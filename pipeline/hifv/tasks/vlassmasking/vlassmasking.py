@@ -171,6 +171,10 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         relativefraction_onedeg = 0.0
         widthdeg = 1.0
 
+        # Work around for CAS-13338
+        mask_csys_rec = self.inputs.context.clean_list_pending[0]['heuristics'].get_parallel_cont_synthesis_imager_csys(
+            phasecenter, imsize=shapelist, cell=cell)
+
         # Test parameters for reference
         # Location of catalog file at the AOC
         # catalog_fits_file = '/home/vlass/packages/VLASS1Q.fits'
@@ -200,7 +204,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             catalog_search_size=self.inputs.catalog_search_size,
                                                             mask_shape=mask_shape, frequency=frequency, cell=cell,
                                                             phasecenter=phasecenter,
-                                                            mask_name=tier1mask)
+                                                            mask_name=tier1mask, csys_rec=mask_csys_rec)
 
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
@@ -248,7 +252,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             catalog_search_size=self.inputs.catalog_search_size,
                                                             mask_shape=mask_shape, frequency=frequency, cell=cell,
                                                             phasecenter=phasecenter,
-                                                            mask_name=tier2mask)
+                                                            mask_name=tier2mask, csys_rec=mask_csys_rec)
 
             # combine first and second order masks
             outfile = maskname_base + '.sum_of_masks.mask'

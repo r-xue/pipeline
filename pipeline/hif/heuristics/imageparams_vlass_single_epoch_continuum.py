@@ -1,10 +1,17 @@
 import re
+import glob
+import shutil
+import uuid
 from typing import Union, Tuple
 
 import numpy
 
+from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
+
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
+import pipeline.infrastructure.mpihelpers as mpihelpers
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -354,6 +361,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         by copying coordinates from a tclean produced image (e.g. the PSF).
 
         See CAS-13338 and PIPE-728"""
+        # TODO: remove this method, it is not needed because get_PyParallelContSynthesisImager_csys fixed the issue preemptively
         if self.vlass_stage == 1:
             try:
                 with casa_tools.ImageReader(image_name) as image:
@@ -372,6 +380,76 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             except Exception as ee:
                 LOG.warning(f"Not able to update Tier-1 mask coordinates, exception: {ee}")
         return
+
+    def get_parallel_cont_synthesis_imager_csys(self, phasecenter=None, imsize=None, cell=None, parallel='automatic'):
+        """
+        This method creates an image with PyParallelContSynthesisImager and returns it's phase centre.
+
+        The purpose of this method is to temporarily (until CASA fixes the issue) reduce the phase centre accuracy of
+        VLASS-SE-CONT masks computed in hifv_makeimages() to the accuracy used in the parallel imager (in the
+        hif_makeimages() stages).
+
+        Tclean 6.1 truncates phase center coordinates at ~1E-7 precision. When a mask is provided to tclean
+        with higher precision reference coordinate, the truncation may lead to the interpolated mask to shift
+        by a pixel, resulting in slightly different tclean input and output mask.
+
+        The method also records the phase centre difference in the CASA log.
+
+        See CAS-13338 and PIPE-728
+        """
+        qaTool = casa_tools.quanta
+        do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
+
+        if not phasecenter:
+            LOG.error(f"No phasecenter is provided.")
+
+        if do_parallel:
+            LOG.info("Determining exact value of image phase center empirically due to CASA precision issue in parallel mode (CAS-13338)")
+            tmp_psf_filename = str(uuid.uuid4())
+            paramList = ImagerParameters(msname=self.vislist,
+                                         phasecenter=phasecenter,
+                                         imagename=tmp_psf_filename,
+                                         imsize=imsize,
+                                         cell=cell,
+                                         stokes='I',
+                                         #gridder=self.gridder(None, None),
+                                         #cfcache=cfcache,
+                                         parallel=do_parallel
+                                         )
+            makepsf_imager = PyParallelContSynthesisImager(params=paramList)
+
+            makepsf_imager.initializeImagers()
+            makepsf_imager.initializeNormalizers()
+            makepsf_imager.setWeighting()
+            makepsf_imager.makePSF()
+            makepsf_imager.deleteTools()
+
+            # Obtain image reference and header
+            with casa_tools.ImageReader('{}.psf'.format(tmp_psf_filename)) as image:
+                csys_image = image.coordsys()
+            csys_record = csys_image.torecord()
+            csys_image.done()
+
+            tmp_psf_images = glob.glob('%s.*' % tmp_psf_filename)
+            for tmp_psf_image in tmp_psf_images:
+                shutil.rmtree(tmp_psf_image)
+
+            # Report coordinate difference:
+            ra_str = qaTool.convert(phasecenter.split(' ')[1], 'arcsec')['value']
+            dec_str = qaTool.convert(phasecenter.split(' ')[2], 'arcsec')['value']
+
+            ra_psf = qaTool.convert('%s %s' % (csys_record['direction0']['crval'][0],
+                                               csys_record['direction0']['units'][0]), 'arcsec')['value']
+            dec_psf = qaTool.convert('%s %s' % (csys_record['direction0']['crval'][1],
+                                                csys_record['direction0']['units'][1]), 'arcsec')['value']
+
+            LOG.info('Corrected difference between requested phase center and parallel synthesis imager phase '
+                     'center is delta_ra = {:.4e} arcsec, delta_dec = {:.4e} arcsec'.format(ra_psf-ra_str,
+                                                                                            dec_psf-dec_str))
+        else:
+            csys_record = None
+
+        return csys_record
 
 class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """

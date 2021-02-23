@@ -791,9 +791,6 @@ class Tclean(cleanbase.CleanBase):
             self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
                                ignore='mask' if do_not_copy_mask else None)
 
-            # Update mask header to work around CAS-13338 (and PIPE-728)
-            self.image_heuristics.fix_vlass_tier_1_mask_coors(glob.glob('%s.*psf.tt0' % new_pname)[0], new_cleanmask)
-
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
             LOG.info('    Threshold %s', threshold)

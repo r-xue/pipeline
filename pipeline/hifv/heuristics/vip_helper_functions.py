@@ -43,7 +43,7 @@ def run_bdsf(infile=""):
 def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
                       catalog_fits_file='/home/vlass/packages/VLASS1Q.fits',
                       catalog_search_size=1.0, mask_shape=[], frequency='',
-                      cell='', phasecenter='', mask_name=''):
+                      cell='', phasecenter='', mask_name='', csys_rec=None):
     """
     Construct a clean mask from a sky catalog and reference image.
 
@@ -57,6 +57,7 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     :param cell: string cell size '2.0arcsec'
     :param phasecenter: Epoch leading string 'J2000 13:33:35.814 +16.44.04.255'
     :param mask_name: string name of the mask to write out
+    :param csys_rec: coordinate system record dictionary (optional)
     :return: returns nothing
 
     Example 1:
@@ -111,11 +112,17 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
     mask_im = myia.fromshape(mask_name, list(mask_shape), overwrite=True)
     mask_csys = myia.coordsys()
-    mask_csys.setunits(['rad', 'rad', '', 'Hz'])
-    cell_rad = qt.convert(qt.quantity(cell), "rad")['value']
-    mask_csys.setincrement([-cell_rad, cell_rad], 'direction')
-    mask_csys.setreferencevalue([qt.convert(rahr, 'rad')['value'], qt.convert(decdeg, 'rad')['value']],
-                                type="direction")
+    if csys_rec:
+        mask_csys.fromrecord(csys_rec)
+    else:
+        cell_rad = qt.convert(qt.quantity(cell), "rad")['value']
+        mask_csys.setincrement([-cell_rad, cell_rad], 'direction')
+        mask_csys.setreferencevalue([qt.convert(rahr, 'rad')['value'], qt.convert(decdeg, 'rad')['value']],
+                                    type="direction")
+        mask_csys.setunits(['rad', 'rad', '', 'Hz'])
+    # Update spectral reference and metadata in any case, csys determined in get_parallel_cont_synthesis_imager_csys()
+    # heuristic method contains different spectral setup than the VLASS-SE-CONT workflow (in order to speed up
+    # computation). The frequency axis should not matter for the spectrally collapsed mask, but set for consistency.
     mask_csys.setreferencevalue(frequency, 'spectral')
     mask_csys.setincrement('1GHz', 'spectral')
     mask_csys.setobserver('Dr. Vlass Scientist')
