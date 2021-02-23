@@ -119,7 +119,10 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
         mask_csys.setincrement([-cell_rad, cell_rad], 'direction')
         mask_csys.setreferencevalue([qt.convert(rahr, 'rad')['value'], qt.convert(decdeg, 'rad')['value']],
                                     type="direction")
-    mask_csys.setunits(['rad', 'rad', '', 'Hz'])
+        mask_csys.setunits(['rad', 'rad', '', 'Hz'])
+    # Update spectral reference and metadata in any case, csys determined in get_parallel_cont_synthesis_imager_csys()
+    # heuristic method contains different spectral setup than the VLASS-SE-CONT workflow (in order to speed up
+    # computation). The frequency axis should not matter for the spectrally collapsed mask, but set for consistency.
     mask_csys.setreferencevalue(frequency, 'spectral')
     mask_csys.setincrement('1GHz', 'spectral')
     mask_csys.setobserver('Dr. Vlass Scientist')
