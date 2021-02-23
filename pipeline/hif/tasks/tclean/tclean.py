@@ -775,9 +775,11 @@ class Tclean(cleanbase.CleanBase):
             # Delete any old files with this naming root
             self.rm_iter_files(rootname, iteration)
 
+            import pdb; pdb.set_trace()
+
             # replace stage substring in copied mask name
             new_cleanmask = 's{:d}_0.{}'.format(self.inputs.context.task_counter,
-                                                re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
+                                                re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1)) if mask and mask != 'pb' else ''
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
             savemodel = self.image_heuristics.savemodel(iteration)

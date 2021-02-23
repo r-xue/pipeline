@@ -72,13 +72,17 @@ class VlassmaskingResults(basetask.Results):
         if len(context.clean_list_pending[0]) == 0:
             LOG.error('Clean list pending is empty. Mask name was not set for imaging target.')
             return
-        elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
+        elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask'] not in ['', 'pb']:
             LOG.warning('Updating existing clean list pending mask selection with {}.'.format(self.combinedmask))
         else:
             LOG.info('Setting clean list pending mask selection to {}.'.format(self.combinedmask))
 
-        # In tier-2 mode cleaning is done first with tier-1 mask (iter1 in tclean.py), then with combined mask (iter2)
-        context.clean_list_pending[0]['mask'] = [context.clean_list_pending[0]['mask'], self.combinedmask] if self.maskingmode == 'vlass-se-tier-2' else self.combinedmask
+        # Is mask is a list then insert new mask to appropriate position (0 if tier-1 mode i.e.
+        # iter1, 1 if tier-2 mode i.e. iter2)
+        if type(context.clean_list_pending[0]['mask']) is list:
+            context.clean_list_pending[0]['mask'].insert(1 if self.maskingmode == 'vlass-se-tier-2' else 0, self.combinedmask)
+        else:
+            context.clean_list_pending[0]['mask'] = [context.clean_list_pending[0]['mask'], self.combinedmask] if self.maskingmode == 'vlass-se-tier-2' else self.combinedmask
         return
 
     def __repr__(self):

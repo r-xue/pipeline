@@ -21,8 +21,8 @@ class VlassMaskThresholdSequence(BaseCleanSequence):
         if iteration is None:
             raise Exception('no data for iteration')
 
-        if iteration in [1, 2]:
-            # VLASS-SE-CONT tier-2 mask results in a two element list for self.mask
+        if iteration in [1, 2] and new_cleanmask not in ['pb','']:
+            # VLASS-SE-CONT tier-2 masking stage results in two element list for self.mask
             iter_mask = self.mask[iteration-1] if type(self.mask) is list else self.mask
             tbTool = casa_tools.table
             tbTool.open(iter_mask)

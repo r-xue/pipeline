@@ -97,20 +97,29 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return '<12km', None
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
-             results_list: Union[list, None] = None) -> str:
+             results_list: Union[list, None] = None, clean_no_mask_all_images=None) -> str:
         """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
 
             Obtain the mask name from the latest MakeImagesResult object in context.results.
             If not found, then return empty string (as base heuristics)."""
+        mask_list = ''
         if results_list and type(results_list) is list:
             for result in results_list:
                 result_meta = result.read()
                 if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
                         'hifv_vlassmasking'):
-                    return [r.combinedmask for r in result_meta][0]
+                    mask_list = [r.combinedmask for r in result_meta][0]
+
+        # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977)
+        # Might happen on request for all imaging stages or automatically for the final imaging stage.
+        if clean_no_mask_all_images or self.vlass_stage == 3:
+            if type(mask_list) is list:
+                mask_list.append('pb')
+            else:
+                mask_list = ['pb']
 
         # In case hif_makeimages result was not found or results_list was not provided
-        return ''
+        return mask_list
 
     def buffer_radius(self) -> float:
         return 1000.
@@ -349,6 +358,11 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pointingoffsetsigdev(self) -> list:
         """Tclean parameter"""
         return [300, 30]
+
+    def pbmask(self) -> float:
+        """Tclean pbmask parameter heuristics.
+        Cleaning with only primary beam mask is used on request (via editimlist)."""
+        return 0.4
 
     def fix_vlass_tier_1_mask_coors(self, image_name: str, mask_name: str):
         """Workaround limited precision tclean phasecenter parameter conversion.

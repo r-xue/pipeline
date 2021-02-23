@@ -83,6 +83,7 @@ class EditimlistInputs(vdp.StandardInputs):
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
     sensitivity = vdp.VisDependentProperty(default=0.0)
+    clean_no_mask_all_images = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty
     def cell(self):
@@ -135,7 +136,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  parameter_file=None, pblimit=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
-                 uvtaper=None, uvrange=None, width=None, sensitivity=None):
+                 uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_all_images=None):
 
         super(EditimlistInputs, self).__init__()
         self.context = context
@@ -179,6 +180,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.uvrange = uvrange
         self.width = width
         self.sensitivity = sensitivity
+        self.clean_no_mask_all_images = clean_no_mask_all_images
 
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
@@ -186,7 +188,7 @@ class EditimlistInputs(vdp.StandardInputs):
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
                             'editmode', 'nsigma', 'pblimit',
-                            'sensitivity', 'conjbeams')
+                            'sensitivity', 'conjbeams', 'clean_no_mask_all_images')
 
         self.keys_to_change = []
         keydict = self.as_dict()
@@ -447,7 +449,9 @@ class Editimlist(basetask.StandardTaskTemplate):
                                      band=None) if not inpdict['imagename'] else inpdict['imagename']
             imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
             # Try to obtain previously computed mask name
-            imlist_entry['mask'] = th.mask(results_list=inp.context.results) if not inpdict['mask'] else inpdict['mask']
+            imlist_entry['mask'] = th.mask(results_list=inp.context.results,
+                                           clean_no_mask_all_images=inpdict['clean_no_mask_all_images']) if not inpdict['mask'] \
+                else inpdict['mask']
 
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))
