@@ -38,15 +38,19 @@ class Pbcor(basetask.StandardTaskTemplate):
             imgname = sci_im['imagename']
             basename = imgname[:imgname.rfind('.image')]
             pbname = basename + '.pb'
-            resname = basename + '.residual'
             term_ext = '.tt0' if sci_im['multiterm'] else ''
-
             pbcor_images = []
-            for inpname in [imgname, resname]:
-                task = casa_tasks.impbcor(imagename=inpname+term_ext, pbimage=pbname+term_ext,
-                                          outfile=inpname+'.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
-                self._executor.execute(task)
-                pbcor_images.append(inpname+'.pbcor'+term_ext)
+
+            task = casa_tasks.impbcor(imagename=basename+'.image'+term_ext, pbimage=pbname+term_ext,
+                                      outfile=basename+'.image.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+            self._executor.execute(task)
+            pbcor_images.append(basename+'.image.pbcor'+term_ext)
+
+            task = casa_tasks.impbcor(imagename=basename + '.residual'+term_ext, pbimage=pbname+term_ext,
+                                      outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+            self._executor.execute(task)
+            pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
+
             pbcor_images.append(pbname+term_ext)
 
             LOG.info("PBCOR image names: " + ','.join(pbcor_images))
