@@ -204,6 +204,11 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
 
+        flag_totals = {}
+        for r in results:
+            flag_totals = utils.dict_merge(flag_totals,
+                                           self.flags_for_result(r, context))
+
         summary_plots = {}
 
         for result in results:
@@ -212,7 +217,34 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots
 
-        ctx.update({'summary_plots': summary_plots,
+        ctx.update({'flags': flag_totals,
+                    'agents': ['before', 'after'],
+                    'summary_plots': summary_plots,
                     'dirname': weblog_dir})
 
         return ctx
+
+    def flags_for_result(self, result, context):
+        ms = context.observing_run.get_ms(result.inputs['vis'])
+        summaries = result.summaries
+
+        by_antenna = self.flags_by_antenna(summaries)
+        by_spw = self.flags_by_spw(summaries)
+
+        return {ms.basename: {'by_antenna': by_antenna, 'by_spw': by_spw}}
+
+    def flags_by_antenna(self, summaries):
+        total = collections.defaultdict(dict)
+        for summary in summaries:
+            for ant_id in summary['antenna']:
+                total[summary['name']][ant_id] = FlagTotal(
+                    summary['antenna'][ant_id]['flagged'], summary['antenna'][ant_id]['total'])
+        return total
+
+    def flags_by_spw(self, summaries):
+        total = collections.defaultdict(dict)
+        for summary in summaries:
+            for spw_id in summary['spw']:
+                total[summary['name']][spw_id] = FlagTotal(
+                    summary['spw'][spw_id]['flagged'], summary['spw'][spw_id]['total'])
+        return total

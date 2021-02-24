@@ -30,17 +30,17 @@ class CheckflagInputs(vdp.StandardInputs):
 
 
 class CheckflagResults(basetask.Results):
-    def __init__(self, jobs=None, summary_stats=None):
+    def __init__(self, jobs=None, summaries=None):
 
         if jobs is None:
             jobs = []
-        if summary_stats is None:
-            summary_stats = []
+        if summaries is None:
+            summaries = []
 
         super(CheckflagResults, self).__init__()
 
         self.jobs = jobs
-        self.summary_stats = summary_stats
+        self.summaries = summaries
         self.plots = {}
 
     def __repr__(self):
@@ -70,7 +70,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             self._check_for_modelcolumn()
 
         # get the before flag total statistics
-        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
+        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
         summarydict = self._executor.execute(job)
         summaries.append(summarydict)
 
@@ -107,9 +107,14 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             if not fieldselect:
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
-                return CheckflagResults()
+                return CheckflagResults(summaries=summaries)
             else:
                 extendflag_result = self.do_targetvlass()
+                # get the after flag total statistics
+                job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
+                summarydict = self._executor.execute(job)
+                summaries.append(summarydict)
+                extendflag_result.summaries = summaries
                 return extendflag_result
 
         if self.inputs.checkflagmode == 'bpd':
@@ -225,7 +230,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
             summarydict = self._executor.execute(job)
             summaries.append(summarydict)
-            extendflag_result.summary_stats = summaries
+            extendflag_result.summaries = summaries
             return extendflag_result
 
         # Values from pipeline context
@@ -261,7 +266,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         summarydict = self._executor.execute(job)
         summaries.append(summarydict)
 
-        return CheckflagResults([job], summary_stats=summaries)
+        return CheckflagResults([job], summaries=summaries)
 
     def _do_checkflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
                       ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
