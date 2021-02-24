@@ -2061,7 +2061,7 @@ class ImageParamsHeuristics(object):
     def stokes(self):
         return 'I'
 
-    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask_all_images=None):
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask=None):
         return ''
 
     def specmode(self):

@@ -97,7 +97,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return '<12km', None
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
-             results_list: Union[list, None] = None, clean_no_mask_all_images=None) -> str:
+             results_list: Union[list, None] = None, clean_no_mask=None) -> str:
         """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
 
             Obtain the mask name from the latest MakeImagesResult object in context.results.
@@ -111,8 +111,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                     mask_list = [r.combinedmask for r in result_meta][0]
 
         # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977)
-        # Might happen on request for all imaging stages or automatically for the final imaging stage.
-        if clean_no_mask_all_images or self.vlass_stage == 3:
+        # On request for first imaging stage (selfcal image) and automatically for the final imaging stage.
+        if (clean_no_mask and self.vlass_stage == 1) or self.vlass_stage == 3:
             if type(mask_list) is list:
                 mask_list.append('pb')
             else:
