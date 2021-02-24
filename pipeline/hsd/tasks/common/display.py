@@ -4,16 +4,14 @@ import datetime
 import itertools
 import math
 import os
-
-import matplotlib.gridspec as gridspec
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from matplotlib.axes import Axes
-from matplotlib.text import Text
-from matplotlib.patches import Polygon
-from matplotlib.lines import Line2D
 from typing import Generator, List, NoReturn, Optional, Tuple, Union
+
+from casatools import coordsys as casa_coordsys
+from matplotlib.axes import Axes
+from matplotlib.dates import date2num, DateFormatter, MinuteLocator
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
@@ -208,7 +206,7 @@ class SpectralImage(object):
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
-    def _load_coordsys(self, coordsys: casa_tools.casatools.coordsys) -> None:
+    def _load_coordsys(self, coordsys: casa_coordsys) -> None:
         """Load axes information of coordinate system.
 
         Args:
@@ -226,7 +224,7 @@ class SpectralImage(object):
         self.refvals = coordsys.referencevalue()['numeric']
         self.increments = coordsys.increment()['numeric']
 
-    def _load_id_coord_types(self, coord_types: casa_tools.casatools.coordsys) -> None:
+    def _load_id_coord_types(self, coord_types: casa_coordsys) -> None:
         """Load indices for coordinate axes.
 
         Args:
