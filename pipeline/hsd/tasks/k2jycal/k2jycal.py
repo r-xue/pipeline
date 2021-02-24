@@ -15,6 +15,8 @@ LOG = infrastructure.get_logger(__name__)
 class SDK2JyCalInputs(vdp.StandardInputs):
 
     reffile = vdp.VisDependentProperty(default='jyperk.csv')
+    dbservice = vdp.VisDependentProperty(default=False)
+    endpoint = vdp.VisDependentProperty(default='asdm')
 
     @vdp.VisDependentProperty
     def infiles(self):

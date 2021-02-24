@@ -35,6 +35,14 @@
     <ProcessingCommand>
         <Command xmlns="">hsd_k2jycal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">dbservice</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">endpoint</Keyword>
+                <Value xmlns="">asdm</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
