@@ -72,8 +72,8 @@ class VlassmaskingResults(basetask.Results):
         if len(context.clean_list_pending[0]) == 0:
             LOG.error('Clean list pending is empty. Mask name was not set for imaging target.')
             return
-        elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask'] not in ['', 'pb']:
-            LOG.warning('Updating existing clean list pending mask selection with {}.'.format(self.combinedmask))
+        elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
+            LOG.info('Updating existing clean list pending mask selection with {}.'.format(self.combinedmask))
         else:
             LOG.info('Setting clean list pending mask selection to {}.'.format(self.combinedmask))
 
