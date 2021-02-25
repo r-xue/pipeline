@@ -3,6 +3,7 @@ import copy
 import os
 
 import matplotlib
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -176,3 +177,80 @@ class CleanSummary(object):
                     plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 
         return [p for p in plot_wrappers if p is not None]
+
+# TODO: extend docstring
+class TcleanMinorCycleSummaryFigure(object):
+    """Tclean minor cycle summery statistics plot, contains:
+
+    Flux density cleaned vs. Major Cycle
+    Plot of Peak Residual per major cycle
+
+    See PIPE-991."""
+
+    def __init__(self, context, result, minor_cycle_stats):
+        self.context = context
+        self.minorcycle_stats = minor_cycle_stats
+        self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+        self.filebase = result.targets[0]['imagename'].replace('STAGENUMBER', '%s_0' % result.stage_number)
+        self.figfile = self._get_figfile()
+        self.units = 'Jy'
+        self.title = 'Major cycle statistics'
+        self.xlabel = 'Minor iterations done'
+        self.ylabel = ['Flux density cleaned [%s]' % self.units, 'Peak RMS [%s]' % self.units]
+        self.unitfactor = 1.0
+
+    def plot(self):
+        if os.path.exists(self.figfile):
+            LOG.debug('Returning existing tclean minor cycle summary plot')
+            return self._get_plot_object()
+
+        LOG.info('Creating major cycle statistics plot.')
+
+        fig, (ax0, ax1) = plt.subplots(2, 1, )
+        fig.set_dpi(150.0)
+
+        ax0.set_title(self.title)
+        ax1.set_xlabel(self.xlabel)
+        ax0.set_ylabel(self.ylabel[0])
+        ax1.set_ylabel(self.ylabel[1])
+
+        ax0.set_yscale('log')
+        ax1.set_yscale('log')
+
+        ax0.xaxis.label.set_size(14)
+        ax0.xaxis.label.set_size(14)
+
+        x0 = 0
+        for iter, item in self.minorcycle_stats.items():
+            if item['nminordone_array'] is not None:
+                # get quantities
+                x = item['nminordone_array'] + x0
+                ax0_y = item['totalflux_array'] * self.unitfactor
+                ax1_y = item['peakrms_array'] * self.unitfactor
+                # increment last iteration
+                x0 = x[-1]
+
+                # scatter plot
+                ax0.plot(x, ax0_y, 'b+')
+                ax1.plot(x, ax1_y, 'b+')
+                # Vertical line and annotation at major cycle end
+                ax0.axvline(x0, linewidth=1, linestyle='dotted', color='k')
+                ax1.axvline(x0, linewidth=1, linestyle='dotted', color='k')
+                ax0.annotate(item['cleanmask'], xy=(x0, ax0.get_ylim()[0]), xycoords='data',
+                             xytext=(-6, 2), textcoords='offset points', size=4, rotation=90)
+
+        plt.tight_layout()
+        plt.savefig(self.figfile)
+        plt.close()
+
+        return self._get_plot_object()
+
+    def _get_figfile(self):
+        return os.path.join(self.reportdir,
+                            'major_cycle_stats.png')
+
+    def _get_plot_object(self):
+        return logger.Plot(self.figfile,
+                           x_axis=self.xlabel,
+                           y_axis='/'.join(self.ylabel))
+
