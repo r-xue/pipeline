@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9}
 %>
 
@@ -15,9 +16,9 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
 % for ms in testgainsamp_subpages.keys():
 
     <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, testgainsamp_subpages[ms]), pcontext.report_dir)}">Testgains amp plots </a> | 
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, testgainsamp_subpages[ms])}">Testgains amp plots </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, testgainsphase_subpages[ms]), pcontext.report_dir)}">Testgains phase plots</a>
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, testgainsphase_subpages[ms])}">Testgains phase plots</a>
     </h4>
     
 %endfor

@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -12,44 +13,34 @@ of the bandpass calibrator has not yet been determined.</p>
 
 % for ms in summary_plots:
     <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, delay_subpages[ms]), pcontext.report_dir)}">Delay plots </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, delay_subpages[ms])}">Delay plots </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, phasegain_subpages[ms]), pcontext.report_dir)}">Gain phase </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phasegain_subpages[ms])}">Gain phase </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolamp_subpages[ms]), pcontext.report_dir)}">BP Amp solution </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_subpages[ms])}">BP Amp solution </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolphase_subpages[ms]), pcontext.report_dir)}">BP Phase solution </a>
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphase_subpages[ms])}">BP Phase solution </a>
     </h4>
 %endfor
 
-
-
 <br>
 
-
-
 <%self:plot_group plot_dict="${summary_plots}"
-                                  url_fn="${lambda ms:  'noop'}">
+                  url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
             semiFinalBPdcals summary plot
         </%def>
 
         <%def name="preamble()">
-
-
         </%def>
-        
-        
+
         <%def name="mouseover(plot)">Summary window </%def>
-        
-        
-        
+
         <%def name="fancybox_caption(plot)">
           Semi-final calibrated bandpass
         </%def>
-        
-        
+
         <%def name="caption_title(plot)">
            Semi-final calibrated bandpass
         </%def>

@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -25,7 +26,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 %endfor
 </ul>
 
-
 <ul>
 %for single_result in result:
 
@@ -41,9 +41,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 %endfor
 </ul>
 
-
-
-
 <hr>
 
 %for single_result in result:
@@ -51,7 +48,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     %if single_result.final:
 
     <%self:plot_group plot_dict="${polarization_plots}"
-                                  url_fn="${lambda ms:  'noop'}">
+                      url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
             Polarization Plots
@@ -61,15 +58,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
            Plots resulting from polarization calibration.
         </%def>
 
-
         <%def name="mouseover(plot)">Summary window </%def>
-
-
 
         <%def name="fancybox_caption(plot)">
           ${plot.parameters['caption']}
         </%def>
-
 
         <%def name="caption_title(plot)">
            ${plot.parameters['caption']}
@@ -83,9 +76,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 %endfor
 
-
-
-
 %if ampfreq_subpages:
 
         <h2>D-term Amplitude vs. Frequency Plots</h2>
@@ -97,13 +87,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         %for ms in polarization_plots.keys():
 
             <h4>
-            <a class="replace" href="${os.path.relpath(os.path.join(dirname, ampfreq_subpages[ms]), pcontext.report_dir)}">Amplitude vs. Frequency (per antenna plots)</a>
+                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, ampfreq_subpages[ms])}">Amplitude vs. Frequency (per antenna plots)</a>
             </h4>
 
         %endfor
 %endif
-
-
-
-
-
