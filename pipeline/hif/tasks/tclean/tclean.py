@@ -781,7 +781,11 @@ class Tclean(cleanbase.CleanBase):
                 self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
-            savemodel = self.image_heuristics.savemodel(iteration)
+            # Model column is saved only at the end of the first imaging stage (see heuristics for more detail)
+            # In case final clean without mask (i.e. pb mask only) is requested for the first imaging stage,
+            # then save model column only in (after) clean without mask, therefore make sure only the last iteration
+            # request saving model column.
+            savemodel = self.image_heuristics.savemodel(1 if iteration == len(vlass_masks) else 0)
 
             seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                     self.pblimit_cleanmask, iteration=iteration)
