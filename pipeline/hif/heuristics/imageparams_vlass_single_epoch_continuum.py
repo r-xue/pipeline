@@ -119,8 +119,10 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if (clean_no_mask and self.vlass_stage == 1) or self.vlass_stage == 3:
             if type(mask_list) is list:
                 mask_list.append('pb')
+            elif mask_list != '': # mask is non-empyy string
+                mask_list = [mask_list, 'pb']
             else:
-                mask_list = ['pb']
+                mask_list = 'pb'
 
         # In case hif_makeimages result was not found or results_list was not provided
         return mask_list
