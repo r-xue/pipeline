@@ -210,16 +210,22 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                            self.flags_for_result(r, context))
 
         summary_plots = {}
+        percentagemap_plots = {}
 
         for result in results:
+            ms = os.path.basename(result.inputs['vis'])
             plotter = displaycheckflag.checkflagSummaryChart(context, result)
             plots = plotter.plot()
-            ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots
+            if result.inputs['checkflagmode'] == 'vlass-imaging':
+                percentagemap_plots[ms] = [displaycheckflag.checkflagPercentageMap(context, result).plot()]
+            else:
+                percentagemap_plots[ms] = []
 
         ctx.update({'flags': flag_totals,
                     'agents': ['before', 'after'],
                     'summary_plots': summary_plots,
+                    'percentagemap_plots': percentagemap_plots,
                     'dirname': weblog_dir})
 
         return ctx
@@ -230,8 +236,9 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         by_antenna = self.flags_by_antenna(summaries)
         by_spw = self.flags_by_spw(summaries)
+        by_field = self.flags_by_field(summaries)
 
-        return {ms.basename: {'by_antenna': by_antenna, 'by_spw': by_spw}}
+        return {ms.basename: {'by_antenna': by_antenna, 'by_spw': by_spw, 'by_field': by_field}}
 
     def flags_by_antenna(self, summaries):
         total = collections.defaultdict(dict)
@@ -247,4 +254,12 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for spw_id in summary['spw']:
                 total[summary['name']][spw_id] = FlagTotal(
                     summary['spw'][spw_id]['flagged'], summary['spw'][spw_id]['total'])
+        return total
+
+    def flags_by_field(self, summaries):
+        total = collections.defaultdict(dict)
+        for summary in summaries:
+            for field_id in summary['field']:
+                total[summary['name']][field_id] = FlagTotal(
+                    summary['field'][field_id]['flagged'], summary['field'][field_id]['total'])
         return total

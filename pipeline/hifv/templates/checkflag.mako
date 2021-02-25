@@ -26,19 +26,13 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
         </%def>
 
         <%def name="preamble()">
-
-
         </%def>
 
-
         <%def name="mouseover(plot)">Summary window</%def>
-
-
 
         <%def name="fancybox_caption(plot)">
             ${plot_caption}
         </%def>
-
 
         <%def name="caption_title(plot)">
             ${plot_caption}
@@ -49,9 +43,32 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
 
 
 
-
-
 % if result[0].inputs['checkflagmode'] in ('vlass-imaging'):
+
+<%
+plot_caption = 'Percentage Flagged Map'
+%>
+
+<%self:plot_group plot_dict="${percentagemap_plots}"
+                                  url_fn="${lambda ms:  'noop'}">
+
+        <%def name="title()">
+            Checkflag Percentage Map Plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Summary window</%def>
+
+        <%def name="fancybox_caption(plot)">
+            ${plot_caption}
+        </%def>
+
+        <%def name="caption_title(plot)">
+            ${plot_caption}
+        </%def>
+</%self:plot_group>
 
 <%
 

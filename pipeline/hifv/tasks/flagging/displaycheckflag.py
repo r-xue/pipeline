@@ -1,9 +1,13 @@
 import os
 
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.interpolate import griddata
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
-
+import pipeline.infrastructure.casa_tools as casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -110,3 +114,85 @@ class checkflagSummaryChart(object):
             return wrapper
 
         return None
+
+
+class checkflagPercentageMap(object):
+    def __init__(self, context, result):
+        self.context = context
+        self.result = result
+        self.ms = context.observing_run.get_ms(result.inputs['vis'])
+        self.figfile = self._get_figfile()
+
+    def plot(self):
+        if os.path.exists(self.figfile):
+            LOG.debug('Returning existing checkflag percentage map plot')
+            return self._get_plot_object()
+
+        LOG.debug('Creating new checkflag percentage map plot')
+        try:
+
+            fig_title = self.ms.basename
+
+            fig, ax = plt.subplots()
+            fields_name, fields_ra, fields_dec = self._fields_to_ra_dec()
+
+            fieldflags = np.zeros((len(fields_name), 3))
+            flags_by_field = self.result.summaries[-1]['field']
+
+            for idx in range(len(fields_name)):
+                field_name = fields_name[idx]
+                fieldflags[idx, 0] = 100.0 * flags_by_field[field_name]['flagged']/flags_by_field[field_name]['total']
+                fieldflags[idx, 1] = np.degrees(float(fields_ra[idx]))
+                fieldflags[idx, 2] = np.degrees(float(fields_dec[idx]))
+
+            self._plot_grid(fieldflags[:, 1], fieldflags[:, 2], fieldflags[:, 0])
+            ax.set_xlabel('R.A. [deg]')
+            ax.set_ylabel('Dec. [deg]')
+
+            fig.savefig(self.figfile)
+
+        except:
+            return None
+
+        return self._get_plot_object()
+
+    def _get_figfile(self):
+        return os.path.join(self.context.report_dir,
+                            'stage%s' % self.result.stage_number,
+                            'checkflag-%s-percentagemap.png' % self.ms.basename)
+
+    def _get_plot_object(self):
+        return logger.Plot(self.figfile,
+                           x_axis='R.A.',
+                           y_axis='Dec.',
+                           parameters={'vis': self.ms.basename})
+
+    def _fields_to_ra_dec(self):
+
+        with casa_tools.TableReader(self.ms.name + '/FIELD') as table:
+            phase_dir = table.getcol('PHASE_DIR')
+            field_names = table.getcol('NAME')
+
+        if len(phase_dir.shape) > 2:
+            phase_dir = phase_dir.squeeze()
+
+        return field_names, phase_dir[0, :], phase_dir[1, :]
+
+    def _plot_grid(self, x, y, z, nx=100, ny=100):
+
+        x[x < 0] = x[x < 0] + 360.
+
+        xi = np.linspace(np.max(x), np.min(x), nx)
+        yi = np.linspace(np.min(y), np.max(y), ny)
+
+        zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method='cubic')
+        zi[zi > 100] = 100.
+
+        dx = (np.max(x)-np.min(x))*0.1
+        dy = (np.max(y)-np.min(y))*0.1
+        plt.imshow(zi, origin='lower', extent=[np.max(x)+dx, np.min(x)-dx, np.min(y)-dy, np.max(y)+dy], aspect='equal')
+        plt.plot(x, y, 'k+')
+
+        plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
+        cba = plt.colorbar()
+        cba.set_label('percent flagged [%]')
