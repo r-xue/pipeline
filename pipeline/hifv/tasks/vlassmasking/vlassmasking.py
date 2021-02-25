@@ -1,3 +1,4 @@
+import copy
 import os
 import numpy as np
 
@@ -235,7 +236,17 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
             # Obtain Tier 1 mask name
-            tier1mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
+            imaging_target_mask_list = copy.deepcopy(self.inputs.context.clean_list_pending[0]['mask'])
+            if type(imaging_target_mask_list) is list:
+                # pb string is a placeholder for cleaning without mask
+                try:
+                    imaging_target_mask_list.remove('pb')
+                except ValueError:
+                    pass
+                # Always take first mask in the list
+                finally:
+                    imaging_target_mask_list = imaging_target_mask_list[0] if len(imaging_target_mask_list) > 0 else ''
+            tier1mask = maskname_base + QLmask if not imaging_target_mask_list else imaging_target_mask_list
 
             # Obtain image name
             imagename_base = self._get_bdsf_imagename(maskname_base, iter=1)
@@ -259,10 +270,12 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             mask_name=tier2mask, csys_rec=mask_csys_rec)
 
             # combine first and second order masks
-            outfile = maskname_base + '.sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[tier2mask, tier1mask], expr='IM0+IM1', outfile=outfile)
-
-            runtask = self._executor.execute(task)
+            try:
+                outfile = maskname_base + '.sum_of_masks.mask'
+                task = casa_tasks.immath(imagename=[tier2mask, tier1mask], expr='IM0+IM1', outfile=outfile)
+                runtask = self._executor.execute(task)
+            except Exception as e:
+                LOG.error(f'Failed to combine mask files {tier1mask} and {tier2mask} with exception {e}')
 
             myim = casa_tools.imager
             LOG.info("Executing imager.mask()...")

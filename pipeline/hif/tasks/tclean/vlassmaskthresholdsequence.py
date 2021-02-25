@@ -35,7 +35,8 @@ class VlassMaskThresholdSequence(BaseCleanSequence):
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
         else:
-            self.result.cleanmask = ''
+            # Special case cleaning without mask if new_cleanmask is 'pb'
+            self.result.cleanmask = 'pb' if new_cleanmask == 'pb' else ''
             self.result.threshold = self.threshold
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter

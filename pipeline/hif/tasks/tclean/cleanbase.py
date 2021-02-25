@@ -416,14 +416,14 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         else:
             tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
-            if (inputs.hm_masking != 'none') and (inputs.mask != ''):
-                tclean_job_parameters['usemask'] = 'user'
-                tclean_job_parameters['mask'] = inputs.mask
-            elif inputs.hm_masking == 'manual' and inputs.mask == 'pb':
+            if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
                 tclean_job_parameters['usemask'] = 'pb'
                 tclean_job_parameters['pbmask'] = inputs.heuristics.pbmask()
+            elif (inputs.hm_masking != 'none') and (inputs.mask != ''):
+                tclean_job_parameters['usemask'] = 'user'
+                tclean_job_parameters['mask'] = inputs.mask
 
         # Show nterms parameter only if it is used.
         if result.multiterm:
