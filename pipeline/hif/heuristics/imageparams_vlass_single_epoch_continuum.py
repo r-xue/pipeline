@@ -73,7 +73,11 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def cycleniter(self, iteration) -> int:
         """Tclean cycleniter parameter heuristics."""
-        if self.vlass_stage == 3 and iteration > 0:
+        # Special case: cleaning without mask in 1st and 3rd imaging stages
+        if (self.vlass_stage == 1 and iteration > 1) or (self.vlass_stage == 3 and iteration > 2):
+            return 100
+        # Special case: 3rd imaging stage
+        elif self.vlass_stage == 3 and iteration > 0:
             return 3000
         else:
             return 5000
