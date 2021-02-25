@@ -386,7 +386,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # into a local context already, before the result has been finalised,
         # so need to explicitly set stage number now.
         LOG.debug('qa: accept WVR results into copy of context')
-        result.stage_number = inputs.context.stage_counter
+        result.stage_number = inputs.context.task_counter
         result.accept(inputs.context)
 
         # do a phase calibration on the bandpass and phase calibrators, now 
