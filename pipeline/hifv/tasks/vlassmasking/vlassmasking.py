@@ -80,10 +80,15 @@ class VlassmaskingResults(basetask.Results):
 
         # Is mask is a list then insert new mask to appropriate position (0 if tier-1 mode i.e.
         # iter1, 1 if tier-2 mode i.e. iter2)
-        if type(context.clean_list_pending[0]['mask']) is list:
+        clp_mask = context.clean_list_pending[0]['mask']
+        if type(clp_mask) is list:
             context.clean_list_pending[0]['mask'].insert(1 if self.maskingmode == 'vlass-se-tier-2' else 0, self.combinedmask)
+        # Cleaning with pb mask only must always be on last place, see PIPE-977
+        elif clp_mask == 'pb':
+            context.clean_list_pending[0]['mask'] = [self.combinedmask, 'pb']
         else:
-            context.clean_list_pending[0]['mask'] = [context.clean_list_pending[0]['mask'], self.combinedmask] if self.maskingmode == 'vlass-se-tier-2' else self.combinedmask
+            context.clean_list_pending[0]['mask'] = [clp_mask, self.combinedmask] if (self.maskingmode == 'vlass-se-tier-2'
+                                                                                      and clp_mask) else self.combinedmask
         return
 
     def __repr__(self):

@@ -85,8 +85,19 @@ The task requires the `vlass_ql_database` parameter. If it is not defined, then 
 `/home/vlass/packages/VLASS1Q.fits` is used (can be found on NMPOST machines). The mask name is constructed 
 from the `context.clean_list_pending['imagename']` key with `".QLcatmask-tier1.mask"` string appended.
 
-When merging mask results to context, the `context.clean_list_pending['mask']` key is overwritten with the 
-newly constructed mask name. Therefore, the next `hif_makeimages` task call will  use this mask.
+The details of how the constructed mask is added to `context.clean_list_pending['mask']` depends on the imaging mode and 
+whether cleaning without mask (i.e. pbmask only) is used:
+
+1. `maskingmode='vlass-se-tier-1'` and no cleaning without mask is requested, then `context.clean_list_pending['mask']` 
+   is overwritten by the new mask name.
+2. `maskingmode='vlass-se-tier-1'` and cleaning without mask is requested, then `context.clean_list_pending['mask']` 
+   is a list with new mask name in first position and `'pb'` string in second (last) position.
+3. `maskingmode='vlass-se-tier-2'`, no cleaning without mask is requested and `context.clean_list_pending['mask']` 
+   is `''`, then key value is overwritten with new mask name. (Not used.)
+4. `maskingmode='vlass-se-tier-2'`, cleaning without mask is requested (`context.clean_list_pending['mask']` 
+   is `'pb'`), then list is returned with new mask in first place followed by `'pb'`. (Not used.)
+5. `maskingmode='vlass-se-tier-2'`  and `context.clean_list_pending['mask']` is a list, then insert new mask name to 
+   the second position. (this applies also when cleaning without mask is requested).
 
 ##### hif_makeimages()
 
@@ -99,13 +110,28 @@ mode. This method is invoked only if `image_heuristics.imaging_mode == 'VLASS-SE
    - compute PSF without frequency dependent A-terms, i.e. `cfcache=cfcache_noawbp` and `wbawp=False` tclean parameters (via Tclean._do_clean() class method)
    - `iter0`: initialize clean using normal CFCache (`niter=0`, `calcpsf=True`, `calcres=True`)
    - replace `iter0` PSF with non-frequency dependent A-terms PSF
-   - `iter1`: continue
+   - `iter1`: continue (clean with 1st mask)
         - tclean-1: clean with mask to nsigma and niter set by heuristics
         - tclean-2 (optional, only if `iter=1` and `vlass_stage=1`): save model to `modelcolumn` in single threaded mode.
    - `iter2` (optional: only if `vlass_stage=3`): same as `iter1`, but use second element of the mask list (see below).
    
-Note that the context.clean_list_pending['mask'] key is a string in imaging stages 1 and 2 (`vlass_stage in [1,2]`) 
-and list in stage 3 (`vlass_stage=3`), where the first element is the Tier-1 mask, the second element is the 
-combined Tier-1 and Tier-2 mask.
+Note that the `context.clean_list_pending['mask']` key is a string in imaging stages 2 (`vlass_stage=2`, Tier-1 mask), list in stage 3 
+(`vlass_stage=3`, first element is Tier-1 mask, second element is the combined Tier-1 and Tier-2 mask, third element is `'pb'`), and either string 
+or list in imaging stage 1 (`vlass_stage=1`), depending on the `clean_no_mask_selfcal_image` `hif_editimlist` parameter. 
+If `clean_no_mask_selfcal_image=True` then the `'mask'` key value is a list in imaging stage 1: first element is the Tier-1 mask, second element is `'pb'`.
 
-The final image is the `vlass_stage=3` `iter=2` image product.
+
+### Masking
+
+See above description of hifv_vlassmasking() and hif_makeimages() tasks.
+
+Obtaining and ordering masks for VLASS-SE-CONT is an overly complicated process that involves several tasks and pipeline 
+stages.
+
+Tasks involved: `hif_editimlist`, `hifv_vlassmasking`, `hif_tclean` (as called by `hif_makimages`). Furthermore, the `hif_editimlist` 
+parameter input file might also contain the `clean_no_mask_selfcal_image` bool parameter, which control the final mask used for cleaning.
+
+If `clean_no_mask_selfcal_image=True` then the `'pb'` placeholder is added to the mask list. This stands always on the last position (i.e. final mask), 
+and always applied (regadless of parameter value in the third imaging stage).
+
+When the mask is `'pb'`, then CASA tclean task is called with `mask=''`, `usemask='pb'`, `pbmask=0.4` and `cycleniter=100` parameters.

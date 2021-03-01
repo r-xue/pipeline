@@ -607,10 +607,8 @@ class Tclean(cleanbase.CleanBase):
                                                          sensitivity=sensitivity, niter=inputs.niter)
 
         # VLASS-SE masking
-        # TODO: may introduce new hm_masking mode?
-        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode in ['VLASS-SE-CONT',
-                                                                                      'VLASS-SE-CONT-AWP-P001',
-                                                                                      'VLASS-SE-CONT-AWP-P032']:
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 as of 01.03.2021
+        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT'):
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
                                                           sensitivity=sensitivity, niter=inputs.niter)
@@ -774,7 +772,6 @@ class Tclean(cleanbase.CleanBase):
 
             # Delete any old files with this naming root
             self.rm_iter_files(rootname, iteration)
-
             # Determine stage mask name and replace stage substring place holder with actual stage number.
             # Special cases when mask is an empty string, None, or when it is set to 'pb'.
             new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(

@@ -330,7 +330,8 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_mode=img_mode)
 
         # Determine current VLASS-SE-CONT imaging stage (used in heuristics to make decisions)
-        if img_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032']:
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 modes as of 01.03.2021
+        if img_mode.startswith('VLASS-SE-CONT'):
             th.vlass_stage = self._get_task_stage_ordinal()
 
         imlist_entry['threshold'] = inpdict['threshold']
@@ -444,7 +445,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
         # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
         # actual stage number string.
-        if img_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032']:
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 as of 01.03.2021
+        if img_mode.startswith('VLASS-SE-CONT'):
             imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
                                      specmode=imlist_entry['specmode'],
                                      band=None) if not inpdict['imagename'] else inpdict['imagename']
