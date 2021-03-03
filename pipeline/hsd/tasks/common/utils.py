@@ -7,7 +7,9 @@ import sys
 import time
 from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
+# Imported for annotation pupose only. Use table in casa_tools in code.
 from casatools import table as casa_table
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
