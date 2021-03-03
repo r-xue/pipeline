@@ -69,10 +69,15 @@ class Checkflag(basetask.StandardTaskTemplate):
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
 
-        # get the before flag total statistics
-        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
-        summarydict = self._executor.execute(job)
-        summaries.append(summarydict)
+        # get the before-flag total statistics
+        # PIPE-757
+        #   skip before-flag summary in three VLASS checkflagmodes: bpd-vlass, allcals-vlass, and target-vlass
+        # PIPE-502/995
+        #   run before-flag summary in all other checkflagmodes, including: vlass-imaging
+        if not (self.inputs.checkflagmode in ('bpd-vlass', 'allcals-vlass')):
+            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
+            summarydict = self._executor.execute(job)
+            summaries.append(summarydict)
 
         # Set up threshold multiplier values for calibrators and targets separately.
         # Xpol are used for cross-hands, Ppol are used for parallel hands. As
@@ -110,7 +115,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                 return CheckflagResults(summaries=summaries)
             else:
                 extendflag_result = self.do_targetvlass()
-                # get the after flag total statistics
+                # PIPE-757/502/995: get the after-flag summary for two VLASS checkflagmodes: target-vlass/vlass-imaging
                 job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
                 summarydict = self._executor.execute(job)
                 summaries.append(summarydict)
