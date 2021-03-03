@@ -6,7 +6,7 @@ import math
 import os
 from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
-from casatools import coordsys as casa_coordsys
+from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
 from matplotlib.axes import Axes
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 import matplotlib.gridspec as gridspec
