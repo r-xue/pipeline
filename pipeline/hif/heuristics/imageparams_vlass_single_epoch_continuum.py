@@ -288,10 +288,16 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
+        # PSF and dirty image
         if iteration == 0:
             return 2.0
+        # Cleaning without user mask
+        elif (self.vlass_stage == 1 and iteration == 2) or (self.vlass_stage == 3 and iteration == 3):
+            return 4.5
+        # Cleaning with user mask, 1st and 2nd imaging stages
         elif self.vlass_stage in [1, 2] and iteration >= 1:
             return 5.0
+        # Cleaning with user mask in 3rd imaging stage
         else:
             return 3.0
 
