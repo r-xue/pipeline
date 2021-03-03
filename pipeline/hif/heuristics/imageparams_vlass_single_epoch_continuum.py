@@ -85,7 +85,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def scales(self, iteration: Union[int, None] = None) -> list:
         """Tclean scales parameter heuristics."""
-        if self.vlass_stage == 3 and iteration >= 1:
+        if self.vlass_stage == 3 and iteration  in [1, 2, 3]:
             return [0, 5, 12]
         else:
             return [0]
