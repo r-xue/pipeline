@@ -82,6 +82,28 @@ import os
     </div>
 %endif
 
+% if suntrack_plot:
+	<div class="col-md-4">
+		<a href="${os.path.relpath(suntrack_plot.abspath, pcontext.report_dir)}" data-fancybox>
+			<h3>Solar Elevation vs. Time</h3>
+		</a>
+        <div class="col-md-12">
+		  	<div class="thumbnail">
+				<a href="${os.path.relpath(suntrack_plot.abspath, pcontext.report_dir)}"
+				   data-fancybox>
+					<img class="lazyload"
+                         data-src="${os.path.relpath(suntrack_plot.thumbnail, pcontext.report_dir)}"
+						 title="SolarElTime for ${ms.basename}"
+						 alt="SolarElTime Details for ${ms.basename}" />
+			    </a>
+			    <div class="caption">
+					<h4>Solar Elevation vs. time</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+% endif
+
 </div>
 
 </body>
