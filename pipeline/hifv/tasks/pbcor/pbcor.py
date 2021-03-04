@@ -33,6 +33,14 @@ class Pbcor(basetask.StandardTaskTemplate):
 
         sci_imlist = self.inputs.context.sciimlist.get_imlist()
         pbcor_dict = {}
+
+        # PIPE-1048: hifv_pbcor should only pbcorrect final products in the VLASS-SE-CONT mode
+        try:
+            if  self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
+                sci_imlist=[sci_imlist[-1]]
+        except Exception:
+            pass
+  
         for sci_im in sci_imlist:
 
             imgname = sci_im['imagename']
