@@ -80,6 +80,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     rotatepastep = vdp.VisDependentProperty(default=None)
     calcpsf = vdp.VisDependentProperty(default=None)
     calcres = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -127,7 +128,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
                  restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
                  result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None, calcpsf=None,
-                 calcres=None, wbawp=None):
+                 calcres=None, wbawp=None, pbmask=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -165,6 +166,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.restoringbeam = restoringbeam
         self.iter = iter
         self.mask = mask
+        self.pbmask = pbmask
 
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
@@ -420,7 +422,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
                 tclean_job_parameters['usemask'] = 'pb'
-                tclean_job_parameters['pbmask'] = inputs.heuristics.pbmask()
+                tclean_job_parameters['pbmask'] = inputs.pbmask if inputs.pbmask else inputs.heuristics.pbmask()
             elif (inputs.hm_masking != 'none') and (inputs.mask != ''):
                 tclean_job_parameters['usemask'] = 'user'
                 tclean_job_parameters['mask'] = inputs.mask

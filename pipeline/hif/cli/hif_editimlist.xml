@@ -125,6 +125,12 @@
                 <value/>
             </param>
 
+            <param name="pbmask" type="float">
+                <shortdescription>Primary beam mask gain level.</shortdescription>
+                <description>Used to declare primary beam gain level for cleaning with primary beam mask (usemask='pb'), used only for VLASS-SE-CONT imaging mode.</description>
+                <value/>
+            </param>
+
             <param name="nbin" type="int">
                 <shortdescription>Channel binning factor.</shortdescription>
                 <description>Channel binning factor.</description>

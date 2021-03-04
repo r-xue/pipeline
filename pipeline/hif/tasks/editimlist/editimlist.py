@@ -63,6 +63,7 @@ class EditimlistInputs(vdp.StandardInputs):
     intent = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
     mask = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
     nbin = vdp.VisDependentProperty(default=-1)
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=0)
@@ -133,7 +134,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  cyclefactor=None, cycleniter=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
-                 mask=None, nbin=None, nchan=None, niter=None, nterms=None,
+                 mask=None, pbmask=None, nbin=None, nchan=None, niter=None, nterms=None,
                  parameter_file=None, pblimit=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
@@ -160,6 +161,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.intent = intent
         self.gridder = gridder
         self.mask = mask
+        self.pbmask = pbmask
         self.nbin = nbin
         self.nchan = nchan
         self.niter = niter
@@ -358,6 +360,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
         imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
+        imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))

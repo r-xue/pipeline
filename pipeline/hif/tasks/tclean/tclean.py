@@ -46,6 +46,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     pblimit = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default=None)
     cfcache_nowb = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
 
     # override CleanBaseInputs default value of 'auto'
     hm_masking = vdp.VisDependentProperty(default='centralregion')
@@ -123,7 +124,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
                  bl_ratio=None, cfcache_nowb=None,
                  # End of extra parameters
-                 heuristics=None):
+                 heuristics=None, pbmask=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
                                            imagename=imagename, antenna=antenna, datacolumn=datacolumn,
                                            intent=intent, field=field, spw=spw, uvrange=uvrange, specmode=specmode,
@@ -174,6 +175,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.pblimit = pblimit
         self.cfcache = cfcache
         self.cfcache_nowb = cfcache_nowb
+        self.pbmask = pbmask
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -1154,6 +1156,7 @@ class Tclean(cleanbase.CleanBase):
                                                   threshold=threshold,
                                                   sensitivity=sensitivity,
                                                   pblimit=inputs.pblimit,
+                                                  pbmask=inputs.pbmask,
                                                   result=result,
                                                   parallel=parallel,
                                                   heuristics=inputs.image_heuristics,
