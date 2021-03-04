@@ -31,11 +31,11 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
         <%def name="mouseover(plot)">Summary window</%def>
 
         <%def name="fancybox_caption(plot)">
-            ${plot_caption}
+            Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},  ${plot.parameters['version']} flagging
         </%def>
 
         <%def name="caption_title(plot)">
-            ${plot_caption}
+            Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},  ${plot.parameters['version']} flagging
         </%def>
 </%self:plot_group>
 

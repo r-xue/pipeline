@@ -1,3 +1,4 @@
+import os
 import collections
 import copy
 
@@ -10,6 +11,8 @@ from pipeline.hifv.heuristics import set_add_model_column_parameters
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+
+from .displaycheckflag import checkflagSummaryChart
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -69,11 +72,9 @@ class Checkflag(basetask.StandardTaskTemplate):
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
 
-        # get the before-flag total statistics
-        # PIPE-757
-        #   skip before-flag summary in three VLASS checkflagmodes: bpd-vlass, allcals-vlass, and target-vlass
-        # PIPE-502/995
-        #   run before-flag summary in all other checkflagmodes, including: vlass-imaging
+        # get the before-flagging total statistics
+        # PIPE-757: skip before-flagging summary in three VLASS checkflagmodes: bpd-vlass/allcals-vlass/target-vlass
+        # PIPE-502/995: run before-flagging summary in all other checkflagmodes, including: vlass-imaging
         if not (self.inputs.checkflagmode in ('bpd-vlass', 'allcals-vlass')):
             job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
             summarydict = self._executor.execute(job)
@@ -114,8 +115,13 @@ class Checkflag(basetask.StandardTaskTemplate):
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
                 return CheckflagResults(summaries=summaries)
             else:
+                # PIPE-757/502/995: 
+                #   save before-flagging summary plots in checkflagresults
+                #   get the after-flagging summary for two VLASS checkflagmodes: target-vlass/vlass-imaging
+                LOG.info('Creating before-flagging summary plots')
+                summaryplot_before=self._create_summaryplots(suffix='before') 
                 extendflag_result = self.do_targetvlass()
-                # PIPE-757/502/995: get the after-flag summary for two VLASS checkflagmodes: target-vlass/vlass-imaging
+                extendflag_result.plots['before'] =  summaryplot_before              
                 job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
                 summarydict = self._executor.execute(job)
                 summaries.append(summarydict)
@@ -633,3 +639,13 @@ class Checkflag(basetask.StandardTaskTemplate):
                 tclean_result = self._executor.execute(job)
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
+
+    def _create_summaryplots(self, suffix='before'):
+        summary_plots = {}
+        results_tmp = basetask.ResultsList()
+        results_tmp.inputs = self.inputs.as_dict()
+        results_tmp.stage_number = self.inputs.context.task_counter
+        ms = os.path.basename(results_tmp.inputs['vis'])
+        summary_plots[ms] = checkflagSummaryChart(self.inputs.context, results_tmp, suffix=suffix).plot()
+
+        return summary_plots

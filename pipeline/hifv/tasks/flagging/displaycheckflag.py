@@ -13,10 +13,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class checkflagSummaryChart(object):
-    def __init__(self, context, result):
+    def __init__(self, context, result, suffix=''):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
+        self.suffix = suffix
         # self.caltable = result.final[0].gaintable
 
     def plot(self):
@@ -82,9 +83,11 @@ class checkflagSummaryChart(object):
             job.execute(dry_run=False)
 
     def get_figfile(self, prefix):
+        fig_basename = '-'.join(list(filter(None, ['checkflag', prefix,
+                                                   self.ms.basename, 'summary', self.suffix])))+'.png'
         return os.path.join(self.context.report_dir,
-                            'stage%s' % self.result.stage_number,
-                            'checkflag' + prefix + '-%s-summary.png' % self.ms.basename)
+                            'stage{}'.format(self.result.stage_number),
+                            fig_basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
@@ -100,6 +103,7 @@ class checkflagSummaryChart(object):
             wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
                                   parameters={'vis': self.ms.basename,
                                               'type': prefix,
+                                              'version': self.suffix,
                                               'spw': ''})
 
             if not os.path.exists(figfile):
