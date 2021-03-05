@@ -11,15 +11,20 @@ from .. import casa_tools
 
 __all__ = [
     "SOLAR_SYSTEM_MODELS_PATH",
+    "IERS_TABLES_PATH",
     "get_file_md5",
     "get_iso_mtime",
     "get_solar_system_model_files",
     "get_filename_info",
-    "get_object_info"
+    "get_object_info",
+    "get_IERS_versions",
+    "get_IERS_versions",
+    "get_IERSeop2000_last_entry"
 ]
 
 
 SOLAR_SYSTEM_MODELS_PATH = casa_tools.utils.resolve("alma/SolarSystemModels")
+IERS_TABLES_PATH = casa_tools.utils.resolve("geodetic")
 
 
 def get_file_md5(filename: str) -> str:
@@ -64,3 +69,36 @@ def get_object_info(ss_object: str) -> str:
         filename = object_model_filenames[i]
         info_list.append(f"{filename} -> {info_string}")
     return f"Solar System models used for {ss_object} => " + "; ".join(info_list)
+
+
+# Get IERSpredict version
+def get_IERS_version(IERS_tablename: str) -> str:
+    """Get the VS_VERSION header of the IERSpredict table"""
+    assert IERS_tablename in ["IERSpredict", "IERSeop2000"]
+    tablename = os.path.join(IERS_TABLES_PATH, IERS_tablename)
+    with casa_tools.TableReader(tablename) as table:
+        vs_version = table.getkeyword('VS_VERSION')
+    return vs_version
+
+
+def get_IERS_versions():
+    IERS_tables = ["IERSpredict", "IERSeop2000"]
+    return {i: get_IERS_version(i) for i in IERS_tables}
+
+
+def get_IERSeop2000_last_entry() -> str:
+    """Get the last entry in the MJD column of the table IERSeop2000"""
+    tablename = os.path.join(IERS_TABLES_PATH, "IERSeop2000")
+    with casa_tools.TableReader(tablename) as table:
+        last_mjd = table.getcol('MJD')[-1]
+    return last_mjd
+
+
+def get_IERS_data():
+    """Get the following data from the casa geodetic tables:
+    * IERSpredict version
+    * IERSeop2000 version
+    * IERSeop2000 last MJD entry
+    """
+    pass
+
