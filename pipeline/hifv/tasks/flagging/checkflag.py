@@ -1,16 +1,13 @@
-import os
 import collections
 import copy
+import os
 
 import numpy as np
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 from .displaycheckflag import checkflagSummaryChart
 
@@ -75,7 +72,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         # get the before-flagging total statistics
         # PIPE-757: skip before-flagging summary in three VLASS checkflagmodes: bpd-vlass/allcals-vlass/target-vlass
         # PIPE-502/995: run before-flagging summary in all other checkflagmodes, including: vlass-imaging
-        if not (self.inputs.checkflagmode in ('bpd-vlass', 'allcals-vlass')):
+        if not (self.inputs.checkflagmode in ('bpd-vlass', 'allcals-vlass', 'target-vlass')):
             job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
             summarydict = self._executor.execute(job)
             summaries.append(summarydict)
@@ -115,13 +112,22 @@ class Checkflag(basetask.StandardTaskTemplate):
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
                 return CheckflagResults(summaries=summaries)
             else:
-                # PIPE-757/502/995: 
-                #   save before-flagging summary plots in checkflagresults
-                #   get the after-flagging summary for two VLASS checkflagmodes: target-vlass/vlass-imaging
-                LOG.info('Creating before-flagging summary plots')
-                summaryplot_before=self._create_summaryplots(suffix='before') 
+                # PIPE-502/995: save before-flagging summary plots and plotting scale for 'vlass-imaging'
+                if self.inputs.checkflagmode == 'vlass-imaging':
+                    LOG.info('Estimating the amplitude range of unflagged data for summary plots')
+                    amp_range = self._get_amp_range()
+                    amp_d = amp_range[1]-amp_range[0]
+                    summary_plotrange = [0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d]
+                    LOG.info('Creating before-flagging summary plots')
+                    plotms_args_overrides = {'plotrange': summary_plotrange,
+                                             'title': 'Amp vs. Frequency (before flagging)'}
+                    summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
+
                 extendflag_result = self.do_targetvlass()
-                extendflag_result.plots['before'] =  summaryplot_before              
+
+                # PIPE-502/757/995: get after-flagging summary for 'target-vlass'/'vlass-imaging'
+                extendflag_result.plots['before'] = summaryplot_before
+                extendflag_result.plots['plotrange'] = summary_plotrange
                 job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
                 summarydict = self._executor.execute(job)
                 summaries.append(summarydict)
@@ -640,12 +646,34 @@ class Checkflag(basetask.StandardTaskTemplate):
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
-    def _create_summaryplots(self, suffix='before'):
+    def _create_summaryplots(self, suffix='before', plotms_args={}):
         summary_plots = {}
         results_tmp = basetask.ResultsList()
         results_tmp.inputs = self.inputs.as_dict()
         results_tmp.stage_number = self.inputs.context.task_counter
         ms = os.path.basename(results_tmp.inputs['vis'])
-        summary_plots[ms] = checkflagSummaryChart(self.inputs.context, results_tmp, suffix=suffix).plot()
+        summary_plots[ms] = checkflagSummaryChart(
+            self.inputs.context, results_tmp, suffix=suffix, plotms_args=plotms_args).plot()
 
         return summary_plots
+
+    def _get_amp_range(self):
+        # used for amp plotting scales in the summary plots of checkflagmode='vlass-imaging'
+        try:
+            visstat_args = {'vis': self.inputs.vis,
+                            'axis': 'amp',
+                            'datacolumn': 'data',
+                            'useflags': True,
+                            'reportingaxes': 'ddid',
+                            'field': ''}
+
+            task = casa_tasks.visstat(**visstat_args)
+            ampstats = task.execute(dry_run=False)
+
+            amp_max = [v['max'] for (k, v) in ampstats.items() if np.isfinite(v['max'])]
+            amp_min = [v['min'] for (k, v) in ampstats.items() if np.isfinite(v['min'])]
+            return [np.min(amp_min), np.max(amp_max)]
+
+        except:
+            LOG.warn("Unable to obtain the range of data amps.")
+            return [0., 0.]

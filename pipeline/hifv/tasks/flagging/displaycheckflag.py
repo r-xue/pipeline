@@ -13,11 +13,12 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class checkflagSummaryChart(object):
-    def __init__(self, context, result, suffix=''):
+    def __init__(self, context, result, suffix='', plotms_args={}):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.suffix = suffix
+        self.plotms_args = plotms_args
         # self.caltable = result.final[0].gaintable
 
     def plot(self):
@@ -29,58 +30,46 @@ class checkflagSummaryChart(object):
         if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
             plots = [self.get_plot_wrapper('allcals')]
         if self.result.inputs['checkflagmode'] == 'vlass-imaging':
-            plots = [self.get_plot_wrapper('targets-vlass')]            
+            plots = [self.get_plot_wrapper('targets-vlass')]
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
-
         corrstring = self.ms.get_vla_corrstring()
+
+        plotms_args = {'vis': self.ms.name,
+                       'xaxis': 'freq', 'yaxis': 'amp',
+                       'xdatacolumn': '', 'ydatacolumn': 'corrected',
+                       'selectdata': True, 'field': '', 'scan': '', 'correlation': corrstring,
+                       'averagedata': True, 'avgtime': '1e8', 'avgscan': False,
+                       'transform': False, 'extendflag': False,
+                       'coloraxis': 'antenna2',
+                       'plotfile': figfile, 'overwrite': True, 'clearplots': True, 'showgui': False}
+
+        plotms_args.update(self.plotms_args)
 
         if self.result.inputs['checkflagmode'] == 'bpd' or self.result.inputs['checkflagmode'] == 'bpd-vlass':
             bandpass_field_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string
             bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
             delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
             if prefix == 'BPcal':
-                job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
-                                        selectdata=True, field=bandpass_field_select_string,
-                                        scan=bandpass_scan_select_string, correlation=corrstring, averagedata=True,
-                                        avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
-                                        coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
-                                        showmajorgrid=False, showminorgrid=False, plotfile=figfile,
-                                        overwrite=True, clearplots=True, showgui=False)
-
+                plotms_args.update(field=bandpass_field_select_string,
+                                   scan=bandpass_scan_select_string, avgscan=True)
+                job = casa_tasks.plotms(**plotms_args)
             if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-                job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
-                                        selectdata=True, scan=delay_scan_select_string, correlation=corrstring,
-                                        averagedata=True, avgtime='1e8', avgscan=True, transform=False,
-                                        extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
-                                        xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
-                                        plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
-
-            job.execute(dry_run=False)
+                plotms_args.update(scan=delay_scan_select_string, avgscan=True)
+                job = casa_tasks.plotms(**plotms_args)
 
         if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
             calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
-
-            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
-                                    selectdata=True, scan=calibrator_scan_select_string, correlation=corrstring,
-                                    averagedata=True, avgtime='1e8', avgscan=False, transform=False, extendflag=False,
-                                    iteraxis='', coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
-                                    showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
-                                    clearplots=True, showgui=False)
-
-            job.execute(dry_run=False)
+            plotms_args.update(scan=calibrator_scan_select_string, avgscan=False)
+            job = casa_tasks.plotms(**plotms_args)
 
         if self.result.inputs['checkflagmode'] == 'vlass-imaging':
-            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='data',
-                                    selectdata=True, scan='', correlation=corrstring,
-                                    averagedata=True, avgtime='1e8', avgscan=False, transform=False, extendflag=False,
-                                    iteraxis='', coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
-                                    showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
-                                    clearplots=True, showgui=False)
+            plotms_args.update(ydatacolumn='data', avgscan=False)
+            job = casa_tasks.plotms(**plotms_args)
 
-            job.execute(dry_run=False)
+        job.execute(dry_run=False)
 
     def get_figfile(self, prefix):
         fig_basename = '-'.join(list(filter(None, ['checkflag', prefix,
@@ -154,6 +143,7 @@ class checkflagPercentageMap(object):
             ax.set_ylabel('Dec. [deg]')
 
             fig.savefig(self.figfile)
+            plt.close()
 
         except:
             return None
@@ -190,7 +180,8 @@ class checkflagPercentageMap(object):
         yi = np.linspace(np.min(y), np.max(y), ny)
 
         zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method='cubic')
-        zi[zi > 100] = 100.
+        with np.errstate(invalid='ignore'):
+            zi[zi > 100] = 100.
 
         dx = (np.max(x)-np.min(x))*0.1
         dy = (np.max(y)-np.min(y))*0.1
