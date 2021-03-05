@@ -2,13 +2,14 @@
 import collections
 import contextlib
 import functools
-from logging import Logger as pyLogger
 import os
 import sys
 import time
 from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
-import casatools
+# Imported for annotation pupose only. Use table in casa_tools in code.
+from casatools import table as casa_table
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -22,7 +23,7 @@ from . import compress
 LOG = infrastructure.get_logger(__name__)
 
 TableLike = NewType('TableLike',
-                    Union[casa_tools._logging_table_cls, casatools.table])
+                    Union[casa_tools._logging_table_cls, casa_table])
 
 
 def profiler(func: Callable):
@@ -631,7 +632,7 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
 
 # TODO (ksugimoto): Move this to casa_tools module.
 @contextlib.contextmanager
-def TableSelector(name: str, query: str) -> casatools.table:
+def TableSelector(name: str, query: str) -> casa_table:
     """
     Retun a CASA table tool instance of selected rows of a table.
 
