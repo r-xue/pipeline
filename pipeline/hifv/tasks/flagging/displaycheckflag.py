@@ -72,11 +72,12 @@ class checkflagSummaryChart(object):
         job.execute(dry_run=False)
 
     def get_figfile(self, prefix):
+        stage_dir = os.path.join(self.context.report_dir, 'stage{}'.format(self.result.stage_number))
+        if not os.path.exists(stage_dir):
+            os.mkdir(stage_dir)
         fig_basename = '-'.join(list(filter(None, ['checkflag', prefix,
                                                    self.ms.basename, 'summary', self.suffix])))+'.png'
-        return os.path.join(self.context.report_dir,
-                            'stage{}'.format(self.result.stage_number),
-                            fig_basename)
+        return os.path.join(stage_dir, fig_basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
