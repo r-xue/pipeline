@@ -39,8 +39,22 @@ if ($last_branch_tag eq "" || $dirty_workspace ) {
 print ("\n");
 
 sub get_last_branch_tag () {
+
     my $gitbranch = shift;
-    my $branchpattern = qr/^$gitbranch-\d+/;
+   
+    # Parse the ticket number from the branch name
+    $jira_prefix="PIPE-";
+    if ($gitbranch =~ m/$jira_prefix/) {
+        my @elems = split /$jira_prefix/, $gitbranch;
+        if ( @elems[1] =~ /(\d+)/) {
+            my $num = $1;
+            $mangled_gitbranch = $jira_prefix . $num;
+        } else {
+            die "Can't parse the PIPE ticket number"
+        }
+    }
+
+    my $branchpattern = qr/^$mangled_gitbranch-\d+/;
     my $delim="-";
     return get_last_tag($gitbranch,$branchpattern,$delim)
 }
