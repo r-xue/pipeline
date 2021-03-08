@@ -91,6 +91,7 @@ class CutoutimagesSummary(object):
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean', vmin=0.2, vmax=1.))
                 plot_wrappers.append(ImageHistDisplay(self.context, subimagename,
+                                                      x_axis='Primary Beam Response', y_axis='Num. of Pixel',
                                                       reportdir=stage_dir).plot())
                 with casa_tools.ImageReader(subimagename) as image:
                     self.result.pb_stats = image.statistics(robust=True)

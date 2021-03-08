@@ -53,6 +53,7 @@ class PbcorimagesSummary(object):
                         self.result.pbcor_stats[basename] = image.statistics(robust=True)
                 else:
                     plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
+                                                          x_axis='Primary Beam Response', y_axis='Num. of Pixel',
                                                           reportdir=stage_dir, boxsize=1.0).plot())
             plot_dict[basename] = [p for p in plot_wrappers if p is not None]
 

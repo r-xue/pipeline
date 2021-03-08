@@ -14,11 +14,13 @@ class ImageHistDisplay(object):
     A display class to generate histogram of a CASA image
     """
 
-    def __init__(self, context, imagename, reportdir='./', boxsize=None):
+    def __init__(self, context, imagename, reportdir='./', boxsize=None, x_axis='Pixel Value', y_axis='Num. of Pixel'):
         self.context = context
         self.imagename = imagename
         self.reportdir = reportdir
         self.boxsize = boxsize
+        self.x_axis = x_axis
+        self.y_axis = y_axis
         self.figfile = self._get_figfile()
 
     def plot(self):
@@ -33,8 +35,8 @@ class ImageHistDisplay(object):
             fig, ax = plt.subplots()
             ax.hist(subim.ravel(), bins=10,
                     histtype='barstacked', align='mid', label='')
-            ax.set_xlabel('Primary Beam Response')
-            ax.set_ylabel('Num. of Pixel')
+            ax.set_xlabel(self.x_axis)
+            ax.set_ylabel(self.y_axis)
             with casa_tools.ImageReader(self.imagename) as myia:
                 im_csys = myia.coordsys()
                 spaxelarea = np.prod(np.degrees(np.abs(im_csys.increment()['numeric'][0:2])))
@@ -43,9 +45,9 @@ class ImageHistDisplay(object):
                                                              lambda area: area/spaxelarea*nchanpol))
             ax_secy.set_ylabel('Area [deg$^2$]')
             if self.boxsize is None:
-                title = 'Histogram (entire image/cube)'
+                title = ''
             else:
-                title = 'Histogram (inner {:.2f} deg$^2$)'.format(self.boxsize)
+                title = 'Inner {:.2f} deg$^2$'.format(self.boxsize)
             ax.set_title(title)
             LOG.debug('Saving new image histogram plot to {}'.format(self.figfile))
             fig.tight_layout()
@@ -62,8 +64,8 @@ class ImageHistDisplay(object):
 
     def _get_plot_object(self):
         return logger.Plot(self.figfile,
-                           x_axis='Pixel Value',
-                           y_axis='Histogram',
+                           x_axis=self.x_axis,
+                           y_axis=self.y_axis,
                            parameters={'imagename': self.imagename,
                                        'boxsize': self.boxsize})
 
