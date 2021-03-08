@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.common.displays import sky as sky
-from pipeline.hifv.tasks.pbcor.display import ImageHistDisplay
+from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
