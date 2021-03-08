@@ -2061,7 +2061,7 @@ class ImageParamsHeuristics(object):
     def stokes(self):
         return 'I'
 
-    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None):
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask=None):
         return ''
 
     def specmode(self):
@@ -2161,3 +2161,8 @@ class ImageParamsHeuristics(object):
     def pointingoffsetsigdev(self):
         """Tclean parameter"""
         return None
+
+    def pbmask(self) :
+        """Tclean pbmask parameter heuristics"""
+        return None
+

@@ -28,7 +28,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         self.vlass_stage = 0
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0) -> int:
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms,
+                         mask_frac_rad=0.0) -> int:
         """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)
@@ -73,14 +74,19 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def cycleniter(self, iteration) -> int:
         """Tclean cycleniter parameter heuristics."""
-        if self.vlass_stage == 3 and iteration > 0:
+        # Special case: cleaning without mask in 1st and 3rd imaging stages
+        if (self.vlass_stage == 1 and iteration > 1) or (self.vlass_stage == 3 and iteration > 2):
+            return 100
+        # Special case: 3rd imaging stage
+        elif self.vlass_stage == 3 and iteration > 0:
             return 3000
         else:
             return 5000
 
-    def scales(self, iteration: Union[int, None] = None) -> list:
+    def scales(self, iteration: Union[int, None] = None) -> Union[list, None]:
         """Tclean scales parameter heuristics."""
-        if self.vlass_stage == 3 and iteration in [1, 2]:
+        if not iteration: return None
+        if self.vlass_stage == 3 and iteration in [1, 2, 3]:
             return [0, 5, 12]
         else:
             return [0]
@@ -97,20 +103,35 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return '<12km', None
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
-             results_list: Union[list, None] = None) -> str:
+             results_list: Union[list, None] = None, clean_no_mask=None) -> str:
         """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
 
             Obtain the mask name from the latest MakeImagesResult object in context.results.
-            If not found, then return empty string (as base heuristics)."""
+            If not found, then set empty string (as base heuristics)."""
+        mask_list = ''
         if results_list and type(results_list) is list:
             for result in results_list:
                 result_meta = result.read()
                 if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
                         'hifv_vlassmasking'):
-                    return [r.combinedmask for r in result_meta][0]
+                    mask_list = [r.combinedmask for r in result_meta][0]
+
+        # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should
+        # always stand at the last place in the mask list.
+        # On request for first imaging stage (selfcal image) and automatically for the final imaging stage.
+        if (clean_no_mask and self.vlass_stage == 1) or self.vlass_stage == 3:
+            if clean_no_mask:
+                LOG.info('Cleaning without user mask is performed in pre-self calibration imaging stage '
+                         '(clean_no_mask_selfcal_image=True)')
+            if type(mask_list) is list:
+                mask_list.append('pb')
+            elif mask_list != '':  # mask is non-empty string
+                mask_list = [mask_list, 'pb']
+            else:
+                mask_list = 'pb'
 
         # In case hif_makeimages result was not found or results_list was not provided
-        return ''
+        return mask_list
 
     def buffer_radius(self) -> float:
         return 1000.
@@ -271,10 +292,16 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
+        # PSF and dirty image
         if iteration == 0:
             return 2.0
+        # Cleaning without user mask
+        elif (self.vlass_stage == 1 and iteration == 2) or (self.vlass_stage == 3 and iteration == 3):
+            return 4.5
+        # Cleaning with user mask, 1st and 2nd imaging stages
         elif self.vlass_stage in [1, 2] and iteration >= 1:
             return 5.0
+        # Cleaning with user mask in 3rd imaging stage
         else:
             return 3.0
 
@@ -350,6 +377,11 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean parameter"""
         return [300, 30]
 
+    def pbmask(self) -> float:
+        """Tclean pbmask parameter heuristics.
+        Cleaning with only primary beam mask is used on request (via editimlist)."""
+        return 0.4
+
     def fix_vlass_tier_1_mask_coors(self, image_name: str, mask_name: str):
         """Workaround limited precision tclean phasecenter parameter conversion.
 
@@ -372,8 +404,10 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                     delta_ra, delta_dec = csys_image.torecord()['direction0']['crval'] - \
                                           csys_mask.torecord()['direction0']['crval']
                     if delta_ra != 0.0 or delta_dec != 0.0:
-                        LOG.info('Modifying {mask:s} reference coordinates by delta_ra: {ra:.4E} arcsec, delta_dec: {dec:.4E} arcsec (see CAS-13338)'.format(
-                            mask=mask_name, ra=numpy.rad2deg(delta_ra) * 3600., dec=numpy.rad2deg(delta_dec)*3600.))
+                        LOG.info(
+                            'Modifying {mask:s} reference coordinates by delta_ra: {ra:.4E} arcsec, delta_dec: {dec:.4E} arcsec (see CAS-13338)'.format(
+                                mask=mask_name, ra=numpy.rad2deg(delta_ra) * 3600.,
+                                dec=numpy.rad2deg(delta_dec) * 3600.))
                         image.setcoordsys(csys_image.torecord())
                 csys_image.done()
                 csys_mask.done()
@@ -404,7 +438,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             LOG.error(f"No phasecenter is provided.")
 
         if do_parallel:
-            LOG.info("Determining exact value of image phase center empirically due to CASA precision issue in parallel mode (CAS-13338)")
+            LOG.info(
+                "Determining exact value of image phase center empirically due to CASA precision issue in parallel mode (CAS-13338)")
             tmp_psf_filename = str(uuid.uuid4())
             paramList = ImagerParameters(msname=self.vislist,
                                          phasecenter=phasecenter,
@@ -412,8 +447,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                                          imsize=imsize,
                                          cell=cell,
                                          stokes='I',
-                                         #gridder=self.gridder(None, None),
-                                         #cfcache=cfcache,
+                                         # gridder=self.gridder(None, None),
+                                         # cfcache=cfcache,
                                          parallel=do_parallel
                                          )
             makepsf_imager = PyParallelContSynthesisImager(params=paramList)
@@ -444,12 +479,13 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                                                 csys_record['direction0']['units'][1]), 'arcsec')['value']
 
             LOG.info('Corrected difference between requested phase center and parallel synthesis imager phase '
-                     'center is delta_ra = {:.4e} arcsec, delta_dec = {:.4e} arcsec'.format(ra_psf-ra_str,
-                                                                                            dec_psf-dec_str))
+                     'center is delta_ra = {:.4e} arcsec, delta_dec = {:.4e} arcsec'.format(ra_psf - ra_str,
+                                                                                            dec_psf - dec_str))
         else:
             csys_record = None
 
         return csys_record
+
 
 class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """

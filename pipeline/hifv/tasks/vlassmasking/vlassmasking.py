@@ -1,3 +1,4 @@
+import copy
 import os
 import numpy as np
 
@@ -73,12 +74,21 @@ class VlassmaskingResults(basetask.Results):
             LOG.error('Clean list pending is empty. Mask name was not set for imaging target.')
             return
         elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
-            LOG.warning('Updating existing clean list pending mask selection with {}.'.format(self.combinedmask))
+            LOG.info('Updating existing clean list pending mask selection with {}.'.format(self.combinedmask))
         else:
             LOG.info('Setting clean list pending mask selection to {}.'.format(self.combinedmask))
 
-        # In tier-2 mode cleaning is done first with tier-1 mask (iter1 in tclean.py), then with combined mask (iter2)
-        context.clean_list_pending[0]['mask'] = [context.clean_list_pending[0]['mask'], self.combinedmask] if self.maskingmode == 'vlass-se-tier-2' else self.combinedmask
+        # Is mask is a list then insert new mask to appropriate position (0 if tier-1 mode i.e.
+        # iter1, 1 if tier-2 mode i.e. iter2)
+        clp_mask = context.clean_list_pending[0]['mask']
+        if type(clp_mask) is list:
+            context.clean_list_pending[0]['mask'].insert(1 if self.maskingmode == 'vlass-se-tier-2' else 0, self.combinedmask)
+        # Cleaning with pb mask only must always be on last place, see PIPE-977
+        elif clp_mask == 'pb':
+            context.clean_list_pending[0]['mask'] = [self.combinedmask, 'pb']
+        else:
+            context.clean_list_pending[0]['mask'] = [clp_mask, self.combinedmask] if (self.maskingmode == 'vlass-se-tier-2'
+                                                                                      and clp_mask) else self.combinedmask
         return
 
     def __repr__(self):
@@ -231,7 +241,17 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
             # Obtain Tier 1 mask name
-            tier1mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
+            imaging_target_mask_list = copy.deepcopy(self.inputs.context.clean_list_pending[0]['mask'])
+            if type(imaging_target_mask_list) is list:
+                # pb string is a placeholder for cleaning without mask
+                try:
+                    imaging_target_mask_list.remove('pb')
+                except ValueError:
+                    pass
+                # Always take first mask in the list
+                finally:
+                    imaging_target_mask_list = imaging_target_mask_list[0] if len(imaging_target_mask_list) > 0 else ''
+            tier1mask = maskname_base + QLmask if not imaging_target_mask_list else imaging_target_mask_list
 
             # Obtain image name
             imagename_base = self._get_bdsf_imagename(maskname_base, iter=1)
@@ -255,10 +275,12 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             mask_name=tier2mask, csys_rec=mask_csys_rec)
 
             # combine first and second order masks
-            outfile = maskname_base + '.sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[tier2mask, tier1mask], expr='IM0+IM1', outfile=outfile)
-
-            runtask = self._executor.execute(task)
+            try:
+                outfile = maskname_base + '.sum_of_masks.mask'
+                task = casa_tasks.immath(imagename=[tier2mask, tier1mask], expr='IM0+IM1', outfile=outfile)
+                runtask = self._executor.execute(task)
+            except Exception as e:
+                LOG.error(f'Failed to combine mask files {tier1mask} and {tier2mask} with exception {e}')
 
             myim = casa_tools.imager
             LOG.info("Executing imager.mask()...")

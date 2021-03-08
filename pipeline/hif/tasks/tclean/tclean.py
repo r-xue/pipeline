@@ -46,6 +46,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     pblimit = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default=None)
     cfcache_nowb = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
 
     # override CleanBaseInputs default value of 'auto'
     hm_masking = vdp.VisDependentProperty(default='centralregion')
@@ -123,7 +124,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
                  bl_ratio=None, cfcache_nowb=None,
                  # End of extra parameters
-                 heuristics=None):
+                 heuristics=None, pbmask=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
                                            imagename=imagename, antenna=antenna, datacolumn=datacolumn,
                                            intent=intent, field=field, spw=spw, uvrange=uvrange, specmode=specmode,
@@ -174,6 +175,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.pblimit = pblimit
         self.cfcache = cfcache
         self.cfcache_nowb = cfcache_nowb
+        self.pbmask = pbmask
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -607,10 +609,8 @@ class Tclean(cleanbase.CleanBase):
                                                          sensitivity=sensitivity, niter=inputs.niter)
 
         # VLASS-SE masking
-        # TODO: may introduce new hm_masking mode?
-        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode in ['VLASS-SE-CONT',
-                                                                                      'VLASS-SE-CONT-AWP-P001',
-                                                                                      'VLASS-SE-CONT-AWP-P032']:
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 as of 01.03.2021
+        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT'):
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
                                                           sensitivity=sensitivity, niter=inputs.niter)
@@ -774,13 +774,17 @@ class Tclean(cleanbase.CleanBase):
 
             # Delete any old files with this naming root
             self.rm_iter_files(rootname, iteration)
-
-            # replace stage substring in copied mask name
-            new_cleanmask = 's{:d}_0.{}'.format(self.inputs.context.task_counter,
-                                                re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
+            # Determine stage mask name and replace stage substring place holder with actual stage number.
+            # Special cases when mask is an empty string, None, or when it is set to 'pb'.
+            new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
+                self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
-            savemodel = self.image_heuristics.savemodel(iteration)
+            # Model column is saved only at the end of the first imaging stage (see heuristics for more detail)
+            # In case final clean without mask (i.e. pb mask only) is requested for the first imaging stage,
+            # then save model column only in (after) clean without mask, therefore make sure only the last iteration
+            # request saving model column.
+            savemodel = self.image_heuristics.savemodel(1 if iteration == len(vlass_masks) else 0)
 
             seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                     self.pblimit_cleanmask, iteration=iteration)
@@ -1152,6 +1156,7 @@ class Tclean(cleanbase.CleanBase):
                                                   threshold=threshold,
                                                   sensitivity=sensitivity,
                                                   pblimit=inputs.pblimit,
+                                                  pbmask=inputs.pbmask,
                                                   result=result,
                                                   parallel=parallel,
                                                   heuristics=inputs.image_heuristics,
