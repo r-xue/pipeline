@@ -120,8 +120,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         # always stand at the last place in the mask list.
         # On request for first imaging stage (selfcal image) and automatically for the final imaging stage.
         if (clean_no_mask and self.vlass_stage == 1) or self.vlass_stage == 3:
-            LOG.info('Cleaning without user mask is performed in pre-self calibration imaging stage '
-                     '(clean_no_mask_selfcal_image=True)')
+            if clean_no_mask:
+                LOG.info('Cleaning without user mask is performed in pre-self calibration imaging stage '
+                         '(clean_no_mask_selfcal_image=True)')
             if type(mask_list) is list:
                 mask_list.append('pb')
             elif mask_list != '':  # mask is non-empty string
