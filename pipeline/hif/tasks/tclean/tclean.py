@@ -943,7 +943,7 @@ class Tclean(cleanbase.CleanBase):
             keep_iterating = True
 
         # Adjust threshold based on the dirty image statistics
-        dirty_dynamic_range = residual_max / sequence_manager.sensitivity
+        dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
         new_threshold, DR_correction_factor, maxEDR_used = \
             self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
                                                 inputs.intent, inputs.tlimit)
