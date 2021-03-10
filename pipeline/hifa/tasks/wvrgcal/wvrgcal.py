@@ -378,9 +378,15 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             LOG.info('qa: wvrgcal QA calculation was successful')
             break
 
-        # accept this result object, thus adding the WVR table to the 
-        # callibrary
+        # Accept the result object into the local copy of the context, thus
+        # adding the WVR table to the callibrary of this local copy.
+        # PIPE-1058: accepting the result requires a stage number. Normally,
+        # this would be added by the task execution infrastructure. In this
+        # the result of the currently-still-running task is being accepted
+        # into a local context already, before the result has been finalised,
+        # so need to explicitly set stage number now.
         LOG.debug('qa: accept WVR results into copy of context')
+        result.stage_number = inputs.context.task_counter
         result.accept(inputs.context)
 
         # do a phase calibration on the bandpass and phase calibrators, now 

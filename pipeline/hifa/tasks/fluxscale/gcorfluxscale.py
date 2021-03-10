@@ -624,23 +624,16 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 # Apply data selection.
                 openms.msselect(data_selection)
 
-                # Read in the weights from MS separately, prior to channel
-                # averaging.
-                weights = openms.getdata(['weight'])
-
                 # Set channel selection to take the average of all channels.
                 openms.selectchannel(1, 0, nchans, 1)
 
                 # Extract data from MS.
-                data = openms.getdata(['corrected_data', 'flag', 'antenna1', 'antenna2'])
+                data = openms.getdata(['corrected_data', 'flag', 'antenna1', 'antenna2', 'weight'])
             except:
                 # Log a warning and return without data.
                 LOG.warning('Unable to compute mean vis for intent(s) {}, field {}, spw {}'
                             ''.format(intent, fieldid, spwid))
                 return
-
-        # Combine the two dictionaries.
-        data = {**data, **weights}
 
         return data
 

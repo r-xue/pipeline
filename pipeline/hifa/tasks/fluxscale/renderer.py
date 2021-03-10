@@ -355,7 +355,7 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
             if not (y == 0 and y_unc == 0):
-                label = 'Calibrated data flux for spw {}'.format(spw.id)
+                label = 'spw {}'.format(spw.id)
                 ax.errorbar(
                     x, y, xerr=x_unc, yerr=y_unc,
                     marker=symbol, color=colour, ls="-", label=label)
@@ -385,11 +385,11 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             x, y, spix = list(zip(*sorted(zip(x, y, spix))))
             # PIPE-644: always plot catalog fluxes in black.
             colour = "k"
-            ax.plot(x, y, marker='o', color=colour, label='Data source: {}'.format(label))
+            ax.plot(x, y, marker='o', color=colour, label='Data source:\n{}'.format(label))
 
             s_xmin = scale_flux(x[0], y[0], x_min, spix[0])
             s_xmax = scale_flux(x[-1], y[-1], x_max, spix[-1])
-            ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index extrapolation',
+            ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index\nextrapolation',
                     linestyle='dotted')
             ax.plot([x[-1], x_max], [y[-1], s_xmax], color=colour, label='_nolegend_', linestyle='dotted')
 
