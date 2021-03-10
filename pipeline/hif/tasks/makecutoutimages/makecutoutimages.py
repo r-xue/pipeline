@@ -89,11 +89,12 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         imlist = self.inputs.context.sciimlist.get_imlist()
         imagenames = []
 
+        is_vlass_se_cont = False
         try:
-            if  self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
-                is_vlass_se_cont=True
+            if self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
+                is_vlass_se_cont = True
         except Exception:
-            is_vlass_se_cont=False
+            pass
         
         # PIPE-1048: hif_makecutoutimages should only process final products in the VLASS-SE-CONT mode
         if is_vlass_se_cont:
