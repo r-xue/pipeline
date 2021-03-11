@@ -104,8 +104,8 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     '''
 
     # --------------------------------------------------------------------------------------
-    rahr = phasecenter.split(' ')[1]
-    decdeg = phasecenter.split(' ')[2]
+    rahr = phasecenter.split()[1]
+    decdeg = phasecenter.split()[2]
 
     qt = casa_tools.quanta
     myia = casa_tools.image
@@ -348,8 +348,8 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
 
     from astropy.coordinates import Angle, SkyCoord, ICRS, Galactic, FK4, FK5
     import astropy.units as u
-    rahrstr = phasecenter.split(' ')[1] + ' hours'
-    declist = phasecenter.split(' ')[2].split('.')
+    rahrstr = phasecenter.split()[1] + ' hours'
+    declist = phasecenter.split()[2].split('.')
     decdegstr = declist[0] + ':' + declist[1] + ':' + declist[2] + '.' + declist[3] + ' degrees'
     phasecentcoord = SkyCoord(ra=Angle(rahrstr), dec=Angle(decdegstr), frame=ICRS)
     racat = catalog_dat['RA']   # degrees from FITS file column

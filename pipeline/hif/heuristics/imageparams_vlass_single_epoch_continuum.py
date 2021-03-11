@@ -470,8 +470,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                 shutil.rmtree(tmp_psf_image)
 
             # Report coordinate difference:
-            ra_str = qaTool.convert(phasecenter.split(' ')[1], 'arcsec')['value']
-            dec_str = qaTool.convert(phasecenter.split(' ')[2], 'arcsec')['value']
+            ra_str = qaTool.convert(phasecenter.split()[1], 'arcsec')['value']
+            dec_str = qaTool.convert(phasecenter.split()[2], 'arcsec')['value']
 
             ra_psf = qaTool.convert('%s %s' % (csys_record['direction0']['crval'][0],
                                                csys_record['direction0']['units'][0]), 'arcsec')['value']
