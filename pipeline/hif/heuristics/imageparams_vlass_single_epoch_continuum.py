@@ -76,7 +76,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean cycleniter parameter heuristics."""
         # Special case: cleaning without mask in 1st and 3rd imaging stages
         if (self.vlass_stage == 1 and iteration > 1) or (self.vlass_stage == 3 and iteration > 2):
-            return 100
+            return 500
         # Special case: 3rd imaging stage
         elif self.vlass_stage == 3 and iteration > 0:
             return 3000
@@ -295,10 +295,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         # PSF and dirty image
         if iteration == 0:
             return 2.0
-        # Cleaning without user mask
-        elif (self.vlass_stage == 1 and iteration == 2) or (self.vlass_stage == 3 and iteration == 3):
+        elif self.vlass_stage == 3 and iteration == 3:
             return 4.5
-        # Cleaning with user mask, 1st and 2nd imaging stages
         elif self.vlass_stage in [1, 2] and iteration >= 1:
             return 5.0
         # Cleaning with user mask in 3rd imaging stage
