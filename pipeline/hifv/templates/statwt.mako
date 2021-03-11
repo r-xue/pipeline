@@ -9,7 +9,110 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
-% for single_result in result:
+<%self:plot_group plot_dict="${summary_plots}"
+                                  url_fn="${lambda ms:  'noop'}">
+
+        <%def name="title()">
+            Statwt Summary Plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Summary window</%def>
+
+        <%def name="fancybox_caption(plot)">
+            Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+        </%def>
+
+        <%def name="caption_title(plot)">
+            Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+        </%def>
+</%self:plot_group>
+
+<%
+weight_stats=plotter.result.weight_stats
+before_by_spw=weight_stats['before']['per_spw']
+before_by_ant=weight_stats['before']['per_ant']
+after_by_spw=weight_stats['after']['per_spw']
+after_by_ant=weight_stats['after']['per_ant']
+import numpy as np
+
+def format_wt(wt):
+
+    if wt is 0:
+        return 'N/A'
+    else:
+        return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
+
+%>
+
+<h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>
+
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+	<caption></caption>
+	<thead>
+		<tr>
+			<th scope="col" rowspan="2">Antenna Selection</th>
+			<!-- flags before task is always first agent -->
+			<th scope="col" colspan="3">statwt before</th>
+			<th scope="col" colspan="3">statwt after</th>
+		</tr>
+		<tr>
+            <th scope="col" >Median</th>
+            <th scope="col" >1st/3rd Quartile</th>
+            <th scope="col" >Mean &#177 S.Dev.</th>
+            <th scope="col" >Median</th>
+            <th scope="col" >1st/3rd Quartile</th>
+            <th scope="col" >Mean &#177 S.Dev.</th>
+		</tr>        
+	</thead>
+	<tbody>
+		% for i in range(len(after_by_ant)):
+		<tr>  
+			<th style="text-align:center">${i}</th>  
+            <td>${format_wt(before_by_ant[i]['med'])}</td>
+            <td>${format_wt(before_by_ant[i]['q1'])}/${format_wt(before_by_ant[i]['q3'])}</td>            
+            <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>         
+            <td>${format_wt(after_by_ant[i]['med'])}</td>
+            <td>${format_wt(after_by_ant[i]['quartiles'][1])}/${format_wt(after_by_ant[i]['quartiles'][3])}</td>              
+            <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>          
+		</tr>
+		% endfor
+	</tbody>
+</table>
 
 
-% endfor
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+	<caption></caption>
+	<thead>
+		<tr>
+			<th scope="col" rowspan="2">Spw Selection</th>
+			<!-- flags before task is always first agent -->
+			<th scope="col" colspan="3">statwt before</th>
+			<th scope="col" colspan="3">statwt after</th>
+		</tr>
+		<tr>
+            <th scope="col" >Median</th>
+            <th scope="col" >1st/3rd Quartile</th>
+            <th scope="col" >Mean &#177 S.Dev.</th>
+            <th scope="col" >Median</th>
+            <th scope="col" >1st/3rd Quartile</th>
+            <th scope="col" >Mean &#177 S.Dev.</th>
+		</tr>        
+	</thead>
+	<tbody>
+		% for i in range(len(after_by_spw)):
+		<tr>
+			<th style="text-align:center">${i}</th>  
+            <td>${format_wt(before_by_spw[i]['med'])}</td>
+            <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>            
+            <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>         
+            <td>${format_wt(after_by_spw[i]['med'])}</td>
+            <td>${format_wt(after_by_spw[i]['quartiles'][1])}/${format_wt(after_by_spw[i]['quartiles'][3])}</td>              
+            <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
+           
+		</tr>
+		% endfor
+	</tbody>
+</table>
