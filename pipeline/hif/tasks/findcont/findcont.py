@@ -253,12 +253,11 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     real_spwsel = context.observing_run.get_real_spwsel([str(spwid)]*len(vislist), vislist)
 
-                    # Set special phasecenter for ephemeris objects.
+                    # Set special phasecenter, frame and specmode for ephemeris objects.
                     # Needs to be done here since the explicit coordinates are
                     # used in heuristics methods upstream.
                     if image_heuristics.is_eph_obj(target['field']):
                         phasecenter = 'TRACKFIELD'
-                        parallel = False
                         # 'REST' does not yet work (see CAS-8965, CAS-9997)
                         #outframe = 'REST'
                         outframe = ''

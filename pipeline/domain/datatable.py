@@ -31,8 +31,6 @@ import time
 # import memory_profiler
 import numpy
 
-import casatools
-
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import absolute_path
@@ -251,8 +249,10 @@ class DataTableImpl(object):
         self.memtable2 = 'DataTableImplRW%s.MemoryTable' % timestamp
         self.plaintable = ''
         self.cols = {}
-
-        self.tb1, self.tb2 = casatools.table(), casatools.table()
+        # New table class instances are required to avoid accidental closure of
+        # the global table tool instance, casa_tools.table
+        self.tb1 = casa_tools._logging_table_cls()
+        self.tb2 = casa_tools._logging_table_cls()
         self.isopened = False
         if name is None or len(name) == 0:
             if readonly is None:
@@ -455,7 +455,6 @@ class DataTableImpl(object):
         LOG.debug('Exporting DataTable to %s...' % name)
         # overwrite check
         abspath = absolute_path(name)
-        basename = os.path.basename(abspath)
         if not os.path.exists(abspath):
             os.makedirs(abspath)
         elif overwrite:
