@@ -78,6 +78,13 @@ normal task operation:
  - `imlist_entry['cfcache_nowb']` key is added in addition to the normal `imlist_entry['cfcache']` key.
    The heuristics method `get_cfcaches()` is used to parse the string provided in the parameter file to 
    these two keys. Other modes than VLASS-CONT-SE always set`cfcache_nowb=None`.
+- `user_cycleniter_final_image_nomask` property of the heuristics object (ImageParamsHeuristicsVlassSeCont) is set 
+  according to the parameter list key `cycleniter_final_image_nomask`. The value is not None, then it is used instead of 
+  the default cycleniter tclean parameter in the third imaging stage last clean interation (cleaning without used mask). 
+  No other cycleniter values are affected. If cycleniter is set explicitly, then it will used in all tclean calls, 
+  except the above mentioned final one. The value set for `user_cycleniter_final_image_nomask` is stored in the heuristics 
+  object (ImageParamsHeuristicsVlassSeCont.user_cycleniter_final_image_nomask).
+- `clean_no_mask_selfcal_image` if True, then perform a final clean in the first imaging stage without a user mask.
 
 ##### hifv_vlassmasking()
 
