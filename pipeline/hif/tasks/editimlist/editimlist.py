@@ -339,7 +339,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 modes as of 01.03.2021
         if img_mode.startswith('VLASS-SE-CONT'):
             th.vlass_stage = self._get_task_stage_ordinal()
-            th.user_cycleniter_final_image_nomask = inpdict['cycleniter_final_image_nomask']
+            # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
+            th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
 
         imlist_entry['threshold'] = inpdict['threshold']
         imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])

@@ -374,6 +374,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return [cfcache, None]
 
+    def set_user_cycleniter_final_image_nomask(self, cycleniter_final_image_nomask: Union[int, None]=None):
+        """Sets class variable controlling the cycleniter parameter of the last clean step (cleaning without user mask,
+        pbmask only) in the third (final) VLASS-SE-CONT imaging stage."""
+        if self.vlass_stage == 3 and cycleniter_final_image_nomask != None:
+            LOG.info("Setting user specified cycleniter = {} for cleaning without "
+                     "user mask (pbmask only).".format(cycleniter_final_image_nomask))
+        self.user_cycleniter_final_image_nomask = cycleniter_final_image_nomask
+
     def smallscalebias(self) -> float:
         """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
         return 0.4
