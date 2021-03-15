@@ -791,7 +791,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # should be only one match but if there are more copy them all.
         pprmatches = []
         if pprtemplate is not None:
-            for file in os.listdir(output_dir):
+            for file in os.listdir(os.path.abspath(output_dir)): # the file list will be names without path
                 if fnmatch.fnmatch(file, pprtemplate):
                     LOG.debug('Located pipeline processing request %s', file)
                     pprmatches.append(os.path.join(output_dir, file))
