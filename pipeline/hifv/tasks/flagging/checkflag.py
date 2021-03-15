@@ -122,12 +122,13 @@ class Checkflag(basetask.StandardTaskTemplate):
                     plotms_args_overrides = {'plotrange': summary_plotrange,
                                              'title': 'Amp vs. Frequency (before flagging)'}
                     summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
+                    extendflag_result.plots['before'] = summaryplot_before
+                    extendflag_result.plots['plotrange'] = summary_plotrange                    
 
                 extendflag_result = self.do_targetvlass()
-
+                
                 # PIPE-502/757/995: get after-flagging summary for 'target-vlass'/'vlass-imaging'
-                extendflag_result.plots['before'] = summaryplot_before
-                extendflag_result.plots['plotrange'] = summary_plotrange
+
                 job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
                 summarydict = self._executor.execute(job)
                 summaries.append(summarydict)
