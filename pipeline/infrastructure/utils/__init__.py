@@ -10,7 +10,7 @@ as appropriate).
 """
 from importlib import import_module
 
-from .casadata import *
+from .casa_data import *
 from .conversion import *
 from .diagnostics import *
 from .framework import *
