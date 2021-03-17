@@ -627,14 +627,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             self._do_extendflag(field='', scan='', intent='*TARGET*', growtime=100.0, growfreq=100.0)
 
-        # Grow flags
-        if self.inputs.checkflagmode == 'target-vlass':
-            extendflag_result = self._do_extendflag(field='', scan='', intent='*TARGET*',
-                                                    growtime=100.0, growfreq=100.0,
-                                                    growaround=True, flagneartime=True, flagnearfreq=True)
-            return extendflag_result
-        else:
-            return CheckflagResults()
+        return CheckflagResults()
 
     def _check_for_modelcolumn(self):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
