@@ -64,7 +64,7 @@ def test_get_filename_info():
     assert callisto_info["MD5"] == "d943f9e40d13c433213de24a01a488d8"
     assert ceres_info["MD5"] == "91a16285f38c9ed05e18cbf3d3573463"
     assert ceres_fd_info["MD5"] == "a6200c8a75195bb43f80c3576907a12e"
-    assert len(callisto_info["mtime"]) == 19
+    assert 19 <= len(callisto_info["mtime"]) <= 26
 
 
 @skip_if_no_data_repo
@@ -75,7 +75,6 @@ def test_info_string_solar_system_models_with_one_file():
     assert "mtime" in info_string
     assert len(info_string.split("MD5")) == 2
     assert info_string.endswith('}}')
-    assert len(info_string) == 137
 
 
 @skip_if_no_data_repo
@@ -87,4 +86,3 @@ def test_info_string_solar_system_models_with_two_files():
     assert "mtime" in info_string
     assert len(info_string.split("MD5")) == 3
     assert info_string.endswith('}}')
-    assert len(info_string) == 229
