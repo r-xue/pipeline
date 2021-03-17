@@ -110,6 +110,15 @@ class SDInspection(object):
                                         ms=ms.basename, field_id=field_id)
         datatable.exportdata(minimal=False)
 
+        # PIPE-646 & PIPE-647
+        # generate flag commands (only for ALMA data)
+        is_alma = self.ms.antenna_array.name == 'ALMA'
+        # TODO: heuristics to detect raster scan
+        # apply pointing flag only for OTF raster
+        is_raster = True
+        if is_alma and is_raster:
+            worker.generate_flagcmd()
+
         return reduction_group, org_directions
 
     def _inspect_reduction_group(self):

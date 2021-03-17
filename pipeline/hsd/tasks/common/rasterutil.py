@@ -23,7 +23,7 @@ LOG = logging.get_logger(__name__)
 
 MetaDataSet = collections.namedtuple(
     'MetaDataSet',
-    ['timestamp', 'dtrow', 'field', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
+    ['timestamp', 'dtrow', 'field', 'spw', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
 
 
 def get_func_compute_mad():
@@ -57,7 +57,20 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
     return np.hypot(_dx, _dy)
 
 
-def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def is_multi_beam(datatable: DataTableImpl) -> bool:
+    """
+    Check if given dataset is multi-beam or not.
+
+    Args:
+        datatable (DataTableImpl): datatable instance
+
+    Returns:
+        bool: True if multi-beam dataset, otherwise False
+    """
+    return len(np.unique(datatable.getcol('BEAM'))) != 1
+
+
+def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Extract necerrary data from datatable instance.
 
@@ -66,8 +79,8 @@ def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np
 
     Returns:
         A tuple that stores arrays of time stamps, row IDs,
-        R.A., Dec., source types, antenna and field IDs of
-        all rows in datable.
+        R.A., Dec., source types, antenna, field, and spw IDs
+        of all rows in datable.
     """
     timestamp = table.getcol('TIME')
     dtrow = np.arange(len(timestamp))
@@ -76,7 +89,8 @@ def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np
     srctype = table.getcol('SRCTYPE')
     antenna = table.getcol('ANTENNA')
     field = table.getcol('FIELD_ID')
-    return timestamp, dtrow, ra, dec, srctype, antenna, field
+    spw = table.getcol('IF')
+    return timestamp, dtrow, ra, dec, srctype, antenna, field, spw
 
 
 def read_readwrite_data(table: DataTableImpl) -> np.ndarray:
@@ -106,12 +120,13 @@ def read_datatable(datatable: DataTableImpl) -> MetaDataSet:
         row IDs, R.A., Dec., source types, antenna and field IDs
         (each is in ndarray of column values taken from datatable).
     """
-    timestamp, dtrow, ra, dec, srctype, antenna, field = read_readonly_data(datatable)
+    timestamp, dtrow, ra, dec, srctype, antenna, field, spw = read_readonly_data(datatable)
     pflag = read_readwrite_data(datatable)
     metadata = MetaDataSet(
         timestamp=timestamp,
         dtrow=dtrow,
         field=field,
+        spw=spw,
         antenna=antenna,
         ra=ra, dec=dec,
         srctype=srctype,
@@ -142,7 +157,7 @@ def from_context(context_dir: str) -> MetaDataSet:
 
     tb.open(rotable)
     try:
-        timestamp, dtrow, ra, dec, srctype, antenna, field = read_readonly_data(tb)
+        timestamp, dtrow, ra, dec, srctype, antenna, field, spw = read_readonly_data(tb)
     finally:
         tb.close()
 
@@ -156,6 +171,7 @@ def from_context(context_dir: str) -> MetaDataSet:
         timestamp=timestamp,
         dtrow=dtrow,
         field=field,
+        spw=spw,
         antenna=antenna,
         ra=ra, dec=dec,
         srctype=srctype,
@@ -175,6 +191,19 @@ def get_science_target_fields(metadata: MetaDataSet) -> np.ndarray:
         np.ndarray of field ids for science targets
     """
     return np.unique(metadata.field[metadata.srctype == 0])
+
+
+def get_science_spectral_windows(metadata: MetaDataSet) -> np.ndarray:
+    """
+    Get a list of unique spw IDs of science targets.
+
+    Args:
+        metadata: MetaDataSet extracted from a datatable
+
+    Returns:
+        np.ndarray of spw ids for science targets
+    """
+    return np.unique(metadata.spw[metadata.srctype == 0])
 
 
 def filter_data(metadata: MetaDataSet, field_id: int, antenna_id: int, onsource: bool=True) -> MetaDataSet:
@@ -374,6 +403,36 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> 
     return distance_list
 
 
+def get_raster_distance_from_timetable(ra: np.ndarray, dec: np.ndarray, timetable: List[List[int]]) -> np.ndarray:
+    """
+    Compute distances between raster rows and the first row.
+
+    Compute distances between representative positions of raster rows and that of the first raster row.
+    Origin of the distance is the first raster row.
+    The representative position of each raster row is the mid point (mean position) of R.A. and Dec.
+
+    Args:
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
+        timetable: list of row ids for grouped data. Each list item consists of
+                   two lists. First list stores MS row numbers while the second
+                   one holds datatable row numbers.
+
+    Returns:
+        np.ndarray of the distances.
+    """
+    i1 = timetable[0][1]
+    x1 = ra[i1].mean()
+    y1 = dec[i1].mean()
+
+    index_generator = map(lambda x: x[1], timetable)
+    distance_list = np.fromiter(
+        (distance(ra[i].mean(), dec[i].mean(), x1, y1) for i in index_generator),
+        dtype=float)
+
+    return distance_list
+
+
 def find_raster_gap(ra: np.ndarray, dec: np.ndarray, position_gap: np.ndarray) -> np.ndarray:
     """
     Find gaps between individual raster map.
@@ -402,7 +461,39 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, position_gap: np.ndarray) -
     return raster_gap
 
 
-def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: int, nd_row: int) -> np.ndarray:
+def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, timetable: List[List[int]]) -> np.ndarray:
+    """
+    Find gaps between individual raster map.
+
+    Returned list should be used in combination with timetable.
+    Here is an example to plot RA/DEC data per raster map:
+
+    Example:
+    >>> import maplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> gap = find_raster_gap_from_timetable(ra, dec, timetable)
+    >>> for s, e in zip(gap[:-1], gap[1:]):
+    >>>     idx = np.concatenate([np.asarray(x[1]) for x in timetable[s:e]])
+    >>>     plt.plot(ra[idx], dec[idx], '.')
+
+    Args:
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
+        timetable: list of row ids for grouped data. Each list item consists of
+                   two lists. First list stores MS row numbers while the second
+                   one holds datatable row numbers.
+
+    Returns:
+        np.ndarray of index for timetable indicating boundary between raster maps
+    """
+    distance_list = get_raster_distance_from_timetable(ra, dec, timetable)
+    delta_distance = distance_list[1:] - distance_list[:-1]
+    idx = np.where(delta_distance < 0)[0] + 1
+    raster_gap = np.concatenate([[0], idx, [len(timetable)]])
+    return raster_gap
+
+
+def flag_incomplete_raster(raster_index_list: List[np.ndarray], nd_raster: int, nd_row: int) -> np.ndarray:
     """
     Return IDs of incomplete raster map.
 
@@ -415,37 +506,37 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: i
       - if N[x] >= MN + MM then flag whole data in raster map x and later
 
     Args:
-        meta: input MetaDataSet to analyze
-        raster_gap: list of indices of gaps between raster maps in MetaDataSet
+        raster_index_list: list of indices for metadata arrays per raster map
         nd_raster: typical number of data per raster map (MN)
         nd_row: typical number of data per raster row (MM)
 
     Returns:
         np.ndarray of index for raster map to flag.
     """
-    gap = gap_gen(raster_gap, len(meta.timestamp))
-    nd = np.asarray([e - s for s, e in gap])
+    nd = np.fromiter(map(len, raster_index_list), dtype=int)
     assert nd_raster >= nd_row
     upper_threshold = nd_raster + nd_row
     lower_threshold = nd_raster - nd_row
+    LOG.debug('There are %s raster maps', len(nd))
+    LOG.debug('number of data points per raster map: %s', nd)
 
     # nd exceeds upper_threshold
     test_upper = nd >= upper_threshold
     idx = np.where(test_upper)[0]
     if len(idx) > 0:
         test_upper[idx[-1]:] = True
-    LOG.debug(f'test_upper={test_upper}')
+    LOG.debug('test_upper=%s', test_upper)
 
     # nd is less than lower_threshold
     test_lower = nd <= lower_threshold
-    LOG.debug(f'test_lower={test_lower}')
+    LOG.debug('test_lower=%s', test_lower)
 
     idx = np.where(np.logical_or(test_upper, test_lower))[0]
 
     return idx
 
 
-def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List[int], nd_row: int) -> np.ndarray:
+def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: List[np.ndarray], nd_row: int) -> np.ndarray:
     """
     Return IDs of raster map where number of continuous flagged data exceeds upper limit given by nd_row.
 
@@ -457,17 +548,19 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List[int], nd_row: int
 
     Args:
         meta: input MetaDataSet to analyze
-        raster_gap: list of indices of gaps between raster maps in MetaDataSet
+        raster_index_list: list of indices for metadata arrays per raster map
         nd_row: typical number of data per raster row (MM)
 
     Returns:
         np.ndarray of index for raster map to flag.
     """
-    gap = gap_gen(raster_gap, len(meta.timestamp))
+    # check if there are at least MM continuously flagged data
+    # where MM is number of typical data points for one raster row
+    #
     # flag
     # 1: valid, 0: invalid
-    flag_raster = [meta.pflag[s:e] for s, e in gap]
-    LOG.debug(f'Typical number of data per raster row: {nd_row}')
+    flag_raster = [meta.pflag[idx] for idx in raster_index_list]
+    LOG.debug('Typical number of data per raster row: %s', nd_row)
     flag_continuous = [
         np.fromiter(
             map(sum, (f[i:i + nd_row] for i in range(len(f) - nd_row + 1))),
@@ -479,52 +572,137 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List[int], nd_row: int
         (x.min() for x in flag_continuous),
         dtype=int
     )
-    LOG.debug(f'Minimum number of continuous valid data: {min_count}')
+    LOG.debug('Minimum number of continuous valid data: %s', min_count)
     test = min_count == 0
-    LOG.debug(f'test={test}')
+    LOG.debug('test_result=%s', test)
 
     idx = np.where(test)[0]
 
     return idx
 
 
-def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_gap: List[int], ndata: int) -> np.ndarray:
+def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_index_list: List[np.ndarray]) -> np.ndarray:
     """
     Merge flag result and convert raster id to list of data index.
 
     Args:
         flagged1: list of flagged raster id
         flagged2: list of flagged raster id
-        raster_gap: list of gaps between raster maps
-        ndata: total number of data points
+        raster_index_list: list of indices for metadata arrays per raster map
 
     Returns:
         np.ndarray of data ids to be flagged
     """
     flagged = set(flagged1).union(set(flagged2))
-    gap = list(gap_gen(raster_gap, ndata))
-    g = (range(*gap[i]) for i in flagged)
+    # gap = list(gap_gen(raster_gap, ndata))
+    g = (raster_index_list[i] for i in flagged)
     data_ids = np.fromiter(itertools.chain(*g), dtype=int)
     return data_ids
 
 
-def flag_raster_map(metadata: MetaDataSet) -> List[int]:
+def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     """
     Return list of index to be flagged by flagging heuristics for raster scan.
 
     Args:
-        metadata: input MetaDataSet to analyze
+        datatable: input datatable to analyze
 
     Returns:
         per-antenna list of indice to be flagged
     """
+    rowdict = {}
+
+    # rasterutil doesn't support multi-beam data
+    if is_multi_beam(datatable):
+        LOG.warn('Currently rasterutil does not support multi-beam data. Raster flag is not applied.')
+        return rowdict
+
+    metadata = read_datatable(datatable)
+    vis = datatable.getkeyword('FILENAME')
+    basename = os.path.basename(vis)
     field_list = get_science_target_fields(metadata)
+    spw_list = get_science_spectral_windows(metadata)
+    antenna_list = np.unique(metadata.antenna)
 
-    rows_per_field = [flag_raster_map_per_field(metadata, f) for f in field_list]
-    rows_per_antenna = zip(*rows_per_field)
-    rows_merged = list(map(np.concatenate, rows_per_antenna))
+    # use timetable (output of grouping heuristics) to distinguish raster rows
+    timetabledict = {}
+    for field_id, spw_id, antenna_id in itertools.product(field_list, spw_list, antenna_list):
+        try:
+            timetable = datatable.get_timetable(ant=antenna_id, spw=spw_id, pol=None, ms=basename, field_id=field_id)
+        except Exception:
+            continue
+        timetable_small = timetable[0]
+        key = (field_id, spw_id, antenna_id)
+        timetabledict[key] = timetable_small
 
-    return rows_merged
+    # typical number of data per raster row
+    # each entry of timetable row is [(list of MS rows), (list of datatable rows)]
+    # here count length of list of MS rows in each timetable row
+    num_data_per_raster_row = [len(x[0]) for x in itertools.chain(*timetabledict.values())]
+    LOG.debug('Number of data per raster row: %s', num_data_per_raster_row)
+    nd_per_row_rep = find_most_frequent(num_data_per_raster_row)
+    LOG.debug('number of raster row: {}'.format(len(num_data_per_raster_row)))
+    LOG.debug(f'most frequent # of data per raster row: {nd_per_row_rep}')
+
+    # rastergapdict stores list of datatable row ids per raster map
+    rastergapdict = {}
+    num_data_per_raster_map = []
+    for key, timetable in timetabledict.items():
+        # get raster gap
+        raster_gap = find_raster_gap_from_timetable(metadata.ra, metadata.dec, timetable)
+        idx_list = [
+            np.concatenate([x[1] for x in timetable[s:e]]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
+        ]
+        rastergapdict[key] = idx_list
+
+        # compute number of data per raster map
+        num_data_per_raster_map.extend(list(map(len, idx_list)))
+
+    LOG.trace(num_data_per_raster_map)
+    nd_per_raster_rep = find_most_frequent(num_data_per_raster_map)
+    LOG.debug('number of raster map: {}'.format(len(num_data_per_raster_map)))
+    LOG.debug(f'most frequent # of data per raster map: {nd_per_raster_rep}')
+    LOG.debug('nominal number of row per raster map: {}'.format(nd_per_raster_rep // nd_per_row_rep))
+
+    for key, idx_list in rastergapdict.items():
+        # filter metadata by timetable
+        #m = filter_metadata_by_timetable(metadata, timetabledict[key])
+
+        # flag incomplete raster map
+        flag_raster1 = flag_incomplete_raster(idx_list, nd_per_raster_rep, nd_per_row_rep)
+
+        # flag raster map if it contains continuous flagged data
+        # whose length is larger than the number of data per raster row
+        flag_raster2 = flag_worm_eaten_raster(metadata, idx_list, nd_per_row_rep)
+
+        # merge flag result and convert raster id to list of data index
+        flag_list = get_raster_flag_list(flag_raster1, flag_raster2, idx_list)
+        LOG.trace(flag_list)
+
+        # get timestamp list:
+        # use timestamp to propagate flag information to other combination of metadata
+        #time_list = set((metadata.timestamp[i] for i in flag_list))
+
+        # convert timestamp list into row list
+        #row_list = metadata.dtrow[[x in time_list for x in metadata.timestamp]]
+
+        # convert to row list
+        row_list = metadata.dtrow[flag_list]
+
+        # key for rowdict is (spw_id, antenna_id) tuple
+        field_id, spw_id, antenna_id = key
+        new_key = (spw_id, antenna_id)
+        val = rowdict.get(new_key, np.zeros(0, metadata.dtrow.dtype))
+        rowdict[new_key] = np.append(val, row_list)
+
+    # sort row numbers
+    for k, v in rowdict.items():
+        rowdict[k] = np.sort(v)
+    #rows_per_field = [flag_raster_map_per_field(metadata, f) for f in field_list]
+    #rows_per_antenna = zip(*rows_per_field)
+    #rows_merged = list(map(np.concatenate, rows_per_antenna))
+
+    return rowdict
 
 
 def find_most_frequent(v: np.ndarray) -> int:
