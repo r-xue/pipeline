@@ -24,7 +24,7 @@ from .positioncorrection import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
 _all_modules = [
-    'casadata',
+    'casa_data',
     'conversion',
     'diagnostics',
     'framework',
