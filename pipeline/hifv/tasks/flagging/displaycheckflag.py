@@ -122,7 +122,7 @@ class checkflagPercentageMap(object):
             LOG.debug('Returning existing checkflag percentage map plot')
             return self._get_plot_object()
 
-        LOG.debug('Creating new checkflag percentage map plot')
+        LOG.info('Creating new checkflag percentage map plot')
         try:
 
             fig_title = self.ms.basename
@@ -147,6 +147,7 @@ class checkflagPercentageMap(object):
             plt.close()
 
         except:
+            LOG.warn('Could not create the flagging percentage map plot')
             return None
 
         return self._get_plot_object()
