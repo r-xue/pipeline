@@ -1,3 +1,4 @@
+import re
 import pytest
 from .. import casa_tools
 from .casa_data import (
@@ -7,6 +8,19 @@ from .casa_data import (
     get_filename_info,
     get_object_info_string
 )
+
+
+# Validation of ISO 8601 strings
+REGEX_ISO8601 = (
+    r'^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T'
+    r'(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])?$'
+)
+match_iso8601 = re.compile(REGEX_ISO8601).match
+
+
+def validate_iso8601(value: str) -> bool:
+    """Check if a string follows a valid ISO 8601 format"""
+    return True if match_iso8601(value) is not None else False
 
 
 # # Tests that depend on the pipeline-testdata repository
@@ -37,11 +51,7 @@ def test_md5_hash_string_solar_system_models():
 def test_get_iso_mtime():
     # At the moment we only check that the format is roughly an ISO date
     iso_mtime = get_iso_mtime(SS_CALLISTO)
-    assert iso_mtime[4] == "-"
-    assert iso_mtime[7] == "-"
-    assert iso_mtime[10] == "T"
-    assert iso_mtime[13] == ":"
-    assert iso_mtime[16] == ":"
+    assert validate_iso8601(iso_mtime)
 
 
 @skip_if_no_data_repo
@@ -64,7 +74,7 @@ def test_get_filename_info():
     assert callisto_info["MD5"] == "d943f9e40d13c433213de24a01a488d8"
     assert ceres_info["MD5"] == "91a16285f38c9ed05e18cbf3d3573463"
     assert ceres_fd_info["MD5"] == "a6200c8a75195bb43f80c3576907a12e"
-    assert 19 <= len(callisto_info["mtime"]) <= 26
+    assert validate_iso8601(callisto_info["mtime"])
 
 
 @skip_if_no_data_repo
