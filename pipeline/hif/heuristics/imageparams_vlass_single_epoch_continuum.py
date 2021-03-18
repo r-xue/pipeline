@@ -26,6 +26,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         self.imaging_mode = 'VLASS-SE-CONT'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
+        # Allow user specified cycleniter that affects only cleaning without user mask in the final imaging stage.
+        # Value is None or float.
+        self.user_cycleniter_final_image_nomask = None
 
     # niter
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms,
@@ -74,9 +77,17 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def cycleniter(self, iteration) -> int:
         """Tclean cycleniter parameter heuristics."""
-        # Special case: cleaning without mask in 1st and 3rd imaging stages
-        if (self.vlass_stage == 1 and iteration > 1) or (self.vlass_stage == 3 and iteration > 2):
-            return 100
+        # Special cases: cleaning without mask in 1st stage
+        if self.vlass_stage == 1 and iteration > 1:
+            return 500
+        # Cleaning without mask 3rd imaging stage, allow user to set value
+        elif self.vlass_stage == 3 and iteration > 2:
+            if self.user_cycleniter_final_image_nomask:
+                LOG.info("Using user specified cycleniter = {} for cleaning without "
+                         "user mask (pbmask only).".format(self.user_cycleniter_final_image_nomask))
+                return self.user_cycleniter_final_image_nomask
+            else:
+                return 500
         # Special case: 3rd imaging stage
         elif self.vlass_stage == 3 and iteration > 0:
             return 3000
@@ -295,10 +306,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         # PSF and dirty image
         if iteration == 0:
             return 2.0
-        # Cleaning without user mask
-        elif (self.vlass_stage == 1 and iteration == 2) or (self.vlass_stage == 3 and iteration == 3):
+        elif self.vlass_stage == 3 and iteration == 3:
             return 4.5
-        # Cleaning with user mask, 1st and 2nd imaging stages
         elif self.vlass_stage in [1, 2] and iteration >= 1:
             return 5.0
         # Cleaning with user mask in 3rd imaging stage
@@ -364,6 +373,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return [cfch.strip() for cfch in cfcache.split(',')][0:2]
         else:
             return [cfcache, None]
+
+    def set_user_cycleniter_final_image_nomask(self, cycleniter_final_image_nomask: Union[int, None]=None):
+        """Sets class variable controlling the cycleniter parameter of the last clean step (cleaning without user mask,
+        pbmask only) in the third (final) VLASS-SE-CONT imaging stage."""
+        if self.vlass_stage == 3 and cycleniter_final_image_nomask != None:
+            LOG.info("Setting user specified cycleniter = {} for cleaning without "
+                     "user mask (pbmask only).".format(cycleniter_final_image_nomask))
+        self.user_cycleniter_final_image_nomask = cycleniter_final_image_nomask
 
     def smallscalebias(self) -> float:
         """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""

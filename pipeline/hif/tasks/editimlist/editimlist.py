@@ -86,6 +86,8 @@ class EditimlistInputs(vdp.StandardInputs):
     sensitivity = vdp.VisDependentProperty(default=0.0)
     # VLASS-SE-CONT specific option: if True then perform final clean iteration without mask for selfcal image
     clean_no_mask_selfcal_image = vdp.VisDependentProperty(default=False)
+    # VLASS-SE-CONT specific option: user settable cycleniter in cleaning without mask in final imaging stage
+    cycleniter_final_image_nomask = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty
     def cell(self):
@@ -138,7 +140,8 @@ class EditimlistInputs(vdp.StandardInputs):
                  parameter_file=None, pblimit=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
-                 uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_selfcal_image=None):
+                 uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_selfcal_image=None,
+                 cycleniter_final_image_nomask=None):
 
         super(EditimlistInputs, self).__init__()
         self.context = context
@@ -184,6 +187,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.width = width
         self.sensitivity = sensitivity
         self.clean_no_mask_selfcal_image = clean_no_mask_selfcal_image
+        self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
 
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
@@ -191,7 +195,7 @@ class EditimlistInputs(vdp.StandardInputs):
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
                             'editmode', 'nsigma', 'pblimit',
-                            'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image')
+                            'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image', 'cycleniter_final_image_nomask')
 
         self.keys_to_change = []
         keydict = self.as_dict()
@@ -335,6 +339,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 modes as of 01.03.2021
         if img_mode.startswith('VLASS-SE-CONT'):
             th.vlass_stage = self._get_task_stage_ordinal()
+            # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
+            th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
 
         imlist_entry['threshold'] = inpdict['threshold']
         imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])
