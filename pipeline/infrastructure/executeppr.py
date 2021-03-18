@@ -244,11 +244,10 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
                 casatools.post_to_log("    Parameter: " + \
                                       keyword + " = " + str(value), echo_to_screen=echo_to_screen)
 
-            if pipeline_task_name == 'ImportData' or pipeline_task_name == 'RestoreData'\
+            if pipeline_task_name == 'ImportData' or pipeline_task_name == 'RestoreData' or pipeline_task_name == 'NRORestoreData' \
                     or pipeline_task_name == 'ALMAImportData' or pipeline_task_name == 'ALMARestoreData'\
                     or pipeline_task_name == 'VLAImportData' or pipeline_task_name == 'VLARestoreData'\
-                    or pipeline_task_name == 'SDImportData' or pipeline_task_name == 'SDRestoreData'\
-                    or pipeline_task_name == 'NROImportData' or pipeline_task_name == 'NRORestoreData':
+                    or pipeline_task_name == 'SDImportData' or pipeline_task_name == 'NROImportData':
                 task_args['vis'] = files
                 task_args['session'] = sessions
 
