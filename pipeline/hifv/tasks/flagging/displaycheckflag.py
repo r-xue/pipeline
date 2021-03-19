@@ -130,21 +130,21 @@ class checkflagPercentageMap(object):
             fig, ax = plt.subplots()
             fields_name, fields_ra, fields_dec = self._fields_to_ra_dec()
 
-            fieldflags = np.zeros((len(fields_name), 3))
             flags_by_field = self.result.summaries[-1]['field']
+            flagpct_per_field = np.zeros((len(flags_by_field), 3))
 
-            for idx in range(len(fields_name)):
-                field_name = fields_name[idx]
-                fieldflags[idx, 0] = 100.0 * flags_by_field[field_name]['flagged']/flags_by_field[field_name]['total']
-                fieldflags[idx, 1] = np.degrees(float(fields_ra[idx]))
-                fieldflags[idx, 2] = np.degrees(float(fields_dec[idx]))
+            for idx, (field_name, field_flag) in enumerate(flags_by_field.items()):
+                field_id = fields_name.index(field_name)
+                flagpct_per_field[idx, 0] = 100.0 * field_flag['flagged']/field_flag['total']
+                flagpct_per_field[idx, 1] = np.degrees(float(fields_ra[field_id]))
+                flagpct_per_field[idx, 2] = np.degrees(float(fields_dec[field_id]))
 
-            self._plot_grid(fieldflags[:, 1], fieldflags[:, 2], fieldflags[:, 0])
+            self._plot_grid(flagpct_per_field[:, 1], flagpct_per_field[:, 2], flagpct_per_field[:, 0])
             ax.set_xlabel('R.A. [deg]')
             ax.set_ylabel('Dec. [deg]')
 
             fig.savefig(self.figfile)
-            plt.close()
+            plt.close(fig)
 
         except:
             LOG.warn('Could not create the flagging percentage map plot')
@@ -172,7 +172,7 @@ class checkflagPercentageMap(object):
         if len(phase_dir.shape) > 2:
             phase_dir = phase_dir.squeeze()
 
-        return field_names, phase_dir[0, :], phase_dir[1, :]
+        return list(field_names), phase_dir[0, :], phase_dir[1, :]
 
     def _plot_grid(self, x, y, z, nx=100, ny=100):
 
