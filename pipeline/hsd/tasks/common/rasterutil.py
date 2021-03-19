@@ -252,46 +252,6 @@ def filter_data(metadata: MetaDataSet, field_id: int, antenna_id: int, onsource:
     return metadata2
 
 
-def squeeze_data(metadata: MetaDataSet) -> MetaDataSet:
-    """
-    Filter elements of MetaDataSet with unique timestamps.
-
-    Args:
-        metadata: input MetaDataSet
-
-    Returns:
-        MetaDataSet without duplication of timestamp
-    """
-    utime, idx = np.unique(metadata.timestamp, return_index=True)
-
-    urow = metadata.dtrow[idx]
-    ura = metadata.ra[idx]
-    udec = metadata.dec[idx]
-    uflag = metadata.pflag[idx]
-    if isinstance(metadata.field, (int, np.int32, np.int64)):
-        ufield = metadata.field
-    else:
-        ufield = metadata.field[idx]
-    if isinstance(metadata.antenna, (int, np.int32, np.int64)):
-        uant = metadata.antenna
-    else:
-        uant = metadata.antenna[idx]
-    if isinstance(metadata.srctype, (int, np.int32, np.int64)) or metadata.srctype is None:
-        usrctype = metadata.srctype
-    else:
-        usrctype = metadata.srctype[idx]
-    metadata2 = MetaDataSet(
-        timestamp=utime,
-        dtrow=urow,
-        field=ufield,
-        antenna=uant,
-        ra=ura, dec=udec,
-        srctype=usrctype,
-        pflag=uflag
-    )
-    return metadata2
-
-
 def find_time_gap(timestamp: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Find time gap. Condition for gap is following.
@@ -679,13 +639,6 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
         flag_list = get_raster_flag_list(flag_raster1, flag_raster2, idx_list)
         LOG.trace(flag_list)
 
-        # get timestamp list:
-        # use timestamp to propagate flag information to other combination of metadata
-        #time_list = set((metadata.timestamp[i] for i in flag_list))
-
-        # convert timestamp list into row list
-        #row_list = metadata.dtrow[[x in time_list for x in metadata.timestamp]]
-
         # convert to row list
         row_list = metadata.dtrow[flag_list]
 
@@ -698,9 +651,6 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     # sort row numbers
     for k, v in rowdict.items():
         rowdict[k] = np.sort(v)
-    #rows_per_field = [flag_raster_map_per_field(metadata, f) for f in field_list]
-    #rows_per_antenna = zip(*rows_per_field)
-    #rows_merged = list(map(np.concatenate, rows_per_antenna))
 
     return rowdict
 
@@ -727,105 +677,6 @@ def find_most_frequent(v: np.ndarray) -> int:
     LOG.trace(f'mode = {mode}')
 
     return mode
-
-
-def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> List[int]:
-    """
-    Return per antenna list of row IDs of datatable to be flagged for a given field ID.
-
-    Data to be flagged are identified based on two flagging heuristics of raster map, i.e.,
-    incomplete raster and the number of continuous flagged data.
-
-    Args:
-        metadata: Input MetaDataSet to analyze
-        field_id: field id to process
-
-    Returns:
-        per-antenna list of data ids to be flagged
-    """
-    # metadata per antenna (with duplication)
-    antenna_list = np.unique(metadata.antenna)
-    meta_per_ant_dup = [filter_data(metadata, field_id, a) for a in antenna_list]
-
-    # metadata per antenna (without duplication)
-    meta_per_ant = [squeeze_data(meta) for meta in meta_per_ant_dup]
-    ndata_per_ant = list(map(lambda x: len(x.timestamp), meta_per_ant))
-
-    # get position gap
-    position_gap_per_ant = [find_position_gap(m.ra, m.dec) for m in meta_per_ant]
-    #position_gap_list = list(itertools.chain(*position_gap_per_ant))
-    gap_list0 = [x[0] for x in position_gap_per_ant]
-    gap_list1 = [x[1] for x in position_gap_per_ant]
-    merged0 = merge_position_gap(gap_list0)
-    merged1 = merge_position_gap(gap_list1)
-    merged_gap, _ = union_position_gap((merged0, merged1))
-    LOG.trace('Number of antenna: %s', len(meta_per_ant))
-    for i, g in enumerate(position_gap_per_ant):
-        LOG.trace('Gap list for antenna %s: %s, %s', i, g[0], g[1])
-    LOG.debug('merged_gap = %s', list(merged_gap))
-
-    # get raster gap
-    raster_gap_per_ant = [
-        find_raster_gap(m.ra, m.dec, merged_gap) for m in meta_per_ant
-    ]
-
-    # compute number of data per raster row
-    num_data_per_raster_row = [
-        [len(m.ra[s:e]) for s, e in gap_gen(merged_gap)] for m in meta_per_ant
-    ]
-    LOG.trace(num_data_per_raster_row)
-    nd_per_row_rep = find_most_frequent(
-        np.fromiter(itertools.chain(*num_data_per_raster_row), dtype=int)
-    )
-    LOG.debug('number of raster row: {}'.format(list(map(len, num_data_per_raster_row))))
-    LOG.debug(f'most frequent # of data per raster row: {nd_per_row_rep}')
-
-    # compute number of data per raster map
-    num_data_per_raster_map = [
-        [len(m.ra[s:e]) for s, e in gap_gen(gap)]
-        for m, gap in zip(meta_per_ant, raster_gap_per_ant)
-    ]
-    LOG.trace(num_data_per_raster_map)
-    nd_per_raster_rep = find_most_frequent(
-        np.fromiter(itertools.chain(*num_data_per_raster_map), dtype=int)
-    )
-    LOG.debug('number of raster map: {}'.format(list(map(len, num_data_per_raster_map))))
-    LOG.debug(f'most frequent # of data per raster map: {nd_per_raster_rep}')
-    LOG.debug('nominal number of row per raster map: {}'.format(nd_per_raster_rep // nd_per_row_rep))
-
-    # flag incomplete raster map
-    flag_raster1 = [
-        flag_incomplete_raster(m, gap, nd_per_raster_rep, nd_per_row_rep)
-        for m, gap in zip(meta_per_ant, raster_gap_per_ant)
-    ]
-
-    # flag raster map if it contains continuous flagged data
-    # whose length is larger than the number of data per raster row
-    flag_raster2 = [
-        flag_worm_eaten_raster(m, gap, nd_per_row_rep)
-        for m, gap in zip(meta_per_ant, raster_gap_per_ant)
-    ]
-
-    # merge flag result and convert raster id to list of data index
-    flag_list = [
-        get_raster_flag_list(f1, f2, gap, n)
-        for f1, f2, gap, n in zip(flag_raster1, flag_raster2, raster_gap_per_ant, ndata_per_ant)
-    ]
-    LOG.trace(flag_list)
-
-    # get timestamp list
-    time_list = [
-        set((m.timestamp[i] for i in f))
-        for f, m in zip(flag_list, meta_per_ant)
-    ]
-
-    # convert timestamp list into row list
-    row_list = [
-        m.dtrow[[x in t for x in m.timestamp]]
-        for t, m in zip(time_list, meta_per_ant_dup)
-    ]
-
-    return row_list
 
 
 def get_aspect(ax: plt.Axes) -> float:
