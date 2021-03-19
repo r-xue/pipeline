@@ -121,7 +121,7 @@ class SetjyInputs(vdp.StandardInputs):
             # Solar System models (PIPE-1007)
             for field_name in field_names:
                 if field_name in standard.Standard.ephemeris_fields:
-                    info = utils.get_object_info(field_name)
+                    info = utils.get_object_info_string(field_name)
                     LOG.info(info)
 
             # Find fluxes

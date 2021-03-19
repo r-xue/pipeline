@@ -10,7 +10,7 @@ as appropriate).
 """
 from importlib import import_module
 
-from .casadata import *
+from .casa_data import *
 from .conversion import *
 from .diagnostics import *
 from .framework import *
@@ -24,7 +24,7 @@ from .positioncorrection import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
 _all_modules = [
-    'casadata',
+    'casa_data',
     'conversion',
     'diagnostics',
     'framework',
