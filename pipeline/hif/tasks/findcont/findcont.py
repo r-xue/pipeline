@@ -246,9 +246,6 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     width = '%.7fMHz' % (channel_width / 1e6)
 
-                    # Starting with CASA 4.7.79 tclean can calculate chanchunks automatically.
-                    chanchunks = -1
-
                     parallel = mpihelpers.parse_mpi_input_parameter(inputs.parallel)
 
                     real_spwsel = context.observing_run.get_real_spwsel([str(spwid)]*len(vislist), vislist)
@@ -296,7 +293,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                             phasecenter=phasecenter, stokes='I', weighting=inputs.hm_weighting,
                                             robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
                                             restoringbeam=[], pbcor=False, usepointing=usepointing,
-                                            savemodel='none', chanchunks=chanchunks, parallel=parallel)
+                                            savemodel='none', parallel=parallel)
                     self._executor.execute(job)
 
                     # Try detecting continuum frequency ranges

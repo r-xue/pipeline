@@ -291,9 +291,6 @@ class CleanBase(basetask.StandardTaskTemplate):
         mask_name = '%s.%s.iter%s.mask' % (
             inputs.imagename, inputs.stokes, iter)
 
-        # Starting with CASA 4.7.79 tclean can calculate chanchunks automatically.
-        chanchunks = -1
-
         parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel),
                         'TARGET' in inputs.intent])
 
@@ -330,7 +327,6 @@ class CleanBase(basetask.StandardTaskTemplate):
             'savemodel':     inputs.savemodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
-            'chanchunks':    chanchunks,
             'parallel':      parallel
             }
 
