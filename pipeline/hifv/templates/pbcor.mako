@@ -5,7 +5,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Primary beam corrected images (tt0 when multi-term)</%block>
+<%block name="title">Primary beam corrected images (tt0/tt1 when multi-term)</%block>
 
 % for ms,ms_pbcorplots in pbcorplots.items():
 
@@ -75,7 +75,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 
             <%def name="fancybox_caption(plot)">
-            primary beam corrected plot (tt0 when multi-term)
+            primary beam corrected plot (tt0/tt1 when multi-term)
             </%def>
 
 
