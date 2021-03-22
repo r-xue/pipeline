@@ -859,8 +859,8 @@ if __name__ == '__main__':
         ant=args.antenna, spw=spw, pol=None, ms=ms_name, field_id=field
     )
 
-    ra = dt.getcol('RA')
-    dec = dt.getcol('DEC')
+    ra = dt.getcol('OFS_RA')
+    dec = dt.getcol('OFS_DEC')
     dtrow_list = extract_dtrow_list(timetable, for_small_gap=True)
     figfile = 'pointing.field{}ant{}.gif'.format(field, args.antenna)
     generate_animation(ra, dec, dtrow_list, figfile=figfile)
