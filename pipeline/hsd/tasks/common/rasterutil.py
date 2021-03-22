@@ -70,6 +70,11 @@ def is_multi_beam(datatable: DataTableImpl) -> bool:
     return len(np.unique(datatable.getcol('BEAM'))) != 1
 
 
+def extract_dtrow_list(timetable: List[List[List[int]]], for_small_gap: bool = True) -> List[np.ndarray]:
+    tt_idx = 0 if for_small_gap else 1
+    return [np.asarray(x[1]) for x in timetable[tt_idx]]
+
+
 def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Extract necerrary data from datatable instance.
@@ -363,7 +368,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> 
     return distance_list
 
 
-def get_raster_distance_from_timetable(ra: np.ndarray, dec: np.ndarray, timetable: List[List[int]]) -> np.ndarray:
+def get_raster_distance_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
     """
     Compute distances between raster rows and the first row.
 
@@ -374,20 +379,18 @@ def get_raster_distance_from_timetable(ra: np.ndarray, dec: np.ndarray, timetabl
     Args:
         ra: np.ndarray of RA
         dec: np.ndarray of Dec
-        timetable: list of row ids for grouped data. Each list item consists of
-                   two lists. First list stores MS row numbers while the second
-                   one holds datatable row numbers.
+        dtrow_list: list of row ids for datatable rows per data chunk indicating
+                    single raster row.
 
     Returns:
         np.ndarray of the distances.
     """
-    i1 = timetable[0][1]
+    i1 = dtrow_list[0]
     x1 = ra[i1].mean()
     y1 = dec[i1].mean()
 
-    index_generator = map(lambda x: x[1], timetable)
     distance_list = np.fromiter(
-        (distance(ra[i].mean(), dec[i].mean(), x1, y1) for i in index_generator),
+        (distance(ra[i].mean(), dec[i].mean(), x1, y1) for i in dtrow_list),
         dtype=float)
 
     return distance_list
@@ -421,7 +424,7 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, position_gap: np.ndarray) -
     return raster_gap
 
 
-def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, timetable: List[List[int]]) -> np.ndarray:
+def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
     """
     Find gaps between individual raster map.
 
@@ -431,25 +434,24 @@ def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, timetable: L
     Example:
     >>> import maplotlib.pyplot as plt
     >>> import numpy as np
-    >>> gap = find_raster_gap_from_timetable(ra, dec, timetable)
+    >>> gap = find_raster_gap_from_timetable(ra, dec, dtrow_list)
     >>> for s, e in zip(gap[:-1], gap[1:]):
-    >>>     idx = np.concatenate([np.asarray(x[1]) for x in timetable[s:e]])
+    >>>     idx = np.concatenate(dtrow_list[s:e])
     >>>     plt.plot(ra[idx], dec[idx], '.')
 
     Args:
         ra: np.ndarray of RA
         dec: np.ndarray of Dec
-        timetable: list of row ids for grouped data. Each list item consists of
-                   two lists. First list stores MS row numbers while the second
-                   one holds datatable row numbers.
+        dtrow_list: List of np.ndarray holding array indices for ra and dec.
+                    Each index array is supposed to represent single raster row.
 
     Returns:
-        np.ndarray of index for timetable indicating boundary between raster maps
+        np.ndarray of index for dtrow_list indicating boundary between raster maps
     """
-    distance_list = get_raster_distance_from_timetable(ra, dec, timetable)
+    distance_list = get_raster_distance_from_timetable(ra, dec, dtrow_list)
     delta_distance = distance_list[1:] - distance_list[:-1]
     idx = np.where(delta_distance < 0)[0] + 1
-    raster_gap = np.concatenate([[0], idx, [len(timetable)]])
+    raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
     return raster_gap
 
 
@@ -585,20 +587,18 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     antenna_list = np.unique(metadata.antenna)
 
     # use timetable (output of grouping heuristics) to distinguish raster rows
-    timetabledict = {}
+    dtrowdict = {}
     for field_id, spw_id, antenna_id in itertools.product(field_list, spw_list, antenna_list):
         try:
             timetable = datatable.get_timetable(ant=antenna_id, spw=spw_id, pol=None, ms=basename, field_id=field_id)
         except Exception:
             continue
-        timetable_small = timetable[0]
+        dtrow_list = extract_dtrow_list(timetable, for_small_gap=True)
         key = (field_id, spw_id, antenna_id)
-        timetabledict[key] = timetable_small
+        dtrowdict[key] = dtrow_list
 
     # typical number of data per raster row
-    # each entry of timetable row is [(list of MS rows), (list of datatable rows)]
-    # here count length of list of MS rows in each timetable row
-    num_data_per_raster_row = [len(x[0]) for x in itertools.chain(*timetabledict.values())]
+    num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
     LOG.debug('Number of data per raster row: %s', num_data_per_raster_row)
     nd_per_row_rep = find_most_frequent(num_data_per_raster_row)
     LOG.debug('number of raster row: {}'.format(len(num_data_per_raster_row)))
@@ -607,11 +607,11 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     # rastergapdict stores list of datatable row ids per raster map
     rastergapdict = {}
     num_data_per_raster_map = []
-    for key, timetable in timetabledict.items():
+    for key, dtrow_list in dtrowdict.items():
         # get raster gap
-        raster_gap = find_raster_gap_from_timetable(metadata.ra, metadata.dec, timetable)
+        raster_gap = find_raster_gap_from_timetable(metadata.ra, metadata.dec, dtrow_list)
         idx_list = [
-            np.concatenate([x[1] for x in timetable[s:e]]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
+            np.concatenate(dtrow_list[s:e]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
         ]
         rastergapdict[key] = idx_list
 
@@ -718,14 +718,15 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Generator[Tuple[Optional[np.ndarray], Optional[np.ndarray], Tuple[float, float, float, float], bool], None, None]:
+def anim_gen(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray], dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Generator[Tuple[Optional[np.ndarray], Optional[np.ndarray], Tuple[float, float, float, float], bool], None, None]:
     """
     Generate position, color and boolean flag for generate_animation.
 
     Args:
         ra: np.ndarray of RA
         dec: np.ndarray of Dec
-        idx_generator: generator yielding start and end indices indicating raster row
+        dtrow_list: list of row ids for datatable rows per data chunk indicating
+                    single raster row.
         dist_list: np.ndarray of distance
         cmap: color map
 
@@ -735,14 +736,14 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_li
     dist_prev = 0
     cidx = 0
     raster_flag = False
-    for idx, dist in zip(idx_generator, dist_list):
+    for idx, dist in zip(dtrow_list, dist_list):
         print('{} - {} = {}'.format(dist, dist_prev, dist - dist_prev))
         if dist - dist_prev < 0:
             print('updating cidx {}'.format(cidx))
             cidx = (cidx + 1) % cmap.N
             raster_flag = True
         color = cmap(cidx)
-        yield ra[idx[0]:idx[1]], dec[idx[0]:idx[1]], color, raster_flag
+        yield ra[idx], dec[idx], color, raster_flag
         dist_prev = dist
         raster_flag = False
 
@@ -779,27 +780,29 @@ def animate(i: Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], 
     return lines
 
 
-def generate_animation(ra: np.ndarray, dec: np.ndarray, gaplist: List[int], figfile: str='movie.gif') -> None:
+def generate_animation(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray], figfile: str = 'movie.gif') -> None:
     """
     Generate animation GIF file to illustrate observing pattern.
 
     Args:
         ra: np.ndarray of RA
         dec: np.ndarray of Dec
-        gaplist: list of gaps between raster rows
+        dtrow_list: list of row ids for datatable rows per data chunk indicating
+                    single raster row.
         figfile: output file name, defaults to 'movie.gif'
     """
-    row_distance = get_raster_distance(ra, dec, gaplist)
+    row_distance = get_raster_distance_from_timetable(ra, dec, dtrow_list)
     cmap = plt.get_cmap('tab10')
+    all_rows = np.concatenate(dtrow_list)
 
     fig = plt.figure()
     plt.clf()
     anim = FuncAnimation(
         fig, animate,
-        anim_gen(ra, dec, gap_gen(gaplist), row_distance, cmap),
-        init_func=lambda: plt.plot(ra, dec, '.', color='gray', markersize=2),
+        anim_gen(ra, dec, dtrow_list, row_distance, cmap),
+        init_func=lambda: plt.plot(ra[all_rows], dec[all_rows], '.', color='gray', markersize=2),
         blit=True)
-    anim.save(figfile, writer=ImageMagickWriter(fps=4))
+    anim.save(figfile, writer=ImageMagickWriter(fps=2))
 
 
 if __name__ == '__main__':
@@ -815,7 +818,24 @@ if __name__ == '__main__':
     print('DEBUG: field={}'.format(args.field))
     print('DEBUG: context_dir="{}"'.format(args.context_dir))
 
-    metadata = from_context(args.context_dir)
+    datatable_root_dir = os.path.join(args.context_dir, 'MSDataTable.tbl')
+    datatable_subdir_list = glob.glob(f'{datatable_root_dir}/*.ms')
+    if len(datatable_subdir_list) == 0:
+        print('Failed to find DataTable in {}'.format(args.context_dir))
+        sys.exit(1)
+    datatable_path = datatable_subdir_list[0]
+    dt = DataTableImpl(datatable_path)
+    metadata = read_datatable(dt)
+
+    _, ms_name = os.path.split(datatable_path)
+    print(f'DEBUG: ms_name="{ms_name}"')
+
+    # pick one science spw from the list
+    science_spws = get_science_spectral_windows(metadata)
+    if len(science_spws) == 0:
+        print(f'ERROR: no science spws exist')
+        sys.exit(1)
+    spw = science_spws[0]
 
     # Field ID to process
     science_targets = get_science_target_fields(metadata)
@@ -829,17 +849,18 @@ if __name__ == '__main__':
         print(f'ERROR: science target field {field} does not exist')
         sys.exit(1)
 
-    # ON-SOURCE with Antenna selection
-    metaon = filter_data(metadata, field, args.antenna, True)
-
-    utime = metaon.timestamp
-    ura = metaon.ra
-    udec = metaon.dec
-    if len(utime) == 0:
-        print('ERROR: antenna {} for field {} does not exist'.format(args.antenna, field))
+    antenna = args.antenna if args.antenna >= 0 else 0
+    antenna_list = np.unique(dt.getcol('ANTENNA'))
+    if antenna not in antenna_list:
+        print(f'ERROR: antnena {antenna} does not exist')
         sys.exit(1)
 
-    gap, _ = union_position_gap(find_position_gap(ura, udec))
+    timetable = dt.get_timetable(
+        ant=args.antenna, spw=spw, pol=None, ms=ms_name, field_id=field
+    )
 
+    ra = dt.getcol('RA')
+    dec = dt.getcol('DEC')
+    dtrow_list = extract_dtrow_list(timetable, for_small_gap=True)
     figfile = 'pointing.field{}ant{}.gif'.format(field, args.antenna)
-    generate_animation(ura, udec, gap, figfile=figfile)
+    generate_animation(ra, dec, dtrow_list, figfile=figfile)
