@@ -808,7 +808,7 @@ def generate_animation(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndar
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
-        description='Generate gif animation of raster pattern'
+        description='Generate gif animation of raster pattern. Matplotlib backend must be "Agg".'
     )
     parser.add_argument('context_dir', type=str, help='context directory')
     parser.add_argument('-a', '--antenna', action='store', dest='antenna', type=int, default=0)
