@@ -2,12 +2,13 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import griddata
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
+import pipeline.infrastructure.renderer.logger as logger
+
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from scipy.interpolate import griddata
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -143,7 +144,7 @@ class checkflagPercentageMap(object):
             ax.set_xlabel('R.A. [deg]')
             ax.set_ylabel('Dec. [deg]')
 
-            fig.savefig(self.figfile)
+            fig.savefig(self.figfile, bbox_inches='tight')
             plt.close(fig)
 
         except:
@@ -174,22 +175,26 @@ class checkflagPercentageMap(object):
 
         return list(field_names), phase_dir[0, :], phase_dir[1, :]
 
-    def _plot_grid(self, x, y, z, nx=100, ny=100):
+    def _plot_grid(self, x, y, z, nx=200, ny=200):
 
         x[x < 0] = x[x < 0] + 360.
 
-        xi = np.linspace(np.max(x), np.min(x), nx)
-        yi = np.linspace(np.min(y), np.max(y), ny)
-
+        xi, dx = np.linspace(np.max(x), np.min(x), nx, retstep=True)
+        yi, dy = np.linspace(np.min(y), np.max(y), ny, retstep=True)
         zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method='cubic')
         with np.errstate(invalid='ignore'):
             zi[zi > 100] = 100.
 
-        dx = (np.max(x)-np.min(x))*0.1
-        dy = (np.max(y)-np.min(y))*0.1
-        plt.imshow(zi, origin='lower', extent=[np.max(x)+dx, np.min(x)-dx, np.min(y)-dy, np.max(y)+dy], aspect='equal')
-        plt.plot(x, y, 'k+')
+        ax = plt.gca()
+        im = ax.imshow(zi, origin='lower', extent=[np.max(x)-0.5*dx, np.min(x) + 0.5*dx,
+                                                   np.min(y)-0.5*dy, np.max(y)+0.5*dy], aspect='equal')
+        ax.plot(x, y, 'k.')
 
-        plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
-        cba = plt.colorbar()
+        dxy = min((np.max(x)-np.min(x))*0.05, (np.max(y)-np.min(y))*0.05)
+        ax.set_xlim(np.max(x)+dxy, np.min(x) - dxy)
+        ax.set_ylim(np.min(y)-dxy, np.max(y)+dxy)
+        ax.get_xaxis().get_major_formatter().set_useOffset(False)
+        cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.05)
+
+        cba = plt.colorbar(im, cax=cax)
         cba.set_label('percent flagged [%]')
