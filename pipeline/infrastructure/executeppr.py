@@ -102,8 +102,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             context = Pipeline(context='last').context
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-                                        output_dir=workingDir).context
+            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:

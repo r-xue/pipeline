@@ -5,6 +5,7 @@ import functools
 import os
 import sys
 import time
+from logging import Logger as pyLogger
 from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
 # Imported for annotation pupose only. Use table in casa_tools in code.
@@ -18,6 +19,7 @@ from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import absolute_path
 from . import compress
 
 LOG = infrastructure.get_logger(__name__)
@@ -553,7 +555,7 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
         field_id = member.field_id
         ant_id = member.antenna_id
         msobj = member.ms
-        if msobj.name in [os.path.abspath(name) for name in msname_filter]:
+        if absolute_path(msobj.name) in [absolute_path(name) for name in msname_filter]:
             _field_selection = field_selection
             try:
                 nfields = len(msobj.fields)

@@ -1,7 +1,7 @@
 import html
 import itertools
 import os
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -264,13 +264,13 @@ def sanitize_data_selection_string(text):
     return sanitized_text
 
 
-def num_lines(abspath):
+def num_lines(path):
     """
-    Report number of non-empty non-comment lines in a file specified by
-    abspath. If the file does not exist, report N/A.
+    Report number of non-empty non-comment lines in a file specified by the
+    path argument. If the file does not exist, report N/A.
     """
-    if os.path.exists(abspath):
-        return sum(1 for line in open(abspath) if line.strip() and not line.startswith('#'))
+    if os.path.exists(path):
+        return sum(1 for line in open(path) if line.strip() and not line.startswith('#'))
     else:
         return 'N/A'
 
@@ -337,3 +337,42 @@ def format_notification(tr_class, alert, msg, icon_class=None):
     else:
         icon = ''
     return '<tr class="%s"><td>%s<strong>%s</strong> %s</td></tr>' % (tr_class, icon, alert, msg)
+
+
+def get_relative_url(report_dir: str, stage_dir: str, subpage_dir: str,
+                     allow_nonexistent: bool = True) -> Union[str, None]:
+    """
+    Return url to weblog subpage relative to the weblog root path, based on
+    provided report dir, stage dir, and subpage dir. Check for and remove
+    common path elements and handle either all relative paths, or all absolute
+    paths.
+
+    If allow_nonexistent (default: True) is set to False, return None when the
+    constructed path does not exist.
+    """
+    # Check whether weblog stage path contains common path
+    # with report dir, and if so, determine actual relative path.
+    stage_cpath = os.path.commonpath([report_dir, stage_dir])
+    if stage_cpath:
+        stage_relpath = os.path.relpath(stage_dir, stage_cpath)
+    else:
+        stage_relpath = stage_dir
+
+    # Check whether subpage path contains common path with the
+    # report + weblog stage path, and if so, determine actual
+    # relative path.
+    subpage_cpath = os.path.commonpath([os.path.join(report_dir, stage_relpath), subpage_dir])
+    if subpage_cpath:
+        subpage_relpath = os.path.relpath(subpage_dir, subpage_cpath)
+    else:
+        subpage_relpath = subpage_dir
+
+    # Combine paths.
+    report_abspath = os.path.abspath(report_dir)
+    subpage_abspath = os.path.join(report_abspath, stage_relpath, subpage_relpath)
+
+    # Return relative url if path exists.
+    if os.path.exists(subpage_abspath) or allow_nonexistent:
+        return os.path.relpath(subpage_abspath, report_abspath)
+    else:
+        return None
