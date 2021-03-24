@@ -374,7 +374,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return [cfcache, None]
 
-    def set_user_cycleniter_final_image_nomask(self, cycleniter_final_image_nomask: Union[int, None]=None):
+    def set_user_cycleniter_final_image_nomask(self, cycleniter_final_image_nomask: Union[int, None] = None):
         """Sets class variable controlling the cycleniter parameter of the last clean step (cleaning without user mask,
         pbmask only) in the third (final) VLASS-SE-CONT imaging stage."""
         if self.vlass_stage == 3 and cycleniter_final_image_nomask != None:
@@ -525,3 +525,71 @@ class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     def gridder(self, intent, field) -> str:
         """Tclean gridder parameter heuristics."""
         return 'awproject'
+
+
+class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
+    """
+    Special heuristics case when gridder is awproject and the wprojplanes parameter
+    is set to 1 (in parent class it is 32).
+    """
+
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
+                                                  contfile, linesfile, imaging_params)
+        self.imaging_mode = 'VLASS-SE-CONT-MOSAIC'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
+        self.user_cycleniter_final_image_nomask = None
+
+    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
+               vislist=None, spwspec=None) -> Union[list, int]:
+        """Tclean imsize parameter heuristics."""
+        return [12500, 12500]
+
+    def mosweight(self, intent, field):
+
+        """tclean flag to use mosaic weighting."""
+
+        # Currently only ALMA has decided to use this flag (CAS-11840). So
+        # the default is set to False here.
+        return False
+
+    def wprojplanes(self) -> int:
+        """Tclean wprojplanes parameter heuristics."""
+        return 1
+
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
+        return 'mosaic'
+
+    def cycleniter(self, iteration) -> int:
+        """Tclean cycleniter parameter heuristics."""
+        # Special cases: cleaning without mask in 1st stage
+        if self.vlass_stage == 1 and iteration > 1:
+            return 100
+        # Cleaning without mask 3rd imaging stage, allow user to set value
+        elif self.vlass_stage == 3 and iteration > 2:
+            if self.user_cycleniter_final_image_nomask:
+                LOG.info("Using user specified cycleniter = {} for cleaning without "
+                         "user mask (pbmask only).".format(self.user_cycleniter_final_image_nomask))
+                return self.user_cycleniter_final_image_nomask
+            else:
+                return 100
+        # Special case: 3rd imaging stage
+        elif self.vlass_stage == 3 and iteration > 0:
+            return 3000
+        else:
+            return 5000
+
+    def pblimits(self, pb):
+
+        pblimit_image = 0.1
+        pblimit_cleanmask = 0.3
+
+        return pblimit_image, pblimit_cleanmask
+
+    def conjbeams(self) -> bool:
+        """Tclean conjbeams parameter heuristics."""
+        # Might change to True based on stackholder feedback
+        return False

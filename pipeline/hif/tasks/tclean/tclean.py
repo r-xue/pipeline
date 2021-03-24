@@ -634,7 +634,8 @@ class Tclean(cleanbase.CleanBase):
         # not optimal. Thus, PSFs need to be created with the tclean parameter
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
-        if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032']:
+        if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
+                                                  'VLASS-SE-CONT-MOSAIC']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         else:
             result = self._do_iterative_imaging(sequence_manager=sequence_manager)
@@ -682,48 +683,54 @@ class Tclean(cleanbase.CleanBase):
         """
         inputs = self.inputs
 
-        # Store CFCache references in local variables
-        cfcache = inputs.cfcache
-        if inputs.cfcache_nowb:
-            cfcache_nowb = inputs.cfcache_nowb
-        else:
-            raise Exception("wbapw=True CFCache is necessary in this imaging mode "
-                            "but it was not defined.")
-
         # Local list from input masks
         if type(inputs.mask) is list:
             vlass_masks = inputs.mask
         else:
             vlass_masks = [inputs.mask]
 
-        # Compute PSF only
-        LOG.info('Computing PSF with wbawp=False')
-        iteration = 0
-        # Replace main CFCache reference with the wbawp=False cache
-        inputs.cfcache = cfcache_nowb
-        result_psf = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
-                                 sensitivity=sequence_manager.sensitivity, result=None, calcres=False, wbawp=False)
+        cfcache = inputs.cfcache
 
-        # Rename PSF before they are overwritten in the text TClean call
-        self._replace_psf(result_psf.psf, result_psf.psf.replace('iter%s' % iteration, 'tmp'))
+        # awproject gridder specific case: replace iter0 PSF with a PSF computed with wbawp=False
+        if inputs.gridder == 'awproject':
+            # Store CFCache references in local variables
+            if inputs.cfcache_nowb:
+                cfcache_nowb = inputs.cfcache_nowb
+            else:
+                raise Exception("wbapw=True CFCache is necessary in this imaging mode "
+                                "but it was not defined.")
+
+            # Compute PSF only
+            LOG.info('Computing PSF with wbawp=False')
+            iteration = 0
+            # Replace main CFCache reference with the wbawp=False cache
+            inputs.cfcache = cfcache_nowb
+            result_psf = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
+                                        sensitivity=sequence_manager.sensitivity, result=None, calcres=False,
+                                        wbawp=False)
+
+            # Rename PSF before they are overwritten in the text TClean call
+            self._replace_psf(result_psf.psf, result_psf.psf.replace('iter%s' % iteration, 'tmp'))
+
+            # Delete any old files with this naming root
+            rootname, _ = os.path.splitext(result_psf.psf)
+            rootname, _ = os.path.splitext(rootname)
+            self.rm_iter_files(rootname, iteration)
 
         # Compute the dirty image
         LOG.info('Initialise tclean iter 0')
         iteration = 0
-        # Delete any old files with this naming root
-        rootname, _ = os.path.splitext(result_psf.psf)
-        rootname, _ = os.path.splitext(rootname)
-        self.rm_iter_files(rootname, iteration)
 
-        # Restore main CFCache reference
+        # Restore main CFCache reference / initialise tclean
         inputs.cfcache = cfcache
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
                                 sensitivity=sequence_manager.sensitivity, result=None)
 
-        LOG.info('Replacing PSF with wbawp=False PSF')
-        # Remove *psf.tmp.* files with clear_origin=True argument
-        self._replace_psf(result_psf.psf.replace('iter%s' % iteration, 'tmp'), result.psf, clear_origin=False)
-        del result_psf  # Not needed in further steps
+        if inputs.gridder == 'awproject':
+            LOG.info('Replacing PSF with wbawp=False PSF')
+            # Remove *psf.tmp.* files with clear_origin=True argument
+            self._replace_psf(result_psf.psf.replace('iter%s' % iteration, 'tmp'), result.psf, clear_origin=False)
+            del result_psf  # Not needed in further steps
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''

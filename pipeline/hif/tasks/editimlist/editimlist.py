@@ -287,7 +287,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         # We set the imlist_entry spw before the heuristics object because the heursitics class
         # uses it in initialization.
         if img_mode in ('VLASS-QL', 'VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
-                        'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
+                        'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
             if not inpdict['spw']:
                 imlist_entry['spw'] = ','.join([str(x) for x in range(2, 18)])
             else:
@@ -454,7 +454,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
         # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
         # actual stage number string.
-        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 as of 01.03.2021
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032,
+        # VLASS-SE-CONT-MOSAIC as of 23.03.2021
         if img_mode.startswith('VLASS-SE-CONT'):
             imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
                                      specmode=imlist_entry['specmode'],
