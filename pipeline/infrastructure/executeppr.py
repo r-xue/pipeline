@@ -102,8 +102,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             context = Pipeline(context='last').context
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-                                        output_dir=workingDir).context
+            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:
@@ -185,11 +184,12 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
     defsession = 'session_1'
     for asdm in asdmList:
         session = defsession
+
         for key, value in sessionsDict.items():
-            # Allow _target.ms or .ms endings: needed to import Measurement Sets (see PIPE-579)
-            if asdm[1].rstrip('_target.ms') in value:
+            if _sanitize_for_ms(asdm[1]) in value:
                 session = key.lower()
                 break
+
         sessions.append(session)
         files.append(os.path.join(rawDir, asdm[1]))
         casa_tools.post_to_log("    Session: " + session + "  ASDM: " + asdm[1], echo_to_screen=echo_to_screen)
@@ -741,3 +741,10 @@ def _getParameters(ppsetObject):
                 search = 0
 
     return numParams, paramsDict
+
+# Allow _target.ms or .ms endings: needed to import Measurement Sets (see PIPE-579 and PIPE-1082)
+def _sanitize_for_ms(vis_name):
+    for msend in ('_target.ms', '.ms'):
+        if vis_name.endswith(msend):
+            return _sanitize_for_ms(vis_name[:-len(msend)])
+    return vis_name

@@ -54,6 +54,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
+    <param name="caltable" subparam="true" type="stringVec">
+        <shortdescription>List of output caltable(s)</shortdescription>
+        <description>Name of output gain calibration tables.
+
+        example: caltable='ngc5921.gcal'</description>
+        <value/>
+    </param>
+
     <param mustexist="true" name="reffile" type="path">
         <shortdescription>File of factors to adjust scale between beams</shortdescription>
         <description>Path to a file containing scaling factors between beams.
@@ -84,22 +92,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         all the factors are set to 1.0.
 
         example: reffile='', reffile='nroscalefactor.csv'</description>
-        <value/>
-    </param>
-
-    <param name="infiles" subparam="true" type="stringVec">
-        <shortdescription>List of input MeasurementSets</shortdescription>
-        <description>List of input MeasurementSets.
-
-        example: vis='ngc5921.ms'</description>
-        <value/>
-    </param>
-
-    <param name="caltable" subparam="true" type="stringVec">
-        <shortdescription>List of output caltable(s)</shortdescription>
-        <description>Name of output gain calibration tables.
-
-        example: caltable='ngc5921.gcal'</description>
         <value/>
     </param>
 
@@ -140,29 +132,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <value>automatic</value>
             <value>interactive</value>
             <value>getinputs</value>
-        </allowed>
-    </param>
-
-    <param name="overwrite" subparam="true" type="bool">
-        <shortdescription>Overwrite existing files on import</shortdescription>
-        <description>Overwrite existing files on import</description>
-        <value>False</value>
-    </param>
-
-    <param name="nocopy" subparam="true" type="bool">
-        <shortdescription>Disable copying of MS to working directory</shortdescription>
-        <description>Disable copying of MS to working directory</description>
-        <value>False</value>
-    </param>
-
-    <param name="createmms" type="string">
-        <shortdescription>Create an MMS</shortdescription>
-        <description>Create an MMS</description>
-    <value>automatic</value>
-        <allowed kind="enum">
-            <value>automatic</value>
-            <value>true</value>
-            <value>false</value>
         </allowed>
     </param>
 

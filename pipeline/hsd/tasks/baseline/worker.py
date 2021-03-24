@@ -4,6 +4,7 @@ import os
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.h.heuristics import caltable as caltable_heuristic
@@ -42,15 +43,16 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
 
         # blparam
         if self.blparam is None or len(self.blparam) == 0:
-            args['blparam'] = prefix + '_blparam.txt'
+            args['blparam'] = relative_path(os.path.join(self.output_dir, prefix + '_blparam.txt'))
         else:
             args['blparam'] = self.blparam
 
         # baseline caltable filename
         if self.bloutput is None or len(self.bloutput) == 0:
             namer = caltable_heuristic.SDBaselinetable()
-            bloutput = namer.calculate(output_dir=self.output_dir,
-                                       stage=self.context.stage, **args)
+            bloutput = relative_path(namer.calculate(output_dir=self.output_dir,
+                                                            stage=self.context.stage,
+                                                            **args))
             args['bloutput'] = bloutput
         else:
             args['bloutput'] = self.bloutput
@@ -59,7 +61,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         if ('outfile' not in args or
                 args['outfile'] is None or
                 len(args['outfile']) == 0):
-            args['outfile'] = self.vis.rstrip('/') + '_bl'
+            args['outfile'] = relative_path(os.path.join(self.output_dir, prefix + '_bl'))
 
         args['datacolumn'] = self.DATACOLUMN[self.colname]
 

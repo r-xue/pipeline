@@ -358,7 +358,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                                                    if isinstance(r, basetask.FailedTaskResults)])
         if fitting_failed:
             for r in failed_results:
-                r.origtask = self
+                r.origtask_cls = self.__class__
             return failed_results
 
         results_dict = dict((os.path.basename(r.outcome['infile']), r) for r in fitter_results)

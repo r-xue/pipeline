@@ -5,9 +5,10 @@ classes.
 import copy
 import itertools
 import operator
+import os
 import re
 import string
-from typing import Union, List, Dict, Sequence
+from typing import Union, List, Dict, Sequence, Optional
 
 import bisect
 import numpy as np
@@ -20,7 +21,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
-           'get_si_prefix']
+           'get_si_prefix', 'absolute_path', 'relative_path']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -273,7 +274,6 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
     else:
         return casa_tools.quanta.quantity(0.0)
 
-
 def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
     """Obtain the best SI unit prefix option for a numeric value.
 
@@ -323,3 +323,28 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
         idx = max(idx-1, 0)
 
         return sp_list[idx].strip(), 10.**sp_pow[idx]
+
+def absolute_path(name: str) -> str:
+    """Return an absolute path of a given file."""
+    return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
+
+
+def relative_path(name: str, start: Optional[str]=None) -> str:
+    """
+    Retun a relative path of a given file with respect a given origin.
+    
+    Args:
+        name: A path to file.
+        start: An origin of relative path. If the start is not given, the
+            current directory is used as the origin of relative path.
+        
+    Examples:
+    >>> relative_path('/root/a/b.txt', '/root/c')
+    '../a/b.txt'
+    >>> relative_path('../a/b.txt', './c')
+    '../../a/b.txt' 
+    """
+    if start is not None:
+        start = absolute_path(start)
+    return os.path.relpath(absolute_path(name), start)
+

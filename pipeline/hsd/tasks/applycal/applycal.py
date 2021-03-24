@@ -137,7 +137,7 @@ def set_unit(ms, calapp):
         data_unit = ''
 
     if data_unit != '':
-        with casa_tools.TableReader(ms.basename, nomodify=False) as tb:
+        with casa_tools.TableReader(ms.name, nomodify=False) as tb:
             colnames = tb.colnames()
             target_columns = set(colnames) & set(['DATA', 'FLOAT_DATA', 'CORRECTED_DATA'])
             for col in target_columns:

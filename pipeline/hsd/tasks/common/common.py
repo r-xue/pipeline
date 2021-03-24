@@ -2,22 +2,16 @@
 This module defines common single dish Results and task container Classes.
 
 Classes and Methods:
-    absolute_path: A method to convert a path to an absolute path.
     SingleDishResults: Common single dish Results class.
 """
-import os
 
 from typing import Any, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import absolute_path
 
 LOG = infrastructure.get_logger(__name__)
-
-
-def absolute_path(name: str) -> str:
-    """Return an absolute path of a given file."""
-    return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
 
 
 class SingleDishResults(basetask.Results):

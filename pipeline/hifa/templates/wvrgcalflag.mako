@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.filenamer as filenamer
+from pipeline.infrastructure.renderer import rendererutils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 <%block name="header" />
@@ -87,7 +88,7 @@ caltables are presented below.</p>
             <ul>
             % for ms, subpage in metric_subpages.items():
                 <li>
-                    <a href="${os.path.relpath(os.path.join(dirname, subpage), pcontext.report_dir)}"
+                    <a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, subpage)}"
                        data-vis="${ms}"
                        class="replace">
                         ${ms}
