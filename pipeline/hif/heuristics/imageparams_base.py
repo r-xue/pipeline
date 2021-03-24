@@ -1171,6 +1171,13 @@ class ImageParamsHeuristics(object):
 
         return pblimit_image, pblimit_cleanmask
 
+    def pblimit(self):
+        """Tclean pblimit parameter heuristics.
+
+        This method determines the tclean parameter pblimit, and not to be
+        confused with pblimits() method (see above)"""
+        return None
+
     def deconvolver(self, specmode, spwspec):
         if (specmode == 'cont'):
             fr_bandwidth = self.get_fractional_bandwidth(spwspec)

@@ -166,6 +166,13 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pb_correction(self) -> bool:
         return False
 
+    def pblimit(self):
+        """Tclean pblimit parameter heuristics.
+
+        This method determines the tclean parameter pblimit, and not to be
+        confused with pblimits() method (see ImageParamsHeuristics base class)."""
+        return 0.02
+
     def conjbeams(self) -> bool:
         """Tclean conjbeams parameter heuristics."""
         return True
@@ -576,20 +583,17 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
                 return self.user_cycleniter_final_image_nomask
             else:
                 return 100
-        # Special case: 3rd imaging stage
-        elif self.vlass_stage == 3 and iteration > 0:
-            return 3000
         else:
-            return 5000
-
-    def pblimits(self, pb):
-
-        pblimit_image = 0.1
-        pblimit_cleanmask = 0.3
-
-        return pblimit_image, pblimit_cleanmask
+            return 500
 
     def conjbeams(self) -> bool:
         """Tclean conjbeams parameter heuristics."""
         # Might change to True based on stackholder feedback
         return False
+
+    def pblimit(self):
+        """Tclean pblimit parameter heuristics.
+
+        This method determines the tclean parameter pblimit, and not to be
+        confused with pblimits() method (see ImageParamsHeuristics base class)."""
+        return 0.1

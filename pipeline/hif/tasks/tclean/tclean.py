@@ -807,9 +807,20 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('    Threshold %s', threshold)
             LOG.info('    Niter %s', seq_result.niter)
 
+            # The user_cycleniter_final_image_nomask ImageParamsHeuristicsVlassSeCont class variable should be
+            # prioritised over cycleniter parameter set by the user when cleaning without a user mask (see PIPE-978
+            # and PIPE-977). The heuristic method cycleniter() takes care of this, but in order to be triggered, the
+            # cycleniter parameter should be reset to None for the specific cases.
+            if mask == 'pb':
+                cycleniter = inputs.cycleniter
+                inputs.cycleniter = None
+
             result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=seq_result.niter, nsigma=nsigma,
                                     threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
                                     result=result)
+            # Restore cycleniter if needed
+            if mask == 'pb':
+                inputs.cycleniter = cycleniter
 
             # Give the result to the clean 'sequencer'
             (residual_cleanmask_rms,
