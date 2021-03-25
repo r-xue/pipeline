@@ -110,6 +110,13 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.pb') + '*.tt0'))
+                # PIPE-1039: make cutout images for .tt1
+                imagenames.extend(glob.glob(imageitem['imagename'] + '.tt1'))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual') + '*.tt1'))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt1'))
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt1.rms'))
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt1'))
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt1'))                
                 # PIPE-631: make alpha image cutouts in the VLASS-SE-CONT mode
                 if  is_vlass_se_cont:
                     imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha')))

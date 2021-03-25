@@ -36,30 +36,34 @@ class Pbcor(basetask.StandardTaskTemplate):
 
         # PIPE-1048: hifv_pbcor should only pbcorrect final products in the VLASS-SE-CONT mode
         try:
-            if  self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
-                sci_imlist=[sci_imlist[-1]]
+            if self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
+                sci_imlist = [sci_imlist[-1]]
         except Exception:
             pass
-  
+
         for sci_im in sci_imlist:
 
             imgname = sci_im['imagename']
             basename = imgname[:imgname.rfind('.image')]
             pbname = basename + '.pb'
-            term_ext = '.tt0' if sci_im['multiterm'] else ''
+
             pbcor_images = []
 
-            task = casa_tasks.impbcor(imagename=basename+'.image'+term_ext, pbimage=pbname+term_ext,
-                                      outfile=basename+'.image.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
-            self._executor.execute(task)
-            pbcor_images.append(basename+'.image.pbcor'+term_ext)
+            term_ext_list = ['.tt0', '.tt1'] if sci_im['multiterm'] else ['']
+            for term_ext in term_ext_list:
 
-            task = casa_tasks.impbcor(imagename=basename + '.residual'+term_ext, pbimage=pbname+term_ext,
-                                      outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
-            self._executor.execute(task)
-            pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
+                pb_term_ext = '' if term_ext == '' else '.tt0'
+                task = casa_tasks.impbcor(imagename=basename+'.image'+term_ext, pbimage=pbname+pb_term_ext,
+                                          outfile=basename+'.image.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+                self._executor.execute(task)
+                pbcor_images.append(basename+'.image.pbcor'+term_ext)
 
-            pbcor_images.append(pbname+term_ext)
+                task = casa_tasks.impbcor(imagename=basename + '.residual'+term_ext, pbimage=pbname+pb_term_ext,
+                                          outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+                self._executor.execute(task)
+                pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
+
+            pbcor_images.append(pbname+pb_term_ext)
 
             LOG.info("PBCOR image names: " + ','.join(pbcor_images))
             pbcor_dict[basename] = pbcor_images
