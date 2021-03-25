@@ -76,7 +76,7 @@ class Statwt(basetask.StandardTaskTemplate):
 
         wtables = {}
         if self.inputs.statwtmode == 'VLASS-SE':
-            wtables['before'] = self._make_weight_table(suffix='before')
+            wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
 
         flag_summaries = []
         # flag statistics before task
@@ -87,7 +87,7 @@ class Statwt(basetask.StandardTaskTemplate):
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
 
         if self.inputs.statwtmode == 'VLASS-SE':
-            wtables['after'] = self._make_weight_table(suffix='after')
+            wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
 
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
 
@@ -147,12 +147,15 @@ class Statwt(basetask.StandardTaskTemplate):
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
-    def _make_weight_table(self, suffix=''):
+    def _make_weight_table(self, suffix='', dryrun=False):
 
-        stage_number=self.inputs.context.task_counter
+        stage_number = self.inputs.context.task_counter
         names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
         outputvis = '.'.join(list(filter(None, names)))
         wtable = outputvis+'.tbl'
+
+        if dryrun == True:
+            return wtable
 
         isdir = os.path.isdir(outputvis)
         if isdir:

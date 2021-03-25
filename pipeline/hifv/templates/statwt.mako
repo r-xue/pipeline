@@ -55,8 +55,8 @@ def format_wt(wt):
 		<tr>
 			<th scope="col" rowspan="2">Antenna Selection</th>
 			<!-- flags before task is always first agent -->
-			<th scope="col" colspan="3">statwt before</th>
-			<th scope="col" colspan="3">statwt after</th>
+			<th scope="col" colspan="3" style="text-align:center">statwt before</th>
+			<th scope="col" colspan="3" style="text-align:center">statwt after</th>
 		</tr>
 		<tr>
             <th scope="col" >Median</th>
@@ -70,7 +70,7 @@ def format_wt(wt):
 	<tbody>
 		% for i in range(len(after_by_ant)):
 		<tr>  
-			<th style="text-align:center">${i}</th>  
+			<th style="text-align:center">${after_by_ant[i]['ant']}</th>  
             <td>${format_wt(before_by_ant[i]['med'])}</td>
             <td>${format_wt(before_by_ant[i]['q1'])}/${format_wt(before_by_ant[i]['q3'])}</td>            
             <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>         
@@ -89,8 +89,8 @@ def format_wt(wt):
 		<tr>
 			<th scope="col" rowspan="2">Spw Selection</th>
 			<!-- flags before task is always first agent -->
-			<th scope="col" colspan="3">statwt before</th>
-			<th scope="col" colspan="3">statwt after</th>
+			<th scope="col" colspan="3" style="text-align:center">statwt before</th>
+			<th scope="col" colspan="3" style="text-align:center">statwt after</th>
 		</tr>
 		<tr>
             <th scope="col" >Median</th>
@@ -104,7 +104,7 @@ def format_wt(wt):
 	<tbody>
 		% for i in range(len(after_by_spw)):
 		<tr>
-			<th style="text-align:center">${i}</th>  
+			<th style="text-align:center">${after_by_spw[i]['spw']}</th>  
             <td>${format_wt(before_by_spw[i]['med'])}</td>
             <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>            
             <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>         

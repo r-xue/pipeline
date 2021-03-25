@@ -2,6 +2,7 @@
 import os
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.exceptions as exceptions
 
 from . import display as statwtdisplay
 
@@ -25,6 +26,23 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots
+            
+            is_same = True
+            try:
+                weight_stats = plotter.result.weight_stats
+                before_by_ant = weight_stats['before']['per_ant']
+                after_by_ant = weight_stats['after']['per_ant']
+
+                for idx in range(before_by_ant):
+                    is_same &= before_by_ant[idx]['mean'] == after_by_ant[idx]['mean']
+                    is_same &= before_by_ant[idx]['med'] == after_by_ant[idx]['med']
+                    is_same &= before_by_ant[idx]['stdev'] == after_by_ant[idx]['stdev']
+            except:
+                is_same = False
+
+            if is_same:
+               raise exceptions.PipelineException("Statwt failed to recalculate the weights, cannot continue.")
+            
 
         ctx.update({'summary_plots': summary_plots,
                     'plotter': plotter,

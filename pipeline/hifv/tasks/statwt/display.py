@@ -42,19 +42,19 @@ class weightboxChart(object):
         figfile = self._get_figfile(suffix)
         fig_title = os.path.basename(tbl)
 
-        LOG.info('making box plot')
+        LOG.info('making antenna-based weight plot: {}'.format(figfile))
 
         with casa_tools.TableReader(tbl) as tb:
             spws = np.sort(np.unique(tb.getcol('SPECTRAL_WINDOW_ID')))
 
         with casa_tools.TableReader(tbl+'/ANTENNA') as tb:
             ant_names = tb.getcol('NAME')
-            ant_ids = range(len(ant_names))
+            ant_idxs = range(len(ant_names))
 
         whis = 3.944
 
         bxpstats_per_ant = list()
-        for this_ant in ant_ids:
+        for this_ant in ant_idxs:
             dat = self._get_weight_from_wtable(tbl, this_ant=this_ant)
             if dat.size > 0:
                 dat = dat[dat > 0]
@@ -67,6 +67,7 @@ class weightboxChart(object):
                 bxpstats[0]['quartiles'] = None
                 bxpstats[0]['stdev'] = None
                 bxpstats_per_ant.extend(bxpstats)
+            bxpstats_per_ant[-1]['ant'] = ant_names[this_ant]
 
         bxpstats_per_spw = list()
         for this_spw in spws:
@@ -82,8 +83,9 @@ class weightboxChart(object):
                 bxpstats[0]['quartiles'] = None
                 bxpstats[0]['stdev'] = None
                 bxpstats_per_spw.extend(bxpstats)
+            bxpstats_per_spw[-1]['spw'] = this_spw
 
-        fig, (ax1, ax2) = plt.subplots(2, 1)
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
 
         ax1.bxp(bxpstats_per_ant, flierprops=flierprops)
@@ -96,8 +98,7 @@ class weightboxChart(object):
         ax2.set_xlabel('SPW ID')
         ax2.set_ylabel('weight')
 
-        #fig.set_size_inches(15, 8)
-
+        fig.tight_layout()
         fig.savefig(figfile)
         plt.close(fig)
 
