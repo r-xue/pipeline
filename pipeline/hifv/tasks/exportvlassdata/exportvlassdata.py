@@ -20,8 +20,23 @@ from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
-StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript')
+StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript parameterlist')
 
+import re
+import glob
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+
+def natural_keys(text):
+    """
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    https://stackoverflow.com/questions/5967500/how-to-correctly-sort-a-string-with-a-number-inside
+    """
+    return [ atoi(c) for c in re.split(r'(\d+)', text) ]
 
 class ExportvlassdataResults(basetask.Results):
     def __init__(self, final=[], pool=[], preceding=[]):
@@ -97,6 +112,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         result.weblog = os.path.basename(stdfproducts.weblog_file)
         result.pipescript = os.path.basename(stdfproducts.casa_pipescript)
         result.commandslog = os.path.basename(stdfproducts.casa_commands_file)
+        if stdfproducts.parameterlist:
+            result.parameterlist = os.path.basename(stdfproducts.parameterlist)
 
         imlist = self.inputs.context.subimlist.get_imlist()
 
@@ -119,12 +136,38 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     alpha_image_name = imageitem['imagename'].replace('.image.subim', '.alpha.subim')
                     alpha_image_error_name = imageitem['imagename'].replace('.image.subim', '.alpha.error.subim')
                     image_bundle.extend([alpha_image_name, alpha_image_error_name])
+
+                    # PIPE-1038:  Adding new export products
+                    pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt1.subim')
+                    rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt1.rms.subim')
+                    image_bundle.extend([pbcor_image_name, rms_image_name])
+
+                    tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
+                    tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
+                    image_bundle.extend([tt0_initial_model_name, tt1_initial_model_name])
+
+                    tt0_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt0')
+                    tt1_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt1')
+                    image_bundle.extend([tt0_final_model_name, tt1_final_model_name])
+
             else:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.subim')
                 rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.rms.subim')
                 image_bundle = [pbcor_image_name, rms_image_name]
             images_list.extend(image_bundle)
 
+        # Add masks for PIPE-1038
+        QLmasks = glob.glob('*.QLcatmask-tier1.mask')
+        QLmasks.sort(key=natural_keys)
+        QLmask = QLmasks[-1]
+        secondmasks = glob.glob('*.secondmask.mask')
+        secondmasks.sort(key=natural_keys)
+        secondmask = secondmasks[-1]
+        finalmasks = glob.glob('*.combined-tier2.mask')
+        finalmasks.sort(key=natural_keys)
+        finalmask = finalmasks[-1]
+
+        images_list.extend([QLmask, secondmask, finalmask])
         fits_list = []
         for image in images_list:
             fitsfile = os.path.join(inputs.products_dir, image + '.fits')
@@ -238,10 +281,33 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Export the processing script independently of the web log
         casa_pipescript = self._export_casa_script(context, context.logs['pipeline_script'], products_dir, oussid)
 
+        # Export the parameter list independently of the weblog for both QL and SE Imaging recipes
+        edit_result = context.results[1].read()
+        parameterlist_filename = edit_result.inputs['parameter_file']
+        parameterlist = self._export_parameterlist(context, parameterlist_filename, products_dir, oussid)
+
+        if hasattr(self.inputs.context, 'imaging_mode'):
+            img_mode = self.inputs.context.imaging_mode
+        else:
+            LOG.warn("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
+            img_mode = None
+
+        # SE Cont imaging mode export for VLASS
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            # Export the self cal table
+            # selfcaltables = glob.glob("*self-cal*")
+            selfcal_result = context.results[7].read()[0]
+            selfcaltable = self._export_table(context, selfcal_result.caltable, products_dir, oussid)
+
+            # Export flagversion
+            flagversions = glob.glob("*flagversions*")
+            flagversion = self._export_table(context, flagversions[0], products_dir, oussid)
+
         return StdFileProducts(ppr_file,
                                weblog_file,
                                casa_commands_file,
-                               casa_pipescript)
+                               casa_pipescript,
+                               parameterlist)
 
     def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, visdict, calimages, targetimages):
         """
@@ -412,6 +478,39 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         os.chdir(cwd)
 
         return tarfilename
+
+    def _export_parameterlist(self, context, parameterlist_name, products_dir, oussid):
+        """
+        Save the parameter list
+        """
+
+        ps = context.project_structure
+        parameterlist_file = parameterlist_name
+        out_parameterlist_file = self.NameBuilder.casa_script(parameterlist_name,
+                                                              project_structure=ps,
+                                                              ousstatus_entity_id=oussid,
+                                                              output_dir=products_dir)
+
+        LOG.info('Copying parameter list file %s to %s' % (parameterlist_file, out_parameterlist_file))
+        if not self._executor._dry_run:
+            shutil.copy(parameterlist_file, out_parameterlist_file)
+
+        return os.path.basename(out_parameterlist_file)
+
+    def _export_table(self, context, table_name, products_dir, oussid):
+        """
+        Save the self cal and flagging tables
+        """
+
+        ps = context.project_structure
+        table_file = table_name
+        out_table_file = os.path.join(products_dir, table_file)
+
+        LOG.info('Copying product from %s to %s' % (table_file, out_table_file))
+        if not self._executor._dry_run:
+            shutil.copytree(table_file, out_table_file)
+
+        return os.path.basename(out_table_file)
 
     def _export_casa_commands_log(self, context, casalog_name, products_dir, oussid):
         """
