@@ -109,7 +109,7 @@ def read_readwrite_data(table: DataTableImpl) -> np.ndarray:
         pflag: np.ndarray of online flag status
     """
     pflags = table.getcol('FLAG_PERMANENT')
-    pflag = pflags[0, datatable.OnlineFlagIndex, :]
+    pflag = np.any(pflags[:, datatable.OnlineFlagIndex, :], axis=0)
     return pflag
 
 
