@@ -11,7 +11,7 @@ import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
+from pipeline import environment
 from . import fluxes
 
 __all__ = [
@@ -233,9 +233,7 @@ class ImportData(basetask.StandardTaskTemplate):
             results.origin[ms.basename] = ms_origin
 
             # PIPE-734: Check the time of the ms is in the range of the IERS table
-        LOG.info(json.dumps(utils.get_IERS_versions()))
-        LOG.info(utils.get_IERSeop2000_last_entry())
-
+        LOG.info(environment.iers_info)
 
         fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
 

@@ -9,6 +9,7 @@ import os
 from typing import List, Dict
 
 from .. import casa_tools
+from .conversion import get_epoch_as_datetime
 
 __all__ = [
     "SOLAR_SYSTEM_MODELS_PATH",
@@ -18,9 +19,8 @@ __all__ = [
     "get_solar_system_model_files",
     "get_filename_info",
     "get_object_info_string",
-    "get_IERS_versions",
-    "get_IERS_versions",
-    "get_IERSeop2000_last_entry"
+    "IERSInfo",
+    "from_mjd_to_datetime"
 ]
 
 
@@ -70,33 +70,91 @@ def get_object_info_string(ss_object: str, ss_path: str = SOLAR_SYSTEM_MODELS_PA
 
 
 # Get IERSpredict version
-def get_IERS_version(IERS_tablename: str) -> str:
-    """Get the VS_VERSION header of the IERSpredict table"""
-    assert IERS_tablename in ["IERSpredict", "IERSeop2000"]
-    tablename = os.path.join(IERS_TABLES_PATH, IERS_tablename)
-    with casa_tools.TableReader(tablename) as table:
-        vs_version = table.getkeyword('VS_VERSION')
-    return vs_version
+def from_mjd_to_datetime(mjd: float) -> datetime:
+    """Convert a MJD float into a datetime"""
+    mt = casa_tools.measures
+    epoch = mt.epoch('UTC', '{}d'.format(mjd))
+    return get_epoch_as_datetime(epoch)
 
 
-def get_IERS_versions():
-    IERS_tables = ["IERSpredict", "IERSeop2000"]
-    return {i: get_IERS_version(i) for i in IERS_tables}
+class IERSInfo():
+    """Class to store, retrieve and process the information from the IERS geodetic tables
 
-
-def get_IERSeop2000_last_entry() -> str:
-    """Get the last entry in the MJD column of the table IERSeop2000"""
-    tablename = os.path.join(IERS_TABLES_PATH, "IERSeop2000")
-    with casa_tools.TableReader(tablename) as table:
-        last_mjd = table.getcol('MJD')[-1]
-    return last_mjd
-
-
-def get_IERS_data():
-    """Get the following data from the casa geodetic tables:
-    * IERSpredict version
-    * IERSeop2000 version
-    * IERSeop2000 last MJD entry
+    Attributes
+    ----------
+    IERS_tables : tuple
+        Class attribute with the name of the relevant tables
+    iers_path : str
+        Path to the location of the geodetic tables
+    info : dict
+        Dictionary with the information retrieved
     """
-    pass
+    IERS_tables = ("IERSpredict", "IERSeop2000")
 
+    def __init__(self, iers_path: str = IERS_TABLES_PATH, load_on_creation: bool = True):
+        """Create instance of IERS Tables info.
+
+        In the option load_on_creation is set to False the information has to be manually
+        loaded with the method load_info().
+
+        Parameters
+        ----------
+        iers_path : str, optional
+            Path to the location of the IERS geodetic tables
+        load_on_creation : bool, optional
+            Do not load the IERS tables information when creating the instance
+        """
+        self.iers_path = iers_path
+        if load_on_creation:
+            self.load_info()
+        else:
+            self.info = None
+
+    def get_IERS_version(self, IERS_tablename: str) -> str:
+        """Get the VS_VERSION header of the IERSpredict table
+
+        Parameters
+        ----------
+        IERS_tablename : str
+            Name of the table to be loaded ("IERSpredict" or "IERSeop2000")
+        """
+        assert IERS_tablename in self.IERS_tables
+        table_name = os.path.join(self.iers_path, IERS_tablename)
+        with casa_tools.TableReader(table_name) as table:
+            vs_version = table.getkeyword('VS_VERSION')
+        return vs_version
+
+    def get_IERSeop2000_last_entry(self) -> float:
+        """Get the last entry in the MJD column of the table IERSeop2000
+        """
+        table_name = os.path.join(self.iers_path, "IERSeop2000")
+        with casa_tools.TableReader(table_name) as table:
+            last_mjd = table.getcol('MJD')[-1]
+        return last_mjd
+
+    def load_info(self):
+        """Get the following data from the casa geodetic tables:
+            * IERSpredict version
+            * IERSeop2000 version
+            * IERSeop2000 last MJD entry
+        """
+        versions = {table: self.get_IERS_version(table) for table in self.IERS_tables}
+        last_mjd = self.get_IERSeop2000_last_entry()
+        last_dt = from_mjd_to_datetime(last_mjd)
+        self.info = {"versions": versions, "IERSeop2000_last_MJD": last_mjd, "IERSeop2000_last": last_dt}
+
+    def validate_date(self, date: datetime) -> bool:
+        """Check if a date is lower or equal than the last entry of the IERSeop2000 table.
+        The end date of the MS should be lower (see PIPE-734)
+        """
+        return date <= self.info["IERSeop2000_last"]
+
+    def __call__(self):
+        return self.info
+
+    def __str__(self):
+        if self.info is not None:
+            info_string = json.dumps(self.info, default=str)
+            return "IERS table information => " + info_string
+        else:
+            return "IERS table information not loaded"

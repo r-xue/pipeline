@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 import pytest
 from .. import casa_tools
@@ -6,7 +7,9 @@ from .casa_data import (
     get_iso_mtime,
     get_solar_system_model_files,
     get_filename_info,
-    get_object_info_string
+    get_object_info_string,
+    IERSInfo,
+    from_mjd_to_datetime
 )
 
 
@@ -96,3 +99,52 @@ def test_info_string_solar_system_models_with_two_files():
     assert "mtime" in info_string
     assert len(info_string.split("MD5")) == 3
     assert info_string.endswith('}}')
+
+
+GEODETIC_PATH = casa_tools.utils.resolve('pl-unittest/casa_data/geodetic')
+
+
+@skip_if_no_data_repo
+def test_IERSInfo_class_creation():
+    IERSInfo(iers_path=GEODETIC_PATH, load_on_creation=False)
+
+
+@skip_if_no_data_repo
+def test_IERSInfo_class_loads_data():
+    IERSInfo(iers_path=GEODETIC_PATH)
+
+
+@skip_if_no_data_repo
+def test_IERSInfo_get_IERS_version_method():
+    iers_info = IERSInfo(iers_path=GEODETIC_PATH)
+    version_IERSeop2000 = iers_info.get_IERS_version("IERSeop2000")
+    assert version_IERSeop2000 == '0001.0144'
+    version_IERSpredict = iers_info.get_IERS_version("IERSpredict")
+    assert version_IERSpredict == '0623.0351'
+
+
+@skip_if_no_data_repo
+def test_IERSInfo_get_IERSeop2000_last_entry_method():
+    iers_info = IERSInfo(iers_path=GEODETIC_PATH)
+    mjd = iers_info.get_IERSeop2000_last_entry()
+    assert mjd == 59184.0
+
+
+@skip_if_no_data_repo
+def test_get_IERS_info():
+    iers_info = IERSInfo(iers_path=GEODETIC_PATH)
+    assert len(iers_info.info["versions"]) == 2
+    assert iers_info.info["versions"]["IERSeop2000"] == '0001.0144'
+    assert iers_info.info["versions"]["IERSpredict"] == '0623.0351'
+    assert iers_info.info["IERSeop2000_last_MJD"] == 59184.0
+
+
+def test_validate_date_method():
+    iers_info = IERSInfo(iers_path=GEODETIC_PATH)
+    assert iers_info.validate_date(datetime(2020, 12, 1, 0, 0))
+    assert not iers_info.validate_date(datetime(2021, 12, 1, 0, 0))
+    assert iers_info.validate_date(datetime(2019, 12, 1, 0, 0))
+
+
+def test_from_mjd_to_datetime():
+    assert from_mjd_to_datetime(59184.0) == datetime(2020, 12, 1, 0, 0)
