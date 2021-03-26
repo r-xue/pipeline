@@ -11,7 +11,7 @@ from setuptools.command.build_py import build_py
 
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
 PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']
-
+ 
 
 def flatten(items):
     """Yield items from any nested iterable"""
