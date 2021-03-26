@@ -166,12 +166,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pb_correction(self) -> bool:
         return False
 
-    def pblimit(self):
-        """Tclean pblimit parameter heuristics.
+    def pblimits(self, pb):
+        """Tclean pblimit parameter and cleanmask pblimit heuristics."""
 
-        This method determines the tclean parameter pblimit, and not to be
-        confused with pblimits() method (see ImageParamsHeuristics base class)."""
-        return 0.02
+        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+
+        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-MOSAIC specific value.
+        return 0.02, pblimit_cleanmask
 
     def conjbeams(self) -> bool:
         """Tclean conjbeams parameter heuristics."""
@@ -591,9 +593,10 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         # Might change to True based on stackholder feedback
         return False
 
-    def pblimit(self):
-        """Tclean pblimit parameter heuristics.
+    def pblimits(self, pb):
+        """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
 
-        This method determines the tclean parameter pblimit, and not to be
-        confused with pblimits() method (see ImageParamsHeuristics base class)."""
-        return 0.1
+        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-MOSAIC specific value.
+        return 0.1, pblimit_cleanmask

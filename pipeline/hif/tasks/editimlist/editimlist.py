@@ -348,7 +348,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         if imlist_entry['threshold'] and imlist_entry['hm_nsigma']:
             LOG.warn("Both 'threshold' and 'nsigma' were specified.")
 
-        imlist_entry['pblimit'] = th.pblimit() if inpdict['pblimit'] in (None, -999.0) else inpdict['pblimit']
+        imlist_entry['pblimit'] = None if inpdict['pblimit'] in (None, -999.0) else inpdict['pblimit']
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']
