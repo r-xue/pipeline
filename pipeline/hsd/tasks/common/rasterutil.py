@@ -211,73 +211,6 @@ def get_science_spectral_windows(metadata: MetaDataSet) -> np.ndarray:
     return np.unique(metadata.spw[metadata.srctype == 0])
 
 
-def filter_data(metadata: MetaDataSet, field_id: int, antenna_id: int, onsource: bool=True) -> MetaDataSet:
-    """
-    Filter elements of MetaDataSet that matches specified field ID, antenna ID, and source type.
-
-    Args:
-        metadata: input MetaDataSet
-        field_id: field id
-        antenna_id: antenna id
-        onsource: take ON_SOURCE data only, defaults to True
-
-    Raises:
-        RuntimeError: filter causes empty result
-
-    Returns: filtered MetaDataSet
-    """
-    mask = np.logical_and(
-        metadata.antenna == antenna_id,
-        metadata.field == field_id
-    )
-    if onsource == True:
-        mask = np.logical_and(mask, metadata.srctype == 0)
-        srctype = 0
-    else:
-        srctype = None
-
-    metadata2 = MetaDataSet(
-        timestamp=metadata.timestamp[mask],
-        dtrow=metadata.dtrow[mask],
-        field=field_id,
-        antenna=antenna_id,
-        ra=metadata.ra[mask],
-        dec=metadata.dec[mask],
-        srctype=srctype,
-        pflag=metadata.pflag[mask]
-    )
-
-    if len(metadata2.timestamp) == 0:
-        raise RuntimeError('No data available for field ID {} antenna ID {} {}'.format(
-            field_id,
-            antenna_id,
-            '(ON_SOURCE)' if onsource else ''
-        ))
-
-    return metadata2
-
-
-def find_time_gap(timestamp: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Find time gap. Condition for gap is following.
-
-      - time interval > 3 * median(time interval) for small gap
-      - time gap > 3 * median(time gap) for large gap
-
-    Args:
-        timestamp: list of timestamp. no duplication. must be sorted in ascending order.
-
-    Returns:
-        Arrays of indices of small and large time gaps
-    """
-    dt = timestamp[1:] - timestamp[:-1]
-    med = np.median(dt)
-    gsmall = np.where(dt > 3 * med)[0]
-    med2 = np.median(dt[gsmall])
-    glarge = np.where(dt > 3 * med2)[0]
-    return gsmall, glarge
-
-
 def find_position_gap(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     delta_ra = ra[1:] - ra[:-1]
     delta_dec = dec[1:] - dec[:-1]
@@ -318,57 +251,7 @@ def merge_position_gap(gaps_list):
     return merged_gaps
 
 
-def gap_gen(gaplist: List[int], length: Optional[int]=None) -> Generator[Tuple[int, int], None, None]:
-    """
-    Generate range of data (start and end indices) from given gap list.
-
-    Return values, s and e, can be used to arr[s:e] to extract the data from
-    the original array, arr.
-
-    Args:
-        gaplist: list of indices indicating gap
-        length: total number of data, defaults to None
-
-    Yields:
-        start and end indices
-    """
-    n = -1 if length is None else length
-    if len(gaplist) == 0:
-        yield 0, n
-    else:
-        yield 0, gaplist[0] + 1
-        for i, j in zip(gaplist[:-1], gaplist[1:]):
-            yield i + 1, j + 1
-        yield gaplist[-1] + 1, n
-
-
-def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> np.ndarray:
-    """
-    Compute distances between raster rows and the first row.
-
-    Compute distances between representative positions of raster rows and that of the first raster row.
-    Origin of the distance is the first raster row.
-    The representative position of each raster row is the mid point (mean position) of R.A. and Dec.
-
-    Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
-        gaplist: list of indices indicating gaps between raster rows
-
-    Returns:
-        np.ndarray of the distances.
-    """
-    x1 = ra[:gaplist[0] + 1].mean()
-    y1 = dec[:gaplist[0] + 1].mean()
-
-    distance_list = np.fromiter(
-        (distance(ra[s:e].mean(), dec[s:e].mean(), x1, y1) for s, e in gap_gen(gaplist)),
-        dtype=float)
-
-    return distance_list
-
-
-def get_raster_distance_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
+def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
     """
     Compute distances between raster rows and the first row.
 
@@ -396,35 +279,7 @@ def get_raster_distance_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_li
     return distance_list
 
 
-def find_raster_gap(ra: np.ndarray, dec: np.ndarray, position_gap: np.ndarray) -> np.ndarray:
-    """
-    Find gaps between individual raster map.
-
-    Returned list should be used in combination with gap_gen.
-    Here is an example to plot RA/DEC data per raster map:
-
-    Example:
-    >>> import maplotlib.pyplot as plt
-    >>> gap = find_raster_gap(ra, dec, position_gap)
-    >>> for s, e in gap_gen(gap):
-    >>>     plt.plot(ra[s:e], dec[s:e], '.')
-
-    Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
-        position_gap: np.ndarray of index of position gaps
-
-    Returns:
-        np.ndarray of index indicating boundary between raster maps
-    """
-    distance_list = get_raster_distance(ra, dec, position_gap)
-    delta_distance = distance_list[1:] - distance_list[:-1]
-    idx = np.where(delta_distance < 0)
-    raster_gap = position_gap[idx]
-    return raster_gap
-
-
-def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
+def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
     """
     Find gaps between individual raster map.
 
@@ -434,7 +289,7 @@ def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_list: 
     Example:
     >>> import maplotlib.pyplot as plt
     >>> import numpy as np
-    >>> gap = find_raster_gap_from_timetable(ra, dec, dtrow_list)
+    >>> gap = find_raster_gap(ra, dec, dtrow_list)
     >>> for s, e in zip(gap[:-1], gap[1:]):
     >>>     idx = np.concatenate(dtrow_list[s:e])
     >>>     plt.plot(ra[idx], dec[idx], '.')
@@ -448,7 +303,7 @@ def find_raster_gap_from_timetable(ra: np.ndarray, dec: np.ndarray, dtrow_list: 
     Returns:
         np.ndarray of index for dtrow_list indicating boundary between raster maps
     """
-    distance_list = get_raster_distance_from_timetable(ra, dec, dtrow_list)
+    distance_list = get_raster_distance(ra, dec, dtrow_list)
     delta_distance = distance_list[1:] - distance_list[:-1]
     idx = np.where(delta_distance < 0)[0] + 1
     raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
@@ -556,7 +411,6 @@ def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_index_
         np.ndarray of data ids to be flagged
     """
     flagged = set(flagged1).union(set(flagged2))
-    # gap = list(gap_gen(raster_gap, ndata))
     g = (raster_index_list[i] for i in flagged)
     data_ids = np.fromiter(itertools.chain(*g), dtype=int)
     return data_ids
@@ -609,7 +463,7 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     num_data_per_raster_map = []
     for key, dtrow_list in dtrowdict.items():
         # get raster gap
-        raster_gap = find_raster_gap_from_timetable(metadata.ra, metadata.dec, dtrow_list)
+        raster_gap = find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
         idx_list = [
             np.concatenate(dtrow_list[s:e]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
         ]
@@ -791,7 +645,7 @@ def generate_animation(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndar
                     single raster row.
         figfile: output file name, defaults to 'movie.gif'
     """
-    row_distance = get_raster_distance_from_timetable(ra, dec, dtrow_list)
+    row_distance = get_raster_distance(ra, dec, dtrow_list)
     cmap = plt.get_cmap('tab10')
     all_rows = np.concatenate(dtrow_list)
 

@@ -12,7 +12,6 @@ import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
-from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
@@ -1180,11 +1179,11 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
         polid: a polarization ID to process
     Returns a named Tuple
     """
-    pflag = numpy.any(datatable.getcol('FLAG_PERMANENT')[:, OnlineFlagIndex] == 1, axis=0)
-    ra = datatable.getcol('OFS_RA')
-    dec = datatable.getcol('OFS_DEC')
+    metadata = rasterutil.read_datatable(datatable)
+    pflag = metadata.pflag
+    ra = metadata.ra
+    dec = metadata.dec
     exposure = datatable.getcol('EXPOSURE')
-    map_center_dec = datatable.getcol('DEC')
     timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=msobj.basename, pol=None)
     # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
     # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
@@ -1193,12 +1192,11 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_r = rasterutil.find_raster_gap_from_timetable(ra, dec, dtrow_list)
+    gap_r = rasterutil.find_raster_gap(ra, dec, dtrow_list)
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)
-    # assert numpy.array_equal(_index_list, idx_all)
-    mean_dec = numpy.mean(map_center_dec[idx_all])
+    mean_dec = numpy.mean(datatable.getcol('DEC')[idx_all])
     dec_unit = datatable.getcolkeyword('DEC', 'UNIT')
     map_center_dec = cqa.getvalue(
         cqa.convert(cqa.quantity(mean_dec, dec_unit), 'rad')
@@ -1238,18 +1236,18 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
         height_list.append(
             numpy.hypot((start_ra - end_ra) * dec_factor, start_dec - end_dec)
         )
-    LOG.info('REFACTOR: ant %s, spw %s, field %s', antid, spwid, fieldid)
-    LOG.info('REFACTOR: map_center_dec=%s, dec_factor=%s', map_center_dec, dec_factor)
-    LOG.info('REFACTOR: duration=%s', list(duration))
-    LOG.info('REFACTOR: num_integration=%s', list(num_integration))
-    LOG.info('REFACTOR: delta_ra=%s', list(delta_ra))
-    LOG.info('REFACTOR: delta_dec=%s', list(delta_dec))
-    LOG.info('REFACTOR: center_ra=%s', list(center_ra))
-    LOG.info('REFACTOR: center_dec=%s', list(center_dec))
-    LOG.info('REFACTOR: height_list=%s', list(height_list))
-    LOG.info('REFACTOR: dtrows')
+    LOG.debug('REFACTOR: ant %s, spw %s, field %s', antid, spwid, fieldid)
+    LOG.debug('REFACTOR: map_center_dec=%s, dec_factor=%s', map_center_dec, dec_factor)
+    LOG.debug('REFACTOR: duration=%s', list(duration))
+    LOG.debug('REFACTOR: num_integration=%s', list(num_integration))
+    LOG.debug('REFACTOR: delta_ra=%s', list(delta_ra))
+    LOG.debug('REFACTOR: delta_dec=%s', list(delta_dec))
+    LOG.debug('REFACTOR: center_ra=%s', list(center_ra))
+    LOG.debug('REFACTOR: center_dec=%s', list(center_dec))
+    LOG.debug('REFACTOR: height_list=%s', list(height_list))
+    LOG.debug('REFACTOR: dtrows')
     for rows in dtrow_list:
-        LOG.info('REFACTOR:   %s', list(rows))
+        LOG.debug('REFACTOR:   %s', list(rows))
     center_ra = numpy.array(center_ra)
     center_dec = numpy.array(center_dec)
     row_sep_ra = (center_ra[1:]-center_ra[:-1])*dec_factor
