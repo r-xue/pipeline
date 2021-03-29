@@ -144,11 +144,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
                     tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
                     tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
-                    image_bundle.extend([tt0_initial_model_name, tt1_initial_model_name])
+                    self.initial_models = [tt0_initial_model_name, tt1_initial_model_name]
+                    image_bundle.extend(self.initial_models)
 
                     tt0_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt0')
                     tt1_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt1')
-                    image_bundle.extend([tt0_final_model_name, tt1_final_model_name])
+                    self.final_models = [tt0_final_model_name, tt1_final_model_name]
+                    image_bundle.extend(self.final_models)
 
             else:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.subim')
@@ -167,7 +169,9 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         finalmasks.sort(key=natural_keys)
         finalmask = finalmasks[-1]
 
-        images_list.extend([QLmask, secondmask, finalmask])
+        self.masks = [QLmask, secondmask, finalmask]
+        images_list.extend(self.masks)
+
         fits_list = []
         for image in images_list:
             fitsfile = os.path.join(inputs.products_dir, image + '.fits')
@@ -196,6 +200,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, {}, {}, [], fits_list)
         casa_pipe_manifest = self._export_pipe_manifest('pipeline_manifest.xml', inputs.products_dir, pipemanifest)
         result.manifest = os.path.basename(casa_pipe_manifest)
+
+        # SE Cont imaging mode export for VLASS
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            # Export tar file
+            reimaging_resources_tarfile = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
 
         # Return the results object, which will be used for the weblog
         return result
@@ -297,11 +306,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             # Export the self cal table
             # selfcaltables = glob.glob("*self-cal*")
             selfcal_result = context.results[7].read()[0]
-            selfcaltable = self._export_table(context, selfcal_result.caltable, products_dir, oussid)
+            self.selfcaltable = self._export_table(context, selfcal_result.caltable, products_dir, oussid)
 
             # Export flagversion
             flagversions = glob.glob("*flagversions*")
-            flagversion = self._export_table(context, flagversions[0], products_dir, oussid)
+            self.flagversion = self._export_table(context, flagversions[0], products_dir, oussid)
 
         return StdFileProducts(ppr_file,
                                weblog_file,
@@ -479,6 +488,44 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return tarfilename
 
+    def _export_reimaging_resources(self, context, products_dir, oussid):
+        """
+        Tar up the reimaging resources for archiving (tarfile)
+        """
+        # Save the current working directory and move to the pipeline
+        # working directory. This is required for tarfile IO
+        cwd = os.getcwd()
+        os.chdir(context.output_dir)
+
+        # Define the name of the output tarfile
+        ps = context.project_structure
+        tarfilename = 'reimaging_resources.tgz'
+
+        LOG.info('Saving reimaging resources in %s...' % tarfilename)
+
+        # Create the tar file
+        if not self._executor._dry_run:
+            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+            for mask in self.masks:
+                tar.add(mask, mask)
+                LOG.info('....Adding {!s}'.format(mask))
+            for initial_model in self.initial_models:
+                tar.add(initial_model, initial_model)
+                LOG.info('....Adding {!s}'.format(initial_model))
+            for final_model in self.final_models:
+                tar.add(final_model, final_model)
+                LOG.info('....Adding {!s}'.format(final_model))
+            tar.add(self.selfcaltable, self.selfcaltable)
+            LOG.info('....Adding {!s}'.format(self.selfcaltable))
+            tar.add(self.flagversion, self.flagversion)
+            LOG.info('....Adding {!s}'.format(self.flagversion))
+            tar.close()
+
+        # Restore the original current working directory
+        os.chdir(cwd)
+
+        return tarfilename
+
     def _export_parameterlist(self, context, parameterlist_name, products_dir, oussid):
         """
         Save the parameter list
@@ -499,7 +546,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
     def _export_table(self, context, table_name, products_dir, oussid):
         """
-        Save the self cal and flagging tables
+        Save directories (either cal table or flag versions)
         """
 
         ps = context.project_structure
