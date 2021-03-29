@@ -232,6 +232,7 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 percentagemap_plots[ms] = [displaycheckflag.checkflagPercentageMap(context, result).plot()]
             else:
                 percentagemap_plots[ms] = []
+            percentagemap_plots[ms] = [p for p in percentagemap_plots[ms] if p is not None]
 
         ctx.update({'flags': flag_totals,
                     'agents': ['before', 'after'],

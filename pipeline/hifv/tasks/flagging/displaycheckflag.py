@@ -2,12 +2,13 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import griddata
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
+import pipeline.infrastructure.renderer.logger as logger
+
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from scipy.interpolate import griddata
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -122,7 +123,7 @@ class checkflagPercentageMap(object):
             LOG.debug('Returning existing checkflag percentage map plot')
             return self._get_plot_object()
 
-        LOG.debug('Creating new checkflag percentage map plot')
+        LOG.info('Creating new checkflag percentage map plot')
         try:
 
             fig_title = self.ms.basename
@@ -130,23 +131,24 @@ class checkflagPercentageMap(object):
             fig, ax = plt.subplots()
             fields_name, fields_ra, fields_dec = self._fields_to_ra_dec()
 
-            fieldflags = np.zeros((len(fields_name), 3))
             flags_by_field = self.result.summaries[-1]['field']
+            flagpct_per_field = np.zeros((len(flags_by_field), 3))
 
-            for idx in range(len(fields_name)):
-                field_name = fields_name[idx]
-                fieldflags[idx, 0] = 100.0 * flags_by_field[field_name]['flagged']/flags_by_field[field_name]['total']
-                fieldflags[idx, 1] = np.degrees(float(fields_ra[idx]))
-                fieldflags[idx, 2] = np.degrees(float(fields_dec[idx]))
+            for idx, (field_name, field_flag) in enumerate(flags_by_field.items()):
+                field_id = fields_name.index(field_name)
+                flagpct_per_field[idx, 0] = 100.0 * field_flag['flagged']/field_flag['total']
+                flagpct_per_field[idx, 1] = np.degrees(float(fields_ra[field_id]))
+                flagpct_per_field[idx, 2] = np.degrees(float(fields_dec[field_id]))
 
-            self._plot_grid(fieldflags[:, 1], fieldflags[:, 2], fieldflags[:, 0])
+            self._plot_grid(flagpct_per_field[:, 1], flagpct_per_field[:, 2], flagpct_per_field[:, 0])
             ax.set_xlabel('R.A. [deg]')
             ax.set_ylabel('Dec. [deg]')
 
-            fig.savefig(self.figfile)
-            plt.close()
+            fig.savefig(self.figfile, bbox_inches='tight')
+            plt.close(fig)
 
         except:
+            LOG.warn('Could not create the flagging percentage map plot')
             return None
 
         return self._get_plot_object()
@@ -171,24 +173,28 @@ class checkflagPercentageMap(object):
         if len(phase_dir.shape) > 2:
             phase_dir = phase_dir.squeeze()
 
-        return field_names, phase_dir[0, :], phase_dir[1, :]
+        return list(field_names), phase_dir[0, :], phase_dir[1, :]
 
-    def _plot_grid(self, x, y, z, nx=100, ny=100):
+    def _plot_grid(self, x, y, z, nx=200, ny=200):
 
         x[x < 0] = x[x < 0] + 360.
 
-        xi = np.linspace(np.max(x), np.min(x), nx)
-        yi = np.linspace(np.min(y), np.max(y), ny)
-
+        xi, dx = np.linspace(np.max(x), np.min(x), nx, retstep=True)
+        yi, dy = np.linspace(np.min(y), np.max(y), ny, retstep=True)
         zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method='cubic')
         with np.errstate(invalid='ignore'):
             zi[zi > 100] = 100.
 
-        dx = (np.max(x)-np.min(x))*0.1
-        dy = (np.max(y)-np.min(y))*0.1
-        plt.imshow(zi, origin='lower', extent=[np.max(x)+dx, np.min(x)-dx, np.min(y)-dy, np.max(y)+dy], aspect='equal')
-        plt.plot(x, y, 'k+')
+        ax = plt.gca()
+        im = ax.imshow(zi, origin='lower', extent=[np.max(x)-0.5*dx, np.min(x) + 0.5*dx,
+                                                   np.min(y)-0.5*dy, np.max(y)+0.5*dy], aspect='equal')
+        ax.plot(x, y, 'k.')
 
-        plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
-        cba = plt.colorbar()
+        dxy = min((np.max(x)-np.min(x))*0.05, (np.max(y)-np.min(y))*0.05)
+        ax.set_xlim(np.max(x)+dxy, np.min(x) - dxy)
+        ax.set_ylim(np.min(y)-dxy, np.max(y)+dxy)
+        ax.get_xaxis().get_major_formatter().set_useOffset(False)
+        cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.05)
+
+        cba = plt.colorbar(im, cax=cax)
         cba.set_label('percent flagged [%]')
