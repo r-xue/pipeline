@@ -504,19 +504,25 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         LOG.info('Saving reimaging resources in %s...' % tarfilename)
 
         # Create the tar file
+
         if not self._executor._dry_run:
             tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+
             for mask in self.masks:
-                tar.add(mask, mask)
-                LOG.info('....Adding {!s}'.format(mask))
+                tar.add(os.path.join(products_dir, mask+'.fits'), mask+'.fits')
+                LOG.info('....Adding {!s}.fits'.format(mask))
+
             for initial_model in self.initial_models:
-                tar.add(initial_model, initial_model)
-                LOG.info('....Adding {!s}'.format(initial_model))
+                tar.add(os.path.join(products_dir, initial_model+'.fits'), initial_model+'.fits')
+                LOG.info('....Adding {!s}.fits'.format(initial_model))
+
             for final_model in self.final_models:
-                tar.add(final_model, final_model)
-                LOG.info('....Adding {!s}'.format(final_model))
+                tar.add(os.path.join(products_dir, final_model+'.fits'), final_model+'.fits')
+                LOG.info('....Adding {!s}.fits'.format(final_model))
+
             tar.add(self.selfcaltable, self.selfcaltable)
             LOG.info('....Adding {!s}'.format(self.selfcaltable))
+
             tar.add(self.flagversion, self.flagversion)
             LOG.info('....Adding {!s}'.format(self.flagversion))
             tar.close()
