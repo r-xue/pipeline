@@ -305,12 +305,25 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
             # Export the self cal table
             # selfcaltables = glob.glob("*self-cal*")
-            selfcal_result = context.results[7].read()[0]
-            self.selfcaltable = self._export_table(context, selfcal_result.caltable, products_dir, oussid)
+            # Look for self cal result table
+            selfcal_result = None
+            for result in context.results:
+                try:
+                    selfcal_result = result.read()[0]
+                    if 'self-cal' in selfcal_result.caltable:
+                        break
+                except Exception as e:
+                    continue
+            # selfcal_result = context.results[7].read()[0]
+            if selfcal_result:
+                self.selfcaltable = self._export_table(context, selfcal_result.caltable, products_dir, oussid)
+            else:
+                self.selfcaltable = ''
+                LOG.warn('Unable to locate self-cal table.')
 
             # Export flagversion
-            flagversions = glob.glob("*flagversions*")
-            self.flagversion = self._export_table(context, flagversions[0], products_dir, oussid)
+            # flagversions = glob.glob("*flagversions*")
+            self.flagversion = self._export_table(context, os.path.basename(self.inputs.vis)+'.flagversions', products_dir, oussid)
 
         return StdFileProducts(ppr_file,
                                weblog_file,
