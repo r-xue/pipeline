@@ -102,6 +102,7 @@ def test_info_string_solar_system_models_with_two_files():
 
 
 GEODETIC_PATH = casa_tools.utils.resolve('pl-unittest/casa_data/geodetic')
+WRONG_GEODETIC_PATH = casa_tools.utils.resolve('pl-unittest/casa_data/geodetic_wrong')
 
 
 @skip_if_no_data_repo
@@ -139,6 +140,7 @@ def test_get_IERS_info():
     assert iers_info.info["IERSeop2000_last_MJD"] == 59184.0
 
 
+@skip_if_no_data_repo
 def test_validate_date_method():
     iers_info = IERSInfo(iers_path=GEODETIC_PATH)
     assert iers_info.validate_date(datetime(2020, 12, 1, 0, 0))
@@ -146,5 +148,44 @@ def test_validate_date_method():
     assert iers_info.validate_date(datetime(2019, 12, 1, 0, 0))
 
 
+@skip_if_no_data_repo
+def test_string_representation_for_IERS_info():
+    iers_info = IERSInfo(iers_path=GEODETIC_PATH)
+    assert str(iers_info) == (
+        'IERS table information => {"versions": {"IERSpredict": "0623.0351", '
+        '"IERSeop2000": "0001.0144"}, "IERSeop2000_last_MJD": 59184.0, '
+        '"IERSeop2000_last": "2020-12-01 00:00:00"}'
+    )
+
+
 def test_from_mjd_to_datetime():
     assert from_mjd_to_datetime(59184.0) == datetime(2020, 12, 1, 0, 0)
+
+
+def test_IERSInfo_when_data_is_not_found():
+    IERSInfo(iers_path=WRONG_GEODETIC_PATH)
+
+
+def test_get_IERS_info_when_data_is_not_found():
+    iers_info = IERSInfo(iers_path=WRONG_GEODETIC_PATH)
+    assert len(iers_info.info["versions"]) == 2
+    assert iers_info.info["versions"]["IERSeop2000"] == 'NOT FOUND'
+    assert iers_info.info["versions"]["IERSpredict"] == 'NOT FOUND'
+    assert iers_info.info["IERSeop2000_last_MJD"] == 'NOT FOUND'
+    assert iers_info.info["IERSeop2000_last"] is None
+
+
+def test_validate_date_method_when_data_is_not_found():
+    iers_info = IERSInfo(iers_path=WRONG_GEODETIC_PATH)
+    assert not iers_info.validate_date(datetime(2020, 12, 1, 0, 0))
+    assert not iers_info.validate_date(datetime(2021, 12, 1, 0, 0))
+    assert not iers_info.validate_date(datetime(2019, 12, 1, 0, 0))
+
+
+def test_string_representation_for_IERS_info_when_data_is_not_found():
+    iers_info = IERSInfo(iers_path=WRONG_GEODETIC_PATH)
+    assert str(iers_info) == (
+        'IERS table information => {"versions": {"IERSpredict": "NOT FOUND", '
+        '"IERSeop2000": "NOT FOUND"}, "IERSeop2000_last_MJD": "NOT FOUND", '
+        '"IERSeop2000_last": null}'
+    )

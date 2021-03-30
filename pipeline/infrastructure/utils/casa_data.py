@@ -120,16 +120,22 @@ class IERSInfo():
         """
         assert IERS_tablename in self.IERS_tables
         table_name = os.path.join(self.iers_path, IERS_tablename)
-        with casa_tools.TableReader(table_name) as table:
-            vs_version = table.getkeyword('VS_VERSION')
+        try:
+            with casa_tools.TableReader(table_name) as table:
+                vs_version = table.getkeyword('VS_VERSION')
+        except (IOError, RuntimeError):
+            vs_version = "NOT FOUND"
         return vs_version
 
     def get_IERSeop2000_last_entry(self) -> float:
         """Get the last entry in the MJD column of the table IERSeop2000
         """
         table_name = os.path.join(self.iers_path, "IERSeop2000")
-        with casa_tools.TableReader(table_name) as table:
-            last_mjd = table.getcol('MJD')[-1]
+        try:
+            with casa_tools.TableReader(table_name) as table:
+                last_mjd = table.getcol('MJD')[-1]
+        except (IOError, IndexError):
+            last_mjd = "NOT FOUND"
         return last_mjd
 
     def load_info(self):
@@ -140,14 +146,21 @@ class IERSInfo():
         """
         versions = {table: self.get_IERS_version(table) for table in self.IERS_tables}
         last_mjd = self.get_IERSeop2000_last_entry()
-        last_dt = from_mjd_to_datetime(last_mjd)
+        if last_mjd != "NOT FOUND":
+            last_dt = from_mjd_to_datetime(last_mjd)
+        else:
+            last_dt = None
         self.info = {"versions": versions, "IERSeop2000_last_MJD": last_mjd, "IERSeop2000_last": last_dt}
 
     def validate_date(self, date: datetime) -> bool:
         """Check if a date is lower or equal than the last entry of the IERSeop2000 table.
-        The end date of the MS should be lower (see PIPE-734)
+        The end date of the MS should be lower (see PIPE-734).
+        If the geodetic tables could not be loaded correctly it always return False.
         """
-        return date <= self.info["IERSeop2000_last"]
+        if self.info["IERSeop2000_last"] is not None:
+            return date <= self.info["IERSeop2000_last"]
+        else:
+            return False
 
     def __call__(self):
         return self.info
