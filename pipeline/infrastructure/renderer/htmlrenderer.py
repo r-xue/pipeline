@@ -347,7 +347,7 @@ class T1_1Renderer(RendererBase):
         # pipeline execution start, end and duration
         exec_start = context.results[0].timestamps.start
         exec_end = context.results[-1].timestamps.end
-        # IERS information (PIPE-734; CHECK!)
+        # IERS information (PIPE-734)
         iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
         iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
         iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]

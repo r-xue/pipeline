@@ -232,7 +232,7 @@ class ImportData(basetask.StandardTaskTemplate):
             ms_origin = 'ASDM' if ms.name in converted_asdm_abspaths else 'MS'
             results.origin[ms.basename] = ms_origin
 
-            # PIPE-734: Check the time of the ms is in the range of the IERS table
+        # Log IERS tables information (PIPE-734)
         LOG.info(environment.iers_info)
 
         fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
