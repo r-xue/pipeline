@@ -129,13 +129,29 @@ $(document).ready(function() {
                 </tr>
                 <tr>
                     <th>IERSeop2000 Version</th>
-                    <td>${iers_eop_2000_version} (last date: ${utils.format_datetime(iers_eop_2000_last_date)})</td>
+                    % if iers_eop_2000_version != 'NOT FOUND':
+                        <td>${iers_eop_2000_version} (last date: ${utils.format_datetime(iers_eop_2000_last_date)})</td>
+                    % else:
+                        <td>
+                            <p class="danger alert-danger">
+                                <span class="glyphicon glyphicon-remove-sign"></span> IERSeop2000 Table not found.
+                            </p>
+                        </td>
+                    % endif
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <th>IERSpredict Version</th>
-                    <td>${iers_predict_version}</td>
+                    % if iers_predict_version != 'NOT FOUND':
+                        <td>${iers_predict_version}</td>
+                    % else:
+                        <td>
+                            <p class="danger alert-danger">
+                                <span class="glyphicon glyphicon-remove-sign"></span> IERSpredict Table not found.
+                            </p>
+                        </td>
+                    % endif
                     <td></td>
                     <td></td>
                 </tr>
