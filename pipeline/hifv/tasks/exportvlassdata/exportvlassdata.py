@@ -142,15 +142,22 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt1.rms.subim')
                     image_bundle.extend([pbcor_image_name, rms_image_name])
 
+                    # No FITS file created
                     tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
-                    tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
-                    self.initial_models = [tt0_initial_model_name, tt1_initial_model_name]
-                    image_bundle.extend(self.initial_models)
+                    tt0_initial_model_name = tt0_initial_model_name.replace('s13', 's5')
 
+                    tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
+                    tt1_initial_model_name = tt1_initial_model_name.replace('s13', 's5')
+
+                    # Create list for tar file
+                    self.initial_models = [tt0_initial_model_name, tt1_initial_model_name]
+
+                    # No FITS files created
                     tt0_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt0')
                     tt1_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt1')
+
+                    # Create list for tar file
                     self.final_models = [tt0_final_model_name, tt1_final_model_name]
-                    image_bundle.extend(self.final_models)
 
             else:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.subim')
@@ -169,8 +176,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         finalmasks.sort(key=natural_keys)
         finalmask = finalmasks[-1]
 
+        # Create list for tar file
         self.masks = [QLmask, secondmask, finalmask]
-        images_list.extend(self.masks)
 
         fits_list = []
         for image in images_list:
@@ -303,9 +310,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # SE Cont imaging mode export for VLASS
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
-            # Export the self cal table
-            # selfcaltables = glob.glob("*self-cal*")
-            # Look for self cal result table
+            # Identify self cal table
             selfcal_result = None
             for result in context.results:
                 try:
@@ -314,16 +319,15 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                         break
                 except Exception as e:
                     continue
-            # selfcal_result = context.results[7].read()[0]
+
             if selfcal_result:
-                self.selfcaltable = self._export_table(context, selfcal_result.caltable, products_dir, oussid)
+                self.selfcaltable = selfcal_result.caltable
             else:
                 self.selfcaltable = ''
                 LOG.warn('Unable to locate self-cal table.')
 
-            # Export flagversion
-            # flagversions = glob.glob("*flagversions*")
-            self.flagversion = self._export_table(context, os.path.basename(self.inputs.vis)+'.flagversions', products_dir, oussid)
+            # Identify flagversion
+            self.flagversion = os.path.basename(self.inputs.vis)+'.flagversions'
 
         return StdFileProducts(ppr_file,
                                weblog_file,
@@ -522,16 +526,16 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
 
             for mask in self.masks:
-                tar.add(os.path.join(products_dir, mask+'.fits'), mask+'.fits')
-                LOG.info('....Adding {!s}.fits'.format(mask))
+                tar.add(mask, mask)
+                LOG.info('....Adding {!s}'.format(mask))
 
             for initial_model in self.initial_models:
-                tar.add(os.path.join(products_dir, initial_model+'.fits'), initial_model+'.fits')
-                LOG.info('....Adding {!s}.fits'.format(initial_model))
+                tar.add(initial_model, initial_model)
+                LOG.info('....Adding {!s}'.format(initial_model))
 
             for final_model in self.final_models:
-                tar.add(os.path.join(products_dir, final_model+'.fits'), final_model+'.fits')
-                LOG.info('....Adding {!s}.fits'.format(final_model))
+                tar.add(final_model, final_model)
+                LOG.info('....Adding {!s}'.format(final_model))
 
             tar.add(self.selfcaltable, self.selfcaltable)
             LOG.info('....Adding {!s}'.format(self.selfcaltable))
