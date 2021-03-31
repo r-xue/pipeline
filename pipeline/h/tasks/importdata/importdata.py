@@ -1,4 +1,5 @@
 import contextlib
+import json
 import os
 import shutil
 import tarfile
@@ -10,6 +11,7 @@ import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline import environment
 from . import fluxes
 
 __all__ = [
@@ -225,6 +227,9 @@ class ImportData(basetask.StandardTaskTemplate):
 
             ms_origin = 'ASDM' if ms.name in converted_asdm_abspaths else 'MS'
             results.origin[ms.basename] = ms_origin
+
+        # Log IERS tables information (PIPE-734)
+        LOG.info(environment.iers_info)
 
         fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
 

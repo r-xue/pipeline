@@ -347,6 +347,11 @@ class T1_1Renderer(RendererBase):
         # pipeline execution start, end and duration
         exec_start = context.results[0].timestamps.start
         exec_end = context.results[-1].timestamps.end
+        # IERS information (PIPE-734)
+        iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
+        iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
+        iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]
+        iers_info = environment.iers_info
         # remove unnecessary precision for execution duration
         dt = exec_end - exec_start
         exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
@@ -461,6 +466,10 @@ class T1_1Renderer(RendererBase):
             'pipeline_doclink': pipeline_doclink,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
+            'iers_eop_2000_version': iers_eop_2000_version,
+            'iers_eop_2000_last_date': iers_eop_2000_last_date,
+            'iers_predict_version': iers_predict_version,
+            'iers_info': iers_info,
             'array_names': utils.commafy(array_names),
             'exec_start': exec_start_fmt,
             'exec_end': exec_end_fmt,
