@@ -25,8 +25,6 @@ from pipeline.infrastructure.displays.summary import UVChart
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.renderer.logger import Plot
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
-from pipeline.h.tasks.common.displays.applycal import PlotmsAntComposite, PlotmsSpwComposite, PlotmsBasebandComposite, PlotmsFieldComposite
-from pipeline.h.tasks.common.displays.common import LeafComposite
 from pipeline.infrastructure.renderer.basetemplates import JsonPlotRenderer
 from ..common import flagging_renderer_utils as flagutils
 from ..common.displays import applycal as applycal
@@ -397,8 +395,9 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def science_plots_for_result(
             context: Context, 
             result: ApplycalResults,
-            plotter_cls: Type[Union[PlotmsAntComposite, PlotmsSpwComposite, 
-                                    PlotmsBasebandComposite, PlotmsFieldComposite, LeafComposite]], 
+            plotter_cls: Type[Union[applycal.PlotmsAntComposite, applycal.PlotmsSpwComposite, 
+                                    applycal.PlotmsBasebandComposite, applycal.PlotmsFieldComposite, 
+                                    applycal.PlotmsFieldSpwAntComposite]], 
             fields: List[int], 
             uvrange: Optional[str]=None, 
             renderer_cls: Optional[Type[JsonPlotRenderer]]=None, 
