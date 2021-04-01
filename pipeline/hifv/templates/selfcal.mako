@@ -7,15 +7,38 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">Selfcal</%block>
 
-<p>Pipeline task running gaincal and applycal.</p>
+<p>Pipeline task running gaincal and applycal: selfcalmode=${result[0].inputs['selfcalmode']}</p>
+
+
+<%self:plot_group plot_dict="${summary_plots}"
+                                  url_fn="${lambda ms:  'noop'}">
+
+        <%def name="title()">
+            Selfcal Summary Plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Summary window</%def>
+
+        <%def name="fancybox_caption(plot)">
+            Plot of ${plot.y_axis} vs. ${plot.x_axis}
+        </%def>
+
+        <%def name="caption_title(plot)">
+            Plot of ${plot.y_axis} vs. ${plot.x_axis}
+        </%def>
+</%self:plot_group>
+
+
 
 % for ms in summary_plots:
+
 
     <h4>Plots:  <a class="replace"
            href="${os.path.relpath(os.path.join(dirname, selfcalphasegaincal_subpages[ms]), pcontext.report_dir)}">Phase vs. time plots </a>
     </h4>
-
-
 
 %endfor
 
