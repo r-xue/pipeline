@@ -143,11 +143,17 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     image_bundle.extend([pbcor_image_name, rms_image_name])
 
                     # No FITS file created
-                    tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
-                    tt0_initial_model_name = tt0_initial_model_name.replace('s13', 's5')
+                    tt0_initial_models = glob.glob('*iter1.model.tt0*')
+                    tt0_initial_models.sort(key=natural_keys)
+                    tt0_initial_model_name = tt0_initial_models[0]
+                    # tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
+                    # tt0_initial_model_name = tt0_initial_model_name.replace('s13', 's5')
 
-                    tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
-                    tt1_initial_model_name = tt1_initial_model_name.replace('s13', 's5')
+                    tt1_initial_models = glob.glob('*iter1.model.tt1*')
+                    tt1_initial_models.sort(key=natural_keys)
+                    tt1_initial_model_name = tt1_initial_models[0]
+                    # tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
+                    # tt1_initial_model_name = tt1_initial_model_name.replace('s13', 's5')
 
                     # Create list for tar file
                     self.initial_models = [tt0_initial_model_name, tt1_initial_model_name]
