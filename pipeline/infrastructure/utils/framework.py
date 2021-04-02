@@ -311,16 +311,16 @@ def plotms_iterate(
         singledish: Optional[bool]=False
 ) -> List[Plot]:
     """
-    plotms_iterate
+    Iterate multiple plotms job requests
 
-    plotms_iterate
+    Iterate multiple plotms job requests
     Args:
         jobs_and_wrappers: JobRequest and Plot
         iteraxis:          iteraxis parameter for plotms
         singledish:        True for singledish (adds &&& to 'antenna')
                            False for others (default, 'antenna' renains unchangedx )
     returns:
-        
+        List of plots
     """
     # CAS-11220: Some Pipeline Plots Do Not Contain Spw Number
     # fix: replace job, adding iteraxis='spw' so that spw is always in title
