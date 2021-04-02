@@ -600,3 +600,7 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
         # the VLASS-SE-CONT-MOSAIC specific value.
         return 0.1, pblimit_cleanmask
+
+    def usepointing(self) -> bool:
+        """clean flag to use pointing table."""
+        return False
