@@ -133,7 +133,6 @@ def write_flagcmd(flagtemplate, cmd_list, reason=''):
     sanitized = reason.replace(' ', '_')
     template = string.Template(f"mode='manual' spw='$spw' antenna='$antenna&&&' timerange='$timerange' reason='SDPL:{sanitized}'\n")
 
-    # TODO: merge spw and antennas in the flag command
     with open(flagtemplate, 'a') as f:
         for spw, antenna, timerange in cmd_list:
             f.write(template.safe_substitute(spw=spw, antenna=antenna, timerange=timerange))
@@ -274,10 +273,6 @@ class MetaDataReader(object):
 
         # for debugging
         if LOG.isEnabledFor(logging.DEBUG):
-            #merged = collections.defaultdict(list)
-            #for k, v in itertools.chain(flagdict1.items(), flagdict2.items()):
-            #    merged[k].extend(v)
-
             for aid, dt_rows in flagdict1.items():
                 with open(f'toflag1_ant{aid}.txt', 'w') as f:
                     f.write('\n'.join(map(lambda x: str(self.datatable.getcell('ROW', x)), dt_rows)))
@@ -301,18 +296,12 @@ class MetaDataReader(object):
         return self.invalid_pointing_data
 
     def generate_flagdict_for_uniform_rms(self):
-        # extract necessary metadata from datatable
-        #metadata = rasterutil.read_datatable(self.datatable)
-
         # apply flagging heuristics
         # returns dictionary containing list of row IDs for datatable
         # keys for dictionary are (spw_id, antenna_id) tuples
-        flag_dict = rasterutil.flag_raster_map(self.datatable)
+        flagdict = rasterutil.flag_raster_map(self.datatable)
 
-        # generate dictionary
-        #flag_dict = dict(enumerate(flag_list))
-
-        return flag_dict
+        return flagdict
 
     def _generate_flagcmd(self, flagtemplate, flag_dict, reason=''):
         datatable = self.datatable
