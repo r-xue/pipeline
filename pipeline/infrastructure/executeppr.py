@@ -248,10 +248,11 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             for keyword, value in task_args.items():
                 casa_tools.post_to_log("    Parameter: " + keyword + " = " + str(value), echo_to_screen=echo_to_screen)
 
-            if pipeline_task_name == 'ImportData' or pipeline_task_name == 'RestoreData' or pipeline_task_name == 'NRORestoreData' \
-                    or pipeline_task_name == 'ALMAImportData' or pipeline_task_name == 'ALMARestoreData'\
-                    or pipeline_task_name == 'VLAImportData' or pipeline_task_name == 'VLARestoreData'\
-                    or pipeline_task_name == 'SDImportData' or pipeline_task_name == 'NROImportData':
+            if pipeline_task_name in ('ImportData', 'RestoreData',
+                                      'ALMAImportData', 'ALMARestoreData',
+                                      'VLAImportData','VLARestoreData',
+                                      'SDImportData', 'SDRestoreData',
+                                      'NROImportData', 'NRORestoreData'):
                 task_args['vis'] = files
                 task_args['session'] = sessions
 
