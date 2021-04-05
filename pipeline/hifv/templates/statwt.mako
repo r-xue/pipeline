@@ -9,6 +9,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
+
+% if result[0].inputs['statwtmode'] == 'VLASS-SE' :
+
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
 
@@ -116,3 +119,5 @@ def format_wt(wt):
 		% endfor
 	</tbody>
 </table>
+
+%endif
