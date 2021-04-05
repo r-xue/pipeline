@@ -371,15 +371,17 @@ class SDInspection(object):
                         (merge_table, merge_gap) = merge_heuristic2(time_gap, time_table, pos_gap, beam_sel)
 
                     ### prepare for Self.Datatable ###
-                    key = ['small', 'large']
-                    grp_list = {key[0]: [], key[1]: []}
-                    for idx in (0, 1):
+                    keys = ['small', 'large']
+                    grp_list = {}
+                    for idx, key in enumerate(keys):
+                        tmp = []
                         table = merge_table[idx]
                         for item in table:
                             for i in item:
                                 timegrp[idx][id_list[i]] = timegrp_id[idx]
-                            grp_list[key[idx]].append(timegrp_id[idx])
+                            tmp.append(timegrp_id[idx])
                             timegrp_id[idx] = timegrp_id[idx] + 1
+                        grp_list[key] = tmp
                         gap = merge_gap[idx]
                         gap_id = []
                         for v in gap:
