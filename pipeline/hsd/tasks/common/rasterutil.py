@@ -26,20 +26,6 @@ MetaDataSet = collections.namedtuple(
     ['timestamp', 'dtrow', 'field', 'spw', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
 
 
-def get_func_compute_mad():
-    # assuming X.Y.Z style version string
-    scipy_version = scipy.version.full_version
-    versioning = map(int, scipy_version.split('.'))
-    major = next(versioning)
-    minor = next(versioning)
-    if major > 1 or (major == 1 and minor >= 5):
-        return lambda x: scipy.stats.median_abs_deviation(x, scale='normal')
-    elif major == 1 and minor >= 3:
-        return scipy.stats.median_absolute_deviation
-    else:
-        raise NotImplementedError('No MAD function available in scipy. Use scipy 1.3 or higher.')
-
-
 def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
     """
     Compute distance between two points (x0, y0) and (x1, y1).
@@ -209,46 +195,6 @@ def get_science_spectral_windows(metadata: MetaDataSet) -> np.ndarray:
         np.ndarray of spw ids for science targets
     """
     return np.unique(metadata.spw[metadata.srctype == 0])
-
-
-def find_position_gap(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
-    delta_ra = ra[1:] - ra[:-1]
-    delta_dec = dec[1:] - dec[:-1]
-    angle_abs = np.abs(np.arctan2(delta_dec, delta_ra)).flatten()
-    compute_mad = get_func_compute_mad()
-    angle_median = np.median(angle_abs)
-    angle_mad = compute_mad(angle_abs)
-    distance = np.hypot(delta_ra, delta_dec).flatten()
-    distance_median = np.median(distance)
-    distance_mad = compute_mad(distance)
-    angle_threshold = np.pi / 4  # 45deg
-    factor = 10
-    angle_gap = np.where(np.abs(angle_abs - angle_median) > angle_threshold)[0]
-    #angle_gap = np.where(np.abs(angle_abs - angle_median) > factor * angle_mad)[0]
-    distance_gap = np.where(np.abs(distance - distance_median) > factor * distance_mad)[0]
-
-    return angle_gap, distance_gap
-
-
-def union_position_gap(gaps_list):
-    num_gaps = len(gaps_list)
-    assert num_gaps > 0
-    assert np.all([isinstance(g, (list, np.ndarray)) for g in gaps_list])
-
-    LOG.info(gaps_list)
-    gaps_union, counts = np.unique(np.concatenate(gaps_list), return_counts=True)
-
-    return gaps_union, counts
-
-
-def merge_position_gap(gaps_list):
-    num_gaps = len(gaps_list)
-    listed_gaps, counts = union_position_gap(gaps_list)
-    majority = num_gaps // 2 + 1
-    LOG.info('majority %s, counts=%s', majority, counts)
-    merged_gaps = listed_gaps[counts >= majority]
-
-    return merged_gaps
 
 
 def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
@@ -479,9 +425,6 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     LOG.debug('nominal number of row per raster map: {}'.format(nd_per_raster_rep // nd_per_row_rep))
 
     for key, idx_list in rastergapdict.items():
-        # filter metadata by timetable
-        #m = filter_metadata_by_timetable(metadata, timetabledict[key])
-
         # flag incomplete raster map
         flag_raster1 = flag_incomplete_raster(idx_list, nd_per_raster_rep, nd_per_row_rep)
 
