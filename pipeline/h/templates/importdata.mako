@@ -37,7 +37,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 		<tr>
 			<th>Scans</th>
 			<th>Fields</th>
-			<th>Flux Densities</th>
+			<th>Science Target</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -52,9 +52,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<td>MS</td>
 			<td>${len(ms.scans)}</td>
 			<td>${len(ms.fields)}</td>
-			<!-- count the number of measurements added to the setjy result in
-				 each importdata_result -->
-			<td>${reduce(lambda x, setjy_result: x + sum(len(y) for y in setjy_result.measurements.values()), importdata_result.setjy_results, 0)}</td>
+			<td>${len({source.name for source in ms.sources if 'TARGET' in source.intents})}</td>
 			<td>${str(ms.filesize)}</td>
 			<td><a href="${fluxcsv_files[ms.basename]}" class="replace-pre" data-title="flux.csv">View</a> or <a href="${fluxcsv_files[ms.basename]}" download="${fluxcsv_files[ms.basename]}">download</a></td>
 		</tr>
