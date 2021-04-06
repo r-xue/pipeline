@@ -12,7 +12,7 @@ IMPORT_ONLY = 'Import only'
 
 
 # Run the procedure
-def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
+def hifacal(vislist, importonly=True, dbservice=True, pipelinemode='automatic',
             interactive=True):
 
     echo_to_screen = interactive

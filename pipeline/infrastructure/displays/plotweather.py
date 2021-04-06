@@ -8,6 +8,8 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
+from .plotstyle import RescaleXAxisTimeTicks
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -367,17 +369,5 @@ def resizeFonts(adesc, fontsize):
     plt.setp(adesc.get_yticklabels(), fontsize=fontsize)
 
 
-def RescaleXAxisTimeTicks(xlim, adesc):
-    """
-    Plotting utility routine
-    """
-    if xlim[1] - xlim[0] < 10/1440.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.SecondLocator(bysecond=list(range(0, 60, 30))))
-    elif xlim[1] - xlim[0] < 0.5/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 5))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
-    elif xlim[1] - xlim[0] < 1/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 2))))
+
 

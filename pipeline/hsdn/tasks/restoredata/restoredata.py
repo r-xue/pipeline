@@ -18,8 +18,10 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
     caltable = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, vis=None, caltable=None, reffile=None,
-                 products_dir=None, rawdata_dir=None, output_dir=None):
-        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=products_dir, rawdata_dir=rawdata_dir,
+                 products_dir=None, copytoraw=None, rawdata_dir=None,
+                 output_dir=None):
+        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=products_dir,
+                                                   copytoraw=copytoraw, rawdata_dir=rawdata_dir,
                                                    output_dir=output_dir)
 
         self.caltable = caltable

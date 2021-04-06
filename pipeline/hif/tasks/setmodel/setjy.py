@@ -117,6 +117,13 @@ class SetjyInputs(vdp.StandardInputs):
             field_ids = {field.id for field in fields}
             field_names = {field.name for field in fields}
 
+            # Log the MD5 hash and modification time of the corresponding
+            # Solar System models (PIPE-1007)
+            for field_name in field_names:
+                if field_name in standard.Standard.ephemeris_fields:
+                    info = utils.get_object_info_string(field_name)
+                    LOG.info(info)
+
             # Find fluxes
             flux_by_spw = [] 
             for spw_id in spw_ids:

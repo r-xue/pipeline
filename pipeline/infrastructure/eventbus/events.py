@@ -24,7 +24,8 @@ class ContextLifecycleEvent(Event):
 
     def __init__(self, context_name=None, output_dir=None):
         super().__init__()
-        if not output_dir:
+        # Output directory should be set but can be an empty string.
+        if output_dir is None:
             raise ValueError(f'output_dir unspecified when creating {self.__class__.__name__}')
         self.output_dir = output_dir
         if not context_name:

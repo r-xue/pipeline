@@ -18,6 +18,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+from pipeline.infrastructure.utils import absolute_path
 
 # NoData = -32767.0
 # NoDataThreshold = NoData + 10000.0
@@ -639,8 +640,8 @@ class SDChannelMapDisplay(SDImageDisplay):
             found = False
             for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
                 msobj_list = self.inputs.context.observing_run.measurement_sets
-                msname_list = [os.path.abspath(msobj_list[idx].name) for idx in range(len(msobj_list))]
-                group_msid = msname_list.index(os.path.abspath(g.ms.name))
+                msname_list = [absolute_path(msobj_list[idx].name) for idx in range(len(msobj_list))]
+                group_msid = msname_list.index(absolute_path(g.ms.name))
                 del msobj_list, msname_list
                 if group_msid == msid and g.antenna_id == ant and \
                     g.field_id == fid and g.spw_id == spw:

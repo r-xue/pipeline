@@ -2,13 +2,15 @@
 import collections
 import contextlib
 import functools
-from logging import Logger as pyLogger
 import os
 import sys
 import time
+from logging import Logger as pyLogger
 from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
-import casatools
+# Imported for annotation pupose only. Use table in casa_tools in code.
+from casatools import table as casa_table
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -17,12 +19,13 @@ from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import absolute_path
 from . import compress
 
 LOG = infrastructure.get_logger(__name__)
 
 TableLike = NewType('TableLike',
-                    Union[casa_tools._logging_table_cls, casatools.table])
+                    Union[casa_tools._logging_table_cls, casa_table])
 
 
 def profiler(func: Callable):
@@ -552,7 +555,7 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
         field_id = member.field_id
         ant_id = member.antenna_id
         msobj = member.ms
-        if msobj.name in [os.path.abspath(name) for name in msname_filter]:
+        if absolute_path(msobj.name) in [absolute_path(name) for name in msname_filter]:
             _field_selection = field_selection
             try:
                 nfields = len(msobj.fields)
@@ -631,7 +634,7 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
 
 # TODO (ksugimoto): Move this to casa_tools module.
 @contextlib.contextmanager
-def TableSelector(name: str, query: str) -> casatools.table:
+def TableSelector(name: str, query: str) -> casa_table:
     """
     Retun a CASA table tool instance of selected rows of a table.
 

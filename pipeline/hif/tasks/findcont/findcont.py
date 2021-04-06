@@ -246,19 +246,15 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     width = '%.7fMHz' % (channel_width / 1e6)
 
-                    # Starting with CASA 4.7.79 tclean can calculate chanchunks automatically.
-                    chanchunks = -1
-
                     parallel = mpihelpers.parse_mpi_input_parameter(inputs.parallel)
 
                     real_spwsel = context.observing_run.get_real_spwsel([str(spwid)]*len(vislist), vislist)
 
-                    # Set special phasecenter for ephemeris objects.
+                    # Set special phasecenter, frame and specmode for ephemeris objects.
                     # Needs to be done here since the explicit coordinates are
                     # used in heuristics methods upstream.
                     if image_heuristics.is_eph_obj(target['field']):
                         phasecenter = 'TRACKFIELD'
-                        parallel = False
                         # 'REST' does not yet work (see CAS-8965, CAS-9997)
                         #outframe = 'REST'
                         outframe = ''
@@ -297,7 +293,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                             phasecenter=phasecenter, stokes='I', weighting=inputs.hm_weighting,
                                             robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
                                             restoringbeam=[], pbcor=False, usepointing=usepointing,
-                                            savemodel='none', chanchunks=chanchunks, parallel=parallel)
+                                            savemodel='none', parallel=parallel)
                     self._executor.execute(job)
 
                     # Try detecting continuum frequency ranges

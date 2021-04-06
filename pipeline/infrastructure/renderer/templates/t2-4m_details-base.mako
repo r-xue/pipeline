@@ -36,9 +36,9 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
         <%
             relurl = url_fn(ms)
             if relurl:
-                subpage_abspath = os.path.join(pcontext.report_dir, dirname, relurl)
-                subpage_path = os.path.relpath(subpage_abspath, pcontext.report_dir)
-                subpage_exists = os.path.exists(subpage_abspath)
+                subpage_path = rendererutils.get_relative_url(pcontext.report_dir, dirname, relurl,
+                                                              allow_nonexistent=False)
+                subpage_exists = subpage_path is not None
             else:
                 subpage_exists = false
         %>
