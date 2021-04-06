@@ -560,16 +560,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         Save the parameter list
         """
 
-        ps = context.project_structure
-        parameterlist_file = parameterlist_name
-        out_parameterlist_file = self.NameBuilder.casa_script(parameterlist_name,
-                                                              project_structure=ps,
-                                                              ousstatus_entity_id=oussid,
-                                                              output_dir=products_dir)
+        out_parameterlist_file = os.path.join(products_dir, os.path.basename(parameterlist_name))
 
-        LOG.info('Copying parameter list file %s to %s' % (parameterlist_file, out_parameterlist_file))
+        LOG.info('Copying parameter list file %s to %s' % (parameterlist_name, out_parameterlist_file))
         if not self._executor._dry_run:
-            shutil.copy(parameterlist_file, out_parameterlist_file)
+            shutil.copy(parameterlist_name, out_parameterlist_file)
 
         return os.path.basename(out_parameterlist_file)
 
