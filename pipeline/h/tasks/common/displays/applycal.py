@@ -744,14 +744,18 @@ class SpwAntDetailChart(PlotmsSpwAntComposite):
         # (calto, intent) = _get_summary_args(context, result, intent)
         LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
 
-        # set singledish flag
-        singledish = self.singledish if hasattr(self, 'singledish') else False
-        # request plots per spw, overlaying all antennas
-        # for SD, 'field' parameter is already given hence should not specify here (PIPE-710)
-        if singledish:
-            super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, **kwargs)
+        if 'field' in kwargs:
+            field = kwargs['field']
+            del kwargs['field']
+            LOG.debug('Override for %s vs %s plot: field=%s' % (yaxis, xaxis, field))
         else:
-            super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=calto.field, **kwargs)
+            field = calto.field
+        
+        # request plots per spw, overlaying all antennas
+        # if field is specified in kwargs, it will override the calto.field
+        # selection
+        super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=calto.field, 
+                                                **kwargs )
 
 
 class FieldSpwAntDetailChart(PlotmsFieldSpwAntComposite):
