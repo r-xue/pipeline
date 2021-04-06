@@ -1,5 +1,7 @@
 import os
 
+import matplotlib as mpl
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -97,7 +99,7 @@ class selfcalphaseGainPerAntennaChart(object):
 
 
 class selfcalSolutionNumPerFieldChart(object):
-    """
+    """present the selfcal solution flag stats as a heatmap. 
     likely only work for the self-cal gain table from the 'VLASS-SE' mode (see PIPE-1010), i.e.
         one solution per polarization per image-row (unique source id) for each antenna
     """
@@ -117,41 +119,57 @@ class selfcalSolutionNumPerFieldChart(object):
 
         selfcal_stats = self._calstat_from_caltable()
         LOG.debug('Creating new selfcal solution summary plot')
+
         try:
 
-            fig, ax = plt.subplots(figsize=(10, 8))
-            row_label = []
-            nsol = []
-            nsol_flagged = []
+            fig, ax = plt.subplots(figsize=(10, 7))
 
-            for idx, field_ids in enumerate(selfcal_stats['field']):
+            n_ant = len(selfcal_stats['ant_unique'])
+            n_row = len(selfcal_stats['field_unique'])
 
-                row_desc = []
-                row_desc.append(selfcal_stats['field_desc']['name'][field_ids[0]])
-                #c = selfcal_stats['field_desc']['position'][field_ids[0]]
-                #row_desc.append(c.ra.to_string(unit=u.hour, pad=True, precision=1))
-                #row_desc.append(c.dec.to_string(unit=u.degree, pad=True, precision=0, alwayssign=True))
+            flag2d = selfcal_stats['flag2d'].reshape((-1, n_ant), order='F')
+            cmap = mpl.colors.ListedColormap(['limegreen', 'blue', 'gray'])
+            norm = mpl.colors.BoundaryNorm(np.arange(cmap.N+1)-0.5, cmap.N)
+            ax.imshow(flag2d, origin='lower', extent=(-0.5, n_ant-0.5, -
+                                                      0.5, n_row-0.5), cmap=cmap, norm=norm, aspect='auto')
 
-                row_label.append('\n'.join(row_desc))
-                nsol.append(selfcal_stats['flag'][idx].size)
-                nsol_flagged.append(np.sum(selfcal_stats['flag'][idx]))
+            ant_name = selfcal_stats['ant_desc']['name']
+            field_name = selfcal_stats['field_desc']['name']
 
-            ypos = np.arange(len(row_label))
-            ax.barh(ypos, nsol, color='lightgray', align='center')
-            ax.barh(ypos, nsol_flagged, color='red', align='center')
-            ax.set_yticks(ypos)
+            ant_label = ant_name[selfcal_stats['ant_unique']]
+            row_label = field_name[selfcal_stats['field_unique']]
+
+            # alternatively, you could include RA/Dec in y-axis labels
+            #
+            # row_label = []
+            # field_position = selfcal_stats['field_desc']['position']
+            # for field_id in selfcal_stats['field_unique']:
+            #     c = field_position[field_id]
+            #     row_desc = [field_name[field_id], c.ra.to_string(unit=u.hour, pad=True, precision=1), c.dec.to_string(
+            #         unit=u.degree, pad=True, precision=0, alwayssign=True)]
+            #     row_label.append(' '.join(row_desc))
+
+            ax.set_xticks(np.arange(len(ant_label)))
+            ax.set_xticklabels(ant_label, rotation=45, ha="right", rotation_mode="anchor")
+            ax.set_yticks(np.arange(len(row_label)))
             ax.set_yticklabels(row_label, rotation=45)
+            ax.grid(which='major', axis='y', color='white', linestyle='-', linewidth=2)
 
-            lg_colors = {'flagged': 'red', 'total': 'lightgray'}
-            lg_handles = [plt.Rectangle((0, 0), 1, 1, color=lg_colors[lg_label]) for lg_label in lg_colors]
-            ax.legend(lg_handles, list(lg_colors.keys()))
+            # for spine in ax.spines:
+            #   ax.spines[spine].set_visible(False)
 
-            #ax.set_ylabel('VLASS Image Row: 1st field name, R.A./Dec.')
+            ax.set_xticks(np.arange(len(ant_label)+1)-0.5, minor=True)
+            ax.set_yticks(np.arange(len(row_label)+1)-0.5, minor=True)
+            ax.grid(which='minor', axis='both', color='white', linestyle='-', linewidth=10)
+
+            ax.tick_params(which='minor', bottom=False, left=False)
+
+            ax.set_title('Selfcal Solution Flags')
             ax.set_ylabel('VLASS Image Row: 1st field name')
-            ax.set_xlabel('No. of Gain Solutions')
-            title = 'Number of Self-Cal Gain Solutions per Image Row'
-            ax.set_title(title)
 
+            lg_colors = {'unflagged': 'limegreen', 'flagged': 'blue', 'ref.ant.': 'gray'}
+            lg_patch = [mpatches.Patch(color=lg_colors[lg_label], label=lg_label) for lg_label in lg_colors]
+            ax.legend(handles=lg_patch, bbox_to_anchor=(0.5, -0.1), loc='upper center', ncol=len(lg_patch))
             fig.tight_layout()
             fig.savefig(self.figfile)
             plt.close(fig)
@@ -176,13 +194,17 @@ class selfcalSolutionNumPerFieldChart(object):
                            y_axis=self.y_axis)
 
     def _calstat_from_caltable(self):
-        """get selfcal solution statistics from caltable
+        """get selfcal solution statistics from caltable.
         """
         with casa_tools.TableReader(self.caltable) as table:
-            time = table.getcol('TIME')  # (n_ant x n_row)
+            # expected row number: n_ant x n_vlass_row
+            time = table.getcol('TIME')
             field_id = table.getcol('FIELD_ID')
+            cparam = table.getcol('CPARAM')  # (n_pol x n_chan x n_row)
             flag = table.getcol('FLAG')
-            ant_id = table.getcol('ANTENNA1')
+            snr = table.getcol('SNR')
+            ant1_id = table.getcol('ANTENNA1')
+            ant2_id = table.getcol('ANTENNA2')
 
         with casa_tools.TableReader(self.caltable+'/FIELD') as table:
             field_name = table.getcol('NAME')
@@ -191,22 +213,40 @@ class selfcalSolutionNumPerFieldChart(object):
         with casa_tools.TableReader(self.caltable+'/ANTENNA') as table:
             ant_name = table.getcol('NAME')
 
-        field_unique, field_unique_idx1st = np.unique(field_id, return_index=True)
+        field_unique, field_unique_idx1st, field_unique_inverse = np.unique(
+            field_id, return_index=True, return_inverse=True)
+        ant_unique, ant_unique_idx1st, ant_unique_inverse = np.unique(ant1_id, return_index=True, return_inverse=True)
 
-        field_list = np.split(field_id, field_unique_idx1st[1:], axis=-1)
-        flag_list = np.split(flag, field_unique_idx1st[1:], axis=-1)
-        ant_list = np.split(ant_id, field_unique_idx1st[1:], axis=-1)
-        time_list = np.split(time, field_unique_idx1st[1:], axis=-1)
+        # alternatively, you could group solution entries by their field id
+        #
+        # field_list = np.split(field_id, field_unique_idx1st[1:], axis=-1)
+        # flag_list = np.split(flag, field_unique_idx1st[1:], axis=-1)
+        # ant_list = np.split(ant1_id, field_unique_idx1st[1:], axis=-1)
+        # time_list = np.split(time, field_unique_idx1st[1:], axis=-1)
 
         if len(phasedir.shape) > 2:
             phasedir = phasedir.squeeze()
 
-        selfcal_stats = {'field': field_list,
-                         'flag': flag_list,
-                         'antenna': ant_list,
-                         'time': time_list,
-                         'field_unique': field_unique,
+        field_sort_idx = np.argsort(phasedir[1, field_unique])
+        field_unique = field_unique[field_sort_idx]
+        field_unique_inverse = field_sort_idx[field_unique_inverse]
+
+        n_ant = len(ant_unique)
+        n_field = len(field_unique)
+
+        # flag2d: 0: unflagged solution; 1: solution flagged; 2: reference antenna
+        flag2d = np.zeros(flag.shape[:-1]+(n_field, n_ant))
+        for idx in range(len(field_id)):
+            flag2d[:, :, field_unique_inverse[idx], ant_unique_inverse[idx]] = flag[:, :, idx]
+            if ant1_id[idx] == ant2_id[idx]:
+                flag2d[:, :, field_unique_inverse[idx], ant_unique_inverse[idx]] = 2
+
+        selfcal_stats = {'field_unique': field_unique,
+                         'ant_unique': ant_unique,
+                         'flag2d': flag2d,
+                         #'field': field_list,'flag': flag_list,'antenna': ant_list,'time': time_list,
                          'field_desc': {'name': field_name, 'position': SkyCoord(ra=phasedir[0, :]*u.rad, dec=phasedir[1, :]*u.rad)},
-                         'ant_desc': {'name': ant_name}}
+                         'ant_desc': {'name': ant_name},
+                         'column': {'cparam': cparam, 'flag': flag, 'snr': snr, 'ant1': ant1_id, 'ant2': ant2_id}}
 
         return selfcal_stats
