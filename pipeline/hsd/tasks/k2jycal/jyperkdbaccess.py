@@ -3,6 +3,7 @@ import datetime
 import json
 import os
 import re
+import ssl
 import string
 import urllib
 
@@ -82,8 +83,11 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 # try opening url
                 query = '?'.join([url, encoded])
                 LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
+                # TEMPORAL WORKAROUND to skip validation of SSL certification to support the other developments.
+                # TODO: Update validation method of SSL certification once discussion with Tomas is converged.
+                ssl_context = ssl._create_unverified_context()
                 # set timeout to 3min (=180sec)
-                response = urllib.request.urlopen(query, timeout=400)#180)
+                response = urllib.request.urlopen(query, context=ssl_context, timeout=400)#180)
                 retval = json.load(response)
                 if not retval['success']:
                     msg = 'Failed to get a Jy/K factor from DB: {}'.format(retval['error'])
