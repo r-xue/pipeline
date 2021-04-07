@@ -787,11 +787,6 @@ class Tclean(cleanbase.CleanBase):
                 self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
-            # Model column is saved only at the end of the first imaging stage (see heuristics for more detail)
-            # In case final clean without mask (i.e. pb mask only) is requested for the first imaging stage,
-            # then save model column only in (after) clean without mask, therefore make sure only the last iteration
-            # request saving model column.
-            savemodel = self.image_heuristics.savemodel(1 if iteration == len(vlass_masks) else 0)
 
             seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                     self.pblimit_cleanmask, iteration=iteration)
@@ -816,8 +811,7 @@ class Tclean(cleanbase.CleanBase):
                 inputs.cycleniter = None
 
             result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=seq_result.niter, nsigma=nsigma,
-                                    threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
-                                    result=result)
+                                    threshold=threshold, sensitivity=sequence_manager.sensitivity, result=result)
             # Restore cycleniter if needed
             if mask == 'pb':
                 inputs.cycleniter = cycleniter
@@ -864,6 +858,18 @@ class Tclean(cleanbase.CleanBase):
 
             # Up the iteration counter
             iteration += 1
+
+        # Optionally save model columns to MS
+        # Model column is saved only at the end of the first imaging stage (see heuristics for more detail)
+        # In case final clean without mask (i.e. pb mask only) is requested for the first imaging stage,
+        # then save model column only in (after) clean without mask, therefore make sure only the last iteration
+        # request saving model column.
+        savemodel = self.image_heuristics.savemodel(1 if (iteration-1) == len(vlass_masks) else 0)
+        if savemodel:
+            # Will use the latest nsigma, threshold and sensitivity values (they should not matter)
+            _ = self._do_clean(iternum=iteration-1, cleanmask='', niter=0, nsigma=nsigma,
+                               threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
+                               result=None, calcpsf=False, calcres=False, parallel=False)
 
         return result
 
@@ -1100,13 +1106,14 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None,
-                  calcres=None, calcpsf=None, wbawp=None):
+                  calcres=None, calcpsf=None, wbawp=None, parallel=None):
         """
         Do basic cleaning.
         """
         inputs = self.inputs
 
-        parallel = mpihelpers.parse_mpi_input_parameter(inputs.parallel)
+        if parallel is None:
+            parallel = mpihelpers.parse_mpi_input_parameter(inputs.parallel)
 
         # if 'start' or 'width' are defined in velocity units, convert from frequency back
         # to velocity before tclean call. Added to support SRDP ALMA optimized imaging.

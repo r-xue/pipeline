@@ -323,13 +323,13 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return 3.0
 
-    def savemodel(self, iteration: int) -> str:
+    def savemodel(self, iteration: int) -> Union[str, None]:
         """Tclean savemodel parameter heuristics."""
         # Model is saved in first imaging cycle last iteration
         if self.vlass_stage == 1 and iteration == 1:
             return 'modelcolumn'
         else:
-            return 'none'
+            return None
 
     def datacolumn(self) -> str:
         """Column parameter to be used as tclean argument"""
