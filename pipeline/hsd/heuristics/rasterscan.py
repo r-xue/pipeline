@@ -164,11 +164,11 @@ def find_angle_gap(angle_deg: np.ndarray):
     num_data_between_gap = np.diff(angle_gap)
     num_data_median = np.median(num_data_between_gap)
     if not np.all(num_data_between_gap == num_data_median):
-        # add isolated data point to neighboring sequence
+        # remove gaps that cause isolated data points
         isolated_indices = np.where(num_data_between_gap == 1)[0]
         if len(isolated_indices) > 0:
-            angle_gap[isolated_indices + 1] += 1
-        angle_gap = angle_gap[angle_gap != 1]
+            angle_gap[isolated_indices + 1] -= 1
+        angle_gap = np.unique(angle_gap)
 
     return angle_gap, hist, bin_edges, peak_indices
 
