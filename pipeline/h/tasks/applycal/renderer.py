@@ -398,7 +398,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plotter_cls: Type[Union[applycal.PlotmsAntComposite, applycal.PlotmsSpwComposite, 
                                     applycal.PlotmsBasebandComposite, applycal.PlotmsFieldComposite, 
                                     applycal.PlotmsFieldSpwAntComposite]], 
-            fields: List[int], 
+            fields: Iterable[int], 
             uvrange: Optional[str]=None, 
             renderer_cls: Optional[Type[JsonPlotRenderer]]=None, 
             preserve_coloraxis: bool=False
