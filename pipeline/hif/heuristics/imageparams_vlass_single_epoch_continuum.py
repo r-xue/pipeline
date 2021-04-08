@@ -326,7 +326,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def savemodel(self, iteration: int) -> Union[str, None]:
         """Tclean savemodel parameter heuristics."""
         # Model is saved in first imaging cycle last iteration
-        if self.vlass_stage == 1 and iteration == 1:
+        if self.vlass_stage == 1:
             return 'modelcolumn'
         else:
             return None

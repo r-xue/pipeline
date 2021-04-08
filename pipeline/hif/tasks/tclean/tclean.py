@@ -859,16 +859,13 @@ class Tclean(cleanbase.CleanBase):
             # Up the iteration counter
             iteration += 1
 
-        # Optionally save model columns to MS
-        # Model column is saved only at the end of the first imaging stage (see heuristics for more detail)
-        # In case final clean without mask (i.e. pb mask only) is requested for the first imaging stage,
-        # then save model column only in (after) clean without mask, therefore make sure only the last iteration
-        # request saving model column.
-        savemodel = self.image_heuristics.savemodel(1 if (iteration-1) == len(vlass_masks) else 0)
+        # Save predicted model visibility columns to MS at the end of the first imaging stage (see heuristic method).
+        savemodel = self.image_heuristics.savemodel(iteration-1)
         if savemodel:
-            # Will use the latest nsigma, threshold and sensitivity values (they should not matter)
-            _ = self._do_clean(iternum=iteration-1, cleanmask='', niter=0, nsigma=nsigma,
-                               threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
+            LOG.info("Saving predicted model visibilities to MeasurementSet after last iteration (iter %s)" %
+                     (iteration-1))
+            _ = self._do_clean(iternum=iteration-1, cleanmask='', niter=0, threshold='0.0mJy',
+                               sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
                                result=None, calcpsf=False, calcres=False, parallel=False)
 
         return result
