@@ -9,6 +9,7 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
+from typing import List
 
 # import 3rd party modules
 import numpy as np
@@ -36,6 +37,21 @@ def get_func_compute_mad():
 
 
 compute_mad = get_func_compute_mad()
+
+
+def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
+    """
+    Compute distance between two points (x0, y0) and (x1, y1).
+
+    Args:
+        x0: x-coordinate value for point 0
+        y0: y-coordinate value for point 0
+        x1: x-coordinate value for point 1
+        y1: y-coordinate value for point 1
+
+    Returns: distance between two points
+    """
+    return np.hypot(x1 - x0, y1 - y0)
 
 
 def generate_histogram(arr, bin_width, left_bin, right_bin):
@@ -189,6 +205,65 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     merged_gap = np.concatenate(([0], merged_gap, [num_data]))
 
     return angle_deg, distance, merged_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices
+
+
+def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
+    """
+    Compute distances between raster rows and the first row.
+
+    Compute distances between representative positions of raster rows and that of the first raster row.
+    Origin of the distance is the first raster row.
+    The representative position of each raster row is the mid point (mean position) of R.A. and Dec.
+
+    Args:
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
+        dtrow_list: list of row ids for datatable rows per data chunk indicating
+                    single raster row.
+
+    Returns:
+        np.ndarray of the distances.
+    """
+    i1 = dtrow_list[0]
+    x1 = ra[i1].mean()
+    y1 = dec[i1].mean()
+
+    distance_list = np.fromiter(
+        (distance(ra[i].mean(), dec[i].mean(), x1, y1) for i in dtrow_list),
+        dtype=float)
+
+    return distance_list
+
+
+def find_raster_map(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
+    """
+    Find gaps between individual raster map.
+
+    Returned list should be used in combination with timetable.
+    Here is an example to plot RA/DEC data per raster map:
+
+    Example:
+    >>> import maplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> gap = find_raster_gap(ra, dec, dtrow_list)
+    >>> for s, e in zip(gap[:-1], gap[1:]):
+    >>>     idx = np.concatenate(dtrow_list[s:e])
+    >>>     plt.plot(ra[idx], dec[idx], '.')
+
+    Args:
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
+        dtrow_list: List of np.ndarray holding array indices for ra and dec.
+                    Each index array is supposed to represent single raster row.
+
+    Returns:
+        np.ndarray of index for dtrow_list indicating boundary between raster maps
+    """
+    distance_list = get_raster_distance(ra, dec, dtrow_list)
+    delta_distance = distance_list[1:] - distance_list[:-1]
+    idx = np.where(delta_distance < 0)[0] + 1
+    raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
+    return raster_gap
 
 
 class RasterScanHeuristic(api.Heuristic):
