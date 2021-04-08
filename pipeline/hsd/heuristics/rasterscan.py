@@ -77,69 +77,118 @@ def find_histogram_peak(hist):
     return peak_indices
 
 
-def find_position_gap(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
-    delta_ra = ra[1:] - ra[:-1]
-    delta_dec = dec[1:] - dec[:-1]
-    angle_rad = np.arctan2(delta_dec, delta_ra).flatten()
-    angle_deg = angle_rad * 180 / np.pi
+def shift_angle(angle, delta):
+    return (angle + 360 + delta) % 360
+
+
+def find_distance_gap(delta_ra, delta_dec):
+    distance = np.hypot(delta_ra, delta_dec).flatten()
+    distance_median = np.median(distance)
+    distance_mad = compute_mad(distance)
+    factor = 10
+    #
+    # ASCII illustration for distance gap
+    #
+    #                      (gap)
+    #  gap idx |   0   1     2     3
+    #          | *---*---*-------*---*
+    # data idx | 0   1   2       3   4
+    #
+    distance_gap = np.where(np.abs(distance - distance_median) > factor * distance_mad)[0] + 1
+    return distance, distance_gap
+
+
+def find_angle_gap(angle_deg: np.ndarray):
     num_angle = len(angle_deg)
     bin_width = 0.5
     hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width, left_bin=-180, right_bin=180)
 
     peak_indices = find_histogram_peak(hist)
-    peak_values = [(bin_edges[i] + bin_edges[i]) / 2 for i in peak_indices]
-    LOG.info('peak_values = %s', peak_values)
     num_peak = len(peak_indices)
     LOG.info('original angle: found %s peaks', num_peak)
     if num_peak == 3:
         # should be raster scan, but one of the raster direction is along 180deg
         # need angle shifting
         delta = 70
-        angle_deg = (angle_deg + 360 + delta) % 360
+        angle_deg = shift_angle(angle_deg, delta)
         hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width, left_bin=0, right_bin=360 + delta)
         peak_indices = find_histogram_peak(hist)
-        peak_values = [(bin_edges[i] + bin_edges[i]) / 2 for i in peak_indices]
-        LOG.info('peak_values = %s', peak_values)
         num_peak = len(peak_indices)
         LOG.info('shifted angle: found %s peaks', num_peak)
+
+    peak_values = [(bin_edges[i] + bin_edges[i + 1]) / 2 for i in peak_indices]
+    LOG.info('peak_values = %s', peak_values)
+
+    # warn if scan pattern is not likely to be raster
+    # 1. check if number of peaks in angle histogram is 2 (assuming round-trip scan)
+    # 2. difference of peak angles is around 180deg
     if num_peak != 2 or abs(180 - abs(peak_values[1] - peak_values[0])) > 5:
-        #raise RuntimeError('Unexpected angle sequence.')
-        LOG.warn('Unexpected angle sequence.')
+        LOG.warn('Scan pattern is not likely to be round-trip raster scan.')
 
-    # angle_median = np.median(angle_abs)
-    # angle_mad = compute_mad(angle_abs)
-    distance = np.hypot(delta_ra, delta_dec).flatten()
-    distance_median = np.median(distance)
-    distance_mad = compute_mad(distance)
-    angle_threshold = np.pi / 4  # 45deg
-    factor = 10
-    angle_gap = 0
-    # angle_gap = np.where(np.abs(angle_abs - angle_median) > angle_threshold)[0]
-    #angle_gap = np.where(np.abs(angle_abs - angle_median) > factor * angle_mad)[0]
-    distance_gap = np.where(np.abs(distance - distance_median) > factor * distance_mad)[0]
+    # acceptable angle deviation from peak angle in degree
+    acceptable_deviation = 45
+    acceptable_ranges = []
+    angle_min = bin_edges.min()
+    angle_max = bin_edges.max()
+    for p in peak_values:
+        upper = p + acceptable_deviation
+        lower = p - acceptable_deviation
+        if angle_min <= lower and upper <= angle_max:
+            acceptable_ranges.append((lower, upper))
+        elif angle_max < upper:
+            upper = angle_min + (upper - angle_max)
+            acceptable_ranges.append((lower, angle_max))
+            acceptable_ranges.append((angle_min, upper))
+        elif lower < angle_min:
+            lower = angle_max - (angle_min - lower)
+            acceptable_ranges.append((angle_min, upper))
+            acceptable_ranges.append((lower, angle_max))
+        else:
+            msg = 'Inconsistent angle range. Aborting.'
+            raise RuntimeError(msg)
 
-    return angle_deg, distance, angle_gap, distance_gap, (hist, bin_edges), peak_values
+    mask = np.empty(num_angle, dtype=bool)
+    mask[:] = False
+    for l, r in acceptable_ranges:
+        in_range = np.logical_and(l <= angle_deg, angle_deg <= r)
+        mask = np.logical_or(mask, in_range)
+
+    # ASCII illustration for angle gap index
+    #
+    #         |                 *
+    #  gap idx|   0   1   2   3 | 4 (gap)
+    #         | *---*---*---*---*
+    # data idx| 0   1   2   3   4
+    #
+    angle_gap = np.where(mask == False)[0] + 1
+    num_data_between_gap = np.diff(angle_gap)
+    num_data_median = np.median(num_data_between_gap)
+    if not np.all(num_data_between_gap == num_data_median):
+        # add isolated data point to neighboring sequence
+        isolated_indices = np.where(num_data_between_gap == 1)[0]
+        if len(isolated_indices) > 0:
+            angle_gap[isolated_indices + 1] += 1
+        angle_gap = angle_gap[angle_gap != 1]
+
+    return angle_gap, hist, bin_edges, peak_indices
 
 
-def union_position_gap(gaps_list):
-    num_gaps = len(gaps_list)
-    assert num_gaps > 0
-    assert np.all([isinstance(g, (list, np.ndarray)) for g in gaps_list])
+def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
+    delta_ra = ra[1:] - ra[:-1]
+    delta_dec = dec[1:] - dec[:-1]
 
-    LOG.info(gaps_list)
-    gaps_union, counts = np.unique(np.concatenate(gaps_list), return_counts=True)
+    # heuristics based on distances between integrations
+    distance, distance_gap = find_distance_gap(delta_ra, delta_dec)
 
-    return gaps_union, counts
+    # heuristics based on scan direction
+    angle_rad = np.arctan2(delta_dec, delta_ra).flatten()
+    angle_deg = angle_rad * 180 / np.pi
+    angle_gap, hist, bin_edges, peak_indices = find_angle_gap(angle_deg)
+    merged_gap = np.union1d(angle_gap, distance_gap)
+    num_data = len(ra)
+    merged_gap = np.concatenate(([0], merged_gap, [num_data]))
 
-
-def merge_position_gap(gaps_list):
-    num_gaps = len(gaps_list)
-    listed_gaps, counts = union_position_gap(gaps_list)
-    majority = num_gaps // 2 + 1
-    LOG.info('majority %s, counts=%s', majority, counts)
-    merged_gaps = listed_gaps[counts >= majority]
-
-    return merged_gaps
+    return angle_deg, distance, merged_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices
 
 
 class RasterScanHeuristic(api.Heuristic):
