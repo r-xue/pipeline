@@ -172,18 +172,21 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             images_list.extend(image_bundle)
 
         # Add masks for PIPE-1038
-        QLmasks = glob.glob('*.QLcatmask-tier1.mask')
-        QLmasks.sort(key=natural_keys)
-        QLmask = QLmasks[-1]
-        secondmasks = glob.glob('*.secondmask.mask')
-        secondmasks.sort(key=natural_keys)
-        secondmask = secondmasks[-1]
-        finalmasks = glob.glob('*.combined-tier2.mask')
-        finalmasks.sort(key=natural_keys)
-        finalmask = finalmasks[-1]
+        self.masks = []
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            QLmasks = glob.glob('*.QLcatmask-tier1.mask')
+            QLmasks.sort(key=natural_keys)
+            QLmask = QLmasks[-1]
+            secondmasks = glob.glob('*.secondmask.mask')
+            secondmasks.sort(key=natural_keys)
+            secondmask = secondmasks[-1]
+            finalmasks = glob.glob('*.combined-tier2.mask')
+            finalmasks.sort(key=natural_keys)
+            finalmask = finalmasks[-1]
 
-        # Create list for tar file
-        self.masks = [QLmask, secondmask, finalmask]
+            # Create list for tar file
+            self.masks = [QLmask, secondmask, finalmask]
+
 
         fits_list = []
         for image in images_list:
