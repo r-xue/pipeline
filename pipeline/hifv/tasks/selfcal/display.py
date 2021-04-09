@@ -109,7 +109,7 @@ class selfcalSolutionNumPerFieldChart(object):
         self.caltable = result.caltable
         self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
         self.figfile = self._get_figfile()
-        self.x_axis = 'No. of Gain Solutions'
+        self.x_axis = 'Antenna'
         self.y_axis = 'VLASS image row '
 
     def plot(self):
@@ -122,10 +122,10 @@ class selfcalSolutionNumPerFieldChart(object):
 
         try:
 
-            fig, ax = plt.subplots(figsize=(10, 7))
+            fig, ax = plt.subplots(figsize=(10, 8))
 
-            n_ant = len(selfcal_stats['ant_unique'])
-            n_row = len(selfcal_stats['field_unique'])
+            n_ant = len(selfcal_stats['ant_unique_id'])
+            n_row = len(selfcal_stats['field_unique_id'])
 
             flag2d = selfcal_stats['flag2d'].reshape((-1, n_ant), order='F')
             cmap = mpl.colors.ListedColormap(['limegreen', 'blue', 'gray'])
@@ -136,23 +136,24 @@ class selfcalSolutionNumPerFieldChart(object):
             ant_name = selfcal_stats['ant_desc']['name']
             field_name = selfcal_stats['field_desc']['name']
 
-            ant_label = ant_name[selfcal_stats['ant_unique']]
-            row_label = field_name[selfcal_stats['field_unique']]
+            ant_label = ant_name[selfcal_stats['ant_unique_id']]
+            row_label = field_name[selfcal_stats['field_unique_id']]
 
-            # alternatively, you could include RA/Dec in y-axis labels
-            #
-            # row_label = []
-            # field_position = selfcal_stats['field_desc']['position']
-            # for field_id in selfcal_stats['field_unique']:
-            #     c = field_position[field_id]
-            #     row_desc = [field_name[field_id], c.ra.to_string(unit=u.hour, pad=True, precision=1), c.dec.to_string(
-            #         unit=u.degree, pad=True, precision=0, alwayssign=True)]
-            #     row_label.append(' '.join(row_desc))
+            row_label = []
+            for idx, field_id in enumerate(selfcal_stats['field_unique_id']):
+                # alternatively, you could include RA/Dec in y-axis labels
+                # c = selfcal_stats['field_desc']['position'][field_id]
+                # row_desc = [field_name[field_id],
+                #            c.ra.to_string(unit=u.hour, pad=True, precision=1),
+                #            c.dec.to_string(unit=u.degree, pad=True, precision=0, alwayssign=True)]
+                row_desc = [field_name[field_id],
+                            'scan no.: {}'.format(selfcal_stats['field_unique_scan'][idx])]
+                row_label.append('\n'.join(row_desc))
 
             ax.set_xticks(np.arange(len(ant_label)))
-            ax.set_xticklabels(ant_label, rotation=45, ha="right", rotation_mode="anchor")
+            ax.set_xticklabels(ant_label, rotation=45, ha='right', rotation_mode='anchor')
             ax.set_yticks(np.arange(len(row_label)))
-            ax.set_yticklabels(row_label, rotation=45)
+            ax.set_yticklabels(row_label, rotation=45, ma='left', va='center', rotation_mode="anchor")
             ax.grid(which='major', axis='y', color='white', linestyle='-', linewidth=2)
 
             # for spine in ax.spines:
@@ -205,6 +206,7 @@ class selfcalSolutionNumPerFieldChart(object):
             snr = table.getcol('SNR')
             ant1_id = table.getcol('ANTENNA1')
             ant2_id = table.getcol('ANTENNA2')
+            scan_no = table.getcol('SCAN_NUMBER')
 
         with casa_tools.TableReader(self.caltable+'/FIELD') as table:
             field_name = table.getcol('NAME')
@@ -213,12 +215,13 @@ class selfcalSolutionNumPerFieldChart(object):
         with casa_tools.TableReader(self.caltable+'/ANTENNA') as table:
             ant_name = table.getcol('NAME')
 
-        field_unique, field_unique_idx1st, field_unique_inverse = np.unique(
+        field_unique_id, field_unique_idx1st, field_unique_inverse = np.unique(
             field_id, return_index=True, return_inverse=True)
-        ant_unique, ant_unique_idx1st, ant_unique_inverse = np.unique(ant1_id, return_index=True, return_inverse=True)
+        ant_unique_id, ant_unique_idx1st, ant_unique_inverse = np.unique(
+            ant1_id, return_index=True, return_inverse=True)
+        field_unique_scan = scan_no[field_unique_idx1st]
 
         # alternatively, you could group solution entries by their field id
-        #
         # field_list = np.split(field_id, field_unique_idx1st[1:], axis=-1)
         # flag_list = np.split(flag, field_unique_idx1st[1:], axis=-1)
         # ant_list = np.split(ant1_id, field_unique_idx1st[1:], axis=-1)
@@ -227,22 +230,26 @@ class selfcalSolutionNumPerFieldChart(object):
         if len(phasedir.shape) > 2:
             phasedir = phasedir.squeeze()
 
-        field_sort_idx = np.argsort(phasedir[1, field_unique])
-        field_unique = field_unique[field_sort_idx]
+        # sort field_unique_ids/scans by their dec.
+        field_sort_idx = np.argsort(phasedir[1, field_unique_id])
+        field_unique_id = field_unique_id[field_sort_idx]
+        field_unique_scan = field_unique_scan[field_sort_idx]
         field_unique_inverse = field_sort_idx[field_unique_inverse]
 
-        n_ant = len(ant_unique)
-        n_field = len(field_unique)
+        n_ant = len(ant_unique_id)
+        n_field = len(field_unique_id)
 
         # flag2d: 0: unflagged solution; 1: solution flagged; 2: reference antenna
+        # note: flag2d actually has four dimensions: (n_pol, n_chan, n_field, n_ant)
         flag2d = np.zeros(flag.shape[:-1]+(n_field, n_ant))
         for idx in range(len(field_id)):
             flag2d[:, :, field_unique_inverse[idx], ant_unique_inverse[idx]] = flag[:, :, idx]
             if ant1_id[idx] == ant2_id[idx]:
                 flag2d[:, :, field_unique_inverse[idx], ant_unique_inverse[idx]] = 2
 
-        selfcal_stats = {'field_unique': field_unique,
-                         'ant_unique': ant_unique,
+        selfcal_stats = {'field_unique_id': field_unique_id,
+                         'field_unique_scan': field_unique_scan,
+                         'ant_unique_id': ant_unique_id,
                          'flag2d': flag2d,
                          #'field': field_list,'flag': flag_list,'antenna': ant_list,'time': time_list,
                          'field_desc': {'name': field_name, 'position': SkyCoord(ra=phasedir[0, :]*u.rad, dec=phasedir[1, :]*u.rad)},
