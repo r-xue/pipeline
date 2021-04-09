@@ -151,6 +151,46 @@ def refine_gaps(gap_list, num_data):
     return np.asarray(refined_gaps)
 
 
+def create_range(peak_values, acceptable_deviation, angle_min, angle_max):
+    acceptable_ranges = []
+    for p in peak_values:
+        upper = p + acceptable_deviation
+        lower = p - acceptable_deviation
+        if angle_min <= lower and upper <= angle_max:
+            acceptable_ranges.append((lower, upper))
+        elif angle_max < upper:
+            upper = angle_min + (upper - angle_max)
+            acceptable_ranges.append((lower, angle_max))
+            acceptable_ranges.append((angle_min, upper))
+        elif lower < angle_min:
+            lower = angle_max - (angle_min - lower)
+            acceptable_ranges.append((angle_min, upper))
+            acceptable_ranges.append((lower, angle_max))
+        else:
+            msg = 'Inconsistent angle range. Aborting.'
+            raise RuntimeError(msg)
+    return acceptable_ranges
+
+
+def find_angle_gap_by_range(angle_deg, acceptable_ranges):
+    mask = np.empty(len(angle_deg), dtype=bool)
+    mask[:] = False
+    for lower, upper in acceptable_ranges:
+        in_range = np.logical_and(lower <= angle_deg, angle_deg <= upper)
+        mask = np.logical_or(mask, in_range)
+
+    # ASCII illustration for angle gap index
+    #
+    #         |                 *
+    #  gap idx|   0   1   2   3 | 4 (gap)
+    #         | *---*---*---*---*
+    # data idx| 0   1   2   3   4
+    #
+    angle_gap = np.where(mask == False)[0] + 1
+
+    return angle_gap
+
+
 def find_distance_gap(delta_ra, delta_dec):
     distance = np.hypot(delta_ra, delta_dec).flatten()
     distance_median = np.median(distance)
@@ -169,7 +209,6 @@ def find_distance_gap(delta_ra, delta_dec):
 
 
 def find_angle_gap(angle_deg: np.ndarray):
-    num_angle = len(angle_deg)
     bin_width = 0.5
     hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width, left_bin=-180, right_bin=180)
 
@@ -197,40 +236,10 @@ def find_angle_gap(angle_deg: np.ndarray):
 
     # acceptable angle deviation from peak angle in degree
     acceptable_deviation = 45
-    acceptable_ranges = []
     angle_min = bin_edges.min()
     angle_max = bin_edges.max()
-    for p in peak_values:
-        upper = p + acceptable_deviation
-        lower = p - acceptable_deviation
-        if angle_min <= lower and upper <= angle_max:
-            acceptable_ranges.append((lower, upper))
-        elif angle_max < upper:
-            upper = angle_min + (upper - angle_max)
-            acceptable_ranges.append((lower, angle_max))
-            acceptable_ranges.append((angle_min, upper))
-        elif lower < angle_min:
-            lower = angle_max - (angle_min - lower)
-            acceptable_ranges.append((angle_min, upper))
-            acceptable_ranges.append((lower, angle_max))
-        else:
-            msg = 'Inconsistent angle range. Aborting.'
-            raise RuntimeError(msg)
-
-    mask = np.empty(num_angle, dtype=bool)
-    mask[:] = False
-    for l, r in acceptable_ranges:
-        in_range = np.logical_and(l <= angle_deg, angle_deg <= r)
-        mask = np.logical_or(mask, in_range)
-
-    # ASCII illustration for angle gap index
-    #
-    #         |                 *
-    #  gap idx|   0   1   2   3 | 4 (gap)
-    #         | *---*---*---*---*
-    # data idx| 0   1   2   3   4
-    #
-    angle_gap = np.where(mask == False)[0] + 1
+    acceptable_ranges = create_range(peak_values, acceptable_deviation, angle_min, angle_max)
+    angle_gap = find_angle_gap_by_range(angle_deg, acceptable_ranges)
 
     return angle_gap, hist, bin_edges, peak_indices
 
