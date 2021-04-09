@@ -97,6 +97,60 @@ def shift_angle(angle, delta):
     return (angle + 360 + delta) % 360
 
 
+def find_most_frequent(v: np.ndarray) -> int:
+    """
+    Return the most frequent value in an input array.
+
+    Args:
+        v: data
+
+    Returns:
+        most frequent value
+    """
+    values, counts = np.unique(v, return_counts=True)
+    max_count = counts.max()
+    LOG.trace(f'max count: {max_count}')
+    modes = values[counts == max_count]
+    LOG.trace(f'modes: {modes}')
+    if len(modes) > 1:
+        mode = modes.max()
+    else:
+        mode = modes[0]
+    LOG.trace(f'mode = {mode}')
+
+    return mode
+
+
+def refine_gaps(gap_list, num_data):
+    gaps = gap_list[:]
+    if gap_list[0] != 0:
+        gaps = np.concatenate(([0], gaps))
+    if gap_list[-1] != num_data:
+        gaps = np.concatenate((gaps, [num_data]))
+    num_data_per_row = np.diff(gaps)
+
+    # remove gaps that causes unnatural division of data sequence
+    most_frequent = find_most_frequent(num_data_per_row)
+
+    refined_gaps = [gaps[0]]
+    ntmp = 0
+    for i in range(len(gaps) - 1):
+        n = num_data_per_row[i]
+        gap = gaps[i + 1]
+        LOG.trace('idx %s, gap %s, n %s', i, gap, n)
+        ntmp += n
+        if ntmp >= most_frequent:
+            LOG.trace('most_frequent %s, n %s, ntmp %s, registering %s', most_frequent, n, ntmp, gap)
+            refined_gaps.append(gap)
+            ntmp = 0
+        else:
+            LOG.trace('adding %s to ntmp %s', n, ntmp)
+    if refined_gaps[-1] != gaps[-1]:
+        refined_gaps.append(gaps[-1])
+
+    return np.asarray(refined_gaps)
+
+
 def find_distance_gap(delta_ra, delta_dec):
     distance = np.hypot(delta_ra, delta_dec).flatten()
     distance_median = np.median(distance)
@@ -177,14 +231,6 @@ def find_angle_gap(angle_deg: np.ndarray):
     # data idx| 0   1   2   3   4
     #
     angle_gap = np.where(mask == False)[0] + 1
-    num_data_between_gap = np.diff(angle_gap)
-    num_data_median = np.median(num_data_between_gap)
-    if not np.all(num_data_between_gap == num_data_median):
-        # remove gaps that cause isolated data points
-        isolated_indices = np.where(num_data_between_gap == 1)[0]
-        if len(isolated_indices) > 0:
-            angle_gap[isolated_indices + 1] -= 1
-        angle_gap = np.unique(angle_gap)
 
     return angle_gap, hist, bin_edges, peak_indices
 
@@ -203,8 +249,9 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     merged_gap = np.union1d(angle_gap, distance_gap)
     num_data = len(ra)
     merged_gap = np.concatenate(([0], merged_gap, [num_data]))
+    refined_gap = refine_gaps(merged_gap, num_data)
 
-    return angle_deg, distance, merged_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices
+    return angle_deg, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices
 
 
 def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
