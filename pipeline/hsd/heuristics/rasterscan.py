@@ -324,4 +324,21 @@ def find_raster_map(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
 
 class RasterScanHeuristic(api.Heuristic):
     def calculate(self, ra, dec):
-        return None
+        ret = find_raster_row(ra, dec)
+        gaplist_row = ret[2]
+        idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
+        dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
+        gaplist_map = find_raster_map(ra, dec, dtrow_list)
+
+        # construct return value that is compatible with grouping2 heuristics
+        # - gaps for raster row correspond to "small" time gap
+        # - gaps for raster map correspond to "large" time gap
+        gap_small = gaplist_row
+        gap_large = [gaplist_row[i] for i in gaplist_map]
+        gaplist = [gap_small, gap_large]
+
+        table_small = dtrow_list
+        idx_iter = zip(gaplist_map[:-1], gaplist_map[1:])
+        table_large = [np.concatenate(dtrow_list[s:e]) for s, e in idx_iter]
+        gaptable = [table_small, table_large]
+        return gaptable, gaplist
