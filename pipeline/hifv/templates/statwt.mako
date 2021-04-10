@@ -53,7 +53,8 @@ def format_wt(wt):
 <h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>
 
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
-	<caption></caption>
+	<caption>Summary of before/after-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
+    </caption>
 	<thead>
 		<tr>
 			<th scope="col" rowspan="2">Antenna Selection</th>
@@ -87,7 +88,8 @@ def format_wt(wt):
 
 
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
-	<caption></caption>
+	<caption>Summary of before/after-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each spectral window. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>.
+    </caption>
 	<thead>
 		<tr>
 			<th scope="col" rowspan="2">Spw Selection</th>

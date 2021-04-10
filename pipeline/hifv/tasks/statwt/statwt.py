@@ -53,7 +53,7 @@ class StatwtResults(basetask.Results):
         s = 'Statwt results:\n'
         for job in self.jobs:
             s += '%s performed. ' % str(job)
-        return s 
+        return s
 
 
 @task_registry.set_equivalent_casa_task('hifv_statwt')

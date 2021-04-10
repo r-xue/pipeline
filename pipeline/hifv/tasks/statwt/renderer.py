@@ -5,6 +5,7 @@ import pipeline.infrastructure.renderer.basetemplates as basetemplates
 
 from . import display as statwtdisplay
 
+
 class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='statwt.mako', description='Statwt summary',
                  always_rerender=False):

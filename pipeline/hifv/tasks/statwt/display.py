@@ -90,13 +90,13 @@ class weightboxChart(object):
 
         ax1.bxp(bxpstats_per_ant, flierprops=flierprops)
         ax1.axes.set_xticklabels(ant_names, rotation=45, ha='center')
-        ax1.set_ylabel('weight')
+        ax1.set_ylabel('$Wt_{i}$')
         ax1.set_title('Antenna-based weights')
 
         ax2.bxp(bxpstats_per_spw, flierprops=flierprops)
         ax2.axes.set_xticklabels(spws)
         ax2.set_xlabel('SPW ID')
-        ax2.set_ylabel('weight')
+        ax2.set_ylabel('$Wt_{i}$')
 
         fig.tight_layout()
         fig.savefig(figfile)
@@ -117,7 +117,7 @@ class weightboxChart(object):
 
     def _get_plot_wrapper(self, suffix=''):
         figfile = self._get_figfile(suffix)
-        wrapper = logger.Plot(figfile, x_axis='ant/spw', y_axis='weights',
+        wrapper = logger.Plot(figfile, x_axis='antenna or spectral window', y_axis='antenna-based weight',
                               parameters={'vis': self.ms.basename,
                                           'x_axis': 'ant/spw',
                                           'y_axis': 'weight',
