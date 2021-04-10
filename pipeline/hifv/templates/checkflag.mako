@@ -43,7 +43,7 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
 
 
 
-% if result[0].inputs['checkflagmode'] in ('vlass-imaging'):
+% if result[0].inputs['checkflagmode'] == 'vlass-imaging' :
 
 <%
 plot_caption = 'Percentage Flagged Map'

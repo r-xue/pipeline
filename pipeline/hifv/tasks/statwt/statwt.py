@@ -1,11 +1,13 @@
+import os
+import shutil
+
+import numpy as np
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.heuristics import cont_file_to_CASA
-from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.hifv.heuristics import cont_file_to_CASA, set_add_model_column_parameters
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -37,7 +39,7 @@ class StatwtInputs(vdp.StandardInputs):
 
 
 class StatwtResults(basetask.Results):
-    def __init__(self, jobs=None, flag_summaries=[]):
+    def __init__(self, jobs=None, flag_summaries=[], wtables={}):
 
         if jobs is None:
             jobs = []
@@ -45,12 +47,13 @@ class StatwtResults(basetask.Results):
         super(StatwtResults, self).__init__()
         self.jobs = jobs
         self.summaries = flag_summaries
+        self.wtables = wtables
 
     def __repr__(self):
         s = 'Statwt results:\n'
         for job in self.jobs:
             s += '%s performed. ' % str(job)
-        return s 
+        return s
 
 
 @task_registry.set_equivalent_casa_task('hifv_statwt')
@@ -71,6 +74,10 @@ class Statwt(basetask.StandardTaskTemplate):
         fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
         fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
+        wtables = {}
+        if self.inputs.statwtmode == 'VLASS-SE':
+            wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
+
         flag_summaries = []
         # flag statistics before task
         flag_summaries.append(self._do_flagsummary('before', field=fields))
@@ -79,7 +86,10 @@ class Statwt(basetask.StandardTaskTemplate):
         # flag statistics after task
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
 
-        return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries)
+        if self.inputs.statwtmode == 'VLASS-SE':
+            wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
+
+        return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
 
     def analyse(self, results):
         return results
@@ -136,3 +146,50 @@ class Statwt(basetask.StandardTaskTemplate):
                 tclean_result = self._executor.execute(job)
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
+
+    def _make_weight_table(self, suffix='', dryrun=False):
+
+        stage_number = self.inputs.context.task_counter
+        names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
+        outputvis = '.'.join(list(filter(None, names)))
+        wtable = outputvis+'.tbl'
+
+        if dryrun == True:
+            return wtable
+
+        isdir = os.path.isdir(outputvis)
+        if isdir:
+            shutil.rmtree(outputvis)
+
+        task_args = {'vis': self.inputs.vis,
+                     'outputvis': outputvis,
+                     'spw': '*:0',
+                     'datacolumn': 'DATA',
+                     'keepflags': False}
+        job = casa_tasks.split(**task_args)
+        self._executor.execute(job)
+
+        with casa_tools.MSMDReader(outputvis) as msmd:
+            spws = msmd.spwfordatadesc(-1)
+
+        with casa_tools.TableReader(outputvis, nomodify=False) as tb:
+            for column in ['WEIGHT_SPECTRUM', 'SIGMA_SPECTRUM']:
+                if column in tb.colnames():
+                    tb.removecols(column)
+            for spw in spws:
+                stb = tb.query('DATA_DESC_ID=={0}'.format(spw))
+                weights = stb.getcol('WEIGHT')
+                weights_shape = weights.shape
+                if weights.size > 0:
+                    stb.putcol('DATA', np.reshape(weights, newshape=(weights_shape[0], 1, weights_shape[1])))
+                    stb.putcol('WEIGHT', np.ones(weights_shape))
+                    flag_row = stb.getcol('FLAG_ROW')
+                    stb.putcol('FLAG', np.resize(flag_row, (weights_shape[0], 1, weights_shape[1])))
+                stb.close()
+
+        gaincal_spws = ','.join([str(s) for s in spws])
+        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',
+                                 minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
+        self._executor.execute(job)
+
+        return wtable
