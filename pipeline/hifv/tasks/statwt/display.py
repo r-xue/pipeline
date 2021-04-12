@@ -92,11 +92,13 @@ class weightboxChart(object):
         ax1.axes.set_xticklabels(ant_names, rotation=45, ha='center')
         ax1.set_ylabel('$Wt_{i}$')
         ax1.set_title('Antenna-based weights')
+        ax1.get_yaxis().get_major_formatter().set_useOffset(False)
 
         ax2.bxp(bxpstats_per_spw, flierprops=flierprops)
         ax2.axes.set_xticklabels(spws)
         ax2.set_xlabel('SPW ID')
         ax2.set_ylabel('$Wt_{i}$')
+        ax2.get_yaxis().get_major_formatter().set_useOffset(False)
 
         fig.tight_layout()
         fig.savefig(figfile)
