@@ -35,7 +35,14 @@ class selfcalphaseGainPerAntennaChart(object):
         nplots = len(m.antennas)
         plots = []
 
-        LOG.info("Plotting phase vs. time after running hifv_selfcal")
+        LOG.info("Plotting phase/SNR vs. time after running hifv_selfcal")
+
+        snr_plotrange = [0, 0, 0, 5.0]
+        with casa_tools.TableReader(result.caltable) as table:
+            snr = table.getcol('SNR')
+            flag = table.getcol('FLAG')
+        if np.sum(flag) < flag.size:
+            snr_plotrange[-1] = 1.1*np.nanmax(snr[~flag])
 
         for ii in range(nplots):
 
@@ -63,7 +70,7 @@ class selfcalphaseGainPerAntennaChart(object):
                                             gridrows=2, gridcols=1, rowindex=0, colindex=0, plotindex=0,
                                             coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                             title='G table: {!s}   Antenna: {!s}'.format(result.caltable, antName), xlabel=' ',
-                                            showlegend=True,
+                                            showlegend=False,
                                             showgui=False, plotfile=figfile, clearplots=True, overwrite=True,
                                             titlefont=8, xaxisfont=7, yaxisfont=7, xconnector='line')
                     job.execute(dry_run=False)
@@ -71,10 +78,10 @@ class selfcalphaseGainPerAntennaChart(object):
                     job = casa_tasks.plotms(vis=result.caltable, xaxis='time', yaxis='snr', field='',
                                             antenna=antPlot, spw='', timerange='',
                                             gridrows=2, gridcols=1, rowindex=1, colindex=0, plotindex=1,
-                                            coloraxis='', plotrange=[], symbolshape='circle',
+                                            coloraxis='', plotrange=snr_plotrange, symbolshape='circle',
                                             title=' ',
                                             showgui=False, plotfile=figfile, clearplots=False, overwrite=True,
-                                            showlegend=True,
+                                            showlegend=False,
                                             titlefont=8, xaxisfont=7, yaxisfont=7, xconnector='line')
                     job.execute(dry_run=False)
 
