@@ -333,8 +333,8 @@ class RasterScanHeuristic(api.Heuristic):
         # construct return value that is compatible with grouping2 heuristics
         # - gaps for raster row correspond to "small" time gap
         # - gaps for raster map correspond to "large" time gap
-        gap_small = gaplist_row
-        gap_large = [gaplist_row[i] for i in gaplist_map]
+        gap_small = gaplist_row[1:-1]
+        gap_large = [gaplist_row[i] for i in gaplist_map[1:-1]]
         gaplist = [gap_small, gap_large]
 
         table_small = dtrow_list
