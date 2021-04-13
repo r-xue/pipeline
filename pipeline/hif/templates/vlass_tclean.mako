@@ -138,6 +138,14 @@ except:
                     <td>${row.residual_ratio}</td>
                 </tr>
 
+                ## added for PIPE-1081
+                % if row.outmaskratio is not None:
+                <tr>
+                    <th>${row.outmaskratio_label}</th>
+                    <td>${row.outmaskratio}</td>
+                </tr>
+                % endif
+
                 <tr>
                     <th>${row.non_pbcor_label}</th>
                     <td>${row.non_pbcor}</td>

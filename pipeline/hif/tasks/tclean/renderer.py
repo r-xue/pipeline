@@ -8,6 +8,7 @@ import itertools
 import os
 import string
 from random import randint
+import re
 
 import numpy
 
@@ -20,6 +21,8 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from . import display
 
+import casatasks
+
 LOG = logging.get_logger(__name__)
 
 
@@ -31,7 +34,8 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'nsigma_label nsigma vis_amp_ratio_label vis_amp_ratio  '
     'image_file nchan plot qa_url iterdone stopcode stopreason '
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
-    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result'))
+    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
+    'outmaskratio outmaskratio_label'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -211,6 +215,62 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
                 row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
+
+            #
+            # Amount of flux >10-sigma inside and outside QL mask VLASS (only first imaging stage), PIPE-1081
+            #
+            if 'VLASS-SE-CONT' in r.imaging_mode and utils.get_task_result_count(context, 'hif_makeimages') == 1:
+                row_outmaskratio_label = 'Flux ratio inside and outside of mask'
+
+                # use first image
+                image1 = r.iterations[maxiter]['image'] + extension
+                pbimage1 = re.sub('\.image$', '.pb', r.iterations[maxiter]['image']) + extension
+                maskimage1 = r.iterations[maxiter]['cleanmask']
+
+                try:
+                    # make inverse of mask image
+                    expression = '(IM0-1.0)*(-1.0)'
+                    casatasks.immath(imagename=[maskimage1], expr=expression, outfile=maskimage1 + '.inverse')
+
+                    # sigma clip cleaned image
+                    # threshold for sigma clipping, should measure sigma in the image and use 10x that value in actuality
+                    thresholdString = '1500.0e-6'
+                    expression = 'iif(IM0 > ' + thresholdString + ', IM0,0.0)'
+                    casatasks.immath(imagename=[image1], expr=expression, outfile=image1 + '.sigclip')
+
+                    # make a pbmask at pblimit = 0.4
+                    pblimit = 0.4
+                    expression = f'iif(IM0 > {pblimit}, 1.0,0.0)'
+                    casatasks.immath(imagename=[pbimage1], expr=expression, outfile=image1 + '.pbclip')
+
+                    # make an image of just flux within the pbmask and QLmask
+                    expression = 'IM0*IM1*IM2'
+                    casatasks.immath(imagename=[image1 + '.sigclip', image1 + '.pbclip', maskimage1], imagemd=image1, expr=expression,
+                           outfile=image1 + '.sigclip.pbclip.inmask')
+
+                    # make an image of just flux within the pbmask and outside the QLmask
+                    expression = 'IM0*IM1*IM2'
+                    casatasks.immath(imagename=[image1 + '.sigclip', image1 + '.pbclip', maskimage1 + '.inverse'], imagemd=image1,
+                           expr=expression, outfile=image1 + '.sigclip.pbclip.outmask')
+
+                    # measure total flux inside and outside masks
+                    inmaskstats = casatasks.imstat(imagename=image1 + '.sigclip.pbclip.inmask')
+                    outmaskstats = casatasks.imstat(imagename=image1 + '.sigclip.pbclip.outmask')
+
+                    # calculate ratio of total flux inside and outside mask
+                    outmaskratio = (outmaskstats['flux'] / (outmaskstats['flux'] + inmaskstats['flux'])).item()
+                    row_outmaskratio = '%#.3g' % outmaskratio
+
+                    if outmaskratio > 0.2:
+                        LOG.warning(f'Flux fraction outside of clearmask ({maskimage1}) exceeds the 0.2 limit!')
+                    else:
+                        LOG.info(f"Flux fraction outside of clearmask ({maskimage1}): {row_outmaskratio}")
+                except:
+                    row_outmaskratio = 'Cannot be determined'
+                    LOG.warning(f'Flux fraction outside of clearmask ({maskimage1}) cannot be determined!')
+            else:
+                row_outmaskratio = None
+                row_outmaskratio_label = None
 
             #
             # clean iterations, for VLASS
@@ -500,6 +560,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 nchan=nchan,
                 plot=None,
                 qa_url=None,
+                outmaskratio=row_outmaskratio,
+                outmaskratio_label=row_outmaskratio_label,
                 iterdone=row_iterdone,
                 stopcode=row_stopcode,
                 stopreason=row_stopreason,

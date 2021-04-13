@@ -20,7 +20,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
-           'get_si_prefix']
+           'get_si_prefix', 'get_task_result_count']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -323,3 +323,23 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
         idx = max(idx-1, 0)
 
         return sp_list[idx].strip(), 10.**sp_pow[idx]
+
+
+def get_task_result_count(context, taskname='hif_makeimages'):
+    """Get task ordinal number (how many times the task was called before in the pipeline execution).
+
+    The order number is determined by counting the number of previous execution of
+    the task, based on the content of the context.results list. The introduction
+    of this method is necessary because VLASS-SE-CONT imaging happens in multiple
+    stages (hif_makeimages calls). Imaging parameters change from stage to stage,
+    therefore it is necessary to know what is the current stage ordinal number.
+    """
+    count = 0
+    for r in context.results:
+        # Work around the fact that r has read() method in some cases (e.g. editimlist)
+        # but not in others (e.g. in tclean renderer)
+        try:
+            if taskname in r.read().pipeline_casa_task: count += 1
+        except AttributeError:
+            if taskname in r.pipeline_casa_task: count += 1
+    return count
