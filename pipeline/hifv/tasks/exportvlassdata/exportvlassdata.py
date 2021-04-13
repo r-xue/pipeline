@@ -308,8 +308,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # Export the parameter list independently of the weblog for both QL and SE Imaging recipes
         edit_result = context.results[1].read()
-        parameterlist_filename = edit_result.inputs['parameter_file']
-        parameterlist = self._export_parameterlist(context, parameterlist_filename, products_dir, oussid)
+        if edit_result.inputs['parameter_file']:
+            parameterlist_filename = edit_result.inputs['parameter_file']
+            parameterlist = self._export_parameterlist(context, parameterlist_filename, products_dir, oussid)
+        else:
+            parameterlist = None
 
         if hasattr(self.inputs.context, 'imaging_mode'):
             img_mode = self.inputs.context.imaging_mode
