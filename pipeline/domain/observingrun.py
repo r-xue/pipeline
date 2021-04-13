@@ -1,10 +1,12 @@
+import itertools
 import operator
 import os
-
-import itertools
+from typing import List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from . import DataType
+from . import MeasurementSet
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -113,6 +115,34 @@ class ObservingRun(object):
                               if is_imaging_ms]
 
         return candidates
+
+    def get_measurement_sets_of_type(self, dtypes: List[DataType]) -> List[MeasurementSet]:
+        """
+        Return a list of MeasurementSet domain object with matching DataType.
+        
+        Args:
+            dtypes: Search order of DataType. The search starts with the
+                first DataType in the list and fallbacks to another DataType
+                in the list only if no MS is found with the searched DataType.
+                The search order of DataType is in the other of elements in
+                list. Search stops at the first DataType with which at least
+                one MS is found.
+        
+        Retruns:
+            A list of MeasurementSet domain objects with a matching DataType.
+        """
+        found = []
+        for dtype in dtypes:
+            for ms in self.measurement_sets:
+                if ms.get_data_column(dtype) is not None:
+                    found.append(ms)
+            if len(found) > 0:
+                break
+        if len(found) > 0:
+            LOG.info('Found {} MSes with type {}'.format(len(found), dtype))
+        else:
+            LOG.warn('No MSes are found with types {}'.format(dtypes))
+        return found
 
     def get_fields(self, names=None):
         """

@@ -208,17 +208,18 @@ class SpectralWindow(object):
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
-                 'channels', '_ref_frequency_frame', 'transitions')
+                 'channels', '_ref_frequency_frame', 'transitions', 'data_column')
 
     def __getstate__(self):
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
-                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions)
+                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions,
+                self.data_column)
 
     def __setstate__(self, state):
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
-         self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions) = state
+         self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions, self.data_column) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -292,6 +293,8 @@ class SpectralWindow(object):
         self._centre_frequency = (self._min_frequency + self._max_frequency) / 2.0
 
         self.transitions = transitions
+        
+        self.data_column = {}
 
     @property
     def centre_frequency(self):

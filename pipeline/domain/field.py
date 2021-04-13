@@ -19,6 +19,8 @@ class Field(object):
         self.states = set()
         self.valid_spws = set()
         self.flux_densities = set()
+        
+        self.data_column = {}
 
     def __repr__(self):
         name = self.name

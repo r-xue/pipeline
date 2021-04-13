@@ -12,6 +12,7 @@ import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 from . import measures
 from . import spectralwindow
+from .datatype import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -37,6 +38,7 @@ class MeasurementSet(object):
         self.filesize = self._calc_filesize() 
         self.is_imaging_ms = False
         self.work_data = name
+        self.data_column = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
@@ -1093,3 +1095,68 @@ class MeasurementSet(object):
         if value is None:
             value = 'session_1'
         self._session = value
+        
+    def set_data_column(self, dtype: DataType, column: str,
+                        spw: Optional[str]=None, field: Optional[str]=None,
+                        overwrite: bool=False):
+        """
+        Set data type and column.
+        
+        Set data type and column to MS domain object or to selected spectral
+        window and field. If both spw and field are None, data column
+        information of MS domain object is set. If both spw and field are not
+        None, data column information of both spectral windows and fields
+        selected by the string selection syntaxes are set.
+        
+        Args:
+            dtype: data type to set
+            column: name of colum in MS associated with the data type
+            spw: spectral window selection string
+            field: field selection string
+            overwrite: if True existing data colum is overwritten by the new
+                column. If False and if type is already associated with other
+                column, the function raises ValueError.
+        
+        Raises:
+            ValueError: An error raised when the column does not exists
+                or the type is already associated with a column and would not
+                be overwritten.
+        """
+        # Check existance of the column
+        with casa_tools.TableReader(self.name) as table:
+            cols = table.colnames()
+        if column not in cols:
+            raise ValueError('Column {} does not exists in {}'.format(column, self.basename))
+        if spw is None and field is None: # Update MS domain object
+            if not overwrite and dtype in self.data_column.keys():
+                raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+            self.data_column[dtype] = column
+            return
+        # Update Spw
+        if spw is not None:
+            for s in self.get_spectral_windows(task_arg=spw, science_windows_only=False):
+                if not overwrite and dtype in s.data_column.keys():
+                    raise ValueError('Data type {} is already associated with {} in spw {}'.format(dtype, s.data_column[dtype], s.id))
+                s.data_column[dtype] = column
+        # Update field
+        if field is not None:
+            for f in self.get_fields(field):
+                if not overwrite and dtype in f.data_column.keys():
+                    raise ValueError('Data type {} is already associated with {} in field {}'.format(dtype, f.data_column[dtype], f.id))
+                f.data_column[dtype] = column
+
+    def get_data_column(self, dtype: DataType) -> Optional[str]:
+        """
+        Retun columns name associated with a DataType in MS domain object.
+        
+        Args:
+            dtype: DataType to fetch column name for
+        
+        Returns:
+            A name of column of a dtype. Returns None if dtype is not defined
+            in the MS.
+        """
+        if not (dtype in self.data_column.keys()):
+            return None
+        return self.data_column[dtype]
+
