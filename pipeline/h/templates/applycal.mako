@@ -620,7 +620,7 @@ def format_spwmap(spwmap, scispws):
 	% endif
 
 		<p>Data are plotted for all antennas and correlations, with different
-		spectral windows shown in different colours.</p>
+                antennas shown in different colours.</p>
 	</%def>
 
 	<%def name="mouseover(plot)">Click to show amplitude vs frequency for spw ${plot.parameters['spw']}</%def>
