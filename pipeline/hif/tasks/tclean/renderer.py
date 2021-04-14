@@ -21,7 +21,6 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from . import display
 
-
 LOG = logging.get_logger(__name__)
 
 
@@ -34,7 +33,8 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'image_file nchan plot qa_url iterdone stopcode stopreason '
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
-    'outmaskratio outmaskratio_label'))
+    'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
+    'tab_dict tab_url outmaskratio outmaskratio_label'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -104,7 +104,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spw = info.get('spw', None)
             if spw is not None:
                 nspwnam = info.get('nspwnam', None)
-                spwnames = ','.join([info.get('spwnam%02d' % (i+1)) for i in range(nspwnam)])
+                spwnames = ','.join([info.get('spwnam%02d' % (i + 1)) for i in range(nspwnam)])
             else:
                 spwnames = None
             if 'field' in info:
@@ -214,6 +214,94 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
                 row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
+
+            #
+            # Model image statistics for VLASS, PIPE-991
+            #
+            if 'VLASS-SE-CONT' in r.imaging_mode:
+                model_image = r.iterations[maxiter]['model'] + extension
+                with casa_tools.ImageReader(model_image) as image:
+                    # In some cases there might not be any negative (or positive) pixels
+                    try:
+                        pos_flux = image.statistics(mask='"%s" > %f'%(model_image, 0.0), robust=False)['sum'][0]
+                    except IndexError:
+                        pos_flux = 0.0
+                    row_model_pos_flux = '{:.2g} {}'.format(pos_flux, image.brightnessunit())
+                    try:
+                        neg_flux = image.statistics(mask='"%s" < %f'%(model_image, 0.0), robust=False)['sum'][0]
+                    except IndexError:
+                        neg_flux = 0.0
+                    row_model_neg_flux = '{:.2g} {}'.format(neg_flux, image.brightnessunit())
+                    # Create region for inner degree
+                    # TODO: refactor because this code is partially a duplicate of vlassmasking.py
+                    image_csys = image.coordsys()
+
+                    xpixel = image_csys.torecord()['direction0']['crpix'][0]
+                    ypixel = image_csys.torecord()['direction0']['crpix'][1]
+                    xdelta = image_csys.torecord()['direction0']['cdelt'][0]  # in radians
+                    ydelta = image_csys.torecord()['direction0']['cdelt'][1]  # in radians
+                    onedeg = 1.0 * numpy.pi / 180.0  # conversion
+                    widthdeg = 1.0  # degrees
+                    boxhalfxwidth = numpy.abs((onedeg * widthdeg / 2.0) / xdelta)
+                    boxhalfywidth = numpy.abs((onedeg * widthdeg / 2.0) / ydelta)
+
+                    blcx = xpixel - boxhalfxwidth
+                    blcy = ypixel - boxhalfywidth
+                    if blcx < 0:
+                        blcx = 0
+                    if blcy < 0:
+                        blcy = 0
+                    blc = [blcx, blcy]
+
+                    trcx = xpixel + boxhalfxwidth
+                    trcy = ypixel + boxhalfywidth
+                    if trcx > image.getchunk().shape[0]:
+                        trcx = image.getchunk().shape[0]
+                    if trcy > image.getchunk().shape[1]:
+                        trcy = image.getchunk().shape[1]
+                    trc = [trcx, trcy]
+
+                    myrg = casa_tools.regionmanager
+                    r1 = myrg.box(blc=blc, trc=trc)
+
+                    y = image.getregion(r1)
+                    row_model_flux_inner_deg = '{:.2g} {}'.format(y.sum(), image.brightnessunit())
+            else:
+                row_model_pos_flux = None
+                row_model_neg_flux = None
+                row_model_flux_inner_deg = None
+
+            #
+            # Major cycle statistics for VLASS
+            #
+            if 'VLASS-SE-CONT' in r.imaging_mode:
+                row_nmajordone_per_iter = {}
+                for iteration, iterdata in r.iterations.items():
+                    iter_dict = {'cleanmask': iterdata['cleanmask'] if 'cleanmask' in iterdata.keys() else '',
+                                 'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata.keys() else 0,
+                                 'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array'
+                                                                                     in iterdata.keys() else None,
+                                 'peakrms_array': iterdata['peakrms_array'] if 'peakrms_array'
+                                                                               in iterdata.keys() else None,
+                                 'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array'
+                                                                                   in iterdata.keys() else None}
+                    row_nmajordone_per_iter[iteration] = iter_dict
+                row_nmajordone_total = numpy.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
+                # Major cycle stats figure
+                plotter = display.TcleanMajorCycleSummaryFigure(context, makeimages_result, row_nmajordone_per_iter)
+                majorcycle_stat_plot = plotter.plot()
+                tab_dict = {0: {'cols': ['iteration', 'cleanmask', 'nmajordone'],
+                                  'nrow': len(row_nmajordone_per_iter.keys()),
+                                  'iteration': [k for k in row_nmajordone_per_iter.keys()],
+                                  'cleanmask': [item['cleanmask'] for iter, item in row_nmajordone_per_iter.items()],
+                                  'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]
+                                  }
+                              }
+            else:
+                row_nmajordone_per_iter = None
+                row_nmajordone_total = None
+                majorcycle_stat_plot = None
+                tab_dict = None
 
             #
             # Amount of flux >10-sigma inside and outside QL mask VLASS (only first imaging stage), PIPE-1081
@@ -536,6 +624,14 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 initial_nsigma_mad=row_initial_nsigma_mad,
                 final_nsigma_mad_label=final_nsigma_mad_label,
                 final_nsigma_mad=row_final_nsigma_mad,
+                model_pos_flux=row_model_pos_flux,
+                model_neg_flux=row_model_neg_flux,
+                model_flux_inner_deg=row_model_flux_inner_deg,
+                nmajordone_total=row_nmajordone_total,
+                nmajordone_per_iter=row_nmajordone_per_iter,
+                majorcycle_stat_plot=majorcycle_stat_plot,
+                tab_dict=tab_dict,
+                tab_url=None,
                 residual_ratio=row_residual_ratio,
                 non_pbcor_label=non_pbcor_label,
                 non_pbcor=row_non_pbcor,
@@ -586,6 +682,12 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         for row in image_rows]
         qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
+        # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
+        tab_renderer = [TCleanTablesRenderer(context, results, row.result,
+                                             row.tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
+                                             row.pol, temp_urls) if row.tab_dict else None for row in image_rows]
+        tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
+
         final_rows = []
         for row, renderer, qa_urls in zip(image_rows, qa_renderers, qa_links):
             prefix = row.image_file.split('.')[0]
@@ -602,6 +704,16 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 values = row._asdict()
                 values['plot'] = plot
                 values['qa_url'] = renderer.path
+
+                # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
+                if any(tab_url):
+                    tab_renderer = TCleanTablesRenderer(context, results, row.result,
+                                                        row.tab_dict, prefix, row.field, str(row.spw), row.pol,
+                                                        tab_url)
+                    with tab_renderer.get_file() as fileobj:
+                        fileobj.write(tab_renderer.render())
+                    values['tab_url'] = tab_renderer.path
+
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
             except IOError as e:
@@ -683,6 +795,31 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             'qa_next': urls[2],
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
             'cube_all_cont': cube_all_cont
+        }
+
+    def update_mako_context(self, mako_context):
+        mako_context.update(self.extra_data)
+
+
+class TCleanTablesRenderer(basetemplates.CommonRenderer):
+    def __init__(self, context, makeimages_results, result, table_dict, prefix, field, spw, pol, urls):
+        super(TCleanTablesRenderer, self).__init__('tcleantables.mako', context, makeimages_results)
+
+        # Set HTML page name
+        outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
+
+        # HTML encoded filenames, so can't have plus sign
+        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+
+        self.extra_data = {
+            'table_dict': table_dict,
+            'prefix': prefix.split('.')[0],
+            'field': field,
+            'spw': spw,
+            'qa_previous': urls[0],
+            'qa_next': urls[2],
+            'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
         }
 
     def update_mako_context(self, mako_context):
