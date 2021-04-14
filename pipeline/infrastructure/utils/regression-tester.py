@@ -1,5 +1,6 @@
 import os
 import shutil
+import pytest
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
@@ -19,8 +20,11 @@ class PipelineRegression(object):
         self.expectedoutput = expectedoutput
         self.testinput = f'{input_dir}/{visname}'
         
+    def __sanitize_regression_string(self, instring):
+        """sanitize to get numeric values, remove newline chars and change to float"""
+        return instring.split('=')[0], float(instring.split('=')[-1].replace('\n',''))
 
-    def run(self, ppr=False, telescope='alma'):
+    def run(self, ppr=False, telescope='alma', relative_tolerance=1e-7):
         """Run test with PPR if supplied or recipereducer if no PPR
         """
 
@@ -63,9 +67,16 @@ class PipelineRegression(object):
         with open(expected) as expected_fd, open(new_file) as new_fd:
             expected_results = expected_fd.readlines()
             new_results = new_fd.readlines()
-
-            assert expected_results == new_results
-
+            errors = []
+            for old, new  in zip(expected_results, new_results):
+                oldkey, oldval = self.__sanitize_regression_string(old)
+                newkey, newval = self.__sanitize_regression_string(new)
+                assert oldkey == newkey
+                if oldval != pytest.approx(newval, rel=relative_tolerance):
+                    errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {relative_tolerance}\n\texpected: {oldval}\n\tnew:      {newval}"
+                    errors.append(errorstr)
+            [LOG.warning(x) for x in errors]
+            assert not errors
 
 def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression():
     """Run ALMA cal+image regression on a small test dataset
