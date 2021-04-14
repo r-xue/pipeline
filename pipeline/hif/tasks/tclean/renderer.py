@@ -21,7 +21,6 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from . import display
 
-import casatasks
 
 LOG = logging.get_logger(__name__)
 
@@ -220,57 +219,52 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Amount of flux >10-sigma inside and outside QL mask VLASS (only first imaging stage), PIPE-1081
             #
             if 'VLASS-SE-CONT' in r.imaging_mode and utils.get_task_result_count(context, 'hif_makeimages') == 1:
-                row_outmaskratio_label = 'Flux ratio inside and outside of mask'
+                row_outmaskratio_label = 'flux fraction outside clean mask'
 
-                # use first image
-                image1 = r.iterations[maxiter]['image'] + extension
-                pbimage1 = re.sub('\.image$', '.pb', r.iterations[maxiter]['image']) + extension
-                maskimage1 = r.iterations[maxiter]['cleanmask']
+                # gather image files
+                image_path = r.iterations[maxiter]['image'] + extension
+                pbimage_path = re.sub('\.image$', '.pb', r.iterations[maxiter]['image']) + extension
+                maskimage_path = r.iterations[maxiter]['cleanmask']
 
                 try:
-                    # make inverse of mask image
-                    expression = '(IM0-1.0)*(-1.0)'
-                    casatasks.immath(imagename=[maskimage1], expr=expression, outfile=maskimage1 + '.inverse')
-
-                    # sigma clip cleaned image
-                    # threshold for sigma clipping, should measure sigma in the image and use 10x that value in actuality
-                    thresholdString = '1500.0e-6'
-                    expression = 'iif(IM0 > ' + thresholdString + ', IM0,0.0)'
-                    casatasks.immath(imagename=[image1], expr=expression, outfile=image1 + '.sigclip')
-
+                    # threshold for sigma clipping, measure sigma in the image and use 10x the value
+                    with casa_tools.ImageReader(image_path) as image:
+                        threshold = image.statistics(robust=False)['sigma'].item() * 10.0
                     # make a pbmask at pblimit = 0.4
                     pblimit = 0.4
-                    expression = f'iif(IM0 > {pblimit}, 1.0,0.0)'
-                    casatasks.immath(imagename=[pbimage1], expr=expression, outfile=image1 + '.pbclip')
 
-                    # make an image of just flux within the pbmask and QLmask
-                    expression = 'IM0*IM1*IM2'
-                    casatasks.immath(imagename=[image1 + '.sigclip', image1 + '.pbclip', maskimage1], imagemd=image1, expr=expression,
-                           outfile=image1 + '.sigclip.pbclip.inmask')
+                    # Image flux within mask, above threshold and pb level
+                    expression = f'iif("{image_path}" > {threshold}, "{image_path}", 0.0) ' \
+                                 f'* iif("{pbimage_path}" >= {pblimit}, 1.0, 0.0) ' \
+                                 f'* "{maskimage_path}"'
+                    image_inmask = casa_tools.image.imagecalc(outfile="", pixels=expression, imagemd=f"{image_path}")
+                    inmask_flux = image_inmask.statistics()['sum'].item()
+                    image_inmask.done()
 
-                    # make an image of just flux within the pbmask and outside the QLmask
-                    expression = 'IM0*IM1*IM2'
-                    casatasks.immath(imagename=[image1 + '.sigclip', image1 + '.pbclip', maskimage1 + '.inverse'], imagemd=image1,
-                           expr=expression, outfile=image1 + '.sigclip.pbclip.outmask')
+                    # Image flux outside mask, above threshold and pb level
+                    expression = f'iif("{image_path}" > {threshold}, "{image_path}", 0.0) ' \
+                                 f'* iif("{pbimage_path}" >= {pblimit}, 1.0, 0.0) ' \
+                                 f'* (("{maskimage_path}" - 1.0) * -1.0)'
 
-                    # measure total flux inside and outside masks
-                    inmaskstats = casatasks.imstat(imagename=image1 + '.sigclip.pbclip.inmask')
-                    outmaskstats = casatasks.imstat(imagename=image1 + '.sigclip.pbclip.outmask')
+                    image_outmask = casa_tools.image.imagecalc(outfile="", pixels=expression, imagemd=f"{image_path}")
+                    outmask_flux = image_outmask.statistics()['sum'].item()
+                    image_outmask.done()
 
                     # calculate ratio of total flux inside and outside mask
-                    outmaskratio = (outmaskstats['flux'] / (outmaskstats['flux'] + inmaskstats['flux'])).item()
+                    outmaskratio = outmask_flux / (inmask_flux + outmask_flux)
                     row_outmaskratio = '%#.3g' % outmaskratio
 
                     if outmaskratio > 0.2:
-                        LOG.warning(f'Flux fraction outside of clearmask ({maskimage1}) exceeds the 0.2 limit!')
+                        LOG.warning(f'Flux fraction outside clearmask ({maskimage_path}): {row_outmaskratio}, '
+                                    f'exceeds 0.2 limit!')
                     else:
-                        LOG.info(f"Flux fraction outside of clearmask ({maskimage1}): {row_outmaskratio}")
+                        LOG.info(f"Flux fraction outside clearmask ({maskimage_path}): {row_outmaskratio}")
                 except:
-                    row_outmaskratio = 'Cannot be determined'
-                    LOG.warning(f'Flux fraction outside of clearmask ({maskimage1}) cannot be determined!')
+                    row_outmaskratio = 'cannot be determined'
+                    LOG.warning(f'Flux fraction outside clearmask ({maskimage_path}): cannot be determined!')
             else:
-                row_outmaskratio = None
                 row_outmaskratio_label = None
+                row_outmaskratio = None
 
             #
             # clean iterations, for VLASS
