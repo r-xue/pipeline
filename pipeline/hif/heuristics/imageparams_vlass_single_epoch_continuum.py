@@ -148,8 +148,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return 1000.
 
     def specmode(self) -> str:
-        """Tclean specmode parameter heuristics."""
-        return 'mfs'
+        """Tclean specmode parameter heuristics.
+        See PIPE-1060"""
+        return 'cont'
 
     def intent(self) -> str:
         """Tclean intent parameter heuristics."""

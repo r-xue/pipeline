@@ -572,6 +572,10 @@ class CleanBase(basetask.StandardTaskTemplate):
                 # Serial tclean result
                 tclean_stopcode = tclean_result['stopcode']
                 tclean_iterdone = tclean_result['iterdone']
+                tclean_nmajordone = tclean_result['nmajordone']
+                tclean_nminordone = tclean_result['summaryminor'][0,:]
+                tclean_peakrms = tclean_result['summaryminor'][1,:]
+                tclean_totalflux = tclean_result['summaryminor'][2, :]
                 tclean_niter = tclean_result['niter']
             else:
                 # Parallel tclean result structure is currently (2017-03) different
@@ -602,10 +606,22 @@ class CleanBase(basetask.StandardTaskTemplate):
                     # This should not happen. Just a fallback. Will cause
                     # stop code reason evaluation to fail later on.
                     tclean_stopcode = 0
+                # With CASA 6.2 (see CAS-9386) this else clause is not necessary. The pipeline 2021.1.1 release is
+                # based on the CASA 6.1 series, however, even there the else clause does not seem to be triggered.
+                # The variables are defined here for completeness, but tclean_nminordone, tclean_peakrms and
+                # tclean_totalflux are not guaranteed to have correct (expected) array shape.
                 tclean_iterdone = sum([tclean_result[key][int(key.replace('node', ''))]['iterdone']
                                        for key in tclean_result])
+                tclean_nmajordone = sum([tclean_result[key][int(key.replace('node', ''))]['nmajordone']
+                                         for key in tclean_result])
                 tclean_niter = max([tclean_result[key][int(key.replace('node', ''))]['niter']
                                     for key in tclean_result])
+                tclean_nminordone = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][0,:]
+                                                    for key in tclean_result])
+                tclean_peakrms = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][1,:]
+                                                 for key in tclean_result])
+                tclean_totalflux = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][2,:]
+                                                   for key in tclean_result])
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
             if (tclean_stopcode == 1) and (tclean_iterdone >= tclean_niter):
@@ -617,6 +633,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_tclean_stopcode(tclean_stopcode)
             result.set_tclean_stopreason(tclean_stopcode)
             result.set_tclean_iterdone(tclean_iterdone)
+            result.set_nmajordone(iter, tclean_nmajordone)
+            result.set_nminordone_array(iter, tclean_nminordone)
+            result.set_peakrms_array(iter, tclean_peakrms)
+            result.set_totalflux_array(iter, tclean_totalflux)
 
             if tclean_stopcode in [5, 6]:
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %

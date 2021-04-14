@@ -517,6 +517,37 @@ class TcleanResult(basetask.Results):
     def set_tclean_iterdone(self, tclean_iterdone):
         self._tclean_iterdone = tclean_iterdone
 
+    @property
+    def nmajordone(self, iteration):
+        return self.iterations[iteration].get('nmajordone', None)
+
+    def set_nmajordone(self, iteration, nmajordone):
+        self.iterations[iteration]['nmajordone'] = nmajordone
+
+    @property
+    # Cumulative minor iteration array
+    def nminordone_array(self, iteration):
+        return self.iterations[iteration].get('nminordone_array', None)
+
+    def set_nminordone_array(self, iteration, nminordone_array):
+        self.iterations[iteration]['nminordone_array'] = nminordone_array
+
+    @property
+    # Cleaned peak RMS as a function of minor iteration number
+    def peakrms_array(self, iteration):
+        return self.iterations[iteration].get('peakrms_array', None)
+
+    def set_peakrms_array(self, iteration, peakrms_array):
+        self.iterations[iteration]['peakrms_array'] = peakrms_array
+
+    @property
+    # Total cleaned flux as a function of minor iteration number
+    def totalflux_array(self, iteration):
+        return self.iterations[iteration].get('totalflux_array', None)
+
+    def set_totalflux_array(self, iteration, totalflux_array):
+        self.iterations[iteration]['totalflux_array'] = totalflux_array
+
     def __repr__(self):
         repr = 'Tclean:\n'
         if self._psf is not None:
