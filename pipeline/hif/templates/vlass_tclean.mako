@@ -163,6 +163,14 @@ except:
                     <td>${row.final_nsigma_mad}</td>
                 </tr>
 
+                ## added for PIPE-1081
+                % if row.outmaskratio is not None:
+                <tr>
+                    <th>${row.outmaskratio_label}</th>
+                    <td>${row.outmaskratio}</td>
+                </tr>
+                % endif
+
                 ## added for PIPE-991
                 % if row.model_pos_flux is not None:
                 <tr>
@@ -196,14 +204,6 @@ except:
                     <th>clean residual peak / scaled MAD</th>
                     <td>${row.residual_ratio}</td>
                 </tr>
-
-                ## added for PIPE-1081
-                % if row.outmaskratio is not None:
-                <tr>
-                    <th>${row.outmaskratio_label}</th>
-                    <td>${row.outmaskratio}</td>
-                </tr>
-                % endif
 
                 <tr>
                     <th>${row.non_pbcor_label}</th>

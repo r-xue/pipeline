@@ -318,10 +318,11 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     # threshold for sigma clipping, measure sigma in the image and use 10x the value
                     with casa_tools.ImageReader(image_path) as image:
                         threshold = image.statistics(robust=False)['sigma'].item() * 10.0
+                        thr_unit = image.brightnessunit()
                     # make a pbmask at pblimit = 0.4
                     pblimit = 0.4
-                    LOG.info(f"Measuring flux fraction outside clean mask with 10 sigma threshold = {threshold} and "
-                             f"pblimit = {pblimit}")
+                    LOG.info(f"Measuring flux fraction outside clean mask with 10 sigma threshold = {threshold} "
+                             f"{thr_unit} and pblimit = {pblimit}")
 
                     # Image flux within mask, above threshold and pb level
                     expression = f'iif("{image_path}" > {threshold}, "{image_path}", 0.0) ' \
@@ -691,7 +692,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
         final_rows = []
-        for row, renderer, qa_urls in zip(image_rows, qa_renderers, qa_links):
+        for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
             prefix = row.image_file.split('.')[0]
             try:
                 final_iter = sorted(plots_dict[prefix][row.field][str(row.spw)].keys())[-1]
