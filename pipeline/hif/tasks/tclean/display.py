@@ -178,22 +178,25 @@ class CleanSummary(object):
 
         return [p for p in plot_wrappers if p is not None]
 
-# TODO: extend docstring
-class TcleanMinorCycleSummaryFigure(object):
-    """Tclean minor cycle summery statistics plot, contains:
 
-    Flux density cleaned vs. Major Cycle
+class TcleanMajorCycleSummaryFigure(object):
+    """Tclean major cycle summery statistics plot with two panels, contains:
+
+    Flux density cleaned vs. major cycle
     Plot of Peak Residual per major cycle
+
+    Note that as of 04.2021 no clear tclean return dictionary was available and the unit
+    of the flux and RMS was determined empirically.
 
     See PIPE-991."""
 
-    def __init__(self, context, result, minor_cycle_stats):
+    def __init__(self, context, result, major_cycle_stats):
         self.context = context
-        self.minorcycle_stats = minor_cycle_stats
+        self.majorcycle_stats = major_cycle_stats
         self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
         self.filebase = result.targets[0]['imagename'].replace('STAGENUMBER', '%s_0' % result.stage_number)
         self.figfile = self._get_figfile()
-        self.units = 'Jy'
+        self.units = 'Jy/pixel'
         self.title = 'Major cycle statistics'
         self.xlabel = 'Minor iterations done'
         self.ylabel = ['Flux density cleaned [%s]' % self.units, 'Peak RMS [%s]' % self.units]
@@ -201,7 +204,7 @@ class TcleanMinorCycleSummaryFigure(object):
 
     def plot(self):
         if os.path.exists(self.figfile):
-            LOG.debug('Returning existing tclean minor cycle summary plot')
+            LOG.debug('Returning existing tclean major cycle summary plot')
             return self._get_plot_object()
 
         LOG.info('Creating major cycle statistics plot.')
@@ -221,7 +224,7 @@ class TcleanMinorCycleSummaryFigure(object):
         ax0.xaxis.label.set_size(14)
 
         x0 = 0
-        for iter, item in self.minorcycle_stats.items():
+        for iter, item in self.majorcycle_stats.items():
             if item['nminordone_array'] is not None:
                 # get quantities
                 x = item['nminordone_array'] + x0
@@ -236,8 +239,8 @@ class TcleanMinorCycleSummaryFigure(object):
                 # Vertical line and annotation at major cycle end
                 ax0.axvline(x0, linewidth=1, linestyle='dotted', color='k')
                 ax1.axvline(x0, linewidth=1, linestyle='dotted', color='k')
-                ax0.annotate(item['cleanmask'], xy=(x0, ax0.get_ylim()[0]), xycoords='data',
-                             xytext=(-6, 2), textcoords='offset points', size=4, rotation=90)
+                ax0.annotate(f'iter{iter}', xy=(x0, ax0.get_ylim()[0]), xycoords='data',
+                             xytext=(-10, 6), textcoords='offset points', size=8, rotation=90)
 
         plt.tight_layout()
         plt.savefig(self.figfile)

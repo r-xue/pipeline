@@ -32,7 +32,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
-    'tab_url'))
+    'tab_dict tab_url'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -285,7 +285,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     row_nmajordone_per_iter[iteration] = iter_dict
                 row_nmajordone_total = numpy.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
                 # Major cycle stats figure
-                plotter = display.TcleanMinorCycleSummaryFigure(context, makeimages_result, row_nmajordone_per_iter)
+                plotter = display.TcleanMajorCycleSummaryFigure(context, makeimages_result, row_nmajordone_per_iter)
                 majorcycle_stat_plot = plotter.plot()
                 tab_dict = {0: {'cols': ['iteration', 'cleanmask', 'nmajordone'],
                                   'nrow': len(row_nmajordone_per_iter.keys()),
@@ -298,7 +298,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row_nmajordone_per_iter = None
                 row_nmajordone_total = None
                 majorcycle_stat_plot = None
-                # TODO: check missing state in weblog
                 tab_dict = None
 
             #
@@ -577,6 +576,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 nmajordone_total=row_nmajordone_total,
                 nmajordone_per_iter=row_nmajordone_per_iter,
                 majorcycle_stat_plot=majorcycle_stat_plot,
+                tab_dict=tab_dict,
                 tab_url=None,
                 residual_ratio=row_residual_ratio,
                 non_pbcor_label=non_pbcor_label,
@@ -626,10 +626,11 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         for row in image_rows]
         qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
+        # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
         tab_renderer = [TCleanTablesRenderer(context, results, row.result,
-                                             tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
-                                             row.pol, temp_urls, row.cube_all_cont) for row in image_rows]
-        tab_links = triadwise([renderer.path for renderer in tab_renderer])
+                                             row.tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
+                                             row.pol, temp_urls) if row.tab_dict else None for row in image_rows]
+        tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
         final_rows = []
         for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
@@ -644,18 +645,19 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
 
-                # PIPE-991: render tclean major cycle table
-                tab_renderer = TCleanTablesRenderer(context, results, row.result,
-                                                    tab_dict, prefix, row.field, str(row.spw), row.pol,
-                                                    tab_url, row.cube_all_cont)
-
-                with tab_renderer.get_file() as fileobj:
-                    fileobj.write(tab_renderer.render())
-
                 values = row._asdict()
                 values['plot'] = plot
                 values['qa_url'] = renderer.path
-                values['tab_url'] = tab_renderer.path
+
+                # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
+                if any(tab_url):
+                    tab_renderer = TCleanTablesRenderer(context, results, row.result,
+                                                        row.tab_dict, prefix, row.field, str(row.spw), row.pol,
+                                                        tab_url)
+                    with tab_renderer.get_file() as fileobj:
+                        fileobj.write(tab_renderer.render())
+                    values['tab_url'] = tab_renderer.path
+
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
             except IOError as e:
@@ -743,56 +745,25 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         mako_context.update(self.extra_data)
 
 
-# TODO: clean up TCleanTablesRenderer class
 class TCleanTablesRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, makeimages_results, result, table_dict, prefix, field, spw, pol, urls, cube_all_cont):
+    def __init__(self, context, makeimages_results, result, table_dict, prefix, field, spw, pol, urls):
         super(TCleanTablesRenderer, self).__init__('tcleantables.mako', context, makeimages_results)
 
         # Set HTML page name
-        # VLA needs a slightly different name for some cases
-        # For that we need to check imaging_mode and specmode but we have to
-        # protect against iteration errors for empty results.
-        if not result.empty():
-            if 'VLA' in result.imaging_mode and 'VLASS' not in result.imaging_mode and result.specmode == 'cont':
-                # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
-                # band = ms.get_vla_spw2band()
-                # band_spws = {}
-                # for k, v in band.items():
-                #     band_spws.setdefault(v, []).append(k)
-                # for k, v in band_spws.items():
-                #     for spw in spw.split(','):
-                #         if int(spw) in v:
-                #             band = k
-                #             break
-                # TODO: Not sure if a random number will work in all cases.
-                #       While working on PIPE-129 it happened that this code
-                #       was run 4 times for 2 targets. Better make sure the
-                #       name is well defined (see new setup for per EB images below).
-                outfile = '%s-field%s-pol%s-cleantables-%d.html' % (prefix, field, pol, randint(1, 1e12))
-            else:
-                # The name needs to be unique also for the per EB imaging. Thus prepend the image name
-                # which contains the OUS or EB ID.
-                outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
-        # TODO: Check if this is useful since the result is empty.
-        else:
-            outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
+        outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
 
         # HTML encoded filenames, so can't have plus sign
         valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
         self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
-
-        colorder = ['pbcorimage', 'residual', 'cleanmask']
 
         self.extra_data = {
             'table_dict': table_dict,
             'prefix': prefix.split('.')[0],
             'field': field,
             'spw': spw,
-            'colorder': colorder,
             'qa_previous': urls[0],
             'qa_next': urls[2],
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
-            'cube_all_cont': cube_all_cont
         }
 
     def update_mako_context(self, mako_context):
