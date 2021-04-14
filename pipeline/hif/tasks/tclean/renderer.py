@@ -320,6 +320,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         threshold = image.statistics(robust=False)['sigma'].item() * 10.0
                     # make a pbmask at pblimit = 0.4
                     pblimit = 0.4
+                    LOG.info(f"Measuring flux fraction outside clean mask with 10 sigma threshold = {threshold} and "
+                             f"pblimit = {pblimit}")
 
                     # Image flux within mask, above threshold and pb level
                     expression = f'iif("{image_path}" > {threshold}, "{image_path}", 0.0) ' \
