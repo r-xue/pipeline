@@ -196,7 +196,7 @@ class TcleanMajorCycleSummaryFigure(object):
         self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
         self.filebase = result.targets[0]['imagename'].replace('STAGENUMBER', '%s_0' % result.stage_number)
         self.figfile = self._get_figfile()
-        self.units = 'Jy/pixel'
+        self.units = 'Jy'
         self.title = 'Major cycle statistics'
         self.xlabel = 'Minor iterations done'
         self.ylabel = ['Flux density cleaned [%s]' % self.units, 'Peak RMS [%s]' % self.units]
@@ -212,16 +212,16 @@ class TcleanMajorCycleSummaryFigure(object):
         fig, (ax0, ax1) = plt.subplots(2, 1, )
         fig.set_dpi(150.0)
 
-        ax0.set_title(self.title)
-        ax1.set_xlabel(self.xlabel)
-        ax0.set_ylabel(self.ylabel[0])
-        ax1.set_ylabel(self.ylabel[1])
+        ax0.set_title(self.title, fontsize=10)
+        ax1.set_xlabel(self.xlabel, fontsize=8)
+        ax0.set_ylabel(self.ylabel[0], fontsize=8)
+        ax1.set_ylabel(self.ylabel[1], fontsize=8)
+
+        ax0.tick_params(axis='both', which='both', labelsize=8)
+        ax1.tick_params(axis='both', which='both', labelsize=8)
 
         ax0.set_yscale('log')
         ax1.set_yscale('log')
-
-        ax0.xaxis.label.set_size(14)
-        ax0.xaxis.label.set_size(14)
 
         x0 = 0
         for iter, item in self.majorcycle_stats.items():
@@ -232,7 +232,6 @@ class TcleanMajorCycleSummaryFigure(object):
                 ax1_y = item['peakrms_array'] * self.unitfactor
                 # increment last iteration
                 x0 = x[-1]
-
                 # scatter plot
                 ax0.plot(x, ax0_y, 'b+')
                 ax1.plot(x, ax1_y, 'b+')
@@ -242,8 +241,8 @@ class TcleanMajorCycleSummaryFigure(object):
                 ax0.annotate(f'iter{iter}', xy=(x0, ax0.get_ylim()[0]), xycoords='data',
                              xytext=(-10, 6), textcoords='offset points', size=8, rotation=90)
 
-        plt.tight_layout()
-        plt.savefig(self.figfile)
+        fig.tight_layout()
+        fig.savefig(self.figfile)
         plt.close()
 
         return self._get_plot_object()
