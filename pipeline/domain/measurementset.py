@@ -1,44 +1,89 @@
+"""Provide a class to store logical representation of MeasurementSet."""
 import collections
 import contextlib
 import itertools
 import operator
 import os
-from typing import Optional
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+if TYPE_CHECKING: # Avoid circular import. Used only for type annotation.
+    from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
+
 from . import measures
 from . import spectralwindow
+from .antennaarray import AntennaArray
 from .datatype import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class MeasurementSet(object):    
-    def __init__(self, name, session=None):
-        self.name = name
-        self.array_name = None
-        self.representative_target = (None, None, None)
-        self.representative_window = None
-        self.science_goals = {}
-        self.antenna_array = None
-        self.data_descriptions = []
-        self.spectral_windows = []
-        self.fields = []
-        self.states = []
-        self.reference_spwmap = None
-        self.phaseup_spwmap = None
-        self.combine_spwmap = None
-        self.derived_fluxes = None
-        self.flagcmds = []
-        self.session = session
-        self.filesize = self._calc_filesize() 
-        self.is_imaging_ms = False
-        self.work_data = name
-        self.data_column = {}
+class MeasurementSet(object):
+    """
+    A class to store logical representation of a MeasurementSet (MS).
+    
+    Attributes:
+        name: A path to MeasurementSet
+        session: Session name of MS
+        antenna_array: Antenna array information
+        array_name: Name of array configuration
+        derived_fluxes: Flux measurements
+        flagcmds: A list of flag commands
+        filesize: Disk size of MS
+        representative_target: A tuple of the name of representative source,
+            frequency and bandwidth.
+        representative_window: A representative spwctral window name
+        science_goals: A science goal information consists of min/max
+            acceptable angular resolution, max allowed beam ratio, sensitivity,
+            dyamic range and SB name.
+        data_descriptions: A list of DataDescription objects associated with MS
+        spectral_windows: A list of SpectralWindow objects associated with MS
+        fields: A list of Field objects associated with MS
+        states: A list of State objects associated with MS
+        reference_spwmap: Reference spectral window map
+        phaseup_spwmap: Spectral window mapping used in spwphaseup calibration
+        combine_spwmap: Spectral window mapping used to increase S/N ratio
+        data_column: A dictionary to store data type (key) and corresponding
+            data column (value)
+        reference_antenna_locked: If True, reference antenna is locked to
+            prevent modification
+        is_imaging_ms: If True, the MS is for imaging (interferometry only)
+        work_data: A path to the current working MS (single dish only)
+    """
+    
+    def __init__(self, name: str, session: Optional[str]=None):
+        """
+        Initialize MeasurmentSet class.
+        
+        Args:
+            name: A path to MS
+            session: Session name of MS
+        """
+        self.name: str = name
+        self.session: Optional[str] = session
+        self.antenna_array: Optional[AntennaArray] = None
+        self.array_name: str = None
+        self.derived_fluxes: Optional[collections.defaultdict] = None
+        self.flagcmds: List[str] = []
+        self.filesize: measures.FileSize = self._calc_filesize() 
+        self.representative_target: Tuple[Optional[str], Optional[dict],
+                                          Optional[dict]] = (None, None, None)
+        self.representative_window: Optiona[str] = None
+        self.science_goals: dict = {}
+        self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
+        self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
+        self.fields: Union[RetrieveByIndexContainer, list] = []
+        self.states: Union[RetrieveByIndexContainer, list] = []
+        self.reference_spwmap: Optional[List[int]] = None
+        self.phaseup_spwmap: Optional[List[int]] = None
+        self.combine_spwmap: Optional[List[int]] = None
+        self.is_imaging_ms: bool = False
+        self.work_data: str = name
+        self.data_column: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
