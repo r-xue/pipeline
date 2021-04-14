@@ -5,7 +5,17 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Primary beam corrected images (tt0/tt1 when multi-term)</%block>
+<%
+termlist = [s.replace('.','') for s in info_dict['multitermlist']]
+if termlist[0]=='':
+    termlabel = ''
+else:
+    termlabel = '{} when multi-term'.format('/'.join(termlist))
+%>
+
+<%block name="title">Primary beam corrected images</%block>
+
+<p>${termlabel}</p>
 
 % for ms,ms_pbcorplots in pbcorplots.items():
 

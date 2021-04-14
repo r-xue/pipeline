@@ -1,10 +1,10 @@
 import os
 
 import numpy
-
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.infrastructure import casa_tools
+
 from . import display as pbcorimages
 
 LOG = logging.get_logger(__name__)
@@ -30,7 +30,9 @@ class T2_4MDetailsMakepbcorimagesRenderer(basetemplates.T2_4MDetailsDefaultRende
         pbcorplots = {}
 
         for r in results:
+
             pbcor_dict = r.pbcorimagenames
+            info_dict['multitermlist'] = r.multitermlist
 
             # Make the plots of the pbcor images
             plotter = pbcorimages.PbcorimagesSummary(context, r)

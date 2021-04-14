@@ -1,16 +1,16 @@
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class PbcorResults(basetask.Results):
-    def __init__(self, pbcorimagenames={}):
+    def __init__(self, pbcorimagenames={}, multitermlist=[]):
         super(PbcorResults, self).__init__()
         self.pbcorimagenames = pbcorimagenames
+        self.multitermlist = multitermlist
 
     def __repr__(self):
         # return 'PbcorResults:\n\t{0}'.format(
@@ -35,7 +35,7 @@ class Pbcor(basetask.StandardTaskTemplate):
         pbcor_dict = {}
 
         # by default, only .tt0 is processed
-        multiterm_ext_list= ['.tt0']
+        multiterm_ext_list = ['.tt0']
 
         # PIPE-1048/1074 (for the VLASS-SE-CONT mode):
         #   hifv_pbcor will only pbcorrect final products, including both tt0 and tt1 images.
@@ -46,6 +46,7 @@ class Pbcor(basetask.StandardTaskTemplate):
         except Exception:
             pass
 
+        term_ext_list = ['']
         for sci_im in sci_imlist:
 
             imgname = sci_im['imagename']
@@ -73,10 +74,7 @@ class Pbcor(basetask.StandardTaskTemplate):
             LOG.info("PBCOR image names: " + ','.join(pbcor_images))
             pbcor_dict[basename] = pbcor_images
 
-        return PbcorResults(pbcorimagenames=pbcor_dict)
+        return PbcorResults(pbcorimagenames=pbcor_dict, multitermlist=term_ext_list)
 
     def analyse(self, results):
         return results
-
-
-
