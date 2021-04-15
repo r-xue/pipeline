@@ -316,9 +316,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         # PSF and dirty image
         if iteration == 0:
             return 2.0
+        # Cleaning with pb mask in 3rd imaging stage
         elif self.vlass_stage == 3 and iteration == 3:
             return 4.5
-        elif self.vlass_stage in [1, 2] and iteration >= 1:
+        # First imaging stage
+        elif self.vlass_stage == 1 and iteration >= 1:
+            return 10.0
+        # Second imaging stage
+        elif self.vlass_stage == 2 and iteration >= 1:
             return 5.0
         # Cleaning with user mask in 3rd imaging stage
         else:
