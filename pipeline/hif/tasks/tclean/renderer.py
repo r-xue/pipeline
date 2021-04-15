@@ -281,7 +281,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                  'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata.keys() else 0,
                                  'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array'
                                                                                      in iterdata.keys() else None,
-                                 'peakrms_array': iterdata['peakrms_array'] if 'peakrms_array'
+                                 'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array'
                                                                                in iterdata.keys() else None,
                                  'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array'
                                                                                    in iterdata.keys() else None}

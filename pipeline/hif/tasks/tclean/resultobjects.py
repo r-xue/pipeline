@@ -518,32 +518,48 @@ class TcleanResult(basetask.Results):
         self._tclean_iterdone = tclean_iterdone
 
     @property
-    def nmajordone(self, iteration):
-        return self.iterations[iteration].get('nmajordone', None)
+    def nmajordone(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('nmajordone', None)
+        else:
+            return None
 
     def set_nmajordone(self, iteration, nmajordone):
         self.iterations[iteration]['nmajordone'] = nmajordone
 
     @property
     # Cumulative minor iteration array
-    def nminordone_array(self, iteration):
-        return self.iterations[iteration].get('nminordone_array', None)
+    def nminordone_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('nminordone_array', None)
+        else:
+            return None
 
     def set_nminordone_array(self, iteration, nminordone_array):
         self.iterations[iteration]['nminordone_array'] = nminordone_array
 
     @property
     # Cleaned peak RMS as a function of minor iteration number
-    def peakrms_array(self, iteration):
-        return self.iterations[iteration].get('peakrms_array', None)
+    def peakresidual_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('peakresidual_array', None)
+        else:
+            return None
 
-    def set_peakrms_array(self, iteration, peakrms_array):
-        self.iterations[iteration]['peakrms_array'] = peakrms_array
+    def set_peakresidual_array(self, iteration, peakresidual_array):
+        self.iterations[iteration]['peakresidual_array'] = peakresidual_array
 
     @property
     # Total cleaned flux as a function of minor iteration number
-    def totalflux_array(self, iteration):
-        return self.iterations[iteration].get('totalflux_array', None)
+    def totalflux_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('totalflux_array', None)
+        else:
+            return None
 
     def set_totalflux_array(self, iteration, totalflux_array):
         self.iterations[iteration]['totalflux_array'] = totalflux_array
