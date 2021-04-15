@@ -847,6 +847,12 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
 
+            # Determine fractional flux outside of mask for final image (only VLASS-SE-CONT imaging stage 1)
+            outmaskratio = self.image_heuristics.get_outmaskratio(iteration, result.image + extension,
+                                                                  re.sub('\.image$', '.pb', result.image) + extension,
+                                                                  new_cleanmask)
+            result.set_outmaskratio(iteration, outmaskratio)
+
             LOG.info('Clean image iter %s stats' % iteration)
             LOG.info('    Clean image annulus area rms: %s', nonpbcor_image_non_cleanmask_rms)
             LOG.info('    Clean image min: %s', pbcor_image_min)

@@ -1,3 +1,4 @@
+import os
 import re
 import glob
 import shutil
@@ -512,6 +513,64 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             csys_record = None
 
         return csys_record
+
+    def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
+                         pblimit: float = 0.4, frac_lim: float = 0.2):
+        """Determine fractional flux in final image outside cleanmask, only in first imaging stage final image.
+
+        A threshold of 10x sigma (measured on image) and a pblimit of 0.4 is applied.
+        """
+        # Only for first imaging stage, restoration with QL mask, and if there is a mask
+        if self.vlass_stage == 1 and iteration == 1 and cleanmask is not '':
+            # Check if files exist
+            warn_message = '%s does not exist, flux fraction outside mask cannot be computed.'
+            if not os.path.exists(image):
+                LOG.warn(warn_message % image)
+                return None
+            if not os.path.exists(pbimage):
+                LOG.warn(warn_message % pbimage)
+                return None
+            if not os.path.exists(cleanmask):
+                LOG.warn(warn_message % cleanmask)
+                return None
+
+            # threshold for sigma clipping, measure sigma in the image and use 10x the value
+            with casa_tools.ImageReader(image) as im:
+                threshold = im.statistics(robust=False)['sigma'].item() * 10.0
+                thr_unit = im.brightnessunit()
+
+            LOG.info(f"Measuring flux fraction outside clean mask with 10 sigma threshold = {threshold} "
+                     f"{thr_unit} and pblimit = {pblimit}")
+
+            # Image flux within mask, above threshold and pb level
+            expression = f'iif("{image}" > {threshold}, "{image}", 0.0) ' \
+                         f'* iif("{pbimage}" >= {pblimit}, 1.0, 0.0) ' \
+                         f'* "{cleanmask}"'
+            image_inmask = casa_tools.image.imagecalc(outfile="", pixels=expression, imagemd=f"{image}")
+            inmask_flux = image_inmask.statistics()['sum'].item()
+            image_inmask.done()
+
+            # Image flux outside mask, above threshold and pb level
+            expression = f'iif("{image}" > {threshold}, "{image}", 0.0) ' \
+                         f'* iif("{pbimage}" >= {pblimit}, 1.0, 0.0) ' \
+                         f'* (("{cleanmask}" - 1.0) * -1.0)'
+
+            image_outmask = casa_tools.image.imagecalc(outfile="", pixels=expression, imagemd=f"{image}")
+            outmask_flux = image_outmask.statistics()['sum'].item()
+            image_outmask.done()
+
+            # calculate ratio of total flux inside and outside mask
+            outmaskratio = outmask_flux / (inmask_flux + outmask_flux)
+
+            if outmaskratio > frac_lim:
+                LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '
+                            f'exceeds {frac_lim} limit!')
+            else:
+                LOG.info(f'Flux fraction outside clean mask ({cleanmask}) is {"%.3g" % outmaskratio}')
+
+            return outmaskratio
+        else:
+            return None
 
 
 class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):

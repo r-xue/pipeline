@@ -548,6 +548,18 @@ class TcleanResult(basetask.Results):
     def set_totalflux_array(self, iteration, totalflux_array):
         self.iterations[iteration]['totalflux_array'] = totalflux_array
 
+    @property
+    # Fractional flux outside of clean mask
+    def outmaskratio(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('outmaskratio', None)
+        else:
+            return None
+
+    def set_outmaskratio(self, iteration, outmaskratio):
+        self.iterations[iteration]['outmaskratio'] = outmaskratio
+
     def __repr__(self):
         repr = 'Tclean:\n'
         if self._psf is not None:
