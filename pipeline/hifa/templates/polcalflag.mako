@@ -22,6 +22,16 @@ _types = {
 def plot_type(plot):
     return _types[plot.parameters['type']]
 
+def summarise_fields(fields):
+    field_list = utils.numeric_sort(fields.split(','))
+
+    max_fields = 10
+    num_fields = len(field_list)
+    if num_fields <= max_fields:
+        return ', '.join([str(f) for f in field_list])
+
+    field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
+    return field_str
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -54,6 +64,9 @@ def plot_type(plot):
     <li><a href="#flagged_data_summary">Flagged data summary table</a></li>
 % if any(v != [] for v in time_plots.values()):
     <li><a href="#amp_vs_time">Amplitude vs time plots for flagging</a></li>
+% endif
+% if any(v != [] for v in uvdist_plots.values()):
+    <li><a href="#amp_vs_uvdist">Amplitude vs uvdist plots for flagging</a></li>
 % endif
 </ul>
 
@@ -184,6 +197,57 @@ def plot_type(plot):
 
     <%def name="caption_subtitle(plot)">
         Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
+
+    <%def name="caption_text(plot, ptype)">
+        ${plot_type(plot)}.
+    </%def>
+
+</%self:plot_group>
+
+% endif
+
+% if any(v != [] for v in uvdist_plots.values()):
+
+<%self:plot_group plot_dict="${uvdist_plots}"
+                  url_fn="${lambda x: 'junk'}"
+                  rel_fn="${lambda plot: 'amp_vs_uvdist_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
+                  title_id="amp_vs_uvdist"
+                  break_rows_by="type_idx"
+                  sort_row_by="spw">
+
+    <%def name="title()">
+        Amplitude vs UV distance
+    </%def>
+
+    <%def name="preamble()">
+        <p>These plots show amplitude vs UV distance for two cases: 1, the calibrated data before application of any
+        flags; and 2, where flagging was applied, the calibrated data after application of flags.</p>
+
+        <p>Data are plotted for all antennas and correlations, with different
+        correlations shown in different colours.</p>
+
+        <p>The plots of amplitude vs UV distance show only the target fields for which new flags were found, and are
+        only produced for spws with new flags.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show amplitude vs UV distance for spw ${plot.parameters['spw']}</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot_type(plot)}<br>
+        ${plot.parameters['vis']}<br>
+        Spw ${plot.parameters['spw']}<br>
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${summarise_fields(plot.parameters['field'])}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        Spectral Window ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_subtitle(plot)">
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${summarise_fields(plot.parameters['field'])}
     </%def>
 
     <%def name="caption_text(plot, ptype)">
