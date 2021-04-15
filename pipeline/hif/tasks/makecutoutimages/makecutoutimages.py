@@ -95,30 +95,33 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 is_vlass_se_cont = True
         except Exception:
             pass
-        
+
         # PIPE-1048: hif_makecutoutimages should only process final products in the VLASS-SE-CONT mode
         if is_vlass_se_cont:
-            imlist=[imlist[-1]]
+            imlist = [imlist[-1]]
 
         # Per VLASS Tech Specs page 22
         for imageitem in imlist:
             if imageitem['multiterm']:
                 imagenames.extend(glob.glob(imageitem['imagename'] + '.tt0'))  # non-pbcor
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual') + '*.tt0'))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace(
+                    '.image', '.residual') + '*.tt0'))  # non-pbcor
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt0.rms'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt0'))
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt0'))
+                imagenames.extend(glob.glob(imageitem['imagename'].replace(
+                    '.image', '.image.residual.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.pb') + '*.tt0'))
-                # PIPE-1039: make cutout images for .tt1
-                imagenames.extend(glob.glob(imageitem['imagename'] + '.tt1'))  # non-pbcor
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual') + '*.tt1'))  # non-pbcor
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt1'))
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt1.rms'))
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt1'))
-                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt1'))                
-                # PIPE-631: make alpha image cutouts in the VLASS-SE-CONT mode
-                if  is_vlass_se_cont:
+                # PIPE-631/1039: make alpha/.tt1 image cutouts in the VLASS-SE-CONT mode
+                if is_vlass_se_cont:
+                    imagenames.extend(glob.glob(imageitem['imagename'] + '.tt1'))  # non-pbcor
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace(
+                        '.image', '.residual') + '*.tt1'))  # non-pbcor
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt1'))
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt1.rms'))
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt1'))
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace(
+                        '.image', '.image.residual.pbcor') + '*.tt1'))
                     imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha')))
                     imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha.error')))
             else:
@@ -185,8 +188,10 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         xcellsize = 3600.0 * (180.0 / math.pi) * math.fabs(imhead_dict['incr'][0])
         ycellsize = 3600.0 * (180.0 / math.pi) * math.fabs(imhead_dict['incr'][1])
 
-        fld_subim_size_x = utils.round_half_up(3600.0 * (image_size_x + buffer_deg) / xcellsize)   # Cutout size with buffer in pixels
-        fld_subim_size_y = utils.round_half_up(3600.0 * (image_size_y + buffer_deg) / ycellsize)   # Cutout size with buffer in pixels
+        fld_subim_size_x = utils.round_half_up(
+            3600.0 * (image_size_x + buffer_deg) / xcellsize)   # Cutout size with buffer in pixels
+        fld_subim_size_y = utils.round_half_up(
+            3600.0 * (image_size_y + buffer_deg) / ycellsize)   # Cutout size with buffer in pixels
 
         # equivalent blc,trc for extracting requested field, in pixels:
         blcx = imsize[0] // 2 - (fld_subim_size_x / 2)
