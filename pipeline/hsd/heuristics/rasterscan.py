@@ -22,6 +22,13 @@ import pipeline.infrastructure.logging as logging
 LOG = logging.get_logger(__name__)
 
 
+class HeuristicsParameter(object):
+    AngleThreshold = 45
+    AngleHistogramThreshold = 0.2
+    AngleHistogramBinWidth = 1
+    DistanceThreshold = 50
+
+
 def get_func_compute_mad():
     # assuming X.Y.Z style version string
     scipy_version = scipy.version.full_version
@@ -54,42 +61,58 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
     return np.hypot(x1 - x0, y1 - y0)
 
 
-def generate_histogram(arr, bin_width, left_bin, right_bin):
-    nbin = int(right_bin - left_bin / bin_width) + 1
-    left_bin_edge = left_bin - bin_width / 2
-    right_bin_edge = right_bin + bin_width / 2
-    return np.histogram(arr, bins=nbin, range=(left_bin_edge, right_bin_edge))
+def generate_histogram(arr, bin_width, left_edge, right_edge):
+    nbin = int(np.ceil(right_edge - left_edge / bin_width))
+    return np.histogram(arr, bins=nbin, range=(left_edge, right_edge))
+
+
+def detect_peak(hist, mask=None):
+    if mask is None:
+        mh = hist
+    else:
+        mh = np.ma.masked_array(hist, mask)
+
+    ipeak = mh.argmax()
+    total = mh[ipeak]
+    imin = ipeak
+    imax = ipeak
+    LOG.trace('Detected peak %s', ipeak)
+    for i in range(ipeak - 1, -1, -1):
+        x = mh[i]
+        if np.ma.is_masked(x) or x == 0:
+            LOG.trace('break left wing %s', imin)
+            break
+        total += x
+        imin = i
+        LOG.trace('peak %s left wing %s', ipeak, i)
+    for i in range(ipeak + 1, len(hist)):
+        x = mh[i]
+        if np.ma.is_masked(x) or x == 0:
+            LOG.trace('break right wing %s', imax)
+            break
+        total += x
+        imax = i
+        LOG.trace('peak %s right wing %s', ipeak, i)
+    return total, ipeak, imin, imax
 
 
 def find_histogram_peak(hist):
-    h_threshold = hist.max() * 3 / 7
-    idx = np.where(hist > h_threshold)[0]
+    total = hist.sum()
+    threshold = HeuristicsParameter.AngleHistogramThreshold
+    fraction = 1.0
+    peak_indices = []
+    mask = np.zeros(len(hist), dtype=bool)
+    ss = 0
     LOG.info('hist = %s', hist.tolist())
-    LOG.info('threshold = %s, idx = %s', h_threshold, idx)
-    if len(idx) == 1:
-        num_peak = 1
-        peak_indices = [idx]
-    else:
-        hist_gaps = []
-        peak_ranges = []
-        left = idx[0]
-        for i in range(len(idx) - 1):
-            l = idx[i]
-            r = idx[i + 1]
-            if np.any(hist[l:r] == 0):
-                hist_gaps.append(i)
-                peak_ranges.append((left, l))
-                left = r
-        num_peak = len(hist_gaps) + 1
-        peak_ranges.append((left, idx[-1]))
-        LOG.info('peak_ranges = %s', peak_ranges)
-        peak_indices = []
-        for l, r in peak_ranges:
-            h = hist[l:r + 1]
-            LOG.info('hist[%s,%s] = %s', l, r + 1, h)
-            peak_indices.append(np.argmax(h) + l)
+    while fraction > threshold:
+        v, ip, il, ir = detect_peak(hist, mask)
+        LOG.info('Found peak: peak %s, range %s~%s, number of data %s', ip, il, ir, v)
+        ss += v
+        fraction = (total - ss) / total
+        LOG.trace('cumulative number %s fraction %s', ss, fraction)
+        mask[il:ir + 1] = True
+        peak_indices.append(ip)
     LOG.info('peak_indices = %s', peak_indices)
-
     return peak_indices
 
 
@@ -195,7 +218,8 @@ def find_distance_gap(delta_ra, delta_dec):
     distance = np.hypot(delta_ra, delta_dec).flatten()
     distance_median = np.median(distance)
     distance_mad = compute_mad(distance)
-    factor = 10
+    #distance_mad = distance.std()
+    factor = HeuristicsParameter.DistanceThreshold
     #
     # ASCII illustration for distance gap
     #
@@ -204,14 +228,15 @@ def find_distance_gap(delta_ra, delta_dec):
     #          | *---*---*-------*---*
     # data idx | 0   1   2       3   4
     #
-    distance_gap = np.where(np.abs(distance - distance_median) > factor * distance_mad)[0] + 1
-    return distance, distance_gap
+    distance_threshold = factor * distance_mad
+    distance_gap = np.where(np.abs(distance - distance_median) > distance_threshold)[0] + 1
+    return distance, distance_gap, distance_threshold
 
 
 def find_angle_gap(angle_deg: np.ndarray):
-    bin_width = 0.5
-    hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width, left_bin=-180, right_bin=180)
-
+    bin_width = HeuristicsParameter.AngleHistogramBinWidth
+    hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width,
+                                         left_edge=-180, right_edge=180)
     peak_indices = find_histogram_peak(hist)
     num_peak = len(peak_indices)
     LOG.info('original angle: found %s peaks', num_peak)
@@ -220,7 +245,8 @@ def find_angle_gap(angle_deg: np.ndarray):
         # need angle shifting
         delta = 70
         angle_deg = shift_angle(angle_deg, delta)
-        hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width, left_bin=0, right_bin=360 + delta)
+        hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width,
+                                             left_edge=0, right_edge=360 + delta)
         peak_indices = find_histogram_peak(hist)
         num_peak = len(peak_indices)
         LOG.info('shifted angle: found %s peaks', num_peak)
@@ -235,13 +261,13 @@ def find_angle_gap(angle_deg: np.ndarray):
         LOG.warn('Scan pattern is not likely to be round-trip raster scan.')
 
     # acceptable angle deviation from peak angle in degree
-    acceptable_deviation = 45
+    acceptable_deviation = HeuristicsParameter.AngleThreshold
     angle_min = bin_edges.min()
     angle_max = bin_edges.max()
     acceptable_ranges = create_range(peak_values, acceptable_deviation, angle_min, angle_max)
     angle_gap = find_angle_gap_by_range(angle_deg, acceptable_ranges)
 
-    return angle_gap, hist, bin_edges, peak_indices
+    return angle_deg, angle_gap, hist, bin_edges, peak_indices, acceptable_ranges
 
 
 def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
@@ -249,18 +275,18 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     delta_dec = dec[1:] - dec[:-1]
 
     # heuristics based on distances between integrations
-    distance, distance_gap = find_distance_gap(delta_ra, delta_dec)
+    distance, distance_gap, distance_threshold = find_distance_gap(delta_ra, delta_dec)
 
     # heuristics based on scan direction
     angle_rad = np.arctan2(delta_dec, delta_ra).flatten()
     angle_deg = angle_rad * 180 / np.pi
-    angle_gap, hist, bin_edges, peak_indices = find_angle_gap(angle_deg)
+    shifted_angle, angle_gap, hist, bin_edges, peak_indices, ranges = find_angle_gap(angle_deg)
     merged_gap = np.union1d(angle_gap, distance_gap)
     num_data = len(ra)
     merged_gap = np.concatenate(([0], merged_gap, [num_data]))
     refined_gap = refine_gaps(merged_gap, num_data)
 
-    return angle_deg, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices
+    return shifted_angle, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices, ranges, distance_threshold
 
 
 def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
