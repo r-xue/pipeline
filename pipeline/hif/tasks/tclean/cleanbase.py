@@ -574,7 +574,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_iterdone = tclean_result['iterdone']
                 tclean_nmajordone = tclean_result['nmajordone']
                 tclean_nminordone = tclean_result['summaryminor'][0,:]
-                tclean_peakrms = tclean_result['summaryminor'][1,:]
+                tclean_peakresidual = tclean_result['summaryminor'][1,:]
                 tclean_totalflux = tclean_result['summaryminor'][2, :]
                 tclean_niter = tclean_result['niter']
             else:
@@ -608,7 +608,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                     tclean_stopcode = 0
                 # With CASA 6.2 (see CAS-9386) this else clause is not necessary. The pipeline 2021.1.1 release is
                 # based on the CASA 6.1 series, however, even there the else clause does not seem to be triggered.
-                # The variables are defined here for completeness, but tclean_nminordone, tclean_peakrms and
+                # The variables are defined here for completeness, but tclean_nminordone, tclean_peakresidual and
                 # tclean_totalflux are not guaranteed to have correct (expected) array shape.
                 tclean_iterdone = sum([tclean_result[key][int(key.replace('node', ''))]['iterdone']
                                        for key in tclean_result])
@@ -618,7 +618,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                                     for key in tclean_result])
                 tclean_nminordone = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][0,:]
                                                     for key in tclean_result])
-                tclean_peakrms = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][1,:]
+                tclean_peakresidual = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][1,:]
                                                  for key in tclean_result])
                 tclean_totalflux = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][2,:]
                                                    for key in tclean_result])
@@ -635,7 +635,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_tclean_iterdone(tclean_iterdone)
             result.set_nmajordone(iter, tclean_nmajordone)
             result.set_nminordone_array(iter, tclean_nminordone)
-            result.set_peakrms_array(iter, tclean_peakrms)
+            result.set_peakresidual_array(iter, tclean_peakresidual)
             result.set_totalflux_array(iter, tclean_totalflux)
 
             if tclean_stopcode in [5, 6]:

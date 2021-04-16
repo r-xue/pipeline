@@ -338,7 +338,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # Determine current VLASS-SE-CONT imaging stage (used in heuristics to make decisions)
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 modes as of 01.03.2021
         if img_mode.startswith('VLASS-SE-CONT'):
-            th.vlass_stage = self._get_task_stage_ordinal()
+            # If 0 hif_makeimlist results are found, then we are in stage 1
+            th.vlass_stage = utils.get_task_result_count(inp.context, 'hif_makeimages') + 1
             # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
             th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
 
@@ -504,18 +505,3 @@ class Editimlist(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
-
-    def _get_task_stage_ordinal(self, taskname='hif_makeimages'):
-        """Get task ordinal number (how many times the task was called before in the pipeline execution).
-
-        The order number is determined by counting the number of previous execution of
-        the task, based on the content of the context.results list. The introduction
-        of this method is necessary because VLASS-SE-CONT imaging happens in multiple
-        stages (hif_makeimages calls). Imaging parameters change from stage to stage,
-        therefore it is necessary to know what is the current stage ordinal number.
-        """
-        ordinal = 1
-        for r in self.inputs.context.results:
-            # TODO: taskname is not a ResultsList attribute in xml recipe runs for some reason
-            if taskname in r.read().pipeline_casa_task: ordinal += 1
-        return ordinal

@@ -130,8 +130,6 @@ except:
                                 </a>
                             </p>
                         </div>
-                    % else:
-                    <p>No major cycle stats available</p>
                     % endif
                     </td>
 			    </tr>
@@ -162,6 +160,14 @@ except:
                     <th>${row.final_nsigma_mad_label}</th>
                     <td>${row.final_nsigma_mad}</td>
                 </tr>
+
+                ## added for PIPE-1081
+                % if row.outmaskratio is not None:
+                <tr>
+                    <th>${row.outmaskratio_label}</th>
+                    <td>${row.outmaskratio}</td>
+                </tr>
+                % endif
 
                 ## added for PIPE-991
                 % if row.model_pos_flux is not None:

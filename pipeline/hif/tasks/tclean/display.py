@@ -196,11 +196,11 @@ class TcleanMajorCycleSummaryFigure(object):
         self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
         self.filebase = result.targets[0]['imagename'].replace('STAGENUMBER', '%s_0' % result.stage_number)
         self.figfile = self._get_figfile()
-        self.units = 'Jy'
+        self.units = ['Jy', 'Jy/pixel']
         self.title = 'Major cycle statistics'
         self.xlabel = 'Minor iterations done'
-        self.ylabel = ['Flux density cleaned [%s]' % self.units, 'Peak RMS [%s]' % self.units]
-        self.unitfactor = 1.0
+        self.ylabel = ['Flux density cleaned [%s]' % self.units[0], 'Peak residual [%s]' % self.units[1]]
+        self.unitfactor = [1.0, 1.0]
 
     def plot(self):
         if os.path.exists(self.figfile):
@@ -228,8 +228,8 @@ class TcleanMajorCycleSummaryFigure(object):
             if item['nminordone_array'] is not None:
                 # get quantities
                 x = item['nminordone_array'] + x0
-                ax0_y = item['totalflux_array'] * self.unitfactor
-                ax1_y = item['peakrms_array'] * self.unitfactor
+                ax0_y = item['totalflux_array'] * self.unitfactor[0]
+                ax1_y = item['peakresidual_array'] * self.unitfactor[1]
                 # increment last iteration
                 x0 = x[-1]
                 # scatter plot

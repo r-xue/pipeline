@@ -8,6 +8,7 @@ import itertools
 import os
 import string
 from random import randint
+import re
 
 import numpy
 
@@ -22,6 +23,7 @@ from . import display
 
 LOG = logging.get_logger(__name__)
 
+
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol frequency_label frequency beam beam_pa sensitivity '
     'cleaning_threshold_label cleaning_threshold initial_nsigma_mad_label initial_nsigma_mad '
@@ -32,7 +34,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
-    'tab_dict tab_url'))
+    'tab_dict tab_url outmaskratio outmaskratio_label'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -60,6 +62,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
         image_stats = {}
+
         for r in clean_results:
             if r.empty():
                 continue
@@ -278,7 +281,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                  'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata.keys() else 0,
                                  'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array'
                                                                                      in iterdata.keys() else None,
-                                 'peakrms_array': iterdata['peakrms_array'] if 'peakrms_array'
+                                 'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array'
                                                                                in iterdata.keys() else None,
                                  'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array'
                                                                                    in iterdata.keys() else None}
@@ -299,6 +302,16 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row_nmajordone_total = None
                 majorcycle_stat_plot = None
                 tab_dict = None
+
+            #
+            # Amount of flux inside and outside QL for VLASS-SE-CONT, PIPE-1081
+            #
+            if 'VLASS-SE-CONT' in r.imaging_mode and r.outmaskratio:
+                row_outmaskratio_label = 'flux fraction outside clean mask'
+                row_outmaskratio = '%#.3g' % r.outmaskratio
+            else:
+                row_outmaskratio_label = None
+                row_outmaskratio = None
 
             #
             # clean iterations, for VLASS
@@ -596,6 +609,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 nchan=nchan,
                 plot=None,
                 qa_url=None,
+                outmaskratio=row_outmaskratio,
+                outmaskratio_label=row_outmaskratio_label,
                 iterdone=row_iterdone,
                 stopcode=row_stopcode,
                 stopreason=row_stopreason,

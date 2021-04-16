@@ -2166,3 +2166,7 @@ class ImageParamsHeuristics(object):
         """Tclean pbmask parameter heuristics"""
         return None
 
+    def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
+                         pblimit: float = 0.4, frac_lim:float = 0.2):
+        """Determine fractional flux in final image outside cleanmask"""
+        return None
