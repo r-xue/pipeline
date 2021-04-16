@@ -130,8 +130,6 @@ except:
                                 </a>
                             </p>
                         </div>
-                    % else:
-                    <p>No major cycle stats available</p>
                     % endif
                     </td>
 			    </tr>
