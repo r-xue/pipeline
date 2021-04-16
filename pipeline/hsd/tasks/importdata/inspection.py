@@ -249,8 +249,8 @@ class SDInspection(object):
         raster_heuristic = heuristics.RasterScanHeuristic()
         ra = numpy.asarray(datatable.getcol('RA'))
         dec = numpy.asarray(datatable.getcol('DEC'))
-        shift_ra = numpy.asarray(datatable.getcol('SHIFT_RA'))
-        shift_dec = numpy.asarray(datatable.getcol('SHIFT_DEC'))
+        offset_ra = numpy.asarray(datatable.getcol('OFS_RA'))
+        offset_dec = numpy.asarray(datatable.getcol('OFS_DEC'))
 #         row = numpy.asarray(datatable.getcol('ROW'))
         elapsed = numpy.asarray(datatable.getcol('ELAPSED'))
         beam = numpy.asarray(datatable.getcol('BEAM'))
@@ -364,8 +364,8 @@ class SDInspection(object):
                     if pattern == 'RASTER':
                         LOG.info('Performing RasterScanHeuristics for raster scan pattern')
                         try:
-                            sra_sel = numpy.take(shift_ra, id_list)
-                            sdec_sel = numpy.take(shift_dec, id_list)
+                            sra_sel = numpy.take(offset_ra, id_list)
+                            sdec_sel = numpy.take(offset_dec, id_list)
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except Exception as e:
