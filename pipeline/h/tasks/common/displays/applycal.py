@@ -754,7 +754,7 @@ class SpwAntDetailChart(PlotmsSpwAntComposite):
         # request plots per spw, overlaying all antennas
         # if field is specified in kwargs, it will override the calto.field
         # selection
-        super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=calto.field, 
+        super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field,
                                                 **kwargs )
 
 
