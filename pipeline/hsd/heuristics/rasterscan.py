@@ -26,7 +26,7 @@ class HeuristicsParameter(object):
     AngleThreshold = 45
     AngleHistogramThreshold = 0.2
     AngleHistogramBinWidth = 1
-    DistanceThreshold = 50
+    DistanceThresholdFactor = 5
 
 
 def get_func_compute_mad():
@@ -216,10 +216,6 @@ def find_angle_gap_by_range(angle_deg, acceptable_ranges):
 
 def find_distance_gap(delta_ra, delta_dec):
     distance = np.hypot(delta_ra, delta_dec).flatten()
-    distance_median = np.median(distance)
-    distance_mad = compute_mad(distance)
-    #distance_mad = distance.std()
-    factor = HeuristicsParameter.DistanceThreshold
     #
     # ASCII illustration for distance gap
     #
@@ -228,8 +224,32 @@ def find_distance_gap(delta_ra, delta_dec):
     #          | *---*---*-------*---*
     # data idx | 0   1   2       3   4
     #
-    distance_threshold = factor * distance_mad
-    distance_gap = np.where(np.abs(distance - distance_median) > distance_threshold)[0] + 1
+    factor = HeuristicsParameter.DistanceThresholdFactor
+    num_loop = 3
+    distance_gap = np.zeros(0, dtype=int)
+    mask = np.ones(len(distance), dtype=bool)
+    num_gap_prev = 0
+    for i in range(num_loop):
+        dist = distance[mask]
+        dmed = np.median(dist)
+        dstd = dist.std()
+        distance_threshold = factor * dstd
+        tmp = np.abs(distance - dmed) <= distance_threshold
+        idx = np.where(tmp == False)[0] + 1
+        LOG.info('LOOP %s. Threshold %s. found %s gaps', i, distance_threshold, len(idx))
+        if len(idx) != num_gap_prev:
+            distance_gap = idx
+            num_gap_prev = len(idx)
+        else:
+            break
+        mask = np.logical_and(mask, tmp)
+    #distance_median = np.median(distance)
+    #distance_mad = compute_mad(distance)
+    #distance_mad = distance.std()
+    #distance_threshold = factor * distance_mad
+    #distance_gap = np.where(np.abs(distance - distance_median) > distance_threshold)[0] + 1
+    distance_gap = np.unique(np.asarray(distance_gap, dtype=int))
+    LOG.info(distance_gap)
     return distance, distance_gap, distance_threshold
 
 
