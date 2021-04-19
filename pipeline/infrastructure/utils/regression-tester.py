@@ -1,6 +1,7 @@
 import os
 import shutil
 import pytest
+from typing import Tuple, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
@@ -13,26 +14,41 @@ LOG = infrastructure.get_logger(__name__)
 
 class PipelineRegression(object):
 
-    def __init__(self, recipe, input_dir, visname, expectedoutput):
+    def __init__(self, recipe: str, input_dir: str, visname: str, expectedoutput: str):
         self.recipe = recipe
         self.input_dir = input_dir
         self.visname = visname
         self.expectedoutput = expectedoutput
         self.testinput = f'{input_dir}/{visname}'
         
-    def __sanitize_regression_string(self, instring):
-        """sanitize to get numeric values, remove newline chars and change to float"""
-        return instring.split('=')[0], float(instring.split('=')[-1].replace('\n',''))
+    def __sanitize_regression_string(self, instring: str) -> Tuple:
+        """sanitize to get numeric values, remove newline chars and change to float
 
-    def run(self, ppr=False, telescope='alma', relative_tolerance=1e-7):
-        """Run test with PPR if supplied or recipereducer if no PPR
+        Returns:
+            tuple(key, value, optional tolerance)
+        """
+        keyval = instring.split(':::')[0]
+
+        keystring = keyval.split('=')[0]
+        value = float(keyval.split('=')[-1])
+        try:
+            tolerance = float(instring.split(':::')[-1].replace('\n',''))
+        except ValueError:
+            tolerance = None
+
+        return keystring, value, tolerance
+
+    def run(self, ppr: Optional[str] = None, telescope: str  = 'alma', default_relative_tolerance: float = 1e-7):
+        """Run test with PPR if supplied or recipereducer if no PPR and compared to expected results
+
+        The inputs and expectd output are usually found in the pipeline data repository.
         """
 
         # Run the Pipeline using cal+imag ALMA IF recipe
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = casa_tools.utils.resolve(self.testinput)
 
-        # run the pipeline for new results
+        #run the pipeline for new results
         if ppr:
             for dd in ('rawdata', 'products', 'working'):
                 try:
@@ -69,11 +85,13 @@ class PipelineRegression(object):
             new_results = new_fd.readlines()
             errors = []
             for old, new  in zip(expected_results, new_results):
-                oldkey, oldval = self.__sanitize_regression_string(old)
-                newkey, newval = self.__sanitize_regression_string(new)
+                oldkey, oldval, tol = self.__sanitize_regression_string(old)
+                newkey, newval, _ = self.__sanitize_regression_string(new)
                 assert oldkey == newkey
-                if oldval != pytest.approx(newval, rel=relative_tolerance):
-                    errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {relative_tolerance}\n\texpected: {oldval}\n\tnew:      {newval}"
+                tolerance = tol if tol else default_relative_tolerance
+                LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
+                if oldval != pytest.approx(newval, rel=tolerance):
+                    errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {tolerance}\n\texpected: {oldval}\n\tnew:      {newval}"
                     errors.append(errorstr)
             [LOG.warning(x) for x in errors]
             assert not errors
