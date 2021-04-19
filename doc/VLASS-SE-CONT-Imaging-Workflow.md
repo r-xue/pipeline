@@ -2,13 +2,15 @@ VLASS-SE-CONT imaging workflow
 ------------------------------
 
 This document describes the implementation of the workflow presented in VLASS Memo 15 as a 
-CASA script ("VIP script") to the pipeline codebase.
+CASA script ("VIP script") to the pipeline codebase. The relevant recipe is found in the pipeline repository at `pipeline/recipes/procedure_vlassSEIP.xml`.
 
 The major peculiarities in the workflow are: 
 1) special masking procedure based on the pyBDSF blob finding algorithm,
 2) widefield projection (awproject gridder) is used by default, additional step is required to compute PSFs without frequency dependent A-terms, 
 3) self calibration is used,
 4) imaging stages depend on the result of previous imaging stages (self-calibration and masking).
+
+Furthermore, astropy is a hard requirement for pyBDSF (the package documentation say otherwise, but in practice it was found to be necessary) and is included in the tarball builds. The hif_vlassmasking() task and hifv_selfcal() task weblog renderer also take advantage of astropy.
 
 ### Imaging modes
 
@@ -147,3 +149,13 @@ Steps including `iter1` and after is implemented as an iteration over the mask l
 The imaging sequence is implemented as `_do_iterative_vlass_se_imaging` method and fullfils the same function as `_do_iterative_imaging` method, that is used for any other imaging mode then 'VLASS-SE-CONT'. The separate method was needed due to the PSF handling (needed for awproject gridder) and single threaded column saving requirements.
 
 The Tclean result object is changed to store information contained in the tclean return dictionary. This include: number of minor cycle in per major cycle, total flux cleaned in per major cycle, peak residual in per major cycle, and total number of major cycles done.
+
+
+### CASA 6.1 specific workaround
+
+This section lists CASA issues that the pipeline needs to work around as of the release of 2021.1.1 (based on the CASA 6.1 series). With future CASA version these issues are expected to be fixed.
+
+1. CAS-13338: Tclean phasecenter parameter conversion has limited precision (in parallel mode)
+   - ImageParamsHeuristicsVlassSeCont.get_parallel_cont_synthesis_imager_csys() heuristic method (see docstring) works around this issue
+   
+2. CAS-13071: Write model column to MeasurementSet always in serial mode, due to potential performance issues (see also PIPE-1107 and VLASS Memo 15). 
