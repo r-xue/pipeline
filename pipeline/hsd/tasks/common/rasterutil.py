@@ -388,6 +388,7 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
 
     # use timetable (output of grouping heuristics) to distinguish raster rows
     dtrowdict = {}
+    ndrowdict = {}
     for field_id, spw_id, antenna_id in itertools.product(field_list, spw_list, antenna_list):
         try:
             timetable = datatable.get_timetable(ant=antenna_id, spw=spw_id, pol=None, ms=basename, field_id=field_id)
@@ -397,16 +398,14 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
         key = (field_id, spw_id, antenna_id)
         dtrowdict[key] = dtrow_list
 
-    # typical number of data per raster row
-    num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
-    LOG.debug('Number of data per raster row: %s', num_data_per_raster_row)
-    nd_per_row_rep = find_most_frequent(num_data_per_raster_row)
-    LOG.debug('number of raster row: {}'.format(len(num_data_per_raster_row)))
-    LOG.debug(f'most frequent # of data per raster row: {nd_per_row_rep}')
+        # typical number of data per raster row
+        num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
+        ndrowdict.setdefault(field_id, [])
+        ndrowdict[field_id].extend(num_data_per_raster_row)
 
     # rastergapdict stores list of datatable row ids per raster map
     rastergapdict = {}
-    num_data_per_raster_map = []
+    ndmapdict = {}
     for key, dtrow_list in dtrowdict.items():
         # get raster gap
         raster_gap = find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
@@ -416,15 +415,34 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
         rastergapdict[key] = idx_list
 
         # compute number of data per raster map
-        num_data_per_raster_map.extend(list(map(len, idx_list)))
+        field_id = key[0]
+        ndmapdict.setdefault(field_id, [])
+        ndmapdict[field_id].extend(list(map(len, idx_list)))
 
-    LOG.trace(num_data_per_raster_map)
-    nd_per_raster_rep = find_most_frequent(num_data_per_raster_map)
-    LOG.debug('number of raster map: {}'.format(len(num_data_per_raster_map)))
-    LOG.debug(f'most frequent # of data per raster map: {nd_per_raster_rep}')
-    LOG.debug('nominal number of row per raster map: {}'.format(nd_per_raster_rep // nd_per_row_rep))
+    repmapdict = {}
+    for field_id, ndmap in ndmapdict.items():
+        ndrow = ndrowdict[field_id]
+        LOG.trace('FIELD %s: Number of data per raster row = %s', field_id, ndrow)
+        nd_per_row_rep = find_most_frequent(ndrow)
+        LOG.debug('FIELD %s: number of raster row = %s', field_id, len(ndrow))
+        LOG.debug('FIELD %s: most frequent # of data per raster row = %s', field_id, nd_per_row_rep)
+        nd_per_raster_rep = find_most_frequent(ndmap)
+        LOG.debug('FIELD %s: number of raster map = %s', field_id, len(ndmap))
+        LOG.debug('FIELD %s: most frequent # of data per raster map = %s', field_id, nd_per_raster_rep)
+        LOG.debug('FIELD %s: nominal number of row per raster map = %s', field_id, nd_per_raster_rep // nd_per_row_rep)
+        repmapdict[field_id] = {
+            'row': nd_per_row_rep,
+            'map': nd_per_raster_rep
+        }
 
     for key, idx_list in rastergapdict.items():
+        LOG.debug('Processing FIELD %s, SPW %s, ANTENNA %s', *key)
+
+        # nominal number of data per row and per raster map
+        field_id = key[0]
+        nd_per_raster_rep = repmapdict[field_id]['map']
+        nd_per_row_rep = repmapdict[field_id]['row']
+
         # flag incomplete raster map
         flag_raster1 = flag_incomplete_raster(idx_list, nd_per_raster_rep, nd_per_row_rep)
 
