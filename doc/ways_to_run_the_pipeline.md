@@ -6,15 +6,15 @@ At the highest level of abstraction, we can execute a pipeline processing reques
 This can be done at the command line, or at a CASA command prompt.
 
 Execute PPR from the command line:
-```
+```console
 $ casa --nologger --nogui -c $SCIPIPE_HEURISTICS/pipeline/runvlapipeline.py PPRnew_VLAT003.xml
 
 $ casa --nogui --log2term -c $SCIPIPE_HEURISTICS/pipeline/runvlapipeline.py PPRnew_VLAT003.xml
 ```
 At a CASA command prompt:
 
-```
-$ casa
+```python
+casa
 # execute a pipeline processing request (PPR)
 CASA <1>: import pipeline.infrastructure.executevlappr as eppr
 CASA <2>: eppr.executeppr('PPR_VLAT003.xml', importonly=False)
@@ -30,41 +30,41 @@ At the lowest level of abstraction, we can run the pipeline as a series of steps
 like the following
 
 A pipeline run will generate a file like the following:
-```
+  ```
   pipeline_test_data/VLAT003/working/pipeline-20161014T172229/html/casa_pipescript.py
- ```
- It contains a series of steps like those described in the casaguide.
+  ```
+It contains a series of steps like those described in the casaguide.
 
 We can execute this script from CASA
-```
+```python
 CASA <1>: execfile('casa_pipescript.py')
 ```
 
 Or we can run it from the command line:
-```
+```console
 casa --nogui --log2term -c casa_pipescript.py
 ```
 
 We can edit the script and turn on memory usage for each task:
-```
+```python
 CASA <1>: h_init()
 CASA <2>: import pipeline
 CASA <3>: pipeline.infrastructure.utils.enable_memstats()
 ```
 
 We can also turn weblog and plotting off:
-```
+```python
 CASA <1>: h_init(pipelinemode="automatic",loglevel="info",plotlevel="summary",output_dir="./",weblog=False,overwrite=True,dryrun=False,acceptresults=True)
 ```
 
 Or we can turn debug mode on, weblog off:
-```
+```python
 CASA <1>: h_init(pipelinemode="automatic",loglevel="debug",plotlevel="summary",output_dir="./",weblog=True,overwrite=True,dryrun=False,acceptresults=True)
 ```
 
 Full example of running Pipeline importdata task on CASA prompt:
 
-```
+```python
 CASA <1>: h_init()
 CASA <2>: h_save()
 CASA <3>: import pipeline
@@ -73,7 +73,7 @@ CASA <5>: h_save()
 CASA <6>: exit
 ```
 
-```
+```python
 casa
 CASA <1>: context = h_resume(filename='last')
 ```
@@ -83,7 +83,7 @@ At the lowest level of abstraction, we can bypass the CASA Pipeline Task interfa
 CASA / Python, by instantiating a Pipeline InputsContainer object for the Pipeline Task, using it to instantiate a Pipeline Task object,
 and then running its 'execute' method to get the task result, as shown in this example (assumed to run in a 
 directory where the Pipeline has already been partly run, i.e. a context already exists):
-```
+```python
 CASA <1>: context = pipeline.Pipeline(context='last').context
 
 CASA <1>: vis='13A-537.sb24066356.eb24324502.56514.05971091435.ms'
@@ -99,7 +99,7 @@ CASA <8>: context.save()
 
 If we don't have a PPR or an executable script available.
 
-```
+```python
 casa
 import pipeline
 import pipeline.recipes.hifv as hifv
@@ -120,7 +120,7 @@ m.polarization  # show a list of polarization objects
 ## Running Pipeline with the "recipereducer"
 
 To run one of the standard recipes we can use a recipereducer:
-```
+```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(vis=['../rawdata/yourasdm'], procedure='procedure_hifv.xml')
 ```
@@ -128,7 +128,7 @@ pipeline.recipereducer.reduce(vis=['../rawdata/yourasdm'], procedure='procedure_
 To run a standard recipe until the end of a specified stage number (dependent on recipe) and running it with
  a different log level:
 
-```
+```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(vis=['../rawdata/yourasdm'], procedure='procedure_hifa.xml', exitstage=6, loglevel='trace')
 ```
@@ -136,7 +136,7 @@ This can be useful to run the Pipeline just up to the stage that you want to deb
  after e.g. stage 6, you could tarball the "working" directory (to be able to restore the run up to this point), 
  then create a short script in "../debug.script" with:
   
-```
+```python
 task_to_run = 'hifa_tsysflag'
 import pipeline
 from pipeline.infrastructure import task_registry
@@ -149,9 +149,49 @@ result.accept(context)
 context.save()
 ``` 
 and then run this with:
-```
+```console
 casa -c ../debug.script
 ```
+
+## Break/Resume, Context-by-Stage
+
+### Context-by-Stage
+
+The context at individual stages can be pickled after the completion of each PL task.
+The [implementation](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/commits/bf904d167c09c2f7a9e648ce3e30122185887586) is in `infrastructure.basetask` and will only be switched on if the PL is in the `DEBUG` (or lower) logging level. This feature works for both PPR and receipereducer runs (see above).
+
+The output directory of pickled context files is: `output_dir`/`context_name`/`saved_state` (`context-stage?.pickle`), saved along with `result-stage*.pickle` which are always present.
+
+### Break and Resume
+
+* `executeppr` offers a "break/resume" feature at the workflow level (see the keywords `bpaction`,`breakpoint` [there](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/infrastructure/executeppr.py)). One example is below:
+
+  ```python
+  import os
+  os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
+  import pipeline.infrastructure.executeppr as eppr
+  eppr.executeppr('../scripts/ppr.xml', importonly=False, loglevel='debug', breakpoint='breakpoint', bpaction='break')
+  exit
+  ...
+  import os
+  os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
+  import pipeline.infrastructure.executeppr as eppr
+  eppr.executeppr('../scripts/ppr.xml', importonly=False, loglevel='debug', breakpoint='breakpoint', bpaction='resume')
+  ```
+  Note: If you try to run the PPR with bpaction='resume' again, the call might fail: `executeppr` is hardcoded to resume from the "last" context (i.a. the `.context` file in the working directory with latest timestamps), but the context just at the "breakpoint" stage should be used. 
+
+  One workaround could be fresh copying the context from the "breakpoint" stage (where your loglevel='debug' is crucial) into the working directory:
+  ```python
+  import os
+  os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
+  os.system('cp -rf pipeline-20210420T180238/saved_state/context-stage10.pickle latest.context')
+  import pipeline.infrastructure.executeppr as eppr
+  eppr.executeppr('../scripts/ppr.xml', importonly=False, loglevel='debug', breakpoint='breakpoint', bpaction='resume')
+  ```
+  However, we note that all break/resume approaches use the **current** files (e.g. MSs/caltables) in your working directory. Please be aware of the existence of files/versions that might be unexpected to the resumed PL workflow task call(s).
+
+* With `recipereducer`, you can load context saved at a specific stage from the working directory and run/rerun the next PL task designed in the workflow (see the demonstration above). There is no "smart" workflow level resume feature built-in it as the `executeppr` offer. However, a calculated usage of `starttage`/`existstage`/`context` keywords may achieve the same workflow-level "break/resume".
+
 
 ## Known issues
 
