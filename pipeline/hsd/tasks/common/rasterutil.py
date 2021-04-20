@@ -225,37 +225,6 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
     return distance_list
 
 
-def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
-    """
-    Find gaps between individual raster map.
-
-    Returned list should be used in combination with timetable.
-    Here is an example to plot RA/DEC data per raster map:
-
-    Example:
-    >>> import maplotlib.pyplot as plt
-    >>> import numpy as np
-    >>> gap = find_raster_gap(ra, dec, dtrow_list)
-    >>> for s, e in zip(gap[:-1], gap[1:]):
-    >>>     idx = np.concatenate(dtrow_list[s:e])
-    >>>     plt.plot(ra[idx], dec[idx], '.')
-
-    Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
-        dtrow_list: List of np.ndarray holding array indices for ra and dec.
-                    Each index array is supposed to represent single raster row.
-
-    Returns:
-        np.ndarray of index for dtrow_list indicating boundary between raster maps
-    """
-    distance_list = get_raster_distance(ra, dec, dtrow_list)
-    delta_distance = distance_list[1:] - distance_list[:-1]
-    idx = np.where(delta_distance < 0)[0] + 1
-    raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
-    return raster_gap
-
-
 def flag_incomplete_raster(raster_index_list: List[np.ndarray], nd_raster: int, nd_row: int) -> np.ndarray:
     """
     Return IDs of incomplete raster map.
@@ -386,9 +355,11 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     spw_list = get_science_spectral_windows(metadata)
     antenna_list = np.unique(metadata.antenna)
 
-    # use timetable (output of grouping heuristics) to distinguish raster rows
+    # use timetable (output of grouping heuristics) to distinguish raster rows and maps
     dtrowdict = {}
     ndrowdict = {}
+    ndmapdict = {}
+    rastergapdict = {}
     for field_id, spw_id, antenna_id in itertools.product(field_list, spw_list, antenna_list):
         try:
             timetable = datatable.get_timetable(ant=antenna_id, spw=spw_id, pol=None, ms=basename, field_id=field_id)
@@ -398,26 +369,16 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
         key = (field_id, spw_id, antenna_id)
         dtrowdict[key] = dtrow_list
 
+        dtrow_list_map = extract_dtrow_list(timetable, for_small_gap=False)
+        rastergapdict[key] = dtrow_list_map
+
         # typical number of data per raster row
-        num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
         ndrowdict.setdefault(field_id, [])
-        ndrowdict[field_id].extend(num_data_per_raster_row)
+        ndrowdict[field_id].extend(list(map(len, dtrow_list)))
 
-    # rastergapdict stores list of datatable row ids per raster map
-    rastergapdict = {}
-    ndmapdict = {}
-    for key, dtrow_list in dtrowdict.items():
-        # get raster gap
-        raster_gap = find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
-        idx_list = [
-            np.concatenate(dtrow_list[s:e]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
-        ]
-        rastergapdict[key] = idx_list
-
-        # compute number of data per raster map
-        field_id = key[0]
+        # typical number of data per raster map
         ndmapdict.setdefault(field_id, [])
-        ndmapdict[field_id].extend(list(map(len, idx_list)))
+        ndmapdict[field_id].extend(list(map(len, dtrow_list_map)))
 
     repmapdict = {}
     for field_id, ndmap in ndmapdict.items():

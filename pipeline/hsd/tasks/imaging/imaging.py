@@ -14,6 +14,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
+from pipeline.hsd.heuristics import rasterscan
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -1192,7 +1193,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_r = rasterutil.find_raster_gap(ra, dec, dtrow_list)
+    gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)

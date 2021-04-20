@@ -337,7 +337,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
     return distance_list
 
 
-def find_raster_map(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
+def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
     """
     Find gaps between individual raster map.
 
@@ -374,7 +374,7 @@ class RasterScanHeuristic(api.Heuristic):
         gaplist_row = ret[2]
         idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
         dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
-        gaplist_map = find_raster_map(ra, dec, dtrow_list)
+        gaplist_map = find_raster_gap(ra, dec, dtrow_list)
 
         # construct return value that is compatible with grouping2 heuristics
         # - gaps for raster row correspond to "small" time gap
