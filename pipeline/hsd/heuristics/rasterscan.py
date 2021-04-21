@@ -22,11 +22,19 @@ import pipeline.infrastructure.logging as logging
 LOG = logging.get_logger(__name__)
 
 
+class RasterScanHeuristicsFailure(Exception):
+    """Indicates failure of RasterScanHeuristics"""
+
+
 class HeuristicsParameter(object):
     AngleThreshold = 45
     AngleHistogramThreshold = 0.2
+    AngleHistogramSparseness = 0.5
     AngleHistogramBinWidth = 1
-    DistanceThresholdFactor = 5
+    # for std
+    # DistanceThresholdFactor = 5
+    # for MAD
+    DistanceThresholdFactor = 50
 
 
 def get_func_compute_mad():
@@ -99,6 +107,7 @@ def detect_peak(hist, mask=None):
 def find_histogram_peak(hist):
     total = hist.sum()
     threshold = HeuristicsParameter.AngleHistogramThreshold
+    sparseness = HeuristicsParameter.AngleHistogramSparseness
     fraction = 1.0
     peak_indices = []
     mask = np.zeros(len(hist), dtype=bool)
@@ -113,6 +122,11 @@ def find_histogram_peak(hist):
         mask[il:ir + 1] = True
         peak_indices.append(ip)
     LOG.info('peak_indices = %s', peak_indices)
+    # if angle distribution is too wide, fail the heuristics
+    if np.count_nonzero(mask) / len(mask) > sparseness:
+        msg = 'Angle distribution is not likely to be the one for raster scan'
+        LOG.warn(msg)
+        raise RasterScanHeuristicsFailure(msg)
     return peak_indices
 
 
@@ -232,7 +246,8 @@ def find_distance_gap(delta_ra, delta_dec):
     for i in range(num_loop):
         dist = distance[mask]
         dmed = np.median(dist)
-        dstd = dist.std()
+        # dstd = dist.std()
+        dstd = compute_mad(dist)
         distance_threshold = factor * dstd
         tmp = np.abs(distance - dmed) <= distance_threshold
         idx = np.where(tmp == False)[0] + 1
@@ -249,7 +264,7 @@ def find_distance_gap(delta_ra, delta_dec):
     #distance_threshold = factor * distance_mad
     #distance_gap = np.where(np.abs(distance - distance_median) > distance_threshold)[0] + 1
     distance_gap = np.unique(np.asarray(distance_gap, dtype=int))
-    LOG.info(distance_gap)
+    LOG.info('distance gap: %s', distance_gap)
     return distance, distance_gap, distance_threshold
 
 
@@ -274,11 +289,18 @@ def find_angle_gap(angle_deg: np.ndarray):
     peak_values = [(bin_edges[i] + bin_edges[i + 1]) / 2 for i in peak_indices]
     LOG.info('peak_values = %s', peak_values)
 
-    # warn if scan pattern is not likely to be raster
+    # fail if scan pattern is not likely to be raster
+    # check if angle distribution is
+    # check if the pattern is one-way raster
+    is_one_way_raster = num_peak == 1
+    # check if the pattern is round-trip rasetr
     # 1. check if number of peaks in angle histogram is 2 (assuming round-trip scan)
     # 2. difference of peak angles is around 180deg
-    if num_peak != 2 or abs(180 - abs(peak_values[1] - peak_values[0])) > 5:
-        LOG.warn('Scan pattern is not likely to be round-trip raster scan.')
+    is_round_trip_raster = ((num_peak == 2) and (abs(180 - abs(peak_values[1] - peak_values[0]))) <= 5)
+    if not (is_one_way_raster or is_round_trip_raster):
+        msg = 'Scan pattern is not likely to be raster scan.'
+        LOG.warn(msg)
+        raise RasterScanHeuristicsFailure(msg)
 
     # acceptable angle deviation from peak angle in degree
     acceptable_deviation = HeuristicsParameter.AngleThreshold
@@ -286,6 +308,7 @@ def find_angle_gap(angle_deg: np.ndarray):
     angle_max = bin_edges.max()
     acceptable_ranges = create_range(peak_values, acceptable_deviation, angle_min, angle_max)
     angle_gap = find_angle_gap_by_range(angle_deg, acceptable_ranges)
+    LOG.info('angle gap: %s', angle_gap)
 
     return angle_deg, angle_gap, hist, bin_edges, peak_indices, acceptable_ranges
 
@@ -304,7 +327,9 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     merged_gap = np.union1d(angle_gap, distance_gap)
     num_data = len(ra)
     merged_gap = np.concatenate(([0], merged_gap, [num_data]))
+    LOG.info('merged gap: %s', merged_gap)
     refined_gap = refine_gaps(merged_gap, num_data)
+    LOG.info('final gap list: %s', refined_gap)
 
     return shifted_angle, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices, ranges, distance_threshold
 
@@ -363,7 +388,14 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
     """
     distance_list = get_raster_distance(ra, dec, dtrow_list)
     delta_distance = distance_list[1:] - distance_list[:-1]
+    LOG.info('delta_distance = %s', delta_distance)
     idx = np.where(delta_distance < 0)[0] + 1
+    delta = idx[1:] - idx[:-1]
+    if np.any(delta == 1):
+        # possibly one-way raster mapping which is not supported
+        msg = 'The pattern seems to be raster but is not supported by this heuristics.'
+        LOG.warn(msg)
+        raise RasterScanHeuristicsFailure(msg)
     raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
     return raster_gap
 
@@ -375,6 +407,7 @@ class RasterScanHeuristic(api.Heuristic):
         idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
         dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
         gaplist_map = find_raster_gap(ra, dec, dtrow_list)
+        LOG.info('large gap list: %s', gaplist_map)
 
         # construct return value that is compatible with grouping2 heuristics
         # - gaps for raster row correspond to "small" time gap

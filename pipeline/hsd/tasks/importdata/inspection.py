@@ -7,6 +7,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.domain.measures as measures
 import pipeline.domain.singledish as singledish
 from pipeline.infrastructure import casa_tools
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
 from ... import heuristics
 from . import reader
 
@@ -368,7 +369,7 @@ class SDInspection(object):
                             sdec_sel = numpy.take(offset_dec, id_list)
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
-                        except Exception as e:
+                        except RasterScanHeuristicsFailure as e:
                             LOG.warn('RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
                             raster_heuristic_ok = False
 
