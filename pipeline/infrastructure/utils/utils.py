@@ -325,21 +325,29 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
         return sp_list[idx].strip(), 10.**sp_pow[idx]
 
 
-def get_task_result_count(context, taskname='hif_makeimages'):
-    """Get task ordinal number (how many times the task was called before in the pipeline execution).
+def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
+    """Count occurrences of a task result in the context.results list.
 
-    The order number is determined by counting the number of previous execution of
-    the task, based on the content of the context.results list. The introduction
-    of this method is necessary because VLASS-SE-CONT imaging happens in multiple
-    stages (hif_makeimages calls). Imaging parameters change from stage to stage,
-    therefore it is necessary to know what is the current stage ordinal number.
+    Loop over the content of the context.results list and compare taskname to the pipeline_casa_task
+    attribute of each result object. Increase counter if taskname substring is found in the attribute.
+
+    Args:
+        context (Context): task results executed in this context are searched
+        taskname (str): task name to be searched, in principle it can be any string, but intended to match valid
+            pipeline task names
+
+    Returns:
+        count (int): number of occurrences of taskname in pipeline_casa_task attributes
+            of task result objects in context.results list
     """
     count = 0
     for r in context.results:
         # Work around the fact that r has read() method in some cases (e.g. editimlist)
         # but not in others (e.g. in tclean renderer)
         try:
-            if taskname in r.read().pipeline_casa_task: count += 1
+            if taskname in r.read().pipeline_casa_task:
+                count += 1
         except AttributeError:
-            if taskname in r.pipeline_casa_task: count += 1
+            if taskname in r.pipeline_casa_task:
+                count += 1
     return count
