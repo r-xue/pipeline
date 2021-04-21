@@ -3,7 +3,7 @@ import re
 import glob
 import shutil
 import uuid
-from typing import Union, Tuple
+from typing import Union, Tuple, Dict
 
 import numpy
 
@@ -72,11 +72,11 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration) -> float:
+    def cyclefactor(self, iteration: int) -> float:
         """Tclean cyclefactor parameter heuristics."""
         return 3.0
 
-    def cycleniter(self, iteration) -> int:
+    def cycleniter(self, iteration: int) -> int:
         """Tclean cycleniter parameter heuristics."""
         # Special cases: cleaning without mask in 1st stage
         if self.vlass_stage == 1 and iteration > 1:
@@ -115,7 +115,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return '<12km', None
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
-             results_list: Union[list, None] = None, clean_no_mask=None) -> str:
+             results_list: Union[list, None] = None, clean_no_mask=None) -> Union[str, list]:
         """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
 
             Obtain the mask name from the latest MakeImagesResult object in context.results.
@@ -168,7 +168,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pb_correction(self) -> bool:
         return False
 
-    def pblimits(self, pb):
+    def pblimits(self, pb: Union[None, str]) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
 
         pblimit_image, pblimit_cleanmask = super().pblimits(pb)
@@ -181,10 +181,11 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean conjbeams parameter heuristics."""
         return True
 
-    def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
+    def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper) \
+            -> Tuple[float, None, None]:
         return 0.0, None, None
 
-    def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
+    def find_fields(self, distance: str = '0deg', phase_center: bool = None, matchregex: str = '') -> list:
 
         # Created STM 2016-May-16 use center direction measure
         # Returns list of fields from msfile within a rectangular box of size distance
@@ -355,7 +356,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean rotatepastep parameter heuristics."""
         return 5.0
 
-    def get_autobox_params(self, iteration, intent, specmode, robust) -> tuple:
+    def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
 
         """Default auto-boxing parameters."""
 
@@ -382,7 +383,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def get_cfcaches(self, cfcache: str) -> list:
         """Parses comma separated cfcache string
 
-        Used to input wide band and non-wide band cfcaches at the same time in
+        Comma separated list is used to input frequency dependent and independent A-term cfcaches in
         VLASS-SE-CONT imaging mode.
         """
         if ',' in cfcache:
@@ -390,7 +391,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return [cfcache, None]
 
-    def set_user_cycleniter_final_image_nomask(self, cycleniter_final_image_nomask: Union[int, None] = None):
+    def set_user_cycleniter_final_image_nomask(self, cycleniter_final_image_nomask: Union[int, None] = None) -> None:
         """Sets class variable controlling the cycleniter parameter of the last clean step (cleaning without user mask,
         pbmask only) in the third (final) VLASS-SE-CONT imaging stage."""
         if self.vlass_stage == 3 and cycleniter_final_image_nomask != None:
@@ -415,40 +416,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         Cleaning with only primary beam mask is used on request (via editimlist)."""
         return 0.4
 
-    def fix_vlass_tier_1_mask_coors(self, image_name: str, mask_name: str):
-        """Workaround limited precision tclean phasecenter parameter conversion.
-
-        Tclean 6.1 truncates phase center coordinates at ~1E-7 precision. When a mask is provided to tclean
-        with higher precision reference coordinate, the truncation may lead to the interpolated mask to shift
-        by a pixel, resulting in slightly different tclean input and output mask.
-
-        To work around the problematic interpolation, the mask coordinate precision is reduced before tclean,
-        by copying coordinates from a tclean produced image (e.g. the PSF).
-
-        See CAS-13338 and PIPE-728"""
-        # TODO: remove this method, it is not needed because get_PyParallelContSynthesisImager_csys fixed the issue preemptively
-        if self.vlass_stage == 1:
-            try:
-                with casa_tools.ImageReader(image_name) as image:
-                    csys_image = image.coordsys()
-                with casa_tools.ImageReader(mask_name) as image:
-                    csys_mask = image.coordsys()
-                    # Overwrite mask reference coordinate if it differs from image reference coordinate
-                    delta_ra, delta_dec = csys_image.torecord()['direction0']['crval'] - \
-                                          csys_mask.torecord()['direction0']['crval']
-                    if delta_ra != 0.0 or delta_dec != 0.0:
-                        LOG.info(
-                            'Modifying {mask:s} reference coordinates by delta_ra: {ra:.4E} arcsec, delta_dec: {dec:.4E} arcsec (see CAS-13338)'.format(
-                                mask=mask_name, ra=numpy.rad2deg(delta_ra) * 3600.,
-                                dec=numpy.rad2deg(delta_dec) * 3600.))
-                        image.setcoordsys(csys_image.torecord())
-                csys_image.done()
-                csys_mask.done()
-            except Exception as ee:
-                LOG.warning(f"Not able to update Tier-1 mask coordinates, exception: {ee}")
-        return
-
-    def get_parallel_cont_synthesis_imager_csys(self, phasecenter=None, imsize=None, cell=None, parallel='automatic'):
+    def get_parallel_cont_synthesis_imager_csys(self, phasecenter=None, imsize=None, cell=None,
+                                                parallel='automatic') -> Union[None, Dict]:
         """
         This method creates an image with PyParallelContSynthesisImager and returns it's phase centre.
 
@@ -520,7 +489,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return csys_record
 
     def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
-                         pblimit: float = 0.4, frac_lim: float = 0.2):
+                         pblimit: float = 0.4, frac_lim: float = 0.2) -> Union[None, float]:
         """Determine fractional flux in final image outside cleanmask, only in first imaging stage final image.
 
         A threshold of 10x sigma (measured on image) and a pblimit of 0.4 is applied.
@@ -621,7 +590,7 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         """Tclean imsize parameter heuristics."""
         return [12500, 12500]
 
-    def mosweight(self, intent, field):
+    def mosweight(self, intent, field) -> bool:
 
         """tclean flag to use mosaic weighting."""
 
@@ -658,7 +627,7 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         # Might change to True based on stackholder feedback
         return False
 
-    def pblimits(self, pb):
+    def pblimits(self, pb: Union[None, str]) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
         pblimit_image, pblimit_cleanmask = super().pblimits(pb)
 
