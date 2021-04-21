@@ -14,7 +14,7 @@ $ casa --nogui --log2term -c $SCIPIPE_HEURISTICS/pipeline/runvlapipeline.py PPRn
 At a CASA command prompt:
 
 ```python
-casa
+$ casa
 # execute a pipeline processing request (PPR)
 CASA <1>: import pipeline.infrastructure.executevlappr as eppr
 CASA <2>: eppr.executeppr('PPR_VLAT003.xml', importonly=False)
@@ -100,7 +100,7 @@ CASA <8>: context.save()
 If we don't have a PPR or an executable script available.
 
 ```python
-casa
+$ casa
 import pipeline
 import pipeline.recipes.hifv as hifv
 # the next line will only importevla and save a context, b/c importonly=True
@@ -150,55 +150,119 @@ context.save()
 ``` 
 and then run this with:
 ```console
-casa -c ../debug.script
+$ casa -c ../debug.script
 ```
 
-## Break/Resume, Context-by-Stage
+## Workflow Break/Resume
 
 ### Context-by-Stage
 
-The context at individual stages can be pickled after the completion of each PL task.
-The [implementation](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/commits/bf904d167c09c2f7a9e648ce3e30122185887586) is in `infrastructure.basetask` and will only be switched on if the PL is in the `DEBUG` (or lower) logging level. This feature works for both PPR and receipereducer runs (see above).
+The context content at individual stages can be pickled after the completion of each PL task.
+The [implementation](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/commits/bf904d167c09c2f7a9e648ce3e30122185887586) is in `infrastructure.basetask` and will only be switched on if the pipeline is in the `DEBUG` (or lower) logging level. This feature works for both PPR and receipereducer runs.
 
-The output directory of pickled context files is: `output_dir`/`context_name`/`saved_state` (`context-stage?.pickle`), saved along with `result-stage*.pickle` which are always present.
+The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/`context-stage*.pickle`, saved along with `result-stage*.pickle` which is always present in the same directory.
 
-### Break and Resume
+### Break/Resume
 
-* `executeppr` offers a "break/resume" feature at the workflow level (see the keywords `bpaction`,`breakpoint` [there](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/infrastructure/executeppr.py)). One example is below:
+* `executeppr` offers a "break/resume" feature at the workflow level (see the optional keywords [`bpaction` and `breakpoint`](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/infrastructure/executeppr.py)). One practical example is below, which is based on the test data available in the [pipeline-testdata](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata) repository:
+
+  * pl-unittest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms
+  * pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/PPR.xml
+
+  We first put the above MeasurementSet and PPR in the `rawdata` directory of your workspace. This specific PPR file already has a breakpoint set after the first `hifa_exportdata` call:
+  
+  To run the PPR up to the breakpoint, at a CASA command prompt,
 
   ```python
   import os
-  os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
   import pipeline.infrastructure.executeppr as eppr
-  eppr.executeppr('../scripts/ppr.xml', importonly=False, loglevel='debug', breakpoint='breakpoint', bpaction='break')
-  exit
-  ...
-  import os
   os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
-  import pipeline.infrastructure.executeppr as eppr
-  eppr.executeppr('../scripts/ppr.xml', importonly=False, loglevel='debug', breakpoint='breakpoint', bpaction='resume')
-  ```
-  Note: If you try to run the PPR with bpaction='resume' again, the call might fail: `executeppr` is hardcoded to resume from the "last" context (i.a. the `.context` file in the working directory with latest timestamps), but the context just at the "breakpoint" stage should be used. 
+  eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='break')
 
-  One workaround could be fresh copying the context from the "breakpoint" stage (where your loglevel='debug' is crucial) into the working directory:
+  ```
+  
+  From the current or a new CASA session, the PPR can be resumed,
+  
+  ```python
+  import os
+  import pipeline.infrastructure.executeppr as eppr
+  os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
+  eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='resume')
+  ```
+
+  **Note**: if you try to run the PPR with bpaction='resume' again, the subsequent call(s) will likely fail: `executeppr` is hardcoded to resume from the "last" context (i.e. the `.context` file in the working directory with latest timestamps), but we need the context content at the "breakpoint" stage to resume. Also, the file states (e.g. MS,s caltables) have changed. The only safe option is making a copy of the working directory before trying resume in case you might tweak the PPR in another attempt.
+
+  For development/test purposes, one workaround to avoid copying the entire working directory is to create a fresh copy of the context pickled from the "breakpoint" stage (where your loglevel='debug' setting is crucial) in the existing working directory:
+  
+  First, you back up the context pickle files from differnet stages:
+  ```console
+  $ cp -rf pipeline-20210421T172403/saved_state pipeline-20210421T172403/saved_state_backup
+  ```
+  Then, at a CASA command prompt,
   ```python
   import os
   os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
-  os.system('cp -rf pipeline-20210420T180238/saved_state/context-stage10.pickle latest.context')
+  os.system('cp -rf pipeline-20210421T172403/saved_state_backup/context-stage26.pickle current.context')
+  # we need some cleanup as this MS below is blocking the executetion of the stage27 hif_mstransform() call.
+  os.system('rm -rf uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms*') 
   import pipeline.infrastructure.executeppr as eppr
-  eppr.executeppr('../scripts/ppr.xml', importonly=False, loglevel='debug', breakpoint='breakpoint', bpaction='resume')
+  eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='resume')
   ```
-  However, we note that all break/resume approaches use the **current** files (e.g. MSs/caltables) in your working directory. Please be aware of the existence of files/versions that might be unexpected to the resumed PL workflow task call(s).
+  Again, please note that the above workaround might yield scientifically meanless results due to the changing file status and is only useful for testing under certain scenarios.
+  All break/resume approaches use the **current** files (e.g. MSs/caltables) in your working directory. So be aware of the existence of files/versions that might be unexpected to the resumed PL workflow task call(s)!
 
-* With `recipereducer`, you can load context saved at a specific stage from the working directory and run/rerun the next PL task designed in the workflow (see the demonstration above). There is no "smart" workflow level resume feature built-in it as the `executeppr` offer. However, a calculated usage of `starttage`/`existstage`/`context` keywords may achieve the same workflow-level "break/resume".
+* With `recipereducer`, you can load context saved at a specific stage from the working directory and run/rerun the next PL task designed in the workflow (also see the demonstration in the last section). 
+  
+  A full recipe run based on the above test data example can be achieved with:
+  
+  ```python
+  import pipeline.recipereducer, os
+  pipeline.recipereducer.reduce(vis=['../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms'],
+                              procedure='procedure_hifa_calimage.xml', loglevel='debug')
+  ``` 
 
+  ```python
+  task_to_run='hif_checkproductsize'
+  task_keywords={'maxcubesize':40.0,'maxcubelimit':60,'maxproductsize':500.0}
+  import pipeline
+  from pipeline.infrastructure import task_registry
+  context = pipeline.Pipeline(context='pipeline-procedure_hifa_calimage/saved_state/context-stage24.pickle', loglevel='debug', plotlevel='default').context
+  taskclass = task_registry.get_pipeline_class_for_task(task_to_run)
+  inputs = pipeline.infrastructure.vdp.InputsContainer(taskclass, context, **task_keywords)
+  task = taskclass(inputs)
+  result = task.execute(dry_run=False)
+  result.accept(context)
+  context.save('test-context-stage25.pickle')
+  ```
+
+  `recipereducer` doesn't offer the "breakpoint" feature built in `executeppr`. However, a calculated usage of `starttage`/ `exitstage`/`context` keywords may achieve the same workflow-level "break/resume":
+
+  ```python
+  import pipeline
+  context = pipeline.Pipeline(context='pipeline-procedure_hifa_calimage/saved_state/context-stage3.pickle', loglevel='debug', plotlevel='default').context
+  import pipeline.recipereducer
+  pipeline.recipereducer.reduce(vis=['../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms'],
+                                procedure='procedure_hifa_calimage.xml', loglevel='debug',startstage=4,exitstage=20,
+                                context=context)
+  ```
+## Re-render Weblog
+
+A common development task is improving weblog. Without re-running a time-consuming pipeline task itself, you can only re-render the weblog using the existing context/result to test a small weblog-related change (e.g., minor tweaks in mako templates). Note: this will only rerun the weblog rendering portion of a pipeline stage (therefore limits your testing scope).
+
+```python
+import pipeline, os
+from pipeline.infrastructure.renderer import htmlrenderer as hr
+context = pipeline.Pipeline(context='last', loglevel='debug', plotlevel='default').context
+os.environ['WEBLOG_RERENDER_STAGES']='16'
+hr.WebLogGenerator.render(context)
+```
 
 ## Known issues
 
 Don't worry about the following intermittent message at the end of a pipeline run. It's a bug
   but it doesn't mean the pipeline was unsuccessful.
 
-```
+```console
 invalid command name "102990944filter_destroy"
     while executing
 "102990944filter_destroy 3657 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 0 ?? ?? .86583632 17 ?? ?? ??"
