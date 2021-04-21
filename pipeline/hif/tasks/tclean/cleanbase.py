@@ -76,7 +76,11 @@ class CleanBaseInputs(vdp.StandardInputs):
     width = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default=None)
     wprojplanes = vdp.VisDependentProperty(default=None)
+    wbawp = vdp.VisDependentProperty(default=None)
     rotatepastep = vdp.VisDependentProperty(default=None)
+    calcpsf = vdp.VisDependentProperty(default=None)
+    calcres = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -123,7 +127,8 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
                  restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
-                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None):
+                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None, calcpsf=None,
+                 calcres=None, wbawp=None, pbmask=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -161,6 +166,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.restoringbeam = restoringbeam
         self.iter = iter
         self.mask = mask
+        self.pbmask = pbmask
 
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
@@ -191,8 +197,11 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.usepointing = usepointing
         self.mosweight = mosweight
         self.wprojplanes = wprojplanes
+        self.wbawp = wbawp
         self.rotatepastep = rotatepastep
         self.heuristics = heuristics
+        self.calcpsf = calcpsf
+        self.calcres = calcres
 
 
 class CleanBase(basetask.StandardTaskTemplate):
@@ -327,7 +336,8 @@ class CleanBase(basetask.StandardTaskTemplate):
             'savemodel':     inputs.savemodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
-            'parallel':      parallel
+            'parallel':     parallel,
+            'wbawp':        inputs.wbawp
             }
 
         # Set special phasecenter and outframe for ephemeris objects.
@@ -408,7 +418,12 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         else:
             tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
-            if (inputs.hm_masking != 'none') and (inputs.mask != ''):
+            if inputs.hm_masking != 'none' and inputs.mask == 'pb':
+                # In manual cleaning mode decide for cleaning with pbmask according
+                # to heuristic class method (see PIPE-977)
+                tclean_job_parameters['usemask'] = 'pb'
+                tclean_job_parameters['pbmask'] = inputs.pbmask if inputs.pbmask else inputs.heuristics.pbmask()
+            elif (inputs.hm_masking != 'none') and (inputs.mask != ''):
                 tclean_job_parameters['usemask'] = 'user'
                 tclean_job_parameters['mask'] = inputs.mask
 
@@ -429,6 +444,12 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['restart'] = True
             tclean_job_parameters['calcpsf'] = False
             tclean_job_parameters['calcres'] = False
+
+        # Allow setting calcpsf and calcres explicitly
+        if type(inputs.calcpsf) is bool:
+            tclean_job_parameters['calcpsf'] = inputs.calcpsf
+        if type(inputs.calcres) is bool:
+            tclean_job_parameters['calcres'] = inputs.calcres
 
         # Additional heuristics or task parameters
         if inputs.cyclefactor not in (None, -999):
@@ -455,7 +476,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.scales:
             tclean_job_parameters['scales'] = inputs.scales
         else:
-            scales = inputs.heuristics.scales()
+            scales = inputs.heuristics.scales(iter)
             if scales:
                 tclean_job_parameters['scales'] = scales
 
@@ -511,6 +532,9 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
+        tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
+        tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
+        tclean_job_parameters['pointingoffsetsigdev'] = inputs.heuristics.pointingoffsetsigdev()
 
         # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
@@ -530,6 +554,11 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_stopcode = tclean_result['stopcode']
             tclean_iterdone = tclean_result['iterdone']
             tclean_niter = tclean_result['niter']
+            tclean_nmajordone = tclean_result['nmajordone']
+            tclean_nminordone = tclean_result['summaryminor'][0, :]
+            tclean_peakresidual = tclean_result['summaryminor'][1, :]
+            tclean_totalflux = tclean_result['summaryminor'][2, :]
+            tclean_niter = tclean_result['niter']
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
             if tclean_stopcode == 1:
@@ -541,6 +570,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_tclean_stopcode(tclean_stopcode)
             result.set_tclean_stopreason(tclean_stopcode)
             result.set_tclean_iterdone(tclean_iterdone)
+            result.set_nmajordone(iter, tclean_nmajordone)
+            result.set_nminordone_array(iter, tclean_nminordone)
+            result.set_peakresidual_array(iter, tclean_peakresidual)
+            result.set_totalflux_array(iter, tclean_totalflux)
 
             if tclean_stopcode in [5, 6]:
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
@@ -577,12 +610,14 @@ class CleanBase(basetask.StandardTaskTemplate):
                 result.set_image(iter=iter, image=image_name)
 
         # Store the residual.
-        imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
-                                 type='residual', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_residual(iter=iter, image=residual_name)
+        # TODO: is checking residual file strictly necessary?
+        if os.path.exists('%s' % (residual_name.replace('.residual', '.residual.tt0' if result.multiterm else '.residual'))):
+            imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
+                                     type='residual', iter=iter, multiterm=result.multiterm,
+                                     intent=inputs.intent, specmode=inputs.specmode,
+                                     is_per_eb=inputs.is_per_eb,
+                                     context=context)
+            result.set_residual(iter=iter, image=residual_name)
 
         # Store the PSF.
         imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, field=inputs.field,

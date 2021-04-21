@@ -1,6 +1,7 @@
 import re
+from typing import Union, Tuple
 
-import numpy as np
+import numpy
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -20,15 +21,18 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                                        linesfile, imaging_params)
         self.imaging_mode = 'VLA'
 
-    def robust(self):
-        """See PIPE-680 and CASR-543"""
+    def robust(self) -> float:
+        """Tclean robust parameter heuristics.
+        See PIPE-680 and CASR-543"""
         return 0.5
 
-    def uvtaper(self, beam_natural=None, protect_long=None):
+    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+        """Tclean uvtaper parameter heuristics."""
         return []
 
-    def uvrange(self, field=None, spwspec=None):
-        """
+    def uvrange(self, field=None, spwspec=None) -> tuple:
+        """Tclean uvrange parameter heuristics.
+
         Restrict uvrange in case of very extended emission.
 
         If the amplitude of the shortest 5 per cent of the covered baselines
@@ -50,11 +54,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             stats = job.execute(dry_run=False)  # returns stat in meter
 
             # Get means of spectral windows with data in the selected uvrange
-            spws_means = [v['mean'] for (k,v) in stats.items() if np.isfinite(v['mean'])]
+            spws_means = [v['mean'] for (k,v) in stats.items() if numpy.isfinite(v['mean'])]
 
             # Determine mean and 95% percentile
-            mean = np.mean(spws_means)
-            percentile_95 = np.percentile(spws_means, 95)
+            mean = numpy.mean(spws_means)
+            percentile_95 = numpy.percentile(spws_means, 95)
 
             return (mean, percentile_95)
 
@@ -131,9 +135,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return '>0.0klambda', ratio
 
     def pblimits(self, pb):
-        """
-        PB gain level at which to cut off normalizations (tclean parameter).
-
+        """PB gain level at which to cut off normalizations (tclean parameter).
         See PIPE-674 and CASR-543
         """
         # pblimits used in pipeline tclean._do_iterative_imaging() method (eventually in cleanbox.py) for
@@ -147,8 +149,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return pblimit_image, pblimit_cleanmask
 
-    def nterms(self, spwspec):
-        """
+    def nterms(self, spwspec) -> Union[int, None]:
+        """Tclean nterms parameter heuristics.
+
         Determine nterms depending on the fractional bandwidth.
         Returns 1 if the fractional bandwidth is < 10 per cent, 2 otherwise.
 
@@ -158,16 +161,17 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return None
         # Fractional bandwidth
         fr_bandwidth = self.get_fractional_bandwidth(spwspec)
-        if (fr_bandwidth >= 0.1):
+        if fr_bandwidth >= 0.1:
             return 2
         else:
             return 1
 
-    def deconvolver(self, specmode, spwspec):
-        """See PIPE-679 and CASR-543"""
+    def deconvolver(self, specmode, spwspec) -> str:
+        """Tclean deconvolver parameter heuristics.
+        See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0) -> int:
         """Adjustment of number of cleaning iterations due to mask size.
 
         Uses residual_robust_rms instead threshold to compute the new niter value.
@@ -197,8 +201,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             new_niter = max_niter
         return new_niter
 
-    def specmode(self):
-        """See PIPE-683 and CASR-543"""
+    def specmode(self) -> str:
+        """Tclean specmode parameter heuristics.
+        See PIPE-683 and CASR-543"""
         return 'cont'
 
     def nsigma(self, iteration, hm_nsigma):
@@ -208,15 +213,16 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         else:
             return 5.0
 
-    def threshold(self, iteration, threshold, hm_masking):
-        """See PIPE-678 and CASR-543"""
+    def threshold(self, iteration: int, threshold: Union[str, float], hm_masking: str) -> Union[str, float]:
+        """Tclean threshold parameter heuristics.
+        See PIPE-678 and CASR-543"""
         if iteration == 0 or hm_masking in ['none']:
             return '0.0mJy'
         else:
             return threshold
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None):
+               centreonly=False, vislist=None, spwspec=None) -> Union[list, int]:
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -256,7 +262,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
                               centreonly=centreonly, vislist=vislist)
 
-    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None):
+    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None) -> str:
         try:
             nameroot = self.imagename_prefix
             if nameroot == 'unknown':
