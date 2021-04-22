@@ -190,7 +190,7 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='resume')
   ```
 
-  **Note**: if you try to run the PPR with bpaction='resume' again, the subsequent call(s) will likely fail: `executeppr` is hardcoded to resume from the "last" context (i.e. the `.context` file in the working directory with latest timestamps), but we need the context content at the "breakpoint" stage to resume. Also, the file states (e.g. MS,s caltables) have changed. The only safe option is making a copy of the working directory before trying resume in case you might tweak the PPR in another attempt.
+  **Note**: if you try to run the PPR with bpaction='resume' again, the subsequent call(s) will likely fail: `executeppr` is hardcoded to resume from the "last" context (i.e. a `.context` file with the latest timestamp from your working directory), but we need the context content from the "breakpoint" stage to resume. Also, the file states (e.g. MSs, caltables) have changed. The only safe option is making a copy of the working directory before trying resume in case you might tweak the PPR in another attempt.
 
   For development/test purposes, one workaround to avoid copying the entire working directory is to create a fresh copy of the context pickled from the "breakpoint" stage (where your loglevel='debug' setting is crucial) in the existing working directory:
   
@@ -208,19 +208,19 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   import pipeline.infrastructure.executeppr as eppr
   eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='resume')
   ```
-  Again, please note that the above workaround might yield scientifically meanless results due to the changing file status and is only useful for testing under certain scenarios.
+  Again, please note that the above workaround might yield scientifically meaningless results due to the changing file status and is only useful for testing under certain scenarios.
   All break/resume approaches use the **current** files (e.g. MSs/caltables) in your working directory. So be aware of the existence of files/versions that might be unexpected to the resumed PL workflow task call(s)!
 
 * With `recipereducer`, you can load context saved at a specific stage from the working directory and run/rerun the next PL task designed in the workflow (also see the demonstration in the last section). 
   
-  A full recipe run based on the above test data example can be achieved with:
+  A full recipe run with the above test data example can be done via,
   
   ```python
   import pipeline.recipereducer, os
   pipeline.recipereducer.reduce(vis=['../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms'],
                               procedure='procedure_hifa_calimage.xml', loglevel='debug')
   ``` 
-
+  With the context pickled from individual stages, you may pick and test a single pipeline stage in your development:
   ```python
   task_to_run='hif_checkproductsize'
   task_keywords={'maxcubesize':40.0,'maxcubelimit':60,'maxproductsize':500.0}
