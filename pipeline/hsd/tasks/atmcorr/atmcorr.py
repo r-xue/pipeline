@@ -116,7 +116,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         # outfile
         if 'outfile' not in args:
             basename = os.path.basename(infile.rstrip('/'))
-            suffix = '_atmcorr_atmtype{}'.format(args['atmtype'])
+            suffix = '.atmcorr.atmtype{}'.format(args['atmtype'])
             outfile = basename + suffix
             args['outfile'] = relative_path(os.path.join(self.output_dir, outfile))
 
