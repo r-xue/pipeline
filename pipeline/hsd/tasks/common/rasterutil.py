@@ -18,6 +18,9 @@ import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
 from typing import Generator, List, Optional, Tuple
 
+from ...heuristics import rasterscan
+
+
 LOG = logging.get_logger(__name__)
 
 
@@ -355,11 +358,9 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     spw_list = get_science_spectral_windows(metadata)
     antenna_list = np.unique(metadata.antenna)
 
-    # use timetable (output of grouping heuristics) to distinguish raster rows and maps
+    # use timetable (output of grouping heuristics) to distinguish raster rows
     dtrowdict = {}
     ndrowdict = {}
-    ndmapdict = {}
-    rastergapdict = {}
     for field_id, spw_id, antenna_id in itertools.product(field_list, spw_list, antenna_list):
         try:
             timetable = datatable.get_timetable(ant=antenna_id, spw=spw_id, pol=None, ms=basename, field_id=field_id)
@@ -369,16 +370,31 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
         key = (field_id, spw_id, antenna_id)
         dtrowdict[key] = dtrow_list
 
-        dtrow_list_map = extract_dtrow_list(timetable, for_small_gap=False)
-        rastergapdict[key] = dtrow_list_map
-
         # typical number of data per raster row
+        num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
         ndrowdict.setdefault(field_id, [])
-        ndrowdict[field_id].extend(list(map(len, dtrow_list)))
+        ndrowdict[field_id].extend(num_data_per_raster_row)
 
-        # typical number of data per raster map
+    # rastergapdict stores list of datatable row ids per raster map
+    rastergapdict = {}
+    ndmapdict = {}
+    for key, dtrow_list in dtrowdict.items():
+        # Here, we need to re-execute find_raster_gap because we cannot
+        # rely on large gap sored in datatable to separate raster map.
+        # That is because there might be malformed raster scan which
+        # cannot be handled by rasterscan heuristic. In such case,
+        # traditional grouping2 heuristic, which is time-domain heuristic,
+        # is trigged.
+        raster_gap = rasterscan.find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
+        idx_list = [
+            np.concatenate(dtrow_list[s:e]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
+        ]
+        rastergapdict[key] = idx_list
+
+        # compute number of data per raster map
+        field_id = key[0]
         ndmapdict.setdefault(field_id, [])
-        ndmapdict[field_id].extend(list(map(len, dtrow_list_map)))
+        ndmapdict[field_id].extend(list(map(len, idx_list)))
 
     repmapdict = {}
     for field_id, ndmap in ndmapdict.items():

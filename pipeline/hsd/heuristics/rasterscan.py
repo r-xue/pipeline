@@ -28,13 +28,13 @@ class RasterScanHeuristicsFailure(Exception):
 
 class HeuristicsParameter(object):
     AngleThreshold = 45
-    AngleHistogramThreshold = 0.2
+    AngleHistogramThreshold = 0.3
     AngleHistogramSparseness = 0.5
     AngleHistogramBinWidth = 1
     # for std
     # DistanceThresholdFactor = 5
     # for MAD
-    DistanceThresholdFactor = 50
+    DistanceThresholdFactor = 75
 
 
 def get_func_compute_mad():
@@ -121,6 +121,7 @@ def find_histogram_peak(hist):
         LOG.trace('cumulative number %s fraction %s', ss, fraction)
         mask[il:ir + 1] = True
         peak_indices.append(ip)
+        LOG.info('thre %s, frac %s', threshold, fraction)
     LOG.info('peak_indices = %s', peak_indices)
     # if angle distribution is too wide, fail the heuristics
     if np.count_nonzero(mask) / len(mask) > sparseness:
