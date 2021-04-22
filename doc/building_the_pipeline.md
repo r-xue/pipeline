@@ -9,7 +9,7 @@ duration of the installation procedure.
 
 ## Standard build
 The pipeline can be built and installed like any standard Python module, with
-```
+```console
 $ python3 setup.py build
 ```
 The build output will be found in the build/lib directory. This directory can
@@ -31,7 +31,7 @@ pipeline with the new installation.
 ## Temporary install
 To build a pipeline .egg file without installing the egg and hence overwriting
 the CASA default pipeline installation, execute 
-```
+```console
 $ python setup.py bdist_egg
 ```
 The resulting egg file can be found in the dist directory and added to the
@@ -112,11 +112,20 @@ wish to exercise new code. The pipeline supports developer installations. In
 this mode, a pseudo installation is made which adds your source directory to
 the CASA site-packages. Hence the working version you are editing will become
 the pipeline version available to CASA.
-```
+
+```console
 $ python3 setup.py develop
 ```
-To uninstall the developer installation, execute
+
+or
+
+```console
+$ pip3 install --editable .
 ```
+
+To uninstall the developer installation, execute
+
+```console
 $ python3 setup.py develop -u
 ```
 
@@ -126,17 +135,35 @@ To make the CASA CLI bindings available for a developer install, the CLI
 bindings need to be written to the src directory. This can be done using the
 `buildmytasks` command, using the _-i_ option to generate the bindings 
 in-place, i.e., 
-```
+```consol
 $ python3 setup.py buildmytasks -i
 ```
 The bindings should be rebuilt whenever you change the interface XML definitions.
 
 __Take care not to commit the code-generated files to SVN!__
 
+### Optional: Install Astropy etc.
+
+[`Astropy`](https://www.astropy.org/) and [`PyBDSF`](https://www.astron.nl/citt/pybdsf/) became the pipeline dependencies in [the VLASS single-epoch imaging development](https://open-jira.nrao.edu/browse/PIPE-714). However, they are not currently bundled in the non-pipeline CASA releases.
+
+An easy installation option is to use `pip` packaged in the CASA distribution:
+
+```console
+$ which pip3
+$ /opt/nrao/casa-6.2.0-114/bin/pip3
+$ pip3 install astropy bdsf
+```
+which can be verified, 
+```python
+CASA <2>: astropy__version__
+Out[2]: '4.1'
+CASA <3>: astropy.__path__
+Out[3]: ['/opt/nrao/casa-6.2.0-114/lib/py/lib/python3.6/site-packages/astropy']
+```
 ### Optional: removing legacy pipeline installation from CASA
 To prevent any possible conflict between legacy pipeline installation and new
 pipeline code, the legacy pipeline installation should be removed from CASA. 
 Execute:
-```
-casa-config --sh-exec rm '$PYTHONHOME/pipeline'
+```consol
+$ casa-config --sh-exec rm '$PYTHONHOME/pipeline'
 ``` 
