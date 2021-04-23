@@ -147,7 +147,7 @@ class SDATMCorrectionResults(common.SingleDishResults):
         return os.path.basename(self.atmcorr_ms_name)
 
 
-@task_registry.set_equivalent_casa_task('hsd_atmcor')
+@task_registry.set_equivalent_casa_task('hsd_correctatm')
 @task_registry.set_casa_commands_comment(
     'Apply offline correction of atmospheric transmission model.'
 )
