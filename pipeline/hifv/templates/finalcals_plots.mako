@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9}
 %>
 
@@ -14,26 +15,23 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
 
 % for ms in finaldelay_subpages.keys():
     <h4>Plots: <br> <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, finaldelay_subpages[ms]), pcontext.report_dir)}">Final delay plots </a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, finaldelay_subpages[ms])}">Final delay plots </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, phasegain_subpages[ms]), pcontext.report_dir)}">BP initial gain phase </a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phasegain_subpages[ms])}">BP initial gain phase </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolamp_subpages[ms]), pcontext.report_dir)}">BP Amp solution </a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_subpages[ms])}">BP Amp solution </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolphase_subpages[ms]), pcontext.report_dir)}">BP Phase solution </a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphase_subpages[ms])}">BP Phase solution </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolphaseshort_subpages[ms]), pcontext.report_dir)}">Phase (short) gain solution</a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphaseshort_subpages[ms])}">Phase (short) gain solution</a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, finalamptimecal_subpages[ms]), pcontext.report_dir)}">Final amp time cal </a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, finalamptimecal_subpages[ms])}">Final amp time cal </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, finalampfreqcal_subpages[ms]), pcontext.report_dir)}">Final amp freq cal </a> |
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, finalampfreqcal_subpages[ms])}">Final amp freq cal </a> |
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, finalphasegaincal_subpages[ms]), pcontext.report_dir)}">Final phase gain cal </a> 
-        
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, finalphasegaincal_subpages[ms])}">Final phase gain cal </a>
     </h4>
-
 %endfor
-
 
 % for band in bandsort.keys():
     % if band in bandlist:
@@ -57,9 +55,9 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
                         <a data-fancybox="allplots"
                            href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
                            title="Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}">
-                                <img   src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
+                                <img src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
                                      title="Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}"
-                                       alt="">
+                                     alt="">
                         </a>
                         <div class="caption">
                             <span class="text-center">Antenna ${plot.parameters['ant']} &nbsp;&nbsp; Band: ${plot.parameters['bandname']}</span>

@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 
 <div class="page-header">
@@ -9,13 +10,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 </div>
 
 % for ms in selfcalphasegaincal_subpages.keys():
-
     <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, selfcalphasegaincal_subpages[ms]), pcontext.report_dir)}">Phase vs. time plots </a>
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, selfcalphasegaincal_subpages[ms])}">Phase vs. time plots </a>
     </h4>
-
-
-
 %endfor
 
 <br>

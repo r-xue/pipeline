@@ -125,7 +125,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 # scans = ms.get_scans(scan_intent='TARGET')
                 # for scan in scans:
                 #     fields.update([field.id for field in scan.fields])
-                with casa_tools.MSMDReader(vis) as msmd:
+                with casa_tools.MSMDReader(result.inputs['vis']) as msmd:
                     fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
 
                 # Science target detail plots. Note that summary plots go onto the

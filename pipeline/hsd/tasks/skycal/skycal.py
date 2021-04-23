@@ -8,12 +8,13 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.sessionutils as sessionutils
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from .. import common
+from ..common import SingleDishResults
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -74,7 +75,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
         return args
 
 
-class SDSkyCalResults(common.SingleDishResults):
+class SDSkyCalResults(SingleDishResults):
     """
     """
     def __init__(self, task=None, success=None, outcome=None):
@@ -156,8 +157,9 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                 try:
                     # we temporarily need 'vis'
                     myargs['vis'] = myargs['infile']
-                    myargs['outfile'] = namer.calculate(output_dir=self.inputs.output_dir,
-                                                        stage=self.inputs.context.stage, **myargs)
+                    myargs['outfile'] = relative_path(namer.calculate(output_dir=self.inputs.output_dir,
+                                                                      stage=self.inputs.context.stage,
+                                                                      **myargs))
                 finally:
                     del myargs['vis']
             else:
@@ -234,7 +236,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                     if eldmax >= threshold:
                         field_name = ms.fields[field_id].name
                         antenna_name = ms.antennas[antenna_id].name
-                        LOG.info('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
+                        LOG.warn('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
                                  ' exceeding the threshold {}deg'
                                  ''.format(ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))
 

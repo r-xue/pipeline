@@ -3,11 +3,12 @@ import os
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-from pipeline.domain.datatable import absolute_path
 from pipeline.infrastructure import task_registry
 from . import inspection
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -93,7 +94,8 @@ class SDImportData(importdata.ImportData):
         results = super(SDImportData, self).prepare()
 
         # per MS inspection
-        table_prefix = absolute_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'))
+        table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),
+                                     self.inputs.output_dir)
         reduction_group_list = []
         org_directions_dict = {}
         for ms in results.mses:

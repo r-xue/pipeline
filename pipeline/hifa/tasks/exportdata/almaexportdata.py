@@ -128,14 +128,8 @@ class ALMAExportData(exportdata.ExportData):
                                                        project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
-        # if ps is None or ps.ousstatus_entity_id == 'unknown':
-        #     script_file = os.path.join(context.report_dir, script_name)
-        #     out_script_file = os.path.join(products_dir, script_name)
-        # else:
-        #     script_file = os.path.join(context.report_dir, script_name)
-        #     out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
 
-        LOG.info('Creating casa restore script %s' % script_file)
+        LOG.info('Creating casa restore script %s', script_file)
 
         # This is hardcoded.
         tmpvislist = []
@@ -178,8 +172,8 @@ finally:
         try:
             report_xml = report_generator.get_report_xml(context)
             almaifaqua.export_to_disk(report_xml, aqua_file)
-        except:
-            LOG.error('Error generating the pipeline AQUA report')
+        except Exception as e:
+            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
             return 'Undefined'
 
         ps = context.project_structure
@@ -187,11 +181,7 @@ finally:
                                                      project_structure=ps,
                                                      ousstatus_entity_id=oussid,
                                                      output_dir=products_dir)
-        # if ps is None or ps.ousstatus_entity_id == 'unknown':
-        #     out_aqua_file = os.path.join(products_dir, aquareport_name)
-        # else:
-        #     out_aqua_file = os.path.join(products_dir, oussid + '.' + aquareport_name)
 
-        LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
+        LOG.info('Copying AQUA report %s to %s', aqua_file, out_aqua_file)
         shutil.copy(aqua_file, out_aqua_file)
         return os.path.basename(out_aqua_file)

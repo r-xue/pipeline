@@ -1,6 +1,7 @@
 <%!
 rsc_path = ""
 import os
+from pipeline.infrastructure.renderer import rendererutils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -241,7 +242,7 @@ for baseline subtraction.</p>
       <h4><a class="replace"
       href="${os.path.join(dirname, plots['html'])}" data-field="${field}">${plots['title']}</h4>
     
-<!--		href="${os.path.relpath(os.path.join(dirname, plots['html']), pcontext.report_dir)}">${plots['title']}-->
+<!--		href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, plots['html'])}">${plots['title']}-->
       % for plot in plots['cover_plots']:
         % if os.path.exists(plot.thumbnail):
 			<div class="col-md-3">

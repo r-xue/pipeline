@@ -10,6 +10,7 @@ as appropriate).
 """
 from importlib import import_module
 
+from .casa_data import *
 from .conversion import *
 from .diagnostics import *
 from .framework import *
@@ -22,8 +23,19 @@ from .math import *
 from .positioncorrection import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
-_all_modules = ['conversion', 'diagnostics', 'framework', 'imaging', 'ppr', 'sorting', 'utils', 'weblog', 'math',
-                'positioncorrection']
+_all_modules = [
+    'casa_data',
+    'conversion',
+    'diagnostics',
+    'framework',
+    'imaging',
+    'ppr',
+    'sorting',
+    'utils',
+    'weblog',
+    'math',
+    'positioncorrection'
+]
 
 
 def _ensure_no_multiple_definitions(module_names):

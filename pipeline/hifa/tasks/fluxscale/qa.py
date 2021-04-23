@@ -18,6 +18,7 @@ from pipeline.domain.measures import FluxDensity, FluxDensityUnits, Frequency, F
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.common.displays.common import CaltableWrapperFactory
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
+from pipeline.hifa.heuristics.snr import ALMA_BANDS, ALMA_SENSITIVITIES, ALMA_TSYS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tools
 from . import gcorfluxscale
@@ -27,18 +28,11 @@ LOG = infrastructure.get_logger(__name__)
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 # Defines some characteristic values for each ALMA receiver band.
+# sensitivity = mJy (for 16*12m antennas, 1 minute, 8 GHz, 2pol)
 BandInfo = collections.namedtuple('BandInfo', 'name number nominal_tsys sensitivity')
-BAND_INFOS = [
-    # sensitivity = mJy (for 16*12m antennas, 1 minute, 8 GHz, 2pol)
-    BandInfo(name='ALMA Band 3', number=3, nominal_tsys=75.0, sensitivity=FluxDensity(0.20, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 4', number=4, nominal_tsys=86.0, sensitivity=FluxDensity(0.24, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 5', number=5, nominal_tsys=120.0, sensitivity=FluxDensity(0.37, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 6', number=6, nominal_tsys=90.0, sensitivity=FluxDensity(0.27, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 7', number=7, nominal_tsys=150.0, sensitivity=FluxDensity(0.50, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 8', number=8, nominal_tsys=387.0, sensitivity=FluxDensity(1.29, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 9', number=9, nominal_tsys=1200.0, sensitivity=FluxDensity(5.32, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 10', number=10, nominal_tsys=1515.0, sensitivity=FluxDensity(8.85, FluxDensityUnits.MILLIJANSKY))
-]
+BAND_INFOS = [BandInfo(name=ALMA_BANDS[i], number=i+1, nominal_tsys=ALMA_TSYS[i],
+                       sensitivity=FluxDensity(ALMA_SENSITIVITIES[i], FluxDensityUnits.MILLIJANSKY))
+              for i in range(len(ALMA_BANDS))]
 
 # External flux providers
 EXTERNAL_SOURCES = (ORIGIN_ANALYSIS_UTILS, ORIGIN_DB, ORIGIN_XML)

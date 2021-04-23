@@ -2,9 +2,10 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
-from pipeline.infrastructure import task_registry
 from . import jyperkreader
 from . import worker
 from . import jyperkdbaccess
@@ -15,6 +16,8 @@ LOG = infrastructure.get_logger(__name__)
 class SDK2JyCalInputs(vdp.StandardInputs):
 
     reffile = vdp.VisDependentProperty(default='jyperk.csv')
+    dbservice = vdp.VisDependentProperty(default=False)
+    endpoint = vdp.VisDependentProperty(default='asdm')
 
     @vdp.VisDependentProperty
     def infiles(self):
@@ -36,8 +39,9 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         namer = caltable_heuristic.AmpCaltable()
         # ignore caltable to avoid circular reference
         casa_args = self._get_task_args(ignore=('caltable',))
-        return namer.calculate(output_dir=self.output_dir,
-                               stage=self.context.stage, **casa_args)
+        return relative_path(namer.calculate(output_dir=self.output_dir,
+                                             stage=self.context.stage,
+                                             **casa_args))
 
     def __init__(self, context, output_dir=None, infiles=None, caltable=None,
                  reffile=None, dbservice=None, endpoint=None):
@@ -129,7 +133,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
 
         if (inputs.dbservice is False) or (len(factors_list) == 0):
             # Read scaling factor file
-            reffile = os.path.abspath(os.path.expandvars(os.path.expanduser(inputs.reffile)))
+            reffile = relative_path(inputs.reffile, inputs.context.output_dir)
             factors_list = self._read_factors(reffile)
 
         LOG.debug('factors_list=%s' % factors_list)

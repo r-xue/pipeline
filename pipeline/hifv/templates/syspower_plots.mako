@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 
 <div class="page-header">
@@ -9,13 +10,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 </div>
 
 % for ms in syspowerspgain_subpages.keys():
-
-    <h4>Plots:  <a class="replace" href="${os.path.relpath(os.path.join(dirname, syspowerspgain_subpages[ms]), pcontext.report_dir)}">SysPower Rq SPgain plots </a> |
-                <a class="replace" href="${os.path.relpath(os.path.join(dirname, pdiffspgain_subpages[ms]), pcontext.report_dir)}">Syspower Pdiff SPgain plots</a>
+    <h4>Plots:  <a class="replace" href="${rendererutils.get_relative_url(pcontext._report_dir, dirname, syspowerspgain_subpages[ms])}">SysPower Rq SPgain plots </a> |
+                <a class="replace" href="${rendererutils.get_relative_url(pcontext._report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff SPgain plots</a>
     </h4>
-
-
-
 %endfor
 
 <br>

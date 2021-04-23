@@ -617,7 +617,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
         # already created and merged into the context by tsyscal, but we
         # recreate it here since it is needed by the weblog renderer to create
         # a Tsys summary chart.
-        calto = callibrary.CalTo(vis=tsystable.vis)
+        calto = callibrary.CalTo(vis=inputs.vis)
         calfrom = callibrary.CalFrom(caltable_to_assess, caltype='tsys', spwmap=spwmap)
         calapp = callibrary.CalApplication(calto, calfrom)
         result.final = [calapp]
@@ -765,9 +765,8 @@ class Tsysflag(basetask.StandardTaskTemplate):
         # already created and merged into the context by tsyscal, but we
         # recreate it here since it is needed by the weblog renderer to create
         # a Tsys summary chart.
-        calto = callibrary.CalTo(vis=tsystable.vis)
-        calfrom = callibrary.CalFrom(caltable_to_assess, caltype='tsys',
-                                     spwmap=spwmap)
+        calto = callibrary.CalTo(vis=inputs.vis)
+        calfrom = callibrary.CalFrom(caltable_to_assess, caltype='tsys', spwmap=spwmap)
         calapp = callibrary.CalApplication(calto, calfrom)
         result.final = [calapp]
 
