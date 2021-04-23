@@ -50,26 +50,15 @@ def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
     """Generate position data for simulated position-switch observation.
 
     Generate position data for simulated position-switch observatin.
-    The observation consists of four positions in 2x2 grids, (0,0),
-    (0,1), (1,0), and (1,1). Each position has ten data that contains
-    random noise around commanded position.
-
-      y
-
-      |  (0,1)   (1,1)
-      |  +       +
-      |
-      |  (0,0)   (1,0)
-      |  +       +
-      |
-      -----------------  x
+    The observation consists of four positions in 4x4 grids. Each
+    position has ten data that contain random noise around commanded position.
 
     Returns:
         tuple: two-tuple consisting of the list of x (R.A.) and
                y (Dec.) directions
     """
-    xlist = [0, 1]
-    ylist = [0, 1]
+    xlist = [0, 1, 2, 3]
+    ylist = [0, 1, 2, 3]
     rs = np.random.RandomState(seed=1234567)
     noise_mean = 0
     noise_amp = 0.02
@@ -80,9 +69,8 @@ def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
         for y in ylist:
             xnoise = random_noise(num_pointings_per_grid, noise_mean, noise_amp, rs)
             ynoise = random_noise(num_pointings_per_grid, noise_mean, noise_amp, rs)
-            for _ in range(3):
-                ra_list.append(xnoise + x)
-                dec_list.append(ynoise + y)
+            ra_list.append(xnoise + x)
+            dec_list.append(ynoise + y)
     ra_list = np.concatenate(ra_list)
     dec_list = np.concatenate(dec_list)
 
@@ -184,28 +172,28 @@ def generate_position_data_raster(
 
 
 @pytest.mark.parametrize(
-    'oneway_row, oneway_map, scan_angle, interval_factor',
+    'oneway_row, oneway_map, scan_angle, interval_factor, pointing_error',
     [
-        (False, True, 0.0, 1.0),
-        (False, True, 30.0, 1.0),
-        (False, True, 90.0, 1.0),
-        (True, True, 0.0, 1.0),
-        (True, True, 30.0, 1.0),
-        (True, True, 90.0, 1.0),
-        (True, False, 0.0, 1.0),
-        (True, False, 30.0, 1.0),
-        (True, False, 90.0, 1.0),
-        (False, False, 0.0, 1.0),
-        (False, False, 30.0, 1.0),
-        (False, False, 90.0, 1.0),
-        (True, True, 0.0, 0.5),
-        (False, True, 0.0, 0.5),
+        (False, True, 0.0, 1.0, 0.1),
+        (False, True, 30.0, 1.0, 0.1),
+        (False, True, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 1.0, 0.1),
+        (True, True, 30.0, 1.0, 0.1),
+        (True, True, 90.0, 1.0, 0.1),
+        (True, False, 0.0, 1.0, 0.1),
+        (True, False, 30.0, 1.0, 0.1),
+        (True, False, 90.0, 1.0, 0.1),
+        (False, False, 0.0, 1.0, 0.1),
+        (False, False, 30.0, 1.0, 0.1),
+        (False, False, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 0.5, 0.1),
+        (False, True, 0.0, 0.5, 0.1),
+        (False, True, 0.0, 1.0, 0.5),
     ]
 )
-def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_factor):
+def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
-    pointing_error = 0.1
     print()
     print('===================')
     print('TEST CONFIGURATION:')
@@ -230,7 +218,7 @@ def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_facto
 
     h = RasterScanHeuristic()
 
-    if oneway_map is False:
+    if oneway_map is False or pointing_error > 0.1:
         # should raise RasterScanHeuristicsFailure
         with pytest.raises(RasterScanHeuristicsFailure):
             gaptable, gaplist = h(ra, dec)
@@ -264,3 +252,20 @@ def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_facto
         gaplist_large = gaplist[1]
         assert np.array_equal(gaplist_small, gaplist_expected_small)
         assert np.array_equal(gaplist_large, gaplist_expected_large)
+
+
+def test_fail_psw():
+    print()
+    print('===================')
+    print('TEST CONFIGURATION:')
+    print('  expected to fail')
+    print('  attempt to analyze PSW pattern')
+    print('===================')
+    print()
+
+    ra, dec = generate_position_data_psw()
+    h = RasterScanHeuristic()
+
+    # should raise RasterScanHeuristicsFailure
+    with pytest.raises(RasterScanHeuristicsFailure):
+        gaptable, gaplist = h(ra, dec)
