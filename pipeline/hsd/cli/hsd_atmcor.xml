@@ -7,7 +7,7 @@
 </description>
 
 <input>
-    <param name="atmtype" type="int">
+    <param name="atmtype" type="any">
         <shortdescription>Type of atmospheric transmission model (1,2,3,4,5)</shortdescription>
         <description>
         Type of atmospheric transmission model represented as an integer.
@@ -19,7 +19,8 @@
           4: subarctic summer
           5: subarctic winter
         </description>
-        <value>1</value>
+        <any type="variant" limittypes="int intArray"/>
+        <value type="int">1</value>
     </param>
 
     <param name="pipelinemode" type="string">
