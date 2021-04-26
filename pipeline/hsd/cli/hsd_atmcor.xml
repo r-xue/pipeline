@@ -23,6 +23,36 @@
         <value type="int">1</value>
     </param>
 
+    <param name="dtem_dh" type="any">
+        <shortdescription>temperature gradient [K/km], e.g. -5.6. (&quot;&quot; = Tool default) </shortdescription>
+        <description>temperature gradient [K/km], e.g. -5.6. (&quot;&quot; = Tool default)
+
+                       The value is directly passed to initialization method for ATM model.
+                       Float and string types are acceptable. Float value is interpreted as
+                       the value in K/km. String value should be the numeric value with unit
+                       such as '-5.6K/km'.
+
+                       Default: '' (tool default, -5.6K/km, is used)
+
+        </description>
+        <any type="variant"  limittypes="string double stringArray doubleArray"/>
+        <value type="string">-5.6K/km</value>
+    </param>
+
+    <param name="h0" type="any">
+        <shortdescription>scale height for water [km], e.g. 2.0. (&quot;&quot; = Tool default)</shortdescription>
+        <description>scale height for water [km], e.g. 2.0. (&quot;&quot; = Tool default)
+
+                       The value is directly passed to initialization method for ATM model.
+                       Float and string types are acceptable. Float value is interpreted as
+                       the value in kilometer. String value should be the numeric value with
+                       unit compatible with length, such as '2km' or '2000m'.
+
+        </description>
+        <any type="variant"  limittypes="string double stringArray doubleArray"/>
+        <value type="string">2km</value>
+    </param>
+
     <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operating  mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the

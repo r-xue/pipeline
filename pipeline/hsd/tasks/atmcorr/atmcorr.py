@@ -17,11 +17,14 @@ LOG = logging.get_logger(__name__)
 
 class SDATMCorrectionInputs(vdp.StandardInputs):
     atmtype = vdp.VisDependentProperty(default=1)
+    dtem_dh = vdp.VisDependentProperty(default=-5.6)
+    h0 = vdp.VisDependentProperty(default=2.0)
     intent = vdp.VisDependentProperty(default='TARGET')
 
     @atmtype.convert
     def atmtype(self, value):
-        print(value, type(value))
+        if isinstance(value, str):
+            value = int(value)
         return value
 
     @vdp.VisDependentProperty
@@ -72,12 +75,14 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         return ','.join(pols)
 
-    def __init__(self, context, atmtype=None,
+    def __init__(self, context, atmtype=None, dtem_dh=None, h0=None,
                  infiles=None, antenna=None, field=None, spw=None, pol=None):
         super().__init__()
 
         self.context = context
         self.atmtype = atmtype
+        self.dtem_dh = dtem_dh
+        self.h0 = h0
         self.infiles = infiles
         self.antenna = antenna
         self.field = field

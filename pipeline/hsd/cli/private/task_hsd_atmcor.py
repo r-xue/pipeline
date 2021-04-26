@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hsd_atmcor(atmtype=None, pipelinemode=None,
+def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None, pipelinemode=None,
                infiles=None, antenna=None, field=None, spw=None, pol=None,
                dryrun=None, acceptresults=None, parallel=None):
 
