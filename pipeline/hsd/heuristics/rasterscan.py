@@ -9,7 +9,7 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
-from typing import List
+from typing import Callable, List, Optional, Tuple, Union
 
 # import 3rd party modules
 import numpy as np
@@ -27,6 +27,7 @@ class RasterScanHeuristicsFailure(Exception):
 
 
 class HeuristicsParameter(object):
+    """Holds tunable parameters for RasterScanHeuristic"""
     AngleThreshold = 45
     AngleHistogramThreshold = 0.3
     AngleHistogramSparseness = 0.5
@@ -37,7 +38,16 @@ class HeuristicsParameter(object):
     DistanceThresholdFactor = 75
 
 
-def get_func_compute_mad():
+def get_func_compute_mad() -> Callable:
+    """Return function to compute median absolute deviation (MAD)
+    depending on SciPy version.
+
+    Raises:
+        NotImplementedError: SciPy version is too old (lower than 1.3.0)
+
+    Returns:
+        function: function to compute MAD
+    """
     # assuming X.Y.Z style version string
     scipy_version = scipy.version.full_version
     versioning = map(int, scipy_version.split('.'))
@@ -69,12 +79,46 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
     return np.hypot(x1 - x0, y1 - y0)
 
 
-def generate_histogram(arr, bin_width, left_edge, right_edge):
+def generate_histogram(
+    arr: np.ndarray,
+    bin_width: float,
+    left_edge: float,
+    right_edge: float
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Generates histogram for given array, arr, with the configuration
+    specified by
+
+    Args:
+        arr: data for histogram
+        bin_width: width of the bin
+        left_edge: lower limit of the histogram bin
+        right_edge: upper limit of the histogram bin
+
+    Returns:
+        histogram and bin configuration as two tuples
+    """
     nbin = int(np.ceil(right_edge - left_edge / bin_width))
     return np.histogram(arr, bins=nbin, range=(left_edge, right_edge))
 
 
-def detect_peak(hist, mask=None):
+def detect_peak(
+    hist: np.ndarray,
+    mask: Optional[np.ndarray] = None
+) -> Tuple[int, int, int, int]:
+    """Detect peak in the given histogram.
+
+    Detects single peak and find its range. Also compute the
+    number of data included in the range.
+
+    Args:
+        hist: histogram to be examined
+        mask: boolean mask array. setting False excludes the corresponding
+              array element in hist from the examination. Defaults to None.
+
+    Returns:
+        Four ints, total numlber of data included in the range, and
+        indices of the peak, left edge, and right edge.
+    """
     if mask is None:
         mh = hist
     else:
@@ -104,7 +148,23 @@ def detect_peak(hist, mask=None):
     return total, ipeak, imin, imax
 
 
-def find_histogram_peak(hist):
+def find_histogram_peak(hist: np.ndarray) -> List[int]:
+    """Find histogram peaks.
+
+    Repeatedly calls detect_peak until fraction of data included in
+    the peak region reaches HeuristicsParameter.AngleHistogramThreshold.
+
+    Args:
+        hist: histogram data.
+
+    Raises:
+        RasterScanHeuristicsFailure:
+            fraction of detected peak region exceeded the threshold
+            specified by HeuristicsParameter.AngleHistogramSparseness
+
+    Returns:
+        List of peak indices.
+    """
     total = hist.sum()
     threshold = HeuristicsParameter.AngleHistogramThreshold
     sparseness = HeuristicsParameter.AngleHistogramSparseness
@@ -131,7 +191,21 @@ def find_histogram_peak(hist):
     return peak_indices
 
 
-def shift_angle(angle, delta):
+def shift_angle(
+    angle: Union[float, np.ndarray],
+    delta: float
+) -> Union[float, np.ndarray]:
+    """Shift angle or angle array by the value, delta.
+
+    All angles must be the value in degree.
+
+    Args:
+        angle: angle value or angle array in degree.
+        delta: angle shift in degree.
+
+    Returns:
+        shifted angle in degree
+    """
     return (angle + 360 + delta) % 360
 
 
@@ -159,7 +233,23 @@ def find_most_frequent(v: np.ndarray) -> int:
     return mode
 
 
-def refine_gaps(gap_list, num_data):
+def refine_gaps(gap_list: List[int], num_data: int) -> np.ndarray:
+    """Refine gap list by eliminating unreasonable gaps.
+
+    When there is relatively large pointing error right before
+    the turnaround of raster row, turnaround effectively spread
+    two data points so that individual angles become shallow.
+    As a result, additional gap is introduced at the end of raster
+    row and edge point is isolated by the additional gap.
+    Such isolation can be compensated by refine_gaps.
+
+    Args:
+        gap_list: original gap list
+        num_data: total number of data
+
+    Returns:
+        refined gap list
+    """
     gaps = gap_list[:]
     if gap_list[0] != 0:
         gaps = np.concatenate(([0], gaps))
@@ -189,7 +279,31 @@ def refine_gaps(gap_list, num_data):
     return np.asarray(refined_gaps)
 
 
-def create_range(peak_values, acceptable_deviation, angle_min, angle_max):
+def create_range(
+    peak_values: List[float],
+    acceptable_deviation: float,
+    angle_min: float,
+    angle_max: float
+) -> List[Tuple[float, float]]:
+    """Create angle ranges (in degree) from peak values and width of the ranges.
+
+    It takes into account periodic property of the angle so that
+    ranges exceeding the range [angle_min, angle_max] are wrapped
+    around.
+
+    Args:
+        peak_values: List of peak values in degree that become
+                     the center of the ranges
+        acceptable_deviation: (half-)width of the range in degree
+        angle_min: minimum angle in degree
+        angle_max: maximum angle in degree
+
+    Raises:
+        RuntimeError: inconsistent angle setup
+
+    Returns:
+        List of angle ranges in degree
+    """
     acceptable_ranges = []
     for p in peak_values:
         upper = p + acceptable_deviation
@@ -210,35 +324,68 @@ def create_range(peak_values, acceptable_deviation, angle_min, angle_max):
     return acceptable_ranges
 
 
-def find_angle_gap_by_range(angle_deg, acceptable_ranges):
+def find_angle_gap_by_range(
+    angle_deg: np.ndarray,
+    acceptable_ranges: List[Tuple[float, float]]
+) -> np.ndarray:
+    """Find angle gap using the range.
+
+    Given the angle array in degree, angle_deg, find angle using the
+    range specified by acceptable_ranges. When a certan angle is out of
+    ranges in acceptable_ranges, it is regarded as a gap.
+
+        ASCII illustration for angle gap index
+
+                |                 *
+         gap idx|   0   1   2   3 | 4 (gap)
+                | *---*---*---*---*
+        data idx| 0   1   2   3   4
+
+
+    Args:
+        angle_deg: angle array in degree
+        acceptable_ranges: angle ranges to detect gaps.
+
+    Returns:
+        list of indices of angle gaps
+    """
     mask = np.empty(len(angle_deg), dtype=bool)
     mask[:] = False
     for lower, upper in acceptable_ranges:
         in_range = np.logical_and(lower <= angle_deg, angle_deg <= upper)
         mask = np.logical_or(mask, in_range)
 
-    # ASCII illustration for angle gap index
-    #
-    #         |                 *
-    #  gap idx|   0   1   2   3 | 4 (gap)
-    #         | *---*---*---*---*
-    # data idx| 0   1   2   3   4
-    #
     angle_gap = np.where(mask == False)[0] + 1
 
     return angle_gap
 
 
-def find_distance_gap(delta_ra, delta_dec):
+def find_distance_gap(delta_ra: np.ndarray, delta_dec: np.ndarray) -> np.ndarray:
+    """Find distance gap.
+
+    Distance gap is detected by the condition below:
+
+        abs(distance - median(distance)) > X * MAD(distance)
+
+    where X is HeuristicsParameter.DistanceThresholdFactor.
+    Detection process is performed three times with clipping.
+
+        ASCII illustration for distance gap
+
+                             (gap)
+         gap idx |   0   1     2     3
+                 | *---*---*-------*---*
+        data idx | 0   1   2       3   4
+
+
+    Args:
+        delta_ra: horisontal position separation
+        delta_dec: vertical position separation
+
+    Returns:
+        list of indices of distance gaps
+    """
     distance = np.hypot(delta_ra, delta_dec).flatten()
-    #
-    # ASCII illustration for distance gap
-    #
-    #                      (gap)
-    #  gap idx |   0   1     2     3
-    #          | *---*---*-------*---*
-    # data idx | 0   1   2       3   4
-    #
     factor = HeuristicsParameter.DistanceThresholdFactor
     num_loop = 3
     distance_gap = np.zeros(0, dtype=int)
@@ -259,17 +406,30 @@ def find_distance_gap(delta_ra, delta_dec):
         else:
             break
         mask = np.logical_and(mask, tmp)
-    #distance_median = np.median(distance)
-    #distance_mad = compute_mad(distance)
-    #distance_mad = distance.std()
-    #distance_threshold = factor * distance_mad
-    #distance_gap = np.where(np.abs(distance - distance_median) > distance_threshold)[0] + 1
     distance_gap = np.unique(np.asarray(distance_gap, dtype=int))
     LOG.info('distance gap: %s', distance_gap)
     return distance, distance_gap, distance_threshold
 
 
-def find_angle_gap(angle_deg: np.ndarray):
+def find_angle_gap(angle_deg: np.ndarray) -> List[int]:
+    """Find angle gap.
+
+    Find angle gap by using angle histogram. For raster scan,
+    there should be one (one-way raster) or two (round-trip raster)
+    angle peaks in the histogram. When deviation from the peaks exceeds
+    45deg, it is regarded as angle gap. Currently the algorithm doesn't
+    support one-way raster scan that all the raster rows are the same.
+
+    Args:
+        angle_deg: angle array in degree
+
+    Raises:
+        RasterScanHeuristicsFailure:
+            scan pattern is not likely to be raster scan
+
+    Returns:
+        list of indices of angle gaps
+    """
     bin_width = HeuristicsParameter.AngleHistogramBinWidth
     hist, bin_edges = generate_histogram(angle_deg, bin_width=bin_width,
                                          left_edge=-180, right_edge=180)
@@ -311,10 +471,24 @@ def find_angle_gap(angle_deg: np.ndarray):
     angle_gap = find_angle_gap_by_range(angle_deg, acceptable_ranges)
     LOG.info('angle gap: %s', angle_gap)
 
-    return angle_deg, angle_gap, hist, bin_edges, peak_indices, acceptable_ranges
+    #return angle_deg, angle_gap, hist, bin_edges, peak_indices, acceptable_ranges
+    return angle_gap
 
 
 def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
+    """Find raster rows using angle gap as primary and distance gap as secondary
+
+    The function tries to find angle gap with tight condition and distance
+    gap with loose condition. Then, these gaps are combined by taking union.
+    Finally, gap list is refined.
+
+    Args:
+        ra: horizontal position sequence
+        dec: vertical position sequence
+
+    Returns:
+        list of indices that separate individual raster rows
+    """
     delta_ra = ra[1:] - ra[:-1]
     delta_dec = dec[1:] - dec[:-1]
 
@@ -324,7 +498,8 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     # heuristics based on scan direction
     angle_rad = np.arctan2(delta_dec, delta_ra).flatten()
     angle_deg = angle_rad * 180 / np.pi
-    shifted_angle, angle_gap, hist, bin_edges, peak_indices, ranges = find_angle_gap(angle_deg)
+    #shifted_angle, angle_gap, hist, bin_edges, peak_indices, ranges = find_angle_gap(angle_deg)
+    angle_gap = find_angle_gap(angle_deg)
     merged_gap = np.union1d(angle_gap, distance_gap)
     num_data = len(ra)
     merged_gap = np.concatenate(([0], merged_gap, [num_data]))
@@ -332,7 +507,8 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     refined_gap = refine_gaps(merged_gap, num_data)
     LOG.info('final gap list: %s', refined_gap)
 
-    return shifted_angle, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices, ranges, distance_threshold
+    #return shifted_angle, distance, refined_gap, angle_gap, distance_gap, (hist, bin_edges), peak_indices, ranges, distance_threshold
+    return refined_gap
 
 
 def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
@@ -402,9 +578,44 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
 
 
 class RasterScanHeuristic(api.Heuristic):
-    def calculate(self, ra, dec):
-        ret = find_raster_row(ra, dec)
-        gaplist_row = ret[2]
+    """Heuristic to analyze raster scan pattern."""
+    def calculate(self, ra: np.ndarray, dec: np.ndarray) -> Tuple[List, List]:
+        """Detect gaps that separate individual raster rows and raster maps.
+
+        Detected gaps are transrated into TimeTable and TimeGap described below.
+
+        Args:
+            ra: horizontal position list
+            dec: vertical position list
+
+        Returns:
+            Two-tuple containing information on group membership
+            (TimeTable) and boundaries between groups (TimeGap).
+
+            TimeTable is the "list-of-list" whose items are the set
+            of indices for each group. TimeTable[0] is the groups
+            separaged by "small" gap while TimeTable[1] is for
+            groups separated by "large" gap. They are used for
+            baseline subtraction (hsd_baseline) and subsequent
+            flagging (hsd_blflag).
+
+            TimeTable:
+                [[[ismall00,...,ismall0M],[...],...,[ismallX0,...,ismallXN]],
+                 [[ilarge00,...,ilarge0P],[...],...,[ilargeY0,...,ilargeYQ]]]
+            TimeTable[0]: separated by small gaps
+            TimeTable[1]: separated by large gaps
+
+            TimeGap is the list of indices which indicate boundaries
+            for "small" and "large" gaps. The "small" gap is a merged
+            list of gaps for groups separated by small time gaps and
+            the ones grouped by positions. These are used for plotting.
+
+            TimeGap: [[rowX1, rowX2,...,rowXN], [rowY1, rowY2,...,rowYN]]
+            TimeGap[0]: small gap
+            TimeGap[1]: large gap
+        """
+        gaplist_row = find_raster_row(ra, dec)
+        # gaplist_row = ret[2]
         idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
         dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
         gaplist_map = find_raster_gap(ra, dec, dtrow_list)
