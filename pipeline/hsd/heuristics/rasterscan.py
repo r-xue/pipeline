@@ -97,7 +97,7 @@ def generate_histogram(
     Returns:
         histogram and bin configuration as two tuples
     """
-    nbin = int(np.ceil(right_edge - left_edge / bin_width))
+    nbin = int(np.ceil((right_edge - left_edge) / bin_width))
     return np.histogram(arr, bins=nbin, range=(left_edge, right_edge))
 
 
