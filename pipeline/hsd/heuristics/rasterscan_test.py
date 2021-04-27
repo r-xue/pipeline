@@ -21,7 +21,7 @@ from typing import Tuple
 import numpy as np
 import pytest
 
-from .rasterscan import RasterScanHeuristic, RasterScanHeuristicsFailure
+from . import rasterscan
 
 
 def random_noise(n: int, mean: int = 0, amp: int = 1, rs: np.random.mtrand.RandomState = None) -> np.ndarray:
@@ -191,7 +191,7 @@ def generate_position_data_raster(
         (False, True, 0.0, 1.0, 0.5),
     ]
 )
-def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+def test_rasterscan_heuristic(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
     print()
@@ -205,9 +205,6 @@ def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_facto
     print('===================')
     print()
 
-    # if oneway_map is False:
-    #     pytest.skip('Round-trip raster scan is not supported')
-
     ra, dec = generate_position_data_raster(
         oneway_row=oneway_row,
         oneway_map=oneway_map,
@@ -216,11 +213,11 @@ def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_facto
         pointing_error=pointing_error
     )
 
-    h = RasterScanHeuristic()
+    h = rasterscan.RasterScanHeuristic()
 
     if oneway_map is False or pointing_error > 0.1:
         # should raise RasterScanHeuristicsFailure
-        with pytest.raises(RasterScanHeuristicsFailure):
+        with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
             gaptable, gaplist = h(ra, dec)
     else:
         gaptable, gaplist = h(ra, dec)
@@ -254,7 +251,7 @@ def test_raster_gap_detection(oneway_row, oneway_map, scan_angle, interval_facto
         assert np.array_equal(gaplist_large, gaplist_expected_large)
 
 
-def test_fail_psw():
+def test_rasterscan_heuristic_fail_psw():
     print()
     print('===================')
     print('TEST CONFIGURATION:')
@@ -264,8 +261,271 @@ def test_fail_psw():
     print()
 
     ra, dec = generate_position_data_psw()
-    h = RasterScanHeuristic()
+    h = rasterscan.RasterScanHeuristic()
 
     # should raise RasterScanHeuristicsFailure
-    with pytest.raises(RasterScanHeuristicsFailure):
+    with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
         gaptable, gaplist = h(ra, dec)
+
+
+@pytest.mark.parametrize(
+    'x, y',
+    [
+        ((0, 0), (1, 1)),
+        ((1.23, 1.24), (2.99, 8.38)),
+    ]
+)
+def test_distance(x, y):
+    d = rasterscan.distance(x[0], y[0], x[1], y[1])
+    dx = x[1] - x[0]
+    dy = y[1] - y[0]
+    expected = math.sqrt(dx * dx + dy * dy)
+    assert d == expected
+
+
+def test_generate_histogram():
+    pass
+
+
+def test_detect_peak():
+    pass
+
+
+def test_find_histogram_peak():
+    pass
+
+
+def test_shift_angle():
+    shift = 10
+    angle = 90
+    result = rasterscan.shift_angle(angle, shift)
+    expected = angle + shift
+    assert result == expected
+
+    angle = np.array([90, 270])
+    result = rasterscan.shift_angle(angle, shift)
+    expected = np.array(angle) + shift
+    assert np.array_equal(result, expected)
+
+    angle = np.array([90, -20])
+    result = rasterscan.shift_angle(angle, shift)
+    expected = np.array([90, 340]) + shift
+    assert np.array_equal(result, expected)
+
+    angle = np.array([-190, -10])
+    result = rasterscan.shift_angle(angle, shift)
+    expected = np.array([180, 0])
+    assert np.array_equal(result, expected)
+
+
+def test_find_most_frequent():
+    arr = np.ones(10)
+    result = rasterscan.find_most_frequent(arr)
+    expected = 1
+    assert result == expected
+
+    arr[0] = 10
+    result = rasterscan.find_most_frequent(arr)
+    expected = 1
+    assert result == expected
+
+    arr[:5] = 10
+    result = rasterscan.find_most_frequent(arr)
+    expected = 10
+    assert result == expected
+
+
+def test_refine_gaps():
+    pass
+
+
+def test_create_range():
+    pass
+
+
+def test_find_angle_gap_by_range():
+    pass
+
+
+def test_find_distance_gap():
+    pass
+
+
+def test_find_angle_gap():
+    pass
+
+
+@pytest.mark.parametrize(
+    'oneway_row, oneway_map, scan_angle, interval_factor, pointing_error',
+    [
+        (False, True, 0.0, 1.0, 0.1),
+        (False, True, 30.0, 1.0, 0.1),
+        (False, True, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 1.0, 0.1),
+        (True, True, 30.0, 1.0, 0.1),
+        (True, True, 90.0, 1.0, 0.1),
+        (True, False, 0.0, 1.0, 0.1),
+        (True, False, 30.0, 1.0, 0.1),
+        (True, False, 90.0, 1.0, 0.1),
+        (False, False, 0.0, 1.0, 0.1),
+        (False, False, 30.0, 1.0, 0.1),
+        (False, False, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 0.5, 0.1),
+        (False, True, 0.0, 0.5, 0.1),
+        (False, True, 0.0, 1.0, 0.5),
+    ]
+)
+def test_find_raster_row(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    raster_row = 'one-way' if oneway_row is True else 'round-trip'
+    raster_map = 'one-way' if oneway_map is True else 'round-trip'
+    print()
+    print('===================')
+    print('TEST CONFIGURATION:')
+    print('  raster row:   {}'.format(raster_row))
+    print('  raster map:   {}'.format(raster_map))
+    print('  scan angle:   {:.1f}deg'.format(scan_angle))
+    print('  row interval: {:.2f}'.format(interval_factor))
+    print('  pointing error: {:.2f}'.format(pointing_error))
+    print('===================')
+    print()
+
+    ra, dec = generate_position_data_raster(
+        oneway_row=oneway_row,
+        oneway_map=oneway_map,
+        scan_angle=scan_angle,
+        interval_factor=interval_factor,
+        pointing_error=pointing_error
+    )
+
+    if pointing_error > 0.1:
+        # should raise RasterScanHeuristicsFailure
+        with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
+            gaplist = rasterscan.find_raster_row(ra, dec)
+    else:
+        gaplist = rasterscan.find_raster_row(ra, dec)
+        expected = np.arange(0, len(ra) + 1, 10)
+        assert np.array_equal(gaplist, expected)
+
+
+@pytest.mark.parametrize(
+    'oneway_row, oneway_map, scan_angle, interval_factor',
+    [
+        (False, True, 0.0, 1.0),
+        (False, True, 30.0, 1.0),
+        (False, True, 90.0, 1.0),
+        (True, True, 0.0, 1.0),
+        (True, True, 30.0, 1.0),
+        (True, True, 90.0, 1.0),
+        (True, False, 0.0, 1.0),
+        (True, False, 30.0, 1.0),
+        (True, False, 90.0, 1.0),
+        (False, False, 0.0, 1.0),
+        (False, False, 30.0, 1.0),
+        (False, False, 90.0, 1.0),
+        (True, True, 0.0, 0.5),
+        (False, True, 0.0, 0.5),
+        (False, True, 0.0, 1.0),
+    ]
+)
+def test_get_raster_distance(oneway_row, oneway_map, scan_angle, interval_factor):
+    raster_row = 'one-way' if oneway_row is True else 'round-trip'
+    raster_map = 'one-way' if oneway_map is True else 'round-trip'
+    pointing_error = 0
+    print()
+    print('===================')
+    print('TEST CONFIGURATION:')
+    print('  raster row:   {}'.format(raster_row))
+    print('  raster map:   {}'.format(raster_map))
+    print('  scan angle:   {:.1f}deg'.format(scan_angle))
+    print('  row interval: {:.2f}'.format(interval_factor))
+    print('  pointing error: {:.2f}'.format(pointing_error))
+    print('===================')
+    print()
+
+    ra, dec = generate_position_data_raster(
+        oneway_row=oneway_row,
+        oneway_map=oneway_map,
+        scan_angle=scan_angle,
+        interval_factor=interval_factor,
+        pointing_error=pointing_error
+    )
+
+    nmap = 2
+    ndata = len(ra)
+    idx = np.arange(ndata)
+    nrow = ndata // 10
+    rowlist = idx.reshape((nrow, 10))
+
+    distance_list = rasterscan.get_raster_distance(ra, dec, rowlist)
+
+    distance_list_for_map = np.arange(nrow // nmap) * interval_factor * 0.1
+
+    if oneway_map is True:
+        expected = np.concatenate(
+            (distance_list_for_map, distance_list_for_map)
+        )
+    else:
+        expected = np.concatenate(
+            (distance_list_for_map, distance_list_for_map[::-1])
+        )
+
+    print(f'distance_list={distance_list}')
+
+    assert np.allclose(distance_list, expected)
+
+
+@pytest.mark.parametrize(
+    'oneway_row, oneway_map, scan_angle, interval_factor, pointing_error',
+    [
+        (False, True, 0.0, 1.0, 0.1),
+        (False, True, 30.0, 1.0, 0.1),
+        (False, True, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 1.0, 0.1),
+        (True, True, 30.0, 1.0, 0.1),
+        (True, True, 90.0, 1.0, 0.1),
+        (True, False, 0.0, 1.0, 0.1),
+        (True, False, 30.0, 1.0, 0.1),
+        (True, False, 90.0, 1.0, 0.1),
+        (False, False, 0.0, 1.0, 0.1),
+        (False, False, 30.0, 1.0, 0.1),
+        (False, False, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 0.5, 0.1),
+        (False, True, 0.0, 0.5, 0.1),
+        (False, True, 0.0, 1.0, 0.5),
+    ]
+)
+def test_find_raster_gap(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    raster_row = 'one-way' if oneway_row is True else 'round-trip'
+    raster_map = 'one-way' if oneway_map is True else 'round-trip'
+    print()
+    print('===================')
+    print('TEST CONFIGURATION:')
+    print('  raster row:   {}'.format(raster_row))
+    print('  raster map:   {}'.format(raster_map))
+    print('  scan angle:   {:.1f}deg'.format(scan_angle))
+    print('  row interval: {:.2f}'.format(interval_factor))
+    print('  pointing error: {:.2f}'.format(pointing_error))
+    print('===================')
+    print()
+
+    ra, dec = generate_position_data_raster(
+        oneway_row=oneway_row,
+        oneway_map=oneway_map,
+        scan_angle=scan_angle,
+        interval_factor=interval_factor,
+        pointing_error=pointing_error
+    )
+
+    ndata = len(ra)
+    idx = np.arange(ndata)
+    nrow = ndata // 10
+    rowlist = idx.reshape((nrow, 10))
+    expected = np.array([0, nrow // 2, nrow])
+
+    if oneway_map is False:
+        # should raise RasterScanHeuristicsFailure
+        with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
+            gaplist = rasterscan.find_raster_gap(ra, dec, rowlist)
+    else:
+        gaplist = rasterscan.find_raster_gap(ra, dec, rowlist)
+        assert np.array_equal(gaplist, expected)
