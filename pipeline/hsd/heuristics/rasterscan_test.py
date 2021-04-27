@@ -284,7 +284,26 @@ def test_distance(x, y):
 
 
 def test_generate_histogram():
-    pass
+    arr = np.arange(10) + 0.5
+    binw = 1
+    left_edge = 0
+    right_edge = 10
+    result = rasterscan.generate_histogram(arr, binw, left_edge, right_edge)
+    expected_data = np.ones(10)
+    expected_bin = np.arange(11)
+    assert np.array_equal(result[0], expected_data)
+    assert np.array_equal(result[1], expected_bin)
+
+    arr += 50
+    binw = 10
+    left_edge = 0
+    right_edge = 100
+    result = rasterscan.generate_histogram(arr, binw, left_edge, right_edge)
+    expected_data = np.zeros(10)
+    expected_data[5] = 10
+    expected_bin = np.arange(0, 101, 10)
+    assert np.array_equal(result[0], expected_data)
+    assert np.array_equal(result[1], expected_bin)
 
 
 def test_detect_peak():
@@ -336,11 +355,34 @@ def test_find_most_frequent():
 
 
 def test_refine_gaps():
-    pass
+    expected = np.arange(0, 101, 10)
+
+    # insert unreasonable gap
+    gaplist = np.append(expected, [9])
+    gaplist.sort()
+
+    result = rasterscan.refine_gaps(gaplist, 100)
+    assert np.array_equal(result, expected)
 
 
-def test_create_range():
-    pass
+@pytest.mark.parametrize(
+    'peaks, width, expected',
+    [
+        ([90], 45, [(45, 135)]),
+        ([10], 45, [(0, 55), (325, 360)]),
+        ([340], 45, [(295, 360), (0, 25)]),
+    ]
+)
+def test_create_range(peaks, width, expected):
+    angle_min = 0
+    angle_max = 360
+
+    result = rasterscan.create_range(peaks, width, angle_min, angle_max)
+    assert len(result) == len(expected)
+    for val, ref in zip(result, expected):
+        assert len(val) == 2
+        assert val[0] == ref[0]
+        assert val[1] == ref[1]
 
 
 def test_find_angle_gap_by_range():
