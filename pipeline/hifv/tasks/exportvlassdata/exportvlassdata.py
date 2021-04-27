@@ -491,7 +491,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Save the current working directory and move to the pipeline
         # working directory. This is required for tarfile IO
         cwd = os.getcwd()
-        os.chdir(context.output_dir)
+        os.chdir(os.path.abspath(context.output_dir))
 
         # Define the name of the output tarfile
         ps = context.project_structure
@@ -524,7 +524,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Save the current working directory and move to the pipeline
         # working directory. This is required for tarfile IO
         cwd = os.getcwd()
-        os.chdir(context.output_dir)
+        os.chdir(os.path.abspath(context.output_dir))
 
         # Define the name of the output tarfile
         ps = context.project_structure
