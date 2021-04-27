@@ -123,13 +123,16 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         if inputs.dbservice is True:
             # Try accessing Jy/K DB if dbservice is True
             reffile = 'jyperk_query.csv'
-            factors_list = self._query_factors()
-            if len(factors_list) > 0:
+            jsondata = self._query_factors()
+            factors_list = jsondata['filtered']
+            #factors_list = self._query_factors()
+            if jsondata['allsuccess'] is True:
                 dbstatus = True
-                # export factors for future reference
-                export_jyperk(reffile, factors_list)
             else:
                 dbstatus = False
+            if len(factors_list) > 0:
+                # export factors for future reference
+                export_jyperk(reffile, factors_list)
 
         if (inputs.dbservice is False) or (len(factors_list) == 0):
             # Read scaling factor file
