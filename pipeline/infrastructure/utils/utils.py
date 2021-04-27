@@ -348,8 +348,11 @@ def relative_path(name: str, start: Optional[str]=None) -> str:
         start = absolute_path(start)
     return os.path.relpath(absolute_path(name), start)
 
-def get_task_result_count(context, taskname='hif_makeimages'):
-    """Get task ordinal number (how many times the task was called before in the pipeline execution).
+def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
+    """Count occurrences of a task result in the context.results list.
+
+    Loop over the content of the context.results list and compare taskname to the pipeline_casa_task
+    attribute of each result object. Increase counter if taskname substring is found in the attribute.
 
     The order number is determined by counting the number of previous execution of
     the task, based on the content of the context.results list. The introduction
@@ -362,7 +365,9 @@ def get_task_result_count(context, taskname='hif_makeimages'):
         # Work around the fact that r has read() method in some cases (e.g. editimlist)
         # but not in others (e.g. in tclean renderer)
         try:
-            if taskname in r.read().pipeline_casa_task: count += 1
+            if taskname in r.read().pipeline_casa_task:
+                count += 1
         except AttributeError:
-            if taskname in r.pipeline_casa_task: count += 1
+            if taskname in r.pipeline_casa_task:
+                count += 1
     return count

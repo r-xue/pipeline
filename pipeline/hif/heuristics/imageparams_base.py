@@ -7,6 +7,7 @@ import os.path
 import re
 import shutil
 import uuid
+from typing import Union
 
 import numpy as np
 
@@ -2163,23 +2164,23 @@ class ImageParamsHeuristics(object):
         """
         return [cfcache, None]
 
-    def smallscalebias(self):
+    def smallscalebias(self) -> None:
         """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
         return None
 
-    def restoringbeam(self):
+    def restoringbeam(self) -> None:
         """Tclean parameter"""
         return None
 
-    def pointingoffsetsigdev(self):
+    def pointingoffsetsigdev(self) -> None:
         """Tclean parameter"""
         return None
 
-    def pbmask(self) :
+    def pbmask(self) -> None:
         """Tclean pbmask parameter heuristics"""
         return None
 
     def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
-                         pblimit: float = 0.4, frac_lim:float = 0.2):
+                         pblimit: float = 0.4, frac_lim:float = 0.2) -> Union[None, float]:
         """Determine fractional flux in final image outside cleanmask"""
         return None
