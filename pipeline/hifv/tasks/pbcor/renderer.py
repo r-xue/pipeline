@@ -1,10 +1,10 @@
 import os
 
 import numpy
-
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.infrastructure import casa_tools
+
 from . import display as pbcorimages
 
 LOG = logging.get_logger(__name__)
@@ -27,41 +27,39 @@ class T2_4MDetailsMakepbcorimagesRenderer(basetemplates.T2_4MDetailsDefaultRende
 
         # Get results info
         info_dict = {}
-
-        # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
-        image_stats = {}
-
         pbcorplots = {}
 
         for r in results:
-            pbcorimagenames = r.pbcorimagenames
 
-            for pbcorimagename in pbcorimagenames:
-                image_path = pbcorimagename
-                LOG.info('Getting properties of %s for the weblog.' % image_path)
-
-                with casa_tools.ImageReader(image_path) as image:
-                    info = image.miscinfo()
-                    spw = info.get('spw', None)
-                    field = ''
-                    # if 'field' in info:
-                    #     field = '%s (%s)' % (info['field'], r.intent)
-
-                    coordsys = image.coordsys()
-                    coord_names = numpy.array(coordsys.names())
-                    coord_refs = coordsys.referencevalue(format='s')
-                    coordsys.done()
-                    pol = coord_refs['string'][coord_names == 'Stokes'][0]
-                    info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
-
-                    stats = image.statistics(robust=False)
-                    beam = image.restoringbeam()
+            pbcor_dict = r.pbcorimagenames
+            info_dict['multitermlist'] = r.multitermlist
 
             # Make the plots of the pbcor images
             plotter = pbcorimages.PbcorimagesSummary(context, r)
-            plots = plotter.plot()
+            plot_dict = plotter.plot()
             ms = os.path.basename(r.inputs['vis'])
-            pbcorplots[ms] = plots
+            pbcorplots[ms] = plot_dict
+
+            for basename, pbcor_images in pbcor_dict.items():
+
+                for image_path in pbcor_images:
+                    LOG.info('Getting properties of %s for the weblog.' % image_path)
+
+                    with casa_tools.ImageReader(image_path) as image:
+                        info = image.miscinfo()
+                        spw = info.get('spw', None)
+                        field = ''
+                        # if 'field' in info:
+                        #     field = '%s (%s)' % (info['field'], r.intent)
+                        coordsys = image.coordsys()
+                        coord_names = numpy.array(coordsys.names())
+                        coord_refs = coordsys.referencevalue(format='s')
+                        coordsys.done()
+                        pol = coord_refs['string'][coord_names == 'Stokes'][0]
+                        info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
+
+                        stats = image.statistics(robust=False)
+                        beam = image.restoringbeam()
 
         ctx.update({'pbcorplots': pbcorplots,
                     'info_dict': info_dict,

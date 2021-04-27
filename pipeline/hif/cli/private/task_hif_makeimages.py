@@ -12,7 +12,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
                    hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
                    cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None, parallel=None,
-                   pipelinemode=None, dryrun=None, acceptresults=None):
+                   pipelinemode=None, dryrun=None, acceptresults=None, clearlist=None):
 
     ##########################################################################
     #                                                                        #

@@ -12,6 +12,7 @@ class MakeImagesResult(basetask.Results):
         self.targets = []
         self.results = []
         self.plot_path = None
+        self.clearlist = True
         self.mitigation_error = False
         self.sensitivities_for_aqua = []
         self.logrecords = []
@@ -86,8 +87,9 @@ class MakeImagesResult(basetask.Results):
                     utils.update_sens_dict(context.per_spw_cont_sensitivities_all_chan, result.per_spw_cont_sensitivities_all_chan)
 
         # empty the pending list and message
-        context.clean_list_pending = []
-        context.clean_list_info = {}
+        if self.clearlist:
+            context.clean_list_pending = []
+            context.clean_list_info = {}
 
         # Remove heuristics objects to avoid accumulating large amounts of unnecessary memory
         for target in self.inputs['target_list']:

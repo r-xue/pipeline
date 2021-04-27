@@ -39,6 +39,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_weighting = vdp.VisDependentProperty(default='briggs')
+    clearlist = vdp.VisDependentProperty(default=True)
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
@@ -60,16 +61,17 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
-                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
+                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, clearlist=None, tlimit=None, masklimit=None,
                  cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
-                 ):
+                 weighting=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
 
         self.target_list = target_list
+        self.weighting = weighting
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
         self.hm_noisethreshold = hm_noisethreshold
@@ -89,6 +91,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_maxpsffraction = hm_maxpsffraction
         self.hm_weighting = hm_weighting
         self.tlimit = tlimit
+        self.clearlist = clearlist
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
         self.calcsb = calcsb
@@ -114,6 +117,7 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         result = MakeImagesResult()
         result.overwrite = inputs.overwrite_on_export
+        result.clearlist = inputs.clearlist
 
         # Carry any message from hif_makeimlist (e.g. for missing PI cube target)
         result.set_info(inputs.context.clean_list_info)
@@ -315,6 +319,7 @@ class CleanTaskFactory(object):
             'hm_perchanweightdensity': inputs.hm_perchanweightdensity,
             'hm_npixels': inputs.hm_npixels,
         })
+        task_args['restoringbeam'] = image_heuristics.restoringbeam()
 
         if 'hm_nsigma' not in task_args:
             task_args['hm_nsigma'] = inputs.hm_nsigma
