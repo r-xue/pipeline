@@ -132,10 +132,25 @@ def truncate_paths(arg):
                         'fluxtable', 'infile', 'infiles', 'mask', 'imagename', 'fitsimage', 'outputvis'):
         return arg
 
+    # PIPE-639: 'inpfile' is an argument for CASA's flagdata task, and it can
+    # contain either a path name, a list of path names, or a list of flagging
+    # commands. Attempting to get the basename of a flagging command can cause
+    # it to become malformed. Treat 'inpfile' as a special case, where we only
+    # return the basename if the provided string(s) resolves as a path to an
+    # existing file. We cannot apply this rule to all arguments, as some
+    # arguments specify output files that may not exist yet.
+    func = basename_if_isfile if arg.name == 'inpfile' else os.path.basename
+
     # wrap value in a tuple so that strings can be interpreted by
     # the recursive map function
-    basename_value = _recur_map(os.path.basename, (arg.value,))[0]
+    basename_value = _recur_map(func, (arg.value,))[0]
     return FunctionArg(arg.name, basename_value)
+
+
+def basename_if_isfile(arg: str) -> bool:
+    if os.path.isfile(arg):
+        return os.path.basename(arg)
+    return arg
 
 
 def _recur_map(fn, data):
