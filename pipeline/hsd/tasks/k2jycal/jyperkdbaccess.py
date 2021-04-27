@@ -76,6 +76,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
 
     def _generate_query(self, url, params):
         try:
+            successlist = []
             for p in params:
                 # encode params
                 encoded = urllib.parse.urlencode(p.param)
@@ -133,14 +134,17 @@ class ALMAJyPerKDatabaseAccessBase(object):
 
         # get Jy/K value from DB
         jyperk = self.get(vis)
-
+        allsuccess = jyperk['allsuccess']
+        
         # convert to pipeline-friendly format
         formatted = self.format_jyperk(vis, jyperk)
         #LOG.info('formatted = {}'.format(formatted))
         filtered = self.filter_jyperk(vis, formatted)
         #LOG.info('filtered = {}'.format(filtered))
-
-        return filtered
+        #arranged = {'filtered': filtered, 'allsuccess': allsuccess}
+        #LOG.info('arranged = {}'.format(arranged))
+        return {'filtered': filtered, 'allsuccess': allsuccess}
+        #return filtered
 
     def get_params(self, vis):
         raise NotImplementedError
@@ -250,6 +254,7 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
 
     def access(self, queries):
         data = []
+        allsuccess = True
         for result in queries:
             # response from DB
             response = result.response
@@ -269,8 +274,10 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
             antenna = response['query']['antenna']
             data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
                          'Polarization': polarization, 'factor': factor})
-
-        return {'query': '', 'data': data, 'total': len(data)}
+            allsuccess = allsuccess and response['success']
+            #LOG.info('allsuccess = {}'.format(allsuccess))
+        
+        return {'query': '', 'data': data, 'total': len(data), 'allsuccess': allsuccess}
 
     def _aux_params(self):
         return {}
@@ -295,6 +302,8 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         response = responses[0].response
         response['total'] = response['data']['length']
         response['data'] = response['data']['factors']
+        response['allsuccess'] = response['success']
+        #LOG.info('response = {}'.format(response))
         return response
 
 
