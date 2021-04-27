@@ -840,9 +840,14 @@ class Executor(object):
         # CAS-5262: casa_commands.log written by the pipeline should
         # be formatted to be more easily readable.
 
-        # replace the working directory with ''..
-        job_str = re.sub('%s/' % self._context.output_dir, '',
-                         str(job))
+        # If the output directory is set to a valid string, then replace any
+        # occurrence of this output path in arguments with an empty string, to
+        # ensure the casa commands log does not contain hardcoded paths
+        # specific to where the pipeline ran.
+        if os.path.isdir(self._context.output_dir):
+            job_str = re.sub('%s/' % self._context.output_dir, '', str(job))
+        else:
+            job_str = str(job)
 
         # wrap the text at the first open bracket
         if '(' in job_str:
