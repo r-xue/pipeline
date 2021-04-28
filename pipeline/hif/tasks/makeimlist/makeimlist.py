@@ -871,6 +871,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             # Get list of antenna IDs
                             antenna_ids = target_heuristics.antenna_ids(inputs.intent)
+                            # PIPE-964: Removing the "+'&'" from the following line would consider majority plus cross
+                            #  baselines which may be required in the future in some configurations
                             antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                        for v in filtered_vislist]
 
