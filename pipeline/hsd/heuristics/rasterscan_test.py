@@ -427,7 +427,24 @@ def test_create_range(peaks, width, expected):
 
 
 def test_find_angle_gap_by_range():
-    pass
+    arr = np.ones(10) * 10
+    ranges = [(0, 20)]
+    result = rasterscan.find_angle_gap_by_range(arr, ranges)
+    expected = np.array([])
+    assert np.array_equal(result, expected)
+
+    arr[5] = 55
+    result = rasterscan.find_angle_gap_by_range(arr, ranges)
+    expected = np.array([6])
+    assert np.array_equal(result, expected)
+
+    arr[:] = 10
+    ranges = [(20, 30)]
+    result = rasterscan.find_angle_gap_by_range(arr, ranges)
+    expected = np.arange(1, len(arr) + 1)
+    assert np.array_equal(result, expected)
+
+
 
 
 @pytest.mark.parametrize(
@@ -491,9 +508,25 @@ def test_find_distance_gap(oneway_row, oneway_map, scan_angle, interval_factor, 
     assert np.array_equal(gaplist, expected)
 
 
-
 def test_find_angle_gap():
-    pass
+    angle = np.zeros(100)
+    angle[9::10] = 90
+    gaplist = rasterscan.find_angle_gap(angle)
+    expected = np.arange(10, 101, 10)
+    assert np.array_equal(gaplist, expected)
+
+    angle += 30
+    gaplist = rasterscan.find_angle_gap(angle)
+    expected = np.arange(10, 101, 10)
+    assert np.array_equal(gaplist, expected)
+
+    angle[:] = 60
+    angle[10] = 100
+    angle[20] = 120
+    gaplist = rasterscan.find_angle_gap(angle)
+    expected = np.array([21])
+    assert np.array_equal(gaplist, expected)
+
 
 
 @pytest.mark.parametrize(
