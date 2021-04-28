@@ -272,7 +272,7 @@ class Tclean(cleanbase.CleanBase):
         # Determine antennas to be used
         if inputs.antenna in (None, [], ''):
             antenna_ids = self.image_heuristics.antenna_ids(inputs.intent)
-            inputs.antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), ''))) for v in inputs.vis]
+            inputs.antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&' for v in inputs.vis]
 
         # Determine the phase center
         if inputs.phasecenter in ('', None):

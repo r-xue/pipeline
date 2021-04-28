@@ -871,7 +871,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             # Get list of antenna IDs
                             antenna_ids = target_heuristics.antenna_ids(inputs.intent)
-                            antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))
+                            antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                        for v in filtered_vislist]
 
                             any_non_imaging_ms = any([not inputs.context.observing_run.get_ms(vis).is_imaging_ms
