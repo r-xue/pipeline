@@ -42,7 +42,6 @@ class MakeImagesInputs(vdp.StandardInputs):
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
-    weighting = vdp.VisDependentProperty(default='briggs')
     overwrite_on_export = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -65,13 +64,12 @@ class MakeImagesInputs(vdp.StandardInputs):
                  cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
-                 weighting=None):
+                 ):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
 
         self.target_list = target_list
-        self.weighting = weighting
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
         self.hm_noisethreshold = hm_noisethreshold
