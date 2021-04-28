@@ -8,7 +8,7 @@ import operator
 import os
 import re
 import string
-from typing import Union, List, Dict, Sequence
+from typing import Union, List, Dict, Sequence, Optional
 
 import bisect
 import numpy as np
