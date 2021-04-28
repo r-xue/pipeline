@@ -558,7 +558,6 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_nminordone = tclean_result['summaryminor'][0, :]
             tclean_peakresidual = tclean_result['summaryminor'][1, :]
             tclean_totalflux = tclean_result['summaryminor'][2, :]
-            tclean_niter = tclean_result['niter']
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
             if tclean_stopcode == 1:
@@ -610,7 +609,6 @@ class CleanBase(basetask.StandardTaskTemplate):
                 result.set_image(iter=iter, image=image_name)
 
         # Store the residual.
-        # TODO: is checking residual file strictly necessary?
         if os.path.exists('%s' % (residual_name.replace('.residual', '.residual.tt0' if result.multiterm else '.residual'))):
             imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
                                      type='residual', iter=iter, multiterm=result.multiterm,
