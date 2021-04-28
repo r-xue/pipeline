@@ -112,7 +112,7 @@ def detect_peak(
 
     Args:
         hist: histogram to be examined
-        mask: boolean mask array. setting False excludes the corresponding
+        mask: boolean mask array. setting True excludes the corresponding
               array element in hist from the examination. Defaults to None.
 
     Returns:
