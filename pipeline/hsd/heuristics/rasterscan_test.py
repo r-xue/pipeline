@@ -307,11 +307,52 @@ def test_generate_histogram():
 
 
 def test_detect_peak():
-    pass
+    arr = np.zeros(10)
+    arr[5] = 3
+    result = rasterscan.detect_peak(arr)
+    expected = (3, 5, 5, 5)
+    assert result == expected
+
+    arr[6] = 1
+    arr[2:5] = 1
+    result = rasterscan.detect_peak(arr)
+    expected = (7, 5, 2, 6)
+    assert result == expected
+
+    # test with mask: True is invalid while False is valid
+    msk = np.ones(10, dtype=bool)
+    arr[8] = 2
+    msk[7:] = False
+    result = rasterscan.detect_peak(arr, msk)
+    expected = (2, 8, 8, 8)
+    assert result == expected
 
 
 def test_find_histogram_peak():
-    pass
+    arr = np.zeros(10)
+    arr[5] = 3
+    result = rasterscan.find_histogram_peak(arr)
+    expected = [5]
+    assert result == expected
+
+    arr[6] = 1
+    arr[2:5] = 1
+    result = rasterscan.find_histogram_peak(arr)
+    expected = [5]
+    assert result == expected
+
+    arr[:] = 0
+    arr[5] = 6
+    arr[8] = 8
+    arr[1] = 7
+    result = rasterscan.find_histogram_peak(arr)
+    expected = [8, 1]
+    assert result == expected
+
+    arr += 1
+    # should raise RasterScanHeuristicsFailure
+    with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
+        result = rasterscan.find_histogram_peak(arr)
 
 
 def test_shift_angle():
