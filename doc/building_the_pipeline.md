@@ -1,65 +1,79 @@
 # Building the pipeline
+
 ## Prerequisites
+
 The pipeline build procedure depends on Python 3, CASA buildmytasks, and Java,
 which is used by buildmytasks to process the task XML and to minify the
 Pipeline Javascript.
 
 It is recommended to put CASA `bin` directory first on your path for the
-duration of the installation procedure. 
+duration of the installation procedure.
 
 ## Standard build
+
 The pipeline can be built and installed like any standard Python module, with
+
 ```console
 $ python3 setup.py build
 ```
+
 The build output will be found in the build/lib directory. This directory can
 be put on the PYTHONPATH inside CASA to make the pipeline available, e.g.,
+
 ```python
 import sys
 sys.path.insert(0, '/path/to/pipeine/build/lib')
 ```
-  
 
 ## Standard install
+
 The pipeline can be built and installed like any standard Python module, with
+
 ```
 $ python3 setup.py install
 ```
-If a pipeline egg is already installed, this command will upgrade the 
-pipeline with the new installation. 
+
+If a pipeline egg is already installed, this command will upgrade the
+pipeline with the new installation.
 
 ## Temporary install
+
 To build a pipeline .egg file without installing the egg and hence overwriting
-the CASA default pipeline installation, execute 
+the CASA default pipeline installation, execute
+
 ```console
 $ python setup.py bdist_egg
 ```
+
 The resulting egg file can be found in the dist directory and added to the
 CASA sys.path in your CASA prelude, e.g.,
+
 ```python
 import sys
 sys.path.insert(0, '/path/to/workspace/dist/Pipeline.egg')
 ```
 
 ### Switching between pipeline versions
+
 Developers often have multiple workspaces, each workspace containing a
 different version of the pipeline. Below is an example prelude.py which
 switches between workspaces based on the launch arguments given to CASA, e.g.,
-`casa --trunk --egg` makes the most recent pipeline egg from the _trunk_ 
+`casa --trunk --egg` makes the most recent pipeline egg from the _trunk_
 workspace available. Edit the workspaces dictionary definition to match your
-environment. 
+environment.
+
 ```python
 #
 #  CASA prelude to switch between development environments and eggs
-# 
+#
 # casa --trunk         : puts the 'trunk' workspace directory first on the CASA
 #                        path
-# casa --trunk --egg   : put the most recent egg from the trunk workspace first  
+# casa --trunk --egg   : put the most recent egg from the trunk workspace first
 #                        on the CASA path
 import os.path
 import sys
 
-# edit workspaces to match your environment. The dictionary keys become the 
+# edit workspaces to match your environment. The dictionary keys become the
 # recognised CASA command line arguments.
 workspaces = {
     'trunk': '~/alma/pipeline/svn/pristine/pipeline',
@@ -107,6 +121,7 @@ for k, workspace_path in workspaces.items():
 ```
 
 ## Developer install
+
 As a developer, you will quickly grow weary of creating an egg every time you
 wish to exercise new code. The pipeline supports developer installations. In
 this mode, a pseudo installation is made which adds your source directory to
@@ -130,19 +145,22 @@ $ python3 setup.py develop -u
 ```
 
 ### Optional: CASA CLI bindings
+
 The CASA CLI bindings are always generated and included in a standard install.
-To make the CASA CLI bindings available for a developer install, the CLI 
+To make the CASA CLI bindings available for a developer install, the CLI
 bindings need to be written to the src directory. This can be done using the
-`buildmytasks` command, using the _-i_ option to generate the bindings 
-in-place, i.e., 
-```consol
+`buildmytasks` command, using the _-i_ option to generate the bindings
+in-place, i.e.,
+
+```console
 $ python3 setup.py buildmytasks -i
 ```
+
 The bindings should be rebuilt whenever you change the interface XML definitions.
 
-__Take care not to commit the code-generated files to SVN!__
+**Take care not to commit the code-generated files to SVN!**
 
-### Optional: Install Astropy etc.
+### Optional: Install `Astropy` etc.
 
 [`Astropy`](https://www.astropy.org/) and [`PyBDSF`](https://www.astron.nl/citt/pybdsf/) became the pipeline dependencies in [the VLASS single-epoch imaging development](https://open-jira.nrao.edu/browse/PIPE-714). However, they are not currently bundled in the non-pipeline CASA releases.
 
@@ -151,19 +169,24 @@ An easy installation option is to use `pip` packaged in the CASA distribution:
 ```console
 $ which pip3
 $ /opt/nrao/casa-6.2.0-114/bin/pip3
-$ pip3 install astropy bdsf
+$ pip3 install astropy bdsf --disable-pip-version-check
 ```
-which can be verified, 
+
+which can be verified,
+
 ```python
 CASA <2>: astropy__version__
 Out[2]: '4.1'
 CASA <3>: astropy.__path__
 Out[3]: ['/opt/nrao/casa-6.2.0-114/lib/py/lib/python3.6/site-packages/astropy']
 ```
+
 ### Optional: removing legacy pipeline installation from CASA
+
 To prevent any possible conflict between legacy pipeline installation and new
-pipeline code, the legacy pipeline installation should be removed from CASA. 
+pipeline code, the legacy pipeline installation should be removed from CASA.
 Execute:
-```consol
+
+```console
 $ casa-config --sh-exec rm '$PYTHONHOME/pipeline'
-``` 
+```
