@@ -1,4 +1,4 @@
-VLA interferometry imaging workflow
+# VLA interferometry imaging workflow
 
 List of differences compared to the ALMA interferometry imaging workflow (ALMA-Imaging-Workflow.md)
 
