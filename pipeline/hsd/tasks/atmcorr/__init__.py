@@ -5,5 +5,10 @@ from .atmcorr import SerialSDATMCorrection
 
 SDATMCorrection = SerialSDATMCorrection
 
-weblog.add_renderer(SDATMCorrection, basetemplates.T2_4MDetailsDefaultRenderer(description='Restore Calibrated Data'),
-                    group_by=weblog.UNGROUPED)
+weblog.add_renderer(
+    SDATMCorrection,
+    basetemplates.T2_4MDetailsDefaultRenderer(
+        description='Apply correction for atmospheric effects',
+        uri='hsd_atmcor.mako', always_rerender=True),
+    group_by=weblog.UNGROUPED
+)
