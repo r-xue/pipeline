@@ -430,8 +430,66 @@ def test_find_angle_gap_by_range():
     pass
 
 
-def test_find_distance_gap():
-    pass
+@pytest.mark.parametrize(
+    'oneway_row, oneway_map, scan_angle, interval_factor, pointing_error',
+    [
+        (False, True, 0.0, 1.0, 0.1),
+        (False, True, 30.0, 1.0, 0.1),
+        (False, True, 90.0, 1.0, 0.1),
+        (True, True, 0.0, 1.0, 0.1),
+        (True, True, 30.0, 1.0, 0.1),
+        (True, True, 90.0, 1.0, 0.1),
+        (True, False, 0.0, 1.0, 0.1),
+        (True, False, 30.0, 1.0, 0.1),
+        (True, False, 90.0, 1.0, 0.1),
+        (False, False, 0.0, 1.0, 0.1),
+        (False, False, 30.0, 1.0, 0.1),
+        (False, False, 90.0, 1.0, 0.1),
+    ]
+)
+def test_find_distance_gap(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    raster_row = 'one-way' if oneway_row is True else 'round-trip'
+    raster_map = 'one-way' if oneway_map is True else 'round-trip'
+    print()
+    print('===================')
+    print('TEST CONFIGURATION:')
+    print('  raster row:   {}'.format(raster_row))
+    print('  raster map:   {}'.format(raster_map))
+    print('  scan angle:   {:.1f}deg'.format(scan_angle))
+    print('  row interval: {:.2f}'.format(interval_factor))
+    print('  pointing error: {:.2f}'.format(pointing_error))
+    print('===================')
+    print()
+
+    ra, dec = generate_position_data_raster(
+        oneway_row=oneway_row,
+        oneway_map=oneway_map,
+        scan_angle=scan_angle,
+        interval_factor=interval_factor,
+        pointing_error=pointing_error
+    )
+
+    ndata = len(ra)
+    dra = np.diff(ra)
+    ddec = np.diff(dec)
+    result = rasterscan.find_distance_gap(dra, ddec)
+    gaplist = result[1]
+    print(f'gaplist={gaplist}')
+    if oneway_row is False:
+        if oneway_map is True:
+            expected = np.array([ndata // 2])
+        else:
+            expected = np.array([])
+    else:
+        if oneway_map is True:
+            expected = np.arange(10, ndata, 10, dtype=int)
+        else:
+            expected = np.arange(10, ndata, 10, dtype=int)
+            ngap = len(expected)
+            expected = np.delete(expected, ngap // 2)
+
+    assert np.array_equal(gaplist, expected)
+
 
 
 def test_find_angle_gap():
