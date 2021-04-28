@@ -147,7 +147,11 @@ def truncate_paths(arg):
     return FunctionArg(arg.name, basename_value)
 
 
-def basename_if_isfile(arg: str) -> bool:
+def basename_if_isfile(arg: str) -> str:
+    """
+    Test whether input string resolves to an existing file: if so, return the
+    basename of the file path, otherwise return the input string unmodified.
+    """
     if os.path.isfile(arg):
         return os.path.basename(arg)
     return arg
