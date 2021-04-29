@@ -25,7 +25,6 @@
     - start (task parameter if set)
     - uvrange (task parameter if set)
 
-
 - hif_makeimages
 
   - set additional parameters via task interface:

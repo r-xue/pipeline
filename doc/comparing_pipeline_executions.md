@@ -105,8 +105,8 @@ calls. This can be tested by running an execution for both branches, keeping the
 From an initial root directory, run the pipeline procedure for the main trunk with
 
 ```console
-$ mkdir trunk
-$ casa --agg
+mkdir trunk
+casa --agg
 ```
 
 ```python
@@ -120,8 +120,8 @@ $ casa --agg
 From the same initial root directory, run the pipeline procedure for the branch with
 
 ```console
-$ mkdir branch
-$ casa --agg
+mkdir branch
+casa --agg
 ```
 
 ```python
@@ -135,7 +135,7 @@ $ casa --agg
 You can now diff the output with:
 
 ```console
-$ diff trunk/casacalls-<hostname>.txt branch/casacalls-<hostname>.txt
+diff trunk/casacalls-<hostname>.txt branch/casacalls-<hostname>.txt
 ```
 
 **Note**: The main trunk does not have an updated build procedure that
