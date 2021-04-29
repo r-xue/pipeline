@@ -8,8 +8,9 @@ Related tickets: PIPE-673
 - hif_checkproductsize
 
   - task parameter
-    - maximize (defaults to -1 for backward compatibility, set to 16384 for VLA)
-      Mitigate continuum image size by changing pixel per beam (min. 4). If `imsize` still larger than limit, then truncate image. Mitigation parameters for different targets and bands are independent.
+    - maximize (defaults to -1 for backward compatibility, set to 16384 for VLA) 
+      Mitigate continuum image size by changing pixel per beam (min. 4). If `imsize` still larger than limit, 
+      then truncate image. Mitigation parameters for different targets and bands are independent.
 
 - hif_makeimlist
 
@@ -28,6 +29,7 @@ Related tickets: PIPE-673
     - nbin (not used)
     - gridder ('standard')
     - uvrange (per target and band, omit first 5% of baselines if emission is extended)
+
 
 - hif_makeimages
 
