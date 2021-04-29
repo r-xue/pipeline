@@ -152,6 +152,8 @@ from pipeline.infrastructure import task_registry
 context = pipeline.Pipeline(context='last', loglevel='info', plotlevel='default').context
 taskclass = task_registry.get_pipeline_class_for_task(task_to_run)
 inputs = pipeline.infrastructure.vdp.InputsContainer(taskclass, context)
+# Optionally override input parameter(s) for debugging, e.g.:
+# inputs.normalize_tsys = True
 task = taskclass(inputs)
 result = task.execute(dry_run=False)
 result.accept(context)
@@ -189,7 +191,6 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   import pipeline.infrastructure.executeppr as eppr
   os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
   eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='break')
-
   ```
 
   From the current or a new CASA session, the PPR can be resumed,
@@ -217,7 +218,7 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   import os
   os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
   os.system('cp -rf pipeline-20210421T172403/saved_state_backup/context-stage26.pickle current.context')
-  # we need some cleanup as this MS below is blocking the executetion of the stage27 hif_mstransform() call.
+  # we need some cleanup as this MS below is blocking the execution of the stage27 hif_mstransform() call.
   os.system('rm -rf uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms*')
   import pipeline.infrastructure.executeppr as eppr
   eppr.executeppr('../rawdata/PPR.xml', importonly=False, loglevel='debug', bpaction='resume')
