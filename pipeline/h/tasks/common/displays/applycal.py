@@ -310,7 +310,7 @@ class AntComposite(common.LeafComposite):
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, spw='', field='', intent='', **kwargs):
         # set the singledish flag for SD runs
-        self.singledish = True if is_singledish_ms( context ) else False
+        self.singledish = is_singledish_ms( context )
 
         ms = context.observing_run.get_ms(calto.vis)
         antennas = [int(a.id) for a in ms.get_antenna(calto.antenna)]
@@ -420,7 +420,7 @@ class PlotmsAntComposite(AntComposite):
 
     def plot(self):
         # set singledish flag
-        singledish = self.singledish if hasattr(self, 'singledish') else False
+        singledish = getattr(self, "singledish", False)
 
         # merge separate ant jobs into one job using plotms iterator
         jobs_and_wrappers = super(PlotmsAntComposite, self).plot()
@@ -1006,7 +1006,6 @@ class RealVsFrequencyDetailChart(SpwAntDetailChart):
         """
         Construct RealVsFrequencyDetailChart instance
 
-        Construct RealVsFrequencyDetailChart instance
         Args:
             context:     Pipeline context
             output_dir:  Output directory for plots
@@ -1031,6 +1030,6 @@ class RealVsFrequencyDetailChart(SpwAntDetailChart):
         plot_args.update(kwargs)
 
         # determine SD or not from context
-        self.singledish = True if is_singledish_ms( context ) else False
+        self.singledish = is_singledish_ms( context )
         super(RealVsFrequencyDetailChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='real',
                                                          intent=intent, **plot_args)

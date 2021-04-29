@@ -318,7 +318,7 @@ def plotms_iterate(
         jobs_and_wrappers: JobRequest and Plot
         iteraxis:          iteraxis parameter for plotms
         singledish:        True for singledish (adds &&& to 'antenna')
-                           False for others (default, 'antenna' renains unchangedx )
+                           False for others (default, 'antenna' remains unchanged )
     returns:
         List of plots
     """

@@ -397,6 +397,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             result: ApplycalResults,
             plotter_cls: Type[Union[applycal.PlotmsAntComposite, applycal.PlotmsSpwComposite, 
                                     applycal.PlotmsBasebandComposite, applycal.PlotmsFieldComposite, 
+                                    applycal.PlotmsFieldSpwComposite, applycal.PlotmsSpwAntComposite, 
                                     applycal.PlotmsFieldSpwAntComposite]], 
             fields: Iterable[int], 
             uvrange: Optional[str]=None, 
@@ -616,7 +617,6 @@ class ApplycalAmpVsFreqPerAntSciencePlotRenderer(basetemplates.JsonPlotRenderer)
         """
         Construct ApplycalAmpVsFreqPerAntSciencePlotRenderer instance
 
-        Construct ApplycalAmpVsFreqPerAntSciencePlotRenderer instance
         Args:
             context: Pipeline context
             result:  Applycal Results
