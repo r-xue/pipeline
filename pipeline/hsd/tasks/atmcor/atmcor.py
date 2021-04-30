@@ -11,6 +11,7 @@ from pipeline.h.heuristics import fieldnames
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils import relative_path
 from .. import common
+from ..k2jycal import k2jycal
 
 LOG = logging.get_logger(__name__)
 
@@ -107,6 +108,27 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         return datacolumn
 
+    def get_k2jycal_result(self):
+        results = self.context.results
+        result = None
+        for r in map(lambda x: x.read(), results):
+            if isinstance(r, k2jycal.SDK2JyCalResults):
+                result = r
+                break
+            elif isinstance(r, basetask.ResultsList) and isinstance(r[0], k2jycal.SDK2JyCalResults):
+                result = r[0]
+                break
+        return result
+
+    def get_gainfactor(self):
+        result = self.get_k2jycal_result()
+        gainfactor = 1.0
+        if result is not None:
+            final = result.final
+            if len(final) > 0:
+                gainfactor = final[0].gaintable
+        return gainfactor
+
     def to_casa_args(self):
         args = super().to_casa_args()
 
@@ -124,6 +146,9 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
             suffix = '.atmcorr.atmtype{}'.format(args['atmtype'])
             outfile = basename + suffix
             args['outfile'] = relative_path(os.path.join(self.output_dir, outfile))
+
+        # ganfactor
+        args['gainfactor'] = self.get_gainfactor()
 
         # overwrite is always True
         args['overwrite'] = True
