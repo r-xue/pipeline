@@ -1,7 +1,6 @@
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
 
-from .atmcorr import SerialSDATMCorrection
+from .atmcor import SerialSDATMCorrection
 from .renderer import T2_4MDetailsSingleDishATMCorRenderer
 
 SDATMCorrection = SerialSDATMCorrection
