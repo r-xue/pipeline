@@ -125,6 +125,7 @@ class PlotmsRealVsFreqPlotter(object):
             'showlegend': True,
             'averagedata': True,
             'avgtime': '1e8',
+            'avgscan': True,
             'showatm': True,
         }
         task = casa_tasks.plotms(**task_args)
