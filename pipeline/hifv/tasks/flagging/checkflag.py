@@ -654,21 +654,11 @@ class Checkflag(basetask.StandardTaskTemplate):
         return summary_plots
 
     def _get_amp_range(self):
-        # used for amp plotting scales in the summary plots of checkflagmode='vlass-imaging'
+        # get amplitude min/max for the amp. vs. freq summary plots
         try:
-            visstat_args = {'vis': self.inputs.vis,
-                            'axis': 'amp',
-                            'datacolumn': 'data',
-                            'useflags': True,
-                            'reportingaxes': 'ddid',
-                            'field': ''}
-
-            task = casa_tasks.visstat(**visstat_args)
-            ampstats = task.execute(dry_run=False)
-
-            amp_max = [v['max'] for (k, v) in ampstats.items() if np.isfinite(v['max'])]
-            amp_min = [v['min'] for (k, v) in ampstats.items() if np.isfinite(v['min'])]
-            return [np.min(amp_min), np.max(amp_max)]
+            with casa_tools.MSReader(self.inputs.vis) as msfile:
+                amp_range = msfile.range(['amplitude'])['amplitude'].tolist()
+            return amp_range
 
         except:
             LOG.warn("Unable to obtain the range of data amps.")
