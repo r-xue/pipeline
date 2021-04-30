@@ -92,7 +92,6 @@ in different colors.</p>
            data-vis="${vis}">${vis}</a>
     </h3>
     % for field, plots_fields in plots_vis.items():
-        <% print(list(plots_fields.keys())) %>
         <h3><a class="replace"
                href="${os.path.relpath(detail_page, pcontext.report_dir)}"
                data-vis="${vis}"
