@@ -8,24 +8,45 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class PlotmsRealVsFreqPlotter(object):
-    def __init__(self, vis, atmvis, atmtype, datacolumn='data', output_dir='.'):
-        self.vis = vis.rstrip('/')
+    def __init__(self, ms, atmvis, atmtype, datacolumn='data', output_dir='.'):
+        self.ms = ms
         self.atmvis = atmvis.rstrip('/')
         self.atmtype = atmtype
         self.spw = ''
         self.antenna = ''
         self.field = ''
+        self.clean_field_name = ''
         self.datacolumn = datacolumn
         self.output_dir = output_dir
+
+    @property
+    def name(self):
+        return self.ms.name
+
+    @property
+    def basename(self):
+        return self.ms.basename
+
+    @property
+    def original_field_name(self):
+        return self.field.strip('"')
 
     def set_spw(self, spw=''):
         self.spw = spw
 
     def set_antenna(self, antenna=''):
-        self.antenna = antenna
+        if isinstance(antenna, int):
+            self.antenna = self.ms.antennas[antenna].name
+        else:
+            self.antenna = antenna
 
     def set_field(self, field=''):
-        self.field = field
+        if isinstance(field, int):
+            self.field = self.ms.fields[field].name
+            self.clean_field_name = self.ms.fields[field].clean_name
+        else:
+            self.field = field
+            self.clean_field_name = field
 
     def get_antenna_selection(self):
         if len(self.antenna) == 0:
@@ -46,9 +67,9 @@ class PlotmsRealVsFreqPlotter(object):
             [
                 'ATM Corrected Real vs Frequency',
                 '{} ATMType {} {} Spw {} Antenna {}'.format(
-                    os.path.basename(self.vis),
+                    self.basename,
                     self.atmtype,
-                    ('all' if self.field == '' else self.field),
+                    ('all' if self.field == '' else self.original_field_name),
                     ('all' if self.spw == '' else self.spw),
                     ('all' if self.antenna == '' else self.antenna),
                 ),
@@ -59,9 +80,9 @@ class PlotmsRealVsFreqPlotter(object):
 
     def get_plotfile_name(self):
         plotfile = '{}-atmtype_{}-{}-spw_{}-antenna_{}-atmcor-TARGET-real_vs_freq.png'.format(
-            os.path.basename(self.vis),
+            self.basename,
             self.atmtype,
-            ('all' if self.field == '' else self.field),
+            ('all' if self.field == '' else self.clean_field_name),
             ('all' if self.spw == '' else self.spw),
             ('all' if self.antenna == '' else self.antenna),
         )
@@ -69,10 +90,10 @@ class PlotmsRealVsFreqPlotter(object):
 
     def get_plot(self, plotfile):
         parameters = {
-            'vis': os.path.basename(self.vis),
+            'vis': self.name,
             'ant': self.antenna,
             'spw': self.spw,
-            'field': self.field,
+            'field': self.original_field_name,
         }
         plot = logger.Plot(
             plotfile,

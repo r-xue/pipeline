@@ -17,9 +17,6 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
 
     def update_mako_context(self, mako_context, pipeline_context, result):
         super().update_mako_context(mako_context, pipeline_context, result)
-
-        LOG.info('This is ATMCorRenderer')
-
         stage_dir = os.path.join(
             pipeline_context.report_dir,
             'stage{}'.format(result.stage_number)
@@ -30,16 +27,16 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
         summary_plots = {}
         detail_plots = []
         for r in result:
-            LOG.info('result for "%s"', r.inputs['vis'])
+            LOG.info('Rendering result for "%s"', r.inputs['vis'])
             if not hasattr(r, 'atmcorr_ms_name'):
                 raise RuntimeError('Wrong result object is given.')
 
             vis = r.inputs['vis']
             atmvis = r.atmcorr_ms_name
             ms = pipeline_context.observing_run.get_ms(os.path.basename(vis))
-            antennas = [a.name for a in ms.get_antenna()]
-            field_names = [f.clean_name for f in ms.get_fields(intent='TARGET')]
-            science_spws = [s.id for s in ms.get_spectral_windows(science_windows_only=True)]
+            antenna_ids = [int(a.id) for a in ms.get_antenna()]
+            field_ids = [int(f.id) for f in ms.get_fields(intent='TARGET')]
+            science_spws = [int(s.id) for s in ms.get_spectral_windows(science_windows_only=True)]
             spw_selection = r.inputs['spw']
             if len(spw_selection) > 0:
                 selected_spws = set(map(int, spw_selection.split(','))).intersection(science_spws)
@@ -47,23 +44,23 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
                 selected_spws = science_spws
 
             plotter = PlotmsRealVsFreqPlotter(
-                vis=ms.basename, atmvis=atmvis,
+                ms=ms, atmvis=atmvis,
                 atmtype=r.inputs['atmtype'], output_dir=stage_dir
             )
             summaries = {}
-            for field_name, spw_id in itertools.product(field_names, selected_spws):
-                LOG.info(f'field {field_name} spw {spw_id}')
+            for field_id, spw_id in itertools.product(field_ids, selected_spws):
+                LOG.info(f'field {field_id} spw {spw_id}')
                 spw = str(spw_id)
+                plotter.set_field(field_id)
+                field_name = plotter.original_field_name
                 summaries.setdefault(field_name, {})
-                plotter.set_field(field_name)
                 plotter.set_spw(spw)
                 p = plotter.plot()
                 summaries[field_name][spw] = p
-                for antenna_name in antennas:
-                    plotter.set_antenna(antenna_name)
+                for antenna_id in antenna_ids:
+                    plotter.set_antenna(antenna_id)
                     p = plotter.plot()
                     detail_plots.append(p)
-            LOG.info('spw list %s', list(summaries.keys()))
             summary_plots[os.path.basename(vis)] = summaries
 
         detail_page_title = 'ATM corrected amplitude vs frequency'
