@@ -8,8 +8,10 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class PlotmsRealVsFreqPlotter(object):
-    def __init__(self, vis, datacolumn='data', output_dir='.'):
+    def __init__(self, vis, atmvis, atmtype, datacolumn='data', output_dir='.'):
         self.vis = vis.rstrip('/')
+        self.atmvis = atmvis.rstrip('/')
+        self.atmtype = atmtype
         self.spw = ''
         self.antenna = ''
         self.field = ''
@@ -43,8 +45,9 @@ class PlotmsRealVsFreqPlotter(object):
         title = '\n'.join(
             [
                 'ATM Corrected Real vs Frequency',
-                '{} {} Spw {} Antenna {}'.format(
+                '{} ATMType {} {} Spw {} Antenna {}'.format(
                     os.path.basename(self.vis),
+                    self.atmtype,
                     ('all' if self.field == '' else self.field),
                     ('all' if self.spw == '' else self.spw),
                     ('all' if self.antenna == '' else self.antenna),
@@ -55,8 +58,9 @@ class PlotmsRealVsFreqPlotter(object):
         return title
 
     def get_plotfile_name(self):
-        plotfile = '{}-{}-spw_{}-antenna_{}-atmcor-TARGET-real_vs_freq.png'.format(
+        plotfile = '{}-atmtype_{}-{}-spw_{}-antenna_{}-atmcor-TARGET-real_vs_freq.png'.format(
             os.path.basename(self.vis),
+            self.atmtype,
             ('all' if self.field == '' else self.field),
             ('all' if self.spw == '' else self.spw),
             ('all' if self.antenna == '' else self.antenna),
@@ -85,7 +89,7 @@ class PlotmsRealVsFreqPlotter(object):
         antenna = self.get_antenna_selection()
         coloraxis = self.get_color_axis()
         task_args = {
-            'vis': self.vis,
+            'vis': self.atmvis,
             'xaxis': 'freq',
             'yaxis': 'real',
             'ydatacolumn': self.datacolumn,
