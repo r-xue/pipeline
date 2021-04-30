@@ -14,7 +14,7 @@ duration of the installation procedure.
 The pipeline can be built and installed like any standard Python module, with
 
 ```console
-$ python3 setup.py build
+python3 setup.py build
 ```
 
 The build output will be found in the build/lib directory. This directory can
@@ -29,8 +29,8 @@ sys.path.insert(0, '/path/to/pipeine/build/lib')
 
 The pipeline can be built and installed like any standard Python module, with
 
-```
-$ python3 setup.py install
+```console
+python3 setup.py install
 ```
 
 If a pipeline egg is already installed, this command will upgrade the
@@ -42,7 +42,7 @@ To build a pipeline .egg file without installing the egg and hence overwriting
 the CASA default pipeline installation, execute
 
 ```console
-$ python setup.py bdist_egg
+python setup.py bdist_egg
 ```
 
 The resulting egg file can be found in the dist directory and added to the
@@ -129,19 +129,19 @@ the CASA site-packages. Hence the working version you are editing will become
 the pipeline version available to CASA.
 
 ```console
-$ python3 setup.py develop
+python3 setup.py develop
 ```
 
 or
 
 ```console
-$ pip3 install --editable .
+pip3 install --editable .
 ```
 
 To uninstall the developer installation, execute
 
 ```console
-$ python3 setup.py develop -u
+python3 setup.py develop -u
 ```
 
 ### Optional: CASA CLI bindings
@@ -153,7 +153,7 @@ bindings need to be written to the src directory. This can be done using the
 in-place, i.e.,
 
 ```console
-$ python3 setup.py buildmytasks -i
+python3 setup.py buildmytasks -i
 ```
 
 The bindings should be rebuilt whenever you change the interface XML definitions.
@@ -167,9 +167,9 @@ The bindings should be rebuilt whenever you change the interface XML definitions
 An easy installation option is to use `pip` packaged in the CASA distribution:
 
 ```console
-$ which pip3
-$ /opt/nrao/casa-6.2.0-114/bin/pip3
-$ pip3 install astropy bdsf --disable-pip-version-check
+which pip3
+/opt/nrao/casa-6.2.0-114/bin/pip3
+pip3 install astropy bdsf --disable-pip-version-check
 ```
 
 which can be verified,
@@ -188,5 +188,5 @@ pipeline code, the legacy pipeline installation should be removed from CASA.
 Execute:
 
 ```console
-$ casa-config --sh-exec rm '$PYTHONHOME/pipeline'
+casa-config --sh-exec rm '$PYTHONHOME/pipeline'
 ```
