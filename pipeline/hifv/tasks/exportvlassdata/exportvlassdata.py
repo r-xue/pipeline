@@ -196,8 +196,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
-            # Apply position corrections to VLASS-QL product images (PIPE-587) and fix FITS header (PIPE-641)
-            if img_mode == 'VLASS-QL':
+            # Apply position corrections to VLASS-QL product images (PIPE-587) and fix FITS header (PIPE-641), PIPE-1134
+            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-001'):
                 # Mean antenna geographic coordinates
                 observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date
