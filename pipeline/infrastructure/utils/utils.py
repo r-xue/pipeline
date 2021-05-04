@@ -2,6 +2,7 @@
 The utils module contains general-purpose uncategorised utility functions and
 classes.
 """
+import collections
 import copy
 import itertools
 import operator
@@ -20,8 +21,8 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
-           'get_si_prefix', 'absolute_path', 'relative_path']
+           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
+           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -253,6 +254,21 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     return rxmap
 
 
+def get_spectralspec_to_spwid_map(spws):
+    """
+    Returns a dictionary of spectral specs mapped to corresponding spectral
+    window IDs for requested list of spectral window objects.
+
+    :param spws: list of spectral window objects
+    :return: dictionary with spectral spec as keys, and corresponding
+    list of spectral window IDs as values.
+    """
+    spwmap = collections.defaultdict(list)
+    for spw in sorted(spws, key=lambda s: s.id):
+        spwmap[spw.spectralspec].append(spw.id)
+    return spwmap
+
+
 def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
     """Wrapper around quanta.quantity() that handles None input.
 
@@ -273,6 +289,7 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
         return casa_tools.quanta.quantity(value)
     else:
         return casa_tools.quanta.quantity(0.0)
+
 
 def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
     """Obtain the best SI unit prefix option for a numeric value.
@@ -323,6 +340,7 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
         idx = max(idx-1, 0)
 
         return sp_list[idx].strip(), 10.**sp_pow[idx]
+
 
 def absolute_path(name: str) -> str:
     """Return an absolute path of a given file."""
