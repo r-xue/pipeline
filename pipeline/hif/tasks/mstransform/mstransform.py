@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -18,6 +19,8 @@ LOG = infrastructure.get_logger(__name__)
 # original MS. Other parameters will be added here as more
 # capabilities are added to hif_mstransform.
 class MstransformInputs(vdp.StandardInputs):
+    
+    processing_data_type = [DataType.CALIBRATED, DataType.RAW]
 
     @vdp.VisDependentProperty
     def outputvis(self):
@@ -186,6 +189,10 @@ class Mstransform(basetask.StandardTaskTemplate):
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
             ms.is_imaging_ms = True
+            LOG.debug('Setting data_column and origin_ms.')
+            ms.origin_ms = self.inputs.ms.name
+            ms.set_data_column(DataType.TARGET, 'DATA')
+
         result.mses.extend(observing_run.measurement_sets)
 
         return result

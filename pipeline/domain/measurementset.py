@@ -83,6 +83,7 @@ class MeasurementSet(object):
         self.combine_spwmap: Optional[List[int]] = None
         self.is_imaging_ms: bool = False
         self.work_data: str = name
+        self.origin_ms: str = name
         self.data_column: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
