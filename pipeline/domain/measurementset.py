@@ -426,8 +426,8 @@ class MeasurementSet(object):
                 raise KeyError('No spectral window with ID \'{0}\' found in '
                                '{1}'.format(spw_id, self.basename))
 
-    def get_spectral_windows(self, task_arg='', with_channels=False,
-                             num_channels=(), science_windows_only=True):
+    def get_spectral_windows(self, task_arg='', with_channels=False, num_channels=(), science_windows_only=True,
+                             spectralspecs=None):
         """
         Return the spectral windows corresponding to the given CASA-style spw
         argument, filtering out windows that may not be science spectral 
@@ -438,6 +438,10 @@ class MeasurementSet(object):
         # if requested, filter spws by number of channels
         if num_channels:
             spws = [w for w in spws if w.num_channels in num_channels] 
+
+        # If requested, filter spws by spectral specs.
+        if spectralspecs:
+            spws = [w for w in spws if w.spectralspec in spectralspecs]
 
         if not science_windows_only:
             return spws
