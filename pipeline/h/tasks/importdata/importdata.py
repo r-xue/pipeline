@@ -9,6 +9,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.datatype import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline import environment
@@ -217,11 +218,21 @@ class ImportData(basetask.StandardTaskTemplate):
         rel_to_import = [os.path.relpath(f, abs_output_dir) for f in to_import]
 
         observing_run = ms_reader.get_observing_run(rel_to_import)
+        data_type = DataType.RAW
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', inputs.session, ms.basename)
             if inputs.asimaging:
                 LOG.info('Importing %s as an imaging measurement set', ms.basename)
                 ms.is_imaging_ms = True
+                data_type = DataType.TARGET
+
+            # Set data_type
+            for col in ['DATA', 'FLOAT_DATA']:
+                try:
+                    ms.set_data_column(data_type, col)
+                    break
+                except ValueError:
+                    continue
 
             ms.session = inputs.session
 
