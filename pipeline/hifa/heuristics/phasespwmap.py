@@ -3,6 +3,7 @@ import decimal
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
@@ -18,7 +19,7 @@ def combine_spwmap(scispws):
     """
     # Create dictionary of spectral specs and their corresponding science
     # spectral window ids.
-    spspec_to_spwid_map = get_spspec_to_spwid_map(scispws)
+    spspec_to_spwid_map = utils.get_spectralspec_to_spwid_map(scispws)
 
     # Identify highest science spw id, and initialize the spwmap for every
     # spectral window id through the max science spectral window id.
@@ -40,33 +41,6 @@ def combine_spwmap(scispws):
         return []
     else:
         return combinespwmap
-
-
-def get_spspec_to_spwid_map(spws):
-    """
-    Returns a dictionary of spectral specs and their corresponding science
-    spectral window ids.
-
-    :param spws: list of spectral window objects for science spectral windows
-    :return: dictionary with spectral spec as keys, and corresponding
-    spectral windows as values.
-    """
-    spspec_to_spwid_map = collections.defaultdict(list)
-    for spw in spws:
-        # Get spectral spec for current spw id; for older datasets where
-        # spws may have no spectral spec, group these no-spectral-spec spws
-        # together into a single "NONE" group.
-        spspec = get_spectral_spec(spw)
-        if not spspec:
-            spspec = "NONE"
-        spspec_to_spwid_map[spspec].append(spw.id)
-
-    # result sorted by spw number for more friendly processing when iterating downstream
-    d = collections.OrderedDict()
-    for k, v in sorted(spspec_to_spwid_map.items(), key=lambda a_b: (a_b[1], a_b[0])):
-        d[k] = v
-
-    return d
 
 
 def get_spectral_spec(spw):
