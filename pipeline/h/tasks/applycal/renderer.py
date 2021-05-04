@@ -8,7 +8,8 @@ import itertools
 import operator
 import os
 import shutil
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional, Type, Union
+
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure
@@ -23,6 +24,8 @@ from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.displays.summary import UVChart
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.renderer.logger import Plot
+from pipeline.h.tasks.applycal.applycal import ApplycalResults
+from pipeline.infrastructure.renderer.basetemplates import JsonPlotRenderer
 from ..common import flagging_renderer_utils as flagutils
 from ..common.displays import applycal as applycal
 
@@ -389,8 +392,36 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return amp_vs_freq_summary_plots, amp_vs_uv_summary_plots, max_uvs
 
     @staticmethod
-    def science_plots_for_result(context, result, plotter_cls, fields, uvrange=None, renderer_cls=None):
-        overrides = {'coloraxis': 'spw'}
+    def science_plots_for_result(
+            context: Context, 
+            result: ApplycalResults,
+            plotter_cls: Type[Union[applycal.PlotmsAntComposite, applycal.PlotmsSpwComposite, 
+                                    applycal.PlotmsBasebandComposite, applycal.PlotmsFieldComposite, 
+                                    applycal.PlotmsFieldSpwComposite, applycal.PlotmsSpwAntComposite, 
+                                    applycal.PlotmsFieldSpwAntComposite]], 
+            fields: Iterable[int], 
+            uvrange: Optional[str]=None, 
+            renderer_cls: Optional[Type[JsonPlotRenderer]]=None, 
+            preserve_coloraxis: bool=False
+    ) -> List[Plot]:
+        """
+        Create science plots for result
+        
+        Create science plots for result.
+        Args:
+            context:            Pipeline Context
+            result:             Applycal Results
+            plotter_cls:        Plotter class
+            fields:             List of field_ids
+            uvrange:            UV range
+            renderer_cls:       Renderer class
+            preserve_coloraxis: True to preserve predefined 'coloraxis' (for SD)
+                                False to override 'coloraxis' with 'spw' (default)
+        Returns:
+            List[Plot]: List of Plot instances.
+        """
+        # preserve coloraxis if necessary (PIPE-710: SD needs to preserve 'coloraxis')
+        overrides = {} if preserve_coloraxis else {'coloraxis': 'spw'}
 
         if uvrange is not None:
             overrides['uvrange'] = uvrange
@@ -572,6 +603,33 @@ class ApplycalAmpVsFreqSciencePlotRenderer(basetemplates.JsonPlotRenderer):
         super(ApplycalAmpVsFreqSciencePlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_field_detail_plots.mako', context,
                 result, plots, title, outfile)
+
+
+class ApplycalAmpVsFreqPerAntSciencePlotRenderer(basetemplates.JsonPlotRenderer):
+    """
+    Class to render 'per antenna' Amp vs Freq plots for applycal
+    """
+    def __init__(self, 
+                 context: Context, 
+                 result: ApplycalResults, 
+                 plots: List[Plot]
+    ) -> None:
+        """
+        Construct ApplycalAmpVsFreqPerAntSciencePlotRenderer instance
+
+        Args:
+            context: Pipeline context
+            result:  Applycal Results
+            plots:   Liost of Plot instances
+        """
+        vis = utils.get_vis_from_plots(plots)
+
+        title = 'Calibrated amplitude vs frequency for %s' % vis
+        outfile = filenamer.sanitize('science_amp_vs_freq-%s.html' % vis)
+
+        super(ApplycalAmpVsFreqPerAntSciencePlotRenderer, self).__init__(
+            'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
+            result, plots, title, outfile)
 
 
 class ApplycalAmpVsUVSciencePlotRenderer(basetemplates.JsonPlotRenderer):

@@ -27,10 +27,9 @@ import re
 import string
 import subprocess
 
-import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import logging
 
-LOG = infrastructure.get_logger(__name__)
-
+LOG = logging.get_logger(__name__)
 
 # Set the command used to shrink plots down to thumbnails. If set to None, no
 # thumbnails will be generated 
