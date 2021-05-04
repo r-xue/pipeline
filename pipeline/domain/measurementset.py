@@ -3,7 +3,7 @@ import contextlib
 import itertools
 import operator
 import os
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 
@@ -26,6 +26,7 @@ class MeasurementSet(object):
         self.antenna_array = None
         self.data_descriptions = []
         self.spectral_windows = []
+        self.spectralspec_spwmap = {}
         self.fields = []
         self.states = []
         self.reference_spwmap = None
@@ -460,6 +461,10 @@ class MeasurementSet(object):
             return [w for w in spws if not science_intents.isdisjoint(w.intents)]
 
         return spws
+
+    def get_spectral_specs(self) -> List[str]:
+        """Return list of all spectral specs used in the MS."""
+        return list(self.spectralspec_spwmap.keys())
 
     def get_all_spectral_windows(self, task_arg='', with_channels=False):
         """Return the spectral windows corresponding to the given CASA-style
