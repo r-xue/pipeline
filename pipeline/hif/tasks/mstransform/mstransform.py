@@ -190,7 +190,7 @@ class Mstransform(basetask.StandardTaskTemplate):
             ms.session = self.inputs.ms.session
             ms.is_imaging_ms = True
             LOG.debug('Setting data_column and origin_ms.')
-            ms.origin_ms = self.inputs.ms.name
+            ms.origin_ms = self.inputs.ms.origin_ms
             ms.set_data_column(DataType.TARGET, 'DATA')
 
         result.mses.extend(observing_run.measurement_sets)

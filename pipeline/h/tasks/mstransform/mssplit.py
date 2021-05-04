@@ -120,7 +120,7 @@ class MsSplit(basetask.StandardTaskTemplate):
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
-            #ms.origin_ms = self.inputs.ms.name
+            ms.origin_ms = self.inputs.ms.origin_ms
             self.__set_data_column_to_ms(ms)
 
         # Note there will be only 1 MS in the temporary observing run structure
@@ -141,6 +141,10 @@ class MsSplit(basetask.StandardTaskTemplate):
         datacolumn = self.inputs.datacolumn
         in_column = datacolumn.upper() if datacolumn != 'corrected' else 'CORRECTED_DATA'
         LOG.debug('in_column = %s' % in_column)
+        #if self.inputs.replace and not os.path.exists(msobj.origin_ms):
+        #    # Replace RAW column if original MS was replaced.
+        #    data_type = DataType.RAW
+        #el
         if self.inputs.intent == 'TARGET':
             data_type = DataType.TARGET
         else:
