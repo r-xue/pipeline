@@ -24,5 +24,6 @@ class DataType(Enum):
     BASELINED = auto()
     ATMCORR = auto()
     TARGET = auto()
+    LINE = auto()
 
         
