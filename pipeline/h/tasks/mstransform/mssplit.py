@@ -121,16 +121,16 @@ class MsSplit(basetask.StandardTaskTemplate):
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
             ms.origin_ms = self.inputs.ms.origin_ms
-            self.__set_data_column_to_ms(ms)
+            self._set_data_column_to_ms(ms)
 
         # Note there will be only 1 MS in the temporary observing run structure
         result.ms = observing_run.measurement_sets[0]
 
         return result
 
-    def __set_data_column_to_ms(self, msobj: MeasurementSet):
+    def _set_data_column_to_ms(self, msobj: MeasurementSet):
         """
-        Set data_column to MeasurementSet domain object.
+        Set data_column to input MeasurementSet domain object.
 
         This method sets data_column information of output MS depending on
         intent and datacolumn selection of the Inputs class.

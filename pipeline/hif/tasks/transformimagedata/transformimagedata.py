@@ -86,9 +86,9 @@ class TransformimagedataInputs(mssplit.MsSplitInputs):
             # Need this to be in the working directory
             # vis_root = os.path.splitext(self.vis)[0]
             vis_root = os.path.splitext(os.path.basename(self.vis))[0]
-            return output_dir + '/' + vis_root + '_split.ms'
+            return os.path.join(output_dir, vis_root + '_split.ms')
         else:
-            return output_dir + '/' + os.path.basename(self.outputvis)
+            return os.path.join(output_dir, os.path.basename(self.outputvis))
 
     @outputvis.convert
     def outputvis(self, value=''):
@@ -203,6 +203,8 @@ class Transformimagedata(mssplit.MsSplit):
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
             ms.is_imaging_ms = True
+            ms.origin_ms = self.inputs.ms.origin_ms
+            self._set_data_column_to_ms(ms)
 
         # Note there will be only 1 MS in the temporary observing run structure
         result.ms = observing_run.measurement_sets[0]
