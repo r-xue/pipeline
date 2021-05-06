@@ -6,6 +6,7 @@ Unchanged functions can be found on the New Mexico nmpost cluster:
 /users/jmarvil/scripts/edit_pybdsf_islands.py
 /users/jmarvil/scripts/run_bdsf.py
 """
+
 import time
 from glob import glob
 
@@ -13,7 +14,15 @@ import numpy as np
 from scipy.stats import linregress
 
 import pyfits
+
+# PIPE-1063/1125: mitigate a side effect from PyBDSF v1.9.2
+# PyBDSF internally changes the NumPy floating-point (FP) 'divide' error handling upon import (`bdsf.gau2srl`), 
+# and does not restore FP error settings after changing all of them to 'ignore' during its runtime (`bdsf.functions`).
+# We work around this issue by saving and restoring NumPy settings when PyBDSF is imported and called.
+old_settings = np.geterr()
 import bdsf
+np.seterr(**old_settings)
+
 
 from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure as infrastructure
@@ -29,9 +38,14 @@ def run_bdsf(infile=""):
     :param infile:
     :return:
     """
+    # PIPE-1063/1125: mitigate a side effect from PyBDSF v1.9.2, see above
+    old_settings = np.geterr()
+    # We set the FP 'divide' error handing to 'raise' to mimic the internal behavior of PyBDSF, but this is likely not necessary.
+    np.seterr(divide='raise')
     img = bdsf.process_image(infile, thresh_isl=2, thresh_pix=5, rms_box=[512, 512], thresh='hard',
                              adaptive_rms_box=False, mean_map='zero', peak_fit=True, split_isl=False,
                              group_by_isl=True)
+    np.seterr(**old_settings)
     img.write_catalog(format='fits', outfile=infile.replace('.fits', '.cat.fits'))
     img.write_catalog(format='ds9', outfile=infile.replace('.fits', '.cat.ds9.reg'))
     img.export_image(outfile=infile + '.rms', img_type='rms', clobber=True)
