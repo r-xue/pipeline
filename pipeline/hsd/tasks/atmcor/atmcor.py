@@ -143,7 +143,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         # outfile
         if 'outfile' not in args:
             basename = os.path.basename(infile.rstrip('/'))
-            suffix = '.atmcorr.atmtype{}'.format(args['atmtype'])
+            suffix = '.atmcor.atmtype{}'.format(args['atmtype'])
             outfile = basename + suffix
             args['outfile'] = relative_path(os.path.join(self.output_dir, outfile))
 
@@ -166,7 +166,7 @@ class SDATMCorrectionResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
         super().__init__(task, success, outcome)
         # outcome is the name of output file from sdatmcor
-        self.atmcorr_ms_name = outcome
+        self.atmcor_ms_name = outcome
 
     def merge_with_context(self, context):
         super().merge_with_context(context)
@@ -174,7 +174,7 @@ class SDATMCorrectionResults(common.SingleDishResults):
         # TODO: register MS after sdatmcor to the context
 
     def _outcome_name(self):
-        return os.path.basename(self.atmcorr_ms_name)
+        return os.path.basename(self.atmcor_ms_name)
 
 
 @task_registry.set_equivalent_casa_task('hsd_atmcor')

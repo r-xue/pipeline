@@ -28,11 +28,11 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
         detail_plots = []
         for r in result:
             LOG.info('Rendering result for "%s"', r.inputs['vis'])
-            if not hasattr(r, 'atmcorr_ms_name'):
+            if not hasattr(r, 'atmcor_ms_name'):
                 raise RuntimeError('Wrong result object is given.')
 
             vis = r.inputs['vis']
-            atmvis = r.atmcorr_ms_name
+            atmvis = r.atmcor_ms_name
             ms = pipeline_context.observing_run.get_ms(os.path.basename(vis))
             antenna_ids = [int(a.id) for a in ms.get_antenna()]
             field_ids = [int(f.id) for f in ms.get_fields(intent='TARGET')]
