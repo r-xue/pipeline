@@ -159,6 +159,14 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         # pol -> correlation
         args['correlation'] = args.pop('pol', '')
 
+        # correlation selection should be empty
+        # to avoid strange error in VI/VB2 framework
+        args['correlation'] = ''
+
+        # intent should include OFF_SOURCE data (for validation purpose)
+        # TODO: remove it after PIPE-1062 is implemented
+        args['intent'] = 'OBSERVE_TARGET#ON_SOURCE,OBSERVE_TARGET#OFF_SOURCE'
+
         return args
 
 
