@@ -272,8 +272,9 @@ class Tclean(cleanbase.CleanBase):
         # Determine antennas to be used
         if inputs.antenna in (None, [], ''):
             antenna_ids = self.image_heuristics.antenna_ids(inputs.intent)
-            # PIPE-964: Removing the "+'&'" from the following line would consider majority plus cross baselines which
-            #  may be required in the future in some configurations
+            # PIPE-964: The '&' at the end of the antenna input was added to not to consider the cross baselines by
+            #  default. The cross baselines with antennas not listed (for TARGET images the antennas with the minority
+            #  antenna sizes are not listed) could be added in some future configurations by removing this character.
             inputs.antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&' for v in inputs.vis]
 
         # Determine the phase center
