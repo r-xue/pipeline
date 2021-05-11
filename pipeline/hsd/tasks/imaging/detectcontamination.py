@@ -237,7 +237,7 @@ def detect_contamination(context, imageitem):
     # Making rms 　& Peak SN maps
     rms_map = decide_rms(naxis3, cube_regrid)
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
-    idy, idx = np.unravel_index(np.argmax(peak_sn), peak_sn.shape)
+    idy, idx = np.unravel_index(np.nanargmax(peak_sn), peak_sn.shape)
     LOG.debug(f'idx {idx}, idy {idy}')
     spectrum_at_peak = cube_regrid[:, idy, idx]
 
