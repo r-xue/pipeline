@@ -6,6 +6,7 @@ import re
 import ssl
 import string
 import urllib
+from typing import List
 
 import numpy
 
@@ -88,6 +89,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 # TODO: Update validation method of SSL certification once discussion with Tomas is converged.
                 ssl_context = ssl._create_unverified_context()
                 # set timeout to 3min (=180sec)
+                # response = urllib.request.urlopen(query, context=ssl_context, timeout=0)#180)
                 response = urllib.request.urlopen(query, context=ssl_context, timeout=400)#180)
                 retval = json.load(response)
                 if not retval['success']:
@@ -118,16 +120,16 @@ class ALMAJyPerKDatabaseAccessBase(object):
         if array_name != 'ALMA':
             raise RuntimeError('{} is not ALMA data'.format(basename))
 
-    def getJyPerK(self, vis):
+    def getJyPerK(self, vis: str) -> dict:
         """
         getJyPerK returns list of Jy/K conversion factors with their
         meta data (MS name, antenna name, spwid, and pol string).
 
-        Arguments:
-            vis {str} -- Name of MS
+        Args:
+            vis: Name of MS
 
         Returns:
-            [list] -- List of Jy/K conversion factors with meta data
+            Dictionary consists of list of Jy/K conversion factors with meta data and allsuccess (True or False).
         """
         # sanity check
         self.validate(vis)
@@ -141,8 +143,6 @@ class ALMAJyPerKDatabaseAccessBase(object):
         #LOG.info('formatted = {}'.format(formatted))
         filtered = self.filter_jyperk(vis, formatted)
         #LOG.info('filtered = {}'.format(filtered))
-        #arranged = {'filtered': filtered, 'allsuccess': allsuccess}
-        #LOG.info('arranged = {}'.format(arranged))
         return {'filtered': filtered, 'allsuccess': allsuccess}
         #return filtered
 
@@ -152,23 +152,25 @@ class ALMAJyPerKDatabaseAccessBase(object):
     def access(self, queries):
         raise NotImplementedError
 
-    def get(self, vis):
+    def get(self, vis: str) -> List:
         """
         Access Jy/K DB and return its response.
 
-        Arguments:
-            vis {str} -- Name of MS
+        Args:
+            vis: Name of MS
+#            vis {str} -- Name of MS
 
         Raises:
             urllib2.HTTPError
             urllib2.URLError
 
         Returns:
-            [dict] -- Response from the DB as a dictionary. It should contain
-                      the following keys:
-                          'query' -- query data
-                          'total' -- number of data
-                          'data'  -- data
+            [dict]: Response from the DB as a dictionary
+#            [dict] -- Response from the DB as a dictionary. It should contain
+#                      the following keys:
+#                          'query' -- query data
+#                          'total' -- number of data
+#                          'data'  -- data
         """
         # set URL
         url = self.url
@@ -182,6 +184,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
         # 'query': query data
         # 'total': number of data
         # 'data': response data
+        LOG.info('retval = {}'.format(retval))
         return retval
 
     def format_jyperk(self, vis, jyperk):
@@ -252,7 +255,16 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
                 subparam = {'vis': vis, 'spwid': spw.id}
                 yield QueryStruct(param=params, subparam=subparam)
 
-    def access(self, queries):
+    def access(self, queries: str) -> dict:
+        """
+        Convert queries to response
+
+        Args:
+            queries: Queries to DB
+
+        Returns:
+            {dict}: JSON including response from DB
+        """
         data = []
         allsuccess = True
         for result in queries:
@@ -293,7 +305,16 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         # subparam is vis
         yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=vis)
 
-    def access(self, queries):
+    def access(self, queries: str) -> dict:
+        """
+        Convert queries to response
+
+        Args:
+            queries: Queries to DB
+
+        Returns:
+            Dictionary consists of response from DB
+        """
         responses = list(queries)
 
         # there should be only one query
