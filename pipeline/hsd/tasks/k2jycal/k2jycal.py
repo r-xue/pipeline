@@ -124,22 +124,26 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             # Try accessing Jy/K DB if dbservice is True
             reffile = 'jyperk_query.csv'
             jsondata = self._query_factors()
-            factors_list = jsondata['filtered']
+            LOG.info('jsondata = {}'.format(jsondata))
             #factors_list = self._query_factors()
-            if jsondata['allsuccess'] is True:
-                dbstatus = True
-            else:
-                dbstatus = False
-            if len(factors_list) > 0:
-                # export factors for future reference
-                export_jyperk(reffile, factors_list)
+            if len(jsondata) > 0:
+                factors_list = jsondata['filtered']
+                if jsondata['allsuccess'] is True:
+                    dbstatus = True
+                else:
+                    dbstatus = False
+                if len(factors_list) > 0:
+                    # export factors for future reference
+                    export_jyperk(reffile, factors_list)
 
-        if (inputs.dbservice is False) or (len(factors_list) == 0):
+        if (inputs.dbservice is False) or (len(jsondata) == 0):
+#        if (inputs.dbservice is False) or (len(factors_list) == 0):
             # Read scaling factor file
             reffile = relative_path(inputs.reffile, inputs.context.output_dir)
             factors_list = self._read_factors(reffile)
 
-        LOG.debug('factors_list=%s' % factors_list)
+        LOG.info('factors_list=%s' % factors_list)
+#        LOG.debug('factors_list=%s' % factors_list)
         if len(factors_list) == 0:
             LOG.error('No scaling factors available')
             return SDK2JyCalResults(vis=os.path.basename(inputs.vis), pool=[])
@@ -204,7 +208,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         query = impl(self.inputs.context)
         try:
             factors_list = query.getJyPerK(vis)
-
+            LOG.info('factors_list = {}'.format(factors_list))
             # warn if result is empty
             if len(factors_list) == 0:
                 LOG.warn('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))
