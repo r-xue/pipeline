@@ -1,7 +1,8 @@
-import os
+import certifi
 import collections
 import datetime
 import decimal
+import os
 import ssl
 import urllib
 from xml.dom import minidom
@@ -122,8 +123,7 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     url = buildurl(service_url, obs_time, frequency, sourcename)
     LOG.debug('Querying {!s}'.format(url))
 
-    # ignore HTTPS certificate
-    ssl_context = ssl._create_unverified_context()
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
 
     try:
         response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
