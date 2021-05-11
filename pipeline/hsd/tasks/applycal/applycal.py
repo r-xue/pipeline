@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 import numpy
 
@@ -7,6 +8,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.datatable import DataTableImpl as DataTable
+from pipeline.domain import DataType
 from pipeline.h.tasks.applycal.applycal import Applycal, ApplycalInputs, ApplycalResults
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -29,8 +31,8 @@ class SDApplycalInputs(ApplycalInputs):
 
 
 class SDApplycalResults(ApplycalResults):
-    def __init__(self, applied=None):
-        super(SDApplycalResults, self).__init__(applied)
+    def __init__(self, applied=None, data_type: Optional[DataType]=None):
+        super(SDApplycalResults, self).__init__(applied, data_type=data_type)
 
 
 #@task_registry.set_equivalent_casa_task('hsd_applycal')
@@ -90,7 +92,7 @@ class SDApplycal(Applycal):
         # here, full export is necessary
         datatable.exportdata(minimal=False)
 
-        sdresults = SDApplycalResults(applied=results.applied)
+        sdresults = SDApplycalResults(applied=results.applied, data_type=self.applied_data_type)
         sdresults.summaries = results.summaries
         if hasattr(results, 'flagsummary'):
             sdresults.flagsummary = results.flagsummary
