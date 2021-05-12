@@ -178,15 +178,13 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
 def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
     std_value = np.nanstd(masked_average_spectrum)
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
-        warning_sentence = '#### Warning ####'
         if imageitem is not None:
             field = imageitem.sourcename
             spw = ','.join(map(str, np.unique(imageitem.spwlist)))
-            warning_detail = f' Field {field} Spw {spw}: ' \
+            warning_sentence = f'Field {field} Spw {spw}: ' \
                               'Absorption feature is detected ' \
                               'in the lower S/N area. ' \
                               'Please check calibration result in detail.'
-            warning_sentence = f'{warning_sentence} {warning_detail}'
         LOG.warn(warning_sentence)
 
 
