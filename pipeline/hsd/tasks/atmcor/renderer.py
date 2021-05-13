@@ -55,6 +55,8 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
                 field_name = plotter.original_field_name
                 summaries.setdefault(field_name, {})
                 plotter.set_spw(spw)
+                # reset antenna selection
+                plotter.set_antenna()
                 p = plotter.plot()
                 summaries[field_name][spw] = p
                 for antenna_id in antenna_ids:
