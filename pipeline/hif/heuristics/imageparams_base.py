@@ -651,8 +651,8 @@ class ImageParamsHeuristics(object):
         self.field(intent, field)
 
         # also need to use mosaic gridder when gridding antennas with different
-        # diameters (only for calibrators)
-        if self._mosaic or (len(self.antenna_diameters()) > 1 and intent != 'TARGET'):
+        # diameters
+        if self._mosaic or (len(self.antenna_diameters()) > 1):
             # Setting this here because it is used in other places in the heuristics
             # TODO: this is flaky since it requires "gridder" to be called before
             #       other methods using self._mosaic

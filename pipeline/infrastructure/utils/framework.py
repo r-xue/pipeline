@@ -16,11 +16,15 @@ import operator
 import os
 import pickle
 import uuid
+from typing import List, Optional, Tuple
 
 from .conversion import flatten, safe_split
 from .. import jobrequest
 from .. import logging
 from .. import mpihelpers
+
+from pipeline.infrastructure.jobrequest import JobRequest
+from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
 
@@ -301,7 +305,23 @@ def contains_single_dish(context):
                 hasattr(context.observing_run, 'ms_datatable_name')])
 
 
-def plotms_iterate(jobs_and_wrappers, iteraxis=None):
+def plotms_iterate(
+        jobs_and_wrappers: List[Tuple[JobRequest,Plot]], 
+        iteraxis: Optional[str]=None, 
+        singledish: Optional[bool]=False
+) -> List[Plot]:
+    """
+    Iterate multiple plotms job requests
+
+    Iterate multiple plotms job requests
+    Args:
+        jobs_and_wrappers: JobRequest and Plot
+        iteraxis:          iteraxis parameter for plotms
+        singledish:        True for singledish (adds &&& to 'antenna')
+                           False for others (default, 'antenna' remains unchanged )
+    returns:
+        List of plots
+    """
     # CAS-11220: Some Pipeline Plots Do Not Contain Spw Number
     # fix: replace job, adding iteraxis='spw' so that spw is always in title
     if (  # iteraxis must be spw,...
@@ -340,7 +360,6 @@ def plotms_iterate(jobs_and_wrappers, iteraxis=None):
         # If there's only one job, queue the original job for execution
         if len(component_jobs) is 1:
             job_to_execute = component_jobs[0]
-
         else:
             # set the final kwargs for the iteraxis-enabled job
             final_kwargs = dict(merged_job.kw)
@@ -352,6 +371,11 @@ def plotms_iterate(jobs_and_wrappers, iteraxis=None):
             # generate random filename to make it easier to identify when things go wrong
             iter_filename = '%s.png' % uuid.uuid4()
             final_kwargs['plotfile'] = iter_filename
+
+            # add &&& to 'antenna' for singledish
+            if singledish:
+                if 'antenna' in final_kwargs and len(final_kwargs['antenna'])!=0:
+                    final_kwargs['antenna'] += '&&&'
 
             job_to_execute = casa_tasks.plotms(**final_kwargs)
 
