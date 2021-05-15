@@ -136,15 +136,17 @@ class ApplycalResults(basetask.Results):
         if not self.applied:
             LOG.error('No results to merge')
 
-        vis_to_update = set()
         for calapp in self.applied:
             LOG.trace('Marking %s as applied' % calapp.as_applycal())
             context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
-            vis_to_update.add(calapp.vis)
+
         # Update data_column
-        for vis in vis_to_update:
-            if self.data_type is not None:
-                context.observing_run.get_ms(vis).set_data_column(self.data_type, 'CORRECTED_DATA')
+        if self.data_type is not None:
+            msobj = context.observing_run.get_ms(self.inputs['vis'])
+            colname = 'CORRECTED_DATA'
+            # Temporal workaround: restoredata merges context twice
+            if msobj.get_data_column(self.data_column) != colname:
+                msobj.set_data_column(self.data_type, colname)
 
     def __repr__(self):
         s = 'ApplycalResults:\n'
