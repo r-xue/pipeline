@@ -145,7 +145,7 @@ class ApplycalResults(basetask.Results):
             msobj = context.observing_run.get_ms(self.inputs['vis'])
             colname = 'CORRECTED_DATA'
             # Temporal workaround: restoredata merges context twice
-            if msobj.get_data_column(self.data_column) != colname:
+            if msobj.get_data_column(self.data_type) != colname:
                 msobj.set_data_column(self.data_type, colname)
 
     def __repr__(self):
