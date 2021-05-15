@@ -17,7 +17,7 @@ FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nr
 
 <%block name="header" />
 
-<%block name="title">Flag data by Tsys, weather, and statistics of spectra</%block>
+<%block name="title">Flag data by Tsys and statistics of spectra</%block>
 
 <%
 def make_detailed_table(result, stage_dir, fieldname):
@@ -67,8 +67,8 @@ try:
        for summary in summaries:
             if summary['field'] not in unique_fields:
                 unique_fields.append(summary['field'])
-
-   flag_types = ['Total', 'Tsys', 'Weather', 'User', 'After calibration']
+ 
+   flag_types = ['Total', 'Tsys', 'After calibration']
    fit_flags = ['Baseline RMS', 'Running mean', 'Expected RMS']
 except Exception as e:
    print('hsd_imaging html template exception:{}'.format(e))
@@ -90,7 +90,7 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#summarytable">Flag Summary</a></li>
+<li><a href="#summarytableperfield">Flag Summary per field</a></li>
 <li><a href="#detailtable">Flag by Reason</a></li>
   <ul>
 %for field in unique_fields:
@@ -100,8 +100,8 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 </ul>
 
 
-<H2 id="summarytable" class="jumptarget">Flag Summary</H2>
-<table class="table table-bordered table-striped" summary="Flag Summary">
+<H2 id="summarytableperfield" class="jumptarget">Flag Summary per field</H2>
+<table class="table table-bordered table-striped" summary="Flag Summary per field">
 	<caption>flag summary of ON-source target scans per source and spw</caption>
     <thead>
 	    <tr>

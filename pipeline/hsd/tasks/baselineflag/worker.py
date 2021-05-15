@@ -829,7 +829,8 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         if pflag[OnlineFlagIndex] == 0:
             return 0
 
-        types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
+###        types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
+        types = [ 'TsysFlag' ]
         mask = 1
         for idx in range(len(types)):
             if FlagRule[types[idx]]['isActive'] and pflag[idx] == 0:

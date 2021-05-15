@@ -53,6 +53,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>3.0</value>
     </param>
         
+<!--
     <param name="flag_weath" type="bool">
         <shortdescription>Flag data by weather (not implemented yet)</shortdescription>
         <description>Activate (True) or deactivate (False) weather flag. 
@@ -67,6 +68,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <description>Threshold value for weather flag.</description>
         <value>3.0</value>
     </param>
+-->
 
     <param name="flag_prfre" type="bool">
         <shortdescription>Flag data by EXPECTED RMS of pre-fit spectra</shortdescription>
@@ -175,6 +177,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>5</value>
     </param>
 
+<!--
     <param name="flag_user" type="bool">
         <shortdescription>Flag data by user flag (not implemented yet)</shortdescription>
         <description>Activate (True) or deactivate (False) user-defined flag. 
@@ -190,6 +193,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </description>
         <value>5.0</value>
     </param>
+-->
 
     <param name="plotflag" type="bool">
         <shortdescription>Create plots for flagging</shortdescription>

@@ -26,18 +26,18 @@
 INVALID_STAT = -1
 
 SDFlagRule = {\
-    'WeatherFlag':\
-        {'isActive': False, \
-         'Reversible': False, \
-         'Threshold': 'unknown'}, \
+###    'WeatherFlag':\
+###        {'isActive': False, \
+###         'Reversible': False, \
+###         'Threshold': 'unknown'}, \
     'TsysFlag':\
         {'isActive': True, \
          'Reversible': False, \
          'Threshold': 3.0}, \
-    'UserFlag':\
-        {'isActive': True, \
-         'Reversible': False, \
-         'Threshold': 'unknown'}, \
+###    'UserFlag':\
+###        {'isActive': True, \
+###         'Reversible': False, \
+###         'Threshold': 'unknown'}, \
     'RmsPreFitFlag':\
         {'isActive': True, \
          'Reversible': True, \

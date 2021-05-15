@@ -133,7 +133,8 @@ class SDBLFlagSummary(object):
         if pflag[OnlineFlagIndex] == 0:
             return 0
 
-        types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
+###        types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
+        types = ['TsysFlag']
         mask = 1
         for idx in range(len(types)):
             if FlagRule[types[idx]]['isActive'] and pflag[idx] == 0:
@@ -199,12 +200,12 @@ class SDBLFlagSummary(object):
             NPptime[0][N] = time
             if FlagRule_local['TsysFlag']['isActive'] and tPFLAG[1] == 0:
                 FlaggedRowsCategory[0].append(row)
-            # Weather flag
-            if FlagRule_local['WeatherFlag']['isActive'] and tPFLAG[0] == 0:
-                FlaggedRowsCategory[1].append(row)
-            # User flag
-            if FlagRule_local['UserFlag']['isActive'] and tPFLAG[2] == 0:
-                FlaggedRowsCategory[2].append(row)
+###            # Weather flag
+###            if FlagRule_local['WeatherFlag']['isActive'] and tPFLAG[0] == 0:
+###                FlaggedRowsCategory[1].append(row)
+###            # User flag
+###            if FlagRule_local['UserFlag']['isActive'] and tPFLAG[2] == 0:
+###                FlaggedRowsCategory[2].append(row)
             # Online flag
             if tPFLAG[3] == 0:
                 FlaggedRowsCategory[3].append(row)
@@ -374,8 +375,8 @@ class SDBLFlagSummary(object):
             # A table of flag statistics summary
             print('<table border="1">', file=Out)
             print('<tr align="center" class="stt"><th>&nbsp</th><th>isActive?</th><th>SigmaThreshold<th>Flagged spectra</th><th>Flagged ratio(%)</th></tr>', file=Out)
-            print(_format_table_row_html('User', FlagRule_local['UserFlag']['isActive'], FlagRule_local['UserFlag']['Threshold'], len(FlaggedRowsCategory[2]), NROW), file=Out)
-            print(_format_table_row_html('Weather', FlagRule_local['WeatherFlag']['isActive'], FlagRule_local['WeatherFlag']['Threshold'], len(FlaggedRowsCategory[1]), NROW), file=Out)
+##            print(_format_table_row_html('User', FlagRule_local['UserFlag']['isActive'], FlagRule_local['UserFlag']['Threshold'], len(FlaggedRowsCategory[2]), NROW), file=Out)
+##            print(_format_table_row_html('Weather', FlagRule_local['WeatherFlag']['isActive'], FlagRule_local['WeatherFlag']['Threshold'], len(FlaggedRowsCategory[1]), NROW), file=Out)
             print(_format_table_row_html('Tsys', FlagRule_local['TsysFlag']['isActive'], FlagRule_local['TsysFlag']['Threshold'], len(FlaggedRowsCategory[0]), NROW), file=Out)
             print(_format_table_row_html('Online', True, "-", len(FlaggedRowsCategory[3]), NROW), file=Out)
             print(_format_table_row_html('RMS baseline (pre-fit)', FlagRule_local['RmsPreFitFlag']['isActive'], FlagRule_local['RmsPreFitFlag']['Threshold'], len(FlaggedRowsCategory[5]), NROW), file=Out)
@@ -397,14 +398,14 @@ class SDBLFlagSummary(object):
             print('</body>', file=Out)
             Out.close()
 
-        # User flag
-        LOG.info('Number of rows flagged by User = %d /%d' % (len(FlaggedRowsCategory[2]), NROW))
-        if len(FlaggedRowsCategory[2]) > 0:
-            LOG.debug('Flagged rows by User =%s ' % FlaggedRowsCategory[2])
-        # Weather
-        LOG.info('Number of rows flagged by Weather = %d /%d' % (len(FlaggedRowsCategory[1]), NROW))
-        if len(FlaggedRowsCategory[1]) > 0:
-            LOG.debug('Flagged rows by Weather =%s ' % FlaggedRowsCategory[1])
+###        # User flag
+###        LOG.info('Number of rows flagged by User = %d /%d' % (len(FlaggedRowsCategory[2]), NROW))
+###        if len(FlaggedRowsCategory[2]) > 0:
+###            LOG.debug('Flagged rows by User =%s ' % FlaggedRowsCategory[2])
+###        # Weather
+###        LOG.info('Number of rows flagged by Weather = %d /%d' % (len(FlaggedRowsCategory[1]), NROW))
+###        if len(FlaggedRowsCategory[1]) > 0:
+###            LOG.debug('Flagged rows by Weather =%s ' % FlaggedRowsCategory[1])
         # Tsys
         LOG.info('Number of rows flagged by Tsys = %d /%d' % (len(FlaggedRowsCategory[0]), NROW))
         if len(FlaggedRowsCategory[0]) > 0:
