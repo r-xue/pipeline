@@ -5,6 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -48,6 +49,9 @@ class MakermsimagesResults(basetask.Results):
 
 
 class MakermsimagesInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     def __init__(self, context, vis=None):
         super(MakermsimagesInputs, self).__init__()
         # set the properties to the values given as input arguments

@@ -4,11 +4,12 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.heuristics import caltable as uvcaltable
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -20,6 +21,8 @@ LOG = infrastructure.get_logger(__name__)
 # Fit the continuum in the UV plane using the CASA style
 # uvcontfit task written by the pipeline.
 class UVcontFitInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     @vdp.VisDependentProperty
     def caltable(self):
@@ -140,7 +143,7 @@ class UVcontFitInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(UVcontFitInputs)
+#api.ImagingMeasurementSetsPreferred.register(UVcontFitInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontfit')

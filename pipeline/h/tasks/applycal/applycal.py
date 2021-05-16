@@ -177,7 +177,7 @@ class Applycal(basetask.StandardTaskTemplate):
     """
     Inputs = ApplycalInputs
     # DataType to be set for a new column
-    applied_data_type = DataType.CALIBRATED
+    applied_data_type = DataType.REGCAL_CONTLINE_ALL
 
     def __init__(self, inputs):
         super(Applycal, self).__init__(inputs)

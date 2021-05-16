@@ -13,17 +13,19 @@ class DataType(Enum):
     
     Attributes:
         RAW: raw data
-        CALIBRATED: calibrated data
+        REGCAL_CONTLINE_ALL: calibrated data
         BASELINED: baseline subtracted data
         ATMCORR: data corrected for residual ATM
-        TARGET: data in target MS
+        REGCAL_CONTLINE_SCIENCE: data in target MS
     '''
     
     RAW = auto()
-    CALIBRATED = auto()
+    REGCAL_CONTLINE_ALL = auto()
     BASELINED = auto()
     ATMCORR = auto()
-    TARGET = auto()
-    LINE = auto()
+    REGCAL_CONTLINE_SCIENCE = auto()
+    SELFCAL_CONTLINE_SCIENCE = auto()
+    LINE_SCIENCE = auto()
+    SELFCAL_LINE_SCIENCE = auto()
 
         

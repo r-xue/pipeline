@@ -19,8 +19,8 @@ LOG = infrastructure.get_logger(__name__)
 # original MS. Other parameters will be added here as more
 # capabilities are added to hif_mstransform.
 class MstransformInputs(vdp.StandardInputs):
-    
-    processing_data_type = [DataType.CALIBRATED, DataType.RAW]
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     @vdp.VisDependentProperty
     def outputvis(self):
@@ -191,7 +191,7 @@ class Mstransform(basetask.StandardTaskTemplate):
             ms.is_imaging_ms = True
             LOG.debug('Setting data_column and origin_ms.')
             ms.origin_ms = self.inputs.ms.origin_ms
-            ms.set_data_column(DataType.TARGET, 'DATA')
+            ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
 
         result.mses.extend(observing_run.measurement_sets)
 

@@ -146,7 +146,7 @@ class MsSplit(basetask.StandardTaskTemplate):
         #    data_type = DataType.RAW
         #el
         if self.inputs.intent == 'TARGET':
-            data_type = DataType.TARGET
+            data_type = DataType.REGCAL_CONTLINE_SCIENCE
         else:
             for t, c in self.inputs.ms.data_column.items():
                 if c == in_column:

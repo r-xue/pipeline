@@ -1177,6 +1177,7 @@ class MeasurementSet(object):
             if not overwrite and dtype in self.data_column.keys():
                 raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
             self.data_column[dtype] = column
+            LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
             return
         # Update Spw
         if spw is not None:

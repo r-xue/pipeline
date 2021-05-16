@@ -7,6 +7,7 @@ import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -17,6 +18,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImListInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     # simple properties with no logic ----------------------------------------------------------------------------------
     calmaxpix = vdp.VisDependentProperty(default=300)
     imagename = vdp.VisDependentProperty(default='')
@@ -194,7 +198,7 @@ class MakeImListInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(MakeImListInputs)
+#api.ImagingMeasurementSetsPreferred.register(MakeImListInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimlist')

@@ -224,7 +224,7 @@ class ImportData(basetask.StandardTaskTemplate):
             if inputs.asimaging:
                 LOG.info('Importing %s as an imaging measurement set', ms.basename)
                 ms.is_imaging_ms = True
-                data_type = DataType.TARGET
+                data_type = DataType.REGCAL_CONTLINE_SCIENCE
 
             # Set data_type
             for col in ['DATA', 'FLOAT_DATA']:

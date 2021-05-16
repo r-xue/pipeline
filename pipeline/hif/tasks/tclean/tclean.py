@@ -5,12 +5,13 @@ import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pipelineqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -26,6 +27,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class TcleanInputs(cleanbase.CleanBaseInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     # simple properties ------------------------------------------------------------------------------------------------
 
     calcsb = vdp.VisDependentProperty(default=False)
@@ -173,7 +177,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(TcleanInputs)
+#api.ImagingMeasurementSetsPreferred.register(TcleanInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_tclean')

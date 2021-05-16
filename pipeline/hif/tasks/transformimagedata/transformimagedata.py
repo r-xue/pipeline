@@ -5,6 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.mstransform import mssplit
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -70,6 +71,8 @@ class TransformimagedataResults(basetask.Results):
 
 
 class TransformimagedataInputs(mssplit.MsSplitInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     clear_pointing = vdp.VisDependentProperty(default=True)
     modify_weights = vdp.VisDependentProperty(default=False)

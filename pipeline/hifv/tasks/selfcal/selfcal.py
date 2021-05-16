@@ -4,6 +4,7 @@ import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -30,6 +31,9 @@ class SelfcalResults(basetask.Results):
 
 
 class SelfcalInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     refantignore = vdp.VisDependentProperty(default='')
     combine = vdp.VisDependentProperty(default='spw,field')
     selfcalmode = vdp.VisDependentProperty(default='VLASS')
