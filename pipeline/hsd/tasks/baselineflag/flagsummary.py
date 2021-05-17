@@ -23,7 +23,8 @@ class SDBLFlagSummary(object):
     """
 
     def __init__(self, context, ms, antid_list, fieldid_list,
-                 spwid_list, pols_list, thresholds, flagRule, userFlag=[]):
+                 spwid_list, pols_list, thresholds, flagRule):
+###                 spwid_list, pols_list, thresholds, flagRule, userFlag=[]):
         """
         Constructor of worker class
         """
@@ -37,7 +38,7 @@ class SDBLFlagSummary(object):
         self.pols_list = pols_list
         self.thres_value = thresholds
         self.flagRule = flagRule
-        self.userFlag = userFlag
+###        self.userFlag = userFlag
         self.bunit = sdutils.get_brightness_unit(self.ms.name, defaultunit='Jy/beam')
 
     def execute(self, dry_run=True):
@@ -125,10 +126,10 @@ class SDBLFlagSummary(object):
 
         return flagSummary
 
-    def _get_parmanent_flag_summary(self, pflag, FlagRule):
-        # FLAG_PERMANENT[0] --- 'WeatherFlag'
+    def _get_permanent_flag_summary(self, pflag, FlagRule):
+        # FLAG_PERMANENT[0] --- 'WeatherFlag' --> not used
         # FLAG_PERMANENT[1] --- 'TsysFlag'
-        # FLAG_PERMANENT[2] --- 'UserFlag'
+        # FLAG_PERMANENT[2] --- 'UserFlag '   --> not used 
         # FLAG_PERMANENT[3] --- 'OnlineFlag' (fixed)
         if pflag[OnlineFlagIndex] == 0:
             return 0
@@ -187,7 +188,7 @@ class SDBLFlagSummary(object):
             tSTAT = DataTable.getcell('STATISTICS', ID)[polid]
 
             # permanent flag
-            Flag = self._get_parmanent_flag_summary(tPFLAG, FlagRule_local)
+            Flag = self._get_permanent_flag_summary(tPFLAG, FlagRule_local)
             PermanentFlag.append(Flag)
             # FLAG_SUMMARY
             Flag *= self._get_stat_flag_summary(tFLAG, FlagRule_local)
