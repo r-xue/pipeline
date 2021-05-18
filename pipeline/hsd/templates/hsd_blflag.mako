@@ -10,8 +10,8 @@ def get_fraction(flagged, total):
    else:
        return '%0.1f%%' % (100.0 * float(flagged) / float(total))
 
-FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
-FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
+FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys before postbl prebl postrmean prermean postrms prerms link")
+FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys before postbl prebl postrmean prermean postrms prerms link")
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -82,8 +82,6 @@ except Exception as e:
 	<li> eliminate rapid variation of spectra using deviation from the running mean (Running mean)</li>
 	<li> eliminate spectra with remarkably large RMS than expected (Expected RMS)</li>
 	<li> eliminate spectra with outlier Tsys value</li>
-	<li> by weather (currently disabled)</li>
-	<li> by user defined threshold (currently disabled)</li>
 </ol>
 For 1.-3., the RMSes of spectra before and after baseline fit are obtained using line free channels.
 </p>

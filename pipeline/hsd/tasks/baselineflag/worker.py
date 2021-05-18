@@ -26,12 +26,10 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
     Inputs for imaging worker
     NOTE: infile should be a complete list of MSes
     """
-###    userFlag = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
 
     def __init__(self, context, clip_niteration, vis, antenna_list, fieldid_list, spwid_list, pols_list, nchan,
                  flagRule, edge=None, rowmap=None):
-###                 flagRule, userFlag=None, edge=None, rowmap=None):
         super(SDBLFlagWorkerInputs, self).__init__()
 
         self.context = context
@@ -44,7 +42,6 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
         self.flagRule = flagRule
         # not used
         self.nchan = nchan
-###        self.userFlag = userFlag
         self.edge = edge
         self.rowmap = rowmap
                                              
@@ -162,7 +159,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         spwid_list = self.inputs.spwid_list
         pols_list = self.inputs.pols_list
         flagRule = self.inputs.flagRule
-###        userFlag = self.inputs.userFlag
         edge = self.inputs.edge
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename)
         datatable = DataTable(name=datatable_name, readonly=False)
@@ -271,9 +267,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 self.flagExpectedRMS(datatable, dt_idx, ms.name, spwid, polid,
                                      FlagRule=flagRule_local, is_baselined=is_baselined)
 
-###                # flag by scantable row ID defined by user
-###                LOG.info( "###@@ worker.SDBLFlagWorker.prepare(): userFlag={}".format(userFlag))
-###                self.flagUser(datatable, dt_idx, polid, UserFlag=userFlag)
                 # Check every flags to create summary flag
                 self.flagSummary(datatable, dt_idx, polid, flagRule_local)
                 t1 = time.time()
@@ -794,21 +787,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                     flags[polid, 6] = 1
                 DataTable.putcell('FLAG', ID, flags)
 
-###    def flagUser(self, DataTable, ids, polid, UserFlag=[]):
-###        # flag by scantable row ID.
-###        for ID in ids:
-###            row = DataTable.getcell('ROW', ID)
-###            # Update User Flag 2008/6/4
-###            try:
-###                Index = UserFlag.index(row)
-###                tPFLAG = DataTable.getcell('FLAG_PERMANENT', ID)
-###                tPFLAG[polid, 2] = 0
-###                DataTable.putcell('FLAG_PERMANENT', ID, tPFLAG)
-###            except ValueError:
-###                tPFLAG = DataTable.getcell('FLAG_PERMANENT', ID)
-###                tPFLAG[polid, 2] = 1
-###                DataTable.putcell('FLAG_PERMANENT', ID, tPFLAG)
-
     def flagSummary(self, DataTable, ids, polid, FlagRule):
         for ID in ids:
             # Check every flags to create summary flag
@@ -830,7 +808,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         if pflag[OnlineFlagIndex] == 0:
             return 0
 
-###        types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
         types = [ 'TsysFlag' ]
         mask = 1
         for idx in range(len(types)):
