@@ -60,6 +60,7 @@ def is_multi_beam(datatable: DataTableImpl) -> bool:
 
 
 def extract_dtrow_list(timetable: List[List[List[int]]], for_small_gap: bool = True) -> List[np.ndarray]:
+    """Convert timetable into datatable row id list."""
     tt_idx = 0 if for_small_gap else 1
     return [np.asarray(x[1]) for x in timetable[tt_idx]]
 

@@ -1,5 +1,5 @@
 """
-Heuristics to detect raster rows and maps
+Heuristics to detect raster rows and maps.
 
 Examine spatial observing pattern in celestial coordinate
 (R.A./Dec. etc.) to distinguish each raster row and each
@@ -23,11 +23,12 @@ LOG = logging.get_logger(__name__)
 
 
 class RasterScanHeuristicsFailure(Exception):
-    """Indicates failure of RasterScanHeuristics"""
+    """Indicates failure of RasterScanHeuristics."""
 
 
 class HeuristicsParameter(object):
-    """Holds tunable parameters for RasterScanHeuristic"""
+    """Holds tunable parameters for RasterScanHeuristic."""
+
     AngleThreshold = 45
     AngleHistogramThreshold = 0.3
     AngleHistogramSparseness = 0.5
@@ -39,8 +40,9 @@ class HeuristicsParameter(object):
 
 
 def get_func_compute_mad() -> Callable:
-    """Return function to compute median absolute deviation (MAD)
-    depending on SciPy version.
+    """Return function to compute median absolute deviation (MAD).
+
+    This absorbs the API difference depending on SciPy version.
 
     Raises:
         NotImplementedError: SciPy version is too old (lower than 1.3.0)
@@ -85,8 +87,10 @@ def generate_histogram(
     left_edge: float,
     right_edge: float
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Generates histogram for given array, arr, with the configuration
-    specified by
+    """Generate histogram for given array.
+
+    Generates histogram for given array, arr, with the configuration specified by
+    the parameters, bin_width, left_edge, and right_edge.
 
     Args:
         arr: data for histogram
@@ -476,7 +480,7 @@ def find_angle_gap(angle_deg: np.ndarray) -> List[int]:
 
 
 def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
-    """Find raster rows using angle gap as primary and distance gap as secondary
+    """Find raster rows using angle gap as primary and distance gap as secondary.
 
     The function tries to find angle gap with tight condition and distance
     gap with loose condition. Then, these gaps are combined by taking union.
@@ -579,6 +583,7 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
 
 class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
+
     def calculate(self, ra: np.ndarray, dec: np.ndarray) -> Tuple[List, List]:
         """Detect gaps that separate individual raster rows and raster maps.
 

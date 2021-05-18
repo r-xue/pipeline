@@ -192,6 +192,7 @@ def generate_position_data_raster(
     ]
 )
 def test_rasterscan_heuristic(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    """Test rasterscan heuristic."""
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
     print()
@@ -252,6 +253,7 @@ def test_rasterscan_heuristic(oneway_row, oneway_map, scan_angle, interval_facto
 
 
 def test_rasterscan_heuristic_fail_psw():
+    """Test rasterscan heuristic (expected to fail)."""
     print()
     print('===================')
     print('TEST CONFIGURATION:')
@@ -276,6 +278,7 @@ def test_rasterscan_heuristic_fail_psw():
     ]
 )
 def test_distance(x, y):
+    """Test distance."""
     d = rasterscan.distance(x[0], y[0], x[1], y[1])
     dx = x[1] - x[0]
     dy = y[1] - y[0]
@@ -284,6 +287,7 @@ def test_distance(x, y):
 
 
 def test_generate_histogram():
+    """Test generate_histogram."""
     arr = np.arange(10) + 0.5
     binw = 1
     left_edge = 0
@@ -307,6 +311,7 @@ def test_generate_histogram():
 
 
 def test_detect_peak():
+    """Test detect_peak."""
     arr = np.zeros(10)
     arr[5] = 3
     result = rasterscan.detect_peak(arr)
@@ -329,6 +334,7 @@ def test_detect_peak():
 
 
 def test_find_histogram_peak():
+    """Test find_histogram_peak."""
     arr = np.zeros(10)
     arr[5] = 3
     result = rasterscan.find_histogram_peak(arr)
@@ -356,6 +362,7 @@ def test_find_histogram_peak():
 
 
 def test_shift_angle():
+    """Test shift_angle."""
     shift = 10
     angle = 90
     result = rasterscan.shift_angle(angle, shift)
@@ -379,6 +386,7 @@ def test_shift_angle():
 
 
 def test_find_most_frequent():
+    """Test find_most_frequent."""
     arr = np.ones(10)
     result = rasterscan.find_most_frequent(arr)
     expected = 1
@@ -396,6 +404,7 @@ def test_find_most_frequent():
 
 
 def test_refine_gaps():
+    """Test refine_gaps."""
     expected = np.arange(0, 101, 10)
 
     # insert unreasonable gap
@@ -415,6 +424,7 @@ def test_refine_gaps():
     ]
 )
 def test_create_range(peaks, width, expected):
+    """Test create_range."""
     angle_min = 0
     angle_max = 360
 
@@ -427,6 +437,7 @@ def test_create_range(peaks, width, expected):
 
 
 def test_find_angle_gap_by_range():
+    """Test find_angle_gap_by_range."""
     arr = np.ones(10) * 10
     ranges = [(0, 20)]
     result = rasterscan.find_angle_gap_by_range(arr, ranges)
@@ -465,6 +476,7 @@ def test_find_angle_gap_by_range():
     ]
 )
 def test_find_distance_gap(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    """Test find_distance_gap."""
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
     print()
@@ -509,6 +521,7 @@ def test_find_distance_gap(oneway_row, oneway_map, scan_angle, interval_factor, 
 
 
 def test_find_angle_gap():
+    """Test find_angle_gap."""
     angle = np.zeros(100)
     angle[9::10] = 90
     gaplist = rasterscan.find_angle_gap(angle)
@@ -550,6 +563,7 @@ def test_find_angle_gap():
     ]
 )
 def test_find_raster_row(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    """Test find_raster_row."""
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
     print()
@@ -602,6 +616,7 @@ def test_find_raster_row(oneway_row, oneway_map, scan_angle, interval_factor, po
     ]
 )
 def test_get_raster_distance(oneway_row, oneway_map, scan_angle, interval_factor):
+    """Test get_raster_distance."""
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
     pointing_error = 0
@@ -669,6 +684,7 @@ def test_get_raster_distance(oneway_row, oneway_map, scan_angle, interval_factor
     ]
 )
 def test_find_raster_gap(oneway_row, oneway_map, scan_angle, interval_factor, pointing_error):
+    """Test find_raster_gap."""
     raster_row = 'one-way' if oneway_row is True else 'round-trip'
     raster_map = 'one-way' if oneway_map is True else 'round-trip'
     print()
