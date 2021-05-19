@@ -175,9 +175,9 @@ def generate_script(context, scriptname, configname):
                                  source=source,
                                  config=os.path.basename(configname))
 
-    config_part, script_part = split_template(s)
+    #config_part, script_part = split_template(s)
 
-    export_template(scriptname, script_part)
-    export_template(configname, config_part)
+    export_template(scriptname, s)
+    #export_template(configname, config_part)
 
     return os.path.exists(scriptname) and os.path.exists(configname)
