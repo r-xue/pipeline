@@ -630,7 +630,7 @@ class T1_3MRenderer(RendererBase):
             task_description = get_task_description(result, context)
             update_flag_table = any([t in task_description for t in flag_update_tasks])
             if update_flag_table:
-                LOG.debug('Updating flaging summary table by results in {}'.format(task_description))
+                LOG.debug('Updating flagging summary table by results in {}'.format(task_description))
                 try:
                     for resultitem in result:
                         vis = os.path.basename(resultitem.inputs['vis'])
