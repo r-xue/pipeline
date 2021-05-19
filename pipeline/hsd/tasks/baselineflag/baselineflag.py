@@ -8,6 +8,7 @@ import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.utils import absolute_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import fieldnames
+from pipeline.h.tasks.applycal.applycal import reshape_flagdata_summary
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from . import worker
@@ -389,6 +390,13 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         results = SDBLFlagResults(task=self.__class__,
                                   success=True,
                                   outcome=outcome)
+        # Calculate flag summary for By Topic Page
+        flagkwargs = ["spw='{!s}' intent='{}' fieldcnt=True mode='summary' name='AntSpw{:0>3}'".format(spw.id, full_intent, spw.id)
+                              for spw in self.inputs.ms.get_spectral_windows()]
+        detailed_flag_job = casa_tasks.flagdata(vis=bl_name, mode='list', inpfile=flagkwargs, flagbackup=False)
+        detailed_flag_result = self._executor.execute(detailed_flag_job)
+        results.flagsummary = reshape_flagdata_summary(detailed_flag_result)
+
         return results
 
     def analyse(self, result):

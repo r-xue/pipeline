@@ -624,7 +624,13 @@ class T1_3MRenderer(RendererBase):
             warning_msgs = utils.get_logrecords(results_list, logging.WARNING)
             tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
-            if 'applycal' in get_task_description(result, context):
+        # Update flag table (search from the last to the first task)
+        for result in context.results[-1::-1]:
+            flag_update_tasks = ['applycal', 'hsd_blflag']
+            task_description = get_task_description(result, context)
+            update_flag_table = any([t in task_description for t in flag_update_tasks])
+            if update_flag_table:
+                LOG.debug('Updating flaging summary table by results in {}'.format(task_description))
                 try:
                     for resultitem in result:
                         vis = os.path.basename(resultitem.inputs['vis'])
@@ -658,6 +664,7 @@ class T1_3MRenderer(RendererBase):
                             flagtable['Source name: '+ field + ', Intents: ' + intents] = fieldtable
 
                         flagtables[ms.basename] = flagtable
+                    break
 
                 except:
                     LOG.debug('No flag summary table available yet from applycal')
