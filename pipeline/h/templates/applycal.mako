@@ -623,7 +623,7 @@ def url_fn_for_amp_vs_freq(vis):
             identified as the field with the highest median channel-averaged amplitude,
             calculated over all science spectral windows. The atmospheric transmission
             for each spectral window is overlayed on each plot in pink.</p>
-	    	
+
         <p>Data are plotted for all antennas and correlations, with different
             spectral windows shown in different colours.</p>
     % else: #Single dish (source = field, so far)

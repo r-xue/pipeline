@@ -110,7 +110,7 @@ The following table lists the correction factors of amplitudes each detector of 
         </tbody>
 </table>
 % else:
-No correction factors file is specified. Correction of amplitude (scaling) between beams is skipped. 
+No correction factors file is specified. Correction of amplitude (scaling) between beams is skipped.
 <table class="table table-bordered table-striped" summary="correction factors">
     <thead>
     % if dovirtual:
@@ -160,7 +160,7 @@ def template_agent_header2(agent):
 	if agent in ('online', 'template'):
 		return '<th>File</th><th>Number of Statements</th>'
 	else:
-		return ''		
+		return ''
 
 def get_template_agents(agents):
 	return [a for a in agents if a in ('online', 'template')]
@@ -201,7 +201,7 @@ $(document).ready(function(){
 </script>
 
 <%
-# these functions are defined in template scope so we have access to the flags 
+# these functions are defined in template scope so we have access to the flags
 # and agents context objects
 
 def total_for_mses(mses, row):
@@ -226,7 +226,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 			flagged += fs.flagged
 			total += fs.total
 		else:
-			# agent was not activated for this MS. 
+			# agent was not activated for this MS.
 			total += flags[ms]['before'][row].total
 	if total is 0:
 		return 'N/A'
@@ -239,7 +239,7 @@ def space_comma(s):
 def format_range(ranges):
     #convert a ranges string (e.g., '0~2') to a string of comma separated numbers (e.g., '0,1,2')
     return str(',').join(map(str, utils.range_to_list(ranges)))
-    
+
 def format_spwmap(spwmap, scispws):
     if not spwmap:
         return ''
@@ -250,7 +250,7 @@ def format_spwmap(spwmap, scispws):
         		spwmap_strings.append("<strong>{0}</strong>".format(spwid))
         	else:
         		spwmap_strings.append(str(spwid))
-        
+
         return ', '.join(spwmap_strings)
 %>
 
@@ -304,7 +304,7 @@ def format_spwmap(spwmap, scispws):
 		</tr>
 		% endfor
 	% endfor
-% endfor		
+% endfor
 	</tbody>
 </table>
 
@@ -335,16 +335,16 @@ def format_spwmap(spwmap, scispws):
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']: 
+%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
 		<tr>
-			<th>${total_keys[k]}</th>		
+			<th>${total_keys[k]}</th>
 	% for agent in agents:
 			<td>${total_for_agent(agent, k)}</td>
 	% endfor
 			<td>${total_for_mses(flags.keys(), k)}</td>
 	% for ms in flags.keys():
 			<td>${total_for_mses([ms], k)}</td>
-	% endfor		
+	% endfor
 		</tr>
 %endfor
 %for ms in flags.keys():
@@ -692,11 +692,11 @@ def format_spwmap(spwmap, scispws):
 		here is the first field for the source. The atmospheric transmission
         for each spectral window is overlayed on each plot in pink.</p>
     % else: #Single dish (source = field, so far)
-		<p>Calibrated amplitude vs frequency plots of each source in each 
+		<p>Calibrated amplitude vs frequency plots of each source in each
 		measurement set. The atmospheric transmission for each spectral window is
         overlayed on each plot in pink.</p>
 	% endif
-		
+
 		<p>Data are plotted for all antennas and correlations, with different
 		spectral windows shown in different colours.</p>
 	</%def>
@@ -740,7 +740,7 @@ def format_spwmap(spwmap, scispws):
 
 	<%def name="preamble()">
 		<p>Calibrated amplitude vs UV distance plots for a representative
-		science field in each measurement set. The science field displayed 
+		science field in each measurement set. The science field displayed
 		here is the first field for the source.</p>
 
 		<p>Data are plotted for all antennas and correlations, with different
@@ -766,7 +766,7 @@ def format_spwmap(spwmap, scispws):
 
 	<%def name="caption_text(plot, source_id)">
 		Source #${source_id}
-		(${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}). 
+		(${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}).
 	</%def>
 
     </%self:plot_group>
