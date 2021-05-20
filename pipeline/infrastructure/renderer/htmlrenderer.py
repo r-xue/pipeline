@@ -783,7 +783,7 @@ class T2_1DetailsRenderer(object):
         num_antennas = len(ms.antennas)
         num_baselines = int(num_antennas * (num_antennas-1) / 2)
         ant_diam_counter = collections.Counter([a.diameter for a in ms.antennas])
-        ant_diam = ["{:d} of {} m".format(n_ant, diam) for diam, n_ant in ant_diam_counter.items()]
+        ant_diam = ["{:d} of {:d} m".format(n_ant, int(diam)) for diam, n_ant in ant_diam_counter.items()]
 
         time_start = utils.get_epoch_as_datetime(ms.start_time)
         time_end = utils.get_epoch_as_datetime(ms.end_time)
