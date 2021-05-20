@@ -209,6 +209,7 @@ class SDBLFlagSummary(object):
             NPpflag[1][N] = tFLAG[2]
             if FlagRule_local['RmsPreFitFlag']['isActive'] and tFLAG[2] == 0:
                 FlaggedRowsCategory[3].append(row)
+            #  RMS flag after baseline fit
             NPpdata[2][N] = tSTAT[1]
             NPpflag[2][N] = tFLAG[1]
             if FlagRule_local['RmsPostFitFlag']['isActive'] and tFLAG[1] == 0:
