@@ -561,7 +561,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             # Always set info on the uncorrected image for plotting
             imageheader.set_miscinfo(name=image_name, spw=inputs.spw, field=inputs.field,
                                      type='image', iter=iter, multiterm=result.multiterm,
-                                     intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                     intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust, weighting=inputs.weighting,
                                      is_per_eb=inputs.is_per_eb,
                                      context=context)
 
@@ -569,7 +569,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             if os.path.exists('%s' % (pbcor_image_name.replace('.image.pbcor', '.image.tt0.pbcor' if result.multiterm else '.image.pbcor'))):
                 imageheader.set_miscinfo(name=pbcor_image_name, spw=inputs.spw, field=inputs.field,
                                          type='pbcorimage', iter=iter, multiterm=result.multiterm,
-                                         intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                         intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust, weighting=inputs.weighting,
                                          is_per_eb=inputs.is_per_eb,
                                          context=context)
                 result.set_image(iter=iter, image=pbcor_image_name)

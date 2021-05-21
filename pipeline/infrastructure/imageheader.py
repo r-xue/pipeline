@@ -51,7 +51,7 @@ def clean_extendable_keys(data, key, num_keys=None):
 
 # Add information to image header
 def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
-                 robust=None, is_per_eb=None, context=None):
+                 robust=None, weighting=None, is_per_eb=None, context=None):
     """
     Define miscellaneous image information
     """
@@ -127,6 +127,9 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
 
             if robust is not None:
                 info['robust'] = robust
+
+            if weighting is not None:
+                info['weight'] = weighting
 
             if is_per_eb is not None:
                 info['per_eb'] = is_per_eb

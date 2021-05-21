@@ -1271,11 +1271,11 @@ finally:
                                 'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
                                 'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
                                 'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
-                                'bmaj', 'bmin', 'bpa', 'robust', 'weighting']:
+                                'bmaj', 'bmin', 'bpa', 'robust', 'weight']:
                         try:
                             fits_keywords[key] = '{}'.format(str(ff[0].header[key]))
                         except:
-                            # Some images do not have beam or weighting keywords
+                            # Some images do not have beam, robust or weight keywords
                             pass
                     ff.close()
                 except Exception as e:
