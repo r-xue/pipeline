@@ -440,7 +440,7 @@ class MeasurementSet(object):
             spws = [w for w in spws if w.num_channels in num_channels] 
 
         # If requested, filter spws by spectral specs.
-        if spectralspecs:
+        if spectralspecs is not None:
             spws = [w for w in spws if w.spectralspec in spectralspecs]
 
         if not science_windows_only:
