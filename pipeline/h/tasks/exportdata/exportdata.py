@@ -38,6 +38,11 @@ import shutil
 import sys
 import tarfile
 
+try:
+    import astropy.io.fits as apfits
+except:
+    pass
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -411,21 +416,21 @@ class ExportData(basetask.StandardTaskTemplate):
         result.sessiondict = sessiondict
 
         # Export calibrator images to FITS
-        calimages_list, calimages_fitslist = self._export_images(inputs.context, True, inputs.calintents,
-                                                                 inputs.calimages, inputs.products_dir)
+        calimages_list, calimages_fitslist, calimages_fitskeywords = self._export_images(inputs.context, True, inputs.calintents,
+                                                                                         inputs.calimages, inputs.products_dir)
         result.calimages=(calimages_list, calimages_fitslist)
 
         # Export science target images to FITS
-        targetimages_list, targetimages_fitslist = self._export_images(inputs.context, False, 'TARGET',
-                                                                       inputs.targetimages, inputs.products_dir)
+        targetimages_list, targetimages_fitslist, targetimages_fitskeywords = self._export_images(inputs.context, False, 'TARGET',
+                                                                                                  inputs.targetimages, inputs.products_dir)
         result.targetimages=(targetimages_list, targetimages_fitslist)
 
         # Export the pipeline manifest file
         # 
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
                                                 inputs.exportmses, calvisdict, inputs.exportcalprods,
-                                                [os.path.basename(image) for image in calimages_fitslist],
-                                                [os.path.basename(image) for image in targetimages_fitslist])
+                                                [os.path.basename(image) for image in calimages_fitslist], calimages_fitskeywords,
+                                                [os.path.basename(image) for image in targetimages_fitslist], targetimages_fitskeywords)
         casa_pipe_manifest = self._export_pipe_manifest(prefix, 'pipeline_manifest.xml', inputs.products_dir,
                                                         pipemanifest)
         result.manifest = os.path.basename(casa_pipe_manifest)
@@ -705,7 +710,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return tarfilename
 
     def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, msvisdict, exportmses, calvisdict,
-                            exportcalprods, calimages, targetimages):
+                            exportcalprods, calimages, calimages_fitskeywords, targetimages, targetimages_fitskeywords):
         """
         Generate the manifest file
         """
@@ -713,12 +718,16 @@ class ExportData(basetask.StandardTaskTemplate):
         # Separate the calibrator images into per ous and per ms images
         # based on the image values of prefix.
         per_ous_calimages = []
+        per_ous_calimages_keywords = []
         per_ms_calimages = []
-        for image in calimages:
+        per_ms_calimages_keywords = []
+        for i, image in enumerate(calimages):
             if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown'):
                 per_ous_calimages.append(image)
+                per_ous_calimages_keywords.append(calimages_fitskeywords[i])
             else:
                 per_ms_calimages.append(image)
+                per_ms_calimages_keywords.append(calimages_fitskeywords[i])
 
         # Initialize the manifest document and the top level ous status.
         pipemanifest = self._init_pipemanifest(oussid)
@@ -760,10 +769,10 @@ class ExportData(basetask.StandardTaskTemplate):
             pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script))
 
         # Add the calibrator images
-        pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator')
+        pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
 
         # Add the target images
-        pipemanifest.add_images(ouss, targetimages, 'target')
+        pipemanifest.add_images(ouss, targetimages, 'target', targetimages_fitskeywords)
 
         return pipemanifest
 
@@ -1230,6 +1239,7 @@ finally:
 
         # Convert to FITS.
         fits_list = []
+        fits_keywords_list = []
         for image_ver in images_list:
             image, version = image_ver
             fitsfile = fitsname(products_dir, image, version)
@@ -1253,10 +1263,29 @@ finally:
                                              stokeslast=True)
                 self._executor.execute(task)
                 fits_list.append(fitsfile)
+                # Fetch header keywords for manifest
+                try:
+                    ff = apfits.open(fitsfile)
+                    fits_keywords = dict()
+                    for key in ['naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
+                                'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
+                                'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
+                                'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
+                                'bmaj', 'bmin', 'bpa', 'robust', 'weighting']:
+                        try:
+                            fits_keywords[key] = '{}'.format(str(ff[0].header[key]))
+                        except:
+                            # Some images do not have beam or weighting keywords
+                            pass
+                    ff.close()
+                except Exception as e:
+                    LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
+                    fits_keywords = {}
+                fits_keywords_list.append(fits_keywords)
 
         new_cleanlist = copy.deepcopy(cleanlist)
 
-        return new_cleanlist, fits_list
+        return new_cleanlist, fits_list, fits_keywords_list
 
     @staticmethod
     def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report):
