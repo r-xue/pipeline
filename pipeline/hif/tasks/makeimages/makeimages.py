@@ -314,6 +314,7 @@ class CleanTaskFactory(object):
             'parallel': parallel,
             'hm_perchanweightdensity': inputs.hm_perchanweightdensity,
             'hm_npixels': inputs.hm_npixels,
+            'restoringbeam': image_heuristics.restoringbeam(),
         })
 
         if 'hm_nsigma' not in task_args:

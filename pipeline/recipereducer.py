@@ -149,9 +149,9 @@ def string_to_val(s):
     """
     try:
         pyobj = ast.literal_eval(s)
-        # seems Tsys wants its groupintent as a string
-        # if type(pyobj) in (list, tuple):
-        #     pyobj = s
+        # PIPE-1030: prevent a string like "1,2,3" from being unexpectedly translated into tuple
+        if type(pyobj) is tuple and s.strip()[0] != '(':
+            pyobj = s
         return pyobj
     except ValueError:
         return s
