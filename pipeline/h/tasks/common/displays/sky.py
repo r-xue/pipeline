@@ -20,21 +20,19 @@
 # *******************************************************************************
 """Module to plot sky images."""
 
-# History:
-
-# package modules
 import copy
 import os
 import string
 
-import matplotlib
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import matplotlib.text as mtext
 import numpy as np
-from matplotlib.offsetbox import HPacker, TextArea, AnnotationBbox
 
-# alma modules
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+
+from matplotlib.offsetbox import AnnotationBbox, HPacker, TextArea
 from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tools
 
@@ -68,7 +66,9 @@ class SkyDisplay(object):
     """Class to plot sky images."""
 
     def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', vmin=None, vmax=None, mom8_fc_peak_snr=None,
-             **imshow_args):
+             dpi=None, **imshow_args):
+
+        self.dpi = dpi
         if not result:
             return []
 
@@ -133,14 +133,25 @@ class SkyDisplay(object):
                 collapsed_new.done()
 
             name = image.name(strippath=True)
-            coordsys = collapsed.coordsys()
-            coord_names = coordsys.names()
-            coordsys.setunits(type='direction', value='arcsec arcsec')
-            coord_units = coordsys.units()
-            coord_refs = coordsys.referencevalue(format='s')
-            beam = collapsed.restoringbeam()
+
+            cs = collapsed.coordsys()
+            coord_names = cs.names()
+            cs.setunits(type='direction', value='arcsec arcsec')
+            coord_units = cs.units()
+            coord_refs = cs.referencevalue(format='s')
+
             brightness_unit = collapsed.brightnessunit()
             miscinfo = collapsed.miscinfo()
+
+            beam_rec = collapsed.restoringbeam()
+            if 'major' in beam_rec:
+                cqa = casa_tools.quanta
+                bpa = cqa.convert(beam_rec['positionangle'], 'deg')['value']
+                bmaj = cqa.convert(beam_rec['major'], 'arcsec')['value']
+                bmin = cqa.convert(beam_rec['minor'], 'arcsec')['value']
+                beam = [bmaj, bmin, bpa]
+            else:
+                beam = None
 
             # don't replot if a file of the required name already exists
             if os.path.exists(plotfile):
@@ -154,54 +165,39 @@ class SkyDisplay(object):
             data = data.reshape(shape[0], shape[1])
             mask = mask.reshape(shape[0], shape[1])
             mdata = np.ma.array(data, mask=mask)
-
             collapsed.done()
 
-            # get x and y axes from coordsys of image
-            xpix = np.arange(shape[0])
-            x = np.zeros(np.shape(xpix))
-            for pix in xpix:
-                world = coordsys.toworld([float(pix), 0, 0, 0])
-                relative = coordsys.torel(world)
-                x[pix] = relative['numeric'][0]
+            # get tl/tr corner positions in offset
+            blc = cs.toworld([-0.5, -0.5, 0, 0])
+            blc = cs.torel(blc)['numeric']
+            trc = cs.toworld([shape[0]-0.5, shape[1]-0.5, 0, 0])
+            trc = cs.torel(trc)['numeric']
 
-            ypix = np.arange(shape[1])
-            y = np.zeros(np.shape(ypix))
-            for pix in ypix:
-                world = coordsys.toworld([0, float(pix), 0, 0])
-                relative = coordsys.torel(world)
-                y[pix] = relative['numeric'][1]
-
-            coordsys.done()
-
-            # remove any incomplete matplotlib plots, if left these can cause
-            # weird errors
+            # remove any incomplete matplotlib plots, if left these can cause weird errors
             plt.close('all')
-            f1 = plt.figure(1)
+            fig, ax = plt.subplots(figsize=(6.4, 4.8))
 
             # plot data
             if 'cmap' not in imshow_args:
-                imshow_args['cmap'] = copy.deepcopy(matplotlib.cm.jet)
+                imshow_args['cmap'] = copy.deepcopy(plt.cm.jet)
             imshow_args['cmap'].set_bad('k', 1.0)
-            plt.imshow(np.transpose(mdata), interpolation='nearest', origin='lower', aspect='equal',
-                       extent=[x[0], x[-1], y[0], y[-1]], **imshow_args)
+            im = ax.imshow(mdata.T, interpolation='nearest', origin='lower', aspect='equal',
+                           extent=[blc[0], trc[0], blc[1], trc[1]], **imshow_args)
 
-            plt.axis('image')
-            lims = plt.axis()
+            ax.axis('image')
+            lims = ax.axis()
 
             # make ticks and labels white
-            ax = plt.gca()
             for line in ax.xaxis.get_ticklines() + ax.yaxis.get_ticklines():
                 line.set_color('white')
             for label in ax.xaxis.get_ticklabels() + ax.yaxis.get_ticklabels():
                 label.set_fontsize(0.5 * label.get_fontsize())
 
             # colour bar
-            cb = plt.colorbar(shrink=0.5)
+            cb = plt.colorbar(im, ax=ax, shrink=0.5)
             fontsize = 8
             for label in cb.ax.get_yticklabels() + cb.ax.get_xticklabels():
                 label.set_fontsize(fontsize)
-
             cb.set_label(brightness_unit, fontsize=fontsize)
 
             # image reference pixel
@@ -216,37 +212,16 @@ class SkyDisplay(object):
                 self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
 
             # plot beam
-            cqa = casa_tools.quanta
-            if 'major' in beam:
-                bpa = beam['positionangle']
-                bpa = cqa.convert(bpa, 'rad')
-                bpa = bpa['value']
-                bpa += np.pi/2.0
-                bmaj = beam['major']
-                bmaj = cqa.convert(bmaj, 'arcsec')
-                bmaj = bmaj['value']
-                bmin = beam['minor']
-                bmin = cqa.convert(bmin, 'arcsec')
-                bmin = bmin['value']
+            if beam is not None:
+                beam_patch = mpatches.Ellipse((lims[0] + 0.1 * (lims[1]-lims[0]), lims[2] + 0.1 * (lims[3]-lims[2])),
+                                              width=beam[1], height=beam[0],
+                                              linestyle='solid', edgecolor='yellow', fill=False,
+                                              angle=-beam[2])
+                ax.add_patch(beam_patch)
 
-                xbeam = []
-                ybeam = []
-                for i in range(37):
-                    theta = i*10.0*np.pi / 180.0
-                    xbeam.append(0.5 * (
-                      bmaj*np.sin(theta)*np.cos(bpa) +
-                      bmin*np.cos(theta)*np.sin(bpa)))
-                    ybeam.append(0.5 * (
-                      -bmaj*np.sin(theta)*np.sin(bpa) +
-                      bmin*np.cos(theta)*np.cos(bpa)))
-
-                xbeam = np.array(xbeam) + lims[0] + 0.1 * (lims[1]-lims[0])
-                ybeam = np.array(ybeam) + lims[2] + 0.1 * (lims[3]-lims[2])
-                plt.plot(xbeam, ybeam, color='yellow')
-
-            # print title
-            plt.xlabel('%s (%s)' % (coord_names[0], coord_units[0]))
-            plt.ylabel('%s (%s)' % (coord_names[1], coord_units[1]))
+            # add xy labels
+            ax.set_xlabel('%s (%s)' % (coord_names[0], coord_units[0]))
+            ax.set_ylabel('%s (%s)' % (coord_names[1], coord_units[1]))
 
             mode_texts = {'mean': 'mean', 'max': 'peak line int. (mom8)', 'center': 'center slice'}
             image_info = {'display': mode_texts[collapseFunction]}
@@ -295,28 +270,57 @@ class SkyDisplay(object):
                          if image_info.get(key) is not None]
                 band = None
 
+            # PIPE-997: plot a 41pix-wide PSF inset if the image is larger than 41*3
+            if 'type' in image_info:
+                if image_info['type'] == 'psf':
+
+                    npix_inset_half = 20
+                    maxfrac_inset = 1./3
+                    npix_inset = npix_inset_half*2.+1
+
+                    if npix_inset < shape[0]*maxfrac_inset or npix_inset < shape[1]*maxfrac_inset:
+                        x0 = shape[0]//2-npix_inset_half
+                        x1 = shape[0]//2+npix_inset_half+1
+                        y0 = shape[1]//2-npix_inset_half
+                        y1 = shape[1]//2+npix_inset_half+1
+                        mdata_sub = mdata[x0:x1, y0:y1]
+                        axinset = ax.inset_axes(bounds=[0.60, 0.02, 0.38, 0.38])
+
+                        blc = cs.toworld([-0.5+x0, -0.5+y0, 0, 0])
+                        blc = cs.torel(blc)['numeric']
+                        trc = cs.toworld([x1-0.5, y1-0.5, 0, 0])
+                        trc = cs.torel(trc)['numeric']
+
+                        axinset.imshow(mdata_sub.T, extent=[blc[0], trc[0], blc[1], trc[1]],
+                                       interpolation='nearest', origin='lower', **imshow_args)
+                        for spine in ['bottom', 'top', 'right', 'left']:
+                            axinset.spines[spine].set_color('white')
+                        axinset.contour(mdata_sub.T, [0.5], colors='k', linestyles='dotted',
+                                        extent=[blc[0], trc[0], blc[1], trc[1]], origin='lower')
+                        axinset.set_xticks([])
+                        axinset.set_yticks([])
+
+                        if beam is not None:
+                            beam_patch = mpatches.Ellipse((0, 0), width=beam[1], height=beam[0],
+                                                          linestyle='solid', edgecolor='k', fill=False,
+                                                          angle=-beam[2])
+                            axinset.add_patch(beam_patch)
+
+            # finally done with ia.coordsys()
+            cs.done()
+
+            # color text box
             txt = HPacker(children=label, align="baseline", pad=0, sep=7)
-
-            bbox = AnnotationBbox(txt, xy=(0.1, 0.5),
-                                  xycoords='data',
+            bbox = AnnotationBbox(txt, xy=(0.5, 1.05),
+                                  xycoords='axes fraction',
                                   frameon=True,
-                                  box_alignment=(0.5, 0.5),  # alignment center, center
-                                  )
-
-            ax = plt.Axes(f1, [0.085, 0.9, 0.7, 0.1])
-            ax.set_frame_on(False)
-            ax.set_axis_off()
+                                  box_alignment=(0.5, 0.5))
             ax.add_artist(bbox)
-            f1.add_axes(ax)
-
-            # make axis fit snugly around image
-            plt.axis([lims[0], lims[1], lims[2], lims[3]])
 
             # save the image
-            plt.savefig(plotfile)
-
-            plt.clf()
-            plt.close(1)
+            fig.tight_layout()
+            fig.savefig(plotfile, bbox_inches='tight', bbox_extra_artists=ax.findobj(mtext.Text), dpi=self.dpi)
+            plt.close(fig)
 
             return plotfile, coord_names, miscinfo.get('field'), band
 
