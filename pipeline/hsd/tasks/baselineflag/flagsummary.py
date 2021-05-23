@@ -6,7 +6,7 @@ import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.datatable import OnlineFlagIndex, TsysFlagIndex
 from pipeline.domain import DataTable
 
 from . import SDFlagPlotter as SDP
@@ -132,12 +132,11 @@ class SDBLFlagSummary(object):
         if pflag[OnlineFlagIndex] == 0:
             return 0
 
-        types = ['TsysFlag']
+        # PIPE-1114: WeatherFlag and UserFlag are removed, only TsysFlag remains.
         mask = 1
-        for idx in range(len(types)):
-            if FlagRule[types[idx]]['isActive'] and pflag[idx] == 0:
-                mask = 0
-                break
+        if FlagRule['TsysFlag']['isActive'] and pflag[TsysFlagIndex] == 0:
+            mask = 0
+
         return mask
 
     def _get_stat_flag_summary(self, tflag, FlagRule):

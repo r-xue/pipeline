@@ -135,7 +135,11 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 	<table class="table table-bordered table-striped " summary="${field}">
 	<thead>
 		<tr>
-			<th colspan="5">Data Selection</th>
+            %if dovirtual:
+                <th colspan="6">Data Selection</th>
+            %else:
+                <th colspan="5">Data Selection</th>
+            %endif
 			<th colspan="2">Flagged Total</th>
 			%for ftype in flag_types[1:]:
 				<th rowspan="2">${ftype}</th>
