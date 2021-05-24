@@ -291,8 +291,12 @@ class SkyDisplay(object):
                         trc = cs.toworld([x1-0.5, y1-0.5, 0, 0])
                         trc = cs.torel(trc)['numeric']
 
+                        # use the same vmin/vmax as the full-size plot.
+                        vmin, vmax = im.get_clim()
                         axinset.imshow(mdata_sub.T, extent=[blc[0], trc[0], blc[1], trc[1]],
-                                       interpolation='nearest', origin='lower', **imshow_args)
+                                       interpolation='nearest', origin='lower', aspect='equal',
+                                       vmin=vmin, vmax=vmax, **imshow_args)
+
                         for spine in ['bottom', 'top', 'right', 'left']:
                             axinset.spines[spine].set_color('white')
                         axinset.contour(mdata_sub.T, [0.5], colors='k', linestyles='dotted',
