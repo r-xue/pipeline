@@ -5,15 +5,13 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_statwt(vis=None, datacolumn=None, pipelinemode=None, overwrite_modelcol=None,
-                statwtmode=None, dryrun=None, acceptresults=None):
+def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalog_search_size=None,
+                      pipelinemode=None, dryrun=None, acceptresults=None):
 
-    ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #
     #                                                                        #
-    ##########################################################################
 
     # create a dictionary containing all the arguments given in the
     # constructor

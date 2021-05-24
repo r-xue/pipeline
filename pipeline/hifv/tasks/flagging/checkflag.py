@@ -1,15 +1,15 @@
 import collections
 import copy
+import os
 
 import numpy as np
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+
+from .displaycheckflag import checkflagSummaryChart
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,17 +30,18 @@ class CheckflagInputs(vdp.StandardInputs):
 
 
 class CheckflagResults(basetask.Results):
-    def __init__(self, jobs=None, summary_stats=None):
+    def __init__(self, jobs=None, summaries=None):
 
         if jobs is None:
             jobs = []
-        if summary_stats is None:
-            summary_stats = {}
+        if summaries is None:
+            summaries = []
 
         super(CheckflagResults, self).__init__()
 
         self.jobs = jobs
-        self.summary_stats = summary_stats
+        self.summaries = summaries
+        self.plots = {}
 
     def __repr__(self):
         s = 'Checkflag (rflag mode) results:\n'
@@ -68,10 +69,13 @@ class Checkflag(basetask.StandardTaskTemplate):
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
 
-        # get the before flag total statistics
-        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
-        summarydict = self._executor.execute(job)
-        summaries.append(summarydict)
+        # get the before-flagging total statistics
+        # PIPE-757: skip before-flagging summary in three VLASS checkflagmodes: bpd-vlass/allcals-vlass/target-vlass
+        # PIPE-502/995: run before-flagging summary in all other checkflagmodes, including: vlass-imaging
+        if not (self.inputs.checkflagmode in ('bpd-vlass', 'allcals-vlass', 'target-vlass')):
+            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
+            summarydict = self._executor.execute(job)
+            summaries.append(summarydict)
 
         # Set up threshold multiplier values for calibrators and targets separately.
         # Xpol are used for cross-hands, Ppol are used for parallel hands. As
@@ -106,9 +110,31 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             if not fieldselect:
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
-                return CheckflagResults()
+                return CheckflagResults(summaries=summaries)
             else:
+                # PIPE-502/995: save before-flagging summary plots and plotting scale for 'vlass-imaging'
+                if self.inputs.checkflagmode == 'vlass-imaging':
+                    LOG.info('Estimating the amplitude range of unflagged data for summary plots')
+                    amp_range = self._get_amp_range()
+                    amp_d = amp_range[1]-amp_range[0]
+                    summary_plotrange = [0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d]
+                    LOG.info('Creating before-flagging summary plots')
+                    plotms_args_overrides = {'plotrange': summary_plotrange,
+                                             'title': 'Amp vs. Frequency (before flagging)'}
+                    summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
+                    
                 extendflag_result = self.do_targetvlass()
+                
+                # PIPE-502/995: attach before-flagging summary plots and plotting scale for 'vlass-imaging'
+                if self.inputs.checkflagmode == 'vlass-imaging':
+                    extendflag_result.plots['before'] = summaryplot_before
+                    extendflag_result.plots['plotrange'] = summary_plotrange
+
+                # PIPE-502/757/995: get after-flagging summary for 'target-vlass'/'vlass-imaging'
+                job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
+                summarydict = self._executor.execute(job)
+                summaries.append(summarydict)
+                extendflag_result.summaries = summaries
                 return extendflag_result
 
         if self.inputs.checkflagmode == 'bpd':
@@ -224,7 +250,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
             summarydict = self._executor.execute(job)
             summaries.append(summarydict)
-            extendflag_result.summary_stats = summaries
+            extendflag_result.summaries = summaries
             return extendflag_result
 
         # Values from pipeline context
@@ -260,7 +286,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         summarydict = self._executor.execute(job)
         summaries.append(summarydict)
 
-        return CheckflagResults([job], summary_stats=summaries)
+        return CheckflagResults([job], summaries=summaries)
 
     def _do_checkflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
                       ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
@@ -603,14 +629,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             self._do_extendflag(field='', scan='', intent='*TARGET*', growtime=100.0, growfreq=100.0)
 
-        # Grow flags
-        if self.inputs.checkflagmode == 'target-vlass':
-            extendflag_result = self._do_extendflag(field='', scan='', intent='*TARGET*',
-                                                    growtime=100.0, growfreq=100.0,
-                                                    growaround=True, flagneartime=True, flagnearfreq=True)
-            return extendflag_result
-        else:
-            return CheckflagResults()
+        return CheckflagResults()
 
     def _check_for_modelcolumn(self):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -622,3 +641,25 @@ class Checkflag(basetask.StandardTaskTemplate):
                 tclean_result = self._executor.execute(job)
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
+
+    def _create_summaryplots(self, suffix='before', plotms_args={}):
+        summary_plots = {}
+        results_tmp = basetask.ResultsList()
+        results_tmp.inputs = self.inputs.as_dict()
+        results_tmp.stage_number = self.inputs.context.task_counter
+        ms = os.path.basename(results_tmp.inputs['vis'])
+        summary_plots[ms] = checkflagSummaryChart(
+            self.inputs.context, results_tmp, suffix=suffix, plotms_args=plotms_args).plot()
+
+        return summary_plots
+
+    def _get_amp_range(self):
+        # get amplitude min/max for the amp. vs. freq summary plots
+        try:
+            with casa_tools.MSReader(self.inputs.vis) as msfile:
+                amp_range = msfile.range(['amplitude'])['amplitude'].tolist()
+            return amp_range
+
+        except:
+            LOG.warn("Unable to obtain the range of data amps.")
+            return [0., 0.]
