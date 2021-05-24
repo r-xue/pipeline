@@ -19,11 +19,15 @@ class T2_4MDetailsRawflagchansRenderer(basetemplates.T2_4MDetailsDefaultRenderer
     def __init__(self, uri='rawflagchans.mako', 
                  description='Flag channels in raw data',
                  always_rerender=False):
-        super(T2_4MDetailsRawflagchansRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
         htmlreports = self._get_htmlreports(pipeline_context, results)
+
+        # calculate which intents to display in the flagging statistics table
+        intents_to_summarise = flagutils.intents_to_summarise(pipeline_context)
+        flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+        flag_table_intents.extend(intents_to_summarise)
 
         plots = {}
         flag_totals = {}
@@ -36,7 +40,8 @@ class T2_4MDetailsRawflagchansRenderer(basetemplates.T2_4MDetailsDefaultRenderer
             plotter = image.ImageDisplay()
             plots[vis] = plotter.plot(context=pipeline_context, results=result, reportdir=dirname)
 
-            flags_for_result = flagutils.flags_for_result(result, pipeline_context)
+            flags_for_result = flagutils.flags_for_result(result, pipeline_context,
+                                                          intents_to_summarise=intents_to_summarise)
             flag_totals = utils.dict_merge(flag_totals, flags_for_result)
 
         # render plots for all EBs in one page
@@ -52,7 +57,8 @@ class T2_4MDetailsRawflagchansRenderer(basetemplates.T2_4MDetailsDefaultRenderer
             'htmlreports': htmlreports,
             'flags': flag_totals,
             'agents': ('before', 'after'),
-            'plots_path': plots_path
+            'plots_path': plots_path,
+            'flag_table_intents': flag_table_intents,
         })
 
     def _get_htmlreports(self, context, results):

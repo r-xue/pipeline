@@ -7,6 +7,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.domain.measures as measures
 import pipeline.domain.singledish as singledish
 from pipeline.infrastructure import casa_tools
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
 from ... import heuristics
 from . import reader
 
@@ -109,6 +110,15 @@ class SDInspection(object):
                                         numpy.array(time_group[0]), numpy.array(time_group[1]),
                                         ms=ms.basename, field_id=field_id)
         datatable.exportdata(minimal=False)
+
+        # PIPE-646 & PIPE-647
+        # generate flag commands (only for ALMA data)
+        is_alma = self.ms.antenna_array.name == 'ALMA'
+        # TODO: heuristics to detect raster scan
+        # apply pointing flag only for OTF raster
+        is_raster = True
+        if is_alma and is_raster:
+            worker.generate_flagcmd()
 
         return reduction_group, org_directions
 
@@ -237,8 +247,11 @@ class SDInspection(object):
         obs_heuristic2 = heuristics.ObservingPattern2()
         time_heuristic2 = heuristics.GroupByTime2()
         merge_heuristic2 = heuristics.MergeGapTables2()
+        raster_heuristic = heuristics.RasterScanHeuristic()
         ra = numpy.asarray(datatable.getcol('RA'))
         dec = numpy.asarray(datatable.getcol('DEC'))
+        offset_ra = numpy.asarray(datatable.getcol('OFS_RA'))
+        offset_dec = numpy.asarray(datatable.getcol('OFS_DEC'))
 #         row = numpy.asarray(datatable.getcol('ROW'))
         elapsed = numpy.asarray(datatable.getcol('ELAPSED'))
         beam = numpy.asarray(datatable.getcol('BEAM'))
@@ -348,29 +361,44 @@ class SDInspection(object):
                         posgrp_id += 1
                     ###
 
-                    ### new GroupByTime with translation ###
-                    time_diff = time_sel[1:] - time_sel[:-1]
-                    update_time = (last_time is None \
-                                   or len(time_diff) != len(last_time) or \
-                                   not all(time_diff == last_time))
-                    if update_time:
-                        (time_table, time_gap) = time_heuristic2(time_sel, time_diff)
-                        last_time = time_diff
+                    raster_heuristic_ok = False
+                    if pattern == 'RASTER':
+                        LOG.info('Performing RasterScanHeuristics for raster scan pattern')
+                        try:
+                            sra_sel = numpy.take(offset_ra, id_list)
+                            sdec_sel = numpy.take(offset_dec, id_list)
+                            merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
+                            raster_heuristic_ok = True
+                        except RasterScanHeuristicsFailure as e:
+                            LOG.warn('RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+                            raster_heuristic_ok = False
 
-                    ### new MergeGapTable with translation ###
-                    if update_pos or update_time:
-                        (merge_table, merge_gap) = merge_heuristic2(time_gap, time_table, pos_gap, beam_sel)
+                    if pattern != 'RASTER' or raster_heuristic_ok is False:
+                        ### new GroupByTime with translation ###
+                        time_diff = time_sel[1:] - time_sel[:-1]
+                        update_time = (last_time is None \
+                                       or len(time_diff) != len(last_time) or \
+                                       not all(time_diff == last_time))
+                        if update_time:
+                            (time_table, time_gap) = time_heuristic2(time_sel, time_diff)
+                            last_time = time_diff
+
+                        ### new MergeGapTable with translation ###
+                        if update_pos or update_time:
+                            (merge_table, merge_gap) = merge_heuristic2(time_gap, time_table, pos_gap, beam_sel)
 
                     ### prepare for Self.Datatable ###
-                    key = ['small', 'large']
-                    grp_list = {key[0]: [], key[1]: []}
-                    for idx in (0, 1):
+                    keys = ['small', 'large']
+                    grp_list = {}
+                    for idx, key in enumerate(keys):
+                        tmp = []
                         table = merge_table[idx]
                         for item in table:
                             for i in item:
                                 timegrp[idx][id_list[i]] = timegrp_id[idx]
-                            grp_list[key[idx]].append(timegrp_id[idx])
+                            tmp.append(timegrp_id[idx])
                             timegrp_id[idx] = timegrp_id[idx] + 1
+                        grp_list[key] = tmp
                         gap = merge_gap[idx]
                         gap_id = []
                         for v in gap:

@@ -1,6 +1,6 @@
 from .imageparams_alma import ImageParamsHeuristicsALMA
 from .imageparams_vlass_quick_look import ImageParamsHeuristicsVlassQl
-from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeCont
+from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeCont, ImageParamsHeuristicsVlassSeContAWPP001, ImageParamsHeuristicsVlassSeContMosaic
 from .imageparams_vlass_single_epoch_taper import ImageParamsHeuristicsVlassSeTaper
 from .imageparams_vlass_single_epoch_cube import ImageParamsHeuristicsVlassSeCube
 from .imageparams_vla import ImageParamsHeuristicsVLA
@@ -16,8 +16,12 @@ class ImageParamsHeuristicsFactory(object):
             return ImageParamsHeuristicsALMA(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-QL':  # quick look
             return ImageParamsHeuristicsVlassQl(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
-        elif imaging_mode == 'VLASS-SE-CONT':  # single epoch continuum
+        elif imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P032']:  # single epoch continuum
             return ImageParamsHeuristicsVlassSeCont(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode == 'VLASS-SE-CONT-AWP-P001': # single epoch continuum, gridder=awproject, wprojplanes=1
+            return ImageParamsHeuristicsVlassSeContAWPP001(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode == 'VLASS-SE-CONT-MOSAIC': # single epoch continuum, gridder=mosaic
+            return ImageParamsHeuristicsVlassSeContMosaic(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-SE-TAPER':  # single epoch taper
             return ImageParamsHeuristicsVlassSeTaper(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-SE-CUBE':  # single epoch cube
