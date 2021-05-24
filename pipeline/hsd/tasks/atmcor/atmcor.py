@@ -196,14 +196,25 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         args = self.inputs.to_casa_args()
         LOG.info('Processing parameter for sdatmcor: %s', args)
         job = casa_tasks.sdatmcor(**args)
-        self._executor.execute(job)
+        task_exec_status = self._executor.execute(job)
+        LOG.info('atmcor: task_exec_status = %s', task_exec_status)
 
         if not os.path.exists(args['outfile']):
             raise Exception('Output MS does not exist. It seems sdatmcor failed.')
 
+        if task_exec_status is None:
+            # no news is good news, this is a sign of success
+            is_successful = True
+        elif task_exec_status is False:
+            # it indicates any problem
+            is_successful = False
+        else:
+            # unexpected, mark as failed
+            is_successful = False
+
         results = SDATMCorrectionResults(
             task=self.__class__,
-            success=True,
+            success=is_successful,
             outcome=args['outfile']
         )
 
