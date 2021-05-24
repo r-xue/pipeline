@@ -21,7 +21,7 @@ FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer):
-    def __init__(self, uri='applycal.mako', 
+    def __init__(self, uri='applycal.mako',
                  description='Apply calibrations from context',
                  always_rerender=False):
         super(T2_4MDetailsSDApplycalRenderer, self).__init__(
@@ -78,16 +78,17 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         })
 
         # CAS-5970: add science target plots to the applycal page
-        (science_amp_vs_freq_summary_plots, uv_max) = self.create_single_dish_science_plots(context, result)
+        (science_amp_vs_freq_summary_plots, science_amp_vs_freq_subpages, uv_max) = self.create_single_dish_science_plots(context, result)
 
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
+            'amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
 
     def create_single_dish_science_plots(self, context, results):
         """
-        Create plots for the science targets, returning two dictionaries of 
+        Create plots for the science targets, returning two dictionaries of
         vis:[Plots].
         MODIFIED for single dish
         """
@@ -139,6 +140,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 amp_vs_freq_detail_plots[vis] = plots
 
         # create detail pages
+        amp_vs_freq_subpage = None
         for d, plotter_cls in (
                 (amp_vs_freq_detail_plots, super_renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer),):
             if d:
@@ -146,5 +148,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
+                amp_vs_freq_subpage = renderer.path
+        amp_vs_freq_subpages = dict((vis, amp_vs_freq_subpage) for vis in amp_vs_freq_detail_plots.keys())
 
-        return amp_vs_freq_summary_plots, max_uvs
+        return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs

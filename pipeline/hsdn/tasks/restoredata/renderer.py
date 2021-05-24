@@ -25,7 +25,7 @@ FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='hsdn_restoredata.mako', 
+    def __init__(self, uri='hsdn_restoredata.mako',
                  description='Restoredata with scale adjustment between beams for NRO FOREST data.',
                  always_rerender=False):
         super(T2_4MDetailsNRORestoreDataRenderer, self).__init__(
@@ -155,7 +155,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 spwid = spw.id
                 vspwid = context.observing_run.real2virtual_spw_id(spwid, ms)
                 ddid = ms.get_data_description(spw=spwid)
-                
+
                 if vspwid not in spw_band:
                     spw_band[vspwid] = spw.band
 
@@ -183,7 +183,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
             LOG.debug('reffile = {0}'.format(reffile));
         stage_dir = os.path.join(context.report_dir, 'stage%s' % ampcal_results.stage_number)
 
-        # input file to correct relative amplitude 
+        # input file to correct relative amplitude
         reffile_copied = None
         if reffile is not None and os.path.exists(reffile):
             shutil.copy2(reffile, stage_dir)
@@ -240,9 +240,10 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         })
 
         # CAS-5970: add science target plots to the applycal page
-        (science_amp_vs_freq_summary_plots, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
+        (science_amp_vs_freq_summary_plots, science_amp_vs_freq_subpages, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
+            'amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
         LOG.debug('ctx = {0}'.format(ctx));
@@ -263,7 +264,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         calto, _ = _get_data_selection_for_plot(context, result, ['TARGET'])
         for field in fields:
             # override field when plotting amp/phase vs frequency, as otherwise
-            # the field is resolved to a list of all field IDs  
+            # the field is resolved to a list of all field IDs
             overrides['field'] = field
 
             plotter = plotter_cls(context, plot_output_dir, calto, 'TARGET', **overrides)
@@ -273,13 +274,13 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         if renderer_cls is not None:
             renderer = renderer_cls(context, result, plots)
             with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())        
+                fileobj.write(renderer.render())
 
         return plots
 
     def create_single_dish_science_plots(self, context, results):
         """
-        Create plots for the science targets, returning two dictionaries of 
+        Create plots for the science targets, returning two dictionaries of
         vis:[Plots].
         MODIFIED for single dish
         """
@@ -327,6 +328,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                                                       ApplycalAmpVsFreqSciencePlotRenderer)
                 amp_vs_freq_detail_plots[vis] = plots
 
+        amp_vs_freq_subpage = None
         for d, plotter_cls in (
                 (amp_vs_freq_detail_plots, ApplycalAmpVsFreqSciencePlotRenderer),):
             if d:
@@ -334,8 +336,10 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 renderer = plotter_cls(context, result, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
+                amp_vs_freq_subpage = renderer.path
+        amp_vs_freq_subpages = dict((vis, amp_vs_freq_subpage) for vis in amp_vs_freq_detail_plots.keys())
 
-        return amp_vs_freq_summary_plots, max_uvs
+        return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs
 
     @staticmethod
     def __get_factor(factor_dict, vis, spwid, ant_name, pol_name):
@@ -389,8 +393,8 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
             for calfrom in calapp.calfrom:
                 caltype = type_map.get(calfrom.caltype, calfrom.caltype)
                 if calfrom.caltype == 'gaincal':
-                    # try heuristics to detect phase-only and amp-only 
-                    # solutions 
+                    # try heuristics to detect phase-only and amp-only
+                    # solutions
                     caltype += self.get_gain_solution_type(calfrom.gaintable)
                 d[calfrom.gaintable] = caltype
         return d
@@ -414,10 +418,10 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         # solve circular import problem by importing at run-time
         from pipeline.infrastructure import casa_tasks
 
-        # get stats on amp solution of gaintable 
-        calstat_job = casa_tasks.calstat(caltable=gaintable, axis='amp', 
+        # get stats on amp solution of gaintable
+        calstat_job = casa_tasks.calstat(caltable=gaintable, axis='amp',
                                          datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)        
+        calstat_result = calstat_job.execute(dry_run=False)
         stats = calstat_result['CPARAM']
 
         # amp solutions of unity imply phase-only was requested
@@ -427,9 +431,9 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                            utils.approx_equal(stats['max'], 1, tol)])
 
         # same again for phase solution
-        calstat_job = casa_tasks.calstat(caltable=gaintable, axis='phase', 
+        calstat_job = casa_tasks.calstat(caltable=gaintable, axis='phase',
                                          datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)        
+        calstat_result = calstat_job.execute(dry_run=False)
         stats = calstat_result['CPARAM']
 
         # phase solutions ~ 0 implies amp-only solution
@@ -459,7 +463,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
             intent_scans[intent] = [str(s.id) for s in ms.scans
                                     if intent in s.intents]
 
-        # while we're looping, get the total flagged by looking in all scans 
+        # while we're looping, get the total flagged by looking in all scans
         intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
         total = collections.defaultdict(dict)
         previous_summary = None
@@ -470,7 +474,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 totalcount = 0
 
                 for i in scan_ids:
-                    # workaround for KeyError exception when summary 
+                    # workaround for KeyError exception when summary
                     # dictionary doesn't contain the scan
                     if i not in summary['scan']:
                         continue
@@ -486,7 +490,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
 
             previous_summary = summary
 
-        return total 
+        return total
 
     def flags_by_science_spws(self, ms, summaries):
         science_spws = ms.get_spectral_windows(science_windows_only=True)
@@ -515,7 +519,7 @@ class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('amp_vs_freq-%s.html' % vis)
 
         super(ApplycalAmpVsFreqPlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context, 
+                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
                 result, plots, title, outfile)
 
 
@@ -527,7 +531,7 @@ class ApplycalPhaseVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('phase_vs_freq-%s.html' % vis)
 
         super(ApplycalPhaseVsFreqPlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context, 
+                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
                 result, plots, title, outfile)
 
 
@@ -575,7 +579,7 @@ class ApplycalPhaseVsUVPlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('phase_vs_uv-%s.html' % vis)
 
         super(ApplycalPhaseVsUVPlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context, 
+                'generic_x_vs_y_spw_ant_plots.mako', context,
                 result, plots, title, outfile)
 
 
@@ -599,7 +603,7 @@ class ApplycalPhaseVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('phase_vs_time-%s.html' % vis)
 
         super(ApplycalPhaseVsTimePlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context, 
+                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
                 result, plots, title, outfile)
 
 
@@ -611,13 +615,13 @@ def _get_data_selection_for_plot(context, result, intent):
     Background: we don't want to create plots for an entire MS, only the data
     selection of interest. Rather than calculate and explicitly pass in the
     data selection of interest, this function calculates the data selection of
-    interest by inspecting the results and extracting the data selection that 
+    interest by inspecting the results and extracting the data selection that
     the calibration is applied to.
 
     :param context: pipeline Context
     :param result: a Result with an .applied property containing CalApplications
     :param intent: pipeline intent
-    :return: 
+    :return:
     """
     spw = _get_calapp_arg(result, 'spw')
     field = _get_calapp_arg(result, 'field')

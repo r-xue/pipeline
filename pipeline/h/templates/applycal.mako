@@ -592,19 +592,9 @@ def format_spwmap(spwmap, scispws):
 
 </%self:plot_group>
 
-<%
-def url_fn_for_amp_vs_freq(vis):
-    url_single_eb = f'science_amp_vs_freq-{vis}.html'
-    url_multi_eb = 'science_amp_vs_freq-all_data.html'
-    if len(science_amp_vs_freq_plots) == 1:
-        url = url_single_eb
-    else:
-        url = url_multi_eb
-    return url
-%>
 
 <%self:plot_group plot_dict="${science_amp_vs_freq_plots}"
-				  url_fn="${url_fn_for_amp_vs_freq}"
+				  url_fn="${lambda x: amp_vs_freq_subpages[x]}"
 				  data_spw="${True}"
 				  data_field="${True}"
                   data_vis="${True}"
