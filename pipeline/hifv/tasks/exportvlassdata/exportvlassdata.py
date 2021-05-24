@@ -197,7 +197,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             fits_list.append(fitsfile)
 
             # Apply position corrections to VLASS QL, MOSAIC and AWP=1 product images (PIPE-587, PIPE-641, PIPE-1134)
-            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-001'):
+            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-P001'):
                 # Mean antenna geographic coordinates
                 observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date
@@ -660,7 +660,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         """
         Update VLASS FITS product header according to PIPE-641.
         Should be called in the following imaging modes:
-            'VLASS-QL', 'VLASS-SE-CONT-MOSAIC', and 'VLASS-SE-CONT-AWP-001'
+            'VLASS-QL', 'VLASS-SE-CONT-MOSAIC', and 'VLASS-SE-CONT-AWP-P001'
 
         The following keywords are changed: DATE-OBS, DATE-END, RADESYS, OBJECT.
         """
