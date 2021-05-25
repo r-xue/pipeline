@@ -9,7 +9,7 @@ import operator
 import os
 import re
 import string
-from typing import Union, List, Dict, Sequence, Optional
+from typing import Collection, Dict, List, Optional, Sequence, Union
 
 import bisect
 import numpy as np
@@ -254,7 +254,7 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     return rxmap
 
 
-def get_spectralspec_to_spwid_map(spws):
+def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
     """
     Returns a dictionary of spectral specs mapped to corresponding spectral
     window IDs for requested list of spectral window objects.
