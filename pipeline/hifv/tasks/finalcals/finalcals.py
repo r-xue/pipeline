@@ -228,14 +228,9 @@ class Finalcals(basetask.StandardTaskTemplate):
         # Run setjy execution per band
         all_sejy_result = self._doall_setjy(calMs, field_spws)
 
-        if self.inputs.context.evla['msinfo'][m.name].fbversion == 'fb1':
-            LOG.info("Using power-law fit results from original hifv_fluxboot task.")
-            powerfit_results = self._do_powerfit(field_spws)
-            powerfit_setjy = self._do_powerfitsetjy1(calMs, powerfit_results)
-        if self.inputs.context.evla['msinfo'][m.name].fbversion == 'fb2':
-            LOG.info("Using power-law fits results from fluxscale and the hifv_fluxboot2 task.")
-            for fs_result in self.inputs.context.evla['msinfo'][m.name].fluxscale_result:
-                powerfit_setjy = self._do_powerfitsetjy2(calMs, fs_result)
+        LOG.info("Using power-law fits results from fluxscale.")
+        for fs_result in self.inputs.context.evla['msinfo'][m.name].fluxscale_result:
+            powerfit_setjy = self._do_powerfitsetjy2(calMs, fs_result)
 
         phaseshortgaincaltable = tableprefix + str(stage_number) + '_6.' + 'phaseshortgaincal.tbl'
         finalampgaincaltable = tableprefix + str(stage_number) + '_7.' + 'finalampgaincal.tbl'
