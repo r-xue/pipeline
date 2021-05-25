@@ -196,8 +196,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
-            # Apply position corrections to VLASS-QL product images (PIPE-587) and fix FITS header (PIPE-641)
-            if img_mode == 'VLASS-QL':
+            # Apply position corrections to VLASS QL, MOSAIC and AWP=1 product images (PIPE-587, PIPE-641, PIPE-1134)
+            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-P001'):
                 # Mean antenna geographic coordinates
                 observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date
@@ -208,8 +208,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 # Correction
                 utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=observatory['m0'],
                                                                obs_lat=observatory['m1'])
-                # PIPE-641: update FITS header for VLASS-QL
-                self._fix_vlass_fits_header(self.inputs.context, fitsfile)
+                # Update FITS header
+                self._fix_vlass_fits_header(self.inputs.context, fitsfile, img_mode)
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
@@ -656,10 +656,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return out_manifest_file
 
-    def _fix_vlass_fits_header(self, context, fitsname):
+    def _fix_vlass_fits_header(self, context, fitsname, img_mode):
         """
         Update VLASS FITS product header according to PIPE-641.
-        Should be called in VLASS-QL imaging mode.
+        Should be called in the following imaging modes:
+            'VLASS-QL', 'VLASS-SE-CONT-MOSAIC', and 'VLASS-SE-CONT-AWP-P001'
 
         The following keywords are changed: DATE-OBS, DATE-END, RADESYS, OBJECT.
         """
@@ -686,9 +687,17 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             if header['radesys'].upper() == 'FK5':
                 header['radesys'] = 'ICRS'
 
-            # Object keyword
-            if header['object'].upper() != header['filnam05'].upper():
-                header['object'] = header['filnam05']
+            # OBJECT
+            # We assume that the FITS name follows the convention described in PIPE-968, and directly
+            # extract the 'OBJECT' name (first FIELD name of the image) from it.
+            filename_components = os.path.basename(fitsname).split('.')
+            object_name = ''
+            if img_mode.startswith('VLASS-QL'):
+                object_name = filename_components[4]
+            if img_mode.startswith('VLASS-SE'):
+                object_name = filename_components[5]
+            if object_name != '' and header['object'].upper() != object_name.upper():
+                header['object'] = object_name
 
             # Save changes and inform log
             hdulist.flush()
