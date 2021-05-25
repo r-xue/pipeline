@@ -369,7 +369,8 @@ def get_mean_temperature(vis):
 
 def get_mean_elevation(context, vis, antenna_id):
     dt_name = context.observing_run.ms_datatable_name
-    basename = os.path.basename(vis.rstrip('/'))
+    ms = context.observing_run.get_ms(vis)
+    basename = os.path.basename(ms.origin_ms)
     with casa_tools.TableReader(os.path.join(dt_name, basename, 'RO')) as tb:
         try:
             t = tb.query('ANTENNA=={}&&SRCTYPE==0'.format(antenna_id))

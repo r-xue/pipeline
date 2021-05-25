@@ -74,7 +74,8 @@ class SDApplycal(Applycal):
         context = self.inputs.context
         # this task uses _handle_multiple_vis framework
         msobj = self.inputs.ms
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, msobj.basename)
+        origin_basename = os.path.basename(msobj.origin_ms)
+        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
         datatable = DataTable()
         datatable.importdata(name=datatable_name, readonly=False)
         datatable._update_flag(msobj.name)

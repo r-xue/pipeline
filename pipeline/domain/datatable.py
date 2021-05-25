@@ -156,13 +156,15 @@ class DataTableIndexer(object):
     """
     @property
     def mses(self):
-        return self.context.observing_run.measurement_sets
+        unique_origin_mses = {ms.origin_ms for ms in self.context.observing_run.measurement_sets}
+        return [self.context.observing_run.get_ms(name=vis) for vis in unique_origin_mses]
 
     def __init__(self, context):
         self.context = context
         self.nrow_per_ms = []
-        for ms in context.observing_run.measurement_sets:
-            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
+        unique_origin_mses = {ms.origin_ms for ms in self.context.observing_run.measurement_sets}
+        for origin_ms in unique_origin_mses:
+            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(origin_ms), 'RO')
             with casa_tools.TableReader(ro_table_name) as tb:
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)
