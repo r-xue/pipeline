@@ -122,8 +122,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
 
     def getJyPerK(self, vis: str) -> dict:
         """
-        getJyPerK returns list of Jy/K conversion factors with their
-        meta data (MS name, antenna name, spwid, and pol string).
+        Return list of Jy/K conversion factors with their meta data.
 
         Args:
             vis: Name of MS
@@ -144,7 +143,6 @@ class ALMAJyPerKDatabaseAccessBase(object):
         filtered = self.filter_jyperk(vis, formatted)
         #LOG.info('filtered = {}'.format(filtered))
         return {'filtered': filtered, 'allsuccess': allsuccess}
-        #return filtered
 
     def get_params(self, vis):
         raise NotImplementedError
@@ -152,25 +150,23 @@ class ALMAJyPerKDatabaseAccessBase(object):
     def access(self, queries):
         raise NotImplementedError
 
-    def get(self, vis: str) -> List:
+    def get(self, vis):
         """
         Access Jy/K DB and return its response.
 
-        Args:
-            vis: Name of MS
-#            vis {str} -- Name of MS
+        Arguments:
+            vis {str} -- Name of MS
 
         Raises:
             urllib2.HTTPError
             urllib2.URLError
 
         Returns:
-            [dict]: Response from the DB as a dictionary
-#            [dict] -- Response from the DB as a dictionary. It should contain
-#                      the following keys:
-#                          'query' -- query data
-#                          'total' -- number of data
-#                          'data'  -- data
+            [dict] -- Response from the DB as a dictionary. It should contain
+                      the following keys:
+                          'query' -- query data
+                          'total' -- number of data
+                          'data'  -- data
         """
         # set URL
         url = self.url
@@ -184,7 +180,6 @@ class ALMAJyPerKDatabaseAccessBase(object):
         # 'query': query data
         # 'total': number of data
         # 'data': response data
-        LOG.info('retval = {}'.format(retval))
         return retval
 
     def format_jyperk(self, vis, jyperk):
@@ -257,13 +252,13 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
 
     def access(self, queries: str) -> dict:
         """
-        Convert queries to response
+        Convert queries to response.
 
         Args:
             queries: Queries to DB
 
         Returns:
-            {dict}: JSON including response from DB
+            Dictionary including response from DB
         """
         data = []
         allsuccess = True
@@ -287,8 +282,7 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
             data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
                          'Polarization': polarization, 'factor': factor})
             allsuccess = allsuccess and response['success']
-            #LOG.info('allsuccess = {}'.format(allsuccess))
-        
+       
         return {'query': '', 'data': data, 'total': len(data), 'allsuccess': allsuccess}
 
     def _aux_params(self):
@@ -307,13 +301,13 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
 
     def access(self, queries: str) -> dict:
         """
-        Convert queries to response
+        Convert queries to response.
 
         Args:
             queries: Queries to DB
 
         Returns:
-            Dictionary consists of response from DB
+            response: Dictionary consists of response from DB
         """
         responses = list(queries)
 
