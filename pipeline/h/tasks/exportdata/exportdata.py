@@ -1276,7 +1276,7 @@ finally:
                             fits_keywords[key] = '{}'.format(str(ff[0].header[key]))
                         except:
                             # Some images do not have beam, robust or weight keywords
-                            pass
+                            fits_keywords[key] = 'N/A'
                     ff.close()
                 except Exception as e:
                     LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
