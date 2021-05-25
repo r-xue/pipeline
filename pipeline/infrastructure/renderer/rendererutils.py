@@ -11,6 +11,8 @@ import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
 
+from typing import Any
+
 LOG = infrastructure.get_logger(__name__)
 
 SCORE_THRESHOLD_ERROR = 0.33
@@ -376,3 +378,53 @@ def get_relative_url(report_dir: str, stage_dir: str, subpage_dir: str,
         return os.path.relpath(subpage_abspath, report_abspath)
     else:
         return None
+
+
+def percent_flagged(flagsummary: Any) -> str:
+    """
+    Method to output flagging percentages neatly.
+    """
+
+    flagged = flagsummary.flagged
+    total = flagsummary.total
+
+    if total is 0:
+        return 'N/A'
+    else:
+        return '%0.1f%%' % (100.0 * flagged / total)
+
+
+_types = {
+    'before': 'Calibrated data before flagging',
+    'after': 'Calibrated data after flagging'
+}
+
+def plot_type(plot: Any) -> str:
+    """
+    Output plot type.
+    """
+
+    return _types[plot.parameters['type']]
+
+
+def summarise_fields(fields: str) -> str:
+    """
+    Output field summary string. List all fields if up to 10,
+    else first 3 fields and last field.
+
+    Args:
+        fields: comma separated list of field names
+
+    Returns:
+        Summary string
+    """
+
+    field_list = utils.numeric_sort(fields.split(','))
+
+    max_fields = 10
+    num_fields = len(field_list)
+    if num_fields <= max_fields:
+        return ', '.join([str(f) for f in field_list])
+
+    field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
+    return field_str

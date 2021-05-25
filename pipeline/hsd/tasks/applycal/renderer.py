@@ -115,7 +115,8 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             plots = self.science_plots_for_result(context,
                                                   result,
                                                   applycal.RealVsFrequencySummaryChart,
-                                                  [brightest_field.id], None)
+                                                  [brightest_field.id], None,
+                                                  preserve_coloraxis=True )
             for plot in plots:
                 plot.parameters['source'] = representative_source
             amp_vs_freq_summary_plots[vis].extend(plots)
@@ -129,16 +130,17 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                     fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
 
                 # Science target detail plots. Note that summary plots go onto the
-                # detail pages; we don't create plots per spw or antenna
+                # detail pages
                 plots = self.science_plots_for_result(context,
                                                       result,
-                                                      applycal.RealVsFrequencySummaryChart,
+                                                      applycal.RealVsFrequencyDetailChart,
                                                       fields, None,
-                                                      super_renderer.ApplycalAmpVsFreqSciencePlotRenderer)
+                                                      preserve_coloraxis=True )
                 amp_vs_freq_detail_plots[vis] = plots
 
+        # create detail pages
         for d, plotter_cls in (
-                (amp_vs_freq_detail_plots, super_renderer.ApplycalAmpVsFreqSciencePlotRenderer),):
+                (amp_vs_freq_detail_plots, super_renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer),):
             if d:
                 all_plots = list(utils.flatten([v for v in d.values()]))
                 renderer = plotter_cls(context, results, all_plots)

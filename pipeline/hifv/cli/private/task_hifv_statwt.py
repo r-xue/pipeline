@@ -5,7 +5,8 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_statwt(vis=None, datacolumn=None, pipelinemode=None, overwrite_modelcol=None, dryrun=None, acceptresults=None):
+def hifv_statwt(vis=None, datacolumn=None, pipelinemode=None, overwrite_modelcol=None,
+                statwtmode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

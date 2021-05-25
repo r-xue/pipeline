@@ -93,6 +93,9 @@
                     <value>VLA</value>
                     <value>VLASS-QL</value>
                     <value>VLASS-SE-CONT</value>
+                    <value>VLASS-SE-CONT-AWP-P001</value>
+                    <value>VLASS-SE-CONT-AWP-P032</value>
+                    <value>VLASS-SE-CONT-MOSAIC</value>
                     <value>VLASS-SE-TAPER</value>
                     <value>VLASS-SE-CUBE</value>
                 </allowed>
@@ -120,6 +123,12 @@
             <param name="mask" type="string">
                 <shortdescription>Used to declare whether to use a predefined mask for tclean.</shortdescription>
                 <description>Used to declare whether to use a predefined mask for tclean.</description>
+                <value/>
+            </param>
+
+            <param name="pbmask" type="float">
+                <shortdescription>Primary beam mask gain level.</shortdescription>
+                <description>Used to declare primary beam gain level for cleaning with primary beam mask (usemask='pb'), used only for VLASS-SE-CONT imaging mode.</description>
                 <value/>
             </param>
 

@@ -2,9 +2,9 @@ import collections
 import os
 
 import numpy as np
-
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
@@ -44,6 +44,11 @@ class CutoutimagesSummary(object):
                     self.result.residual_stats = image.statistics(robust=True)
 
             elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
+
+                with casa_tools.ImageReader(subimagename) as image:
+                    self.result.rms_stats = image.statistics(robust=True)
+                    self.result.RMSmedian = self.result.rms_stats.get('median')[0]
+
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean',
@@ -84,10 +89,12 @@ class CutoutimagesSummary(object):
             elif '.pb.' in subimagename:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
-                                                           collapseFunction='mean'))
+                                                           collapseFunction='mean', vmin=0.2, vmax=1.))
+                plot_wrappers.append(ImageHistDisplay(self.context, subimagename,
+                                                      x_axis='Primary Beam Response', y_axis='Num. of Pixel',
+                                                      reportdir=stage_dir).plot())
                 with casa_tools.ImageReader(subimagename) as image:
                     self.result.pb_stats = image.statistics(robust=True)
-
             else:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
