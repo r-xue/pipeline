@@ -11,6 +11,7 @@ from pipeline.h.tasks.importdata.renderer import T2_4MDetailsImportDataRenderer
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.basetask import Executor
 from pipeline.infrastructure.filenamer import sanitize
+from pipeline.infrastructure.renderer.rendererutils import get_relative_url
 
 LOG = logging.get_logger(__name__)
 
@@ -90,13 +91,11 @@ def make_parang_plots(context, result):
         parang_plots[session_name] = {}
         parang_plots[session_name]['name'] = plot_name
 
-        dst = os.path.join(context.report_dir, stage_id, plot_name)
-
         # create a plot object so we can access (thus generate) the thumbnail
-        plot_obj = logger.Plot(dst)
+        plot_obj = logger.Plot(plot_name)
 
-        fullsize_relpath = os.path.relpath(dst, context.report_dir)
-        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
+        fullsize_relpath = get_relative_url(context.report_dir, stage_id, plot_name)
+        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, os.path.abspath(context.report_dir))
         title = 'Parallactic angle coverage for session {}'.format(session_name)
 
         html_args = {

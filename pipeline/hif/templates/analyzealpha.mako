@@ -15,6 +15,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     <td>${result[0].max_location}</td>
   </tr>
   <tr>
+    <td><b>Restored image peak intensity</b></td>
+    <td>${'{:.4e}'.format(result[0].image_at_max)} Jy/beam</td>
+  </tr>
+  <tr>
     <td><b>Alpha at restored max</b></td>
     <td>${result[0].alpha_and_error}</td>
   </tr>

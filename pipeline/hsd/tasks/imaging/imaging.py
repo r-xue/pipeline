@@ -14,6 +14,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
+from pipeline.hsd.heuristics import rasterscan
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -35,7 +36,7 @@ LOG = infrastructure.get_logger(__name__)
 SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
 # RasterInfo: width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
-RasterInfo = collections.namedtuple('RasterInfo', 'width height scan_angle row_separation row_duration') 
+RasterInfo = collections.namedtuple('RasterInfo', 'width height scan_angle row_separation row_duration')
 
 
 class SDImagingInputs(vdp.StandardInputs):
@@ -991,7 +992,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                         pols, cell, bandwidth, imageunit, datatable_dict):
         """
         Calculate theoretical RMS of an image (PIPE-657).
-        
+
         Parameters:
             infiles: a list of MS names
             antids: a list of antenna IDs, e.g., [3, 3]
@@ -1157,15 +1158,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             c_proj = numpy.sqrt( (cy_val* numpy.sin(ang))**2 + (cx_val*numpy.cos(ang))**2)
             inv_variant_on = effBW * numpy.abs(cx_val * cy_val) * t_on_act / width / height
             inv_variant_off = effBW * c_proj * t_sub_off * t_on_act / t_sub_on / height
-            
+
             for ipol in polids:
-                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off) 
+                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
                 N += 1.0
 
         theoretical_rms = numpy.sqrt(sq_rms)/N
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return cqa.quantity(theoretical_rms, imageunit)
-    
+
 
 def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     """
@@ -1179,47 +1180,75 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
         polid: a polarization ID to process
     Returns a named Tuple
     """
-    _index_list = common.get_index_list_for_ms(datatable, [msobj.name], [antid], [fieldid],
-                                                       [spwid])
-    timestamp = datatable.getcol('TIME').take(_index_list, axis=-1)
-    ra = datatable.getcol('OFS_RA').take(_index_list, axis=-1)
-    dec = datatable.getcol('OFS_DEC').take(_index_list, axis=-1)
-    exposure = datatable.getcol('EXPOSURE').take(_index_list, axis=-1)
-    map_center_dec = datatable.getcol('DEC').take(_index_list, axis=-1).mean()
+    metadata = rasterutil.read_datatable(datatable)
+    pflag = metadata.pflag
+    ra = metadata.ra
+    dec = metadata.dec
+    exposure = datatable.getcol('EXPOSURE')
+    timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=msobj.basename, pol=None)
+    # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
+    # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
+    dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)
+    dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] == True)]
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_s, gap_l = rasterutil.find_time_gap(timestamp) #gap_s stores the last index in a raster row.
-    gap_r = rasterutil.find_raster_gap(timestamp, ra, dec, gap_s) #gap_r stores the last index in a raster iteration.
-    duration = []
-    num_integration = []
-    delta_ra = []
-    delta_dec = []
-    center_ra = []
-    center_dec = []
-    height_list = []
-    first_row = None # RA and Dec of the first raster row
-    
+    gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+
     cqa = casa_tools.quanta
-    map_center_dec = cqa.getvalue(cqa.convert(cqa.quantity(map_center_dec, datatable.getcolkeyword('DEC', 'UNIT')),'rad'))[0]
+    idx_all = numpy.concatenate(dtrow_list)
+    mean_dec = numpy.mean(datatable.getcol('DEC')[idx_all])
+    dec_unit = datatable.getcolkeyword('DEC', 'UNIT')
+    map_center_dec = cqa.getvalue(
+        cqa.convert(cqa.quantity(mean_dec, dec_unit), 'rad')
+    )[0]
     dec_factor = numpy.abs(numpy.cos(map_center_dec))
-    # loop over raster rows.
-    # rasterutil.gap_gen returns 'start index' and 'end index+1' of each raster row
-    for start_idx, end_idx in rasterutil.gap_gen(gap_s):
-        duration.append(numpy.sum(exposure[start_idx:end_idx]))
-        num_integration.append(end_idx-start_idx)
-        delta_ra.append((ra[end_idx-1]-ra[start_idx])*dec_factor)
-        delta_dec.append(dec[end_idx-1]-dec[start_idx])
-        cra = ra[start_idx:end_idx].mean()
-        cdec = dec[start_idx:end_idx].mean()
-        center_ra.append(cra)
-        center_dec.append(cdec)
-        if first_row is None: first_row = (cra, cdec)
-        if end_idx-1 in gap_r:
-            height_list.append( numpy.hypot((first_row[0]-cra)*dec_factor, first_row[1]-cdec) )
-            first_row = None
-    if len(height_list) == 0: # only one iteration of map
-        height_list.append( numpy.hypot((first_row[0]-center_ra[-1])*dec_factor, first_row[1]-center_dec[-1]) )
+
+    ndata = len(dtrow_list)
+    duration = numpy.fromiter(
+        map(lambda x: exposure[x].sum(), dtrow_list),
+        dtype=float, count=ndata
+    )
+    num_integration = numpy.fromiter(
+        map(len, dtrow_list), dtype=int, count=ndata
+    )
+    center_ra = numpy.fromiter(
+        map(lambda x: ra[x].mean(), dtrow_list),
+        dtype=float, count=ndata
+    )
+    center_dec = numpy.fromiter(
+        map(lambda x: dec[x].mean(), dtrow_list),
+        dtype=float, count=ndata
+    )
+    delta_ra = numpy.fromiter(
+        map(lambda x: (ra[x[-1]] - ra[x[0]]) * dec_factor, dtrow_list),
+        dtype=float, count=ndata
+    )
+    delta_dec = numpy.fromiter(
+        map(lambda x: dec[x[-1]] - dec[x[0]], dtrow_list),
+        dtype=float, count=ndata
+    )
+    height_list = []
+    for s, e in zip(gap_r[:-1], gap_r[1:]):
+        start_ra = center_ra[s]
+        start_dec = center_dec[s]
+        end_ra = center_ra[e - 1]
+        end_dec = center_dec[e - 1]
+        height_list.append(
+            numpy.hypot((start_ra - end_ra) * dec_factor, start_dec - end_dec)
+        )
+    LOG.debug('REFACTOR: ant %s, spw %s, field %s', antid, spwid, fieldid)
+    LOG.debug('REFACTOR: map_center_dec=%s, dec_factor=%s', map_center_dec, dec_factor)
+    LOG.debug('REFACTOR: duration=%s', list(duration))
+    LOG.debug('REFACTOR: num_integration=%s', list(num_integration))
+    LOG.debug('REFACTOR: delta_ra=%s', list(delta_ra))
+    LOG.debug('REFACTOR: delta_dec=%s', list(delta_dec))
+    LOG.debug('REFACTOR: center_ra=%s', list(center_ra))
+    LOG.debug('REFACTOR: center_dec=%s', list(center_dec))
+    LOG.debug('REFACTOR: height_list=%s', list(height_list))
+    LOG.debug('REFACTOR: dtrows')
+    for rows in dtrow_list:
+        LOG.debug('REFACTOR:   %s', list(rows))
     center_ra = numpy.array(center_ra)
     center_dec = numpy.array(center_dec)
     row_sep_ra = (center_ra[1:]-center_ra[:-1])*dec_factor
@@ -1247,5 +1276,4 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     LOG.info('- Raster row separation = {}'.format(cqa.tos(raster_info.row_separation)))
     LOG.info('- Raster row scan duration = {}'.format(cqa.tos(cqa.convert(raster_info.row_duration, 's'))))
     return raster_info
-        
-    
+

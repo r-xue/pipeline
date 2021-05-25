@@ -56,6 +56,7 @@ class EditimlistInputs(vdp.StandardInputs):
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
     cfcache = vdp.VisDependentProperty(default='')
+    cfcache_nowb = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
     datacolumn = vdp.VisDependentProperty(default='')
@@ -66,6 +67,7 @@ class EditimlistInputs(vdp.StandardInputs):
     intent = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
     mask = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
     nbin = vdp.VisDependentProperty(default=-1)
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=0)
@@ -86,6 +88,10 @@ class EditimlistInputs(vdp.StandardInputs):
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
     sensitivity = vdp.VisDependentProperty(default=0.0)
+    # VLASS-SE-CONT specific option: if True then perform final clean iteration without mask for selfcal image
+    clean_no_mask_selfcal_image = vdp.VisDependentProperty(default=False)
+    # VLASS-SE-CONT specific option: user settable cycleniter in cleaning without mask in final imaging stage
+    cycleniter_final_image_nomask = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty
     def cell(self):
@@ -134,11 +140,12 @@ class EditimlistInputs(vdp.StandardInputs):
                  cyclefactor=None, cycleniter=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
-                 mask=None, nbin=None, nchan=None, niter=None, nterms=None,
+                 mask=None, pbmask=None, nbin=None, nchan=None, niter=None, nterms=None,
                  parameter_file=None, pblimit=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
-                 uvtaper=None, uvrange=None, width=None, sensitivity=None):
+                 uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_selfcal_image=None,
+                 cycleniter_final_image_nomask=None):
 
         super(EditimlistInputs, self).__init__()
         self.context = context
@@ -161,6 +168,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.intent = intent
         self.gridder = gridder
         self.mask = mask
+        self.pbmask = pbmask
         self.nbin = nbin
         self.nchan = nchan
         self.niter = niter
@@ -182,6 +190,8 @@ class EditimlistInputs(vdp.StandardInputs):
         self.uvrange = uvrange
         self.width = width
         self.sensitivity = sensitivity
+        self.clean_no_mask_selfcal_image = clean_no_mask_selfcal_image
+        self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
 
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
@@ -189,7 +199,7 @@ class EditimlistInputs(vdp.StandardInputs):
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
                             'editmode', 'nsigma', 'pblimit',
-                            'sensitivity', 'conjbeams')
+                            'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image', 'cycleniter_final_image_nomask')
 
         self.keys_to_change = []
         keydict = self.as_dict()
@@ -280,7 +290,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # The default spw range for VLASS is 2~17. hif_makeimages() needs a csv list.
         # We set the imlist_entry spw before the heuristics object because the heursitics class
         # uses it in initialization.
-        if img_mode in ('VLASS-QL', 'VLASS-SE-CONT', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
+        if img_mode in ('VLASS-QL', 'VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
+                        'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
             if not inpdict['spw']:
                 imlist_entry['spw'] = ','.join([str(x) for x in range(2, 18)])
             else:
@@ -328,6 +339,14 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_params=inp.context.imaging_parameters,
                                                             imaging_mode=img_mode)
 
+        # Determine current VLASS-SE-CONT imaging stage (used in heuristics to make decisions)
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 modes as of 01.03.2021
+        if img_mode.startswith('VLASS-SE-CONT'):
+            # If 0 hif_makeimlist results are found, then we are in stage 1
+            th.vlass_stage = utils.get_task_result_count(inp.context, 'hif_makeimages') + 1
+            # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
+            th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
+
         imlist_entry['threshold'] = inpdict['threshold']
         imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])
 
@@ -343,7 +362,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
-        imlist_entry['cfcache'] = inpdict['cfcache']
+        imlist_entry['cfcache'], imlist_entry['cfcache_nowb'] = th.get_cfcaches(inpdict['cfcache'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
@@ -352,6 +371,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
         imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
+        imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
@@ -435,6 +455,21 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
                                                  band=None) if not inpdict['imagename'] else inpdict['imagename']
+
+        # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
+        # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
+        # actual stage number string.
+        # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032,
+        # VLASS-SE-CONT-MOSAIC as of 23.03.2021
+        if img_mode.startswith('VLASS-SE-CONT'):
+            imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
+                                     specmode=imlist_entry['specmode'],
+                                     band=None) if not inpdict['imagename'] else inpdict['imagename']
+            imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
+            # Try to obtain previously computed mask name
+            imlist_entry['mask'] = th.mask(results_list=inp.context.results,
+                                           clean_no_mask=inpdict['clean_no_mask_selfcal_image']) if not inpdict['mask'] \
+                else inpdict['mask']
 
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))

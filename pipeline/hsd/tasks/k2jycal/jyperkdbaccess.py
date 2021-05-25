@@ -1,8 +1,10 @@
+import certifi
 import collections
 import datetime
 import json
 import os
 import re
+import ssl
 import string
 import urllib
 
@@ -82,8 +84,9 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 # try opening url
                 query = '?'.join([url, encoded])
                 LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
+                ssl_context = ssl.create_default_context(cafile=certifi.where())
                 # set timeout to 3min (=180sec)
-                response = urllib.request.urlopen(query, timeout=400)#180)
+                response = urllib.request.urlopen(query, context=ssl_context, timeout=180)
                 retval = json.load(response)
                 if not retval['success']:
                     msg = 'Failed to get a Jy/K factor from DB: {}'.format(retval['error'])

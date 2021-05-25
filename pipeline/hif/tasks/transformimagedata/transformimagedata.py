@@ -52,7 +52,7 @@ class TransformimagedataResults(basetask.Results):
         context.observing_run.measurement_sets.pop(0)
 
         for i in range(0, len(context.clean_list_pending)):
-            outvisname = context.output_dir + '/' + os.path.basename(self.outputvis)
+            outvisname = os.path.join(context.output_dir, os.path.basename(self.outputvis))
             context.clean_list_pending[i]['heuristics'].observing_run.measurement_sets[0].name = outvisname
             newvislist = [self.outputvis]
             context.clean_list_pending[i]['heuristics'].vislist = newvislist
@@ -84,7 +84,6 @@ class TransformimagedataInputs(mssplit.MsSplitInputs):
     def outputvis(self):
 
         output_dir = self.context.output_dir
-
         if isinstance(self._outputvis, vdp.NullMarker):
             # Need this to be in the working directory
             # vis_root = os.path.splitext(self.vis)[0]
@@ -198,8 +197,8 @@ class Transformimagedata(mssplit.MsSplit):
             #result.outputvis = result.vis
 
         # Import the new MS
-        to_import = os.path.abspath(result.outputvis)
-        observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
+        rel_to_import = result.outputvis
+        observing_run = tablereader.ObservingRunReader.get_observing_run(rel_to_import)
 
         # Adopt same session as source measurement set
         for ms in observing_run.measurement_sets:

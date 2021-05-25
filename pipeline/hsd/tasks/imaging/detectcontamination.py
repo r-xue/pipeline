@@ -159,7 +159,7 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
         plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold], "--", color="green")
         plt.text(minabc + w * 0.5, np.nanmean(rms_map) * peak_sn_threshold, "lower 10% level", fontsize=18, color="green")
     plt.text(minabc + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
-    plt.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue")
+    plt.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue", va='top')
     plt.text(minabc + w * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
     plt.legend()
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
@@ -178,15 +178,13 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
 def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
     std_value = np.nanstd(masked_average_spectrum)
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
-        warning_sentence = '#### Warning ####'
         if imageitem is not None:
             field = imageitem.sourcename
             spw = ','.join(map(str, np.unique(imageitem.spwlist)))
-            warning_detail = f' Field {field} Spw {spw}: ' \
+            warning_sentence = f'Field {field} Spw {spw}: ' \
                               'Absorption feature is detected ' \
                               'in the lower S/N area. ' \
                               'Please check calibration result in detail.'
-            warning_sentence = f'{warning_sentence} {warning_detail}'
         LOG.warn(warning_sentence)
 
 
@@ -237,7 +235,7 @@ def detect_contamination(context, imageitem):
     # Making rms 　& Peak SN maps
     rms_map = decide_rms(naxis3, cube_regrid)
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
-    idy, idx = np.unravel_index(np.argmax(peak_sn), peak_sn.shape)
+    idy, idx = np.unravel_index(np.nanargmax(peak_sn), peak_sn.shape)
     LOG.debug(f'idx {idx}, idy {idy}')
     spectrum_at_peak = cube_regrid[:, idy, idx]
 

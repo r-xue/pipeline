@@ -40,6 +40,15 @@ class SelfcalInputs(vdp.StandardInputs):
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
     refantmode = 'strict'
 
+    @selfcalmode.postprocess
+    def selfcalmode(self, unprocessed):
+        if unprocessed not in ['VLASS', 'VLASS-SE']:
+            LOG.warning('Unkown selfcalmode \'%s\' was set. Known modes are [\'VLASS\',\'VLASS-SE\']. '
+                        'Continuing in \'VLASS\' mode.' % unprocessed)
+            return 'VLASS'
+        else:
+            return unprocessed
+
     def __init__(self, context, vis=None, refantignore=None, combine=None, selfcalmode=None, refantmode=None,
                  overwrite_modelcol=None):
         self.context = context
@@ -105,6 +114,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = ','.join([str(spw.id) for spw in spwsobjlist])
 
+        # VLASS mode
         casa_task_args = {'vis': self.inputs.vis,
                           'caltable': self.caltable,
                           'spw': spws,
@@ -118,6 +128,9 @@ class Selfcal(basetask.StandardTaskTemplate):
                           'calmode': 'p',
                           'parang': False,
                           'append': False}
+        # VLASS-SE mode
+        if self.inputs.selfcalmode == 'VLASS-SE':
+            casa_task_args['minsnr'] = 5.0
 
         job = casa_tasks.gaincal(**casa_task_args)
 
@@ -130,14 +143,19 @@ class Selfcal(basetask.StandardTaskTemplate):
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = [int(spw.id) for spw in spwsobjlist]
         numspws = len(m.get_spectral_windows(science_windows_only=False))
-        lowestscispwid = str(min(spws))  # PIPE-101
+        lowestscispwid = min(spws)  # PIPE-101, PIPE-1042: spwmap parameter in applycal must be a list of integers
 
+        # VLASS mode
         applycal_task_args = {'vis': self.inputs.vis,
                               'gaintable': self.caltable,
                               'interp': ['nearestPD'],
-                              'spwmap': [numspws*[lowestscispwid]],
+                              'spwmap': [numspws * [lowestscispwid]],
                               'parang': False,
                               'applymode': 'calonly'}
+        # VLASS-SE mode
+        if self.inputs.selfcalmode == 'VLASS-SE':
+            applycal_task_args['calwt'] = False
+            applycal_task_args['interp'] = ['nearest']
 
         job = casa_tasks.applycal(**applycal_task_args)
 

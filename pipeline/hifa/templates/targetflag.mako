@@ -4,35 +4,6 @@ import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
-
-# method to output flagging percentages neatly
-def percent_flagged(flagsummary):
-    flagged = flagsummary.flagged
-    total = flagsummary.total
-
-    if total is 0:
-        return 'N/A'
-    else:
-        return '%0.1f%%' % (100.0 * flagged / total)
-
-_types = {
-    'before': 'Calibrated data before flagging',
-    'after': 'Calibrated data after flagging'
-}
-
-def plot_type(plot):
-    return _types[plot.parameters['type']]
-
-def summarise_fields(fields):
-    field_list = utils.numeric_sort(fields.split(','))
-
-    max_fields = 10
-    num_fields = len(field_list)
-    if num_fields <= max_fields:
-        return ', '.join([str(f) for f in field_list])
-
-    field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
-    return field_str
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -112,7 +83,7 @@ def summarise_fields(fields):
             <th>${k}</th>
             % for step in ['before','after']:
                 % if flags[ms].get(step) is not None:
-                    <td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
+                    <td>${rendererutils.percent_flagged(flags[ms][step]['Summary'][k])}</td>
                 % else:
                     <td>0.0%</td>
                 % endif
@@ -150,7 +121,7 @@ def summarise_fields(fields):
     <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
 
     <%def name="fancybox_caption(plot)">
-        ${plot_type(plot)}<br>
+        ${rendererutils.plot_type(plot)}<br>
         ${plot.parameters['vis']}<br>
         Spw ${plot.parameters['spw']}<br>
         Intents: ${utils.commafy([plot.parameters['intent']], False)}
@@ -165,7 +136,7 @@ def summarise_fields(fields):
     </%def>
 
     <%def name="caption_text(plot, ptype)">
-        ${plot_type(plot)}.
+        ${rendererutils.plot_type(plot)}.
     </%def>
 
 </%self:plot_group>
@@ -199,11 +170,11 @@ def summarise_fields(fields):
     <%def name="mouseover(plot)">Click to show amplitude vs UV distance for spw ${plot.parameters['spw']}</%def>
 
     <%def name="fancybox_caption(plot)">
-        ${plot_type(plot)}<br>
+        ${rendererutils.plot_type(plot)}<br>
         ${plot.parameters['vis']}<br>
         Spw ${plot.parameters['spw']}<br>
         Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
-        Fields: ${summarise_fields(plot.parameters['field'])}
+        Fields: ${rendererutils.summarise_fields(plot.parameters['field'])}
     </%def>
 
     <%def name="caption_title(plot)">
@@ -212,11 +183,11 @@ def summarise_fields(fields):
 
     <%def name="caption_subtitle(plot)">
         Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
-        Fields: ${summarise_fields(plot.parameters['field'])}
+        Fields: ${rendererutils.summarise_fields(plot.parameters['field'])}
     </%def>
 
     <%def name="caption_text(plot, ptype)">
-        ${plot_type(plot)}.
+        ${rendererutils.plot_type(plot)}.
     </%def>
 
 </%self:plot_group>

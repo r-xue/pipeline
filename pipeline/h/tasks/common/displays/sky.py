@@ -68,7 +68,10 @@ class SkyDisplay(object):
     """Class to plot sky images."""
 
     def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', vmin=None, vmax=None, mom8_fc_peak_snr=None,
-             **imshow_args):
+             dpi=None, **imshow_args):
+
+        self.dpi = dpi
+
         if not result:
             return []
 
@@ -177,7 +180,10 @@ class SkyDisplay(object):
             # remove any incomplete matplotlib plots, if left these can cause
             # weird errors
             plt.close('all')
-            f1 = plt.figure(1)
+            if self.dpi:
+                f1 = plt.figure(1, dpi=self.dpi)
+            else:
+                f1 = plt.figure(1)
 
             # plot data
             if 'cmap' not in imshow_args:

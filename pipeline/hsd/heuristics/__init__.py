@@ -12,3 +12,4 @@ from .fragmentation import FragmentationHeuristics
 from .tsysspwmap import TsysSpwMapHeuristics
 from .MaskDeviation import MaskDeviationHeuristic
 from .baselineparamconfig import CubicSplineFitParamConfig
+from .rasterscan import RasterScanHeuristic

@@ -71,6 +71,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
         for imageitem in imlist:
             if imageitem['multiterm']:
                 imagenames.extend(glob.glob(imageitem['imagename'] + '.pbcor.tt0'))
+                imagenames.extend(glob.glob(imageitem['imagename'] + '.pbcor.tt1'))
             else:
                 imagenames.extend(glob.glob(imageitem['imagename'] + '.pbcor'))
 
