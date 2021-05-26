@@ -1,3 +1,4 @@
+import contextlib
 import copy
 import math
 import os
@@ -60,56 +61,38 @@ class SDBLFlagWorkerResults(common.SingleDishResults):
 
 
 class BLFlagTableContainer(object):
-    def __init__(self):
-        # New table class instances are required for parallel operation of two tables.
-        self.tb1 = casa_tools._logging_table_cls()
-        self.tb2 = casa_tools._logging_table_cls()
-        self._init()
-
-    def __get_ms_attr(self, attr):
-        if self.ms is None:
-            return None
-        else:
-            return getattr(self.ms, attr)
+    def __init__(self, tb1, tb2):
+        self.tb1 = tb1
+        self.tb2 = tb2
 
     @property
     def calvis(self):
-        return self.__get_ms_attr('name')
+        return self.tb1.name()
 
     @property
     def blvis(self):
-        return self.__get_ms_attr('work_data')
+        if self.tb2 is None:
+            return None
+        else:
+            return self.tb2.name()
 
-    @property
-    def is_baselined(self):
-        return getattr(self, '_is_baselined', self.ms is not None and (self.calvis != self.blvis))
 
-    @is_baselined.setter
-    def is_baselined(self, value):
-        self._is_baselined = value
-
-    def _init(self):
-        self.ms = None
-
-    def close(self):
-        if self.ms is not None:
-            self.tb1.close()
-
-            if self.is_baselined:
-                self.tb2.close()
-
-            self._init()
-
-    def open(self, ms, nomodify=False):
-        if self.ms is None or self.ms != ms:
-            self.close()
-
-            self.ms = ms
-
-            self.tb1.open(self.calvis, nomodify=nomodify)
-
-            if self.is_baselined:
-                self.tb2.open(self.blvis, nomodify=nomodify)
+@contextlib.contextmanager
+def open_cal_bl_tables(ms, is_baselined):
+    tb1 = casa_tools._logging_table_cls()
+    if is_baselined:
+        tb2 = casa_tools._logging_table_cls()
+    else:
+        tb2 = None
+    try:
+        tb1.open(ms.name, nomodify=False)
+        if tb2 is not None:
+            tb2.open(ms.work_data, nomodify=False)
+        yield BLFlagTableContainer(tb1, tb2)
+    finally:
+        tb1.close()
+        if tb2 is not None:
+            tb2.close()
 
 
 class SDBLFlagWorker(basetask.StandardTaskTemplate):
@@ -137,16 +120,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         return col_found
 
     def prepare(self):
-        container = BLFlagTableContainer()
-
-        try:
-            results = self._prepare(container)
-        finally:
-            container.close()
-
-        return results
-
-    def _prepare(self, container):
         """
         Invoke single dish flagging based on statistics of spectra.
         Iterates over antenna and polarization for a certain spw ID
@@ -155,7 +128,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
         context = self.inputs.context
         clip_niteration = self.inputs.clip_niteration
-        #vis = self.inputs.vis
         ms = self.inputs.ms
         antid_list = self.inputs.antenna_list
         fieldid_list = self.inputs.fieldid_list
@@ -221,33 +193,32 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             flagRule_local = copy.deepcopy(flagRule)
             # Set is_baselined flag when processing not yet baselined data.
             is_baselined = (_get_iteration(context.observing_run.ms_reduction_group, ms, antid, fieldid, spwid) > 0)
+            LOG.info(f'is_baselined = {is_baselined}')
 
             # open table via container
-            container.is_baselined = is_baselined
-            container.open(ms)
+            with open_cal_bl_tables(ms, is_baselined) as container:
+                if not is_baselined:
+                    LOG.warn("No baseline subtraction operated to {} Field {} Antenna {} Spw {}. Skipping flag by post fit"
+                             " spectra.".format(ms.basename, fieldid, antid, spwid))
+                    # Reset MASKLIST for the non-baselined DataTable
+                    self.ResetDataTableMaskList(datatable, TimeTable)
+                    # force disable post fit flagging (not really effective except for flagSummary)
+                    flagRule_local['RmsPostFitFlag']['isActive'] = False
+                    flagRule_local['RunMeanPostFitFlag']['isActive'] = False
+                    flagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
+                    # include MASKLIST to cache
+                    with_masklist = True
+                elif rowmap is None:
+                    rowmap = sdutils.make_row_map_for_baselined_ms(ms, container)
+                LOG.debug("FLAGRULE = %s" % str(flagRule_local))
 
-            if not is_baselined:
-                LOG.warn("No baseline subtraction operated to {} Field {} Antenna {} Spw {}. Skipping flag by post fit"
-                         " spectra.".format(ms.basename, fieldid, antid, spwid))
-                # Reset MASKLIST for the non-baselined DataTable
-                self.ResetDataTableMaskList(datatable, TimeTable)
-                # force disable post fit flagging (not really effective except for flagSummary)
-                flagRule_local['RmsPostFitFlag']['isActive'] = False
-                flagRule_local['RunMeanPostFitFlag']['isActive'] = False
-                flagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
-                # include MASKLIST to cache
-                with_masklist = True
-            elif rowmap is None:
-                rowmap = sdutils.make_row_map_for_baselined_ms(ms, container)
-            LOG.debug("FLAGRULE = %s" % str(flagRule_local))
-
-            # Calculate Standard Deviation and Diff from running mean
-            t0 = time.time()
-            ddobj = ms.get_data_description(spw=spwid)
-            polids = [ddobj.get_polarization_id(pol) for pol in pollist]
-            dt_idx, tmpdict, _ = self.calcStatistics(datatable, container, nchan, nmean,
-                                                     TimeTable, polids, edge,
-                                                     is_baselined, rowmap, deviation_mask)
+                # Calculate Standard Deviation and Diff from running mean
+                t0 = time.time()
+                ddobj = ms.get_data_description(spw=spwid)
+                polids = [ddobj.get_polarization_id(pol) for pol in pollist]
+                dt_idx, tmpdict, _ = self.calcStatistics(datatable, container, nchan, nmean,
+                                                         TimeTable, polids, edge,
+                                                         is_baselined, rowmap, deviation_mask)
             t1 = time.time()
             LOG.info('Standard Deviation and diff calculation End: Elapse time = %.1f sec' % (t1 - t0))
 
@@ -322,8 +293,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
     def calcStatistics(self, DataTable, container, NCHAN, Nmean, TimeTable, polids, edge, is_baselined, rowmap,
                        deviation_mask=None):
-        DataIn = container.calvis
-        DataOut = container.blvis
         # Calculate Standard Deviation and Diff from running mean
         NROW = len([series for series in utils.flatten(TimeTable)])//2
         # parse edge
@@ -341,14 +310,14 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
         tbIn = container.tb1
         tbOut = container.tb2
-        #tbIn.open(DataIn)
         datacolIn = self._search_datacol(tbIn)
         if not datacolIn:
+            DataIn = os.path.basename(container.calvis.rstrip('/'))
             raise RuntimeError('Could not find any data column in %s' % DataIn)
         if is_baselined:
-            #tbOut.open(DataOut)
             datacolOut = self._search_datacol(tbOut)
             if not datacolOut:
+                DataOut = os.path.basename(container.blvis.rstrip('/'))
                 raise RuntimeError('Could not find any data column in %s' % DataOut)
 
         # Create progress timer
