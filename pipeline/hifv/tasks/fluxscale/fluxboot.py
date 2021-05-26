@@ -180,8 +180,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                 LOG.info('Unable to get band from spw id - using reference frequency instead')
                                 EVLA_band = find_EVLA_band(reference_frequency)
 
-                            LOG.info("Center freq for spw " + str(spw.id) + " = " + str(
-                                reference_frequency) + ", observing band = " + EVLA_band)
+                            LOG.info("Center freq for spw " + str(spw.id) + " = " + str(reference_frequency)
+                                     + ", observing band = " + EVLA_band)
 
                             model_image = standard_source_names[i] + '_' + EVLA_band + '.im'
 
@@ -194,12 +194,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                 job = self._fluxgains_setjy(calMs, str(m.get_fields()[myfield].id), str(spw.id),
                                                             model_image, -1)
                                 jobs.append(job)
-
-                                # result.measurements.update(setjy_result.measurements)
                             except Exception as e:
                                 # something has gone wrong, return an empty result
-                                LOG.error('Unable merge setjy jobs for flux scaling operation for field ' + str(
-                                    myfield) + ', spw ' + str(spw.id))
+                                LOG.error('Unable merge setjy jobs for flux scaling operation for field '
+                                          + str(myfield) + ', spw ' + str(spw.id))
                                 LOG.exception(e)
 
                         LOG.info("Merging flux scaling operation for setjy jobs for " + self.inputs.vis)
@@ -208,8 +206,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             try:
                                 self._executor.execute(job)
                             except Exception as e:
-                                LOG.warn("SetJy issue with field id=" + str(job.kw['field']) + " and spw=" + str(
-                                    job.kw['spw']))
+                                LOG.warn("SetJy issue with field id=" + str(job.kw['field']) + " and spw="
+                                         + str(job.kw['spw']))
 
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
@@ -222,7 +220,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                                     spw='', refantignore=refantignore)
 
             RefAntOutput = refantobj.calculate()
-
             refAnt = ','.join(RefAntOutput)
 
             LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
@@ -355,9 +352,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
         fluxcalfields = flux_field_select_string
         fluxcalfieldlist = str.split(fluxcalfields, ',')
 
-        phase_field_select_string = context.evla['msinfo'][m.name].phase_field_select_string
-        phasecalfieldlist = str.split(phase_field_select_string, ',')
-
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
@@ -409,9 +403,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                              'fitorder': fitorder}
 
                 job = casa_tasks.fluxscale(**task_args)
-
                 fs_result = self._executor.execute(job)
-
                 fluxscale_result.append(fs_result)
 
         return fluxscale_result
@@ -421,10 +413,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
         :param spwlist: list of string values for spw ids
         :return: fitorder
         """
-
-        # if self.inputs.fitorder > -1:
-        #     LOG.info("User defined fitorder for fluxscale will be fitorder={!s}.".format(self.inputs.fitorder))
-        #     return self.inputs.fitorder
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2bandall = m.get_vla_spw2band()
@@ -523,8 +511,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
             spwkeys = [int(spw_id) for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
 
             # fluxscale results  give all spectral windows
-            # Take the intersection of the domain object spws and fluxscale results to match the earlier setjy execution
-            # in this task
+            # Take the intersection of the domain object spws and fluxscale results to
+            # match the earlier setjy execution in this task
 
             scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
             newspwkeys = [str(spwint) for spwint in list(set(scispws) & set(spwkeys))]
@@ -547,7 +535,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
         results = []
         weblog_results = []
         spindex_results = []
-        spindex_results_global = []
 
         for source in unique_sources:
             indices = []
@@ -594,11 +581,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / np.log(10.0))
                             uspws.append(spws[indices[ii]])
 
-                if len(lfds) < 2:
-                    fitcoeff = [lfds[0], 0.0, 0.0, 0.0, 0.0]
-                else:
-                    fitcoeff = fluxscale_result[fieldid]['spidx']
-
                 freqs = fluxscale_result['freq']
                 fitflx = fluxscale_result[fieldid]['fitFluxd']   # Fiducial flux for entire fit
                 fitflxAtRefFreq = fluxscale_result[fieldid]['fitFluxd']
@@ -644,12 +626,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 for i in range(len(spidx)):
                     logfiducialflux += spidx[i] * (np.log10(bandcenterfreq/fitreff)) ** i
 
-                fitflx = 10.0 ** logfiducialflux
                 fitflx = fluxscale_result[fieldid]['fitFluxd']
-
-                # Compute flux errors
-                flxerrslist = [fluxscale_result[fieldid][str(spwid)]['fluxdErr'][0] for spwid in uspws]
-                fitflxerr = np.mean(flxerrslist)
                 fitflxerr = fitflxAtRefFreqErr
 
                 # Again, single spectral window
@@ -783,8 +760,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     SS = fittedfluxd[ii]
                     freq = freqs[ii]/1.e9
                     data = 10.0 ** lfds[ii]
-
-                    # fderr = lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / 2.303)
                     fderr = lerrs[ii] * (10 ** lfds[ii]) / np.log10(np.e)
 
                     LOG.info('    ' + str(freq) + '  ' + str(data) + '  ' + str(fderr) + '  ' + str(SS))
@@ -795,8 +770,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                            'fitteddata': str(SS)})
 
             # If multiple bands, then add another a special entry with the global fit
-            freqs = fluxscale_result['freq']
-            fitflx = fluxscale_result[fieldid]['fitFluxd']  # Fiducial flux for entire fit
             fitflxAtRefFreq = fluxscale_result[fieldid]['fitFluxd']
             fitflxAtRefFreqErr = fluxscale_result[fieldid]['fitFluxdErr']
             fitreff = fluxscale_result[fieldid]['fitRefFreq']
@@ -833,24 +806,24 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             if len(unique_bands) > 1:
                 spindex_results.append({'source': source,
-                                               'band': 'Multi',
-                                               'bandcenterfreq': fluxscale_result[fieldid]['fitRefFreq'],
-                                               'sortingfreq': 0.0,
-                                               'spix': str(spix),
-                                               'spixerr': str(spixerr),
-                                               'SNR': SNR,
-                                               'fitflx': fitflxAtRefFreq,
-                                               'fitflxerr': fitflxAtRefFreqErr,
-                                               'curvature': str(curvature),
-                                               'curvatureerr': str(curvatureerr),
-                                               'gamma': str(gamma),
-                                               'gammaerr': str(gammaerr),
-                                               'delta': str(delta),
-                                               'deltaerr': str(deltaerr),
-                                               'fitorder': str(fitorderused),
-                                               'reffreq': str(reffreq),
-                                               'fitflxAtRefFreq': str(fitflxAtRefFreq),
-                                               'fitflxAtRefFreqErr': str(fitflxAtRefFreqErr)})
+                                        'band': 'Multi',
+                                        'bandcenterfreq': fluxscale_result[fieldid]['fitRefFreq'],
+                                        'sortingfreq': 0.0,
+                                        'spix': str(spix),
+                                        'spixerr': str(spixerr),
+                                        'SNR': SNR,
+                                        'fitflx': fitflxAtRefFreq,
+                                        'fitflxerr': fitflxAtRefFreqErr,
+                                        'curvature': str(curvature),
+                                        'curvatureerr': str(curvatureerr),
+                                        'gamma': str(gamma),
+                                        'gammaerr': str(gammaerr),
+                                        'delta': str(delta),
+                                        'deltaerr': str(deltaerr),
+                                        'fitorder': str(fitorderused),
+                                        'reffreq': str(reffreq),
+                                        'fitflxAtRefFreq': str(fitflxAtRefFreq),
+                                        'fitflxAtRefFreqErr': str(fitflxAtRefFreqErr)})
 
         self.spix = spix
         self.curvature = curvature
@@ -892,16 +865,11 @@ class Fluxboot(basetask.StandardTaskTemplate):
                          'standard': 'manual',
                          'usescratch': True}
 
-            # job = casa_tasks.setjy(**task_args)
             jobs_calMs.append(casa_tasks.setjy(**task_args))
-
-            # self._executor.execute(job)
 
             # Run on the ms
             task_args['vis'] = self.inputs.vis
             jobs_vis.append(casa_tasks.setjy(**task_args))
-            # job = casa_tasks.setjy(**task_args)
-            # self._executor.execute(job)
 
             if abs(self.spix) > 5.0:
                 LOG.warn("abs(spix) > 5.0 - Fail")
@@ -947,12 +915,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     fluxflag=False, vlassmode=False, spw=''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        # minBL_for_cal = context.evla['msinfo'][m.name].minBL_for_cal
         minBL_for_cal = m.vla_minbaselineforcal()
-
-        # Do this to get the reference antenna string
-        # temp_inputs = gaincal.GTypeGaincal.Inputs(context)
-        # refant = temp_inputs.refant.lower()
 
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
@@ -1004,7 +967,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     task_args['append'] = True
 
                 job = casa_tasks.gaincal(**task_args)
-
                 self._executor.execute(job)
 
             return True
