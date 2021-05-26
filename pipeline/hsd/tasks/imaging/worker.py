@@ -126,9 +126,12 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         del datatable
 
     if len(ra0) == 0:
-        antenna_name = ref_msobj.antennas[ant_list[0]].name
-        LOG.warn('No valid data for source %s antenna %s spw %s in %s. Image will not be created.' % (
-        source_name, antenna_name, ref_spw, ref_msobj.basename))
+        antenna_id = ant_list[0]
+        if antenna_id is None:
+            LOG.warn('No valid data for source %s spw %s in %s. Image will not be created.', source_name, ref_spw, ref_msobj.basename)
+        else:
+            antenna_name = ref_msobj.antennas[antenna_id].name
+            LOG.warn('No valid data for source %s antenna %s spw %s in %s. Image will not be created.', source_name, antenna_name, ref_spw, ref_msobj.basename)
         return False
 
     if outref is None:
