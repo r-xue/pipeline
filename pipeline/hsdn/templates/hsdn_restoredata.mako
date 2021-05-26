@@ -144,11 +144,6 @@ agent_description = {
 }
 
 total_keys = {
-	'TOTAL'        : 'All Data',
-	'SCIENCE SPWS' : 'Science Spectral Windows',
-	'BANDPASS'     : 'Bandpass',
-	'AMPLITUDE'    : 'Flux',
-	'PHASE'        : 'Phase',
 	'TARGET'       : 'Target (science spws)'
 }
 
@@ -234,7 +229,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 		return '%0.1f%%' % (100.0 * flagged / total)
 
 def space_comma(s):
-	return ', '.join(string.split(s, ','))
+	return ', '.join(s.split(','))
 
 def format_range(ranges):
     #convert a ranges string (e.g., '0~2') to a string of comma separated numbers (e.g., '0,1,2')
@@ -335,7 +330,7 @@ def format_spwmap(spwmap, scispws):
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']: 
+%for k in ['TARGET']: 
 		<tr>
 			<th>${total_keys[k]}</th>		
 	% for agent in agents:

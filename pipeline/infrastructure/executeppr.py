@@ -25,13 +25,6 @@ from . import casa_tools
 from . import exceptions
 from . import task_registry
 
-# Make sure CASA exceptions are rethrown
-try:
-    default__rethrow_casa_exceptions = __rethrow_casa_exceptions=True
-except Exception as e:
-    default__rethrow_casa_exceptions = False
-__rethrow_casa_exceptions=True
-
 
 def executeppr(pprXmlFile: str, importonly: bool = True,
                breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
@@ -109,8 +102,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             context = Pipeline(context='last').context
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-                                        output_dir=workingDir).context
+            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:
@@ -256,10 +248,11 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             for keyword, value in task_args.items():
                 casa_tools.post_to_log("    Parameter: " + keyword + " = " + str(value), echo_to_screen=echo_to_screen)
 
-            if pipeline_task_name == 'ImportData' or pipeline_task_name == 'RestoreData' or pipeline_task_name == 'NRORestoreData' \
-                    or pipeline_task_name == 'ALMAImportData' or pipeline_task_name == 'ALMARestoreData'\
-                    or pipeline_task_name == 'VLAImportData' or pipeline_task_name == 'VLARestoreData'\
-                    or pipeline_task_name == 'SDImportData' or pipeline_task_name == 'NROImportData':
+            if pipeline_task_name in ('ImportData', 'RestoreData',
+                                      'ALMAImportData', 'ALMARestoreData',
+                                      'VLAImportData','VLARestoreData',
+                                      'SDImportData', 'SDRestoreData',
+                                      'NROImportData', 'NRORestoreData'):
                 task_args['vis'] = files
                 task_args['session'] = sessions
 
@@ -318,8 +311,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             # Save the context
             context.save()
 
-            # Restore setting for rethrowing CASA exceptions.
-            __rethrow_casa_exceptions = default__rethrow_casa_exceptions
             casa_tools.set_log_origin(fromwhere='')
 
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
@@ -331,7 +322,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
 
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
 
-    __rethrow_casa_exceptions = default__rethrow_casa_exceptions
     casa_tools.set_log_origin(fromwhere='')
 
     return

@@ -5,6 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import absolute_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import fieldnames
 from pipeline.infrastructure import casa_tasks
@@ -328,7 +329,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         # per-MS loop
         for msobj, accumulator in registry.items():
             rowmap = None
-            if os.path.abspath(cal_name) == os.path.abspath(bl_name):
+            if absolute_path(cal_name) == absolute_path(bl_name):
                 LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
                          " MASKLIST will also be cleared up. You may go on flagging but the statistics"
                          " will contain line emission." % self.inputs.ms.basename)

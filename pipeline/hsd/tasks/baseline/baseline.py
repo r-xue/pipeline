@@ -18,8 +18,7 @@ from ..common import compress
 from ..common import utils
 
 # import memory_profiler
-_LOG = infrastructure.get_logger(__name__)
-LOG = utils.OnDemandStringParseLogger(_LOG)
+LOG = infrastructure.get_logger(__name__)
 
 
 class SDBaselineInputs(vdp.StandardInputs):
@@ -195,18 +194,18 @@ class SDBaseline(basetask.StandardTaskTemplate):
         # dictionay of org_direction
         org_directions_dict = {}
 
-        LOG.debug('Starting per reduction group processing: number of groups is {ngroup}', ngroup=len(reduction_group))
+        LOG.debug('Starting per reduction group processing: number of groups is %d', len(reduction_group))
         for (group_id, group_desc) in reduction_group.items():
-            LOG.info('Processing Reduction Group {}', group_id)
+            LOG.info('Processing Reduction Group %s', group_id)
             LOG.info('Group Summary:')
             for m in group_desc:
                 # LOG.debug('\tAntenna %s Spw %s Pol %s'%(m.antenna, m.spw, m.pols))
-                LOG.info('\tMS "{ms}" Antenna "{antenna}" (ID {antenna_id}) Spw {spw} Field "{field}" (ID {field_id})',
+                LOG.info('\tMS "{ms}" Antenna "{antenna}" (ID {antenna_id}) Spw {spw} Field "{field}" (ID {field_id})'.format(
                          ms=m.ms.basename,
                          antenna=m.antenna_name,
                          antenna_id=m.antenna_id, spw=m.spw_id,
                          field=m.field_name,
-                         field_id=m.field_id)
+                         field_id=m.field_id))
 
                 # scan for org_direction and find the first one in group
                 msobj = context.observing_run.get_ms(m.ms.basename)
@@ -224,31 +223,31 @@ class SDBaseline(basetask.StandardTaskTemplate):
             # assume all members have same spw and pollist
             first_member = group_desc[0]
             iteration = first_member.iteration
-            LOG.debug('iteration for group {group_id} is {iter}', group_id=group_id, iter=iteration)
+            LOG.debug('iteration for group %s is %s', group_id, iteration)
 
             # skip channel averaged spw
             nchan = group_desc.nchan
-            LOG.debug('nchan for group {group_id} is {nchan}', group_id=group_id, nchan=nchan)
+            LOG.debug('nchan for group %s is %s', group_id, nchan)
             if nchan == 1:
-                LOG.info('Skip channel averaged spw {}.', first_member.spw)
+                LOG.info('Skip channel averaged spw %s.', first_member.spw)
                 continue
 
-            LOG.debug('spw=\'{}\'', args['spw'])
-            LOG.debug('vis_list={}', vis_list)
+            LOG.debug('spw=\'%s\'', args['spw'])
+            LOG.debug('vis_list=%s', vis_list)
             member_list = numpy.fromiter(
                 utils.get_valid_ms_members2(group_desc, ms_list, args['antenna'], args['field'], args['spw']),
                 dtype=numpy.int32)
             # skip this group if valid member list is empty
-            LOG.debug('member_list={}', member_list)
+            LOG.debug('member_list=%s', member_list)
             if len(member_list) == 0:
-                LOG.info('Skip reduction group {}', group_id)
+                LOG.info('Skip reduction group %s', group_id)
                 continue
 
             member_list.sort()
 
             LOG.debug('Members to be processed:')
             for (gms, gfield, gant, gspw) in utils.iterate_group_member(group_desc, member_list):
-                LOG.debug('\tMS "{}" Field ID {} Antenna ID {} Spw ID {}',
+                LOG.debug('\tMS "%s" Field ID %s Antenna ID %s Spw ID %s',
                           gms.basename, gfield, gant, gspw)
 
             # Deviation Mask
@@ -261,7 +260,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     if (not hasattr(ms, 'deviation_mask')) or ms.deviation_mask is None:
                         ms.deviation_mask = {}
                     if (fieldid, antennaid, spwid) not in ms.deviation_mask:
-                        LOG.debug('Evaluating deviation mask for {} field {} antenna {} spw {}',
+                        LOG.debug('Evaluating deviation mask for %s field %s antenna %s spw %s',
                                   ms.basename, fieldid, antennaid, spwid)
                         #mask_list = self.evaluate_deviation_mask(ms.name, fieldid, antennaid, spwid,
                         #                                         consider_flag=True)
@@ -281,13 +280,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     for field_id, antenna_id, spw_id, mask_list in zip(field_list, antenna_list, spw_list, dvmasks):
                         # key: (fieldid, antennaid, spwid)
                         key = (field_id, antenna_id, spw_id)
-                        LOG.debug('deviation mask: key {0} {1} {2} mask {3}', field_id, antenna_id, spw_id, mask_list)
+                        LOG.debug('deviation mask: key %s %s %s mask %s', field_id, antenna_id, spw_id, mask_list)
                         ms.deviation_mask[key] = mask_list
                         deviation_mask[ms.basename][key] = ms.deviation_mask[key]
-                        LOG.debug('evaluated deviation mask is {v}', v=ms.deviation_mask[key])
+                        LOG.debug('evaluated deviation mask is %s', ms.deviation_mask[key])
             else:
                 LOG.info('Deviation mask is disabled by the user')
-            LOG.debug('deviation_mask={}', deviation_mask)
+            LOG.debug('deviation_mask=%s', deviation_mask)
 
             # Spectral Line Detection and Validation
             # MaskLine will update DataTable.MASKLIST column
@@ -297,7 +296,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             maskline_result = self._executor.execute(maskline_task, merge=False)
             grid_table = maskline_result.outcome['grid_table']
             if grid_table is None:
-                LOG.info('Skip reduction group {}', group_id)
+                LOG.info('Skip reduction group %s', group_id)
                 continue
             compressed_table = compress.CompressedObj(grid_table)
             del grid_table
@@ -321,7 +320,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                               'clusters': cluster_info,
                               'flag_digits': flag_digits,
                               'org_direction': org_direction })
-        
+
         # - end of the loop over reduction group
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
@@ -359,7 +358,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                                                    if isinstance(r, basetask.FailedTaskResults)])
         if fitting_failed:
             for r in failed_results:
-                r.origtask = self
+                r.origtask_cls = self.__class__
             return failed_results
 
         results_dict = dict((os.path.basename(r.outcome['infile']), r) for r in fitter_results)

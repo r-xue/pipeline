@@ -14,6 +14,7 @@ import pkg_resources
 import casalith
 from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
+from .infrastructure import utils
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores',
            'memory_size', 'pipeline_revision', 'role', 'cluster_details']
@@ -214,6 +215,7 @@ compare_casa_version = casalith.compare_version
 cpu_type = _cpu_type()
 hostname = _hostname()
 host_distribution = _host_distribution()
+iers_info = utils.IERSInfo()
 logical_cpu_cores = _logical_cpu_cores()
 memory_size = _memory_size()
 role = _role()

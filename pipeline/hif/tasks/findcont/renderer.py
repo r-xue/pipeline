@@ -86,6 +86,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
                         refer = 'LSRK'
+                    elif (refers == 'SOURCE').all():
+                        refer = 'SOURCE'
                     else:
                         refer = 'UNDEFINED'
                     sorted_ranges = sorted(raw_ranges_for_spw, key=operator.itemgetter(0))
@@ -143,8 +145,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def _get_jointmaskplot(self, context, result, field, spw):
 
-        joint2 = glob.glob('{}/*s{}*{}*spw{}*joint.mask2'.format(context.output_dir, result.stage_number, field, spw))
-        joint = glob.glob('{}/*s{}*{}*spw{}*joint.mask'.format(context.output_dir, result.stage_number, field, spw))
+        joint2 = glob.glob('*s{}*{}*spw{}*joint.mask2'.format(result.stage_number, field, spw))
+        joint = glob.glob('*s{}*{}*spw{}*joint.mask'.format(result.stage_number, field, spw))
         
         if joint2:
             src = joint2[0]

@@ -1,11 +1,15 @@
 import collections
 import os
+from typing import Dict, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure.renderer.htmlrenderer import is_singledish_ms
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.callibrary import CalTo
 from . import common
 
 LOG = infrastructure.get_logger(__name__)
@@ -33,7 +37,7 @@ class PlotmsLeaf(object):
         self._spw = spw
         self._intent = intent
         self._uvrange = uvrange
-
+        
         # TODO
         # This should be revisited when the confusion between correlation and
         # polarisation is ironed out. I'm not convinced that
@@ -305,6 +309,9 @@ class AntComposite(common.LeafComposite):
     leaf_class = None
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, spw='', field='', intent='', **kwargs):
+        # set the singledish flag for SD runs
+        self.singledish = is_singledish_ms( context )
+
         ms = context.observing_run.get_ms(calto.vis)
         antennas = [int(a.id) for a in ms.get_antenna(calto.antenna)]
 
@@ -412,9 +419,12 @@ class PlotmsAntComposite(AntComposite):
     leaf_class = PlotmsLeaf
 
     def plot(self):
+        # set singledish flag
+        singledish = getattr(self, "singledish", False)
+
         # merge separate ant jobs into one job using plotms iterator
         jobs_and_wrappers = super(PlotmsAntComposite, self).plot()
-        successful_wrappers = utils.plotms_iterate(jobs_and_wrappers, 'antenna')
+        successful_wrappers = utils.plotms_iterate(jobs_and_wrappers, 'antenna', singledish=singledish)
         return successful_wrappers
 
 
@@ -734,8 +744,18 @@ class SpwAntDetailChart(PlotmsSpwAntComposite):
         # (calto, intent) = _get_summary_args(context, result, intent)
         LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
 
+        if 'field' in kwargs:
+            field = kwargs['field']
+            del kwargs['field']
+            LOG.debug('Override for %s vs %s plot: field=%s' % (yaxis, xaxis, field))
+        else:
+            field = calto.field
+        
         # request plots per spw, overlaying all antennas
-        super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=calto.field, **kwargs)
+        # if field is specified in kwargs, it will override the calto.field
+        # selection
+        super(SpwAntDetailChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field,
+                                                **kwargs )
 
 
 class FieldSpwAntDetailChart(PlotmsFieldSpwAntComposite):
@@ -970,3 +990,46 @@ class RealVsFrequencySummaryChart(SpwSummaryChart):
 
         super(RealVsFrequencySummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='real',
                                                           intent=intent, **plot_args)
+
+class RealVsFrequencyDetailChart(SpwAntDetailChart):
+    """
+    Create a real vs time plot for each spw and antenna
+    """
+    def __init__(self, 
+                 context: Context, 
+                 output_dir: str, 
+                 calto: CalTo, 
+                 intent: str='', 
+                 ydatacolumn: Optional[str]='corrected', 
+                 **kwargs: Optional[Dict]
+    ) -> None:
+        """
+        Construct RealVsFrequencyDetailChart instance
+
+        Args:
+            context:     Pipeline context
+            output_dir:  Output directory for plots
+            calto:       Target data selection to apply calibration
+            intent:      Intent of the field
+            ydatacolumn: Data column for y-axis of the plot
+            kwargs:      Plotms arguments
+        """
+
+        plot_args = {
+            'ydatacolumn': ydatacolumn,
+            'avgchannel': '',
+            'avgtime': '1e8',
+            'avgscan': True,
+            'avgantenna': False,
+            'plotrange': [0, 0, 0, 0],
+            'correlation': '',
+            'coloraxis': 'antenna1',
+            'overwrite': True,
+            'showatm': True
+        }
+        plot_args.update(kwargs)
+
+        # determine SD or not from context
+        self.singledish = is_singledish_ms( context )
+        super(RealVsFrequencyDetailChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='real',
+                                                         intent=intent, **plot_args)

@@ -5,17 +5,6 @@ import sys
 import traceback
 import inspect
 
-# Make sure CASA exceptions are rethrown
-try:
-    if not __rethrow_casa_exceptions:
-        def_rethrow = False
-    else:
-        def_rethrow = __rethrow_casa_exceptions
-except:
-    def_rethrow = False
-
-__rethrow_casa_exceptions = True
-
 # Pipeline imports
 from pipeline.infrastructure import casa_tools
 
@@ -23,7 +12,7 @@ IMPORT_ONLY = 'Import only'
 
 
 # Run the procedure
-def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
+def hifacal(vislist, importonly=True, dbservice=True, pipelinemode='automatic',
             interactive=True):
 
     echo_to_screen = interactive
@@ -114,7 +103,7 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
         hifa_imageprecheck(pipelinemode=pipelinemode)
 
         # Check product size limits and mitigate imaging parameters
-        hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=350.0)
+        hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=500.0)
 
         # Export the data
         hifa_exportdata(pipelinemode=pipelinemode)
@@ -133,6 +122,3 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
         h_save()
 
         casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
-
-        # Restore previous state
-        __rethrow_casa_exceptions = def_rethrow

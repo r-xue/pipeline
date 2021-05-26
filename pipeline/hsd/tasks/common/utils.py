@@ -2,13 +2,15 @@
 import collections
 import contextlib
 import functools
-from logging import Logger as pyLogger
 import os
 import sys
 import time
+from logging import Logger as pyLogger
 from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
-import casatools
+# Imported for annotation pupose only. Use table in casa_tools in code.
+from casatools import table as casa_table
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -17,199 +19,13 @@ from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import absolute_path
 from . import compress
 
-_LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.get_logger(__name__)
 
 TableLike = NewType('TableLike',
-                    Union[casa_tools._logging_table_cls, casatools.table])
-
-
-class OnDemandStringParseLogger(object):
-    """
-    On-demand logging class.
-
-    To improve performance of logging, log messages are generated only if a
-    log level of the messages are high enough to be printed.
-
-    Attributes:
-        PRIORITY_MAP: A dictionary to map a loglevel of the class to that of
-            logger.
-        logger: A logger class object to post log messages.
-    """
-
-    PRIORITY_MAP = {'warn': 'warning'}
-
-    def __init__(self, logger: pyLogger):
-        """
-        Initialize class attributes.
-
-        Args:
-            logger: A logger class object.
-        """
-        self.logger = logger
-#         self._func_list = [] # Un used?
-
-    @staticmethod
-    def parse(msg_template: str, *args: Any, **kwargs: Any) -> str:
-        """
-        Return a formatted string.
-
-        Return an input string if msg_template is a simple string. If a format
-        string is passed as msg_template, the string is formatted using the
-        other input arguments and the formatted string is returned.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-
-        Returns:
-            A formatted string.
-
-        Examples:
-            >>> import logging
-            >>> pyLog = logging.getLogger('mylog')
-            >>> logger = OnDemandStringParseLogger(pyLog)
-
-            Simple string example
-            >>> logger.parse('The first log message.')
-            'The first log message.'
-
-            Formatted string example
-            >>> message = 'The {}nd log message.'.format(2)
-            >>> logger.parse(message)
-            'The 2nd log message.'
-
-            A format string and argument example
-            >>> logger.parse('The {}rd log message.', 3)
-            'The 3rd log message.'
-
-            A format string and keyword argument example
-            >>> logger.parse('The {n}th log message.', n=4)
-            'The 4th log message.'
-        """
-        if len(args) == 0 and len(kwargs) == 0:
-            return msg_template
-        else:
-            return msg_template.format(*args, **kwargs)
-
-    def _post(self, priority: str, msg_template: str, *args: Any,
-              **kwargs: Any):
-        """
-        Generate and post a message to logger.
-
-        Generate a log message string only if the priority is high enough
-        compared to the filtering level of a logger. Post the message string
-        to the logger.
-
-        Args:
-            priority: A priority of message.
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        key_for_level = self.PRIORITY_MAP.get(priority, priority)
-        if self.logger.isEnabledFor(logging.LOGGING_LEVELS[key_for_level]):
-            getattr(self.logger, priority)(OnDemandStringParseLogger.parse(msg_template, *args, **kwargs))
-
-    def critical(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print a critical level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('critical', msg_template, *args, **kwargs)
-
-    def error(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print an error level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('error', msg_template, *args, **kwargs)
-
-    def warn(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print a warning level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('warning', msg_template, *args, **kwargs)
-
-    def info(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print an info level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('info', msg_template, *args, **kwargs)
-
-    def debug(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print a debug level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('debug', msg_template, *args, **kwargs)
-
-    def todo(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print a todo level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('todo', msg_template, *args, **kwargs)
-
-    def trace(self, msg_template: str, *args: Any, **kwargs: Any):
-        """
-        Print a trace level message to logger.
-
-        Args:
-            msg_template: A message string or a format string
-            *args: Arguments to use in formatting of msg_template. Valid only
-                if the msg_template is a format string.
-            **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.
-        """
-        self._post('trace', msg_template, *args, **kwargs)
-
-
-LOG = OnDemandStringParseLogger(_LOG)
+                    Union[casa_tools._logging_table_cls, casa_table])
 
 
 def profiler(func: Callable):
@@ -739,7 +555,7 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
         field_id = member.field_id
         ant_id = member.antenna_id
         msobj = member.ms
-        if msobj.name in [os.path.abspath(name) for name in msname_filter]:
+        if absolute_path(msobj.name) in [absolute_path(name) for name in msname_filter]:
             _field_selection = field_selection
             try:
                 nfields = len(msobj.fields)
@@ -818,7 +634,7 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
 
 # TODO (ksugimoto): Move this to casa_tools module.
 @contextlib.contextmanager
-def TableSelector(name: str, query: str) -> casatools.table:
+def TableSelector(name: str, query: str) -> casa_table:
     """
     Retun a CASA table tool instance of selected rows of a table.
 

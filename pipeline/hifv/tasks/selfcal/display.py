@@ -10,8 +10,8 @@ import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.renderer.logger as logger
 
-from astropy import units as u
-from astropy.coordinates import SkyCoord
+#from astropy import units as u
+#from astropy.coordinates import SkyCoord
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -259,7 +259,8 @@ class selfcalSolutionNumPerFieldChart(object):
                          'ant_unique_id': ant_unique_id,
                          'flag2d': flag2d,
                          #'field': field_list,'flag': flag_list,'antenna': ant_list,'time': time_list,
-                         'field_desc': {'name': field_name, 'position': SkyCoord(ra=phasedir[0, :]*u.rad, dec=phasedir[1, :]*u.rad)},
+                         #'field_desc': {'name': field_name, 'position': SkyCoord(ra=phasedir[0, :]*u.rad, dec=phasedir[1, :]*u.rad)},
+                         'field_desc': {'name': field_name},
                          'ant_desc': {'name': ant_name},
                          'column': {'cparam': cparam, 'flag': flag, 'snr': snr, 'ant1': ant1_id, 'ant2': ant2_id}}
 

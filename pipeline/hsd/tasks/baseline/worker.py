@@ -4,6 +4,7 @@ import os
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.h.heuristics import caltable as caltable_heuristic
@@ -14,8 +15,7 @@ from pipeline.infrastructure import casa_tools
 from . import plotter
 from .. import common
 
-_LOG = infrastructure.get_logger(__name__)
-LOG = sdutils.OnDemandStringParseLogger(_LOG)
+LOG = infrastructure.get_logger(__name__)
 
 
 class BaselineSubtractionInputsBase(vdp.StandardInputs):
@@ -43,15 +43,16 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
 
         # blparam
         if self.blparam is None or len(self.blparam) == 0:
-            args['blparam'] = prefix + '_blparam.txt'
+            args['blparam'] = relative_path(os.path.join(self.output_dir, prefix + '_blparam.txt'))
         else:
             args['blparam'] = self.blparam
 
         # baseline caltable filename
         if self.bloutput is None or len(self.bloutput) == 0:
             namer = caltable_heuristic.SDBaselinetable()
-            bloutput = namer.calculate(output_dir=self.output_dir,
-                                       stage=self.context.stage, **args)
+            bloutput = relative_path(namer.calculate(output_dir=self.output_dir,
+                                                            stage=self.context.stage,
+                                                            **args))
             args['bloutput'] = bloutput
         else:
             args['bloutput'] = self.bloutput
@@ -60,7 +61,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         if ('outfile' not in args or
                 args['outfile'] is None or
                 len(args['outfile']) == 0):
-            args['outfile'] = self.vis.rstrip('/') + '_bl'
+            args['outfile'] = relative_path(os.path.join(self.output_dir, prefix + '_bl'))
 
         args['datacolumn'] = self.DATACOLUMN[self.colname]
 
@@ -171,17 +172,17 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         field_id_list = self.inputs.field
         antenna_id_list = self.inputs.antenna
         spw_id_list = self.inputs.spw
-        LOG.debug('subgroup member for {vis}:\n\tfield: {field}\n\tantenna: {antenna}\n\tspw: {spw}',
-                  vis=ms.basename,
-                  field=field_id_list,
-                  antenna=antenna_id_list,
-                  spw=spw_id_list)
+        LOG.debug('subgroup member for %s:\n\tfield: %s\n\tantenna: %s\n\tspw: %s',
+                  ms.basename,
+                  field_id_list,
+                  antenna_id_list,
+                  spw_id_list)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
         # reduction group
         if os.path.exists(blparam):
-            LOG.debug('Cleaning up blparam file for {vis}', vis=vis)
+            LOG.debug('Cleaning up blparam file for %s', vis)
             os.remove(blparam)
 
         #datatable = DataTable(context.observing_run.ms_datatable_name)
@@ -226,7 +227,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         plot_list = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
-            LOG.info('field {0} antenna {1} spw {2}', field_id, antenna_id, spw_id)
+            LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:

@@ -25,13 +25,6 @@ from . import casa_tools
 from . import exceptions
 from . import task_registry
 
-# Make sure CASA exceptions are rethrown
-try:
-    default__rethrow_casa_exceptions = __rethrow_casa_exceptions=True
-except Exception as e:
-    default__rethrow_casa_exceptions = False
-__rethrow_casa_exceptions=True
-
 
 def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
     plotlevel='summary', interactive=True):
@@ -54,8 +47,7 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
             relativePath, "rawdata")
 
         # Get the pipeline context 
-        context = Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-            output_dir=workingDir).context
+        context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
 
     except Exception:
         casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)
@@ -214,8 +206,6 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
             # Save the context
             context.save()
 
-            # Restore setting for rethrowing CASA exceptions.
-            __rethrow_casa_exceptions = default__rethrow_casa_exceptions
             casa_tools.set_log_origin(fromwhere='')
 
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
@@ -227,7 +217,6 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
 
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
 
-    __rethrow_casa_exceptions = default__rethrow_casa_exceptions
     casa_tools.set_log_origin(fromwhere='')
 
     return

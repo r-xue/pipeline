@@ -8,6 +8,8 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
+from .plotstyle import RescaleXAxisTimeTicks
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -61,7 +63,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         station_name = str(station_id)
         if station_names is not None:
             if any([wx_prefix.lower() in station_names[station_id].lower() for wx_prefix in ['WSTB', 'Meteo', 'OSF']]):
-                station_name = station_names[station_id].replace('Meteo',  '')
+                station_name = station_names[station_id]
         unique_station_names.append(station_name)
 
     # PIPE-31: deprioritize the station with "Itinerant" in name (typically: "MeteoItinerant"), 
@@ -367,17 +369,5 @@ def resizeFonts(adesc, fontsize):
     plt.setp(adesc.get_yticklabels(), fontsize=fontsize)
 
 
-def RescaleXAxisTimeTicks(xlim, adesc):
-    """
-    Plotting utility routine
-    """
-    if xlim[1] - xlim[0] < 10/1440.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.SecondLocator(bysecond=list(range(0, 60, 30))))
-    elif xlim[1] - xlim[0] < 0.5/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 5))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
-    elif xlim[1] - xlim[0] < 1/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 2))))
+
 

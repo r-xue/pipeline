@@ -135,6 +135,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>-999.0</value>
   </param>
 
+  <param name="hm_weighting" type="string">
+    <shortdescription>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</shortdescription>
+    <description>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</description>
+    <value>briggs</value>
+  </param>
+
   <param name="hm_cleaning" type="string">
     <shortdescription>Pipeline cleaning mode </shortdescription>
     <description>Pipeline cleaning mode </description>
@@ -152,12 +158,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <shortdescription>Times the sensitivity limit for cleaning</shortdescription>
     <description>Times the sensitivity limit for cleaning</description>
     <value>2.0</value>
-  </param>
-
-  <param name="clearlist" subparam="true" type="bool">
-    <shortdescription>Clear target list</shortdescription>
-    <description>Clear target list in context after successful imaging</description>
-    <value>True</value>
   </param>
 
   <param name="masklimit" subparam="true" type="int">

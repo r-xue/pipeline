@@ -27,11 +27,12 @@ class BoxResult(basetask.Results):
 
 
 class TcleanResult(basetask.Results):
-    def __init__(self, vis=None, sourcename=None, intent=None, spw=None, orig_specmode=None, specmode=None,
-                 multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None, is_eph_obj=None):
+    def __init__(self, vis=None, sourcename=None, field_ids=None, intent=None, spw=None, orig_specmode=None,
+                 specmode=None, multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None, is_eph_obj=None):
         super(TcleanResult, self).__init__()
         self.vis = vis
         self.sourcename = sourcename
+        self.field_ids = field_ids
         self.intent = intent
         self.spw = spw
         self.orig_specmode = orig_specmode

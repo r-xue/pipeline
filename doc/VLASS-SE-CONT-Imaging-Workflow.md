@@ -117,8 +117,6 @@ If `clean_no_mask_selfcal_image=True` then the `'mask'` key value is a list in i
 
 The following changes are implemented for the VLASS-SE-CONT mode:
 
- - A new parameter, `clearlist` is added. If `False` then `context.clean_list_pending` is not emptied during 
-merging hifv_makeimages result to context. This is not needed in the pipeline currently and can be omitted (**May be removed when merging to main**).
  - New Tclean._do_iterative_vlass_se_imaging() method implements the VLASS-SE-CONT imaging sequence in awproject and mosaic
 modes. This method is invoked only if image_heuristics.imaging_mode starts with the 'VLASS-SE-CONT' string. The sequence incorporates the following steps:
    

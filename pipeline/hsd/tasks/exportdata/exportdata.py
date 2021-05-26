@@ -25,6 +25,7 @@ import tarfile
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import absolute_path
 from pipeline.h.tasks.exportdata.aqua import export_to_disk as aqua_export_to_disk
 import pipeline.infrastructure.project as project
 from pipeline.infrastructure import task_registry
@@ -171,48 +172,42 @@ class SDExportData(exportdata.ExportData):
 
         # Save the current working directory and move to the pipeline
         # working directory. This is required for tarfile IO
-        cwd = os.getcwd()
-        try:
-            os.chdir(context.output_dir)
 
-            # Define the name of the output tarfile
-            tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
-                                                     session_name=session,
-                                                     aux_product=True)
-            #tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
-            #tarfilename = '{}.{}.caltables.tgz'.format(oussid, session)
-            LOG.info('Saving final caltables for %s in %s', session, tarfilename)
+        # Define the name of the output tarfile
+        tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
+                                                 session_name=session,
+                                                 aux_product=True)
+        #tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
+        #tarfilename = '{}.{}.caltables.tgz'.format(oussid, session)
+        LOG.info('Saving final caltables for %s in %s', session, tarfilename)
 
-            # Create the tar file
-            if self._executor._dry_run:
-                return tarfilename
+        # Create the tar file
+        if self._executor._dry_run:
+            return tarfilename
 
 #             caltables = set()
 
-            bl_caltables = set()
+        bl_caltables = set()
 
-            for visfile in vislist:
-                LOG.info('Collecting final caltables for %s in %s',
-                         os.path.basename(visfile), tarfilename)
+        for visfile in vislist:
+            LOG.info('Collecting final caltables for %s in %s',
+                     os.path.basename(visfile), tarfilename)
 
-                # Create the list of baseline caltable for that vis
-                name = self.__get_last_baseline_table(visfile)
-                if name is not None:
-                    bl_caltables.add(name)
+            # Create the list of baseline caltable for that vis
+            name = self.__get_last_baseline_table(visfile)
+            if name is not None:
+                bl_caltables.add(name)
 
-                with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
-                    # Tar the session list.
-                    # for table in caltables:
-                    #     tar.add(table, arcname=os.path.basename(table))
+            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+                # Tar the session list.
+                # for table in caltables:
+                #     tar.add(table, arcname=os.path.basename(table))
 
-                    for table in bl_caltables:
-                        tar.add(table, arcname=os.path.basename(table))
+                for table in bl_caltables:
+                    tar.add(table, arcname=os.path.basename(table))
 
-            return tarfilename
+        return tarfilename
 
-        finally:
-            # Restore the original current working directory
-            os.chdir(cwd)
 
     def _do_aux_ms_products(self, context, vislist, products_dir):
 
@@ -292,7 +287,7 @@ class SDExportData(exportdata.ExportData):
             return None
 
         LOG.info('Exporting {0} as a product'.format(jyperk))
-        return os.path.abspath(jyperk)
+        return absolute_path(jyperk)
 
     @staticmethod
     def __get_reffile(results):
@@ -330,39 +325,32 @@ class SDExportData(exportdata.ExportData):
             return None
 
         # Create the tarfile.
-        cwd = os.getcwd()
-        try:
-            os.chdir(output_dir)
-
-            # Define the name of the output tarfile.
-            tarfilename = self.NameBuilder.auxiliary_products('auxproducts.tgz',
+        # Define the name of the output tarfile.
+        tarfilename = self.NameBuilder.auxiliary_products('auxproducts.tgz',
                                                               ousstatus_entity_id=oussid)
-            #tarfilename = '{}.auxproducts.tgz'.format(oussid)
-            LOG.info('Saving auxiliary data products in %s', tarfilename)
+        #tarfilename = '{}.auxproducts.tgz'.format(oussid)
+        LOG.info('Saving auxiliary data products in %s', tarfilename)
 
-            # Open tarfile.
-            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+        # Open tarfile.
+        with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
 
-                # Save flux file.
-                if jyperk and os.path.exists(jyperk):
-                    tar.add(jyperk, arcname=os.path.basename(jyperk))
-                    LOG.info('Saving auxiliary data product {} in {}'.format(os.path.basename(jyperk), tarfilename))
-                elif isinstance(jyperk, str):
-                    LOG.info('Auxiliary data product {} does not exist'.format(os.path.basename(jyperk)))
+            # Save flux file.
+            if jyperk and os.path.exists(jyperk):
+                tar.add(jyperk, arcname=os.path.basename(jyperk))
+                LOG.info('Saving auxiliary data product {} in {}'.format(os.path.basename(jyperk), tarfilename))
+            elif isinstance(jyperk, str):
+                LOG.info('Auxiliary data product {} does not exist'.format(os.path.basename(jyperk)))
 
-                # Save flag files.
-                for flags_file in flags_file_list:
-                    if os.path.exists(flags_file):
-                        tar.add(flags_file, arcname=os.path.basename(flags_file))
-                        LOG.info('Saving auxiliary data product {} in {}'.format(os.path.basename(flags_file),
+            # Save flag files.
+            for flags_file in flags_file_list:
+                if os.path.exists(flags_file):
+                    tar.add(flags_file, arcname=os.path.basename(flags_file))
+                    LOG.info('Saving auxiliary data product {} in {}'.format(os.path.basename(flags_file),
                                                                                  tarfilename))
-                    else:
-                        LOG.info('Auxiliary data product {} does not exist'.format(os.path.basename(flags_file)))
+                else:
+                    LOG.info('Auxiliary data product {} does not exist'.format(os.path.basename(flags_file)))
 
-                tar.close()
-        finally:
-            # Restore the original current working directory.
-            os.chdir(cwd)
+            tar.close()
 
         return tarfilename
 
@@ -436,8 +424,7 @@ class SDExportData(exportdata.ExportData):
             state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
                                for cls, name, value in project.get_state(o)]
 
-        template = '''__rethrow_casa_exceptions = True
-context = h_init()
+        template = '''context = h_init()
 %s
 try:
 %s
@@ -468,8 +455,7 @@ finally:
             report_xml = report_generator.get_report_xml(context)
             aqua_export_to_disk(report_xml, aqua_file)
         except Exception as e:
-            LOG.error('Error generating the pipeline AQUA report')
-            LOG.info('{}'.format(e))
+            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
             return 'Undefined'
 
         ps = context.project_structure

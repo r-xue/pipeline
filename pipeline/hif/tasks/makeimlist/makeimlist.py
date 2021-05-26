@@ -802,12 +802,15 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             if spwsel_spwid in ('ALL', '', 'NONE'):
                                 spwsel_spwid_freqs = ''
-                                spwsel_spwid_refer = 'LSRK'
+                                if target_heuristics.is_eph_obj(field_intent[0]):
+                                    spwsel_spwid_refer = 'SOURCE'
+                                else:
+                                    spwsel_spwid_refer = 'LSRK'
                             else:
                                 spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
-                            if spwsel_spwid_refer != 'LSRK':
-                                LOG.warn('Frequency selection is specified in %s but must be in LSRK'
+                            if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
+                                LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE'
                                          '' % spwsel_spwid_refer)
                                 # TODO: skip this field and/or spw ?
 
@@ -868,7 +871,11 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             # Get list of antenna IDs
                             antenna_ids = target_heuristics.antenna_ids(inputs.intent)
-                            antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))
+                            # PIPE-964: The '&' at the end of the antenna input was added to not to consider the cross
+                            #  baselines by default. The cross baselines with antennas not listed (for TARGET images
+                            #  the antennas with the minority antenna sizes are not listed) could be added in some
+                            #  future configurations by removing this character.
+                            antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                        for v in filtered_vislist]
 
                             any_non_imaging_ms = any([not inputs.context.observing_run.get_ms(vis).is_imaging_ms

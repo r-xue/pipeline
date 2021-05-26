@@ -22,6 +22,7 @@ from pipeline.domain.measures import FluxDensityUnits, FrequencyUnits
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
 from pipeline.infrastructure.renderer import logger
+from pipeline.infrastructure.displays.plotutils import CB_color_cycle
 from . import display as gfluxscale
 from ..importdata.dbfluxes import ORIGIN_DB
 
@@ -336,13 +337,13 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         # Avoid offset values (PIPE-644)
         ax.yaxis.set_major_formatter(plt.ScalarFormatter(useOffset=False))
 
-        colours = itertools.cycle('bgrcmyk')
+        symbols_and_colours = itertools.cycle(itertools.product("osDv^<>", CB_color_cycle))
 
         x_min = 1e99
         x_max = 0
         for m in sorted(measurements, key=operator.attrgetter('spw_id')):
             # cycle colours so that windows centred on the same frequency are distinguishable
-            colour = next(colours)
+            symbol, colour = next(symbols_and_colours)
 
             spw = ms.get_spectral_window(m.spw_id)
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
@@ -354,8 +355,10 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
             if not (y == 0 and y_unc == 0):
-                label = 'Calibrated data flux for spw {}'.format(spw.id)
-                ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
+                label = 'spw {}'.format(spw.id)
+                ax.errorbar(
+                    x, y, xerr=x_unc, yerr=y_unc,
+                    marker=symbol, color=colour, ls="-", label=label)
 
             x_min = min(x_min, x - x_unc)
             x_max = max(x_max, x + x_unc)
@@ -382,11 +385,11 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             x, y, spix = list(zip(*sorted(zip(x, y, spix))))
             # PIPE-644: always plot catalog fluxes in black.
             colour = "k"
-            ax.plot(x, y, marker='o', color=colour, label='Data source: {}'.format(label))
+            ax.plot(x, y, marker='o', color=colour, label='Data source:\n{}'.format(label))
 
             s_xmin = scale_flux(x[0], y[0], x_min, spix[0])
             s_xmax = scale_flux(x[-1], y[-1], x_max, spix[-1])
-            ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index extrapolation',
+            ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index\nextrapolation',
                     linestyle='dotted')
             ax.plot([x[-1], x_max], [y[-1], s_xmax], color=colour, label='_nolegend_', linestyle='dotted')
 

@@ -238,8 +238,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         if not inputs.result:
             plotdir = os.path.join(inputs.context.report_dir,
                                    'stage%s' % inputs.context.stage.split('_')[0])
+            field_ids = inputs.heuristics.field(inputs.intent, inputs.field)
             result = TcleanResult(vis=inputs.vis,
                                   sourcename=inputs.field,
+                                  field_ids=field_ids,
                                   intent=inputs.intent,
                                   spw=inputs.spw,
                                   orig_specmode=inputs.orig_specmode,
@@ -302,9 +304,6 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
             inputs.imagename, inputs.stokes, iter)
 
-        # Starting with CASA 4.7.79 tclean can calculate chanchunks automatically.
-        chanchunks = -1
-
         parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel),
                         'TARGET' in inputs.intent])
 
@@ -341,9 +340,8 @@ class CleanBase(basetask.StandardTaskTemplate):
             'savemodel':     inputs.savemodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
-            'chanchunks':    chanchunks,
-            'parallel':      parallel,
-            'wbawp':         inputs.wbawp
+            'parallel':     parallel,
+            'wbawp':        inputs.wbawp
             }
 
         # Set special phasecenter and outframe for ephemeris objects.
@@ -360,7 +358,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['outframe'] = ''
             # 2018-07-10: Parallel imaging of ephemeris objects does not
             # yet work (see CAS-11631)
-            tclean_job_parameters['parallel'] = False
+            # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
+            # runs for ephemeris sources.
+            #tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             tclean_job_parameters['outframe'] = inputs.outframe
@@ -540,93 +540,29 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
         tclean_job_parameters['pointingoffsetsigdev'] = inputs.heuristics.pointingoffsetsigdev()
 
-        # Up until CASA 5.2 it is necessary to run tclean calls with
+        # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
-        if (tclean_job_parameters['parallel'] == True) and \
-           (tclean_job_parameters['specmode'] == 'cube') and \
-           (tclean_job_parameters['restoration'] == True) and \
-           (tclean_job_parameters['restoringbeam'] == 'common'):
+        # With CASA 6.2.0-57 the cube refactor is in place and the two step
+        # process is no longer needed (PIPE-980). See removed code at:
+        # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/cleanbase.py?at=15e495a29d0bfc93892c65eceb660d61a1805790#521
 
-            # CAS-11322 asks to temporarily leave restoration set to True
-            # DMU, 2018-06-01
-            #tclean_job_parameters['restoration'] = False
-            tclean_job_parameters['restoringbeam'] = ''
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result = self._executor.execute(job)
-
-            tclean_job_parameters['parallel'] = False
-            tclean_job_parameters['niter'] = 0
-            tclean_job_parameters['restoration'] = True
-            tclean_job_parameters['restoringbeam'] = 'common'
-            tclean_job_parameters['calcpsf'] = False
-            tclean_job_parameters['calcres'] = False
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result2 = self._executor.execute(job)
-        else:
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result = self._executor.execute(job)
+        job = casa_tasks.tclean(**tclean_job_parameters)
+        tclean_result = self._executor.execute(job)
 
         # Record last tclean command for weblog
         result.set_tclean_command(str(job))
 
         if inputs.niter > 0:
-            if 'stopcode' in tclean_result:
-                # Serial tclean result
-                tclean_stopcode = tclean_result['stopcode']
-                tclean_iterdone = tclean_result['iterdone']
-                tclean_nmajordone = tclean_result['nmajordone']
-                tclean_nminordone = tclean_result['summaryminor'][0, :]
-                tclean_peakresidual = tclean_result['summaryminor'][1, :]
-                tclean_totalflux = tclean_result['summaryminor'][2, :]
-                tclean_niter = tclean_result['niter']
-            else:
-                # Parallel tclean result structure is currently (2017-03) different
-                tclean_stopcodes = [tclean_result[key][int(key.replace('node', ''))]['stopcode']
-                                    for key in tclean_result]
-                # Bump up any error condition (8, 6, 5, 4, 3, 1) to the
-                # reporting level.
-                if 8 in tclean_stopcodes:
-                    tclean_stopcode = 8
-                elif 6 in tclean_stopcodes:
-                    tclean_stopcode = 6
-                elif 5 in tclean_stopcodes:
-                    tclean_stopcode = 5
-                elif 4 in tclean_stopcodes:
-                    tclean_stopcode = 4
-                elif 3 in tclean_stopcodes:
-                    tclean_stopcode = 3
-                elif 1 in tclean_stopcodes:
-                    tclean_stopcode = 1
-                elif (np.array(tclean_stopcodes) == 7).all():
-                    # If zero masks (stopcode 7) occur only in a subset of
-                    # frequency regions, they should not be reported.
-                    tclean_stopcode = 7
-                elif 2 in tclean_stopcodes:
-                    # Normal stop based on threshold
-                    tclean_stopcode = 2
-                else:
-                    # This should not happen. Just a fallback. Will cause
-                    # stop code reason evaluation to fail later on.
-                    tclean_stopcode = 0
-                # With CASA 6.2 (see CAS-9386) this else clause is not necessary. The pipeline 2021.1.1 release is
-                # based on the CASA 6.1 series, however, even there the else clause does not seem to be triggered.
-                # The variables are defined here for completeness, but tclean_nminordone, tclean_peakresidual and
-                # tclean_totalflux are not guaranteed to have correct (expected) array shape.
-                tclean_iterdone = sum([tclean_result[key][int(key.replace('node', ''))]['iterdone']
-                                       for key in tclean_result])
-                tclean_nmajordone = sum([tclean_result[key][int(key.replace('node', ''))]['nmajordone']
-                                         for key in tclean_result])
-                tclean_niter = max([tclean_result[key][int(key.replace('node', ''))]['niter']
-                                    for key in tclean_result])
-                tclean_nminordone = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][0, :]
-                                                    for key in tclean_result])
-                tclean_peakresidual = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][1, :]
-                                                      for key in tclean_result])
-                tclean_totalflux = np.concatenate([tclean_result[key][int(key.replace('node', ''))]['summaryminor'][2, :]
-                                                   for key in tclean_result])
+            tclean_stopcode = tclean_result['stopcode']
+            tclean_iterdone = tclean_result['iterdone']
+            tclean_niter = tclean_result['niter']
+            tclean_nmajordone = tclean_result['nmajordone']
+            tclean_nminordone = tclean_result['summaryminor'][0, :]
+            tclean_peakresidual = tclean_result['summaryminor'][1, :]
+            tclean_totalflux = tclean_result['summaryminor'][2, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
-            if (tclean_stopcode == 1) and (tclean_iterdone >= tclean_niter):
+            if tclean_stopcode == 1:
                 result.error = CleanBaseError('tclean reached niter limit. Field: %s SPW: %s' %
                                               (inputs.field, inputs.spw), 'Reached niter limit')
                 LOG.warning('tclean reached niter limit of %d for %s / spw%s !' %

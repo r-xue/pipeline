@@ -49,3 +49,4 @@ class ${taskname.capitalize()}(basetask.StandardTaskTemplate):
         task = casa_tasks.${taskname.lower()}cal(vis=self.inputs.vis, caltable='tempcal.${taskname.lower()}')
 
         return self._executor.execute(task)
+

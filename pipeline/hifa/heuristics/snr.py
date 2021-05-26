@@ -19,11 +19,11 @@ The ALMA receiver band, nominal tsys, and sensitivity info.
     This information should go elsewhere in the next release
     The ALMA receiver bands are defined per pipeline convention
 """
-ALMA_BANDS = ['ALMA Band 3', 'ALMA Band 4', 'ALMA Band 5', 'ALMA Band 6',
+ALMA_BANDS = ['ALMA Band 1', 'ALMA Band 2', 'ALMA Band 3', 'ALMA Band 4', 'ALMA Band 5', 'ALMA Band 6',
               'ALMA Band 7', 'ALMA Band 8', 'ALMA Band 9', 'ALMA Band 10']
-ALMA_TSYS = [75.0, 86.0, 120.0, 90.0, 150.0, 387.0, 1200.0, 1515.0]
+ALMA_TSYS = [56.0, 65.0, 75.0, 86.0, 120.0, 90.0, 150.0, 387.0, 1200.0, 1515.0]
 # Sensitivities in mJy (for 16*12 m antennas, 1 minute, 8 GHz, 2pol)
-ALMA_SENSITIVITIES = [0.20, 0.24, 0.37, 0.27, 0.50, 1.29, 5.32, 8.85]
+ALMA_SENSITIVITIES = [0.16, 0.19, 0.20, 0.24, 0.37, 0.27, 0.50, 1.29, 5.32, 8.85]
 
 # origins with smaller numbers are preferred over those with larger numbers
 # this is a dict rather than a list so that a default preference order can be
@@ -1102,8 +1102,10 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         bpsensitivity = ALMA_SENSITIVITIES[bandidx] * bpfactor
         snrPerChannel = spw_dict[spwid]['flux'] * 1000.0 / bpsensitivity
         requiredChannels = (reqBpSnr / snrPerChannel) ** 2
-        LOG.info("spw=%d, band=%d, alma_sensitivity=%s, bpfactor=%f" % (spwid, bandidx, ALMA_SENSITIVITIES[bandidx], bpfactor))
-        LOG.info("requiredChannels=%f, repBpSnr=%f, snrPerChannel=%f, spw flux=%f, bpsensitivity=%f" % (requiredChannels, reqBpSnr, snrPerChannel, spw_dict[spwid]['flux'], bpsensitivity))
+        LOG.info("spw={}, band={}, alma_sensitivity={}, bpfactor={}".format(
+            spwid, bandidx+1, ALMA_SENSITIVITIES[bandidx], bpfactor))
+        LOG.info("requiredChannels={}, repBpSnr={}, snrPerChannel={}, spw flux={}, bpsensitivity={}".format(
+            requiredChannels, reqBpSnr, snrPerChannel, spw_dict[spwid]['flux'], bpsensitivity))
         evenChannels = nextHighestDivisibleInt(spw_dict[spwid]['nchan'], int(np.ceil(requiredChannels)))
 
         # Fill in the dictionary

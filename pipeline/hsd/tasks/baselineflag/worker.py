@@ -5,8 +5,6 @@ import time
 
 import numpy
 
-import casatools
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
@@ -63,7 +61,9 @@ class SDBLFlagWorkerResults(common.SingleDishResults):
 
 class BLFlagTableContainer(object):
     def __init__(self):
-        self.tb1, self.tb2 = casatools.table(), casatools.table()
+        # New table class instances are required for parallel operation of two tables.
+        self.tb1 = casa_tools._logging_table_cls()
+        self.tb2 = casa_tools._logging_table_cls()
         self._init()
 
     def __get_ms_attr(self, attr):

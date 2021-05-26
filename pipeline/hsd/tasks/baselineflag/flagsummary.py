@@ -38,7 +38,7 @@ class SDBLFlagSummary(object):
         self.thres_value = thresholds
         self.flagRule = flagRule
         self.userFlag = userFlag
-        self.bunit = sdutils.get_brightness_unit(self.ms.basename, defaultunit='Jy/beam')
+        self.bunit = sdutils.get_brightness_unit(self.ms.name, defaultunit='Jy/beam')
 
     def execute(self, dry_run=True):
         """

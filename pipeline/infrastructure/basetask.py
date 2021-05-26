@@ -1,7 +1,9 @@
 import abc
 import collections
 import datetime
+import functools
 import inspect
+import matplotlib
 import os
 import pickle
 import re
@@ -13,6 +15,7 @@ from .mpihelpers import MPIEnvironment
 
 from . import api
 from . import casa_tools
+from . import eventbus
 from . import filenamer
 from . import jobrequest
 from . import logging
@@ -21,6 +24,8 @@ from . import project
 from . import task_registry
 from . import utils
 from . import vdp
+from .eventbus import TaskStartedEvent, TaskCompleteEvent, TaskAbnormalExitEvent
+from .eventbus import ResultAcceptingEvent, ResultAcceptedEvent, ResultAcceptErrorEvent
 
 LOG = logging.get_logger(__name__)
 
@@ -50,7 +55,7 @@ def result_finaliser(method):
     returned from a number of places but we don't want to set the properties
     in each location.
 
-    TODO: refactor so this is done as part of execute!  
+    TODO: refactor so this is done as part of execute!
     """
     def finalise_pipeline_result(self, *args, **kw):
         result = method(self, *args, **kw)
@@ -82,7 +87,7 @@ def capture_log(method):
         # execute the task
         result = method(self, *args, **kw)
 
-        # copy the CASA log entries written since task execution to the result 
+        # copy the CASA log entries written since task execution to the result
         with open(logfile, 'r') as casalog:
             casalog.seek(size_before)
 
@@ -103,6 +108,20 @@ def capture_log(method):
 
         return result
     return capture
+
+
+def matplotlibrc_handler(method):
+    @functools.wraps(method)
+    def handle_matplotlibrc(self, *args, **kwargs):
+        # execute method within dedicated matplotlib context to pipeline
+        # currently default rcParams is used
+        with matplotlib.rc_context(rc=matplotlib.rcParamsDefault):
+            # execute method
+            result = method(self, *args, **kwargs)
+
+        return result
+
+    return handle_matplotlibrc
 
 
 class ModeTask(api.Task):
@@ -137,15 +156,15 @@ class ModeTask(api.Task):
         Update, if necessary, the delegate task so that it matches the
         mode specified in the Inputs.
 
-        This function is necessary as the value of Inputs.mode can change 
-        after the task has been constructed. Therefore, we cannot rely on any 
+        This function is necessary as the value of Inputs.mode can change
+        after the task has been constructed. Therefore, we cannot rely on any
         delegate set at construction time. Instead, the delegate must be
-        updated on every execution. 
+        updated on every execution.
         """
         # given two modes, A and B, it's possible that A is a subclass of B,
         # eg. PhcorChannelBandpass extends ChannelBandpass, therefore we
         # cannot test whether the current instance is the correct type using
-        # isinstance. Instead, we need to compare class names.        
+        # isinstance. Instead, we need to compare class names.
         mode = self.inputs.mode
         mode_cls = self.inputs._modes[mode]
         mode_cls_name = mode_cls.__name__
@@ -156,23 +175,23 @@ class ModeTask(api.Task):
             self._delegate = self.inputs.get_task()
 
 
-# A simple named tuple to hold the start and end timestamps 
+# A simple named tuple to hold the start and end timestamps
 Timestamps = collections.namedtuple('Timestamps', ['start', 'end'])
 
 
 class Results(api.Results):
     """
-    Results is the base implementation of the Results API. 
+    Results is the base implementation of the Results API.
 
-    In practice, all results objects should subclass this object to take 
+    In practice, all results objects should subclass this object to take
     advantage of the shared functionality.
-    """    
+    """
     def __init__(self):
         super(Results, self).__init__()
 
         # set the value used to uniquely identify this object. This value will
-        # be used to determine whether this results has already been merged 
-        # with the context 
+        # be used to determine whether this results has already been merged
+        # with the context
         self._uuid = uuid.uuid4()
 
         # property used to hold pipeline QA values
@@ -200,12 +219,12 @@ class Results(api.Results):
         """
         Merge these results with the given context.
 
-        This method will be called during the execution of accept(). For 
+        This method will be called during the execution of accept(). For
         calibration tasks, a typical implementation will register caltables
-        with the pipeline callibrary.  
+        with the pipeline callibrary.
 
         At this point the result is deemed safe to merge, so no further checks
-        on the context need be performed. 
+        on the context need be performed.
 
         :param context: the target
             :class:`~pipeline.infrastructure.launcher.Context`
@@ -214,13 +233,17 @@ class Results(api.Results):
         LOG.debug('Null implementation of merge_with_context used for %s'
                   '' % self.__class__.__name__)
 
+    @matplotlibrc_handler
     def accept(self, context=None):
         """
         Accept these results, registering objects with the context and incrementing
         stage counters as necessary in preparation for the next task.
         """
+        event = ResultAcceptingEvent(context_name=context.name, stage_number=self.stage_number)
+        eventbus.send_message(event)
+
         if context is None:
-            # context will be none when called from a CASA interactive 
+            # context will be none when called from a CASA interactive
             # session. When this happens, we need to locate the global context
             # from the stack
             import pipeline.h.cli.utils
@@ -321,15 +344,18 @@ class Results(api.Results):
                 with open(path, 'wb') as outfile:
                     pickle.dump(context, outfile, -1)
 
+        event = ResultAcceptedEvent(context_name=context.name, stage_number=self.stage_number)
+        eventbus.send_message(event)
+
     def _check_for_remerge(self, context):
         """
-        Check whether this result has already been added to the given context. 
+        Check whether this result has already been added to the given context.
         """
-        # context.results contains the list of results that have been merged 
+        # context.results contains the list of results that have been merged
         # with the context. Check whether the UUID of any result or sub-result
         # in that list matches the UUID of this result.
         for result in context.results:
-            if self._is_uuid_in_result(result):    
+            if self._is_uuid_in_result(result):
                 msg = 'This result has already been added to the context'
                 LOG.error(msg)
                 raise ValueError(msg)
@@ -337,7 +363,7 @@ class Results(api.Results):
     def _is_uuid_in_result(self, result):
         """
         Return True if the UUID of this result matches the UUID of the given
-        result or any sub-result contained within. 
+        result or any sub-result contained within.
         """
         for subtask_result in getattr(result, 'subtask_results', ()):
             if self._is_uuid_in_result(subtask_result):
@@ -383,13 +409,13 @@ class ResultsProxy(object):
 
         # only store the basename to allow for relocation between save and
         # restore
-        self._basename = 'result-stage%s.pickle' % result.stage_number        
+        self._basename = 'result-stage%s.pickle' % result.stage_number
         path = os.path.join(self._context.output_dir,
                             self._context.name,
                             'saved_state',
                             self._basename)
 
-        utils.mkdir_p(os.path.dirname(path))        
+        utils.mkdir_p(os.path.dirname(path))
         with open(path, 'wb') as outfile:
             pickle.dump(result, outfile, pickle.HIGHEST_PROTOCOL)
 
@@ -398,7 +424,7 @@ class ResultsProxy(object):
         Read the pickle from disk, returning the unpickled object.
         """
         path = os.path.join(self._context.output_dir,
-                            self._context.name, 
+                            self._context.name,
                             'saved_state',
                             self._basename)
         with open(path, 'rb') as infile:
@@ -408,14 +434,14 @@ class ResultsProxy(object):
         """
         Take the CASA log snippets attached to each result and write them to
         the appropriate weblog directory. The log snippet is deleted from the
-        result after a successful write to keep the pickle size down. 
+        result after a successful write to keep the pickle size down.
         """
         if not hasattr(result, 'casalog'):
             return
 
         stage_dir = os.path.join(self._context.report_dir,
                                  'stage%s' % result.stage_number)
-        if not os.path.exists(stage_dir):                
+        if not os.path.exists(stage_dir):
             os.makedirs(stage_dir)
 
         stagelog_entries = result.casalog
@@ -425,10 +451,10 @@ class ResultsProxy(object):
         stagelog_path = os.path.join(stage_dir, 'casapy.log')
         with open(stagelog_path, 'w') as stagelog:
             LOG.debug('Writing CASA log entries for stage %s (%s -> %s)' %
-                      (result.stage_number, start, end))                          
+                      (result.stage_number, start, end))
             stagelog.write(stagelog_entries)
 
-        # having written the log entries, the CASA log entries have no 
+        # having written the log entries, the CASA log entries have no
         # further use. Remove them to keep the size of the pickle small
         delattr(result, 'casalog')
 
@@ -472,7 +498,7 @@ class ResultsList(Results):
 
 class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
     """
-    StandardTaskTemplate is a template class for pipeline reduction tasks whose 
+    StandardTaskTemplate is a template class for pipeline reduction tasks whose
     execution can be described by a common four-step process:
 
     #. prepare(): examine the measurement set and prepare a list of\
@@ -486,10 +512,10 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
     Simpletask implements the :class:`Task` interface and steps 2 and 4 in the
     above process, leaving subclasses to implement
-    :func:`~SimpleTask.prepare` and :func:`~SimpleTask.analyse`.    
+    :func:`~SimpleTask.prepare` and :func:`~SimpleTask.analyse`.
 
 
-    A Task and its :class:`Inputs` are closely aligned. It is anticipated that 
+    A Task and its :class:`Inputs` are closely aligned. It is anticipated that
     the Inputs for a Task will be created using the :attr:`Task.Inputs`
     reference rather than locating and instantiating the partner class
     directly, eg.::
@@ -534,8 +560,8 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
         :param parameters: the parameters to pass through to the subclass.
             Refer to the implementing subclass for specific information on
-            what these parameters are.            
-        :rtype: a class implementing :class:`~pipeline.api.Result`        
+            what these parameters are.
+        :rtype: a class implementing :class:`~pipeline.api.Result`
         """
         raise NotImplementedError
 
@@ -546,7 +572,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         returning any final jobs to execute.
 
         :param jobs: the job requests generated by :func:`~SimpleTask.prepare`
-        :type jobs: a list of\ 
+        :type jobs: a list of\
             :class:`~pipeline.infrastructure.jobrequest.JobRequest`
         :rtype: \
             :class:`~pipeline.api.Result`
@@ -554,17 +580,18 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @timestamp
+    @matplotlibrc_handler
     @capture_log
     @result_finaliser
     def execute(self, dry_run=True, **parameters):
         # The filenamer deletes any identically named file when constructing
         # the filename, which is desired when really executing a task but not
-        # when performing a dry run. This line disables the 
+        # when performing a dry run. This line disables the
         # 'delete-on-generate' behaviour.
         filenamer.NamingTemplate.dry_run = dry_run
 
         if utils.is_top_level_task():
-            # Set the task name, but only if this is a top-level task. This 
+            # Set the task name, but only if this is a top-level task. This
             # name will be prepended to every data product name as a sign of
             # their origin
             try:
@@ -573,14 +600,18 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                 name = self.__class__.__name__
             filenamer.NamingTemplate.task = name
 
-            # initialise the subtask counter, which will be subsequently 
-            # incremented for every execute within this top-level task  
+            # initialise the subtask counter, which will be subsequently
+            # incremented for every execute within this top-level task
             self.inputs.context.task_counter += 1
-            LOG.info('Starting execution for stage %s', 
+            LOG.info('Starting execution for stage %s',
                      self.inputs.context.task_counter)
             self.inputs.context.subtask_counter = 0
 
-            # log the invoked pipeline task and its comment to 
+            event = TaskStartedEvent(context_name=self.inputs.context.name,
+                                     stage_number=self.inputs.context.task_counter)
+            eventbus.send_message(event)
+
+            # log the invoked pipeline task and its comment to
             # casa_commands.log
             _log_task(self, dry_run)
 
@@ -601,7 +632,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         handler = logging.CapturingHandler(logging.WARNING)
 
         try:
-            # if this task does not handle multiple input mses but was 
+            # if this task does not handle multiple input mses but was
             # invoked with multiple mses in its inputs, call our utility
             # function to invoke the task once per ms.
             if not self.is_multi_vis_task:
@@ -640,6 +671,10 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             else:
                 result.logrecords.extend(handler.buffer)
 
+            event = TaskCompleteEvent(context_name=self.inputs.context.name,
+                                      stage_number=self.inputs.context.task_counter)
+            eventbus.send_message(event)
+
             return result
 
         except Exception as ex:
@@ -668,6 +703,10 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                 else:
                     result.logrecords.extend(handler.buffer)
 
+                event = TaskAbnormalExitEvent(context_name=self.inputs.context.name,
+                                              stage_number=self.inputs.context.task_counter)
+                eventbus.send_message(event)
+
                 return result
             else:
                 raise
@@ -695,7 +734,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         Handle a single task invoked for multiple measurement sets.
 
         This function handles the case when the vis parameter on the Inputs
-        specifies multiple measurement sets. In this situation, we want to 
+        specifies multiple measurement sets. In this situation, we want to
         invoke the task for each individual MS. We could do this by having
         each task iterate over the measurement sets involved, but in order to
         keep the task implementations as simple as possible, that complexity
@@ -704,12 +743,12 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         If the task wants to handle the multiple measurement sets
         itself it should override is_multi_vis_task.
         """
-        # The following code loops through the MSes specified in vis, 
+        # The following code loops through the MSes specified in vis,
         # executing the task for the first value (head) and then appending the
         # results of executing the remainder of the MS list (tail).
         if len(self.inputs.vis) is 0:
             # we don't return an empty list as the timestamp decorator wants
-            # to set attributes on this value, which it can't on a built-in 
+            # to set attributes on this value, which it can't on a built-in
             # list
             return ResultsList()
 
@@ -740,7 +779,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
         for name in names:
             if hasattr(self.inputs, name):
-                property_value = getattr(self.inputs, name)            
+                property_value = getattr(self.inputs, name)
 
                 head = property_value[0]
                 tail = property_value[1:]
@@ -761,7 +800,7 @@ class Executor(object):
     def __init__(self, context, dry_run=True):
         self._dry_run = dry_run
         self._context = context
-        self._cmdfile = os.path.join(context.report_dir, 
+        self._cmdfile = os.path.join(context.report_dir,
                                      context.logs['casa_commands'])
 
     @capture_log
@@ -775,7 +814,7 @@ class Executor(object):
 
         :rtype: :class:`~pipeline.api.Result`
         """
-        # execute the job, capturing its results object                
+        # execute the job, capturing its results object
         result = job.execute(dry_run=self._dry_run, **kwargs)
 
         if self._dry_run:
@@ -801,9 +840,14 @@ class Executor(object):
         # CAS-5262: casa_commands.log written by the pipeline should
         # be formatted to be more easily readable.
 
-        # replace the working directory with ''..
-        job_str = re.sub('%s/' % self._context.output_dir, '',
-                         str(job))
+        # If the output directory is set to a valid string, then replace any
+        # occurrence of this output path in arguments with an empty string, to
+        # ensure the casa commands log does not contain hardcoded paths
+        # specific to where the pipeline ran.
+        if os.path.isdir(self._context.output_dir):
+            job_str = re.sub('%s/' % self._context.output_dir, '', str(job))
+        else:
+            job_str = str(job)
 
         # wrap the text at the first open bracket
         if '(' in job_str:
@@ -825,7 +869,7 @@ def _log_task(task, dry_run):
         return
 
     context = task.inputs.context
-    filename = os.path.join(context.report_dir, 
+    filename = os.path.join(context.report_dir,
                             context.logs['casa_commands'])
     comment = ''
 
@@ -851,9 +895,9 @@ def property_with_default(name, default, doc=None):
     Return a property whose value is reset to a default value when setting the
     property value to None.
     """
-    # our standard name for the private property backing the public property 
+    # our standard name for the private property backing the public property
     # is a prefix of one underscore
-    varname = '_' + name 
+    varname = '_' + name
 
     def getx(self):
         return object.__getattribute__(self, varname)
@@ -891,8 +935,7 @@ def write_pipeline_casa_tasks(context):
         state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
                            for cls, name, value in project.get_state(o)]
 
-    template = '''__rethrow_casa_exceptions = True
-context = h_init()
+    template = '''context = h_init()
 %s
 try:
 %s
@@ -901,7 +944,7 @@ finally:
 ''' % ('\n'.join(state_commands), task_string)
 
     f = os.path.join(context.report_dir, context.logs['pipeline_script'])
-    with open(f, 'w') as casatask_file: 
+    with open(f, 'w') as casatask_file:
         casatask_file.write(template)
 
 
