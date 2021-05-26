@@ -144,11 +144,6 @@ agent_description = {
 }
 
 total_keys = {
-	'TOTAL'        : 'All Data',
-	'SCIENCE SPWS' : 'Science Spectral Windows',
-	'BANDPASS'     : 'Bandpass',
-	'AMPLITUDE'    : 'Flux',
-	'PHASE'        : 'Phase',
 	'TARGET'       : 'Target (science spws)'
 }
 
@@ -335,7 +330,7 @@ def format_spwmap(spwmap, scispws):
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']: 
+%for k in ['TARGET']: 
 		<tr>
 			<th>${total_keys[k]}</th>		
 	% for agent in agents:
