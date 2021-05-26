@@ -1,6 +1,7 @@
 import math
 import os
 import collections
+from typing import Union, List, Dict, Sequence, Optional
 
 import numpy as np
 
@@ -188,11 +189,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             LOG.info("Setting model for field " + str(m.get_fields()[myfield].id) + " spw " + str(
                                 spw.id) + " using " + model_image)
 
-                            # Double check, but the fluxdensity=-1 should not matter since
-                            #  the model image take precedence
                             try:
+                                # fluxdensity=-1 should not matter since the model image take precedence
                                 job = self._fluxgains_setjy(calMs, str(m.get_fields()[myfield].id), str(spw.id),
-                                                            model_image, -1)
+                                                            model_image)
                                 jobs.append(job)
                             except Exception as e:
                                 # something has gone wrong, return an empty result
@@ -345,7 +345,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         return self.sources, self.flux_densities, self.spws, weblog_results,\
                spindex_results, caltable, fluxscale_result
 
-    def _do_fluxscale(self, context, calMs, caltable):
+    def _do_fluxscale(self, context, calMs: str, caltable: str) -> List:
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         flux_field_select_string = context.evla['msinfo'][m.name].flux_field_select_string
@@ -408,10 +408,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         return fluxscale_result
 
-    def find_fitorder(self, spwlist=[]):
+    def find_fitorder(self, spwlist: List[str] = []) -> int:
         """
         :param spwlist: list of string values for spw ids
-        :return: fitorder
+        :return: fitorder integer
         """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -478,7 +478,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         return fitorder
 
-    def _do_powerfit(self, fluxscale_result):
+    def _do_powerfit(self, fluxscale_result: List):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2band = m.get_vla_spw2band()
@@ -835,7 +835,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         return results, weblog_results, spindex_results, fluxscale_result
 
-    def _do_setjy(self, calMs, fluxscale_result):
+    def _do_setjy(self, calMs: str, fluxscale_result: List) -> bool:
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         dictkeys = list(fluxscale_result.keys())
@@ -889,7 +889,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         return True
 
-    def _fluxgains_setjy(self, calMs, field, spw, modimage, fluxdensity):
+    def _fluxgains_setjy(self, calMs: str, field: str, spw: str, modimage: str):
 
         try:
             task_args = {'vis': calMs,
@@ -910,9 +910,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.info(e)
             return None
 
-    def _do_gaincal(self, context, calMs, caltable, calmode, gaintablelist,
-                    solint='int', minsnr=3.0, refAnt=None, field='', solnorm=False, append=False,
-                    fluxflag=False, vlassmode=False, spw=''):
+    def _do_gaincal(self, context, calMs: str, caltable: str, calmode: str, gaintablelist: List[str],
+                    solint: str = 'int', minsnr: float = 3.0, refAnt: str = None, field: str = '',
+                    solnorm: bool = False, append: bool = False,
+                    fluxflag: bool = False, vlassmode: bool = False, spw: str = ''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         minBL_for_cal = m.vla_minbaselineforcal()
@@ -996,7 +997,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             return self._executor.execute(job)
 
-    def re_reference_polynomial(self, c1, original_ref_freq, new_ref_freq):
+    def re_reference_polynomial(self, c1: List, original_ref_freq: float, new_ref_freq: float) -> List:
         shift = np.log10(new_ref_freq / original_ref_freq)
         p1 = np.poly1d(c1[::-1])
         r2 = np.roots(p1) - shift
