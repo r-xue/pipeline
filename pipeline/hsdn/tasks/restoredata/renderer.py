@@ -4,18 +4,20 @@ import shutil
 import itertools
 import operator
 
+import pipeline.domain.measures as measures
 import pipeline.infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 from . import csvfilereader
 
-from pipeline.h.tasks.applycal.renderer import *
+from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.h.tasks.applycal import renderer as super_renderer
+from pipeline.hsd.tasks.applycal import renderer as sdapplycal
 
 LOG = logging.get_logger(__name__)
 
@@ -24,8 +26,8 @@ JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
-class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='hsdn_restoredata.mako',
+class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRenderer):
+    def __init__(self, uri='hsdn_restoredata.mako', 
                  description='Restoredata with scale adjustment between beams for NRO FOREST data.',
                  always_rerender=False):
         super(T2_4MDetailsNRORestoreDataRenderer, self).__init__(
@@ -202,13 +204,16 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                                   'stage%s' % applycal_results.stage_number)
         LOG.debug('weblog_dir = {0}'.format(weblog_dir));
 
+        intents_to_summarise = ['TARGET'] 
         flag_totals = {}
         for r in applycal_results:
             LOG.debug('r in applycal_results = {0}'.format(r));
 
             if r.inputs['flagsum'] == True:
-                flag_totals = utils.dict_merge(flag_totals, self.flags_for_result(r, context))
-
+                flag_totals = utils.dict_merge(flag_totals,
+                                               flagutils.flags_for_result(
+                                                   r, context, intents_to_summarise=intents_to_summarise
+                                               )) 
         calapps = {}
         for r in applycal_results:
             calapps = utils.dict_merge(calapps,
@@ -249,99 +254,6 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         LOG.debug('ctx = {0}'.format(ctx));
 
     @staticmethod
-    def science_plots_for_result(context, result, plotter_cls, fields, uvrange=None, renderer_cls=None):
-        overrides = {'coloraxis': 'spw'}
-
-        if uvrange is not None:
-            overrides['uvrange'] = uvrange
-            # CAS-9395: ALMA pipeline weblog plot of calibrated amp vs.
-            # frequency with avgantenna=True and a uvrange upper limit leads
-            # to misleading results and wrong conclusions
-            overrides['avgantenna'] = False
-
-        plots = []
-        plot_output_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-        calto, _ = _get_data_selection_for_plot(context, result, ['TARGET'])
-        for field in fields:
-            # override field when plotting amp/phase vs frequency, as otherwise
-            # the field is resolved to a list of all field IDs
-            overrides['field'] = field
-
-            plotter = plotter_cls(context, plot_output_dir, calto, 'TARGET', **overrides)
-            plots.extend(plotter.plot())
-        for plot in plots:
-            plot.parameters['intent'] = ['TARGET']
-        if renderer_cls is not None:
-            renderer = renderer_cls(context, result, plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-
-        return plots
-
-    def create_single_dish_science_plots(self, context, results):
-        """
-        Create plots for the science targets, returning two dictionaries of
-        vis:[Plots].
-        MODIFIED for single dish
-        """
-        amp_vs_freq_summary_plots = collections.defaultdict(dict)
-        max_uvs = collections.defaultdict(dict)
-
-        amp_vs_freq_detail_plots = {}
-        for result in results:
-            vis = os.path.basename(result.inputs['vis'])
-            ms = context.observing_run.get_ms(vis)
-            max_uvs[vis] = measures.Distance(value=0.0, units=measures.DistanceUnits.METRE)
-            amp_vs_freq_summary_plots[vis] = []
-
-            # Plot for 1 science field (either 1 science target or for a mosaic 1
-            # pointing). The science field that should be chosen is the one with
-            # the brightest average amplitude over all spws
-            representative_source_name, _ = ms.get_representative_source_spw()
-            representative_source = {s for s in ms.sources if s.name == representative_source_name}
-            if len(representative_source) >= 1:
-                representative_source = representative_source.pop()
-
-            brightest_field = get_brightest_field(ms, representative_source)
-            plots = self.science_plots_for_result(context,
-                                                  result,
-                                                  applycal.RealVsFrequencySummaryChart,
-                                                  [brightest_field.id], None)
-            for plot in plots:
-                plot.parameters['source'] = representative_source
-            amp_vs_freq_summary_plots[vis].extend(plots)
-
-            if pipeline.infrastructure.generate_detail_plots(result):
-                fields = set()
-                # scans = ms.get_scans(scan_intent='TARGET')
-                # for scan in scans:
-                #     fields.update([field.id for field in scan.fields])
-                with casa_tools.MSMDReader(vis) as msmd:
-                    fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
-
-                # Science target detail plots. Note that summary plots go onto the
-                # detail pages; we don't create plots per spw or antenna
-                plots = self.science_plots_for_result(context,
-                                                      result,
-                                                      applycal.RealVsFrequencySummaryChart,
-                                                      fields, None,
-                                                      ApplycalAmpVsFreqSciencePlotRenderer)
-                amp_vs_freq_detail_plots[vis] = plots
-
-        amp_vs_freq_subpage = None
-        for d, plotter_cls in (
-                (amp_vs_freq_detail_plots, ApplycalAmpVsFreqSciencePlotRenderer),):
-            if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
-                renderer = plotter_cls(context, result, all_plots)
-                with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
-                amp_vs_freq_subpage = renderer.path
-        amp_vs_freq_subpages = dict((vis, amp_vs_freq_subpage) for vis in amp_vs_freq_detail_plots.keys())
-
-        return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs
-
-    @staticmethod
     def __get_factor(factor_dict, vis, spwid, ant_name, pol_name):
         """
         Returns a factor corresponding to vis, spwid, ant_name, and pol_name from
@@ -354,300 +266,3 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 pol_name not in factor_dict[vis][spwid][ant_name]):
             return None
         return factor_dict[vis][spwid][ant_name][pol_name]
-
-    def plots_for_result(self, context, result, plotter_cls, intents, renderer_cls=None, **kwargs):
-        vis = os.path.basename(result.inputs['vis'])
-        output_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-        calto, str_intents = _get_data_selection_for_plot(context, result, intents)
-        plotter = plotter_cls(context, output_dir, calto, str_intents, **kwargs)
-        plots = plotter.plot()
-        for plot in plots:
-            plot.parameters['intent'] = intents
-        d = {vis: plots}
-        path = None
-        if renderer_cls is not None:
-            renderer = renderer_cls(context, result, plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                path = renderer.path
-        return d, path
-
-    def calapps_for_result(self, result):
-        calapps = collections.defaultdict(list)
-        for calapp in result.applied:
-            vis = os.path.basename(calapp.vis)
-            calapps[vis].append(calapp)
-        return calapps
-
-    def caltypes_for_result(self, result):
-        type_map = {
-            'bandpass': 'Bandpass',
-            'gaincal': 'Gain',
-            'tsys': 'T<sub>sys</sub>',
-            'wvr': 'WVR',
-            'ps': 'Sky',
-        }
-
-        d = {}
-        for calapp in result.applied:
-            for calfrom in calapp.calfrom:
-                caltype = type_map.get(calfrom.caltype, calfrom.caltype)
-                if calfrom.caltype == 'gaincal':
-                    # try heuristics to detect phase-only and amp-only
-                    # solutions
-                    caltype += self.get_gain_solution_type(calfrom.gaintable)
-                d[calfrom.gaintable] = caltype
-        return d
-
-    def get_gain_solution_type(self, gaintable):
-        # CAS-9835: hif_applycal() "type" descriptions are misleading /
-        # incomplete in weblog table
-        #
-        # quick hack: match filenamer-generated file names
-        #
-        # TODO find a way to attach the originating task to the callibrary entries
-        if gaintable.endswith('.gacal.tbl'):
-            return ' (amplitude only)'
-        if gaintable.endswith('.gpcal.tbl'):
-            return ' (phase only)'
-        if gaintable.endswith('.gcal.tbl'):
-            return ''
-
-        # resort to inspecting caltable values to infer what its type is
-
-        # solve circular import problem by importing at run-time
-        from pipeline.infrastructure import casa_tasks
-
-        # get stats on amp solution of gaintable
-        calstat_job = casa_tasks.calstat(caltable=gaintable, axis='amp',
-                                         datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)
-        stats = calstat_result['CPARAM']
-
-        # amp solutions of unity imply phase-only was requested
-        tol = 1e-3
-        no_amp_soln = all([utils.approx_equal(stats['sum'], stats['npts'], tol),
-                           utils.approx_equal(stats['min'], 1, tol),
-                           utils.approx_equal(stats['max'], 1, tol)])
-
-        # same again for phase solution
-        calstat_job = casa_tasks.calstat(caltable=gaintable, axis='phase',
-                                         datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)
-        stats = calstat_result['CPARAM']
-
-        # phase solutions ~ 0 implies amp-only solution
-        tol = 1e-5
-        no_phase_soln = all([utils.approx_equal(stats['sum'], 0, tol),
-                             utils.approx_equal(stats['min'], 0, tol),
-                             utils.approx_equal(stats['max'], 0, tol)])
-
-        if no_phase_soln and not no_amp_soln:
-            return ' (amplitude only)'
-        if no_amp_soln and not no_phase_soln:
-            return ' (phase only)'
-        return ''
-
-    def flags_for_result(self, result, context):
-        ms = context.observing_run.get_ms(result.inputs['vis'])
-        summaries = result.summaries
-        by_intent = self.flags_by_intent(ms, summaries)
-        by_spw = self.flags_by_science_spws(ms, summaries)
-        return {ms.basename: utils.dict_merge(by_intent, by_spw)}
-
-    def flags_by_intent(self, ms, summaries):
-        # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-        intent_scans = {}
-        for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'CHECK', 'TARGET'):
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent_scans[intent] = [str(s.id) for s in ms.scans
-                                    if intent in s.intents]
-
-        # while we're looping, get the total flagged by looking in all scans
-        intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
-        total = collections.defaultdict(dict)
-        previous_summary = None
-        for summary in summaries:
-
-            for intent, scan_ids in intent_scans.items():
-                flagcount = 0
-                totalcount = 0
-
-                for i in scan_ids:
-                    # workaround for KeyError exception when summary
-                    # dictionary doesn't contain the scan
-                    if i not in summary['scan']:
-                        continue
-
-                    flagcount += int(summary['scan'][i]['flagged'])
-                    totalcount += int(summary['scan'][i]['total'])
-
-                    if previous_summary:
-                        flagcount -= int(previous_summary['scan'][i]['flagged'])
-
-                ft = FlagTotal(flagcount, totalcount)
-                total[summary['name']][intent] = ft
-
-            previous_summary = summary
-
-        return total
-
-    def flags_by_science_spws(self, ms, summaries):
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-        total = collections.defaultdict(dict)
-        previous_summary = None
-        for summary in summaries:
-            flagcount = 0
-            totalcount = 0
-            for spw in science_spws:
-                spw_id = str(spw.id)
-                flagcount += int(summary['spw'][spw_id]['flagged'])
-                totalcount += int(summary['spw'][spw_id]['total'])
-                if previous_summary:
-                    flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
-            ft = FlagTotal(flagcount, totalcount)
-            total[summary['name']]['SCIENCE SPWS'] = ft
-            previous_summary = summary
-        return total
-
-
-class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated amplitude vs frequency for %s' % vis
-        outfile = filenamer.sanitize('amp_vs_freq-%s.html' % vis)
-
-        super(ApplycalAmpVsFreqPlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalPhaseVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated phase vs frequency for %s' % vis
-        outfile = filenamer.sanitize('phase_vs_freq-%s.html' % vis)
-
-        super(ApplycalPhaseVsFreqPlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalAmpVsFreqSciencePlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated amplitude vs frequency for %s' % vis
-        outfile = filenamer.sanitize('science_amp_vs_freq-%s.html' % vis)
-
-        super(ApplycalAmpVsFreqSciencePlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_field_detail_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalAmpVsUVSciencePlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated amplitude vs UV distance for %s' % vis
-        outfile = filenamer.sanitize('science_amp_vs_uv-%s.html' % vis)
-
-        super(ApplycalAmpVsUVSciencePlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_field_detail_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalAmpVsUVPlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated amplitude vs UV distance for %s' % vis
-        outfile = filenamer.sanitize('amp_vs_uv-%s.html' % vis)
-
-        super(ApplycalAmpVsUVPlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalPhaseVsUVPlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated phase vs UV distance for %s' % vis
-        outfile = filenamer.sanitize('phase_vs_uv-%s.html' % vis)
-
-        super(ApplycalPhaseVsUVPlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalAmpVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated amplitude vs times for %s' % vis
-        outfile = filenamer.sanitize('amp_vs_time-%s.html' % vis)
-
-        super(ApplycalAmpVsTimePlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context,
-                result, plots, title, outfile)
-
-
-class ApplycalPhaseVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
-    def __init__(self, context, result, plots):
-        vis = utils.get_vis_from_plots(plots)
-
-        title = 'Calibrated phase vs times for %s' % vis
-        outfile = filenamer.sanitize('phase_vs_time-%s.html' % vis)
-
-        super(ApplycalPhaseVsTimePlotRenderer, self).__init__(
-                'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
-                result, plots, title, outfile)
-
-
-def _get_data_selection_for_plot(context, result, intent):
-    """
-    Inspect a result, returning a CalTo that matches the data selection of the
-    applied calibration.
-
-    Background: we don't want to create plots for an entire MS, only the data
-    selection of interest. Rather than calculate and explicitly pass in the
-    data selection of interest, this function calculates the data selection of
-    interest by inspecting the results and extracting the data selection that
-    the calibration is applied to.
-
-    :param context: pipeline Context
-    :param result: a Result with an .applied property containing CalApplications
-    :param intent: pipeline intent
-    :return:
-    """
-    spw = _get_calapp_arg(result, 'spw')
-    field = _get_calapp_arg(result, 'field')
-    antenna = _get_calapp_arg(result, 'antenna')
-    intent = ','.join(intent).upper()
-
-    vis = {calapp.vis for calapp in result.applied}
-    assert (len(vis) is 1)
-    vis = vis.pop()
-
-    wanted = set(intent.split(','))
-    fields_with_intent = set()
-    for f in context.observing_run.get_ms(vis).get_fields(field):
-        intersection = f.intents.intersection(wanted)
-        if not intersection:
-            continue
-        fields_with_intent.add(f.name)
-    field = ','.join(fields_with_intent)
-
-    calto = callibrary.CalTo(vis, field, spw, antenna, intent)
-
-    return calto, intent
-
-
-def _get_calapp_arg(result, arg):
-    s = set()
-    for calapp in result.applied:
-        s.update(utils.safe_split(getattr(calapp, arg)))
-    return ','.join(s)
