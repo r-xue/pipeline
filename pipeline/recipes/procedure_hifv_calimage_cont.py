@@ -77,7 +77,7 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hif_makeimlist(intent='PHASE,BANDPASS', specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean images for the selected calibrators
-        hif_makeimages(hm_masking='none')
+        hif_makeimages()
 
         # Split out the target data
         hif_mstransform(pipelinemode=pipelinemode)
@@ -89,7 +89,7 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hif_makeimlist(specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean cont images for the selected targets
-        hif_makeimages(hm_masking='none', hm_cyclefactor=3.0)
+        hif_makeimages(hm_cyclefactor=3.0)
 
         # Export the data
         hifv_exportdata(pipelinemode=pipelinemode)

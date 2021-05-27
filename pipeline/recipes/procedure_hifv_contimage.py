@@ -32,7 +32,7 @@ def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interact
         hif_makeimlist(specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean cont images for the selected targets
-        hif_makeimages(hm_masking='none', hm_cyclefactor=3.0)
+        hif_makeimages(hm_cyclefactor=3.0)
 
         # Export the data
         hifv_exportdata(imaging_products_only=True, pipelinemode=pipelinemode)
