@@ -149,6 +149,36 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return pblimit_image, pblimit_cleanmask
 
+    def niter(self):
+        """niter heuristic value.
+        See PIPE-677"""
+        return 50
+
+    def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
+        """VLA auto-boxing parameters.
+        See PIPE-677"""
+
+        sidelobethreshold = None
+        noisethreshold = None
+        lownoisethreshold = None
+        negativethreshold = None
+        minbeamfrac = None
+        growiterations = None
+        dogrowprune = None
+        minpercentchange = None
+        fastnoise = None
+
+        # iter1, shallow clean, with pruning off, other automasking settings are the default
+        if iteration in [1, 2]:
+            sidelobethreshold = 2.0
+            minbeamfrac = 0.0
+        # iter2, same settings, but pruning is turned back on
+        if iteration == 2:
+            minbeamfrac = 0.3
+
+        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
+                dogrowprune, minpercentchange, fastnoise)
+
     def nterms(self, spwspec) -> Union[int, None]:
         """Tclean nterms parameter heuristics.
 
@@ -211,7 +241,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         if hm_nsigma:
             return hm_nsigma
         else:
-            return 5.0
+            # PIPE-677: reduce from 5.0 (value set in PIPE-678)
+            return 4.0
 
     def threshold(self, iteration: int, threshold: Union[str, float], hm_masking: str) -> Union[str, float]:
         """Tclean threshold parameter heuristics.
