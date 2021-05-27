@@ -5,6 +5,9 @@ import time
 
 import numpy
 
+from typing import Dict, List
+from pipeline.domain import MeasurementSet
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
@@ -14,7 +17,6 @@ from pipeline.domain.datatable import OnlineFlagIndex, TsysFlagIndex
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
-from .flagsummary import _get_iteration
 from .. import common
 from .SDFlagRule import INVALID_STAT
 
@@ -793,44 +795,10 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             tFLAG = DataTable.getcell('FLAG', ID)[polid]
             tPFLAG = DataTable.getcell('FLAG_PERMANENT', ID)[polid]
             tSFLAG = DataTable.getcell('FLAG_SUMMARY', ID)
-            pflag = self._get_permanent_flag_summary(tPFLAG, FlagRule)
-            sflag = self._get_stat_flag_summary(tFLAG, FlagRule)
+            pflag = _get_permanent_flag_summary(tPFLAG, FlagRule)
+            sflag = _get_stat_flag_summary(tFLAG, FlagRule)
             tSFLAG[polid] = pflag*sflag
             DataTable.putcell('FLAG_SUMMARY', ID, tSFLAG)
-
-    def _get_permanent_flag_summary(self, pflag, FlagRule):
-        # FLAG_PERMANENT[0] --- 'WeatherFlag' --> not used
-        # FLAG_PERMANENT[1] --- 'TsysFlag'
-        # FLAG_PERMANENT[2] --- 'UserFlag'    --> not used
-        # FLAG_PERMANENT[3] --- 'OnlineFlag' (fixed)
-
-        # OnlineFlag is always active
-        if pflag[OnlineFlagIndex] == 0:
-            return 0
-
-        # PIPE-1114: WeatherFlag and UserFlag are removed, only TsysFlag remains.
-        mask = 1
-        if FlagRule['TsysFlag']['isActive'] and pflag[TsysFlagIndex] == 0:
-            mask = 0
-
-        return mask
-
-    def _get_stat_flag_summary(self, tflag, FlagRule):
-        # FLAG[0] --- 'LowFrRMSFlag' (OBSOLETE)
-        # FLAG[1] --- 'RmsPostFitFlag'
-        # FLAG[2] --- 'RmsPreFitFlag'
-        # FLAG[3] --- 'RunMeanPostFitFlag'
-        # FLAG[4] --- 'RunMeanPreFitFlag'
-        # FLAG[5] --- 'RmsExpectedPostFitFlag'
-        # FLAG[6] --- 'RmsExpectedPreFitFlag'
-        types = ['RmsPostFitFlag', 'RmsPreFitFlag', 'RunMeanPostFitFlag', 'RunMeanPreFitFlag',
-                 'RmsExpectedPostFitFlag', 'RmsExpectedPreFitFlag']
-        mask = 1
-        for idx in range(len(types)):
-            if FlagRule[types[idx]]['isActive'] and tflag[idx+1] == 0:
-                mask = 0
-                break
-        return mask
 
     def ResetDataTableMaskList(self, datatable, TimeTable):
         """Reset MASKLIST column of DataTable for row indices in TimeTable"""
@@ -911,3 +879,87 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                          "reason='blflag'"]
                 fout.write(str(" ").join(line)+"\n")
         return valid_flag_commands
+
+
+def _get_permanent_flag_summary( pflag:List[int], FlagRule:Dict ) -> int:
+    """
+    get permanent flag summary
+
+    Args:
+        pflag    : list of  permanent flags
+                     [0] --- 'WeatherFlag' --> not used
+                     [1] --- 'TsysFlag'
+                     [2] --- 'UserFlag'    --> not used
+                     [3] --- 'OnlineFlag' (fixed)
+        FlagRule : Flag rule
+    Returns:
+        mask
+    """    
+    # OnlineFlag is always active
+    if pflag[OnlineFlagIndex] == 0:
+        mask = 0
+    # PIPE-1114: WeatherFlag and UserFlag are removed, only TsysFlag remains.
+    elif FlagRule['TsysFlag']['isActive'] and pflag[TsysFlagIndex] == 0:
+        mask = 0
+    else:
+        mask = 1
+
+    return mask
+
+
+def _get_stat_flag_summary( tflag:List[int], FlagRule:Dict ) -> int:
+    """
+    get stat flag summary
+
+    Args:
+        tFlag    : List of flags
+                      [0] --- 'LowFrRMSFlag' (OBSOLETE)
+                      [1] --- 'RmsPostFitFlag'
+                      [2] --- 'RmsPreFitFlag'
+                      [3] --- 'RunMeanPostFitFlag'
+                      [4] --- 'RunMeanPreFitFlag'
+                      [5] --- 'RmsExpectedPostFitFlag'
+                      [6] --- 'RmsExpectedPreFitFlag'
+        FlagRule : Flag rule
+    Returns:
+        mask
+    """
+    types = ['RmsPostFitFlag', 'RmsPreFitFlag', 'RunMeanPostFitFlag', 'RunMeanPreFitFlag',
+             'RmsExpectedPostFitFlag', 'RmsExpectedPreFitFlag']
+    mask = 1
+    for idx in range(len(types)):
+        if FlagRule[types[idx]]['isActive'] and tflag[idx+1] == 0:
+            mask = 0
+            break
+    return mask
+
+
+# validity check in _get_iteration is not necessary since group_member
+# has already been validated at upper level (baselineflag.py)
+def _get_iteration(reduction_group:Dict, msobj:MeasurementSet, antid:int, fieldid:int, spwid:int) -> int:
+    """
+    Get iteration 
+
+    Args:
+        reduction_group : Reduction group dictionary.
+        msobj           : measurment set
+        antid           : ant id
+        fieldid         : field id
+        spwid           : spw id
+    Returns:
+        iteration
+    Raises:
+        RuntimeError when group_desc does not hold multiple members
+    """
+    members = []
+    for group_desc in reduction_group.values():
+        #memids = common.get_valid_ms_members(group_desc, [msobj.name], antid, fieldid, spwid)
+        #members.extend([group_desc[i] for i in memids])
+        member_id = group_desc._search_member(msobj, antid, spwid, fieldid)
+        if member_id is not None:
+            members.append(group_desc[member_id])
+    if len(members) == 1:
+        return members[0].iteration
+    elif len(members) == 0:
+        raise RuntimeError('Given (%s, %s, %s) is not in reduction group.' % (antid, fieldid, spwid))
+    raise RuntimeError('Given (%s, %s, %s) is in more than one reduction groups.' % (antid, fieldid, spwid))

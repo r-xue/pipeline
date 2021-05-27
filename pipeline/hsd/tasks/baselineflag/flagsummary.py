@@ -10,6 +10,7 @@ from pipeline.domain.datatable import OnlineFlagIndex, TsysFlagIndex
 from pipeline.domain import DataTable
 
 from . import SDFlagPlotter as SDP
+from .worker import _get_permanent_flag_summary, _get_iteration
 from .. import common
 from ..common import utils as sdutils
 
@@ -124,37 +125,6 @@ class SDBLFlagSummary(object):
 
         return flagSummary
 
-    def _get_permanent_flag_summary(self, pflag, FlagRule):
-        # FLAG_PERMANENT[0] --- 'WeatherFlag' --> not used
-        # FLAG_PERMANENT[1] --- 'TsysFlag'
-        # FLAG_PERMANENT[2] --- 'UserFlag '   --> not used 
-        # FLAG_PERMANENT[3] --- 'OnlineFlag' (fixed)
-        if pflag[OnlineFlagIndex] == 0:
-            return 0
-
-        # PIPE-1114: WeatherFlag and UserFlag are removed, only TsysFlag remains.
-        mask = 1
-        if FlagRule['TsysFlag']['isActive'] and pflag[TsysFlagIndex] == 0:
-            mask = 0
-
-        return mask
-
-    def _get_stat_flag_summary(self, tflag, FlagRule):
-        # FLAG[0] --- 'LowFrRMSFlag' (OBSOLETE)
-        # FLAG[1] --- 'RmsPostFitFlag'
-        # FLAG[2] --- 'RmsPreFitFlag'
-        # FLAG[3] --- 'RunMeanPostFitFlag'
-        # FLAG[4] --- 'RunMeanPreFitFlag'
-        # FLAG[5] --- 'RmsExpectedPostFitFlag'
-        # FLAG[6] --- 'RmsExpectedPreFitFlag'
-        types = ['RmsPostFitFlag', 'RmsPreFitFlag', 'RunMeanPostFitFlag', 'RunMeanPreFitFlag',
-                 'RmsExpectedPostFitFlag', 'RmsExpectedPreFitFlag']
-        mask = 1
-        for idx in range(len(types)):
-            if FlagRule[types[idx]]['isActive'] and tflag[idx+1] == 0:
-                mask = 0
-                break
-        return mask
 
     def plot_flag(self, DataTable, ids, polid, PosGap, TimeGap, threshold, FlagRule, FigFileDir, FigFileRoot, is_baselined):
         FlagRule_local = copy.deepcopy(FlagRule)
@@ -182,14 +152,12 @@ class SDBLFlagSummary(object):
             tPFLAG = DataTable.getcell('FLAG_PERMANENT', ID)[polid]
             tTSYS = DataTable.getcell('TSYS', ID)[polid]
             tSTAT = DataTable.getcell('STATISTICS', ID)[polid]
-
-            # permanent flag
-            Flag = self._get_permanent_flag_summary(tPFLAG, FlagRule_local)
-            PermanentFlag.append(Flag)
             # FLAG_SUMMARY
-            Flag *= self._get_stat_flag_summary(tFLAG, FlagRule_local)
+            Flag = DataTable.getcell('FLAG_SUMMARY', ID)[polid]
             if Flag == 0:
                 FlaggedRows.append(row)
+            # permanent flag
+            PermanentFlag.append( _get_permanent_flag_summary(tPFLAG, FlagRule_local) )
             # Tsys flag
             NPpdata[0][N] = tTSYS
             NPpflag[0][N] = tPFLAG[1]
@@ -446,20 +414,3 @@ def _format_table_row_html(label, isactive, threshold, nflag, ntotal):
     if not valid_flag: typestr="%s"
     html_str = '<tr align="center" class="stp"><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>'+typestr+'</th></tr>'
     return html_str % (label, isactive, threshold, (nflag if valid_flag else "N/A"), (nflag*100.0/ntotal if valid_flag else "N/A"))
-
-
-# validity check in _get_iteration is not necessary since group_member
-# has already been validated at upper level (baselineflag.py)
-def _get_iteration(reduction_group, msobj, antid, fieldid, spwid):
-    members = []
-    for group_desc in reduction_group.values():
-        #memids = common.get_valid_ms_members(group_desc, [msobj.name], antid, fieldid, spwid)
-        #members.extend([group_desc[i] for i in memids])
-        member_id = group_desc._search_member(msobj, antid, spwid, fieldid)
-        if member_id is not None:
-            members.append(group_desc[member_id])
-    if len(members) == 1:
-        return members[0].iteration
-    elif len(members) == 0:
-        raise RuntimeError('Given (%s, %s, %s) is not in reduction group.' % (antid, fieldid, spwid))
-    raise RuntimeError('Given (%s, %s, %s) is in more than one reduction groups.' % (antid, fieldid, spwid))
