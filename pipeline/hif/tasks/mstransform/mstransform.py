@@ -22,7 +22,7 @@ class MstransformInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
-        return vis_root + '_target.ms'
+        return vis_root + '_cont.ms'
 
     @outputvis.convert
     def outputvis(self, value):
@@ -194,11 +194,11 @@ class Mstransform(basetask.StandardTaskTemplate):
     def _copy_xml_files(vis, outputvis):
         for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
             vis_source = os.path.join(vis, xml_filename)
-            outputvis_target = os.path.join(outputvis, xml_filename)
+            outputvis_target_continuum = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):
-                LOG.info('Copying %s from original MS to target MS', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target)
-                shutil.copyfile(vis_source, outputvis_target)
+                LOG.info('Copying %s from original MS to target continuum MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_continuum)
+                shutil.copyfile(vis_source, outputvis_target_continuum)
 
 
 class MstransformResults(basetask.Results):
