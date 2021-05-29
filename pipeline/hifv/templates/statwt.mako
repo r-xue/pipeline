@@ -43,7 +43,7 @@ import numpy as np
 
 def format_wt(wt):
 
-    if wt is 0:
+    if not wt:
         return 'N/A'
     else:
         return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
