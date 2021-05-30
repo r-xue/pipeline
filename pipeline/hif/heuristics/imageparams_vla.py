@@ -244,6 +244,16 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             # PIPE-677: reduce from 5.0 (value set in PIPE-678)
             return 4.0
 
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
+        """Determine if another tclean iteration is necessary.
+
+        VLA auto-masking heuristics performs two iteration step with different auto-masking parameters.
+        See PIPE-677."""
+        if iteration in [0, 1, 2]:
+            return True, hm_masking
+        else:
+            return False, hm_masking
+
     def threshold(self, iteration: int, threshold: Union[str, float], hm_masking: str) -> Union[str, float]:
         """Tclean threshold parameter heuristics.
         See PIPE-678 and CASR-543"""
