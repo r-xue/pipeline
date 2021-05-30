@@ -43,7 +43,7 @@ import numpy as np
 
 def format_wt(wt):
 
-    if (wt is 0) or (wt is None):
+    if wt is None:
         return 'N/A'
     else:
         return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
@@ -76,13 +76,17 @@ def format_wt(wt):
 		<tr>  
 			<th style="text-align:center">${after_by_ant[i]['ant']}</th>  
             <td>${format_wt(before_by_ant[i]['med'])}</td>
-            <td>${format_wt(before_by_ant[i]['q1'])}/${format_wt(before_by_ant[i]['q3'])}</td>            
+            % if before_by_ant[i]['quartiles'] is not None:
+                <td>${format_wt(before_by_ant[i]['q1'])}/${format_wt(before_by_ant[i]['q3'])}</td>
+            % else:
+                <td>N/A</td>
+            % endif 
             <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>         
             <td>${format_wt(after_by_ant[i]['med'])}</td>
             % if after_by_ant[i]['quartiles'] is not None:
-                <td>${format_wt(after_by_ant[i]['quartiles'][1])}/${format_wt(after_by_ant[i]['quartiles'][3])}</td>
+                <td>${format_wt(after_by_ant[i]['q1'])}/${format_wt(after_by_ant[i]['q3'])}</td>
             % else:
-                <td>'N/A'</td>
+                <td>N/A</td>
             % endif
             <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>          
 		</tr>
@@ -115,13 +119,17 @@ def format_wt(wt):
 		<tr>
 			<th style="text-align:center">${after_by_spw[i]['spw']}</th>  
             <td>${format_wt(before_by_spw[i]['med'])}</td>
-            <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>            
+            % if before_by_spw[i]['quartiles'] is not None:
+                <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>
+            % else:
+                <td>N/A</td>
+            % endif            
             <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>         
             <td>${format_wt(after_by_spw[i]['med'])}</td>
             % if after_by_spw[i]['quartiles'] is not None:
-                <td>${format_wt(after_by_spw[i]['quartiles'][1])}/${format_wt(after_by_spw[i]['quartiles'][3])}</td>
+                <td>${format_wt(after_by_spw[i]['q1'])}/${format_wt(after_by_spw[i]['q3'])}</td>
             % else:
-                <td>'N/A'</td>
+                <td>N/A</td>
             % endif
             <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
            
