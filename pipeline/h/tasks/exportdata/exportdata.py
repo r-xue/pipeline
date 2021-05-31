@@ -1270,7 +1270,8 @@ finally:
                 try:
                     ff = apfits.open(fitsfile)
                     fits_keywords = dict()
-                    for key in ['naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
+                    for key in ['object', 'obsra', 'obsdec', 'intent', 'specmode',
+                                'naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
                                 'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
                                 'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
                                 'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
@@ -1280,6 +1281,16 @@ finally:
                         except:
                             # Some images do not have beam, robust or weight keywords
                             fits_keywords[key] = 'N/A'
+                    if 'spw' in ff[0].header:
+                        fits_keywords['virtspw'] = '{}'.format(str(ff[0].header['spw']))
+                    if 'nspwnam' in ff[0].header:
+                        nspwnam = ff[0].header['nspwnam']
+                        for i in range(1, nspwnam+1):
+                            key = 'spwnam{:02d}'.format(i)
+                            try:
+                                fits_keywords[key] = '{}'.format(str(ff[0].header[key]))
+                            except:
+                                fits_keywords[key] = 'N/A'
                     ff.close()
                 except Exception as e:
                     LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
