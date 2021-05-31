@@ -1285,6 +1285,7 @@ finally:
                         fits_keywords['virtspw'] = '{}'.format(str(ff[0].header['spw']))
                     if 'nspwnam' in ff[0].header:
                         nspwnam = ff[0].header['nspwnam']
+                        fits_keywords['nspwnam'] = '{}'.format(str(nspwnam))
                         for i in range(1, nspwnam+1):
                             key = 'spwnam{:02d}'.format(i)
                             try:
