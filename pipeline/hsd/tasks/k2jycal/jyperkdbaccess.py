@@ -6,7 +6,7 @@ import re
 import ssl
 import string
 import urllib
-from typing import List
+from typing import Iterable, List
 
 import numpy
 
@@ -77,7 +77,6 @@ class ALMAJyPerKDatabaseAccessBase(object):
 
     def _generate_query(self, url, params):
         try:
-            successlist = []
             for p in params:
                 # encode params
                 encoded = urllib.parse.urlencode(p.param)
@@ -139,9 +138,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
         
         # convert to pipeline-friendly format
         formatted = self.format_jyperk(vis, jyperk)
-        #LOG.info('formatted = {}'.format(formatted))
         filtered = self.filter_jyperk(vis, formatted)
-        #LOG.info('filtered = {}'.format(filtered))
         return {'filtered': filtered, 'allsuccess': allsuccess}
 
     def get_params(self, vis):
@@ -250,7 +247,7 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
                 subparam = {'vis': vis, 'spwid': spw.id}
                 yield QueryStruct(param=params, subparam=subparam)
 
-    def access(self, queries: str) -> dict:
+    def access(self, queries: Iterable[ResponseStruct]) -> dict:
         """
         Convert queries to response.
 
@@ -299,7 +296,7 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         # subparam is vis
         yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=vis)
 
-    def access(self, queries: str) -> dict:
+    def access(self, queries: Iterable[ResponseStruct]) -> dict:
         """
         Convert queries to response.
 
@@ -318,7 +315,6 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         response['total'] = response['data']['length']
         response['data'] = response['data']['factors']
         response['allsuccess'] = response['success']
-        #LOG.info('response = {}'.format(response))
         return response
 
 
