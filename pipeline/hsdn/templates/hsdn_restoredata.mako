@@ -330,7 +330,7 @@ def format_spwmap(spwmap, scispws):
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TARGET']: 
+%for k in ['TARGET']:
 		<tr>
 			<th>${total_keys[k]}</th>
 	% for agent in agents:
@@ -657,7 +657,7 @@ def format_spwmap(spwmap, scispws):
 
 
     <%self:plot_group plot_dict="${science_amp_vs_freq_plots}"
-				  url_fn="${lambda x: amp_vs_freq_subpages[x]}"
+				  url_fn="${lambda x: science_amp_vs_freq_subpages[x]}"
 				  data_spw="${True}"
 				  data_field="${True}"
                   data_vis="${True}"

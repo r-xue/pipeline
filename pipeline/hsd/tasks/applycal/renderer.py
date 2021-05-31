@@ -82,7 +82,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
-            'amp_vs_freq_subpages': science_amp_vs_freq_subpages,
+            'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
 

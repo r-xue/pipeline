@@ -248,7 +248,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
         (science_amp_vs_freq_summary_plots, science_amp_vs_freq_subpages, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
-            'amp_vs_freq_subpages': science_amp_vs_freq_subpages,
+            'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
         LOG.debug('ctx = {0}'.format(ctx));

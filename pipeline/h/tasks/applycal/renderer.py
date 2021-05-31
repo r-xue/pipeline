@@ -145,6 +145,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # CAS-5970: add science target plots to the applycal page
         (science_amp_vs_freq_summary_plots,
+         science_amp_vs_freq_subpages,
          science_amp_vs_uv_summary_plots,
          uv_max) = self.create_science_plots(context, result)
 
@@ -272,6 +273,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'corrected_to_antenna1_plots': corrected_ratio_to_antenna1_plots,
             'corrected_to_model_vs_uvdist_plots': corrected_ratio_to_uv_dist_plots,
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
+            'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'science_amp_vs_uv_plots': science_amp_vs_uv_summary_plots,
             'uv_plots': uv_plots,
             'uv_max': uv_max,
@@ -307,6 +309,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         max_uvs = collections.defaultdict(dict)
 
         amp_vs_freq_detail_plots = {}
+        amp_vs_freq_subpages = collections.defaultdict(lambda: 'null')
         amp_vs_uv_detail_plots = {}
 
         for result in results:
@@ -388,8 +391,10 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
+                if plotter_cls is ApplycalAmpVsFreqSciencePlotRenderer:
+                    amp_vs_freq_subpages.update((vis, renderer.path) for vis in d.keys())
 
-        return amp_vs_freq_summary_plots, amp_vs_uv_summary_plots, max_uvs
+        return amp_vs_freq_summary_plots, amp_vs_freq_subpages, amp_vs_uv_summary_plots, max_uvs
 
     @staticmethod
     def science_plots_for_result(
