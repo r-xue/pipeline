@@ -9,7 +9,6 @@ from pipeline.h.heuristics import caltable as caltable_heuristic
 from . import jyperkreader
 from . import worker
 from . import jyperkdbaccess
-from pipeline.hsdn.tasks.restoredata.ampcal import rearrange_factors_list
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -106,7 +105,7 @@ class SDK2JyCalResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hsd_k2jycal')
 @task_registry.set_casa_commands_comment('The Kelvin to Jy calibration tables are generated.')
 class SDK2JyCal(basetask.StandardTaskTemplate):
-    """Obtain Jy/K factors from DB and make jyperk_query.csv."""
+    """Generate calibration table of Jy/K factors."""
     
     Inputs = SDK2JyCalInputs
 
@@ -133,7 +132,6 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             # Try accessing Jy/K DB if dbservice is True
             reffile = 'jyperk_query.csv'
             jsondata = self._query_factors()
-            #LOG.info('jsondata = {}'.format(jsondata))
             if len(jsondata) > 0:
                 factors_list = jsondata['filtered']
                 if jsondata['allsuccess'] is True:
@@ -214,7 +212,6 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         query = impl(self.inputs.context)
         try:
             factors_list = query.getJyPerK(vis)
-            #LOG.info('factors_list = {}'.format(factors_list))
             # warn if result is empty
             if len(factors_list) == 0:
                 LOG.warn('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))
