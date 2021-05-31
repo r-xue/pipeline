@@ -34,6 +34,11 @@ from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
 from pipeline.hifa.tasks.fluxscale.gcorfluxscale import GcorFluxscale
 from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
+from pipeline.hsd.tasks.applycal.applycal import HpcSDApplycal
+from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlagResults
+from pipeline.hsd.tasks.baselineflag.baselineflag import HpcSDBLFlag
+from pipeline.hsd.tasks.imaging.imaging import SDImaging
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
 from ..taskregistry import task_registry
 from .. import logging
 
@@ -69,7 +74,8 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
         # this is the expected class and we weren't expecting any
         # children, so we should be able to handle the result
         if self.child_cls is None and (self.generating_task is None
-                                       or result.task is self.generating_task):
+                                       or result.task is self.generating_task
+                                       or ( hasattr(self.generating_task, 'Task') and result.task is self.generating_task.Task) ):
             return True
 
         try:
@@ -122,7 +128,7 @@ class RegressionExtractorRegistry(object):
 
     def handle(self, result):
         if not self.__plugins_loaded:
-            for plugin_class in RegressionExtractor.__subclasses__():
+            for plugin_class in get_all_subclasses( RegressionExtractor ):
                 self.add_handler(plugin_class())
             self.__plugins_loaded = True
 
@@ -185,7 +191,7 @@ class FluxcalflagRegressionExtractor(RegressionExtractor):
     child_cls = None
 
     def handle(self, result):
-        prefix = get_prefix(result)
+        prefix = get_prefix(result, result.task)
 
         summaries_by_name = {s['name']: s for s in result.cafresult.summaries}
 
@@ -218,7 +224,7 @@ class GcorFluxscaleRegressionExtractor(RegressionExtractor):
     generating_task = GcorFluxscale
 
     def handle(self, result):
-        prefix = get_prefix(result)
+        prefix = get_prefix(result, self.generating_task)
 
         d = OrderedDict()
         for field_id, measurements in result.measurements.items():
@@ -241,8 +247,8 @@ class ApplycalRegressionExtractor(RegressionExtractor):
     generating_task = IFApplycal
 
     def handle(self, result):
-        prefix = get_prefix(result)
-
+        prefix = get_prefix(result, self.generating_task)
+        
         summaries_by_name = {s['name']: s for s in result.summaries}
 
         num_flags_before = summaries_by_name['before']['flagged']
@@ -266,9 +272,71 @@ class ApplycalRegressionExtractor(RegressionExtractor):
         return d
 
 
-def get_prefix(result):
-    vis, _ = os.path.splitext(os.path.basename(result.inputs['vis']))
-    casa_task = task_registry.get_casa_task(result.task)
+class SDApplycalRegressionExtractor(ApplycalRegressionExtractor):
+    """
+    Regression test result extractor for sd_applycal.
+
+    It extends ApplycalRegressionExtractor in order to use same extraction logic.
+    """
+    result_cls = ApplycalResults
+    child_cls = None
+    generating_task = HpcSDApplycal
+
+
+class SDBLFlagRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for sd_blfrag.
+    """
+    result_cls = SDBLFlagResults
+    child_cls = None
+    generating_task = HpcSDBLFlag
+
+    def handle(self, result):
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        for summary in result.outcome['flagdata_summary']:
+            name = prop = None
+            for k, v in summary.items():
+                if 'name' == k:
+                    name = v
+                elif isinstance(v, dict):
+                    prop = v
+            if name is not None and prop is not None:
+                d['{}.num_rows_flagged.{}'.format(prefix, name)] = int(prop['flagged'])
+                for scan_id, v in prop['scan'].items():
+                    d['{}.scan_{}.num_rows_flagged.{}'.format(prefix, scan_id, name)] = int(v['flagged'])
+
+        qa_entries = extract_qa_score_regression(prefix, result)
+        d.update(qa_entries)
+
+        return d
+
+
+class SDImagingRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for sd_imaging.
+    """
+    result_cls = SDImagingResults
+    child_cls = None
+    generating_task = SDImaging
+
+    def handle(self, result):
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+        qa_entries = extract_qa_score_regression(prefix, result)
+        d.update(qa_entries)
+
+        return d
+
+
+def get_prefix(result, task):
+    # A value of result.inputs['vis'] of some classes (ex: SDImagingResults) is a list object
+    res_vis = result.inputs['vis'][0] if isinstance(result.inputs['vis'], list) else result.inputs['vis']
+    vis, _ = os.path.splitext(os.path.basename(res_vis))
+    casa_task = task_registry.get_casa_task(task)
     prefix = 's{}.{}.{}'.format(result.stage_number, casa_task, vis)
     return prefix
 
@@ -297,6 +365,13 @@ def extract_regression_results(context):
 
     # return unified
     return ['{}={}'.format(k, v) for k, v in unified.items()]
+
+
+def get_all_subclasses(cls):
+    subclasses = cls.__subclasses__()
+    for subclass in subclasses:
+        subclasses += get_all_subclasses(subclass)
+    return subclasses
 
 
 # TODO enable runtime comparisons?

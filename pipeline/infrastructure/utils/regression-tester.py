@@ -96,6 +96,7 @@ class PipelineRegression(object):
             [LOG.warning(x) for x in errors]
             assert not errors
 
+
 def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression():
     """Run ALMA cal+image regression on a small test dataset
 
@@ -110,3 +111,20 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage
                                             'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.casa-6.1.1-15-pipeline-2020.1.0.40.results.txt'))
 
     pr.run(ppr='pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/PPR.xml')
+
+
+def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
+    """Run ALMA single-dish cal+image regression on the obseration data of M100
+
+    Recipe name:                procedure_hsd_calimage
+    Dataset:                    uid___A002_X85c183_X36f
+    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
+    """
+
+    pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
+                            input_dir='pl-regressiontest/uid___A002_X85c183_X36f', visname='uid___A002_X85c183_X36f',
+                            expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f/' +
+                                            'uid___A002_X85c183_X36f.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+    
+    pr.run()
+
