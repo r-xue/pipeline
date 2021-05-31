@@ -12,7 +12,7 @@ _pprinter = pprint.PrettyPrinter(width=1e99)
 class Field(object):
     """
     A class to store logical representation of a field.
-    
+
     Attributes:
         id: The numerical identifier of this field within the
             FIELD subtable of the MeasurementSet
@@ -27,12 +27,12 @@ class Field(object):
         data_column: a dictionary of data type (key) and data column name
             (value) conbination
     """
-    
+
     def __init__(self, field_id: int, name: str, source_id: int,
                  time: np.ndarray, direction: dict):
         """
         Initialize Field class.
-        
+
         Args:
             field_id: Field ID
             name: Field name
@@ -51,7 +51,7 @@ class Field(object):
         self.states = set()
         self.valid_spws = set()
         self.flux_densities = set()
-        
+
         self.data_column = {}
 
     def __repr__(self):

@@ -4,12 +4,12 @@ import re
 import numpy
 
 import pipeline.infrastructure as infrastructure
-import pipeline.domain.measures as measures
-import pipeline.domain.singledish as singledish
+# import pipeline.domain.singledish as singledish
 from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
 from ... import heuristics
 from . import reader
+from pipeline.hsd.tasks.common.inspection_util import inspect_reduction_group, set_beam_size
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -26,13 +26,13 @@ class SDInspection(object):
 
         # per ms inspection: beam size and calibration strategy
         LOG.debug('inspect_beam_size')
-        self._inspect_beam_size()
+        set_beam_size(self.ms)
         LOG.debug('inspect_calibration_strategy')
         self._inspect_calibration_strategy()
 
         # per ms inspection: reduction group
         LOG.debug('inspect_reduction_group')
-        reduction_group = self._inspect_reduction_group()
+        reduction_group = inspect_reduction_group(self.ms)
 
         # generate MS-based DataTable
         LOG.debug('register meta data to DataTable')
@@ -122,58 +122,58 @@ class SDInspection(object):
 
         return reduction_group, org_directions
 
-    def _inspect_reduction_group(self):
-        reduction_group = {}
-        group_spw_names = {}
-        ms = self.ms
-        science_windows = ms.get_spectral_windows(science_windows_only=True)
-        assert hasattr(ms, 'calibration_strategy')
-        field_strategy = ms.calibration_strategy['field_strategy']
-        for field_id in field_strategy:
-            fields = ms.get_fields(field_id)
-            assert len(fields) == 1
-            field = fields[0]
-            field_name = field.name
-            for spw in science_windows:
-                spw_name = spw.name
-                nchan = spw.num_channels
-                min_frequency = float(spw._min_frequency.value)
-                max_frequency = float(spw._max_frequency.value)
-                if len(spw_name) > 0:
-                    # grouping by name
-                    match = self.__find_match_by_name(spw_name, field_name, group_spw_names)
-                else:
-                    # grouping by frequency range
-                    match = self.__find_match_by_coverage(nchan, min_frequency, max_frequency,
-                                                          reduction_group, fraction=0.99, field_name=field_name)
-                if match == False:
-                    # add new group
-                    key = len(reduction_group)
-                    group_spw_names[key] = (spw_name, field_name)
-                    newgroup = singledish.MSReductionGroupDesc(spw_name=spw_name,
-                                                               min_frequency=min_frequency,
-                                                               max_frequency=max_frequency,
-                                                               nchan=nchan,
-                                                               field=field)
-                    reduction_group[key] = newgroup
-                else:
-                    key = match
-                ### Check existance of antenna, spw, field combination in MS
-                ddid = ms.get_data_description(id=spw.id)
-                with casa_tools.TableReader(ms.name) as tb:
-                    subtb = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d' % (ddid.id, field.id),
-                                     columns='ANTENNA1')
-                    valid_antid = set(subtb.getcol('ANTENNA1'))
-                    subtb.close()
-#                 myms = casa_tools.ms
-#                 valid_antid = myms.msseltoindex(vis=ms.name, spw=spw.id,
-#                                                 field=field_id, baseline='*&&&')['antenna1']
-#                 for antenna in ms.antennas:
-#                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)
-                for ant_id in valid_antid:
-                    reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
-
-        return reduction_group
+#     def _inspect_reduction_group(self):
+#         reduction_group = {}
+#         group_spw_names = {}
+#         ms = self.ms
+#         science_windows = ms.get_spectral_windows(science_windows_only=True)
+#         assert hasattr(ms, 'calibration_strategy')
+#         field_strategy = ms.calibration_strategy['field_strategy']
+#         for field_id in field_strategy:
+#             fields = ms.get_fields(field_id)
+#             assert len(fields) == 1
+#             field = fields[0]
+#             field_name = field.name
+#             for spw in science_windows:
+#                 spw_name = spw.name
+#                 nchan = spw.num_channels
+#                 min_frequency = float(spw._min_frequency.value)
+#                 max_frequency = float(spw._max_frequency.value)
+#                 if len(spw_name) > 0:
+#                     # grouping by name
+#                     match = self.__find_match_by_name(spw_name, field_name, group_spw_names)
+#                 else:
+#                     # grouping by frequency range
+#                     match = self.__find_match_by_coverage(nchan, min_frequency, max_frequency,
+#                                                           reduction_group, fraction=0.99, field_name=field_name)
+#                 if match == False:
+#                     # add new group
+#                     key = len(reduction_group)
+#                     group_spw_names[key] = (spw_name, field_name)
+#                     newgroup = singledish.MSReductionGroupDesc(spw_name=spw_name,
+#                                                                min_frequency=min_frequency,
+#                                                                max_frequency=max_frequency,
+#                                                                nchan=nchan,
+#                                                                field=field)
+#                     reduction_group[key] = newgroup
+#                 else:
+#                     key = match
+#                 ### Check existance of antenna, spw, field combination in MS
+#                 ddid = ms.get_data_description(id=spw.id)
+#                 with casa_tools.TableReader(ms.name) as tb:
+#                     subtb = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d' % (ddid.id, field.id),
+#                                      columns='ANTENNA1')
+#                     valid_antid = set(subtb.getcol('ANTENNA1'))
+#                     subtb.close()
+# #                 myms = casa_tools.ms
+# #                 valid_antid = myms.msseltoindex(vis=ms.name, spw=spw.id,
+# #                                                 field=field_id, baseline='*&&&')['antenna1']
+# #                 for antenna in ms.antennas:
+# #                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)
+#                 for ant_id in valid_antid:
+#                     reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
+#
+#         return reduction_group
 
     def __select_data(self, datatable, ms_ant_map, startrow=0, nrow=-1):
         ms_name = self.ms.name
@@ -492,55 +492,55 @@ class SDInspection(object):
                                 'field_strategy': field_map}
         ms.calibration_strategy = calibration_strategy
 
-    def _inspect_beam_size(self):
-        ms = self.ms
-        beam_size_heuristic = heuristics.SingleDishBeamSize()
-        beam_sizes = {}
-        for antenna in ms.antennas:
-            diameter = antenna.diameter
-            antenna_id = antenna.id
-            beam_size_for_antenna = {}
-            for spw in ms.spectral_windows:
-                spw_id = spw.id
-                center_frequency = float(spw.centre_frequency.convert_to(measures.FrequencyUnits.GIGAHERTZ).value)
-                beam_size = beam_size_heuristic(diameter=diameter, frequency=center_frequency)
-                beam_size_quantity = casa_tools.quanta.quantity(beam_size, 'arcsec')
-                beam_size_for_antenna[spw_id] = beam_size_quantity
-            beam_sizes[antenna_id] = beam_size_for_antenna
-        ms.beam_sizes = beam_sizes
+#     def _inspect_beam_size(self):
+#         ms = self.ms
+#         beam_size_heuristic = heuristics.SingleDishBeamSize()
+#         beam_sizes = {}
+#         for antenna in ms.antennas:
+#             diameter = antenna.diameter
+#             antenna_id = antenna.id
+#             beam_size_for_antenna = {}
+#             for spw in ms.spectral_windows:
+#                 spw_id = spw.id
+#                 center_frequency = float(spw.centre_frequency.convert_to(measures.FrequencyUnits.GIGAHERTZ).value)
+#                 beam_size = beam_size_heuristic(diameter=diameter, frequency=center_frequency)
+#                 beam_size_quantity = casa_tools.quanta.quantity(beam_size, 'arcsec')
+#                 beam_size_for_antenna[spw_id] = beam_size_quantity
+#             beam_sizes[antenna_id] = beam_size_for_antenna
+#         ms.beam_sizes = beam_sizes
 
-    def __find_match_by_name(self, spw_name, field_name, group_names):
-        match = False
-        for group_key, names in group_names.items():
-            group_spw_name = names[0]
-            group_field_name = names[1]
-            if group_spw_name == '':
-                raise RuntimeError("Got empty group spectral window name")
-            elif spw_name == group_spw_name and field_name == group_field_name:
-                match = group_key
-                break
-        return match
-
-    def __find_match_by_coverage(self, nchan, min_frequency, max_frequency, reduction_group, fraction=0.99,
-                                 field_name=None):
-        if fraction <= 0 or fraction > 1.0:
-            raise ValueError("overlap fraction should be between 0.0 and 1.0")
-        LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
-                 " over long period.")
-        match = False
-        for group_key, group_desc in reduction_group.items():
-            group_field_name = group_desc.field
-            if field_name is not None and group_field_name != field_name:
-                continue
-            group_range = group_desc.frequency_range
-            group_nchan = group_desc.nchan
-            overlap = max(0.0, min(group_range[1], max_frequency) - max(group_range[0], min_frequency))
-            width = max(group_range[1], max_frequency) - min(group_range[0], min_frequency)
-            coverage = overlap/width
-            if nchan == group_nchan and coverage >= fraction:
-                match = group_key
-                break
-        return match
+#     def __find_match_by_name(self, spw_name, field_name, group_names):
+#         match = False
+#         for group_key, names in group_names.items():
+#             group_spw_name = names[0]
+#             group_field_name = names[1]
+#             if group_spw_name == '':
+#                 raise RuntimeError("Got empty group spectral window name")
+#             elif spw_name == group_spw_name and field_name == group_field_name:
+#                 match = group_key
+#                 break
+#         return match
+# 
+#     def __find_match_by_coverage(self, nchan, min_frequency, max_frequency, reduction_group, fraction=0.99,
+#                                  field_name=None):
+#         if fraction <= 0 or fraction > 1.0:
+#             raise ValueError("overlap fraction should be between 0.0 and 1.0")
+#         LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
+#                  " over long period.")
+#         match = False
+#         for group_key, group_desc in reduction_group.items():
+#             group_field_name = group_desc.field
+#             if field_name is not None and group_field_name != field_name:
+#                 continue
+#             group_range = group_desc.frequency_range
+#             group_nchan = group_desc.nchan
+#             overlap = max(0.0, min(group_range[1], max_frequency) - max(group_range[0], min_frequency))
+#             width = max(group_range[1], max_frequency) - min(group_range[0], min_frequency)
+#             coverage = overlap/width
+#             if nchan == group_nchan and coverage >= fraction:
+#                 match = group_key
+#                 break
+#         return match
 
 
 def match_field_name(name1, name2):

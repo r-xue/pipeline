@@ -8,6 +8,7 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.domain.datatable import DataTableIndexer
 from pipeline.infrastructure import casa_tools
 from .. import common
@@ -20,11 +21,20 @@ DO_TEST = False
 
 
 class SDSimpleGriddingInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     nplane = vdp.VisDependentProperty(default=3)
 
     @property
     def group_desc(self):
         return self.context.observing_run.ms_reduction_group[self.group_id]
+
+    @property
+    def member_ms(self):
+        """Return a list of unitque MS domain objects of group members."""
+        gm = [ self.group_desc[i] for i in self.member_list ]
+        return list({ m.ms for m in gm })
 
     @property
     def reference_member(self):
@@ -112,14 +122,10 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
         def _g(colname):
             for i in index_list:
-                vis, j = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, j = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 yield datatable.getcell(colname, j)
 
-#        ras = numpy.fromiter(_g('RA'), dtype=numpy.float64)
-#        decs = numpy.fromiter(_g('DEC'), dtype=numpy.float64)
-#        ras = numpy.fromiter(_g('SHIFT_RA'), dtype=numpy.float64)
-#        decs = numpy.fromiter(_g('SHIFT_DEC'), dtype=numpy.float64)
         ras = numpy.fromiter(_g('OFS_RA'), dtype=numpy.float64)
         decs = numpy.fromiter(_g('OFS_DEC'), dtype=numpy.float64)
 
@@ -200,12 +206,12 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                         #             * dec_corr * dec_corr
                         #             + (decs[index] - DEC) * (decs[index] - DEC))
                         _index = index_list[index]
-                        vis, datatable_index = indexer.serial2perms(_index)
-                        datatable = datatable_dict[vis]
+                        origin_vis, datatable_index = indexer.serial2perms(_index)
+                        datatable = datatable_dict[origin_vis]
                         row = datatable.getcell('ROW', datatable_index)
                         #stat = datatable.getcell('STATISTICS', datatable_index)[0]
                         ant = datatable.getcell('ANTENNA', datatable_index)
-                        msid = msid_list[vis]
+                        msid = msid_list[origin_vis]
                         line[6].append([row, None, None, datatable_index, ant, msid])
                     line[6] = numpy.array(line[6])
                     grid_table.append(line)
@@ -239,14 +245,12 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
         reference_data = self.inputs.reference_member.ms
         real_spw = self.inputs.reference_member.spw_id
-        reference_spw = self.inputs.context.observing_run.real2virtual_spw_id(real_spw, reference_data)
         nchan = reference_data.spectral_windows[real_spw].num_channels
         npol = reference_data.get_data_description(spw=real_spw).num_polarizations
         LOG.debug('nrow=%s nchan=%s npol=%s', nrow, nchan, npol)
 
         # loop for all ROWs in grid_table to make dictionary that
         # associates spectra in data_in and weights with grids.
-        # bind_to_grid = dict([(k,[]) for k in self.data_in.keys()])
         bind_to_grid = collections.defaultdict(list)
         vislist = [x.basename for x in self.inputs.context.observing_run.measurement_sets]
         for grid_table_row in range(nrow):
@@ -274,12 +278,6 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                         flags.append(flag_summary)
                         weights.append(Weight)
                 bind_to_grid[ms.basename].append([data_row, grid_table_row, pols, weights, flags])
-#                 if tSFLAG[index] == 1:
-#                     if tTSYS[index] > 0.5 and tEXPT[index] > 0.0:
-#                         Weight = tEXPT[index] / (tTSYS[index] ** 2.0)
-#                     else: Weight = 1.0
-#                     bind_to_grid[vis].append([data_row, grid_table_row, Weight, tSFLAG[index]])
-#         del tTSYS, tEXPT, tSFLAG
         LOG.debug('bind_to_grid.keys() = %s', [x for x in bind_to_grid])
         LOG.debug('bind_to_grid=%s', bind_to_grid)
 
@@ -300,9 +298,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
         # create storage for output
         StorageOut = numpy.zeros((nrow, nchan), dtype=numpy.complex)
-        #FlagOut = numpy.zeros((nrow, nchan), dtype=numpy.int)
         StorageWeight = numpy.zeros((nrow, nchan), dtype=numpy.float32)
-        #StorageNumSp = numpy.zeros((nrow, nchan), dtype=numpy.int)
         StorageNumSp = numpy.zeros((nrow), dtype=numpy.int)
         StorageNumFlag = numpy.zeros((nrow), dtype=numpy.int)
         OutputTable = []
@@ -316,29 +312,24 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         # Create progress timer
         Timer = common.ProgressTimer(80, sum(map(len, bind_to_grid.values())), LOG.level)
 
-        # loop for antennas
-        # for AntID in index_list:
-        #for vis in infiles:
-        #for i in xrange(len(antenna_list)):
-        #query = lambda condition: 1 if condition else 0
-        #vquery = numpy.vectorize(query)
-        #for basename, entries in bind_to_grid.items():
-        for ms in self.inputs.context.observing_run.measurement_sets:
-            #AntID = antenna_list[i]
-            # with casa_tools.TableReader(infiles[i]) as tb:
-            entries = bind_to_grid[ms.basename]
-            vis = ms.work_data
+        # Obtain spectrum and FLAG from Baselined MS (if exists) or member MS (calibrated)
+        bl_mses = self.inputs.context.observing_run.get_measurement_sets_of_type([DataType.BASELINED])
+        for in_ms in self.inputs.member_ms:
+            origin_ms = self.inputs.context.observing_run.get_ms(in_ms.origin_ms)
+            entries = bind_to_grid[origin_ms.basename]
+            bl_ms = utils.match_origin_ms(bl_mses, in_ms.origin_ms)
+            grid_ms = bl_ms if bl_ms is not None else in_ms
+            vis = grid_ms.name
             ms_colname = utils.get_datacolumn_name(vis)
-            rowmap = utils.make_row_map_for_baselined_ms(ms)
+            rowmap = utils.make_row_map_between_ms(origin_ms, vis)
             LOG.debug('Start reading data from "%s"', os.path.basename(vis))
             LOG.debug('There are %s entries', len(entries))
             with casa_tools.TableReader(vis) as tb:
-                #get = lambda col, row: tb.getcell(col, row)
-                #for entry in bind_to_grid[AntID]:
                 for entry in entries:
                     [tROW, ROW, pols, weights, flags] = entry
                     Sp = None
                     Mask = None
+                    # map row ID in origin MS and grid_ms
                     mapped_row = rowmap[tROW]
                     LOG.debug('tROW %s: mapped_row %s', tROW, mapped_row)
                     for (Weight, Pol, SFLAG) in zip(weights, pols, flags):
@@ -350,15 +341,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                             if Mask is None:
                                 Mask = numpy.asarray(numpy.logical_not(tb.getcell('FLAG', mapped_row)),
                                                      dtype=int)#vquery(tb.getcell('FLAG', mapped_row) == False)
-                            #LOG.debug('Mask.shape = {shape}'.format(shape=Mask.shape))
-                            #collapsed_mask = numpy.any(Mask == 1, axis=1)
-                            #LOG.debug('collapsed_mask = %s'%(collapsed_mask))
                             StorageOut[ROW] += (Sp[Pol] * Mask[Pol] * Weight)
                             StorageWeight[ROW] += (Mask[Pol] * Weight)
                             StorageNumSp[ROW] += 1 if numpy.any(Mask[Pol] == 1) else 0#query(any(Mask[Pol] == 1))
-                            #StorageOut[ROW] += (Sp * Mask * Weight).sum(axis=0)
-                            #StorageWeight[ROW] += (Mask * Weight).sum(axis=0)
-                            #StorageNumSp[ROW] += numpy.sum(vquery(numpy.any(Mask == 1, axis=1)))#query(any(Mask == 1))
                         else:
                             StorageNumFlag[ROW] += 1
                     Timer.count()
@@ -372,19 +357,15 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
             [IF, POL, X, Y, RAcent, DECcent, RowDelta] = grid_table[ROW]
             if StorageNumSp[ROW] == 0 or all(StorageWeight[ROW] == 0.0):
                 StorageOut[ROW,:] = NoData
-                #FlagOut[ROW,:] = 1
                 RMS = 0.0
             else:
                 for ichan in range(nchan):
                     if StorageWeight[ROW, ichan] == 0.0:
                         StorageOut[ROW, ichan] = NoData
-                        #FlagOut[ROW,ichan] = 1
                     else:
                         StorageOut[ROW, ichan] /= StorageWeight[ROW, ichan]
                 RMS = 1.0
             OutputTable.append([IF, POL, X, Y, RAcent, DECcent, StorageNumSp[ROW], StorageNumFlag[ROW], RMS])
 
         del StorageWeight, StorageNumSp, StorageNumFlag, Timer
-        #return (StorageOut, FlagOut, OutputTable)
-        #LOG.debug('StorageOut=%s'%(numpy.real(StorageOut).tolist()))
         return (numpy.real(StorageOut), OutputTable)

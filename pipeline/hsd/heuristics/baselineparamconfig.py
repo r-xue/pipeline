@@ -2,14 +2,16 @@ import os
 import numpy
 import collections
 import abc
+from typing import List, Tuple, Union
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-# from pipeline.domain.datatable import DataTableImpl as DataTable
+from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from . import fitorder
 from . import fragmentation
+from ..tasks.common.utils import make_row_map_between_ms
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -105,23 +107,29 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                         break
         return colname
 
-    def calculate(self, datatable, ms, antenna_id, field_id, spw_id, fit_order, edge, deviation_mask, blparam):
+    def calculate(self, datatable: DataTable, origin_ms: MeasurementSet,
+                  ms: MeasurementSet, antenna_id: int, field_id: int,
+                  spw_id: int, fit_order: Union[str, int],
+                  edge: Tuple[int, int], deviation_mask: List[dict],
+                  blparam: str) -> str:
         """
-        Generate/update BLParam file, which will be an input to sdbaseline,
-        according to the input parameters.
+        Generate/update BLParam file according to the input parameters.
 
-        Inputs:
-            datatable -- DataTable instance
-            ms -- MeasurementSet domain object
-            antenna_id -- Antenna ID to process
-            field_id -- Field ID to process
-            spw_id -- Spw ID to process
-            fit_order -- Fiting order ('automatic' or number)
-            edge -- Number of edge channels to be excluded from the heuristics
-                    (format: [L, R])
-            deviation_mask -- Deviation mask
-            blparam -- Name of the BLParam file
-                       File contents will be updated by this heuristics
+        BLParam file will be an input to sdbaseline,.
+
+        Args:
+            datatable: DataTable instance
+            origin_ms: MS domain object of origin MS.
+            ms: MS domain object to calculate fitting parameters.
+            antenna_id: Antenna ID to process
+            field_id: Field ID to process
+            spw_id: Spw ID to process
+            fit_order: Fiting order ('automatic' or number)
+            edge: Number of edge channels to be excluded from the heuristics
+                (format: [L, R])
+            deviation_mask: Deviation mask
+            blparam: Name of the BLParam file
+                File contents will be updated by this heuristics
 
         Returns:
             Name of the BLParam file
@@ -175,7 +183,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         #LOG.info('base_mask_array = {}'.format(''.join(map(str, base_mask_array))))
 
-        time_table = datatable.get_timetable(antenna_id, spw_id, None, os.path.basename(vis), field_id)
+        time_table = datatable.get_timetable(antenna_id, spw_id, None, os.path.basename(ms.origin_ms), field_id)
         member_list = time_table[timetable_index]
 
         # working with spectral data in scantable
@@ -190,27 +198,23 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         if DEBUG() or TRACE():
             LOG.debug('data column name is "{}"'.format(datacolumn))
 
+        # row ID map between vis (value) and origin_ms (key)
+        rowmap = make_row_map_between_ms(origin_ms, vis)
+
         # open blparam file (append mode)
         with open(blparam, 'a') as blparamfileobj:
 
             with casa_tools.TableReader(vis) as tb:
                 for y in range(len(member_list)):
-                    rows = member_list[y][0]
-                    idxs = member_list[y][1]
+                    origin_rows = member_list[y][0] # origin_ms row ID
+                    idxs = member_list[y][1] # datatable row ID
+                    rows = [rowmap[i] for i in origin_rows] # vis row ID
 
-                    #spectra = numpy.fromiter((tb.getcell(colname,row)
-                    #                          for row in rows),
-                    #                         dtype=numpy.float64)
-                    #tsel = tb.query('ROWNUMBER() IN [%s]'%((','.join(map(str, rows)))), style='python')
-                    #spectra = tsel.getcol()
-                    #tsel.close()
-                    #spectra = numpy.asarray([tb.getcell(colname, row).real for row in rows])
                     spectra = numpy.zeros((len(rows), npol, nchan,), dtype=numpy.float32)
                     for (i, row) in enumerate(rows):
                         spectra[i] = tb.getcell(datacolumn, row).real
                     #get_mask_from_flagtra: 1 valid 0 invalid
                     #arg for mask_to_masklist: 0 valid 1 invalid
-                    #flaglist = [self._mask_to_masklist(-sdutils.get_mask_from_flagtra(tb.getcell('FLAGTRA', row))+1 )
                     flaglist = [self._mask_to_masklist(tb.getcell('FLAG', row).astype(int))
                                 for row in rows]
 

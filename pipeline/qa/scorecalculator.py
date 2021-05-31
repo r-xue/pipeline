@@ -2513,7 +2513,6 @@ def generate_metric_mask(context, result, cs, mask):
         bool array -- metric mask (True: valid, False: invalid)
     """
     outcome = result.outcome
-    imagename = outcome['image'].imagename
     org_direction = outcome['image'].org_direction
     imshape = mask.shape
 
@@ -2524,7 +2523,6 @@ def generate_metric_mask(context, result, cs, mask):
 
     mses = context.observing_run.measurement_sets
     ms_list = [mses[i] for i in file_index]
-    vis_list = np.asarray([m.basename for m in ms_list])
     spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
 
     ra = []
@@ -2533,9 +2531,9 @@ def generate_metric_mask(context, result, cs, mask):
     ofs_dec = []
     online_flag = []
 
-    for i in range(len(mses)):
-        vis = mses[i].basename
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, vis)
+    for i in range(len(ms_list)):
+        origin_basename = os.path.basename(ms_list[i].origin_ms)
+        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
         rotable_name = os.path.join(datatable_name, 'RO')
         rwtable_name = os.path.join(datatable_name, 'RW')
         _index = np.where(file_index == i)

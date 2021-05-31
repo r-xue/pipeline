@@ -1,5 +1,5 @@
 '''
-datatype module is 
+Module to define data type.
 
 Classes:
     DataType: An Enum class to define data type.
@@ -10,7 +10,7 @@ from enum import Enum, auto
 class DataType(Enum):
     '''
     A class to define DataType enum.
-    
+
     Attributes:
         RAW: raw data
         REGCAL_CONTLINE_ALL: calibrated data
@@ -18,7 +18,7 @@ class DataType(Enum):
         ATMCORR: data corrected for residual ATM
         REGCAL_CONTLINE_SCIENCE: data in target MS
     '''
-    
+
     RAW = auto()
     REGCAL_CONTLINE_ALL = auto()
     BASELINED = auto()
@@ -28,4 +28,3 @@ class DataType(Enum):
     LINE_SCIENCE = auto()
     SELFCAL_LINE_SCIENCE = auto()
 
-        

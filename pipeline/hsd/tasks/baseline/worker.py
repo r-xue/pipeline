@@ -6,7 +6,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable
+from pipeline.domain import DataTable, DataType
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import CubicSplineFitParamConfig
 from pipeline.hsd.tasks.common import utils as sdutils
@@ -19,6 +19,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class BaselineSubtractionInputsBase(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     DATACOLUMN = {'CORRECTED_DATA': 'corrected',
                   'DATA': 'data',
                   'FLOAT_DATA': 'float_data'}
@@ -81,6 +84,9 @@ class BaselineSubtractionResults(common.SingleDishResults):
 
 
 class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
@@ -157,6 +163,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
     def prepare(self):
         vis = self.inputs.vis
         ms = self.inputs.ms
+        origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
         fit_order = self.inputs.fit_order
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
@@ -194,8 +201,10 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
             blparam_heuristic = self.Heuristics(switchpoly=self.inputs.switchpoly)
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, ms, antenna_id, field_id, spw_id,
-                                            fit_order, formatted_edge, deviationmask, blparam)
+            out_blparam = blparam_heuristic(self.datatable, origin_ms, ms,
+                                            antenna_id, field_id, spw_id,
+                                            fit_order, formatted_edge,
+                                            deviationmask, blparam)
             assert out_blparam == blparam
 
         # execute sdbaseline
@@ -296,16 +305,3 @@ class HpcCubicSplineBaselineSubtractionWorker(HpcBaselineSubtractionWorker):
 
     def __init__(self, inputs):
         super(HpcCubicSplineBaselineSubtractionWorker, self).__init__(inputs)
-
-
-# # facade for FitParam
-# class BaselineSubtractionInputs(vdp.ModeInputs):
-#     _modes = {'spline': CubicSplineBaselineSubtractionWorker,
-#               'cspline': CubicSplineBaselineSubtractionWorker}
-#
-#     def __init__(self, context, fitfunc, **parameters):
-#         super(BaselineSubtractionInputs, self).__init__(context=context, mode=fitfunc, **parameters)
-#
-#
-# class BaselineSubtractionTask(basetask.ModeTask):
-#     Inputs = BaselineSubtractionInputs

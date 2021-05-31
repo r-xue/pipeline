@@ -266,7 +266,7 @@ class SpectralWindow(object):
                  transitions: Optional[numpy.ndarray]=None):
         """
         Initialize SpectralWindow class.
-        
+
         Args:
             spw_id: Spw ID
             name: Spw name
@@ -323,7 +323,7 @@ class SpectralWindow(object):
         self._centre_frequency = (self._min_frequency + self._max_frequency) / 2.0
 
         self.transitions = transitions
-        
+
         self.data_column = {}
 
     @property

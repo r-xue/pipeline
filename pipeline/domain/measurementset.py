@@ -25,7 +25,7 @@ LOG = infrastructure.get_logger(__name__)
 class MeasurementSet(object):
     """
     A class to store logical representation of a MeasurementSet (MS).
-    
+
     Attributes:
         name: A path to MeasurementSet
         session: Session name of MS
@@ -54,11 +54,11 @@ class MeasurementSet(object):
         is_imaging_ms: If True, the MS is for imaging (interferometry only)
         work_data: A path to the current working MS (single dish only)
     """
-    
+
     def __init__(self, name: str, session: Optional[str]=None):
         """
         Initialize MeasurmentSet class.
-        
+
         Args:
             name: A path to MS
             session: Session name of MS
@@ -69,7 +69,7 @@ class MeasurementSet(object):
         self.array_name: str = None
         self.derived_fluxes: Optional[collections.defaultdict] = None
         self.flagcmds: List[str] = []
-        self.filesize: measures.FileSize = self._calc_filesize() 
+        self.filesize: measures.FileSize = self._calc_filesize()
         self.representative_target: Tuple[Optional[str], Optional[dict],
                                           Optional[dict]] = (None, None, None)
         self.representative_window: Optiona[str] = None
@@ -82,7 +82,7 @@ class MeasurementSet(object):
         self.phaseup_spwmap: Optional[List[int]] = None
         self.combine_spwmap: Optional[List[int]] = None
         self.is_imaging_ms: bool = False
-        self.work_data: str = name
+#         self.work_data: str = name
         self.origin_ms: str = name
         self.data_column: dict = {}
 
@@ -1141,19 +1141,19 @@ class MeasurementSet(object):
         if value is None:
             value = 'session_1'
         self._session = value
-        
+
     def set_data_column(self, dtype: DataType, column: str,
                         spw: Optional[str]=None, field: Optional[str]=None,
                         overwrite: bool=False):
         """
         Set data type and column.
-        
+
         Set data type and column to MS domain object or to selected spectral
         window and field. If both spw and field are None, data column
         information of MS domain object is set. If both spw and field are not
         None, data column information of both spectral windows and fields
         selected by the string selection syntaxes are set.
-        
+
         Args:
             dtype: data type to set
             column: name of colum in MS associated with the data type
@@ -1162,7 +1162,7 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
-        
+
         Raises:
             ValueError: An error raised when the column does not exists
                 or the type is already associated with a column and would not
@@ -1195,10 +1195,10 @@ class MeasurementSet(object):
     def get_data_column(self, dtype: DataType) -> Optional[str]:
         """
         Retun columns name associated with a DataType in MS domain object.
-        
+
         Args:
             dtype: DataType to fetch column name for
-        
+
         Returns:
             A name of column of a dtype. Returns None if dtype is not defined
             in the MS.
@@ -1206,4 +1206,3 @@ class MeasurementSet(object):
         if not (dtype in self.data_column.keys()):
             return None
         return self.data_column[dtype]
-

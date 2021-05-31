@@ -11,7 +11,7 @@ import os
 <%
 def get_mses():
 	"""Return a list of MS domain objects"""
-	return [pcontext.observing_run.get_ms(name=vis) for vis in result.inputs['vis']]
+	return [pcontext.observing_run.get_ms(name=r.inputs['vis']) for r in result]
 %>
 
 <p>This task generates a sky calibration table, a collection of OFF spectra for single dish data calibration.</p>
