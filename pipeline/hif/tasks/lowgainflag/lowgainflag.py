@@ -213,7 +213,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
             # Get final view.
             view = result.last(description)
 
-            # Identify antennas fully flagged for all timestamps, mapping the
+            # Identify antennas fully flagged for all scans, mapping the
             # array indices to the original antenna IDs using the flagging view
             # x-axis data.
             antids_fully_flagged = view.axes[0].data[
