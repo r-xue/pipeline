@@ -7,20 +7,17 @@ LOG = logging.get_logger(__name__)
 
 
 def create_V_array(npol, nchan):
-    """
-    Create an array to hold the time averaged visibilities.
+    """Create an empty array to hold the time averaged visibilities.
 
-    Parameters
-    ----------
-    npol : int
-        Number of polarizations.
-    nchan : int
-        Number of channels.
+    Args:
+        npol: int
+            Number of polarizations.
+        nchan: int
+            Number of channels.
 
-    Returns
-    -------
-    numpy.ma
-        Empty numpy masked array
+    Returns:
+        numpy.ma
+            Empty numpy masked array
     """
     # Create variables and storage space for V_k
     result_dtype = [
@@ -211,6 +208,9 @@ class MSWrapper(object):
         LOG.trace('MSWrapper.create_averages_from_ms(%r, %r, %r, %r, %r)',
                   filename, scan, spw, memlim, perantave)
 
+        # Epsilon used to avoid division by zero in sigma calculations
+        epsilon = 1.e-6
+
         # put memory limit in bytes
         memlim = int(memlim * (1024.0 ** 3))
 
@@ -232,8 +232,6 @@ class MSWrapper(object):
         freqdim = np.array([0, 0, 1, 0, 1], dtype='int32')
         # Total size of the whole piece of data should be:
         # Size = nrows*Sum( dsizes*(npols*poldim+1)*(nchan*freqdim+1) )(over number of colnames)
-        # columns in this list are omitted from V_k
-        excluded_columns = ['antenna1', 'antenna2', 'flag']
 
         # commented out from copied PL code
         with casa_tools.MSReader(filename) as openms:
@@ -268,7 +266,6 @@ class MSWrapper(object):
             niter = int(np.ceil(1.0 * scandatasize / memlim))
             nrowsbuffer = int(np.floor(1.0 * memlim / rowdatasize))
 
-            # TODO: Check appropriate log level
             LOG.debug('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(
                 scan, nrows, 1.0 * scandatasize / (1024.0 ** 3), 1.0 * memlim / (1024.0 ** 3)))
             LOG.debug('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
@@ -334,7 +331,7 @@ class MSWrapper(object):
             # pixels are filled with some epsilon dummy value
             for antenna in antennaids:
                 zerosel = ndata[antenna].data < 1.0
-                ndata[antenna].data[zerosel] = 1.e-6
+                ndata[antenna].data[zerosel] = epsilon
                 ndata[antenna].mask += zerosel
 
             # Iterate over antennas, now calculating the mean and sigma of the data
@@ -383,8 +380,6 @@ class MSWrapper(object):
         # Method added as part of PIPE-687
         LOG.trace('MSWrapper.create_averages_from_combination(%r)', mswlist)
 
-        # Epsilon used to avoid division by zero in sigma calculations
-        eps = 1.e-6
         # Get data from first MSWrapper element of the list, scan will be the list of scans
         # discard raw data if present
         nscans = len(mswlist)

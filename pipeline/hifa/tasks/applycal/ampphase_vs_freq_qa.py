@@ -75,6 +75,9 @@ def calc_vk(wrapper):
     :param wrapper: MSWrapper to process
     :return:
     """
+    # PIPE-687: This function may be obsolete if the function create_averages_from_ms in mswrapper.py
+    #  is used to create the wrapper.
+
     # find indices of all antennas
     antenna1 = set(wrapper['antenna1'])
     antenna2 = set(wrapper['antenna2'])
@@ -142,7 +145,11 @@ def get_best_fits_per_ant(wrapper):
     :param wrapper: MSWrapper to process
     :return: a list of AntennaFit objects
     """
+    # PIPE-687: the next line may be replaced by "V_k = wrapper.V" if the new function
+    #  create_averages_from_ms in mswrapper.py is used to create the wrapper. This will
+    #  probably made obsolete the function calc_vk
     V_k = calc_vk(wrapper)
+
     corrected_data = V_k['corrected_data']
     sigma = V_k['sigma']
 
