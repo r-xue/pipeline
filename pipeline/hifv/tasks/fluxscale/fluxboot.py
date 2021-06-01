@@ -21,7 +21,10 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FluxbootInputs(vdp.StandardInputs):
-    """
+    """Fluxboot Inputs class used with Fluxboot and Fluxboot Results.
+
+    The class inherits from vdp.StandardInputs.
+
     If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
     and we proceed directly to the flux density bootstrapping.
     """
@@ -30,6 +33,15 @@ class FluxbootInputs(vdp.StandardInputs):
     fitorder = vdp.VisDependentProperty(default=-1)
 
     def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None):
+        """
+        Args:
+            vis(str or list):  measurement set
+            caltable(str):  fluxgaincal table from user input.  If None, task uses default name.
+                If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
+                and we proceed directly to the flux density bootstrapping.
+            refantignore(str):  csv string of referance antennas to ignore   'ea24, ea18, ea12'
+            fitorder(int):  User input value of the fit order.  Default is -1 (heuristics will determine)
+        """
 
         if fitorder is None:
             fitorder = -1
@@ -44,9 +56,29 @@ class FluxbootInputs(vdp.StandardInputs):
 
 
 class FluxbootResults(basetask.Results):
+    """Fluxboot Results class used with Fluxboot and Fluxboot Inputs.
+
+    The class inherits from basetask.Results
+
+    """
     def __init__(self, final=None, pool=None, preceding=None, sources=None,
                  flux_densities=None, spws=None, weblog_results=None, spindex_results=None,
                  vis=None, caltable=None, fluxscale_result=None):
+
+        """
+        Args:
+                final(list): final list of tables (not used in this task)
+                pool(list): pool list (not used in this task)
+                preceding(list): preceding list (not used in this task)
+                sources(list):  list of string source names
+                flux_densities(list):  list of float value flux densities
+                spws(list): list of integer spw values
+                weblog_results(list):  list of dictionaries containing keys: source, freq, data, error, and fitted data
+                spindex_results(list): list of dictionaries with fitting results for weblog display
+                vis(str or list):  measurement set
+                caltable(str):  fluxgaincal table that was used (from user input or task determination)
+                fluxscale_result(list):  Output from CASA task fluxscale
+        """
 
         if sources is None:
             sources = []
@@ -124,7 +156,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
     def _do_fluxboot(self, band2spw):
 
         calMs = 'calibrators.ms'
-        context = self.inputs.context
 
         self.sources = []
         self.flux_densities = []
@@ -132,7 +163,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         # Is this a VLASS execution?
         vlassmode = False
-        for result in context.results:
+        for result in self.inputs.context.results:
             try:
                 resultinputs = result.read()[0].inputs
                 if 'vlass' in resultinputs['checkflagmode']:
@@ -145,7 +176,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
         if self.inputs.caltable is None:
-            # Original Fluxgain stage
+            # Original Fluxgain stage from the scripted pipeline
 
             caltable = 'fluxgaincal.g'
 
@@ -211,10 +242,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
-            context = self.inputs.context
             refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
 
-            refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
+            refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
             refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
                                                     geometry=True, flagging=True, intent='',
                                                     spw='', refantignore=refantignore)
@@ -233,12 +263,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     append = True
                     LOG.info("Appending to existing table: {!s}".format(fluxphase))
 
-                new_gain_solint1 = context.evla['msinfo'][m.name].new_gain_solint1[band]
+                new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
 
                 LOG.info("Making gain tables for flux density bootstrapping")
                 LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
 
-                self._do_gaincal(context, calMs, fluxphase, 'p', [''],
+                self._do_gaincal(calMs, fluxphase, 'p', [''],
                                  solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
                                  spw=','.join(spwlist), append=append)
 
@@ -275,10 +305,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             append = True
                             LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
 
-                        gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
+                        gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
                         LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
 
-                        self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
+                        self._do_gaincal(calMs, fluxflagtable, 'ap', [fluxphase],
                                          solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
                                          solnorm=True, append=append, fluxflag=True,
                                          vlassmode=vlassmode, spw=','.join(spwlist))
@@ -306,9 +336,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     append = True
                     LOG.info("Appending to existing table: {!s}".format(caltable))
 
-                gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
+                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
 
-                self._do_gaincal(context, calMs, caltable, 'ap', [fluxphase],
+                self._do_gaincal(calMs, caltable, 'ap', [fluxphase],
                                  solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
 
             LOG.info("Gain table " + caltable + " is ready for flagging.")
@@ -326,7 +356,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             weblog_results = []
             spindex_results = []
             fluxscale_result = []
-            fluxscale_result_list = self._do_fluxscale(context, calMs, caltable)
+            fluxscale_result_list = self._do_fluxscale(calMs, caltable)
             LOG.info("Using fit from fluxscale.")
             for single_fs_result in fluxscale_result_list:
                 powerfit_results_single, weblog_results_single, spindex_results_single, single_fs_result = self._do_powerfit(single_fs_result)
@@ -345,10 +375,20 @@ class Fluxboot(basetask.StandardTaskTemplate):
         return self.sources, self.flux_densities, self.spws, weblog_results,\
                spindex_results, caltable, fluxscale_result
 
-    def _do_fluxscale(self, context, calMs: str, caltable: str) -> List:
+    def _do_fluxscale(self, calMs: str, caltable: str) -> List:
+        """Set up and execute the CASA task fluxscale
+
+        Args:
+            calMs(str): hardwired for this task to be calibrators.ms
+            caltable(str): fluxgaincal table that was used (from user input or task determination)
+
+        Return:
+            fluxscale_result(list):  Result from the CASA task fluxscale
+
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        flux_field_select_string = context.evla['msinfo'][m.name].flux_field_select_string
+        flux_field_select_string = self.inputs.context.evla['msinfo'][m.name].flux_field_select_string
         fluxcalfields = flux_field_select_string
         fluxcalfieldlist = str.split(fluxcalfields, ',')
 
@@ -409,9 +449,13 @@ class Fluxboot(basetask.StandardTaskTemplate):
         return fluxscale_result
 
     def find_fitorder(self, spwlist: List[str] = []) -> int:
-        """
-        :param spwlist: list of string values for spw ids
-        :return: fitorder integer
+        """Determine the fitorder for a given list of spectral windows
+
+        Args:
+            spwlist(list): list of string values for spw ids
+
+        Return:
+            fitorder(int): integer value of the determined fitorder for a given band (list of spws)
         """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -479,6 +523,20 @@ class Fluxboot(basetask.StandardTaskTemplate):
         return fitorder
 
     def _do_powerfit(self, fluxscale_result: List):
+        """Organize the fitting results from fluxscale, re-reference the fit coefficients, and prepare
+            dictionaries for weblog display
+
+        Args:
+            fluxscale_result(list):  Dictionary outpput from CASA task fluxscale
+
+        Return:
+            results(list):  List of lists containing [source, uspws, fitflx, spix, SNR, reffreq, curvature]
+                This parameter dates from the original scripted pipeline.
+            weblog_results(list):  list of dictionaries containing keys: source, freq, data, error, and fitted data
+            spindex_results(list): list of dictionaries with fitting results for weblog display
+            fluxscale_result(list):  Output from CASA task fluxscale
+
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2band = m.get_vla_spw2band()
@@ -510,7 +568,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                         'fitFluxdErr', 'covarMat']
             spwkeys = [int(spw_id) for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
 
-            # fluxscale results  give all spectral windows
+            # fluxscale results give **ALL** spectral windows
             # Take the intersection of the domain object spws and fluxscale results to
             # match the earlier setjy execution in this task
 
@@ -836,6 +894,11 @@ class Fluxboot(basetask.StandardTaskTemplate):
         return results, weblog_results, spindex_results, fluxscale_result
 
     def _do_setjy(self, calMs: str, fluxscale_result: List) -> bool:
+        """Setup and execute setjy using the results from CASA task fluxscale
+
+        Return:
+            Boolean
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         dictkeys = list(fluxscale_result.keys())
@@ -875,12 +938,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 LOG.warn("abs(spix) > 5.0 - Fail")
 
             # merge identical jobs into one job with a multi-spw argument
-            LOG.info("Merging setjy jobs for " + calMs)
+            LOG.info("Merging setjy jobs for {!s}".format(calMs))
             jobs_and_components_calMs = utils.merge_jobs(jobs_calMs, casa_tasks.setjy, merge=('spw',))
             for job, _ in jobs_and_components_calMs:
                 self._executor.execute(job)
 
-            LOG.info("Merging setjy jobs for " + self.inputs.vis)
+            LOG.info("Merging setjy jobs for {!s}".format(self.inputs.vis))
             jobs_and_components_vis = utils.merge_jobs(jobs_vis, casa_tasks.setjy, merge=('spw',))
             for job, _ in jobs_and_components_vis:
                 self._executor.execute(job)
@@ -890,6 +953,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
         return True
 
     def _fluxgains_setjy(self, calMs: str, field: str, spw: str, modimage: str):
+        """Set up parameters setjy task on the fluxgains cal table
+
+        Return:
+            setjy task job object
+
+        """
 
         try:
             task_args = {'vis': calMs,
@@ -910,7 +979,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.info(e)
             return None
 
-    def _do_gaincal(self, context, calMs: str, caltable: str, calmode: str, gaintablelist: List[str],
+    def _do_gaincal(self, calMs: str, caltable: str, calmode: str, gaintablelist: List[str],
                     solint: str = 'int', minsnr: float = 3.0, refAnt: str = None, field: str = '',
                     solnorm: bool = False, append: bool = False,
                     fluxflag: bool = False, vlassmode: bool = False, spw: str = ''):
@@ -998,6 +1067,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
             return self._executor.execute(job)
 
     def re_reference_polynomial(self, c1: List, original_ref_freq: float, new_ref_freq: float) -> List:
+        """Re-reference polynomial
+
+            Return:
+                p2.coefficients(np.array):  re-referenced coefficients
+
+        """
         shift = np.log10(new_ref_freq / original_ref_freq)
         p1 = np.poly1d(c1[::-1])
         r2 = np.roots(p1) - shift
