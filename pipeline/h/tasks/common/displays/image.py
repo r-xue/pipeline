@@ -98,6 +98,11 @@ class ImageDisplay(object):
         else:
             fileparts['ant'] = 'Ant_%s' % utils.find_ranges(result.ant)
 
+        if result.scan is None or result.scan == '':
+            fileparts['scan'] = ''
+        else:
+            fileparts['scan'] = 'Scan_%s' % utils.find_ranges(result.scan)
+
         if result.time is None or result.time == '':
             fileparts['time'] = ''
         else:
@@ -111,7 +116,7 @@ class ImageDisplay(object):
             fileparts['time'] = '%sh%sm%ss' % (h, m, s)
 
         png = "{prefix}_{datatype}_{y}_vs_{x}_{file}_{intent}_{fieldname}_" \
-              "{fieldid}_{spw}_{pol}_{ant}_{time}.png".format(**fileparts)
+              "{fieldid}_{spw}_{pol}_{ant}_{scan}_{time}.png".format(**fileparts)
         png = sanitize(png)
 
         # Maximum filename size for Lustre filesystems is 255 bytes.
@@ -388,6 +393,16 @@ class ImageDisplay(object):
             extent[2] -= 0.5
             extent[3] += 0.5
 
+        # If plotting by scan ID on y-xis, then adjust limits of axis to ensure
+        # that the tick mark aligns correctly with center of scan rows.
+        if 'SCAN' in ytitle.upper():
+            if len(ydata) == 1:
+                extent[2] = -0.5
+                extent[3] = 0.5
+            else:
+                extent[2] -= 0.5
+                extent[3] += 0.5
+
         # Plot the image array; transpose data to get [x,y] into [row,column]
         # expected by matplotlib
         img = ax.imshow(np.transpose(data), cmap=cmap, norm=norm, vmin=vmin, vmax=vmax, interpolation='nearest',
@@ -500,6 +515,14 @@ class ImageDisplay(object):
         # start of each new antenna)
         if 'BASELINE' in ytitle.upper():
             ax.yaxis.set_minor_locator(ticker.AutoMinorLocator())
+
+        # If plotting by scan on y-axis, disable minor tick marks, and map
+        # major tick marks to scan IDs.
+        if 'SCAN' in ytitle.upper():
+            ax.yaxis.set_minor_locator(ticker.NullLocator())
+            yticks = np.arange(0, len(ydata), 1)
+            ax.set_yticks(yticks)
+            ax.set_yticklabels(ydata)
 
     @staticmethod
     def plottext(ax, xoff, yoff, text, maxchars, ny_subplot=1, mult=1):
