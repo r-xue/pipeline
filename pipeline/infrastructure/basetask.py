@@ -646,7 +646,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             # We should not pass unused parameters to prepare(), so first
             # inspect the signature to find the names the arguments and then
             # create a dictionary containing only those parameters
-            prepare_args = set(inspect.getargspec(self.prepare).args)
+            prepare_args = set(inspect.getfullargspec(self.prepare).args)
             prepare_parameters = dict(parameters)
             for arg in parameters:
                 if arg not in prepare_args:
