@@ -176,7 +176,12 @@ def uvcontfit(*v, **k):
     return _get_job(task_uvcontfit.uvcontfit, *v, **k)
 
 
-def sdatmcor(*v, **k):
+def sdatmcor(*v, **k) -> JobRequest:
+    """Wrap casatasks.sdatmcor
+
+    Returns:
+        JobRequest instance
+    """
     return _get_job(casatasks.sdatmcor, *v, **k)
 
 

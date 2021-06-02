@@ -1,4 +1,6 @@
+"""Offline ATM correction stage."""
 import os
+from typing import List, Optional, Union
 
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casa_tasks as casa_tasks
@@ -9,6 +11,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import fieldnames
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.utils import relative_path
 from .. import common
 from ..k2jycal import k2jycal
@@ -23,26 +26,64 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
     intent = vdp.VisDependentProperty(default='TARGET')
 
     @atmtype.convert
-    def atmtype(self, value):
+    def atmtype(self, value: Union[int, str]) -> int:
+        """Convert atmtype into int.
+
+        Args:
+            value: atmtype value
+
+        Returns:
+            atmtype in integer
+        """
         if isinstance(value, str):
             value = int(value)
         return value
 
     @vdp.VisDependentProperty
-    def infiles(self):
+    def infiles(self) -> str:
+        """Return infiles.
+
+        infiles is an alias of vis
+
+        Returns:
+            infiles string
+        """
         return self.vis
 
     @infiles.convert
-    def infiles(self, value):
+    def infiles(self, value: str) -> str:
+        """Update infiles and vis consistently.
+
+        Args:
+            value: new infiles value
+
+        Returns:
+            input value
+        """
         self.vis = value
         return value
 
     @vdp.VisDependentProperty
-    def antenna(self):
+    def antenna(self) -> str:
+        """Return antenna selection.
+
+        By default, empty string (all antennas) is returned.
+
+        Returns:
+            antenna selection string
+        """
         return ''
 
     @antenna.convert
-    def antenna(self, value):
+    def antenna(self, value: str) -> str:
+        """Convert antenna selection string.
+
+        Args:
+            value: input antenna selection
+
+        Returns:
+            converted antenna selection
+        """
         antennas = self.ms.get_antenna(value)
         # if all antennas are selected, return ''
         if len(antennas) == len(self.ms.antennas):
@@ -50,7 +91,14 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         return utils.find_ranges([a.id for a in antennas])
 
     @vdp.VisDependentProperty
-    def field(self):
+    def field(self) -> str:
+        """Return field selection string.
+
+        By default, only fields that matches given intent are returned.
+
+        Returns:
+            field selection string
+        """
         # this will give something like '0542+3243,0343+242'
         field_finder = fieldnames.IntentFieldnames()
         intent_fields = field_finder.calculate(self.ms, self.intent)
@@ -62,12 +110,26 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         return ','.join(fields)
 
     @vdp.VisDependentProperty
-    def spw(self):
+    def spw(self) -> str:
+        """Return spw selection string.
+
+        By default, channelized spws are returned.
+
+        Returns:
+            spw selection string
+        """
         science_spws = self.ms.get_spectral_windows(with_channels=True)
         return ','.join([str(spw.id) for spw in science_spws])
 
     @vdp.VisDependentProperty
-    def pol(self):
+    def pol(self) -> str:
+        """Return pol selection string.
+
+        By default, polarizatons corresponding to selected spws are selected.
+
+        Returns:
+            pol selecton string
+        """
         # filters polarization by self.spw
         selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(self.spw, with_channels=True)]
         pols = set()
@@ -76,8 +138,29 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         return ','.join(pols)
 
-    def __init__(self, context, atmtype=None, dtem_dh=None, h0=None,
-                 infiles=None, antenna=None, field=None, spw=None, pol=None):
+    def __init__(self,
+                 context: Context,
+                 atmtype: Optional[Union[int, str, List[int], List[str]]] =None,
+                 dtem_dh: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
+                 h0: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
+                 infiles: Optional[Union[str, List[str]]] =None,
+                 antenna: Optional[Union[str, List[str]]] =None,
+                 field: Optional[Union[str, List[str]]] =None,
+                 spw: Optional[Union[str, List[str]]] =None,
+                 pol: Optional[Union[str, List[str]]] =None):
+        """Initialize Inputs instance for hsd_atmcor.
+
+        Args:
+            context: pipeline context
+            atmtype: enumeration for atmospheric transmission model
+            dtem_dh: temperature gradient [K/km]
+            h0: scale height for water [km]. Defaults to None.
+            infiles: MS selection. Defaults to None.
+            antenna: antenna selection. Defaults to None.
+            field: field selection. Defaults to None.
+            spw: spw selection. Defaults to None.
+            pol: polarization selection. Defaults to None.
+        """
         super().__init__()
 
         self.context = context
@@ -90,7 +173,18 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         self.spw = spw
         self.pol = pol
 
-    def _identify_datacolumn(self, vis):
+    def _identify_datacolumn(self, vis: str) -> str:
+        """Identify data column.
+
+        Args:
+            vis: MS name
+
+        Raises:
+            Exception: no datacolumn exists
+
+        Returns:
+            datacolumn parameter
+        """
         datacolumn = ''
         with casa_tools.TableReader(vis) as tb:
             colnames = tb.colnames()
@@ -108,7 +202,12 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         return datacolumn
 
-    def get_k2jycal_result(self):
+    def get_k2jycal_result(self) -> Optional[k2jycal.SDK2JyCalResults]:
+        """Find k2jycal results instance from the context.
+
+        Returns:
+            k2jycal results instance or None
+        """
         results = self.context.results
         result = None
         for r in map(lambda x: x.read(), results):
@@ -120,7 +219,12 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
                 break
         return result
 
-    def get_gainfactor(self):
+    def get_gainfactor(self) -> Union[float, str]:
+        """Retrieve k2jycal table from k2jycal results.
+
+        Returns:
+            name of the k2jycal table or 1.0
+        """
         result = self.get_k2jycal_result()
         gainfactor = 1.0
         if result is not None:
@@ -129,7 +233,12 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
                 gainfactor = final[0].gaintable
         return gainfactor
 
-    def to_casa_args(self):
+    def to_casa_args(self) -> dict:
+        """Return task arguments for sdatmcor.
+
+        Returns:
+            task arguments for sdatmcor
+        """
         args = super().to_casa_args()
 
         # infile
@@ -171,17 +280,41 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
 
 class SDATMCorrectionResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results instance for hsd_atmcor."""
+    def __init__(self,
+                 task: Optional[basetask.StandardTaskTemplate] =None,
+                 success: Optional[bool] =None,
+                 outcome: Optional[str] =None):
+        """Initialize results instance for hsd_atmcor.
+
+        Args:
+            task: task class. Defaults to None.
+            success: task execution was successful or not. Defaults to None.
+            outcome: outcome of the task execution. name of the output MS. Defaults to None.
+        """
         super().__init__(task, success, outcome)
         # outcome is the name of output file from sdatmcor
         self.atmcor_ms_name = outcome
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context):
+        """Merge execution result of atmcor stage into pipeline context.
+
+        Args:
+            pipeline context
+        """
         super().merge_with_context(context)
 
         # TODO: register MS after sdatmcor to the context
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return representative string for the outcome.
+
+        Any string that represents outcome is returned.
+        In case of hsd_atmcor, output MS name is returned.
+
+        Returns:
+            output MS name for sdatmcor
+        """
         return os.path.basename(self.atmcor_ms_name)
 
 
@@ -190,9 +323,18 @@ class SDATMCorrectionResults(common.SingleDishResults):
     'Apply offline correction of atmospheric transmission model.'
 )
 class SerialSDATMCorrection(basetask.StandardTaskTemplate):
+    """Offline ATM correction task."""
     Inputs = SDATMCorrectionInputs
 
-    def prepare(self):
+    def prepare(self) -> SDATMCorrectionResults:
+        """Execute task and produce results instance.
+
+        Raises:
+            Exception: execution of sdatmcor was failed
+
+        Returns:
+            results instance for hsd_atmcor stage
+        """
         args = self.inputs.to_casa_args()
         LOG.info('Processing parameter for sdatmcor: %s', args)
         job = casa_tasks.sdatmcor(**args)
@@ -220,18 +362,51 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
 
         return results
 
-    def analyse(self, result):
+    def analyse(self, result: SDATMCorrectionResults) -> SDATMCorrectionResults:
+        """Analyse results produced by prepare method.
+
+        Do nothing at this moment.
+
+        Args:
+            result: results instance
+
+        Returns:
+            input results instance
+        """
         return result
 
 
 ### Tier-0 parallelization
 class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
+    """Inputs for parallel implementation of offline ATM correction."""
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, atmtype=None,
-                 infiles=None, antenna=None, field=None, spw=None, pol=None,
-                 parallel=None):
+    def __init__(self,
+                 context: Context,
+                 atmtype: Optional[Union[int, str, List[int], List[str]]] =None,
+                 dtem_dh: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
+                 h0: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
+                 infiles: Optional[Union[str, List[str]]] =None,
+                 antenna: Optional[Union[str, List[str]]] =None,
+                 field: Optional[Union[str, List[str]]] =None,
+                 spw: Optional[Union[str, List[str]]] =None,
+                 pol: Optional[Union[str, List[str]]] =None,
+                 parallel: Optional[bool] =None):
+        """Initialize Inputs instance for hsd_atmcor.
+
+        Args:
+            context: pipeline context
+            atmtype: enumeration for atmospheric transmission model
+            dtem_dh: temperature gradient [K/km]
+            h0: scale height for water [km]. Defaults to None.
+            infiles: MS selection. Defaults to None.
+            antenna: antenna selection. Defaults to None.
+            field: field selection. Defaults to None.
+            spw: spw selection. Defaults to None.
+            pol: polarization selection. Defaults to None.
+            parallel: enable Tier-0 parallelization or not. Defaults to None.
+        """
         super().__init__(context, atmtype, infiles, antenna, field, spw, atmtype)
         self.parallel = parallel
 
@@ -241,14 +416,29 @@ class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
 #     'Apply offline correction of atmospheric transmission model.'
 # )
 class HpcSDATMCorrection(sessionutils.ParallelTemplate):
+    """Parallel implementation of offline ATM correction task."""
     Inputs = HpcSDATMCorrectionInputs
     Task = SerialSDATMCorrection
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: HpcSDATMCorrectionInputs):
+        """Initialize parallel ATM correction task.
+
+        Args:
+            inputs instance for parallel ATM correction task
+        """
         super().__init__(inputs)
 
     @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
+    def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
+        """Produce failed task results
+
+        Args:
+            vis: name of the MS
+            exception: original exception
+
+        Returns:
+            FailedTaskResults instance
+        """
         LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
         LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
         import traceback

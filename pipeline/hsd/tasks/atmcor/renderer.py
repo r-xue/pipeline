@@ -1,3 +1,4 @@
+"""Renderer for hsd_atmcor stage."""
 import itertools
 import os
 
@@ -5,17 +6,38 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from .display import PlotmsRealVsFreqPlotter
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.basetask import ResultsList
 
 LOG = logging.get_logger(__name__)
 
 
 class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='hsd_atmcor.mako',
-                 description='Apply correction for atmospheric effects',
-                 always_rerender=False):
+    """Renderer class for hsd_atmcor stage."""
+    def __init__(self, always_rerender=False):
+        """Initialize renderer.
+
+        Args:
+            always_rerender: Set True to always render the page. Defaults to False.
+        """
+        uri = 'hsd_atmcor.mako'
+        description = 'Apply correction for atmospheric effects'
         super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, mako_context, pipeline_context, result):
+    def update_mako_context(self,
+                            mako_context: dict,
+                            pipeline_context: Context,
+                            result: ResultsList):
+        """Update Mako context.
+
+        Args:
+            mako_context (): original Mako context
+            pipeline_context (): pipeline context
+            result (): ResultsList containing SDATMCorrectionResults
+
+        Raises:
+            RuntimeError: given results object is not valid
+        """
         super().update_mako_context(mako_context, pipeline_context, result)
         stage_dir = os.path.join(
             pipeline_context.report_dir,
