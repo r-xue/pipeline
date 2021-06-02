@@ -5,6 +5,7 @@ Created on 24 Oct 2014
 """
 import collections
 import os.path
+from typing import Dict, Tuple
 
 import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as super_renderer
@@ -14,6 +15,8 @@ import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.basetask import ResultsList
 
 LOG = logging.get_logger(__name__)
 
@@ -86,11 +89,20 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_max': uv_max,
         })
 
-    def create_single_dish_science_plots(self, context, results):
+    def create_single_dish_science_plots(self, context: Context, results: ResultsList) -> Tuple[Dict, Dict, Dict]:
         """
-        Create plots for the science targets, returning two dictionaries of
-        vis:[Plots].
-        MODIFIED for single dish
+        Create plots for the science targets, returning three dictionaries
+        vis:[Plots], vis:[subpage paths], and vis:[max UV distances].
+
+         MODIFIED for single dish
+
+        Args:
+            context: pipeline context
+            results: ResultsList instance containing Applycal Results
+
+        Returns:
+            Three dictionaries of plot objects, subpage paths, and
+            max UV distances for each vis.
         """
         amp_vs_freq_summary_plots = collections.defaultdict(dict)
         max_uvs = collections.defaultdict(dict)

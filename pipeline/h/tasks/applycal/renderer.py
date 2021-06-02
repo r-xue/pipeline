@@ -302,7 +302,15 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def create_science_plots(self, context, results):
         """
         Create plots for the science targets, returning two dictionaries of 
-        vis:[Plots].
+        vis:[Plots], vis:[subpage paths], and vis:[max UV distances].
+
+        Args:
+            context: pipeline context
+            results: ResultsList instance containing Applycal Results
+
+        Returns:
+            Three dictionaries of plot objects, subpage paths, and
+            max UV distances for each vis.
         """
         amp_vs_freq_summary_plots = collections.defaultdict(dict)
         amp_vs_uv_summary_plots = collections.defaultdict(dict)
