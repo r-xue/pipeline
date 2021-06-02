@@ -185,7 +185,7 @@ class ImportData(basetask.StandardTaskTemplate):
                 to_import.append(dst)
 
                 if os.path.exists(dst):
-                    LOG.warning('%s already in %s. Will import existing data.', os.path.basename(src), abs_output_dir)
+                    LOG.warning('{} already in {}. Will import existing data.'.format(os.path.basename(src), abs_output_dir))
                     continue
 
                 if not self._executor._dry_run:
