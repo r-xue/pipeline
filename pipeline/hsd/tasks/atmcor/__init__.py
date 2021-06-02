@@ -13,6 +13,6 @@ qaadapter.registry.register_to_calibration_topic(SDATMCorrectionResults)
 
 weblog.add_renderer(
     SDATMCorrection,
-    T2_4MDetailsSingleDishATMCorRenderer(always_rerender=True),
+    T2_4MDetailsSingleDishATMCorRenderer(always_rerender=False),
     group_by=weblog.UNGROUPED
 )
