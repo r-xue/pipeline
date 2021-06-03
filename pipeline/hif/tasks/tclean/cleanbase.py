@@ -617,7 +617,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             for name in name_list:
                 if os.path.exists(name):
                     imageheader.set_miscinfo(name=name, spw=inputs.spw, field=inputs.field,
-                                             type=im_type, iter=iter, multiterm=result.multiterm,
+                                             type=im_type, iter=iter,
                                              intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
                                              is_per_eb=inputs.is_per_eb,
                                              context=context)
