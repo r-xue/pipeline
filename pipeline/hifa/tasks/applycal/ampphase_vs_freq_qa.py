@@ -6,6 +6,7 @@ import warnings
 from typing import List
 
 import numpy
+import numpy as np
 import scipy.optimize
 
 import pipeline.infrastructure.logging as logging
@@ -29,7 +30,7 @@ PHASE_SLOPE_THRESHOLD = 6.5
 PHASE_INTERCEPT_THRESHOLD = 8.4
 
 
-def score_all_scans(ms, intent: str, flag_all: bool = False) -> List[Outlier]:
+def score_all_scans(ms, intent: str, memory_gb: int = 4, flag_all: bool = False) -> List[Outlier]:
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
@@ -43,6 +44,7 @@ def score_all_scans(ms, intent: str, flag_all: bool = False) -> List[Outlier]:
 
     :param ms: MeasurementSet to process
     :param intent: data intent to process
+    :param memory_gb: maximum chunk size (in GB) used when loading the MeasurementSet
     :param flag_all: (optional) True if all fits should be classified as
         outliers
     :return: outliers that deviate from a reference fit
@@ -53,7 +55,8 @@ def score_all_scans(ms, intent: str, flag_all: bool = False) -> List[Outlier]:
                       key=operator.attrgetter('id'))
         for spw in spws:
             LOG.info('Applycal QA analysis: processing {} scan {} spw {}'.format(ms.basename, scan.id, spw.id))
-            wrapper = mswrapper.MSWrapper.create_from_ms(ms.name, scan=scan.id, spw=spw.id)
+            # TODO: Check memory_gb value
+            wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, scan.id, spw.id, memory_gb)
             fits = get_best_fits_per_ant(wrapper)
 
             outlier_fn = functools.partial(Outlier,
@@ -65,72 +68,6 @@ def score_all_scans(ms, intent: str, flag_all: bool = False) -> List[Outlier]:
             outliers.extend(score_all(fits, outlier_fn, flag_all))
 
     return outliers
-
-
-def calc_vk(wrapper):
-    """
-    Return a NumPy array containing time-averaged visibilities for each
-    baseline in the input MSWrapper.
-
-    :param wrapper: MSWrapper to process
-    :return:
-    """
-    # PIPE-687: This function may be obsolete if the function create_averages_from_ms in mswrapper.py
-    #  is used to create the wrapper.
-
-    # find indices of all antennas
-    antenna1 = set(wrapper['antenna1'])
-    antenna2 = set(wrapper['antenna2'])
-    all_antennas = antenna1.union(antenna2)
-
-    # Sigma is a function of sqrt(num_antennas - 1). Calculate and cache this value now.
-    root_num_antennas = numpy.sqrt(len(all_antennas) - 1)
-
-    # columns in this list are omitted from V_k
-    excluded_columns = ['antenna1', 'antenna2', 'corrected_phase', 'flag']
-
-    # create a new dtype that adds 'antenna' and 'sigma' columns, filtering out columns we want to omit
-    column_names = [c for c in wrapper.data.dtype.names if c not in excluded_columns]
-    result_dtype = [mswrapper.get_dtype(wrapper.data, c) for c in column_names]
-    result_dtype.insert(0, ('antenna', numpy.int32))
-    result_dtype.append(('sigma', wrapper['corrected_data'].dtype, wrapper['corrected_data'].shape[1:]))
-
-    # get 1D array of channel frequencies and include its definition in the dtype
-    chan_freq = wrapper.freq_axis['chan_freq']
-    chan_freq = chan_freq.swapaxes(0, 1)[0]
-    result_dtype.append(('chan_freq', chan_freq.dtype, chan_freq.shape))
-
-    # get 1D array of channel widths and include the column in the dtype
-    resolution = wrapper.freq_axis['resolution']
-    resolution = resolution.swapaxes(0, 1)[0]
-    result_dtype.append(('resolution', resolution.dtype, resolution.shape))
-
-    # new numpy array to hold visibilities V
-    V = numpy.ma.empty((0,), dtype=result_dtype)
-
-    for k in all_antennas:
-        # create new row to hold all data for this antenna
-        V_k = numpy.ma.empty((1,), dtype=V.data.dtype)
-
-        # add antenna and channel frequencies to the row for this antenna
-        V_k['antenna'] = k
-        V_k['chan_freq'] = chan_freq
-        V_k['resolution'] = resolution
-
-        # Equation 2: sigma_{k}(nu_{i}) = std(V_{jk}(nu_{i}))_{j} / sqrt(n_{ant})
-        # select all visibilities created using this antenna.
-        V_jk = wrapper.xor_filter(antenna1=k, antenna2=k)
-        sigma_k_real = V_jk['corrected_data'].real.std(axis=0) / root_num_antennas
-        sigma_k_imag = V_jk['corrected_data'].imag.std(axis=0) / root_num_antennas
-        V_k['sigma'] = sigma_k_real + 1j * sigma_k_imag
-
-        # add the remaining columns
-        for col in column_names:
-            V_k[col] = V_jk[col].mean(axis=0)
-
-        V = numpy.ma.concatenate((V, V_k), axis=0)
-
-    return V
 
 
 def get_best_fits_per_ant(wrapper):
@@ -145,10 +82,7 @@ def get_best_fits_per_ant(wrapper):
     :param wrapper: MSWrapper to process
     :return: a list of AntennaFit objects
     """
-    # PIPE-687: the next line may be replaced by "V_k = wrapper.V" if the new function
-    #  create_averages_from_ms in mswrapper.py is used to create the wrapper. This will
-    #  probably made obsolete the function calc_vk
-    V_k = calc_vk(wrapper)
+    V_k = wrapper.V
 
     corrected_data = V_k['corrected_data']
     sigma = V_k['sigma']

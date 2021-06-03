@@ -6,13 +6,13 @@ from pipeline.infrastructure import casa_tools
 LOG = logging.get_logger(__name__)
 
 
-def create_V_array(npol, nchan):
+def create_V_array(n_pol: int, n_chan: int):
     """Create an empty array to hold the time averaged visibilities.
 
     Args:
-        npol: int
+        n_pol: int
             Number of polarizations.
-        nchan: int
+        n_chan: int
             Number of channels.
 
     Returns:
@@ -22,11 +22,11 @@ def create_V_array(npol, nchan):
     # Create variables and storage space for V_k
     result_dtype = [
         ('antenna', np.dtype('int32')),
-        ('corrected_data', np.dtype('complex128'), (npol, nchan)),
+        ('corrected_data', np.dtype('complex128'), (n_pol, n_chan)),
         ('time', np.dtype('float64')),
-        ('sigma', np.dtype('complex128'), (npol, nchan)),
-        ('chan_freq', np.dtype('float64'), (nchan,)),
-        ('resolution', np.dtype('float64'), (nchan,))
+        ('sigma', np.dtype('complex128'), (n_pol, n_chan)),
+        ('chan_freq', np.dtype('float64'), (n_chan,)),
+        ('resolution', np.dtype('float64'), (n_chan,))
     ]
     # new numpy array to hold visibilities V
     return np.ma.empty((0,), dtype=result_dtype)
@@ -481,3 +481,70 @@ def get_dtype(data, column_name):
         return column_name, column_dtype
 
     return column_name, column_dtype, column_shape[1:]
+
+
+def calc_vk(wrapper):
+    """
+    Return a NumPy array containing time-averaged visibilities for each
+    baseline in the input MSWrapper.
+
+    :param wrapper: MSWrapper to process
+    :return:
+    """
+    # PIPE-687: This function was moved from ampphase_vs_freq_qa.py. It is here to test the consistency
+    #  of the old and new code. This may be removed in the future once the accuracy of the output has
+    #  been validated.
+
+    # find indices of all antennas
+    antenna1 = set(wrapper['antenna1'])
+    antenna2 = set(wrapper['antenna2'])
+    all_antennas = antenna1.union(antenna2)
+
+    # Sigma is a function of sqrt(num_antennas - 1). Calculate and cache this value now.
+    root_num_antennas = np.sqrt(len(all_antennas) - 1)
+
+    # columns in this list are omitted from V_k
+    excluded_columns = ['antenna1', 'antenna2', 'corrected_phase', 'flag']
+
+    # create a new dtype that adds 'antenna' and 'sigma' columns, filtering out columns we want to omit
+    column_names = [c for c in wrapper.data.dtype.names if c not in excluded_columns]
+    result_dtype = [get_dtype(wrapper.data, c) for c in column_names]
+    result_dtype.insert(0, ('antenna', np.int32))
+    result_dtype.append(('sigma', wrapper['corrected_data'].dtype, wrapper['corrected_data'].shape[1:]))
+
+    # get 1D array of channel frequencies and include its definition in the dtype
+    chan_freq = wrapper.freq_axis['chan_freq']
+    chan_freq = chan_freq.swapaxes(0, 1)[0]
+    result_dtype.append(('chan_freq', chan_freq.dtype, chan_freq.shape))
+
+    # get 1D array of channel widths and include the column in the dtype
+    resolution = wrapper.freq_axis['resolution']
+    resolution = resolution.swapaxes(0, 1)[0]
+    result_dtype.append(('resolution', resolution.dtype, resolution.shape))
+
+    # new numpy array to hold visibilities V
+    V = np.ma.empty((0,), dtype=result_dtype)
+
+    for k in all_antennas:
+        # create new row to hold all data for this antenna
+        V_k = np.ma.empty((1,), dtype=V.data.dtype)
+
+        # add antenna and channel frequencies to the row for this antenna
+        V_k['antenna'] = k
+        V_k['chan_freq'] = chan_freq
+        V_k['resolution'] = resolution
+
+        # Equation 2: sigma_{k}(nu_{i}) = std(V_{jk}(nu_{i}))_{j} / sqrt(n_{ant})
+        # select all visibilities created using this antenna.
+        V_jk = wrapper.xor_filter(antenna1=k, antenna2=k)
+        sigma_k_real = V_jk['corrected_data'].real.std(axis=0) / root_num_antennas
+        sigma_k_imag = V_jk['corrected_data'].imag.std(axis=0) / root_num_antennas
+        V_k['sigma'] = sigma_k_real + 1j * sigma_k_imag
+
+        # add the remaining columns
+        for col in column_names:
+            V_k[col] = V_jk[col].mean(axis=0)
+
+        V = np.ma.concatenate((V, V_k), axis=0)
+
+    return V
