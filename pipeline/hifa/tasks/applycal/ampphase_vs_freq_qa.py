@@ -5,7 +5,6 @@ import operator
 import warnings
 from typing import List
 
-import numpy
 import numpy as np
 import scipy.optimize
 
@@ -99,8 +98,8 @@ def get_best_fits_per_ant(wrapper):
     for ant in range(num_antennas):
         frequencies = V_k['chan_freq'][ant]
 
-        bandwidth = numpy.ma.max(frequencies) - numpy.ma.min(frequencies)
-        band_midpoint = (numpy.ma.max(frequencies) + numpy.ma.min(frequencies)) / 2.0
+        bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
+        band_midpoint = (np.ma.max(frequencies) + np.ma.min(frequencies)) / 2.0
         frequency_scale = 1.0 / bandwidth
         amp_model_fn = get_linear_function(band_midpoint, frequency_scale)
         ang_model_fn = get_angular_linear_function(band_midpoint, frequency_scale)
@@ -321,8 +320,8 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
             ant = fit.ant
             unc = accessor(fit).unc
             value = accessor(fit).value
-            this_sigma = numpy.sqrt(reference_sigma ** 2 + unc ** 2)
-            num_sigma = numpy.abs((value - reference_val) / this_sigma)
+            this_sigma = np.sqrt(reference_sigma ** 2 + unc ** 2)
+            num_sigma = np.abs((value - reference_val) / this_sigma)
 
             if num_sigma > sigma_threshold:
                 outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma)
@@ -356,25 +355,25 @@ def get_amp_fit(amp_model_fn, frequencies, visibilities, sigma):
     :return: tuple of best fit params, uncertainty tuple
     """
     # calculate amplitude and phase from visibility, inc. std. deviations for each
-    amp = numpy.ma.abs(visibilities)
+    amp = np.ma.abs(visibilities)
     # angle of complex argument, in radians
-    sigma_amp = numpy.ma.sqrt((visibilities.real * sigma.real) ** 2 + (visibilities.imag * sigma.imag) ** 2) / amp
-    sigma_phase = numpy.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (visibilities.real * sigma.imag) ** 2) / (
+    sigma_amp = np.ma.sqrt((visibilities.real * sigma.real) ** 2 + (visibilities.imag * sigma.imag) ** 2) / amp
+    sigma_phase = np.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (visibilities.real * sigma.imag) ** 2) / (
             amp ** 2)
 
     # curve_fit doesn't handle MaskedArrays, so mask out all bad data and
     # convert to standard NumPy arrays
-    mask = numpy.ma.all([amp.mask, sigma_amp <= 0, sigma_phase <= 0], axis=0)
+    mask = np.ma.all([amp.mask, sigma_amp <= 0, sigma_phase <= 0], axis=0)
     trimmed_frequencies = frequencies[~mask]
     trimmed_amp = amp.data[~mask]
     trimmed_sigma_amp = sigma_amp.data[~mask]
 
-    Cinit = numpy.ma.median(trimmed_amp)
+    Cinit = np.ma.median(trimmed_amp)
 
     amp_fit, amp_cov = scipy.optimize.curve_fit(amp_model_fn, trimmed_frequencies, trimmed_amp,
                                                 p0=[0.0, Cinit], sigma=trimmed_sigma_amp, absolute_sigma=True)
 
-    amp_err = numpy.sqrt(numpy.diag(amp_cov))
+    amp_err = np.sqrt(np.diag(amp_cov))
 
     return amp_fit, amp_err
 
@@ -392,37 +391,37 @@ def get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, sigma):
     :return: tuple of best fit params, uncertainty tuple
     """
     # calculate amplitude and phase from visibility, inc. std. deviations for each
-    amp = numpy.ma.abs(visibilities)
-    phase = numpy.ma.angle(visibilities)
+    amp = np.ma.abs(visibilities)
+    phase = np.ma.angle(visibilities)
 
     zeroamp = (amp.data <= 0.0)
     amp.mask[zeroamp] = True
     phase.mask[zeroamp] = True
 
-    sigma_amp = numpy.ma.sqrt((visibilities.real * sigma.real) ** 2 + (
+    sigma_amp = np.ma.sqrt((visibilities.real * sigma.real) ** 2 + (
             visibilities.imag * sigma.imag) ** 2) / amp
-    sigma_phase = numpy.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (
+    sigma_phase = np.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (
             visibilities.real * sigma.imag) ** 2) / (amp ** 2)
 
     # curve_fit doesn't handle MaskedArrays, so mask out all bad data and
     # convert to standard NumPy arrays
-    mask = numpy.ma.all([amp.mask, sigma_amp <= 0, sigma_phase <= 0], axis=0)
+    mask = np.ma.all([amp.mask, sigma_amp <= 0, sigma_phase <= 0], axis=0)
     trimmed_frequencies = frequencies[~mask]
     trimmed_phase = phase.data[~mask]
     trimmed_sigma_phase = sigma_phase.data[~mask]
 
-    phi_init = numpy.ma.median(trimmed_phase)
+    phi_init = np.ma.median(trimmed_phase)
 
     # normalise visibilities by amplitude to fit linear angular model
-    normalised_visibilities = numpy.ma.divide(visibilities, amp)
-    normalised_sigma = numpy.ma.divide(sigma, amp)
+    normalised_visibilities = np.ma.divide(visibilities, amp)
+    normalised_sigma = np.ma.divide(sigma, amp)
 
     ang_fit_res = fit_angular_model(ang_model_fn, frequencies, normalised_visibilities, normalised_sigma)
 
     # Detrend phases using fit
     detrend_model = ang_model_fn(frequencies, -ang_fit_res['x'][0], -ang_fit_res['x'][1])
     detrend_data = normalised_visibilities * detrend_model
-    detrend_phase = numpy.ma.angle(detrend_data)[~mask]
+    detrend_phase = np.ma.angle(detrend_data)[~mask]
 
     # Refit phases to obtain errors from the same curve_fit method
     zerophasefit, phasecov = scipy.optimize.curve_fit(amp_model_fn, trimmed_frequencies, detrend_phase,
@@ -431,7 +430,7 @@ def get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, sigma):
     # Final result is detrending model + new fit (close to zero)
     phase_fit = ang_fit_res['x'] + zerophasefit
 
-    phase_err = numpy.sqrt(numpy.diag(phasecov))
+    phase_err = np.sqrt(np.diag(phasecov))
 
     return phase_fit, phase_err
 
@@ -446,8 +445,8 @@ def get_linear_function(midpoint, x_scale):
     """
 
     def f(x, slope, intercept):
-        return numpy.ma.multiply(
-            numpy.ma.multiply(slope, numpy.ma.subtract(x, midpoint)),
+        return np.ma.multiply(
+            np.ma.multiply(slope, np.ma.subtract(x, midpoint)),
             x_scale
         ) + intercept
 
@@ -465,7 +464,7 @@ def get_angular_linear_function(midpoint, x_scale):
     linear_fn = get_linear_function(midpoint, x_scale)
 
     def f(x, slope, intercept):
-        return numpy.ma.exp(1j * linear_fn(x, slope, intercept))
+        return np.ma.exp(1j * linear_fn(x, slope, intercept))
 
     return f
 
@@ -473,17 +472,17 @@ def get_angular_linear_function(midpoint, x_scale):
 def get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma):
     m = angular_model(nu, omega, phi)
     diff = angdata - m
-    aux = (numpy.square(diff.real / angsigma.real) + numpy.square(diff.imag / angsigma.imag))[~angdata.mask]
-    return float(numpy.sum(aux.real))
+    aux = (np.square(diff.real / angsigma.real) + np.square(diff.imag / angsigma.imag))[~angdata.mask]
+    return float(np.sum(aux.real))
 
 
 def fit_angular_model(angular_model, nu, angdata, angsigma):
     f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
-    angle = numpy.ma.angle(angdata[~angdata.mask])
+    angle = np.ma.angle(angdata[~angdata.mask])
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore', numpy.ComplexWarning)
-        phi_init = numpy.ma.median(angle)
-    fitres = scipy.optimize.minimize(f_aux, numpy.array([0.0, phi_init]), method='L-BFGS-B')
+        warnings.simplefilter('ignore', np.ComplexWarning)
+        phi_init = np.ma.median(angle)
+    fitres = scipy.optimize.minimize(f_aux, np.array([0.0, phi_init]), method='L-BFGS-B')
     return fitres
 
 
@@ -507,8 +506,8 @@ def robust_stats(a):
         alpha = 1.32
         beta = -0.9
     bn = 1.0 - 1.0 / (alpha * n + beta)
-    mu = numpy.median(a)
-    sigma = (1.0 / bn) * madfactor * numpy.median(numpy.abs(a - mu))
+    mu = np.median(a)
+    sigma = (1.0 / bn) * madfactor * np.median(np.abs(a - mu))
     return mu, sigma
 
 
