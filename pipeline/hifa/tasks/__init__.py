@@ -22,5 +22,6 @@ from .tsysflag import Tsysflag as ALMATsysflag
 from .unlock_refant import UnlockRefAnt
 from .wvrgcal import Wvrgcal
 from .wvrgcalflag import Wvrgcalflag
+from .renorm import Renorm
 # required to load ALMA-specific QA
 from . import applycal
