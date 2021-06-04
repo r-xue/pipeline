@@ -30,7 +30,7 @@ PHASE_SLOPE_THRESHOLD = 6.5
 PHASE_INTERCEPT_THRESHOLD = 8.4
 
 
-def score_all_scans(ms, intent: str, memory_gb: int = 4, flag_all: bool = False) -> List[Outlier]:
+def score_all_scans(ms, intent: str, memory_gb: int = 1, flag_all: bool = False) -> List[Outlier]:
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
@@ -55,8 +55,11 @@ def score_all_scans(ms, intent: str, memory_gb: int = 4, flag_all: bool = False)
                       key=operator.attrgetter('id'))
         for spw in spws:
             LOG.info('Applycal QA analysis: processing {} scan {} spw {}'.format(ms.basename, scan.id, spw.id))
-            # TODO: Check memory_gb value
-            wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, scan.id, spw.id, memory_gb)
+
+            wrapper = mswrapper.MSWrapper.create_from_ms(ms.name, scan.id, spw.id)
+            # PIPE-687: Change previous line with the following commented code as part of PIPE-401
+            # wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, scan.id, spw.id, memory_gb)
+
             fits = get_best_fits_per_ant(wrapper)
 
             outlier_fn = functools.partial(Outlier,
@@ -82,7 +85,9 @@ def get_best_fits_per_ant(wrapper):
     :param wrapper: MSWrapper to process
     :return: a list of AntennaFit objects
     """
-    V_k = wrapper.V
+    V_k = mswrapper.calc_vk(wrapper)
+    # PIPE-687: Change previous line with the following commented code as part of PIPE-401
+    # V_k = wrapper.V
 
     corrected_data = V_k['corrected_data']
     sigma = V_k['sigma']
