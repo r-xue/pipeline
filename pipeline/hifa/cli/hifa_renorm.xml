@@ -14,6 +14,17 @@
 	<value></value>
     </param>
 
+    <param name="apply" type="bool">
+        <shortdescription>Apply renormalization correction</shortdescription>
+        <description>Apply renormalization correction</description>
+        <value>False</value>
+    </param>
+
+    <param name="threshold" type="float">
+        <shortdescription>Apply correction if max correction is above threshold and apply=True</shortdescription>
+        <description>Apply correction if max correction is above threshold and apply=True</description>
+        <value>False</value>
+    </param>
 
     <param type="string" name="pipelinemode">
     <shortdescription>The pipeline operating mode</shortdescription>

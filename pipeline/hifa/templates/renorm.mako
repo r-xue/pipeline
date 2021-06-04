@@ -9,3 +9,20 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <p>Renorm</p>
 
+<table class="table table-bordered table-striped" summary="Targetflag flagging results">
+	<caption>Renormalization parameters</caption>
+        <thead>
+	    <tr>
+	        <th>apply</th>
+	        <th>threshold</th>
+	    </tr>
+	</thead>
+	<tbody>
+    	%for r in result:
+		<tr>
+			<td>${r.apply}</td>
+			<td>${r.threshold}</td>
+		</tr>
+		%endfor
+	</tbody>
+</table>

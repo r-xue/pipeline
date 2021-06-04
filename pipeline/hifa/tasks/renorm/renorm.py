@@ -9,9 +9,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self):
+    def __init__(self, apply, threhold):
         super(RenormResults, self).__init__()
         self.pipeline_casa_task = 'Renorm'
+        self.apply = apply
+        self.threshold = threhold
 
     def merge_with_context(self, context):
         """
@@ -20,15 +22,17 @@ class RenormResults(basetask.Results):
         return
 
     def __repr__(self):
-        #return 'RenormResults:\n\t{0}'.format(
-        #    '\n\t'.join([ms.name for ms in self.mses]))
-        return 'RenormResults:'
-
+        return (f'RenormResults:\n'
+                '\tapply={self.apply}\n'
+                '\tthreshold={self.threshold}')
 
 class RenormInputs(vdp.StandardInputs):
-    def __init__(self, context, vis=None):
+
+    def __init__(self, context, vis=None, apply=None, threhold=None):
         self.context = context
         self.vis = vis
+        self.apply = apply
+        self.threshold = threhold
 
 @task_registry.set_equivalent_casa_task('hifa_renorm')
 @task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
@@ -38,15 +42,11 @@ class Renorm(basetask.StandardTaskTemplate):
     def prepare(self):
 
         LOG.info("This Renorm class is running.")
+        # call the renorm script
 
-        return RenormResults()
+        result = RenormResults(self.inputs.apply, self.inputs.threshold)
+
+        return result
 
     def analyse(self, results):
         return results
-
-    def _do_somethingrenorm(self):
-
-        task = casa_tasks.renormcal(vis=self.inputs.vis, caltable='tempcal.renorm')
-
-        return self._executor.execute(task)
-
