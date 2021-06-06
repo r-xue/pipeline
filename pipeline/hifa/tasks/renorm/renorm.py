@@ -4,6 +4,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.extern.almarenorm import ACreNorm
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -27,8 +28,11 @@ class RenormResults(basetask.Results):
                 '\tthreshold={self.threshold}')
 
 class RenormInputs(vdp.StandardInputs):
+    apply = vdp.VisDependentProperty(default=False)
+    threshold = vdp.VisDependentProperty(default=0.0)
 
     def __init__(self, context, vis=None, apply=None, threhold=None):
+        super(RenormInputs, self).__init__()
         self.context = context
         self.vis = vis
         self.apply = apply
@@ -40,11 +44,20 @@ class Renorm(basetask.StandardTaskTemplate):
     Inputs = RenormInputs
 
     def prepare(self):
+        inp = self.inputs
 
         LOG.info("This Renorm class is running.")
-        # call the renorm script
 
-        result = RenormResults(self.inputs.apply, self.inputs.threshold)
+        # call the renorm script
+        rn = ACreNorm(inp.vis)
+        rn.plotRelTsysSpectra()
+        rn.writeTsysTemps()
+        rn.renormalize(docorr=inp.apply, correctATM=False)#, diagspectra=False, fthresh=inp.threshold)
+        stats = rn.stats()
+        rn.plotSpectra()
+        rn.close()
+
+        result = RenormResults(inp.apply, inp.threshold)
 
         return result
 

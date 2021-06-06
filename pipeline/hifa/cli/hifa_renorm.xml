@@ -23,7 +23,7 @@
     <param name="threshold" type="float">
         <shortdescription>Apply correction if max correction is above threshold and apply=True</shortdescription>
         <description>Apply correction if max correction is above threshold and apply=True</description>
-        <value>False</value>
+        <value>0.0</value>
     </param>
 
     <param type="string" name="pipelinemode">
