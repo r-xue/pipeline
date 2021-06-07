@@ -67,6 +67,20 @@ def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
     return date2num(datetime_list)
 
 
+def is_invalid_axis_range(xmin: float, xmax: float, ymin: float, ymax: float) -> bool:
+    axis_ranges = [xmin, xmax, ymin, ymax]
+
+    def _is_invalid(v):
+        # check if given value is Inf or NaN or masked
+        return (np.isfinite(v) is False) or np.ma.is_masked(v)
+
+    zero_range_x = xmax - xmin == 0
+    zero_range_y = ymax - ymin == 0
+    invalid_values = any(map(_is_invalid, axis_ranges))
+
+    return zero_range_x or zero_range_y or invalid_values
+
+
 class CustomDateFormatter(DateFormatter):
     """Customized date formatter.
 
@@ -1220,8 +1234,8 @@ class SDSparseMapPlotter(object):
         """
         overlay_atm_transmission = self.atm_transmission is not None
 
-        spmin = averaged_data.min()
-        spmax = averaged_data.max()
+        spmin = np.nanmin(averaged_data)
+        spmax = np.nanmax(averaged_data)
         dsp = spmax - spmin
         spmin -= dsp * 0.1
         if overlay_atm_transmission:
@@ -1273,14 +1287,33 @@ class SDSparseMapPlotter(object):
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
 
-        LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
-
         plt.gcf().sca(self.axes.axes_integsp)
         plt.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = plt.axis()
-        plt.axis((global_xmin, global_xmax, spmin, spmax))
+
+        LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
+        LOG.info('spmin=%s, spmax=%s', spmin, spmax)
+
+        # do not create plots if any of specified axis ranges
+        # are invalid
+        if is_invalid_axis_range(global_xmin, global_xmax, spmin, spmax):
+            LOG.warn(
+                'Invalid axis range for averaged spectrum. Plot %s will not be created.',
+                os.path.basename(figfile)
+            )
+            return False
+
+        try:
+            # PIPE-1140
+            plt.axis((global_xmin, global_xmax, spmin, spmax))
+        except Exception:
+            LOG.warn(
+                'Axis configuration for %s failed. Plot will not be created.',
+                os.path.basename(figfile)
+            )
+            return False
         fedge_span = None
         if self.edge is not None:
             (ch1, ch2) = self.edge
