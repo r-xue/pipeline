@@ -224,7 +224,6 @@ It generates an image combined spectral data from whole antenna as well as image
 	                        <a href="${os.path.join(dirname, subpage)}"
 	                           class="replace"
 	                           data-spw="${plot.parameters['spw']}"
-	                           data-ant="${plot.parameters['ant']}"
 	                           data-field="${field}">
 	                           ${get_spw_exp(plot.parameters['spw'])}
 	                        </a>
@@ -244,7 +243,7 @@ It generates an image combined spectral data from whole antenna as well as image
 		                               class="btn replace"
 		                               data-spw="${plot.parameters['spw']}"
 		                               data-ant="${ant}"
-	                                       data-field="${field}"
+		                               data-field="${field}"
 		                               data-pol="${pol}">
 		                            ${pol}
 		                            </a>
@@ -295,7 +294,6 @@ It generates an image combined spectral data from whole antenna as well as image
 	                            <a href="${os.path.join(dirname, subpage)}"
 	                               class="replace"
 	                               data-spw="${plot.parameters['spw']}"
-	                               data-ant="${plot.parameters['ant']}"
 	                               data-field="${field}">
 	                               ${get_spw_exp(plot.parameters['spw'])}
 	                            </a>

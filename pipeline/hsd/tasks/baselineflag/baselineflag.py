@@ -35,8 +35,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
     iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
     flag_tsys = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
     tsys_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
-    flag_weath = vdp.VisDependentProperty(default=False, fconvert=__to_bool)
-    weath_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
     flag_prfre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
     prfre_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
     flag_pofre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
@@ -51,8 +49,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
     flag_pofrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
     pofrm_thresh = vdp.VisDependentProperty(default=5.0, fconvert=__to_numeric)
     pofrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
-    flag_user = vdp.VisDependentProperty(default=False, fconvert=__to_bool)
-    user_thresh = vdp.VisDependentProperty(default=5.0, fconvert=__to_numeric)
     plotflag = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
 
     @vdp.VisDependentProperty
@@ -116,14 +112,12 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None,
                  iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
-                 flag_weath=None, weath_thresh=None,
                  flag_prfre=None, prfre_thresh=None,
                  flag_pofre=None, pofre_thresh=None,
                  flag_prfr=None, prfr_thresh=None,
                  flag_pofr=None, pofr_thresh=None,
                  flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
                  flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 flag_user=None, user_thresh=None,
                  plotflag=None,
                  infiles=None, antenna=None, field=None,
                  spw=None, pol=None):
@@ -139,8 +133,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
         self.edge = edge
         self.flag_tsys = flag_tsys
         self.tsys_thresh = tsys_thresh
-        self.flag_weath = flag_weath
-        self.weath_thresh = weath_thresh
         self.flag_prfre = flag_prfre
         self.prfre_thresh = prfre_thresh
         self.flag_pofre = flag_pofre
@@ -155,8 +147,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
         self.flag_pofrm = flag_pofrm
         self.pofrm_thresh = pofrm_thresh
         self.pofrm_nmean = pofrm_nmean
-        self.flag_user = flag_user
-        self.user_thresh = user_thresh
         self.plotflag = plotflag
         self.antenna = antenna
         self.field = field
@@ -171,8 +161,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
     def _configureFlagRule(self):
         """A private method to convert input parameters to FlagRuleDictionary"""
         d = {'TsysFlag': (self.flag_tsys, [self.tsys_thresh]),
-             'WeatherFlag': (self.flag_weath, [self.weath_thresh]),
-             'UserFlag': (self.flag_user, [self.user_thresh]),
              'RmsPreFitFlag': (self.flag_prfr, [self.prfr_thresh]),
              'RmsPostFitFlag': (self.flag_pofr, [self.pofr_thresh]),
              'RmsExpectedPreFitFlag': (self.flag_prfre, [self.prfre_thresh]),
@@ -261,7 +249,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         LOG.debug("Flag Rule for %s: %s" % (cal_name, flag_rule))
 
         # sumarize flag before execution
-        full_intent = utils.to_CASA_intent(self.inputs.ms, self.inputs.intent)
+        full_intent = utils.to_CASA_intent(inputs.ms, inputs.intent)
         flagdata_summary_job = casa_tasks.flagdata(vis=bl_name, mode='summary',
                                                    antenna=in_ant, field=in_field,
                                                    spw=in_spw, intent=full_intent,
@@ -332,7 +320,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             if absolute_path(cal_name) == absolute_path(bl_name):
                 LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
                          " MASKLIST will also be cleared up. You may go on flagging but the statistics"
-                         " will contain line emission." % self.inputs.ms.basename)
+                         " will contain line emission." % inputs.ms.basename)
             else:
                 # row map generation is very expensive. Do as few time as possible
                 _ms = context.observing_run.get_ms(msobj.name)
@@ -403,28 +391,26 @@ class HpcSDBLFlagInputs(SDBLFlagInputs):
     def __init__(self, context, output_dir=None,
                  iteration=None, edge=None,
                  flag_tsys=None, tsys_thresh=None,
-                 flag_weath=None, weath_thresh=None,
                  flag_prfre=None, prfre_thresh=None,
                  flag_pofre=None, pofre_thresh=None,
                  flag_prfr=None, prfr_thresh=None,
                  flag_pofr=None, pofr_thresh=None,
                  flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
                  flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 flag_user=None, user_thresh=None, plotflag=None,
+                 plotflag=None,
                  infiles=None, antenna=None, field=None,
                  spw=None, pol=None, parallel=None):
         super(HpcSDBLFlagInputs, self).__init__(
             context, output_dir=output_dir,
             iteration=iteration, edge=edge,
             flag_tsys=flag_tsys, tsys_thresh=tsys_thresh,
-            flag_weath=flag_weath, weath_thresh=weath_thresh,
             flag_prfre=flag_prfre, prfre_thresh=prfre_thresh,
             flag_pofre=flag_pofre, pofre_thresh=pofre_thresh,
             flag_prfr=flag_prfr, prfr_thresh=prfr_thresh,
             flag_pofr=flag_pofr, pofr_thresh=pofr_thresh,
             flag_prfrm=flag_prfrm, prfrm_thresh=prfrm_thresh, prfrm_nmean=prfrm_nmean,
             flag_pofrm=flag_pofrm, pofrm_thresh=pofrm_thresh, pofrm_nmean=pofrm_nmean,
-            flag_user=flag_user, user_thresh=user_thresh, plotflag=plotflag,
+            plotflag=plotflag,
             infiles=infiles, antenna=antenna, field=field, spw=spw, pol=pol)
         self.parallel = parallel
 

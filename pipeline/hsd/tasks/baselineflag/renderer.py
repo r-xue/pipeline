@@ -18,7 +18,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     The renderer class for baselineflag.
     """
     def __init__(self, uri='hsd_blflag.mako',
-                 description='Flag data by Tsys, weather, and statistics of spectra',
+                 description='Flag data by Tsys and statistics of spectra',
                  always_rerender=False):
         """
         Constructor

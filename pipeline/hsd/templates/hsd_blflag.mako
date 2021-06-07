@@ -10,14 +10,14 @@ def get_fraction(flagged, total):
    else:
        return '%0.1f%%' % (100.0 * float(flagged) / float(total))
 
-FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
-FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
+FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys before postbl prebl postrmean prermean postrms prerms link")
+FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys before postbl prebl postrmean prermean postrms prerms link")
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="header" />
 
-<%block name="title">Flag data by Tsys, weather, and statistics of spectra</%block>
+<%block name="title">Flag data by Tsys and statistics of spectra</%block>
 
 <%
 def make_detailed_table(result, stage_dir, fieldname):
@@ -67,8 +67,8 @@ try:
        for summary in summaries:
             if summary['field'] not in unique_fields:
                 unique_fields.append(summary['field'])
-
-   flag_types = ['Total', 'Tsys', 'Weather', 'User', 'After calibration']
+ 
+   flag_types = ['Total', 'Tsys', 'After calibration']
    fit_flags = ['Baseline RMS', 'Running mean', 'Expected RMS']
 except Exception as e:
    print('hsd_imaging html template exception:{}'.format(e))
@@ -82,15 +82,13 @@ except Exception as e:
 	<li> eliminate rapid variation of spectra using deviation from the running mean (Running mean)</li>
 	<li> eliminate spectra with remarkably large RMS than expected (Expected RMS)</li>
 	<li> eliminate spectra with outlier Tsys value</li>
-	<li> by weather (currently disabled)</li>
-	<li> by user defined threshold (currently disabled)</li>
 </ol>
 For 1.-3., the RMSes of spectra before and after baseline fit are obtained using line free channels.
 </p>
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#summarytable">Flag Summary</a></li>
+<li><a href="#summarytableperfield">Flag Summary per field</a></li>
 <li><a href="#detailtable">Flag by Reason</a></li>
   <ul>
 %for field in unique_fields:
@@ -100,8 +98,8 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 </ul>
 
 
-<H2 id="summarytable" class="jumptarget">Flag Summary</H2>
-<table class="table table-bordered table-striped" summary="Flag Summary">
+<H2 id="summarytableperfield" class="jumptarget">Flag Summary per field</H2>
+<table class="table table-bordered table-striped" summary="Flag Summary per field">
 	<caption>flag summary of ON-source target scans per source and spw</caption>
     <thead>
 	    <tr>
@@ -137,7 +135,11 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 	<table class="table table-bordered table-striped " summary="${field}">
 	<thead>
 		<tr>
-			<th colspan="5">Data Selection</th>
+            %if dovirtual:
+                <th colspan="6">Data Selection</th>
+            %else:
+                <th colspan="5">Data Selection</th>
+            %endif
 			<th colspan="2">Flagged Total</th>
 			%for ftype in flag_types[1:]:
 				<th rowspan="2">${ftype}</th>
