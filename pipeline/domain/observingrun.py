@@ -1,7 +1,8 @@
+import collections
 import itertools
 import operator
 import os
-from typing import List
+from typing import List, Tuple, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -116,10 +117,12 @@ class ObservingRun(object):
 
         return candidates
 
-    def get_measurement_sets_of_type(self, dtypes: List[DataType]) -> List[MeasurementSet]:
+    def get_measurement_sets_of_type(self, dtypes: List[DataType],
+                                     msonly: bool=True) -> Union[List[MeasurementSet],
+                                                                 Tuple[collections.OrderedDict, DataType]]:
         """
         Return a list of MeasurementSet domain object with matching DataType.
-        
+
         Args:
             dtypes: Search order of DataType. The search starts with the
                 first DataType in the list and fallbacks to another DataType
@@ -127,22 +130,35 @@ class ObservingRun(object):
                 The search order of DataType is in the other of elements in
                 list. Search stops at the first DataType with which at least
                 one MS is found.
-        
+            msonly: If True, return a list of MS domain object only.
+
         Retruns:
-            A list of MeasurementSet domain objects with a matching DataType.
+            When msonly is True, a list of MeasurementSet domain objects of
+            a matching DataType is returned.
+            Otherwise, a tuple of an ordered dictionary and a matched DataType
+            is returned. The ordered dictionary stores matching MS domain
+            objects as keys and matching data column names as values. The order
+            of elements is that appears in measurement_sets list attribute.
         """
         found = []
+        column = []
         for dtype in dtypes:
             for ms in self.measurement_sets:
-                if ms.get_data_column(dtype) is not None:
+                dcol = ms.get_data_column(dtype)
+                if dcol is not None:
                     found.append(ms)
+                    column.append(dcol)
             if len(found) > 0:
                 break
         if len(found) > 0:
             LOG.info('Found {} MSes with type {}'.format(len(found), dtype))
         else:
-            LOG.warn('No MSes are found with types {}'.format(dtypes))
-        return found
+            LOG.info('No MSes are found with types {}'.format(dtypes))
+        if msonly:
+            return found
+        else:
+            ms_dict = collections.OrderedDict( (m, c) for m, c in zip(found, column))
+            return ms_dict, dtype
 
     def get_fields(self, names=None):
         """
