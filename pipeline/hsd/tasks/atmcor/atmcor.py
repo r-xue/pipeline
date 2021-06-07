@@ -20,6 +20,8 @@ LOG = logging.get_logger(__name__)
 
 
 class SDATMCorrectionInputs(vdp.StandardInputs):
+    """Inputs class for SDATMCorrection task."""
+
     atmtype = vdp.VisDependentProperty(default=1)
     dtem_dh = vdp.VisDependentProperty(default=-5.6)
     h0 = vdp.VisDependentProperty(default=2.0)
@@ -281,6 +283,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
 class SDATMCorrectionResults(common.SingleDishResults):
     """Results instance for hsd_atmcor."""
+
     def __init__(self,
                  task: Optional[basetask.StandardTaskTemplate] =None,
                  success: Optional[bool] =None,
@@ -324,6 +327,7 @@ class SDATMCorrectionResults(common.SingleDishResults):
 )
 class SerialSDATMCorrection(basetask.StandardTaskTemplate):
     """Offline ATM correction task."""
+
     Inputs = SDATMCorrectionInputs
 
     def prepare(self) -> SDATMCorrectionResults:
@@ -379,6 +383,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
 ### Tier-0 parallelization
 class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
     """Inputs for parallel implementation of offline ATM correction."""
+
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
@@ -417,6 +422,7 @@ class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
 # )
 class HpcSDATMCorrection(sessionutils.ParallelTemplate):
     """Parallel implementation of offline ATM correction task."""
+
     Inputs = HpcSDATMCorrectionInputs
     Task = SerialSDATMCorrection
 
@@ -430,7 +436,7 @@ class HpcSDATMCorrection(sessionutils.ParallelTemplate):
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
-        """Produce failed task results
+        """Produce failed task results.
 
         Args:
             vis: name of the MS

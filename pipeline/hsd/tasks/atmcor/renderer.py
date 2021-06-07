@@ -14,6 +14,7 @@ LOG = logging.get_logger(__name__)
 
 class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """Renderer class for hsd_atmcor stage."""
+
     def __init__(self, always_rerender=False):
         """Initialize renderer.
 

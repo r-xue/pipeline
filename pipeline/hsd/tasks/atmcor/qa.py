@@ -13,6 +13,7 @@ LOG = logging.get_logger(__name__)
 
 class SDATMCorrectionQAHandler(pqa.QAPlugin):
     """QA handler for hsd_atmcor stage."""
+
     result_cls = atmcor.SDATMCorrectionResults
     child_cls = None
 
@@ -48,6 +49,7 @@ class SDATMCorrectionQAHandler(pqa.QAPlugin):
 
 class SDATMCorrectionListQAHandler(pqa.QAPlugin):
     """QA handler for hsd_atmcor stage."""
+
     result_cls = collections.Iterable
     child_cls = atmcor.SDATMCorrectionResults
 

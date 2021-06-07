@@ -1,3 +1,4 @@
+"""atmcor - Single dish ATM correction task."""
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
 

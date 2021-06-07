@@ -11,6 +11,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class PlotmsRealVsFreqPlotter(object):
     """Plotter class to generate real_vs_freq plot."""
+
     def __init__(self,
                  ms: MeasurementSet,
                  atmvis: str,
