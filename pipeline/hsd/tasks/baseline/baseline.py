@@ -114,14 +114,14 @@ class SDBaselineResults(common.SingleDishResults):
         target = context.observing_run
         for ms in self.out_mses:
             # remove existing MS in context if the same MS is already in list.
-            parentms = None
+            oldms_index = None
             for index, oldms in enumerate(target.get_measurement_sets()):
                 if ms.name == oldms.name:
-                    parentms = index
+                    oldms_index = index
                     break
-            if parentms is not None:
+            if oldms_index is not None:
                 LOG.info('Replace {} in context'.format(ms.name))
-                del target.measurement_sets[parentms]
+                del target.measurement_sets[oldms_index]
 
             # Adding mses to context
             LOG.info('Adding {} to context'.format(ms.name))
@@ -134,16 +134,9 @@ class SDBaselineResults(common.SingleDishResults):
             reduction_group = inspect_reduction_group(ms)
             merge_reduction_group(target, reduction_group)
 
-#         # TODO (ksugimot): remove dependency to work_data
-#         # register working data that stores spectra after baseline subtraction
-#         if 'work_data' in self.outcome:
-#             for (vis, work_data) in self.outcome['work_data'].items():
-#                 ms = context.observing_run.get_ms(vis)
-#                 ms.work_data = work_data
-
         # increment iteration counter (only to in MS for now)
         # register detected lines to reduction group member (to both in and out MS)
-        reduction_group = context.observing_run.ms_reduction_group
+        reduction_group = target.ms_reduction_group
         for b in self.outcome['baselined']:
             group_id = b['group_id']
             member_list = b['members']
@@ -152,17 +145,17 @@ class SDBaselineResults(common.SingleDishResults):
             group_desc = reduction_group[group_id]
             for (ms, field, ant, spw) in utils.iterate_group_member(reduction_group[group_id], member_list):
                 group_desc.iter_countup(ms, ant, spw, field)
-                out_ms = context.observing_run.get_ms(name=self.outcome['vis_map'][ms.name])
+                out_ms = target.get_ms(name=self.outcome['vis_map'][ms.name])
                 for m in [ms, out_ms]:
                     group_desc.add_linelist(lines, m, ant, spw, field,
                                             channelmap_range=channelmap_range)
 
         # merge deviation_mask with context
-        for ms in context.observing_run.measurement_sets:
+        for ms in target.measurement_sets:
             if not hasattr(ms, 'deviation_mask'): ms.deviation_mask = None
         if 'deviation_mask' in self.outcome:
             for (basename, masks) in self.outcome['deviation_mask'].items():
-                ms = context.observing_run.get_ms(basename)
+                ms = target.get_ms(basename)
                 ms.deviation_mask = {}
                 for field in ms.get_fields(intent='TARGET'):
                     for antenna in ms.antennas:
@@ -170,7 +163,7 @@ class SDBaselineResults(common.SingleDishResults):
                             key = (field.id, antenna.id, spw.id)
                             if key in masks:
                                 ms.deviation_mask[key] = masks[key]
-                out_ms = context.observing_run.get_ms(name=self.outcome['vis_map'][ms.name])
+                out_ms = target.get_ms(name=self.outcome['vis_map'][ms.name])
                 out_ms.deviation_mask = ms.deviation_mask
 
     def _outcome_name(self):

@@ -99,50 +99,6 @@ def asdm_name_from_ms(ms_domain: MeasurementSet) -> str:
     asdm = ms_basename[:index_for_suffix] if index_for_suffix > 0 else ms_basename
     return asdm
 
-
-# def get_parent_ms_idx(context: Context, msname: str) -> int:
-#     """
-#     Return an index of a given MeasurementSet (MS) in Pipeline Context.
-# 
-#     This method maps both work_data and original MS to a proper index.
-# 
-#     Args:
-#         context: A Pipeline Context to be investigated.
-#         msname: A name of MS to look into.
-# 
-#     Returns:
-#         An index of MS in Context. The return value is -1 if no match is found.
-#     """
-#     mslist = context.observing_run.measurement_sets
-#     idx_found = -1
-#     for idx in range(len(mslist)):
-#         msobj = mslist[idx]
-#         search_list = [msobj.name, msobj.basename]
-#         if hasattr(msobj, "work_data"):
-#             search_list += [msobj.work_data, os.path.basename(msobj.work_data)]
-#         if msname in search_list:
-#             idx_found = idx
-#             break
-#     return idx_found
-# 
-# 
-# def get_parent_ms_name(context: Context, msname: str) -> str:
-#     """
-#     Return a name of corresponding parent MeasurementSet in Pipeline Context.
-# 
-#     This method maps both work_data and original MeasurementSet (MS) to a
-#     proper name of original MS.
-# 
-#     Args:
-#         context: A Pipeline Context to be investigated.
-#         msname: A name of MS to look into.
-# 
-#     Returns:
-#         A name of original MS. The return value is '', if no match is found.
-#     """
-#     idx = get_parent_ms_idx(context, msname)
-#     return context.observing_run.measurement_sets[idx].name if idx >= 0 else ""
-
 def get_ms_idx(context: Context, msname: str) -> int:
     """
     Return an index of a given MeasurementSet (MS) in Pipeline Context.
@@ -714,32 +670,6 @@ class EchoDictionary(dict):
     def __getitem__(self, x):
         """Destructor of EchoDictionary class."""
         return x
-
-
-# def make_row_map_for_baselined_ms(ms: MeasurementSet,
-#                                   table_container=None) -> dict:
-#     """
-#     Make row mapping between a MeasurementSet (MS) and an associating MS.
-# 
-#     Mapping is done between an input MS and work_data associated to it.
-# 
-#     Args:
-#         ms: A MeasurementSet (MS) domain object.
-#         table_container: A container class that stores table tool instances
-#             of calibrated and associating MS.
-# 
-#     Returns:
-#         A row mapping dictionary. A key is row ID of calibrated MS and
-#         a corresponding value is that of baselined MS.
-#     """
-#     work_data = ms.work_data
-#     src_tb = None
-#     derived_tb = None
-#     if table_container is not None:
-#         src_tb = table_container.tb1
-#         derived_tb = table_container.tb2
-# 
-#     return make_row_map(ms, work_data, src_tb, derived_tb)
 
 def make_row_map_between_ms(src_ms: MeasurementSet, derived_vis: str,
                             table_container=None) -> dict:
