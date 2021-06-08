@@ -1299,7 +1299,7 @@ class SDSparseMapPlotter(object):
         # do not create plots if any of specified axis ranges
         # are invalid
         if is_invalid_axis_range(global_xmin, global_xmax, spmin, spmax):
-            LOG.warn(
+            LOG.warning(
                 'Invalid axis range for averaged spectrum. Plot %s will not be created.',
                 os.path.basename(figfile)
             )
@@ -1309,7 +1309,7 @@ class SDSparseMapPlotter(object):
             # PIPE-1140
             plt.axis((global_xmin, global_xmax, spmin, spmax))
         except Exception:
-            LOG.warn(
+            LOG.warning(
                 'Axis configuration for %s failed. Plot will not be created.',
                 os.path.basename(figfile)
             )
