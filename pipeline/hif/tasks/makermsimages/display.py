@@ -25,19 +25,19 @@ class RmsimagesSummary(object):
 
         LOG.info("Making PNG RMS images for weblog")
         plot_wrappers = []
-
         for rmsimagename in self.result.rmsimagenames:
             plot_wrappers.append(sky.SkyDisplay().plot(self.context, rmsimagename,
                                                        reportdir=stage_dir, intent='',
                                                        collapseFunction='mean'))
-
-            with casa_tools.ImageReader(rmsimagename) as image:
-                stats = image.statistics(robust=True)
-                self.result.max = stats.get('max')[0]
-                self.result.min = stats.get('min')[0]
-                self.result.mean = stats.get('mean')[0]
-                self.result.median = stats.get('median')[0]
-                self.result.sigma = stats.get('sigma')[0]
-                self.result.MADrms = stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
+            # PIPE-1163: avoid saving stats from .tt1
+            if '.tt1.' not in rmsimagename:
+                with casa_tools.ImageReader(rmsimagename) as image:
+                    stats = image.statistics(robust=True)
+                    self.result.max = stats.get('max')[0]
+                    self.result.min = stats.get('min')[0]
+                    self.result.mean = stats.get('mean')[0]
+                    self.result.median = stats.get('median')[0]
+                    self.result.sigma = stats.get('sigma')[0]
+                    self.result.MADrms = stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
 
         return [p for p in plot_wrappers if p is not None]
