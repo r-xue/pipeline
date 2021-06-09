@@ -1,4 +1,6 @@
 """
+Classes of Regression Framework.
+
 The regression module contains base classes and plugin registry for the
 pipeline's regression test value extractor framework.
 
@@ -26,7 +28,7 @@ import collections
 import os.path
 import re
 from collections import OrderedDict
-from typing import List
+from typing import List, Union
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
@@ -39,7 +41,7 @@ from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlagResults
 from pipeline.hsd.tasks.baselineflag.baselineflag import HpcSDBLFlag
 from pipeline.hsd.tasks.imaging.imaging import SDImaging
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
-from pipeline.infrastructure.basetask import Results, StandardTaskTemplate
+from pipeline.infrastructure.basetask import Results, ResultsList, StandardTaskTemplate
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.taskregistry import task_registry
 from pipeline.infrastructure import logging
@@ -61,7 +63,7 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
     # all results of this type regardless of which task generated it
     generating_task = None
 
-    def is_handler_for(self, result:Results) -> bool:
+    def is_handler_for(self, result:Union[Results, ResultsList]) -> bool:
         """
         Return True if this RegressionExtractor can process the Result.
 
@@ -93,6 +95,8 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def handle(self, result:Results) -> OrderedDict:
         """
+        [Abstract] Extract values for testing.
+
         This method should return a dict of
 
         {'applycal.new_flags.science': 0.34,
@@ -113,6 +117,7 @@ class RegressionExtractorRegistry(object):
     """
 
     def __init__(self):
+        """Constractor of this class."""
         self.__plugins_loaded = False
         self.__handlers = []
 
@@ -135,9 +140,9 @@ class RegressionExtractorRegistry(object):
         self.__handlers.append(handler)
 
 
-    def handle(self, result:Results) -> OrderedDict:
+    def handle(self, result:Union[Results, ResultsList]) -> OrderedDict:
         """
-        Extract values from corresponging Extracter object of Result object.
+        Extract values from corresponding Extractor object of Result object.
 
         Args:
             result: Results or ResultsList[Results]
@@ -189,7 +194,7 @@ def union(d1: dict, d2: dict) -> OrderedDict:
     return u
 
 
-def key_intersection(d1: dict, d2: dict) -> dict:
+def key_intersection(d1: dict, d2: dict) -> set:
     """
     Compare keys of two dicts, returning duplicate keys.
 
