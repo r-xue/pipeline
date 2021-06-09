@@ -50,10 +50,7 @@ LOG = logging.get_logger(__name__)
 
 
 class RegressionExtractor(object, metaclass=abc.ABCMeta):
-    """
-    RegressionExtractor is the mandatory base class for all regression test
-    result extractors.
-    """
+    """The mandatory base class for all regression test result extractors."""
 
     # the Results class this handler is expected to handle
     result_cls = None
@@ -176,8 +173,9 @@ class RegressionExtractorRegistry(object):
 
 def union(d1: dict, d2: dict) -> OrderedDict:
     """
-    Return the union of two dicts, raising an exception if duplicate keys are
-    detected in the input dicts.
+    Return the union of two dicts.
+    
+    It raises an exception if duplicate keys are detected in the input dicts.
 
     Args:
         d1, d2: dict for unioning
