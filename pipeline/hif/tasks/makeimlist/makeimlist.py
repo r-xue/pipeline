@@ -244,6 +244,16 @@ class MakeImList(basetask.StandardTaskTemplate):
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
 
+        # Select the correct vis list
+        imaging_cont_mses = [vis for vis in inputs.vis if inputs.context.observing_run.get_ms(name=vis).is_imaging_ms and not inputs.context.observing_run.get_ms(name=vis).is_line_ms]
+        imaging_line_mses = [vis for vis in inputs.vis if inputs.context.observing_run.get_ms(name=vis).is_imaging_ms and inputs.context.observing_run.get_ms(name=vis).is_line_ms]
+        if len(imaging_line_mses) > 0 and inputs.specmode in ('cube', 'repBW'):
+            # Science targets *_line.ms
+            inputs.vis = imaging_line_mses
+        elif len(imaging_cont_mses) > 0 and inputs.specmode not in ('cube', 'repBW'):
+            # Science targets *_cont.ms
+            inputs.vis = imaging_cont_mses
+
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
         # representative target case

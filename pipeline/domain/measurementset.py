@@ -36,6 +36,7 @@ class MeasurementSet(object):
         self.session = session
         self.filesize = self._calc_filesize() 
         self.is_imaging_ms = False
+        self.is_line_ms = False
         self.work_data = name
 
         # Polarisation calibration requires the refant list be frozen, after

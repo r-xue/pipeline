@@ -174,7 +174,7 @@ class Mstransform(basetask.StandardTaskTemplate):
 
         # Check for existence of the output vis. 
         if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating target MS %s' % (os.path.basename(result.outputvis)))
+            LOG.debug('Error creating target continuum MS %s' % (os.path.basename(result.outputvis)))
             return result
 
         # Import the new measurement set.

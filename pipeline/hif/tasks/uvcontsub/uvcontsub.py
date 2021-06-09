@@ -1,9 +1,16 @@
+import os
+import shutil
+
 import pipeline.h.tasks.applycal.applycal as applycal
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -40,12 +47,59 @@ class UVcontSub(applycal.Applycal):
                 result.mitigation_error = True
                 return result
 
-        return super(UVcontSub, self).prepare()
+        applycal_result = super(UVcontSub, self).prepare()
+        result = UVcontSubResults()
+        result.applycal_result = applycal_result
 
-        return UVcontSubResults()
+        # Create *_line.ms datasets using subtracted data from the corrected column
+        outputvis = inputs.vis.replace('_cont', '_line')
+        mstransform_args = {'vis': inputs.vis, 'outputvis': outputvis, 'datacolumn': 'corrected'}
+        mstransform_job = casa_tasks.mstransform(**mstransform_args)
+        try:
+            self._executor.execute(mstransform_job)
+        except OSError as ee:
+            LOG.warning(f"Caught mstransform exception: {ee}")
+
+        # Copy across requisite XML files.
+        self._copy_xml_files(inputs.vis, outputvis)
+
+        result.vis = inputs.vis
+        result.outputvis = outputvis
+
+        return result
+
+    def analyse(self, result):
+
+        # Check for existence of the output vis. 
+        if not os.path.exists(result.outputvis):
+            LOG.debug('Error creating target line MS %s' % (os.path.basename(result.outputvis)))
+            return result
+
+        # Import the new measurement set.
+        to_import = os.path.abspath(result.outputvis)
+        observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
+
+        # Adopt same session as source measurement set
+        for ms in observing_run.measurement_sets:
+            LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
+            ms.session = self.inputs.ms.session
+            ms.is_imaging_ms = True
+            ms.is_line_ms = True
+        result.mses.extend(observing_run.measurement_sets)
+
+        return result
+
+    @staticmethod
+    def _copy_xml_files(vis, outputvis):
+        for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
+            vis_source = os.path.join(vis, xml_filename)
+            outputvis_target_line = os.path.join(outputvis, xml_filename)
+            if os.path.exists(vis_source) and os.path.exists(outputvis):
+                LOG.info('Copying %s from original MS to target line MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_line)
+                shutil.copyfile(vis_source, outputvis_target_line)
 
 
-# Simple results class to transport any mitigation error
 class UVcontSubResults(basetask.Results):
     """
     UVcontSubResults is the results class for the pipeline UVcontSub task.
@@ -54,8 +108,62 @@ class UVcontSubResults(basetask.Results):
     def __init__(self, applied=[]):
         super(UVcontSubResults, self).__init__()
         self.mitigation_error = False
+        self.applycal_result = None
+        self.vis = None
+        self.outputvis = None
+        self.mses = []
 
-# May need this full class in the future
+    def merge_with_context(self, context):
+        # Check for an output vis
+        if not self.mses:
+            LOG.error('No hif_mstransform results to merge')
+            return
+
+        target = context.observing_run
+
+        # Adding mses to context
+        for ms in self.mses:
+            LOG.info('Adding {} to context'.format(ms.name))
+            target.add_measurement_set(ms)
+
+        # Create targets flagging template file if it does not already exist
+        for ms in self.mses:
+            if not ms.is_imaging_ms:
+                continue
+            template_flagsfile = os.path.join(
+                self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
+            self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
+
+        # Initialize callibrary
+        for ms in self.mses:
+            calto = callibrary.CalTo(vis=ms.name)
+            LOG.info('Registering {} with callibrary'.format(ms.name))
+            context.callibrary.add(calto, [])
+
+    def _make_template_flagfile(self, outfile, titlestr):
+        # Create a new file if overwrite is true and the file
+        # does not already exist.
+        if not os.path.exists(outfile):
+            template_text = FLAGGING_TEMPLATE_HEADER.replace('___TITLESTR___', titlestr)
+            with open(outfile, 'w') as f:
+                f.writelines(template_text)
+
+FLAGGING_TEMPLATE_HEADER = '''#
+# ___TITLESTR___
+#
+# Examples
+# Note: Do not put spaces inside the reason string !
+#
+# mode='manual' correlation='YY' antenna='DV01;DV08;DA43;DA48&DV23' spw='21:1920~2880' autocorr=False reason='bad_channels'
+# mode='manual' spw='25:0~3;122~127' reason='stage8_2'
+# mode='manual' antenna='DV07' timerange='2013/01/31/08:09:55.248~2013/01/31/08:10:01.296' reason='quack'
+#
+'''
+
+# May need this full class in the future when keeping records of
+# which source/spw combination actually did have valid uvcontsub
+# results (cf. "applied" parameter below). Note that the template
+# below is quite old and probably needs work to be used.
 #
 #
 #class UVcontSubResults(basetask.Results):

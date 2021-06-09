@@ -219,14 +219,19 @@ class CleanBase(basetask.StandardTaskTemplate):
             inputs.vis = [inputs.vis]
 
         # Set the data column
-        targetmslist = [vis for vis in inputs.vis if context.observing_run.get_ms(name=vis).is_imaging_ms]
+        imaging_cont_mses = [vis for vis in inputs.vis if context.observing_run.get_ms(name=vis).is_imaging_ms and not context.observing_run.get_ms(name=vis).is_line_ms]
+        imaging_line_mses = [vis for vis in inputs.vis if context.observing_run.get_ms(name=vis).is_imaging_ms and context.observing_run.get_ms(name=vis).is_line_ms]
         if not inputs.datacolumn:
-            if len(targetmslist) > 0:
-                if inputs.specmode == 'cube':
-                    inputs.datacolumn = 'corrected'
-                else:
-                    inputs.datacolumn = 'data'
+            if len(imaging_line_mses) > 0 and inputs.specmode in ('cube', 'repBW'):
+                # Science targets *_line.ms
+                inputs.vis = imaging_line_mses
+                inputs.datacolumn = 'data'
+            elif len(imaging_cont_mses) > 0 and inputs.specmode not in ('cube', 'repBW'):
+                # Science targets *_cont.ms
+                inputs.vis = imaging_cont_mses
+                inputs.datacolumn = 'data'
             else:
+                # Calibrators
                 inputs.datacolumn = 'corrected'
 
         # Remove MSs that do not contain data for the given field(s)
