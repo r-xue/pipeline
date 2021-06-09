@@ -76,7 +76,7 @@
         <description>ASDM or MS files to be processed. This parameter behaves
                      as data selection parameter. The name specified by
                      infiles must be registered to context before you run
-                     hsd_corectatm.
+                     hsd_atmcor.
 	</description>
         <value/>
     </param>
