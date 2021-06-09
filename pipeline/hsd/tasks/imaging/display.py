@@ -1073,11 +1073,25 @@ class SDRmsMapDisplay(SDImageDisplay):
 
         rms = self.__get_rms()
         nvalid = self.__get_num_valid()
+        nx = rms.shape[0]
+        ny = rms.shape[1]
+        LOG.info('self.nx = {}'.format(self.nx))
+        LOG.info('self.ny = {}'.format(self.ny))
+        LOG.info('self.npol = {}'.format(self.npol))
+        LOG.info('rms = {}'.format(rms))
+        LOG.info('nvalid = {}'.format(nvalid))
+        pix_beam = 0
         npol_data = rms.shape[2]
-#         for pol in xrange(self.npol):
+        LOG.info('npol_data = {}'.format(npol_data))
+#        for pol in xrange(self.npol):
         for pol in range(npol_data):
+            LOG.info('pol = {}'.format(pol))
+            LOG.info('rms[:, :, pol] = {}'.format(rms[:, :, pol]))
+            LOG.info('nvalid[:, :, pol] = {}'.format(nvalid[:, :, pol]))
             rms_map = rms[:, :, pol] * (nvalid[:, :, pol] > 0)
+            LOG.info('rms_map = {}'.format(rms_map))
             rms_map = numpy.flipud(rms_map.transpose())
+            LOG.info('rms_map after flipud = {}'.format(rms_map))
             #LOG.debug('rms_map=%s'%(rms_map))
             # 2008/9/20 DEC Effect
             image = plt.imshow(rms_map, interpolation='nearest', aspect=self.aspect, extent=Extent)
@@ -1085,8 +1099,19 @@ class SDRmsMapDisplay(SDImageDisplay):
             ylim = rms_axes.get_ylim()
 
             # colorbar
-            rmsmin = rms_map.min()
-            rmsmax = rms_map.max()
+            rmsmin = rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam].min()
+            # rmsmin = rms_map[:, :].min()
+            LOG.info('pix_beam = {}'.format(pix_beam))
+            LOG.info('nx = {}'.format(nx))
+            LOG.info('ny = {}'.format(ny))
+            LOG.info('len(rms_map) = {}'.format(len(rms_map)))
+            # rmsmin = rms_map[:, :].min()
+            LOG.info('len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam]) = {}'.format(len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam])))
+            LOG.info('rmsmin = {}'.format(rmsmin))
+            rmsmax = rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam].max()
+#            rmsmax = rms_map[2.0*self.beam_radius:nx-2.0*self.beam_radius, 2.0*self.beam_radius:ny-2.0*self.beam_radius].max()
+            # rmsmax = rms_map[:, :].max()
+            LOG.info('rmsmax = {}'.format(rmsmax))
             if not (rmsmin == rmsmax):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
                     if rms_colorbar is None:
