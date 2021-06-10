@@ -135,10 +135,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>-999.0</value>
   </param>
 
-  <param name="hm_weighting" type="string">
+  <param name="hm_weighting" type="any">
     <shortdescription>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</shortdescription>
     <description>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</description>
-    <value>briggs</value>
+    <any type="variant"/>
+    <value type="string"/>
   </param>
 
   <param name="hm_cleaning" type="string">

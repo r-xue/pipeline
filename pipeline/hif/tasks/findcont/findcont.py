@@ -21,8 +21,8 @@ LOG = infrastructure.get_logger(__name__)
 
 class FindContInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
-    hm_weighting = vdp.VisDependentProperty(default='briggs')
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
+    hm_weighting = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -125,6 +125,14 @@ class FindCont(basetask.StandardTaskTemplate):
                         mosweight = target['mosweight']
                     else:
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
+
+                    # Determine weighting and perchanweightdensity parameters
+                    if inputs.hm_weighting is None:
+                        weighting = image_heuristics.weighting('cube')
+                        perchanweightdensity = image_heuristics.perchanweightdensity('cube')
+                    else:
+                        weighting = inputs.hm_weighting
+                        perchanweightdensity = inputs.hm_perchanweightdensity
 
                     # Usually the inputs value takes precedence over the one from the target list.
                     # For PIPE-557 it was necessary to fill target['vis'] in hif_makeimlist to filter
@@ -287,10 +295,10 @@ class FindCont(basetask.StandardTaskTemplate):
                                             intent=utils.to_CASA_intent(inputs.ms[0], target['intent']),
                                             field=target['field'], start=start, width=width, nchan=nchan,
                                             outframe=outframe, scan=scanidlist, specmode=specmode, gridder=gridder,
-                                            mosweight=mosweight, perchanweightdensity=inputs.hm_perchanweightdensity,
+                                            mosweight=mosweight, perchanweightdensity=perchanweightdensity,
                                             pblimit=0.2, niter=0, threshold='0mJy', deconvolver='hogbom',
                                             interactive=False, imsize=target['imsize'], cell=target['cell'],
-                                            phasecenter=phasecenter, stokes='I', weighting=inputs.hm_weighting,
+                                            phasecenter=phasecenter, stokes='I', weighting=weighting,
                                             robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
                                             restoringbeam=[], pbcor=False, usepointing=usepointing,
                                             savemodel='none', parallel=parallel)
