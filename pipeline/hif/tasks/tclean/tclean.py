@@ -283,7 +283,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw)
 
         # Determine weighting and perchanweightdensity
-        if inputs.weighting is None:
+        if inputs.weighting in (None, ''):
             inputs.weighting = self.image_heuristics.weighting(inputs.specmode)
             inputs.hm_perchanweightdensity = self.image_heuristics.perchanweightdensity(inputs.specmode)
 

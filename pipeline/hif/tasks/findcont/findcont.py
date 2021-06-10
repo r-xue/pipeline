@@ -127,7 +127,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
 
                     # Determine weighting and perchanweightdensity parameters
-                    if inputs.hm_weighting is None:
+                    if inputs.hm_weighting in (None, ''):
                         weighting = image_heuristics.weighting('cube')
                         perchanweightdensity = image_heuristics.perchanweightdensity('cube')
                     else:
