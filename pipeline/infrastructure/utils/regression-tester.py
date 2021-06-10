@@ -1,3 +1,10 @@
+"""
+Pipeline Regression framework.
+
+PipelineRegression class runs on pytest framework, so it needs to implement
+test_* methods for testing. 
+"""
+
 import os
 import shutil
 import pytest
@@ -13,8 +20,17 @@ import pipeline.infrastructure.executevlappr as vlappr
 LOG = infrastructure.get_logger(__name__)
 
 class PipelineRegression(object):
+    """Pipeline regression test class called from pytest."""
 
     def __init__(self, recipe: str, input_dir: str, visname: str, expectedoutput: str):
+        """Constractor of PilelineRegression.
+        
+        Args:
+            recipe: recipe XML file name
+            input_dir: path to directory contains input files
+            visname: name of MeadurementSet
+            expectedoutput: path to a file that defines expected output of a test
+        """
         self.recipe = recipe
         self.input_dir = input_dir
         self.visname = visname
@@ -22,8 +38,10 @@ class PipelineRegression(object):
         self.testinput = f'{input_dir}/{visname}'
         
     def __sanitize_regression_string(self, instring: str) -> Tuple:
-        """sanitize to get numeric values, remove newline chars and change to float
+        """Sanitize to get numeric values, remove newline chars and change to float.
 
+        Args:
+            instring: input string
         Returns:
             tuple(key, value, optional tolerance)
         """
@@ -39,11 +57,16 @@ class PipelineRegression(object):
         return keystring, value, tolerance
 
     def run(self, ppr: Optional[str] = None, telescope: str  = 'alma', default_relative_tolerance: float = 1e-7):
-        """Run test with PPR if supplied or recipereducer if no PPR and compared to expected results
-
-        The inputs and expectd output are usually found in the pipeline data repository.
         """
+        Run test with PPR if supplied or recipereducer if no PPR and compared to expected results.
+        
+        The inputs and expectd output are usually found in the pipeline data repository.
 
+        Args:
+            ppr: PPR file name
+            telescope: string 'alma' or 'vla'
+            default_relative_tolerance: default relative tolerance of output value
+        """
         # Run the Pipeline using cal+imag ALMA IF recipe
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = casa_tools.utils.resolve(self.testinput)
@@ -96,17 +119,33 @@ class PipelineRegression(object):
             [LOG.warning(x) for x in errors]
             assert not errors
 
+
 def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression():
-    """Run ALMA cal+image regression on a small test dataset
+    """Run ALMA cal+image regression on a small test dataset.
 
     Recipe name:                procedure_hifa_calimage
     Dataset:                    uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms
     Expected results version:   casa-6.1.1-15-pipeline-2020.1.0.40
     """
-
     pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
                             input_dir='pl-unittest', visname='uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/' +
                                             'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.casa-6.1.1-15-pipeline-2020.1.0.40.results.txt'))
 
     pr.run(ppr='pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/PPR.xml')
+
+
+def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
+    """Run ALMA single-dish cal+image regression on the obseration data of M100.
+
+    Recipe name:                procedure_hsd_calimage
+    Dataset:                    uid___A002_X85c183_X36f
+    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
+    """
+    pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
+                            input_dir='pl-regressiontest/uid___A002_X85c183_X36f', visname='uid___A002_X85c183_X36f',
+                            expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f/' +
+                                            'uid___A002_X85c183_X36f.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+    
+    pr.run()
+
