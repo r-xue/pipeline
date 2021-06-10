@@ -10,7 +10,11 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2020: (as of August 9, 2020)
+Code changes for Pipeline2021 from PIPE-824: (as of June 10, 2021)
+0) fix for PRTSPR-50321
+1) change .rstrip('.image')+'.mask' to .replace('.image','.mask')
+
+Code changes for Pipeline2020: 
 0) fix for PIPE-554 (bug found in cube imaging of calibrators by ARI-L project)
 1) fix for PIPE-525 (divide by zero in a 130-target MOUS)
 2) new feature PIPE-702 (expand mask if mom8fc image has emission outside it)
@@ -193,7 +197,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.107 2020/12/18 17:35:25 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.110 2021/06/10 12:23:51 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -740,7 +744,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             casalogPost('FDM spectrum detected: setting amendMaskIterations=%d' % (amendMaskIterations))
 
     if (mask == 'auto'):
-        mask = img.rstrip('.image') + '.mask'
+        mask = img.replace('.image','.mask')
         if (not os.path.exists(mask)):
             mask = ''
         else:
@@ -5634,7 +5638,10 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         elif (whichBaseline == 1):
             useBaseline = 'high'
         else:
-            useBaseline = 'middle'
+            if madMiddleChannels > 0:
+                useBaseline = 'middle'
+            else: # fix for PRTSPR-50321
+                useBaseline = 'low'
         # In the following if/elif/else, we convert the tri-valued variable useBaseline into two
         # Booleans for legacy purposes (i.e before useMiddleChannels was considered as an option).
         if (useBaseline == 'high'):
