@@ -1075,9 +1075,11 @@ class SDRmsMapDisplay(SDImageDisplay):
         nvalid = self.__get_num_valid()
         nx = rms.shape[0]
         ny = rms.shape[1]
-        LOG.info('self.nx = {}'.format(self.nx))
-        LOG.info('self.ny = {}'.format(self.ny))
-        LOG.info('self.npol = {}'.format(self.npol))
+#        LOG.info('self.nx = {}'.format(self.nx))
+#        LOG.info('self.ny = {}'.format(self.ny))
+        LOG.info('nx = {}'.format(nx))
+        LOG.info('ny = {}'.format(ny))
+#        LOG.info('self.npol = {}'.format(self.npol))
         LOG.info('rms = {}'.format(rms))
         LOG.info('nvalid = {}'.format(nvalid))
         pix_beam = 0
@@ -1101,17 +1103,17 @@ class SDRmsMapDisplay(SDImageDisplay):
             # colorbar
             rmsmin = rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam].min()
             # rmsmin = rms_map[:, :].min()
-            LOG.info('pix_beam = {}'.format(pix_beam))
-            LOG.info('nx = {}'.format(nx))
-            LOG.info('ny = {}'.format(ny))
-            LOG.info('len(rms_map) = {}'.format(len(rms_map)))
+#            LOG.info('pix_beam = {}'.format(pix_beam))
+#            LOG.info('nx = {}'.format(nx))
+#            LOG.info('ny = {}'.format(ny))
+#            LOG.info('len(rms_map) = {}'.format(len(rms_map)))
             # rmsmin = rms_map[:, :].min()
-            LOG.info('len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam]) = {}'.format(len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam])))
-            LOG.info('rmsmin = {}'.format(rmsmin))
+#            LOG.info('len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam]) = {}'.format(len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam])))
+#            LOG.info('rmsmin = {}'.format(rmsmin))
             rmsmax = rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam].max()
 #            rmsmax = rms_map[2.0*self.beam_radius:nx-2.0*self.beam_radius, 2.0*self.beam_radius:ny-2.0*self.beam_radius].max()
             # rmsmax = rms_map[:, :].max()
-            LOG.info('rmsmax = {}'.format(rmsmax))
+#            LOG.info('rmsmax = {}'.format(rmsmax))
             if not (rmsmin == rmsmax):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
                     if rms_colorbar is None:
