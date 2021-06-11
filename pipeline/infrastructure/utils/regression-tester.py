@@ -39,7 +39,7 @@ class PipelineRegression(object):
         self.__initialize_working_folder()
         
     def __initialize_working_folder(self):
-        """Initialize working folder execute tests."""
+        """Initialize a root folder for task execution."""
         if os.path.isdir(self.visname):
             shutil.rmtree(self.visname)
         os.mkdir(self.visname)
@@ -110,10 +110,6 @@ class PipelineRegression(object):
         context = pipeline.Pipeline(context='last').context
         new_results = sorted(regression.extract_regression_results(context))
 
-        # Get new results
-        context = pipeline.Pipeline(context='last').context
-        new_results = sorted(regression.extract_regression_results(context))
-
         # Store new results in a file
         new_file = f'{self.visname}.NEW.results.txt'
         with open(new_file,'w') as fd:
@@ -179,6 +175,8 @@ def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression(
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
                                             'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt')) 
 
+    # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
     shutil.copytree(input_products, './products')
+
     pr.run(ppr='pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/PPR.xml')
