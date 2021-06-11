@@ -1,11 +1,11 @@
 """
 Code in the argmapper module transforms CASA input arguments to pipeline
 inputs arguments.
-  
+
 CASA arguments may be named differently to their corresponding arguments in
 the pipeline classes. This module defines how those arguments should be
 renamed so that they are acceptable to the Inputs constructors, and secondly
-it converts from the CASA concept of null values ('', [], etc.) to the 
+it converts from the CASA concept of null values ('', [], etc.) to the
 pipeline equivalent.
 """
 import inspect
@@ -16,7 +16,7 @@ from . import task_registry
 LOG = logging.get_logger(__name__)
 
 
-# _altmapping holds the mapping for CASA arguments that should be given as a 
+# _altmapping holds the mapping for CASA arguments that should be given as a
 # task input argument of a different name.
 _altmapping = {
     'hif_gaincal': {'hm_gaintype': 'mode'},
@@ -28,7 +28,7 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
     Convert CASA arguments to pipeline Inputs arguments.
 
     This function converts a dictionary of CASA arguments to the corresponding
-    dictionary of pipeline Inputs arguments by doing the following: 
+    dictionary of pipeline Inputs arguments by doing the following:
 
     #. Rename CASA arguments to their pipeline equivalents.
     #. Remove any arguments not accepted by the Inputs constructor.
@@ -66,7 +66,7 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
     try:
         constructor_args = inputs_cls.get_constructor_args()
     except AttributeError:
-        constructor_args = inspect.getargspec(inputs_cls.__init__).args
+        constructor_args = inspect.getfullargspec(inputs_cls.__init__).args
 
     # remove any arguments that are not accepted by the input constructor
     accepted = {}
