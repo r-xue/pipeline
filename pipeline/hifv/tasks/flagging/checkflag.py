@@ -366,7 +366,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         job = casa_tasks.flagdata(**task_args)
         result = self._executor.execute(job)
 
-        return CheckflagResults(jobs=[job], results=[result])
+        return CheckflagResults(jobs=[job])
 
     def _do_tfcropflag(self, mode='tfcrop', field=None, correlation=None, scan=None, intent='',
                        ntime=0.45, datacolumn='corrected', flagbackup=True,
