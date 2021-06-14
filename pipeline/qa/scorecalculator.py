@@ -2403,7 +2403,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         if score <= 0.9:
             shortmsg = 'Check source fit not optimal'
 
-    origin = pqa.QAOrigin(metric_name='score_checksources',
+    origin = pqa.QAOrigin(metric_name='ScoreChecksources',
                           metric_score=metric_score,
                           metric_units=metric_units)
 

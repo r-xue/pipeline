@@ -2,6 +2,7 @@ import collections
 
 import numpy
 
+import pipeline.h.tasks.exportdata.aqua as aqua
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -123,7 +124,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                         gfluxscale = None
                         gfluxscale_err = None
 
-                    checkscore, offset, offset_err, beams, beams_err, fitflux, fitflux_err, fitpeak = scorecalc.score_checksources (mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err)
+                    checkscore, offset, offset_err, beams, beams_err, fitflux, fitflux_err, fitpeak = scorecalc.score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err)
                     result.qa.pool.append(checkscore)
 
                     result.check_source_fit = {'offset': offset, 'offset_err': offset_err, 'beams': beams, 'beams_err': beams_err, 'fitflux': fitflux, 'fitflux_err': fitflux_err, 'fitpeak': fitpeak, 'gfluxscale': gfluxscale, 'gfluxscale_err': gfluxscale_err}
@@ -142,3 +143,7 @@ class TcleanListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result]) 
         result.qa.pool[:] = collated
+
+
+aqua_exporter = aqua.xml_generator_for_metric('ScoreChecksources', '{:0.3%}')
+aqua.register_aqua_metric(aqua_exporter)
