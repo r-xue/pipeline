@@ -21,7 +21,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class FindContInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
     hm_weighting = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
