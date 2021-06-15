@@ -145,5 +145,5 @@ class TcleanListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
 
-aqua_exporter = aqua.xml_generator_for_metric('ScoreChecksources', '{:0.3%}')
+aqua_exporter = aqua.xml_generator_for_metric('ScoreChecksources', '{:0.3}')
 aqua.register_aqua_metric(aqua_exporter)
