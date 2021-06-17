@@ -373,13 +373,17 @@ def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, n
     """
     ms_basename = os.path.basename(ms_path)
     if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
+        # PIPE-327:
         # Historically, a cache size of 1000 entries per EB has been
         # sufficient to avoid cache eviction. It would be possible to
         # calculate a more accurate required cache size (some function of
         # spws, fields, field combinations, etc.) but it's probably not
         # worth the effort as cache entries left unoccupied should take
         # minimal space.
-        MSTOOL_SELECTEDINDICES_CACHE[ms_basename] = LoggingLRUCache(ms_basename, maxsize=2000)
+        # PIPE-1008: 
+        # increase maxsize to 40k entries for VLASS calibration
+        # A typical VLASS observation can have 15-20k fields
+        MSTOOL_SELECTEDINDICES_CACHE[ms_basename] = LoggingLRUCache(ms_basename, maxsize=40000)
 
     cache_for_ms = MSTOOL_SELECTEDINDICES_CACHE[ms_basename]
     cache_key = (arg_name, arg_val)

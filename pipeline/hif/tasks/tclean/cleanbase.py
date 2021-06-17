@@ -76,7 +76,11 @@ class CleanBaseInputs(vdp.StandardInputs):
     width = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default=None)
     wprojplanes = vdp.VisDependentProperty(default=None)
+    wbawp = vdp.VisDependentProperty(default=None)
     rotatepastep = vdp.VisDependentProperty(default=None)
+    calcpsf = vdp.VisDependentProperty(default=None)
+    calcres = vdp.VisDependentProperty(default=None)
+    pbmask = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -123,7 +127,8 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
                  restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
-                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None):
+                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None, calcpsf=None,
+                 calcres=None, wbawp=None, pbmask=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -161,6 +166,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.restoringbeam = restoringbeam
         self.iter = iter
         self.mask = mask
+        self.pbmask = pbmask
 
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
@@ -191,8 +197,11 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.usepointing = usepointing
         self.mosweight = mosweight
         self.wprojplanes = wprojplanes
+        self.wbawp = wbawp
         self.rotatepastep = rotatepastep
         self.heuristics = heuristics
+        self.calcpsf = calcpsf
+        self.calcres = calcres
 
 
 class CleanBase(basetask.StandardTaskTemplate):
@@ -290,6 +299,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             inputs.imagename, inputs.stokes, iter)
         mask_name = '%s.%s.iter%s.mask' % (
             inputs.imagename, inputs.stokes, iter)
+        alpha_name = '%s.%s.iter%s.alpha' % (
+            inputs.imagename, inputs.stokes, iter)
+        pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
+            inputs.imagename, inputs.stokes, iter)
 
         parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel),
                         'TARGET' in inputs.intent])
@@ -327,7 +340,8 @@ class CleanBase(basetask.StandardTaskTemplate):
             'savemodel':     inputs.savemodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
-            'parallel':      parallel
+            'parallel':     parallel,
+            'wbawp':        inputs.wbawp
             }
 
         # Set special phasecenter and outframe for ephemeris objects.
@@ -408,7 +422,12 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         else:
             tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
-            if (inputs.hm_masking != 'none') and (inputs.mask != ''):
+            if inputs.hm_masking != 'none' and inputs.mask == 'pb':
+                # In manual cleaning mode decide for cleaning with pbmask according
+                # to heuristic class method (see PIPE-977)
+                tclean_job_parameters['usemask'] = 'pb'
+                tclean_job_parameters['pbmask'] = inputs.pbmask if inputs.pbmask else inputs.heuristics.pbmask()
+            elif (inputs.hm_masking != 'none') and (inputs.mask != ''):
                 tclean_job_parameters['usemask'] = 'user'
                 tclean_job_parameters['mask'] = inputs.mask
 
@@ -429,6 +448,12 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['restart'] = True
             tclean_job_parameters['calcpsf'] = False
             tclean_job_parameters['calcres'] = False
+
+        # Allow setting calcpsf and calcres explicitly
+        if type(inputs.calcpsf) is bool:
+            tclean_job_parameters['calcpsf'] = inputs.calcpsf
+        if type(inputs.calcres) is bool:
+            tclean_job_parameters['calcres'] = inputs.calcres
 
         # Additional heuristics or task parameters
         if inputs.cyclefactor not in (None, -999):
@@ -455,7 +480,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.scales:
             tclean_job_parameters['scales'] = inputs.scales
         else:
-            scales = inputs.heuristics.scales()
+            scales = inputs.heuristics.scales(iter)
             if scales:
                 tclean_job_parameters['scales'] = scales
 
@@ -511,6 +536,9 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
+        tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
+        tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
+        tclean_job_parameters['pointingoffsetsigdev'] = inputs.heuristics.pointingoffsetsigdev()
 
         # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
@@ -524,12 +552,14 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Record last tclean command for weblog
         result.set_tclean_command(str(job))
 
-        pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (inputs.imagename, inputs.stokes, iter)
-
         if inputs.niter > 0:
             tclean_stopcode = tclean_result['stopcode']
             tclean_iterdone = tclean_result['iterdone']
             tclean_niter = tclean_result['niter']
+            tclean_nmajordone = tclean_result['nmajordone']
+            tclean_nminordone = tclean_result['summaryminor'][0, :]
+            tclean_peakresidual = tclean_result['summaryminor'][1, :]
+            tclean_totalflux = tclean_result['summaryminor'][2, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
             if tclean_stopcode == 1:
@@ -541,6 +571,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_tclean_stopcode(tclean_stopcode)
             result.set_tclean_stopreason(tclean_stopcode)
             result.set_tclean_iterdone(tclean_iterdone)
+            result.set_nmajordone(iter, tclean_nmajordone)
+            result.set_nminordone_array(iter, tclean_nminordone)
+            result.set_peakresidual_array(iter, tclean_peakresidual)
+            result.set_totalflux_array(iter, tclean_totalflux)
 
             if tclean_stopcode in [5, 6]:
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
@@ -549,76 +583,63 @@ class CleanBase(basetask.StandardTaskTemplate):
                 LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                             (tclean_stopcode, inputs.field, inputs.spw))
 
+        # Collect images to be examined and stored in TcleanResult
+        im_names = {}
+
         # Using virtual spw setups for all interferometry pipelines
         virtspw = True
 
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
-            # Store the model.
-            imageheader.set_miscinfo(name=model_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                     type='model', iter=iter, multiterm=result.multiterm,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_model(iter=iter, image=model_name)
+            im_names['model'] = model_name
+            im_names['image'] = image_name
+            im_names['pbcorimage'] = pbcor_image_name
+            im_names['alpha'] = alpha_name
 
-            # Always set info on the uncorrected image for plotting
-            imageheader.set_miscinfo(name=image_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                     type='image', iter=iter, multiterm=result.multiterm,
-                                     intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust, weighting=inputs.weighting,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-
-            # Store the PB corrected image.
-            if os.path.exists('%s' % (pbcor_image_name.replace('.image.pbcor', '.image.tt0.pbcor' if result.multiterm else '.image.pbcor'))):
-                imageheader.set_miscinfo(name=pbcor_image_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                         type='pbcorimage', iter=iter, multiterm=result.multiterm,
-                                         intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust, weighting=inputs.weighting,
-                                         is_per_eb=inputs.is_per_eb,
-                                         context=context)
-                result.set_image(iter=iter, image=pbcor_image_name)
-            else:
-                result.set_image(iter=iter, image=image_name)
-
-        # Store the residual.
-        imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                 type='residual', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_residual(iter=iter, image=residual_name)
-
-        # Store the PSF.
-        imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                 type='psf', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_psf(image=psf_name)
-
-        # Store the flux image.
-        imageheader.set_miscinfo(name=flux_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                 type='flux', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_flux(image=flux_name)
-
-        # Make sure mask has path name
+        im_names['residual'] = residual_name
+        im_names['psf'] = psf_name
+        im_names['flux'] = flux_name
         if os.path.exists(inputs.mask):
-            imageheader.set_miscinfo(name=inputs.mask, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                     type='cleanmask', iter=iter,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_cleanmask(iter=iter, image=inputs.mask)
+            im_names['cleanmask'] = inputs.mask
         elif os.path.exists(mask_name):
-            # Use mask made by tclean
-            imageheader.set_miscinfo(name=mask_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                     type='cleanmask', iter=iter,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_cleanmask(iter=iter, image=mask_name)
+            im_names['cleanmask'] = mask_name
+
+        for im_type, im_name in im_names.items():
+            # Set misc info on imaging products
+            # - Usually we only need to do this for a single image per image type;
+            # - For multiterm calls, we create an image list depending on the image type;
+            #   - current, only include .tt0 and .tt1
+            name_list = [im_name]
+            if result.multiterm:
+                if im_type == 'pbcorimage' and im_name.find('.image.pbcor') != -1:
+                    name_list = [im_name.replace('.image.pbcor', '.image.'+mterm+'.pbcor')
+                                 for mterm in ['tt0', 'tt1']]
+                if im_type == 'alpha':
+                    name_list = [im_name, im_name+'.error']
+                if im_type in ['model', 'image', 'residual', 'psf', 'flux']:
+                    name_list = ['{}.{}'.format(im_name, mterm) for mterm in ['tt0', 'tt1']]
+            for name in name_list:
+                if os.path.exists(name):
+                    imageheader.set_miscinfo(name=name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
+                                             type=im_type, iter=iter,
+                                             intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                             is_per_eb=inputs.is_per_eb,
+                                             context=context)
+            # Store in TcleanResult
+            if im_type == 'model':
+                result.set_model(iter=iter, image=im_name)
+            if im_type == 'pbcorimage':
+                if os.path.exists(name_list[0]):
+                    result.set_image(iter=iter, image=im_names['pbcorimage'])
+                else:
+                    result.set_image(iter=iter, image=im_names['image'])
+            if im_type == 'residual' and os.path.exists(name_list[0]):
+                result.set_residual(iter=iter, image=im_name)
+            if im_type == 'psf':
+                result.set_psf(image=im_name)
+            if im_type == 'flux':
+                result.set_flux(image=im_name)
+            if im_type == 'cleanmask':
+                result.set_cleanmask(iter=iter, image=im_name)
 
         # Keep threshold and sensitivity for QA and weblog
         result.set_threshold(inputs.threshold)

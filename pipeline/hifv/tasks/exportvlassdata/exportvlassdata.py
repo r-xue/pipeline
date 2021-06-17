@@ -20,8 +20,23 @@ from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
-StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript')
+StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript parameterlist')
 
+import re
+import glob
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+
+def natural_keys(text):
+    """
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    https://stackoverflow.com/questions/5967500/how-to-correctly-sort-a-string-with-a-number-inside
+    """
+    return [ atoi(c) for c in re.split(r'(\d+)', text) ]
 
 class ExportvlassdataResults(basetask.Results):
     def __init__(self, final=[], pool=[], preceding=[]):
@@ -97,6 +112,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         result.weblog = os.path.basename(stdfproducts.weblog_file)
         result.pipescript = os.path.basename(stdfproducts.casa_pipescript)
         result.commandslog = os.path.basename(stdfproducts.casa_commands_file)
+        if stdfproducts.parameterlist:
+            result.parameterlist = os.path.basename(stdfproducts.parameterlist)
 
         imlist = self.inputs.context.subimlist.get_imlist()
 
@@ -115,15 +132,61 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt0.rms.subim')
                 image_bundle = [pbcor_image_name, rms_image_name]
                 # PIPE-592: save VLASS SE alpha and alpha error images
-                if img_mode == 'VLASS-SE-CONT':
+                if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
                     alpha_image_name = imageitem['imagename'].replace('.image.subim', '.alpha.subim')
                     alpha_image_error_name = imageitem['imagename'].replace('.image.subim', '.alpha.error.subim')
                     image_bundle.extend([alpha_image_name, alpha_image_error_name])
+
+                    # PIPE-1038:  Adding new export products
+                    pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt1.subim')
+                    rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt1.rms.subim')
+                    image_bundle.extend([pbcor_image_name, rms_image_name])
+
+                    # No FITS file created
+                    tt0_initial_models = glob.glob('*iter1.model.tt0*')
+                    tt0_initial_models.sort(key=natural_keys)
+                    tt0_initial_model_name = tt0_initial_models[0]
+                    # tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
+                    # tt0_initial_model_name = tt0_initial_model_name.replace('s13', 's5')
+
+                    tt1_initial_models = glob.glob('*iter1.model.tt1*')
+                    tt1_initial_models.sort(key=natural_keys)
+                    tt1_initial_model_name = tt1_initial_models[0]
+                    # tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
+                    # tt1_initial_model_name = tt1_initial_model_name.replace('s13', 's5')
+
+                    # Create list for tar file
+                    self.initial_models = [tt0_initial_model_name, tt1_initial_model_name]
+
+                    # No FITS files created
+                    tt0_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt0')
+                    tt1_final_model_name = imageitem['imagename'].replace('image.subim', 'model.tt1')
+
+                    # Create list for tar file
+                    self.final_models = [tt0_final_model_name, tt1_final_model_name]
+
             else:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.subim')
                 rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.rms.subim')
                 image_bundle = [pbcor_image_name, rms_image_name]
             images_list.extend(image_bundle)
+
+        # Add masks for PIPE-1038
+        self.masks = []
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            QLmasks = glob.glob('*.QLcatmask-tier1.mask')
+            QLmasks.sort(key=natural_keys)
+            QLmask = QLmasks[-1]
+            secondmasks = glob.glob('*.secondmask.mask')
+            secondmasks.sort(key=natural_keys)
+            secondmask = secondmasks[-1]
+            finalmasks = glob.glob('*.combined-tier2.mask')
+            finalmasks.sort(key=natural_keys)
+            finalmask = finalmasks[-1]
+
+            # Create list for tar file
+            self.masks = [QLmask, secondmask, finalmask]
+
 
         fits_list = []
         for image in images_list:
@@ -133,8 +196,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
-            # Apply position corrections to VLASS-QL product images (PIPE-587) and fix FITS header (PIPE-641)
-            if img_mode == 'VLASS-QL':
+            # Apply position corrections to VLASS QL, MOSAIC and AWP=1 product images (PIPE-587, PIPE-641, PIPE-1134)
+            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-P001'):
                 # Mean antenna geographic coordinates
                 observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date
@@ -145,14 +208,19 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 # Correction
                 utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=observatory['m0'],
                                                                obs_lat=observatory['m1'])
-                # PIPE-641: update FITS header for VLASS-QL
-                self._fix_vlass_fits_header(self.inputs.context, fitsfile)
+                # Update FITS header
+                self._fix_vlass_fits_header(self.inputs.context, fitsfile, img_mode)
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, {}, {}, [], fits_list)
         casa_pipe_manifest = self._export_pipe_manifest('pipeline_manifest.xml', inputs.products_dir, pipemanifest)
         result.manifest = os.path.basename(casa_pipe_manifest)
+
+        # SE Cont imaging mode export for VLASS
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            # Export tar file
+            reimaging_resources_tarfile = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
 
         # Return the results object, which will be used for the weblog
         return result
@@ -238,10 +306,46 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Export the processing script independently of the web log
         casa_pipescript = self._export_casa_script(context, context.logs['pipeline_script'], products_dir, oussid)
 
+        # Export the parameter list independently of the weblog for both QL and SE Imaging recipes
+        edit_result = context.results[1].read()
+        if edit_result.inputs['parameter_file']:
+            parameterlist_filename = edit_result.inputs['parameter_file']
+            parameterlist = self._export_parameterlist(context, parameterlist_filename, products_dir, oussid)
+        else:
+            parameterlist = None
+
+        if hasattr(self.inputs.context, 'imaging_mode'):
+            img_mode = self.inputs.context.imaging_mode
+        else:
+            LOG.warn("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
+            img_mode = None
+
+        # SE Cont imaging mode export for VLASS
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            # Identify self cal table
+            selfcal_result = None
+            for result in context.results:
+                try:
+                    selfcal_result = result.read()[0]
+                    if 'self-cal' in selfcal_result.caltable:
+                        break
+                except Exception as e:
+                    continue
+
+            if selfcal_result:
+                self.selfcaltable = selfcal_result.caltable
+            else:
+                self.selfcaltable = ''
+                LOG.warn('Unable to locate self-cal table.')
+
+            # Identify flagversion
+            self.flagversion = os.path.basename(self.inputs.vis)+'.flagversions'
+
         return StdFileProducts(ppr_file,
                                weblog_file,
                                casa_commands_file,
-                               casa_pipescript)
+                               casa_pipescript,
+                               parameterlist)
 
     def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, visdict, calimages, targetimages):
         """
@@ -387,7 +491,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Save the current working directory and move to the pipeline
         # working directory. This is required for tarfile IO
         cwd = os.getcwd()
-        os.chdir(context.output_dir)
+        os.chdir(os.path.abspath(context.output_dir))
 
         # Define the name of the output tarfile
         ps = context.project_structure
@@ -412,6 +516,78 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         os.chdir(cwd)
 
         return tarfilename
+
+    def _export_reimaging_resources(self, context, products_dir, oussid):
+        """
+        Tar up the reimaging resources for archiving (tarfile)
+        """
+        # Save the current working directory and move to the pipeline
+        # working directory. This is required for tarfile IO
+        cwd = os.getcwd()
+        os.chdir(os.path.abspath(context.output_dir))
+
+        # Define the name of the output tarfile
+        ps = context.project_structure
+        tarfilename = 'reimaging_resources.tgz'
+
+        LOG.info('Saving reimaging resources in %s...' % tarfilename)
+
+        # Create the tar file
+
+        if not self._executor._dry_run:
+            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+
+            for mask in self.masks:
+                tar.add(mask, mask)
+                LOG.info('....Adding {!s}'.format(mask))
+
+            for initial_model in self.initial_models:
+                tar.add(initial_model, initial_model)
+                LOG.info('....Adding {!s}'.format(initial_model))
+
+            for final_model in self.final_models:
+                tar.add(final_model, final_model)
+                LOG.info('....Adding {!s}'.format(final_model))
+
+            tar.add(self.selfcaltable, self.selfcaltable)
+            LOG.info('....Adding {!s}'.format(self.selfcaltable))
+
+            tar.add(self.flagversion, self.flagversion)
+            LOG.info('....Adding {!s}'.format(self.flagversion))
+            tar.close()
+
+        # Restore the original current working directory
+        os.chdir(cwd)
+
+        return tarfilename
+
+    def _export_parameterlist(self, context, parameterlist_name, products_dir, oussid):
+        """
+        Save the parameter list
+        """
+
+        out_parameterlist_file = os.path.join(products_dir, os.path.basename(parameterlist_name))
+
+        LOG.info('Copying parameter list file %s to %s' % (parameterlist_name, out_parameterlist_file))
+        if not self._executor._dry_run:
+            shutil.copy(parameterlist_name, out_parameterlist_file)
+
+        return os.path.basename(out_parameterlist_file)
+
+    def _export_table(self, context, table_name, products_dir, oussid):
+        """
+        Save directories (either cal table or flag versions)
+        """
+
+        ps = context.project_structure
+        table_file = table_name
+        out_table_file = os.path.join(products_dir, table_file)
+
+        LOG.info('Copying product from %s to %s' % (table_file, out_table_file))
+        if not self._executor._dry_run:
+            shutil.copytree(table_file, out_table_file)
+
+        return os.path.basename(out_table_file)
 
     def _export_casa_commands_log(self, context, casalog_name, products_dir, oussid):
         """
@@ -480,10 +656,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return out_manifest_file
 
-    def _fix_vlass_fits_header(self, context, fitsname):
+    def _fix_vlass_fits_header(self, context, fitsname, img_mode):
         """
         Update VLASS FITS product header according to PIPE-641.
-        Should be called in VLASS-QL imaging mode.
+        Should be called in the following imaging modes:
+            'VLASS-QL', 'VLASS-SE-CONT-MOSAIC', and 'VLASS-SE-CONT-AWP-P001'
 
         The following keywords are changed: DATE-OBS, DATE-END, RADESYS, OBJECT.
         """
@@ -510,9 +687,17 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             if header['radesys'].upper() == 'FK5':
                 header['radesys'] = 'ICRS'
 
-            # Object keyword
-            if header['object'].upper() != header['filnam05'].upper():
-                header['object'] = header['filnam05']
+            # OBJECT
+            # We assume that the FITS name follows the convention described in PIPE-968, and directly
+            # extract the 'OBJECT' name (first FIELD name of the image) from it.
+            filename_components = os.path.basename(fitsname).split('.')
+            object_name = ''
+            if img_mode.startswith('VLASS-QL'):
+                object_name = filename_components[4]
+            if img_mode.startswith('VLASS-SE'):
+                object_name = filename_components[5]
+            if object_name != '' and header['object'].upper() != object_name.upper():
+                header['object'] = object_name
 
             # Save changes and inform log
             hdulist.flush()

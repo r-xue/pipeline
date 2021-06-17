@@ -53,21 +53,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>3.0</value>
     </param>
         
-    <param name="flag_weath" type="bool">
-        <shortdescription>Flag data by weather (not implemented yet)</shortdescription>
-        <description>Activate (True) or deactivate (False) weather flag. 
-                     Since weather flagging is not implemented yet, 
-                     setting True has no effect at the moment.
-        </description>
-        <value>False</value>
-    </param>
-
-    <param name="weath_thresh" subparam="true" type="double">
-        <shortdescription>Threshold for weather flag</shortdescription>
-        <description>Threshold value for weather flag.</description>
-        <value>3.0</value>
-    </param>
-
     <param name="flag_prfre" type="bool">
         <shortdescription>Flag data by EXPECTED RMS of pre-fit spectra</shortdescription>
         <description>Activate (True) or deactivate (False) flag by expected 
@@ -173,22 +158,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <description>Number of channels for running mean of post-fit spectra.
         </description>
         <value>5</value>
-    </param>
-
-    <param name="flag_user" type="bool">
-        <shortdescription>Flag data by user flag (not implemented yet)</shortdescription>
-        <description>Activate (True) or deactivate (False) user-defined flag. 
-                     Since user flagging is not implemented yet, setting True 
-                     has no effect at the moment.
-        </description>
-        <value>False</value>
-    </param>
-
-    <param name="user_thresh" subparam="true" type="double">
-        <shortdescription>Threshold for user flag</shortdescription>
-        <description>Threshold value for flag by user-defined rule.
-        </description>
-        <value>5.0</value>
     </param>
 
     <param name="plotflag" type="bool">

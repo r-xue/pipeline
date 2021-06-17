@@ -2,13 +2,14 @@
 The utils module contains general-purpose uncategorised utility functions and
 classes.
 """
+import collections
 import copy
 import itertools
 import operator
 import os
 import re
 import string
-from typing import Union, List, Dict, Sequence, Optional
+from typing import Collection, Dict, List, Optional, Sequence, Union
 
 import bisect
 import numpy as np
@@ -20,8 +21,8 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
-           'get_si_prefix', 'absolute_path', 'relative_path']
+           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
+           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -253,6 +254,21 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     return rxmap
 
 
+def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
+    """
+    Returns a dictionary of spectral specs mapped to corresponding spectral
+    window IDs for requested list of spectral window objects.
+
+    :param spws: list of spectral window objects
+    :return: dictionary with spectral spec as keys, and corresponding
+    list of spectral window IDs as values.
+    """
+    spwmap = collections.defaultdict(list)
+    for spw in sorted(spws, key=lambda s: s.id):
+        spwmap[spw.spectralspec].append(spw.id)
+    return spwmap
+
+
 def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
     """Wrapper around quanta.quantity() that handles None input.
 
@@ -273,6 +289,7 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
         return casa_tools.quanta.quantity(value)
     else:
         return casa_tools.quanta.quantity(0.0)
+
 
 def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
     """Obtain the best SI unit prefix option for a numeric value.
@@ -324,6 +341,7 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
 
         return sp_list[idx].strip(), 10.**sp_pow[idx]
 
+
 def absolute_path(name: str) -> str:
     """Return an absolute path of a given file."""
     return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
@@ -332,19 +350,43 @@ def absolute_path(name: str) -> str:
 def relative_path(name: str, start: Optional[str]=None) -> str:
     """
     Retun a relative path of a given file with respect a given origin.
-    
+
     Args:
         name: A path to file.
         start: An origin of relative path. If the start is not given, the
             current directory is used as the origin of relative path.
-        
+
     Examples:
     >>> relative_path('/root/a/b.txt', '/root/c')
     '../a/b.txt'
     >>> relative_path('../a/b.txt', './c')
-    '../../a/b.txt' 
+    '../../a/b.txt'
     """
     if start is not None:
         start = absolute_path(start)
     return os.path.relpath(absolute_path(name), start)
 
+
+def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
+    """Count occurrences of a task result in the context.results list.
+
+    Loop over the content of the context.results list and compare taskname to the pipeline_casa_task
+    attribute of each result object. Increase counter if taskname substring is found in the attribute.
+
+    The order number is determined by counting the number of previous execution of
+    the task, based on the content of the context.results list. The introduction
+    of this method is necessary because VLASS-SE-CONT imaging happens in multiple
+    stages (hif_makeimages calls). Imaging parameters change from stage to stage,
+    therefore it is necessary to know what is the current stage ordinal number.
+    """
+    count = 0
+    for r in context.results:
+        # Work around the fact that r has read() method in some cases (e.g. editimlist)
+        # but not in others (e.g. in tclean renderer)
+        try:
+            if taskname in r.read().pipeline_casa_task:
+                count += 1
+        except AttributeError:
+            if taskname in r.pipeline_casa_task:
+                count += 1
+    return count

@@ -208,17 +208,18 @@ class SpectralWindow(object):
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
-                 'channels', '_ref_frequency_frame', 'transitions')
+                 'channels', '_ref_frequency_frame', 'spectralspec', 'transitions')
 
     def __getstate__(self):
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
-                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions)
+                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
+                self.spectralspec, self.transitions)
 
     def __setstate__(self, state):
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
-         self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions) = state
+         self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -254,7 +255,8 @@ class SpectralWindow(object):
         )
 
     def __init__(self, spw_id, name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
-                 chan_effective_bws, sideband, baseband, receiver, freq_lo, band='Unknown', transitions=None):
+                 chan_effective_bws, sideband, baseband, receiver, freq_lo, band='Unknown', spectralspec=None,
+                 transitions=None):
         if transitions is None:
             transitions = ['Unknown']
 
@@ -269,6 +271,7 @@ class SpectralWindow(object):
         self.mean_frequency = measures.Frequency(mean_freq, measures.FrequencyUnits.HERTZ)
         self.band = band
         self.type = spw_type
+        self.spectralspec = spectralspec
         self.intents = set()
 
         # work around NumPy bug with empty strings

@@ -7,6 +7,7 @@ import os.path
 import re
 import shutil
 import uuid
+from typing import Union
 
 import numpy as np
 
@@ -1926,7 +1927,7 @@ class ImageParamsHeuristics(object):
     def cycleniter(self, iteration):
         return None
 
-    def scales(self):
+    def scales(self, iteration=None):
         return None
 
     def uvtaper(self, beam_natural=None, protect_long=None):
@@ -2074,7 +2075,7 @@ class ImageParamsHeuristics(object):
     def stokes(self):
         return 'I'
 
-    def mask(self):
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask=None):
         return ''
 
     def specmode(self):
@@ -2154,3 +2155,40 @@ class ImageParamsHeuristics(object):
                     image.setrestoringbeam( major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii )
 
         return newcommonbeam, np.where(np.logical_not(weight))[0]
+
+    def get_cfcaches(self, cfcache: str):
+        """Parses comma separated cfcache string
+
+        Used to input wide band and non-wide band cfcaches at the same time in
+        VLASS-SE-CONT imaging mode.
+        """
+        return [cfcache, None]
+
+    def smallscalebias(self) -> None:
+        """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
+        return None
+
+    def restoringbeam(self) -> None:
+        """Tclean parameter"""
+        return None
+
+    def pointingoffsetsigdev(self) -> None:
+        """Tclean parameter"""
+        return None
+
+    def pbmask(self) -> None:
+        """Tclean pbmask parameter heuristics"""
+        return None
+
+    def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
+                         pblimit: float = 0.4, frac_lim:float = 0.2) -> Union[None, float]:
+        """Determine fractional flux in final image outside cleanmask"""
+        return None
+
+    def weighting(self, specmode: str) -> str:
+        """Determine the weighting scheme."""
+        return 'briggs'
+
+    def perchanweightdensity(self, specmode: str) -> bool:
+        """Determine the perchanweightdensity parameter."""
+        return False

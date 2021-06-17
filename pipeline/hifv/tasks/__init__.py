@@ -29,3 +29,4 @@ from .exportvlassdata import Exportvlassdata
 from .syspower import Syspower
 from .selfcal import Selfcal
 from .fixpointing import Fixpointing
+from .vlassmasking import Vlassmasking
