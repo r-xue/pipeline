@@ -2184,3 +2184,11 @@ class ImageParamsHeuristics(object):
                          pblimit: float = 0.4, frac_lim:float = 0.2) -> Union[None, float]:
         """Determine fractional flux in final image outside cleanmask"""
         return None
+
+    def weighting(self, specmode: str) -> str:
+        """Determine the weighting scheme."""
+        return 'briggs'
+
+    def perchanweightdensity(self, specmode: str) -> bool:
+        """Determine the perchanweightdensity parameter."""
+        return False

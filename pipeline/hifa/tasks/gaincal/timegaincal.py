@@ -2,11 +2,11 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.gaincal import common
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hifa.heuristics import exptimes as gexptimes
-from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -181,7 +181,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             return None
         grouped_spw = {}
         request_spws = set(ms.get_spectral_windows(task_arg=spw_sel))
-        for spws in get_spspec_to_spwid_map(request_spws).values():
+        for spws in utils.get_spectralspec_to_spwid_map(request_spws).values():
             ref_spw = {spw_map[i] for i in spws}
             assert len(ref_spw) == 1, 'A SpectralSpec is mapped to more than one SpWs'
             grouped_spw[ref_spw.pop()] = str(',').join([str(i) for i in sorted(spws)])

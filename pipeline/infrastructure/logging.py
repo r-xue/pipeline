@@ -28,7 +28,7 @@ LOGGING_LEVELS = {'critical' : CRITICAL,
                   'trace'    : TRACE}
 
 # Begin with a default log level of NOTSET. All loggers created at module level
-# import time will use this logging level. 
+# import time will use this logging level.
 logging_level = logging.NOTSET
 
 # initialise the root logger so that module-level messages can be logged.
@@ -66,7 +66,7 @@ class CASALogHandler(logging.Handler):
         """
         Emit a record.
 
-        If a formatter is specified, it is used to format the record. The 
+        If a formatter is specified, it is used to format the record. The
         record is then written to the stream with a trailing newline. If
         exception information is present, it is formatted using
         traceback.print_exception and appended to the stream.
@@ -75,7 +75,7 @@ class CASALogHandler(logging.Handler):
             msg = self.format(record)
             priority = CASALogHandler.get_casa_priority(record.levelno)
             origin = record.name
-            log = self._log            
+            log = self._log
             log.post(msg, priority, origin)
             self.flush()
         except (KeyboardInterrupt, SystemExit):
@@ -102,42 +102,42 @@ class CASALogHandler(logging.Handler):
 # emitted the message. Try it!
 #               format='%(asctime)s %(name)s %(funcName)s\n%(levelname)s: %(message)s',
 
-def get_logger(name, 
+def get_logger(name,
                format='%(asctime)s %(levelname)s: %(message)s',
                datefmt='%Y-%m-%d %H:%M:%S',
                stream=sys.stdout, level=None,
-               filename=None, filemode='w', filelevel=None,  
+               filename=None, filemode='w', filelevel=None,
                propagate=False,
                addToCasaLog=True):
-    """Do basic configuration for the logging system. Similar to 
-    logging.basicConfig but the logger ``name`` is configurable and both a 
-    file output and a stream output can be created. Returns a logger object. 
+    """Do basic configuration for the logging system. Similar to
+    logging.basicConfig but the logger ``name`` is configurable and both a
+    file output and a stream output can be created. Returns a logger object.
 
-    The default behaviour is to create a StreamHandler which writes to 
+    The default behaviour is to create a StreamHandler which writes to
     sys.stdout, set a formatter using the "%(message)s" format string, and add
-    the handler to the ``name`` logger. 
+    the handler to the ``name`` logger.
 
     A number of optional keyword arguments may be specified, which can alter
-    the default behaviour. 
+    the default behaviour.
 
-    :param name: Logger name 
-    :param format: handler format string 
-    :param datefmt: handler date/time format specifier 
-    :param stream: initialize the StreamHandler using ``stream`` 
-        (None disables the stream, default=sys.stdout) 
-    :param level: logger level (default=current pipeline log level). 
-    :param filename: create FileHandler using ``filename`` (default=None) 
-    :param filemode: open ``filename`` with specified filemode ('w' or 'a') 
-    :param filelevel: logger level for file logger (default=``level``) 
-    :param propagate: propagate message to parent (default=False) 
+    :param name: Logger name
+    :param format: handler format string
+    :param datefmt: handler date/time format specifier
+    :param stream: initialize the StreamHandler using ``stream``
+        (None disables the stream, default=sys.stdout)
+    :param level: logger level (default=current pipeline log level).
+    :param filename: create FileHandler using ``filename`` (default=None)
+    :param filemode: open ``filename`` with specified filemode ('w' or 'a')
+    :param filelevel: logger level for file logger (default=``level``)
+    :param propagate: propagate message to parent (default=False)
     :param addToCasaLog: emit log message to CASA logs too (default=True)
 
-    :returns: logging.Logger object 
-    """  
+    :returns: logging.Logger object
+    """
     if level is None:
         level = logging_level
 
-    # Get a logger for the specified name  
+    # Get a logger for the specified name
     logger = logging.getLogger(name)
 
     def trace(self, msg, *args, **kwargs):
@@ -168,39 +168,39 @@ def get_logger(name,
     logger.todo = types.MethodType(todo, logger)
 
     logger.setLevel(logging_level)
-    fmt = UTCFormatter(format, datefmt)  
-    logger.propagate = propagate  
+    fmt = UTCFormatter(format, datefmt)
+    logger.propagate = propagate
 
-    # Remove existing handlers, otherwise multiple handlers can accrue  
-    for hdlr in logger.handlers[:]:  
-        logger.removeHandler(hdlr)  
+    # Remove existing handlers, otherwise multiple handlers can accrue
+    for hdlr in logger.handlers[:]:
+        logger.removeHandler(hdlr)
 
-    # Add handlers. Add NullHandler if no file or stream output so that  
-    # modules don't emit a warning about no handler.  
-    if not (filename or stream):  
-        logger.addHandler(logutils.NullHandler())  
+    # Add handlers. Add NullHandler if no file or stream output so that
+    # modules don't emit a warning about no handler.
+    if not (filename or stream):
+        logger.addHandler(logutils.NullHandler())
 
     if filename:
         # delay = 1 so that file is not opened until used
         hdlr = logging.FileHandler(filename, filemode, delay=1)
-        if filelevel is None:  
-            filelevel = level  
-        hdlr.setLevel(filelevel)  
-        hdlr.setFormatter(fmt)  
-        logger.addHandler(hdlr)  
+        if filelevel is None:
+            filelevel = level
+        hdlr.setLevel(filelevel)
+        hdlr.setFormatter(fmt)
+        logger.addHandler(hdlr)
 
     if stream:
         hdlr = colorize.ColorizingStreamHandler(stream)
-        hdlr.setLevel(level)  
-        hdlr.setFormatter(fmt)  
-        logger.addHandler(hdlr)  
+        hdlr.setLevel(level)
+        hdlr.setFormatter(fmt)
+        logger.addHandler(hdlr)
 
     hdlr = CASALogHandler()
 #     hdlr.setLevel(level)
     if addToCasaLog:
         logger.addHandler(hdlr)
 
-    _loggers.append(logger)  
+    _loggers.append(logger)
 
     return logger
 
@@ -239,7 +239,7 @@ def add_handler(handler):
 
 def remove_handler(handler):
     """
-    Remove specified handler from all registered loggers. 
+    Remove specified handler from all registered loggers.
     """
     for l in _loggers:
         l.removeHandler(handler)
@@ -292,11 +292,13 @@ class CapturingHandler(logging.Handler):
         Append the record to the buffer.
         """
         # The Traceback object attached to the LogRecord exception tuple is
-        # not serializable. Replace it with a substitute wrapper object that 
+        # not serializable. Replace it with a substitute wrapper object that
         # is.
         if record.exc_info is not None:
             exc_type, exc_value, tb = record.exc_info
             record.exc_info = (exc_type, exc_value, Traceback(tb))
+
+        record.msg = self.format(record)
 
         self.buffer.append(record)
 
