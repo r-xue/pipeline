@@ -1255,9 +1255,15 @@ finally:
             # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
             with casa_tools.ImageReader(image) as img:
                 info = img.miscinfo()
-                if ('spw' in info) and (len(info['spw']) >= 68):
-                    spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
-                    info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                if 'spw' in info:
+                    spw_kw = 'spw'
+                elif 'virtspw' in info:
+                    spw_kw = 'virtspw'
+                else:
+                    spw_kw = None
+                if (spw_kw is not None) and (len(info[kw]) >= 68):
+                    spw_sorted = sorted([int(x) for x in info[spw_kw].split(',')])
+                    info[spw_kw] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
                     img.setmiscinfo(info)
 
             if not self._executor._dry_run:
@@ -1281,8 +1287,13 @@ finally:
                         except:
                             # Some images do not have beam, robust or weight keywords
                             fits_keywords[key] = 'N/A'
+
+                    # Write spw or virtspw only if they exist (no default value)
                     if 'spw' in ff[0].header:
-                        fits_keywords['virtspw'] = '{}'.format(str(ff[0].header['spw']))
+                        fits_keywords['spw'] = '{}'.format(str(ff[0].header['spw']))
+                    if 'virtspw' in ff[0].header:
+                        fits_keywords['virtspw'] = '{}'.format(str(ff[0].header['virtspw']))
+
                     if 'nspwnam' in ff[0].header:
                         nspwnam = ff[0].header['nspwnam']
                         fits_keywords['nspwnam'] = '{}'.format(str(nspwnam))

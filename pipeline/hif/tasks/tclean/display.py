@@ -147,7 +147,7 @@ class CleanSummary(object):
                     with casa_tools.ImageReader(imagename) as image:
                         miscinfo = image.miscinfo()
 
-                    parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
+                    parameters = {k: miscinfo[k] for k in ['virtspw', 'iter'] if k in miscinfo}
                     parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
                     parameters['type'] = 'spectra'
                     try:

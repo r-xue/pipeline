@@ -50,7 +50,7 @@ def clean_extendable_keys(data, key, num_keys=None):
 
 
 # Add information to image header
-def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
+def set_miscinfo(name, spw=None, virtspw=None, field=None, nfield=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
                  robust=None, weighting=None, is_per_eb=None, context=None):
     """
     Define miscellaneous image information
@@ -86,7 +86,10 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
                     ]
                 else:
                     spw_names = ['N/A']
-                info['spw'] = unique_spws
+                if virtspw:
+                    info['virtspw'] = unique_spws
+                else:
+                    info['spw'] = unique_spws
                 info['nspwnam'] = len(spw_names)
                 for i in range(len(spw_names)):
                     info['spwnam%02d' % (i+1)] = spw_names[i]

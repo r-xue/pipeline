@@ -549,9 +549,12 @@ class CleanBase(basetask.StandardTaskTemplate):
                 LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                             (tclean_stopcode, inputs.field, inputs.spw))
 
+        # Using virtual spw setups for all interferometry pipelines
+        virtspw = True
+
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             # Store the model.
-            imageheader.set_miscinfo(name=model_name, spw=inputs.spw, field=inputs.field,
+            imageheader.set_miscinfo(name=model_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                      type='model', iter=iter, multiterm=result.multiterm,
                                      intent=inputs.intent, specmode=inputs.specmode,
                                      is_per_eb=inputs.is_per_eb,
@@ -559,7 +562,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_model(iter=iter, image=model_name)
 
             # Always set info on the uncorrected image for plotting
-            imageheader.set_miscinfo(name=image_name, spw=inputs.spw, field=inputs.field,
+            imageheader.set_miscinfo(name=image_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                      type='image', iter=iter, multiterm=result.multiterm,
                                      intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust, weighting=inputs.weighting,
                                      is_per_eb=inputs.is_per_eb,
@@ -567,7 +570,7 @@ class CleanBase(basetask.StandardTaskTemplate):
 
             # Store the PB corrected image.
             if os.path.exists('%s' % (pbcor_image_name.replace('.image.pbcor', '.image.tt0.pbcor' if result.multiterm else '.image.pbcor'))):
-                imageheader.set_miscinfo(name=pbcor_image_name, spw=inputs.spw, field=inputs.field,
+                imageheader.set_miscinfo(name=pbcor_image_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                          type='pbcorimage', iter=iter, multiterm=result.multiterm,
                                          intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust, weighting=inputs.weighting,
                                          is_per_eb=inputs.is_per_eb,
@@ -577,7 +580,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 result.set_image(iter=iter, image=image_name)
 
         # Store the residual.
-        imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
+        imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                  type='residual', iter=iter, multiterm=result.multiterm,
                                  intent=inputs.intent, specmode=inputs.specmode,
                                  is_per_eb=inputs.is_per_eb,
@@ -585,7 +588,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         result.set_residual(iter=iter, image=residual_name)
 
         # Store the PSF.
-        imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, field=inputs.field,
+        imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                  type='psf', iter=iter, multiterm=result.multiterm,
                                  intent=inputs.intent, specmode=inputs.specmode,
                                  is_per_eb=inputs.is_per_eb,
@@ -593,7 +596,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         result.set_psf(image=psf_name)
 
         # Store the flux image.
-        imageheader.set_miscinfo(name=flux_name, spw=inputs.spw, field=inputs.field,
+        imageheader.set_miscinfo(name=flux_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                  type='flux', iter=iter, multiterm=result.multiterm,
                                  intent=inputs.intent, specmode=inputs.specmode,
                                  is_per_eb=inputs.is_per_eb,
@@ -602,7 +605,7 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         # Make sure mask has path name
         if os.path.exists(inputs.mask):
-            imageheader.set_miscinfo(name=inputs.mask, spw=inputs.spw, field=inputs.field,
+            imageheader.set_miscinfo(name=inputs.mask, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                      type='cleanmask', iter=iter,
                                      intent=inputs.intent, specmode=inputs.specmode,
                                      is_per_eb=inputs.is_per_eb,
@@ -610,7 +613,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_cleanmask(iter=iter, image=inputs.mask)
         elif os.path.exists(mask_name):
             # Use mask made by tclean
-            imageheader.set_miscinfo(name=mask_name, spw=inputs.spw, field=inputs.field,
+            imageheader.set_miscinfo(name=mask_name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                      type='cleanmask', iter=iter,
                                      intent=inputs.intent, specmode=inputs.specmode,
                                      is_per_eb=inputs.is_per_eb,

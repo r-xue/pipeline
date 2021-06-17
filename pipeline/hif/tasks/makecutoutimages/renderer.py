@@ -42,7 +42,7 @@ class T2_4MDetailsMakecutoutimagesRenderer(basetemplates.T2_4MDetailsDefaultRend
 
                 with casa_tools.ImageReader(image_path) as image:
                     info = image.miscinfo()
-                    spw = info.get('spw', None)
+                    spw = info.get('virtspw', None)
                     field = ''
                     #if 'field' in info:
                     #    field = '%s (%s)' % (info['field'], r.intent)

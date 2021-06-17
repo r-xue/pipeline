@@ -42,7 +42,7 @@ class T2_4MDetailsMakepbcorimagesRenderer(basetemplates.T2_4MDetailsDefaultRende
 
                 with casa_tools.ImageReader(image_path) as image:
                     info = image.miscinfo()
-                    spw = info.get('spw', None)
+                    spw = info.get('virtspw', None)
                     field = ''
                     # if 'field' in info:
                     #     field = '%s (%s)' % (info['field'], r.intent)

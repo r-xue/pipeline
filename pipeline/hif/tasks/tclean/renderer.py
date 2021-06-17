@@ -98,7 +98,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             image_max = stats.get('max')[0]
             image_stats[image_path] = display.ImageStats(rms=image_rms, max=image_max)
 
-            spw = info.get('spw', None)
+            spw = info.get('virtspw', None)
             if spw is not None:
                 nspwnam = info.get('nspwnam', None)
                 spwnames = ','.join([info.get('spwnam%02d' % (i+1)) for i in range(nspwnam)])

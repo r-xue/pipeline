@@ -965,8 +965,11 @@ class Tclean(cleanbase.CleanBase):
         self._executor.execute(job)
         assert os.path.exists(outfile)
 
+        # Using virtual spw setups for all interferometry pipelines
+        virtspw = True
+
         # Update the metadata in the MOM8_FC image.
-        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw,
+        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw, virtspw=virtspw,
                                  field=self.inputs.field, iter=iter, type=mom_type,
                                  intent=self.inputs.intent, specmode=self.inputs.specmode,
                                  context=context)
