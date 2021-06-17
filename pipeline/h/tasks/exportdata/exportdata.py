@@ -1261,7 +1261,7 @@ finally:
                     spw_kw = 'virtspw'
                 else:
                     spw_kw = None
-                if (spw_kw is not None) and (len(info[kw]) >= 68):
+                if (spw_kw is not None) and (len(info[spw_kw]) >= 68):
                     spw_sorted = sorted([int(x) for x in info[spw_kw].split(',')])
                     info[spw_kw] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
                     img.setmiscinfo(info)
