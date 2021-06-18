@@ -11,13 +11,16 @@ import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.hsd.tasks.importdata import SDImportDataResults
+from pipeline.hsd.tasks.applycal import SDApplycalResults
 from .. import applycal
 from ..importdata import importdata as importdata
+from typing import List, Dict # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
 
 LOG = infrastructure.get_logger(__name__)
-
 
 class SDRestoreDataInputs(restoredata.RestoreDataInputs):
     """SDRestoreDataInputs manages the inputs for the SDRestoreData task."""
@@ -51,7 +54,8 @@ class SDRestoreDataInputs(restoredata.RestoreDataInputs):
 class SDRestoreDataResults(restoredata.RestoreDataResults):
     """Results object of SDRestoreData."""
 
-    def __init__(self, importdata_results=None, applycal_results=None, flagging_summaries=None):
+    def __init__(self, importdata_results: SDImportDataResults = None, applycal_results: SDApplycalResults = None, 
+                 flagging_summaries: List[Dict[str,str]] = None):
         """
         Initialise the results objects.
 
@@ -62,7 +66,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         """
         super(SDRestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context):
         """
         Call same method of superclass and _merge_k2jycal().
 
@@ -78,7 +82,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         else:
             self._merge_k2jycal(context, self.applycal_results)
 
-    def _merge_k2jycal(self, context, applycal_results):
+    def _merge_k2jycal(self, context: Context, applycal_results: SDApplycalResults):
         """
         Merge K to Jy.
 
@@ -137,7 +141,7 @@ class SDRestoreData(restoredata.RestoreData):
 
         return sdresults
 
-    def _do_importasdm(self, sessionlist, vislist):
+    def _do_importasdm(self, sessionlist: List[str], vislist: List[str]):
         """
         Execute importasdm task.
 
