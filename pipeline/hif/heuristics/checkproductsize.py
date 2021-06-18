@@ -81,7 +81,7 @@ class CheckProductSizeHeuristics(object):
             float(ref_ms.get_spectral_window(real_spw).channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)) \
             for spw, real_spw in zip(spws, real_spws)])
 
-        if len(fields) == 0:
+        if nfields == 0:
             LOG.error('Cannot determine any default imaging targets')
             return {}, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
 
@@ -97,6 +97,17 @@ class CheckProductSizeHeuristics(object):
         maxAllowedBeamAxialRatio, \
         sensitivityGoal = \
             imlist[0]['heuristics'].representative_target()
+
+        # Sort to get consistent mitigation results
+        fields.sort()
+        # Make sure that the representative source is the first list item
+        print('DEBUG_DM:', repr_source)
+        try:
+            rep_source_index = [utils.dequote(f) for f in fields].index(utils.dequote(repr_source))
+            fields.pop(rep_source_index)
+            fields = [repr_source] + fields
+        except ValueError:
+            LOG.warning('Could not reorder field list to place representative source first')
 
         # Get original maximum cube and product sizes
         cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
@@ -210,14 +221,9 @@ class CheckProductSizeHeuristics(object):
             if nfields == 0:
                 nfields = 1
 
-            # Truncate the field list
+            # Truncate the field list. The representative source is always
+            # included since it is the first list item.
             mitigated_fields = fields[:nfields]
-
-            # Make sure the representative source is included in the new list
-            for field in fields[nfields:]:
-                if utils.dequote(field) == utils.dequote(repr_source):
-                    mitigated_fields[0] = field
-                    break
 
             size_mitigation_parameters['field'] = ','.join(mitigated_fields)
 
