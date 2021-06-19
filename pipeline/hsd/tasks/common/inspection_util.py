@@ -188,7 +188,7 @@ def inspect_reduction_group(ms: MeasurementSet) -> Dict[int, MSReductionGroupDes
             else:
                 key = match
             ### Check existance of antenna, spw, field combination in MS
-            ddid = ms.get_data_description(id=spw.id)
+            ddid = ms.get_data_description(spw=spw)
             with casa_tools.TableReader(ms.name) as tb:
                 subtb = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d' % (ddid.id, field.id),
                                  columns='ANTENNA1')

@@ -16,9 +16,9 @@ Furthermore, astropy is a hard requirement for pyBDSF (the package documentation
 
 The pipeline supports 3 VLASS-SE-CONT imaging modes (parameter used in hif_editimlist task). The modes differ in gridder related tclean parameters. 
 
-- VLASS-SE-CONT: default imaging mode, short for VLASS-SE-CONT-AWP-032.
-- VLASS-SE-CONT-AWP-032: applies widefield projection algorithms with 32 projection planes (i.e. tclean parameters `gridder='awproject'`, `wprojplanes=32`). This is a direct implements of the VLASS Memo 15 imaging workflow and script. Requires two sets of CFcaches; one with frequency dependent A-terms, one without. 
-- VLASS-SE-CONT-AWP-001: alternative widefield projection mode. It differs from the default mode by using one projection plane (i.e. `wprojplanes=1`), in order to speed up imaging.
+- VLASS-SE-CONT: default imaging mode, short for VLASS-SE-CONT-AWP-P032.
+- VLASS-SE-CONT-AWP-P032: applies widefield projection algorithms with 32 projection planes (i.e. tclean parameters `gridder='awproject'`, `wprojplanes=32`). This is a direct implements of the VLASS Memo 15 imaging workflow and script. Requires two sets of CFcaches; one with frequency dependent A-terms, one without. 
+- VLASS-SE-CONT-AWP-P001: alternative widefield projection mode. It differs from the default mode by using one projection plane (i.e. `wprojplanes=1`), in order to speed up imaging.
 - VLASS-SE-CONT-MOSAIC: mosaic gridder based mode`gridder='mosaic'`, similar to the Quick Look Imaging Project (QLIP) recipe. 
 
 ### Task level workflow

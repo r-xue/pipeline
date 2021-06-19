@@ -8,23 +8,23 @@ Inputs easier.
 
 - VisDependentProperty is a reworking of pipeline properties to reduce the
   amount of boilerplate code required to implement an Inputs class.
-    
+
 Implementation details:
 
     See the documentation on the classes, particularly VisDependentProperty,
-    for detailed information on how the framework operates. 
-    
+    for detailed information on how the framework operates.
+
 Examples:
 
     There are three common scenarios that use VisDependentProperty. The
     following examples show each scenario for an Inputs property belonging to
     an Inputs class that extends vdp.StandardInputs.
-    
+
     1. To provide a default value that can be overridden on a per-MS basis. Use
-       the optional 'default' argument to VisDependentProperty, eg: 
-    
+       the optional 'default' argument to VisDependentProperty, eg:
+
         myarg = VisDependentProperty(default='some value')
-        
+
     2. For more sophisticated default values, e.g., a default value that is a
        function of other data or properties, use the @VisDependentProperty
        decorator. A class property decorated with @VisDependentProperty should
@@ -42,7 +42,7 @@ Examples:
     3. Convert or validate user input before accept it as an Inputs argument.
        Use the @VisDependentProperty.convert decorator, possibly alongside the
        getter decorator as above.
-       
+
         @VisDependentProperty
         def myarg():
             # this will return 100 - but only if the user has not supplied
@@ -55,7 +55,7 @@ Examples:
             # argument to the convert decorator. The converted value will be
             # returned for all subsequent 'gets'.
             return int(user_input)
-    
+
 """
 import collections
 import copy
@@ -407,7 +407,8 @@ class InputsContainer(object):
         #
         # note: _scope_attr must be set for __setattr__ to function correctly
         #
-        constructor_spec = inspect.getargspec(current_inputs_cls.__init__)
+        constructor_spec = inspect.getfullargspec(current_inputs_cls.__init__)
+
         if 'vis' in constructor_spec.args:
             self._scope_attr = 'vis'
         elif 'infiles' in constructor_spec.args:
@@ -628,7 +629,7 @@ class InputsContainer(object):
         """
         distribute a incoming user argument amongst the active instances.
 
-        :param val: 
+        :param val:
         :return:
         """
         if not isinstance(val, (list, tuple)):
@@ -764,7 +765,7 @@ class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
     def _get_task_args(self, ignore=None):
         """
         Express this class as a dictionary of CASA arguments, listing all
-        inputs except those named in ignore. 
+        inputs except those named in ignore.
 
         The main purpose of the ignore argument is used to prevent an infinite
         loop in :meth:`~CommonCalibrationInputs.caltable`, which determines the
@@ -774,13 +775,13 @@ class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
             ignore = []
 
         # get the signature of this Inputs class. We want to return a
-        # of dictionary of all kw argument names except self, the 
+        # of dictionary of all kw argument names except self, the
         # pipeline-specific arguments (context, output_dir, run_qa2 etc.) and
         # caltable.
         skip = ['self', 'context', 'output_dir', 'ms', 'calstate']
         skip.extend(ignore)
 
-        kw_names = [a for a in inspect.getargspec(self.__init__).args if a not in skip]
+        kw_names = [a for a in inspect.getfullargspec(self.__init__).args if a not in skip]
         d = {key: getattr(self, key) for key in kw_names}
 
         # add any read-only properties too
@@ -798,11 +799,11 @@ class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
     def to_casa_args(self):
         """
         Express these inputs as a dictionary of CASA arguments. The values
-        in the dictionary are in a format suitable for CASA and can be 
+        in the dictionary are in a format suitable for CASA and can be
         directly passed to the CASA task.
 
         :rtype: a dictionary of string/??? kw/val pairs
-        """        
+        """
         args = self._get_task_args()
 
         # spw needs to be a string and not a number
@@ -821,7 +822,7 @@ class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
 
         for k, v in list(args.items()):
             if v is None:
-                del args[k]        
+                del args[k]
         return args
 
     def __str__(self):
@@ -839,7 +840,7 @@ class ModeInputs(api.Inputs, metaclass=PipelineInputsMeta):
     ModeInputs is a facade for Inputs of a common task type, allowing the user
     to switch between task implementations by changing the 'mode' parameter.
 
-    Extending classes should override the _modes dictionary with a set of 
+    Extending classes should override the _modes dictionary with a set of
     key/value pairs, each pair mapping the mode name key to the task class
     value.
     """
@@ -970,14 +971,14 @@ class ModeInputs(api.Inputs, metaclass=PipelineInputsMeta):
         all_args = set()
 
         # get the arguments for this class's contructor
-        args = inspect.getargspec(cls.__init__).args
+        args = inspect.getfullargspec(cls.__init__).args
         # and add them to our collection
         all_args.update(args)
 
         # now do the same for each inputs class we can switch between
         for task_cls in cls._modes.values():
             # get the arguments of the task Inputs constructor
-            args = inspect.getargspec(task_cls.Inputs.__init__).args
+            args = inspect.getfullargspec(task_cls.Inputs.__init__).args
             # and add them to our set
             all_args.update(args)
 
@@ -1043,7 +1044,7 @@ def name_all_arguments(cls, *args, **kwargs):
     # we need to know the names of any non-key/value arguments supplied
     # in the constructor. The names of the argument can be found in the
     # constructor specification.
-    argspec = inspect.getargspec(cls)
+    argspec = inspect.getfullargspec(cls)
 
     # The constructor specification includes 'self', which is not passed
     # in either args or kwargs. Hence, a dummy value for self is supplied

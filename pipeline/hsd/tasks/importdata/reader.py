@@ -410,6 +410,9 @@ class MetaDataReader(object):
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
+                if len(fields) == 0:
+                    continue
+
                 source_name = (fields[0].source.name) # removed upper() 2019.5.14
                 if 'EPHEMERIS_ID' in tb.colnames():
                     ephemeris_ids = tb.getcol( 'EPHEMERIS_ID' )
@@ -488,6 +491,10 @@ class MetaDataReader(object):
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
+                if len(fields) == 0:
+                    org_direction = None
+                    continue
+
                 source_name = fields[0].source.name
                 if source_name in org_directions:
                     fields[0].source.org_direction = org_directions[source_name]

@@ -46,7 +46,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     restfreq = vdp.VisDependentProperty(default=None)
     tlimit = vdp.VisDependentProperty(default=2.0)
     usepointing = vdp.VisDependentProperty(default=None)
-    weighting = vdp.VisDependentProperty(default='briggs')
+    weighting = vdp.VisDependentProperty(default=None)
     pblimit = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default=None)
     cfcache_nowb = vdp.VisDependentProperty(default=None)
@@ -285,6 +285,11 @@ class Tclean(cleanbase.CleanBase):
         # Determine deconvolver
         if inputs.deconvolver in (None, ''):
             inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw)
+
+        # Determine weighting and perchanweightdensity
+        if inputs.weighting in (None, ''):
+            inputs.weighting = self.image_heuristics.weighting(inputs.specmode)
+            inputs.hm_perchanweightdensity = self.image_heuristics.perchanweightdensity(inputs.specmode)
 
         # Determine nterms
         if (inputs.nterms in ('', None)) and (inputs.deconvolver == 'mtmfs'):

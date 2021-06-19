@@ -21,8 +21,7 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
     def __init__(self, uri='lowgainflag.mako', 
                  description='Flag antennas with low gain',
                  always_rerender=False):
-        super(T2_4MDetailsLowgainFlagRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
         htmlreports = self.get_htmlreports(pipeline_context, results)        
@@ -34,18 +33,15 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         for result in (r for r in results if r.view):
             vis = os.path.basename(result.inputs['vis'])
             plotter = image.ImageDisplay()
-            plots[vis] = plotter.plot(
-                context=pipeline_context, results=result, reportdir=dirname)
+            plots[vis] = plotter.plot(context=pipeline_context, results=result, reportdir=dirname)
 
         plots_path = None
         if plots:
             all_plots = list(utils.flatten([v for v in plots.values()]))
-            renderer = TimeVsAntenna1PlotRenderer(pipeline_context, results,
-                                                  all_plots)
+            renderer = ScanVsAntenna1PlotRenderer(pipeline_context, results, all_plots)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
-                plots_path = os.path.relpath(renderer.path,
-                                             pipeline_context.report_dir)
+                plots_path = os.path.relpath(renderer.path, pipeline_context.report_dir)
 
         # Check for updated reference antenna lists.
         updated_refants = {}
@@ -65,8 +61,7 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
     def get_htmlreports(self, context, results):
         report_dir = context.report_dir
-        weblog_dir = os.path.join(report_dir,
-                                  'stage%s' % results.stage_number)
+        weblog_dir = os.path.join(report_dir, 'stage%s' % results.stage_number)
 
         htmlreports = {}
         for result in results:
@@ -90,13 +85,9 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         return filename
 
 
-class TimeVsAntenna1PlotRenderer(basetemplates.JsonPlotRenderer):
+class ScanVsAntenna1PlotRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, context, result, plots):
         vis = utils.get_vis_from_plots(plots)
-
-        title = 'Time vs Antenna1 plots for %s' % vis
-        outfile = filenamer.sanitize('time_vs_antenna1-%s.html' % vis)
-
-        super(TimeVsAntenna1PlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_plots.mako', context, 
-                result, plots, title, outfile)
+        title = 'Scan vs Antenna1 plots for %s' % vis
+        outfile = filenamer.sanitize('scan_vs_antenna1-%s.html' % vis)
+        super().__init__('generic_x_vs_y_spw_plots.mako', context, result, plots, title, outfile)

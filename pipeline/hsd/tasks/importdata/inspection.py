@@ -159,7 +159,7 @@ class SDInspection(object):
 #                 else:
 #                     key = match
 #                 ### Check existance of antenna, spw, field combination in MS
-#                 ddid = ms.get_data_description(id=spw.id)
+#                 ddid = ms.get_data_description(spw=spw)
 #                 with casa_tools.TableReader(ms.name) as tb:
 #                     subtb = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d' % (ddid.id, field.id),
 #                                      columns='ANTENNA1')
@@ -172,7 +172,7 @@ class SDInspection(object):
 # #                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)
 #                 for ant_id in valid_antid:
 #                     reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
-#
+# 
 #         return reduction_group
 
     def __select_data(self, datatable, ms_ant_map, startrow=0, nrow=-1):

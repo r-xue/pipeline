@@ -42,6 +42,7 @@ class MeasurementSet(object):
             dyamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
+        spectralspec_spwmap: SpectralSpec mapping
         fields: A list of Field objects associated with MS
         states: A list of State objects associated with MS
         reference_spwmap: Reference spectral window map
@@ -77,6 +78,7 @@ class MeasurementSet(object):
         self.science_goals: dict = {}
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
+        self.spectralspec_spwmap: dict = {}
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
@@ -473,8 +475,8 @@ class MeasurementSet(object):
                 raise KeyError('No spectral window with ID \'{0}\' found in '
                                '{1}'.format(spw_id, self.basename))
 
-    def get_spectral_windows(self, task_arg='', with_channels=False,
-                             num_channels=(), science_windows_only=True):
+    def get_spectral_windows(self, task_arg='', with_channels=False, num_channels=(), science_windows_only=True,
+                             spectralspecs=None):
         """
         Return the spectral windows corresponding to the given CASA-style spw
         argument, filtering out windows that may not be science spectral 
@@ -485,6 +487,10 @@ class MeasurementSet(object):
         # if requested, filter spws by number of channels
         if num_channels:
             spws = [w for w in spws if w.num_channels in num_channels] 
+
+        # If requested, filter spws by spectral specs.
+        if spectralspecs is not None:
+            spws = [w for w in spws if w.spectralspec in spectralspecs]
 
         if not science_windows_only:
             return spws
@@ -508,6 +514,10 @@ class MeasurementSet(object):
             return [w for w in spws if not science_intents.isdisjoint(w.intents)]
 
         return spws
+
+    def get_spectral_specs(self) -> List[str]:
+        """Return list of all spectral specs used in the MS."""
+        return list(self.spectralspec_spwmap.keys())
 
     def get_all_spectral_windows(self, task_arg='', with_channels=False):
         """Return the spectral windows corresponding to the given CASA-style

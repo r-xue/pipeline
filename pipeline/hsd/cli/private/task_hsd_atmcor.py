@@ -1,23 +1,11 @@
-'''
-Created on 2013/06/23
-
-@author: kana
-'''
 import sys
 
 import pipeline.h.cli.utils as utils
 
-def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
-                 flag_prfre=None, prfre_thresh=None,
-                 flag_pofre=None, pofre_thresh=None,
-                 flag_prfr=None, prfr_thresh=None,
-                 flag_pofr=None, pofr_thresh=None,
-                 flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
-                 flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 plotflag=None,
-                 pipelinemode=None, infiles=None, antenna=None, 
-                 field=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None, parallel=None):
+
+def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None, pipelinemode=None,
+               infiles=None, antenna=None, field=None, spw=None, pol=None,
+               dryrun=None, acceptresults=None, parallel=None):
 
     ##########################################################################
     #                                                                        #

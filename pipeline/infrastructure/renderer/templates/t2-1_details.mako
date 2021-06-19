@@ -137,6 +137,10 @@ import os
 					<th>Number of Antennas</th>
 					<td>${num_antennas}</td>
 				</tr>
+                <tr>
+					<th>Antenna Diameters</th>
+					<td>${ant_diameters}</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
