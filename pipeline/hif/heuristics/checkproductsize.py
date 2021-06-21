@@ -101,11 +101,10 @@ class CheckProductSizeHeuristics(object):
         # Sort to get consistent mitigation results
         fields.sort()
         # Make sure that the representative source is the first list item
-        print('DEBUG_DM:', repr_source)
         try:
-            rep_source_index = [utils.dequote(f) for f in fields].index(utils.dequote(repr_source))
-            fields.pop(rep_source_index)
-            fields = [repr_source] + fields
+            repr_source_index = [utils.dequote(f) for f in fields].index(utils.dequote(repr_source))
+            repr_source_entry = fields.pop(repr_source_index)
+            fields = [repr_source_entry] + fields
         except ValueError:
             LOG.warning('Could not reorder field list to place representative source first')
 
