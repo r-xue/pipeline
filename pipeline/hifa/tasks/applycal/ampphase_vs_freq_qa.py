@@ -181,25 +181,40 @@ def score_all(all_fits, outlier_fn, flag_all: bool = False):
     Compare and score the calculated best fits based on how they deviate from
     a reference value.
 
+    For all amplitude or slope vs frequency fits, score the slope or intercept
+    of the fit against the slope or intercept of the median best fit or a value
+    of 0, marking fits that deviate by sigma_threshold from the median dispersion
+    as outliers. Identified outliers are returned as a list of Outlier object
+    returned by the outlier_fn.
+
+    The outlier_fn argument should be a function that returns Outlier objects.
+    In practice, this function should be a partially-applied Outlier
+    constructor that requires a more required arguments to be
+    supplied for an Outlier instance to be created.
+
     Setting the test argument flag_all to True sets all fits as outliers. This
     is useful for testing the QA score roll-up and summary functions in the QA
     plugin.
 
-    :param all_fits:
-    :param outlier_fn:
+    :param all_fits: list of all AntennaFit best fit parameters for all metrics
+    :param outlier_fn: a function returning Outlier objects
     :param flag_all: True if all fits should be classed as outliers
-    :return:
+    :return: list of Outlier objects
     """
-    amp_slope_threshold = 0.0 if flag_all else AMPLITUDE_SLOPE_THRESHOLD
-    amp_intercept_threshold = 0.0 if flag_all else AMPLITUDE_INTERCEPT_THRESHOLD
-    phase_slope_threshold = 0.0 if flag_all else PHASE_SLOPE_THRESHOLD
-    phase_intercept_threshold = 0.0 if flag_all else PHASE_INTERCEPT_THRESHOLD
+    # Dictionary for the different cases to consider. Each is defined by a tuple
+    #  with: attr, ref_value_fn, sigma_threshold
+    score_definitions = {
+        "amp_slope": ('amp.slope', get_median_fit, AMPLITUDE_SLOPE_THRESHOLD),
+        "amp_intercept": ('amp.intercept', get_median_fit, AMPLITUDE_INTERCEPT_THRESHOLD),
+        "phase_slope": ('phase.slope', PHASE_REF_FN, PHASE_SLOPE_THRESHOLD),
+        "phase_intercept": ('phase.intercept', PHASE_REF_FN, PHASE_INTERCEPT_THRESHOLD),
+    }
 
     outliers = []
-    outliers.extend(score_amp_slope(all_fits, outlier_fn, amp_slope_threshold))
-    outliers.extend(score_amp_intercept(all_fits, outlier_fn, amp_intercept_threshold))
-    outliers.extend(score_phase_slope(all_fits, outlier_fn, phase_slope_threshold))
-    outliers.extend(score_phase_intercept(all_fits, outlier_fn, phase_intercept_threshold))
+    for k, v in score_definitions.items():
+        threshold = 0.0 if flag_all else v[2]
+        scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold)
+        outliers.extend(scores)
 
     return outliers
 
@@ -221,90 +236,6 @@ def get_median_fit(all_fits, accessor):
     values = [f.value for f in pol_slopes]
     median, median_sigma = robust_stats(values)
     return ValueAndUncertainty(value=median, unc=median_sigma)
-
-
-def score_amp_slope(all_fits, outlier_fn, sigma_threshold):
-    """
-    For all amplitude vs frequency fits, score the slope of the fit against
-    the slope of the median best fit, marking fits that deviate by
-    sigma_threshold from the median dispersion as outliers. Identified
-    outliers are returned as a list of Outlier object returned by the
-    outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    return score_X_vs_freq_fits(all_fits, 'amp.slope', get_median_fit, outlier_fn, sigma_threshold)
-
-
-def score_amp_intercept(all_fits, outlier_fn, sigma_threshold):
-    """
-    Score the intercept of the best fit against the intercept of the median
-    best fit, marking fits that deviate by sigma_threshold from the median
-    dispersion as outliers. Identified outliers are returned as a list of
-    Outlier object returned by the outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    return score_X_vs_freq_fits(all_fits, 'amp.intercept', get_median_fit, outlier_fn, sigma_threshold)
-
-
-def score_phase_slope(all_fits, outlier_fn, sigma_threshold):
-    """
-    For all phase vs frequency fits, score the slope of the fit against the
-    slope of the median best fit, marking fits that deviate by sigma_threshold
-    from the median dispersion as outliers. Identified outliers are returned
-    as a list of Outlier object returned by the outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    # phase score is calculated as deviation from zero
-    return score_X_vs_freq_fits(all_fits, 'phase.slope', PHASE_REF_FN, outlier_fn, sigma_threshold)
-
-
-def score_phase_intercept(all_fits, outlier_fn, sigma_threshold):
-    """
-    For all phase vs frequency fits, score the intercept of the fit against
-    the intercept of the median best fit, marking fits that deviate by
-    sigma_threshold from the median dispersion as outliers. Identified
-    outliers are returned as a list of Outlier object returned by the
-    outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    # phase score is calculated as deviation from zero
-    return score_X_vs_freq_fits(all_fits, 'phase.intercept', PHASE_REF_FN, outlier_fn, sigma_threshold)
 
 
 def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold):
