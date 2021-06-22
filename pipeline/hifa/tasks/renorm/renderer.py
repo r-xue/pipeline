@@ -1,5 +1,8 @@
 import os
 import collections
+import shutil
+
+from pipeline.infrastructure.utils import weblog
 
 import pipeline.h.tasks.common.displays.image as image
 import pipeline.infrastructure.filenamer as filenamer
@@ -23,7 +26,7 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         weblog_dir = os.path.join(pipeline_context.report_dir,
                                   'stage%s' % result.stage_number)
 
-        table_rows = make_renorm_table(pipeline_context, result)
+        table_rows = make_renorm_table(pipeline_context, result, weblog_dir)
 
         mako_context.update({
             'table_rows': table_rows,
@@ -32,7 +35,7 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 TR = collections.namedtuple('TR', 'vis source spw max pdf')
 
-def make_renorm_table(context, results):
+def make_renorm_table(context, results, weblog_dir):
 
     # Will hold all the input and output MS(s)
     rows = []
@@ -44,11 +47,21 @@ def make_renorm_table(context, results):
             for spw, spw_stats in source_stats.items():
                 # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
-                maxrn_field = spw_stats.get('max_rn_field') # (fieldid)
+                if not maxrn:
+                    continue # no renorm for this spw
+
+                maxrn_field = f"{spw_stats.get('max_rn'):.4} ({spw_stats.get('max_rn_field')})"
+
                 pdf = spw_stats.get('pdf_summary')
+                pdf_path = f"RN_plots/{pdf}"
+                if os.path.exists(pdf_path):
+                    LOG.trace(f"Copying {pdf_path} to {weblog_dir}")
+                    shutil.copy(pdf_path, weblog_dir)   # copy pdf file across to weblog directory
+                pdf_path = pdf_path.replace('RN_plots', f'stage{result.stage_number}')
+                pdf_path_link = f'<a href="{pdf_path}" download="{pdf}">PDF</a>'
+
                 specplot = spw_stats.get('spec_plot')
-                tr = TR(vis, source, spw, maxrn, pdf)
-                if maxrn:  # None if no renorm for this spw
-                    rows.append(tr)
+                tr = TR(vis, source, spw, maxrn_field, pdf_path_link)
+                rows.append(tr)
 
     return utils.merge_td_columns(rows)
