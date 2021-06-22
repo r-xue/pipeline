@@ -7,9 +7,21 @@ import os
 
 import matplotlib.pyplot as plt
 
+from pipeline.domain import DataTable, MeasurementSet
+import pipeline.infrastructure as infrastructure
+
 from .SDFlagRule import INVALID_STAT
 from ..common import display as sd_display
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+from ..common import utils as sdutils
+
+from typing import Dict, List
+import pipeline.infrastructure.utils as utils
+from pipeline.domain import DataTable, MeasurementSet
+
+
+LOG = infrastructure.get_logger(__name__)
+
 
 ## 0:DebugPlot 1:TPlotRADEC 2:TPlotAzEl 3:TPlotCluster 4:TplotFit 5:TPlotMultiSP 6:TPlotSparseSP 7:TPlotChannelMap 8:TPlotFlag 9:TPlotIntermediate
 MATPLOTLIB_FIGURE_ID = [8904, 8905, 8906, 8907, 8908, 8909, 8910, 8911, 8912, 8913]
@@ -17,8 +29,144 @@ DPIDetail = 130
 FIGSIZE_INCHES = (7.0, 2.8)
 
 
+def plot_flag( msobj:MeasurementSet, datatable:DataTable, antid:int, spwid:int, is_baselined:bool, FlagRule_local:Dict,
+               PermanentFlag:List[int], NPp_dict:Dict, threshold, time_gap, FigFileDir:str, FigFileRoot:str ) -> List[str]:
+    """
+    Create Summary page
+    
+    Vars:
+        MeasurementSet:
+        datatable:
+        antid:
+        spwid:
+        is_baselined:
+        FlagRule_local:
+        PermanentFlag:
+        NPp_dict:
+        threshold:
+        time_gap:
+        FigFileDir:  directory for figure files
+        FigFileRoot: basename of figure files
+    Returns:
+        List of Figure filenames (basename only)
+    """
+    ant_name     = msobj.get_antenna(antid)[0].name
+    PosGap = time_gap[0]
+    TimeGap = time_gap[1]
+    NPpflag = NPp_dict['flag']
+    NPprows = NPp_dict['rows']
+    NPptime = NPp_dict['time']
+    NPpdata = NPp_dict['data']
+
+    ThreExpectedRMSPreFit = FlagRule_local['RmsExpectedPreFitFlag']['Threshold']
+    ThreExpectedRMSPostFit = FlagRule_local['RmsExpectedPostFitFlag']['Threshold']
+    plots = []
+
+    # Tsys flag
+    timeCol = datatable.getcol('TIME')
+    PosGapInTime = timeCol.take(PosGap)
+    TimeGapInTime = timeCol.take(TimeGap)
+    PlotData = {
+        'ms_name': msobj.name,
+        'ant_name' : ant_name,
+        'spw' : spwid,
+        'row': NPprows['TsysFlag'],
+        'time': NPptime['TsysFlag'],
+        'data': NPpdata['TsysFlag'],
+        'flag': NPpflag['TsysFlag'],
+        'thre': [threshold[4][1], 0.0],
+        'gap': [PosGapInTime, TimeGapInTime],
+        'title': "Tsys (K)",
+        'xlabel': "Time (UTC)",
+        'ylabel': "Tsys (K)",
+        'permanentflag': PermanentFlag,
+        'isActive': FlagRule_local['TsysFlag']['isActive'],
+        'threType': "line",
+        'threDesc': "{:.1f} sigma threshold".format(FlagRule_local['TsysFlag']['Threshold'])
+    }
+    figfilename = FigFileRoot+'_0.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename )
+    plots.append( figfilename )
+
+    PlotData['row'] = NPprows['BaselineFlag']
+    PlotData['time'] = NPptime['BaselineFlag']
+    # RMS flag before baseline fit
+    bunit = sdutils.get_brightness_unit( msobj.name, defaultunit='Jy/beam' )
+    PlotData['data'] = NPpdata['RmsPreFitFlag']
+    PlotData['flag'] = NPpflag['RmsPreFitFlag']
+    PlotData['thre'] = [threshold[1][1]]
+    PlotData['title'] = "Baseline RMS ({}) before baseline subtraction".format(bunit)
+    PlotData['ylabel'] = "Baseline RMS ({})".format(bunit)
+    PlotData['isActive'] = FlagRule_local['RmsPreFitFlag']['isActive']
+    PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RmsPreFitFlag']['Threshold'])
+    figfilename = FigFileRoot+'_1.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename )
+    plots.append( figfilename )
+
+    # RMS flag after baseline fit
+    PlotData['data'] = NPpdata['RmsPostFitFlag'] if is_baselined else None
+    PlotData['flag'] = NPpflag['RmsPostFitFlag']
+    PlotData['thre'] = [threshold[0][1]]
+    PlotData['title'] = "Baseline RMS ({}) after baseline subtraction".format(bunit)
+    PlotData['isActive'] = FlagRule_local['RmsPostFitFlag']['isActive']
+    PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RmsPostFitFlag']['Threshold'])
+    figfilename = FigFileRoot+'_2.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename ) 
+    plots.append( figfilename )
+    
+    # Running mean flag before baseline fit
+    PlotData['data'] = NPpdata['RunMeanPreFitFlag']
+    PlotData['flag'] = NPpflag['RunMeanPreFitFlag']
+    PlotData['thre'] = [threshold[3][1]]
+    PlotData['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) before baseline subtraction".format(bunit, FlagRule_local['RunMeanPreFitFlag']['Nmean'])
+    PlotData['isActive'] = FlagRule_local['RunMeanPreFitFlag']['isActive']
+    PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RunMeanPreFitFlag']['Threshold'])
+    figfilename = FigFileRoot+'_3.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename )
+    plots.append( figfilename )
+
+    # Running mean flag after baseline fit
+    PlotData['data'] = NPpdata['RunMeanPostFitFlag'] if is_baselined else None
+    PlotData['flag'] = NPpflag['RunMeanPostFitFlag']
+    PlotData['thre'] = [threshold[2][1]]
+    PlotData['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) after baseline subtraction".format(bunit, FlagRule_local['RunMeanPostFitFlag']['Nmean'])
+    PlotData['isActive'] = FlagRule_local['RunMeanPostFitFlag']['isActive']
+    PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RunMeanPostFitFlag']['Threshold'])
+    figfilename = FigFileRoot+'_4.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename ) 
+    plots.append( figfilename )
+
+    # Expected RMS flag before baseline fit
+    PlotData['data'] = NPpdata['RmsPreFitFlag']
+    PlotData['flag'] = NPpflag['RmsExpectedPreFitFlag']
+    PlotData['thre'] = [NPpdata['RmsExpectedPreFitFlag']]
+    PlotData['title'] = "Baseline RMS ({}) compared with the expected RMS calculated from Tsys before baseline subtraction".format(bunit)
+    PlotData['isActive'] = FlagRule_local['RmsExpectedPreFitFlag']['isActive']
+    PlotData['threType'] = "plot"
+    PlotData['threDesc'] = "threshold with the scaling factor of {:.1f}".format(ThreExpectedRMSPreFit)
+    figfilename = FigFileRoot+'_5.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename )
+    plots.append( figfilename )
+
+    # Expected RMS flag after baseline fit
+    PlotData['data'] = NPpdata['RmsPostFitFlag'] if is_baselined else None
+    PlotData['flag'] = NPpflag['RmsExpectedPostFitFlag']
+    PlotData['thre'] = [NPpdata['RmsExpectedPostFitFlag']]
+    PlotData['title'] = "Baseline RMS ({}) compared with the expected RMS calculated from Tsys after baseline subtraction".format(bunit)
+    PlotData['isActive'] = FlagRule_local['RmsExpectedPostFitFlag']['isActive']
+    PlotData['threType'] = "plot"
+    PlotData['threDesc'] = "threshold with the scaling factor of {:.1f}".format(ThreExpectedRMSPostFit)
+    figfilename = FigFileRoot+'_6.png'
+    StatisticsPlot( PlotData, FigFileDir, figfilename )
+    plots.append( figfilename )
+
+###    del PlotData, NPpflag, NPprows, NPpdata
+    del PlotData
+    return plots
+
+
 @casa5style_plot
-def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
+def StatisticsPlot(PlotData, FigFileDir=None, FigFileName=None):
     # PlotData = {
     #             row:  [row], # row number of the spectrum
     #             time: [time], # timestamp
@@ -37,13 +185,13 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     #             threDesc: description of the threshold (for legend)
     #            }
 
-    if FigFileDir == False:
+    if FigFileDir is None:
         return
 
     plt.ioff()
     plt.figure(MATPLOTLIB_FIGURE_ID[8])
 
-    if FigFileDir != False:
+    if FigFileDir is not None:
         if os.access(FigFileDir+'listofplots.txt', os.F_OK):
             BrowserFile = open(FigFileDir+'listofplots.txt', 'a')
         else:
@@ -51,7 +199,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             print('TITLE: BF_Stat', file=BrowserFile)
             print('FIELDS: Stat IF POL Iteration Page', file=BrowserFile)
             print('COMMENT: Statistics of spectra', file=BrowserFile)
-        print(FigFileRoot+'.png', file=BrowserFile)
+        print(FigFileName, file=BrowserFile)
         BrowserFile.close()
 
     plt.cla()
@@ -92,8 +240,8 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
                     style='normal', weight='bold')
         plt.ion()
         plt.draw()
-        if FigFileDir != False:
-            OldPlot = FigFileDir+FigFileRoot+'.png'
+        if FigFileDir is not None:
+            OldPlot = FigFileDir+FigFileName
             plt.savefig(OldPlot, format='png', dpi=DPIDetail)
         plt.gcf().set_size_inches(figsize_org)
         return
@@ -182,8 +330,8 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
 
     plt.ion()
     plt.draw()
-    if FigFileDir != False:
-        OldPlot = FigFileDir+FigFileRoot+'.png'
+    if FigFileDir is not None:
+        OldPlot = FigFileDir+FigFileName
         plt.savefig(OldPlot, format='png', dpi=DPIDetail)
     plt.gcf().set_size_inches(figsize_org)
 

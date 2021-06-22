@@ -256,6 +256,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                    spwcorr=True, fieldcnt=True,
                                                    name='before')
         stats_before = self._executor.execute(flagdata_summary_job)
+        LOG.info( "###@@ stats_before={}".format(stats_before))
 
         # collection of field, antenna, and spw ids in reduction group per MS
         registry = collections.defaultdict(sdutils.RGAccumulator)
@@ -371,6 +372,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                    spwcorr=True, fieldcnt=True,
                                                    name='after')
         stats_after = self._executor.execute(flagdata_summary_job)
+        LOG.info( "###@@ stats_after={}".format(stats_after))
 
         outcome = {'flagdata_summary': [stats_before, stats_after],
                    'summary': flagResult}
