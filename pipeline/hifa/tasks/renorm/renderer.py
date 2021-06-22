@@ -48,6 +48,7 @@ def make_renorm_table(context, results):
                 pdf = spw_stats.get('pdf_summary')
                 specplot = spw_stats.get('spec_plot')
                 tr = TR(vis, source, spw, maxrn, pdf)
-                rows.append(tr)
+                if maxrn:  # None if no renorm for this spw
+                    rows.append(tr)
 
     return utils.merge_td_columns(rows)
