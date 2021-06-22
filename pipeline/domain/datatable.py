@@ -35,6 +35,7 @@ import numpy
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import absolute_path
+from ..domain import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -160,8 +161,12 @@ class DataTableIndexer(object):
     """
     @property
     def origin_mses(self):
-        unique_origin_mses = {ms.origin_ms for ms in self.context.observing_run.measurement_sets}
-        return [self.context.observing_run.get_ms(name=vis) for vis in unique_origin_mses]
+        return self.__origin_mses
+
+    @origin_mses.setter
+    def origin_mses(self, value):
+        """Set an attribute, origin_ms."""
+        self.__origin_mses = value
 
     def __init__(self, context):
         """
@@ -171,10 +176,11 @@ class DataTableIndexer(object):
             context: Pipeline context
         """
         self.context = context
+        self.origin_mses = [ms for ms in self.context.observing_run.measurement_sets \
+                            if ms.name == ms.origin_ms]
         self.nrow_per_ms = []
-        unique_origin_mses = {ms.origin_ms for ms in self.context.observing_run.measurement_sets}
-        for origin_ms in unique_origin_mses:
-            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(origin_ms), 'RO')
+        for origin_ms in self.origin_mses:
+            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, origin_ms.basename, 'RO')
             with casa_tools.TableReader(ro_table_name) as tb:
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)

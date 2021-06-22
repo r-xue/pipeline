@@ -33,8 +33,9 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
     @property
     def member_ms(self):
         """Return a list of unitque MS domain objects of group members."""
-        gm = [ self.group_desc[i] for i in self.member_list ]
-        return list({ m.ms for m in gm })
+        duplicated_ms_names = [ self.group_desc[i].ms.name for i in self.member_list ]
+        return [ms for ms in self.context.observing_run.measurement_sets \
+                if ms.name in duplicated_ms_names]
 
     @property
     def reference_member(self):

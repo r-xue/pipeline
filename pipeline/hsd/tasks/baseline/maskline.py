@@ -82,11 +82,13 @@ class MaskLine(basetask.StandardTaskTemplate):
         reference_antenna = reference_member.antenna_id
         reference_field = reference_member.field_id
         reference_spw = reference_member.spw_id
-        mses = { group_desc[i].ms for i in member_list }
+        duplicated_member_mses = [group_desc[i].ms for i in member_list]
+        # list of unique MS object in member list in the order that appears in context
+        unique_member_mses = [ms for ms in context.observing_run.measurement_sets if ms in duplicated_member_mses]
         #dt_dict: key = origin_ms name, value = DataTable instance
         dt_dict = dict((os.path.basename(ms.origin_ms),
                         DataTable(utils.get_data_table_path(context, ms)))
-                       for ms in mses)
+                       for ms in unique_member_mses)
         t0 = time.time()
         # index_dict: key = origin_ms name, value = row IDs of DataTable
         index_dict = utils.get_index_list_for_ms2(dt_dict, group_desc, member_list)
@@ -98,7 +100,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         t0 = time.time()
         indexer = DataTableIndexer(context)
         def _g():
-            for ms in mses:
+            for ms in unique_member_mses:
                 origin_basename = os.path.basename(ms.origin_ms)
                 if origin_basename in index_dict:
                     for i in index_dict[origin_basename]:
