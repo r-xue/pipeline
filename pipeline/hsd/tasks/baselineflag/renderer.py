@@ -97,7 +97,7 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
             accum_flag[ms.name]['flagdata_total']  += after[field]['total']
 
         # pack detail plot info
-        accum_flag[ms.name]['details'] = "stay tuned"
+        accum_flag[ms.name]['details'] = ""
 
     return accum_flag
 
