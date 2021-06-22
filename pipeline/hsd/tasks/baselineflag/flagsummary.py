@@ -11,7 +11,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.domain import DataTable, MeasurementSet
 
-from . import SDFlagPlotter as SDP
+from .SDFlagPlotter import SDFlagPlotter
 from .worker import _get_permanent_flag_summary, _get_iteration
 from .. import common
 from ..common import utils as sdutils
@@ -77,7 +77,6 @@ class SDBLFlagSummary(object):
             asdm = common.asdm_name_from_ms(ms)
             field_name = ms.get_fields(field_id=fieldid)[0].name
             LOG.info("*** Summarizing table: %s ***" % (os.path.basename(filename_in)))
-            LOG.info( "###@@ ant={} field={} spw={}".format(ant_name, field_name, spwid))
             time_table = datatable.get_timetable(antid, spwid, None, ms.basename, fieldid)
             # Select time gap list: 'subscan': large gap; 'raster': small gap
             if flagRule['Flagging']['ApplicableDuration'] == "subscan":
@@ -91,7 +90,6 @@ class SDBLFlagSummary(object):
             for pol in pollist:
                 ddobj = ms.get_data_description(spw=spwid)
                 polid = ddobj.get_polarization_id(pol)
-                LOG.info( "###@@ polid={}".format(polid))
                 # generate summary plot
                 FigFileRoot = ("FlagStat_%s_ant%d_field%d_spw%d_pol%d_iter%d" %
                                (asdm, antid, fieldid, spwid, polid, iteration))
@@ -120,18 +118,20 @@ class SDBLFlagSummary(object):
                 # pack flag values
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
                 # create plots
-                plots = SDP.plot_flag( self.ms, datatable, antid, spwid, is_baselined, FlagRule_local,
-                                       PermanentFlag, NPp_dict, final_thres, time_gap, FigFileDir, FigFileRoot )
+                plots = SDFlagPlotter.create_plots( self.ms, datatable, antid, spwid, is_baselined, FlagRule_local,
+                                                   PermanentFlag, NPp_dict, final_thres, time_gap, FigFileDir, FigFileRoot )
+
+                # delete variables not used after all
                 del FlagRule_local, NPp_dict
 
                 # create html file with summary table
-                htmlName = self.create_summary_table( self.ms, datatable, polid, plots, dt_idx, is_baselined, 
-                                                             flagRule, FlaggedRows, FlaggedRowsCategory, 
-                                                             FigFileDir, FigFileRoot )
+                htmlName = self.create_summary_table( self.ms, datatable, polid, is_baselined, plots, 
+                                                      dt_idx, flagRule, FlaggedRows, FlaggedRowsCategory, 
+                                                      FigFileDir, FigFileRoot )
                 # show flags on LOG
                 self.show_flags( dt_idx, is_baselined, FlaggedRows, FlaggedRowsCategory )
                 # create summary data
-                nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory)
+                nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
                 flagplotter = None
 
                 t1 = time.time()
@@ -158,27 +158,29 @@ class SDBLFlagSummary(object):
 
     def pack_flags( self, datatable:DataTable, polid:int, ids, FlagRule_local:Dict ) -> Tuple[ List[int], Dict, List[int], Dict ]:
         """
-        pack flag data into arrays
+        pack flag data into data sets
 
         Args:
-            datatable
-            polid
-            ids
-            FlagRule_local
+            datatable      : DataTable
+            polid          : polarization ID
+            ids            : row numbers       
+            FlagRule_local : FlagRule modified for local use
         Returns: (none)
-            FlaggedRows 
-            FlaggedRowsCategory
-            PermanentFlag 
-            NPp_dict 
+            FlaggedRows         : flagged rows
+            FlaggedRowsCategory : flagged rows by category
+            PermanentFlag       : permanent flag
+            NPp_dict            : flagging data summarized for weblog
         """
         FlaggedRows = []
         PermanentFlag = []
         NROW = len(ids)
+
         NPprows = {}
         NPptime = {}
         for key in [ 'TsysFlag', 'BaselineFlag' ]:
             NPprows[key] = np.zeros( NROW, dtype=np.int )
             NPptime[key] = np.zeros( NROW, dtype=np.float )
+
         NPpdata = {}
         NPpflag = {}
         for key in [ 'TsysFlag', 'OnlineFlag', 
@@ -187,10 +189,7 @@ class SDBLFlagSummary(object):
                      'RmsExpectedPostFitFlag', 'RmsExpectedPreFitFlag' ]:
             NPpdata[key] = np.zeros( NROW, dtype=np.float )
             NPpflag[key] = np.zeros( NROW, dtype=np.int )
-###        NPpdata = np.zeros((7, NROW), np.float)
-###        NPpflag = np.zeros((7, NROW), np.int)
-###        NPprows = np.zeros((2, NROW), np.int)
-###        NPptime = np.zeros((2, NROW), np.float)
+
         FlaggedRowsCategory = collections.OrderedDict((
             ('TsysFlag', []),              ('OnlineFlag', []),
             ('RmsPostFitFlag', []),        ('RmsPreFitFlag', []),
@@ -279,10 +278,10 @@ class SDBLFlagSummary(object):
         Output flag statistics to LOG
         
         Args:
-            ids
-            is_baselined
-            FlaggedRows
-            FlaggedRowsCategory
+            ids                 : row numbers       
+            is_baselined        : True if baselined, Fause if not
+            FlaggedRows         : flagged rows
+            FlaggedRowsCategory : flagged rows by category
         Returns:
             (none)
         """
@@ -340,8 +339,8 @@ class SDBLFlagSummary(object):
         Count flagged rows for each flagging reason
         
         Args:
-            FlaggedRows         : List of flagged rows
-            FlaggedRowsCategory : 
+            FlaggedRows         : flagged rows
+            FlaggedRowsCategory : flagged rows by category
         Returns:
             List of flag countes
         """
@@ -369,26 +368,27 @@ class SDBLFlagSummary(object):
         return flag_nums
 
 
-    def create_summary_table( self, msobj:MeasurementSet, datatable:DataTable, polid:int, plots:List[str], ids:List[int], is_baselined:bool, 
+    def create_summary_table( self, msobj:MeasurementSet, datatable:DataTable, polid:int, is_baselined:bool, 
+                              plots:List[str], ids:List[int], 
                               FlagRule:Dict, FlaggedRows:List[int], FlaggedRowsCategory:Dict, 
                               FigFileDir:Optional[str], FigFileRoot:str ) -> str:
         """
         Create summary table for detail page
 
         Args:
-            msobj: Measurement Set Object
-            datatable: DataTable
-            polid: polarization ID
-            plots: List of figure filenames
-            ids: 
-            is_baselined: True if baselined, Fause if not
-            FlagRule: Flag Rule
-            FlaggedRows: Flagged row numbers
-            FlaggedRowsCategory:
-            FigFileDir: Directory to output figure files
-            FigFileRoot: Basename of figure files
+            msobj               : Measurement Set Object
+            datatable           : DataTable
+            polid               : polarization ID
+            is_baselined        : True if baselined, Fause if not
+            plots               : List of figure filenames
+            ids                 : row numbers
+            FlagRule            : Flag Rule
+            FlaggedRows         : flagged rows
+            FlaggedRowsCategory : flagged rows by category
+            FigFileDir          : directory to output figure files
+            FigFileRoot         : basename of figure files
         Returns:
-            Html file name
+            html file name
         """
         NROW = len( ids )
 
@@ -432,9 +432,9 @@ class SDBLFlagSummary(object):
             print(self._format_table_row_html('Running Mean (pre-fit)', FlagRule['RunMeanPreFitFlag']['isActive'], FlagRule['RunMeanPreFitFlag']['Threshold'], len(FlaggedRowsCategory['RunMeanPreFitFlag']), NROW), file=Out)
             runmeanpostfitflag_thres = FlagRule['RunMeanPostFitFlag']['Threshold'] if is_baselined else "SKIPPED"
             print(self._format_table_row_html('Running Mean (post-fit)', FlagRule['RunMeanPostFitFlag']['isActive'], runmeanpostfitflag_thres, len(FlaggedRowsCategory['RunMeanPostFitFlag']), NROW), file=Out)
-            print(self._format_table_row_html('Expected RMS (pre-fit)', FlagRule['RmsExpectedPreFitFlag']['isActive'], FlagRule['RmsExpectedPreFitFlag']['Threshold'], len(FlaggedRowsCategory['RmsExpectedPostFitFlag']), NROW), file=Out)
+            print(self._format_table_row_html('Expected RMS (pre-fit)', FlagRule['RmsExpectedPreFitFlag']['isActive'], FlagRule['RmsExpectedPreFitFlag']['Threshold'], len(FlaggedRowsCategory['RmsExpectedPreFitFlag']), NROW), file=Out)
             rmsexpectedpostfitflag_thres = FlagRule['RmsExpectedPostFitFlag']['Threshold'] if is_baselined else "SKIPPED"
-            print(self._format_table_row_html('Expected RMS (post-fit)', FlagRule['RmsExpectedPostFitFlag']['isActive'], rmsexpectedpostfitflag_thres, len(FlaggedRowsCategory['RmsExpectedPreFitFlag']), NROW), file=Out)
+            print(self._format_table_row_html('Expected RMS (post-fit)', FlagRule['RmsExpectedPostFitFlag']['isActive'], rmsexpectedpostfitflag_thres, len(FlaggedRowsCategory['RmsExpectedPostFitFlag']), NROW), file=Out)
             print('<tr align="center" class="stt"><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%.1f</th></tr>' % ('Total Flagged', '-', '-', len(FlaggedRows), len(FlaggedRows)*100.0/NROW), file=Out)
             print('<tr><td colspan=4>%s</td></tr>' % ("Note: flags in grey background are permanent, <br> which are not reverted or changed during the iteration cycles."), file=Out)
             print('</table>\n', file=Out)
@@ -455,9 +455,9 @@ class SDBLFlagSummary(object):
         Format the html string for table row for "Flag by Reason"
 
         Args:
-            label
+            label     : label sring
             isactive  : active flag for the criteria
-            threshold : Threshold value
+            threshold : threshold value
             nflag     : Number of flagged rows
             ntotal    : Number of total rows
         Returns:

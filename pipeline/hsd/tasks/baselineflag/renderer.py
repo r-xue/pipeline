@@ -3,14 +3,6 @@ Created on Nov 9, 2016
 
 @author: kana
 """
-#############################################
-#############################################
-### DO NOT FORGET TO CARE ABOUT VSPWS
-#############################################
-#############################################
-
-
-
 import collections
 
 import pipeline.infrastructure.logging as logging
@@ -43,7 +35,6 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # per EB table
         accum_flag_eb = accumulate_flag_per_eb( context, result )
         table_rows_eb = make_summary_table_per_eb( accum_flag_eb )
-        LOG.info( "###@@ table_rows_eb={}".format(table_rows_eb))
         ctx.update({'per_eb_summary_table_rows': table_rows_eb})
 
         # per field, spw table
@@ -59,14 +50,13 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
     Accumulate flag per field, spw from the output of flagdata to a dictionary
     
     Args:
-        context: 
-        results:
+        context: pipeline context
+        results: SDBLFlag Results
     Returns:
         accum_flag: dictionary of accumulated flags
     Raises:
         RuntimeError: if FlagSummary data does not exist for a specific ms.name
     """
-###    accum_flag = {} 
     accum_flag = collections.OrderedDict()
     for r in results:
         vis = r.inputs['vis']
@@ -105,10 +95,7 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
             accum_flag[ms.name]['flagdata_before'] += before[field]['flagged']
             accum_flag[ms.name]['flagdata_after']  += after[field]['flagged']
             accum_flag[ms.name]['flagdata_total']  += after[field]['total']
-            LOG.info( "###@@ renderer.py accumulating :{} {} {} {} {}".format(ms.name, field,
-                                                                             before[field]['flagged'],
-                                                                             after[field]['flagged'],
-                                                                             after[field]['total'] ))
+
         # pack detail plot info
         accum_flag[ms.name]['details'] = "stay tuned"
 
@@ -121,14 +108,13 @@ def make_summary_table_per_eb( accum_flag : Dict ) -> str:
     Inputs:
         accum_flag : dictionary of acumulated flags
     Returns:
-        ### hogehoge ###
+        lines for per EB summary table
     """
     FlagSummaryEB_TR = collections.namedtuple( 
         'FlagSummaryEB', 
         'ms baseline_rms_post baseline_rms_pre running_mean_post running_mean_pre expected_rms_post expected_rms_pre outlier_tsys frac_before frac_additional frac_total details' )
 
     rows = []
-    LOG.info( "###@@ accum_flag.keys={}".format(list(accum_flag.keys())))
     for ms_name in accum_flag.keys():
         row_total = accum_flag[ms_name]['total']
         frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
@@ -141,21 +127,13 @@ def make_summary_table_per_eb( accum_flag : Dict ) -> str:
                                '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total), 
                                '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total), 
                                '{:.1f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
-#                               '{:.1f} %'.format(accum_flag[ms_name]['OnlineFlag']*100.0/total), 
-#                               '{:.1f} %'.format(accum_flag[ms_name]['TotalAdditional']*100.0/total), 
-#                               '{:.1f} %'.format(accum_flag[ms_name]['Flagged']*100.0/total), 
                                '{:.1f} %'.format( frac_before ),
                                '{:.1f} %'.format( frac_after - frac_before ),
                                '{:.1f} %'.format( frac_after ),
                                '{}'.format(accum_flag[ms_name]['details']) )
         
         rows.append(tr)
-        LOG.info( "###@@ renderer.py accumulated  : {} {} {} {}".format(ms_name, 
-                                                                        accum_flag[ms_name]['flagdata_before'], 
-                                                                        accum_flag[ms_name]['flagdata_after'], 
-                                                                        accum_flag[ms_name]['flagdata_total'] ))
     
-    LOG.info( "###@@ rows={}".format(rows))
     return utils.merge_td_columns(rows, num_to_merge=0)
 
 
@@ -185,7 +163,6 @@ def accumulate_flag_per_source_spw(context, results):
                 vspw = context.observing_run.real2virtual_spw_id(spw, ms)
                 accum_flag[field].setdefault(vspw, dict(before=0, additional=0, after=0, total=0))
                 # sum up incremental flags
-###                LOG.info( "###@@ summing field={} vspw={} before={} after={} total={}".format( field, vspw, before[field]['spw'][spw]['flagged'], flagval['flagged'], flagval['total'] ))
                 accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
                 accum_flag[field][vspw]['after'] += flagval['flagged']
                 accum_flag[field][vspw]['total'] += flagval['total']
@@ -202,7 +179,6 @@ def make_summary_table_per_field(flagdict):
             frac_before = flagval['before']/flagval['total']
             frac_total = flagval['after']/flagval['total']
             frac_additional = (flagval['after']-flagval['before'])/flagval['total']
-            LOG.info( "###@@ packing per_field field={} spw={} before={} after={} total={}".format( field, spw, flagval['before'], flagval['after'], flagval['total'] ))
             tr = FlagSummaryField_TR(field, spw, '%0.1f%%' % (frac_before*100), '%0.1f%%' % (frac_additional*100),
                                '%0.1f%%' % (frac_total*100))
             rows.append(tr)
