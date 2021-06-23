@@ -32,7 +32,7 @@ class UVcontSubInputs(applycal.ApplycalInputs):
 class UVcontSub(applycal.Applycal):
     Inputs = UVcontSubInputs
     # DataType to be set for a new column
-    applied_data_type = DataType.LINE_SCIENCE
+    applied_data_type = DataType.REGCAL_LINE_SCIENCE
 
     # Override prepare method with one which sets and unsets the VI1CAL
     # environment variable.

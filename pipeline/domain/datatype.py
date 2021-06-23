@@ -25,6 +25,6 @@ class DataType(Enum):
     ATMCORR = auto()
     REGCAL_CONTLINE_SCIENCE = auto()
     SELFCAL_CONTLINE_SCIENCE = auto()
-    LINE_SCIENCE = auto()
+    REGCAL_LINE_SCIENCE = auto()
     SELFCAL_LINE_SCIENCE = auto()
 

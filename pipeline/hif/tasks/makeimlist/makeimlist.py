@@ -19,7 +19,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class MakeImListInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     # simple properties with no logic ----------------------------------------------------------------------------------
     calmaxpix = vdp.VisDependentProperty(default=300)
