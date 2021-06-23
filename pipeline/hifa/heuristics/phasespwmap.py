@@ -1,4 +1,3 @@
-import collections
 import decimal
 
 import pipeline.domain.measures as measures
@@ -43,7 +42,7 @@ def combine_spwmap(scispws):
         return combinespwmap
 
 
-def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
+def snr_n2wspwmap(scispws, snrs, goodsnrs):
     # Heuristics for computing an spwmap which uses SNR information.
     # Here an spw is the spw object stored in the domain object.
     #        allspws - List of all spws in the MS (not actually used)
@@ -52,7 +51,7 @@ def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
     #      goodsnrs  - Determines whether the SNR is good (True), bad (False), or undefined (None)
     #                - At least one value per receiver band should be good.
 
-    # Find the spw with largest good SNR for each receiver band 
+    # Find the spw with largest good SNR for each receiver band
     snrdict = {}
     for scispw, snr, goodsnr in zip(scispws, snrs, goodsnrs):
         if goodsnr is not True:
@@ -164,10 +163,9 @@ def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
         return goodmap, phasespwmap, snrmap
 
 
-def simple_n2wspwmap(allspws, scispws, maxnarrowbw, maxbwfrac, samebb):
+def simple_n2wspwmap(scispws, maxnarrowbw, maxbwfrac, samebb):
     # Heuristics for computing a simple phase up wide to narrow spwmap
     # Here an spw is the spw object stored in the domain object.
-    #        allspws - List of all spws in the MS (not actually used)
     #        scipws  - List of all science spws in the MS
     #    maxnarrowbw - Maximum narrow bandwidth, e.g. '300MHz'
     #      maxbwfrac - Width must be > maxbwfrac * maximum bandwidth for a match

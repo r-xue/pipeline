@@ -102,8 +102,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             ms.combine_spwmap = []
             ms.low_combined_phasesnr_spws = []
 
-        # Get a list of all the spws and a list of the science spws
-        allspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=False)
+        # Get a list of the science spws.
         scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
 
         # Compute the spw map according to the rules defined by each
@@ -121,8 +120,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 LOG.warn('    No SNR estimates for any spws - Forcing simple spw mapping for {}'
                          ''.format(inputs.ms.basename))
                 combinespwmap = []
-                phaseupspwmap = simple_n2wspwmap(allspws, scispws, inputs.maxnarrowbw, inputs.minfracmaxbw,
-                                                 inputs.samebb)
+                phaseupspwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
                 LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
             # All spws have good SNR values, no spw mapping required
@@ -149,7 +147,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 if None in goodsnrs:
                     LOG.warn('    Spws without SNR measurements {}'
                              ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
-                goodmap, phaseupspwmap, snrmap = snr_n2wspwmap(allspws, scispws, snrs, goodsnrs)
+                goodmap, phaseupspwmap, snrmap = snr_n2wspwmap(scispws, snrs, goodsnrs)
                 if not goodmap:
                     LOG.warn('    Still unable to match all spws - Forcing combined spw mapping for {}'
                              ''.format(inputs.ms.basename))
@@ -169,7 +167,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         elif inputs.hm_spwmapmode == 'simple':
             combinespwmap = []
-            phaseupspwmap = simple_n2wspwmap(allspws, scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
+            phaseupspwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
             LOG.info('    Using simple spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
         else:
