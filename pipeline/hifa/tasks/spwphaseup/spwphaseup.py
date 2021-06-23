@@ -85,22 +85,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Simplify the inputs
         inputs: SpwPhaseupInputs = self.inputs
 
+        # PIPE-629: if requested, unregister old spwphaseup calibrations from
+        # local copy of context, to stop these from being pre-applied during
+        # this stage.
         if inputs.unregister_existing:
-            # Unregister old spwphaseup calibrations to stop them from being preapplied
-
-            # predicate function that triggers when the spwphaseup caltable is detected
-            def spwphaseup_matcher(_: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
-                return 'hifa_spwphaseup' in calfrom.gaintable
-
-            LOG.info('Temporarily unregistering previous spwphaseup tables while task executes')
-            inputs.context.callibrary.unregister_calibrations(spwphaseup_matcher)
-
-            # Reset the spwmaps. The will be restored if the result is not accepted
-            ms = inputs.ms
-            LOG.info('Temporarily resetting spwmaps for %s', ms.basename)
-            ms.phaseup_spwmap = []
-            ms.combine_spwmap = []
-            ms.low_combined_phasesnr_spws = []
+            self._unregister_spwphaseup()
 
         # Get a list of the science spws.
         scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
@@ -349,6 +338,23 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return tuning_result
 
+    def _unregister_spwphaseup(self):
+        inputs = self.inputs
+        ms = inputs.ms
+
+        # predicate function that triggers when the spwphaseup caltable is detected
+        def spwphaseup_matcher(_: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+            return 'hifa_spwphaseup' in calfrom.gaintable
+
+        LOG.info('Temporarily unregistering previous spwphaseup tables while task executes')
+        inputs.context.callibrary.unregister_calibrations(spwphaseup_matcher)
+
+        # Reset the spwmaps. The will be restored if the result is not accepted
+        LOG.info('Temporarily resetting spwmaps for %s', ms.basename)
+        ms.phaseup_spwmap = []
+        ms.combine_spwmap = []
+        ms.low_combined_phasesnr_spws = []
+
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis=None, phaseup_result=None, combine_spwmap=None, phaseup_spwmap=None,
@@ -380,6 +386,8 @@ class SpwPhaseupResults(basetask.Results):
             LOG.error(' No results to merge ')
             return
 
+        # PIPE-629: if requested, unregister previous spwphaseup caltables from
+        # the context before merging in the newly derived caltable.
         if self.unregister_existing:
             # Identify the MS to process
             vis: str = os.path.basename(self.inputs['vis'])
