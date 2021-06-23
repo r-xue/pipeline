@@ -157,8 +157,8 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         super(BaselineSubtractionWorker, self).__init__(inputs)
 
         # initialize plotter
-        self.datatable = DataTable(os.path.join(self.inputs.context.observing_run.ms_datatable_name,
-                                                self.inputs.ms.basename))
+        self.datatable = DataTable(sdutils.get_data_table_path(self.inputs.context,
+                                                               self.inputs.ms))
 
     def prepare(self):
         vis = self.inputs.vis

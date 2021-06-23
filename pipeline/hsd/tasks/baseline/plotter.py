@@ -367,7 +367,8 @@ class BaselineSubtractionPlotManager(object):
                                                  map_mask_storage=self.prefit_storage.map_mask)
 
         if line_range is not None:
-            lines_map_avg = get_lines2(prefit_data, self.datatable, num_ra, rowlist, polids)
+            lines_map_avg = get_lines2(prefit_data, self.datatable, num_ra,
+                                       rowlist, polids, rowmap=in_rowmap)
         else:
             lines_map_avg = None
         # plot pre-fit averaged spectra
