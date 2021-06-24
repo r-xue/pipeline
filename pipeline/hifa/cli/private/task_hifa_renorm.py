@@ -5,7 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifa_renorm(vis=None, apply=None, threshold=None, 
+def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, diagspectra=True,
                 pipelinemode=None, dryrun=None, acceptresults=None):
 
     #                                                                        #

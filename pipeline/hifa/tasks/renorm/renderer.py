@@ -47,18 +47,20 @@ def make_renorm_table(context, results, weblog_dir):
             for spw, spw_stats in source_stats.items():
                 # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
-                if not maxrn:
-                    continue # no renorm for this spw
-
-                maxrn_field = f"{spw_stats.get('max_rn'):.4} ({spw_stats.get('max_rn_field')})"
+                if maxrn:
+                    maxrn_field = f"{spw_stats.get('max_rn'):.4} ({spw_stats.get('max_rn_field')})"
+                else:
+                    maxrn_field = ""
 
                 pdf = spw_stats.get('pdf_summary')
                 pdf_path = f"RN_plots/{pdf}"
                 if os.path.exists(pdf_path):
                     LOG.trace(f"Copying {pdf_path} to {weblog_dir}")
                     shutil.copy(pdf_path, weblog_dir)   # copy pdf file across to weblog directory
-                pdf_path = pdf_path.replace('RN_plots', f'stage{result.stage_number}')
-                pdf_path_link = f'<a href="{pdf_path}" download="{pdf}">PDF</a>'
+                    pdf_path = pdf_path.replace('RN_plots', f'stage{result.stage_number}')
+                    pdf_path_link = f'<a href="{pdf_path}" download="{pdf}">PDF</a>'
+                else:
+                    pdf_path_link = ""
 
                 specplot = spw_stats.get('spec_plot')
                 tr = TR(vis, source, spw, maxrn_field, pdf_path_link)

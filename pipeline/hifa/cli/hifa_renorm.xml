@@ -26,6 +26,23 @@
         <value>0.0</value>
     </param>
 
+    <param name="correctATM" type="bool">
+        <shortdescription>Correct for ATM residual features</shortdescription>
+        <description>Use the ATM model transmission profiles to try correct
+            for any ATM residual features that get into the scaling spectra
+        </description>
+        <value>False</value>
+    </param>  
+
+    <param name="diagspectra" type="bool">
+        <shortdescription>Plot extra diagnostic spectra</shortdescription>
+        <description>Plot extra diagnostic spectra, made a scaling spectra plot 
+            for each SPW, scan, field. Both XX and YY and all ants on same plot
+            and the respective median representative spectra
+        </description>
+        <value>True</value>
+    </param>  
+
     <param type="string" name="pipelinemode">
     <shortdescription>The pipeline operating mode</shortdescription>
 	<description>The pipeline operating mode</description>
