@@ -937,6 +937,29 @@ class MeasurementSet(object):
 
         return critfrac
 
+    def get_vla_baseband_spws(self, science_windows_only=True):
+
+        vlabasebands = []
+        banddict = collections.defaultdict(lambda: collections.defaultdict(list))
+
+        for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
+            try:
+                band = spw.name.split('#')[0].split('_')[1]
+                baseband = spw.name.split('#')[1]
+                banddict[band][baseband].append({str(spw.id): (spw.min_frequency, spw.max_frequency)})
+            except Exception as ex:
+                LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+
+        for band in banddict:
+            for baseband in banddict[band]:
+                spws = []
+                for spwitem in banddict[band][baseband]:
+                    # TODO: review if this relies on order of keys.
+                    spws.append(list(spwitem.keys())[0])
+                vlabasebands.append(','.join(spws))
+
+        return vlabasebands
+
     def get_median_integration_time(self, intent=None):
         """Get the median integration time used to get data for the given
         intent.
