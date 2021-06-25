@@ -82,6 +82,6 @@ def make_renorm_table(context, results, weblog_dir):
         if any(chr.isdigit() for chr in factor_cell):  # if cell contains digits
             if float(factor_cell.lstrip('<>td').split(' ')[0]) > threshold:  # if > threshold
                 for cell in (-3, -2, -1):  # highlight last three cells
-                    merged_rows[row][cell] = factor_cell.replace('<td>', "<td class='danger alert-danger'>")
+                    merged_rows[row][cell] = merged_rows[row][cell].replace('<td>', "<td class='danger alert-danger'>")
 
     return merged_rows
