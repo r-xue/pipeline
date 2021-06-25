@@ -6,6 +6,8 @@ import numpy as np
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+
+from pipeline.hifv.heuristics import RflagDevHeuristic
 from pipeline.hifv.heuristics import set_add_model_column_parameters
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
@@ -59,7 +61,8 @@ class Checkflag(basetask.StandardTaskTemplate):
         LOG.info("Checkflag task: " + self.inputs.checkflagmode)
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.tint = m.get_vla_max_integration_time()
-        pols = m.polarizations[0]
+        self.corr_type_string = m.polarizations[0].corr_type_string
+
         timedevscale = 4.0
         freqdevscale = 4.0
 
@@ -70,9 +73,9 @@ class Checkflag(basetask.StandardTaskTemplate):
             self._check_for_modelcolumn()
 
         # get the before-flagging total statistics
-        # PIPE-757: skip before-flagging summary in three VLASS checkflagmodes: bpd-vlass/allcals-vlass/target-vlass
-        # PIPE-502/995: run before-flagging summary in all other checkflagmodes, including: vlass-imaging
-        if not (self.inputs.checkflagmode in ('bpd-vlass', 'allcals-vlass', 'target-vlass')):
+        # PIPE-757: skip before-flagging summary in all VLASS calibration checkflagmodes: bpd-vlass*/allcals-vlass*/target-vlass*
+        # PIPE-502/995: run before-flagging summary in all other checkflagmodes, including vlass-imaging*.
+        if '-vlass' in self.inputs.checkflagmode:
             job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
             summarydict = self._executor.execute(job)
             summaries.append(summarydict)
@@ -86,7 +89,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         self.rflagThreshMultiplierCalsPpol = 4.0
         self.rflagThreshMultiplierTargetXpol = 4.0
         self.rflagThreshMultiplierTargetPpol = 7.0
-        if self.inputs.checkflagmode == 'vlass-imaging':
+        if 'vlass-image' in self.inputs.checkflagmode:
             self.rflagThreshMultiplierTargetPpol = 4.0
         self.tfcropThreshMultiplierCals = 3.0
         self.tfcropThreshMultiplierTarget = 3.0
@@ -98,12 +101,15 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode == 'bpd-vlass':
             extendflag_result = self.do_bpdvlass()
             return extendflag_result
-
         if self.inputs.checkflagmode == 'allcals-vlass':
             extendflag_result = self.do_allcalsvlass()
             return extendflag_result
 
-        if self.inputs.checkflagmode == 'target-vlass' or self.inputs.checkflagmode == 'vlass-imaging':
+        if self.inputs.checkflagmode in ('bpd-vlass2', 'allcals-vlass2'):
+            extendflag_result = self.do_rfi_flag(growflags=True)
+            return extendflag_result
+
+        if 'target-vlass' in self.inputs.checkflagmode or 'vlass-imaging' in self.inputs.checkflagmode:
             fieldsobj = m.get_fields(intent='TARGET')
             fieldids = [field.id for field in fieldsobj]
             fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
@@ -112,8 +118,8 @@ class Checkflag(basetask.StandardTaskTemplate):
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
                 return CheckflagResults(summaries=summaries)
             else:
-                # PIPE-502/995: save before-flagging summary plots and plotting scale for 'vlass-imaging'
-                if self.inputs.checkflagmode == 'vlass-imaging':
+                # PIPE-502/995: save before-flagging summary plots and plotting scale for 'vlass-imaging(2)'
+                if 'vlass-imaging' in self.inputs.checkflagmode:
                     LOG.info('Estimating the amplitude range of unflagged data for summary plots')
                     amp_range = self._get_amp_range()
                     amp_d = amp_range[1]-amp_range[0]
@@ -123,10 +129,13 @@ class Checkflag(basetask.StandardTaskTemplate):
                                              'title': 'Amp vs. Frequency (before flagging)'}
                     summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
                     
-                extendflag_result = self.do_targetvlass()
+                if self.inputs.checkflagmode.endswith('2'):
+                    extendflag_result = self.do_rfi_flag()
+                else:
+                    extendflag_result = self.do_targetvlass()
                 
-                # PIPE-502/995: attach before-flagging summary plots and plotting scale for 'vlass-imaging'
-                if self.inputs.checkflagmode == 'vlass-imaging':
+                # PIPE-502/995: attach before-flagging summary plots and plotting scale for 'vlass-imaging(2)'
+                if 'vlass-imaging' in self.inputs.checkflagmode:
                     extendflag_result.plots['before'] = summaryplot_before
                     extendflag_result.plots['plotrange'] = summary_plotrange
 
@@ -136,6 +145,46 @@ class Checkflag(basetask.StandardTaskTemplate):
                 summaries.append(summarydict)
                 extendflag_result.summaries = summaries
                 return extendflag_result
+
+            if self.inputs.checkflagmode in ('bpd-vla', 'allcals-vlas', 'target-vla'):
+
+                if self.inputs.checkflagmode == 'target-vla':
+                    fielscanselect = self._select_fieldscan()
+                    if not fielscanselect[0]:
+                        LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
+                        return CheckflagResults()
+
+                extendflag_result = self.do_rfi_flag()
+
+                job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
+                summarydict = self._executor.execute(job)
+                summaries.append(summarydict)
+                extendflag_result.summaries = summaries
+                return extendflag_result
+
+        if self.inputs.checkflagmode in ('vla', 'semi-vla'):
+
+            fieldselect, scanselect, intentselect = self._select_fieldscan()
+            method_args = {'mode': 'rflag',
+                           'field': fieldselect,
+                           'correlation': 'ABS_' + m.get_vla_corrstring(),
+                           'scan': scanselect,
+                           'ntime': 'scan',
+                           'datacolumn': 'corrected',
+                           'flagbackup': False}
+            self._do_rflag(**method_args)
+            # get the after flag total statistics
+            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
+            summarydict = self._executor.execute(job)
+            summaries.append(summarydict)
+
+            return CheckflagResults([job], summaries=summaries)
+
+        #####################################################################################################
+        #   consider to deprecate the workflow below this line, if:
+        #       - the generic heuristics is verified.
+        #       - old checkflagmodes are succeded by new checkflagmodes
+        #####################################################################################################
 
         if self.inputs.checkflagmode == 'bpd':
             fieldselect = self.inputs.context.evla['msinfo'][m.name].checkflagfields
@@ -166,7 +215,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode in ('bpd', 'allcals', 'target'):
             flagbackup = True
 
-            if ('RL' in pols.corr_type_string) and ('LR' in pols.corr_type_string):
+            if ('RL' in self.corr_type_string) and ('LR' in self.corr_type_string):
                 for correlation in ['ABS_RL', 'ABS_LR']:
 
                     method_args = {'mode': 'rflag',
@@ -205,7 +254,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             self._do_extendflag(field=fieldselect, scan=scanselect)
 
-            if ('RL' in pols.corr_type_string) and ('LR' in pols.corr_type_string):
+            if ('RL' in self.corr_type_string) and ('LR' in self.corr_type_string):
                 for correlation in ['ABS_LR', 'ABS_RL']:
                     method_args = {'mode': 'tfcrop',
                                    'field': fieldselect,
@@ -288,9 +337,25 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return CheckflagResults([job], summaries=summaries)
 
-    def _do_checkflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
-                      ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
-                      freqdevscale=4.0, action='apply', timedev='', freqdev='', savepars=True):
+    def _do_checkflag(self, **kwargs):
+        #
+        # This has been succeed by _do_rflag(alcftdev=False,extendflags=False,..),
+        # and it's kept as a shortcut for backward-compatbility of older checkflagmode modes
+        #
+        return self._do_rflag(**kwargs, calcftdev=False, extendflags=False)
+
+    def _do_rflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
+                  ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
+                  freqdevscale=4.0, action='apply', timedev='', freqdev='', savepars=True,
+                  calcftdev=True, useheuristic=True, extendflags=False):
+        """
+        - _do_rflag{calcftdev=False,extendflags=False,..} has the exactly SAME behavior
+            as the deprecated _do_checkflag(..): just a single casa/flagdata() pass without extending flags.
+        - _do_rflag{action='apply',calcftdev=True,useheuristic=False,..} is NOT equivalent to
+          _do_rflag{action='apply',calcftdev=False,..}:
+                A single pass migh show different result from a double pass, in which a single threshold
+                are calculated/applied over all scans of each field+spw combination (see flagdata documentation)
+        """
 
         task_args = {'vis': self.inputs.vis,
                      'mode': mode,
@@ -312,9 +377,27 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'flagbackup': flagbackup,
                      'savepars': savepars}
 
-        job = casa_tasks.flagdata(**task_args)
+        if calcftdev == True:
+            task_args['action'] = 'calculate'
 
+            job = casa_tasks.flagdata(**task_args)
+            jobresult = self._executor.execute(job)
+
+            if useherustic == True:
+                rflagdev = RflagDevHeuristic()
+                ftdev = rflagdev(m, jobresult['report0'])
+            else:
+                ftdev = jobresult['report0']
+            if ftdev is not None:
+                task_args['timedev'] = ftdev['timedev']
+                task_args['freqdev'] = ftdev['freqdev']
+            task_args['action'] = 'apply'
+
+        job = casa_tasks.flagdata(**task_args)
         jobresult = self._executor.execute(job)
+
+        if extendflags:
+            self._do_extendflag(field=field, scan=scan, intent=intent, growtime=100.0, growfreq=100.0)
 
         return jobresult
 
@@ -353,7 +436,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
     def _do_tfcropflag(self, mode='tfcrop', field=None, correlation=None, scan=None, intent='',
                        ntime=0.45, datacolumn='corrected', flagbackup=True,
-                       freqcutoff=3.0, timecutoff=4.0, savepars=True):
+                       freqcutoff=3.0, timecutoff=4.0, savepars=True, extendflags=False):
 
         task_args = {'vis': self.inputs.vis,
                      'mode': mode,
@@ -375,12 +458,174 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'savepars': savepars}
 
         job = casa_tasks.flagdata(**task_args)
-
         self._executor.execute(job)
+
+        if extendflags == True:
+            self._do_extendflag(field=field, scan=scan, intent=intent, growtime=100.0, growfreq=100.0)
 
         return
 
+    def _select_fieldscan(self):
+        fieldselect = None
+        scanselect = None
+        if self.inputs.checkflagmode in ('bpd-vlass2', 'bpd-vla', 'vla'):
+            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+            fieldselect = self.inputs.context.evla['msinfo'][m.name].checkflagfields
+            scanselect = self.inputs.context.evla['msinfo'][m.name].testgainscans
+            intentselect = ''
+
+        if self.inputs.checkflagmode in ('allcals-vlass2', 'allcals-vla'):
+            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+            fieldselect = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string.split(',')
+            scanselect = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string.split(',')
+            checkflagfields = self.inputs.context.evla['msinfo'][m.name].checkflagfields.split(',')
+            testgainscans = self.inputs.context.evla['msinfo'][m.name].testgainscans.split(',')
+            fieldselect = ','.join([fieldid for fieldid in fieldselect if fieldid not in checkflagfields])
+            scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
+            intentselect = ''
+
+        if self.inputs.checkflagmode in ('targe-vlass2', 'vlass-imaging2'):
+
+            fieldselect = ''
+            scanselect = ''
+            intentselect = '*TARGET*'
+
+        if self.inputs.checkflagmode in ('targe-vla'):
+
+            fieldsobj = m.get_fields(intent='TARGET')
+            fieldids = [field.id for field in fieldsobj]
+            fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
+
+            scanselect = ''
+            intentselect = ''
+
+        if self.inputs.checkflagmode in ('semi-vla'):
+            fieldselect = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
+            scanselect = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
+            intentselect = ''
+
+        return fieldselect, scanselect, intentselect
+
+    def _select_rflag_standard(self):
+        rflag_standard = [None, None, None, None]
+        if self.inputs.checkflagmode in ('bpd-vlass2', 'bpd-vla'):
+            rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('ABS_LR', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('REAL_RR', self.rflagThreshMultiplierCalsPpol, 'residual'),
+                              ('REAL_LL', self.rflagThreshMultiplierCalsPpol, 'residual')]
+        if self.inputs.checkflagmode in ('allcals-vlass2', 'allcals-vla'):
+            rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('ABS_LR', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('ABS_RR', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('ABS_LL', self.rflagThreshMultiplierCalsXpol, 'corrected')]
+
+        if self.inputs.checkflagmode in ('vlass-imaging2'):
+
+            rflag_standard = [('ABS_RL', self.rflagThreshMultiplierTargetXpol, 'data'),
+                              ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'data'),
+                              ('ABS_RR', self.rflagThreshMultiplierTargetXpol, 'residual_data'),
+                              ('ABS_LL', self.rflagThreshMultiplierTargetXpol, 'residual_data')]
+
+        if self.inputs.checkflagmode in ('targe-vlass2'):
+
+            rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
+                              ('ABS_RR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
+                              ('ABS_LL', self.rflagThreshMultiplierTargetXpol, 'corrected')]
+
+        if self.inputs.checkflagmode in ('targe-vla'):
+
+            rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
+                              ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
+                              ('ABS_RR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
+                              ('ABS_LL', self.rflagThreshMultiplierTargetXpol, 'corrected')]
+
+        return rflag_standard
+
+    def _select_tfcrop_standard(self):
+
+        tfcrop_standard = [None, None, None, None]
+        fcrop_datacolumn = ['corrected', 'corrected', 'corrected', 'corrected']
+        tfcropThreshMultiplier = self.tfcropThreshMultiplierCals
+
+        if self.inputs.checkflagmode in ('bpd-vlass2', 'bpd-vla'):
+            tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+        if self.inputs.checkflagmode in ('allcals-vlass2', 'allcals-vla'):
+            tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+
+        if self.inputs.checkflagmode in ('targe-vlass2'):
+            tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+            tfcropThreshMultiplier = self.tfcropThreshMultiplierTarget
+
+        if self.inputs.checkflagmode in ('vlass-imaging2'):
+            tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+            fcrop_datacolumn = ['data', 'data', 'data', 'data']
+            tfcropThreshMultiplier = self.tfcropThreshMultiplierTarget
+
+        if self.inputs.checkflagmode in ('targe-vla'):
+            tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+            tfcropThreshMultiplier = self.tfcropThreshMultiplierTarget
+
+        return list(zip(tfcrop_standard, tfcrop_datacolumn, tfcropThreshMultiplier))
+
+    def do_rfi_flag(self, growflags=False):
+        """based on the new heuristics"""
+
+        fieldselect, scanselect, intentselect = self._select_fieldscan()
+
+        for correlation, scale, datacolumn in self._select_rflag_standard():
+            if correlation.split('_')[1] not in self.corr_type_string:
+                continue
+            method_args = {'mode': 'rflag',
+                           'field': fieldselect,
+                           'correlation': correlation,
+                           'scan': scanselect,
+                           'intent': intentselect,
+                           'ntime': 'scan',
+                           'timedevscale': scale,
+                           'freqdevscale': scale,
+                           'datacolumn': datacolumn,
+                           'flagbackup': False,
+                           'savepars': False,
+                           'extendflags': True}
+
+            self._do_rflag(**method_args)
+
+        for correlation, datacolumn, tfcropThreshMultiplier in self._select_tfcop_standard():
+            if correlation.split('_')[1] not in self.corr_type_string:
+                continue
+            method_args = {'mode': 'tfcrop',
+                           'field': fieldselect,
+                           'correlation': correlation,
+                           'scan': scanselect,
+                           'intent': intentselect,
+                           'timecutoff': tfcropThreshMultiplier,
+                           'freqcutoff': tfcropThreshMultiplier,
+                           'ntime': self.tint,
+                           'datacolumn': datacolumn,
+                           'flagbackup': False,
+                           'savepars': False,
+                           'extendflags': True}
+
+            self._do_tfcropflag(**method_args)
+
+        extendflag_result = CheckflagResults()
+
+        # Grow flags: not for standard VLA by default and not implemented
+        # In the future, this should be turned on for checkflagmode='bpd-vlass2' or growflag=True (see PIPE-939)
+        if  growflags:
+            extendflag_result = self._do_extendflag(field=fieldselect, scan=scanselect,
+                                                    growtime=100.0, growfreq=100.0,
+                                                    growaround=True, flagneartime=True, flagnearfreq=True)                                                
+
+        return extendflag_result
+
+
+
     def thresholds(self, inputThresholds):
+        #
+        # Consider to remove if 'target-vlass'/'vlass-image' is replaced by 'target-vlass2'/'vlass-image2'
+        #
         # the following command maps spws 2~9 to one baseband, and 10~17 to
         # the other; the pipeline should replace this with internally-derived
         # values
@@ -422,6 +667,9 @@ class Checkflag(basetask.StandardTaskTemplate):
         return outputThresholds
 
     def do_bpdvlass(self):
+        #
+        # Consider to remove if 'target-vlass'/'vlass-image' is replaced by 'target-vlass2'/'vlass-image2'
+        #
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         fieldselect = self.inputs.context.evla['msinfo'][m.name].checkflagfields
@@ -480,6 +728,9 @@ class Checkflag(basetask.StandardTaskTemplate):
         return extendflag_result
 
     def do_allcalsvlass(self):
+        #
+        # Consider to remove if 'allcals-vlass' is replaced by 'allcals-vlass2'
+        #
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
@@ -545,7 +796,9 @@ class Checkflag(basetask.StandardTaskTemplate):
         return extendflag_result
 
     def do_targetvlass(self):
-
+        #
+        # Consider to remove if 'target-vlass'/'vlass-image' is replaced by 'target-vlass2'/'vlass-image2'
+        #
         datacolumn = 'corrected'
         if self.inputs.checkflagmode == 'vlass-imaging':
             datacolumn = 'data'
