@@ -40,11 +40,19 @@ def make_renorm_table(context, results, weblog_dir):
     # Will hold all the input and output MS(s)
     rows = []
 
+    threshold = None
+
     # Loop over the results
     for result in results:
         vis = os.path.basename(result.inputs['vis'])
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
+
+                # TODO: get the threshold used from almarenorm.py when it becomes available
+                # It will probably end up being per spw, so the code that uses it below will
+                #    need to adjust accordingly
+                threshold = result.stats.get('threshold', 1.02)
+
                 # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
                 if maxrn:
@@ -66,4 +74,14 @@ def make_renorm_table(context, results, weblog_dir):
                 tr = TR(vis, source, spw, maxrn_field, pdf_path_link)
                 rows.append(tr)
 
-    return utils.merge_td_columns(rows)
+    merged_rows = utils.merge_td_columns(rows)
+    merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
+
+    for row, _ in enumerate(merged_rows):
+        factor_cell = merged_rows[row][-2]
+        if any(chr.isdigit() for chr in factor_cell):  # if cell contains digits
+            if float(factor_cell.lstrip('<>td').split(' ')[0]) > threshold:  # if > threshold
+                for cell in (-3, -2, -1):  # highlight last three cells
+                    merged_rows[row][cell] = factor_cell.replace('<td>', "<td class='danger alert-danger'>")
+
+    return merged_rows
