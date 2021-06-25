@@ -61,14 +61,14 @@ class RenormQAHandler(pqa.QAPlugin):
                                           'is outside threshold of {:.1%}'.format( \
                                           os.path.basename(result.vis), source, spw, max_factor, threshold)
 
-                    origin = pqa.QAOrigin(metric_name='MaxRenormFactor',
-                                          metric_score=result.stats[source][spw]['max_rn'],
-                                          metric_units='')
+                        origin = pqa.QAOrigin(metric_name='MaxRenormFactor',
+                                              metric_score=result.stats[source][spw]['max_rn'],
+                                              metric_units='')
 
-                    result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
-                except:
-                    # No factors for this spw. Just skip it.
-                    pass
+                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
+                    except:
+                        # No factors for this spw. Just skip it.
+                        pass
 
 
 class RenormListQAHandler(pqa.QAPlugin):
