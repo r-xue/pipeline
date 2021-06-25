@@ -146,7 +146,7 @@ f.close()
 
 import xml.dom.minidom as minidom
 from copy import copy
-
+import ast
 
 class _XmlObject:
     """
@@ -261,6 +261,7 @@ def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
 
 
 def castType(value):
+
     try:
         value = int(value)
     except ValueError:
@@ -272,6 +273,17 @@ def castType(value):
                 value = False
             elif value.lower() == 'true':
                 value = True
+
+    if isinstance(value, str):
+        try:
+            pyobj = ast.literal_eval(value)
+            if isinstance(pyobj, list) and value.strip()[0] == '[':
+                value = pyobj
+            if isinstance(pyobj, tuple) and value.strip()[0] == '(':
+                value = pyobj
+        except (ValueError, SyntaxError):
+            pass
+
     return value
 
 
