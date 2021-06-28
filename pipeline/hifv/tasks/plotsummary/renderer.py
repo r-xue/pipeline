@@ -155,48 +155,53 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         }
 
         phase_vs_freq_polarization_plots = utils.OrderedDefaultdict(list)
-        for intents, correlation in [(['POLANGLE'], 'RL,LR'), (['POLLEAKAGE'], 'RL,LR'),
-                                     (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
-            plots = self.create_plots(context,
-                                      results_list,
-                                      applycal.PhaseVsFrequencyPerBasebandSummaryChart,
-                                      intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
-                                      avgbaseline=True, avgantenna=False, plotrange=[0, 0, -180, 180])
-
-            use_pol_plots = False
-            for vis, vis_plots in plots.items():
-                vis_plots_mod = []
-                for p in vis_plots:
-                    p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
-                    field = m.get_fields(p.parameters['field'])[0]
-                    p.parameters['fieldid'] = field.id
-                    vis_plots_mod.append(p)
-
-                phase_vs_freq_polarization_plots[vis].extend(vis_plots_mod)
-                if vis_plots and (('POLANGLE' in m.intents) or ('POLLEAKAGE' in m.intents)):
-                    use_pol_plots = True
-
         amp_vs_freq_polarization_plots = utils.OrderedDefaultdict(list)
-        for intents, correlation in [(['POLANGLE'], 'RL,LR'), (['POLLEAKAGE'], 'RL,LR'),
-                                     (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
-            plots = self.create_plots(context,
-                                      results_list,
-                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
-                                      intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
-                                      avgbaseline=True, avgantenna=False, plotrange=[])
+        allintents = list(m.intents)
 
+        if [intent for intent in allintents if 'POL' in intent]:
+            for intents, correlation in [(['POLANGLE'], 'RL,LR'), (['POLLEAKAGE'], 'RL,LR'),
+                                         (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
+                plots = self.create_plots(context,
+                                          results_list,
+                                          applycal.PhaseVsFrequencyPerBasebandSummaryChart,
+                                          intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
+                                          avgbaseline=True, avgantenna=False, plotrange=[0, 0, -180, 180])
+
+                use_pol_plots = False
+                for vis, vis_plots in plots.items():
+                    vis_plots_mod = []
+                    for p in vis_plots:
+                        p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
+                        field = m.get_fields(p.parameters['field'])[0]
+                        p.parameters['fieldid'] = field.id
+                        vis_plots_mod.append(p)
+
+                    phase_vs_freq_polarization_plots[vis].extend(vis_plots_mod)
+                    if vis_plots and (('POLANGLE' in m.intents) or ('POLLEAKAGE' in m.intents)):
+                        use_pol_plots = True
+
+            for intents, correlation in [(['POLANGLE'], 'RL,LR'), (['POLLEAKAGE'], 'RL,LR'),
+                                         (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
+                plots = self.create_plots(context,
+                                          results_list,
+                                          applycal.AmpVsFrequencyPerBasebandSummaryChart,
+                                          intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
+                                          avgbaseline=True, avgantenna=False, plotrange=[])
+
+                use_pol_plots = False
+                for vis, vis_plots in plots.items():
+                    vis_plots_mod = []
+                    for p in vis_plots:
+                        p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
+                        field = m.get_fields(p.parameters['field'])[0]
+                        p.parameters['fieldid'] = field.id
+                        vis_plots_mod.append(p)
+
+                    amp_vs_freq_polarization_plots[vis].extend(vis_plots_mod)
+                    if vis_plots and (('POLANGLE' in m.intents) or ('POLLEAKAGE' in m.intents)):
+                        use_pol_plots = True
+        else:
             use_pol_plots = False
-            for vis, vis_plots in plots.items():
-                vis_plots_mod = []
-                for p in vis_plots:
-                    p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
-                    field = m.get_fields(p.parameters['field'])[0]
-                    p.parameters['fieldid'] = field.id
-                    vis_plots_mod.append(p)
-
-                amp_vs_freq_polarization_plots[vis].extend(vis_plots_mod)
-                if vis_plots and (('POLANGLE' in m.intents) or ('POLLEAKAGE' in m.intents)):
-                    use_pol_plots = True
 
         # Removed for CAS-8737
         # amp_vs_uv_summary_plots = self.create_plots(context,
@@ -411,23 +416,32 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             overrides['uvrange'] = uvrange
 
         m = context.observing_run.measurement_sets[0]
+        intentselection = 'TARGET'
 
         plots = []
         plot_output_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-        calto, _ = applycal_renderer._get_data_selection_for_plot(context, result, ['TARGET'])
+        calto, _ = applycal_renderer._get_data_selection_for_plot(context, result, [intentselection])
 
         for field in fields:
             # override field when plotting amp/phase vs frequency, as otherwise
             # the field is resolved to a list of all field IDs
             overrides['field'] = field
 
-            LOG.info("PlotSummary Plotting: " + 'Field ' + str(field) + ', ' + str(m.get_fields(field_id=field)[0].name))
+            if plotter_cls.__name__ == 'VLAAmpVsFrequencyBasebandSummaryChart':
+                fieldobjs = m.get_fields(intent=intentselection, field_id=field)
+                first_field = fieldobjs[0]
+                source_spwobjlist = list(first_field.valid_spws)
+                source_spwidlist = [spw.id for spw in source_spwobjlist]
+                source_spwidlist.sort()
+                overrides['spws'] = ','.join([str(spwid) for spwid in source_spwidlist])
 
-            plotter = plotter_cls(context, plot_output_dir, calto, 'TARGET', **overrides)
+            LOG.info("PlotSummary Plotting:" + 'Field ' + str(field) + ', ' + str(m.get_fields(field_id=field)[0].name))
+
+            plotter = plotter_cls(context, plot_output_dir, calto, intentselection, **overrides)
             plots.extend(plotter.plot())
 
         for plot in plots:
-            plot.parameters['intent'] = ['TARGET']
+            plot.parameters['intent'] = [intentselection]
 
         if renderer_cls is not None:
             renderer = renderer_cls(context, result, plots, **overrides)
