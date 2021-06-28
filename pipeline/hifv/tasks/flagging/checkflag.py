@@ -371,7 +371,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             as the deprecated _do_checkflag(..): just a single casa/flagdata() pass without extending flags.
         - _do_rflag{action='apply',calcftdev=True,useheuristic=False,..} is NOT equivalent to
           _do_rflag{action='apply',calcftdev=False,..}:
-                A single pass migh show different result from a double pass, in which a single threshold
+                A single pass might lead to different results from a double pass, in which a single threshold
                 are calculated/applied over all scans of each field+spw combination (see flagdata documentation)
         """
 
@@ -395,17 +395,24 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'flagbackup': flagbackup,
                      'savepars': savepars}
 
-        if calcftdev == True:
+        if calcftdev:
             task_args['action'] = 'calculate'
 
             job = casa_tasks.flagdata(**task_args)
             jobresult = self._executor.execute(job)
 
-            if useherustic == True:
-                rflagdev = RflagDevHeuristic()
-                ftdev = rflagdev(m, jobresult['report0'])
+            if jobresult is None:
+                LOG.warn("This is likely a dryrun test because 'None' is returned from the visibility noise calculation!")
+                LOG.warn("Proceed with timedev/freqdev=''.")
+                ftdev = None
             else:
-                ftdev = jobresult['report0']
+                if useheuristic:
+                    rflagdev = RflagDevHeuristic()
+                    ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+                    ftdev = rflagdev(ms, jobresult['report0'])
+                else:
+                    ftdev = jobresult['report0']
+
             if ftdev is not None:
                 task_args['timedev'] = ftdev['timedev']
                 task_args['freqdev'] = ftdev['freqdev']
@@ -485,14 +492,14 @@ class Checkflag(basetask.StandardTaskTemplate):
     def _select_fieldscan(self):
         fieldselect = None
         scanselect = None
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         if self.inputs.checkflagmode in ('bpd-vlass2', 'bpd-vla', 'vla'):
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             fieldselect = self.inputs.context.evla['msinfo'][m.name].checkflagfields
             scanselect = self.inputs.context.evla['msinfo'][m.name].testgainscans
             intentselect = ''
 
         if self.inputs.checkflagmode in ('allcals-vlass2', 'allcals-vla'):
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             fieldselect = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string.split(',')
             scanselect = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string.split(',')
             checkflagfields = self.inputs.context.evla['msinfo'][m.name].checkflagfields.split(',')
@@ -501,18 +508,15 @@ class Checkflag(basetask.StandardTaskTemplate):
             scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
             intentselect = ''
 
-        if self.inputs.checkflagmode in ('targe-vlass2', 'vlass-imaging2'):
-
+        if self.inputs.checkflagmode in ('target-vlass2', 'vlass-imaging2'):
             fieldselect = ''
             scanselect = ''
             intentselect = '*TARGET*'
 
-        if self.inputs.checkflagmode in ('targe-vla'):
-
+        if self.inputs.checkflagmode in ('target-vla'):
             fieldsobj = m.get_fields(intent='TARGET')
             fieldids = [field.id for field in fieldsobj]
             fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
-
             scanselect = ''
             intentselect = ''
 
@@ -524,12 +528,13 @@ class Checkflag(basetask.StandardTaskTemplate):
         return fieldselect, scanselect, intentselect
 
     def _select_rflag_standard(self):
-        rflag_standard = [None, None, None, None]
+
         if self.inputs.checkflagmode in ('bpd-vlass2', 'bpd-vla'):
             rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
                               ('ABS_LR', self.rflagThreshMultiplierCalsXpol, 'corrected'),
                               ('REAL_RR', self.rflagThreshMultiplierCalsPpol, 'residual'),
                               ('REAL_LL', self.rflagThreshMultiplierCalsPpol, 'residual')]
+        
         if self.inputs.checkflagmode in ('allcals-vlass2', 'allcals-vla'):
             rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
                               ('ABS_LR', self.rflagThreshMultiplierCalsXpol, 'corrected'),
@@ -537,21 +542,18 @@ class Checkflag(basetask.StandardTaskTemplate):
                               ('ABS_LL', self.rflagThreshMultiplierCalsXpol, 'corrected')]
 
         if self.inputs.checkflagmode in ('vlass-imaging2'):
-
             rflag_standard = [('ABS_RL', self.rflagThreshMultiplierTargetXpol, 'data'),
                               ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'data'),
                               ('ABS_RR', self.rflagThreshMultiplierTargetXpol, 'residual_data'),
                               ('ABS_LL', self.rflagThreshMultiplierTargetXpol, 'residual_data')]
 
-        if self.inputs.checkflagmode in ('targe-vlass2'):
-
+        if self.inputs.checkflagmode in ('target-vlass2'):
             rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
                               ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
                               ('ABS_RR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
                               ('ABS_LL', self.rflagThreshMultiplierTargetXpol, 'corrected')]
 
-        if self.inputs.checkflagmode in ('targe-vla'):
-
+        if self.inputs.checkflagmode in ('target-vla'):
             rflag_standard = [('ABS_RL', self.rflagThreshMultiplierCalsXpol, 'corrected'),
                               ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
                               ('ABS_RR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
@@ -562,26 +564,28 @@ class Checkflag(basetask.StandardTaskTemplate):
     def _select_tfcrop_standard(self):
 
         tfcrop_standard = [None, None, None, None]
-        fcrop_datacolumn = ['corrected', 'corrected', 'corrected', 'corrected']
-        tfcropThreshMultiplier = self.tfcropThreshMultiplierCals
+        tfcrop_datacolumn = ['corrected', 'corrected', 'corrected', 'corrected']
 
         if self.inputs.checkflagmode in ('bpd-vlass2', 'bpd-vla'):
             tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+            tfcropThreshMultiplier = [self.tfcropThreshMultiplierCals]*4
+
         if self.inputs.checkflagmode in ('allcals-vlass2', 'allcals-vla'):
             tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
+            tfcropThreshMultiplier = [self.tfcropThreshMultiplierCals]*4
 
-        if self.inputs.checkflagmode in ('targe-vlass2'):
+        if self.inputs.checkflagmode in ('target-vlass2'):
             tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
-            tfcropThreshMultiplier = self.tfcropThreshMultiplierTarget
+            tfcropThreshMultiplier = [self.tfcropThreshMultiplierTarget]*4
 
         if self.inputs.checkflagmode in ('vlass-imaging2'):
             tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
-            fcrop_datacolumn = ['data', 'data', 'data', 'data']
-            tfcropThreshMultiplier = self.tfcropThreshMultiplierTarget
+            tfcrop_datacolumn = ['data', 'data', 'data', 'data']
+            tfcropThreshMultiplier = [self.tfcropThreshMultiplierTarget]*4
 
-        if self.inputs.checkflagmode in ('targe-vla'):
+        if self.inputs.checkflagmode in ('target-vla'):
             tfcrop_standard = ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']
-            tfcropThreshMultiplier = self.tfcropThreshMultiplierTarget
+            tfcropThreshMultiplier = [self.tfcropThreshMultiplierTarget]*4
 
         return list(zip(tfcrop_standard, tfcrop_datacolumn, tfcropThreshMultiplier))
 
@@ -608,7 +612,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             self._do_rflag(**method_args)
 
-        for correlation, datacolumn, tfcropThreshMultiplier in self._select_tfcop_standard():
+        for correlation, datacolumn, tfcropThreshMultiplier in self._select_tfcrop_standard():
             if correlation.split('_')[1] not in self.corr_type_string:
                 continue
             method_args = {'mode': 'tfcrop',
@@ -646,6 +650,11 @@ class Checkflag(basetask.StandardTaskTemplate):
         # the following command maps spws 2~9 to one baseband, and 10~17 to
         # the other; the pipeline should replace this with internally-derived
         # values
+
+        if inputThresholds is None:
+            LOG.warn("This is likely a dryrun test because 'None' is returned from the visibility noise calculation!")
+            LOG.warn("Proceed with timedev/freqdev=''.")
+            return {'report0': {'freqdev': '', 'timedev': ''}}
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         vlabasebands = m.get_vla_baseband_spws(science_windows_only=True)
