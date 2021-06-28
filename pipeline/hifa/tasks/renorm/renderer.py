@@ -1,6 +1,8 @@
 import os
 import collections
 import shutil
+import re
+import xml.etree.ElementTree as ET
 
 from pipeline.infrastructure.utils import weblog
 
@@ -74,14 +76,26 @@ def make_renorm_table(context, results, weblog_dir):
                 tr = TR(vis, source, spw, maxrn_field, pdf_path_link)
                 rows.append(tr)
 
-    merged_rows = utils.merge_td_columns(rows)
+    merged_rows = utils.merge_td_columns(rows, num_to_merge=2)
     merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
 
     for row, _ in enumerate(merged_rows):
-        factor_cell = merged_rows[row][-2]
-        if any(chr.isdigit() for chr in factor_cell):  # if cell contains digits
-            if float(factor_cell.lstrip('<>td').split(' ')[0]) > threshold:  # if > threshold
-                for cell in (-3, -2, -1):  # highlight last three cells
-                    merged_rows[row][cell] = merged_rows[row][cell].replace('<td>', "<td class='danger alert-danger'>")
+        mm = re.search('<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
+        if mm:  # do we have a pattern match?
+            scale_factor = float(mm.groups()[0])
+            if scale_factor > threshold:
+
+                for col in (-3, -2, -1):
+                    cell = ET.fromstring(merged_rows[row][col])
+                    innermost_child = getchild(cell)
+                    innermost_child.set('class','danger alert-danger')
+                    merged_rows[row][col] = ET.tostring(innermost_child)
+
 
     return merged_rows
+
+def getchild(el):
+    if el.findall('td'):
+        return getchild(el[0])
+    else:
+        return el
