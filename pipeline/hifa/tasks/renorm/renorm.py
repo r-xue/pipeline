@@ -72,7 +72,7 @@ class Renorm(basetask.StandardTaskTemplate):
         stats = rn.rnpipestats
         rn.close()
 
-        result = RenormResults(inp. vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats)
+        result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats)
 
         return result
 
