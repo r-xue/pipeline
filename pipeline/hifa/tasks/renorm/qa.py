@@ -33,7 +33,8 @@ class RenormQAHandler(pqa.QAPlugin):
                         # These values should never occur
                         score = 0.0
                         shortmsg = 'Unexpected values.'
-                        longmsg = 'Error calculating corrections'
+                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. Maximum factor is {}.'.format( \
+                                  os.path.basename(result.vis), source, spw, max_factor)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                     elif 1.0 <= max_factor <= threshold_factor:
                         score = 1.0
