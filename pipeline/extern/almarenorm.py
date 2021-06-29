@@ -1305,7 +1305,7 @@ class ACreNorm(object):
         if correctATM:
             self.corrATM = True
             print('Will account for any ATM lines within the SPWs')
-            self.logReNorm.write('Will make a account for any ATM lines within the SPWs\n')
+            self.logReNorm.write('Will account for any ATM lines within the SPWs\n')
 
         # Handle correction request
         if docorr:
@@ -1426,7 +1426,7 @@ class ACreNorm(object):
 
         # this sets up rnstats for later summary plots
         self.rnstats['scans']=targscans
-
+    # Need to find number of corrs, not assume 2
         self.rnstats['rNmax']=pl.zeros((2,self.nAnt,len(spws),len(targscans)))
         self.rnstats['rNmdev']=pl.zeros((2,self.nAnt,len(spws),len(targscans)))
         self.rnstats['N']={}
@@ -1612,8 +1612,7 @@ class ACreNorm(object):
                     (nseg,dNchan) = self.calcChanRanges(ispw,bwthresh,bwdiv,edge=mededge,verbose=verbose)
 
                 # init Norm spectra for this spw
-                #
-                # need to not do this if second pass...
+        # Need to set the numer of corrs based on the found number, not assume 2
                 self.rnstats['N'][target][str(ispw)]= pl.zeros((2,self.msmeta.nchan(ispw),self.nAnt))
                 self.rnstats['N_thresh'][target][str(ispw)] = pl.zeros((2, self.msmeta.nchan(ispw), self.nAnt))
 
@@ -1633,11 +1632,8 @@ class ACreNorm(object):
                 self.logReNorm.write('Target is in the following scans: '+str(target_scans)+'\n') # AL added
 
                             # 
-            # Need to add a loop item here to actually do the apply. Since we want to apply over all fields even if only one
-            # field of a mosaic is over the limit. This will also catch anything that wobbles around the limit and make sure it is applied.
-            # Maybe a while loop here? while second_pass=False: if docorr==False or self.docorrApply[target][spw] exists: second_pass=True....
-            # or just another for loop where the max loop number is set to 1 for docoor=False and 2 if docoor=True? Need to be able to exit
-            # the loop cleanly if after all scans/fields for a SPW yield nothing over the limit.... dynamically change the max loop number? seems dangerous... 
+                # We want to apply over all fields even if only one field of a mosaic is over the limit. 
+                # This will also catch anything that wobbles around the limit and make sure it is applied.
                 if docorr: 
                     num_passes = 2
                 else:
@@ -2499,6 +2495,7 @@ class ACreNorm(object):
             pl.show()
 
     ## LM added field input
+    # AL added XX only case
     def applyReNorm(self,scan,spw,field,rN,datacolumn='CORRECTED_DATA'):
 
         (a1,a2,X)=self.getXCdata(scan,spw,field,datacolumn)
@@ -2506,7 +2503,9 @@ class ACreNorm(object):
         (nCor,nCha,nRow)=X.shape
         for irow in range(nRow):
             for icor in range(nCor):
-                if nCor==2:
+                if nCor==1:
+                    X[icor,:,irow]*=(rN[icor,:,a1[irow]]*rN[icor,:,a2[irow]])
+                elif nCor==2:
                     X[icor,:,irow]*=(rN[icor,:,a1[irow]]*rN[icor,:,a2[irow]])
                 elif nCor==4:
                     X[icor,:,irow]*=(rN[icor/2,:,a1[irow]]*rN[icor%2,:,a2[irow]])
@@ -3817,7 +3816,7 @@ class ACreNorm(object):
         # Add the summary spectra plot to the beginning of the file
         pngs = ['./RN_plots/'+self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png']+pngs
         # Add the outlier antenna plots
-        fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'),self.msmeta.namesforfields(target))
+        fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'),self.msmeta.fieldsforname(target))
         ant_pngs = glob.glob('./RN_plots/'+self.msname+'_ReNormHeuristicOutlierAnt_*_spw'+str(spw)+'_scan*field'+str(fields)+'*.png')
         if len(ant_pngs) != 0:
             ant_pngs.sort()
