@@ -462,6 +462,9 @@ class ACreNorm(object):
         print('Opening ms: '+str(self.msname))
         self.logReNorm.write('Opening ms: '+str(self.msname)+'\n') # LM Added 
 
+        self.msmeta=msmdtool()
+        self.msmeta.open(self.msname)
+
         mytb.open(self.msname)
         self.correxists=mytb.colnames().count('CORRECTED_DATA')>0
 
@@ -480,10 +483,12 @@ class ACreNorm(object):
         print('CORRECTED_DATA exists = '+str(self.correxists))
         self.logReNorm.write('CORRECTED_DATA exists = '+str(self.correxists)+'\n') # LM Added 
 
-        mytb.open(self.msname+'/ANTENNA')
-        self.nAnt=mytb.nrows()
-        self.AntName=mytb.getcol('NAME') # LM added 
-        mytb.close()
+        #mytb.open(self.msname+'/ANTENNA')
+        #self.nAnt=mytb.nrows()
+        #self.AntName=mytb.getcol('NAME') # LM added 
+        #mytb.close()
+        self.AntName = self.msmeta.antennanames()
+        self.nAnt = self.msmeta.nantennas()
         print('Found '+str(self.nAnt)+' antennas')
 
         #LM added
@@ -531,15 +536,30 @@ class ACreNorm(object):
         self.nfit=5
         self.fthresh=0.001
         
-        self.msmeta=msmdtool()
-        self.msmeta.open(self.msname)
         self.rnstats={}
+        myms.open(self.msname)
+        spwInfo = myms.getspectralwindowinfo()
+        myms.close()
 
-        self.fdmspws=self.msmeta.almaspws(fdm=True)
-
-        mytb.open(self.msname+'/SPECTRAL_WINDOW')
-        bandFreq = mytb.getcol('REF_FREQUENCY')[self.fdmspws[0]]
-        mytb.close()
+        self.fdmspws=self.msmeta.fdmspws()
+        # Make sure there are FDM windows, if not, work around that.
+        if len(self.fdmspws) != 0:
+            self.tdm_only = False
+            bandFreq = spwInfo[str(self.fdmspws[0])]['Chan1Freq']
+            #mytb.open(self.msname+'/SPECTRAL_WINDOW')
+            # try to get the reference frequency directly but REF_FREQUENCY doesn't exist for
+            # older data so in those cases we just take the mean of the spw. 
+            #try: 
+            #    bandFreq = mytb.getcol('REF_FREQUENCY')[self.fdmspws[0]]
+            #except RuntimeError:
+            #    bandFreq = pl.mean(mytb.getcell('CHAN_FREQ',[self.fdmswps[0]]))
+            #mytb.close()
+        else:
+            print('No FDM windows found! Renormalization unnecessary.')
+            self.logReNorm.write('No FDM windows found! Renormalization unnecessary.')
+            self.tdm_only = True
+            bandFreq = spwInfo['0']['Chan1Freq']
+        
         self.Band = int(self.getband(bandFreq))
 
         # warnings that give nan slice back or empty mean
@@ -1395,7 +1415,7 @@ class ACreNorm(object):
         self.rnstats['spws']=spws
 
         # list of target scans if user didn't input any
-        if len(targscans)==0:
+        if not targscans:
             targscans=list(self.msmeta.scansforintent('*TARGET*'))
 
         
@@ -1508,7 +1528,25 @@ class ACreNorm(object):
       
             # process each spw
             for ispw in spws:
-                self.docorrApply[target][str(ispw)] = {} # instantiating the spw dictionary for this target
+                # Not all targets are in all scans, we need to iterate over only those scans containing the target
+                target_scans = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
+
+                # Make an additional cut to catch only those scans which contain the current spw (usually only relevant
+                # for spectral scan datasets)
+                target_scans = pl.intersect1d(target_scans, self.msmeta.scansforspw(ispw))
+
+                # If user input list of scans to use, cross check those with the list of all scans on targets to make
+                # sure it's necessary to perform this loop. 
+                target_scans = pl.intersect1d(target_scans, targscans)
+                
+                # if there is no intersection of the input scan list and the list of scans with this target, break 
+                # out of the spw loop and continue on to the next target.
+                if len(target_scans) == 0:
+                    print('\n Target '+str(target)+' is not contained in the input scan list '+str(targscans)+'. Moving to next target.\n')
+                    self.logReNorm.write('\n Target '+str(target)+' is not contained in the input scan list '+str(targscans)+'. Moving to next target.\n')
+                    break
+
+                self.docorrApply[target][str(ispw)] = None # instantiating the spw dictionary for this target
 
                 print('\n Processing spw='+str(ispw)+' (nchan='+str(self.msmeta.nchan(ispw))+') ******************************')
                 self.logReNorm.write('Processing spw='+str(ispw)+' (nchan='+str(self.msmeta.nchan(ispw))+') ******************************\n') # LM added
@@ -1590,8 +1628,7 @@ class ACreNorm(object):
                     self.birdiechan[str(ispw)]=[]
                     # sets for list of known ants with channel outliers 
                 
-                # Not all targets are in all scans, we need to iterate over only those scans containing the target
-                target_scans = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
+                
                 print('Target is in the following scans: '+str(target_scans))
                 self.logReNorm.write('Target is in the following scans: '+str(target_scans)+'\n') # AL added
 
@@ -1601,338 +1638,346 @@ class ACreNorm(object):
             # Maybe a while loop here? while second_pass=False: if docorr==False or self.docorrApply[target][spw] exists: second_pass=True....
             # or just another for loop where the max loop number is set to 1 for docoor=False and 2 if docoor=True? Need to be able to exit
             # the loop cleanly if after all scans/fields for a SPW yield nothing over the limit.... dynamically change the max loop number? seems dangerous... 
+                if docorr: 
+                    num_passes = 2
+                else:
+                    num_passes = 1
+                second_pass = False
+                second_pass_required = False
+                for npass in range(num_passes):
+                    # if num_passes = 2, then npass will be set to 0 on first loop and 1 on second loop (then stops when 2 is reached).
+                    # So, if npass == 1, it's the second loop and if second_pass was *not* set to True at the end of the loop, we don't
+                    # need to go through the loop again.
+                    if npass==1 and not second_pass_required:
+                        print('Threshold limit not reached for any field/scan of spw '+str(ispw)+' of target '+target+'.')
+                        self.logReNorm.write('Threshold limit not reached for any field/scan of spw '+str(ispw)+' of target '+target+'.\n')
+                        continue
+                    # Same as previous but if second_pass_required is set to True, we need to apply the correction and run through the scan loop again.
+                    elif npass==1 and second_pass_required:
+                        second_pass = True
+                        print('\nThreshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans and fields.')
+                        self.logReNorm.write('Threshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans and fields.\n')
+                    else:
+                        pass
 
-                for iscan in target_scans:
-                    print(' Processing scan='+str(iscan)+'------------------------------')
-                    self.logReNorm.write(' Processing scan='+str(iscan)+'------------------------------\n') # LM added
+                    for iscan in target_scans:
+                        print(' Processing scan='+str(iscan)+'------------------------------')
+                        self.logReNorm.write(' Processing scan='+str(iscan)+'------------------------------\n') # LM added
 
-                    # LM added
-                    # here we will get the Phasecal AC if requested
-                    # this will be from the scan preceeding the target scan
-                    # get the existing phase cal scan numerically lower than the target scan 'iscan'
-                    # do this outside the 'if' because if editAC=True we need scanIdx later to be set phaseAC to unity even if we don't use the phase AC
-                    # here in this run, it must be blocked from being used in subsequent runs
-                    scanIdx = int(pl.where(pl.array(Phscan)<iscan)[0][-1])
-                    if usePhaseAC:
-                        print('**************** using the phase cal scan '+str(Phscan[scanIdx])+' *************************')
-                        B=self.getACdata(Phscan[scanIdx],ispw,None,True)
-                        self.logReNorm.write('Will use Phase Cal AutoCorr scan='+str(Phscan[scanIdx])+'------------------------------\n') # LM added
-                        if correctATM: 
-                            if 'PhaseCal' not in self.atmtrans.keys():
-                                self.atmtrans['PhaseCal']={}
-                            if str(ispw) not in self.atmtrans['PhaseCal'].keys():
-                                self.atmtrans['PhaseCal'][str(ispw)]={}
-                            if str(iscan) not in self.atmtrans['PhaseCal'][str(ispw)].keys():
-                                # now we know this field, spw and scan is not filled and we will calc it
-                                # otherwise we just use what's there - i.e for a mosaic it doesn't redo for each ifld
-                                # because the atm trans model reads scan level only
-                                self.atmtrans['PhaseCal'][str(ispw)][str(Phscan[scanIdx])]=self.ATMtrans(Phscan[scanIdx],ispw,verbose=True)
-
-                    # get the fields to process in this scan - i.e. mosaics have many fields per scan
-                    Tarfld = list(self.msmeta.fieldsforscan(iscan))
-                    print(' Will process science target field(s) '+str(Tarfld)+' within this scan')
-                    self.logReNorm.write(' Will process science target field(s) '+str(Tarfld)+' within this scan \n') # LM added
-                    # LM added
-                    # holder for a max value per scan to print out 
-                    scanNmax=[]
-
-                    # LM added - so now we are looping over the target field
-                    for ifld in Tarfld:
-                        if verbose:
-                            print(' Processing field='+str(ifld)+'-----------------------------')
-                        self.logReNorm.write(' Processing field='+str(ifld)+'-----------------------------\n') # LM added
-
-                        # step over target scans that don't have the current spw
-                        if spwscans.count(iscan)==0:
-                            if verbose:
-                                print('Scan='+str(iscan)+' is not a target scan in spw='+str(ispw))
-                            self.logReNorm.write('Scan='+str(iscan)+' is not a target scan in spw='+str(ispw)+'\n') # LM added
-                            continue
-
-                        # initiate the self.scalingValues dictionary
-                        if 'spw'+str(ispw) not in self.scalingValues.keys():
-                                    self.scalingValues['spw'+str(ispw)]={}
-                        if 'scan'+str(iscan) not in self.scalingValues['spw'+str(ispw)].keys():
-                                    self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]={}
-                        if 'field'+str(ifld) not in self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)].keys():
-                                    self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]['field'+str(ifld)]=1.0 # default no scaling
-
-                        # LM added 
-                        # AutoCorr is divided by B (can be BANDPASS or PHASE cal AutoCorr) 
-                        # make if statement aas getACdata can now return None - if data was not filled
-                        ToB=self.getACdata(iscan,ispw,ifld,True)
-                        if ToB is not None: 
-                            ToB/=B
-
-                            # Renorm function will be Nb0 divided by a fit
-                            N=ToB.copy()
-
-
-                            # LM added - ATM functionality
-                            # get the ATM transmission here for target - above for BP and Phase already
-                            # and fix the data - should we do per scan or bulk - bulk should be enough
-                            # to get rid of the main defect so fitting will work close enough (one hopes)
-                          
-
-                            if correctATM:
-                                # we are in iscan, ispw  and ifld
-                                # in a mosaic we are safe to use one field as representative
-                                # because these differences are 'negligable' 
-                                # compared to possibly large ones we are trying to fix between the BP and target
-                                fldname=self.msmeta.namesforfields(ifld)[0]  
-
-                                # flid name or not - code only deals with the pointing of a scan, az and el - all pointing in mosaic are close eough
-                                # need per scan, per spw - if we are just doing a bulk correction we miss any scan variations ??? 
-                            
-                                if str(fldname) not in self.atmtrans.keys():
-                                    self.atmtrans[str(fldname)]={}
-                                if str(ispw) not in self.atmtrans[str(fldname)].keys():
-                                    self.atmtrans[str(fldname)][str(ispw)]={}
-                                if str(iscan) not in self.atmtrans[str(fldname)][str(ispw)].keys():
+                        # LM added
+                        # here we will get the Phasecal AC if requested
+                        # this will be from the scan preceeding the target scan
+                        # get the existing phase cal scan numerically lower than the target scan 'iscan'
+                        # do this outside the 'if' because if editAC=True we need scanIdx later to be set phaseAC to unity even if we don't use the phase AC
+                        # here in this run, it must be blocked from being used in subsequent runs
+                        scanIdx = int(pl.where(pl.array(Phscan)<iscan)[0][-1])
+                        if usePhaseAC:
+                            print('**************** using the phase cal scan '+str(Phscan[scanIdx])+' *************************')
+                            B=self.getACdata(Phscan[scanIdx],ispw,None,True)
+                            self.logReNorm.write('Will use Phase Cal AutoCorr scan='+str(Phscan[scanIdx])+'------------------------------\n') # LM added
+                            if correctATM: 
+                                if 'PhaseCal' not in self.atmtrans.keys():
+                                    self.atmtrans['PhaseCal']={}
+                                if str(ispw) not in self.atmtrans['PhaseCal'].keys():
+                                    self.atmtrans['PhaseCal'][str(ispw)]={}
+                                if str(iscan) not in self.atmtrans['PhaseCal'][str(ispw)].keys():
                                     # now we know this field, spw and scan is not filled and we will calc it
                                     # otherwise we just use what's there - i.e for a mosaic it doesn't redo for each ifld
                                     # because the atm trans model reads scan level only
-                                    self.atmtrans[str(fldname)][str(ispw)][str(iscan)]=self.ATMtrans(iscan,ispw,verbose=verbose)
+                                    self.atmtrans['PhaseCal'][str(ispw)][str(Phscan[scanIdx])]=self.ATMtrans(Phscan[scanIdx],ispw,verbose=True)
 
-                                # check if we want to do the fix, it the ATM line is not strong
-                                # its pointless calculation to work out the are differences
-                                # between the BandPass and Target pointings
-                                if min(self.atmtrans[str(fldname)][str(ispw)][str(iscan)])<limATM:
-                                    # * check now the global as if the ATM code previously didn't
-                                    # * find the correct PWV, only nominal values were input
-                                    # * and we probably don't want to use those for ATM correction
-                                    # * as it could make ATM residuals worse
-                                    if self.corrATM is False:
-                                        # statement that is won't do the correction
-                                        if verbose:
-                                            print('WARNING will not account for any ATM lines as requested as PWV not found')
-                                        self.logReNorm.write('WARNING will not account for any ATM lines as requested as PWV not found\n')
-                                    else:
-                                        # now we pass to a function to do the correction
-                                        if usePhaseAC:
-                                            self.ATMcorrection(N,iscan,ispw,ifld,str(Phscan[scanIdx]),'PhaseCal', verbose=verbose) # just edits the N in place - i.e. should flattens out the ATM region 
-                                            # - could pass fldname also but re-gets this in ATM correction function
-                                        else:
-                                            # bscanatm already specified above 
-                                            self.ATMcorrection(N,iscan,ispw,ifld,str(Bscanatm),'BandPass',verbose=verbose) # just edits the N in place - i.e. should flattens out the ATM region 
+                        # get the fields to process in this scan - i.e. mosaics have many fields per scan
+                        Tarfld = list(self.msmeta.fieldsforscan(iscan))
+                        print(' Will process science target field(s) '+str(Tarfld)+' within this scan')
+                        self.logReNorm.write(' Will process science target field(s) '+str(Tarfld)+' within this scan \n') # LM added
+                        # LM added
+                        # holder for a max value per scan to print out 
+                        scanNmax=[]
 
-
-
-                            # ants and corrs to calculate:
-                            (nCor,nCha,nAnt)=N.shape
-
-                            for iant in range(nAnt):
-
-                                for iseg in range(nseg):
-                                    lochan=iseg*dNchan
-                                    hichan=(iseg+1)*dNchan
-
-                                    for icor in range(nCor):
-                                        # edits N in place! just does the fit to get zero baseline - this is calcuating the ReNorm scaling per ant !!!
-                                        self.calcReNorm1(N[icor,lochan:hichan,iant],False)
-
-                            ## LM added 
-                            if mededge:
-                                # will set the 0.01 (1% - default) of all edge channels to the median value of the scaling spectrum (circa 1)
-                                # stops high edge outliers
-                                self.calcSetEdge(N, edge=mededge)
-
-
-                            # LM added - excflagged
-                            # regardless of any manually input excludeants we still check the cross-corr
-                            # data for those antennas and simply see if it is entirely flagged
-                            # i.e. 100% flagged antenna we set to 1.0 - i.e. no scaling
-                            # thus plots are not skewed and anyway these antennas are not in the IF data
-                            if excflagged:
-                                # get the XC flags - if true returned its 100% flagged - deals with spw SPW, per scan basis as it is selected
-                                antflagged = self.getXCflags(iscan,ispw,ifld,verbose=verbose)
-                                # adds to excludeants list if its not already there
-                                for excant in antflagged:
-                                    N[:,:,excant].fill(1.0)
-                                    if verbose:
-                                        print('**** auto flagged antenna: '+self.AntName[excant]+' for SPW='+str(ispw)+', scan='+str(iscan)+', field='+str(ifld)+' ****')
-                                        self.logReNorm.write('**** auto flagged antenna: '+self.AntName[excant]+' for SPW='+str(ispw)+', scan='+str(iscan)+', field='+str(ifld)+' ****\n') # LM added
-
-
-                            # LM added - excludeants 
-                            if excludeants:
-                                # we are excluding antennas all by index - converted above from names if input
-                                # they should be set to 1.0 - this is a workaround to
-                                # avoid bad antennas messing up the plots - if an analyst really needed
-                                # to make a list of badantennas, and they were not flagged by pipeline
-                                # then it is worrying why data are bad ...
-                                for excant in excludeants:
-                                    N[:,:,excant].fill(1.0)
-
-                            # LM added
-                            if excludechan:
-                                # now check if the spw under analysis needs a range setting to 1.0
-                                # i.e. where we know from testing that some ATM line is not well removed in fitting
-                                # usually over the sharp peak transition - e.g. ALMA-IMF wideband SPW
-                                # -- Note, this might not be required since 2021 May - Luke coded ATM correction function -- 
-                                if str(ispw) in excludechan.keys():
-                                    exloch=int(excludechan[str(ispw)].split('~')[0])
-                                    exhich=int(excludechan[str(ispw)].split('~')[1]) + 1 
-                                    N[:,exloch:exhich,:].fill(1.0)
-
-                            # LM added - the checking and fixing of outlier antennas compared to a representative median spectrumd
-                            if fixOutliers: 
-                              
-                                ## LM added Feb 09 - outlier checker in a function (updated End Feb)
-                                AntChk = self.checkOutlierAnt(N)
-
-                                if len(AntChk) > 0:
-                                    # pass badant to the fix code for channel by channel investigation and correction
-                                    self.calcFixReNorm(N,AntChk,iscan,ispw,ifld,doplot=antdiagspectra,verbose=verbose) 
-        
-        # Here, Nmax needs to only consider values greater than 1.02 (2%) rather than just 1 _if_ it's a mosaic, otherwise, keep as normal
-
-                            # now do new stats printout
-                            # need to exclude values of 1.0 if/where ants are flagged - otherwise skews all outputs
-                            Nmax = pl.nanmean(pl.where(N.max(1)!=1,N.max(1),pl.nan),1) # mean of max of all ants/channels
-                            if pl.isnan(pl.sum(Nmax)):# is nan:
-                                Nmax = pl.array([1.0,1.0])
-                            Nmads = pl.nanmedian(pl.where(N!=1.0,pl.absolute(N-1.0),pl.nan),[1,2]) 
-                            if pl.isnan(pl.sum(Nmads)):# is nan:
-                                Nmads = pl.array([0.0,0.0])
-                            # pre-April was pl.median(pl.absolute(N-1.0),[1,2]) in below print out
-                            scanNmax.append(pl.mean(Nmax))
-                            alarm='   '
-                            if pl.any(pl.greater(Nmax,1.0+usefthresh)):
-                                alarm='***'
+                        # LM added - so now we are looping over the target field
+                        for ifld in Tarfld:
                             if verbose:
-                                print('  Mean peak renormalization factor (power) per polarization = '+str(alarm)+str(Nmax))
-                                print('  Median renormalization deviation (power) per polarization = '+'   '+str(Nmads))
-                            self.logReNorm.write('  Mean peak renormalization factor (power) per polarization = '+str(alarm)+str(Nmax)+'\n')
-                            self.logReNorm.write('  Median renormalization deviation (power) per polarization = '+'   '+str(Nmads)+'\n')
-                             
+                                print(' Processing field='+str(ifld)+'-----------------------------')
+                            self.logReNorm.write(' Processing field='+str(ifld)+'-----------------------------\n') # LM added
 
-                            # LM added - diagnoastic lots one level more detail vs. summary plots
-                            # this is really the ant level what will be applied as a scaling
-                            #
-                            # skip these if second pass...
-                            if diagspectra:
-                                if docorr:
-                                    self.plotdiagSpectra(N, iscan, ispw, ifld, plotATM=plotATM) # , threshline=hardLim ) # show threshold line, optional - not sure I like it but coded 
-                                else:
-                                    self.plotdiagSpectra(N, iscan, ispw, ifld, plotATM=plotATM) # no threshold will be shown
+                            # step over target scans that don't have the current spw
+                            if spwscans.count(iscan)==0:
+                                if verbose:
+                                    print('Scan='+str(iscan)+' is not a target scan in spw='+str(ispw))
+                                self.logReNorm.write('Scan='+str(iscan)+' is not a target scan in spw='+str(ispw)+'\n') # LM added
+                                continue
 
-                            # Skip this if second pass....
-                            #
-                            # LM Added/modified rnstats recording
-                            # in the spectra antennas that have some scans as 1.0 due to being 
-                            # interferometrically flagged (or we excluded) we don't want them
-                            # to skew the summary cumulative average plots using the rnstats
-                            # if some scans are flagged and some are unflagged
-                            if excflagged:  
-                                # regardless of flagged antennas or not we need to initiate the rnstats on the first scan
-                                if ngoodscan==0:
-                                    self.rnstats['N'][target][str(ispw)]= N
-                                    ngoodscan+=1
-                                elif antflagged and ngoodscan!=0:
-                                    # enter this loop if there ARE flagged antennas  
-                                    for lpAnt in range(nAnt):
-                                        # if the antenna is not listed as flagged and the initiated first
-                                        # entry to rnstats['N'] is not 1.0 (i.e. flagged) we do
-                                        # the cumulative sum for the average spectra
-                                        if lpAnt not in antflagged and pl.sum(self.rnstats['N'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
-                                            self.rnstats['N'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N[:,:,lpAnt]/(ngoodscan+1)
-                                        # if the stored antenna scan value in rnstats is 1.0 (i.e. initiated with a flagged antenna
-                                        # but the antenna scan value we want to add now is good
-                                        # then just replace the rnstat antenna scaling values entirely
-                                        elif lpAnt not in antflagged and pl.sum(self.rnstats['N'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
-                                            print('replacing scan with good for '+str(self.AntName[lpAnt]))
-                                            self.rnstats['N'][target][str(ispw)][:,:,lpAnt]= N[:,:,lpAnt] 
-                                    # remember to add to the scans assessed
-                                    ngoodscan+=1
-                                else:
-                                    # if no flagged antennas were passed we do the default cumulative average as normal
-                                    self.rnstats['N'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N/(ngoodscan+1)
-                                    ngoodscan+=1
-                            ## Non flagged antenna cases
-                            else:
-                                # incrementall accumulate scan-mean spectra - keeps adding even as we do per field
-                                self.rnstats['N'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N/(ngoodscan+1)
-                                ngoodscan+=1
+                            # initiate the self.scalingValues dictionary
+                            if 'spw'+str(ispw) not in self.scalingValues.keys():
+                                        self.scalingValues['spw'+str(ispw)]={}
+                            if 'scan'+str(iscan) not in self.scalingValues['spw'+str(ispw)].keys():
+                                        self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]={}
+                            if 'field'+str(ifld) not in self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)].keys():
+                                        self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]['field'+str(ifld)]=1.0 # default no scaling
 
-                            # Skip this if second pass...
-                            # 
-                            # AL added - PIPE 1168 (1)
-                            # Repeat the same process but now we'll only be keeping normalized spectra that is above the threshold.
-                            # This helps us plot mosaic sources and multi-target MSs as the mixture of empty/problem fields can wash the peaks.
-                            if pl.mean(Nmax) > hardLim:
-                                if excflagged:  
-                                    # regardless of flagged antennas or not we need to initiate the rnstats on the first scan
-                                    if ngoodscan_thresh==0:
-                                        self.rnstats['N_thresh'][target][str(ispw)]= N
-                                        ngoodscan_thresh+=1
+                            # LM added 
+                            # AutoCorr is divided by B (can be BANDPASS or PHASE cal AutoCorr) 
+                            # make if statement as getACdata can now return None - if data was not filled
+                            ToB=self.getACdata(iscan,ispw,ifld,True)
+                            if ToB is not None: 
+                                ToB/=B
 
-                                    elif antflagged and ngoodscan!=0:
-                                        # enter this loop if there ARE flagged antennas  
-                                        for lpAnt in range(nAnt):
-                                            # if the antenna is not listed as flagged and the initiated first
-                                            # entry to rnstats['N_thresh'] is not 1.0 (i.e. flagged) we do
-                                            # the cumulative sum for the average spectra
-                                            if lpAnt not in antflagged and pl.sum(self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
-                                                self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt]*ngoodscan_thresh/(ngoodscan_thresh+1)  + N[:,:,lpAnt]/(ngoodscan_thresh+1)
-                                            # if the stored antenna scan value in rnstats is 1.0 (i.e. initiated with a flagged antenna
-                                            # but the antenna scan value we want to add now is good
-                                            # then just replace the rnstat antenna scaling values entirely
-                                            elif lpAnt not in antflagged and pl.sum(self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
-                                                print('replacing scan with good for '+str(self.AntName[lpAnt]))
-                                                self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt]= N[:,:,lpAnt] 
-                                        # remember to add to the scans assessed
-                                        ngoodscan_thresh+=1
+                                # Renorm function will be Nb0 divided by a fit
+                                N=ToB.copy()
+
+
+                                # LM added - ATM functionality
+                                # get the ATM transmission here for target - above for BP and Phase already
+                                # and fix the data - should we do per scan or bulk - bulk should be enough
+                                # to get rid of the main defect so fitting will work close enough (one hopes)
+                              
+
+                                if correctATM:
+                                    # we are in iscan, ispw  and ifld
+                                    # in a mosaic we are safe to use one field as representative
+                                    # because these differences are 'negligable' 
+                                    # compared to possibly large ones we are trying to fix between the BP and target
+                                    fldname=self.msmeta.namesforfields(ifld)[0]  
+
+                                    # flid name or not - code only deals with the pointing of a scan, az and el - all pointing in mosaic are close eough
+                                    # need per scan, per spw - if we are just doing a bulk correction we miss any scan variations ??? 
+                                
+                                    if str(fldname) not in self.atmtrans.keys():
+                                        self.atmtrans[str(fldname)]={}
+                                    if str(ispw) not in self.atmtrans[str(fldname)].keys():
+                                        self.atmtrans[str(fldname)][str(ispw)]={}
+                                    if str(iscan) not in self.atmtrans[str(fldname)][str(ispw)].keys():
+                                        # now we know this field, spw and scan is not filled and we will calc it
+                                        # otherwise we just use what's there - i.e for a mosaic it doesn't redo for each ifld
+                                        # because the atm trans model reads scan level only
+                                        self.atmtrans[str(fldname)][str(ispw)][str(iscan)]=self.ATMtrans(iscan,ispw,verbose=verbose)
+
+                                    # check if we want to do the fix, it the ATM line is not strong
+                                    # its pointless calculation to work out the are differences
+                                    # between the BandPass and Target pointings
+                                    if min(self.atmtrans[str(fldname)][str(ispw)][str(iscan)])<limATM:
+                                        # * check now the global as if the ATM code previously didn't
+                                        # * find the correct PWV, only nominal values were input
+                                        # * and we probably don't want to use those for ATM correction
+                                        # * as it could make ATM residuals worse
+                                        if self.corrATM is False:
+                                            # statement that is won't do the correction
+                                            if verbose:
+                                                print('WARNING will not account for any ATM lines as requested as PWV not found')
+                                            self.logReNorm.write('WARNING will not account for any ATM lines as requested as PWV not found\n')
+                                        else:
+                                            # now we pass to a function to do the correction
+                                            if usePhaseAC:
+                                                self.ATMcorrection(N,iscan,ispw,ifld,str(Phscan[scanIdx]),'PhaseCal', verbose=verbose) # just edits the N in place - i.e. should flattens out the ATM region 
+                                                # - could pass fldname also but re-gets this in ATM correction function
+                                            else:
+                                                # bscanatm already specified above 
+                                                self.ATMcorrection(N,iscan,ispw,ifld,str(Bscanatm),'BandPass',verbose=True) # just edits the N in place - i.e. should flattens out the ATM region 
+
+
+                                # ants and corrs to calculate:
+                                (nCor,nCha,nAnt)=N.shape
+
+                                for iant in range(nAnt):
+
+                                    for iseg in range(nseg):
+                                        lochan=iseg*dNchan
+                                        hichan=(iseg+1)*dNchan
+
+                                        for icor in range(nCor):
+                                            # edits N in place! just does the fit to get zero baseline - this is calcuating the ReNorm scaling per ant !!!
+                                            self.calcReNorm1(N[icor,lochan:hichan,iant],False)
+
+                                ## LM added 
+                                if mededge:
+                                    # will set the 0.01 (1% - default) of all edge channels to the median value of the scaling spectrum (circa 1)
+                                    # stops high edge outliers
+                                    self.calcSetEdge(N, edge=mededge)
+
+
+                                # LM added - excflagged
+                                # regardless of any manually input excludeants we still check the cross-corr
+                                # data for those antennas and simply see if it is entirely flagged
+                                # i.e. 100% flagged antenna we set to 1.0 - i.e. no scaling
+                                # thus plots are not skewed and anyway these antennas are not in the IF data
+                                if excflagged:
+                                    # get the XC flags - if true returned its 100% flagged - deals with spw SPW, per scan basis as it is selected
+                                    antflagged = self.getXCflags(iscan,ispw,ifld,verbose=verbose)
+                                    # adds to excludeants list if its not already there
+                                    for excant in antflagged:
+                                        N[:,:,excant].fill(1.0)
+                                        if verbose:
+                                            print('**** auto flagged antenna: '+self.AntName[excant]+' for SPW='+str(ispw)+', scan='+str(iscan)+', field='+str(ifld)+' ****')
+                                            self.logReNorm.write('**** auto flagged antenna: '+self.AntName[excant]+' for SPW='+str(ispw)+', scan='+str(iscan)+', field='+str(ifld)+' ****\n') # LM added
+
+
+                                # LM added - excludeants 
+                                if excludeants:
+                                    # we are excluding antennas all by index - converted above from names if input
+                                    # they should be set to 1.0 - this is a workaround to
+                                    # avoid bad antennas messing up the plots - if an analyst really needed
+                                    # to make a list of badantennas, and they were not flagged by pipeline
+                                    # then it is worrying why data are bad ...
+                                    for excant in excludeants:
+                                        N[:,:,excant].fill(1.0)
+
+                                # LM added
+                                if excludechan:
+                                    # now check if the spw under analysis needs a range setting to 1.0
+                                    # i.e. where we know from testing that some ATM line is not well removed in fitting
+                                    # usually over the sharp peak transition - e.g. ALMA-IMF wideband SPW
+                                    # -- Note, this might not be required since 2021 May - Luke coded ATM correction function -- 
+                                    if str(ispw) in excludechan.keys():
+                                        exloch=int(excludechan[str(ispw)].split('~')[0])
+                                        exhich=int(excludechan[str(ispw)].split('~')[1]) + 1 
+                                        N[:,exloch:exhich,:].fill(1.0)
+
+                                # LM added - the checking and fixing of outlier antennas compared to a representative median spectrumd
+                                if fixOutliers: 
+                                  
+                                    ## LM added Feb 09 - outlier checker in a function (updated End Feb)
+                                    AntChk = self.checkOutlierAnt(N)
+
+                                    if len(AntChk) > 0:
+                                        # pass badant to the fix code for channel by channel investigation and correction
+                                        self.calcFixReNorm(N,AntChk,iscan,ispw,ifld,doplot=antdiagspectra,verbose=verbose) 
+
+                                # No need to do any of this on the second round of data 
+                                if not second_pass:            
+                                    # now do new stats printout
+                                    # need to exclude values of 1.0 if/where ants are flagged - otherwise skews all outputs
+                                    Nmax = pl.nanmean(pl.where(N.max(1)!=1,N.max(1),pl.nan),1) # mean of max of all ants/channels
+                                    if pl.isnan(pl.sum(Nmax)):# is nan:
+                                        Nmax = pl.array([1.0,1.0])
+                                    Nmads = pl.nanmedian(pl.where(N!=1.0,pl.absolute(N-1.0),pl.nan),[1,2]) 
+                                    if pl.isnan(pl.sum(Nmads)):# is nan:
+                                        Nmads = pl.array([0.0,0.0])
+                                    # pre-April was pl.median(pl.absolute(N-1.0),[1,2]) in below print out
+                                    scanNmax.append(pl.mean(Nmax))
+                                    alarm='   '
+                                    if pl.any(pl.greater(Nmax,1.0+usefthresh)):
+                                        alarm='***'
+                                    if verbose:
+                                        print('  Mean peak renormalization factor (power) per polarization = '+str(alarm)+str(Nmax))
+                                        print('  Median renormalization deviation (power) per polarization = '+'   '+str(Nmads))
+                                    self.logReNorm.write('  Mean peak renormalization factor (power) per polarization = '+str(alarm)+str(Nmax)+'\n')
+                                    self.logReNorm.write('  Median renormalization deviation (power) per polarization = '+'   '+str(Nmads)+'\n')
+                                     
+
+                                    # LM added - diagnoastic lots one level more detail vs. summary plots
+                                    # this is really the ant level what will be applied as a scaling
+                                    #
+                                    # skip these if second pass...
+                                    if diagspectra:
+                                        if docorr:
+                                            self.plotdiagSpectra(N, iscan, ispw, ifld, plotATM=plotATM) # , threshline=hardLim ) # show threshold line, optional - not sure I like it but coded 
+                                        else:
+                                            self.plotdiagSpectra(N, iscan, ispw, ifld, plotATM=plotATM) # no threshold will be shown
+
+                                    # LM Added/modified rnstats recording
+                                    # in the spectra antennas that have some scans as 1.0 due to being 
+                                    # interferometrically flagged (or we excluded) we don't want them
+                                    # to skew the summary cumulative average plots using the rnstats
+                                    # if some scans are flagged and some are unflagged
+                                    if excflagged:  
+                                        # regardless of flagged antennas or not we need to initiate the rnstats on the first scan
+                                        if ngoodscan==0:
+                                            self.rnstats['N'][target][str(ispw)]= N
+                                            ngoodscan+=1
+                                        elif antflagged and ngoodscan!=0:
+                                            # enter this loop if there ARE flagged antennas  
+                                            for lpAnt in range(nAnt):
+                                                # if the antenna is not listed as flagged and the initiated first
+                                                # entry to rnstats['N'] is not 1.0 (i.e. flagged) we do
+                                                # the cumulative sum for the average spectra
+                                                if lpAnt not in antflagged and pl.sum(self.rnstats['N'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
+                                                    self.rnstats['N'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N[:,:,lpAnt]/(ngoodscan+1)
+                                                # if the stored antenna scan value in rnstats is 1.0 (i.e. initiated with a flagged antenna
+                                                # but the antenna scan value we want to add now is good
+                                                # then just replace the rnstat antenna scaling values entirely
+                                                elif lpAnt not in antflagged and pl.sum(self.rnstats['N'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
+                                                    print('replacing scan with good for '+str(self.AntName[lpAnt]))
+                                                    self.rnstats['N'][target][str(ispw)][:,:,lpAnt]= N[:,:,lpAnt] 
+                                            # remember to add to the scans assessed
+                                            ngoodscan+=1
+                                        else:
+                                            # if no flagged antennas were passed we do the default cumulative average as normal
+                                            self.rnstats['N'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N/(ngoodscan+1)
+                                            ngoodscan+=1
+                                    ## Non flagged antenna cases
                                     else:
-                                        # if no flagged antennas were passed we do the default cumulative average as normal
-                                        self.rnstats['N_thresh'][target][str(ispw)]=self.rnstats['N_thresh'][target][str(ispw)]*ngoodscan_thresh/(ngoodscan_thresh+1)  + N/(ngoodscan_thresh+1)
-                                        ngoodscan_thresh+=1
+                                        # incrementall accumulate scan-mean spectra - keeps adding even as we do per field
+                                        self.rnstats['N'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N/(ngoodscan+1)
+                                        ngoodscan+=1
 
-                                ## Non flagged antenna cases
-                                else:
-                                    # incrementall accumulate scan-mean spectra - keeps adding even as we do per field
-                                    self.rnstats['N_thresh'][target][str(ispw)]=self.rnstats['N_thresh'][target][str(ispw)]*ngoodscan_thresh/(ngoodscan_thresh+1)  + N/(ngoodscan_thresh+1)
-                                    ngoodscan_thresh+=1
+                                    # AL added - PIPE 1168 (1)
+                                    # Repeat the same process but now we'll only be keeping normalized spectra that is above the threshold.
+                                    # This helps us plot mosaic sources and multi-target MSs as the mixture of empty/problem fields can wash the peaks.
+                                    if pl.mean(Nmax) > hardLim:
+                                        if excflagged:  
+                                            # regardless of flagged antennas or not we need to initiate the rnstats on the first scan
+                                            if ngoodscan_thresh==0:
+                                                self.rnstats['N_thresh'][target][str(ispw)]= N
+                                                ngoodscan_thresh+=1
 
-                            # Skip this if second pass...
-                            # 
-                            # below is George's original code and these are used in other RN.plot*  (not the spectral one)    
-                            # this does not add per field, it appears that only the last field will be appended currently
-                            # as it is not cumulative, it is a replacement that calls only ispw and iscan
-                            # the current median will possibly be skewed by antennas set to 1.0 if flagged
-                            # if the last field has no scaling, plots using these scan based stats/and latter plots
-                            # will not show anything useful
-                            self.rnstats['rNmax'][:,:,spws.index(ispw),targscans.index(iscan)]=N.max(1)
-                            self.rnstats['rNmdev'][:,:,spws.index(ispw),targscans.index(iscan)]=pl.median(pl.absolute(N-1.0),1)
+                                            elif antflagged and ngoodscan_thresh!=0:
+                                                # enter this loop if there ARE flagged antennas  
+                                                for lpAnt in range(nAnt):
+                                                    # if the antenna is not listed as flagged and the initiated first
+                                                    # entry to rnstats['N_thresh'] is not 1.0 (i.e. flagged) we do
+                                                    # the cumulative sum for the average spectra
+                                                    if lpAnt not in antflagged and pl.sum(self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
+                                                        self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt]*ngoodscan_thresh/(ngoodscan_thresh+1)  + N[:,:,lpAnt]/(ngoodscan_thresh+1)
+                                                    # if the stored antenna scan value in rnstats is 1.0 (i.e. initiated with a flagged antenna
+                                                    # but the antenna scan value we want to add now is good
+                                                    # then just replace the rnstat antenna scaling values entirely
+                                                    elif lpAnt not in antflagged and pl.sum(self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
+                                                        print('replacing scan with good for '+str(self.AntName[lpAnt]))
+                                                        self.rnstats['N_thresh'][target][str(ispw)][:,:,lpAnt]= N[:,:,lpAnt] 
+                                                # remember to add to the scans assessed
+                                                ngoodscan_thresh+=1
+                                            else:
+                                                # if no flagged antennas were passed we do the default cumulative average as normal
+                                                self.rnstats['N_thresh'][target][str(ispw)]=self.rnstats['N_thresh'][target][str(ispw)]*ngoodscan_thresh/(ngoodscan_thresh+1)  + N/(ngoodscan_thresh+1)
+                                                ngoodscan_thresh+=1
 
+                                        ## Non flagged antenna cases
+                                        else:
+                                            # incrementall accumulate scan-mean spectra - keeps adding even as we do per field
+                                            self.rnstats['N_thresh'][target][str(ispw)]=self.rnstats['N_thresh'][target][str(ispw)]*ngoodscan_thresh/(ngoodscan_thresh+1)  + N/(ngoodscan_thresh+1)
+                                            ngoodscan_thresh+=1
 
-                            # write in the max value for this SPW, scan, field into the self.scalingValues dictionary
-                            self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]['field'+str(ifld)]=pl.mean(Nmax) # average the correlations
+                                    # below is George's original code and these are used in other RN.plot*  (not the spectral one)    
+                                    # this does not add per field, it appears that only the last field will be appended currently
+                                    # as it is not cumulative, it is a replacement that calls only ispw and iscan
+                                    # the current median will possibly be skewed by antennas set to 1.0 if flagged
+                                    # if the last field has no scaling, plots using these scan based stats/and latter plots
+                                    # will not show anything useful
+                                    self.rnstats['rNmax'][:,:,spws.index(ispw),targscans.index(iscan)]=N.max(1)
+                                    self.rnstats['rNmdev'][:,:,spws.index(ispw),targscans.index(iscan)]=pl.median(pl.absolute(N-1.0),1)
 
-                            if docorr:
-                                # Need to move this part out of the docorr check so that we can add a check to above thresh, then add to 
-                                # to the dictionary. Then after each scan/field, we check for it to be above the limit and update it each
-                                # time to set to True/False unless it is already set to True. Should do this regardless of the number of
-                                # fields as it would catch single field targets that wobble around the limit. Also skip this part if second pass!
-                                #
-                                # hardLim is set already 
-                                # now check the dictionary of SPW and fields which to apply to - don't need scans here
-                                # initial it not done so, but then the first instance of that fields scaling determines
-                                # the rest of the applies, e.g. first scan is the basis of the assesment that comes here
-                                # due to the iteration over spw, scan, field 
-                                if str(ispw) not in self.docorrApply.keys():
-                                    self.docorrApply[str(ispw)]={}  # first initiation of dict of fields to store the apply condition
-                                if str(ifld) not in self.docorrApply[str(ispw)].keys():
+                                    # write in the max value for this SPW, scan, field into the self.scalingValues dictionary
+                                    self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]['field'+str(ifld)]=pl.mean(Nmax) # average the correlations
+
+                                    # Need to move this part out of the docorr check so that we can add a check to above thresh, then add to 
+                                    # to the dictionary. Then after each scan/field, we check for it to be above the limit and update it each
+                                    # time to set to True/False unless it is already set to True. Should do this regardless of the number of
+                                    # fields as it would catch single field targets that wobble around the limit. 
+                                    #
+                                    # Check if above limit but only on the first pass through the data
                                     if pl.mean(Nmax) > hardLim: 
                                         # Nmax hold 2 values for dual corr (xx,yy) coming from mean of all maximal values of all ants  
-                                        self.docorrApply[str(ispw)][str(ifld)]=True # will correct this field
+                                        self.docorrApply[target][str(ispw)]=True # will correct this field
+                                    # if this field isn't above the limit but it's already True, pass
+                                    elif self.docorrApply[target][str(ispw)]:
+                                        pass
+                                    # if not above the limit and not already set to True, set to False
                                     else:
-                                        self.docorrApply[str(ispw)][str(ifld)]=False # will never correct this field
-
+                                        self.docorrApply[target][str(ispw)]=False
                                 
-                                # now query the self.docorrApply dict to see if the fld is in the list and then it will be corrected
-                                if self.docorrApply[str(ispw)][str(ifld)]:
-                                # apply the correction
+                                # If we want to apply the correction and it's the second time through the data
+                                if docorr and second_pass: 
+                                    # apply the correction
                                     # Antenna-based Correction factors are in voltage units (pair products are power)
                                     Nv=pl.sqrt(N)
                                     self.applyReNorm(iscan,ispw,ifld,Nv,datacolumn) # LM pass field too
@@ -1949,69 +1994,64 @@ class ACreNorm(object):
                                     if verbose:
                                         print('Application of the ReNormalization was written to the MS history for spw'+str(ispw)+' scan'+str(iscan)+' field'+str(ifld))
                                     self.logReNorm.write(' Application of the ReNormalization was written to the MS history for spw'+str(ispw)+' scan'+str(iscan)+' field'+str(ifld)+'\n')
+                                        
 
-                                
+                            # LM added closes the data check whereto see if the AC data is confirmed to be filled - only gets here if None was returned
+                            else:
+                                if verbose:
+                                    print(' **** No data found - skipping field '+str(ifld)+' in scan '+str(iscan)+' ****')
+                                self.logReNorm.write(' **** No data found - skipping field '+str(ifld)+' in scan '+str(iscan)+' ****\n')
 
-                                else:
-                                    if verbose:
-                                        print('ReNormalization was not applied as the scaling for spw'+str(ispw)+' field'+str(ifld)+' is below the threshold')
-                                    self.logReNorm.write('ReNormalization was not applied as the scaling for spw'+str(ispw)+' field'+str(ifld)+' is below the threshold\n')
-                                    
+                            if not second_pass:
+                            # LM added print of per scan max val
+                                if ifld == max(Tarfld):
+                                    print('  Max peak renormalization factor (power) over scan '+str(iscan)+' = '+str(max(scanNmax)))
+                                    self.logReNorm.write('  Max peak renormalization factor (power) over scan '+str(iscan)+' = '+str(max(scanNmax))+'\n')
 
-                        # LM added closes the data check whereto see if the AC data is confirmed to be filled - only gets here if None was returned
-                        else:
-                            if verbose:
-                                print(' **** No data found - skipping field '+str(ifld)+' in scan '+str(iscan)+' ****')
-                            self.logReNorm.write(' **** No data found - skipping field '+str(ifld)+' in scan '+str(iscan)+' ****\n')
+                                # LM added check the scan max vs the overall value and stores to class value 
+                                if max(scanNmax) > self.MaxOutScaling:
+                                    self.MaxOutScaling = max(scanNmax)
 
+                        # LM added
+                        # this is added as protection to overwrite the AutoCorr data if the application was made 
+                        # set the AC of the BP, Phase and Target to 1.0 (this should not have negative effects for data redcution as AC is flagged out)
+                        # this is a hard protection against any subsequent runs of the ReNormalize code
+                        # here we are in the scan loop - don't need to do field level as everything will be overwritten with unity
+                        if docorr and editAC and second_pass:
+                            print(' Setting AutoCorrelations to 1.0 so no subsequent re-run of renormalization can occur ')
+                            self.logReNorm.write(' Setting AutoCorrelations to 1.0 so no subsequent re-run of renormalization can occur \n')
 
-                        # LM added print of per scan max val
-                        if ifld == max(Tarfld):
-                            print('  Max peak renormalization factor (power) over scan '+str(iscan)+' = '+str(max(scanNmax)))
-                            self.logReNorm.write('  Max peak renormalization factor (power) over scan '+str(iscan)+' = '+str(max(scanNmax))+'\n')
+                            self.unityAC(Phscan[scanIdx],ispw,None)
+                            self.unityAC(Bscan,ispw,None) # currently crude as it will repeat this for every target scan but the AC is set to 1.0 after first pass
+                            self.unityAC(iscan,ispw,None)
 
-
-                        # LM added check the scan max vs the overall value and stores to class value 
-                        if max(scanNmax) > self.MaxOutScaling:
-                            self.MaxOutScaling = max(scanNmax)
-
-                    # LM added
-                    # this is added as protection to overwrite the AutoCorr data if the application was made 
-                    # set the AC of the BP, Phase and Target to 1.0 (this should not have negative effects for data redcution as AC is flagged out)
-                    # this is a hard protection against any subsequent runs of the ReNormalize code
-                    # here we are in the scan loop - don't need to do field level as everything will be overwritten with unity
-                    if docorr and editAC:
-                        print(' Setting AutoCorrelations to 1.0 so no subsequent re-run of renormalization can occur ')
-                        self.logReNorm.write(' Setting AutoCorrelations to 1.0 so no subsequent re-run of renormalization can occur \n')
-
-                        self.unityAC(Phscan[scanIdx],ispw,None)
-                        self.unityAC(Bscan,ispw,None) # currently crude as it will repeat this for every target scan but the AC is set to 1.0 after first pass
-                        self.unityAC(iscan,ispw,None)
-            
+                        # After doing the first pass, if docorr is True and docorrApply was set to True, 
+                        # we now need to go through again and actually apply the renormalization 
+                        if docorr and not second_pass and self.docorrApply[target][str(ispw)]:
+                            second_pass_required = True
+                
         # AL added - PIPE 1168 (3)
-        # Loops through the scalingValue dict and populates the pipeline needed dictionary only if the hard limit is reached
+        # Loops through the scalingValue dict and populates the pipeline needed dictionary
         self.rnpipestats = {}
         target_field_ids = self.msmeta.fieldsforintent('*TARGET*')
         target_fields = pl.unique(self.msmeta.namesforfields(target_field_ids))
-        if docorrThresh:
-            lim = hardLim
-        else:
-            lim = self.bandThresh[self.Band]
-        for trg in target_fields:
+        for trg in self.rnstats['N'].keys(): #target_fields:
             self.rnpipestats[trg] = {}
-            for spw in spws:
+            for spw in self.rnstats['N'][trg].keys(): # spws:
                 self.rnpipestats[trg][spw] = {}
-                fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'), self.msmeta.fieldsforname(trg))
+                scans = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(trg)) # find scans related to this target
+                scans = pl.intersect1d(scans, self.msmeta.scansforspw(int(spw))) # find scans related to given spw (spectral scan)
+                scans = pl.intersect1d(scans, targscans) # if user input scans, limit to those
                 pipe_target_sv, pipe_target_fld = [],[]
-                for field in fields:
-                    # change this to loop over all scans to find the max, not just the first scan
-                    first_scan = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'),self.msmeta.scansforfield(field))[0]
-                    if self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)] > lim:
-                        pipe_target_sv.append(self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)])
+                for scan in scans:
+                    fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'), self.msmeta.fieldsforname(trg)) # fields for target
+                    fields = pl.intersect1d(fields, self.msmeta.fieldsforscan(scan)) # fields for given scan
+                    for field in fields:
+                        pipe_target_sv.append(self.scalingValues['spw'+str(spw)]['scan'+str(scan)]['field'+str(field)])
                         pipe_target_fld.append(field)
-                if pipe_target_sv:
-                    self.rnpipestats[trg][spw]['max_rn'] = max(pipe_target_sv)
-                    self.rnpipestats[trg][spw]['max_rn_field'] = pipe_target_fld[pl.where(pl.array(pipe_target_sv) == self.rnpipestats[trg][spw]['max_rn'])[0][0]]
+                self.rnpipestats[trg][spw]['max_rn'] = max(pipe_target_sv)
+                self.rnpipestats[trg][spw]['max_rn_field'] = pipe_target_fld[pl.where(pl.array(pipe_target_sv) == self.rnpipestats[trg][spw]['max_rn'])[0][0]]
+                self.rnpipestats[trg][spw]['threshold'] = hardLim
 
         
         # LM added - final docorr check to write history as a single value - commented out in 
@@ -2233,45 +2273,45 @@ class ACreNorm(object):
                     pl.plot(freqs, Nm[1,:],'b-')
                 
                 # Find the average of the max fields
-                fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'), self.msmeta.fieldsforname(target))
-                if len(fields) > 1:
-                    max_values = []
-                    for field in fields:
-                        first_scan = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'),self.msmeta.scansforfield(field))[0]
-                        if self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)] > self.bandThresh[self.Band]:
-                            max_values.append(self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)])
-                    if max_values:
-                        Nmax = pl.mean(max_values)
-                    else:
-                        Nmax = None
-                else:
-                    Nxmax=Nm[0,:].max()
-                    Nymax=Nm[1,:].max()
+                #fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'), self.msmeta.fieldsforname(target))
+                #if len(fields) > 1:
+                #    max_values = []
+                #    for field in fields:
+                #        first_scan = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'),self.msmeta.scansforfield(field))[0]
+                #        if self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)] > self.bandThresh[self.Band]:
+                #            max_values.append(self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)])
+                #    if max_values:
+                #        Nmax = pl.mean(max_values)
+                #    else:
+                #        Nmax = None
+                #else:
+                Nxmax=Nm[0,:].max()
+                Nymax=Nm[1,:].max()
 
-                if len(fields) == 1:
-                    if Nxmax>=(1.+self.fthresh) or Nymax>=(1.+self.fthresh):
-                        if not plotfreq:
-                            pl.plot([3*nCha/8,5*nCha/8],[Nxmax]*2,'r-')
-                            pl.text(3*nCha/8,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
-                            pl.plot([3*nCha/8,5*nCha/8],[Nymax]*2,'b-')
-                            pl.text(5*nCha/8,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),va='center',color='b',size='x-small')
-                        else:
-                            fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
-                            fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
-                            pl.plot([fmin,fmax],[Nxmax]*2,'r-')
-                            pl.text(fmin,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
-                            pl.plot([fmin,fmax],[Nymax]*2,'b-')
-                            pl.text(fmax,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),va='center',color='b',size='x-small')
-                else:
-                    if Nmax:
-                        if not plotfreq:
-                            pl.plot([3*nCha/8,5*nCha/8],[Nmax]*2,'r-')
-                            pl.text(3*nCha/8,Nxmax,'<RN>='+str(floor(Nmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
-                        else:
-                            fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
-                            fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
-                            pl.plot([fmin,fmax],[Nmax]*2,'r-')
-                            pl.text(fmin,Nmax,'<RN>='+str(floor(Nmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
+                #if len(fields) == 1:
+                if Nxmax>=(1.+self.fthresh) or Nymax>=(1.+self.fthresh):
+                    if not plotfreq:
+                        pl.plot([3*nCha/8,5*nCha/8],[Nxmax]*2,'r-')
+                        pl.text(3*nCha/8,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
+                        pl.plot([3*nCha/8,5*nCha/8],[Nymax]*2,'b-')
+                        pl.text(5*nCha/8,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),va='center',color='b',size='x-small')
+                    else:
+                        fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
+                        fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
+                        pl.plot([fmin,fmax],[Nxmax]*2,'r-')
+                        pl.text(fmin,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
+                        pl.plot([fmin,fmax],[Nymax]*2,'b-')
+                        pl.text(fmax,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),va='center',color='b',size='x-small')
+                #else:
+                #    if Nmax:
+                #        if not plotfreq:
+                #            pl.plot([3*nCha/8,5*nCha/8],[Nmax]*2,'r-')
+                #            pl.text(3*nCha/8,Nxmax,'<RN>='+str(floor(Nmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
+                #        else:
+                #            fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
+                #            fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
+                #            pl.plot([fmin,fmax],[Nmax]*2,'r-')
+                #            pl.text(fmin,Nmax,'<RN>='+str(floor(Nmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
 
                 #print(ispw, Nxmax, Nymax)
 
@@ -2332,8 +2372,8 @@ class ACreNorm(object):
                         pl.savefig('./RN_plots/'+fname)
                         pl.close()
                         # If there is already an entry here, then the threshold was reached. Save the output filename to the pipe dictionary.
-                        if self.rnpipestats[target][spw]:
-                            self.rnpipestats[target][spw]['spec_plot'] = fname
+                        if self.rnpipestats[target][str(spw)]:
+                            self.rnpipestats[target][str(spw)]['spec_plot'] = fname
                         if createpdf:
                             self.convert_plots_pdf(target, spw)
                     else:
@@ -3151,7 +3191,20 @@ class ACreNorm(object):
         fldnam=self.msmeta.namesforfields(infld)[0]  
 
         # imporved way - get ratio spectrum to find actually differences and then median outside ant loop
+        #
+        # AL - Is this the right order??? Souldn't it be Bandpass/Target?? Also, does it make sense to subtract the medians 
+        #      first rather than multiplying the ratio and then subtract the median?
+        #    - I confirmed that by dividing out the atmo profiles of the target and bandpass from each AC spectrum before
+        #      doing the initial divide to create ToB, you get the same answer and using the Bandpass_atm/Target_atm as the ratio
+        #      here. So IF that is the right thing to do, it's equivilent. It SEEMS like it, if you want to account for the atmosphere
+        #      attenuating the power then you would divide that factor out. 
+        #           - except why does it show up as emission then?....
+        #    - I guess this more comes down to "how (mathematically) is the atmospheric transmission profile actually effecting the values of the AC 
+        #      spectrum?" The answer to that question should shed light on how to "undo" it's effects so that we can make the proper ratio.
         ratioATM = self.atmtrans[fldnam][str(inspw)][str(inscan)] / self.atmtrans[calfld][str(inspw)][calscan]
+        #trg_atm = self.atmtrans[fldnam][str(inspw)][str(inscan)]
+        #cal_atm = self.atmtrans[calfld][str(inspw)][calscan]
+        #ratioATM = abs(trg_atm - cal_atm)/((trg_atm*cal_atm)/2.)
         ratioMed = pl.array(pl.median(ratioATM))
         # shift to baseline of average 1.0
         ratioATM = ratioATM + (1.0 - ratioMed)
@@ -3733,20 +3786,42 @@ class ACreNorm(object):
         """
         Super hacky way to create PDFs of created plots so that we can display them in the weblog.
         Simply calls the bash commands "montage" (to create super plots of pngs), "convert" (to
-        then convert those super plots into pdfs), and "pdftk" (to combine all pdfs into one). 
+        then convert those super plots into pdfs), and "pdfunite" (to combine all pdfs into one).
+
+        Imports: 
+            target : string
+                Name of the target field that matches the filename target
+
+            spw : str (or int, the type is forced)
+                The spectral window of the files that need to be converted to a PDF.
+
+        Output:
+            The target/spw matched plots are montaged and transformed into a PDF and placed into the
+            ./RN_plots directory. The name of the PDF is put into the self.rnpipestats dictionary. 
         """
         import glob
 
-        def sort_func(fn):
+        def diagnostic_sort(fn):
             # All files names are deterministic, we want to sort on the scan number, then on field number.
             return int(fn.split('scan')[-1].split('_')[0]), int(fn.split('field')[-1].split('.')[0])
-        
+
         # First create the montaged files of the ReNormDiagnosticCheck plots. Defaults stolen from AU tools.
         tile = '2x4'
         geometry = '1000x800+2+2'
         pngs = glob.glob('./RN_plots/'+self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spw)+'_scan*_field*.png')
-        pngs.sort(key=sort_func) # sort file names by scan number, then by field to get the right order
+        if len(pngs) == 0:
+            print('No PNGs found! Exiting without creating a PDF.')
+            self.logReNorm.write('No PNGs found! Exiting without creating a PDF.\n')
+            return
+        pngs.sort(key=diagnostic_sort) # sort file names by scan number, then by field to get the right order
+        # Add the summary spectra plot to the beginning of the file
         pngs = ['./RN_plots/'+self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png']+pngs
+        # Add the outlier antenna plots
+        fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'),self.msmeta.namesforfields(target))
+        ant_pngs = glob.glob('./RN_plots/'+self.msname+'_ReNormHeuristicOutlierAnt_*_spw'+str(spw)+'_scan*field'+str(fields)+'*.png')
+        if len(ant_pngs) != 0:
+            ant_pngs.sort()
+            pngs = pngs+ant_pngs
         pages = int(ceil(len(pngs)/8.)) # Figure out how many pages are needed. We will create tiles of 2 columns x 4 rows
         j = 0
         montaged_pngs = [] # Keep the list of newly created montages
@@ -3757,7 +3832,6 @@ class ACreNorm(object):
             montage = './RN_plots/'+self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spw)+'_montage_'+str(i)+'.png'
             os.system('montage -geometry '+geometry+' -tile '+tile+' '+figs+' '+montage)
             montaged_pngs.append(montage)
-        #fnames = ['./RN_plots/'+self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png'] + montaged_files
 
         # Now convert all the PNGs into PDFs
         for mfile in montaged_pngs:
@@ -3766,8 +3840,8 @@ class ACreNorm(object):
 
         # Finally, create the summary PDF containing all the plots
         outfile = self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spw)+'_summary.pdf'
-        os.system('pdftk '+pdflist+' cat output ./RN_plots/'+outfile)
+        os.system('pdfunite '+pdflist+' ./RN_plots/'+outfile)
 
         # Put the name of the new PDF into the self.rnpipestats dictionary.
-        if self.rnpipestats[target][int(spw)]:
-            self.rnpipestats[target][int(spw)]['pdf_summary'] = outfile
+        if self.rnpipestats[target][str(spw)]:
+            self.rnpipestats[target][str(spw)]['pdf_summary'] = outfile
