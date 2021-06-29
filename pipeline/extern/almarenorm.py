@@ -2307,7 +2307,10 @@ class ACreNorm(object):
                     else:
                         ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)] # this is the profiles stored in the dictionary from the renormalize run
                     pl.twinx()
-                    pl.plot(100.*ATMprof,c='m',linestyle='-',linewidth=2) 
+                    if plotfreq:
+                        pl.plot(freqs, 100.*ATMprof, c='m', linestyle='-', linewidth=2)
+                    else:
+                        pl.plot(100.*ATMprof,c='m',linestyle='-',linewidth=2) 
                     # channels is not called its just the shape of the data e.g. N[0,:,iAnt] = chans - this is the same as the ATMprof as we get it using the SPW data
                     pl.xlim(lims[0], lims[1])
                     pl.ylim(0,100)
