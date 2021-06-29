@@ -36,6 +36,14 @@ class PipelineRegression(object):
         self.visname = visname
         self.expectedoutput = expectedoutput
         self.testinput = f'{input_dir}/{visname}'
+        self.__initialize_working_folder()
+        
+    def __initialize_working_folder(self):
+        """Initialize a root folder for task execution."""
+        if os.path.isdir(self.visname):
+            shutil.rmtree(self.visname)
+        os.mkdir(self.visname)
+        os.chdir(self.visname)
         
     def __sanitize_regression_string(self, instring: str) -> Tuple:
         """Sanitize to get numeric values, remove newline chars and change to float.
@@ -59,7 +67,7 @@ class PipelineRegression(object):
     def run(self, ppr: Optional[str] = None, telescope: str  = 'alma', default_relative_tolerance: float = 1e-7):
         """
         Run test with PPR if supplied or recipereducer if no PPR and compared to expected results.
-        
+
         The inputs and expectd output are usually found in the pipeline data repository.
 
         Args:
@@ -91,6 +99,11 @@ class PipelineRegression(object):
                 LOG.error("Telescope is not 'alma' or 'vla'.  Can't run executeppr.")
         else:
             LOG.warning("Running without Pipeline Processing Request (PPR).  Using recipereducer instead.")
+            try:
+                os.mkdir('working')
+            except FileExistsError:
+                LOG.warning(f"Directory working exists.  Continuing")
+            os.chdir('working')
             pipeline.recipereducer.reduce(vis=[input_vis], procedure=self.recipe)
 
         # Get new results
@@ -149,3 +162,21 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
     
     pr.run()
 
+def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression():
+    """Run ALMA single-dish restoredata regression on the obseration data of M100.
+
+    Recipe name:                procedure_hsd_calimage
+    Dataset:                    uid___A002_X85c183_X36f_SPW15_23
+    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
+    """
+    input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
+    pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
+                            input_dir=input_dir, visname='uid___A002_X85c183_X36f_SPW15_23.ms',
+                            expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
+                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt')) 
+
+    # copy files use restore task into products folder
+    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+    shutil.copytree(input_products, './products')
+
+    pr.run(ppr='pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/PPR.xml')
