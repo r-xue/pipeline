@@ -131,6 +131,8 @@ class PipelineRegression(object):
                     errors.append(errorstr)
             [LOG.warning(x) for x in errors]
             assert not errors
+            
+        os.chdir("../../")
 
 
 def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression():
