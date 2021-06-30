@@ -621,7 +621,8 @@ class CleanBase(basetask.StandardTaskTemplate):
                 if os.path.exists(name):
                     imageheader.set_miscinfo(name=name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                              type=im_type, iter=iter,
-                                             intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                             intent=inputs.intent, specmode=inputs.specmode,
+                                             robust=inputs.robust, weighting=inputs.weighting,
                                              is_per_eb=inputs.is_per_eb,
                                              context=context)
             # Store in TcleanResult
