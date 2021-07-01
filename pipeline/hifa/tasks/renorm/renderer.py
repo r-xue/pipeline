@@ -50,10 +50,7 @@ def make_renorm_table(context, results, weblog_dir):
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
 
-                # TODO: get the threshold used from almarenorm.py when it becomes available
-                # It will probably end up being per spw, so the code that uses it below will
-                #    need to adjust accordingly
-                threshold = result.stats.get('threshold', 1.02)
+                threshold_factor = result.threshold + 1.0
 
                 # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
@@ -83,7 +80,7 @@ def make_renorm_table(context, results, weblog_dir):
         mm = re.search('<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
         if mm:  # do we have a pattern match?
             scale_factor = float(mm.groups()[0])
-            if scale_factor > threshold:
+            if scale_factor > threshold_factor:
 
                 for col in (-3, -2, -1):
                     cell = ET.fromstring(merged_rows[row][col])
