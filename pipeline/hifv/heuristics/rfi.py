@@ -88,7 +88,7 @@ class RflagDevHeuristic(api.Heuristic):
             report['*dev'][:, 0]:           FldId
             report['*dev'][:, 1]:           SpwId
             report['freqdev'][:, 2]:        Estimated freqdev/timedev
-                                            note: this is not the flagging threshold (which is defined as dev*devscale).
+                                            note: this is not the "clipping" threshold (which is defined as dev*devscale).
         
         - the median-based clip of spw rms within each baseband/field is summarized in CAS-11598 and PIPE-685/987
         """
