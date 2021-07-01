@@ -234,10 +234,13 @@ class PipelineManifest(object):
         to be an ous element, e.d. an asdm element will do
         """
         for i, image in enumerate(imagelist):
+            # "manualstring" is a special attribute requested in PIPE-1105 to
+            # distinguish pipeline products from manually reduced ones. For
+            # pipeline runs "manualstring" is always "N/A".
             if extra_attributes_list is None:
-                eltree.SubElement(ous, "image", name=image, imtype=imtype)
+                eltree.SubElement(ous, "image", name=image, imtype=imtype, manualstring="N/A")
             else:
-                eltree.SubElement(ous, "image", name=image, imtype=imtype, **extra_attributes_list[i])
+                eltree.SubElement(ous, "image", name=image, imtype=imtype, manualstring="N/A", **extra_attributes_list[i])
 
     @staticmethod
     def add_pipescript(ous, pipescript):

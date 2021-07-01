@@ -1305,11 +1305,6 @@ finally:
                             except:
                                 fits_keywords[key] = 'N/A'
                     ff.close()
-
-                    # "manualstring" is a special case requested in PIPE-1105 to match
-                    # header entries of manually reduced data. For pipeline runs
-                    # manualstring will always be 'N/A'.
-                    fits_keywords['manualstring'] = 'N/A'
                 except Exception as e:
                     LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
                     fits_keywords = {}
