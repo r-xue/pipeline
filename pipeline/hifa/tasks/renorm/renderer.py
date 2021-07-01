@@ -42,15 +42,13 @@ def make_renorm_table(context, results, weblog_dir):
     # Will hold all the input and output MS(s)
     rows = []
 
-    threshold = None
 
     # Loop over the results
     for result in results:
+        threshold_factor = result.threshold + 1.0
         vis = os.path.basename(result.inputs['vis'])
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
-
-                threshold_factor = result.threshold + 1.0
 
                 # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
