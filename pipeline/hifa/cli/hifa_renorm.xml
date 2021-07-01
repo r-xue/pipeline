@@ -23,7 +23,7 @@
     <param name="threshold" type="float">
         <shortdescription>Apply correction if max correction is above threshold and apply=True</shortdescription>
         <description>Apply correction if max correction is above threshold and apply=True</description>
-        <value>0.0</value>
+        <value>1.02</value>
     </param>
 
     <param name="correctATM" type="bool">

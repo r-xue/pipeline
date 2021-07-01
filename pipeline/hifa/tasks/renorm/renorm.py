@@ -37,7 +37,7 @@ class RenormResults(basetask.Results):
 
 class RenormInputs(vdp.StandardInputs):
     apply = vdp.VisDependentProperty(default=False)
-    threshold = vdp.VisDependentProperty(default=0.0)
+    threshold = vdp.VisDependentProperty(default=1.02)
     correctATM = vdp.VisDependentProperty(default=False)
     diagspectra = vdp.VisDependentProperty(default=True)
 
@@ -46,10 +46,7 @@ class RenormInputs(vdp.StandardInputs):
         self.context = context
         self.vis = vis
         self.apply = apply
-        if 0.0 == threshold:
-            self.threshold = None
-        else:
-            self.threshold = threshold
+        self.threshold = threshold
         self.correctATM = correctATM
         self.diagspectra = diagspectra
 
