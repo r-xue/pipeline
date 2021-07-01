@@ -45,7 +45,7 @@ def make_renorm_table(context, results, weblog_dir):
     scale_factors = []
     # Loop over the results
     for result in results:
-        threshold_factor = result.threshold + 1.0
+        threshold = result.threshold
         vis = os.path.basename(result.inputs['vis'])
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
@@ -79,7 +79,7 @@ def make_renorm_table(context, results, weblog_dir):
         mm = re.search('<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
         if mm:  # do we have a pattern match?
             scale_factor = scale_factors[row]
-            if scale_factor > threshold_factor:
+            if scale_factor > threshold:
 
                 for col in (-3, -2, -1):
                     cell = ET.fromstring(merged_rows[row][col])

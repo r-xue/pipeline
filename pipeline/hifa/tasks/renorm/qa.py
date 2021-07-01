@@ -20,7 +20,6 @@ class RenormQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         threshold = result.threshold 
-        threshold_factor = 1.0 + threshold 
         for source in result.stats: 
             for spw in result.stats[source]:
                 try:
@@ -36,25 +35,25 @@ class RenormQAHandler(pqa.QAPlugin):
                         longmsg = 'EB {} source {} spw {}: Error calculating corrections. Maximum factor is {}.'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
-                    elif 1.0 <= max_factor <= threshold_factor:
+                    elif 1.0 <= max_factor <= threshold:
                         score = 1.0
                         shortmsg = 'Renormalization factor within threshold'
                         longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
                                   'is within threshold of {:.1%}'.format( \
-                                  os.path.basename(result.vis), source, spw, max_factor, threshold)
-                    elif max_factor > threshold_factor:
+                                  os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                    elif max_factor > threshold:
                         if result.apply:
                             score = 0.9
                             shortmsg = 'Renormalization applied'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
                                       'is outside threshold of {:.1%} so corrections were applied to data'.format( \
-                                      os.path.basename(result.vis), source, spw, max_factor, threshold)
+                                      os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         else:
-                            score = max(0.66+threshold_factor-max_factor, 0.34)
+                            score = max(0.66+threshold-max_factor, 0.34)
                             shortmsg = 'Renormalization factor outside threshold'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
                                       'is outside threshold of {:.1%}'.format( \
-                                      os.path.basename(result.vis), source, spw, max_factor, threshold)
+                                      os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
                     result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                 except:
