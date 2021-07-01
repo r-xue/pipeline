@@ -42,7 +42,7 @@ def make_renorm_table(context, results, weblog_dir):
     # Will hold all the input and output MS(s)
     rows = []
 
-
+    scale_factors = []
     # Loop over the results
     for result in results:
         threshold_factor = result.threshold + 1.0
@@ -52,6 +52,7 @@ def make_renorm_table(context, results, weblog_dir):
 
                 # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
+                scale_factors.append(maxrn)
                 if maxrn:
                     maxrn_field = f"{spw_stats.get('max_rn'):.4} ({spw_stats.get('max_rn_field')})"
                 else:
@@ -77,7 +78,7 @@ def make_renorm_table(context, results, weblog_dir):
     for row, _ in enumerate(merged_rows):
         mm = re.search('<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
         if mm:  # do we have a pattern match?
-            scale_factor = float(mm.groups()[0])
+            scale_factor = scale_factors[row]
             if scale_factor > threshold_factor:
 
                 for col in (-3, -2, -1):
