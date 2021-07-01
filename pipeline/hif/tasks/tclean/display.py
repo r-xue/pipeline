@@ -156,7 +156,7 @@ class CleanSummary(object):
                     except:
                         parameters['prefix'] = None
 
-                    virtual_spw = parameters['spw']
+                    virtual_spw = parameters['virtspw']
                     imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
                     if imaging_mss != []:
                         ref_ms = imaging_mss[0]

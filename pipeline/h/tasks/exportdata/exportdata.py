@@ -1276,6 +1276,7 @@ finally:
                 try:
                     ff = apfits.open(fitsfile)
                     fits_keywords = dict()
+                    # Loop through FITS keywords.
                     for key in ['object', 'obsra', 'obsdec', 'intent', 'specmode',
                                 'naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
                                 'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
@@ -1304,6 +1305,11 @@ finally:
                             except:
                                 fits_keywords[key] = 'N/A'
                     ff.close()
+
+                    # "manualstring" is a special case requested in PIPE-1105 to match
+                    # header entries of manually reduced data. For pipeline runs
+                    # manualstring will always be 'N/A'.
+                    fits_keywords['manualstring'] = 'N/A'
                 except Exception as e:
                     LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
                     fits_keywords = {}

@@ -796,7 +796,7 @@ def make_plot_dict(plots):
     # Make the plots
     prefixes = sorted({p.parameters['prefix'] for p in plots})
     fields = sorted({p.parameters['field'] for p in plots})
-    spws = sorted({p.parameters['spw'] for p in plots})
+    spws = sorted({p.parameters['virtspw'] for p in plots})
     iterations = sorted({p.parameters['iter'] for p in plots})
     types = sorted({p.parameters['type'] for p in plots})
 
@@ -812,7 +812,7 @@ def make_plot_dict(plots):
                         matching = [p for p in plots
                                     if p.parameters['prefix'] == prefix
                                     and p.parameters['field'] == field
-                                    and p.parameters['spw'] == spw
+                                    and p.parameters['virtspw'] == spw
                                     and p.parameters['iter'] == iteration
                                     and p.parameters['type'] == t]
                         if matching != []:
