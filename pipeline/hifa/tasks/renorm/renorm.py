@@ -10,7 +10,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, apply, threshold, correctATM, diagspectra, stats):
+    def __init__(self, vis, apply, threshold, correctATM, diagspectra, stats, alltdm):
         super(RenormResults, self).__init__()
         self.pipeline_casa_task = 'Renorm'
         self.vis = vis
@@ -19,6 +19,7 @@ class RenormResults(basetask.Results):
         self.correctATM = correctATM
         self.diagspectra = diagspectra
         self.stats = stats
+        self.alltdm = alltdm
 
     def merge_with_context(self, context):
         """
@@ -33,6 +34,7 @@ class RenormResults(basetask.Results):
                 f'\tthreshold={self.threshold}\n'
                 f'\tcorrectATM={self.correctATM}\n'
                 f'\tdiagspectra={self.diagspectra}\n'
+                f'\talltdm={self.alltdm}\n'
                 f'\tstats={self.stats}')
 
 class RenormInputs(vdp.StandardInputs):
@@ -57,6 +59,7 @@ class Renorm(basetask.StandardTaskTemplate):
 
     def prepare(self):
         inp = self.inputs
+        alltdm = True  # assume no FDM present
 
         LOG.info("This Renorm class is running.")
 
@@ -64,12 +67,15 @@ class Renorm(basetask.StandardTaskTemplate):
         rn = ACreNorm(inp.vis)
         rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                        diagspectra=inp.diagspectra)
+        if not rn.tdm_only:
+            rn.plotSpectra()
+            alltdm = False
+
         # get stats (dictionary) indexed by source, spw
-        rn.plotSpectra()
         stats = rn.rnpipestats
         rn.close()
 
-        result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats)
+        result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats, alltdm)
 
         return result
 

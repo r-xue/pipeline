@@ -28,7 +28,8 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         weblog_dir = os.path.join(pipeline_context.report_dir,
                                   'stage%s' % result.stage_number)
 
-        table_rows = make_renorm_table(pipeline_context, result, weblog_dir)
+        (table_rows,
+         mako_context['alerts_info']) = make_renorm_table(pipeline_context, result, weblog_dir)
 
         mako_context.update({
             'table_rows': table_rows,
@@ -41,12 +42,17 @@ def make_renorm_table(context, results, weblog_dir):
 
     # Will hold all the input and output MS(s)
     rows = []
+    alert = []
 
     scale_factors = []
     # Loop over the results
     for result in results:
         threshold = result.threshold
         vis = os.path.basename(result.inputs['vis'])
+        if result.alltdm:
+            alert = ['No FDM spectral windows are present, '
+                     'so the amplitude scale does not need to be '
+                     'assessed for renormalization.']
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
 
@@ -54,7 +60,7 @@ def make_renorm_table(context, results, weblog_dir):
                 maxrn = spw_stats.get('max_rn')
                 scale_factors.append(maxrn)
                 if maxrn:
-                    maxrn_field = f"{spw_stats.get('max_rn'):.4} ({spw_stats.get('max_rn_field')})"
+                    maxrn_field = f"{spw_stats.get('max_rn'):.8} ({spw_stats.get('max_rn_field')})"
                 else:
                     maxrn_field = ""
 
@@ -88,7 +94,7 @@ def make_renorm_table(context, results, weblog_dir):
                     merged_rows[row][col] = ET.tostring(innermost_child)
 
 
-    return merged_rows
+    return merged_rows, alert
 
 def getchild(el):
     if el.findall('td'):
