@@ -93,8 +93,8 @@ class SDBLFlagSummary(object):
                 # generate summary plot
                 FigFileRoot = ("FlagStat_%s_ant%d_field%d_spw%d_pol%d_iter%d" %
                                (asdm, antid, fieldid, spwid, polid, iteration))
-                time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,     ### This may get out of pol loop
-                                                 ms=ms, field_id=fieldid)             ### 
+                time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
+                                                 ms=ms, field_id=fieldid)
                 # time_gap[0]: PosGap, time_gap[1]: TimeGap
                 for i in range(len(thresholds)):
                     thres = thresholds[i]
@@ -118,8 +118,10 @@ class SDBLFlagSummary(object):
                 # pack flag values
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
                 # create plots
-                plots = SDFlagPlotter.create_plots( self.ms, datatable, antid, spwid, is_baselined, FlagRule_local,
-                                                   PermanentFlag, NPp_dict, final_thres, time_gap, FigFileDir, FigFileRoot )
+                plotter = SDFlagPlotter()
+                plots = plotter.create_plots_singlepol( 
+                    self.ms, datatable, antid, spwid, pol, is_baselined, FlagRule_local,
+                    PermanentFlag, NPp_dict, final_thres, time_gap, FigFileDir, FigFileRoot )
 
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
@@ -132,7 +134,7 @@ class SDBLFlagSummary(object):
                 self.show_flags( dt_idx, is_baselined, FlaggedRows, FlaggedRowsCategory )
                 # create summary data
                 nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
-                flagplotter = None
+                plotter = None
 
                 t1 = time.time()
 
