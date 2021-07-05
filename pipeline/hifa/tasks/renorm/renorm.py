@@ -10,7 +10,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, apply, threshold, correctATM, diagspectra, stats, alltdm):
+    def __init__(self, vis, apply, threshold, correctATM, diagspectra, stats, alltdm, exception=None):
         super(RenormResults, self).__init__()
         self.pipeline_casa_task = 'Renorm'
         self.vis = vis
@@ -20,6 +20,7 @@ class RenormResults(basetask.Results):
         self.diagspectra = diagspectra
         self.stats = stats
         self.alltdm = alltdm
+        self.exception = exception
 
     def merge_with_context(self, context):
         """
@@ -63,19 +64,30 @@ class Renorm(basetask.StandardTaskTemplate):
 
         LOG.info("This Renorm class is running.")
 
+        # Issue warning if band 9 and 10 data is found
+        bands = [s.band for sub in [m.get_spectral_windows() for m in inp.context.observing_run.measurement_sets] for s in sub]
+        if 'ALMA Band 9' in bands:
+            LOG.warning('Running hifa_renorm on ALMA Band 9 (DSB) data')
+        if 'ALMA Band 10' in bands:
+            LOG.warning('Running hifa_renorm on ALMA Band 10 (DSB) data')
+
         # call the renorm code
-        rn = ACreNorm(inp.vis)
-        rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
-                       diagspectra=inp.diagspectra)
-        if not rn.tdm_only:
-            rn.plotSpectra()
-            alltdm = False
+        try:
+            rn = ACreNorm(inp.vis)
+            rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
+                           diagspectra=inp.diagspectra)
+            if not rn.tdm_only:
+                rn.plotSpectra()
+                alltdm = False
 
-        # get stats (dictionary) indexed by source, spw
-        stats = rn.rnpipestats
-        rn.close()
+            # get stats (dictionary) indexed by source, spw
+            stats = rn.rnpipestats
+            rn.close()
 
-        result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats, alltdm)
+            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats, alltdm)
+        except Exception as e:
+            LOG.error('Failure in running renormalization heuristic: {}'.format(e))
+            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, {}, alltdm, e)
 
         return result
 

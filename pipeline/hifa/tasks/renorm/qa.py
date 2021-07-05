@@ -20,6 +20,13 @@ class RenormQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         threshold = result.threshold 
+        if result.exception is not None:
+            score = 0.0
+            shortmsg = 'Failure in renormalization'
+            longmsg = 'Failure in running renormalization heuristic: {}'.format(result.exception)
+            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
+            return
+
         for source in result.stats: 
             for spw in result.stats[source]:
                 try:
