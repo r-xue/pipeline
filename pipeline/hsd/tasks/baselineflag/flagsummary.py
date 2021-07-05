@@ -140,9 +140,7 @@ class SDBLFlagSummary(object):
 
                 # dict to list conversion (only for compatibility)
                 # will be removed once Flag by Reason table is removed
-                nflags_list = []
-                for key in nflags.keys():
-                    nflags_list.append(nflags[key])
+                nflags_list = list(nflags.values())
 
                 LOG.info('Plot flags End: Elapsed time = %.1f sec' % (t1 - t0) )
                 flagSummary.append({'html': htmlName, 'name': asdm,
@@ -167,7 +165,7 @@ class SDBLFlagSummary(object):
             polid          : polarization ID
             ids            : row numbers       
             FlagRule_local : FlagRule modified for local use
-        Returns: (none)
+        Returns:
             FlaggedRows         : flagged rows
             FlaggedRowsCategory : flagged rows by category
             PermanentFlag       : permanent flag
@@ -203,8 +201,7 @@ class SDBLFlagSummary(object):
 
         # Plot statistics
         # Store data for plotting
-        N = 0
-        for ID in ids:
+        for N, ID in enumerate(ids):
             row = datatable.getcell('ROW', ID)
             time = datatable.getcell('TIME', ID)
             # Check every flags to create summary flag
@@ -262,7 +259,6 @@ class SDBLFlagSummary(object):
             NPpflag['RmsExpectedPostFitFlag'][N] = tFLAG[5]
             if FlagRule_local['RmsExpectedPostFitFlag']['isActive'] and tFLAG[5] == 0:
                 FlaggedRowsCategory['RmsExpectedPostFitFlag'].append(row)
-            N += 1
         # data store finished
         
         NPp_dict = {
