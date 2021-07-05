@@ -146,7 +146,7 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
+        LOG.error('Error importing {!s}'.format(os.path.basename(vis)))
         LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
         import traceback
         tb = traceback.format_exc()
