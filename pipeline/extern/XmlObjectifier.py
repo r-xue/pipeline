@@ -274,6 +274,7 @@ def castType(value):
             elif value.lower() == 'true':
                 value = True
 
+    # PIPE-585: workaround if the value string is intended to represent a list or tuple
     if isinstance(value, str):
         try:
             pyobj = ast.literal_eval(value)
