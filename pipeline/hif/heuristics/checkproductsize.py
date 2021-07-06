@@ -69,7 +69,9 @@ class CheckProductSizeHeuristics(object):
         imlist = makeimlist_result.targets
 
         # Extract some information for later
-        fields = list({i['field'] for i in imlist})
+        #
+        # Sort fields to get consistent mitigation results.
+        fields = sorted({i['field'] for i in imlist})
         nfields = len(fields)
         spws = list({i['spw'] for i in imlist})
         ref_ms = self.context.observing_run.measurement_sets[0]
@@ -98,15 +100,8 @@ class CheckProductSizeHeuristics(object):
         sensitivityGoal = \
             imlist[0]['heuristics'].representative_target()
 
-        # Sort to get consistent mitigation results
-        fields.sort()
-        # Make sure that the representative source is the first list item
-        try:
-            repr_source_index = [utils.dequote(f) for f in fields].index(utils.dequote(repr_source))
-            repr_source_entry = fields.pop(repr_source_index)
-            fields = [repr_source_entry] + fields
-        except ValueError:
-            LOG.warning('Could not reorder field list to place representative source first')
+        # Make sure that the representative source is the first list item.
+        fields = utils.place_repr_source_first(fields, repr_source)
 
         # Get original maximum cube and product sizes
         cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)

@@ -745,12 +745,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # In case of TARGET intent place representative source first in the list.
                 if 'TARGET' in inputs.intent:
-                    try:
-                        repr_source_index = [utils.dequote(f[0]) for f in sorted_field_intent_list].index(utils.dequote(repr_source))
-                        repr_source_entry = sorted_field_intent_list.pop(repr_source_index)
-                        sorted_field_intent_list = [repr_source_entry] + sorted_field_intent_list
-                    except ValueError:
-                        LOG.warning('Could not reorder field list to place representative source first')
+                    sorted_field_intent_list = utils.place_repr_source_first(sorted_field_intent_list, repr_source)
 
                 for field_intent in sorted_field_intent_list:
                     mosweight = self.heuristics.mosweight(field_intent[1], field_intent[0])
