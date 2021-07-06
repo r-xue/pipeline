@@ -87,15 +87,21 @@ class SDBLFlagSummary(object):
             dt_idx = [chunk for chunk in flatiter]
             iteration = _get_iteration(self.context.observing_run.ms_reduction_group,
                                        ms, antid, fieldid, spwid)
+
+            time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
+                                             ms=ms, field_id=fieldid)
+            # time_gap[0]: PosGap, time_gap[1]: TimeGap
+            
             for pol in pollist:
                 ddobj = ms.get_data_description(spw=spwid)
                 polid = ddobj.get_polarization_id(pol)
                 # generate summary plot
                 FigFileRoot = ("FlagStat_%s_ant%d_field%d_spw%d_pol%d_iter%d" %
                                (asdm, antid, fieldid, spwid, polid, iteration))
-                time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
-                                                 ms=ms, field_id=fieldid)
-                # time_gap[0]: PosGap, time_gap[1]: TimeGap
+                # moved outside pol loop
+                # time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
+                #                                 ms=ms, field_id=fieldid)
+                ## time_gap[0]: PosGap, time_gap[1]: TimeGap
                 for i in range(len(thresholds)):
                     thres = thresholds[i]
                     if (thres['msname'] == ms.basename and thres['antenna'] == antid and
@@ -118,10 +124,10 @@ class SDBLFlagSummary(object):
                 # pack flag values
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
                 # create plots
-                plotter = SDFlagPlotter()
-                plots = plotter.create_plots_singlepol( 
-                    self.ms, datatable, antid, spwid, pol, is_baselined, FlagRule_local,
-                    PermanentFlag, NPp_dict, final_thres, time_gap, FigFileDir, FigFileRoot )
+                ### instance should be made outside pol loop if overplotting pols
+                flagplotter = SDFlagPlotter( self.ms, datatable, antid, spwid, time_gap, FigFileDir )
+                flagplotter.register_data( pol, is_baselined, FlagRule_local, PermanentFlag, NPp_dict, final_thres )
+                plots = flagplotter.create_plots( FigFileRoot )
 
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
@@ -130,16 +136,16 @@ class SDBLFlagSummary(object):
                 htmlName = self.create_summary_table( self.ms, datatable, polid, is_baselined, plots, 
                                                       dt_idx, flagRule, FlaggedRows, FlaggedRowsCategory, 
                                                       FigFileDir, FigFileRoot )
+
                 # show flags on LOG
                 self.show_flags( dt_idx, is_baselined, FlaggedRows, FlaggedRowsCategory )
                 # create summary data
                 nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
-                plotter = None
 
                 t1 = time.time()
 
                 # dict to list conversion (only for compatibility)
-                # will be removed once Flag by Reason table is removed
+                # will be removed once "Flag by Reason" table is removed
                 nflags_list = list(nflags.values())
 
                 LOG.info('Plot flags End: Elapsed time = %.1f sec' % (t1 - t0) )
@@ -149,6 +155,8 @@ class SDBLFlagSummary(object):
                                     'nrow': len(dt_idx), 'nflags': nflags,
                                     'nflags_list': nflags_list,
                                     'baselined': is_baselined})
+
+            flagplotter = None
 
         end_time = time.time()
         LOG.info('PROFILE execute: elapsed time is %s sec'%(end_time-start_time))

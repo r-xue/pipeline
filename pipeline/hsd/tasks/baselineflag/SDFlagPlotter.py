@@ -33,79 +33,92 @@ class SDFlagPlotter(object):
     """
     Class to create Flag Plots for hsd_blflag weblog
     """
-    def __init__( self ):
+    def __init__( self, msobj:MeasurementSet, datatable:DataTable, antid:int, spwid:int, 
+                  time_gap:List[List[int]], FigFileDir:Optional[str] ):
         """
-        constructor
-        """
-        pass
-
-    def create_plots_singlepol( self, msobj:MeasurementSet, datatable:DataTable, 
-                                antid:int, spwid:int, pol:str,
-                                is_baselined:bool, FlagRule_local:Dict,
-                                PermanentFlag:List[int], NPp:Dict, 
-                                threshold:List[List[float]], time_gap:List[List[int]], 
-                                FigFileDir:Optional[str], FigFileRoot:str ) -> List[str]:
-        """
-        Wrapper for conventional plots with single pol
+        Constructor 
 
         Args:
             msobj          : Measurementset object
             datatable      : DataTable
             antid          : antenna ID
             spwid          : SpW ID
+            time_gap       : time gap
+            FigFileDir     : directory to output figure files
+        Returns:
+            (none)
+        """
+        self.msobj = msobj
+        self.datatable = datatable
+        self.antid = antid
+        self.spwid = spwid
+        self.time_gap = time_gap
+        self.FigFileDir = FigFileDir
+
+        self.pollist = []
+        self.is_baselined_dict   = {}
+        self.FlagRule_local_dict = {}
+        self.PermanentFlag_dict  = {}
+        self.NPp_dict            = {}
+        self.threshold_dict      = {}
+
+        return
+
+
+    def register_data( self, pol:str,
+                         is_baselined:bool, FlagRule_local:Dict,
+                         PermanentFlag:List[int], NPp:Dict, 
+                         threshold:List[List[float]] ) -> List[str]:
+        """
+        Resiter data to be plotted
+
+        Args:
             pol            : polarization
             is_baselined   : True if baselined, False if not
             FlagRule_local : FlagRule
             PermanentFlag  : permanent Flag
             NPp            : flagging data summarized for weblog
             threshold      : threshold
-            time_gap       : time gap
-            FigFileDir     : directory to output figure files
-            FigFileRoot    : basename of figure filenames
         Returns:
-            List of plot filenames 
+            (none)
+        Raises:
+            RuntimeError if attempted to register data for existing pol
         """
-        pollist             = [ pol ]
-        is_baselined_dict   = { pol: is_baselined }
-        FlagRule_local_dict = { pol: FlagRule_local }
-        PermanentFlag_dict  = { pol: PermanentFlag }
-        NPp_dict            = { pol: NPp }
-        threshold_dict      = { pol: threshold }
-        FigFileRoot_dict    = { pol: FigFileRoot }
-
-        return self.create_plots_allpol( msobj, datatable, antid, spwid, pollist,
-                                         is_baselined_dict, FlagRule_local_dict,
-                                         PermanentFlag_dict, NPp_dict,
-                                         threshold_dict, time_gap,
-                                         FigFileDir, FigFileRoot_dict )
-
+        if pol in self.pollist:
+            raise RuntimeError( "Attempted to register existing pol={} in {}".format(pol, self.pollist))
+        self.pollist.append(pol)
+        self.is_baselined_dict[pol]   = is_baselined
+        self.FlagRule_local_dict[pol] = FlagRule_local
+        self.PermanentFlag_dict[pol]  = PermanentFlag
+        self.NPp_dict[pol]            = NPp
+        self.threshold_dict[pol]      = threshold
         
-    def create_plots_allpol( self, msobj:MeasurementSet, datatable:DataTable, 
-                             antid:int, spwid:int, pollist:List[int],
-                             is_baselined_dict:Dict, FlagRule_local_dict:Dict, 
-                             PermanentFlag_dict:Dict, NPp_dict:Dict, 
-                             threshold_dict:Dict, time_gap:List[List[int]], 
-                             FigFileDir:str, FigFileRoot_dict:Dict ) -> List[str]:
+        return
+
+
+    def create_plots( self, FigFileRoot:Optional[str]=None ):
         """
         Create Summary plots
-    
+        
         Vars:
-            msobj               : Measurementset object
-            datatable           : DataTable
-            antid               : antenna ID
-            spwid               : SpW ID
-            pollist             : list of pol ids
-            is_baselined_dict   : dictionary of is_baselined (True if baselined, False if not)
-            FlagRule_local_dict : dictionary of flag Rule for local use
-            PermanentFlag_dict  : dictionary of Permanent flag
-            NPp_dict:           : dictionary of flagging data summarized for weblog
-            threshold_dict      : dictionary of thresholds
-            time_gap            : time gap
-            FigFileDir          : directory to output figure files
-            FigFileRoot_dict    : dictionary of  basenames of figure files 
+            FigFileRoot : basename of figure files 
         Returns:
             List of Figure filenames (basename only)
         """
+        msobj = self.msobj
+        datatable = self.datatable
+        antid = self.antid
+        spwid = self.spwid
+        time_gap = self.time_gap
+        FigFileDir = self.FigFileDir
+
+        pollist = self.pollist
+        is_baselined_dict = self.is_baselined_dict
+        FlagRule_local_dict = self.FlagRule_local_dict
+        PermanentFlag_dict = self.PermanentFlag_dict
+        NPp_dict = self.NPp_dict
+        threshold_dict = self.threshold_dict
+
         ant_name     = msobj.get_antenna(antid)[0].name
         PosGap = time_gap[0]
         TimeGap = time_gap[1]
@@ -125,7 +138,6 @@ class SDFlagPlotter(object):
         timeCol = datatable.getcol('TIME')
         PosGapInTime = timeCol.take(PosGap)
         TimeGapInTime = timeCol.take(TimeGap)
-        figfilename_dict = {}
         for pol in pollist:
             PlotData_dict[pol]['row'] =  NPp_dict[pol]['rows']['TsysFlag']
             PlotData_dict[pol]['time'] = NPp_dict[pol]['time']['TsysFlag']
@@ -140,9 +152,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['TsysFlag']['isActive']
             PlotData_dict[pol]['threType'] = "line"
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['TsysFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol] + '_0.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict )
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_0.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
+        plots.append( figfilename )
 
         # RMS flag before baseline fit
         for pol in pollist:
@@ -156,9 +168,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['ylabel'] = "Baseline RMS ({})".format(bunit)
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RmsPreFitFlag']['isActive']
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RmsPreFitFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol] + '_1.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict )
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_1.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
+        plots.append( figfilename )
 
         # RMS flag after baseline fit
         for pol in pollist:
@@ -168,9 +180,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['title'] = "Baseline RMS ({}) after baseline subtraction".format(bunit)
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RmsPostFitFlag']['isActive']
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RmsPostFitFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol]+'_2.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict ) 
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_2.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename ) 
+        plots.append( figfilename )
     
         # Running mean flag before baseline fit
         for pol in pollist:
@@ -180,9 +192,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) before baseline subtraction".format(bunit, FlagRule_local_dict[pol]['RunMeanPreFitFlag']['Nmean'])
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RunMeanPreFitFlag']['isActive']
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RunMeanPreFitFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol]+'_3.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict )
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_3.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
+        plots.append( figfilename )
 
         # Running mean flag after baseline fit
         for pol in pollist:
@@ -192,9 +204,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) after baseline subtraction".format(bunit, FlagRule_local_dict[pol]['RunMeanPostFitFlag']['Nmean'])
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RunMeanPostFitFlag']['isActive']
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RunMeanPostFitFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol]+'_4.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict ) 
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_4.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename) 
+        plots.append( figfilename )
 
         # Expected RMS flag before baseline fit
         for pol in pollist:
@@ -205,9 +217,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RmsExpectedPreFitFlag']['isActive']
             PlotData_dict[pol]['threType'] = "plot"
             PlotData_dict[pol]['threDesc'] = "threshold with scaling factor = {:.1f}".format(FlagRule_local_dict[pol]['RmsExpectedPreFitFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol]+'_5.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict )
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_5.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
+        plots.append( figfilename )
 
         # Expected RMS flag after baseline fit
         for pol in pollist:
@@ -218,16 +230,18 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RmsExpectedPostFitFlag']['isActive']
             PlotData_dict[pol]['threType'] = "plot"
             PlotData_dict[pol]['threDesc'] = "threshold with scaling factor = {:.1f}".format(FlagRule_local_dict[pol]['RmsExpectedPostFitFlag']['Threshold'])
-            figfilename_dict[pol] = FigFileRoot_dict[pol]+'_6.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename_dict )
-        plots += list(figfilename_dict.values())
+        figfilename = FigFileRoot + '_6.png'
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
+        plots.append( figfilename )
 
+        # delete variables not used after all
         del PlotData_dict
+
         return plots
 
 
     @casa5style_plot
-    def StatisticsPlot( self, pollist:List[str], PlotData_dict:Dict, FigFileDir:Optional[str]=None, FigFileName_dict:Optional[Dict]=None ):
+    def StatisticsPlot( self, pollist:List[str], PlotData_dict:Dict, FigFileDir:Optional[str]=None, figfilename:Optional[Dict]=None ):
         """
         Create blflag statistics plot
 
@@ -235,13 +249,12 @@ class SDFlagPlotter(object):
             pollist          : list of pols
             PlotData_dict    : dictonary of PlotData
             FigFileDir       : directory to create figure files
-            FigFileName_dict : dictionary of figure filename (that of first pol will be chozen to use)
+            figfilename     : figure filename
         Returns:
             (none)
         Raises:
             RuntimeError if number of pols exceeds the limit of 4
         """
-
         # PlotData = {
         #             ms_name: MeasurementSet name
         #             ant_name:  Antenna name
@@ -264,13 +277,12 @@ class SDFlagPlotter(object):
         #             threDesc: description of the threshold (for legend)
         #            }
 
-        if len(pollist)>4:
-            raise RuntimeError( "Number of pols {} exceeds limit (4)".format(len(pollist)) )
+        if len(pollist)>4:   # max number of pols=4
+            raise RuntimeError( "Number of polarizations ({}) exceeds limit of 4.".format(len(pollist)) )
         if FigFileDir is None:
             return
 
         # create listofplots.txt
-        outfile = FigFileName_dict[pollist[0]] if FigFileName_dict is not None else None
         if os.access(FigFileDir+'listofplots.txt', os.F_OK):
             BrowserFile = open(FigFileDir+'listofplots.txt', 'a')
         else:
@@ -278,7 +290,7 @@ class SDFlagPlotter(object):
             print('TITLE: BF_Stat', file=BrowserFile)
             print('FIELDS: Stat IF POL Iteration Page', file=BrowserFile)
             print('COMMENT: Statistics of spectra', file=BrowserFile)
-        print( outfile, file=BrowserFile)
+        print( figfilename, file=BrowserFile)
         BrowserFile.close()
 
         # pack data into working vars
@@ -290,9 +302,11 @@ class SDFlagPlotter(object):
         for pol in pollist:
             data[pol], xlim[pol], ylim[pol], ScaleOut[pol], LowRange[pol] = self._pack_data( PlotData_dict[pol] )
         # do the plots!
-        self._plot( FigFileDir, outfile, pollist, PlotData_dict, data, xlim, ylim, ScaleOut, LowRange )
+        self._plot( FigFileDir, figfilename, pollist, PlotData_dict, data, xlim, ylim, ScaleOut, LowRange )
 
+        # delete variables not used after all
         del data, ScaleOut
+
         return
 
 
@@ -381,7 +395,7 @@ class SDFlagPlotter(object):
         return data, xlim, ylim, ScaleOut, LowRange
 
 
-    def _plot( self, figfiledir:Optional[str], plotfilename:Optional[str],
+    def _plot( self, figfiledir:Optional[str], figfilename:Optional[str],
                pollist:List[int],
                PlotData_dict:Dict, data_dict:Optional[Dict],
                xlim_dict:List[Dict], ylim_dict:List[Dict],
@@ -391,7 +405,7 @@ class SDFlagPlotter(object):
 
         Args:
             figfiledir    : directory to write the figure file
-            plotfilename  : filename for the figure file
+            figfilename   : filename of the figure file
             pollist       : list of polarization
             PlotData_dict : dictionary of PlotData (for all pols)
             data_dict     : dictionary of plotting data (for all pols)
@@ -427,8 +441,8 @@ class SDFlagPlotter(object):
         # draw and save the entire plot to png file
         plt.ion()
         plt.draw()
-        if figfiledir is not None and plotfilename is not None:
-            outfile = figfiledir + plotfilename
+        if figfiledir is not None and figfilename is not None:
+            outfile = figfiledir + figfilename
             plt.savefig( outfile, format='png', dpi=DPIDetail )
                 
         # recover original plot configurations
@@ -544,14 +558,14 @@ class SDFlagPlotter(object):
 
         # color and alpha defs (used for each pol)
         col = [ 
-            { 'online': '0.5', 'normal': 'blue', 'deviator' : 'red', 
-              'thre': 'cyan', 'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
-            { 'online': '0.5', 'normal': 'blue', 'deviator' : 'red', 
-              'thre': 'cyan', 'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
-            { 'online': '0.5', 'normal': 'blue', 'deviator' : 'red', 
-              'thre': 'cyan', 'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
-            { 'online': '0.5', 'normal': 'blue', 'deviator' : 'red', 
-              'thre': 'cyan', 'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' }
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+              'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+              'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+              'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+              'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' }
         ]
         alpha = [ 1.0, 0.4, 0.16, 0.064 ]
 
