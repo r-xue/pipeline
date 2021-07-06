@@ -450,25 +450,29 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
     LOG.info('Estimating Tsys temperatures')
 
     # Temperature type must be one of 'tsys' or 'trx' or 'tsky'
-    if temptype != 'tsys' and temptype != 'trx' and temptype != 'tsky':
+    if temptype not in ['tsys', 'trx', 'tsky']:
         return medtempsdict
 
     # Get list of unique scan ids.
-    uniqueScans = list(set(scan_list))
+    unique_scans = sorted(list(set(scan_list)))
+
+    # Get the associated spws for each scan id
+    scans_spws = {scan: [spw.id for spw in ms.get_scans(scan_id=scan)[0].spws] for scan in unique_scans}
+    LOG.debug("Scan spws: {}".format(scans_spws))
 
     # Determine the start and end times for each unique scan
-    beginScanTimes = []
-    endScanTimes = []
-    for scan in uniqueScans:
+    begin_scan_times = []
+    end_scan_times = []
+    for scan in unique_scans:
         reqscan = ms.get_scans(scan_id=scan)
         if not reqscan:
             LOG.warn('Cannot find observation scan %d in MS %s' % (scan, ms.basename))
             return medtempsdict
-        startTime = reqscan[0].start_time
-        endTime = reqscan[0].end_time
-        beginScanTimes.append(startTime)
-        endScanTimes.append(endTime)
-        LOG.debug ('scan %d start %s end %s' % (scan, startTime, endTime))
+        start_time = reqscan[0].start_time
+        end_time = reqscan[0].end_time
+        begin_scan_times.append(start_time)
+        end_scan_times.append(end_time)
+        LOG.debug('scan %d start %s end %s' % (scan, start_time, end_time))
 
     # Get the syscal table meta data.
     with casa_tools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
@@ -487,13 +491,18 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         qt = casa_tools.quanta
 
         # Get time and intervals
-        tsys_start_times = table.getcol('TIME')
+        tsys_times = table.getcol('TIME')
         tsys_intervals = table.getcol('INTERVAL')
 
         # Compute the time range of validity for each tsys measurement
         #    Worry about memory efficiency later
-        tsys_start_times = tsys_start_times - 0.5 * tsys_intervals
+        # PIPE-775: This considers the time to be the central time
+        tsys_start_times = tsys_times - 0.5 * tsys_intervals
         tsys_end_times = tsys_start_times + tsys_intervals
+
+        # Get the spw ids
+        tsys_spws = table.getcol('SPECTRAL_WINDOW_ID')
+        tsys_uniqueSpws = np.unique(tsys_spws)
 
         # Create a scan id array and populate it with zeros
         scanids = np.zeros(len(tsys_start_times), dtype=np.int32)
@@ -510,32 +519,31 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             LOG.debug('row %d start %s end %s' % (i, tstart, tend))
 
             # Scan starts after end of validity interval or ends before
-            # the beginning of the validity interval
-            for j in range(len(uniqueScans)):
-                if (beginScanTimes[j]['m0']['value'] > tend['m0']['value'] or
-                        endScanTimes[j]['m0']['value'] < tstart['m0']['value']):
+            # the beginning of the validity interval. PIPE-775: It also checks that the
+            # spw corresponds to the scan.
+            for j, scan in enumerate(unique_scans):
+                if (begin_scan_times[j]['m0']['value'] > tend['m0']['value'] or
+                    end_scan_times[j]['m0']['value'] < tstart['m0']['value'] or
+                    tsys_spws[i] not in scans_spws[scan]
+                ):
                     continue
                 if scanids[i] <= 0:
-                    scanids[i] = uniqueScans[j]
+                    scanids[i] = unique_scans[j]
                     nmatch = nmatch + 1
 
         if nmatch <= 0:
             LOG.warn('No SYSCAL table row matches for scans %s tsys spws %s in MS %s' %
-                     (uniqueScans, tsys_spwlist, ms.basename))
+                     (unique_scans, tsys_spwlist, ms.basename))
             return medtempsdict
         else:
             LOG.info('    SYSCAL table row matches for scans %s Tsys spws %s %d / %d' %
-                     (uniqueScans, tsys_spwlist, nmatch, len(tsys_start_times)))
-
-        # Get the spw ids
-        tsys_spws = table.getcol('SPECTRAL_WINDOW_ID')
-        tsys_uniqueSpws = np.unique(tsys_spws)
+                     (unique_scans, tsys_spwlist, nmatch, len(tsys_start_times)))
 
     # Get a list of unique antenna ids.
     if antenna == '':
-        uniqueAntennaIds = [a.id for a in ms.get_antenna()]
+        unique_antenna_ids = [a.id for a in ms.get_antenna()]
     else:
-        uniqueAntennaIds = [ms.get_antenna(search_term=antenna)[0].id]
+        unique_antenna_ids = [ms.get_antenna(search_term=antenna)[0].id]
 
     # Loop over the spw and scan list which have the same length
     for spw, scan in zip(tsys_spwlist, scan_list):
@@ -553,7 +561,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             for i in range(len(tsys_antennas)):
                 if tsys_spws[i] != spw:
                     continue
-                if tsys_antennas[i] not in uniqueAntennaIds:
+                if tsys_antennas[i] not in unique_antenna_ids:
                     continue
                 if scan != scanids[i]:
                     continue
