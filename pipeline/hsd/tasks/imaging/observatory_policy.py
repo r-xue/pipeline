@@ -1,5 +1,6 @@
-"""Observatory policy for imaging."""
+"""Observatory policy for single-dish imaging."""
 import abc
+from typing import Type
 
 import numpy as np
 
@@ -147,7 +148,7 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
         return 3
 
 
-def get_imaging_policy(context: Context) -> ObservatoryImagingPolicy:
+def get_imaging_policy(context: Context) -> Type[ObservatoryImagingPolicy]:
     """Get appropriate observatory policy for imaging.
 
     Args:
