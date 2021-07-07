@@ -10,7 +10,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, apply, threshold, correctATM, diagspectra, stats, alltdm, exception=None):
+    def __init__(self, vis, apply, threshold, correctATM, diagspectra, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
         super(RenormResults, self).__init__()
         self.pipeline_casa_task = 'Renorm'
         self.vis = vis
@@ -18,7 +18,10 @@ class RenormResults(basetask.Results):
         self.threshold = threshold
         self.correctATM = correctATM
         self.diagspectra = diagspectra
+        self.corrApplied = corrApplied
+        self.corrColExists = corrColExists
         self.stats = stats
+        self.rnstats = rnstats
         self.alltdm = alltdm
         self.exception = exception
 
@@ -74,20 +77,29 @@ class Renorm(basetask.StandardTaskTemplate):
         # call the renorm code
         try:
             rn = ACreNorm(inp.vis)
+            # Check if the correction has already been applied
+            corrApplied = rn.checkApply()
+            corrColExists = rn.correxists
             rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                            diagspectra=inp.diagspectra)
             if not rn.tdm_only:
                 rn.plotSpectra()
                 alltdm = False
 
-            # get stats (dictionary) indexed by source, spw
-            stats = rn.rnpipestats
+            if corrColExists and not corrApplied:
+                # get stats (dictionary) indexed by source, spw
+                stats = rn.rnpipestats
+                # get all factors for QA
+                rnstats = rn.stats()
+            else:
+                stats = {}
+                rnstats = {}
             rn.close()
 
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, stats, alltdm)
+            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, corrApplied, corrColExists, stats, rnstats, alltdm)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, {}, alltdm, e)
+            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, False, False, {}, {}, alltdm, e)
 
         return result
 

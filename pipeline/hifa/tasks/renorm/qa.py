@@ -19,6 +19,10 @@ class RenormQAHandler(pqa.QAPlugin):
     child_cls = None
 
     def handle(self, context, result):
+        # Get task threshold value. In the future one might rely on
+        # the automatic defaults in almarenorm. In that case the threshold
+        # per spw needs to be fetched from the stats dictionary in the spw
+        # loop below (result.stats[source][spw]['threshold']).
         threshold = result.threshold 
         if result.exception is not None:
             score = 0.0
@@ -26,6 +30,20 @@ class RenormQAHandler(pqa.QAPlugin):
             longmsg = 'Failure in running renormalization heuristic: {}'.format(result.exception)
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
+
+        if result.apply and result.corrApplied:
+            # Request for correcting data that has already been corrected
+            score = 0.0
+            shortmsg = 'Corrections already applied'
+            longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
+            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
+
+        if not result.corrColExists:
+            # CORRECTED_DATA column does not exist
+            score = 0.0
+            shortmsg = 'No corrected data column'
+            longmsg = 'EB {}: Corrected data column does not exist'.format(os.path.basename(result.vis))
+            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         for source in result.stats: 
             for spw in result.stats[source]:
@@ -35,13 +53,18 @@ class RenormQAHandler(pqa.QAPlugin):
                                           metric_score=max_factor,
                                           metric_units='')
 
-                    if (max_factor < 1.0) or (max_factor is np.nan):
+                    if (max_factor < 1.0) or np.isnan(max_factor):
                         # These values should never occur
                         score = 0.0
                         shortmsg = 'Unexpected values.'
                         longmsg = 'EB {} source {} spw {}: Error calculating corrections. Maximum factor is {}.'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor)
-                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
+                    elif np.isnan(result.rnstats['N'][source][spw]).any():
+                        # Any NaNs apart from max_factor?
+                        score = 0.0
+                        shortmsg = 'Unexpected values.'
+                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. NaNs encountered.'.format( \
+                                  os.path.basename(result.vis), source, spw)
                     elif 1.0 <= max_factor <= threshold:
                         score = 1.0
                         shortmsg = 'Renormalization factor within threshold'
