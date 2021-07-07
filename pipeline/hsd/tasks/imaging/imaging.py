@@ -394,7 +394,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if not coord_set:
                     # PIPE-313: evaluate map extent using pointing data from all the antenna in the data
                     dummyids = [None for _ in antids]
-                    image_coord = worker.ALMAImageCoordinateUtil(context, infiles, dummyids, spwids, fieldids)
+                    image_coord = worker.ImageCoordinateUtil(context, infiles, dummyids, spwids, fieldids)
                     if not image_coord:  # No valid data is found
                         continue
                     coord_set = True
