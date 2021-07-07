@@ -44,17 +44,18 @@ class PbcorimagesSummary(object):
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcor_imagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean', vmin=vmin, vmax=vmax))
-
-                if 'residual.pbcor' in pbcor_imagename:
-                    with casa_tools.ImageReader(pbcor_imagename) as image:
-                        self.result.residual_stats[basename] = image.statistics(robust=True)
-                elif 'image.pbcor' in pbcor_imagename:
-                    with casa_tools.ImageReader(pbcor_imagename) as image:
-                        self.result.pbcor_stats[basename] = image.statistics(robust=True)
-                else:
-                    plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
-                                                          x_axis='Primary Beam Response', y_axis='Num. of Pixel',
-                                                          reportdir=stage_dir, boxsize=1.0).plot())
+                # PIPE-1163: avoid saving stats from .tt1
+                if not pbcor_imagename.endswith('.tt1'):
+                    if 'residual.pbcor' in pbcor_imagename:
+                        with casa_tools.ImageReader(pbcor_imagename) as image:
+                            self.result.residual_stats[basename] = image.statistics(robust=True)
+                    elif 'image.pbcor' in pbcor_imagename:
+                        with casa_tools.ImageReader(pbcor_imagename) as image:
+                            self.result.pbcor_stats[basename] = image.statistics(robust=True)
+                    else:
+                        plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
+                                                            x_axis='Primary Beam Response', y_axis='Num. of Pixel',
+                                                            reportdir=stage_dir, boxsize=1.0).plot())
             plot_dict[basename] = [p for p in plot_wrappers if p is not None]
 
         return plot_dict

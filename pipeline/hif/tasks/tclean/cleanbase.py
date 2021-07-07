@@ -299,6 +299,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             inputs.imagename, inputs.stokes, iter)
         mask_name = '%s.%s.iter%s.mask' % (
             inputs.imagename, inputs.stokes, iter)
+        alpha_name = '%s.%s.iter%s.alpha' % (
+            inputs.imagename, inputs.stokes, iter)
+        pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
+            inputs.imagename, inputs.stokes, iter)
 
         parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel),
                         'TARGET' in inputs.intent])
@@ -548,8 +552,6 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Record last tclean command for weblog
         result.set_tclean_command(str(job))
 
-        pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (inputs.imagename, inputs.stokes, iter)
-
         if inputs.niter > 0:
             tclean_stopcode = tclean_result['stopcode']
             tclean_iterdone = tclean_result['iterdone']
@@ -581,74 +583,60 @@ class CleanBase(basetask.StandardTaskTemplate):
                 LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                             (tclean_stopcode, inputs.field, inputs.spw))
 
+        # Collect images to be examined and stored in TcleanResult
+        im_names = {}
+
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
-            # Store the model.
-            imageheader.set_miscinfo(name=model_name, spw=inputs.spw, field=inputs.field,
-                                     type='model', iter=iter, multiterm=result.multiterm,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_model(iter=iter, image=model_name)
+            im_names['model'] = model_name
+            im_names['image'] = image_name
+            im_names['pbcorimage'] = pbcor_image_name
+            im_names['alpha'] = alpha_name
 
-            # Always set info on the uncorrected image for plotting
-            imageheader.set_miscinfo(name=image_name, spw=inputs.spw, field=inputs.field,
-                                     type='image', iter=iter, multiterm=result.multiterm,
-                                     intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-
-            # Store the PB corrected image.
-            if os.path.exists('%s' % (pbcor_image_name.replace('.image.pbcor', '.image.tt0.pbcor' if result.multiterm else '.image.pbcor'))):
-                imageheader.set_miscinfo(name=pbcor_image_name, spw=inputs.spw, field=inputs.field,
-                                         type='pbcorimage', iter=iter, multiterm=result.multiterm,
-                                         intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
-                                         is_per_eb=inputs.is_per_eb,
-                                         context=context)
-                result.set_image(iter=iter, image=pbcor_image_name)
-            else:
-                result.set_image(iter=iter, image=image_name)
-
-        # Store the residual.
-        if os.path.exists('%s' % (residual_name.replace('.residual', '.residual.tt0' if result.multiterm else '.residual'))):
-            imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
-                                     type='residual', iter=iter, multiterm=result.multiterm,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_residual(iter=iter, image=residual_name)
-
-        # Store the PSF.
-        imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, field=inputs.field,
-                                 type='psf', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_psf(image=psf_name)
-
-        # Store the flux image.
-        imageheader.set_miscinfo(name=flux_name, spw=inputs.spw, field=inputs.field,
-                                 type='flux', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_flux(image=flux_name)
-
-        # Make sure mask has path name
+        im_names['residual'] = residual_name
+        im_names['psf'] = psf_name
+        im_names['flux'] = flux_name
         if os.path.exists(inputs.mask):
-            imageheader.set_miscinfo(name=inputs.mask, spw=inputs.spw, field=inputs.field,
-                                     type='cleanmask', iter=iter,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_cleanmask(iter=iter, image=inputs.mask)
+            im_names['cleanmask'] = inputs.mask
         elif os.path.exists(mask_name):
-            # Use mask made by tclean
-            imageheader.set_miscinfo(name=mask_name, spw=inputs.spw, field=inputs.field,
-                                     type='cleanmask', iter=iter,
-                                     intent=inputs.intent, specmode=inputs.specmode,
-                                     is_per_eb=inputs.is_per_eb,
-                                     context=context)
-            result.set_cleanmask(iter=iter, image=mask_name)
+            im_names['cleanmask'] = mask_name
+
+        for im_type, im_name in im_names.items():
+            # Set misc info on imaging products
+            # - Usually we only need to do this for a single image per image type;
+            # - For multiterm calls, we create an image list depending on the image type;
+            #   - current, only include .tt0 and .tt1
+            name_list = [im_name]
+            if result.multiterm:
+                if im_type == 'pbcorimage' and im_name.find('.image.pbcor') != -1:
+                    name_list = [im_name.replace('.image.pbcor', '.image.'+mterm+'.pbcor')
+                                 for mterm in ['tt0', 'tt1']]
+                if im_type == 'alpha':
+                    name_list = [im_name, im_name+'.error']
+                if im_type in ['model', 'image', 'residual', 'psf', 'flux']:
+                    name_list = ['{}.{}'.format(im_name, mterm) for mterm in ['tt0', 'tt1']]
+            for name in name_list:
+                if os.path.exists(name):
+                    imageheader.set_miscinfo(name=name, spw=inputs.spw, field=inputs.field,
+                                             type=im_type, iter=iter,
+                                             intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                             is_per_eb=inputs.is_per_eb,
+                                             context=context)
+            # Store in TcleanResult
+            if im_type == 'model':
+                result.set_model(iter=iter, image=im_name)
+            if im_type == 'pbcorimage':
+                if os.path.exists(name_list[0]):
+                    result.set_image(iter=iter, image=im_names['pbcorimage'])
+                else:
+                    result.set_image(iter=iter, image=im_names['image'])
+            if im_type == 'residual' and os.path.exists(name_list[0]):
+                result.set_residual(iter=iter, image=im_name)
+            if im_type == 'psf':
+                result.set_psf(image=im_name)
+            if im_type == 'flux':
+                result.set_flux(image=im_name)
+            if im_type == 'cleanmask':
+                result.set_cleanmask(iter=iter, image=im_name)
 
         # Keep threshold and sensitivity for QA and weblog
         result.set_threshold(inputs.threshold)
