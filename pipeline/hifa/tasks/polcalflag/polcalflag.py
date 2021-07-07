@@ -103,6 +103,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
         # Determine the parameters to use for the gaincal to create the
         # phase-only caltable.
+        # If a non-empty combine spw mapping is defined then use spw
+        # combination with corresponding map and interpolation.
         if inputs.ms.combine_spwmap:
             phase_combine = 'spw'
             phaseup_spwmap = inputs.ms.combine_spwmap
@@ -111,6 +113,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # value, defined in inputs. In the future, phaseupsolint may
             # need to be set based on exposure times; if so, see discussion
             # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
+        # If no valid combine spw map was defined, then use regular spw mapping
+        # using the phase up spw map, without any interpolation.
         else:
             phase_combine = ''
             phaseup_spwmap = inputs.ms.phaseup_spwmap

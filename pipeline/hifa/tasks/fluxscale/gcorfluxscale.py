@@ -153,21 +153,25 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             if not refspwmap:
                 refspwmap = [-1]
 
-        # Determine the spw gaincal strategy. This determines how the phase only tables will
-        # be constructed.
+        # Based on the SpW mapping mode declared in the MeasurementSet, set
+        # default values for key parameters (solint, gaintype, combine) for
+        # constructing the phase only calibration tables.
         if inputs.ms.combine_spwmap:
+            phase_gaintype = 'T'
+            phase_combine = 'spw'
+            phaseup_spwmap = inputs.ms.combine_spwmap
+            # When combine='spw', set the solint to a quarter of the shortest
+            # scan time for PHASE scans; similar to approach in task
+            # hifa_timegaincal.
             spwidlist = [spw.id for spw in inputs.ms.get_spectral_windows(science_windows_only=True)]
             fieldnamelist = [field.name for field in inputs.ms.get_fields(task_arg=inputs.transfer, intent='PHASE')]
             exptimes = heuristics.exptimes.get_scan_exptimes(inputs.ms, fieldnamelist, 'PHASE', spwidlist)
             phaseup_solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
-            phase_gaintype = 'T'
-            phase_combine = 'spw'
-            phaseup_spwmap = inputs.ms.combine_spwmap
             phase_interp = 'linearPD,linear'
         else:
-            phaseup_solint = inputs.phaseupsolint
             phase_gaintype = 'G'
             phase_combine = ''
+            phaseup_solint = inputs.phaseupsolint
             phaseup_spwmap = inputs.ms.phaseup_spwmap
             phase_interp = None
 

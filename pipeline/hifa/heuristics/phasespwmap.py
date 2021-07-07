@@ -43,14 +43,18 @@ def combine_spwmap(scispws):
 
 
 def snr_n2wspwmap(scispws, snrs, goodsnrs):
-    # Heuristics for computing an spwmap which uses SNR information.
-    # Here an spw is the spw object stored in the domain object.
-    #        allspws - List of all spws in the MS (not actually used)
-    #        scipws  - List of all science spws in the MS
-    #          snrs  - List of snr values for scispws
-    #      goodsnrs  - Determines whether the SNR is good (True), bad (False), or undefined (None)
-    #                - At least one value per receiver band should be good.
+    """
+    Compute a spectral window map based on signal-to-noise information.
 
+    Args:
+        scispws: List of all science spws in the MS
+        snrs: List of snr values for scispws
+        goodsnrs: Determines whether the SNR is good (True), bad (False), or
+            undefined (None). At least one value per receiver band should be good.
+
+    Returns:
+        List of spectral window IDs, representing the spectral window map.
+    """
     # Find the spw with largest good SNR for each receiver band
     snrdict = {}
     for scispw, snr, goodsnr in zip(scispws, snrs, goodsnrs):
@@ -164,13 +168,18 @@ def snr_n2wspwmap(scispws, snrs, goodsnrs):
 
 
 def simple_n2wspwmap(scispws, maxnarrowbw, maxbwfrac, samebb):
-    # Heuristics for computing a simple phase up wide to narrow spwmap
-    # Here an spw is the spw object stored in the domain object.
-    #        scipws  - List of all science spws in the MS
-    #    maxnarrowbw - Maximum narrow bandwidth, e.g. '300MHz'
-    #      maxbwfrac - Width must be > maxbwfrac * maximum bandwidth for a match
-    #         samebb - If possible match within a baseband
+    """
+    Compute a simple phase up wide to narrow spectral window map.
 
+    Args:
+        scispws: List of all science spws in the MS
+        maxnarrowbw: Maximum narrow bandwidth, e.g. '300MHz'
+        maxbwfrac: Width must be > maxbwfrac * maximum bandwidth for a match
+        samebb: If possible match within a baseband
+
+    Returns:
+        List of spectral window IDs, representing the spectral window map.
+    """
     quanta = casa_tools.quanta
 
     # Find the maximum science spw bandwidth for each science receiver band.
@@ -183,10 +192,9 @@ def simple_n2wspwmap(scispws, maxnarrowbw, maxbwfrac, samebb):
         else:
             bwmaxdict[scispw.band] = bandwidth
 
-    # Convert the maximum narrow bandwidth to the the correct format
+    # Convert the maximum narrow bandwidth to the correct format
     maxnbw = quanta.convert(quanta.quantity(maxnarrowbw), 'Hz')
-    maxnbw = measures.Frequency(quanta.getvalue(maxnbw)[0],
-                                measures.FrequencyUnits.HERTZ)
+    maxnbw = measures.Frequency(quanta.getvalue(maxnbw)[0], measures.FrequencyUnits.HERTZ)
 
     # Find a matching spw each science spw
     matchedspws = []
@@ -227,17 +235,14 @@ def simple_n2wspwmap(scispws, maxnarrowbw, maxbwfrac, samebb):
 
             # Find the spw with the closest center frequency
             elif not samebb:
-
                 if abs(scispw.centre_frequency.value - matchspw.centre_frequency.value) < \
                         abs(scispw.centre_frequency.value - bestspw.centre_frequency.value):
                     bestspw = matchspw
 
             else:
-                # If the candidate  match is in the same baseband as the science spw but the current best
+                # If the candidate match is in the same baseband as the science spw but the current best
                 # match is not then switch matches.
-
-                if matchspw.baseband == scispw.baseband and \
-                        bestspw.baseband != scispw.baseband:
+                if matchspw.baseband == scispw.baseband and bestspw.baseband != scispw.baseband:
                     bestspw = matchspw
                 else:
                     if abs(scispw.centre_frequency.value - matchspw.centre_frequency.value) < \
@@ -276,7 +281,7 @@ def simple_n2wspwmap(scispws, maxnarrowbw, maxbwfrac, samebb):
     for scispw, matchspw in zip(scispws, matchedspws):
         phasespwmap[scispw.id] = matchspw.id
 
-    # Return  the new map
+    # Return the new map
     if phasespwmap == refphasespwmap:
         return []
     else:

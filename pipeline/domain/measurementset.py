@@ -26,18 +26,24 @@ class MeasurementSet(object):
         self.antenna_array = None
         self.data_descriptions = []
         self.spectral_windows = []
-        self.spectralspec_spwmap = {}
         self.fields = []
         self.states = []
         self.reference_spwmap = None
-        self.phaseup_spwmap = None
-        self.combine_spwmap = None
         self.derived_fluxes = None
         self.flagcmds = []
         self.session = session
         self.filesize = self._calc_filesize() 
         self.is_imaging_ms = False
         self.work_data = name
+
+        # Dictionary to map each SpectralSpec to list of corresponding spectral
+        # window IDs (PIPE-1132).
+        self.spectralspec_spwmap = {}
+
+        # Spectral window maps for mapping or combining spws, in use by several
+        # ALMA Pipeline calibration tasks.
+        self.phaseup_spwmap = None
+        self.combine_spwmap = None
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
