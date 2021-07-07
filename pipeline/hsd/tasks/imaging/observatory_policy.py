@@ -28,30 +28,39 @@ class ObservatoryImagingPolicy(abc.ABC):
             ms: MS domain object
             spw_id: Spectral window id
 
+        Raises:
+            NotImplementedError
+
         Returns:
-            Beam size in arcsec.
+            (Supposed to be) Beam size in arcsec.
         """
-        pass
+        raise NotImplementedError('should be implemented in subclass')
 
     @staticmethod
     @abc.abstractmethod
     def get_beam_size_pixel() -> float:
         """Get beam size as number of pixels.
 
+        Raises:
+            NotImplementedError
+
         Returns:
-            Beam size as number of pixels.
+            (Supposed to be) Beam size as number of pixels.
         """
-        pass
+        raise NotImplementedError('should be implemented in subclass')
 
     @staticmethod
     @abc.abstractmethod
     def get_convsupport() -> int:
         """Get convolution support.
 
+        Raises:
+            NotImplementedError
+
         Returns:
-            Convolution support.
+            (Supposed to be) Convolution support.
         """
-        pass
+        raise NotImplementedError('should be implemented in subclass')
 
 
 class ALMAImagingPolicy(ObservatoryImagingPolicy):
