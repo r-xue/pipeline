@@ -45,7 +45,7 @@ PHASE_SLOPE_THRESHOLD = 40.0
 PHASE_INTERCEPT_THRESHOLD = 60.5
 
 
-def score_all_scans(ms, intent: str, memory_gb: int = MEMORY_CHUNK_SIZE, flag_all: bool = False) -> List[Outlier]:
+def score_all_scans(ms, intent: str, flag_all: bool = False, memory_gb: int = MEMORY_CHUNK_SIZE) -> List[Outlier]:
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
