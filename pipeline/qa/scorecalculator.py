@@ -2393,17 +2393,20 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         metric_units = '%s, %s, %s' % (offset_unit, fitflux_unit, fitpeak_unit)
 
         if warnings != []:
-            longmsg = '%s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
+            longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
             # Log warnings only if they would not be logged by the QA system (score <= 0.66)
             if score > 0.66:
                 LOG.warn(longmsg)
         else:
-            longmsg = 'Check source fit successful'
+            if score <= 0.9:
+                longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
+            else:
+                longmsg = 'EB %s field %s spwid %d: Check source fit successful' % (msnames, fieldname, spwid)
 
         if score <= 0.9:
             shortmsg = 'Check source fit not optimal'
 
-    origin = pqa.QAOrigin(metric_name='score_checksources',
+    origin = pqa.QAOrigin(metric_name='ScoreChecksources',
                           metric_score=metric_score,
                           metric_units=metric_units)
 
