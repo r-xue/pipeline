@@ -115,6 +115,41 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         if inputs.unregister_existing:
             self._unregister_spwphaseup()
 
+        # Derive the optimal spectral window maps.
+        LOG.info('Deriving optimal spw mapping for {}'.format(inputs.ms.basename))
+        combinespwmap, low_combined_phasesnr_spws, phaseupspwmap = self._derive_spwmaps()
+
+        # Compute the spw-to-spw phase offsets ("phaseup") cal table.
+        LOG.info('Computing spw phaseup table for {}'.format(inputs.ms.basename))
+        phaseupresult = self._do_phaseup()
+
+        # Create the results object.
+        result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
+                                   phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws,
+                                   unregister_existing=inputs.unregister_existing)
+
+        return result
+
+    def analyse(self, result):
+        # The caltable portion of the result is treated as if it
+        # were any other calibration result.
+        # With no best caltable to find, our task is simply to set the one
+        # caltable as the best result
+
+        # double-check that the caltable was actually generated
+        on_disk = [ca for ca in result.phaseup_result.pool if ca.exists() or self._executor._dry_run]
+        result.phaseup_result.final[:] = on_disk
+
+        missing = [ca for ca in result.phaseup_result.pool if ca not in on_disk and not self._executor._dry_run]
+        result.phaseup_result.error.clear()
+        result.phaseup_result.error.update(missing)
+
+        return result
+
+    def _derive_spwmaps(self):
+        # Simplify the inputs
+        inputs: SpwPhaseupInputs = self.inputs
+
         # Get a list of the science spws.
         scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
 
@@ -223,34 +258,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         else:
             LOG.info('    Using standard spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
-        # Compute the spw-to-spw phase offsets ("phaseup") cal table.
-        LOG.info('Computing spw phaseup table for {}'.format(inputs.ms.basename))
-        phaseupresult = self._do_phaseup()
-
-        # Create the results object.
-        result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
-                                   phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws,
-                                   unregister_existing=inputs.unregister_existing)
-
-        return result
-
-    def analyse(self, result):
-
-        # The caltable portion of the result is treated as if it
-        # were any other calibration result.
-
-        # With no best caltable to find, our task is simply to set the one
-        # caltable as the best result
-
-        # double-check that the caltable was actually generated
-        on_disk = [ca for ca in result.phaseup_result.pool if ca.exists() or self._executor._dry_run]
-        result.phaseup_result.final[:] = on_disk
-
-        missing = [ca for ca in result.phaseup_result.pool if ca not in on_disk and not self._executor._dry_run]
-        result.phaseup_result.error.clear()
-        result.phaseup_result.error.update(missing)
-
-        return result
+        return combinespwmap, low_combined_phasesnr_spws, phaseupspwmap
 
     def _do_snrtest(self):
 
