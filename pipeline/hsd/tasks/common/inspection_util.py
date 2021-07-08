@@ -8,6 +8,7 @@ import pipeline.infrastructure.tablereader as tablereader
 from pipeline.domain import MeasurementSet, ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import relative_path
 
 from ... import heuristics
 
@@ -37,7 +38,7 @@ def generate_ms(name: str, ref_ms: MeasurementSet) -> MeasurementSet:
         raise ValueError('Could not find {}'.format(os.path.basename(name)))
 
     # Import the new measurement set.
-    to_import = os.path.abspath(name)
+    to_import = relative_path(name)
     observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
     assert len(observing_run.measurement_sets) == 1
 
