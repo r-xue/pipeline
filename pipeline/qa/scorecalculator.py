@@ -328,7 +328,7 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
         longmsg = ('No model data column found in %s' % s)
         shortmsg = 'MODELDATA empty'
 
-    score = linear_score(f, 0.0, 1.0, 1.0, 0.5)
+    score = linear_score(f, 0.0, 1.0, 1.0, 0.9)
 
     origin = pqa.QAOrigin(metric_name='score_ms_model_data_column_present',
                           metric_score=f,
@@ -2881,7 +2881,7 @@ def score_fluxservice(result):
             score = 0.9
         elif result.fluxservice is 'FAIL':
             msg = 'Neither primary or backup flux service could be queried.  ASDM values used.'
-            score = 0.6
+            score = 0.3
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
