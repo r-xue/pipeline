@@ -36,6 +36,7 @@ class PipelineRegression(object):
         self.visname = visname
         self.expectedoutput = expectedoutput
         self.testinput = f'{input_dir}/{visname}'
+        self.current_path = os.getcwd()
         self.__initialize_working_folder()
 
     def __initialize_working_folder(self):
@@ -79,9 +80,6 @@ class PipelineRegression(object):
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = casa_tools.utils.resolve(self.testinput)
 
-        # get current path
-        current_path = os.getcwd()
-
         try:
             # run the pipeline for new results
             if ppr:
@@ -101,7 +99,7 @@ class PipelineRegression(object):
             # Compare new results with expected results
             self.__compare_results(new_file, default_relative_tolerance)
         finally:
-            os.chdir(current_path)
+            os.chdir(self.current_path)
 
     def __compare_results(self, new_file: str, relative_tolerance: float):
         """
