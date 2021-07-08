@@ -296,57 +296,61 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
     def _do_combined_snr_test(self, spwlist, perspwsnr, spwmap):
         """
-        Calculate combined SNRs from per SpW SNR and
-        return a list of SpW IDs that does not meet phasesnr threshold.
-        Grouping of SpWs is specified by an input parameter, spwmap.
-        For each grouped SpWs, combined SNR is calculated by
+        Calculate combined SNRs from the "per-SpW SNR" and return a list of SpW
+        IDs that does not meet phase SNR threshold. Grouping of SpWs is
+        specified by input parameter spwmap.
+
+        For each grouped SpWs, combined SNR is calculated by:
             combined SNR = numpy.linalg.nrom(list of per SpW SNR in a group)
 
-        Prameters:
-            spwlist : A list of spw IDs to calculate combined SNR
-            perspwsnr : A list of SNRs of each SpW
-            spwmap : A spectral window map that specifies which SpW IDs
-                    should be combined together.
+        Args:
+            spwlist: List of spw IDs to calculate combined SNR
+            perspwsnr: List of SNRs of each SpW
+            spwmap: A spectral window map that specifies which SpW IDs should
+                be combined together.
+
+        Returns:
+            List of spectral window IDs whose combined phase SNR is below the
+            threshold specified by inputs.phasesnr.
         """
         LOG.info("Start combined SpW SNR test")
         LOG.debug('- spwlist to analyze: {}'.format(spwlist))
         LOG.debug('- per SpW SNR: {}'.format(perspwsnr))
         LOG.debug('- spwmap = {}'.format(spwmap))
-        nosnr = True
-        combined_spwids = []
-        combined_snrs = []
-        combined_goodsnrs = [False for _ in spwlist]
+
+        # Initialize return list.
         low_snr_spwids = []
+
         # Filter reference SpW IDs of each group.
         unique_mappedspw = {spwmap[spwid] for spwid in spwlist}
         for mappedspwid in unique_mappedspw:
             snrlist = []
             combined_idx = []
+
             # only consider SpW IDs in spwlist for combination
             for i in range(len(spwlist)):
                 spwid = spwlist[i]
                 if spwmap[spwid] == mappedspwid:
                     snr = perspwsnr[i]
                     if snr is None:
-                        LOG.error('SNR not calculated for spw={}. Cannnot calculate combined SNR'.format(spwid))
+                        LOG.error('SNR not calculated for spw={}. Cannot calculate combined SNR'.format(spwid))
                         return False, [], [], []
                     snrlist.append(perspwsnr[i])
                     combined_idx.append(i)
+
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
-            LOG.info('Reference SpW ID = {} (Combined SpWs = {}) : Combined SNR = {}'.format(mappedspwid, str(
-                [spwlist[j] for j in combined_idx]), combined_snr))
+            LOG.info('Reference SpW ID = {} (Combined SpWs = {}) : Combined SNR = {}'
+                     ''.format(mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
 
+            # If the combined SNR does not meet the phase SNR threshold, then
+            # add these to the list of low combined SNR spws.
             if combined_snr < self.inputs.phasesnr:
                 low_snr_spwids.extend([spwlist[i] for i in combined_idx])
-            else:
-                nosnr = False
-                # FIXME: should i be spwid?
-                for spwid in combined_idx:
-                    combined_goodsnrs[i] = True
-            combined_spwids.append(mappedspwid)
-            combined_snrs.append(combined_snr)
+
+        # Log results from SNR test.
         LOG.info('SpW IDs that has low combined SNR (threshold: {}) = {}'.format(self.inputs.phasesnr, low_snr_spwids))
+
         return low_snr_spwids
 
     def _do_phaseup(self):
