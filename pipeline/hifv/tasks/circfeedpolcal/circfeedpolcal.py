@@ -149,13 +149,13 @@ class Circfeedpolcal(polarization.Polarization):
 
         tablesToAdd[0][2] = []  # Default for KCROSS table
         if self.inputs.mbdkcross:
-            # baseband_spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
-            baseband_spws = m.get_vla_baseband_spws(science_windows_only=True)
+            _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
             addcallib = False
-            if len(baseband_spws) == 1:
+            if len(baseband_spwstr) == 1:
                 addcallib = True
-            for spws in baseband_spws:
+            for spws in baseband_spwstr:
                 LOG.info("Executing gaincal on baseband with spws={!s}".format(spws))
                 self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws,
                                 combine='scan,spw', addcallib=addcallib)
@@ -534,11 +534,11 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: spwmap for use with gaintable in callibrary (polcal and applycal)
         """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        vlabasebands = m.get_vla_baseband_spws(science_windows_only=False)
+        _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
+        baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
         spwmap = []
-
-        for spwstr in vlabasebands:
+        for spwstr in baseband_spwstr:
             spwlist = [int(spw) for spw in spwstr.split(',')]
             basebandmap = [spwlist[0]] * len(spwlist)
             spwmap.extend(basebandmap)

@@ -18,24 +18,26 @@ class RflagDevHeuristic(api.Heuristic):
     see PIPE-685/987
     """
 
-    def __init__(self):
+    def __init__(self, ms):
         self.vla_sefd = self._get_vla_sefd()
+        self.ms = ms
+        self.spw_rms_scale = self._get_spw_rms_scale()
 
-    def calculate(self, ms, rflag_report):
+    def calculate(self, rflag_report):
 
-        vlabasebands = ms.get_vla_baseband_spws(science_windows_only=True)
-
-        bbspws = [list(map(int, i.split(','))) for i in vlabasebands]
-        rms_scale = self._get_spw_rms_scale(ms, self.vla_sefd)
+        _, baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
 
         if 'rflag' in rflag_report['type'] == 'rflag':
-            return self._correct_rflag_ftdev(rflag_report, bbspws, spw_rms_scale=rms_scale)
+            return self._correct_rflag_ftdev(rflag_report)
         else:
             LOG.error("Invalid input rflag report")
             return None
 
     def _get_vla_sefd(self):
-        """Load the VLA SEFD profile"""
+        """Load the VLA SEFD profile.
+
+        Note: P-band (200-500 Mhz)and 4-band (54-86 MHz) are not in the database.
+        """
         sedf_path = pkg_resources.resource_filename('pipeline', 'hifv/heuristics/sefd')
 
         bands = ['L', 'S', 'C', 'X', 'Ku', 'K', 'Ka', 'Q']
@@ -75,11 +77,12 @@ class RflagDevHeuristic(api.Heuristic):
 
         return
 
-    def _correct_rflag_ftdev(self, rflag_report, bbspws, spw_rms_scale=None):
-        """derive the corrected freqdev/timedev for applying rflag 
+    def _correct_rflag_ftdev(self, rflag_report):
+        """Derive the corrected freqdev/timedev for applying rflag.
 
         Args:
             rflag_report:  the "rflag" report dictionary in the returne from flagdata(action='calculation',mode='rflag',..)
+                           flagdata_result['report0']
 
         - The return report structure of flagdata(action='calculation',mode='rflag',..) from
         the freq-domain and time-domain analysis (see additional details in flagdata documenttaion) is exepcted
@@ -90,49 +93,53 @@ class RflagDevHeuristic(api.Heuristic):
             report['freqdev'][:, 2]:        Estimated freqdev/timedev
                                             note: this is not the "clipping" threshold (which is defined as dev*devscale).
         
-        - the median-based clip of spw rms within each baseband/field is summarized in CAS-11598 and PIPE-685/987
+        - the median-based rflag threshold reset scheme (within each baseband/field) is summarized in CAS-11598 and PIPE-685/987
+        - A completely flagged spw+field data selection is still show up in flagdata reports, but the value will be 0.0.
         """
-        rms_scale_lookup = np.ones(int(np.max(rflag_report['freqdev'][:, 1]))+1)
-        if spw_rms_scale is not None:
-            for spw_id in range(rms_scale_lookup.size):
-                if str(spw_id) in spw_rms_scale:
-                    rms_scale_lookup[spw_id] = spw_rms_scale[str(spw_id)]
 
         new_report = copy.deepcopy(rflag_report)
 
-        freqdev = rflag_report['freqdev']
-        timedev = rflag_report['timedev']
-
         for ftdev in ['freqdev', 'timedev']:
 
-            fields = rflag_report[ftdev][:, 0]
-            spws = rflag_report[ftdev][:, 1]
-            devs = rflag_report[ftdev][:, 2]
-            devs_scale = rms_scale_lookup[rflag_report[ftdev][:, 1].astype(int)]
+            fields = new_report[ftdev][:, 0]
+            spws = new_report[ftdev][:, 1]
+            devs = new_report[ftdev][:, 2]
+            devs_med = new_report[ftdev][:, 2].copy()
+            bbs = np.full_like(spws, -1)
 
-            ufields = np.unique(fields)
-            for ifield in ufields:
-                fldmask = np.where(fields == ifield)
-                if len(fldmask[0]) == 0:
-                    continue  # no data matching field
-                # filter spws and threshes whose fields==ifield
-                field_spws = spws[fldmask]
-                field_devs_scaled = devs[fldmask]/devs_scale[fldmask]
+            _, baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            for bb_idx, bb_spws in enumerate(baseband_spws_list):
+                bb_mask = np.isin(spws, bb_spws)
+                bbs[bb_mask] = bb_idx
 
-                for ibbspws in bbspws:
-                    spwmask = np.where(np.array([ispw in ibbspws for ispw in field_spws]) == True)
-                    if len(spwmask[0]) == 0:
-                        continue  # no data matching ibbspws
-                    # filter threshes whose fields==ifield and spws in ibbspws
-                    spw_field_devs_scaled = field_devs_scaled[spwmask]
-                    med_devs_scaled = np.median(spw_field_devs_scaled)
-                    medmask = np.where(spw_field_devs_scaled > med_devs_scaled)
-                    outmask = fldmask[0][spwmask[0][medmask]]
-                    new_report[ftdev][:, 2][outmask] = med_devs_scaled*devs_scale[outmask]
+            spws_unique, spws_unique_inverse = np.unique(spws, return_inverse=True)
 
+            spws_unique_rms_scale = np.array([self.spw_rms_scale[int(spw)]['rms_scale'] for spw in spws_unique])
+            rms_scale = spws_unique_rms_scale[spws_unique_inverse]
+            spws_unique_sefd_jy = np.array([self.spw_rms_scale[int(spw)]['sefd_jy'] for spw in spws_unique])
+            sefd_jy = spws_unique_sefd_jy[spws_unique_inverse]
+            spws_unique_chanwidth_mhz = np.array([self.spw_rms_scale[int(spw)]['chanwidth_mhz'] for spw in spws_unique])
+            chanwidth_mhz = spws_unique_chanwidth_mhz[spws_unique_inverse]
+
+            fields_bbs = np.column_stack((fields, bbs))
+            _, fields_bbs_inverse = np.unique(fields_bbs, return_inverse=True, axis=0)
+            for idx in np.unique(fields_bbs_inverse):
+                select_mask = np.where(fields_bbs_inverse == idx)
+                devs_med[select_mask] = rms_scale[select_mask]*np.median(devs[select_mask]/rms_scale[select_mask])
+            devs_modified = np.minimum(devs, devs_med)
+            new_report[ftdev] = np.column_stack((fields, spws, devs_modified))
+            new_report[ftdev+'_info'] = {'field': fields,
+                                         'spw': spws,
+                                         'devs': devs,
+                                         'bb': bbs,
+                                         'sefd_jy': sefd_jy,
+                                         'chanwidth_mhz': chanwidth_mhz,
+                                         'rms_scale': rms_scale,
+                                         'devs_med': devs_med,
+                                         'devs_modified': devs_modified}
         return new_report
 
-    def _get_spw_rms_scale(self, ms, science_windows_only=True):
+    def _get_spw_rms_scale(self, science_windows_only=True):
         """[summary]
 
         Args:
@@ -148,27 +155,35 @@ class RflagDevHeuristic(api.Heuristic):
 
         spw_rms_scale = dict()
 
-        for spw in ms.get_spectral_windows(science_windows_only=science_windows_only):
-            chanwidth_mhz = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.MEGAHERTZ)
-            try:
-                band = spw.name.split('#')[0].split('_')[1]
-                baseband = spw.name.split('#')[1]
-                sedf_per_band = self.vla_sefd[band]
-                frequency_mhz = spw.mean_frequency.to_units(measures.FrequencyUnits.MEGAHERTZ)
-                spw_sefd = np.interp(float(frequency_mhz), sedf_per_band[:, 0],
-                                     sedf_per_band[:, 1], left=np.nan, right=np.nan)
-                if frequency_mhz < min(sedf_per_band[:, 0]) or frequency_mhz > max(sedf_per_band[:, 0]):
-                    LOG.warn("The mean frequency of spw {!s} is out of the SEFD profile coverage.".format(spw.id))
-            except Exception as ex:
-                LOG.warn("Exception: Baseband name cannot be parsed.{!s}".format(str(ex)))
-                LOG.warn("Exception: Fail to query SEFD for {!s}. {!s}".format(spw.id, str(ex)))
-                spw_sefd = np.nan
+        baseband_spws, baseband_spws_list = self.ms.get_vla_baseband_spws(
+            science_windows_only=science_windows_only, return_select_list=True)
+        for band in baseband_spws:
+            for baseband in baseband_spws[band]:
+                for spwitem in baseband_spws[band][baseband]:
+                    for spw_id, spw_info in spwitem.items():
 
-            if np.isnan(spw_sefd):
-                LOG.warn("The SEFD information of spw {!s} is not avaialble.\
-                        The rms scale caclulation will assume a fidudial SEFD of 500Jy ")
-                spw_sefd = 500.
+                        try:
+                            sedf_per_band = self.vla_sefd[band]
+                            mean_freq_mhz = float(spw_info[2].to_units(measures.FrequencyUnits.MEGAHERTZ))
+                            chanwidth_mhz = float(spw_info[3].to_units(measures.FrequencyUnits.MEGAHERTZ))
+                            spw_sefd = np.interp(mean_freq_mhz, sedf_per_band[:, 0],
+                                                 sedf_per_band[:, 1], left=np.nan, right=np.nan)
+                            if mean_freq_mhz < min(sedf_per_band[:, 0]) or mean_freq_mhz > max(sedf_per_band[:, 0]):
+                                LOG.warn(
+                                    "The mean frequency of spw {!s} from {!s}#{!s}  is out of the SEFD profile coverage.".format(spw_id, band, baseband))
 
-            spw_rms_scale[str(spw.id)] = spw_sefd/float(chanwidth_mhz)**0.5
+                        except Exception as ex:
+                            LOG.warn("Exception: Fail to query SEFD for {!s}. {!s}".format(spw_id, str(ex)))
+                            spw_sefd = np.nan
 
+                        if np.isnan(spw_sefd):
+                            LOG.warn("The SEFD information of spw {!s} is not avaialble.\
+                                    The rms scale caclulation will use a fidudial SEFD of 500Jy, \
+                                    equivalent to the assumption of unfirm SEFD within each baseband. ".format(spw_id))
+                            spw_sefd = 500.
+                        spw_rms_scale[spw_id] = {'rms_scale': spw_sefd/chanwidth_mhz**0.5,
+                                                 'sefd_jy': spw_sefd,
+                                                 'chanwidth_mhz': chanwidth_mhz}
+                        LOG.debug('spw {:>3}  SEFD = {:8.2f}  ChanWidth = {:6.2f} MHz'.format(
+                            spw_id, spw_sefd, chanwidth_mhz))
         return spw_rms_scale

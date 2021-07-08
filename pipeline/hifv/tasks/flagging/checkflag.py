@@ -362,76 +362,6 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return jobresult
 
-    def _do_rflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
-                  ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
-                  freqdevscale=4.0, action='apply', timedev='', freqdev='', savepars=True,
-                  calcftdev=True, useheuristic=True, extendflags=False):
-        """
-        calcftdev: decide to run a single-pass rflag or two-pass; for two-pass, action will always be 1) "calculate" 2) "apply"
-        useheuristics: use the internal ftdev threshold heuristic, or not; only matters if calcftdev=True
-        extendflags: set the "extendflags" plan:
-            True/False: extend flags along with the rflag call
-            Dictionary: extend flags after the rflag call
-        """
-
-        if isinstance(extendflags, bool):
-            extendflags_rflag = extendflags
-            extend_followup = None
-        else:
-            extendflags_rflag = False
-            extend_followup = extendflags
-
-        task_args = {'vis': self.inputs.vis,
-                     'mode': mode,
-                     'field': field,
-                     'correlation': correlation,
-                     'scan': scan,
-                     'intent': intent,
-                     'ntime': ntime,
-                     'combinescans': False,
-                     'datacolumn': datacolumn,
-                     'winsize': 3,
-                     'timedevscale': timedevscale,
-                     'freqdevscale': freqdevscale,
-                     'timedev': timedev,
-                     'freqdev': freqdev,
-                     'action': action,
-                     'display': '',
-                     'extendflags': extendflags_rflag,
-                     'flagbackup': flagbackup,
-                     'savepars': savepars}
-
-        if calcftdev:
-            task_args['action'] = 'calculate'
-
-            job = casa_tasks.flagdata(**task_args)
-            jobresult = self._executor.execute(job)
-
-            if jobresult is None:
-                LOG.warn("This is likely a dryrun test because 'None' is returned from the visibility noise calculation!")
-                LOG.warn("Proceed with timedev/freqdev=''.")
-                ftdev = None
-            else:
-                if useheuristic:
-                    rflagdev = RflagDevHeuristic()
-                    ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-                    ftdev = rflagdev(ms, jobresult['report0'])
-                else:
-                    ftdev = jobresult['report0']
-
-            if ftdev is not None:
-                task_args['timedev'] = ftdev['timedev']
-                task_args['freqdev'] = ftdev['freqdev']
-            task_args['action'] = 'apply'
-
-        job = casa_tasks.flagdata(**task_args)
-        jobresult = self._executor.execute(job)
-
-        if extend_followup is not None:
-            self._do_extendflag(field=field, scan=scan, intent=intent, **extend_followup)
-
-        return jobresult
-
     def analyse(self, results):
         return results
 
@@ -501,6 +431,79 @@ class Checkflag(basetask.StandardTaskTemplate):
             self._do_extendflag(field=field, scan=scan, intent=intent, **extend_followup)
 
         return
+
+    def _do_rflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
+                  ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
+                  freqdevscale=4.0, timedev='', freqdev='', savepars=True,
+                  calcftdev=True, useheuristic=True, extendflags=False):
+        """Run rflag heuristics.
+
+        calcftdev: decide to run a single-pass rflag or two-pass; for two-pass, action will always be 1) "calculate" 2) "apply"
+        useheuristics: use the internal ftdev threshold heuristic, or not; only matters if calcftdev=True
+        extendflags: set the "extendflags" plan:
+            True/False: extend flags along with the rflag call
+            Dictionary: extend flags after the rflag call
+        """
+
+        if isinstance(extendflags, bool):
+            extendflags_rflag = extendflags
+            extend_followup = None
+        else:
+            extendflags_rflag = False
+            extend_followup = extendflags
+
+        task_args = {'vis': self.inputs.vis,
+                     'mode': mode,
+                     'field': field,
+                     'correlation': correlation,
+                     'scan': scan,
+                     'intent': intent,
+                     'ntime': ntime,
+                     'combinescans': False,
+                     'datacolumn': datacolumn,
+                     'winsize': 3,
+                     'timedevscale': timedevscale,
+                     'freqdevscale': freqdevscale,
+                     'timedev': timedev,
+                     'freqdev': freqdev,
+                     'action': 'apply',
+                     'display': '',
+                     'extendflags': extendflags_rflag,
+                     'flagbackup': flagbackup,
+                     'savepars': savepars}
+
+        if calcftdev:
+            task_args['action'] = 'calculate'
+
+            job = casa_tasks.flagdata(**task_args)
+            jobresult = self._executor.execute(job)
+
+            if jobresult is None:
+                LOG.warn("This is likely a dryrun test because 'None' is returned from the visibility noise calculation!")
+                LOG.warn("Proceed with timedev/freqdev=''.")
+                ftdev = None
+            else:
+                if useheuristic:
+                    ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+                    rflagdev = RflagDevHeuristic(ms)
+                    ftdev = rflagdev(jobresult['report0'])
+                else:
+                    ftdev = jobresult['report0']
+
+            if ftdev is not None:
+                task_args['timedev'] = ftdev['timedev']
+                task_args['freqdev'] = ftdev['freqdev']
+            task_args['action'] = 'apply'
+
+        job = casa_tasks.flagdata(**task_args)
+        jobresult = self._executor.execute(job)
+        if task_args['action'] == 'apply':
+            self.flagbackup_state = False
+
+        if extend_followup is not None:
+            self._do_extendflag(field=field, scan=scan, intent=intent, **extend_followup)
+
+        return jobresult
 
     def _select_data(self):
 
@@ -620,12 +623,14 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         fieldselect, scanselect, intentselect = self._select_data()
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
+        flagbackup = True
 
         if rflag_standard is not None:
 
             for datacolumn, correlation, scale, extendflags in rflag_standard:
-                if correlation.split('_')[1] not in self.corr_type_string:
-                    continue
+                if '_' in correlation:
+                    if correlation.split('_')[1] not in self.corr_type_string:
+                        continue
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
                                'correlation': correlation,
@@ -635,17 +640,21 @@ class Checkflag(basetask.StandardTaskTemplate):
                                'timedevscale': scale,
                                'freqdevscale': scale,
                                'datacolumn': datacolumn,
-                               'flagbackup': False,
+                               'flagbackup': flagbackup,
                                'savepars': False,
+                               'calcftdev': True,
+                               'useheuristic': True,
                                'extendflags': extendflags}
 
                 self._do_rflag(**method_args)
+                flagbackup = False
 
         if tfcrop_standard is not None:
 
             for datacolumn, correlation, tfcropThreshMultiplier, extendflags in tfcrop_standard:
-                if correlation.split('_')[1] not in self.corr_type_string:
-                    continue
+                if '_' in correlation:
+                    if correlation.split('_')[1] not in self.corr_type_string:
+                        continue
                 method_args = {'mode': 'tfcrop',
                                'field': fieldselect,
                                'correlation': correlation,
@@ -655,17 +664,18 @@ class Checkflag(basetask.StandardTaskTemplate):
                                'freqcutoff': tfcropThreshMultiplier,
                                'ntime': self.tint,
                                'datacolumn': datacolumn,
-                               'flagbackup': False,
+                               'flagbackup': flagbackup,
                                'savepars': False,
                                'extendflags': extendflags}
 
                 self._do_tfcropflag(**method_args)
+                flagbackup = False
 
         extendflag_result = CheckflagResults()
 
         if growflag_standard is not None:
             extendflag_result = self._do_extendflag(
-                field=fieldselect, scan=scanselect, intent=intentselect, **growflag_standard)
+                field=fieldselect, scan=scanselect, intent=intentselect, flagbackup=flagbackup, **growflag_standard)
 
         return extendflag_result
 
@@ -680,11 +690,8 @@ class Checkflag(basetask.StandardTaskTemplate):
             return {'report0': {'freqdev': '', 'timedev': ''}}
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        vlabasebands = m.get_vla_baseband_spws(science_windows_only=True)
-
-        bbspws = [list(map(int, i.split(','))) for i in vlabasebands]
-
-        # bbspws = [[2, 3, 4, 5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15, 16, 17]]
+        _, bbspws = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+        # e.g., bbspws = [[2, 3, 4, 5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15, 16, 17]]
 
         outputThresholds = copy.deepcopy(inputThresholds)
 
