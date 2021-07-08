@@ -549,6 +549,13 @@ class ACreNorm(object):
             self.tdm_only = False
             bandFreq = spwInfo[str(self.fdmspws[0])]['Chan1Freq']
             self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.fdmspws[0]))
+            # AC data will only use the parallel hands, so if 4 correlations are detected in the FDM
+            # window, we set the full_pol flag to True and reset num_corrs to 2.
+            if self.num_corrs == 4:
+                self.full_pol = True
+                self.num_corrs = 2
+            else:
+                self.full_pol = False
             #mytb.open(self.msname+'/SPECTRAL_WINDOW')
             # try to get the reference frequency directly but REF_FREQUENCY doesn't exist for
             # older data so in those cases we just take the mean of the spw. 
@@ -768,7 +775,7 @@ class ACreNorm(object):
 
         gdants=[]
         for irow in range(cd.shape[2]):
-            if pl.sum(cd[:,:,irow]) != self.num_corrs*cd.shape[1]: # i.e here we are summing all corrs and the spectral axis
+            if pl.sum(cd[:,:,irow]) != cd.shape[0]*cd.shape[1]: # i.e here we are summing all corrs and the spectral axis
                 gdants.append(a1[irow])
                 gdants.append(a2[irow])
 
@@ -1356,7 +1363,7 @@ class ACreNorm(object):
         if docorrThresh is not None:
             if type(docorrThresh) is not float:
                 print('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly! Cannot procede.')
-                print(' set to "auto" for automatic thresholding during apply, or input a float to use') 
+                print(' set to None for automatic thresholding during apply, or input a float to use') 
                 self.logReNorm.write('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly! Cannot procede.\n') # LM Added
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                 return
@@ -1499,29 +1506,29 @@ class ACreNorm(object):
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     return
 
-            # LM added - bwthreshspw (dictionary)
-            if bwthreshspw:
-                # checkformats sucessively for fail modes
-                if type(bwthreshspw) is not dict:
-                    print(' bwthreshspw requires a string dict input')
+        # LM added - bwthreshspw (dictionary)
+        if bwthreshspw:
+            # checkformats sucessively for fail modes
+            if type(bwthreshspw) is not dict:
+                print(' bwthreshspw requires a string dict input')
+                print(' e.g. {"22":120e6}')
+                casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
+                return
+            for spwth in bwthreshspw.keys():
+                if type(spwth) is not str:
+                    print(' bwthreshspw requires the spw as a string input')
                     print(' e.g. {"22":120e6}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     return
-                for spwth in bwthreshspw.keys():
-                    if type(spwth) is not str:
-                        print(' bwthreshspw requires the spw as a string input')
-                        print(' e.g. {"22":120e6}')
-                        casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                        return
-                    if int(spwth) not in spws:
-                        print(' bwthreshspw SPW specified is not a SPW of this dataset')
-                        casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                        return
-                    if type(bwthreshspw[spwth]) is not float:
-                        print(' bwthreshspw requires a float for the bw-threshold')
-                        print(' e.g. {"22":120e6}')
-                        casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                        return
+                if int(spwth) not in spws:
+                    print(' bwthreshspw SPW specified is not a SPW of this dataset')
+                    casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
+                    return
+                if type(bwthreshspw[spwth]) is not float:
+                    print(' bwthreshspw requires a float for the bw-threshold')
+                    print(' e.g. {"22":120e6}')
+                    casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
+                    return
 
         # AL added - Want to loop over sources so we can disentangle fields and sources and better plot what is happening
         # for mosaics and multi-target observations. 
@@ -2095,7 +2102,12 @@ class ACreNorm(object):
 
         # Only do non-trivial segments if bwthresh exceeded AND spw is FDM (lots of channels)
         #   (This prevents TDM spws, which are wide and low-res, from being segmented)
-
+        
+        # First check the number of channels explicitly, if less than 128, no need to divide the window up.
+        if nchan <= 128:
+            print(' **Small number of channels found, will not divide up the spw.')
+            self.logReNorm.write(' **Small number of channels found, will not divide up the spw.')
+            return (nseg,dNchan)
         # check first if we are forcing a divide
         if type(bwdiv) is int and spw in self.fdmspws:
             # make float so we can check dNchan
@@ -2351,11 +2363,15 @@ class ACreNorm(object):
                 if plotDivisions:
                     dNchan = self.rnstats['inputs'][target][str(spw)]['dNchan']
                     nseg = self.rnstats['inputs'][target][str(spw)]['num_segments']
-                    xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-                    if plotfreq:
-                        pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+                    # If there is only 1 segment, no lines to draw
+                    if nseg == 1:
+                        plotDivisions=False
                     else:
-                        pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+                        xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
+                        if plotfreq:
+                            pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+                        else:
+                            pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
 
                 if plotATM:
                     # for refernce its easiest to only plot the bandpass ATM profile as representative 
@@ -2395,15 +2411,19 @@ class ACreNorm(object):
 
                     # Setup for properly labelling the y-axis so that labels below 0 are blanked (because they have no meaning).
                     # initialize the axes so we can read the labels
-                    pl.draw()
+                    #ax = pl.gca()
+                    #print(ax.get_yticklabels()[2])
+                    #pl.draw()
                     # get the axes
-                    ax = pl.gca()
+                    #ax = pl.gca()
                     #grab the label strings
-                    ylabels = ax.get_yticklabels()
+                    #ylabels = ax.get_yticklabels()
+                    #print(ylabels[0])
                     # iterate over the labels and if any are located below 0, blank them out
-                    ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
+                    #ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
+                    #print(ylabels)
                     # set the new label names
-                    ax.set_yticklabels(ylabels)
+                    #ax.set_yticklabels(ylabels)
                     
                     if subplot:
                         if (k-1)%nXspw==0:  
@@ -2439,7 +2459,10 @@ class ACreNorm(object):
                             self.convert_plots_pdf(target, spw)
                     else:
                         pl.show()
-                        raw_input('Please close plot and press ENTER to continue.')
+                        try:
+                            raw_input('Please close plot and press ENTER to continue.')
+                        except NameError:
+                            input('Please close plot and press ENTER to continue.')
 
             if subplot:
                 if nXspw == 3:
@@ -2726,7 +2749,7 @@ class ACreNorm(object):
         # this changes actively the renorm value, R,
         # creates a channel based threshold
         # uses the divided spectrum (ant/median-spec) for checks
-
+        
 
         ##M = pl.median(R,2) # median spectra for each pol - in principle all ants should be the same per field
         # the above is a problem if there are too many 1.0's from flagged data - median ends up being 1.0
@@ -2746,7 +2769,7 @@ class ACreNorm(object):
             Rorig = R.copy() # copy 
             # for the plotting
 
-        # assuming 2 corr/pols
+        # assuming 2 corr/pols but this doesn't hurt single pol or full pol
         lineOut=[[],[]]
         plttxt=[[],[]]
         corPrt=['XX','YY']
@@ -2779,7 +2802,8 @@ class ACreNorm(object):
         for jant in AntUse:
 
             # append to known dict if not there already
-            if self.AntName[jant] not in self.AntOut[str(spwin)].keys(): self.AntOut[str(spwin)][self.AntName[jant]]={}
+            if self.AntName[jant] not in self.AntOut[str(spwin)].keys(): 
+                self.AntOut[str(spwin)][self.AntName[jant]]={}
                 
             # for later logic of action if required
             replaceCorr = [False for iCor in range(self.num_corrs)]
@@ -2789,7 +2813,7 @@ class ACreNorm(object):
                 Rcomp = 1.0+pl.absolute((R[jcor,:,jant]/M[jcor,:])-1.0)
                 # make channel based assessment and reset to specific channel value in median spectrum - default operation
                 # but as we replace we store how many channels are replaced for later logic
-                R[jcor,:,jant]=[M[jcor][nch] if Rcomp[nch]>thresharr[jcor][nch] else R[jcor,:,jant][nch] for nch in range(M.shape[1])] 
+                R[jcor,:,jant] = [M[jcor][nch] if Rcomp[nch]>thresharr[jcor][nch] else R[jcor,:,jant][nch] for nch in range(M.shape[1])] 
                 lineOut[jcor]=[spl for spl in range(M.shape[1]) if Rcomp[spl]>thresharr[jcor][spl]]
                 plttxt[jcor]=' **** Replace flagged channels with that from median spectrum **** ' # store a print statement for plot - can be later overwritten
                 if len(lineOut[jcor])>0:
@@ -2798,48 +2822,61 @@ class ACreNorm(object):
                     self.logReNorm.write('   Outlier antenna identified '+str(self.AntName[jant])+' '+str(corPrt[jcor])+' will repair outlier channels\n') # LM Added 
 
                     # open the list for outlier channels if not already existing (fill below)
-                    if corPrt[jcor] not in self.AntOut[str(spwin)][self.AntName[jant]].keys(): self.AntOut[str(spwin)][self.AntName[jant]][corPrt[jcor]]=[]
+                    if corPrt[jcor] not in self.AntOut[str(spwin)][self.AntName[jant]].keys(): 
+                        self.AntOut[str(spwin)][self.AntName[jant]][corPrt[jcor]]=[]
+                    
                     # also want to know the maximum consecutive channels 
                     maxConseq = self.calcMaxConseq(lineOut[jcor])
                     #print(' ######## consecuitve is '+str(maxConseq)) # for testing
 
                     # if there are more than 10 consecutive lines follow the replacement with other correlation route, XX -> YY, or YY-> XX
-                    if maxConseq > 10: replaceCorr[jcor]=True
+                    if maxConseq > 10: 
+                        replaceCorr[jcor]=True
                     # the below code will do logic to check if the swap to the oposite correlation is ok or not
                 else:
-                    # there were no triggered lines, maybe only one pol was bad - done assess any further 
+                    # there were no triggered lines, maybe only one pol was bad - don't assess any further 
                     # it triggered the outlierAnt but this pol wasn't bad
                     continue 
         
                 # if we find a lot of outlier channels, or the consecutive amount of bad channels is triggered  
                 # we work out what action to take - 10% of SPW must be bad in total - this is hard coded choice 
                 if len(lineOut[jcor])>0.1*M.shape[1] or replaceCorr[jcor]:
-                    lineOut1=[]  # set as empty list for checking oposite correlation case
-                    if self.num_corrs !=1 and jcor==0 and replaceCorr[1] is False:
-                        # this is XX corr, so we test if opposite correlation YY is good - won't do this test if replaceCorr triggered already for YY
-                        # and also checks consequtive length, which can trigger replaceCorr for YY too
-                        Rcomp1 = 1.0+pl.absolute((R[1,:,jant]/M[1,:])-1.0)
-                        lineOut1=[spl for spl in range(M.shape[1]) if Rcomp1[spl]>thresharr[1][spl]]
-                        maxConseq1 = self.calcMaxConseq(lineOut1)
-                        if maxConseq1>10: replaceCorr[1] = True
+                    # This large comment block was originally coded by Luke and goes through a chain of logic to
+                    # decide if only 1 of 2 correlations are bad. If only one is bad, it is replaced with the other
+                    # so, for example, if XX is bad but YY is good, then XX would be set to YY. This works fine 
+                    # for non-polarization data but ends up destroyingn polarization signal in full polarization
+                    # data. Therefore, Andy removed this logic and instead simplified it to be if a correlation is
+                    # found to be bad, it is replaced with the median spectrum of that same correlation. It may be
+                    # the case that it is decided later that dual pol should use Luke's method and full pol should 
+                    # use the new method, so Andy left this here.
+                    #
+                    #
+                    #lineOut1=[]  # set as empty list for checking oposite correlation case
+                    #if self.num_corrs !=1 and jcor==0 and replaceCorr[1] is False:
+                    #    # this is XX corr, so we test if opposite correlation YY is good - won't do this test if replaceCorr triggered already for YY
+                    #    # and also checks consequtive length, which can trigger replaceCorr for YY too
+                    #    Rcomp1 = 1.0+pl.absolute((R[1,:,jant]/M[1,:])-1.0)
+                    #    lineOut1=[spl for spl in range(M.shape[1]) if Rcomp1[spl]>thresharr[1][spl]]
+                    #    maxConseq1 = self.calcMaxConseq(lineOut1)
+                    #    if maxConseq1>10: replaceCorr[1] = True
 
                     # after doing YY check above - see what the replacement method should be
-                    if self.num_corrs!=1 and jcor==0 and len(lineOut1)<0.1*M.shape[1] and replaceCorr[1] is False:
-                        # if YY assessment is ok , correct any few channels on the fly as needed while filling into XX scaling spectrum
-                        # this on-the -fly correction of YY is only required as we loop XX then YY, so YY wasn't checked yet
-                        R[jcor,:,jant]=[M[jcor][nch] if Rcomp1[nch]>thresharr[1][nch] else R[1,:,jant][nch] for nch in range(M.shape[1])] 
-                        plttxt[jcor]=' **** Replaced XX spectrum with good YY spectrum **** '  ## new plot annotation text
-
-                    elif self.num_corrs!=1 and jcor==1 and replaceCorr[0] is False:
-                        # replace YY with XX - i.e. jcor = 0 - was either deemed ok, or corrected already as it was looped 
-                        # for a few outlier channels, so we simply can fill XX into YY
-                        R[jcor,:,jant]=R[0,:,jant]
-                        plttxt[jcor]=' **** Replaced YY spectrum with good XX spectrum **** '
-                    else:
-                        # we get to here as both correclations will have triggered replaceCorr - i.e. lots of channels total or >10 consequtive 
-                        R[jcor,:,jant]=M[jcor]
-                        plttxt[jcor]=' **** Replaced spectrum with median spectrum **** '
-
+                    #if self.num_corrs!=1:# and len(lineOut1)<0.1*M.shape[1] and replaceCorr[1] is False and jcor==0:
+                    #    # if YY assessment is ok , correct any few channels on the fly as needed while filling into XX scaling spectrum
+                    #    # this on-the -fly correction of YY is only required as we loop XX then YY, so YY wasn't checked yet
+                    #    #R[jcor,:,jant]=[M[jcor][nch] if Rcomp1[nch]>thresharr[1][nch] else R[1,:,jant][nch] for nch in range(M.shape[1])] 
+                    #    R[jcor,:,jant]=[M[jcor][nch] if Rcomp[nch]>thresharr[1][nch] else R[1,:,jant][nch] for nch in range(M.shape[1])] 
+                    #    plttxt[jcor]=' **** Replaced XX spectrum with good YY spectrum **** '  ## new plot annotation text
+                    #
+                    #elif self.num_corrs!=1 and jcor==1 and replaceCorr[0] is False:
+                    #    # replace YY with XX - i.e. jcor = 0 - was either deemed ok, or corrected already as it was looped 
+                    #    # for a few outlier channels, so we simply can fill XX into YY
+                    #    R[jcor,:,jant]=R[0,:,jant]
+                    #    plttxt[jcor]=' **** Replaced YY spectrum with good XX spectrum **** '
+                    #else:
+                    #    # we get to here as both correclations will have triggered replaceCorr - i.e. lots of channels total or >10 consequtive 
+                    R[jcor,:,jant]=M[jcor]
+                    plttxt[jcor]=' **** Replaced '+corPrt[jcor]+' spectrum with median '+corPrt[jcor]+' spectrum **** '
 
 
                 if len(lineOut[jcor]) < 10 and set(lineOut[jcor]).issubset(self.AntOut[str(spwin)][self.AntName[jant]][corPrt[jcor]]):
@@ -2889,8 +2926,12 @@ class ACreNorm(object):
                         target = self.msmeta.namesforfields(fldin)[0]
                         dNchan = self.rnstats['inputs'][target][str(spwin)]['dNchan']
                         nseg = self.rnstats['inputs'][target][str(spwin)]['num_segments']
-                        xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-                        pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)                        
+                        # if there is only 1 segment, then no lines to draw
+                        if nseg==1:
+                            plotDivisions=False
+                        else:
+                            xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
+                            pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)                        
                     pl.xlabel('Channels')
                     pl.ylabel('ReNorm Scaling')
                     fname=self.msname+'_ReNormHeuristicOutlierAnt_'+self.AntName[jant]+'_spw'+str(spwin)+'_scan'+str(scanin)+'_field'+str(fldin)+'_'+corPrt[jcor]
@@ -2915,8 +2956,6 @@ class ACreNorm(object):
                         # if not hardcopy, the plots are currently show to screen interactively - i.e. for Luke's huristic checking
                         pl.show()
 
-
-                            
             
 
     # LM added function - main diagnostic spectra at lowest level - scaling that each spw, scan, field, ant, correlation will have
@@ -2990,11 +3029,14 @@ class ACreNorm(object):
         if plotDivisions:
             dNchan = self.rnstats['inputs'][target][str(spwin)]['dNchan']
             nseg = self.rnstats['inputs'][target][str(spwin)]['num_segments']
-            xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-            if plotfreq:
-                pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+            if nseg == 1:
+                plotDivisions=False
             else:
-                pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+                xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
+                if plotfreq:
+                    pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+                else:
+                    pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
         if plotATM:
             # plot the ATM line
             if len(self.atmtrans.keys())==0:
@@ -3026,15 +3068,15 @@ class ACreNorm(object):
 
             # Setup for properly labelling the y-axis so that labels below 0 are blanked (because they have no meaning).
             # update the axes so we can read the labels
-            pl.draw()
+            #pl.draw()
             # get the axes
-            ax = pl.gca()
+            #ax = pl.gca()
             #grab the label strings
-            ylabels = ax.get_yticklabels()
+            #ylabels = ax.get_yticklabels()
             # iterate over the labels and if any are located below 0, blank them out
-            ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
+            #ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
             # set the new label names
-            ax.set_yticklabels(ylabels)
+            #ax.set_yticklabels(ylabels)
 
             if self.Band in [9, 10]:
                 pl.ylabel('ATM Transmission (%), Image Sideband')
@@ -3048,95 +3090,6 @@ class ACreNorm(object):
         pl.savefig('./RN_plots/'+fnameM+'.png')
         pl.close('all')
 
-
-#       else:
-#           # note this has not really been tested as we've only dealt with dual corr projects for ALMA-IMF / FAUST so far
-#           # maybe this is not the correct way for plots for poliarized data 
-#           for allCor in range(R.shape[0]):
-#               pl.ioff()
-#               pl.clf()
-#               if plotfreq:
-#                   for allAnt in range(R.shape[2]):
-#                       pl.plot(freqs, R[allCor,:,allAnt],c='b',alpha=0.5)
-#                   pl.plot(freqs, M[allCor],c='g',linewidth='3')
-#                   if threshline and threshline < plMax:
-#                       pl.plot([min(freqs), max(freqs)],[threshline,threshline],linestyle='-',c='c',linewidth='2')
-#                   pl.xlabel('Frequency (GHz)')
-#               else:
-#                   for allAnt in range(R.shape[2]):
-#                       pl.plot(R[allCor,:,allAnt],c='b',alpha=0.5)
-#                   pl.plot(M[allCor],c='g',linewidth='3')
-#                   if threshline and threshline < plMax:
-#                       pl.plot([0,R.shape[1]],[threshline,threshline],linestyle='-',c='c',linewidth='2')
-#                   pl.xlabel('Channels')
-#               pl.ylabel('ReNorm Scaling')  
-#               fnameM=self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spwin)+'_scan'+str(scanin)+'_field'+str(fldin)+'_'+corPrt[allCor]
-#               #pl.title(fnameM,{'horizontalalignment': 'center', 'fontsize': 'medium','verticalalignment': 'bottom'})
-#               pl.title(self.msname+'\nTarget: '+target+' Spw: '+str(spwin)+' Scan: '+str(scanin)+' Field: '+str(fldin)+' Corr: '+corPrt[allCor], {'fontsize': 'medium'})
-#               if plotfreq:
-#                   pl.xlim(min(freqs)*0.99999, max(freqs)*1.00001)
-#               else:
-#                   pl.xlim(0,R.shape[1])
-#               pl.ylim(plMin,plMax)
-#               if plotDivisions:
-#                   dNchan = self.rnstats['inputs'][target][str(spwin)]['dNchan']
-#                   nseg = self.rnstats['inputs'][target][str(spwin)]['num_segments']
-#                   xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-#                   if plotfreq:
-#                       pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
-#                   else:
-#                       pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
-#               if plotATM:
-#                   # plot the ATM line
-#                   if len(self.atmtrans.keys())==0:
-#                       if self.Band in [9, 10]:
-#                           ATMprof, ATMprof_imageSB = self.ATMtrans(scanin, spwin, verbose=False)
-#                       else:
-#                           ATMprof=self.ATMtrans(scanin,spwin,verbose=False)
-#                   else:
-#                       ATMprof=self.atmtrans[target][str(spwin)][str(scanin)]
-#                   pl.twinx()
-#                   if plotfreq:
-#                       pl.plot(freqs, 100.*ATMprof,c='m',linestyle='-',linewidth=2)
-#                       if self.Band in [9, 10]:
-#                           pl.plot(freqs, 100.*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
-#                       pl.xlim(min(freqs)*0.99999, max(freqs)*1.00001)
-#                   else:
-#                       pl.plot(100.*ATMprof,c='m',linestyle='-',linewidth=2)
-#                       if self.Band in [9, 10]:
-#                           pl.plot(100.*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
-#                       pl.xlim(-1,R.shape[1]+1)
-#                   if self.Band in [9,10]:
-#                       peak = max(pl.maximum(ATMprof,ATMprof_imageSB)*100.)+10
-#                       pl.ylim(peak-100,peak)
-#                   else:
-#                       peak = max(ATMprof*100.)+10
-#                       pl.ylim(peak-100,peak)
-#               # CASA 6 units change unless specificed
-#               pl.ticklabel_format(style='plain', useOffset=False)
-#               
-#               # Setup for properly labelling the y-axis so that labels below 0 are blanked (because they have no meaning).
-#               # update the axes so we can read the labels
-#               pl.draw()
-#               # get the axes
-#               ax = pl.gca()
-#               #grab the label strings
-#               ylabels = ax.get_yticklabels()
-#               # iterate over the labels and if any are located below 0, blank them out
-#               ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
-#               # set the new label names
-#               ax.set_yticklabels(ylabels)
-#                               
-#               if self.Band in [9, 10]:
-#                   pl.ylabel('ATM Transmission (%), Image Sideband')
-#               else:
-#                   pl.ylabel('ATM Transmission (%)')
-#
-#               if not os.path.exists('RN_plots'):
-#                   os.mkdir('RN_plots')
-#               pl.savefig('./RN_plots/'+fnameM+'.png')
-#               pl.close()
-        
             
 
     # LM added
@@ -3331,10 +3284,6 @@ class ACreNorm(object):
             if verbose:
                 print('********* REVERSING THE ATM FOUND FOR LSB ***********')
             # need to super check this !!
-            #transhold = pl.zeros(len(transmission))
-            #for i in range(len(transmission)):
-            #    transhold[i] = transmission[len(transmission)-1-i]
-            #transmission = transhold # i.e reveresed order
             transmission = transmission[::-1] # reverse the order
             if self.Band in [9, 10]:
                 transmission_SB = transmission_SB[::-1]
