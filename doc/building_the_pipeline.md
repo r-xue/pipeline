@@ -6,8 +6,13 @@ The pipeline build procedure depends on Python 3, CASA buildmytasks, and Java,
 which is used by buildmytasks to process the task XML and to minify the
 Pipeline Javascript.
 
-It is recommended to put CASA `bin` directory first on your path for the
+It is recommended to put the CASA `bin` directory first on your path for the
 duration of the installation procedure.
+
+### Downloading and Installing CASA
+If you don't already have CASA installed, you can find recent builds at  [CASA pre-releases](https://casa.nrao.edu/download/distro/casa/releaseprep/). Sort by "Last Modified" to find the most recent version. 
+
+After downloading a CASA build, follow the instructions on the [CASA Installation Guide](https://casadocs.readthedocs.io/en/stable/notebooks/usingcasa.html#Full-Installation-of-CASA-5-and-6) to install CASA.
 
 ## Standard build
 
