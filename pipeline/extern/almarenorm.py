@@ -699,11 +699,8 @@ class ACreNorm(object):
         # simply
 
         if len(d)>0:
-            # This if/else does nothing?...
-            if d.shape[0] == 1:
-                d=d[0::1,:,:]
-            else:
-                d=d[0::(d.shape[0]-1),:,:]   #  parallel hands only
+            if d.shape[0] == 4:
+                d=d[0::(d.shape[0]-1),:,:]   #  parallel hands only for full pol data
             a1=st.getcol('ANTENNA1')  ## WARNING will CASA 6.2 obey row ordering if getcol ANT is not called with DATA ??
             st.close()
             mytb.close()
@@ -771,7 +768,7 @@ class ACreNorm(object):
 
         gdants=[]
         for irow in range(cd.shape[2]):
-            if pl.sum(cd[:,:,irow]) != 2*cd.shape[1]: # i.e here we are summing both XX and YY corr and the spectral axis
+            if pl.sum(cd[:,:,irow]) != self.num_corrs*cd.shape[1]: # i.e here we are summing all corrs and the spectral axis
                 gdants.append(a1[irow])
                 gdants.append(a2[irow])
 
