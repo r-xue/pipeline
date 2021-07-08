@@ -859,7 +859,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                         else:
                             nbin = -1
 
-                        if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
+                        if spwspec_ok and (field_intent[0], spwspec) in imsizes \
+                                and 'invalid' not in cells[spwspec] \
+                                and (field_intent[0], spwspec) in uvrange \
+                                and (field_intent[0], spwspec) in bl_ratio:
                             LOG.debug(
                               'field:%s intent:%s spw:%s cell:%s imsize:%s phasecenter:%s' %
                               (field_intent[0], field_intent[1], adjusted_spwspec,
