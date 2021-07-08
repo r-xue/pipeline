@@ -67,7 +67,6 @@ class CutoutimagesSummary(object):
                 if '.tt1.' not in subimagename:
                     with casa_tools.ImageReader(subimagename) as image:
                         self.result.rms_stats = image.statistics(robust=True)
-                        self.result.RMSmedian = self.result.rms_stats.get('median')[0]
                         arr = image.getchunk()
                         # PIPE-489 changed denominators to unmasked (non-zero) pixels
                         # get fraction of pixels <= 120 micro Jy VLASS technical goal.  ignore 0 (masked) values.
