@@ -223,9 +223,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         else:
             LOG.info('    Using standard spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
-        # Compute the spw-to-spw phase offsets ("phaseup") cal table and set
-        # calwt to False.
-        LOG.info('Computing spw phaseup table for {} is {}'.format(inputs.ms.basename, inputs.hm_spwmapmode))
+        # Compute the spw-to-spw phase offsets ("phaseup") cal table.
+        LOG.info('Computing spw phaseup table for {}'.format(inputs.ms.basename))
         phaseupresult = self._do_phaseup()
 
         # Create the results object.
@@ -401,8 +400,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # caltable.
             append = True
 
-        # Create new copies of all CalApplications with calwt set to False, and
-        # add these to the final result.
+        # Created an updated version of each CalApplication with an override to
+        # set calwt to False. Replace any existing CalApplications in latest
+        # tuning result with complete list of all updated CalApplications, and
+        # return this as the final result.
         processed_calapps = [callibrary.copy_calapplication(c, calwt=False) for c in original_calapps]
         tuning_result.pool = processed_calapps
         tuning_result.final = processed_calapps
