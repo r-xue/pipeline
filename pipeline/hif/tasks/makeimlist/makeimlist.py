@@ -569,7 +569,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
                             except Exception as e:
                                 # problem defining uvrange
-                                LOG.warn(e)
+                                LOG.warn(e, "Data selection   Field: {!s}, spw: {!s}".format(str(field_intent[0]), str(spwspec)))
                                 pass
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
