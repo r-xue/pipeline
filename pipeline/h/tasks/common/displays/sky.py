@@ -96,7 +96,7 @@ class SkyDisplay(object):
         with casa_tools.ImageReader(result) as image:
             miscinfo = image.miscinfo()
 
-        parameters = {k: miscinfo[k] for k in ['spw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
+        parameters = {k: miscinfo[k] for k in ['virtspw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
         parameters['ant'] = None
         parameters['band'] = band
         try:
@@ -244,9 +244,9 @@ class SkyDisplay(object):
                     for spw in image_info['spw'].split(','):
                         if int(spw) in v:
                             image_info['band'] = k
-                            del image_info['spw']
+                            del image_info['virtspw']
                             break
-                    if 'spw' not in image_info:
+                    if 'virtspw' not in image_info:
                         break
 
             if 'band' in image_info:
@@ -264,7 +264,7 @@ class SkyDisplay(object):
                          for key, color in [('type', 'k'),
                                             ('display', 'r'),
                                             ('field', 'k'),
-                                            ('spw', 'k'),
+                                            ('virtspw', 'k'),
                                             ('pol', 'k'),
                                             ('iter', 'k')]
                          if image_info.get(key) is not None]
