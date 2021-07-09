@@ -1069,6 +1069,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
             # obtain Wx, and Wy
             raster_info = _analyze_raster_pattern(dt, msobj, fieldid, spwid, antid, polids[0])
+            if raster_info is None:
+                LOG.warn('Raster scan analysis failed. Skipping further calculation.')
+                continue
+
             width = cqa.getvalue(cqa.convert(raster_info.width, ang_unit))[0]
             height = cqa.getvalue(cqa.convert(raster_info.height, ang_unit))[0]
             # obtain T_OS,f
@@ -1163,6 +1167,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                 sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
                 N += 1.0
 
+        if N == 0:
+            LOG.warn('No rms estimate is available.')
+            return failed_rms
+
         theoretical_rms = numpy.sqrt(sq_rms)/N
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return cqa.quantity(theoretical_rms, imageunit)
@@ -1193,7 +1201,10 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+    try:
+        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+    except Exception:
+        return None
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)
