@@ -122,18 +122,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         antid = self.inputs.antenna
         fieldid = self.inputs.fieldid
         in_rows = []
-        with casa_tools.TableReader(os.path.join(infile, 'DATA_DESCRIPTION')) as tb:
-            spwids = tb.getcol('SPECTRAL_WINDOW_ID')
-            data_desc_id = numpy.where(spwids == spwid)[0][0]
-
-        with casa_tools.TableReader(infile) as tb:
-            tsel = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d' %
-                            (data_desc_id, fieldid, antid, antid),
-                            sortlist='TIME')
-            if tsel.nrows() > 0:
-                in_rows = tsel.rownumbers() 
-            tsel.close()
-
+        out_rows = []
         with casa_tools.TableReader(os.path.join(outfile, 'DATA_DESCRIPTION')) as tb:
             spwids = tb.getcol('SPECTRAL_WINDOW_ID')
             data_desc_id = numpy.where(spwids == spwid)[0][0]
@@ -143,7 +132,23 @@ class WeightMS(basetask.StandardTaskTemplate):
                             (data_desc_id, fieldid, antid, antid),
                             sortlist='TIME')
             out_rows = tsel.rownumbers() 
+            stateids = numpy.unique(tsel.getcol('STATE_ID'))
             tsel.close()
+
+        with casa_tools.TableReader(os.path.join(infile, 'DATA_DESCRIPTION')) as tb:
+            spwids = tb.getcol('SPECTRAL_WINDOW_ID')
+            data_desc_id = numpy.where(spwids == spwid)[0][0]
+
+        with casa_tools.TableReader(infile) as tb:
+            # Tentative adding state id selection for sdatmcor data selection issue.
+            tsel = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d && STATE_ID IN %s' %
+                            (data_desc_id, fieldid, antid, antid, list(stateids)),
+                            sortlist='TIME', style='python')
+            if tsel.nrows() > 0:
+                in_rows = tsel.rownumbers() 
+            tsel.close()
+
+        assert len(in_rows) == len(out_rows)
 
         row_map = {}
         # in_row: out_row
