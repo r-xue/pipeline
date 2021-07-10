@@ -79,35 +79,45 @@ class plotsummarySummaryChart(object):
             for bandname, spwlist in band2spw.items():
                 figfile = self.get_figfile('field'+str(field.id)+'_amp_uvdist_{!s}'.format(bandname))
 
-                plot = logger.Plot(figfile, x_axis='uvwave', y_axis='amp',
-                                   parameters={'vis': self.ms.basename,
-                                               'type': 'Field '+str(field.id)+', '+field.name,
-                                               'field': str(field.id),
-                                               'bandname': bandname,
-                                               'spw': ','.join(spwlist)})
+                source_spwobjlist = list(field.valid_spws)
+                source_spwidlist = [spw.id for spw in source_spwobjlist]
+                source_spwidlist.sort()
+                # Find if spwlist contents are in the valid_spws for this band **and** field
+                spwidlist = [int(spw) for spw in spwlist]
+                spwuselist = [str(spwid) for spwid in spwidlist if spwid in source_spwidlist]
 
-                if not os.path.exists(figfile):
-                    LOG.trace('Plotting amp vs. uvwave for field id='+str(field.id)+'  Band '+bandname+'.  Creating new plot.')
+                if spwuselist:
+                    LOG.info(bandname+': ' + ','.join(spwuselist) + '    Field: '+field.name + '   id:'+str(field.id))
 
-                    try:
-                        job = casa_tasks.plotms(vis=ms_active, xaxis='uvwave', yaxis='amp', ydatacolumn='corrected',
-                                                selectdata=True, field=str(field.id), correlation=corrstring,
-                                                spw=','.join(spwlist),
-                                                averagedata=True, avgchannel=str(max(channels)), avgtime='1e8',
-                                                avgscan=False, transform=False, extendflag=False, iteraxis='',
-                                                coloraxis='spw', plotrange=[],
-                                                title='Field '+str(field.id)+', '+field.name + '   Band ' + bandname,
-                                                xlabel='', ylabel='',  showmajorgrid=False, showminorgrid=False,
-                                                plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+                    plot = logger.Plot(figfile, x_axis='uvwave', y_axis='amp',
+                                       parameters={'vis': self.ms.basename,
+                                                   'type': 'Field '+str(field.id)+', '+field.name,
+                                                   'field': str(field.id),
+                                                   'bandname': bandname,
+                                                   'spw': ','.join(spwuselist)})
 
-                        job.execute(dry_run=False)
+                    if not os.path.exists(figfile):
+                        LOG.info('Plotting amp vs. uvwave for field id='+str(field.id)+'  Band '+bandname+'.  Creating new plot.')
 
-                    except Exception as ex:
-                        LOG.error('Could not create plot for field {!s}  band {!s}'.format(str(field.id), bandname))
-                        LOG.exception(ex)
-                        plot = None
+                        try:
+                            job = casa_tasks.plotms(vis=ms_active, xaxis='uvwave', yaxis='amp', ydatacolumn='corrected',
+                                                    selectdata=True, field=str(field.id), correlation=corrstring,
+                                                    spw=','.join(spwuselist),
+                                                    averagedata=True, avgchannel=str(max(channels)), avgtime='1e8',
+                                                    avgscan=False, transform=False, extendflag=False, iteraxis='',
+                                                    coloraxis='spw', plotrange=[],
+                                                    title='Field '+str(field.id)+', '+field.name + '   Band ' + bandname,
+                                                    xlabel='', ylabel='',  showmajorgrid=False, showminorgrid=False,
+                                                    plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
-                plots.append(plot)
+                            job.execute(dry_run=False)
+
+                        except Exception as ex:
+                            LOG.error('Could not create plot for field {!s}  band {!s}'.format(str(field.id), bandname))
+                            LOG.exception(ex)
+                            plot = None
+
+                    plots.append(plot)
 
         return [p for p in plots if p is not None]
 

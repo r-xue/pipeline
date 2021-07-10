@@ -160,7 +160,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         with casa_tools.ImageReader(src) as image:
             info = image.miscinfo()
             info['type'] = masktype
-            info['spw'] = spw
+            info['virtspw'] = spw
             info['field'] = field
             image.setmiscinfo(info)
 

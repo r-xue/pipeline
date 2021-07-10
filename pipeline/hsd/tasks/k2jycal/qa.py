@@ -28,7 +28,8 @@ class SDK2JyCalQAHandler(pqa.QAPlugin):
                 score = 1.0
             else:
                 statusstr = 'failed'
-                score = 0.8
+                score = 0.0
+                #score = 0.8
             shortmsg = "Accessing Jy/K DB was {}".format(statusstr)
             longmsg = shortmsg + " for " + (result.vis if result.vis is not None else "input vis")
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))

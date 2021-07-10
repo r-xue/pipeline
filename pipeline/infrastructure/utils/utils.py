@@ -9,12 +9,12 @@ import operator
 import os
 import re
 import string
-from typing import Collection, Dict, List, Optional, Sequence, Union
+from typing import Collection, Dict, List, Tuple, Optional, Sequence, Union
 
 import bisect
 import numpy as np
 
-from .conversion import range_to_list
+from .conversion import range_to_list, dequote
 from .. import casa_tools
 from .. import logging
 
@@ -22,7 +22,8 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count']
+           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
+           'place_repr_source_first']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -390,3 +391,24 @@ def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
             if taskname in r.pipeline_casa_task:
                 count += 1
     return count
+
+
+def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source: str) -> Union[List[str], List[Tuple]]:
+    """
+    Place representative source first in a list of source names
+    or tuples with source name as first tuple element.
+    """
+    try:
+        itemtype = type(itemlist[0])
+        if itemtype is str:
+            repr_source_index = [dequote(item) for item in itemlist].index(dequote(repr_source))
+        elif itemtype is tuple or itemtype is list:
+            repr_source_index = [dequote(item[0]) for item in itemlist].index(dequote(repr_source))
+        else:
+            raise Exception('Cannot handle items of type {}'.format(itemtype))
+        repr_source_entry = itemlist.pop(repr_source_index)
+        itemlist = [repr_source_entry] + itemlist
+    except ValueError:
+        LOG.warning('Could not reorder field list to place representative source first')
+
+    return itemlist

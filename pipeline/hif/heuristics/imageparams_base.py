@@ -225,7 +225,7 @@ class ImageParamsHeuristics(object):
                         fintents_list = [fld.intents for fld in fields if utils.dequote(fld.name) == utils.dequote(f)]
                         for fintents in fintents_list:
                             for fintent in fintents:
-                                field_intent_result.update((f, fintent))
+                                field_intent_result.update([(f, fintent)])
 
         # eliminate redundant copies of field/intent keys that map to the
         # same data - to prevent duplicate images being produced

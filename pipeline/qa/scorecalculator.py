@@ -2393,17 +2393,20 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         metric_units = '%s, %s, %s' % (offset_unit, fitflux_unit, fitpeak_unit)
 
         if warnings != []:
-            longmsg = '%s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
+            longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
             # Log warnings only if they would not be logged by the QA system (score <= 0.66)
             if score > 0.66:
                 LOG.warn(longmsg)
         else:
-            longmsg = 'Check source fit successful'
+            if score <= 0.9:
+                longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
+            else:
+                longmsg = 'EB %s field %s spwid %d: Check source fit successful' % (msnames, fieldname, spwid)
 
         if score <= 0.9:
             shortmsg = 'Check source fit not optimal'
 
-    origin = pqa.QAOrigin(metric_name='score_checksources',
+    origin = pqa.QAOrigin(metric_name='ScoreChecksources',
                           metric_score=metric_score,
                           metric_units=metric_units)
 
@@ -2894,11 +2897,11 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_thr
     with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
-        spw = info.get('spw')
+        spw = info.get('virtspw')
 
     if peak_snr <= outlier_threshold:
         score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
         shortmsg = 'MOM8 FC peak SNR below QA threshold'
         weblog_location = pqa.WebLogLocation.ACCORDION
     else:

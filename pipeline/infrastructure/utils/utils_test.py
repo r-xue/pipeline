@@ -7,7 +7,7 @@ import pytest
 from pipeline import domain
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
-    get_field_accessor, get_field_identifiers, get_receiver_type_for_spws
+    get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first
 
 params_find_ranges = [('', ''), ([], ''), ('1:2', '1:2'), ([1, 2, 3], '1~3'),
                       (['5~12', '14', '16:17'], '5~12,14,16:17'),
@@ -229,3 +229,15 @@ def test_get_casa_quantity(value: Union[str, float, Dict, None], expected: Dict)
     tool method.
     """
     assert get_casa_quantity(value) == expected
+
+
+params_place_repr_source_first = [(['f0', 'f1', 'f2', 'f3'], 'f2', ['f2', 'f0', 'f1', 'f3']),
+                                  ([('f3', 'a'), ('f2', 'b'), ('f0', 'p'), ('f1', 't')], 'f2', [('f2', 'b'), ('f3', 'a'), ('f0', 'p'), ('f1', 't')])]
+
+
+@pytest.mark.parametrize('itemlist, repr_source, expected', params_place_repr_source_first)
+def test_place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source: str, expected: Union[List[str], List[Tuple]]):
+    """
+    Test place_repr_source_first()
+    """
+    assert place_repr_source_first(itemlist, repr_source) == expected
