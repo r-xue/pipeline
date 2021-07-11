@@ -571,7 +571,7 @@ class SDFlagPlotter(object):
 
         # Regular Plot
         ax.plot( sd_display.mjd_to_plotval(data['online_x']), data['online_y'], 's', 
-                 markersize=1.5, color=col[pp]['online'], markeredgewidth=0, 
+                 markersize=1.7, color=col[pp]['online'], markeredgewidth=0, 
                  alpha=alpha[pp], label='flagged (online)' )
         ax.plot( sd_display.mjd_to_plotval(data['normal_x']), data['normal_y'], 'o', 
                  markersize=1.5, color=col[pp]['normal'], markeredgewidth=0, 
