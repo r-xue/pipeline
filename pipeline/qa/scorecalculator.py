@@ -2539,7 +2539,7 @@ def generate_metric_mask(context, result, cs, mask):
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
         rotable_name = os.path.join(datatable_name, 'RO')
         rwtable_name = os.path.join(datatable_name, 'RW')
-        _index = np.where(file_index == i)
+        _index = np.where(file_index == file_index[i])
         if len(_index[0]) == 0:
             continue
 
