@@ -569,6 +569,7 @@ class ACreNorm(object):
             self.logReNorm.write('No FDM windows found! Renormalization unnecessary.')
             self.tdm_only = True
             bandFreq = spwInfo['0']['Chan1Freq']
+            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.tdmspws()[-1]))
         
         self.Band = int(self.getband(bandFreq))
 
