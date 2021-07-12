@@ -177,50 +177,16 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             vis=inputs.vis, mode='save', versionname=flag_backup_name_pregfsf)
         self._executor.execute(task)
 
-        # Determine the parameters to use for the gaincal to create the
-        # phase-only caltable.
-        # If a non-empty combine spw mapping is defined
-        # then use spw combination with corresponding map and interpolation.
-        if inputs.ms.combine_spwmap:
-            phase_combine = 'spw'
-            phaseup_spwmap = inputs.ms.combine_spwmap
-            phase_interp = 'linearPD,linear'
-            # Note: at present, phaseupsolint is specified as a fixed
-            # value, defined in inputs. In the future, phaseupsolint may
-            # need to be set based on exposure times; if so, see discussion
-            # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
-        # If no valid combine spw map was defined, then use regular spw mapping
-        # using the phase up spw map, without any interpolation.
-        else:
-            phase_combine = ''
-            phaseup_spwmap = inputs.ms.phaseup_spwmap
-            phase_interp = None
-
-        # Create phase caltable and merge it into the local context.
-        LOG.info('Compute phase gaincal table.')
-        self._do_gaincal(
-            intent=inputs.intent, gaintype='G', calmode='p',
-            combine=phase_combine, solint=inputs.phaseupsolint,
-            minsnr=inputs.minsnr, refant=inputs.refant,
-            spwmap=phaseup_spwmap, interp=phase_interp,
-            merge=True)
+        # Create phase caltable(s) and merge into the local context.
+        self._do_phasecal()
 
         # Create amplitude caltable and merge it into the local context.
         # CAS-10491: for scan-based (solint='inf') amplitude solves that
         # will be applied to the calibrator, set interp to 'nearest'.
         LOG.info('Compute amplitude gaincal table.')
-        if inputs.solint == 'inf':
-            self._do_gaincal(
-                intent=inputs.intent, gaintype='T', calmode='a',
-                combine='', solint=inputs.solint,
-                minsnr=inputs.minsnr, refant=inputs.refant,
-                interp='nearest,linear', merge=True)
-        else:
-            self._do_gaincal(
-                intent=inputs.intent, gaintype='T', calmode='a',
-                combine='', solint=inputs.solint,
-                minsnr=inputs.minsnr, refant=inputs.refant,
-                interp='linear,linear', merge=True)
+        amp_interp = 'nearest,linear' if inputs.solint == 'inf' else 'linear,linear'
+        self._do_gaincal(intent=inputs.intent, gaintype='T', calmode='a', combine='', solint=inputs.solint,
+                         minsnr=inputs.minsnr, refant=inputs.refant, interp=amp_interp, merge=True)
 
         # Ensure that any flagging applied to the MS by this applycal are
         # reverted at the end, even in the case of exceptions.
@@ -421,6 +387,38 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 if merge:
                     # Merge result to the local context
                     result.accept(inputs.context)
+
+    def _do_phasecal(self):
+        inputs = self.inputs
+
+        # Determine the parameters to use for the gaincal to create the
+        # phase-only caltable.
+        # If a non-empty combine spw mapping is defined
+        # then use spw combination with corresponding map and interpolation.
+        if inputs.ms.combine_spwmap:
+            phase_combine = 'spw'
+            phaseup_spwmap = inputs.ms.combine_spwmap
+            phase_interp = 'linearPD,linear'
+            # Note: at present, phaseupsolint is specified as a fixed
+            # value, defined in inputs. In the future, phaseupsolint may
+            # need to be set based on exposure times; if so, see discussion
+            # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
+
+        # If no valid combine spw map was defined, then use regular spw mapping
+        # using the phase up spw map, without any interpolation.
+        else:
+            phase_combine = ''
+            phaseup_spwmap = inputs.ms.phaseup_spwmap
+            phase_interp = None
+
+        # Create phase caltable and merge it into the local context.
+        LOG.info('Compute phase gaincal table.')
+        self._do_gaincal(
+            intent=inputs.intent, gaintype='G', calmode='p',
+            combine=phase_combine, solint=inputs.phaseupsolint,
+            minsnr=inputs.minsnr, refant=inputs.refant,
+            spwmap=phaseup_spwmap, interp=phase_interp,
+            merge=True)
 
 
 def create_plots(inputs, context, intents, suffix=''):
