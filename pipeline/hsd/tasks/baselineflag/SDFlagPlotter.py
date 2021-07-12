@@ -96,14 +96,16 @@ class SDFlagPlotter(object):
         return
 
 
-    def create_plots( self, FigFileRoot:Optional[str]=None ):
+    def create_plots( self, FigFileRoot:Optional[str]=None ) -> Dict:
         """
         Create Summary plots
         
         Vars:
             FigFileRoot : basename of figure files 
         Returns:
-            List of Figure filenames (basename only)
+            List of dictonaries of plot data
+                'file' : List of Figure filenames (basename only)
+                'type' : Type string for selector
         """
         msobj = self.msobj
         datatable = self.datatable
@@ -119,7 +121,7 @@ class SDFlagPlotter(object):
         NPp_dict = self.NPp_dict
         threshold_dict = self.threshold_dict
 
-        ant_name     = msobj.get_antenna(antid)[0].name
+        ant_name = msobj.get_antenna(antid)[0].name
         PosGap = time_gap[0]
         TimeGap = time_gap[1]
         plots = []
@@ -154,7 +156,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['TsysFlag']['Threshold'])
         figfilename = FigFileRoot + '_0.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Outlier Tsys' } )
 
         # RMS flag before baseline fit
         for pol in pollist:
@@ -170,7 +172,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RmsPreFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_1.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Baseline RMS pre-fit' } )
 
         # RMS flag after baseline fit
         for pol in pollist:
@@ -182,7 +184,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RmsPostFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_2.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename ) 
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Baseline RMS post-fit' } )
     
         # Running mean flag before baseline fit
         for pol in pollist:
@@ -194,7 +196,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RunMeanPreFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_3.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Running mean pre-fit' } )
 
         # Running mean flag after baseline fit
         for pol in pollist:
@@ -206,7 +208,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RunMeanPostFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_4.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename) 
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Running mean post-fit' } )
 
         # Expected RMS flag before baseline fit
         for pol in pollist:
@@ -219,7 +221,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "threshold with scaling factor = {:.1f}".format(FlagRule_local_dict[pol]['RmsExpectedPreFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_5.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Expected RMS pre-fit' } )
 
         # Expected RMS flag after baseline fit
         for pol in pollist:
@@ -232,7 +234,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "threshold with scaling factor = {:.1f}".format(FlagRule_local_dict[pol]['RmsExpectedPostFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_6.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Expected RMS post-fit' } )
 
         # delete variables not used after all
         del PlotData_dict
@@ -249,7 +251,7 @@ class SDFlagPlotter(object):
             pollist          : list of pols
             PlotData_dict    : dictonary of PlotData
             FigFileDir       : directory to create figure files
-            figfilename     : figure filename
+            figfilename      : figure filename
         Returns:
             (none)
         Raises:
@@ -571,7 +573,7 @@ class SDFlagPlotter(object):
 
         # Regular Plot
         ax.plot( sd_display.mjd_to_plotval(data['online_x']), data['online_y'], 's', 
-                 markersize=1.5, color=col[pp]['online'], markeredgewidth=0, 
+                 markersize=1.7, color=col[pp]['online'], markeredgewidth=0, 
                  alpha=alpha[pp], label='flagged (online)' )
         ax.plot( sd_display.mjd_to_plotval(data['normal_x']), data['normal_y'], 'o', 
                  markersize=1.5, color=col[pp]['normal'], markeredgewidth=0, 

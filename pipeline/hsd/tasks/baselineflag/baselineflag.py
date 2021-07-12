@@ -313,8 +313,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            antenna_id=member.antenna_id,
                                            spw_id=member.spw_id,
                                            pol_ids=pols_list[i])
-
+ 
         # per-MS loop
+        plots = []
         for msobj, accumulator in registry.items():
             rowmap = None
             if absolute_path(cal_name) == absolute_path(bl_name):
@@ -361,8 +362,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 renderer = SDBLFlagSummary(context, msobj,
                                            antenna_list, fieldid_list, spwid_list,
                                            pols_list, thresholds, flag_rule)
-                result = self._executor.execute(renderer, merge=False)
+                result, plot_list = self._executor.execute(renderer, merge=False)
                 flagResult += result
+                plots.extend( plot_list )
 
         # Calculate flag fraction after operation.
         flagdata_summary_job = casa_tasks.flagdata(vis=bl_name, mode='summary',
@@ -372,8 +374,10 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                    name='after')
         stats_after = self._executor.execute(flagdata_summary_job)
 
+###        LOG.info( "###@@ baselinelag.py: plots={}".format(plots))
         outcome = {'flagdata_summary': [stats_before, stats_after],
-                   'summary': flagResult}
+                   'summary': flagResult,
+                   'plots': plots }                                      #### ADDED
         results = SDBLFlagResults(task=self.__class__,
                                   success=True,
                                   outcome=outcome)

@@ -3,17 +3,21 @@ Created on Nov 9, 2016
 
 @author: kana
 """
+import os
 import collections
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.utils as utils
 from ..common import utils as sdutils
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from pipeline.infrastructure import Context
 from pipeline.infrastructure.basetask import ResultsList
 from .baselineflag import SDBLFlagResults
+from mako.runtime import Context as makoContext
 
 LOG = logging.get_logger(__name__)
 
@@ -31,18 +35,92 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super(T2_4MDetailsBLFlagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx, context, result):
-        # per EB table
-        accum_flag_eb = accumulate_flag_per_eb( context, result )
-        table_rows_eb = make_summary_table_per_eb( accum_flag_eb )
-        ctx.update({'per_eb_summary_table_rows': table_rows_eb})
+    def update_mako_context(self, ctx:makoContext, context:Context, result:SDBLFlagResults):
+        """
+        update mako context
 
+        Args:
+            ctx:     mako context
+            context: pipeline context
+            result:  SDBLFlag results
+        Returns:
+            (none)
+        """
         # per field, spw table
         accum_flag_field = accumulate_flag_per_source_spw(context, result)
         table_rows_field = make_summary_table_per_field(accum_flag_field)
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         ctx.update({'per_field_summary_table_rows': table_rows_field,
                     'dovirtual': dovirtual})
+
+        # statistics plots
+        plots_list = []
+        for r in result:
+            plots_list.extend( r.outcome['plots'] )
+        wrappers = []
+        for plot in plots_list:
+            wrapper = logger.Plot( plot['FigFileDir']+plot['plot'],
+                                    x_axis="Xaxis",
+                                    y_axis="Yaxis",
+                                    field=plot['field'],
+                                    parameters = {
+                                        'vis' : plot['vis'],
+                                        'type' : plot['type'],
+                                        'spw' : plot['spw'],
+                                        'ant' : plot['ant'],
+                                        'field' : plot['field'],
+                                        'pol' : plot['pol']
+                                    } )
+            wrappers.append( wrapper )
+
+        renderer = SDBLFlagStatisticsPlotRenderer( context, result, wrappers )
+        with renderer.get_file() as fileobj:
+            fileobj.write(renderer.render())
+        vis_list = [ p.get('vis') for p in plots_list ]
+        subpages = {}
+        for vis in vis_list:
+            subpages[vis] = os.path.basename(renderer.path)
+
+        # per EB table
+        accum_flag_eb = accumulate_flag_per_eb( context, result )
+        table_rows_eb, statistics_subpages = make_summary_table_per_eb( accum_flag_eb, subpages )
+        ctx.update({'per_eb_summary_table_rows': table_rows_eb,
+                    'statistics_subpages' : statistics_subpages, 
+                    'dovirtual' : dovirtual } )
+
+
+class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
+    """
+    Renderer class for Flag Statistics
+    """
+    def __init__( self, context:Context, result:SDBLFlagResults, plots ):
+        """
+        constructor
+
+        Args:
+            context : pipeline Context
+            result  : SDBLFlagResults
+            plots   : plot objects
+        Returns:
+            (none)
+        """
+        uri = 'hsd_blflag_statistics.mako'
+        title = 'Flag Statistics'
+        filename = 'hsd_blflag_statistics.html'
+        outfile = filenamer.sanitize( filename.replace( " ", "_") )
+        super(SDBLFlagStatisticsPlotRenderer, self ).__init__( uri, context, result, plots, title, outfile )
+
+    def update_json_dict(self, d, plot):
+        """
+        Update json dict to add new filters
+
+        Args:
+            d    : Json dict for plot    
+            plot : plot object
+        Returns:
+            (none)
+        """
+        d['type'] = plot.parameters['type']
 
 
 def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
@@ -96,29 +174,30 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
             accum_flag[ms.name]['flagdata_after']  += after[field]['flagged']
             accum_flag[ms.name]['flagdata_total']  += after[field]['total']
 
-        # pack detail plot info
-        accum_flag[ms.name]['details'] = ""
-
     return accum_flag
 
-def make_summary_table_per_eb( accum_flag : Dict ) -> str:
+
+def make_summary_table_per_eb( accum_flag:Dict, subpages:Dict ) -> Tuple[List[str], List[Dict]]:
     """
     make summary table data fpr flagsummary per EB
     
     Inputs:
         accum_flag : dictionary of acumulated flags
     Returns:
-        lines for per EB summary table
+        lines for per EB summary table, 
+        List of dictionaries of subplot info
     """
     FlagSummaryEB_TR = collections.namedtuple( 
         'FlagSummaryEB', 
-        'ms baseline_rms_post baseline_rms_pre running_mean_post running_mean_pre expected_rms_post expected_rms_pre outlier_tsys frac_before frac_additional frac_total details' )
+        'ms baseline_rms_post baseline_rms_pre running_mean_post running_mean_pre expected_rms_post expected_rms_pre outlier_tsys frac_before frac_additional frac_total' )
 
     rows = []
+    statistics_subpages = []
     for ms_name in accum_flag.keys():
         row_total = accum_flag[ms_name]['total']
         frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
         frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total'] 
+        html = "<A href={} class=\"replace\" data-vis=\"{}\">Plots</A>".format( subpages[ms_name], ms_name )
         tr = FlagSummaryEB_TR( ms_name, 
                                '{:.1f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
                                '{:.1f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total), 
@@ -129,12 +208,12 @@ def make_summary_table_per_eb( accum_flag : Dict ) -> str:
                                '{:.1f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
                                '{:.1f} %'.format( frac_before ),
                                '{:.1f} %'.format( frac_after - frac_before ),
-                               '{:.1f} %'.format( frac_after ),
-                               '{}'.format(accum_flag[ms_name]['details']) )
-        
+                               '{:.1f} %'.format( frac_after ) )
         rows.append(tr)
+        statistics_subpages.append( {'vis': ms_name,
+                                     'html' : subpages[ms_name] } )
     
-    return utils.merge_td_columns(rows, num_to_merge=0)
+    return utils.merge_td_columns(rows, num_to_merge=0), statistics_subpages
 
 
 def accumulate_flag_per_source_spw(context, results):

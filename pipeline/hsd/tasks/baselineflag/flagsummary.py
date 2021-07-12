@@ -41,10 +41,18 @@ class SDBLFlagSummary(object):
         self.flagRule = flagRule
         self.bunit = sdutils.get_brightness_unit(self.ms.name, defaultunit='Jy/beam')
 
-    def execute(self, dry_run=True):
+    def execute(self, dry_run:bool=True) -> Tuple[List[Dict],List]:
         """
         Summarizes flagging results.
+
         Iterates over antenna and polarization for a certain spw ID
+        Args:
+           dry_run: True if dry_run
+        Returns:
+           flagSummary : flagsummary
+           plot_list   : list of plot objects
+        Raises:
+            Exception when is_baselined is False for baselined data
         """
         start_time = time.time()
 
@@ -69,6 +77,7 @@ class SDBLFlagSummary(object):
         FigFileDir += "/"
 
         flagSummary = []
+        plot_list = []
         # loop over members (practically, per antenna loop in an MS)
         for (antid, fieldid, spwid, pollist) in zip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('Performing flagging for %s Antenna %d Field %d Spw %d' % (ms.basename, antid, fieldid, spwid))
@@ -123,11 +132,22 @@ class SDBLFlagSummary(object):
                     FlagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
                 # pack flag values
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
+
                 # create plots
-                ### instance should be made outside pol loop if overplotting pols
+                ### instance to be made outside pol loop if overplotting pols
                 flagplotter = SDFlagPlotter( self.ms, datatable, antid, spwid, time_gap, FigFileDir )
                 flagplotter.register_data( pol, is_baselined, FlagRule_local, PermanentFlag, NPp_dict, final_thres )
                 plots = flagplotter.create_plots( FigFileRoot )
+                for plot in plots:
+                    plot_list.append( { 'FigFileDir' : FigFileDir,
+                                        'FigFileRoot' : FigFileRoot,
+                                        'plot' : plot['file'],
+                                        'vis' : self.ms.name,
+                                        'type' : plot['type'],
+                                        'ant' : ant_name,
+                                        'spw' : spwid, 
+                                        'pol' : pol,
+                                        'field' : field_name } )
 
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
@@ -161,7 +181,7 @@ class SDBLFlagSummary(object):
         end_time = time.time()
         LOG.info('PROFILE execute: elapsed time is %s sec'%(end_time-start_time))
 
-        return flagSummary
+        return flagSummary, plot_list
 
 
     def pack_flags( self, datatable:DataTable, polid:int, ids, FlagRule_local:Dict ) -> Tuple[ List[int], Dict, List[int], Dict ]:
