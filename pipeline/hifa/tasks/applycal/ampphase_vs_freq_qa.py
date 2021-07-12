@@ -11,25 +11,41 @@ import scipy.optimize
 import pipeline.infrastructure.logging as logging
 from . import mswrapper
 
+
+MEMORY_CHUNK_SIZE = 1  # Size of the memory chunk when loading the MS (in GB)
 LOG = logging.get_logger(__name__)
 
-# used to associate ant/pol metadata with the amp/phase best fits
-AntennaFit = collections.namedtuple('AntennaFit', 'ant pol amp phase')
-# struct to hold best fit parameters for a linear model
-LinearFitParameters = collections.namedtuple('LinearFitParameters', 'slope intercept')
-# describes an outlier data selection with why it's an outlier, and by how much
-Outlier = collections.namedtuple('Outlier', 'vis intent scan spw ant pol num_sigma reason')
-# simple 2-tuple to hold a value and the uncertainty in that value
-ValueAndUncertainty = collections.namedtuple('FitAndError', 'value unc')
+
+# AntennaFit is used to associate ant/pol metadata with the amp/phase best fits
+AntennaFit = collections.namedtuple(
+    'AntennaFit',
+    ['ant', 'pol', 'amp', 'phase']
+)
+# LinearFitParameters is a struct to hold best fit parameters for a linear model
+LinearFitParameters = collections.namedtuple(
+    'LinearFitParameters',
+    ['slope', 'intercept']
+)
+# Outlier describes an outlier data selection with why it's an outlier, and by how much
+Outlier = collections.namedtuple(
+    'Outlier',
+    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'reason']
+)
+# ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value
+ValueAndUncertainty = collections.namedtuple(
+    'ValueAndUncertainty',
+    ['value', 'unc']
+)
+
 
 # nsigma thresholds for marking deviating fits as an outlier
-AMPLITUDE_SLOPE_THRESHOLD = 10
-AMPLITUDE_INTERCEPT_THRESHOLD = 10
-PHASE_SLOPE_THRESHOLD = 6.5
-PHASE_INTERCEPT_THRESHOLD = 8.4
+AMPLITUDE_SLOPE_THRESHOLD = 25.0
+AMPLITUDE_INTERCEPT_THRESHOLD = 53.0
+PHASE_SLOPE_THRESHOLD = 40.0
+PHASE_INTERCEPT_THRESHOLD = 60.5
 
 
-def score_all_scans(ms, intent: str, memory_gb: int = 1, flag_all: bool = False) -> List[Outlier]:
+def score_all_scans(ms, intent: str, flag_all: bool = False, memory_gb: int = MEMORY_CHUNK_SIZE) -> List[Outlier]:
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
@@ -55,17 +71,17 @@ def score_all_scans(ms, intent: str, memory_gb: int = 1, flag_all: bool = False)
         for spw in spws:
             LOG.info('Applycal QA analysis: processing {} scan {} spw {}'.format(ms.basename, scan.id, spw.id))
 
-            wrapper = mswrapper.MSWrapper.create_from_ms(ms.name, scan.id, spw.id)
-            # PIPE-687: Change previous line with the following commented code as part of PIPE-401
-            # wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, scan.id, spw.id, memory_gb)
+            wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, scan.id, spw.id, memory_gb)
 
             fits = get_best_fits_per_ant(wrapper)
 
-            outlier_fn = functools.partial(Outlier,
-                                           vis={ms.basename, },
-                                           intent={intent, },
-                                           spw={spw.id, },
-                                           scan={scan.id, })
+            outlier_fn = functools.partial(
+                Outlier,
+                vis={ms.basename, },
+                intent={intent, },
+                spw={spw.id, },
+                scan={scan.id, }
+            )
 
             outliers.extend(score_all(fits, outlier_fn, flag_all))
 
@@ -84,9 +100,7 @@ def get_best_fits_per_ant(wrapper):
     :param wrapper: MSWrapper to process
     :return: a list of AntennaFit objects
     """
-    V_k = mswrapper.calc_vk(wrapper)
-    # PIPE-687: Change previous line with the following commented code as part of PIPE-401
-    # V_k = wrapper.V
+    V_k = wrapper.V
 
     corrected_data = V_k['corrected_data']
     sigma = V_k['sigma']
@@ -112,21 +126,49 @@ def get_best_fits_per_ant(wrapper):
                 LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
                 continue
 
-            try:
-                (amp_fit, amp_err) = get_amp_fit(amp_model_fn, frequencies, visibilities, ta_sigma)
-                amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
-            except TypeError:
-                # Antenna probably flagged..
-                LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
-                continue
-
-            try:
-                (phase_fit, phase_err) = get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, ta_sigma)
-                phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
-            except TypeError:
-                # Antenna probably flagged..
-                LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
-                continue
+            median_sn = np.ma.median(np.ma.abs(visibilities) / np.ma.abs(ta_sigma))
+            if median_sn > 3:  # PIPE-401: Check S/N and either fit or use average
+                # Fit the amplitude
+                try:
+                    amp_fit, amp_err = get_amp_fit(amp_model_fn, frequencies, visibilities, ta_sigma)
+                    amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
+                except TypeError:
+                    # Antenna probably flagged..
+                    LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
+                    continue
+                # Fit the phase
+                try:
+                    phase_fit, phase_err = get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, ta_sigma)
+                    phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
+                except TypeError:
+                    # Antenna probably flagged..
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
+                    continue
+            else:
+                # 'Fit' the amplitude
+                try:
+                    amplitude_fit = LinearFitParameters(
+                        slope=ValueAndUncertainty(value=0., unc=0.),
+                        intercept=ValueAndUncertainty(
+                            value=np.ma.average(np.ma.abs(visibilities)),
+                            unc=np.ma.std(np.ma.abs(visibilities)))
+                    )
+                except TypeError:
+                    # Antenna probably flagged..
+                    LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
+                    continue
+                # 'Fit' the phase
+                try:
+                    phase_fit = LinearFitParameters(
+                        slope=ValueAndUncertainty(value=0., unc=0.),
+                        intercept=ValueAndUncertainty(
+                            value=np.ma.average(np.ma.angle(visibilities)),
+                            unc=np.ma.std(np.ma.angle(visibilities)))
+                    )
+                except TypeError:
+                    # Antenna probably flagged..
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
+                    continue
 
             fit_obj = AntennaFit(ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)
             all_fits.append(fit_obj)
@@ -139,25 +181,40 @@ def score_all(all_fits, outlier_fn, flag_all: bool = False):
     Compare and score the calculated best fits based on how they deviate from
     a reference value.
 
+    For all amplitude or slope vs frequency fits, score the slope or intercept
+    of the fit against the slope or intercept of the median best fit or a value
+    of 0, marking fits that deviate by sigma_threshold from the median dispersion
+    as outliers. Identified outliers are returned as a list of Outlier object
+    returned by the outlier_fn.
+
+    The outlier_fn argument should be a function that returns Outlier objects.
+    In practice, this function should be a partially-applied Outlier
+    constructor that requires a more required arguments to be
+    supplied for an Outlier instance to be created.
+
     Setting the test argument flag_all to True sets all fits as outliers. This
     is useful for testing the QA score roll-up and summary functions in the QA
     plugin.
 
-    :param all_fits:
-    :param outlier_fn:
+    :param all_fits: list of all AntennaFit best fit parameters for all metrics
+    :param outlier_fn: a function returning Outlier objects
     :param flag_all: True if all fits should be classed as outliers
-    :return:
+    :return: list of Outlier objects
     """
-    amp_slope_threshold = 0.0 if flag_all else AMPLITUDE_SLOPE_THRESHOLD
-    amp_intercept_threshold = 0.0 if flag_all else AMPLITUDE_INTERCEPT_THRESHOLD
-    phase_slope_threshold = 0.0 if flag_all else PHASE_SLOPE_THRESHOLD
-    phase_intercept_threshold = 0.0 if flag_all else PHASE_INTERCEPT_THRESHOLD
+    # Dictionary for the different cases to consider. Each is defined by a tuple
+    #  with: attr, ref_value_fn, sigma_threshold
+    score_definitions = {
+        "amp_slope": ('amp.slope', get_median_fit, AMPLITUDE_SLOPE_THRESHOLD),
+        "amp_intercept": ('amp.intercept', get_median_fit, AMPLITUDE_INTERCEPT_THRESHOLD),
+        "phase_slope": ('phase.slope', PHASE_REF_FN, PHASE_SLOPE_THRESHOLD),
+        "phase_intercept": ('phase.intercept', PHASE_REF_FN, PHASE_INTERCEPT_THRESHOLD),
+    }
 
     outliers = []
-    outliers.extend(score_amp_slope(all_fits, outlier_fn, amp_slope_threshold))
-    outliers.extend(score_amp_intercept(all_fits, outlier_fn, amp_intercept_threshold))
-    outliers.extend(score_phase_slope(all_fits, outlier_fn, phase_slope_threshold))
-    outliers.extend(score_phase_intercept(all_fits, outlier_fn, phase_intercept_threshold))
+    for k, v in score_definitions.items():
+        threshold = 0.0 if flag_all else v[2]
+        scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold)
+        outliers.extend(scores)
 
     return outliers
 
@@ -179,90 +236,6 @@ def get_median_fit(all_fits, accessor):
     values = [f.value for f in pol_slopes]
     median, median_sigma = robust_stats(values)
     return ValueAndUncertainty(value=median, unc=median_sigma)
-
-
-def score_amp_slope(all_fits, outlier_fn, sigma_threshold):
-    """
-    For all amplitude vs frequency fits, score the slope of the fit against
-    the slope of the median best fit, marking fits that deviate by
-    sigma_threshold from the median dispersion as outliers. Identified
-    outliers are returned as a list of Outlier object returned by the
-    outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    return score_X_vs_freq_fits(all_fits, 'amp.slope', get_median_fit, outlier_fn, sigma_threshold)
-
-
-def score_amp_intercept(all_fits, outlier_fn, sigma_threshold):
-    """
-    Score the intercept of the best fit against the intercept of the median
-    best fit, marking fits that deviate by sigma_threshold from the median
-    dispersion as outliers. Identified outliers are returned as a list of
-    Outlier object returned by the outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    return score_X_vs_freq_fits(all_fits, 'amp.intercept', get_median_fit, outlier_fn, sigma_threshold)
-
-
-def score_phase_slope(all_fits, outlier_fn, sigma_threshold):
-    """
-    For all phase vs frequency fits, score the slope of the fit against the
-    slope of the median best fit, marking fits that deviate by sigma_threshold
-    from the median dispersion as outliers. Identified outliers are returned
-    as a list of Outlier object returned by the outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    # phase score is calculated as deviation from zero
-    return score_X_vs_freq_fits(all_fits, 'phase.slope', PHASE_REF_FN, outlier_fn, sigma_threshold)
-
-
-def score_phase_intercept(all_fits, outlier_fn, sigma_threshold):
-    """
-    For all phase vs frequency fits, score the intercept of the fit against
-    the intercept of the median best fit, marking fits that deviate by
-    sigma_threshold from the median dispersion as outliers. Identified
-    outliers are returned as a list of Outlier object returned by the
-    outlier_fn.
-
-    The outlier_fn argument should be a function that returns Outlier objects.
-    In practice, this function should be a partially-applied Outlier
-    constructor that requires a more required arguments to be
-    supplied for an Outlier instance to be created.
-
-    :param all_fits: list of all AntennaFit best fit parameters for all metrics
-    :param outlier_fn: a function returning Outlier objects
-    :param sigma_threshold: the nsigma threshold to be considered an outlier
-    :return: list of Outlier objects
-    """
-    # phase score is calculated as deviation from zero
-    return score_X_vs_freq_fits(all_fits, 'phase.intercept', PHASE_REF_FN, outlier_fn, sigma_threshold)
 
 
 def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold):
@@ -307,14 +280,17 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
     :param sigma_threshold: threshold nsigma deviation for comparisons
     :return: list of Outliers
     """
+    median_cor_factor = np.sqrt(np.pi / 2.)  # PIPE-401: factor due to using the median instead of the mean
     outliers = []
 
     pols = {f.pol for f in all_fits}
     for pol in pols:
         pol_fits = [f for f in all_fits if f.pol == pol]
+        n_antennas = len(pol_fits)
 
         # get reference val. Usually median, could be zero for phase
-        reference_val, reference_sigma = reference_value_fn(pol_fits, accessor)
+        reference_val, sigma_sample = reference_value_fn(pol_fits, accessor)
+        reference_sigma = median_cor_factor * sigma_sample / np.sqrt(n_antennas)
 
         for fit in pol_fits:
             ant = fit.ant
@@ -608,6 +584,6 @@ def data_selection_contains(proposed, ds_args):
 
 # The function used to create the reference value for phase vs frequency best fits
 # Select this to compare fits against the median
-PHASE_REF_FN = get_median_fit
+# PHASE_REF_FN = get_median_fit
 # Select this to compare fits against zero
-# PHASE_REF_FN = lambda _, __: ValueAndUncertainty(0, 0)
+PHASE_REF_FN = lambda _, __: ValueAndUncertainty(0, 0)
