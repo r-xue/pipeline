@@ -80,9 +80,10 @@ class Renorm(basetask.StandardTaskTemplate):
             # Check if the correction has already been applied
             corrApplied = rn.checkApply()
             corrColExists = rn.correxists
-            rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
-                           diagspectra=inp.diagspectra)
+
             if not rn.tdm_only:
+                rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
+                               diagspectra=inp.diagspectra)
                 rn.plotSpectra()
                 alltdm = False
 
