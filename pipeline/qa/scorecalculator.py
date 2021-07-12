@@ -2941,16 +2941,17 @@ def score_fluxservice(result):
             score = 0.3
         # elif result.fluxservice is
 
-        for setjy_result in result.setjy_results:
-            measurements = setjy_result.measurements
-            for measurement in measurements.items():
-                try:
-                    age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
-                    if int(age) > 14:
-                        score = 0.5
-                        msg = "Age of nearest monitoring point is greater than 14 days."
-                except IndexError:
-                    LOG.debug("Skip since there is no age present")
+        if result.fluxservice is 'FIRSTURL' or result.fluxservice is 'BACKUPURL':
+            for setjy_result in result.setjy_results:
+                measurements = setjy_result.measurements
+                for measurement in measurements.items():
+                    try:
+                        age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
+                        if int(age) > 14:
+                            score = 0.5
+                            msg = "Age of nearest monitoring point is greater than 14 days."
+                    except IndexError:
+                        LOG.debug("Skip since there is no age present")
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
