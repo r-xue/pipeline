@@ -158,9 +158,16 @@ class SDImaging(basetask.StandardTaskTemplate):
         # set some information to image header
         image_item = result.outcome['image']
         imagename = image_item.imagename
+        # check if data is NRO
+        is_nro = sdutils.is_nro(context)
+        if is_nro:
+            virtspw = False
+        else:
+            virtspw = True
         for name in (imagename, imagename+'.weight'):
             imageheader.set_miscinfo(name=name,
                                      spw=','.join(map(str, spwlist)),
+                                     virtspw=virtspw,
                                      field=image_item.sourcename,
                                      nfield=1,
                                      type='singledish',
@@ -947,7 +954,10 @@ class SDImaging(basetask.StandardTaskTemplate):
     def get_imagename(self, source, spwids, antenna=None, asdm=None, stokes=None):
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
-        namer = filenamer.Image()
+        if is_nro:
+            namer = filenamer.Image(virtspw=False)
+        else:
+            namer = filenamer.Image(virtspw=True)
         if self.inputs.is_ampcal:
             nameroot = asdm
             if nameroot is None:

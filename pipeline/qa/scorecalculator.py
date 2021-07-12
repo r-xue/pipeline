@@ -2899,11 +2899,11 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_thr
     with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
-        spw = info.get('spw')
+        spw = info.get('virtspw')
 
     if peak_snr <= outlier_threshold:
         score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
         shortmsg = 'MOM8 FC peak SNR below QA threshold'
         weblog_location = pqa.WebLogLocation.ACCORDION
     else:
