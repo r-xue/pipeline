@@ -1073,60 +1073,124 @@ class SDRmsMapDisplay(SDImageDisplay):
 
         rms = self.__get_rms()
         nvalid = self.__get_num_valid()
-        nx = rms.shape[0]
-        ny = rms.shape[1]
-#        LOG.info('self.nx = {}'.format(self.nx))
-#        LOG.info('self.ny = {}'.format(self.ny))
-        LOG.info('nx = {}'.format(nx))
-        LOG.info('ny = {}'.format(ny))
+        #nx = self.nx
+        #ny = self.ny
+        LOG.info('nx = {}'.format(self.nx))
+        LOG.info('ny = {}'.format(self.ny))
 #        LOG.info('self.npol = {}'.format(self.npol))
-        LOG.info('rms = {}'.format(rms))
-        LOG.info('nvalid = {}'.format(nvalid))
-        pix_beam = 0
+        # LOG.info('rms = {}'.format(rms))
+        # LOG.info('nvalid = {}'.format(nvalid))
+        LOG.info('self.beam_size = {}'.format(self.beam_size))
+        #LOG.info('self.x_min = {}'.format(self.x_min))
+        #LOG.info('self.x_max = {}'.format(self.x_max))
+        #LOG.info('self.ra_min = {}'.format(self.ra_min))
+        #LOG.info('self.ra_max = {}'.format(self.ra_max))
+        #beam_pix_ra = self.beam_size * abs(nx/(self.ra_max - self.ra_min))
+        #beam_pix = self.beam_size * abs((self.x_max - self.x_min)/(self.ra_max - self.ra_min))
+        #beam_pix = round(beam_pix)
+        #beam_pix = 5
+        #LOG.info('beam_pix_ra = {}'.format(beam_pix_ra))
+
+        #LOG.info('self.y_min = {}'.format(self.y_min))
+        #LOG.info('self.y_max = {}'.format(self.y_max))
+        LOG.info('self.dec_min = {}'.format(self.dec_min))
+        LOG.info('self.dec_max = {}'.format(self.dec_max))
+        beam_pix = self.beam_size * abs(self.ny/(self.dec_max - self.dec_min))
+        #beam_pix_dec = self.beam_size * abs((self.y_max - self.y_min)/(self.dec_max - self.dec_min))
+        LOG.info('beam_pix = {}'.format(beam_pix))
+        length = 4*(self.nx*self.ny)**0.5 
+        LOG.info('length = {}'.format(length))
+            
+        thres_min = 1  # 1 percent
+        #thres_max_ra = (1.0 - (length*beam_pix_ra/6.0)/(nx*ny))*100  # several ten percents
+        #LOG.info('thres_max_ra = {}'.format(thres_max_ra))
+        #q_min, q_max = numpy.nanpercentile(rms_map_v, [thres_min, thres_max_ra])
+        #LOG.info('q_min_ra = {}'.format(q_min))
+        #LOG.info('q_max_ra = {}'.format(q_max))
+        thres_max = (1.0 - (length*beam_pix/6.0)/(self.nx*self.ny))*100
+        LOG.info('thres_max = {}'.format(thres_max))
+        
         npol_data = rms.shape[2]
-        LOG.info('npol_data = {}'.format(npol_data))
+        #LOG.info('npol_data = {}'.format(npol_data))
 #        for pol in xrange(self.npol):
         for pol in range(npol_data):
-            LOG.info('pol = {}'.format(pol))
-            LOG.info('rms[:, :, pol] = {}'.format(rms[:, :, pol]))
-            LOG.info('nvalid[:, :, pol] = {}'.format(nvalid[:, :, pol]))
+            # LOG.info('rms[:, :, pol] = {}'.format(rms[:, :, pol]))
+            # LOG.info('nvalid[:, :, pol] = {}'.format(nvalid[:, :, pol]))
             rms_map = rms[:, :, pol] * (nvalid[:, :, pol] > 0)
-            LOG.info('rms_map = {}'.format(rms_map))
+            # LOG.info('rms_map = {}'.format(rms_map))
             rms_map = numpy.flipud(rms_map.transpose())
-            LOG.info('rms_map after flipud = {}'.format(rms_map))
+            #LOG.info('rms_map = {}'.format(rms_map))
+            # LOG.info('rms_map after flipud = {}'.format(rms_map))
             #LOG.debug('rms_map=%s'%(rms_map))
             # 2008/9/20 DEC Effect
-            image = plt.imshow(rms_map, interpolation='nearest', aspect=self.aspect, extent=Extent)
+            rms_map_v = rms_map[~numpy.isnan(rms_map)]
+            rms_map_v = rms_map_v[numpy.nonzero(rms_map_v)]
+            #LOG.info('rms_map_v = {}'.format(rms_map_v))
+
+            q_min, q_max = numpy.nanpercentile(rms_map_v, [thres_min, thres_max])
+            LOG.info('q_min = {}'.format(q_min))
+            LOG.info('q_max = {}'.format(q_max))
+            image = plt.imshow(rms_map, vmin=q_min, vmax=q_max, interpolation='nearest', aspect=self.aspect, extent=Extent)
             xlim = rms_axes.get_xlim()
             ylim = rms_axes.get_ylim()
 
             # colorbar
-            rmsmin = rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam].min()
-            # rmsmin = rms_map[:, :].min()
-#            LOG.info('pix_beam = {}'.format(pix_beam))
-#            LOG.info('nx = {}'.format(nx))
-#            LOG.info('ny = {}'.format(ny))
-#            LOG.info('len(rms_map) = {}'.format(len(rms_map)))
-            # rmsmin = rms_map[:, :].min()
-#            LOG.info('len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam]) = {}'.format(len(rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam])))
-#            LOG.info('rmsmin = {}'.format(rmsmin))
-            rmsmax = rms_map[pix_beam:nx-pix_beam, pix_beam:ny-pix_beam].max()
+            #rmsmin = rms_map[:, :].min()
+            #rmsmin = rms_map[beam_pix:nx-beam_pix, beam_pix:ny-beam_pix].min()
+            #LOG.info('rmsmin (beam_pix) = {}'.format(rmsmin))
+            #rmsmax = rms_map[:, :].max()
+            # LOG.info('rmsmax (normal) = {}'.format(rmsmax))
+            #rmsmax = rms_map[beam_pix:nx-beam_pix, beam_pix:ny-beam_pix].max()
+            #LOG.info('rmsmax (beam_pix) = {}'.format(rmsmax))
 #            rmsmax = rms_map[2.0*self.beam_radius:nx-2.0*self.beam_radius, 2.0*self.beam_radius:ny-2.0*self.beam_radius].max()
-            # rmsmax = rms_map[:, :].max()
-#            LOG.info('rmsmax = {}'.format(rmsmax))
-            if not (rmsmin == rmsmax):
+            #rms_colorbar = None
+            if not (q_min == q_max):
+#            if not (rmsmin == rmsmax):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
+                    #rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
+                    #rms_colorbar = None
+                    #LOG.info('rms_colorbar 1 = {}'.format(rms_colorbar))
+                    #rms_colorbar = plt.colorbar(shrink=0.8)
+                    #LOG.info('rms_colorbar 2 = {}'.format(rms_colorbar))
+                    #rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
+                    #LOG.info('rms_colorbar 3 = {}'.format(rms_colorbar))
+                    #rms_colorbar.draw_all()
+                    #for t in rms_colorbar.ax.get_yticklabels():
+                    #    newfontsize = t.get_fontsize()*0.5
+                    #    t.set_fontsize(newfontsize)
+                    #LOG.info('rms_colorbar 4 = {}'.format(rms_colorbar))
+                    #rms_colorbar.remove()
                     if rms_colorbar is None:
+                    #    rms_colorbar.remove()
                         rms_colorbar = plt.colorbar(shrink=0.8)
+                        #rms_colorbar.mappable.set_clim((q_min, q_max))
+                        #rms_colorbar.ax.set_ylabel('pol = [%s]' % pol)
+                    #    #rms_colorbar.draw_all()
+                        #LOG.info('rms_colorbar 1 = {}'.format(rms_colorbar))
                         for t in rms_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
+                        #rms_colorbar = None
                     else:
-                        rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
+                        #rms_colorbar.remove()
+                        #rms_colorbar.remove()
+                        #rms_colorbar = plt.colorbar(shrink=0.8)
+                        rms_colorbar.mappable.set_clim((q_min, q_max))
+                        #rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
+                        #for t in rms_colorbar.ax.get_yticklabels():
+                        #    newfontsize = t.get_fontsize()*0.5
+                        #    t.set_fontsize(newfontsize)
                         rms_colorbar.draw_all()
+                        #LOG.info('rms_colorbar 2 = {}'.format(rms_colorbar))
+                    #LOG.info('rms_colorbar 4 = {}'.format(rms_colorbar))
                     # set_clim and draw_all clears y-label
-                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
+                    #rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
+                    #rms_colorbar.draw_all()
+                    #rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
+#            LOG.info('rms_colorbar 4 = {}'.format(rms_colorbar))
             del rms_map
+            #rms_colorbar = None
+            #rms_colorbar.remove()
 
             # draw beam pattern
             if beam_circle is None:
