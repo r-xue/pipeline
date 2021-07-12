@@ -90,7 +90,7 @@ def total_for_mses(mses, row):
 	if total is 0:
 		return 'N/A'
 	else:
-		return '%0.1f%%' % (100.0 * flagged / total)
+		return '%0.3f%%' % (100.0 * flagged / total)
 
 def total_for_agent(agent, row, mses=flags.keys()):
 	flagged = 0
@@ -106,7 +106,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 	if total is 0:
 		return 'N/A'
 	else:
-		return '%0.1f%%' % (100.0 * flagged / total)
+		return '%0.3f%%' % (100.0 * flagged / total)
 
 def space_comma(s):
 	return ', '.join(s.split(','))
@@ -244,7 +244,7 @@ def format_spwmap(spwmap, scispws):
 
 <h2 id="flaggeddata" class="jumptarget">Flagged data after calibration application</h2>
 <table class="table table-bordered table-striped "
-	   summary="Flagged Data">
+	   summary=>
 	<caption>Summary of measurement set flagging status after application
 	of (potentially flagged) calibration tables. Each cell gives the
 	amount of data flagged as a fraction of the specified data selection.
