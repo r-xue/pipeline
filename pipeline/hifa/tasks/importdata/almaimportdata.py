@@ -79,6 +79,7 @@ class ALMAImportData(importdata.ImportData):
 
             try:
                 ssl_context = ssl.create_default_context(cafile=certifi.where())
+                LOG.info('Attempting test query at: {!s}'.format(url))
                 response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
@@ -90,6 +91,7 @@ class ALMAImportData(importdata.ImportData):
                     url = baseurl + testquery
                     if baseurl == '':
                         url = ''
+                    LOG.info('Attempting test query at backup: {!s}'.format(url))
                     response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                     xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'

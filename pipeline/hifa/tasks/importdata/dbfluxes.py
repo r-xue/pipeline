@@ -121,7 +121,7 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     """
 
     url = buildurl(service_url, obs_time, frequency, sourcename)
-    LOG.debug('Querying {!s}'.format(url))
+    LOG.info('Attempting query {!s}'.format(url))
 
     ssl_context = ssl.create_default_context(cafile=certifi.where())
 
@@ -308,7 +308,7 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
     LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
     LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
-    LOG.info('         URL: {!s}'.format(url))
+    LOG.info('         Successful URL: {!s}'.format(url))
     LOG.info('         Version: {!s}'.format(version))
     if catalogue_I == 'N/A':
         LOG.warn('         **No flux returned from the flux catalogue service.**')
