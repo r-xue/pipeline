@@ -454,7 +454,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         return medtempsdict
 
     # Get list of unique scan ids.
-    unique_scans = sorted(list(set(scan_list)))
+    unique_scans = sorted(set(scan_list))
 
     # Get the associated spws for each scan id
     scans_spws = {scan: [spw.id for spw in ms.get_scans(scan_id=scan)[0].spws] for scan in unique_scans}
