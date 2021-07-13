@@ -363,6 +363,10 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 # the intent from which the calibration was derived
                 calapp_overrides = dict(intent=intent)
 
+                # Adjust the interp if provided.
+                if interp:
+                    calapp_overrides['interp'] = interp
+
                 # Adjust the spw map if provided.
                 if spwmap:
                     calapp_overrides['spwmap'] = spwmap
@@ -374,14 +378,12 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 if combine == 'spw':
                     calapp_overrides['spwmap'] = ms.combine_spwmap
 
-                # Adjust the interp if provided.
-                if interp:
-                    calapp_overrides['interp'] = interp
-
-                calapp = result.final[0]
-                modified = callibrary.copy_calapplication(calapp, **calapp_overrides)
-                result.pool[0] = modified
-                result.final[0] = modified
+                # Create modified CalApplication and replace CalApp in result
+                # with this new one.
+                original_calapp = result.final[0]
+                modified_calapp = callibrary.copy_calapplication(original_calapp, **calapp_overrides)
+                result.pool[0] = modified_calapp
+                result.final[0] = modified_calapp
 
                 # If requested, merge the result...
                 if merge:
