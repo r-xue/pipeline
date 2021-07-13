@@ -157,7 +157,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                 spwid = spw.id
                 vspwid = context.observing_run.real2virtual_spw_id(spwid, ms)
                 ddid = ms.get_data_description(spw=spwid)
-                
+
                 if vspwid not in spw_band:
                     spw_band[vspwid] = spw.band
 
@@ -185,7 +185,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
             LOG.debug('reffile = {0}'.format(reffile));
         stage_dir = os.path.join(context.report_dir, 'stage%s' % ampcal_results.stage_number)
 
-        # input file to correct relative amplitude 
+        # input file to correct relative amplitude
         reffile_copied = None
         if reffile is not None and os.path.exists(reffile):
             shutil.copy2(reffile, stage_dir)
@@ -245,9 +245,10 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
         })
 
         # CAS-5970: add science target plots to the applycal page
-        (science_amp_vs_freq_summary_plots, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
+        (science_amp_vs_freq_summary_plots, science_amp_vs_freq_subpages, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
+            'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
         LOG.debug('ctx = {0}'.format(ctx));
@@ -265,4 +266,3 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                 pol_name not in factor_dict[vis][spwid][ant_name]):
             return None
         return factor_dict[vis][spwid][ant_name][pol_name]
-

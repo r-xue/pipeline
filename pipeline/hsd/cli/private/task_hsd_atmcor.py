@@ -1,12 +1,11 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_fluxboot2(vis=None, caltable=None, fitorder=None, pipelinemode=None, dryrun=None, acceptresults=None,
-                   refantignore=None):
+def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None, pipelinemode=None,
+               infiles=None, antenna=None, field=None, spw=None, pol=None,
+               dryrun=None, acceptresults=None, parallel=None):
 
     ##########################################################################
     #                                                                        #

@@ -69,7 +69,9 @@ class CheckProductSizeHeuristics(object):
         imlist = makeimlist_result.targets
 
         # Extract some information for later
-        fields = list({i['field'] for i in imlist})
+        #
+        # Sort fields to get consistent mitigation results.
+        fields = sorted({i['field'] for i in imlist})
         nfields = len(fields)
         spws = list({i['spw'] for i in imlist})
         ref_ms = self.context.observing_run.measurement_sets[0]
@@ -81,7 +83,7 @@ class CheckProductSizeHeuristics(object):
             float(ref_ms.get_spectral_window(real_spw).channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)) \
             for spw, real_spw in zip(spws, real_spws)])
 
-        if len(fields) == 0:
+        if nfields == 0:
             LOG.error('Cannot determine any default imaging targets')
             return {}, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
 
@@ -97,6 +99,9 @@ class CheckProductSizeHeuristics(object):
         maxAllowedBeamAxialRatio, \
         sensitivityGoal = \
             imlist[0]['heuristics'].representative_target()
+
+        # Make sure that the representative source is the first list item.
+        fields = utils.place_repr_source_first(fields, repr_source)
 
         # Get original maximum cube and product sizes
         cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
@@ -210,14 +215,9 @@ class CheckProductSizeHeuristics(object):
             if nfields == 0:
                 nfields = 1
 
-            # Truncate the field list
+            # Truncate the field list. The representative source is always
+            # included since it is the first list item.
             mitigated_fields = fields[:nfields]
-
-            # Make sure the representative source is included in the new list
-            for field in fields[nfields:]:
-                if utils.dequote(field) == utils.dequote(repr_source):
-                    mitigated_fields[0] = field
-                    break
 
             size_mitigation_parameters['field'] = ','.join(mitigated_fields)
 

@@ -42,7 +42,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     restfreq = vdp.VisDependentProperty(default=None)
     tlimit = vdp.VisDependentProperty(default=2.0)
     usepointing = vdp.VisDependentProperty(default=None)
-    weighting = vdp.VisDependentProperty(default='briggs')
+    weighting = vdp.VisDependentProperty(default=None)
     pblimit = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default=None)
     cfcache_nowb = vdp.VisDependentProperty(default=None)
@@ -281,6 +281,11 @@ class Tclean(cleanbase.CleanBase):
         # Determine deconvolver
         if inputs.deconvolver in (None, ''):
             inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw)
+
+        # Determine weighting and perchanweightdensity
+        if inputs.weighting in (None, ''):
+            inputs.weighting = self.image_heuristics.weighting(inputs.specmode)
+            inputs.hm_perchanweightdensity = self.image_heuristics.perchanweightdensity(inputs.specmode)
 
         # Determine nterms
         if (inputs.nterms in ('', None)) and (inputs.deconvolver == 'mtmfs'):
@@ -1224,10 +1229,13 @@ class Tclean(cleanbase.CleanBase):
         self._executor.execute(job)
         assert os.path.exists(outfile)
 
+        # Using virtual spw setups for all interferometry pipelines
+        virtspw = True
+
         # Update the metadata in the MOM8_FC image.
-        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw,
+        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw, virtspw=virtspw,
                                  field=self.inputs.field, iter=iter, type=mom_type,
-                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                 intent=self.inputs.intent, specmode=self.inputs.orig_specmode,
                                  context=context)
 
     # Calculate a "mom0_fc" and "mom8_fc" image: this is a moment 0 and 8

@@ -165,7 +165,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
     all_scores = []
     for intent in intents:
         # delegate to dedicated module for outlier detection
-        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, flag_all)
+        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, flag_all=flag_all)
 
         # if requested, export outlier descriptions to a file
         if export_outliers:

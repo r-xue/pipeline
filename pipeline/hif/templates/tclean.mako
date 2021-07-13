@@ -157,9 +157,9 @@ except:
                                 <a href="${fullsize_relpath}"
                                    data-fancybox="clean-summary-images"
                                    data-tcleanCommandTarget="#tcleancmd-${hash(image_info[k].plot.abspath)}"
-                                   data-caption="Iteration: ${image_info[k].plot.parameters['iter']}<br>Spw: ${image_info[k].plot.parameters['spw']}<br>Field: ${html.escape(image_info[k].field, True)}"
+                                   data-caption="Iteration: ${image_info[k].plot.parameters['iter']}<br>Spw: ${image_info[k].plot.parameters['virtspw']}<br>Field: ${html.escape(image_info[k].field, True)}"
                                    title='<div class="pull-left">Iteration: ${image_info[k].plot.parameters['iter']}<br>
-                                          Spw: ${image_info[k].plot.parameters["spw"]}<br>
+                                          Spw: ${image_info[k].plot.parameters["virtspw"]}<br>
                                           Field: ${html.escape(image_info[k].field, True)}</div><div class="pull-right"><a href="${fullsize_relpath}">Full Size</a></div>'>
                                   <img class="lazyload"
                                        data-src="${thumbnail_relpath}"

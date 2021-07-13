@@ -101,7 +101,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             image_max = stats.get('max')[0]
             image_stats[image_path] = display.ImageStats(rms=image_rms, max=image_max)
 
-            spw = info.get('spw', None)
+            spw = info.get('virtspw', None)
             if spw is not None:
                 nspwnam = info.get('nspwnam', None)
                 spwnames = ','.join([info.get('spwnam%02d' % (i + 1)) for i in range(nspwnam)])
@@ -796,7 +796,7 @@ def make_plot_dict(plots):
     # Make the plots
     prefixes = sorted({p.parameters['prefix'] for p in plots})
     fields = sorted({p.parameters['field'] for p in plots})
-    spws = sorted({p.parameters['spw'] for p in plots})
+    spws = sorted({p.parameters['virtspw'] for p in plots})
     iterations = sorted({p.parameters['iter'] for p in plots})
     types = sorted({p.parameters['type'] for p in plots})
 
@@ -812,7 +812,7 @@ def make_plot_dict(plots):
                         matching = [p for p in plots
                                     if p.parameters['prefix'] == prefix
                                     and p.parameters['field'] == field
-                                    and p.parameters['spw'] == spw
+                                    and p.parameters['virtspw'] == spw
                                     and p.parameters['iter'] == iteration
                                     and p.parameters['type'] == t]
                         if matching != []:
