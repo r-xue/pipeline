@@ -443,7 +443,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             ampcal_result = self._do_gaincal(
                 field=f'{inputs.transfer},{inputs.reference}', intent=f'{inputs.transintent},{inputs.refintent}',
                 gaintype='T', calmode='a', combine='', solint=inputs.solint, antenna=allantenna, uvrange='',
-                refant=filtered_refant, minblperant=minblperant, phaseup_spwmap=None, phase_interp=None, append=False,
+                refant=filtered_refant, minblperant=minblperant, spwmap=None, interp=None, append=False,
                 merge=True)
 
             # Get the gaincal caltable from the results
@@ -471,7 +471,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         return ampcal_result, caltable, check_ok
 
     def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype='G', calmode=None, combine=None, solint=None,
-                    antenna=None, uvrange='', refant=None, minblperant=None, phaseup_spwmap=None, phase_interp=None,
+                    antenna=None, uvrange='', refant=None, minblperant=None, spwmap=None, interp=None,
                     append=None, merge=True):
         inputs = self.inputs
 
@@ -513,14 +513,16 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         if merge:
             overrides = {}
 
-            # Adjust the spwmap for the combine case
-            if inputs.ms.combine_spwmap and phase_interp:
-                overrides['interp'] = phase_interp
+            # Adjust the interp if provided.
+            if interp:
+                overrides['interp'] = interp
 
-            # Adjust the spw map
-            if phaseup_spwmap:
-                overrides['spwmap'] = phaseup_spwmap
+            # Adjust the spw map if provided.
+            if spwmap:
+                overrides['spwmap'] = spwmap
 
+            # If any overrides are necessary, then create a modified
+            # CalApplication and replace CalApp in result with this new one.
             if overrides:
                 original_calapp = result.pool[0]
                 modified_calapp = callibrary.copy_calapplication(original_calapp, **overrides)
@@ -560,7 +562,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         r = self._do_gaincal(field=inputs.reference, intent=inputs.refintent, gaintype=phase_gaintype, calmode='p',
                              combine=phase_combine, solint=inputs.phaseupsolint, antenna=resantenna, uvrange=uvrange,
-                             refant=filtered_refant, minblperant=minblperant, phaseup_spwmap=None, phase_interp=None,
+                             refant=filtered_refant, minblperant=minblperant, spwmap=None, interp=None,
                              append=False, merge=False)
 
         # Test for the existence of the caltable
@@ -578,7 +580,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         _ = self._do_gaincal(caltable=caltable, field=inputs.transfer, intent=inputs.transintent,
                              gaintype=phase_gaintype, calmode='p', combine=phase_combine, solint=phaseup_solint,
                              antenna=allantenna, uvrange='', minblperant=None, refant=filtered_refant,
-                             phaseup_spwmap=phaseup_spwmap, phase_interp=phase_interp, append=append, merge=True)
+                             spwmap=phaseup_spwmap, interp=phase_interp, append=append, merge=True)
 
     def _do_fluxscale(self, caltable=None, refspwmap=None):
         inputs = self.inputs
