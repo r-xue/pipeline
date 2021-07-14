@@ -681,8 +681,12 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # Image statistics
                 statval = calc_image_statistics(imagename, stat_chans, region)
-                image_rms = statval['rms'][0]
-                LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                if len(statval['rms']):
+                    image_rms = statval['rms'][0]
+                    LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                else:
+                    LOG.warn('Could not image statistics. Potentially no valid pixel in region of interest.')
+                    image_rms = -1.0
                 # Theoretical RMS
                 LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
                 theoretical_rms = self.calculate_theoretical_image_rms(combined_infiles, combined_antids,
@@ -968,8 +972,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         Retrun region to calculate statistics.
 
         Median width, height, and position angle is adopted as a reference
-        map extent and then the width and height will be shrinked by a beam
-        size.
+        map extent and then the width and height will be shrinked by 2 beam
+        size in each direction.
 
         Arg:
             raster_infos: A list of RasterInfo to calculate region from.
@@ -1005,8 +1009,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         rep_angle = numpy.nanmedian([cqa.getvalue(r.scan_angle) for r in raster_infos if r is not None])
         center_ra = numpy.nanmedian(__extract_values('center_ra', center_unit))
         center_dec = numpy.nanmedian(__extract_values('center_dec', center_unit))
-        width = rep_width - beam_size
-        height = rep_height - beam_size
+        width = rep_width - beam_size*2.
+        height = rep_height - beam_size*2.
         if org_direction is not None:
             (center_ra, center_dec) = direction_utils.direction_recover(center_ra,
                                                                         center_dec,
