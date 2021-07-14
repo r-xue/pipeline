@@ -201,7 +201,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             context,
             result,
             applycal.CAS9154AmpVsTimeDetailChart,
-            ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'TARGET'],
+            ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
             ApplycalAmpVsTimePlotRenderer,
             avgchannel='9000'
         )
