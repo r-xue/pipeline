@@ -685,7 +685,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     image_rms = statval['rms'][0]
                     LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
                 else:
-                    LOG.warn('Could not image statistics. Potentially no valid pixel in region of interest.')
+                    LOG.warn('Could not get image statistics. Potentially no valid pixel in region of interest.')
                     image_rms = -1.0
                 # Theoretical RMS
                 LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
