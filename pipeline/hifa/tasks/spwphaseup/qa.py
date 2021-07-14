@@ -26,6 +26,10 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # fraction of unmapped science spws.
             if intent == 'PHASE':
                 scores.append(qacalc.score_phaseup_mapping_fraction(ms, intent, field, spwmapping))
+            # For CHECK fields, score the spwmapping based on whether or not
+            # it is combining spws.
+            elif intent == 'CHECK':
+                scores.append(qacalc.score_combine_spwmapping(ms, intent, field, spwmapping))
 
         # Create QA score for whether or not the phaseup caltable was created succesfully.
         if not result.phaseup_result.final:
