@@ -1,24 +1,17 @@
-"""
-Created on 2013/07/02
-
-@author: kana
-"""
+"""Classes and methods to create SD Flag Plots."""
 import os
+from typing import Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
+from matplotlib.axes._axes import Axes as MplAxes
 
 from pipeline.domain import DataTable, MeasurementSet
 import pipeline.infrastructure as infrastructure
-
+from pipeline.infrastructure import Context
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from .SDFlagRule import INVALID_STAT
 from ..common import display as sd_display
-from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import utils as sdutils
-
-from typing import Dict, List, Optional, Tuple
-from matplotlib.axes._axes import Axes as MplAxes
-import pipeline.infrastructure.utils as utils
-from pipeline.domain import DataTable, MeasurementSet
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,13 +23,12 @@ FIGSIZE_INCHES = (7.0, 2.9)
 
 
 class SDFlagPlotter(object):
-    """
-    Class to create Flag Plots for hsd_blflag weblog
-    """
+    """Class to create Flag Plots for hsd_blflag weblog."""
+
     def __init__( self, msobj:MeasurementSet, datatable:DataTable, antid:int, spwid:int, 
                   time_gap:List[List[int]], FigFileDir:Optional[str] ):
         """
-        Constructor 
+        Construct SDFlagPlotter instance.
 
         Args:
             msobj          : Measurementset object
@@ -70,7 +62,7 @@ class SDFlagPlotter(object):
                          PermanentFlag:List[int], NPp:Dict, 
                          threshold:List[List[float]] ) -> List[str]:
         """
-        Resiter data to be plotted
+        Resiter data to be plotted.
 
         Args:
             pol            : polarization
@@ -98,9 +90,9 @@ class SDFlagPlotter(object):
 
     def create_plots( self, FigFileRoot:Optional[str]=None ):
         """
-        Create Summary plots
+        Create Summary plots.
         
-        Vars:
+        Args:
             FigFileRoot : basename of figure files 
         Returns:
             List of Figure filenames (basename only)
@@ -120,6 +112,7 @@ class SDFlagPlotter(object):
         threshold_dict = self.threshold_dict
 
         ant_name     = msobj.get_antenna(antid)[0].name
+        bunit = sdutils.get_brightness_unit( msobj.name, defaultunit='Jy/beam' )
         PosGap = time_gap[0]
         TimeGap = time_gap[1]
         plots = []
@@ -160,7 +153,6 @@ class SDFlagPlotter(object):
         for pol in pollist:
             PlotData_dict[pol]['row'] = NPp_dict[pol]['rows']['BaselineFlag']
             PlotData_dict[pol]['time'] = NPp_dict[pol]['time']['BaselineFlag']
-            bunit = sdutils.get_brightness_unit( msobj.name, defaultunit='Jy/beam' )
             PlotData_dict[pol]['data'] = NPp_dict[pol]['data']['RmsPreFitFlag']
             PlotData_dict[pol]['flag'] = NPp_dict[pol]['flag']['RmsPreFitFlag']
             PlotData_dict[pol]['thre'] = [threshold_dict[pol][1][1]]
@@ -234,49 +226,46 @@ class SDFlagPlotter(object):
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
         plots.append( figfilename )
 
-        # delete variables not used after all
-        del PlotData_dict
-
         return plots
 
 
     @casa5style_plot
     def StatisticsPlot( self, pollist:List[str], PlotData_dict:Dict, FigFileDir:Optional[str]=None, figfilename:Optional[Dict]=None ):
         """
-        Create blflag statistics plot
+        Create blflag statistics plot.
 
         Args:
-            pollist          : list of pols
-            PlotData_dict    : dictonary of PlotData
-            FigFileDir       : directory to create figure files
+            pollist         : list of pols
+            PlotData_dict   : dictonary of PlotData
+            FigFileDir      : directory to create figure files
             figfilename     : figure filename
         Returns:
             (none)
         Raises:
             RuntimeError if number of pols exceeds the limit of 4
-        """
-        # PlotData = {
-        #             ms_name: MeasurementSet name
-        #             ant_name:  Antenna name
-        #             spw:  spwid
-        #             pol:  polarization
-        #             row:  [row], # row number of the spectrum
-        #             time: [time], # timestamp
-        #             data: [data],
-        #             flag: [flag], # 0: flag out, 1: normal, 2: exclude from the plot
-        #             sigma: "Clipping Sigma"
-        #             thre: [threshold(s) max, min(if any)], # holizontal line
-        #             gap:  [gap(s)], # vertical tick: [[PosGap], [TimeGap]]
-        #             title: "title",
-        #             xlabel: "xlabel",
-        #             ylabel: "ylabel"
-        #             permanentflag: [PermanentFlag rows]
-        #             isActive: True/False
-        #             threType: "line" or "plot" # if "plot" then thre should be a list
-        #                           having the equal length of row
-        #             threDesc: description of the threshold (for legend)
-        #            }
 
+        PlotData = {
+                     ms_name: MeasurementSet name
+                     ant_name:  Antenna name
+                     spw:  spwid
+                     pol:  polarization
+                     row:  [row], # row number of the spectrum
+                     time: [time], # timestamp
+                     data: [data],
+                     flag: [flag], # 0: flag out, 1: normal, 2: exclude from the plot
+                     sigma: "Clipping Sigma"
+                     thre: [threshold(s) max, min(if any)], # holizontal line
+                     gap:  [gap(s)], # vertical tick: [[PosGap], [TimeGap]]
+                     title: "title",
+                     xlabel: "xlabel",
+                     ylabel: "ylabel"
+                     permanentflag: [PermanentFlag rows]
+                     isActive: True/False
+                     threType: "line" or "plot" # if "plot" then thre should be a list
+                                   having the equal length of row
+                     threDesc: description of the threshold (for legend)
+                    }
+        """
         if len(pollist)>4:   # max number of pols=4
             raise RuntimeError( "Number of polarizations ({}) exceeds limit of 4.".format(len(pollist)) )
         if FigFileDir is None:
@@ -304,15 +293,12 @@ class SDFlagPlotter(object):
         # do the plots!
         self._plot( FigFileDir, figfilename, pollist, PlotData_dict, data, xlim, ylim, ScaleOut, LowRange )
 
-        # delete variables not used after all
-        del data, ScaleOut
-
         return
 
 
     def _pack_data( self, plotdata:Dict ) -> Tuple[ Dict, List[float], List[float], Dict, Dict ]:
         """
-        pack data for plotting for each pol
+        Pack data for plotting for each pol.
 
         Args:
             plotdata: dictionary of PlotData
@@ -355,7 +341,6 @@ class SDFlagPlotter(object):
                         [ymin + yy * 0.1, ymin + yy * 0.04]]
 
             # Make Plot Data
-            x = 0
             data = {
                 'online_x'    : [],
                 'online_y'    : [],
@@ -364,7 +349,7 @@ class SDFlagPlotter(object):
                 'normal_x'    : [],
                 'normal_y'    : []
             }
-            for Pflag in plotdata['permanentflag']:
+            for x, Pflag in enumerate(plotdata['permanentflag']):
                 if Pflag == 0 or plotdata['data'][x] == INVALID_STAT:  # Flag-out case
                     data['online_x'].append(plotdata['time'][x])
                     if plotdata['data'][x] > ScaleOut[0][0] or plotdata['data'][x] == INVALID_STAT:
@@ -384,7 +369,6 @@ class SDFlagPlotter(object):
                 else:  # Normal case
                     data['normal_x'].append(plotdata['time'][x])
                     data['normal_y'].append(plotdata['data'][x])
-                x += 1
         else: # "NO DATA" case
             xlim = None
             ylim = None
@@ -401,7 +385,7 @@ class SDFlagPlotter(object):
                xlim_dict:List[Dict], ylim_dict:List[Dict],
                ScaleOut_dict:Optional[Dict], LowRange_dict:Optional[Dict] ):
         """
-        Create actual plots
+        Create actual plots.
 
         Args:
             figfiledir    : directory to write the figure file
@@ -419,7 +403,6 @@ class SDFlagPlotter(object):
         # initial settings & hold original plot configurations
         plt.ioff()
         fig = plt.figure( MATPLOTLIB_FIGURE_ID[8] )
-        figsize_org = fig.get_size_inches()
         fig.set_size_inches( FIGSIZE_INCHES )
 
         # pick the widest limits
@@ -445,8 +428,7 @@ class SDFlagPlotter(object):
             outfile = figfiledir + figfilename
             plt.savefig( outfile, format='png', dpi=DPIDetail )
                 
-        # recover original plot configurations
-        fig.set_size_inches(figsize_org)
+        # close fig
         plt.close()
 
         return
@@ -455,7 +437,7 @@ class SDFlagPlotter(object):
     def __plot_frame_to_axes( self, pollist, ax:Dict, PlotData_dict:Dict,
                               xlim:List[float], ylim:List[float] ):
         """
-        Prepare the frame on axes
+        Prepare the frame on axes.
 
         Args:
             pollist:  list of pols
@@ -493,7 +475,7 @@ class SDFlagPlotter(object):
         polf = pollist[0] if pol0 is None else pol0
         axf = ax[polf]
         axf.axis( "on" )
-        # determine the position of title and Active flag with respet to axes size
+        # determine the position of title and Active flag with respect to axes size
         axpos = axf.get_position()
         loc_y = 1.07 * 0.72/(axpos.y1 - axpos.y0)
         title_text = "{}\nMS: {}    Antenna: {}    SpW: {}".format(
@@ -532,7 +514,7 @@ class SDFlagPlotter(object):
                              PlotData:Dict, data:Optional[Dict], 
                              ScaleOut:Optional[List[float]], LowRange:Optional[bool] ):
         """
-        Plot data to axes
+        Plot data to axes.
 
         Args:
             pollist     : List of pols
