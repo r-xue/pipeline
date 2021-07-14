@@ -1,3 +1,4 @@
+import collections
 import os
 from typing import Optional
 
@@ -22,6 +23,9 @@ __all__ = [
     'SpwPhaseup',
     'SpwPhaseupResults'
 ]
+
+IntentField = collections.namedtuple('IntentField', 'intent field')
+SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap low_combinedsnr_spws')
 
 
 class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
@@ -116,25 +120,22 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             self._unregister_spwphaseup()
 
         # Derive the optimal spectral window maps.
-        LOG.info('Deriving optimal spw mapping for {}'.format(inputs.ms.basename))
-        combinespwmap, low_combined_phasesnr_spws, phaseupspwmap = self._derive_spwmaps()
+        spwmaps = self._derive_spwmaps()
 
         # Compute the spw-to-spw phase offsets ("phaseup") cal table.
         LOG.info('Computing spw phaseup table for {}'.format(inputs.ms.basename))
         phaseupresult = self._do_phaseup()
 
         # Create the results object.
-        result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
-                                   phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws,
+        result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, spwmaps=spwmaps,
                                    unregister_existing=inputs.unregister_existing)
 
         return result
 
     def analyse(self, result):
-        # The caltable portion of the result is treated as if it
-        # were any other calibration result.
-        # With no best caltable to find, our task is simply to set the one
-        # caltable as the best result
+        # The caltable portion of the result is treated as if it were any other
+        # calibration result. With no best caltable to find, our task is simply
+        # to set the one caltable as the best result.
 
         # double-check that the caltable was actually generated
         on_disk = [ca for ca in result.phaseup_result.pool if ca.exists() or self._executor._dry_run]
@@ -150,117 +151,136 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Simplify the inputs
         inputs: SpwPhaseupInputs = self.inputs
 
+        # Report which spw mapping heuristics mode is being used.
+        LOG.info(f"The spw mapping mode for {inputs.ms.basename} is \"{inputs.hm_spwmapmode}\"")
+
+        # Initialize collection of spectral window maps.
+        spwmaps = {}
+
+        # Intents to derive separate spwmaps for:
+        spwmap_intents = 'CHECK,PHASE'
+
+        # Do not derive separate spwmsp for fields that also cover any of these
+        # calibrator intents:
+        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE'
+
+        # Identify the combinations of intent and fields for which to derive a
+        # separate spwmap.
+        intent_field_to_assess = self._get_intent_field(inputs.ms, intents=spwmap_intents,
+                                                        exclude_intents=exclude_intents)
+
+        # Run derivation of spwmap for each intent, field combination.
+        for intent, field in intent_field_to_assess:
+            LOG.info(f'Deriving optimal spw mapping for {inputs.ms.basename}, intent={intent}, field={field}')
+            spwmaps[IntentField(intent, field)] = self._derive_spwmap_for_intent_field(intent, field)
+
+        return spwmaps
+
+    def _derive_spwmap_for_intent_field(self, intent, field):
+        # Simplify the inputs
+        inputs: SpwPhaseupInputs = self.inputs
+
         # Get a list of the science spws.
         scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
 
-        # Set default results for phase-up spectral window map to an empty
-        # list, which stands for the default behaviour of mapping each spw to
-        # itself.
-        phaseupspwmap = []
-
-        # Set default result for the "combine" spectral window map to an empty
-        # list, which stands for "do not combine spws".
-        combinespwmap = []
-
-        # Set default for list of spws whose combined SNR does not meet the
-        # threshold set by the inputs.phasesnr parameter.
-        low_combined_phasesnr_spws = []
-
-        # Report which spw mapping heuristics mode is being used.
-        LOG.info("The spw mapping mode for {} is {}".format(inputs.ms.basename, inputs.hm_spwmapmode))
+        # By default, combine is False (i.e., no combining of spws), the
+        # spwmap is empty (i.e. no mapping of spws), and there are no spws
+        # whose combined phase SNR does not meet the threshold set by the
+        # inputs.phasesnr parameter.
+        combine = False
+        spwmap = []
+        low_combinedsnr_spws = []
 
         # Compute the spw map according to the rules defined by each
         # mapping mode.
         if inputs.hm_spwmapmode == 'auto':
 
-            # Run a task to estimate the gaincal SNR.
-            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest()
+            # Run a task to estimate the gaincal SNR for given intent and field.
+            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field)
 
             # No SNR estimates available, default to simple narrow-to-wide spw
             # mapping.
             if nosnrs:
-                LOG.warn('    No SNR estimates for any spws - Forcing simple spw mapping for {}'
-                         ''.format(inputs.ms.basename))
-                phaseupspwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
-                LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
+                LOG.warn(f'No SNR estimates for any spws - Forcing simple spw mapping for'
+                         f' {inputs.ms.basename}, intent={intent}, field={field}')
+                spwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
+                LOG.info(f'Using spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
             # All spws have good SNR values, no spw mapping required.
             elif len([goodsnr for goodsnr in goodsnrs if goodsnr is True]) == len(goodsnrs):
-                LOG.info('    High SNR - Default spw mapping used for all spws {}'.format(inputs.ms.basename))
-                LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
+                LOG.info(f'High SNR - Default spw mapping used for all spws {inputs.ms.basename}')
+                LOG.info(f'Using spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
             # No spws have good SNR values, use combined spw mapping, and test
             # which spws have too low combined phase SNR.
             elif len([goodsnr for goodsnr in goodsnrs if goodsnr is True]) == 0:
-                LOG.warn('    Low SNR for all spws - Forcing combined spw mapping for {}'.format(inputs.ms.basename))
+                LOG.warn(f'Low SNR for all spws - Forcing combined spw mapping for {inputs.ms.basename}')
 
                 # Report spws for which no SNR estimate was available.
                 if None in goodsnrs:
-                    LOG.warn('    Spws without SNR measurements {}'
+                    LOG.warn('Spws without SNR measurements {}'
                              ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
                 # Create a spw mapping for combining spws.
-                combinespwmap = combine_spwmap(scispws)
-                LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
+                spwmap = combine_spwmap(scispws)
+                combine = True
+                LOG.info(f'Using combined spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
                 # Run a test on the combined spws to identify spws whose
                 # combined SNR would not meet the threshold set by
                 # inputs.phasesnr.
-                low_combined_phasesnr_spws = self._do_combined_snr_test(spwids, snrs, combinespwmap)
+                low_combinedsnr_spws = self._do_combined_snr_test(spwids, snrs, spwmap)
 
             # If some, but not all, spws have good SNR values, then try to use
             # an SNR-based approach for, but fall back to combined spw mapping
             # if necessary.
             else:
-                LOG.warn('    Some low SNR spws - using highest good SNR window for these in {}'
-                         ''.format(inputs.ms.basename))
+                LOG.warn(f'Some low SNR spws - using highest good SNR window for these in {inputs.ms.basename}')
 
                 # Report spws for which no SNR estimate was available.
                 if None in goodsnrs:
-                    LOG.warn('    Spws without SNR measurements {}'
+                    LOG.warn('Spws without SNR measurements {}'
                              ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
                 # Create an SRN-based spw mapping.
-                goodmap, phaseupspwmap, snrmap = snr_n2wspwmap(scispws, snrs, goodsnrs)
+                goodmap, spwmap, snrmap = snr_n2wspwmap(scispws, snrs, goodsnrs)
 
                 # If the SNR-based mapping gave a good match for all spws, then
                 # report the final phase up spw map.
                 if goodmap:
-                    LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
+                    LOG.info(f'Using spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
-                # Otherwise, reject the phase up spwmap and force the use of a
-                # combined spw map.
+                # Otherwise, replace the spwmap with a combined spw map.
                 else:
-                    LOG.warn('    Still unable to match all spws - Forcing combined spw mapping for {}'
-                             ''.format(inputs.ms.basename))
-
-                    # Reset the phaseup spwmap back to empty.
-                    phaseupspwmap = []
+                    LOG.warn(f'Still unable to match all spws - Forcing combined spw mapping for {inputs.ms.basename}')
 
                     # Create a spw mapping for combining spws.
-                    combinespwmap = combine_spwmap(scispws)
-                    LOG.info('    Using spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
+                    spwmap = combine_spwmap(scispws)
+                    combine = True
+                    LOG.info(f'Using combined spw map {spwmap} for'
+                             f' {inputs.ms.basename}, intent={intent}, field={field}')
 
                     # Run a test on the combined spws to identify spws whose
                     # combined SNR would not meet the threshold set by
                     # inputs.phasesnr.
-                    low_combined_phasesnr_spws = self._do_combined_snr_test(spwids, snrs, combinespwmap)
+                    low_combinedsnr_spws = self._do_combined_snr_test(spwids, snrs, spwmap)
 
         elif inputs.hm_spwmapmode == 'combine':
-            combinespwmap = combine_spwmap(scispws)
-            low_combined_phasesnr_spws = scispws
-            LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
+            spwmap = combine_spwmap(scispws)
+            combine = True
+            low_combinedsnr_spws = scispws
+            LOG.info(f'Using combined spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         elif inputs.hm_spwmapmode == 'simple':
-            phaseupspwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
-            LOG.info('    Using simple spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
+            spwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
+            LOG.info(f'Using simple spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         else:
-            LOG.info('    Using standard spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
+            LOG.info(f'Using standard spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
-        return combinespwmap, low_combined_phasesnr_spws, phaseupspwmap
+        return SpwMapping(combine, spwmap, low_combinedsnr_spws)
 
-    def _do_snrtest(self):
+    def _do_snrtest(self, intent, field):
 
         # Simplify inputs.
         inputs = self.inputs
@@ -268,7 +288,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
-            'intent': 'PHASE',
+            'field': field,
+            'intent': intent,
             'phasesnr': inputs.phasesnr,
             'bwedgefrac': inputs.bwedgefrac,
             'hm_nantennas': inputs.hm_nantennas,
@@ -418,6 +439,29 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return tuning_result
 
+    @staticmethod
+    def _get_intent_field(ms, intents, exclude_intents=None):
+        # If provided, convert "intents to exclude" into set of strings.
+        if exclude_intents is not None:
+            exclude_intents = set(exclude_intents.split(','))
+
+        intent_field = []
+        for intent in intents.split(','):
+            for field in ms.get_fields(intent=intent):
+                # Check whether found field also covers any of the intents to
+                # skip.
+                excluded_intents_found = field.intents.intersection(exclude_intents)
+                if not excluded_intents_found:
+                    intent_field.append((intent, field.name))
+                else:
+                    # Log a message to explain why no spwmap will be derived
+                    # for this particular combination of field and intent.
+                    excluded_intents_str = ", ".join(sorted(excluded_intents_found))
+                    LOG.info(f'{ms.basename}: will not derive spwmap for field {field.name} (#{field.id}) and intent'
+                             f' {intent} because this field also covers calibrator intent(s) {excluded_intents_str}')
+
+        return intent_field
+
     def _unregister_spwphaseup(self):
         inputs = self.inputs
         ms = inputs.ms
@@ -429,32 +473,25 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         LOG.info('Temporarily unregistering previous spwphaseup tables while task executes')
         inputs.context.callibrary.unregister_calibrations(spwphaseup_matcher)
 
-        # Reset the spwmaps. The will be restored if the result is not accepted
+        # Reset the spwmaps registered in the MS. This will be restored if the
+        # result is not accepted.
         LOG.info('Temporarily resetting spwmaps for %s', ms.basename)
-        ms.phaseup_spwmap = []
-        ms.combine_spwmap = []
-        ms.low_combined_phasesnr_spws = []
+        ms.spwmaps = {}
 
 
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=None, phaseup_spwmap=None,
-                 low_combined_phasesnr_spws=None, unregister_existing: Optional[bool] = False):
+    def __init__(self, vis=None, phaseup_result=None, spwmaps=None, unregister_existing: Optional[bool] = False):
         """
         Initialise the phaseup spw mapping results object.
         """
         super(SpwPhaseupResults, self).__init__()
-        if combine_spwmap is None:
-            combine_spwmap = []
-        if phaseup_spwmap is None:
-            phaseup_spwmap = []
-        if low_combined_phasesnr_spws is None:
-            low_combined_phasesnr_spws = []
+
+        if spwmaps is None:
+            spwmaps = {}
 
         self.vis = vis
         self.phaseup_result = phaseup_result
-        self.combine_spwmap = combine_spwmap
-        self.phaseup_spwmap = phaseup_spwmap
-        self.low_combined_phasesnr_spws = low_combined_phasesnr_spws
+        self.spwmaps = spwmaps
         self.unregister_existing = unregister_existing
 
     def merge_with_context(self, context):
@@ -490,15 +527,18 @@ class SpwPhaseupResults(basetask.Results):
         # combined SNR does not meet the threshold.
         ms = context.observing_run.get_ms(name=self.vis)
         if ms:
-            ms.phaseup_spwmap = self.phaseup_spwmap
-            ms.combine_spwmap = self.combine_spwmap
-            ms.low_combined_phasesnr_spws = self.low_combined_phasesnr_spws
+            ms.spwmaps = self.spwmaps
 
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
             return ('SpwPhaseupResults:\n'
                     '\tNo spw phaseup table computed')
         else:
-            spwmap = 'SpwPhaseupResults:\nCombine spwmap = {}\nNarrow to wide spwmap = {}\n' \
-                     ''.format(self.combine_spwmap, self.phaseup_spwmap)
-            return spwmap
+            s = f'SpwPhaseupResults:\nvis={self.vis}\n'
+            for (intent, field), spwmapping in self.spwmaps.items():
+                s += f'\t{intent}, {field}:\n'
+                s += f'\t\tCombine = {spwmapping.combine}\n'
+                s += f'\t\tSpwmap = {spwmapping.spwmap}\n'
+                if spwmapping.combine:
+                    s += f'\t\tLow combined phase SNR spws = {spwmapping.low_combinedsnr_spws}'
+            return s

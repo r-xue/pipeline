@@ -7,17 +7,15 @@ import pipeline.infrastructure.utils as utils
 
 LOG = logging.get_logger(__name__)
 
-SpwMaps = collections.namedtuple('SpwMaps', 'ms spwmap scispws')
-SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 
-                                            'ms gaintable calmode solint intent spw') 
+SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
+SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 
 
 class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='spwphaseup.mako',
                  description='Spw phase offsets calibration',
                  always_rerender=False):
-        super(T2_4MDetailsSpwPhaseupRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
         spwmaps = []
@@ -27,16 +25,10 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
 
-            if result.combine_spwmap:
-                spwmap = result.combine_spwmap
-            else:
-                spwmap = result.phaseup_spwmap
+            # Get info on spectral window mappings.
+            spwmaps.extend(self.get_spwmaps(result, ms))
 
-            # Get science spws
-            science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-
-            spwmaps.append(SpwMaps(ms.basename, spwmap, science_spw_ids))
-
+            # Get info on phase caltable.
             applications.extend(self.get_gaincal_applications(context, result.phaseup_result, ms))
 
         ctx.update({
@@ -77,9 +69,27 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             calmode = utils.get_origin_input_arg(calapp, 'calmode')
 
             calmode = calmode_map.get(calmode, calmode)
-            a = SpwPhaseupApplication(ms.basename, gaintable, solint, calmode,
-                                   to_intent, spw)
+            a = SpwPhaseupApplication(ms.basename, gaintable, solint, calmode, to_intent, spw)
             applications.append(a)
 
         return applications
 
+    def get_spwmaps(self, result, ms):
+        spwmaps = []
+
+        # Get science spws
+        science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+
+        if result.spwmaps:
+            for (intent, field), spwmapping in result.spwmaps.items():
+                # Get field ID.
+                fieldid = ms.get_fields(name=[field])[0].id
+
+                # Get scan IDs
+                scanids = ", ".join(str(scan.id) for scan in ms.get_scans(scan_intent=intent, field=field))
+
+                # Append info on spwmap to list.
+                spwmaps.append(SpwMapInfo(ms.basename, intent, field, fieldid, spwmapping.combine, spwmapping.spwmap,
+                                          scanids, science_spw_ids))
+
+        return spwmaps

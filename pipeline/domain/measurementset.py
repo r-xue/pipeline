@@ -40,10 +40,10 @@ class MeasurementSet(object):
         # window IDs (PIPE-1132).
         self.spectralspec_spwmap = {}
 
-        # Spectral window maps for mapping or combining spws, in use by several
-        # ALMA Pipeline calibration tasks.
-        self.phaseup_spwmap = None
-        self.combine_spwmap = None
+        # Dictionary with collections of spectral window maps for mapping or
+        # combining spws, split by (intent, field). This is used in several
+        # ALMA ('hifa') calibration tasks.
+        self.spwmaps = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with

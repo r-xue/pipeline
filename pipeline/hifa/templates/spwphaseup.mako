@@ -28,6 +28,10 @@ and the caltable containing per spw phase offsets</p>
         <thead>
 	    <tr>
 	        <th>Measurement Set</th>
+            <th>Field</th>
+            <th>Intent</th>
+            <th>Scan IDs</th>
+            <th>Combine</th>
 	        <th>Spectral Window Map</th>
 	    </tr>
 	</thead>
@@ -35,7 +39,11 @@ and the caltable containing per spw phase offsets</p>
     % for spwmap in spwmaps:
 		<tr>
 			<td>${os.path.basename(spwmap.ms)}</td>
-			<td>${format_spwmap(spwmap.spwmap, spwmap.scispws)}</td>
+            <td>${spwmap.field} (#${spwmap.fieldid})</td>
+            <td>${spwmap.intent}</td>
+            <td>${spwmap.scanids}</td>
+            <td>${spwmap.combine}</td>
+            <td>${format_spwmap(spwmap.spwmap, spwmap.scispws)}</td>
 		</tr>
     % endfor
 	</tbody>
