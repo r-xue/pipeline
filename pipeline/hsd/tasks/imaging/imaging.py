@@ -1204,7 +1204,21 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except Exception:
-        return None
+        LOG.warn('Failed to detect gaps between raster scans. Fall back to time domain analysis. Result might not be correct.')
+        try:
+            dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
+            se_small = [(v[0], v[-1]) for v in dtrow_list]
+            se_large = [(v[0], v[-1]) for v in dtrow_list_large]
+            gap_r = []
+            for sl, el in se_large:
+                for i, (ss, es) in enumerate(se_small):
+                    if ss == sl:
+                        gap_r.append(i)
+                        break
+            gap_r.append(len(dtrow_list))
+        except Exception:
+            LOG.warn('Could not find gaps between raster scans. No result is produced.')
+            return None
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)
