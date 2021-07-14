@@ -101,7 +101,7 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
         hif_makeimlist(intent='PHASE,BANDPASS', specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean images for the selected calibrators
-        hif_makeimages()
+        hif_makeimages(hm_masking='none')
 
         # Export the data
         # hifv_exportdata(pipelinemode=pipelinemode)
