@@ -149,15 +149,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return pblimit_image, pblimit_cleanmask
 
-    def niter(self):
-        """niter heuristic value.
-        See PIPE-677"""
-        return 50
-
     def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
         """VLA auto-boxing parameters.
-        See PIPE-677"""
 
+        See PIPE-677 for TARGTE-specific heuristic
+        """
         sidelobethreshold = None
         noisethreshold = None
         lownoisethreshold = None
@@ -168,13 +164,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        # iter1, shallow clean, with pruning off, other automasking settings are the default
-        if iteration in [1, 2]:
-            sidelobethreshold = 2.0
-            minbeamfrac = 0.0
-        # iter2, same settings, but pruning is turned back on
-        if iteration == 2:
-            minbeamfrac = 0.3
+        if 'TARGET' in intent:
+            # iter1, shallow clean, with pruning off, other automasking settings are the default
+            if iteration in [1, 2]:
+                sidelobethreshold = 2.0
+                minbeamfrac = 0.0
+            # iter2, same settings, but pruning is turned back on
+            if iteration == 2:
+                minbeamfrac = 0.3
 
         return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
                 dogrowprune, minpercentchange, fastnoise)
@@ -231,6 +228,19 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             new_niter = max_niter
         return new_niter
 
+    def niter_by_iteration(self, iteration, hm_masking, niter):
+        """Tclean niter heuristic at each iteration.
+
+        PIPE-677: niter=50 for iteration=1 of the VLA auto-masking tclean call.
+        """
+        if iteration == 1 and hm_masking == 'auto':
+            new_niter = 50
+            LOG.info('niter heuristic for iteration={} / hm_masking={}: Modified niter to {} from {}'.format(iteration,
+                     hm_masking, new_niter, niter))
+            return new_niter
+        else:
+            return niter
+
     def specmode(self) -> str:
         """Tclean specmode parameter heuristics.
         See PIPE-683 and CASR-543"""
@@ -244,13 +254,40 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             # PIPE-677: reduce from 5.0 (value set in PIPE-678)
             return 4.0
 
+    def tclean_stopcode_ignore(self, iteration, hm_masking):
+        """Tclean stop code(s) to be ignored for warning messages.
+
+        PIPE-667: We will ignore tclean_stopcode=1 (i.e., niter is reached) for iter1 of the VLA automasking sequence.
+        """
+        if iteration == 1 and hm_masking == 'auto':
+            return [1]
+        return []
+
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
         """Determine if another tclean iteration is necessary.
 
-        VLA auto-masking heuristics performs two iteration step with different auto-masking parameters.
-        See PIPE-677."""
-        if iteration in [0, 1, 2]:
+        non automasking mode:
+            iteration=0: keep_iteration=True
+            iteration=1: keep_iteration=False
+        
+        automasking mode (PIPE-677):
+            VLA auto-masking heuristics for TARGET performs two-stage iterations with slightly different auto-multithresh parameters
+            iteration=0: keep_iteration=True
+            iteration=1: 
+                stopcode=0 (no minor or major cycles?): keep_iteration=False
+                stopcode=1 (iteration limit): keep_iteration=True
+                stopcode=5,6 (doesn't converge): keep_iteration=False
+                stopcode=7 (no mask generated from automask): keep_iteration=False
+                stopcode=others: keep_iteration=True
+            iteration>=2: keep_iteration=False
+        """
+        if iteration == 0:
             return True, hm_masking
+        elif iteration == 1 and hm_masking == 'auto' and 'TARGET' in intent:
+            if tclean_stopcode in [0, 5, 6, 7]:
+                return False, hm_masking
+            else:
+                return True, hm_masking
         else:
             return False, hm_masking
 
