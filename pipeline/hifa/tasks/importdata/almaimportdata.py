@@ -70,7 +70,7 @@ class ALMAImportData(importdata.ImportData):
         # get the flux measurements from Source.xml for each MS
 
         if self.inputs.dbservice:
-            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206'
+            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206&VERBOSE=1'
             # Test for service response
             baseurl = FLUX_SERVICE_URL
             url = baseurl + testquery
