@@ -120,16 +120,16 @@ def make_summary_table_per_eb( accum_flag : Dict ) -> str:
         frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
         frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total'] 
         tr = FlagSummaryEB_TR( ms_name, 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
-                               '{:.1f} %'.format( frac_before ),
-                               '{:.1f} %'.format( frac_after - frac_before ),
-                               '{:.1f} %'.format( frac_after ),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
+                               '{:.3f} %'.format( frac_before ),
+                               '{:.3f} %'.format( frac_after - frac_before ),
+                               '{:.3f} %'.format( frac_after ),
                                '{}'.format(accum_flag[ms_name]['details']) )
         
         rows.append(tr)
@@ -179,8 +179,8 @@ def make_summary_table_per_field(flagdict):
             frac_before = flagval['before']/flagval['total']
             frac_total = flagval['after']/flagval['total']
             frac_additional = (flagval['after']-flagval['before'])/flagval['total']
-            tr = FlagSummaryField_TR(field, spw, '%0.1f%%' % (frac_before*100), '%0.1f%%' % (frac_additional*100),
-                               '%0.1f%%' % (frac_total*100))
+            tr = FlagSummaryField_TR(field, spw, '%0.3f%%' % (frac_before*100), '%0.3f%%' % (frac_additional*100),
+                               '%0.3f%%' % (frac_total*100))
             rows.append(tr)
 
     return utils.merge_td_columns(rows, num_to_merge=2)
