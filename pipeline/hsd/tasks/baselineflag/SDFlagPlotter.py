@@ -237,6 +237,27 @@ class SDFlagPlotter(object):
         Args:
             pollist         : list of pols
             PlotData_dict   : dictonary of PlotData
+                                PlotData_dict[pol] = {
+                                    ms_name: MeasurementSet name
+                                    ant_name:  Antenna name
+                                    spw:  spwid
+                                    pol:  polarization
+                                    row:  [row], # row number of the spectrum
+                                    time: [time], # timestamp
+                                    data: [data],
+                                    flag: [flag], # 0: flag out, 1: normal, 2: exclude from the plot
+                                    sigma: "Clipping Sigma"
+                                    thre: [threshold(s) max, min(if any)], # holizontal line
+                                    gap:  [gap(s)], # vertical tick: [[PosGap], [TimeGap]]
+                                    title: "title",
+                                    xlabel: "xlabel",
+                                    ylabel: "ylabel"
+                                    permanentflag: [PermanentFlag rows]
+                                    isActive: True/False
+                                    threType: "line" or "plot" # if "plot" then thre should be a list
+                                       having the equal length of row
+                                    threDesc: description of the threshold (for legend)
+                                }
             FigFileDir      : directory to create figure files
             figfilename     : figure filename
         Returns:
@@ -244,27 +265,6 @@ class SDFlagPlotter(object):
         Raises:
             RuntimeError if number of pols exceeds the limit of 4
 
-        PlotData = {
-                     ms_name: MeasurementSet name
-                     ant_name:  Antenna name
-                     spw:  spwid
-                     pol:  polarization
-                     row:  [row], # row number of the spectrum
-                     time: [time], # timestamp
-                     data: [data],
-                     flag: [flag], # 0: flag out, 1: normal, 2: exclude from the plot
-                     sigma: "Clipping Sigma"
-                     thre: [threshold(s) max, min(if any)], # holizontal line
-                     gap:  [gap(s)], # vertical tick: [[PosGap], [TimeGap]]
-                     title: "title",
-                     xlabel: "xlabel",
-                     ylabel: "ylabel"
-                     permanentflag: [PermanentFlag rows]
-                     isActive: True/False
-                     threType: "line" or "plot" # if "plot" then thre should be a list
-                                   having the equal length of row
-                     threDesc: description of the threshold (for legend)
-                    }
         """
         if len(pollist)>4:   # max number of pols=4
             raise RuntimeError( "Number of polarizations ({}) exceeds limit of 4.".format(len(pollist)) )
