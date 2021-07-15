@@ -214,7 +214,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # No spws have good SNR values, use combined spw mapping, and test
             # which spws have too low combined phase SNR.
             elif len([goodsnr for goodsnr in goodsnrs if goodsnr is True]) == 0:
-                LOG.warn(f'Low SNR for all spws - Forcing combined spw mapping for {inputs.ms.basename}')
+                LOG.warn(f'Low SNR for all spws - Forcing combined spw mapping for {inputs.ms.basename},'
+                         f' intent={intent}, field={field}')
 
                 # Report spws for which no SNR estimate was available.
                 if None in goodsnrs:
