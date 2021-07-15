@@ -444,6 +444,10 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
     The median temperature dictionary keys and values
         key: the spw id         value: The median Tsys temperature in degrees K
     """
+    # PIPE-775: Output the call to the function. The second and third arguments (tsys_spwlist and scan_list)
+    #  should have the same length
+    LOG.debug("Called get_mediantemp({}, {}, {}, antenna={}, temptype={})".format(
+        ms, tsys_spwlist, scan_list, antenna, temptype))
 
     # Initialize
     medtempsdict = collections.OrderedDict()
@@ -519,13 +523,10 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             LOG.debug('row %d start %s end %s' % (i, tstart, tend))
 
             # Scan starts after end of validity interval or ends before
-            # the beginning of the validity interval. PIPE-775: It also checks that the
-            # spw corresponds to the scan.
+            # the beginning of the validity interval.
             for j, scan in enumerate(unique_scans):
                 if (begin_scan_times[j]['m0']['value'] > tend['m0']['value'] or
-                    end_scan_times[j]['m0']['value'] < tstart['m0']['value'] or
-                    tsys_spws[i] not in scans_spws[scan]
-                ):
+                    end_scan_times[j]['m0']['value'] < tstart['m0']['value']):
                     continue
                 if scanids[i] <= 0:
                     scanids[i] = unique_scans[j]
