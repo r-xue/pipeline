@@ -81,7 +81,7 @@ class ALMAImportData(importdata.ImportData):
                 ssl_context = ssl.create_default_context(cafile=certifi.where())
                 LOG.info('Attempting test query at: {!s}'.format(url))
                 response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
-                xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
             except Exception as e:
                 try:
@@ -93,7 +93,7 @@ class ALMAImportData(importdata.ImportData):
                         url = ''
                     LOG.info('Attempting test query at backup: {!s}'.format(url))
                     response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
-                    xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                    xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
                 except Exception as e2:
                     if url == '':
@@ -103,9 +103,11 @@ class ALMAImportData(importdata.ImportData):
                     LOG.warn(msg+'\nProceeding without using the online flux catalog service.')
                     xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice = 'FAIL'
+                    qastatus = None
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
             fluxservice = None
+            qastatus = None
         # write/append them to flux.csv
 
         # Cycle 1 hack for exporting the field intents to the CSV file:
@@ -121,4 +123,4 @@ class ALMAImportData(importdata.ImportData):
         # re-read from flux.csv, which will include any user-coded values
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
-        return fluxservice, combined_results
+        return fluxservice, combined_results, qastatus

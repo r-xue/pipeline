@@ -49,11 +49,14 @@ def get_setjy_results(mses):
     tables XML for backup values and store the values in the context
     """
     results = []
+    qastatus = []
     for ms in mses:
         result = commonfluxresults.FluxCalibrationResults(ms.name)
         science_spw_ids = {spw.id for spw in ms.get_spectral_windows()}
 
-        for source, measurements in read_fluxes_db(ms).items():
+        fluxdb_results, qacodes = read_fluxes_db(ms)
+
+        for source, measurements in fluxdb_results.items():
             m = [m for m in measurements if int(m.spw_id) in science_spw_ids]
 
             # import flux values for all fields and intents so that we can
@@ -63,8 +66,10 @@ def get_setjy_results(mses):
                 result.measurements[field.id].extend(m)
 
         results.append(result)
+        if qacodes:
+            qastatus.extend(qacodes)
 
-    return results
+    return results, qastatus
 
 
 def read_fluxes_db(ms):
@@ -76,9 +81,11 @@ def read_fluxes_db(ms):
 
     if not xml_measurements:
         # Source.xml could not be read or parsed. Fall back to catalogue query
-        return flux_nosourcexml(ms)
+        return flux_nosourcexml(ms), None
 
-    return add_catalogue_fluxes(xml_measurements, ms)
+    results, qacodes = add_catalogue_fluxes(xml_measurements, ms)
+
+    return results, qacodes
 
 
 def flux_nosourcexml(ms):
@@ -253,6 +260,8 @@ def add_catalogue_fluxes(measurements, ms):
             # LOG.error("Could not contact the backup flux service URL.")
             return results
 
+    qacodes = []   # Dictionaries will be added here for codes and warning messages from the sources catalog
+
     # Continue with required queries
     for source, xml_measurements in measurements.items():
         for xml_measurement in xml_measurements:
@@ -288,10 +297,13 @@ def add_catalogue_fluxes(measurements, ms):
                 spix = 'N/A'
                 age = 'N/A'
 
+            if clarification or int(status_code) > 1:
+                qacodes.append({'source': source, 'status_code': status_code, 'clarification': clarification})
+
             log_result(source, spw, xml_measurement.I, catalogue_I, spix, age, url, version,
                        status_code, data_conditions, clarification)
 
-    return results
+    return results, qacodes
 
 
 def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status_code, data_conditions, clarification):

@@ -2922,7 +2922,7 @@ def score_fluxservice(result):
                     if fluxorigin == 'Source.xml':
                         score = 0.3
                         msg = "Flux catalog service not used.  Source.xml is the origin."
-                except IndexError:
+                except Exception as e:
                     LOG.debug("Skip since there is not a flux measurement")
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
@@ -2930,18 +2930,18 @@ def score_fluxservice(result):
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
     elif result.inputs['dbservice'] is True:
+        msg = ""
         if result.fluxservice is 'FIRSTURL':
-            msg = "Flux catalog service used."
+            msg += "Flux catalog service used.  "
             score = 1.0
         elif result.fluxservice is 'BACKUPURL':
-            msg = 'Backup flux catalog service used.'
+            msg += "Backup flux catalog service used.  "
             score = 0.9
         elif result.fluxservice is 'FAIL':
-            msg = 'Neither primary or backup flux service could be queried.  ASDM values used.'
+            msg += "Neither primary or backup flux service could be queried.  ASDM values used."
             score = 0.3
-        # elif result.fluxservice is
 
-        if result.fluxservice is 'FIRSTURL' or result.fluxservice is 'BACKUPURL':
+        if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
             for setjy_result in result.setjy_results:
                 measurements = setjy_result.measurements
                 for measurement in measurements.items():
@@ -2949,7 +2949,7 @@ def score_fluxservice(result):
                         age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
                         if int(age) > 14:
                             score = 0.5
-                            msg = "Age of nearest monitoring point is greater than 14 days."
+                            msg += "Age of nearest monitoring point is greater than 14 days."
                     except IndexError:
                         LOG.debug("Skip since there is no age present")
 
@@ -2957,6 +2957,61 @@ def score_fluxservice(result):
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_fluxservicemessages(result):
+    """
+    Report any flux service messaging and status codes
+    """
+    if result.inputs['dbservice'] is False:
+        score = 1.0
+        longmsg = "Flux catalog service not used.  No warning messages reported."
+        shortmsg = longmsg
+    elif result.inputs['dbservice'] is True:
+        score = 1.0
+        longmsg = "No warning messages from the flux catalog service."
+        shortmsg = longmsg
+        if result.qastatus:
+            longmsg = ""
+            for qacode in result.qastatus:
+                if qacode.clarification:
+                    score = 0.5
+                    # Queries a per source, so there may be more than one message returned.
+                    longmsg += "Source: {!s}  Status code: {!s}     Message: {!s}\n".format(qacode.source,
+                                                                                            qacode.status_code,
+                                                                                            qacode.clarification)
+                    shortmsg = "Flux service returned warning messages."
+
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_messaging',
+                          metric_score=score,
+                          metric_units='flux service messaging')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_fluxservicestatuscodes(result):
+    """
+    Report any flux service codes for status_code > 1
+    """
+    if result.inputs['dbservice'] is False:
+        score = 1.0
+        msg = "Flux catalog service not used.  No status codes to report."
+    elif result.inputs['dbservice'] is True:
+        score = 1.0
+        msg = "Flux catalog service status queries returned code 0 or 1."
+        if result.qastatus:
+            scores = []
+            for qacode in result.qastatus:
+                # Status code can be 0,1,2,3
+                if int(qacode.status_code) > 1:
+                    score = 0.3
+                    msg = "A query of the flux catalog service returned a status code: {!s}".format(str(qacode.status_code))
+
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_statuscode',
+                          metric_score=score,
+                          metric_units='flux service status code')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
 @log_qa

@@ -66,8 +66,14 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Check if amp/bp/phcal objects are the same (returns list of pqa)
         scores7 = _check_calobjects(recipe_name, result.mses)
 
+        # Check for flux service messages/warnings
+        score8 = _check_fluxservicemessages(result)
+
+        # Check for flux service status codes
+        score9 = _check_fluxservicestatuscodes(result)
+
         result.qa.pool.extend(polcal_scores)
-        result.qa.pool.extend([score2, score3, score4, score5, score6])
+        result.qa.pool.extend([score2, score3, score4, score5, score6, score8, score9])
         result.qa.pool.extend(scores7)
 
 
@@ -159,6 +165,18 @@ def _check_fluxservice(result) -> pqa.QAScore:
     """
     return qacalc.score_fluxservice(result)
 
+
+def _check_fluxservicemessages(result) -> pqa.QAScore:
+    """
+    Check flux service messages
+    """
+    return qacalc.score_fluxservicemessages(result)
+
+def _check_fluxservicestatuscodes(result) -> pqa.QAScore:
+    """
+    Check flux service statuscodes
+    """
+    return qacalc.score_fluxservicestatuscodes(result)
 
 def _check_fluxcsv(result) -> pqa.QAScore:
     """
