@@ -772,7 +772,7 @@ class Tclean(cleanbase.CleanBase):
             new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
                 self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
+            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
 
             seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                     self.pblimit_cleanmask, iteration=iteration)
@@ -1012,7 +1012,7 @@ class Tclean(cleanbase.CleanBase):
                                ignore='mask' if do_not_copy_mask else None)
             
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
+            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
             savemodel = self.image_heuristics.savemodel(iteration)
             niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
 

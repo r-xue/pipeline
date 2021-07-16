@@ -210,7 +210,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             mask_frac_rad = 0.05
 
         # VLA specific threshold
-        threshold_vla = casa_tools.quanta.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
+        # set to nsigma=4.0, rather than a hm_masking-specific nsigma value
+        nsigma = 4.0
+        threshold_vla = casa_tools.quanta.quantity(nsigma * residual_robust_rms, 'Jy')
 
         # Set allowed niter range
         max_niter = 1000000
@@ -246,13 +248,17 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         See PIPE-683 and CASR-543"""
         return 'cont'
 
-    def nsigma(self, iteration, hm_nsigma):
-        """See PIPE-678 and CASR-543"""
+    def nsigma(self, iteration, hm_nsigma, hm_masking):
+        """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
         else:
-            # PIPE-677: reduce from 5.0 (value set in PIPE-678)
-            return 4.0
+            # PIPE-678: VLA 'none' set to 5.0
+            # PIPE-677: VLA automasking set to 4.0, reduce from 5.0
+            if hm_masking == 'auto':
+                return 4.0
+            else:
+                return 5.0
 
     def tclean_stopcode_ignore(self, iteration, hm_masking):
         """Tclean stop code(s) to be ignored for warning messages.

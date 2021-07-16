@@ -231,7 +231,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float) -> Union[float, None]:
+    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
