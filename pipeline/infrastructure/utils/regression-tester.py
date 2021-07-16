@@ -191,7 +191,6 @@ class PipelineRegression(object):
         os.chdir('working')
         pipeline.recipereducer.reduce(vis=[input_vis], procedure=self.recipe)
 
-
 # The methods below are test methods called from pytest.
 
 def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression():
@@ -227,7 +226,7 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
 
 
 def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression():
-    """Run ALMA single-dish restoredata regression on the obseration data of M100.
+    """Run ALMA single-dish restoredata regression on the observation data of M100.
 
     Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f_SPW15_23
@@ -248,7 +247,7 @@ def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression(
 
 
 def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
-    """Run ALMA single-dish cal+image regression on the obseration data at NRO.
+    """Run ALMA single-dish cal+image regression for standard nobeyama recipe.
 
     Recipe name:                procedure_hsdn_calimage
     Dataset:                    mg2-20170525142607-180419
@@ -260,4 +259,3 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
                             expectedoutput=('pl-regressiontest/mg2-20170525142607-180419/' +
                                             'mg2-20170525142607-180419.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
     pr.run()
-    
