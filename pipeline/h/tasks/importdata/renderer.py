@@ -66,7 +66,7 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         })
 
 
-FluxTR = collections.namedtuple('FluxTR', 'vis field spw i q u v spix ageNMP')
+FluxTR = collections.namedtuple('FluxTR', 'vis field spw intent i q u v spix ageNMP')
 
 
 def make_flux_table(context, results):
@@ -101,7 +101,12 @@ def make_flux_table(context, results):
                 else:
                     age = 'N/A'
 
-                tr = FluxTR(vis_cell, field_cell, measurement.spw_id,
+                # Get the intent for each 'field/spw' combination
+                spw_intents = ms_for_result.get_spectral_window(measurement.spw_id).intents
+                field_spw_intents = field.intents.intersection(spw_intents)
+                field_spw_filtered_intents = "".join(sorted(field_spw_intents.intersection({'PHASE', 'BANDPASS', 'FLUX', 'CHECK', 'POLARIZATION'}))) # Set of intents to include from PIPE-1006
+
+                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, field_spw_filtered_intents, 
                             fluxes['I'], fluxes['Q'], fluxes['U'], fluxes['V'],
                             measurement.spix, age)
                 rows.append(tr)
