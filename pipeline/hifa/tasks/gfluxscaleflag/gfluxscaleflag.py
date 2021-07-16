@@ -272,25 +272,29 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
 
         return callib_map
 
-    def _do_gaincal(self, caltable=None, intent=None, gaintype='G',
-                    calmode=None, combine=None, solint=None, antenna=None,
-                    uvrange='', minsnr=None, refant=None, minblperant=None,
-                    spwmap=None, interp=None, append=None, merge=True):
+    def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype='G', calmode=None, combine=None, solint=None,
+                    antenna=None, uvrange='', minsnr=None, refant=None, minblperant=None, spwmap=None, interp=None,
+                    append=None, merge=True):
         inputs = self.inputs
         ms = inputs.ms
 
-        # Get the science spws
+        # Identify which science spws were selected by inputs parameter.
         request_spws = ms.get_spectral_windows(task_arg=inputs.spw)
-        targeted_scans = ms.get_scans(scan_intent=intent, spw=inputs.spw)
 
-        # boil it down to just the valid spws for these fields and request
+        # Identify which scans covered the requested intent, field, and any of
+        # the requested spws.
+        targeted_scans = ms.get_scans(scan_intent=intent, spw=inputs.spw, field=field)
+
+        # Among the requested spws, identify which have a scan among the
+        # targeted scans.
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
+        # Create separate phase caltables for each spectral spec.
         for spectral_spec, tuning_spw_ids in utils.get_spectralspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 
-            scans_with_data = ms.get_scans(spw=tuning_spw_str, scan_intent=intent)
+            scans_with_data = ms.get_scans(spw=tuning_spw_str, scan_intent=intent, field=field)
             if not scans_with_data:
                 LOG.info('No data to process for spectral spec {}. Continuing...'.format(spectral_spec))
                 continue
@@ -301,8 +305,8 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             fields_in_scans = {fld for scan in scans_with_data for fld in scan.fields}
             singular_intents = frozenset(intent.split(','))
             if len(singular_intents) > 1:
-                for field in fields_in_scans:
-                    intents_to_scans = {si: ms.get_scans(scan_intent=si, field=field.id, spw=tuning_spw_str)
+                for fld in fields_in_scans:
+                    intents_to_scans = {si: ms.get_scans(scan_intent=si, field=fld.id, spw=tuning_spw_str)
                                         for si in singular_intents}
                     valid_intents = [k for k, v in intents_to_scans.items() if v]
                     if len(valid_intents) > 1:
@@ -328,6 +332,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                     inputs.context,
                     vis=inputs.vis,
                     caltable=caltable,
+                    field=field,
                     intent=intent,
                     spw=tuning_spw_str,
                     solint=solint,
@@ -363,6 +368,10 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 # the intent from which the calibration was derived
                 calapp_overrides = dict(intent=intent)
 
+                # Adjust the field if provided.
+                if field:
+                    calapp_overrides['field'] = field
+
                 # Adjust the interp if provided.
                 if interp:
                     calapp_overrides['interp'] = interp
@@ -370,13 +379,6 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 # Adjust the spw map if provided.
                 if spwmap:
                     calapp_overrides['spwmap'] = spwmap
-
-                # https://open-jira.nrao.edu/browse/PIPE-367?focusedCommentId=141097&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-141097
-                #
-                # '... then to apply this table you need the same spw map that
-                # is printed in the spwphaseup stage'
-                if combine == 'spw':
-                    calapp_overrides['spwmap'] = ms.combine_spwmap
 
                 # Create modified CalApplication and replace CalApp in result
                 # with this new one.
@@ -391,36 +393,62 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                     result.accept(inputs.context)
 
     def _do_phasecal(self):
+        # Note: at present, phaseupsolint is specified as a fixed
+        # value, defined in inputs. In the future, phaseupsolint may
+        # need to be set based on exposure times; if so, see discussion
+        # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
         inputs = self.inputs
 
-        # Determine the parameters to use for the gaincal to create the
-        # phase-only caltable.
-        # If a non-empty combine spw mapping is defined
-        # then use spw combination with corresponding map and interpolation.
-        if inputs.ms.combine_spwmap:
-            phase_combine = 'spw'
-            phaseup_spwmap = inputs.ms.combine_spwmap
-            phase_interp = 'linearPD,linear'
-            # Note: at present, phaseupsolint is specified as a fixed
-            # value, defined in inputs. In the future, phaseupsolint may
-            # need to be set based on exposure times; if so, see discussion
-            # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
+        # PIPE-1154: the phase solves for flux calibrator should always use
+        # combine='', gaintype='G', and no spwmap or interp.
+        if 'AMPLITUDE' in inputs.intent:
+            LOG.info('Compute phase gaincal table for flux calibrator.')
+            self._do_gaincal(intent='AMPLITUDE', gaintype='G', calmode='p', combine='', solint=inputs.phaseupsolint,
+                             minsnr=inputs.minsnr, refant=inputs.refant, merge=True)
 
-        # If no valid combine spw map was defined, then use regular spw mapping
-        # using the phase up spw map, without any interpolation.
-        else:
-            phase_combine = ''
-            phaseup_spwmap = inputs.ms.phaseup_spwmap
-            phase_interp = None
+        # PIPE-1154: for PHASE calibrator and CHECK source fields, create
+        # separate phase solutions for each combination of intent, field, and
+        # use optimal gaincal parameters based on spwmapping registered in the
+        # measurement set.
+        for intent in ['CHECK', 'PHASE']:
+            if intent in inputs.intent:
+                self._do_phasecal_per_field_for_intent(intent)
 
-        # Create phase caltable and merge it into the local context.
-        LOG.info('Compute phase gaincal table.')
-        self._do_gaincal(
-            intent=inputs.intent, gaintype='G', calmode='p',
-            combine=phase_combine, solint=inputs.phaseupsolint,
-            minsnr=inputs.minsnr, refant=inputs.refant,
-            spwmap=phaseup_spwmap, interp=phase_interp,
-            merge=True)
+    def _do_phasecal_per_field_for_intent(self, intent):
+        inputs = self.inputs
+
+        # Create separate phase solutions for each field covered by requested
+        # intent.
+        for field in inputs.ms.get_fields(intent=intent):
+            # Get optimal phase solution parameters for current intent and
+            # field, based on spw mapping info in MS.
+            combine, interp, spwmap = self._get_phasecal_params(self.inputs.ms, intent, field.name)
+
+            # Create phase caltable and merge it into the local context.
+            LOG.info(f'Compute phase gaincal table for intent={intent}, field={field.name}.')
+            self._do_gaincal(field=field.name, intent=intent, gaintype='G', calmode='p', combine=combine,
+                             solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant, spwmap=spwmap,
+                             interp=interp, merge=True)
+
+    @staticmethod
+    def _get_phasecal_params(ms, intent, field):
+        # By default, no spw mapping or combining, no interp.
+        combine = ''
+        interp = None
+        spwmap = []
+
+        # Try to fetch spwmapping info from MS for requested intent and field.
+        spwmapping = ms.spwmaps.get((intent, field), None)
+
+        # If a mapping was found, use the spwmap, and update combine and interp
+        # depending on whether it is a combine spw mapping.
+        if spwmapping:
+            spwmap = spwmapping.spwmap
+            if spwmapping.combine:
+                combine = 'spw'
+                interp = 'linearPD,linear'
+
+        return combine, interp, spwmap
 
 
 def create_plots(inputs, context, intents, suffix=''):
