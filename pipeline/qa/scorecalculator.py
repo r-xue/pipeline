@@ -2941,6 +2941,7 @@ def score_fluxservice(result):
             msg += "Neither primary or backup flux service could be queried.  ASDM values used."
             score = 0.3
 
+        agecounter = 0
         if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
             for setjy_result in result.setjy_results:
                 measurements = setjy_result.measurements
@@ -2948,10 +2949,14 @@ def score_fluxservice(result):
                     try:
                         age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
                         if int(age) > 14:
-                            score = 0.5
-                            msg += "Age of nearest monitoring point is greater than 14 days."
+                            agecounter = agecounter + 1
                     except IndexError:
                         LOG.debug("Skip since there is no age present")
+
+            # Any sources with age of nearest monitoring point greater than 14 days?
+            if agecounter > 0:
+                score = 0.5
+                msg += "Age of nearest monitoring point is greater than 14 days."
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
@@ -2975,12 +2980,12 @@ def score_fluxservicemessages(result):
         if result.qastatus:
             longmsg = ""
             for qacode in result.qastatus:
-                if qacode.clarification:
+                if qacode['clarification']:
                     score = 0.5
                     # Queries a per source, so there may be more than one message returned.
-                    longmsg += "Source: {!s}  Status code: {!s}     Message: {!s}\n".format(qacode.source,
-                                                                                            qacode.status_code,
-                                                                                            qacode.clarification)
+                    longmsg += "Source: {!s},  Status code: {!s},     Message: {!s}\n".format(qacode['source'],
+                                                                                            qacode['status_code'],
+                                                                                            qacode['clarification'])
                     shortmsg = "Flux service returned warning messages."
 
     origin = pqa.QAOrigin(metric_name='score_fluxservice_messaging',
@@ -3004,9 +3009,9 @@ def score_fluxservicestatuscodes(result):
             scores = []
             for qacode in result.qastatus:
                 # Status code can be 0,1,2,3
-                if int(qacode.status_code) > 1:
+                if int(qacode['status_code']) > 1:
                     score = 0.3
-                    msg = "A query of the flux catalog service returned a status code: {!s}".format(str(qacode.status_code))
+                    msg = "A query of the flux catalog service returned a status code: {!s}".format(str(qacode['status_code']))
 
     origin = pqa.QAOrigin(metric_name='score_fluxservice_statuscode',
                           metric_score=score,
