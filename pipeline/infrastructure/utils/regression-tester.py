@@ -260,3 +260,4 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
                             expectedoutput=('pl-regressiontest/mg2-20170525142607-180419/' +
                                             'mg2-20170525142607-180419.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
     pr.run()
+    
