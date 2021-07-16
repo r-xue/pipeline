@@ -6,18 +6,16 @@ Unchanged functions can be found on the New Mexico nmpost cluster:
 /users/jmarvil/scripts/edit_pybdsf_islands.py
 /users/jmarvil/scripts/run_bdsf.py
 """
+
 import time
 from glob import glob
 
 import numpy as np
-from scipy.stats import linregress
-
+import pipeline.infrastructure as infrastructure
 import pyfits
-import bdsf
 
 from pipeline.infrastructure import casa_tools
-import pipeline.infrastructure as infrastructure
-# import casatools.__casac__ as casac
+from scipy.stats import linregress
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -29,9 +27,23 @@ def run_bdsf(infile=""):
     :param infile:
     :return:
     """
-    img = bdsf.process_image(infile, thresh_isl=2, thresh_pix=5, rms_box=[512, 512], thresh='hard',
-                             adaptive_rms_box=False, mean_map='zero', peak_fit=True, split_isl=False,
-                             group_by_isl=True)
+    # PIPE-1063/1125:
+    #   - mitigate a side-effect from PyBDSF v1.9.2
+    #       PyBDSF internally changes the NumPy floating-point (FP) 'divide' error handling upon
+    #       import (`bdsf.gau2srl`), and does not restore FP error settings after changing all of
+    #       them to 'ignore' during its runtime (`bdsf.functions`).
+    #   - protect against the absence of PyBDSF for non-VLASS projects
+    try:
+        with np.errstate():
+            import bdsf
+            img = bdsf.process_image(infile, thresh_isl=2, thresh_pix=5, rms_box=[512, 512], thresh='hard',
+                                     adaptive_rms_box=False, mean_map='zero', peak_fit=True, split_isl=False,
+                                     group_by_isl=True)
+    except ImportError as e:
+        LOG.debug('Import error: {!s}'.format(e))
+        raise Exception(
+            "PyBDSF is not installed, which is required to run hifv_vlassmasking(maskingmode='vlass-se-tier-2',..).")
+
     img.write_catalog(format='fits', outfile=infile.replace('.fits', '.cat.fits'))
     img.write_catalog(format='ds9', outfile=infile.replace('.fits', '.cat.ds9.reg'))
     img.export_image(outfile=infile + '.rms', img_type='rms', clobber=True)
@@ -346,8 +358,14 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
     num_rejected_islands = len(list(rejected_islands))
 
-    from astropy.coordinates import Angle, SkyCoord, ICRS, Galactic, FK4, FK5
-    import astropy.units as u
+    try:
+        import astropy.units as u
+        from astropy.coordinates import FK4, FK5, ICRS, Angle, Galactic, SkyCoord
+    except ImportError as e:
+        LOG.debug('Import error: {!s}'.format(e))
+        raise Exception(
+            "Astropy is not installed, which is required to run hifv_vlassmasking(maskingmode='vlass-se-tier-2',..)")
+
     rahrstr = phasecenter.split()[1] + ' hours'
     declist = phasecenter.split()[2].split('.')
     decdegstr = declist[0] + ':' + declist[1] + ':' + declist[2] + '.' + declist[3] + ' degrees'
