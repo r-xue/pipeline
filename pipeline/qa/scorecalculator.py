@@ -2948,7 +2948,7 @@ def score_fluxservice(result):
                 for measurement in measurements.items():
                     try:
                         age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
-                        if int(age) > 14:
+                        if int(abs(age)) > 14:
                             agecounter = agecounter + 1
                     except IndexError:
                         LOG.debug("Skip since there is no age present")
@@ -2956,7 +2956,7 @@ def score_fluxservice(result):
             # Any sources with age of nearest monitoring point greater than 14 days?
             if agecounter > 0:
                 score = 0.5
-                msg += "Age of nearest monitoring point is greater than 14 days."
+                msg += "Age of nearest monitor point is greater than 14 days."
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
