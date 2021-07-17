@@ -10,7 +10,13 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2020: (as of August 9, 2020)
+Code changes for Pipeline2021 from PIPE-824: (as of June 10, 2021)
+0) fix for PRTSPR-50321
+1) change .rstrip('.image')+'.mask' to .replace('.image','.mask')
+2) fix for PIPE-1181 (protection for all joint mask pixels between pb=0.20-21)
+3) add nbin=1 parameter in prepration for PIPE-949
+
+Code changes for Pipeline2020: 
 0) fix for PIPE-554 (bug found in cube imaging of calibrators by ARI-L project)
 1) fix for PIPE-525 (divide by zero in a 130-target MOUS)
 2) new feature PIPE-702 (expand mask if mom8fc image has emission outside it)
@@ -193,7 +199,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.107 2020/12/18 17:35:25 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.112 2021/06/30 16:06:36 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -334,7 +340,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                   keepIntermediatePngs=True, returnWarnings=False, enableOnlyExtraMask=True,
                   useMomentDiff=True, smallBandwidthFraction=0.05, smallSpreadFraction=0.33,
                   skipAmendMask=False, useAnnulus=True, cubeSigmaThreshold=7.5, 
-                  npixThreshold=7):  # 98
+                  npixThreshold=7, nbin=1):  # 98
     """
     This function calls functions to:
     1) compute a representative 'mean' spectrum of a dirty cube
@@ -740,7 +746,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             casalogPost('FDM spectrum detected: setting amendMaskIterations=%d' % (amendMaskIterations))
 
     if (mask == 'auto'):
-        mask = img.rstrip('.image') + '.mask'
+        mask = img.replace('.image','.mask')
         if (not os.path.exists(mask)):
             mask = ''
         else:
@@ -1614,8 +1620,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                     immath(imagename=[jointMask,userJointMask], mode='evalexpr', outfile=addedMask, expr=expression)
                     plotStatisticalSpectrumFromMask(img, addedMask, pbcube, statistic='mean', normalizeByMAD=normalizeByMAD)
                 
-                maskedPixelsBefore = countPixelsAboveZero(jointMask)
-                maskedPixelsAfter = countPixelsAboveZero(userJointMask) 
+                maskedPixelsBefore = countPixelsAboveZero(jointMask, pbmom)
+                maskedPixelsAfter = countPixelsAboveZero(userJointMask, pbmom) 
                 newPixels = maskedPixelsAfter - maskedPixelsBefore
                 print("---------------------------------------------------------------------")
                 casalogPost("amending mask %s into %s, adding %d-%d=%d pixels" % (jointMask,userJointMask,maskedPixelsAfter,maskedPixelsBefore,newPixels))
@@ -5634,7 +5640,10 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         elif (whichBaseline == 1):
             useBaseline = 'high'
         else:
-            useBaseline = 'middle'
+            if madMiddleChannels > 0:
+                useBaseline = 'middle'
+            else: # fix for PRTSPR-50321
+                useBaseline = 'low'
         # In the following if/elif/else, we convert the tri-valued variable useBaseline into two
         # Booleans for legacy purposes (i.e before useMiddleChannels was considered as an option).
         if (useBaseline == 'high'):
@@ -6470,10 +6479,12 @@ def countUnmaskedPixels(img, useImstat=True):
         pixels = np.prod(np.shape(maskdata))
         return pixels-maskedPixels
 
-def countPixelsAboveZero(img, useImstat=True, value=0):
+def countPixelsAboveZero(img, pbmom=None, useImstat=True, value=0):
     """
     This function is called by meanSpectrumFromMom0Mom8JointMask.
     Returns number of pixels > a specified threshold.
+    pbmom: if specified, and useImstat==True, then also require pb>0.21
+    Note that the value of 0.21 is also used in findOuterAnnulusForPBCube and should be changed in parallel
     value: threshold (default=0)
     Total pixels: spatial * spectral * Stokes
     Todd Hunter
@@ -6482,7 +6493,11 @@ def countPixelsAboveZero(img, useImstat=True, value=0):
         print("Could not find image: ", img)
         return
     if useImstat:
-        npix = imstat(img, mask='"%s">0'%(img), listit=imstatListit, verbose=imstatVerbose)['npts']
+        if pbmom is None:
+            mask = '"%s">0'%(img)
+        else:
+            mask = '"%s">0 && "%s">0.21' % (img,pbmom)
+        npix = imstat(img, mask=mask, listit=imstatListit, verbose=imstatVerbose)['npts']
         if type(npix) == list or type(npix) == np.ndarray:
             if len(npix) == 0:
                 npix = 0
@@ -6542,13 +6557,14 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                                       mom8minsnr=MOM8MINSNR_DEFAULT, rmStatContQuadratic=True,
                                       bidirectionalMaskPhase2=False, outdir='', 
                                       avoidExtremaInNoiseCalcForJointMask=False, momentdir='',
-                                      statistic='mean'):
+                                      statistic='mean', pbmom=None):
     """
     This function is called by runFindContinuum when meanSpectrumMethod='mom0mom8jointMask'.
     This is the new heuristic for Cycle 6 which creates the moment 0 and moment 8 images
     for a cube, takes their union and determines the mean spectrum by calling 
     computeStatisticalSpectrumFromMask(), which uses ia.getprofile.
     pbcube: if not specified, then assume '.residual' should be replaced in the name by '.pb'
+    pbmom: if not specified, then assume '.pb' should be replaced in the name by '.pbmom'
     overwriteMoments: rebuild the mom0 and mom8 images even if they already exist
     overwriteMasks: rebuild the mom0 and mom8 mask images even if they already exist
     phase2: if True, then run a second phase if SNR is high
@@ -6585,6 +6601,11 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
     # Look for the .pb image if it was not specified
     if pbcube is None:
         pbcube = locatePBCube(cube)
+    if pbmom is None:
+        pbmom = os.path.join(outdir,os.path.basename(pbcube)) + 'mom'
+        if not os.path.exists(pbmom):
+            casalogPost("Running immoments('%s', moments=[-1], outfile='%s')" % (pbcube,pbmom))
+            immoments(pbcube, moments=[-1], outfile=pbmom)
     # Look for the .psf image if it was not specified
     if psfcube is None:
         if cube.find('.residual') >= 0: 
@@ -6775,7 +6796,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         # mom8.mask_bi: this image will have the true values of the image where it is not masked
         makemask(mode='copy', inpimage=mom8+'.mask_chauv_bi',
                  inpmask=mom8+'.mask_chauv_bi:mask0', output=mom8mask)
-        numberPixelsInMom8Mask = countPixelsAboveZero(mom8mask)
+        numberPixelsInMom8Mask = countPixelsAboveZero(mom8mask, pbmom)
 
         ####################
         # Build joint mask
@@ -6917,7 +6938,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         mom0snrs = [mom0snr, mom0snr2, mom0snr3]
         mom8snrs = [mom8snr, mom8snr2, mom8snr3]
         # if no pixels were found in the mask, then build one from PB annulus, or use whole image if no PB is available.
-        numberPixelsInMask = countPixelsAboveZero(jointMask)
+        numberPixelsInMask = countPixelsAboveZero(jointMask, pbmom)
         if not pixelsInMask or numberPixelsInMask < minPixelsInJointMask:
             pbBasedMask = True
             os.system('rm -rf %s' % (jointMask))
@@ -6948,9 +6969,9 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         mom8snrs = [mom8snr,None,None]
         mom8threshold = 0
         if os.path.exists(mom8mask):
-            numberPixelsInMom8Mask = countPixelsAboveZero(mom8mask)
+            numberPixelsInMom8Mask = countPixelsAboveZero(mom8mask, pbmom)
         elif os.path.exists(userJointMask):
-            numberPixelsInMom8Mask = countPixelsAboveZero(userJointMask)
+            numberPixelsInMom8Mask = countPixelsAboveZero(userJointMask, pbmom)
             casalogPost("Using userJointMask to set numberPixelsInMom8Mask = %d" % (numberPixelsInMom8Mask))
         else:
             numberPixelsInMom8Mask = 0
@@ -6985,7 +7006,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                           mask=False, iteration=0)
     channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, statistic, normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir, jointMask)
 
-    numberPixelsInMask = countPixelsAboveZero(jointMask)
+    numberPixelsInMask = countPixelsAboveZero(jointMask, pbmom)
     if MAD(intensity) == 0.0:
         # Fix for CAS-11960
         pbBasedMask = True
@@ -6999,7 +7020,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         makemask(mode='copy', inpimage=myMask1chan, overwrite=True,
                  inpmask=myMask1chan+':mask0', output=jointMask)
         channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, statistic, normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir, jointMask)
-        numberPixelsInMask = countPixelsAboveZero(jointMask)
+        numberPixelsInMask = countPixelsAboveZero(jointMask, pbmom)
         initialQuadraticRemoved = False
         initialQuadraticImprovementRatio = 1.0
     elif not rmStatContQuadratic:
@@ -7064,6 +7085,7 @@ def findOuterAnnulusForPBCube(pbcube, imstatListit=False, imstatVerbose=False):
     """
     lowerAnnulusLevel = imstat(pbcube, listit=imstatListit, verbose=imstatVerbose)['min'][0]
     higherAnnulusLevel = gaussianBeamResponse(gaussianBeamOffset(lowerAnnulusLevel)/1.15, fwhm=1)
+    # Note that the value of 0.21 is also used in countPixelsAboveZero and should be changed in parallel
     return np.max([0.21,lowerAnnulusLevel]), higherAnnulusLevel
 
 def computeStatisticalSpectrumFromMask(cube, jointmask, pbimg=None, imageInfo=None,
@@ -7104,6 +7126,7 @@ def computeStatisticalSpectrumFromMask(cube, jointmask, pbimg=None, imageInfo=No
         if pbimg is not None:
             if pbimg.find('"') < 0:
                 # a plain pbimg was given
+                # Note that the value of 0.21 is also used in countPixelsAboveZero and should be changed in parallel
                 pbimgExpression = '"%s">0.21' % (pbimg)
             else:
                 pbimgExpression = pbimg
@@ -9493,7 +9516,7 @@ def plotStatisticalSpectrumFromMask(cube, jointMask='', pbcube=None,
     print("Wrote ", png)
     pl.draw()
     
-def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, overwrite=True):
+def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, overwrite=True, pbmom=None):
     """
     available in CASA >= 5.4.0-X  (see CAS-11335)
     Removes any regions smaller than prunesize contiguous pixels.
@@ -9535,7 +9558,7 @@ def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, ove
     newmask = mymask + '.pruned'
     if npruned > 0:
         casalogPost('Pruned %d regions.' % (npruned))
-        remainingPixels = countPixelsAboveZero(newmask)
+        remainingPixels = countPixelsAboveZero(newmask, pbmom)
         casalogPost('Remaining pixels = %s.' % (str(remainingPixels)))
         if remainingPixels < 1 and psfcube is not None:
             # Everything got pruned away, so check if ACA and reduce minbeamfrac by factor of 2

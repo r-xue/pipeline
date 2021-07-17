@@ -109,10 +109,9 @@ class FlagCmd(object):
         Added detailed docs here.
     """
 
-    def __init__(self, filename=None, rulename=None, ruleaxis=None, spw=None,
-                 antenna=None, intent=None, pol=None, time=None, field=None,
-                 axisnames=None, flagcoords=None, channel_axis=None,
-                 reason=None, extendfields=None, antenna_id_to_name=None):
+    def __init__(self, filename=None, rulename=None, ruleaxis=None, spw=None, antenna=None, intent=None, pol=None,
+                 scan=None, time=None, field=None, axisnames=None, flagcoords=None, channel_axis=None, reason=None,
+                 extendfields=None, antenna_id_to_name=None):
 
         self.filename = filename
         self.rulename = rulename
@@ -121,6 +120,7 @@ class FlagCmd(object):
         self.antenna = antenna
         self.intent = intent
         self.pol = pol
+        self.scan = scan
         self.time = time
         self.field = field
         self.axisnames = axisnames
@@ -218,6 +218,7 @@ class FlagCmd(object):
                 else:
                     flagcmd += " antenna='%s'" % ax_antenna
 
+            # Time-based flags
             flag_time = None
             for k, name in enumerate(axisnames):
                 if name.upper() == 'TIME':
@@ -234,8 +235,13 @@ class FlagCmd(object):
                 end = casa_tools.quanta.time(end, form=['ymd'])
                 flagcmd += " timerange='%s~%s'" % (start[0], end[0])
 
-        # have to be careful with antenna as it may have been set during
-        # the analysis of flagcoords
+            # Scan-based flags
+            for k, name in enumerate(axisnames):
+                if name.upper() == 'SCAN':
+                    flagcmd += " scan='%s'" % flagcoords[k]
+
+        # Add antenna to flagging command, unless it was already added
+        # as part of flagcoords.
         if self.antenna is not None and 'antenna' not in flagcmd:
             # If provided a dictionary to translate antenna IDs
             # to antenna names, then use antenna names in the 
@@ -259,6 +265,14 @@ class FlagCmd(object):
             end = casa_tools.quanta.quantity(self.end_time + 0.5, 's')
             end = casa_tools.quanta.time(end, form=['ymd'])
             flagcmd += " timerange='%s~%s'" % (start[0], end[0])
+
+        # Add scan to flagging command, unless it was already added
+        # as part of flagcoords.
+        if self.scan is not None and 'scan' not in flagcmd:
+            if isinstance(scan, list):
+                flagcmd += " scan='%s'" % ",".join(str(s) for s in scan)
+            else:
+                flagcmd += " scan='%s'" % scan
 
         # Add field to flagging command.
         if self.field is not None:

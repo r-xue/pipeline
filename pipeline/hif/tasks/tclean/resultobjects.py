@@ -518,6 +518,65 @@ class TcleanResult(basetask.Results):
     def set_tclean_iterdone(self, tclean_iterdone):
         self._tclean_iterdone = tclean_iterdone
 
+    @property
+    def nmajordone(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('nmajordone', None)
+        else:
+            return None
+
+    def set_nmajordone(self, iteration, nmajordone):
+        self.iterations[iteration]['nmajordone'] = nmajordone
+
+    @property
+    # Cumulative minor iteration array
+    def nminordone_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('nminordone_array', None)
+        else:
+            return None
+
+    def set_nminordone_array(self, iteration, nminordone_array):
+        self.iterations[iteration]['nminordone_array'] = nminordone_array
+
+    @property
+    # Cleaned peak RMS as a function of minor iteration number
+    def peakresidual_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('peakresidual_array', None)
+        else:
+            return None
+
+    def set_peakresidual_array(self, iteration, peakresidual_array):
+        self.iterations[iteration]['peakresidual_array'] = peakresidual_array
+
+    @property
+    # Total cleaned flux as a function of minor iteration number
+    def totalflux_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('totalflux_array', None)
+        else:
+            return None
+
+    def set_totalflux_array(self, iteration, totalflux_array):
+        self.iterations[iteration]['totalflux_array'] = totalflux_array
+
+    @property
+    # Fractional flux outside of clean mask
+    def outmaskratio(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('outmaskratio', None)
+        else:
+            return None
+
+    def set_outmaskratio(self, iteration, outmaskratio):
+        self.iterations[iteration]['outmaskratio'] = outmaskratio
+
     def __repr__(self):
         repr = 'Tclean:\n'
         if self._psf is not None:

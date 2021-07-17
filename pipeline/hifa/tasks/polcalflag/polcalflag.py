@@ -13,7 +13,6 @@ from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
-from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -260,7 +259,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
         # boil it down to just the valid spws for these fields and request
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
+        for spectral_spec, tuning_spw_ids in utils.get_spectralspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 

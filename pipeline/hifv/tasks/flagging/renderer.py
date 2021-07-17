@@ -204,15 +204,74 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
 
+        flag_totals = {}
+        for r in results:
+            flag_totals = utils.dict_merge(flag_totals,
+                                           self.flags_for_result(r, context))
+
         summary_plots = {}
+        percentagemap_plots = {}
 
         for result in results:
-            plotter = displaycheckflag.checkflagSummaryChart(context, result)
-            plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
-            summary_plots[ms] = plots
+            try:
+                plots = result.plots['before'][ms]
+            except Exception:
+                plots = []
+            try:
+                plotrange = result.plots['plotrange']
+            except Exception:
+                plotrange = [0, 0, 0, 0]
 
-        ctx.update({'summary_plots': summary_plots,
+            plotms_args_overrides = {'plotrange': plotrange, 'title': 'Amp vs. Frequency (after flagging)'}
+            plotter = displaycheckflag.checkflagSummaryChart(context, result,
+                                                             suffix='after', plotms_args=plotms_args_overrides)
+            plots.extend(plotter.plot())
+            summary_plots[ms] = plots
+            if result.inputs['checkflagmode'] == 'vlass-imaging':
+                percentagemap_plots[ms] = [displaycheckflag.checkflagPercentageMap(context, result).plot()]
+            else:
+                percentagemap_plots[ms] = []
+            percentagemap_plots[ms] = [p for p in percentagemap_plots[ms] if p is not None]
+
+        ctx.update({'flags': flag_totals,
+                    'agents': ['before', 'after'],
+                    'summary_plots': summary_plots,
+                    'percentagemap_plots': percentagemap_plots,
                     'dirname': weblog_dir})
 
         return ctx
+
+    def flags_for_result(self, result, context):
+        ms = context.observing_run.get_ms(result.inputs['vis'])
+        summaries = result.summaries
+
+        by_antenna = self.flags_by_antenna(summaries)
+        by_spw = self.flags_by_spw(summaries)
+        by_field = self.flags_by_field(summaries)
+
+        return {ms.basename: {'by_antenna': by_antenna, 'by_spw': by_spw, 'by_field': by_field}}
+
+    def flags_by_antenna(self, summaries):
+        total = collections.defaultdict(dict)
+        for summary in summaries:
+            for ant_id in summary['antenna']:
+                total[summary['name']][ant_id] = FlagTotal(
+                    summary['antenna'][ant_id]['flagged'], summary['antenna'][ant_id]['total'])
+        return total
+
+    def flags_by_spw(self, summaries):
+        total = collections.defaultdict(dict)
+        for summary in summaries:
+            for spw_id in summary['spw']:
+                total[summary['name']][spw_id] = FlagTotal(
+                    summary['spw'][spw_id]['flagged'], summary['spw'][spw_id]['total'])
+        return total
+
+    def flags_by_field(self, summaries):
+        total = collections.defaultdict(dict)
+        for summary in summaries:
+            for field_id in summary['field']:
+                total[summary['name']][field_id] = FlagTotal(
+                    summary['field'][field_id]['flagged'], summary['field'][field_id]['total'])
+        return total

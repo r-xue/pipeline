@@ -38,7 +38,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
-    hm_weighting = vdp.VisDependentProperty(default='briggs')
+    hm_weighting = vdp.VisDependentProperty(default=None)
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
@@ -314,6 +314,7 @@ class CleanTaskFactory(object):
             'parallel': parallel,
             'hm_perchanweightdensity': inputs.hm_perchanweightdensity,
             'hm_npixels': inputs.hm_npixels,
+            'restoringbeam': image_heuristics.restoringbeam(),
         })
 
         if 'hm_nsigma' not in task_args:

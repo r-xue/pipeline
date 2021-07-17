@@ -385,3 +385,19 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
     def intent(self):
         return 'TARGET'
+
+
+    def weighting(self, specmode: str) -> str:
+        """Determine the weighting scheme."""
+        if specmode in ('mfs', 'cont'):
+            return 'briggs'
+        else:
+            return 'briggsbwtaper'
+
+    def perchanweightdensity(self, specmode: str) -> bool:
+        """Determine the perchanweightdensity parameter."""
+        if specmode in ('mfs', 'cont'):
+            return False
+        else:
+            return True
+

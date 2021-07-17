@@ -57,14 +57,14 @@ class ResultBase(object):
                   ('SpW', self.spw),
                   ('Pol', self.pol),
                   ('Ant', self.ant),
+                  ('Scan', self.scan),
                   ('Time', tstring)]
         return ' '.join('%s:%s' % (k) for k in fields if k[1] is not None)
 
 
 class ImageResult(ResultBase):
-    def __init__(self, filename, data, datatype, axes, flag=None, nodata=None,
-                 intent=None, field_id=None, field_name=None, spw=None,
-                 pol=None, ant=None, units=None, time=None):
+    def __init__(self, filename, data, datatype, axes, flag=None, nodata=None, intent=None, field_id=None,
+                 field_name=None, spw=None, pol=None, ant=None, units=None, scan=None, time=None):
         self.filename = filename
         self.data = data.copy()
         self.axes = axes
@@ -90,6 +90,7 @@ class ImageResult(ResultBase):
         self.pol = pol
         self.ant = ant
         self.units = units
+        self.scan = scan
         self.time = time
 
         self.children = {}
@@ -104,11 +105,9 @@ class ImageResult(ResultBase):
 
 
 class SpectrumResult(ResultBase):
-    def __init__(self, data, datatype, data_mad=None, axis=None, flag=None,
-                 nodata=None, noisychannels=None, filename=None,
-                 intent=None, field_id=None, field_name=None, spw=None,
-                 pol=None, ant=None,
-                 units=None, time=None, normalise=False):
+    def __init__(self, data, datatype, data_mad=None, axis=None, flag=None, nodata=None, noisychannels=None,
+                 filename=None, intent=None, field_id=None, field_name=None, spw=None, pol=None, ant=None, units=None,
+                 scan=None, time=None, normalise=False):
         self.filename = filename
 
         if flag is None:
@@ -158,6 +157,7 @@ class SpectrumResult(ResultBase):
         self._field_name = field_name
         self.pol = pol
         self.spw = spw
+        self.scan = scan
         self.time = time
         self.units = units
 

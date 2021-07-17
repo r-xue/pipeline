@@ -14,6 +14,7 @@ import numpy
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
+import pipeline.infrastructure.utils as utils
 from . import casa_tools
 from . import logging
 
@@ -181,6 +182,19 @@ class MeasurementSetReader(object):
                                   'Q': '0.7cm (Q)'}
 
                 spw.band = EVLA_band_dict[EVLA_band]
+
+    @staticmethod
+    def add_spectralspec_spwmap(ms):
+        ms.spectralspec_spwmap = utils.get_spectralspec_to_spwid_map(ms.spectral_windows)
+
+    @staticmethod
+    def add_spectralspec_to_spws(ms):
+        # For ALMA, extract spectral spec from spw name.
+        for spw in ms.spectral_windows:
+            if 'ALMA' in spw.name:
+                i = spw.name.find('#')
+                if i != -1:
+                    spw.spectralspec = spw.name[:i]
 
     @staticmethod
     def link_intents_to_spws(msmd, ms):
@@ -367,7 +381,12 @@ class MeasurementSetReader(object):
 
             (observer, project_id, schedblock_id, execblock_id) = ObservationTable.get_project_info(msmd)
 
+        # Update spectral windows in ms with band and spectralspec.
         MeasurementSetReader.add_band_to_spws(ms)
+        MeasurementSetReader.add_spectralspec_to_spws(ms)
+
+        # Populate mapping of spectralspecs to spws.
+        MeasurementSetReader.add_spectralspec_spwmap(ms)
 
         # work around NumPy bug with empty strings
         # http://projects.scipy.org/numpy/ticket/1239
@@ -448,6 +467,7 @@ class SpectralWindowTable(object):
             else:
                 transitions = ['Unknown']
 
+            # Create simple name for spectral window if none was provided.
             if spw_name in [None, '']:
                 spw_name = 'spw_%s' % str(i)
 

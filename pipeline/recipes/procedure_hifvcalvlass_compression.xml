@@ -149,7 +149,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_fluxboot2</Command>
+        <Command xmlns="">hifv_fluxboot</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">fitorder</Keyword>
@@ -215,6 +215,12 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_fixpointing</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

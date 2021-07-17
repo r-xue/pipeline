@@ -9,13 +9,13 @@ import os.path
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
-from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from .resultobjects import GfluxscaleflagResults
@@ -316,7 +316,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         # boil it down to just the valid spws for these fields and request
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
+        for spectral_spec, tuning_spw_ids in utils.get_spectralspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 

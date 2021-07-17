@@ -228,13 +228,19 @@ class PipelineManifest(object):
         eltree.SubElement(ous, "piperequest", name=ppr_file)
 
     @staticmethod
-    def add_images(ous, imagelist, imtype):
+    def add_images(ous, imagelist, imtype, extra_attributes_list=None):
         """
         Add a list of images to the OUS element. Note that this does not have
         to be an ous element, e.d. an asdm element will do
         """
-        for image in imagelist:
-            eltree.SubElement(ous, "image", name=image, imtype=imtype)
+        for i, image in enumerate(imagelist):
+            # "manualstring" is a special attribute requested in PIPE-1105 to
+            # distinguish pipeline products from manually reduced ones. For
+            # pipeline runs "manualstring" is always "N/A".
+            if extra_attributes_list is None:
+                eltree.SubElement(ous, "image", name=image, imtype=imtype, manualstring="N/A")
+            else:
+                eltree.SubElement(ous, "image", name=image, imtype=imtype, manualstring="N/A", **extra_attributes_list[i])
 
     @staticmethod
     def add_pipescript(ous, pipescript):
