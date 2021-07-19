@@ -24,6 +24,9 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
+        LOG.info('ctx = {}'.format(ctx))
+        LOG.info('context = {}'.format(context))
+        LOG.info('results = {}'.format(results))
         # whether or not virtual spw id handling is necessary
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         sorted_fields = sdutils.sort_fields(context)
@@ -33,17 +36,30 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
 
         cqa = casa_tools.quanta
         plots = []
+        image_rms_reps = []
+        image_rms_others = []
         image_rms = []
         for r in results:
+            LOG.info('r = {}'.format(r))
             if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
                 msid_list = r.outcome['file_index']
                 imagemode = r.outcome['imagemode']
+                LOG.info('image_item = {}'.format(image_item))
+                LOG.info('msid_list = {}'.format(msid_list))
+                LOG.info('imagemode = {}'.format(imagemode))
                 v_spwid = image_item.spwlist
                 mses = context.observing_run.measurement_sets
                 spwid = [context.observing_run.virtual2real_spw_id(s, mses[i]) for s, i in zip(v_spwid, msid_list)]
                 ref_ms = mses[msid_list[0]]
                 ref_spw = spwid[0]
+                LOG.info('v_spwid = {}'.format(v_spwid))
+                LOG.info('mses = {}'.format(mses))
+                LOG.info('spwid = {}'.format(spwid))
+                LOG.info('ref_ms = {}'.format(ref_ms))
+                LOG.info('ref_spw = {}'.format(ref_spw))
+                #rep = ref_ms.representative_target[0]
+                LOG.info('ref_ms.representative_target[0] = {}'.format(ref_ms.representative_target[0]))
                 spw_type = 'TP' if imagemode.upper() == 'AMPCAL' else ref_ms.spectral_windows[ref_spw].type
                 task_cls = display.SDImageDisplayFactory(spw_type)
                 inputs = task_cls.Inputs(context, result=r)
@@ -52,16 +68,35 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 # RMS of combined image
                 if r.sensitivity_info is not None:
                     rms_info = r.sensitivity_info
+                    LOG.info('rms_info = {}'.format(rms_info))
                     sensitivity = rms_info.sensitivity
+                    LOG.info('sensitivity = {}'.format(sensitivity))
                     theoretical_rms = r.theoretical_rms['sensitivity']
+                    LOG.info('theoretical_rms = {}'.format(theoretical_rms))
                     trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
+                    LOG.info('trms = {}'.format(trms))
                     icon = '<span class="glyphicon glyphicon-ok"></span>' if rms_info.representative else ''
-                    tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
-                                    cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
-                                    trms, cqa.tos(sensitivity['sensitivity']))
-                    image_rms.append(tr)
+                    LOG.info('icon = {}'.format(icon))
+                    if ref_ms.representative_target[0] is not None:
+                        tr_rep = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
+                                        cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
+                                        trms, cqa.tos(sensitivity['sensitivity']))
+                        LOG.info('tr_rep = {}'.format(tr_rep))
+                        image_rms.append(tr_rep)
+                        LOG.info('image_rms = {}'.format(image_rms))
+                    else:
+                        tr_other = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
+                                        cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
+                                        trms, cqa.tos(sensitivity['sensitivity']))
+                        LOG.info('tr_other = {}'.format(tr_other))
+                        image_rms_others.append(tr_other)                    
+                        LOG.info('image_rms_others = {}'.format(image_rms_others))
+                    if len(image_rms) > 0 and len(image_rms_others) > 0:
+                        image_rms.extend(image_rms_others)
+                        LOG.info('image_rms = {}'.format(image_rms))
 
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
+        LOG.info('rms_table = {}'.format(rms_table))
 
         map_types = {'sparsemap': {'type': 'sd_sparse_map',
                                    'plot_title': 'Sparse Profile Map'},
