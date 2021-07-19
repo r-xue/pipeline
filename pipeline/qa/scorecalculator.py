@@ -2947,9 +2947,18 @@ def score_fluxservice(result):
                 measurements = setjy_result.measurements
                 for measurement in measurements.items():
                     try:
-                        age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
-                        if int(abs(age)) > 14:
-                            agecounter = agecounter + 1
+                        fieldid = measurement[0]
+                        mm = result.mses[0]
+                        fieldobjs = mm.get_fields(field_id=fieldid)
+                        intentlist = []
+                        for fieldobj in fieldobjs:
+                            intentlist.append(fieldobj.intents)
+
+                        # PIPE-1124.  Only determine QA age scoring if 'AMPLITUDE' intent is present for a source.
+                        if 'AMPLTIUDE' in intentlist:
+                            age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
+                            if int(abs(age)) > 14:
+                                agecounter = agecounter + 1
                     except IndexError:
                         LOG.debug("Skip since there is no age present")
 
