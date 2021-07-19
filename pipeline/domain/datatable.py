@@ -35,7 +35,6 @@ import numpy
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import absolute_path
-from ..domain import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -156,7 +155,7 @@ class DataTableIndexer(object):
     Map between serial indices and per-MS row indices.
 
     DataTableIndexer is responsible for mapping between classical
-    (serial) row indices (unique row IDs thoughtout all origin MSes)
+    (serial) row indices (unique row IDs throughout all origin MSes)
     and per-MS row indices.
     """
     @property
@@ -176,7 +175,7 @@ class DataTableIndexer(object):
             context: Pipeline context
         """
         self.context = context
-        self.origin_mses = [ms for ms in self.context.observing_run.measurement_sets \
+        self.origin_mses = [ms for ms in self.context.observing_run.measurement_sets
                             if ms.name == ms.origin_ms]
         self.nrow_per_ms = []
         for origin_ms in self.origin_mses:

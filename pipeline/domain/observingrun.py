@@ -127,12 +127,12 @@ class ObservingRun(object):
             dtypes: Search order of DataType. The search starts with the
                 first DataType in the list and fallbacks to another DataType
                 in the list only if no MS is found with the searched DataType.
-                The search order of DataType is in the other of elements in
+                The search order of DataType is in the order of elements in
                 list. Search stops at the first DataType with which at least
                 one MS is found.
             msonly: If True, return a list of MS domain object only.
 
-        Retruns:
+        Returns:
             When msonly is True, a list of MeasurementSet domain objects of
             a matching DataType is returned.
             Otherwise, a tuple of an ordered dictionary and a matched DataType

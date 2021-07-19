@@ -25,7 +25,7 @@ class Field(object):
             this field
         flux_densities: A list of unique flux measurments from setjy
         data_column: a dictionary of data type (key) and data column name
-            (value) conbination
+            (value) combination
     """
 
     def __init__(self, field_id: int, name: str, source_id: int,

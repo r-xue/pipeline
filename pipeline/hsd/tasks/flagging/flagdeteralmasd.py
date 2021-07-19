@@ -337,7 +337,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         return flag_cmds
 
 
-# ## Tier-0 parallelization
+### Tier-0 parallelization
 class HpcFlagDeterALMASingleDishInputs(FlagDeterALMASingleDishInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()

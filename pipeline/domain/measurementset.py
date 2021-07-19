@@ -36,10 +36,10 @@ class MeasurementSet(object):
         filesize: Disk size of MS
         representative_target: A tuple of the name of representative source,
             frequency and bandwidth.
-        representative_window: A representative spwctral window name
+        representative_window: A representative spectral window name
         science_goals: A science goal information consists of min/max
             acceptable angular resolution, max allowed beam ratio, sensitivity,
-            dyamic range and SB name.
+            dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
         spectralspec_spwmap: SpectralSpec mapping
@@ -53,7 +53,7 @@ class MeasurementSet(object):
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
         is_imaging_ms: If True, the MS is for imaging (interferometry only)
-        origin_ms: A path to the first generation MeasurementSet form which
+        origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
     """
 
@@ -74,7 +74,7 @@ class MeasurementSet(object):
         self.filesize: measures.FileSize = self._calc_filesize()
         self.representative_target: Tuple[Optional[str], Optional[dict],
                                           Optional[dict]] = (None, None, None)
-        self.representative_window: Optiona[str] = None
+        self.representative_window: Optional[str] = None
         self.science_goals: dict = {}
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
@@ -1166,7 +1166,7 @@ class MeasurementSet(object):
 
         Args:
             dtype: data type to set
-            column: name of colum in MS associated with the data type
+            column: name of column in MS associated with the data type
             spw: spectral window selection string
             field: field selection string
             overwrite: if True existing data colum is overwritten by the new
@@ -1174,17 +1174,17 @@ class MeasurementSet(object):
                 column, the function raises ValueError.
 
         Raises:
-            ValueError: An error raised when the column does not exists
+            ValueError: An error raised when the column does not exist
                 or the type is already associated with a column and would not
                 be overwritten.
         """
-        # Check existance of the column
+        # Check existence of the column
         with casa_tools.TableReader(self.name) as table:
             cols = table.colnames()
         if column not in cols:
             raise ValueError('Column {} does not exists in {}'.format(column, self.basename))
         if spw is None and field is None: # Update MS domain object
-            if not overwrite and dtype in self.data_column.keys():
+            if not overwrite and dtype in self.data_column:
                 raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
@@ -1204,7 +1204,7 @@ class MeasurementSet(object):
 
     def get_data_column(self, dtype: DataType) -> Optional[str]:
         """
-        Retun columns name associated with a DataType in MS domain object.
+        Retun a column name associated with a DataType in MS domain object.
 
         Args:
             dtype: DataType to fetch column name for

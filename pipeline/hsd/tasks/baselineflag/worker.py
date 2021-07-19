@@ -89,7 +89,7 @@ class BLFlagTableContainer(object):
         return self.tb1.name()
 
     @property
-    def blvis(self)-> str:
+    def blvis(self)-> Optional[str]:
         """Return a name of baselined MS."""
         if self.tb2 is None:
             return None
@@ -109,6 +109,10 @@ def open_cal_bl_tables(
     Args:
         ms: MS domain object of MS before baseline subtraction
         bl_ms: MS domain object of MS after baseline subtraction
+
+    Yields:
+        BLFlagTableContainer instance that holds table tool instances
+        of given ms and bl_ms.
     """
     tb1 = casa_tools._logging_table_cls()
     if bl_ms is not None:

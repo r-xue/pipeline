@@ -195,7 +195,7 @@ class SpectralWindow(object):
         channels: Frequency information of each channel in spectral window,
             i.e.,, frequencies, channel width, effective band width.
         data_column: a dictionary of data type (key) and data column name
-            (value) conbination
+            (value) combination
         freq_lo: A list of LO frequencies
         intents: the observing intents that have been observed using this
             spectral window

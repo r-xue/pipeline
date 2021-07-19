@@ -63,7 +63,6 @@ import inspect
 import numbers
 import os
 import pprint
-from typing import List
 
 from pipeline.domain import DataType
 
