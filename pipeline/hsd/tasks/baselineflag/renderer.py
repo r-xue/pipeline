@@ -1,43 +1,47 @@
-"""
-Created on Nov 9, 2016
-
-@author: kana
-"""
+"""Renderer hsd_blflag."""
 import os
 import collections
-
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.filenamer as filenamer
-import pipeline.infrastructure.utils as utils
-from ..common import utils as sdutils
-
 from typing import Dict, List, Tuple
+
+from mako.runtime import Context as makoContext
+
+import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.infrastructure import Context
+import pipeline.infrastructure.filenamer as filenamer
+import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.logging as logging
+from pipeline.infrastructure.renderer.logger import Plot
 from pipeline.infrastructure.basetask import ResultsList
 from .baselineflag import SDBLFlagResults
-from mako.runtime import Context as makoContext
+from ..common import utils as sdutils
+import pipeline.infrastructure.utils as utils
+
 
 LOG = logging.get_logger(__name__)
 
 
 class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    """
-    The renderer class for baselineflag.
-    """
-    def __init__(self, uri='hsd_blflag.mako',
-                 description='Flag data by Tsys and statistics of spectra',
-                 always_rerender=False):
+    """The renderer class for baselineflag."""
+
+    def __init__( self, uri:str = 'hsd_blflag.mako',
+                  description:str = 'Flag data by Tsys and statistics of spectra',
+                  always_rerender:bool = False):
         """
-        Constructor
+        Construct T2_4MDetailsBLFlagRenderer instance.
+
+        Args:
+            uri             : mako template file 
+            description     : description string
+            always_rerender : True if always rerender, False if not
+        Returns:
+            (none)
         """
         super(T2_4MDetailsBLFlagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx:makoContext, context:Context, result:SDBLFlagResults):
         """
-        update mako context
+        Update mako context.
 
         Args:
             ctx:     mako context
@@ -90,17 +94,16 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
-    """
-    Renderer class for Flag Statistics
-    """
-    def __init__( self, context:Context, result:SDBLFlagResults, plots ):
+    """Renderer class for Flag Statistics."""
+
+    def __init__( self, context:Context, result:SDBLFlagResults, plots:List[Plot] ):
         """
-        constructor
+        Construct SDBLFlagStatisticsPlotRenderer instance.
 
         Args:
             context : pipeline Context
             result  : SDBLFlagResults
-            plots   : plot objects
+            plots   : list of plot objects
         Returns:
             (none)
         """
@@ -110,9 +113,9 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
         outfile = filenamer.sanitize( filename.replace( " ", "_") )
         super(SDBLFlagStatisticsPlotRenderer, self ).__init__( uri, context, result, plots, title, outfile )
 
-    def update_json_dict(self, d, plot):
+    def update_json_dict( self, d:Dict, plot:Plot ):
         """
-        Update json dict to add new filters
+        Update json dict to add new filters.
 
         Args:
             d    : Json dict for plot    
@@ -125,7 +128,7 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
 
 def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
     """
-    Accumulate flag per field, spw from the output of flagdata to a dictionary
+    Accumulate flag per field, spw from the output of flagdata to a dictionary.
     
     Args:
         context: pipeline context
@@ -179,7 +182,7 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
 
 def make_summary_table_per_eb( accum_flag:Dict, subpages:Dict ) -> Tuple[List[str], List[Dict]]:
     """
-    make summary table data fpr flagsummary per EB
+    Make summary table data fpr flagsummary per EB.
     
     Inputs:
         accum_flag : dictionary of acumulated flags

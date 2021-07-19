@@ -20,8 +20,8 @@ SELECTORS = ['vis', 'type', 'spw', 'ant', 'field', 'pol']
         % endif
 		Field: ${plot.parameters['field']}<br>
 		Antenna: ${plot.parameters['ant']}<br>
-		Spectral Window: ${plot.parameters['spw']}
-        Polarization: ${plot.parameters['pol']}
+		Spectral Window: ${plot.parameters['spw']}<br>
+        Polarization: ${plot.parameters['pol']}<br>
         ${plot.parameters['type']}
 	</%def>
 

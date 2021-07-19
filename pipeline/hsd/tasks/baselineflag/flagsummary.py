@@ -1,3 +1,4 @@
+"""Class SDBLFlagSummary."""
 import copy
 import os
 import time
@@ -7,9 +8,10 @@ import numpy as np
 
 from typing import Dict, List, Optional, Tuple
 
+from pipeline.infrastructure import Context
+from pipeline.domain import DataTable, MeasurementSet
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from pipeline.domain import DataTable, MeasurementSet
 
 from .SDFlagPlotter import SDFlagPlotter
 from .worker import _get_permanent_flag_summary, _get_iteration
@@ -22,12 +24,26 @@ LOG = infrastructure.get_logger(__name__)
 class SDBLFlagSummary(object):
     """
     A class of single dish flagging task.
+
     This class defines per spwid flagging operation.
     """
-    def __init__(self, context, ms, antid_list, fieldid_list,
-                 spwid_list, pols_list, thresholds, flagRule):
+
+    def __init__( self, context:Context, ms:MeasurementSet, antid_list:List[int], fieldid_list:List[int],
+                  spwid_list:List[int], pols_list:List[str], thresholds:List[Dict], flagRule:Dict ):
         """
-        Constructor of worker class
+        Construct SDBLFlagSummary instance.
+
+        Args:
+            context      : pipeline Context
+            ms           : Measurement Set
+            antid_list   : list of antenna ID
+            fieldid_list : list of field ID
+            spwid_list   : list of SpW ID
+            pols_list    : list of pols
+            thresholds   : list of threshold
+            flagRule     : FlagRule
+        Returns:
+            (none)
         """
         self.context = context
         self.ms = ms
@@ -100,17 +116,13 @@ class SDBLFlagSummary(object):
             time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
                                              ms=ms, field_id=fieldid)
             # time_gap[0]: PosGap, time_gap[1]: TimeGap
-            
+
             for pol in pollist:
                 ddobj = ms.get_data_description(spw=spwid)
                 polid = ddobj.get_polarization_id(pol)
                 # generate summary plot
                 FigFileRoot = ("FlagStat_%s_ant%d_field%d_spw%d_pol%d_iter%d" %
                                (asdm, antid, fieldid, spwid, polid, iteration))
-                # moved outside pol loop
-                # time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
-                #                                 ms=ms, field_id=fieldid)
-                ## time_gap[0]: PosGap, time_gap[1]: TimeGap
                 for i in range(len(thresholds)):
                     thres = thresholds[i]
                     if (thres['msname'] == ms.basename and thres['antenna'] == antid and
@@ -145,7 +157,7 @@ class SDBLFlagSummary(object):
                                         'vis' : self.ms.name,
                                         'type' : plot['type'],
                                         'ant' : ant_name,
-                                        'spw' : spwid, 
+                                        'spw' : spwid,
                                         'pol' : pol,
                                         'field' : field_name } )
 
@@ -153,8 +165,8 @@ class SDBLFlagSummary(object):
                 del FlagRule_local, NPp_dict
 
                 # create html file with summary table
-                htmlName = self.create_summary_table( self.ms, datatable, polid, is_baselined, plots, 
-                                                      dt_idx, flagRule, FlaggedRows, FlaggedRowsCategory, 
+                htmlName = self.create_summary_table( self.ms, datatable, polid, is_baselined, plots,
+                                                      dt_idx, flagRule, FlaggedRows, FlaggedRowsCategory,
                                                       FigFileDir, FigFileRoot )
 
                 # show flags on LOG
@@ -175,8 +187,7 @@ class SDBLFlagSummary(object):
                                     'nrow': len(dt_idx), 'nflags': nflags,
                                     'nflags_list': nflags_list,
                                     'baselined': is_baselined})
-
-            flagplotter = None
+                flagplotter = None
 
         end_time = time.time()
         LOG.info('PROFILE execute: elapsed time is %s sec'%(end_time-start_time))
@@ -186,12 +197,12 @@ class SDBLFlagSummary(object):
 
     def pack_flags( self, datatable:DataTable, polid:int, ids, FlagRule_local:Dict ) -> Tuple[ List[int], Dict, List[int], Dict ]:
         """
-        pack flag data into data sets
+        Pack flag data into data sets.
 
         Args:
             datatable      : DataTable
             polid          : polarization ID
-            ids            : row numbers       
+            ids            : row numbers
             FlagRule_local : FlagRule modified for local use
         Returns:
             FlaggedRows         : flagged rows
@@ -211,7 +222,7 @@ class SDBLFlagSummary(object):
 
         NPpdata = {}
         NPpflag = {}
-        for key in [ 'TsysFlag', 'OnlineFlag', 
+        for key in [ 'TsysFlag', 'OnlineFlag',
                      'RmsPostFitFlag', 'RmsPreFitFlag',
                      'RunMeanPostFitFlag', 'RunMeanPreFitFlag',
                      'RmsExpectedPostFitFlag', 'RmsExpectedPreFitFlag' ]:
@@ -288,7 +299,7 @@ class SDBLFlagSummary(object):
             if FlagRule_local['RmsExpectedPostFitFlag']['isActive'] and tFLAG[5] == 0:
                 FlaggedRowsCategory['RmsExpectedPostFitFlag'].append(row)
         # data store finished
-        
+
         NPp_dict = {
             'data' : NPpdata,
             'flag' : NPpflag,
@@ -301,10 +312,10 @@ class SDBLFlagSummary(object):
 
     def show_flags( self, ids:List[int], is_baselined:bool, FlaggedRows:List[int], FlaggedRowsCategory:Dict ):
         """
-        Output flag statistics to LOG
-        
+        Output flag statistics to LOG.
+
         Args:
-            ids                 : row numbers       
+            ids                 : row numbers
             is_baselined        : True if baselined, Fause if not
             FlaggedRows         : flagged rows
             FlaggedRowsCategory : flagged rows by category
@@ -362,8 +373,8 @@ class SDBLFlagSummary(object):
 
     def create_summary_data( self, FlaggedRows:List[int], FlaggedRowsCategory:Dict ) -> Dict:
         """
-        Count flagged rows for each flagging reason
-        
+        Count flagged rows for each flagging reason.
+
         Args:
             FlaggedRows         : flagged rows
             FlaggedRowsCategory : flagged rows by category
@@ -383,23 +394,23 @@ class SDBLFlagSummary(object):
         flag_nums['RmsExpectedPostFitFlag'] = len( FlaggedRowsCategory['RmsExpectedPostFitFlag'] )
         flag_nums['RmsExpectedPreFitFlag']  = len( FlaggedRowsCategory['RmsExpectedPreFitFlag'] )
 
-        # added following the discussion 
+        # added following the discussion
         total_additional = list(set(
             FlaggedRowsCategory['TsysFlag']
             + FlaggedRowsCategory['RmsPostFitFlag'] +FlaggedRowsCategory['RmsPreFitFlag']
-            + FlaggedRowsCategory['RunMeanPostFitFlag'] + FlaggedRowsCategory['RunMeanPreFitFlag'] 
-            + FlaggedRowsCategory['RmsExpectedPostFitFlag'] + FlaggedRowsCategory['RmsExpectedPreFitFlag'] 
+            + FlaggedRowsCategory['RunMeanPostFitFlag'] + FlaggedRowsCategory['RunMeanPreFitFlag']
+            + FlaggedRowsCategory['RmsExpectedPostFitFlag'] + FlaggedRowsCategory['RmsExpectedPreFitFlag']
         ))
 
         return flag_nums
 
 
-    def create_summary_table( self, msobj:MeasurementSet, datatable:DataTable, polid:int, is_baselined:bool, 
-                              plots:List[str], ids:List[int], 
-                              FlagRule:Dict, FlaggedRows:List[int], FlaggedRowsCategory:Dict, 
+    def create_summary_table( self, msobj:MeasurementSet, datatable:DataTable, polid:int, is_baselined:bool,
+                              plots:List[str], ids:List[int],
+                              FlagRule:Dict, FlaggedRows:List[int], FlaggedRowsCategory:Dict,
                               FigFileDir:Optional[str], FigFileRoot:str ) -> str:
         """
-        Create summary table for detail page
+        Create summary table for detail page.
 
         Args:
             msobj               : Measurement Set Object
@@ -478,7 +489,7 @@ class SDBLFlagSummary(object):
 
     def _format_table_row_html( self, label:str, isactive:bool, threshold:str, nflag:int, ntotal:int ) -> str:
         """
-        Format the html string for table row for "Flag by Reason"
+        Format the html string for table row for "Flag by Reason".
 
         Args:
             label     : label sring
@@ -497,4 +508,4 @@ class SDBLFlagSummary(object):
         html_str += "<th>{:.1f}</th>".format(100.0*nflag/ntotal if valid_flag else "N/A")
         html_str += '</tr>'
 
-        return html_str 
+        return html_str

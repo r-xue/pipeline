@@ -374,10 +374,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                    name='after')
         stats_after = self._executor.execute(flagdata_summary_job)
 
-###        LOG.info( "###@@ baselinelag.py: plots={}".format(plots))
         outcome = {'flagdata_summary': [stats_before, stats_after],
                    'summary': flagResult,
-                   'plots': plots }                                      #### ADDED
+                   'plots': plots }
         results = SDBLFlagResults(task=self.__class__,
                                   success=True,
                                   outcome=outcome)
