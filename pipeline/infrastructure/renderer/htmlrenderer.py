@@ -625,8 +625,8 @@ class T1_3MRenderer(RendererBase):
             tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
         # Update flag table (search from the last to the first task)
+        flag_update_tasks = ['applycal', 'hsd_blflag']
         for result in context.results[-1::-1]:
-            flag_update_tasks = ['applycal', 'hsd_blflag']
             task_description = get_task_description(result, context)
             update_flag_table = any([t in task_description for t in flag_update_tasks])
             if update_flag_table:
