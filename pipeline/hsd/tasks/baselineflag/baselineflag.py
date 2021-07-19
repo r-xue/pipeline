@@ -222,7 +222,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
     # The class uses _handle_multiple_vis framework.
     # Method, prepare() is called per MS. Inputs.ms
     # holds "an" MS instance to be processed.
-    ##################################################    
+    ##################################################
     Inputs = SDBLFlagInputs
 
     def prepare(self):
@@ -313,7 +313,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            antenna_id=member.antenna_id,
                                            spw_id=member.spw_id,
                                            pol_ids=pols_list[i])
- 
+
         # per-MS loop
         plots = []
         for msobj, accumulator in registry.items():

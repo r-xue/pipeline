@@ -30,7 +30,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         Construct T2_4MDetailsBLFlagRenderer instance.
 
         Args:
-            uri             : mako template file 
+            uri             : mako template file
             description     : description string
             always_rerender : True if always rerender, False if not
         Returns:
@@ -89,7 +89,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         accum_flag_eb = accumulate_flag_per_eb( context, result )
         table_rows_eb, statistics_subpages = make_summary_table_per_eb( accum_flag_eb, subpages )
         ctx.update({'per_eb_summary_table_rows': table_rows_eb,
-                    'statistics_subpages' : statistics_subpages, 
+                    'statistics_subpages' : statistics_subpages,
                     'dovirtual' : dovirtual } )
 
 
@@ -118,7 +118,7 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
         Update json dict to add new filters.
 
         Args:
-            d    : Json dict for plot    
+            d    : Json dict for plot
             plot : plot object
         Returns:
             (none)
@@ -129,7 +129,7 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
 def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
     """
     Accumulate flag per field, spw from the output of flagdata to a dictionary.
-    
+
     Args:
         context: pipeline context
         results: SDBLFlag Results
@@ -183,15 +183,15 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
 def make_summary_table_per_eb( accum_flag:Dict, subpages:Dict ) -> Tuple[List[str], List[Dict]]:
     """
     Make summary table data fpr flagsummary per EB.
-    
+
     Inputs:
         accum_flag : dictionary of acumulated flags
     Returns:
-        lines for per EB summary table, 
+        lines for per EB summary table,
         List of dictionaries of subplot info
     """
-    FlagSummaryEB_TR = collections.namedtuple( 
-        'FlagSummaryEB', 
+    FlagSummaryEB_TR = collections.namedtuple(
+        'FlagSummaryEB',
         'ms baseline_rms_post baseline_rms_pre running_mean_post running_mean_pre expected_rms_post expected_rms_pre outlier_tsys frac_before frac_additional frac_total' )
 
     rows = []
@@ -199,23 +199,23 @@ def make_summary_table_per_eb( accum_flag:Dict, subpages:Dict ) -> Tuple[List[st
     for ms_name in accum_flag.keys():
         row_total = accum_flag[ms_name]['total']
         frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
-        frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total'] 
+        frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total']
         html = "<A href={} class=\"replace\" data-vis=\"{}\">Plots</A>".format( subpages[ms_name], ms_name )
-        tr = FlagSummaryEB_TR( ms_name, 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total), 
-                               '{:.1f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
+        tr = FlagSummaryEB_TR( ms_name,
+                               '{:.1f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total),
+                               '{:.1f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total),
+                               '{:.1f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total),
+                               '{:.1f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total),
+                               '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total),
+                               '{:.1f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total),
+                               '{:.1f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total),
                                '{:.1f} %'.format( frac_before ),
                                '{:.1f} %'.format( frac_after - frac_before ),
                                '{:.1f} %'.format( frac_after ) )
         rows.append(tr)
         statistics_subpages.append( {'vis': ms_name,
                                      'html' : subpages[ms_name] } )
-    
+
     return utils.merge_td_columns(rows, num_to_merge=0), statistics_subpages
 
 

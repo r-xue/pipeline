@@ -479,8 +479,8 @@ class SDBLFlagSummary(object):
             if not is_baselined: print('ATTENTION: flag by post-fit spectra are skipped due to absence of baseline-fitting in previous stages.\n', file=Out)
             # Plot figures
             print('<HR>\nNote to all the plots below: short green vertical lines indicate position gaps; short cyan vertical lines indicate time gaps\n<HR>', file=Out)
-            for name in plots:
-                print('<img src="./%s">\n<HR>' % (name), file=Out)
+            for plot in plots:
+                print('<img src="./%s">\n<HR>' % (plot['file']), file=Out)
             print('</body>', file=Out)
             Out.close()
 
