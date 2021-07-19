@@ -432,10 +432,9 @@ class InputsContainer(object):
         if scope_is_null:
             if hasattr(current_inputs_cls, 'processing_data_type'):
                 data_types = current_inputs_cls.processing_data_type
-                LOG.info('Fetching MS with {}'.format(data_types))
                 ms_pool = self._context.observing_run.get_measurement_sets_of_type(data_types)
                 for ms in ms_pool:
-                    LOG.info('{}: {}'.format(ms.basename, ms.data_column))
+                    LOG.debug('{}: {}'.format(ms.basename, ms.data_column))
             else:
                 LOG.error('Unable to get processing data type from input class.')
 #                 # note that for ModeInputs this queries whether the ModeInputs is
@@ -444,7 +443,7 @@ class InputsContainer(object):
 #                 ms_pool = self._context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)
                 
             named_args[self._scope_attr] = [ms.name for ms in ms_pool]
-            LOG.info('MS to be processed: {}'.format(named_args[self._scope_attr]))
+            LOG.debug('MS to be processed: {}'.format(named_args[self._scope_attr]))
 
         # multi-vis tasks do not require any further processing
         from . import sessionutils

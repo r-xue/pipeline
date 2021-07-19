@@ -123,6 +123,9 @@ class ObservingRun(object):
         """
         Return a list of MeasurementSet domain object with matching DataType.
 
+        The method returns a list of MSes of the first matching DataType in the
+        list of dtypes.
+
         Args:
             dtypes: Search order of DataType. The search starts with the
                 first DataType in the list and fallbacks to another DataType
@@ -151,9 +154,9 @@ class ObservingRun(object):
             if len(found) > 0:
                 break
         if len(found) > 0:
-            LOG.info('Found {} MSes with type {}'.format(len(found), dtype))
+            LOG.debug('Found {} MSes with type {}'.format(len(found), dtype))
         else:
-            LOG.info('No MSes are found with types {}'.format(dtypes))
+            LOG.debug('No MSes are found with types {}'.format(dtypes))
         if msonly:
             return found
         else:
