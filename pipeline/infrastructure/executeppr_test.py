@@ -13,15 +13,26 @@ test_params = [('uid__A002_target.msXd3e89f_Xc53e', 'uid__A002_target.msXd3e89f_
 
 @pytest.mark.parametrize("visname, expected", test_params)
 def test_sanitize_ms(visname, expected):
-    """Test _sanitize_for_ms() from executeppr
-    """
+    """Test _sanitize_for_ms() from executeppr."""
     assert _sanitize_for_ms(visname) == expected
 
 
-@pytest.fixture
-def example_alma_ppr():
+test_parameter_values = [(r"1,2,3", '1,2,3'),
+                         (r"(1,2,3)", (1, 2, 3)),
+                         (r"[1,2,3]", [1, 2, 3]),
+                         (r"true", True),
+                         (r"False", False),
+                         (r"['','table1.cal']", ['', 'table1.cal']),
+                         (r"['test1.ms','test2.ms']", ['test1.ms', 'test2.ms']),
+                         (r"test1.ms,test2.ms", 'test1.ms,test2.ms'),
+                         (r"&lt;12km", '<12km'),
+                         (r"None", 'None'),
+                         (r"[[0,0,1,1],[0,1,0,1]]", [[0, 0, 1, 1], [0, 1, 0, 1]])]
+
+
+def create_example_alma_ppr(input_parameter_str):
     """Create an example ppr to test task paramater value parsing."""
-    test_xml = """\
+    template_ppr = """\
 <?xml version="1.0" encoding="UTF-8"?>
 <SciPipeRequest xmlns="Alma/pipelinescience/SciPipeRequest"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SciPipeRequest">
@@ -76,62 +87,18 @@ def example_alma_ppr():
             </ProcessingIntents>
             <ProcessingProcedure>
                 <ProcessingCommand>
-                <Command>test_pipe1030</Command>
+                <Command>test_parameter_cast</Command>
                 <ParameterSet>
                     <Parameter>
-                    <Keyword>expect_string</Keyword>
-                    <Value>1,2,3</Value>
+                    <Keyword>parameter</Keyword>
+                    <Value>{:s}</Value>
                     </Parameter>
                     <Parameter>
                     <Keyword>expect_tuple</Keyword>
                     <Value>(1,2,3)</Value>
                     </Parameter>
                 </ParameterSet>
-                </ProcessingCommand>
-                <ProcessingCommand>
-                <Command>test_pipe585</Command>
-                <ParameterSet>
-                    <Parameter>
-                    <Keyword>expect_list</Keyword>
-                    <Value>[1,2,3]</Value>
-                    </Parameter>
-                    <Parameter>
-                    <Keyword>expect_boolean</Keyword>
-                    <Value>true</Value>
-                    </Parameter>
-                </ParameterSet>
-                </ProcessingCommand>
-                <ProcessingCommand>
-                <Command>test_pipe971</Command>
-                <ParameterSet>
-                    <Parameter>
-                    <Keyword>expect_list1</Keyword>
-                    <Value>['test1.ms','test2.ms']</Value>
-                    </Parameter>
-                    <Parameter>
-                    <Keyword>expect_list2</Keyword>
-                    <Value>test1.ms,test2.ms</Value>
-                    </Parameter>
-                </ParameterSet>
-                </ProcessingCommand>
-                <ProcessingCommand>
-                <Command>test_escaping</Command>
-                <ParameterSet>
-                    <Parameter>
-                    <Keyword>expect_string</Keyword>
-                    <Value>&lt;12km</Value>
-                    </Parameter>
-                </ParameterSet>
-                </ProcessingCommand>
-                <ProcessingCommand>
-                <Command>test_none</Command>
-                <ParameterSet>
-                    <Parameter>
-                    <Keyword>expect_string</Keyword>
-                    <Value>None</Value>
-                    </Parameter>
-                </ParameterSet>
-                </ProcessingCommand>                                     
+                </ProcessingCommand>                                    
             </ProcessingProcedure>
             <DataSet>
                 <SchedBlockSet>
@@ -165,18 +132,12 @@ def example_alma_ppr():
     </ResultsProcessing>
 </SciPipeRequest>
 """
-    return StringIO(test_xml)
+    return StringIO(template_ppr.format(input_parameter_str))
 
 
-def test_xmlobjectifier_casttype(example_alma_ppr):
+@pytest.mark.parametrize("input_str, expected_value", test_parameter_values)
+def test_xmlobjectifier_casttype(input_str, expected_value):
     """Test the parameter value paraser from pipeline.external.XmlObjectifier."""
     info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = _getFirstRequest(
-        example_alma_ppr)
-    assert commandsList[0][1]['expect_string'] == '1,2,3'
-    assert commandsList[0][1]['expect_tuple'] == (1, 2, 3)
-    assert commandsList[1][1]['expect_list'] == [1, 2, 3]
-    assert commandsList[1][1]['expect_boolean'] is True
-    assert commandsList[2][1]['expect_list1'] == ['test1.ms', 'test2.ms']
-    assert commandsList[2][1]['expect_list2'] == 'test1.ms,test2.ms'
-    assert commandsList[3][1]['expect_string'] == '<12km'
-    assert commandsList[4][1]['expect_string'] == 'None'
+        create_example_alma_ppr(input_str))
+    assert commandsList[0][1]['parameter'] == expected_value

@@ -2,15 +2,17 @@ import pytest
 
 from .recipereducer import string_to_val
 
-test_params = [('True', True),
-               ('false', 'false'),
-               ('1,2,3', '1,2,3'),
-               ('(1,2,3)', (1, 2, 3)),
-               ('[1,2,3]', [1, 2, 3]),
-               ('None', None),
-               ('none', 'none'),
-               ('>12klambda', '>12klambda'),
-               ('&lt;12km', '&lt;12km')]
+test_params = [(r"True", True),
+               (r"false", 'false'),
+               (r"1,2,3", '1,2,3'),
+               (r"(1,2,3)", (1, 2, 3)),
+               (r"[1,2,3]", [1, 2, 3]),
+               (r"None", None),
+               (r"none", 'none'),
+               (r"'none'", 'none'),
+               (r">12klambda", '>12klambda'),
+               (r"&lt;12km", '&lt;12km'),
+               (r"[[0,0,1,1],[0,1,0,1]]", [[0, 0, 1, 1], [0, 1, 0, 1]])]
 
 
 @pytest.mark.parametrize("input_str, expected_value", test_params)
