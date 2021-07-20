@@ -91,7 +91,7 @@ class SDFlagPlotter(object):
         """
         Create Summary plots.
 
-        Vars:
+        Args:
             FigFileRoot : basename of figure files
         Returns:
             List of dictonaries of plot data
