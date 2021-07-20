@@ -103,10 +103,13 @@ def make_flux_table(context, results):
 
                 # Get the intent for each 'field/spw' combination
                 spw_intents = ms_for_result.get_spectral_window(measurement.spw_id).intents
-                field_spw_intents = field.intents.intersection(spw_intents)
-                field_spw_filtered_intents = ", ".join(sorted(field_spw_intents.intersection({'PHASE', 'BANDPASS', 'FLUX', 'CHECK', 'POLARIZATION'}))) # Set of intents to include from PIPE-1006
 
-                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, field_spw_filtered_intents, 
+                # get one spw/field intent
+                scan_intents_list = [scan.intents for scan in ms_for_result.get_scans(field=field.name, spw=measurement.spw_id)]
+                scan_intents = set().union(*scan_intents_list)
+                field_spw_intents = ", ".join(sorted(scan_intents.intersection({'PHASE', 'BANDPASS', 'FLUX', 'CHECK', 'POLARIZATION'}))) # Set of intents to include from PIPE-1006
+
+                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, field_spw_intents, 
                             fluxes['I'], fluxes['Q'], fluxes['U'], fluxes['V'],
                             measurement.spix, age)
                 rows.append(tr)
