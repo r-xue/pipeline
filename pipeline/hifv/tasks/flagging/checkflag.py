@@ -160,9 +160,6 @@ class Checkflag(basetask.StandardTaskTemplate):
                        freqcutoff=3.0, timecutoff=4.0, savepars=True,
                        extendflags=False):
 
-        jobs = []
-        jobresults = []
-
         if isinstance(extendflags, bool):
             extendflags_rflag = extendflags
             extend_followup = None
@@ -191,15 +188,11 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         job = casa_tasks.flagdata(**task_args)
         result = self._executor.execute(job)
-        jobs.append(job)
-        jobresults.append(result)
 
         if extend_followup is not None:
             job, result = self._do_extendflag(field=field, scan=scan, intent=intent, **extend_followup)
-            jobs.append(job)
-            jobresults.append(result)
 
-        return jobs, jobresults
+        return
 
     def _do_rflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
                   ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
@@ -213,9 +206,9 @@ class Checkflag(basetask.StandardTaskTemplate):
         extendflags: set the "extendflags" plan:
             True/False: extend flags along with the rflag call
             Dictionary: extend flags after the rflag call
+
+        flagbackup=True will only backup the flag version for the first flagdata() call
         """
-        jobs = []
-        jobresults = []
 
         if isinstance(extendflags, bool):
             extendflags_rflag = extendflags
@@ -247,8 +240,6 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             job = casa_tasks.flagdata(**task_args)
             jobresult = self._executor.execute(job)
-            jobs.append(job)
-            jobresults.append(jobresult)
 
             if jobresult is None:
                 LOG.warn("This is likely a dryrun test because 'None' is returned from the rflag threshold calculation!")
@@ -266,18 +257,15 @@ class Checkflag(basetask.StandardTaskTemplate):
                 task_args['timedev'] = ftdev['timedev']
                 task_args['freqdev'] = ftdev['freqdev']
             task_args['action'] = 'apply'
+            task_args['flagbackup'] = False
 
         job = casa_tasks.flagdata(**task_args)
         jobresult = self._executor.execute(job)
-        jobs.append(job)
-        jobresults.append(jobresult)
 
         if isinstance(extendflags, dict):
-            job, jobresult = self._do_extendflag(field=field, scan=scan, intent=intent, **extendflags)
-            jobs.append(job)
-            jobresults.append(jobresult)
+            self._do_extendflag(field=field, scan=scan, intent=intent, **extendflags)
 
-        return jobs, jobresults
+        return
 
     def do_rfi_flag(self):
         """Perform RFI flagging using multiple passes of rflag/tfcrop/extend."""
@@ -286,18 +274,17 @@ class Checkflag(basetask.StandardTaskTemplate):
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
         flagbackup = True
 
-        # set ignore_sedf to True only to maintain the same behavior as with do_*pass()
-        # which could be removed if the vlass-spefici mode is removed in future.
-        if '-vlass' in self.inputs.checkflagmode:
-            ignore_sefd = True
-        else:
-            ignore_sefd = False
+        # set ignore_sedf=True to maintain the same behavior as that of do_*vlasass()
+        ignore_sefd = self.inputs.checkflagmode in ('target-vlass', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging')
+
+        # set calcftdev=True for the single-pass of flagdata(mode='rflag',action='apply'..), as it was before.
+        calcftdev = self.inputs.checkflagmode not in ('semi', '', 'target', 'bpd', 'allcals')
 
         if rflag_standard is not None:
 
             for datacolumn, correlation, scale, extendflags in rflag_standard:
                 if '_' in correlation:
-                    if correlation.split('_')[1] not in self.corr_type_string:
+                    if not (correlation.split('_')[1] in self.corr_type_string or correlation.split('_')[1] == self.corrstring):
                         continue
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
@@ -310,7 +297,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                'datacolumn': datacolumn,
                                'flagbackup': flagbackup,
                                'savepars': False,
-                               'calcftdev': True,
+                               'calcftdev': calcftdev,
                                'useheuristic': True,
                                'ignore_sefd': ignore_sefd,
                                'extendflags': extendflags}
@@ -322,7 +309,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             for datacolumn, correlation, tfcropThreshMultiplier, extendflags in tfcrop_standard:
                 if '_' in correlation:
-                    if correlation.split('_')[1] not in self.corr_type_string:
+                    if not (correlation.split('_')[1] in self.corr_type_string or correlation.split('_')[1] == self.corrstring):
                         continue
                 timecutoff = 4. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
                 freqcutoff = 3. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
@@ -383,10 +370,14 @@ class Checkflag(basetask.StandardTaskTemplate):
             intentselect = '*TARGET*'
 
         # select all calibrators
-        if self.inputs.checkflagmode in ('semi'):
+        if self.inputs.checkflagmode == 'semi':
             fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string
             scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string
             intentselect = ''
+
+        LOG.debug('FieldSelect:  {}'.format(repr(fieldselect)))
+        LOG.debug('ScanSelect:   {}'.format(repr(scanselect)))
+        LOG.debug('IntentSelect: {}'.format(repr(intentselect)))
 
         return fieldselect, scanselect, intentselect
 
@@ -466,7 +457,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'flagneartime': True,
                                  'flagnearfreq': True}
 
-        if self.inputs.checkflagmode in ('target-vla'):
+        if self.inputs.checkflagmode == 'target-vla':
             # PIPE-685/CARS-540: apply three incremental 'rflag' iterations; no tfcrop follows; growflags at the end
             rflag_standard = [('corrected', '', 4.5, True),
                               ('corrected', '', 4.5, True),
@@ -477,7 +468,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'flagneartime': True,
                                  'flagnearfreq': True}
 
-        if self.inputs.checkflagmode in ('target-vlass'):
+        if self.inputs.checkflagmode == 'target-vlass':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
@@ -488,7 +479,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                ('corrected', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
                                ('corrected', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
 
-        if self.inputs.checkflagmode in ('vlass-imaging'):
+        if self.inputs.checkflagmode == 'vlass-imaging':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             rflag_standard = [('data', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
                               ('data', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
@@ -499,7 +490,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                ('data', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
                                ('data', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
 
-        if self.inputs.checkflagmode in ('target'):
+        if self.inputs.checkflagmode == 'target':
             rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 60.}),
                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 60.}),
                               ('corrected', 'ABS_RR', 7.0, {'growtime': 100., 'growfreq': 60.}),
@@ -527,6 +518,10 @@ class Checkflag(basetask.StandardTaskTemplate):
                                      'growaround': True,
                                      'flagneartime': True,
                                      'flagnearfreq': True}
+
+        LOG.debug('rflag_standard:     {}'.format(repr(rflag_standard)))
+        LOG.debug('tfcrop_standard:    {}'.format(repr(tfcrop_standard)))
+        LOG.debug('growflag_standard:  {}'.format(repr(growflag_standard)))
 
         return rflag_standard, tfcrop_standard, growflag_standard
 

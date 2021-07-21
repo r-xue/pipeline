@@ -4,11 +4,10 @@ import copy
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pkg_resources
-
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
+import pkg_resources
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -18,10 +17,10 @@ class RflagDevHeuristic(api.Heuristic):
     see PIPE-685/987
     """
 
-    def __init__(self, ms):
+    def __init__(self, ms, ignore_sefd=False):
         self.vla_sefd = self._get_vla_sefd()
         self.ms = ms
-        self.spw_rms_scale = self._get_spw_rms_scale()
+        self.spw_rms_scale = self._get_spw_rms_scale(ignore_sefd=ignore_sefd)
 
     def calculate(self, rflag_report):
 
@@ -124,8 +123,9 @@ class RflagDevHeuristic(api.Heuristic):
             fields_bbs = np.column_stack((fields, bbs))
             _, fields_bbs_inverse = np.unique(fields_bbs, return_inverse=True, axis=0)
             for idx in np.unique(fields_bbs_inverse):
-                select_mask = np.where(fields_bbs_inverse == idx)
-                devs_med[select_mask] = rms_scale[select_mask]*np.median(devs[select_mask]/rms_scale[select_mask])
+                select_mask = (fields_bbs_inverse == idx) & (devs > 0)
+                if np.any(select_mask):
+                    devs_med[select_mask] = rms_scale[select_mask]*np.median(devs[select_mask]/rms_scale[select_mask])
             devs_modified = np.minimum(devs, devs_med)
             new_report[ftdev] = np.column_stack((fields, spws, devs_modified))
             new_report[ftdev+'_info'] = {'field': fields,
@@ -139,7 +139,7 @@ class RflagDevHeuristic(api.Heuristic):
                                          'devs_modified': devs_modified}
         return new_report
 
-    def _get_spw_rms_scale(self, science_windows_only=True):
+    def _get_spw_rms_scale(self, science_windows_only=True, ignore_sefd=False):
         """[summary]
 
         Args:
@@ -150,7 +150,9 @@ class RflagDevHeuristic(api.Heuristic):
         Returns:
             [type]: [description]
         
-        - The abitary rms scaling factor (spw_rms_scale) is calcualted as SEFD/chanwidth_mhz^0.5
+        By default, the rms scaling factor per spw (spw_rms_scale) is defined as: SEFD_jy/chanwidth_mhz^0.5.
+        If ignore_sefd=True, spw_rms_scale would be simplily as: 1/chanwidth_mhz^0.5. This is equiavelent to the VLASS specific assumption of a uniform SEFD (see PIPE-685/987).
+        Note: spw_rms_scale is only useful in a relative sense when comparing threstical rms from different spws from same scans.
         """
 
         spw_rms_scale = dict()
@@ -161,6 +163,14 @@ class RflagDevHeuristic(api.Heuristic):
             for baseband in baseband_spws[band]:
                 for spwitem in baseband_spws[band][baseband]:
                     for spw_id, spw_info in spwitem.items():
+
+                        chanwidth_mhz = float(spw_info[3].to_units(measures.FrequencyUnits.MEGAHERTZ))
+                        if ignore_sefd:
+                            spw_rms_scale[spw_id] = {'rms_scale': 1./chanwidth_mhz**0.5,
+                                                     'chanwidth_mhz': chanwidth_mhz}
+                            LOG.debug('spw {:>3}  ChanWidth = {:6.2f} MHz'.format(
+                                spw_id, chanwidth_mhz))
+                            continue
 
                         try:
                             sedf_per_band = self.vla_sefd[band]
@@ -184,6 +194,7 @@ class RflagDevHeuristic(api.Heuristic):
                         spw_rms_scale[spw_id] = {'rms_scale': spw_sefd/chanwidth_mhz**0.5,
                                                  'sefd_jy': spw_sefd,
                                                  'chanwidth_mhz': chanwidth_mhz}
-                        LOG.debug('spw {:>3}  SEFD = {:8.2f}  ChanWidth = {:6.2f} MHz'.format(
+                        LOG.debug('spw {:>3}   SEFD = {:8.2f} Jy   ChanWidth = {:6.2f} MHz'.format(
                             spw_id, spw_sefd, chanwidth_mhz))
+
         return spw_rms_scale

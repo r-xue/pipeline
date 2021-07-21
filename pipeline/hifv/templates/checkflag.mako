@@ -7,7 +7,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">RFI Flagging</%block>
 
-<p>Flag possible RFI using rflag and tfcrop; checkflagmode=${result[0].inputs['checkflagmode']}</p>
+<p>Flag possible RFI using rflag and tfcrop; checkflagmode=${repr(result[0].inputs['checkflagmode'])}</p>
 
 
 % if result[0].inputs['checkflagmode'] in ('bpd','allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
