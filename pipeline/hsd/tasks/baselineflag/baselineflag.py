@@ -418,7 +418,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         ignore_keys = ['name', 'type']
         sum_keys = ['flagged', 'total']
         
-        for _, rep_summary in in_stat.items(): # per report loop
+        for rep_summary in in_stat.values(): # per report loop
             for source, source_summary in rep_summary.items(): # per source loop
                 if source in ignore_keys: continue
                 if not source in out_stat: # source names
