@@ -1,4 +1,12 @@
+"""
+Restore task module for NRO data, based on h_restoredata.
+
+The restore data module provides a class for reimporting, reflagging, and
+recalibrating a subset of the ASDMs belonging to a member OUS, using pipeline
+flagging and calibration data products.
+"""
 import os
+from typing import List, Dict
 
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
@@ -14,12 +22,27 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class NRORestoreDataInputs(restoredata.RestoreDataInputs):
+    """NRORestoreDataInputs manages the inputs for the NRORestoreData task."""
+
     reffile = vdp.VisDependentProperty(default='')
     caltable = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, vis=None, caltable=None, reffile=None,
                  products_dir=None, copytoraw=None, rawdata_dir=None,
                  output_dir=None):
+        """
+        Initialise the Inputs, initialising any property values to those given here.
+
+        Args:
+            context: the pipeline Context state object
+            vis: the ASDMs(s) for which data is to be restored
+            caltable: VisDependentProperty object, calibration table data
+            reffile: VisDependentProperty object, a scale file
+            products_dir: the directory of archived pipeline products
+            copytoraw: copy the required data products from products_dir to rawdata_dir
+            rawdata_dir: the raw data directory for ASDM(s) and products
+            output_dir: the working directory for the restored data
+        """
         super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=products_dir,
                                                    copytoraw=copytoraw, rawdata_dir=rawdata_dir,
                                                    output_dir=output_dir)
@@ -29,12 +52,20 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
 
 
 class NRORestoreDataResults(restoredata.RestoreDataResults):
+    """Results object of NRORestoreData."""
 
-    def __init__(self, importdata_results=None, applycal_results=None, ampcal_results=None):
+    def __init__(self, importdata_results=None, applycal_results=None, ampcal_results=None,
+                 flagging_summaries: List[Dict[str, str]] = None):
         """
         Initialise the results objects.
+
+        Args:
+            importdata_results: results of importdata
+            applycal_results: results of applycal
+            ampcal_results:
+            flagging_summaries: summaries of flagdata
         """
-        super(NRORestoreDataResults, self).__init__(importdata_results, applycal_results)
+        super(NRORestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
         self.ampcal_results = ampcal_results
 
     def merge_with_context(self, context):
@@ -80,6 +111,8 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
 
 @task_registry.set_equivalent_casa_task('hsdn_restoredata')
 class NRORestoreData(restoredata.RestoreData):
+    """Restore flagged and calibrated data produced during a previous pipeline run and archived on disk."""
+
     Inputs = NRORestoreDataInputs
 
     def prepare(self):
@@ -93,7 +126,8 @@ class NRORestoreData(restoredata.RestoreData):
         # apply baseline table and produce baseline-subtracted MSs
         # apply final flags for baseline-subtracted MSs
 
-        results = NRORestoreDataResults(results.importdata_results, results.applycal_results, ampcal_results)
+        results = NRORestoreDataResults(results.importdata_results, results.applycal_results, ampcal_results,
+                                        results.flagging_summaries)
         return results
 
     def _do_importasdm(self, sessionlist, vislist):
