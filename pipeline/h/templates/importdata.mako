@@ -71,8 +71,8 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 	    <tr>
 	        <th scope="col" rowspan="2">Measurement Set</th>
 	        <th scope="col" rowspan="2">Field</th>
-	        <th scope="col" rowspan="2">SpW</th>
 	        <th scope="col" rowspan="2">Intents</th>
+	        <th scope="col" rowspan="2">SpW</th>
 	        <th scope="col" colspan="4">Flux Density</th>
 	        <th scope="col" rowspan="2">Spix</th>
 	        <th scope="col" rowspan="2">Age Of Nearest <p>Monitor Point (days)</th>
