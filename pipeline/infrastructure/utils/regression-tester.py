@@ -19,6 +19,7 @@ import pipeline.infrastructure.executevlappr as vlappr
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class PipelineRegression(object):
     """Pipeline regression test class called from pytest."""
 
@@ -198,7 +199,8 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage
     Expected results version:   casa-6.1.1-15-pipeline-2020.1.0.40
     """
     pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
-                            input_dir='pl-unittest', visname='uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms',
+                            input_dir='pl-unittest',
+                            visname='uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/' +
                                             'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.casa-6.1.1-15-pipeline-2020.1.0.40.results.txt'))
 
@@ -213,14 +215,16 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
     Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
     pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
-                            input_dir='pl-regressiontest/uid___A002_X85c183_X36f', visname='uid___A002_X85c183_X36f',
+                            input_dir='pl-regressiontest/uid___A002_X85c183_X36f',
+                            visname='uid___A002_X85c183_X36f',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f/' +
                                             'uid___A002_X85c183_X36f.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
-    
+
     pr.run()
 
+
 def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression():
-    """Run ALMA single-dish restoredata regression on the obseration data of M100.
+    """Run ALMA single-dish restoredata regression on the observation data of M100.
 
     Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f_SPW15_23
@@ -228,12 +232,28 @@ def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression(
     """
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
     pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
-                            input_dir=input_dir, visname='uid___A002_X85c183_X36f_SPW15_23.ms',
+                            input_dir=input_dir,
+                            visname='uid___A002_X85c183_X36f_SPW15_23.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
-                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt')) 
+                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
     shutil.copytree(input_products, './products')
 
     pr.run(ppr='pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/PPR.xml')
+
+
+def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
+    """Run ALMA single-dish cal+image regression for standard nobeyama recipe.
+
+    Recipe name:                procedure_hsdn_calimage
+    Dataset:                    mg2-20170525142607-180419
+    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
+    """
+    pr = PipelineRegression(recipe='procedure_hsdn_calimage.xml',
+                            input_dir='pl-regressiontest/mg2-20170525142607-180419',
+                            visname='mg2-20170525142607-180419.ms',
+                            expectedoutput=('pl-regressiontest/mg2-20170525142607-180419/' +
+                                            'mg2-20170525142607-180419.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+    pr.run()

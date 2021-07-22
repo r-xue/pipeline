@@ -69,7 +69,7 @@ def test_create_averages_from_ms_produces_comparable_corrected_data():
 @skip_if_no_data_repo
 def test_create_averages_from_ms_produces_comparable_sigma():
     """This test checks that the code implemented in PIPE-687 gives equivalent values to
-    those of the old implementation given the chang in the normalization.
+    those of the old implementation given the change in the normalization.
     The test may be deleted in the future once the output is validated.
     The sigma column should be proportional to the old value of sigma.
     """
