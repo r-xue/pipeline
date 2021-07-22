@@ -285,12 +285,15 @@ class Checkflag(basetask.StandardTaskTemplate):
 
     def do_rfi_flag(self):
         """Do RFI flagging using multiple passes of rflag/tfcrop/extend."""
+        
         fieldselect, scanselect, intentselect = self._select_data()
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
         flagbackup = True
+        calcftdev = True
 
-        # set ignore_sedf=True to maintain the same behavior as the deprecated do_*vlass() methods
+        # set ignore_sedf=True/flagbackup=False to maintain the same behavior as the deprecated do_*vlass() methods
         ignore_sefd = self.inputs.checkflagmode in ('target-vlass', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging')
+        flagbackup = self.inputs.checkflagmode not in ('target-vlass', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging')
 
         # set calcftdev=False to turn off the new heuristic for some older modes
         calcftdev = self.inputs.checkflagmode not in ('semi', '', 'target', 'bpd', 'allcals')
