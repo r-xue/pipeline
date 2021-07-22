@@ -48,13 +48,13 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         def get_mean_amplitude(vis, uvrange=None, axis='amplitude', field='', spw=None):
             stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
-                        'useflags': True, 'field':field, 'spw': spw,
+                        'useflags': True, 'field': field, 'spw': spw,
                         'correlation': 'LL,RR'}
             job = casa_tasks.visstat(**stat_arg)
             stats = job.execute(dry_run=False)  # returns stat in meter
 
             # Get means of spectral windows with data in the selected uvrange
-            spws_means = [v['mean'] for (k,v) in stats.items() if numpy.isfinite(v['mean'])]
+            spws_means = [v['mean'] for (k, v) in stats.items() if numpy.isfinite(v['mean'])]
 
             # Determine mean and 95% percentile
             mean = numpy.mean(spws_means)
@@ -71,7 +71,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         #
         qa = casa_tools.quanta
         #
-        LOG.info('Computing uvrange heuristics for field="{:s}", spwsids={:s}'.format(field, ','.join([str(spw) for spw in spwids])))
+        LOG.info('Computing uvrange heuristics for field="{:s}", spwsids={:s}'.format(
+            field, ','.join([str(spw) for spw in spwids])))
 
         # Can it be that more than one visibility (ms file) is used?
         vis = self.vislist[0]
@@ -220,7 +221,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         # Compute new niter
         new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold_vla, residual_robust_rms,
-                                        mask_frac_rad=mask_frac_rad)
+                                             mask_frac_rad=mask_frac_rad)
         # Apply limits
         if new_niter < min_niter:
             LOG.info('niter heuristic: Modified niter %d is smaller than lower limit (%d)' % (new_niter, min_niter))
@@ -272,10 +273,6 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
         """Determine if another tclean iteration is necessary.
 
-        non automasking mode:
-            iteration=0: keep_iteration=True
-            iteration=1: keep_iteration=False
-        
         automasking mode (PIPE-677):
             VLA auto-masking heuristics for TARGET performs two-stage iterations with slightly different auto-multithresh parameters
             iteration=0: keep_iteration=True
@@ -286,11 +283,15 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 stopcode=7 (no mask generated from automask): keep_iteration=False
                 stopcode=others: keep_iteration=True
             iteration>=2: keep_iteration=False
+        
+        other modes:
+            iteration=0: keep_iteration=True
+            iteration=1: keep_iteration=False
         """
         if iteration == 0:
             return True, hm_masking
         elif iteration == 1 and hm_masking == 'auto' and 'TARGET' in intent:
-            if tclean_stopcode in [0, 5, 6, 7]:
+            if tclean_stopcode in [5, 6, 7]:
                 return False, hm_masking
             else:
                 return True, hm_masking
