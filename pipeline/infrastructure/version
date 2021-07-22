@@ -41,6 +41,11 @@ print ("\n");
 sub get_last_branch_tag () {
     my $gitbranch = shift;
     my $branchpattern = qr/^$gitbranch-\d+/;
+    if($gitbranch =~ /(^PIPE-(\d)+)/) {
+       $mungedbranch = $1 ;
+       $branchpattern = qr/$mungedbranch-\d+/;
+       #print ("$branchpattern\n");
+    }
     my $delim="-";
     return get_last_tag($gitbranch,$branchpattern,$delim)
 }
