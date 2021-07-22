@@ -635,8 +635,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
                 # Compute optimal solint.
                 spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-                fieldnamelist = [field.name for field in ms.get_fields(task_arg=inputs.transfer, intent=intent)]
-                exptimes = heuristics.exptimes.get_scan_exptimes(ms, fieldnamelist, intent, spwidlist)
+                exptimes = heuristics.exptimes.get_scan_exptimes(ms, [field], intent, spwidlist)
                 solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             else:
                 # PIPE-1154: when using a phase up spw mapping, ensure that
