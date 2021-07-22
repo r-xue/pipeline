@@ -350,9 +350,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         Returns:
             tuple: (field_select_string, scan_select_string, intent_select_string) 
         """
-        fieldselect = ''
-        scanselect = ''
-        intentselect = ''
+        fieldselect = scanselect = intentselect = ''
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
         # select bpd calibrators
@@ -372,7 +370,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             intentselect = ''
 
         # select targets
-        if self.inputs.checkflagmode in ('target-vla', 'targe-vlass', 'vlass-imaging', 'target'):
+        if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
             fieldids = [field.id for field in ms.get_fields(intent='TARGET')]
             fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
             scanselect = ''
