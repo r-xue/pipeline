@@ -70,10 +70,13 @@ class Checkflag(basetask.StandardTaskTemplate):
         self.tint = ms.get_vla_max_integration_time()
 
         # a list of strings representing polarizations
-        self.corr_type_string = ms.polarizations[0].corr_type_string  
-        
+        self.corr_type_string = ms.polarizations[0].corr_type_string
+
         # a string representing selected polarizations, only parallel hands
-        self.corrstring = ms.get_vla_corrstring()  
+        self.corrstring = ms.get_vla_corrstring()
+
+        # a string representing science spws
+        self.sci_spws = ','.join([str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True)])
 
         summaries = []  # Flagging statistics summaries for VLA QA scoring (CAS-10910/10916/10921)
         plots = {}      # Summary plots
@@ -145,6 +148,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'field': field,
                      'scan': scan,
                      'intent': intent,
+                     'spw': self.sci_spws,
                      'ntime': ntime,
                      'combinescans': False,
                      'extendpols': extendpols,
@@ -181,6 +185,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'correlation': correlation,
                      'scan': scan,
                      'intent': intent,
+                     'spw': self.sci_spws,
                      'ntime': ntime,
                      'combinescans': False,
                      'datacolumn': datacolumn,
@@ -231,6 +236,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'correlation': correlation,
                      'scan': scan,
                      'intent': intent,
+                     'spw': self.sci_spws,
                      'ntime': ntime,
                      'combinescans': False,
                      'datacolumn': datacolumn,
