@@ -35,7 +35,10 @@ class RflagDevHeuristic(api.Heuristic):
     def _get_vla_sefd(self):
         """Load the VLA SEFD profile.
 
-        Note: P-band (200-500 Mhz)and 4-band (54-86 MHz) are not in the database.
+        PIPE-987: See the ticket attachement for the description of SEFD data files
+        Note:
+            - P-band (200-500 Mhz)and 4-band (54-86 MHz) are not in the database.
+            - The band label here has been capitalized, but the band name from SPW label is all caps.
         """
         sedf_path = pkg_resources.resource_filename('pipeline', 'hifv/heuristics/sefd')
 
@@ -46,7 +49,7 @@ class RflagDevHeuristic(api.Heuristic):
 
         return sefd
 
-    def plot_sefd(self, spws_per_band=None, figfile='vla_sefd.png'):
+    def _plot_sefd(self, spws_per_band=None, figfile='vla_sefd.png'):
         """Generate the VLA SEFD summary plot"""
 
         fig, ax = plt.subplots(figsize=(8, 4))
@@ -130,13 +133,32 @@ class RflagDevHeuristic(api.Heuristic):
             new_report[ftdev] = np.column_stack((fields, spws, devs_modified))
             new_report[ftdev+'_info'] = {'field': fields,
                                          'spw': spws,
-                                         'devs': devs,
                                          'bb': bbs,
+                                         'devs': devs,
                                          'sefd_jy': sefd_jy,
-                                         'chanwidth_mhz': chanwidth_mhz,
+                                         'ch_mhz': chanwidth_mhz,
                                          'rms_scale': rms_scale,
                                          'devs_med': devs_med,
-                                         'devs_modified': devs_modified}
+                                         'devs_use': devs_modified}
+            ftdev_report = new_report[ftdev+'_info']
+
+            str_message = ' {:<6s} '.format('field')
+            str_message += ' {:<20s} '.format('spw_id/name')
+            str_message += ' {:<3s} '.format('bb')
+            colnum_names = ['devs', 'sefd_jy', 'ch_mhz', 'rms_scale', 'devs_med', 'devs_use']
+            str_message += (' {:<10s} '*len(colnum_names)).format(*colnum_names)
+            LOG.debug('rflag '+ftdev+' heuristic')
+            LOG.debug(str_message)
+            for idx, field in enumerate(ftdev_report['field']):
+                str_message = ' {:<6.0f} '.format(ftdev_report['field'][idx])
+                spw_id = ftdev_report['spw'][idx]
+                spw_name = self.ms.get_spectral_window(spw_id).name
+                str_message += ' {:<3.0f} {:<16s} '.format(spw_id, spw_name)
+                colnum_values = [ftdev_report[name][idx] for name in colnum_names]
+                str_message += ' {:<3.0f} '.format(ftdev_report['bb'][idx])
+                str_message += (' {:<10.4g} '*len(colnum_names)).format(*colnum_values)
+                LOG.debug(str_message)
+
         return new_report
 
     def _get_spw_rms_scale(self, science_windows_only=True, ignore_sefd=False):
@@ -167,13 +189,14 @@ class RflagDevHeuristic(api.Heuristic):
                         chanwidth_mhz = float(spw_info[3].to_units(measures.FrequencyUnits.MEGAHERTZ))
                         if ignore_sefd:
                             spw_rms_scale[spw_id] = {'rms_scale': 1./chanwidth_mhz**0.5,
+                                                     'sefd_jy': 1.,   
                                                      'chanwidth_mhz': chanwidth_mhz}
-                            LOG.debug('spw {:>3}  ChanWidth = {:6.2f} MHz'.format(
-                                spw_id, chanwidth_mhz))
+                            LOG.debug('spw {:>3}   ChanWidth = {:6.2f} MHz   rms_scale = {:8.2f}'.format(
+                                spw_id, chanwidth_mhz, spw_rms_scale[spw_id]['rms_scale']))
                             continue
-
+                        
                         try:
-                            sedf_per_band = self.vla_sefd[band]
+                            sedf_per_band = self.vla_sefd[band.capitalize()]
                             mean_freq_mhz = float(spw_info[2].to_units(measures.FrequencyUnits.MEGAHERTZ))
                             chanwidth_mhz = float(spw_info[3].to_units(measures.FrequencyUnits.MEGAHERTZ))
                             spw_sefd = np.interp(mean_freq_mhz, sedf_per_band[:, 0],
@@ -194,7 +217,7 @@ class RflagDevHeuristic(api.Heuristic):
                         spw_rms_scale[spw_id] = {'rms_scale': spw_sefd/chanwidth_mhz**0.5,
                                                  'sefd_jy': spw_sefd,
                                                  'chanwidth_mhz': chanwidth_mhz}
-                        LOG.debug('spw {:>3}   SEFD = {:8.2f} Jy   ChanWidth = {:6.2f} MHz'.format(
-                            spw_id, spw_sefd, chanwidth_mhz))
+                        LOG.debug('spw {:>3}   SEFD = {:8.2f} Jy   ChanWidth = {:6.2f} MHz   rms_scale = {:8.2f}'.format(
+                            spw_id, spw_sefd, chanwidth_mhz,  spw_rms_scale[spw_id]['rms_scale']))
 
         return spw_rms_scale
