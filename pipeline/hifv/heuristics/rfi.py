@@ -32,30 +32,30 @@ class RflagDevHeuristic(api.Heuristic):
             LOG.error("Invalid input rflag report")
             return None
 
-    def _get_vla_sefd(self):
+    @staticmethod
+    def _get_vla_sefd():
         """Load the VLA SEFD profile.
 
         PIPE-987: See the ticket attachement for the description of SEFD data files
-        Note:
-            - P-band (200-500 Mhz)and 4-band (54-86 MHz) are not in the database.
-            - The band label here has been capitalized, but the band name from SPW label is all caps.
+        Note: The band names here are capitalized, but the labels from SPW names are all caps.
         """
         sedf_path = pkg_resources.resource_filename('pipeline', 'hifv/heuristics/sefd')
 
-        bands = ['L', 'S', 'C', 'X', 'Ku', 'K', 'Ka', 'Q']
+        bands = ['4', 'P', 'L', 'S', 'C', 'X', 'Ku', 'K', 'Ka', 'Q']
         sefd = collections.OrderedDict()
         for band in bands:
             sefd[band] = np.loadtxt(sedf_path+'/'+band+'.txt', skiprows=1, comments='#')
 
         return sefd
 
-    def _plot_sefd(self, spws_per_band=None, figfile='vla_sefd.png'):
-        """Generate the VLA SEFD summary plot"""
+    @staticmethod
+    def _plot_vla_sefd(sefd, baseband_spws=None, figfile='vla_sefd.png'):
+        """Generate the VLA SEFD summary plot."""
 
         fig, ax = plt.subplots(figsize=(8, 4))
 
-        for band, sedf_per_band in self.vla_sefd.items():
-            ax.plot(sedf_per_band[:, 0], sedf_per_band[:, 1], label=band)
+        for band, sefd_per_band in sefd.items():
+            ax.plot(sefd_per_band[:, 0], sefd_per_band[:, 1], label=band)
 
         ax.set_xlabel('Freq. [MHz]')
         ax.set_ylabel('SEFD [Jy]')
@@ -64,8 +64,10 @@ class RflagDevHeuristic(api.Heuristic):
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         yrange = ax.get_ylim()
 
-        if spws_per_band is not None:
-            for band, basebands_per_band in spws_per_band.items():
+        freq_min = []
+        freq_max = []
+        if baseband_spws is not None:
+            for band, basebands_per_band in baseband_spws.items():
                 for baseband, spws_per_baseband in basebands_per_band.items():
                     for idx, spw_dict in enumerate(spws_per_baseband):
                         for spw_id, spw_freq_range in spw_dict.items():
@@ -73,8 +75,10 @@ class RflagDevHeuristic(api.Heuristic):
                             yhline = yrange[0]*10**(dlog10*(0.75+0.01*idx))
                             ax.hlines(yhline, float(spw_freq_range[0].value)/1e6,
                                       float(spw_freq_range[1].value)/1e6, color='k')
-
-        fig.savefig('sedf.png', bbox_inches='tight')
+                            freq_min.append(float(spw_freq_range[0].value)/1e6)
+                            freq_max.append(float(spw_freq_range[1].value)/1e6)
+            ax.set_xlim([np.min(freq_min)/1.01, np.max(freq_max)*1.01])
+        fig.savefig(figfile, bbox_inches='tight')
         plt.close(fig)
 
         return
@@ -189,12 +193,12 @@ class RflagDevHeuristic(api.Heuristic):
                         chanwidth_mhz = float(spw_info[3].to_units(measures.FrequencyUnits.MEGAHERTZ))
                         if ignore_sefd:
                             spw_rms_scale[spw_id] = {'rms_scale': 1./chanwidth_mhz**0.5,
-                                                     'sefd_jy': 1.,   
+                                                     'sefd_jy': 1.,
                                                      'chanwidth_mhz': chanwidth_mhz}
                             LOG.debug('spw {:>3}   ChanWidth = {:6.2f} MHz   rms_scale = {:8.2f}'.format(
                                 spw_id, chanwidth_mhz, spw_rms_scale[spw_id]['rms_scale']))
                             continue
-                        
+
                         try:
                             sedf_per_band = self.vla_sefd[band.capitalize()]
                             mean_freq_mhz = float(spw_info[2].to_units(measures.FrequencyUnits.MEGAHERTZ))
