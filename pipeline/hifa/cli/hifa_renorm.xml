@@ -34,14 +34,21 @@
         <value>False</value>
     </param>  
 
-    <param name="diagspectra" type="bool">
-        <shortdescription>Plot extra diagnostic spectra</shortdescription>
-        <description>Plot extra diagnostic spectra, made a scaling spectra plot 
-            for each SPW, scan, field. Both XX and YY and all ants on same plot
-            and the respective median representative spectra
+    <param name="spw" subparam="true" type="string">
+        <shortdescription>List of spectral windows to use in data selection</shortdescription>
+        <description>The list of spectral windows. Set to spw='' by default,
+            which means the task will select all spectral windows.
+
+            Example: spw='11,13,15,17'
         </description>
-        <value>True</value>
-    </param>  
+        <value/>
+    </param>
+
+    <param name="excludechan" subparam="true" type="string">
+        <shortdescription>Channels to exclude</shortdescription>
+        <description>Channels to exclude, e.g. excludechan={'22':'100~150'}</description>
+        <value/>
+    </param>
 
     <param type="string" name="pipelinemode">
     <shortdescription>The pipeline operating mode</shortdescription>
@@ -89,55 +96,6 @@
 
 
 <example>
-The hifa_renorm task
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-   MSs, or tar files of MSs, If ASDM files are specified, they will be
-   converted  to MS format.
-   default: []
-   example: vis=['X227.ms', 'asdms.tar.gz']
-
-
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs
-   automatically.  In 'interactive' mode the user can set the pipeline
-   context defined parameters manually.  In 'getinputs' mode the user
-   can check the settings of all pipeline parameters without running
-   the task.
-   default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
-Examples
-
-1. Basic renorm task
-
-   hifa_renorm()
-
-
 </example>
 </task>
 </casaxml>

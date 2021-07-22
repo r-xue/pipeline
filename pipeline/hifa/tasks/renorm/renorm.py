@@ -1,4 +1,5 @@
 import os
+import ast
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -10,14 +11,15 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, apply, threshold, correctATM, diagspectra, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
+    def __init__(self, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
         super(RenormResults, self).__init__()
         self.pipeline_casa_task = 'Renorm'
         self.vis = vis
         self.apply = apply
         self.threshold = threshold
         self.correctATM = correctATM
-        self.diagspectra = diagspectra
+        self.spw = spw
+        self.excludechan = excludechan
         self.corrApplied = corrApplied
         self.corrColExists = corrColExists
         self.stats = stats
@@ -37,7 +39,8 @@ class RenormResults(basetask.Results):
                 f'\tapply={self.apply}\n'
                 f'\tthreshold={self.threshold}\n'
                 f'\tcorrectATM={self.correctATM}\n'
-                f'\tdiagspectra={self.diagspectra}\n'
+                f'\tspw={self.spw}\n'
+                f'\texcludechan={self.excludechan}\n'
                 f'\talltdm={self.alltdm}\n'
                 f'\tstats={self.stats}')
 
@@ -45,16 +48,29 @@ class RenormInputs(vdp.StandardInputs):
     apply = vdp.VisDependentProperty(default=False)
     threshold = vdp.VisDependentProperty(default=1.02)
     correctATM = vdp.VisDependentProperty(default=False)
-    diagspectra = vdp.VisDependentProperty(default=True)
+    spw = vdp.VisDependentProperty(default='')
+    excludechan = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, diagspectra=None):
+    @spw.convert
+    def spw(self, value):
+        # turn comma seperated string into a list of integers
+        return [int(x) for x in value.split(',')]
+
+    @excludechan.convert
+    def excludechan(self, value):
+        pyobj = ast.literal_eval(value)
+        if isinstance(pyobj, dict):
+            return pyobj
+
+    def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None):
         super(RenormInputs, self).__init__()
         self.context = context
         self.vis = vis
         self.apply = apply
         self.threshold = threshold
         self.correctATM = correctATM
-        self.diagspectra = diagspectra
+        self.spw = spw
+        self.excludechan = excludechan
 
 @task_registry.set_equivalent_casa_task('hifa_renorm')
 @task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
@@ -83,7 +99,7 @@ class Renorm(basetask.StandardTaskTemplate):
 
             if not rn.tdm_only:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
-                               diagspectra=inp.diagspectra)
+                               spws=inp.spw, excludechan=inp.excludechan)
                 rn.plotSpectra()
                 alltdm = False
 
@@ -97,10 +113,10 @@ class Renorm(basetask.StandardTaskTemplate):
                 rnstats = {}
             rn.close()
 
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, corrApplied, corrColExists, stats, rnstats, alltdm)
+            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.diagspectra, False, False, {}, {}, alltdm, e)
+            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, e)
 
         return result
 
