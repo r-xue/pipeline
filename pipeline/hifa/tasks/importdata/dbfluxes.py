@@ -202,18 +202,18 @@ def query_online_catalogue(flux_url, ms, spw, source):
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except Exception as e:
         # error contacting service
-        return flux_url, '0.0', '0', None, None
+        return flux_url, '0.0', '0', None, None, None
 
     try:
         cat_fd = float(fluxdict['fluxdensity'])
         cat_spix = float(fluxdict['spectralindex'])
     except Exception as e:
         # could not convert 'null' to number. Bad catalogue value.
-        return flux_url, '0.0', '0', None, None
+        return flux_url, '0.0', fluxdict['statuscode'], None, fluxdict['clarification'], None
 
     valid_catalogue_val = cat_fd > 0.0 and cat_spix != -1000
     if not valid_catalogue_val:
-        return flux_url, '0.0', '0', None, None
+        return flux_url, '0.0', fluxdict['statuscode'], None, fluxdict['clarification'], None
 
     final_I = measures.FluxDensity(cat_fd, measures.FluxDensityUnits.JANSKY)
     final_spix = decimal.Decimal('%0.3f' % cat_spix)
@@ -323,10 +323,16 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     LOG.info('         Online catalog Spectral Index: {!s}'.format(spix))
     LOG.info('         ageOfNearestMonitorPoint: {!s}'.format(age))
     LOG.info('         {!s}'.format(codedict[int(status_code)]))
-    LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
-    LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
-    LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
-    LOG.info('         Successful URL: {!s}'.format(url))
+    if data_conditions:
+        LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
+        LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
+        LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
+    else:
+        LOG.info('         Number of measurements = {!s}'.format('N/A'))
+        LOG.info('         Dual-band data? {!s}'.format('N/A'))
+        LOG.info('         Measurements bracketed in time? {!s}'.format('N/A'))
+
+    LOG.info('         URL: {!s}'.format(url))
     LOG.info('         Version: {!s}'.format(version))
     if clarification:
         LOG.info('         WARNING message returned: {!s}'.format(clarification))
