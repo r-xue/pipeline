@@ -96,7 +96,10 @@ def read_fluxes_nodb(ms):
         if source_id >= len(ms.sources):
             LOG.warning('Source.xml refers to source #{}, which was not found in {}'.format(source_id, ms.basename))
             continue
-        source = ms.sources[int(source_id)]
+        if int(source_id) not in ms.sources:
+            LOG.warning("Source.xml contains source #{} that is not present in {}.".format(source_id, ms.basename))
+        else:
+            source = ms.sources[int(source_id)]
 
         # all elements must contain data to proceed
         if flux_text is None or frequency_text is None:
