@@ -6951,6 +6951,9 @@ pre {
   color: #c7ddef;
   background-color: #337ab7;
 }
+.nav-sidebar .active .text-muted {
+  color: #fff;
+}
 .dropdown-submenu {
   position: relative;
 }
