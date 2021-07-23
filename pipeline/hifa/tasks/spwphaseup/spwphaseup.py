@@ -184,7 +184,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         phaseupresult = self._do_phaseup()
 
         # Collect SNR info.
-        snr_info = list(zip(spwids, snrs))
+        snr_info = self._get_snr_info(spwids, snrs)
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
@@ -355,6 +355,16 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         tuning_result.final = processed_calapps
 
         return tuning_result
+
+    def _get_snr_info(self, spwids, snrs):
+        spw_snr = {str(k): v for k, v in zip(spwids, snrs)}
+        snr_info = []
+        for spwid in self.inputs.spw.split(','):
+            snr = None
+            if spwid in spw_snr:
+                snr = spw_snr[spwid]
+            snr_info.append((spwid, snr))
+        return snr_info
 
 
 class SpwPhaseupResults(basetask.Results):

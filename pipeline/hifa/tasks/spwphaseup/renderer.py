@@ -96,9 +96,9 @@ def get_snr_table_rows(context, results):
         for row in result.snr_info:
             spwid = row[0]
             if row[1] is None:
-                snr = 'N/A'
+                snr = '<strong class="text-danger">N/A</strong>'
             elif row[1] < threshold:
-                snr = f'<strong>{row[1]:.1f}</strong>'
+                snr = f'<strong class="text-danger">{row[1]:.1f}</strong>'
             else:
                 snr = f'{row[1]:.1f}'
 
