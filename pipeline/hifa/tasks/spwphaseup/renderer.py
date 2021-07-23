@@ -7,17 +7,16 @@ import pipeline.infrastructure.utils as utils
 
 LOG = logging.get_logger(__name__)
 
+SnrTR = collections.namedtuple('SnrTR', 'vis threshold spw snr')
 SpwMaps = collections.namedtuple('SpwMaps', 'ms spwmap scispws')
-SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 
-                                            'ms gaintable calmode solint intent spw') 
+SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 
 
 class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='spwphaseup.mako',
                  description='Spw phase offsets calibration',
                  always_rerender=False):
-        super(T2_4MDetailsSpwPhaseupRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
         spwmaps = []
@@ -39,7 +38,11 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             applications.extend(self.get_gaincal_applications(context, result.phaseup_result, ms))
 
+        # Generate rows for phase SNR table.
+        snr_table_rows = get_snr_table_rows(context, results)
+
         ctx.update({
+            'snr_table_rows': snr_table_rows,
             'spwmaps': spwmaps,
             'applications': applications
         })
@@ -77,9 +80,28 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             calmode = utils.get_origin_input_arg(calapp, 'calmode')
 
             calmode = calmode_map.get(calmode, calmode)
-            a = SpwPhaseupApplication(ms.basename, gaintable, solint, calmode,
-                                   to_intent, spw)
+            a = SpwPhaseupApplication(ms.basename, gaintable, solint, calmode, to_intent, spw)
             applications.append(a)
 
         return applications
 
+
+def get_snr_table_rows(context, results):
+    rows = []
+
+    for result in results:
+        ms = context.observing_run.get_ms(result.vis)
+        threshold = result.inputs['phasesnr']
+
+        for row in result.snr_info:
+            spwid = row[0]
+            if row[1] is None:
+                snr = 'N/A'
+            elif row[1] < threshold:
+                snr = f'<strong>{row[1]:.1f}</strong>'
+            else:
+                snr = f'{row[1]:.1f}'
+
+            rows.append(SnrTR(ms.basename, threshold, spwid, snr))
+
+    return utils.merge_td_columns(rows)
