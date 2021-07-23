@@ -310,22 +310,27 @@ class ImportData(basetask.StandardTaskTemplate):
 
         with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
 
-        task = casa_tasks.importasdm(asdm=asdm,
-                                     vis=vis,
-                                     savecmds=inputs.save_flagonline,
-                                     outfile=outfile,
-                                     process_caldevice=inputs.process_caldevice,
-                                     asis=inputs.asis,
-                                     overwrite=inputs.overwrite,
-                                     bdfflags=inputs.bdfflags,
-                                     lazy=inputs.lazy,
-                                     with_pointing_correction=with_pointing_correction,
-                                     ocorr_mode=inputs.ocorr_mode,
-                                     createmms=createmms)
-        try:
-            self._executor.execute(task)
-        except Exception as ee:
-            LOG.warning(f"Caught importasdm exception: {ee}")
+        # PIPE-1200: do not call CASA's importasdm if the output MS already
+        # exists on disk and overwrite is set to False, to avoid Exception.
+        if os.path.exists(vis) and not inputs.overwrite:
+            LOG.info(f"Skipping importasdm for ASDM {asdm}; output directory for measurement set already exists.")
+        else:
+            task = casa_tasks.importasdm(asdm=asdm,
+                                         vis=vis,
+                                         savecmds=inputs.save_flagonline,
+                                         outfile=outfile,
+                                         process_caldevice=inputs.process_caldevice,
+                                         asis=inputs.asis,
+                                         overwrite=inputs.overwrite,
+                                         bdfflags=inputs.bdfflags,
+                                         lazy=inputs.lazy,
+                                         with_pointing_correction=with_pointing_correction,
+                                         ocorr_mode=inputs.ocorr_mode,
+                                         createmms=createmms)
+            try:
+                self._executor.execute(task)
+            except Exception as ee:
+                LOG.warning(f"Caught importasdm exception: {ee}")
 
         for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
             asdm_source = os.path.join(asdm, xml_filename)
