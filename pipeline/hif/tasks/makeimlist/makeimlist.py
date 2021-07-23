@@ -570,7 +570,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             except Exception as e:
                                 # problem defining uvrange
                                 LOG.warn(e)
-                                LOG.warn("Data selection error   Field: {!s}, spw: {!s}".format(str(field_intent[0]), str(spwspec)))
                                 pass
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
@@ -860,10 +859,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         else:
                             nbin = -1
 
-                        if spwspec_ok and (field_intent[0], spwspec) in imsizes \
-                                and 'invalid' not in cells[spwspec] \
-                                and (field_intent[0], spwspec) in uvrange \
-                                and (field_intent[0], spwspec) in bl_ratio:
+                        if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                             LOG.debug(
                               'field:%s intent:%s spw:%s cell:%s imsize:%s phasecenter:%s' %
                               (field_intent[0], field_intent[1], adjusted_spwspec,
