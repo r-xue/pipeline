@@ -187,7 +187,7 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 
 <h2>Flagged data summary</h2>
 <table class="table table-bordered table-striped"
-	   summary=>
+	   summary="Flagged Data">
 	<caption>Summary of flagged data. Each cell states the amount of data
 	flagged as a fraction of the specified data selection, with the
 	<em>Flagging Agent</em> columns giving this information per flagging agent.

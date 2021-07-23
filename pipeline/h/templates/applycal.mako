@@ -244,7 +244,7 @@ def format_spwmap(spwmap, scispws):
 
 <h2 id="flaggeddata" class="jumptarget">Flagged data after calibration application</h2>
 <table class="table table-bordered table-striped "
-	   summary=>
+	   summary="Flagged Data">
 	<caption>Summary of measurement set flagging status after application
 	of (potentially flagged) calibration tables. Each cell gives the
 	amount of data flagged as a fraction of the specified data selection.
