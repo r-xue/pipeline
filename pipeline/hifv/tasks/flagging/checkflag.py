@@ -102,19 +102,26 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         # abort if no target is found
         if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
-            fieldselect, _, _ = self._select_data()
+            fieldselect, _, _, _ = self._select_data()
             if not fieldselect:
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
                 return CheckflagResults(summaries=summaries)
 
-        # PIPE-502/995: save the before-flagging summary plot and plotting scale for 'vlass-imaging'
-        if self.inputs.checkflagmode == 'vlass-imaging':
+        # PIPE-502/995/987: save the before/after-flagging summary plot for most calibrator-related checkflagmodes, and 'vlass-imaging'/'targe-vla'
+        if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'targte-vla',
+                                         'bpd', 'allcals',
+                                         'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
+
+            fieldselect, scanselect, intentselect, columnselect = self._select_data()
+
             LOG.info('Estimating the amplitude range of unflagged data for summary plots')
-            amp_range = self._get_amp_range()
+            amp_range = self._get_amp_range(field=fieldselect, scan=scanselect,
+                                            intent=intentselect, datacolumn=columnselect)
             amp_d = amp_range[1]-amp_range[0]
             summary_plotrange = [0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d]
             LOG.info('Creating before-flagging summary plots')
             plotms_args_overrides = {'plotrange': summary_plotrange,
+                                     'ydatacolumn': columnselect,
                                      'title': 'Amp vs. Frequency (before flagging)'}
             summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
             plots['before'] = summaryplot_before
@@ -286,7 +293,7 @@ class Checkflag(basetask.StandardTaskTemplate):
     def do_rfi_flag(self):
         """Do RFI flagging using multiple passes of rflag/tfcrop/extend."""
         
-        fieldselect, scanselect, intentselect = self._select_data()
+        fieldselect, scanselect, intentselect, _ = self._select_data()
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
         flagbackup = True
         calcftdev = True
@@ -360,13 +367,13 @@ class Checkflag(basetask.StandardTaskTemplate):
             tuple: (field_select_string, scan_select_string, intent_select_string) 
         """
         fieldselect = scanselect = intentselect = ''
+        columnselect = 'corrected'
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
         # select bpd calibrators
         if self.inputs.checkflagmode in ('bpd-vla', 'bpd-vlass', '', 'bpd'):
             fieldselect = self.inputs.context.evla['msinfo'][ms.name].checkflagfields
             scanselect = self.inputs.context.evla['msinfo'][ms.name].testgainscans
-            intentselect = ''
 
         # select all calibrators but not bpd cals
         if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass', 'allcals'):
@@ -376,26 +383,28 @@ class Checkflag(basetask.StandardTaskTemplate):
             testgainscans = self.inputs.context.evla['msinfo'][ms.name].testgainscans.split(',')
             fieldselect = ','.join([fieldid for fieldid in fieldselect if fieldid not in checkflagfields])
             scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
-            intentselect = ''
 
         # select targets
         if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
             fieldids = [field.id for field in ms.get_fields(intent='TARGET')]
             fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
-            scanselect = ''
             intentselect = '*TARGET*'
 
         # select all calibrators
         if self.inputs.checkflagmode == 'semi':
             fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string
             scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string
-            intentselect = ''
+
+        if self.inputs.checkflagmode == 'vlass-imaging':
+            # use the 'data' column by default as 'vlass-imaging' is working on target-only MS.
+            columnselect='data'
 
         LOG.debug('FieldSelect:  {}'.format(repr(fieldselect)))
         LOG.debug('ScanSelect:   {}'.format(repr(scanselect)))
         LOG.debug('IntentSelect: {}'.format(repr(intentselect)))
+        LOG.debug('ColumnSelect: {}'.format(repr(columnselect)))
 
-        return fieldselect, scanselect, intentselect
+        return fieldselect, scanselect, intentselect, columnselect
 
     def _select_rfi_standard(self):
         """Set rflag data selection and threshold-multiplier in individual rflag iterations.
@@ -553,6 +562,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
     def _create_summaryplots(self, suffix='before', plotms_args={}):
+        """Preload the display class to generate before-flagging plot(s)."""
         summary_plots = {}
         results_tmp = basetask.ResultsList()
         results_tmp.inputs = self.inputs.as_dict()
@@ -563,12 +573,25 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return summary_plots
 
-    def _get_amp_range(self):
+    def _get_amp_range(self, field='', spw='', scan='', intent='', datacolumn='corrected'):
         """Get amplitude min/max for the amp. vs. freq summary plots."""
+        amp_range = [0., 0.]
+
         try:
             with casa_tools.MSReader(self.inputs.vis) as msfile:
-                amp_range = msfile.range(['amplitude'])['amplitude'].tolist()
-            return amp_range
+                staql = {'field': field, 'spw': spw, 'scan': scan, 'scanintent': intent}
+                r_msselect = msfile.msselect(staql, onlyparse=False)
+                if not r_msselect:
+                    LOG.warn("Null selection from the field/spw/scan combination.")
+                else:
+                    if datacolumn == 'corrected':
+                        item = 'corrected_amplitude'
+                    if datacolumn == 'data':
+                        item = 'amplitude'
+                    if datacolumn == 'model':
+                        item = 'model_amplitude'
+                    amp_range = msfile.range([item])[item].tolist()
         except:
             LOG.warn("Unable to obtain the range of data amps.")
-            return [0., 0.]
+
+        return amp_range
