@@ -7,7 +7,6 @@ from matplotlib.axes._axes import Axes as MplAxes
 
 from pipeline.domain import DataTable, MeasurementSet
 import pipeline.infrastructure as infrastructure
-from pipeline.infrastructure import Context
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from .SDFlagRule import INVALID_STAT
 from ..common import display as sd_display
