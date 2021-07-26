@@ -446,7 +446,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
     """
     # PIPE-775: Output the call to the function. The second and third arguments (tsys_spwlist and scan_list)
     #  should have the same length
-    LOG.debug("Called get_mediantemp({}, {}, {}, antenna={}, temptype={})".format(
+    LOG.trace("Called get_mediantemp({}, {}, {}, antenna='{}', temptype='{}')".format(
         ms, tsys_spwlist, scan_list, antenna, temptype))
 
     # Initialize
