@@ -46,19 +46,17 @@ class CutoutimagesSummary(object):
                         self.result.residual_stats = image.statistics(robust=True)
 
             elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
-
-                with casa_tools.ImageReader(subimagename) as image:
-                    rms_stats = image.statistics(robust=True)
-                    RMSmedian = rms_stats.get('median')[0]
+                # CAS-10345/PIPE-1189: use (-5*RMSmedian, 20*RMSmedian) as the colormap scaling range
+                # We expect 'subimagename' here to be: X.image.pbcor.ttX.subim or X.image.pbcor.subim
+                rms_subimagename = os.path.splitext(subimagename)[0]+'.rms.subim'
+                with casa_tools.ImageReader(rms_subimagename) as image:
+                    rms_median = image.statistics(robust=True).get('median')[0]
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean',
-                                                           vmin=-5 * RMSmedian,
-                                                           vmax=20 * RMSmedian))
-
+                                                           vmin=-5 * rms_median,
+                                                           vmax=20 * rms_median))
                 if '.tt1.' not in subimagename:
-                    self.result.rms_stats = rms_stats
-                    self.result.RMSmedian = RMSmedian
                     with casa_tools.ImageReader(subimagename) as image:
                         self.result.pbcor_stats = image.statistics(robust=True)
 
@@ -69,7 +67,6 @@ class CutoutimagesSummary(object):
                 if '.tt1.' not in subimagename:
                     with casa_tools.ImageReader(subimagename) as image:
                         self.result.rms_stats = image.statistics(robust=True)
-                        self.result.RMSmedian = self.result.rms_stats.get('median')[0]
                         arr = image.getchunk()
                         # PIPE-489 changed denominators to unmasked (non-zero) pixels
                         # get fraction of pixels <= 120 micro Jy VLASS technical goal.  ignore 0 (masked) values.

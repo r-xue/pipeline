@@ -5,6 +5,7 @@ import io
 import numpy
 
 import pipeline.infrastructure as infrastructure
+from pipeline.domain import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -148,7 +149,7 @@ def associate(context, factors):
     stream = io.StringIO()
     try:
         data = factors.data
-        for ms in context.observing_run.measurement_sets:
+        for ms in context.observing_run.get_measurement_sets_of_type(DataType.RAW):
             session_name = ms.session
             if session_name == 'Session_default':
                 # Session_default is not supported, use Session_1 instead

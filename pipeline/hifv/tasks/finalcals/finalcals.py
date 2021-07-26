@@ -228,14 +228,9 @@ class Finalcals(basetask.StandardTaskTemplate):
         # Run setjy execution per band
         all_sejy_result = self._doall_setjy(calMs, field_spws)
 
-        if self.inputs.context.evla['msinfo'][m.name].fbversion == 'fb1':
-            LOG.info("Using power-law fit results from original hifv_fluxboot task.")
-            powerfit_results = self._do_powerfit(field_spws)
-            powerfit_setjy = self._do_powerfitsetjy1(calMs, powerfit_results)
-        if self.inputs.context.evla['msinfo'][m.name].fbversion == 'fb2':
-            LOG.info("Using power-law fits results from fluxscale and the hifv_fluxboot2 task.")
-            for fs_result in self.inputs.context.evla['msinfo'][m.name].fluxscale_result:
-                powerfit_setjy = self._do_powerfitsetjy2(calMs, fs_result)
+        LOG.info("Using power-law fits results from fluxscale.")
+        for fs_result in self.inputs.context.evla['msinfo'][m.name].fluxscale_result:
+            powerfit_setjy = self._do_powerfitsetjy(calMs, fs_result)
 
         phaseshortgaincaltable = tableprefix + str(stage_number) + '_6.' + 'phaseshortgaincal.tbl'
         finalampgaincaltable = tableprefix + str(stage_number) + '_7.' + 'finalampgaincal.tbl'
@@ -783,45 +778,7 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         return results
 
-    def _do_powerfitsetjy1(self, calMs, results):
-
-        LOG.info("Setting power-law fit in the model column")
-
-        for result in results:
-            jobs_calMs = []
-            for spw_i in result[1]:
-
-                try:
-                    LOG.info('Running setjy on spw ' + str(spw_i))
-                    task_args = {'vis': calMs,
-                                 'field': str(result[0]),
-                                 'spw': str(spw_i),
-                                 'selectdata': False,
-                                 'modimage': '',
-                                 'listmodels': False,
-                                 'scalebychan': True,
-                                 'fluxdensity': [result[2], 0, 0, 0],
-                                 'spix': result[3],
-                                 'reffreq': str(result[4]) + 'GHz',
-                                 'standard': 'manual',
-                                 'usescratch': True}
-
-                    # job = casa_tasks.setjy(**task_args)
-                    jobs_calMs.append(casa_tasks.setjy(**task_args))
-
-                    # self._executor.execute(job)
-                except Exception as e:
-                    LOG.info(e)
-
-            # merge identical jobs into one job with a multi-spw argument
-            LOG.info("Merging setjy jobs for calibrators.ms")
-            jobs_and_components_calMs = utils.merge_jobs(jobs_calMs, casa_tasks.setjy, merge=('spw',))
-            for job, _ in jobs_and_components_calMs:
-                self._executor.execute(job)
-
-        return True
-
-    def _do_powerfitsetjy2(self, calMs, fluxscale_result):
+    def _do_powerfitsetjy(self, calMs, fluxscale_result):
 
         LOG.info("Setting power-law fit in the model column")
 

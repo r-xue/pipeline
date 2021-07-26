@@ -74,7 +74,7 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
 
         # Do the flux density boostrapping -- fits spectral index of
         # calibrators with a heuristics determined fit order
-        hifv_fluxboot2(pipelinemode=pipelinemode)
+        hifv_fluxboot(pipelinemode=pipelinemode)
 
         # Make the final calibration tables
         hifv_finalcals(pipelinemode=pipelinemode)

@@ -1,5 +1,6 @@
 import copy
 import os
+import operator
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -7,6 +8,7 @@ import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -17,6 +19,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImListInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     # simple properties with no logic ----------------------------------------------------------------------------------
     calmaxpix = vdp.VisDependentProperty(default=300)
     imagename = vdp.VisDependentProperty(default='')
@@ -194,7 +199,7 @@ class MakeImListInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(MakeImListInputs)
+#api.ImagingMeasurementSetsPreferred.register(MakeImListInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimlist')
@@ -246,25 +251,27 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
+        # Initial heuristics instance without spw information.
+        self.heuristics = image_heuristics_factory.getHeuristics(
+            vislist=inputs.vis,
+            spw='',
+            observing_run=inputs.context.observing_run,
+            imagename_prefix=inputs.context.project_structure.ousstatus_entity_id,
+            proj_params=inputs.context.project_performance_parameters,
+            contfile=inputs.contfile,
+            linesfile=inputs.linesfile,
+            imaging_params=inputs.context.imaging_parameters,
+            imaging_mode=inputs.context.project_summary.telescope
+            )
+
+        # Get representative target information
+        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.heuristics.representative_target()
+
         # representative target case
         if inputs.specmode == 'repBW':
             repr_target_mode = True
             image_repr_target = False
 
-            # Initial heuristics instance without spw information.
-            self.heuristics = image_heuristics_factory.getHeuristics(
-                vislist=inputs.vis,
-                spw='',
-                observing_run=inputs.context.observing_run,
-                imagename_prefix=inputs.context.project_structure.ousstatus_entity_id,
-                proj_params=inputs.context.project_performance_parameters,
-                contfile=inputs.contfile,
-                linesfile=inputs.linesfile,
-                imaging_params=inputs.context.imaging_parameters,
-                imaging_mode=inputs.context.project_summary.telescope
-            )
-
-            repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.heuristics.representative_target()
             # The PI cube shall only be created for real representative targets
             if not real_repr_target:
                 LOG.info('No representative target found. No PI cube will be made.')
@@ -736,7 +743,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                 # Remember if there are targets for this vislist
                 have_targets[','.join(vislist)] = len(field_intent_list) > 0
 
-                for field_intent in field_intent_list:
+                # Sort field/intent list alphabetically considering the intent as the first
+                # and the source name as the second key.
+                sorted_field_intent_list = sorted(field_intent_list, key=operator.itemgetter(1,0))
+
+                # In case of TARGET intent place representative source first in the list.
+                if 'TARGET' in inputs.intent:
+                    sorted_field_intent_list = utils.place_repr_source_first(sorted_field_intent_list, repr_source)
+
+                for field_intent in sorted_field_intent_list:
                     mosweight = self.heuristics.mosweight(field_intent[1], field_intent[0])
                     for spwspec in spwlist_local:
                         # The field/intent and spwspec loops still cover the full parameter
