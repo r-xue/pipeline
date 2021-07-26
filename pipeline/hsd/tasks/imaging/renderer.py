@@ -177,7 +177,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         nfields = [len(ms.fields) for ms in context.observing_run.measurement_sets]
         repid = nfields.index(max(nfields))
         ms = context.observing_run.measurement_sets[repid]
-        source_names = [filenamer.sanitize(s.name) for s in ms.sources]
+        source_dict = dict((filenamer.sanitize(s.name), s.id) for s in ms.sources)
 
         summary_plots = {}
         for field_name, plots in plot_group.items():
@@ -194,8 +194,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 if spw_id not in spw_list:
                     spw_list.append(spw_id)
                 source_name = plot.field
-                source_index = source_names.index(source_name)
-                source_id = ms.sources[source_index].id
+                source_id = source_dict[source_name]
                 # center frequency
                 spw = ms.get_spectral_window(spw_id)
                 cf = spw.centre_frequency

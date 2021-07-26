@@ -6,10 +6,10 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
-from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
@@ -314,7 +314,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         append = False
         original_calapps = []
-        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
+        for spectral_spec, tuning_spw_ids in utils.get_spectralspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 
