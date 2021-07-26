@@ -30,9 +30,9 @@ class checkflagSummaryChart(object):
         if self.result.inputs['checkflagmode'] in ('allcals', 'allcals-vlass', 'allcals-vla'):
             plots = [self.get_plot_wrapper('allcals')]
         if self.result.inputs['checkflagmode'] == 'vlass-imaging':
-            plots = [self.get_plot_wrapper('vlass-imaging')]
+            plots = [self.get_plot_wrapper('targets-vlass')]
         if self.result.inputs['checkflagmode'] == 'target-vla':
-            plots = [self.get_plot_wrapper('target')]
+            plots = [self.get_plot_wrapper('targets')]
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
@@ -59,11 +59,11 @@ class checkflagSummaryChart(object):
             plotms_args.update(avgscan=True)
         if prefix == 'allcals':
             plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string)
-        if prefix == 'target-vla':
+        if prefix == 'targets':
             fieldids = [field.id for field in self.ms.get_fields(intent='TARGET')]
             fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
             plotms_args.update(field=fieldselect, intent='*TARGET*')
-        if prefix == 'vlass-imaging':
+        if prefix == 'targets-vlass':
             plotms_args.update(ydatacolumn='data', intent='*TARGET*')
 
         job = casa_tasks.plotms(**plotms_args)

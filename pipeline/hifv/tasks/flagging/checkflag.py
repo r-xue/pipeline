@@ -3,6 +3,7 @@ import copy
 import os
 
 import numpy as np
+import datetime 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
@@ -69,10 +70,15 @@ class Checkflag(basetask.StandardTaskTemplate):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.tint = ms.get_vla_max_integration_time()
 
-        # a list of strings representing polarizations
-        self.corr_type_string = ms.polarizations[0].corr_type_string
+        # a list of strings representing polarizations from science spws
+        sci_spwlist = ms.get_spectral_windows(science_windows_only=True)
+        sci_spwids = [spw.id for spw in sci_spwlist]
+        pols_list = [ms.polarizations[dd.pol_id].corr_type_string for dd in ms.data_descriptions if dd.spw.id in sci_spwids]
+        pols = [pol for pols in pols_list for pol in pols]
+        self.corr_type_string = list(set(pols))
 
         # a string representing selected polarizations, only parallel hands
+        # this is only preserved to maintain the existing behavior of checkflagmode=''/'semi'
         self.corrstring = ms.get_vla_corrstring()
 
         # a string representing science spws
@@ -84,14 +90,6 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode == 'vlass-imaging':
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
-
-        # PIPE-502/995: run the before-flagging summary in most checkflagmodes, including 'vlass-imaging'
-        # PIPE-757: skip in all VLASS calibration checkflagmodes: 'bpd-vlass', 'allcals-vlass', and 'target-vlass'
-        if self.inputs.checkflagmode not in ('bpd-vlass', 'allcals-vlass', 'target-vlass'):
-            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
-            summarydict = self._executor.execute(job)
-            if summarydict is not None:
-                summaries.append(summarydict)
 
         # abort if the mode selection is not recognized
         if self.inputs.checkflagmode not in ('bpd-vla', 'allcals-vla', 'target-vla',
@@ -107,8 +105,16 @@ class Checkflag(basetask.StandardTaskTemplate):
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
                 return CheckflagResults(summaries=summaries)
 
+        # PIPE-502/995: run the before-flagging summary in most checkflagmodes, including 'vlass-imaging'
+        # PIPE-757: skip in all VLASS calibration checkflagmodes: 'bpd-vlass', 'allcals-vlass', and 'target-vlass'
+        if self.inputs.checkflagmode not in ('bpd-vlass', 'allcals-vlass', 'target-vlass'):
+            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
+            summarydict = self._executor.execute(job)
+            if summarydict is not None:
+                summaries.append(summarydict)
+
         # PIPE-502/995/987: save the before/after-flagging summary plot for most calibrator-related checkflagmodes, and 'vlass-imaging'/'targe-vla'
-        if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'targte-vla',
+        if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'target-vla',
                                          'bpd', 'allcals',
                                          'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
 
@@ -126,6 +132,15 @@ class Checkflag(basetask.StandardTaskTemplate):
             summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
             plots['before'] = summaryplot_before
             plots['plotrange'] = summary_plotrange
+
+        # PIPE-987: backup flagversion before rfi flagging
+        now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+        job = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save',
+                                     versionname='hifv_checkflag_{}_stage{}_{}'.format(
+                                         self.inputs.checkflagmode, self.inputs.context.task_counter, now_str),
+                                     comment='flagversion before running hifv_checkflag()',
+                                     merge='replace')
+        self._executor.execute(job)
 
         # run rfi flagging heuristics
         self.do_rfi_flag()
@@ -176,7 +191,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         return job, result
 
     def _do_tfcropflag(self, mode='tfcrop', field=None, correlation=None, scan=None, intent='',
-                       ntime=0.45, datacolumn='corrected', flagbackup=True,
+                       ntime=0.45, datacolumn='corrected', flagbackup=False,
                        freqcutoff=3.0, timecutoff=4.0, savepars=True,
                        extendflags=False):
 
@@ -228,8 +243,6 @@ class Checkflag(basetask.StandardTaskTemplate):
         extendflags: set the "extendflags" plan.
             True/False: toggle the 'extendflags' argument in the 'rflag' flagdata() call
             Dictionary: do flag extension with a seperate flagdata() call
-
-        flagbackup=True will only backup the flag version for the first flagdata() call
         """
         # pass 'extendflags' to flagdata(mode='rflag') if boolean
         if isinstance(extendflags, bool):
@@ -279,7 +292,6 @@ class Checkflag(basetask.StandardTaskTemplate):
                 task_args['timedev'] = ftdev['timedev']
                 task_args['freqdev'] = ftdev['freqdev']
             task_args['action'] = 'apply'
-            task_args['flagbackup'] = False
 
         job = casa_tasks.flagdata(**task_args)
         jobresult = self._executor.execute(job)
@@ -295,12 +307,11 @@ class Checkflag(basetask.StandardTaskTemplate):
         
         fieldselect, scanselect, intentselect, _ = self._select_data()
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
-        flagbackup = True
+        flagbackup = False
         calcftdev = True
 
         # set ignore_sedf=True/flagbackup=False to maintain the same behavior as the deprecated do_*vlass() methods
         ignore_sefd = self.inputs.checkflagmode in ('target-vlass', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging')
-        flagbackup = self.inputs.checkflagmode not in ('target-vlass', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging')
 
         # set calcftdev=False to turn off the new heuristic for some older modes
         calcftdev = self.inputs.checkflagmode not in ('semi', '', 'target', 'bpd', 'allcals')
@@ -309,7 +320,10 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             for datacolumn, correlation, scale, extendflags in rflag_standard:
                 if '_' in correlation:
-                    if not (correlation.split('_')[1] in self.corr_type_string or correlation.split('_')[1] == self.corrstring):
+                    polselect = correlation.split('_')[1]
+                    if not (polselect in self.corr_type_string or polselect == self.corrstring):
+                        continue
+                    if not self._mssel_validate(field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
                         continue
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
@@ -328,13 +342,15 @@ class Checkflag(basetask.StandardTaskTemplate):
                                'extendflags': extendflags}
 
                 self._do_rflag(**method_args)
-                flagbackup = False
 
         if tfcrop_standard is not None:
 
             for datacolumn, correlation, tfcropThreshMultiplier, extendflags in tfcrop_standard:
                 if '_' in correlation:
-                    if not (correlation.split('_')[1] in self.corr_type_string or correlation.split('_')[1] == self.corrstring):
+                    polselect = correlation.split('_')[1]
+                    if not (polselect in self.corr_type_string or polselect == self.corrstring):
+                        continue
+                    if not self._mssel_validate(field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
                         continue
                 timecutoff = 4. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
                 freqcutoff = 3. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
@@ -352,7 +368,6 @@ class Checkflag(basetask.StandardTaskTemplate):
                                'extendflags': extendflags}
 
                 self._do_tfcropflag(**method_args)
-                flagbackup = False
 
         if growflag_standard is not None:
             self._do_extendflag(
@@ -590,8 +605,22 @@ class Checkflag(basetask.StandardTaskTemplate):
                         item = 'amplitude'
                     if datacolumn == 'model':
                         item = 'model_amplitude'
-                    amp_range = msfile.range([item])[item].tolist()
-        except:
-            LOG.warn("Unable to obtain the range of data amps.")
+                    # results of ms.range (notably val_min) seems to be affected to blocksize setting
+                    # we increase the blocksize from 10MB (default) to 100MB
+                    amp_range = msfile.range([item], useflags=True, blocksize=100)[item].tolist()
+        except Exception as ex:
+            LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
         return amp_range
+
+    def _mssel_validate(self, field='', spw='', scan='', intent='', correlation='', uvdist=''):
+        """Check if the data selection is valid (i.e. not a null selection).
+
+        This method is used as a secondary "null" selection check for flagdata() calls.
+        Ideally, the primary "corr_type_string" check should be sufficient.
+        """
+        with casa_tools.MSReader(self.inputs.vis) as msfile:
+            staql = {'field': field, 'spw': spw, 'scan': scan,
+                     'scanintent': intent, 'polarization': correlation, 'uvdist': uvdist}
+            select_valid = msfile.msselect(staql, onlyparse=True)
+        return select_valid
