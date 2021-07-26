@@ -44,7 +44,7 @@ class LowgainflagInputs(vdp.StandardInputs):
     # Flagging view is created if number of antennas in a set equals-or-exceeds
     # the threshold.
     min_nants_threshold = vdp.VisDependentProperty(default=5)
-    niter = vdp.VisDependentProperty(default=1)
+    niter = vdp.VisDependentProperty(default=2)
 
     @vdp.VisDependentProperty
     def refant(self):

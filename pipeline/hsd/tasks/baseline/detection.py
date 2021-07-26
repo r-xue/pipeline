@@ -1,8 +1,10 @@
 # import os
 import collections
-import time
-import numpy
 import math
+import numpy
+import os
+import time
+
 import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
@@ -11,6 +13,7 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.h.heuristics as heuristics
 # import pipeline.domain.measures as measures
 # from pipeline.domain.datatable import DataTableImpl as DataTable
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import utils
@@ -22,6 +25,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class DetectLineInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     window = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
@@ -55,14 +61,6 @@ class DetectLineResults(common.SingleDishResults):
     def merge_with_context(self, context):
         LOG.debug('DetectLineResults.merge_with_context')
         super(DetectLineResults, self).merge_with_context(context)
-        # exporting datatable should be done within the parent task
-#         if isinstance(self.outcome, dict) and 'datatable' in self.outcome:
-#             datatable = self.outcome.pop('datatable')
-#             start_time = time.time()
-#             LOG.debug('Start exporting datatable (minimal): {}', start_time)
-#             datatable.exportdata(minimal=True)
-#             end_time = time.time()
-#             LOG.debug('End exporting datatable (minimal): {} ({} sec)', end_time, end_time - start_time)
 
     @property
     def signals(self):
@@ -92,7 +90,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         window = self.inputs.window
         windowmode = self.inputs.windowmode
         edge = self.inputs.edge
-        broadline = self.inputs.broadline
+#         broadline = self.inputs.broadline #Not used anymore
 
         detect_signal = collections.OrderedDict()
 
@@ -106,8 +104,6 @@ class DetectLine(basetask.StandardTaskTemplate):
             # and should be passed to inputs.window
             group_id = self.inputs.group_id
             group_desc = self.inputs.context.observing_run.ms_reduction_group[group_id]
-            #spw = grid_table[0][0] if len(grid_table) > 0 else -1
-            #predefined_window = self._get_predefined_window(spw, window)
             LOG.trace('predefined_window={0}'.format(window))
             for row in range(nrow):
                 grid_info = grid_table[row]
@@ -119,11 +115,12 @@ class DetectLine(basetask.StandardTaskTemplate):
                 spw_id = m.spw_id
                 field_id = m.field_id
                 antenna_id = m.antenna_id
-                if ms.basename not in datatable_dict:
+                origin_basename = os.path.basename(ms.origin_ms)
+                if origin_basename not in datatable_dict:
                     continue
 
-                datatable = datatable_dict[ms.basename]
-                for dt_row in utils.get_index_list_for_ms(datatable, [ms.basename], [antenna_id],
+                datatable = datatable_dict[origin_basename]
+                for dt_row in utils.get_index_list_for_ms(datatable, [origin_basename], [antenna_id],
                                                      [field_id], [spw_id]):
                     datatable.putcell('MASKLIST', dt_row, window)
 
@@ -139,7 +136,6 @@ class DetectLine(basetask.StandardTaskTemplate):
         # not necessary when line window is specified
         assert spectral_data is not None
 
-        #(nchan,nrow) = spectra.shape
         (nrow, nchan) = spectra.shape
 
         LOG.info('Search regions for protection against the background subtraction...')
@@ -156,15 +152,9 @@ class DetectLine(basetask.StandardTaskTemplate):
             LOG.error(message)
             raise RuntimeError(message)
 
-        #2015/04/23 MaxFWHM < nchan/3.0
-        #MaxFWHM = int(min(rules.LineFinderRule['MaxFWHM'], (nchan - Nedge)/3.0))
         #2019/08/16 MaxFWHM < nchan/2.0 Need wider line detection (NGC1097)
         MaxFWHM = int((nchan - Nedge)/2.0)
-        #rules.LineFinderRule['MaxFWHM'] = MaxFWHM
-        MinFWHM = int(rules.LineFinderRule['MinFWHM'])
         Threshold = rules.LineFinderRule['Threshold']
-        EdgeMin = int(nchan * rules.LineFinderRule['IgnoreEdge'])
-        EdgeMax = int(nchan * (1.0 - rules.LineFinderRule['IgnoreEdge']) - 1)
 
         # 2011/05/17 TN
         # Switch to use either ASAP linefinder or John's linefinder
@@ -194,7 +184,6 @@ class DetectLine(basetask.StandardTaskTemplate):
             else:
                 LOG.debug('Start Row %s', row)
                 for [BINN, offset] in BinningRange:
-                    MinNchan = (MinFWHM-2) // BINN + 2
                     SP = self.SpBinning(spectra[row], BINN, offset)
                     MSK = self.MaskBinning(masks[row], BINN, offset)
 
@@ -211,7 +200,6 @@ class DetectLine(basetask.StandardTaskTemplate):
                     #                         edge=(EdgeL, EdgeR))
 
                     MaxLineWidth = MaxFWHM
-                    #MaxLineWidth = int((nchan - Nedge)/3.0)
                     MinLineWidth = rules.LineFinderRule['MinFWHM']
                     for i in range(len(protected)):
                         if protected[i][0] != -1:
@@ -329,77 +317,6 @@ class DetectLine(basetask.StandardTaskTemplate):
                 else:
                     flag = True
         return protected
-
-    def _get_predefined_window(self, spw, window):
-        # CAS-10764 flexible line masking -- supported format
-        #  - integer list [chmin, chmax]
-        #  - nested integer list [[chmin, chmax], [chmin, chmax], ...]
-        #  - float list [fmin, fmax]
-        #  - nested float list [[fmin, fmax], [fmin, fmax], ...]
-        #  - string list ['XGHz', 'YGHz']
-        #  - nested string list [['XGHz', 'YGHz'], ['aMHz', 'bMHz'], ...]
-        #  - channel selection string 'A:chmin~chmax;chmin~chmax,B:fmin~fmax,...'
-        group_id = self.inputs.group_id
-        group_desc = self.inputs.context.observing_run.ms_reduction_group[group_id]
-        ms = group_desc[0].ms
-        field_id = group_desc[0].field_id
-        parser = LineWindowParser(ms, window)
-        parser.parse(field_id)
-        new_window = parser.get_result(spw)
-
-        # TODO
-        # Channel range could be specified by LSRK frequency. This means that
-        # effective channnel range in TOPO frame may be different between MSs.
-        # This effect is not taken into account because (1) line detection
-        # and validation stage doesn't support frequency change over MSs
-        # (i.e. gridding is done in TOPO frame), and (2) data format
-        # for detected lines doesn't support per-MS line lists. This have to be
-        # considered later.
-
-        return new_window
-
-#         if len(window) == 0:
-#             return []
-#         else:
-#             if hasattr(window[0], '__iter__'):
-#                 return [self._get_linerange(spw, w) for w in window]
-#             else:
-#                 return [self._get_linerange(spw, window)]
-#
-#     def _get_linerange(self, spwid, window):
-#         if spwid < 0:
-#             raise RuntimeError("Invalid spw id ({})".format(spwid))
-#
-#         ms = self.inputs.context.observing_run.measurement_sets[0]
-#         parsed_window = get_linerange(window, spwid, ms)
-#         return parsed_window
-#
-#
-# def get_linerange(window, spwid, ms):
-#     if len(window) == 2:
-#         # [chmin, chmax] form
-#         return window
-#     elif len(window) == 3:
-#         # [center_freq, velmin, velmax] form
-#         spw = ms.spectral_windows[spwid]
-#         center_freq = window[0] * 1.0e9  # GHz -> Hz
-#         target_fields = ms.get_fields(intent='TARGET')
-#         source_id = target_fields[0].source_id
-#         restfreq = utils.get_restfrequency(ms.name, spwid, source_id)
-#         if restfreq is None:
-#             restfreq = float(spw.ref_frequency.to_units(measures.FrequencyUnits.HERTZ).value)
-#         #restfreq = spw.refval if len(spw.rest_frequencies) == 0 else spw.rest_frequencies[0]
-#         dfreq = map(lambda x: restfreq * abs(x) / 299792.458, window[1:])
-#         freq_range = [center_freq + dfreq[0], center_freq - dfreq[1]]
-#         refpix = 0
-#         refval = spw.channels.chan_freqs.start
-#         increment = spw.channels.chan_freqs.delta
-#         window = map(lambda x: refpix + (x - refval) / increment, freq_range)
-#         window.sort()
-#         return window
-#     else:
-#         raise RuntimeError('Invalid linewindow format')
-
 
 class LineWindowParser(object):
     """
@@ -744,18 +661,3 @@ def test_parser(ms):
     print('=== TEST RESULTS ===')
     for s in results:
         print(s)
-
-# def get_restfrequency(vis, spwid, source_id):
-#     source_table = os.path.join(vis, 'SOURCE')
-#     with casa_tools.TableReader(source_table) as tb:
-#         tsel = tb.query('SOURCE_ID == {} && SPECTRAL_WINDOW_ID == {}'.format(source_id, spwid))
-#         try:
-#             if tsel.nrows() == 0:
-#                 return None
-#             else:
-#                 if tsel.iscelldefined('REST_FREQUENCY', 0):
-#                     return tsel.getcell('REST_FREQUENCY', 0)[0]
-#                 else:
-#                     return None
-#         finally:
-#             tsel.close()
