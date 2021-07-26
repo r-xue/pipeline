@@ -225,7 +225,7 @@ class ImageParamsHeuristics(object):
                         fintents_list = [fld.intents for fld in fields if utils.dequote(fld.name) == utils.dequote(f)]
                         for fintents in fintents_list:
                             for fintent in fintents:
-                                field_intent_result.update((f, fintent))
+                                field_intent_result.update([(f, fintent)])
 
         # eliminate redundant copies of field/intent keys that map to the
         # same data - to prevent duplicate images being produced
@@ -2184,3 +2184,11 @@ class ImageParamsHeuristics(object):
                          pblimit: float = 0.4, frac_lim:float = 0.2) -> Union[None, float]:
         """Determine fractional flux in final image outside cleanmask"""
         return None
+
+    def weighting(self, specmode: str) -> str:
+        """Determine the weighting scheme."""
+        return 'briggs'
+
+    def perchanweightdensity(self, specmode: str) -> bool:
+        """Determine the perchanweightdensity parameter."""
+        return False

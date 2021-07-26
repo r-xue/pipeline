@@ -5,6 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.mstransform import mssplit
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -70,6 +71,8 @@ class TransformimagedataResults(basetask.Results):
 
 
 class TransformimagedataInputs(mssplit.MsSplitInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     clear_pointing = vdp.VisDependentProperty(default=True)
     modify_weights = vdp.VisDependentProperty(default=False)
@@ -202,6 +205,8 @@ class Transformimagedata(mssplit.MsSplit):
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
             ms.is_imaging_ms = True
+            ms.origin_ms = self.inputs.ms.origin_ms
+            self._set_data_column_to_ms(ms)
 
         # Note there will be only 1 MS in the temporary observing run structure
         result.ms = observing_run.measurement_sets[0]

@@ -234,8 +234,8 @@ class Task(object, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-class ImagingMeasurementSetsPreferred(object, metaclass=abc.ABCMeta):
-    """
-    Class used to register Inputs classes that prefer to see post-mstransform
-    data when available.
-    """
+# class ImagingMeasurementSetsPreferred(object, metaclass=abc.ABCMeta):
+#     """
+#     Class used to register Inputs classes that prefer to see post-mstransform
+#     data when available.
+#     """

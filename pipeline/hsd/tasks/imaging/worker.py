@@ -10,7 +10,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable
+from pipeline.domain import DataTable, DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from . import resultobjects
@@ -32,11 +32,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
 
-    idx = utils.get_parent_ms_idx(context, ms_names[0])
-    if idx >= 0 and idx < len(context.observing_run.measurement_sets):
-        ref_msobj = context.observing_run.measurement_sets[idx]
-    else:
-        raise ValueError("The reference ms, %s, not registered to context" % ms_names[0])
+    ref_msobj = context.observing_run.get_ms(ms_names[0])
     ref_fieldid = fieldid_list[0]
     ref_spw = spw_list[0]
     source_name = ref_msobj.fields[ref_fieldid].name
@@ -76,21 +72,20 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     LOG.info('cell=%s' % (qa.tos(cellx)))
 
     # nx, ny and center
-    parent_mses = [utils.get_parent_ms_name(context, name) for name in ms_names]
     ra0 = []
     dec0 = []
     outref = None
     org_direction = None
-    for vis, ant_id, field_id, spw_id in zip(parent_mses, ant_list, fieldid_list, spw_list):
+    for vis, ant_id, field_id, spw_id in zip(ms_names, ant_list, fieldid_list, spw_list):
 
+        msobj = context.observing_run.get_ms(vis)
         # get first org_direction if source if ephemeris source
         # if is_eph_obj and org_direction==None:
         if ( is_eph_obj or is_known_eph_obj ) and org_direction==None:
             # get org_direction
-            msobj = context.observing_run.get_ms(vis)
             org_direction = msobj.get_fields(field_id)[0].source.org_direction
 
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(vis))
+        datatable_name = sdutils.get_data_table_path(context, msobj)
         datatable = DataTable(name=datatable_name, readonly=True)
 
         if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
@@ -101,15 +96,14 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
 
         if ant_id is None:
             # take all the antennas into account
-            msobj = context.observing_run.get_ms(vis)
             num_antennas = len(msobj.antennas)
-            _vislist = [vis for _ in range(num_antennas)]
+            _vislist = [msobj.origin_ms for _ in range(num_antennas)]
             _antlist = [i for i in range(num_antennas)]
             _fieldlist = [field_id for _ in range(num_antennas)]
             _spwlist = [spw_id for _ in range(num_antennas)]
             index_list = sorted(common.get_index_list_for_ms(datatable, _vislist, _antlist, _fieldlist, _spwlist))
         else:
-            index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
+            index_list = sorted(common.get_index_list_for_ms(datatable, [msobj.origin_ms], [ant_id], [field_id], [spw_id]))
 
         # if is_eph_obj:
         if is_eph_obj or is_known_eph_obj:
@@ -126,9 +120,12 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         del datatable
 
     if len(ra0) == 0:
-        antenna_name = ref_msobj.antennas[ant_list[0]].name
-        LOG.warn('No valid data for source %s antenna %s spw %s in %s. Image will not be created.' % (
-        source_name, antenna_name, ref_spw, ref_msobj.basename))
+        antenna_id = ant_list[0]
+        if antenna_id is None:
+            LOG.warn('No valid data for source %s spw %s in %s. Image will not be created.', source_name, ref_spw, ref_msobj.basename)
+        else:
+            antenna_name = ref_msobj.antennas[antenna_id].name
+            LOG.warn('No valid data for source %s antenna %s spw %s in %s. Image will not be created.', source_name, antenna_name, ref_spw, ref_msobj.basename)
         return False
 
     if outref is None:
@@ -214,6 +211,10 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     Inputs for imaging worker
     NOTE: infile should be a complete list of MSes
     """
+    # Search order of input vis
+    processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     outfile = vdp.VisDependentProperty(default='')
     mode = vdp.VisDependentProperty(default='LINE')
@@ -242,8 +243,8 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         super(SDImagingWorkerInputs, self).__init__()
 
         self.context = context
-        self.infiles = infiles
-        self.outfile = outfile
+        self.infiles = infiles # input MS names
+        self.outfile = outfile # output image name
         self.mode = mode
         self.antids = antids
         self.spwids = spwids
@@ -274,10 +275,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         spwid_list = inputs.spwids
         fieldid_list = inputs.fieldids
         imagemode = inputs.mode
-        file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
-        mses = context.observing_run.measurement_sets
-        v_spwids = [context.observing_run.real2virtual_spw_id(i, mses[j]) for i, j in zip(spwid_list, file_index)]
-        rep_ms = mses[file_index[0]]
+        mses = [context.observing_run.get_ms(name) for name in infiles]
+        v_spwids = [context.observing_run.real2virtual_spw_id(i, ms) for i, ms in zip(spwid_list, mses)]
+        rep_ms = mses[0]
         ant_name = rep_ms.antennas[antid_list[0]].name
         source_name = rep_ms.fields[fieldid_list[0]].clean_name
         phasecenter, cellx, celly, nx, ny, org_direction = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
@@ -327,11 +327,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                     celly, nx, ny):
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
-        idx = utils.get_parent_ms_idx(context, infiles[0])
-        if idx >= 0 and idx < len(context.observing_run.measurement_sets):
-            reference_data = context.observing_run.measurement_sets[idx]
-        else:
-            raise ValueError("The reference ms, %s, not registered to context" % infiles[0])
+        reference_data = context.observing_run.get_ms(infiles[0])
         ref_spwid = spwid_list[0]
 
         LOG.debug('Members to be processed:')

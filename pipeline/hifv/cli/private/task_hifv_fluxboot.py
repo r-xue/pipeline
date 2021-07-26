@@ -5,7 +5,8 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_fluxboot(vis=None, caltable=None, pipelinemode=None, dryrun=None, acceptresults=None, refantignore=None):
+def hifv_fluxboot(vis=None, caltable=None, fitorder=None, pipelinemode=None, dryrun=None, acceptresults=None,
+                   refantignore=None):
 
     ##########################################################################
     #                                                                        #
