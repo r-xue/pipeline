@@ -6,6 +6,7 @@ import numpy as np
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hifv.heuristics import set_add_model_column_parameters
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
@@ -18,28 +19,36 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class CheckflagInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     checkflagmode = vdp.VisDependentProperty(default='')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
+    growflags = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, vis=None, checkflagmode=None, overwrite_modelcol=None):
+    def __init__(self, context, vis=None, checkflagmode=None, overwrite_modelcol=None, growflags=None):
         super(CheckflagInputs, self).__init__()
         self.context = context
         self.vis = vis
         self.checkflagmode = checkflagmode
         self.overwrite_modelcol = overwrite_modelcol
+        self.growflags = growflags
 
 
 class CheckflagResults(basetask.Results):
-    def __init__(self, jobs=None, summaries=None):
+    def __init__(self, jobs=None, results=None, summaries=None):
 
         if jobs is None:
             jobs = []
+        if results is None:
+            results = []
         if summaries is None:
             summaries = []
 
         super(CheckflagResults, self).__init__()
 
         self.jobs = jobs
+        self.results = results
         self.summaries = summaries
         self.plots = {}
 
@@ -247,6 +256,12 @@ class Checkflag(basetask.StandardTaskTemplate):
 
                 extendflag_result = self._do_extendflag(field=fieldselect, scan=scanselect)
 
+            # PIPE-939: optional growflags for 'bpd' and 'allcals'
+            if self.inputs.checkflagmode in ('bpd', 'allcals') and self.inputs.growflags is True:
+                extendflag_result = self._do_extendflag(field=fieldselect, scan=scanselect,
+                                                        growtime=100.0, growfreq=100.0,
+                                                        growaround=True, flagneartime=True, flagnearfreq=True)
+
             job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
             summarydict = self._executor.execute(job)
             summaries.append(summarydict)
@@ -280,6 +295,13 @@ class Checkflag(basetask.StandardTaskTemplate):
                            'flagbackup': False}
 
         self._do_checkflag(**method_args)
+
+        # PIPE-939: optional growflags for checkflag'semi' and ''
+        if self.inputs.checkflagmode in ('semi', '') and self.inputs.growflags is True:
+            extendflag_result = self._do_extendflag(field=method_args['field'],
+                                                    scan=method_args['scan'],
+                                                    growtime=100.0, growfreq=100.0,
+                                                    growaround=True, flagneartime=True, flagnearfreq=True)
 
         # get the after flag total statistics
         job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
@@ -346,10 +368,9 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'savepars': False}
 
         job = casa_tasks.flagdata(**task_args)
+        result = self._executor.execute(job)
 
-        self._executor.execute(job)
-
-        return CheckflagResults([job])
+        return CheckflagResults(jobs=[job])
 
     def _do_tfcropflag(self, mode='tfcrop', field=None, correlation=None, scan=None, intent='',
                        ntime=0.45, datacolumn='corrected', flagbackup=True,

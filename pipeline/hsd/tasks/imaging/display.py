@@ -9,6 +9,7 @@ from matplotlib.ticker import MultipleLocator
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
 from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
 from pipeline.hsd.tasks.common.display import sd_polmap as polmap
@@ -635,14 +636,13 @@ class SDChannelMapDisplay(SDImageDisplay):
         fieldid_list = self.inputs.fieldid_list
 
         line_list = []
-#         for group_desc in reduction_group.values():
+
+        msobj_list = self.inputs.context.observing_run.measurement_sets
+        msname_list = [absolute_path(msobj.name) for msobj in msobj_list]
         for g in group_desc:
             found = False
             for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
-                msobj_list = self.inputs.context.observing_run.measurement_sets
-                msname_list = [absolute_path(msobj_list[idx].name) for idx in range(len(msobj_list))]
                 group_msid = msname_list.index(absolute_path(g.ms.name))
-                del msobj_list, msname_list
                 if group_msid == msid and g.antenna_id == ant and \
                     g.field_id == fid and g.spw_id == spw:
                     found = True
@@ -1275,7 +1275,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
         # MS-based procedure
         reference_data = self.context.observing_run.measurement_sets[self.inputs.msid_list[0]]
-        is_baselined = reference_data.work_data != reference_data.name
+        is_baselined = reference_data.get_data_column(DataType.BASELINED) is not None
 
         for pol in range(self.npol):
             data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()

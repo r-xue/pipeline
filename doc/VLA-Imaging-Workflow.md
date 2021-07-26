@@ -1,4 +1,4 @@
-VLA interferometry imaging workflow
+# VLA interferometry imaging workflow
 
 List of differences compared to the ALMA interferometry imaging workflow (ALMA-Imaging-Workflow.md)
 
@@ -8,8 +8,8 @@ Related tickets: PIPE-673
 - hif_checkproductsize
 
   - task parameter
-    - maximsize (defaults to -1 for backward compatibilty, set to 16384 for VLA) 
-      Mitigate continum image size by changing pixel per beam (min. 4). If imsize still larger than limit, 
+    - maximize (defaults to -1 for backward compatibility, set to 16384 for VLA) 
+      Mitigate continuum image size by changing pixel per beam (min. 4). If `imsize` still larger than limit, 
       then truncate image. Mitigation parameters for different targets and bands are independent.
 
 - hif_makeimlist

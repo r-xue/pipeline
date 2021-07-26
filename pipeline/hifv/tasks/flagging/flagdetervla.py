@@ -69,6 +69,7 @@ from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -209,6 +210,9 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
     """
     FlagDeterVLAInputs defines the inputs for the FlagDeterVLA pipeline task.
     """
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     baseband = vdp.VisDependentProperty(default=True)
     clip = vdp.VisDependentProperty(default=True)
     edgespw = vdp.VisDependentProperty(default=True)
