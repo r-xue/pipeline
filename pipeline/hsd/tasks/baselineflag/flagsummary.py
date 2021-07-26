@@ -47,7 +47,7 @@ class SDBLFlagSummary(object):
         """
         self.context = context
         self.ms = ms
-        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, self.ms.basename)
+        datatable_name = sdutils.get_data_table_path(self.context, self.ms)
         self.datatable = DataTable(name=datatable_name, readonly=True)
         self.antid_list = antid_list
         self.fieldid_list = fieldid_list
@@ -67,6 +67,7 @@ class SDBLFlagSummary(object):
 
         datatable = self.datatable
         ms = self.ms
+        origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
         antid_list = self.antid_list
         fieldid_list = self.fieldid_list
         spwid_list = self.spwid_list
@@ -94,7 +95,7 @@ class SDBLFlagSummary(object):
             asdm = common.asdm_name_from_ms(ms)
             field_name = ms.get_fields(field_id=fieldid)[0].name
             LOG.info("*** Summarizing table: %s ***" % (os.path.basename(filename_in)))
-            time_table = datatable.get_timetable(antid, spwid, None, ms.basename, fieldid)
+            time_table = datatable.get_timetable(antid, spwid, None, origin_ms.basename, fieldid)
             # Select time gap list: 'subscan': large gap; 'raster': small gap
             if flagRule['Flagging']['ApplicableDuration'] == "subscan":
                 TimeTable = time_table[1]
@@ -106,7 +107,7 @@ class SDBLFlagSummary(object):
                                        ms, antid, fieldid, spwid)
 
             time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
-                                             ms=ms, field_id=fieldid)
+                                             ms=origin_ms, field_id=fieldid)
             # time_gap[0]: PosGap, time_gap[1]: TimeGap
             
             for pol in pollist:

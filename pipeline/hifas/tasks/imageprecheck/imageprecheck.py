@@ -3,9 +3,10 @@ import math
 import pipeline.domain.measures as measures
 import pipeline.hifa.tasks.imageprecheck.imageprecheck as hifa_task_imageprecheck
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hifa.heuristics import imageprecheck
@@ -73,6 +74,9 @@ class ImagePreCheckResults(hifa_task_imageprecheck.ImagePreCheckResults):
 
 
 class ImagePreCheckInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
     desired_angular_resolution = vdp.VisDependentProperty(default='')
@@ -86,7 +90,7 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)
+#api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)
 
 
 @task_registry.set_equivalent_casa_task('hifas_imageprecheck')

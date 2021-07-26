@@ -1,8 +1,9 @@
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.project as project
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import checkproductsize
 from pipeline.infrastructure import task_registry
 from .resultobjects import CheckProductSizeResult
@@ -11,6 +12,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class CheckProductSizeInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     parallel = vdp.VisDependentProperty(default='automatic')
 
     @vdp.VisDependentProperty(null_input=[None, '', -1, -1.0])
@@ -47,7 +51,7 @@ class CheckProductSizeInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(CheckProductSizeInputs)
+#api.ImagingMeasurementSetsPreferred.register(CheckProductSizeInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_checkproductsize')

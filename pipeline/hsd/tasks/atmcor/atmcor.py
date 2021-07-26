@@ -3,13 +3,16 @@ import os
 from typing import List, Optional, Union
 
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.heuristics import fieldnames
+from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.utils import relative_path
@@ -21,6 +24,8 @@ LOG = logging.get_logger(__name__)
 
 class SDATMCorrectionInputs(vdp.StandardInputs):
     """Inputs class for SDATMCorrection task."""
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     atmtype = vdp.VisDependentProperty(default=1)
     dtem_dh = vdp.VisDependentProperty(default=-5.6)
@@ -298,6 +303,7 @@ class SDATMCorrectionResults(common.SingleDishResults):
         super().__init__(task, success, outcome)
         # outcome is the name of output file from sdatmcor
         self.atmcor_ms_name = outcome
+        self.out_mses = []
 
     def merge_with_context(self, context: Context):
         """Merge execution result of atmcor stage into pipeline context.
@@ -307,7 +313,29 @@ class SDATMCorrectionResults(common.SingleDishResults):
         """
         super().merge_with_context(context)
 
-        # TODO: register MS after sdatmcor to the context
+        # register output MS domain object and reduction_group to context
+        target = context.observing_run
+        for ms in self.out_mses:
+            # remove existing MS in context if the same MS is already in list.
+            oldms_index = None
+            for index, oldms in enumerate(target.get_measurement_sets()):
+                if ms.name == oldms.name:
+                    oldms_index = index
+                    break
+            if oldms_index is not None:
+                LOG.info('Replace {} in context'.format(ms.name))
+                del target.measurement_sets[oldms_index]
+
+            # Adding mses to context
+            LOG.info('Adding {} to context'.format(ms.name))
+            target.add_measurement_set(ms)
+            # Initialize callibrary
+            calto = callibrary.CalTo(vis=ms.name)
+            LOG.info('Registering {} with callibrary'.format(ms.name))
+            context.callibrary.add(calto, [])
+            # register output MS to processing group
+            reduction_group = inspect_reduction_group(ms)
+            merge_reduction_group(target, reduction_group)
 
     def _outcome_name(self) -> str:
         """Return representative string for the outcome.
@@ -377,6 +405,11 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         Returns:
             input results instance
         """
+        # Generate domain object of baselined MS
+        in_ms = self.inputs.ms
+        new_ms = generate_ms(result.atmcor_ms_name, in_ms)
+        new_ms.set_data_column(DataType.ATMCORR, 'DATA')
+        result.out_mses.append(new_ms)
         return result
 
 
