@@ -5,10 +5,12 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.utils import absolute_path
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.applycal.applycal import reshape_flagdata_summary
+from pipeline.infrastructure.utils import absolute_path
+
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from . import worker
@@ -31,6 +33,10 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     def __to_int(self, val):
         return int(val)
+
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
 
     intent = vdp.VisDependentProperty(default='TARGET')
     iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
@@ -234,7 +240,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         context = inputs.context
         # name of MS to process
         cal_name = inputs.ms.name
-        bl_name = inputs.ms.work_data
+        bl_list = context.observing_run.get_measurement_sets_of_type([DataType.BASELINED])
+        match = sdutils.match_origin_ms(bl_list, inputs.ms.origin_ms)
+        bl_name = match.name if match is not None else cal_name
         in_ant = inputs.antenna
         in_spw = inputs.spw
         in_field = inputs.field
@@ -317,15 +325,10 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
 
         # per-MS loop
         for msobj, accumulator in registry.items():
-            rowmap = None
             if absolute_path(cal_name) == absolute_path(bl_name):
                 LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
                          " MASKLIST will also be cleared up. You may go on flagging but the statistics"
                          " will contain line emission." % inputs.ms.basename)
-            else:
-                # row map generation is very expensive. Do as few time as possible
-                _ms = context.observing_run.get_ms(msobj.name)
-                rowmap = sdutils.make_row_map_for_baselined_ms(_ms)
 
             antenna_list = accumulator.get_antenna_id_list()
             fieldid_list = accumulator.get_field_id_list()
@@ -351,8 +354,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             flagging_inputs = worker.SDBLFlagWorkerInputs(
                 context, clip_niteration,
                 msobj.name, antenna_list, fieldid_list,
-                spwid_list, pols_list, nchan, flag_rule,
-                rowmap=rowmap)
+                spwid_list, pols_list, nchan, flag_rule)
             flagging_task = worker.SDBLFlagWorker(flagging_inputs)
 
             flagging_results = self._executor.execute(flagging_task, merge=False)

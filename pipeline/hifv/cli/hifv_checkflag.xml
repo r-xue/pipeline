@@ -45,7 +45,15 @@
                            data, intent='*TARGET', datacolumn='data' and uses a timedevscale of 4.0.
         </description>
         <value/>
-            </param>
+    </param>
+
+    <param name="growflags" type="bool">
+        <shortdescription>Grow flags in time and frequenct at the end of the chosen checkflagmode</shortdescription>
+        <description>Grow flags in time and frequenct at the end of the following checkflagmodes:
+            'bpd', 'allcals', 'semi' and ''.
+        </description>
+        <value>False</value>
+    </param>    
 
     <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operating mode</shortdescription>

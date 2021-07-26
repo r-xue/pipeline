@@ -5,16 +5,18 @@ import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.mpihelpers as mpihelpers
-# from pipeline.domain import DataTable
+from pipeline.domain import DataType
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
 from pipeline.infrastructure import task_registry
 from . import maskline
 from . import worker
 from .. import common
 from ..common import compress
+from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
 # import memory_profiler
@@ -25,6 +27,9 @@ class SDBaselineInputs(vdp.StandardInputs):
     """
     Inputs for baseline subtraction
     """
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     spw = vdp.VisDependentProperty(default='')
     pol = vdp.VisDependentProperty(default='')
@@ -99,14 +104,39 @@ class SDBaselineInputs(vdp.StandardInputs):
 class SDBaselineResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
         super(SDBaselineResults, self).__init__(task, success, outcome)
+        self.out_mses = []
 
     #@utils.profiler
     def merge_with_context(self, context):
         super(SDBaselineResults, self).merge_with_context(context)
 
-        # increment iteration counter
-        # register detected lines to reduction group member
-        reduction_group = context.observing_run.ms_reduction_group
+        # register output MS domain object and reduction_group to context
+        target = context.observing_run
+        for ms in self.out_mses:
+            # remove existing MS in context if the same MS is already in list.
+            oldms_index = None
+            for index, oldms in enumerate(target.get_measurement_sets()):
+                if ms.name == oldms.name:
+                    oldms_index = index
+                    break
+            if oldms_index is not None:
+                LOG.info('Replace {} in context'.format(ms.name))
+                del target.measurement_sets[oldms_index]
+
+            # Adding mses to context
+            LOG.info('Adding {} to context'.format(ms.name))
+            target.add_measurement_set(ms)
+            # Initialize callibrary
+            calto = callibrary.CalTo(vis=ms.name)
+            LOG.info('Registering {} with callibrary'.format(ms.name))
+            context.callibrary.add(calto, [])
+            # register output MS to processing group
+            reduction_group = inspect_reduction_group(ms)
+            merge_reduction_group(target, reduction_group)
+
+        # increment iteration counter (only to in MS for now)
+        # register detected lines to reduction group member (to both in and out MS)
+        reduction_group = target.ms_reduction_group
         for b in self.outcome['baselined']:
             group_id = b['group_id']
             member_list = b['members']
@@ -115,21 +145,17 @@ class SDBaselineResults(common.SingleDishResults):
             group_desc = reduction_group[group_id]
             for (ms, field, ant, spw) in utils.iterate_group_member(reduction_group[group_id], member_list):
                 group_desc.iter_countup(ms, ant, spw, field)
-                group_desc.add_linelist(lines, ms, ant, spw, field,
-                                        channelmap_range=channelmap_range)
-
-        # register working data that stores spectra after baseline subtraction
-        if 'work_data' in self.outcome:
-            for (vis, work_data) in self.outcome['work_data'].items():
-                ms = context.observing_run.get_ms(vis)
-                ms.work_data = work_data
+                out_ms = target.get_ms(name=self.outcome['vis_map'][ms.name])
+                for m in [ms, out_ms]:
+                    group_desc.add_linelist(lines, m, ant, spw, field,
+                                            channelmap_range=channelmap_range)
 
         # merge deviation_mask with context
-        for ms in context.observing_run.measurement_sets:
-            ms.deviation_mask = None
+        for ms in target.measurement_sets:
+            if not hasattr(ms, 'deviation_mask'): ms.deviation_mask = None
         if 'deviation_mask' in self.outcome:
             for (basename, masks) in self.outcome['deviation_mask'].items():
-                ms = context.observing_run.get_ms(basename)
+                ms = target.get_ms(basename)
                 ms.deviation_mask = {}
                 for field in ms.get_fields(intent='TARGET'):
                     for antenna in ms.antennas:
@@ -137,6 +163,8 @@ class SDBaselineResults(common.SingleDishResults):
                             key = (field.id, antenna.id, spw.id)
                             if key in masks:
                                 ms.deviation_mask[key] = masks[key]
+                out_ms = target.get_ms(name=self.outcome['vis_map'][ms.name])
+                out_ms.deviation_mask = ms.deviation_mask
 
     def _outcome_name(self):
         return '\n'.join(['Reduction Group {0}: member {1}'.format(b['group_id'], b['members'])
@@ -199,7 +227,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
             LOG.info('Processing Reduction Group %s', group_id)
             LOG.info('Group Summary:')
             for m in group_desc:
-                # LOG.debug('\tAntenna %s Spw %s Pol %s'%(m.antenna, m.spw, m.pols))
                 LOG.info('\tMS "{ms}" Antenna "{antenna}" (ID {antenna_id}) Spw {spw} Field "{field}" (ID {field_id})'.format(
                          ms=m.ms.basename,
                          antenna=m.antenna_name,
@@ -220,16 +247,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     org_directions_dict.update( {source_name:org_direction} )
                     LOG.info( "registered org_direction[{}]={}".format( source_name, org_direction ) )
 
-            # assume all members have same spw and pollist
-            first_member = group_desc[0]
-            iteration = first_member.iteration
-            LOG.debug('iteration for group %s is %s', group_id, iteration)
-
             # skip channel averaged spw
             nchan = group_desc.nchan
             LOG.debug('nchan for group %s is %s', group_id, nchan)
             if nchan == 1:
-                LOG.info('Skip channel averaged spw %s.', first_member.spw)
+                first_member = group_desc[0]
+                vspw = context.observing_run.real2virtual_spw_id(first_member.spw.id, first_member.ms)
+                LOG.info('Skip channel averaged spw %s.', vspw)
                 continue
 
             LOG.debug('spw=\'%s\'', args['spw'])
@@ -245,9 +269,14 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
             member_list.sort()
 
-            LOG.debug('Members to be processed:')
+            # assume all members have same iteration
+            first_member = group_desc[member_list[0]]
+            iteration = first_member.iteration
+            LOG.debug('iteration for group %s is %s', group_id, iteration)
+
+            LOG.info('Members to be processed:')
             for (gms, gfield, gant, gspw) in utils.iterate_group_member(group_desc, member_list):
-                LOG.debug('\tMS "%s" Field ID %s Antenna ID %s Spw ID %s',
+                LOG.info('\tMS "%s" Field ID %s Antenna ID %s Spw ID %s',
                           gms.basename, gfield, gant, gspw)
 
             # Deviation Mask
@@ -325,7 +354,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
-        work_data = {}
+        vis_map = {} # key and value are input and output vis name, respectively
         plot_list = []
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
 
@@ -371,13 +400,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
             outfile = result.outcome['outfile']
             LOG.debug('infile: {0}, outfile: {1}'.format(os.path.basename(vis), os.path.basename(outfile)))
-            work_data[ms.name] = outfile
+            vis_map[ms.name] = outfile
 
             if 'plot_list' in result.outcome:
                 plot_list.extend(result.outcome['plot_list'])
 
         outcome = {'baselined': baselined,
-                   'work_data': work_data,
+                   'vis_map': vis_map,
                    'edge': edge,
                    'deviation_mask': deviation_mask,
                    'plots': plot_list}
@@ -388,6 +417,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
         return results
 
     def analyse(self, result):
+        # Generate domain object of baselined MS
+        for infile, outfile in result.outcome['vis_map'].items():
+            in_ms = self.inputs.context.observing_run.get_ms(infile)
+            new_ms = generate_ms(outfile, in_ms)
+            new_ms.set_data_column(DataType.BASELINED, 'DATA')
+            result.out_mses.append(new_ms)
+
         return result
 
     @staticmethod

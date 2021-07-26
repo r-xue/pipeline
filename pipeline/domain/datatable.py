@@ -27,6 +27,7 @@ import collections
 import os
 import re
 import time
+from typing import Tuple
 
 # import memory_profiler
 import numpy
@@ -151,47 +152,71 @@ def timetable_key(table_type, antenna, spw, polarization=None, ms=None, field_id
 
 class DataTableIndexer(object):
     """
+    Map between serial indices and per-MS row indices.
+
     DataTableIndexer is responsible for mapping between classical
-    (serial) row indices and per-MS row indices.
+    (serial) row indices (unique row IDs throughout all origin MSes)
+    and per-MS row indices.
     """
     @property
-    def mses(self):
-        return self.context.observing_run.measurement_sets
+    def origin_mses(self):
+        return self.__origin_mses
+
+    @origin_mses.setter
+    def origin_mses(self, value):
+        """Set an attribute, origin_ms."""
+        self.__origin_mses = value
 
     def __init__(self, context):
+        """
+        Initialize DataTable Indexer class.
+
+        Args:
+            context: Pipeline context
+        """
         self.context = context
+        self.origin_mses = [ms for ms in self.context.observing_run.measurement_sets
+                            if ms.name == ms.origin_ms]
         self.nrow_per_ms = []
-        for ms in context.observing_run.measurement_sets:
-            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
+        for origin_ms in self.origin_mses:
+            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, origin_ms.basename, 'RO')
             with casa_tools.TableReader(ro_table_name) as tb:
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)
 
-    def serial2perms(self, i):
+    def serial2perms(self, i: int) -> Tuple[str, int]:
         """
-        Return two indices. The former indicates a MS index while
-        the later corresponds to the row index of the datatable for
-        that MS.
+        Return basename of origin MS and per-MS row id of a given serial index.
 
-        i -- serial index
+        Args:
+            i: serial index
+
+        Returns:
+            The basename of origin MS and the row index of the datatable for
+            that MS corresponding to a given serial index.
         """
         base = 0
         for j in range(self.num_mses):
             past_base = base
             base += self.nrow_per_ms[j]
             if i < base:
-                return self.mses[j].basename, i - past_base
+                return self.origin_mses[j].basename, i - past_base
 
         raise RuntimeError('Internal Consistency Error. ')
 
-    def perms2serial(self, vis, i):
+    def perms2serial(self, vis: str, i: int) -> int:
         """
         Return serial index.
 
-        vis -- basename of the MS
-        i -- per MS datatable row index
+        Args:
+            vis: Name of an MS
+            i: per-MS DataTable row index
+
+        Returns:
+            A specified index in serial mode
         """
-        j = self.mses.index(self.context.observing_run.get_ms(vis))
+        ms = self.context.observing_run.get_ms(vis)
+        j = self.origin_mses.index(self.context.observing_run.get_ms(ms.origin_ms))
         assert j < self.num_mses
         assert i < self.nrow_per_ms[j]
 
@@ -199,7 +224,8 @@ class DataTableIndexer(object):
         return base + i
 
     def per_ms_index_list(self, ms, index_list):
-        j = self.mses.index(ms)
+        origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
+        j = self.origin_mses.index(origin_ms)
         base = sum(self.nrow_per_ms[:j])
         length = self.nrow_per_ms[j]
         perms_list = numpy.where(numpy.logical_and(index_list >= base,
