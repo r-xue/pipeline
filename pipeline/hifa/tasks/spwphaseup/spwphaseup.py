@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import List, Optional, Tuple
 
 import numpy
 
@@ -356,10 +356,24 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return tuning_result
 
-    def _get_snr_info(self, spwids, snrs):
+    def _get_snr_info(self, spwids: List[int], snrs: List[float]) -> List[Tuple[int, float]]:
+        """
+        Helper method that takes phase SNR info from the SNR test, and returns
+        return phase SNR info for all SpWs specified in inputs.spw.
+
+        Args:
+            spwids: list of SpW IDs for which phase SNRs were determined.
+            snrs: list of phase SNRs.
+
+        Returns:
+            List of tuples, specifying SpW ID and corresponding phase SNR.
+        """
         spw_snr = {str(k): v for k, v in zip(spwids, snrs)}
         snr_info = []
+        # Create entry for each SpW specified by inputs.
         for spwid in self.inputs.spw.split(','):
+            # If no SNR info was available, set to None, otherwise use the
+            # derived value.
             snr = None
             if spwid in spw_snr:
                 snr = spw_snr[spwid]

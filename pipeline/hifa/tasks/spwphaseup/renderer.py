@@ -1,9 +1,12 @@
 import collections
 import os
+from typing import List
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.basetask import ResultsList
 
 LOG = logging.get_logger(__name__)
 
@@ -41,6 +44,7 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Generate rows for phase SNR table.
         snr_table_rows = get_snr_table_rows(context, results)
 
+        # Update mako context.
         ctx.update({
             'snr_table_rows': snr_table_rows,
             'spwmaps': spwmaps,
@@ -86,22 +90,43 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return applications
 
 
-def get_snr_table_rows(context, results):
+def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
+    """
+    Return list of strings containing HTML TD columns, representing rows for
+    the phase SNR table.
+
+    Args:
+        context: the pipeline context.
+        results: list of task results.
+
+    Returns:
+        List of strings containing rows for phase SNR table.
+    """
     rows = []
 
     for result in results:
         ms = context.observing_run.get_ms(result.vis)
-        threshold = result.inputs['phasesnr']
 
+        # Get phase SNR threshold, and present this in the table if the phase
+        # SNR test was run during task.
+        threshold = result.inputs['phasesnr']
+        spwmapmode = result.inputs['hm_spwmapmode']
+        if spwmapmode == 'auto':
+            thr_str = str(threshold)
+        else:
+            thr_str = f"N/A <p>(hm_spwmapmode='{spwmapmode}')"
+
+        # For each SpW in SNR info, create a row, and highlight when the SNR
+        # was missing or below the phase SNR threshold.
         for row in result.snr_info:
             spwid = row[0]
             if row[1] is None:
-                snr = '<strong class="text-danger">N/A</strong>'
+                snr = '<strong class="alert-danger">N/A</strong>'
             elif row[1] < threshold:
-                snr = f'<strong class="text-danger">{row[1]:.1f}</strong>'
+                snr = f'<strong class="alert-danger">{row[1]:.1f}</strong>'
             else:
                 snr = f'{row[1]:.1f}'
 
-            rows.append(SnrTR(ms.basename, threshold, spwid, snr))
+            rows.append(SnrTR(ms.basename, thr_str, spwid, snr))
 
     return utils.merge_td_columns(rows)
