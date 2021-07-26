@@ -10,11 +10,13 @@ from typing import List, Dict
 
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline import Context
+from pipeline.h.tasks.applycal import ApplycalResults
 from pipeline.hsd.tasks.applycal import applycal
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.basetask import ResultsList
 from . import ampcal
 from ..importdata import importdata as importdata
 
@@ -27,9 +29,9 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
     reffile = vdp.VisDependentProperty(default='')
     caltable = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, caltable=None, reffile=None,
-                 products_dir=None, copytoraw=None, rawdata_dir=None,
-                 output_dir=None):
+    def __init__(self, context: Context, vis: List[str] = None, caltable: vdp.VisDependentProperty = None,
+                 reffile: vdp.VisDependentProperty = None, products_dir: str = None,
+                 copytoraw: vdp.VisDependentProperty = None, rawdata_dir: str = None, output_dir: str = None):
         """
         Initialise the Inputs, initialising any property values to those given here.
 
@@ -54,31 +56,44 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
 class NRORestoreDataResults(restoredata.RestoreDataResults):
     """Results object of NRORestoreData."""
 
-    def __init__(self, importdata_results=None, applycal_results=None, ampcal_results=None,
-                 flagging_summaries: List[Dict[str, str]] = None):
+    def __init__(self, importdata_results: ResultsList = None, applycal_results: ResultsList = None,
+                 ampcal_results: ResultsList = None, flagging_summaries: List[Dict[str, str]] = None):
         """
         Initialise the results objects.
 
         Args:
             importdata_results: results of importdata
             applycal_results: results of applycal
-            ampcal_results:
+            ampcal_results: results of ampcal
             flagging_summaries: summaries of flagdata
         """
         super(NRORestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
         self.ampcal_results = ampcal_results
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context):
+        """
+        Merge results with context.
+
+        Args:
+            context: Context object
+        """
         super(NRORestoreDataResults, self).merge_with_context(context)
 
         # set amplitude scaling factor to ms domain objects
-        if isinstance(self.applycal_results, basetask.ResultsList):
+        if isinstance(self.applycal_results, ResultsList):
             for result in self.applycal_results:
                 self._merge_ampcal(context, result)
         else:
             self._merge_ampcal(context, self.applycal_results)
 
-    def _merge_ampcal(self, context, applycal_results):
+    def _merge_ampcal(self, context: Context, applycal_results: ApplycalResults):
+        """
+        Merge results of applycal with context.
+
+        Args:
+            context: Context object
+            applycal_results: results of applycal
+        """
         for calapp in applycal_results.applied:
             msobj = context.observing_run.get_ms(name=os.path.basename(calapp.vis))
             if not hasattr(msobj, 'k2jy_factor'):
@@ -116,6 +131,7 @@ class NRORestoreData(restoredata.RestoreData):
     Inputs = NRORestoreDataInputs
 
     def prepare(self):
+        """Prepare results."""
         inputs = self.inputs
         LOG.debug('prepare inputs = {0}'.format(inputs))
 
@@ -130,7 +146,14 @@ class NRORestoreData(restoredata.RestoreData):
                                         results.flagging_summaries)
         return results
 
-    def _do_importasdm(self, sessionlist, vislist):
+    def _do_importasdm(self, sessionlist: List[str], vislist: List[str]):
+        """
+        Execute importasdm.
+
+        Args:
+            sessionlist: a list of sessions
+            vislist: a list of vis
+        """
         inputs = self.inputs
         # NROImportDataInputs operate in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
@@ -144,6 +167,7 @@ class NRORestoreData(restoredata.RestoreData):
         return self._executor.execute(importdata_task, merge=True)
 
     def _do_applycal(self):
+        """Execute applycal."""
         inputs = self.inputs
         LOG.debug('_do_applycal inputs = {0}'.format(inputs))
 
