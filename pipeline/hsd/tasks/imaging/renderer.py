@@ -36,9 +36,8 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
 
         cqa = casa_tools.quanta
         plots = []
-        image_rms_reps = []
-        image_rms_others = []
         image_rms = []
+        image_rms_notreps = []
         for r in results:
             LOG.info('r = {}'.format(r))
             if isinstance(r, resultobjects.SDImagingResultItem):
@@ -77,23 +76,19 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     LOG.info('trms = {}'.format(trms))
                     icon = '<span class="glyphicon glyphicon-ok"></span>' if rms_info.representative else ''
                     LOG.info('icon = {}'.format(icon))
-                    if ref_ms.representative_target[0] is not None:
-                        tr_rep = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
-                                        cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
-                                        trms, cqa.tos(sensitivity['sensitivity']))
-                        LOG.info('tr_rep = {}'.format(tr_rep))
-                        image_rms.append(tr_rep)
+                    tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
+                                    cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
+                                    trms, cqa.tos(sensitivity['sensitivity']))
+                    LOG.info('tr = {}'.format(tr))
+                    if image_items.sourcename == ref_ms.representative_target[0]:
+                        image_rms.append(tr)
                         LOG.info('image_rms = {}'.format(image_rms))
                     else:
-                        tr_other = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
-                                        cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
-                                        trms, cqa.tos(sensitivity['sensitivity']))
-                        LOG.info('tr_other = {}'.format(tr_other))
-                        image_rms_others.append(tr_other)                    
-                        LOG.info('image_rms_others = {}'.format(image_rms_others))
-                    if len(image_rms) > 0 and len(image_rms_others) > 0:
-                        image_rms.extend(image_rms_others)
-                        LOG.info('image_rms = {}'.format(image_rms))
+                        image_rms_notreps.append(tr)                    
+                        LOG.info('image_rms_notreps = {}'.format(image_rms_notreps))
+
+        image_rms.extend(image_rms_notreps)
+        LOG.info('image_rms = {}'.format(image_rms))
 
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
         LOG.info('rms_table = {}'.format(rms_table))
