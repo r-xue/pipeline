@@ -11,6 +11,7 @@ import scipy.cluster.vq as VQ
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.domain.datatable import DataTableIndexer
 from . import rules
 from .. import common
@@ -29,6 +30,9 @@ def ValidationFactory(pattern):
 
 
 class ValidateLineInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     window = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
     nsigma = vdp.VisDependentProperty(default=3.0)
@@ -82,9 +86,6 @@ class ValidateLineResults(common.SingleDishResults):
 
     def merge_with_context(self, context):
         super(ValidateLineResults, self).merge_with_context(context)
-        # exporting datatable should be done within the parent task
-#         datatable = self.outcome.pop('datatable')
-#         datatable.exportdata(minimal=True)
 
     def _outcome_name(self):
         return ''
@@ -125,8 +126,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
             # TODO: review whether this relies on order of dictionary values.
             signal = list(detect_signal.values())[0]
             for i in index_list:
-                vis, row = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, row = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 datatable.putcell('MASKLIST', row, signal[2])
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': lines,
@@ -158,8 +159,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         #if len(grid_table) == 0:
         if iteration == 0:
             for i in index_list:
-                vis, row = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, row = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 mask_list = datatable.getcell('MASKLIST', row)
                 no_change = datatable.getcell('NOCHANGE', row)
                 #LOG.debug('DataTable = %s, detect_signal = %s, OldFlag = %s' % (mask_list, detect_signal[row][2], no_change))
@@ -170,8 +171,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         # Iteration case
         else:
             for i in index_list:
-                vis, row = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, row = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 mask_list = datatable.getcell('MASKLIST', row)
                 no_change = datatable.getcell('NOCHANGE', row)
                 #LOG.debug('DataTable = %s, detect_signal = %s, OldFlag = %s' % (mask_list, detect_signal[0][2], no_change))
@@ -207,7 +208,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     Inputs = ValidateLineInputs
 
     CLUSTER_WHITEN = 1.0
-    #CLUSTER_WHITEN = 4.0 # sensitivity of line width compared to center position -> 1/4
 
     # as of 2017/7/4 Valid=0.5, Marginal=0.35, Questionable=0.2
     # should be Valid=0.7, Marginal=0.5, Questionable=0.3
@@ -259,11 +259,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 'grid_ra': grid_ra,
                 'grid_dec': grid_dec
             }
-        # self.cluster_info['grid']['ra_min'] = x0
-        # self.cluster_info['grid']['dec_min'] = y0
-        # self.cluster_info['grid']['grid_ra'] = grid_ra
-        # self.cluster_info['grid']['grid_dec'] = grid_dec
-
         # Create Space for storing the list of spectrum (ID) in the Grid
         # 2013/03/27 TN
         # Grid2SpectrumID stores index of index_list instead of row numbers
@@ -279,7 +274,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         print('LineIndex: {}'.format(LineIndex))
 
         ### 2011/05/17 anti-scaling of the line width
-        # Region2[:, 0] = Region2[:, 0] * self.CLUSTER_WHITEN
         for Nc in range(Ncluster):
             lines[Nc][1] *= self.CLUSTER_WHITEN
 
@@ -287,7 +281,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         print('LineIndex2: {}'.format(LineIndex2))
         print('BestCategory: {}'.format(BestCategory))
 
-        #for i in range(len(BestCategory)): category[i] = LineIndex2[BestCategory[i]]
         category = [LineIndex2[bc] for bc in BestCategory]
 
         ######## Clustering: Detection Stage ########
@@ -374,8 +367,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             # TODO: review whether this relies on order of dictionary values.
             signal = list(detect_signal.values())[0]
             for i in index_list:
-                vis, row = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, row = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 datatable.putcell('MASKLIST', row, signal[2])
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': lines,
@@ -397,13 +390,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         iteration = self.inputs.iteration
 
-        # grid_ra = self.inputs.grid_ra
-        # grid_dec = self.inputs.grid_dec
-        # broad_component = self.inputs.broad_component
-        # xorder = self.inputs.xorder
-        # yorder = self.inputs.yorder
-        _vis, _row = indexer.serial2perms(index_list[0])
-        self.nchan = datatable_dict[_vis].getcell('NCHAN', _row)
+        origin_vis, _row = indexer.serial2perms(index_list[0])
+        self.nchan = datatable_dict[origin_vis].getcell('NCHAN', _row)
         self.nsigma = self.inputs.nsigma
 
         ProcStartTime = time.time()
@@ -462,8 +450,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             else:
                 signal = manual_window
             for i in index_list:
-                vis, row = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, row = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 datatable.putcell('MASKLIST', row, signal)
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': manual_window,
@@ -481,45 +469,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # 2008/9/20 Dec Effect was corrected
         def _g(colname):
             for i in index_list:
-                vis, j = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, j = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 yield datatable.getcell(colname, j)
-#        ras = numpy.fromiter(_g('RA'), dtype=numpy.float64)
-#        decs = numpy.fromiter(_g('DEC'), dtype=numpy.float64)
-#        ras = numpy.fromiter(_g('SHIFT_RA'), dtype=numpy.float64)
-#        decs = numpy.fromiter(_g('SHIFT_DEC'), dtype=numpy.float64)
         ras = numpy.fromiter(_g('OFS_RA'), dtype=numpy.float64)
         decs = numpy.fromiter(_g('OFS_DEC'), dtype=numpy.float64)
         PosList = numpy.asarray([ras, decs])
-#         PosList = numpy.array([numpy.take(datatable.getcol('RA'),index_list),
-#                                numpy.take(datatable.getcol('DEC'),index_list)])
-        # DecCorrection = 1.0 / math.cos(PosList[1][0] / 180.0 * 3.141592653)
-        # grid_ra *= DecCorrection
-        # # Calculate Parameters for Gridding
-        # wra = PosList[0].max() - PosList[0].min()
-        # wdec = PosList[1].max() - PosList[1].min()
-        # cra = PosList[0].min() + wra/2.0
-        # cdec = PosList[1].min() + wdec/2.0
-        # # 2010/6/11 +1.0 -> +1.01: if wra is n x grid_ra (n is a integer), int(wra/grid_ra) is not n in some cases because of the lack of accuracy.
-        # nra = 2 * (int((wra/2.0 - grid_ra/2.0)/grid_ra) + 1) + 1
-        # ndec = 2 * (int((wdec/2.0 - grid_dec/2.0)/grid_dec) + 1) + 1
-        # x0 = cra - grid_ra/2.0 - grid_ra*(nra-1)/2.0
-        # y0 = cdec - grid_dec/2.0 - grid_dec*(ndec-1)/2.0
-        # LOG.debug('Grid = {} x {}\n', nra, ndec)
-        # self.cluster_info['grid'] = {}
-        # self.cluster_info['grid']['ra_min'] = x0
-        # self.cluster_info['grid']['dec_min'] = y0
-        # self.cluster_info['grid']['grid_ra'] = grid_ra
-        # self.cluster_info['grid']['grid_dec'] = grid_dec
-
-        # # Create Space for storing the list of spectrum (ID) in the Grid
-        # # 2013/03/27 TN
-        # # Grid2SpectrumID stores index of index_list instead of row numbers
-        # # that are held by index_list.
-        # Grid2SpectrumID = [[[] for y in xrange(ndec)] for x in xrange(nra)]
-        # for i in range(len(PosList[0])):
-        #     Grid2SpectrumID[int((PosList[0][i] - x0)/grid_ra)][int((PosList[1][i] - y0)/grid_dec)].append(i)
-
         ProcEndTime = time.time()
         LOG.info('Clustering: Initialization End: Elapsed time = %s sec', ProcEndTime - ProcStartTime)
 
@@ -558,8 +513,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             else:
                 signal = manual_window
             for i in index_list:
-                vis, row = indexer.serial2perms(i)
-                datatable = datatable_dict[vis]
+                origin_vis, row = indexer.serial2perms(i)
+                datatable = datatable_dict[origin_vis]
                 datatable.putcell('MASKLIST', row, signal)
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': manual_window,
@@ -572,73 +527,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             result.task = self.__class__
             return result
 
-        # # Sort lines and Category by LineCenter: lines[][0]
-        # LineIndex = numpy.argsort([line[0] for line in Bestlines[:Ncluster]])
-        # lines = [Bestlines[i] for i in LineIndex]
-        # print('Ncluster, lines: {} {}'.format(Ncluster, lines))
-        # print('LineIndex: {}'.format(LineIndex))
-
         ### 2011/05/17 anti-scaling of the line width
         Region2[:, 0] = Region2[:, 0] * self.CLUSTER_WHITEN
-        # the following lines have been moved to self.validate_cluster
-        # for Nc in range(Ncluster):
-        #     lines[Nc][1] *= self.CLUSTER_WHITEN
-
-        # LineIndex2 = numpy.argsort(LineIndex)
-        # print('LineIndex2: {}'.format(LineIndex2))
-        # print('BestCategory: {}'.format(BestCategory))
-
-        # #for i in range(len(BestCategory)): category[i] = LineIndex2[BestCategory[i]]
-        # category = [LineIndex2[bc] for bc in BestCategory]
-
-        # ######## Clustering: Detection Stage ########
-        # ProcStartTime = time.time()
-        # LOG.info('Clustering: Detection Stage Start')
-
-        # (GridCluster, GridMember) = self.detection_stage(Ncluster, nra, ndec, x0, y0, grid_ra, grid_dec, category,
-        #                                                  Region, detect_signal)
-
-        # ProcEndTime = time.time()
-        # LOG.info('Clustering: Detection Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
-
-        # ######## Clustering: Validation Stage ########
-        # ProcStartTime = time.time()
-        # LOG.info('Clustering: Validation Stage Start')
-
-        # (GridCluster, GridMember, lines) = self.validation_stage(GridCluster, GridMember, lines)
-
-        # ProcEndTime = time.time()
-        # LOG.info('Clustering: Validation Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
-
-        # ######## Clustering: Smoothing Stage ########
-        # # Rating:  [0.0, 0.4, 0.5, 0.4, 0.0]
-        # #          [0.4, 0.7, 1.0, 0.7, 0.4]
-        # #          [0.5, 1.0, 6.0, 1.0, 0.5]
-        # #          [0.4, 0.7, 1.0, 0.7, 0.4]
-        # #          [0.0, 0.4, 0.5, 0.4, 0.0]
-        # # Rating = 1.0 / (Dx**2 + Dy**2)**(0.5) : if (Dx, Dy) == (0, 0) rating = 6.0
-
-        # ProcStartTime = time.time()
-        # LOG.info('Clustering: Smoothing Stage Start')
-
-        # (GridCluster, lines) = self.smoothing_stage(GridCluster, lines)
-
-        # ProcEndTime = time.time()
-        # LOG.info('Clustering: Smoothing Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
-
-        # ######## Clustering: Final Stage ########
-        # ProcStartTime = time.time()
-        # LOG.info('Clustering: Final Stage Start')
-
-        # # create virtual index_list
-        # (RealSignal, lines, channelmap_range) = self.final_stage(GridCluster, GridMember, Region, Region2,
-        #                                                          lines, category, grid_ra, grid_dec, broad_component,
-        #                                                          xorder, yorder, x0, y0, Grid2SpectrumID, index_list,
-        #                                                          PosList)
-
-        # ProcEndTime = time.time()
-        # LOG.info('Clustering: Final Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
-
         # validate cluster
         assert clustering_algorithm in ['kmean', 'hierarchy', 'both']
         validated = [
@@ -672,8 +562,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 #RealSignal[row] = [PosList[0][tmp_index], PosList[1][tmp_index], signal]
             tmp_index += 1
 
-            vis, row = indexer.serial2perms(vrow)
-            datatable = datatable_dict[vis]
+            origin_vis, row = indexer.serial2perms(vrow)
+            datatable = datatable_dict[origin_vis]
 
             # In the following code, access to MASKLIST and NOCHANGE columns
             # is direct to underlying table object instead of access via
@@ -688,26 +578,15 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             else:
                 tMASKLIST = tMASKLIST.tolist()  # list(tMASKLIST)
             tNOCHANGE = datatable.getcell('NOCHANGE', row)
-            #LOG.debug('DataTable = %s, RealSignal = %s' % (tMASKLIST, signal))
             if tMASKLIST == signal:
-                #LOG.debug('No update on row %s: iter is %s'%(row,iteration))
-                #if type(tNOCHANGE) != int:
                 if tNOCHANGE < 0:
                     # 2013/05/17 TN
                     # Put iteration itself instead to subtract 1 since iteration
                     # counter is incremented *after* baseline subtraction
                     # in refactorred code.
-                    #datatable.putcell('NOCHANGE',row,iteration - 1)
-                    #datatable.putcell('NOCHANGE', row, iteration)
                     datatable.putcell('NOCHANGE', row, iteration)
             else:
-                #datatable.putcell('NOCHANGE',row,False)
-                #datatable.putcell('MASKLIST',row,numpy.array(RealSignal[row][2]))
-                #LOG.debug('Updating row %s: signal=%s (type=%s, %s)'%(row,list(signal),type(signal),type(signal[0])))
-                #datatable.putcell('MASKLIST',row,numpy.array(signal))
-                #datatable.putcell('MASKLIST',row,signal)
                 datatable.putcell('MASKLIST', row, signal)
-                #datatable.putcell('NOCHANGE',row,-1)
                 datatable.putcell('NOCHANGE', row, -1)
         del RealSignal
         ProcEndTime = time.time()
@@ -1068,13 +947,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             #print 'MedianD', MedianDistance
             Stddev = LinkMatrix.T[2].std()
             LOG.debug('MedianDistance = %s, MeanDistance = %s, Stddev = %s', MedianDistance, MeanDistance, Stddev)
-            #NewThreshold = MedianDistance + Nthreshold ** 2. * Stddev
-            #NewThreshold = MedianDistance + Nthreshold ** 1.5 * Stddev
-            #NewThreshold = MeanDistance + Nthreshold ** 1.5 * Stddev
-            #NewThreshold = MeanDistance + Nthreshold * 2.0 * Stddev
-            #NewThreshold = MeanDistance + Nthreshold * 1.5 * Stddev
-            #NewThreshold = MedianDistance + Nthreshold ** 1.3 * Stddev
-            #NewThreshold = MedianDistance + Nthreshold * Stddev
             NewThreshold = MeanDistance + nThreshold2 * Stddev
             LOG.debug('Threshold(%s): %s', k, NewThreshold)
             print('Threshold(%d): %.1f' % (k, NewThreshold), end=' ')
@@ -1092,7 +964,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         Category[NewIDX[i]] = C + NewCategory[i] - 1
         Ncluster = Category.max() # update Ncluster
 
-        #(Region, Range, Stdev, Category) = self.clean_cluster(Data, Category, Region, Nthreshold, 2) # nThreshold, NumParam
         (Region, Range, Stdev, Category) = self.clean_cluster(Data, Category, Region, nThreshold2, 2) # nThreshold, NumParam
         # 2017/7/25 ReNumbering is done in clean_cluster
         #for i in range(len(Category)):
@@ -1222,7 +1093,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ### 2014/11/28 further modified for (distance==0)
         ### 2017/07/05 modified to be sensitive to MemberRate
         # (distance * numpy.transpose(Region[5])).mean(): average distance from each cluster center
-        #return(math.sqrt(((distance * numpy.transpose(numpy.array(Region))[5]).mean())**2.0 + (MedianWidth/2.0)**2.0) * (Ncluster+ 1.0/Ncluster) * (((1.0 - MemberRate)**0.5 + 1.0)**2.0))
         return(math.sqrt(MeanDistance**2.0 + (MedianWidth/2.0)**2.0) * (Ncluster+ 1.0/Ncluster) * ((1.0 - MemberRate) * 100.0 + 1.0))
 
     def detection_stage(self, Ncluster, nra, ndec, ra0, dec0, grid_ra, grid_dec, category, Region, detect_signal):
@@ -1259,22 +1129,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 except IndexError:
                     pass
         GridCluster = GridClusterWithBinning.max(axis=1)
-        #2014/11/28 select the largest value among different Binning
-        #2017/7/4 normalize by the number of spectra in the grid
-        #x1, x2, x3 = GridCluster.shape
-        #for i in range(x1):
-        #    GridCluster[i] /= GridMember
-        #    for j in range(x2):
-        #        for k in range(x3):
-        #            if GridCluster[i][j][k] > 1.0: GridCluster[i][j][k] = 1.0
-        #for i in xrange(Ncluster):
-        #    for j in xrange(nra):
-        #        for k in xrange(ndec):
-        #            m = 0
-        #            for l in xrange(BinningVariation):
-        #                if GridClusterWithBinning[i][l][j][k] > m: m = GridClusterWithBinning[i][l][j][k]
-        #            GridCluster[i][j][k] = m
-
         LOG.trace('GridClusterWithBinning = %s', GridClusterWithBinning)
         LOG.trace('GridCluster = %s', GridCluster)
         LOG.trace('GridMember = %s', GridMember)
@@ -1397,15 +1251,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                     Rating = 1.0 / (dx*dx + dy*dy)
                                     GridScore[0][x][y] += Rating * GridCluster[Nc][nx][ny]
                                     GridScore[1][x][y] += Rating
-                        #for dx in [-2, -1, 0, 1, 2]:
-                        #    for dy in [-2, -1, 0, 1, 2]:
-                        #       if (abs(dx) + abs(dy)) <= 3:
-                        #           (nx, ny) = (x + dx, y + dy)
-                        #           if 0 <= nx < nra and 0 <= ny < ndec:
-                        #               if dx == 0 and dy == 0: Rating = 6.0
-                        #               else: Rating = 1.0 / sqrt(dx*dx + dy*dy)
-                        #               GridScore[0][x][y] += Rating * GridCluster[Nc][nx][ny]
-                        #               GridScore[1][x][y] += Rating
                 LOG.trace('Score :  GridScore[%s][0] = %s', Nc, GridScore[0])
                 LOG.trace('Rating:  GridScore[%s][1] = %s', Nc, GridScore[1])
                 #GridCluster[Nc] = GridScore[0] / GridScore[1]
@@ -1488,8 +1333,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 # 0 <= xorder0,yorder0 <= 5, swap xorder0 and yorder0
                 if xorder < 0: xorder0 = max(min(numpy.sum(ValidPlane, axis=0).max()-1, 5), 0)
                 if yorder < 0: yorder0 = max(min(numpy.sum(ValidPlane, axis=1).max()-1, 5), 0)
-                #if xorder < 0: xorder0 = max(min(numpy.sum(ValidPlane, axis=1).max()-1, 5), 0)
-                #if yorder < 0: yorder0 = max(min(numpy.sum(ValidPlane, axis=0).max()-1, 5), 0)
                 LOG.trace('(X,Y)order, order0 = (%s, %s) (%s, %s)', xorder, yorder, xorder0, yorder0)
 
                 # clear Flag
@@ -1520,10 +1363,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 # FitData format: [Chan0, Chan1, RA, DEC, flag]
                 LOG.trace('FitData = %s', FitData)
 
-                # Instantiate SVD solver
-                #LOG.trace('2D Fit Order: xorder0={} yorder0={}', xorder0, yorder0)
-                #solver = SVDSolver2D(xorder0, yorder0)
-
                 # TN refactoring
                 # Comment out the following if statement since
                 # 1) len(FitData) is always greater than 0.
@@ -1543,10 +1382,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     assert len(effective) > 0
 
                     # prepare data for SVD fit
-                    #xdata = numpy.array([FitData[i][2] for i in effective], dtype=numpy.float64)
-                    #ydata = numpy.array([FitData[i][3] for i in effective], dtype=numpy.float64)
-                    #lmindata = numpy.array([FitData[i][0] for i in effective], dtype=numpy.float64)
-                    #lmaxdata = numpy.array([FitData[i][1] for i in effective], dtype=numpy.float64)
                     # 2017/9/26 Repeat solver.find_good_solution until not through exception by reducing xorder and yorder
                     SVDsolver = True
                     while(1):
@@ -1603,21 +1438,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                 LOG.trace('SVD: A0=%s', A0.tolist())
                                 LOG.trace('SVD: A1=%s', A1.tolist())
                                 break
-                                # verification
-#                               diff_lmin = numpy.zeros(len(effective), dtype=numpy.float64)
-#                               diff_lmax = numpy.zeros(len(effective), dtype=numpy.float64)
-#                               for ieff in xrange(len(effective)):
-#                                   eff = effective[ieff]
-#                                   lmin_ex = FitData[eff][0]
-#                                   lmax_ex = FitData[eff][1]
-#                                   x = FitData[eff][2]
-#                                   y = FitData[eff][3]
-#                                   lmin_fit, lmax_fit = _eval_poly(xorder0+1, yorder0+1, x, y, A0, A1)
-#                                   diff_lmin[ieff] = abs((lmin_fit - lmin_ex) / lmin_ex)
-#                                   diff_lmax[ieff] = abs((lmax_fit - lmax_ex) / lmax_ex)
-#                               LOG.trace('SVD: Lmin difference: max %s, min %s, mean %s, std %s'%(diff_lmin.max(), diff_lmin.min(), diff_lmin.mean(), diff_lmin.std()))
-#                               LOG.trace('SVD: Lmax difference: max %s, min %s, mean %s, std %s'%(diff_lmax.max(), diff_lmax.min(), diff_lmax.mean(), diff_lmax.std()))
-
                             else:
                                 A0 = LA.solve(MM0, B0)
                                 A1 = LA.solve(MM1, B1)
@@ -1859,8 +1679,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     NsubCluster += 1
 
         if len(Nmember) > 0:
-            # Threshold is set to half the number of the largest cluster in the plane
-            #Threshold = max(Nmember) / 2.0
             Threshold = min(0.5 * max(Realmember), 3)
             for n in range(NsubCluster - 1, -1, -1):
                 # isolated cluster made from single spectrum should be omitted
@@ -1898,19 +1716,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         """
         return ProtectMask: [MaskL, MaskR]
         """
-        #Allowance = Fit1 / 2.0 * 1.3
         # To keep broad line region, make allowance larger
-        ### 2011/05/16 allowance + 0.5 ->  2.5 for sharp line
-        ### 2011/05/16 factor 1.5 -> 2.0 for broad line
-        #Allowance = min(Fit1 / 2.0 * 2.0, MaxFWHM / 2.0)
-        ### 2011/11/22 Allowance is too narrow for new line finding algorithm
-        #Allowance = min(Fit1 + 5.0, self.MaxFWHM / 2.0)
         ### 2015/04/23 Allowance=MaxFWHM at x=MaxFWHM, Allowance=2xMinFWHM+10 at x=MinFWHM
         Allowance = ((MaxFWHM-Width)*(2.0*MinFWHM+10.0) + (Width-MinFWHM)*MaxFWHM) / (MaxFWHM-MinFWHM) / 2.0
         ### 2011/10/21 left side mask exceeded nchan
         ProtectMask = [min(max(int(Center - Allowance), 0), nchan - 1), min(int(Center + Allowance), nchan - 1)]
-        #Allowance = Fit1 / 2.0 * 1.5
-        #ProtectMask = [max(int(Fit0 - Allowance + 0.5), 0), min(int(Fit0 + Allowance + 0.5), nchan - 1)]
         LOG.trace('Allowance = %s ProtectMask = %s' % (Allowance, ProtectMask))
         return ProtectMask
 
@@ -1946,11 +1756,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             sorted_index[nedges+1] = flat_lines[sorted_index[-1]]
             nedges += 2
             return sorted_index[:nedges].reshape((nedges//2, 2)).tolist()
-            #region = numpy.ones(nchan + 2, dtype=int)
-            #for [chan0, chan1] in lines:
-            #    region[chan0 + 1:chan1 + 1] = 0
-            #dummy = (region[1:] - region[:-1]).nonzero()[0]
-            #return dummy.reshape((len(dummy)/2,2)).tolist()
 
     def __update_cluster_flag(self, cluster_flag, stage, GridCluster, threshold, factor):
         #cluster_flag = self.cluster_info['cluster_flag']
@@ -2006,9 +1811,6 @@ def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
     for k in range(yorder):
         xjyk = yk
         for j in range(xorder):
-            #xjyk = math.pow(x, j) * math.pow(y, k)
-            #xpoly += xjyk * xcoeff[j + k * xorder]
-            #ypoly += xjyk * ycoeff[j + k * xorder]
             xpoly += xjyk * xcoeff[idx]
             ypoly += xjyk * ycoeff[idx]
             xjyk *= x
@@ -2136,19 +1938,10 @@ class SVDSolver2D(object):
         LOG.trace('U.shape=%s (N,L)=(%s,%s)', self.U.shape, self.N, self.L)
         LOG.trace('s.shape=%s', s.shape)
         LOG.trace('Vh.shape=%s', Vh.shape)
-        #LOG.trace('U=%s'%(self.U))
-        #LOG.trace('s=%s'%(s))
-        #LOG.trace('Vh=%s'%(Vh))
         assert self.U.shape == (self.N, self.L)
         assert len(s) == self.L
         assert Vh.shape == (self.L, self.L)
         assert 0.0 < eps
-
-#         absolute_s = abs(s)
-#         condition_number = absolute_s.min() / absolute_s.max()
-#         if condition_number < self.CONDITION_NUMBER_LIMIT:
-#             LOG.trace('smax {}, smin {}, condition_number is {}', absolute_s.max(), absolute_s.min(), condition_number)
-#             raise RuntimeError('singular matrix')
 
         threshold = s.max() * eps
         for i in range(self.L):
@@ -2167,7 +1960,6 @@ class SVDSolver2D(object):
             for j in range(self.xorder + 1):
                 poly += self.G[row, idx] * coeff[idx]
                 idx += 1
-        #LOG.trace('poly=%s'%(poly))
         return poly
 
     def solve_with_mask(self, z, out=None, nmask=0):
@@ -2190,9 +1982,6 @@ class SVDSolver2D(object):
             for k in range(self.L):
                 A[i] += self.Vs[i, k] * self.B[k]
 
-        #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)
-        #LOG.trace('fit=%s'%(fit))
-        #LOG.trace('diff=%s'%(abs(fit - z)/z))
         return A
 
     def solve_with_eps(self, z, out=None, eps=1.0e-7):
@@ -2217,9 +2006,6 @@ class SVDSolver2D(object):
             for k in range(self.L):
                 A[i] += self.Vs[i, k] * self.B[k]
 
-        #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)
-        #LOG.trace('fit=%s'%(fit))
-        #LOG.trace('diff=%s'%(abs(fit - z)/z))
         return A
 
     def solve_for(self, z, out=None, eps=1.0e-7):
@@ -2244,9 +2030,6 @@ class SVDSolver2D(object):
             for k in range(self.L):
                 A[i] += self.Vs[i, k] * self.B[k]
 
-        #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)
-        #LOG.trace('fit=%s'%(fit))
-        #LOG.trace('diff=%s'%(abs(fit - z)/z))
         return A
 
     def find_good_solution(self, z, threshold=0.05):
@@ -2271,7 +2054,6 @@ class SVDSolver2D(object):
                     diff[i] = abs((fit - z[i]) / z[i])
                 else:
                     diff[i] = fit
-            #score = diff.max()
             score = diff.mean()
             LOG.trace('eps=%s, score=%s', intlog(eps), score)
             if best_ans is None or score < best_score:

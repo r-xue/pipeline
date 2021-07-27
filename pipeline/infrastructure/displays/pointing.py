@@ -927,7 +927,7 @@ class SingleDishPointingChart(object):
         ms = self.ms
         antenna_id = self.antenna.id
 
-        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, ms.basename)
+        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
         datatable = DataTable()
         datatable.importdata(datatable_name, minimal=False, readonly=True)
 

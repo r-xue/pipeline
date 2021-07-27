@@ -64,6 +64,8 @@ import numbers
 import os
 import pprint
 
+from pipeline.domain import DataType
+
 from . import api
 from . import argmapper
 from . import launcher
@@ -428,12 +430,20 @@ class InputsContainer(object):
         scope_is_null = scope_null == scope_null.convert(scope_value)
 
         if scope_is_null:
-            from . import basetask
-            # note that for ModeInputs this queries whether the ModeInputs is
-            # registered for imaging MSes, not the Inputs that is selected.
-            imaging_preferred = issubclass(self._task_cls.Inputs, api.ImagingMeasurementSetsPreferred)
-            ms_pool = self._context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)
+            if hasattr(current_inputs_cls, 'processing_data_type'):
+                data_types = current_inputs_cls.processing_data_type
+                ms_pool = self._context.observing_run.get_measurement_sets_of_type(data_types)
+                for ms in ms_pool:
+                    LOG.debug('{}: {}'.format(ms.basename, ms.data_column))
+            else:
+                LOG.error('Unable to get processing data type from input class.')
+#                 # note that for ModeInputs this queries whether the ModeInputs is
+#                 # registered for imaging MSes, not the Inputs that is selected.
+#                 imaging_preferred = issubclass(self._task_cls.Inputs, api.ImagingMeasurementSetsPreferred)
+#                 ms_pool = self._context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)
+                
             named_args[self._scope_attr] = [ms.name for ms in ms_pool]
+            LOG.debug('MS to be processed: {}'.format(named_args[self._scope_attr]))
 
         # multi-vis tasks do not require any further processing
         from . import sessionutils
@@ -703,7 +713,8 @@ def get_properties(inputs_cls):
 class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
 
     # - standard non-vis-dependent properties --------------------------------
-
+    processing_data_type = [DataType.RAW]
+    
     @property
     def context(self):
         """
