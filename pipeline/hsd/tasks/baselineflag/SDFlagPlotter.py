@@ -24,7 +24,7 @@ FIGSIZE_INCHES = (7.0, 2.9)
 class SDFlagPlotter(object):
     """Class to create Flag Plots for hsd_blflag weblog."""
 
-    def __init__( self, msobj:MeasurementSet, datatable:DataTable, antid:int, spwid:int, 
+    def __init__( self, msobj:MeasurementSet, datatable:DataTable, antid:int, spwid:int,
                   time_gap:List[List[int]], FigFileDir:Optional[str] ):
         """
         Construct SDFlagPlotter instance.
@@ -58,7 +58,7 @@ class SDFlagPlotter(object):
 
     def register_data( self, pol:str,
                          is_baselined:bool, FlagRule_local:Dict,
-                         PermanentFlag:List[int], NPp:Dict, 
+                         PermanentFlag:List[int], NPp:Dict,
                          threshold:List[List[float]] ) -> List[str]:
         """
         Resiter data to be plotted.
@@ -83,18 +83,20 @@ class SDFlagPlotter(object):
         self.PermanentFlag_dict[pol]  = PermanentFlag
         self.NPp_dict[pol]            = NPp
         self.threshold_dict[pol]      = threshold
-        
+
         return
 
 
-    def create_plots( self, FigFileRoot:Optional[str]=None ):
+    def create_plots( self, FigFileRoot:Optional[str]=None ) -> Dict:
         """
         Create Summary plots.
-        
+
         Args:
-            FigFileRoot : basename of figure files 
+            FigFileRoot : basename of figure files
         Returns:
-            List of Figure filenames (basename only)
+            List of dictonaries of plot data
+                'file' : List of Figure filenames (basename only)
+                'type' : Type string for selector
         """
         msobj = self.msobj
         datatable = self.datatable
@@ -110,7 +112,7 @@ class SDFlagPlotter(object):
         NPp_dict = self.NPp_dict
         threshold_dict = self.threshold_dict
 
-        ant_name     = msobj.get_antenna(antid)[0].name
+        ant_name = msobj.get_antenna(antid)[0].name
         bunit = sdutils.get_brightness_unit( msobj.name, defaultunit='Jy/beam' )
         PosGap = time_gap[0]
         TimeGap = time_gap[1]
@@ -125,7 +127,7 @@ class SDFlagPlotter(object):
                 'spw' : spwid,
                 'pol' : pol
             }
-            
+
         # Tsys flag
         timeCol = datatable.getcol('TIME')
         PosGapInTime = timeCol.take(PosGap)
@@ -146,7 +148,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['TsysFlag']['Threshold'])
         figfilename = FigFileRoot + '_0.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Outlier Tsys' } )
 
         # RMS flag before baseline fit
         for pol in pollist:
@@ -161,7 +163,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RmsPreFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_1.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Baseline RMS pre-fit' } )
 
         # RMS flag after baseline fit
         for pol in pollist:
@@ -172,9 +174,9 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RmsPostFitFlag']['isActive']
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RmsPostFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_2.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename ) 
-        plots.append( figfilename )
-    
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
+        plots.append( { 'file':figfilename, 'type':'Baseline RMS post-fit' } )
+
         # Running mean flag before baseline fit
         for pol in pollist:
             PlotData_dict['data'] = NPp_dict[pol]['data']['RunMeanPreFitFlag']
@@ -185,7 +187,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RunMeanPreFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_3.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Running mean pre-fit' } )
 
         # Running mean flag after baseline fit
         for pol in pollist:
@@ -196,8 +198,8 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['isActive'] = FlagRule_local_dict[pol]['RunMeanPostFitFlag']['isActive']
             PlotData_dict[pol]['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local_dict[pol]['RunMeanPostFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_4.png'
-        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename) 
-        plots.append( figfilename )
+        self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename)
+        plots.append( { 'file':figfilename, 'type':'Running mean post-fit' } )
 
         # Expected RMS flag before baseline fit
         for pol in pollist:
@@ -210,7 +212,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "threshold with scaling factor = {:.1f}".format(FlagRule_local_dict[pol]['RmsExpectedPreFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_5.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Expected RMS pre-fit' } )
 
         # Expected RMS flag after baseline fit
         for pol in pollist:
@@ -223,7 +225,7 @@ class SDFlagPlotter(object):
             PlotData_dict[pol]['threDesc'] = "threshold with scaling factor = {:.1f}".format(FlagRule_local_dict[pol]['RmsExpectedPostFitFlag']['Threshold'])
         figfilename = FigFileRoot + '_6.png'
         self.StatisticsPlot( pollist, PlotData_dict, FigFileDir, figfilename )
-        plots.append( figfilename )
+        plots.append( { 'file':figfilename, 'type':'Expected RMS post-fit' } )
 
         return plots
 
@@ -263,7 +265,6 @@ class SDFlagPlotter(object):
             (none)
         Raises:
             RuntimeError if number of pols exceeds the limit of 4
-
         """
         if len(pollist)>4:   # max number of pols=4
             raise RuntimeError( "Number of polarizations ({}) exceeds limit of 4.".format(len(pollist)) )
@@ -392,7 +393,7 @@ class SDFlagPlotter(object):
             pollist       : list of polarization
             PlotData_dict : dictionary of PlotData (for all pols)
             data_dict     : dictionary of plotting data (for all pols)
-            xlim_dict     : dictionary of x-limits (for all pols)        
+            xlim_dict     : dictionary of x-limits (for all pols)
             ylim_dict     : dictionary of y-limits (for all pols)
             ScaleOut_dict : dictionary of Scaleout (for all pols)
             LowRange_dict : dictionary of LowRange (for all pols)
@@ -417,7 +418,7 @@ class SDFlagPlotter(object):
             ax[pol] = fig.add_axes( [0.1, 0.13, 0.88, 0.72-0.04*(npol-1)], label=pol )
         self.__plot_frame_to_axes( pollist, ax, PlotData_dict, global_xlim, global_ylim )
         for pol in pollist:
-            self.__plot_data_to_axes( pollist, ax[pol], 
+            self.__plot_data_to_axes( pollist, ax[pol],
                                       PlotData_dict[pol], data_dict[pol], ScaleOut_dict[pol], LowRange_dict[pol] )
 
         # draw and save the entire plot to png file
@@ -426,7 +427,7 @@ class SDFlagPlotter(object):
         if figfiledir is not None and figfilename is not None:
             outfile = figfiledir + figfilename
             plt.savefig( outfile, format='png', dpi=DPIDetail )
-                
+
         # close fig
         plt.close()
 
@@ -453,7 +454,7 @@ class SDFlagPlotter(object):
         for pol in pollist:
             if PlotData_dict[pol]['data'] is None and PlotData_dict[pol]['isActive']:
                 raise Exception("Got no valid data for active flag type.")
-                
+
         # loop over pols
         for pol in pollist:
             # X-axis label format
@@ -498,7 +499,7 @@ class SDFlagPlotter(object):
 
         # if there are no data at all, draw a big 'NO DATA' to the first axes
         if pol0 == None:
-            ax[pollist[0]].text( 0.5, 0.5, "NO DATA", 
+            ax[pollist[0]].text( 0.5, 0.5, "NO DATA",
                                  transform=ax[pollist[0]].transAxes,
                                  ha='center', va='center', color='Gray', size=24,
                                  style='normal', weight='bold')
@@ -509,8 +510,8 @@ class SDFlagPlotter(object):
         return
 
 
-    def __plot_data_to_axes( self, pollist:List[str], ax:MplAxes, 
-                             PlotData:Dict, data:Optional[Dict], 
+    def __plot_data_to_axes( self, pollist:List[str], ax:MplAxes,
+                             PlotData:Dict, data:Optional[Dict],
                              ScaleOut:Optional[List[float]], LowRange:Optional[bool] ):
         """
         Plot data to axes.
@@ -538,38 +539,38 @@ class SDFlagPlotter(object):
             return
 
         # color and alpha defs (used for each pol)
-        col = [ 
-            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+        col = [
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red',
               'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
-            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red',
               'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
-            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red',
               'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' },
-            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red', 
+            { 'online': '0.5', 'normal': 'blue',  'deviator' : 'red',
               'thre': 'cyan',  'scaleout': 'red', 'gap0':'green', 'gap1':'cyan' }
         ]
         alpha = [ 1.0, 0.4, 0.16, 0.064 ]
 
         # Regular Plot
-        ax.plot( sd_display.mjd_to_plotval(data['online_x']), data['online_y'], 's', 
-                 markersize=1.7, color=col[pp]['online'], markeredgewidth=0, 
+        ax.plot( sd_display.mjd_to_plotval(data['online_x']), data['online_y'], 's',
+                 markersize=1.7, color=col[pp]['online'], markeredgewidth=0,
                  alpha=alpha[pp], label='flagged (online)' )
-        ax.plot( sd_display.mjd_to_plotval(data['normal_x']), data['normal_y'], 'o', 
-                 markersize=1.5, color=col[pp]['normal'], markeredgewidth=0, 
+        ax.plot( sd_display.mjd_to_plotval(data['normal_x']), data['normal_y'], 'o',
+                 markersize=1.5, color=col[pp]['normal'], markeredgewidth=0,
                  alpha=alpha[pp], label='data below threshold' )
-        ax.plot( sd_display.mjd_to_plotval(data['deviator_x']), data['deviator_y'], 'o', 
-                 markersize=2.5, color=col[pp]['deviator'], markeredgewidth=0, 
+        ax.plot( sd_display.mjd_to_plotval(data['deviator_x']), data['deviator_y'], 'o',
+                 markersize=2.5, color=col[pp]['deviator'], markeredgewidth=0,
                  alpha=alpha[pp], label='deviator' )
-        ax.axhline( y=ScaleOut[0][0], linewidth=1, color=col[pp]['scaleout'], 
+        ax.axhline( y=ScaleOut[0][0], linewidth=1, color=col[pp]['scaleout'],
                     label='vertical limit(s)', alpha=alpha[pp] )
         if PlotData['threType'] != "plot":
-            ax.axhline( y=PlotData['thre'][0], linewidth=1, color=col[pp]['thre'], 
+            ax.axhline( y=PlotData['thre'][0], linewidth=1, color=col[pp]['thre'],
                         alpha=alpha[pp], label=PlotData['threDesc'] )
             if LowRange:
                 ax.axhline( y=PlotData['thre'][1], linewidth=1, color=col[pp]['thre'], alpha=alpha[pp] )
                 ax.axhline( y=ScaleOut[1][0], linewidth=1, color=col[pp]['scaleout'], alpha=alpha[pp] )
         else:
-            ax.plot( sd_display.mjd_to_plotval(PlotData['time']), PlotData['thre'][0], '-', 
+            ax.plot( sd_display.mjd_to_plotval(PlotData['time']), PlotData['thre'][0], '-',
                      linewidth=1, color=col[pp]['thre'], alpha=alpha[pp], label=PlotData['threDesc'] )
 
         # plot gaps
@@ -579,7 +580,7 @@ class SDFlagPlotter(object):
         if len(PlotData['gap']) > 1:
             for row in sd_display.mjd_to_plotval(PlotData['gap'][1]):
                 ax.axvline(x=row, linewidth=0.5, color=col[pp]['gap1'], ymin=0.9, ymax=0.95, alpha=alpha[pp])
-                
+
         # legends
         ax.legend(loc='center left', numpoints=1, ncol=5,
                   prop={'size': 7}, frameon=False,

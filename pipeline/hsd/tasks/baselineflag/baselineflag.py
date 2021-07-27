@@ -229,7 +229,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
     # The class uses _handle_multiple_vis framework.
     # Method, prepare() is called per MS. Inputs.ms
     # holds "an" MS instance to be processed.
-    ##################################################    
+    ##################################################
     Inputs = SDBLFlagInputs
 
     def prepare(self):
@@ -324,6 +324,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            pol_ids=pols_list[i])
 
         # per-MS loop
+        plots = []
         for msobj, accumulator in registry.items():
             if absolute_path(cal_name) == absolute_path(bl_name):
                 LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
@@ -364,8 +365,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 renderer = SDBLFlagSummary(context, msobj,
                                            antenna_list, fieldid_list, spwid_list,
                                            pols_list, thresholds, flag_rule)
-                result = self._executor.execute(renderer, merge=False)
+                result, plot_list = self._executor.execute(renderer, merge=False)
                 flagResult += result
+                plots.extend( plot_list )
 
         # Calculate flag fraction after operation.
         # flag summary for By Topic Page
@@ -378,7 +380,8 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         stats_after['name'] = 'after'
 
         outcome = {'flagdata_summary': [stats_before, stats_after],
-                   'summary': flagResult}
+                   'summary': flagResult,
+                   'plots': plots }
         results = SDBLFlagResults(task=self.__class__,
                                   success=True,
                                   outcome=outcome)
