@@ -1087,60 +1087,61 @@ class SDRmsMapDisplay(SDImageDisplay):
             rms_map = numpy.flipud(rms_map.transpose())
             rms_map_v = rms_map[~numpy.isnan(rms_map)]
             rms_map_v = rms_map[numpy.nonzero(rms_map)]
-            if len(rms_map_v) > 0:
-                # threshold values (minimum and maximum)
-                q_min, q_max = numpy.nanpercentile(rms_map_v, [thres_min, thres_max])
-                # 2008/9/20 DEC Effect
-                image = plt.imshow(rms_map, vmin=q_min, vmax=q_max, interpolation='nearest', aspect=self.aspect, extent=Extent)
-                xlim = rms_axes.get_xlim()
-                ylim = rms_axes.get_ylim()
+            if len(rms_map_v) == 0:
+                continue
+            # threshold values (minimum and maximum)
+            q_min, q_max = numpy.nanpercentile(rms_map_v, [thres_min, thres_max])
+            # 2008/9/20 DEC Effect
+            image = plt.imshow(rms_map, vmin=q_min, vmax=q_max, interpolation='nearest', aspect=self.aspect, extent=Extent)
+            xlim = rms_axes.get_xlim()
+            ylim = rms_axes.get_ylim()
 
-                # colorbar
-                if not (q_min == q_max):
-                    if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
-                        if rms_colorbar is None:
-                            rms_colorbar = plt.colorbar(shrink=0.8)
-                            for t in rms_colorbar.ax.get_yticklabels():
-                                newfontsize = t.get_fontsize()*0.5
-                                t.set_fontsize(newfontsize)
-                        else:
-                            rms_colorbar.mappable.set_clim((q_min, q_max))
-                            rms_colorbar.draw_all()
-                        # set_clim and draw_all clears y-label
-                        rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
-                del rms_map
+            # colorbar
+            if not (q_min == q_max):
+                if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
+                    if rms_colorbar is None:
+                        rms_colorbar = plt.colorbar(shrink=0.8)
+                        for t in rms_colorbar.ax.get_yticklabels():
+                            newfontsize = t.get_fontsize()*0.5
+                            t.set_fontsize(newfontsize)
+                    else:
+                        rms_colorbar.mappable.set_clim((q_min, q_max))
+                        rms_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
+            del rms_map
 
-                # draw beam pattern
-                if beam_circle is None:
-                    beam_circle = pointing.draw_beam(rms_axes, self.beam_radius, self.aspect, self.ra_min, self.dec_min)
+            # draw beam pattern
+            if beam_circle is None:
+                beam_circle = pointing.draw_beam(rms_axes, self.beam_radius, self.aspect, self.ra_min, self.dec_min)
 
-                rms_axes.set_xlim(xlim)
-                rms_axes.set_ylim(ylim)
+            rms_axes.set_xlim(xlim)
+            rms_axes.set_ylim(ylim)
 
-                if ShowPlot:
-                    plt.draw()
-                FigFileRoot = self.inputs.imagename + '.pol%s' % pol
-                plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
-                plt.savefig(plotfile, format='png', dpi=DPISummary)
+            if ShowPlot:
+                plt.draw()
+            FigFileRoot = self.inputs.imagename + '.pol%s' % pol
+            plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
+            plt.savefig(plotfile, format='png', dpi=DPISummary)
 
-                image.remove()
+            image.remove()
 
-                parameters = {}
-                parameters['intent'] = 'TARGET'
-                parameters['spw'] = self.spw
-                parameters['pol'] = polmap[pol]
-                parameters['ant'] = self.antenna
-                parameters['file'] = self.inputs.imagename
-                parameters['type'] = 'rms_map'
-                parameters['field'] = self.inputs.source
-                parameters['vis'] = 'ALL'
+            parameters = {}
+            parameters['intent'] = 'TARGET'
+            parameters['spw'] = self.spw
+            parameters['pol'] = polmap[pol]
+            parameters['ant'] = self.antenna
+            parameters['file'] = self.inputs.imagename
+            parameters['type'] = 'rms_map'
+            parameters['field'] = self.inputs.source
+            parameters['vis'] = 'ALL'
 
-                plot2 = logger.Plot(plotfile,
-                                    x_axis='R.A.',
-                                    y_axis='Dec.',
-                                    field=self.inputs.source,
-                                    parameters=parameters)
-                plot_list.append(plot2)
+            plot2 = logger.Plot(plotfile,
+                                x_axis='R.A.',
+                                y_axis='Dec.',
+                                field=self.inputs.source,
+                                parameters=parameters)
+            plot_list.append(plot2)
 
         return plot_list
 
