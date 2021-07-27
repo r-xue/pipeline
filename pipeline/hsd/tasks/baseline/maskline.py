@@ -6,6 +6,7 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import DataTableIndexer
 from pipeline.infrastructure import casa_tools
@@ -21,6 +22,9 @@ NoData = common.NoData
 
 
 class MaskLineInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     window = vdp.VisDependentProperty(default=[])
     windowmode = vdp.VisDependentProperty(default='replace')
     edge = vdp.VisDependentProperty(default=(0, 0))
@@ -35,7 +39,7 @@ class MaskLineInputs(vdp.StandardInputs):
     def reference_member(self):
         return self.group_desc[self.member_list[0]]
 
-    def __init__(self, context, iteration, group_id, member_list, #vis_list, field_list, antenna_list, spwid_list,
+    def __init__(self, context, iteration, group_id, member_list,
                  window=None, windowmode=None, edge=None, broadline=None, clusteringalgorithm=None):
         super(MaskLineInputs, self).__init__()
 
@@ -78,10 +82,15 @@ class MaskLine(basetask.StandardTaskTemplate):
         reference_antenna = reference_member.antenna_id
         reference_field = reference_member.field_id
         reference_spw = reference_member.spw_id
-        mses = context.observing_run.measurement_sets
-        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename)))
-                       for ms in mses)
+        duplicated_member_mses = [group_desc[i].ms for i in member_list]
+        # list of unique MS object in member list in the order that appears in context
+        unique_member_mses = [ms for ms in context.observing_run.measurement_sets if ms in duplicated_member_mses]
+        #dt_dict: key = origin_ms name, value = DataTable instance
+        dt_dict = dict((os.path.basename(ms.origin_ms),
+                        DataTable(utils.get_data_table_path(context, ms)))
+                       for ms in unique_member_mses)
         t0 = time.time()
+        # index_dict: key = origin_ms name, value = row IDs of DataTable
         index_dict = utils.get_index_list_for_ms2(dt_dict, group_desc, member_list)
         t1 = time.time()
         LOG.info('Elapsed time for generating index_dict: {0} sec'.format(t1 - t0))
@@ -91,10 +100,12 @@ class MaskLine(basetask.StandardTaskTemplate):
         t0 = time.time()
         indexer = DataTableIndexer(context)
         def _g():
-            for ms in mses:
-                if ms.basename in index_dict:
-                    for i in index_dict[ms.basename]:
-                        yield indexer.perms2serial(ms.basename, i)
+            for ms in unique_member_mses:
+                origin_basename = os.path.basename(ms.origin_ms)
+                if origin_basename in index_dict:
+                    for i in index_dict[origin_basename]:
+                        yield indexer.perms2serial(origin_basename, i)
+        # index_list stores serial DataTable row IDs of all group members
         index_list = numpy.fromiter(_g(), dtype=numpy.int64)
         LOG.info('index_list=%s', index_list)
         t1 = time.time()
@@ -133,13 +144,6 @@ class MaskLine(basetask.StandardTaskTemplate):
             v = m.name
             LOG.debug('MS "%s" Field %s Antenna %s Spw %s', os.path.basename(v), f, a, s)
 
-        # filename for input/output
-        # ms_list = [context.observing_run.get_ms(vis) for vis in vis_list]
-        # filenames_work = [ms.work_data for ms in ms_list]
-        # files_to_grid = dict(zip(file_index, filenames_work))
-
-        # LOG.debug('files_to_grid=%s'%(files_to_grid))
-
         # gridding size
         grid_size = beam_size
 
@@ -151,6 +155,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         gridding_result = self._executor.execute(gridding_task, merge=False,
                                                  datatable_dict=dt_dict,
                                                  index_list=index_list)
+        # gridded spectrum of each grid position x ncube and corrsponding grdi_table
         spectra = gridding_result.outcome['spectral_data']
         grid_table = gridding_result.outcome['grid_table']
         t1 = time.time()
@@ -182,6 +187,7 @@ class MaskLine(basetask.StandardTaskTemplate):
                                                   datatable_dict=dt_dict,
                                                   grid_table=grid_table,
                                                   spectral_data=spectra)
+        # detected line channels for each grid position x ncube (grid_table row)
         detect_signal = detection_result.signals
         t1 = time.time()
 

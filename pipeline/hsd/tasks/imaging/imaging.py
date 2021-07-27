@@ -11,7 +11,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable
+from pipeline.domain import DataTable, DataType
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.hsd.heuristics import rasterscan
@@ -43,6 +43,10 @@ class SDImagingInputs(vdp.StandardInputs):
     """
     Inputs for imaging
     """
+    # Search order of input vis
+    processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     spw = vdp.VisDependentProperty(default='')
     pol = vdp.VisDependentProperty(default='')
@@ -216,8 +220,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         else:
             LOG.info('No SDBaselineResults available. Set edge as [0,0]')
             edge = [0, 0]
-
-        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename)))
+        # dt_dict: key=input MS, value=datatable corresponding to the MS
+        dt_dict = dict((ms.basename, DataTable(sdutils.get_data_table_path(context, ms)))
                        for ms in ms_list)
 
         # loop over reduction group (spw and source combination)
@@ -225,7 +229,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug('Processing Reduction Group {}'.format(group_id))
             LOG.debug('Group Summary:')
             for m in group_desc:
-                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(os.path.basename(m.ms.work_data),
+                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(m.ms.basename,
                                                                                     m.antenna_id, m.antenna_name,
                                                                                     m.spw_id,
                                                                                     m.field_id, m.field_name))
@@ -284,7 +288,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             LOG.debug('Members to be processed:')
             for i in range(len(member_list)):
-                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(os.path.basename(ms_list[i].work_data),
+                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(ms_list[i].basename,
                                                                     antenna_list[i],
                                                                     spwid_list[i],
                                                                     fieldid_list[i]))
@@ -349,7 +353,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 source_name = group_desc.field_name.replace(' ', '_')
 
                 # filenames for gridding
-                infiles = [ms.work_data for ms in msobjs]
+                infiles = [ms.name for ms in msobjs]
 
                 LOG.debug('infiles={}'.format(infiles))
 
@@ -383,10 +387,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # Step 1.
                 # Initialize weight column based on baseline RMS.
-                original_ms = [msobj.name for msobj in msobjs]
-                work_ms = [msobj.work_data for msobj in msobjs]
+                origin_ms = [msobj.origin_ms for msobj in msobjs]
+                work_ms = [msobj.name for msobj in msobjs]
                 weighting_inputs = vdp.InputsContainer(weighting.WeightMS, context,
-                                                       infiles=original_ms, outfiles=work_ms,
+                                                       infiles=origin_ms, outfiles=work_ms,
                                                        antenna=antids, spwid=spwids, fieldid=fieldids)
                 weighting_task = weighting.WeightMS(weighting_inputs)
                 weighting_result = self._executor.execute(weighting_task, merge=False,
@@ -520,7 +524,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(rms_exclude_freq)))
                     combined_rms_exclude.extend(rms_exclude_freq)
 
-                    file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    file_index = [common.get_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
@@ -544,7 +548,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         tocombine_images_nro.append(imagename_nro)
                         tocombine_org_directions_nro.append(org_direction)
 
-                    file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    file_index = [common.get_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result_nro,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
@@ -562,7 +566,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                 continue
             # reference MS
-            ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
+            ref_ms = context.observing_run.get_ms(name=combined_infiles[0])
 
             # image name
             # image name should be based on virtual spw id
@@ -752,7 +756,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
 
-                file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
                 sensitivity = Sensitivity(array='TP',
                                           field=source_name,
                                           spw=str(combined_spws[0]),
@@ -802,7 +806,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
 
-                    file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
                     self._finalize_worker_result(context, imager_result,
                                                  sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
@@ -1036,7 +1040,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
         for (infile, antid, fieldid, spwid, pol_names) in zip(infiles, antids, fieldids, spwids, pols):
-            msobj = context.observing_run.get_ms(sdutils.get_parent_ms_name(context, infile))
+            msobj = context.observing_run.get_ms(name=infile)
+            callist = context.observing_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_ALL])
+            calmsobj = sdutils.match_origin_ms(callist, msobj.origin_ms)
             dd_corrs = msobj.get_data_description(spw=spwid).corr_axis
             polids = [dd_corrs.index(p) for p in pol_names if p in dd_corrs]
             field_name = msobj.get_fields(field_id=fieldid)[0].name
@@ -1044,13 +1050,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
                 LOG.warn('Unable to calculate RMS of non-Raster map. '+error_msg)
                 return failed_rms
-            LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(os.path.basename(infile),
+            LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(msobj.basename,
                                                                                      field_name,
                                                                                      spwid,
                                                                                      msobj.get_antenna(antid)[0].name,
                                                                                      str(pol_names)))
             dt = datatable_dict[msobj.basename]
-            _index_list = common.get_index_list_for_ms(dt, [msobj.basename], [antid], [fieldid],
+            _index_list = common.get_index_list_for_ms(dt, [msobj.origin_ms], [antid], [fieldid],
                                                        [spwid])
             if len(_index_list) == 0: #this happens when permanent flag is set to all selection.
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
@@ -1100,17 +1106,17 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('- total time on source = {} {}'.format(t_on_tot, time_unit))
             LOG.info('- flagged Fraction = {} %'.format(100*frac_flagged))
             # obtain calibration tables applied
-            calto = callibrary.CalTo(vis=msobj.name, field=str(fieldid))
+            calto = callibrary.CalTo(vis=calmsobj.name, field=str(fieldid))
             calst = context.callibrary.get_calstate(calto)
             # obtain T_sub,on, T_sub,off
             t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
-            sky_field = msobj.calibration_strategy['field_strategy'][fieldid]
+            sky_field = calmsobj.calibration_strategy['field_strategy'][fieldid]
             try:
                 skytab = ''
                 caltabs = context.callibrary.applied.get_caltable('ps')
                 ### For some reasons, sky caltable is not registered to calstate
                 for cto, cfrom in context.callibrary.applied.merged().items():
-                    if cto.vis == msobj.name and (cto.field == '' or fieldid in [f.id for f in msobj.get_fields(name=cto.field)]):
+                    if cto.vis == calmsobj.name and (cto.field == '' or fieldid in [f.id for f in calmsobj.get_fields(name=cto.field)]):
                         for cf in cfrom:
                             if cf.gaintable in caltabs:
                                 skytab=cf.gaintable
@@ -1190,12 +1196,13 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
         polid: a polarization ID to process
     Returns a named Tuple
     """
+    origin_basename = os.path.basename(msobj.origin_ms)
     metadata = rasterutil.read_datatable(datatable)
     pflag = metadata.pflag
     ra = metadata.ra
     dec = metadata.dec
     exposure = datatable.getcol('EXPOSURE')
-    timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=msobj.basename, pol=None)
+    timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=origin_basename, pol=None)
     # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
     # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
     dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)
