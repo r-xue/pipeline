@@ -23,7 +23,8 @@ LOG = infrastructure.get_logger(__name__)
 class PipelineRegression(object):
     """Pipeline regression test class called from pytest."""
 
-    def __init__(self, recipe: str, input_dir: str, visname: str, expectedoutput: str, output_dir=None):
+    def __init__(self, recipe: str = None, input_dir: str = None, visname: str = None,
+                 expectedoutput: str = None, output_dir: str = None):
         """Constractor of PilelineRegression.
         
         Args:
@@ -232,8 +233,7 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
     Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
-    pr = PipelineRegression(recipe='',
-                            input_dir=input_dir,
+    pr = PipelineRegression(input_dir=input_dir,
                             visname='uid___A002_X85c183_X36f_SPW15_23.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
                                             'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
@@ -269,8 +269,7 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
 
     input_dir = 'pl-regressiontest/mg2-20170525142607-180419'
 
-    pr = PipelineRegression(recipe='',
-                            input_dir=input_dir,
+    pr = PipelineRegression(input_dir=input_dir,
                             visname='mg2-20170525142607-180419.ms',
                             expectedoutput=(f'{input_dir}/' +
                                             'mg2-20170525142607-180419_PPR.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'),
