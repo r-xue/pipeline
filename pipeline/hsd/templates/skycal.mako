@@ -8,6 +8,12 @@ import os
 
 <%block name="title">Single-Dish Sky Calibration</%block>
 
+<%
+def get_mses():
+	"""Return a list of MS domain objects"""
+	return [pcontext.observing_run.get_ms(name=r.inputs['vis']) for r in result]
+%>
+
 <p>This task generates a sky calibration table, a collection of OFF spectra for single dish data calibration.</p>
 
 <h2>Contents</h2>
@@ -85,7 +91,7 @@ import os
 % endif
 
 <h2 id="ampfreqplots" class="jumptarget">Amp vs. Frequency Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
+% for ms in get_mses():
     <% 
         vis = ms.basename 
         subpage = os.path.join(dirname, amp_vs_freq_subpages[vis])
@@ -124,7 +130,7 @@ import os
 % endfor
 
 <h2 id="amptimeplots" class="jumptarget">Amp vs. Time Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
+% for ms in get_mses():
     <% 
         vis = ms.basename 
         subpage = os.path.join(dirname, amp_vs_time_subpages[vis])
@@ -163,7 +169,7 @@ import os
 % endfor
 
 <h2 id="intervaltimeplots" class="jumptarget">Interval vs. Time Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
+% for ms in get_mses():
     <% 
         vis = ms.basename 
         subpage = os.path.join(dirname, interval_vs_time_subpages[vis])
@@ -203,7 +209,7 @@ import os
 % endfor
 
 <h2 id="eldiffplots" class="jumptarget">Elevation Difference vs. Time Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
+% for ms in get_mses():
     <%
         vis = ms.basename
         subpage = os.path.join(dirname, elev_diff_subpages[vis])

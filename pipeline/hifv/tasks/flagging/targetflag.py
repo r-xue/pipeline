@@ -1,6 +1,7 @@
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hifv.heuristics import cont_file_to_CASA
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
@@ -12,6 +13,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class TargetflagInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     @vdp.VisDependentProperty
     def intents(self):
 
