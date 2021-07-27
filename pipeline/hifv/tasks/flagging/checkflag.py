@@ -121,8 +121,9 @@ class Checkflag(basetask.StandardTaskTemplate):
             fieldselect, scanselect, intentselect, columnselect = self._select_data()
 
             LOG.info('Estimating the amplitude range of unflagged data for summary plots')
-            amp_range = self._get_amp_range(field=fieldselect, scan=scanselect,
-                                            intent=intentselect, datacolumn=columnselect)
+            amp_range = self._get_amp_range2(field=fieldselect, scan=scanselect, spw=self.sci_spws,
+                                             intent=intentselect, datacolumn=columnselect,
+                                             correlation=self.corrstring)
             amp_d = amp_range[1]-amp_range[0]
             summary_plotrange = [0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d]
             LOG.info('Creating before-flagging summary plots')
@@ -472,16 +473,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'flagneartime': True,
                                  'flagnearfreq': True}
 
-        if self.inputs.checkflagmode in ('', 'semi'):
-            rflag_standard = [('corrected', 'ABS_'+self.corrstring, 4.0, False)]
-            if self.inputs.growflags:
-                growflag_standard = {'growtime': 100,
-                                     'growfreq': 100,
-                                     'growaround': True,
-                                     'flagneartime': True,
-                                     'flagnearfreq': True}
-
-        if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass', 'allcals'):
+        if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass'):
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
@@ -542,16 +534,42 @@ class Checkflag(basetask.StandardTaskTemplate):
                                ('corrected', 'ABS_RR', None, {'growtime': 100., 'growfreq': 60.}),
                                ('corrected', 'ABS_LL', None, {'growtime': 100., 'growfreq': 60.})]
 
-        if self.inputs.checkflagmode in ('bpd', 'allcals'):
+        if self.inputs.checkflagmode == 'bpd':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
-            rflag_standard = [('data', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('data', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('residual_data', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('residual_data', 'ABS_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
-            tfcrop_standard = [('data', 'ABS_RL', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('data', 'ABS_LR', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('data', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('data', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
+            rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 60.}),
+                              ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 60.}),
+                              ('residual', 'REAL_RR', 4.0, {'growtime': 100., 'growfreq': 60.}),
+                              ('residual', 'REAL_LL', 4.0, {'growtime': 100., 'growfreq': 60.})]
+            tfcrop_standard = [('corrected', 'ABS_RL', None, {'growtime': 100., 'growfreq': 60.}),
+                               ('corrected', 'ABS_LR', None, {'growtime': 100., 'growfreq': 60.}),
+                               ('corrected', 'ABS_RR', None, {'growtime': 100., 'growfreq': 60.}),
+                               ('corrected', 'ABS_LL', None, {'growtime': 100., 'growfreq': 60.})]
+            if self.inputs.growflags:
+                growflag_standard = {'growtime': 100,
+                                     'growfreq': 100,
+                                     'growaround': True,
+                                     'flagneartime': True,
+                                     'flagnearfreq': True}
+
+        if self.inputs.checkflagmode == 'allcals':
+            # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
+            rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 60.}),
+                              ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 60.}),
+                              ('corrected', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 60.}),
+                              ('corrected', 'ABS_LL', 4.0, {'growtime': 100., 'growfreq': 60.})]
+            tfcrop_standard = [('corrected', 'ABS_RL', None, {'growtime': 100., 'growfreq': 60.}),
+                               ('corrected', 'ABS_LR', None, {'growtime': 100., 'growfreq': 60.}),
+                               ('corrected', 'ABS_RR', None, {'growtime': 100., 'growfreq': 60.}),
+                               ('corrected', 'ABS_LL', None, {'growtime': 100., 'growfreq': 60.})]
+            if self.inputs.growflags:
+                growflag_standard = {'growtime': 100,
+                                     'growfreq': 100,
+                                     'growaround': True,
+                                     'flagneartime': True,
+                                     'flagnearfreq': True}
+
+        if self.inputs.checkflagmode in ('', 'semi'):
+            rflag_standard = [('corrected', 'ABS_'+self.corrstring, 4.0, False)]
             if self.inputs.growflags:
                 growflag_standard = {'growtime': 100,
                                      'growfreq': 100,
@@ -589,13 +607,15 @@ class Checkflag(basetask.StandardTaskTemplate):
         return summary_plots
 
     def _get_amp_range(self, field='', spw='', scan='', intent='', datacolumn='corrected'):
-        """Get amplitude min/max for the amp. vs. freq summary plots."""
+        """Get amplitude min/max for the amp. vs. freq summary plots, with ms.range()."""
         amp_range = [0., 0.]
 
         try:
             with casa_tools.MSReader(self.inputs.vis) as msfile:
                 staql = {'field': field, 'spw': spw, 'scan': scan, 'scanintent': intent}
                 r_msselect = msfile.msselect(staql, onlyparse=False)
+                # ms.range always works on whole rows in MS, and ms.selectpolarization() won't affect its result.
+                # r_msselect = msfile.selectpolarization(['RR','LL']) # doesn't work as expected.
                 if not r_msselect:
                     LOG.warn("Null selection from the field/spw/scan combination.")
                 else:
@@ -605,9 +625,25 @@ class Checkflag(basetask.StandardTaskTemplate):
                         item = 'amplitude'
                     if datacolumn == 'model':
                         item = 'model_amplitude'
-                    # results of ms.range (notably val_min) seems to be affected to blocksize setting
+                    # ms.range (notably val_min) results were seen to be affected by blocksize
                     # we increase the blocksize from 10MB (default) to 100MB
                     amp_range = msfile.range([item], useflags=True, blocksize=100)[item].tolist()
+        except Exception as ex:
+            LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+
+        return amp_range
+
+    def _get_amp_range2(self, field='', spw='', scan='', intent='', datacolumn='corrected', correlation='', uvrange=''):
+        """Get amplitude min/max for the amp. vs. freq summary plots, with ms.statistic()."""
+        amp_range = [0., 0.]
+
+        try:
+            with casa_tools.MSReader(self.inputs.vis) as msfile:
+                stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False,
+                                          field=field, scan=scan, spw=spw, reportingaxes='',
+                                          correlation=correlation, uvrange=uvrange)
+                print(stats)
+                amp_range = [stats['']['min'], stats['']['max']]
         except Exception as ex:
             LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
