@@ -562,6 +562,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_totalflux = tclean_result['summaryminor'][2, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
+
+            if tclean_stopcode == 0 and tclean_iterdone > 0:
+                result.error = CleanBaseError('CASA error: tclean exit status 0 for Field: %s SPW: %s' %
+                                              (inputs.field, inputs.spw), 'tclean exited without reaching global stopping criterion.')
+                LOG.warning('CASA error: tclean exit status 0 for Field: %s SPW: %s' %
+                            (inputs.field, inputs.spw))
+
             if tclean_stopcode == 1:
                 result.error = CleanBaseError('tclean reached niter limit. Field: %s SPW: %s' %
                                               (inputs.field, inputs.spw), 'Reached niter limit')
