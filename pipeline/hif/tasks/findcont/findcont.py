@@ -4,12 +4,13 @@ import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -20,6 +21,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     parallel = vdp.VisDependentProperty(default='automatic')
     hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
     hm_weighting = vdp.VisDependentProperty(default=None)
@@ -47,7 +51,7 @@ class FindContInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(FindContInputs)
+#api.ImagingMeasurementSetsPreferred.register(FindContInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_findcont')
