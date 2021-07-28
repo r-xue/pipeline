@@ -61,7 +61,7 @@ phasecenter = ${phasecenter}
 imsize = ${imsize}
 
 gridfunction = 'SF'
-convsupport = 3
+convsupport = ${convsupport}
 truncate = -1
 gwidth = -1
 jwidth = -1
