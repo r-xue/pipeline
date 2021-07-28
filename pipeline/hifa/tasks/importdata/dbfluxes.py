@@ -147,22 +147,26 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     rowdict = {}
     for node in dom.getElementsByTagName('TR'):
         row = node.getElementsByTagName('TD')
+        rl = len(row)
         rowdict['statuscode'] = row[0].childNodes[0].nodeValue
-        try:
-            rowdict['clarification'] = row[1].childNodes[0].nodeValue
-        except IndexError:
+        if rl == 13:
+            try:
+                rowdict['clarification'] = row[1].childNodes[0].nodeValue
+            except IndexError:
+                rowdict['clarification'] = None
+        else:
             rowdict['clarification'] = None
-        rowdict['sourcename'] = row[2].childNodes[0].nodeValue
-        rowdict['dbfrequency'] = row[3].childNodes[0].nodeValue
-        rowdict['date'] = row[4].childNodes[0].nodeValue
-        rowdict['fluxdensity'] = row[5].childNodes[0].nodeValue
-        rowdict['fluxdensityerror'] = row[6].childNodes[0].nodeValue
-        rowdict['spectralindex'] = row[7].childNodes[0].nodeValue
-        rowdict['spectralindexerror'] = row[8].childNodes[0].nodeValue
-        rowdict['dataconditions'] = row[9].childNodes[0].nodeValue
-        rowdict['ageOfNearestMonitorPoint'] = row[10].childNodes[0].nodeValue
-        # rowdict['verbose'] = row[11].childNodes[0].nodeValue
-        rowdict['version'] = row[12].childNodes[0].nodeValue
+        rowdict['sourcename'] = row[rl-11].childNodes[0].nodeValue
+        rowdict['dbfrequency'] = row[rl-10].childNodes[0].nodeValue
+        rowdict['date'] = row[rl-9].childNodes[0].nodeValue
+        rowdict['fluxdensity'] = row[rl-8].childNodes[0].nodeValue
+        rowdict['fluxdensityerror'] = row[rl-7].childNodes[0].nodeValue
+        rowdict['spectralindex'] = row[rl-6].childNodes[0].nodeValue
+        rowdict['spectralindexerror'] = row[rl-5].childNodes[0].nodeValue
+        rowdict['dataconditions'] = row[rl-4].childNodes[0].nodeValue
+        rowdict['ageOfNearestMonitorPoint'] = row[rl-3].childNodes[0].nodeValue
+        # rowdict['verbose'] = row[rl-2].childNodes[0].nodeValue
+        rowdict['version'] = row[rl-1].childNodes[0].nodeValue
         rowdict['url'] = url
 
     return rowdict
