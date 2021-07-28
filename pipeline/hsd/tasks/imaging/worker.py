@@ -36,7 +36,7 @@ def ImageCoordinateUtil(
     fieldid_list: List[int]
 ) -> Tuple[str, Angle, Angle, int, int, Direction]:
     """
-    Calculate spatial coordinate of image for ALMA.
+    Calculate spatial coordinate of image.
 
     Items in ant_list can be None, which indicates that the function will take into
     account pointing data from all the antennas in MS.
@@ -48,7 +48,7 @@ def ImageCoordinateUtil(
         spw_list: List of spw ids.
         fieldid_list: List of field ids.
     Returns:
-        Seven tuple containing phasecenter, horizontal and vertical cell sizes,
+        Six tuple containing phasecenter, horizontal and vertical cell sizes,
         horizontal and vertical number of pixels, and direction of the origin
         (for moving targets).
     """
