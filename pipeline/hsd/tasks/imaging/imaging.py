@@ -961,7 +961,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         if is_nro:
             namer = filenamer.Image(virtspw=False)
         else:
-            namer = filenamer.Image(virtspw=True)
+            namer = filenamer.Image()
         if self.inputs.is_ampcal:
             nameroot = asdm
             if nameroot is None:
