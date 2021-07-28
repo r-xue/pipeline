@@ -115,11 +115,11 @@ class Renorm(basetask.StandardTaskTemplate):
 
                 alltdm = False
 
-            if corrColExists and not corrApplied:
-                # get stats (dictionary) indexed by source, spw
-                stats = rn.rnpipestats
-                # get all factors for QA
-                rnstats = rn.stats()
+                if corrColExists and not corrApplied:
+                    # get stats (dictionary) indexed by source, spw
+                    stats = rn.rnpipestats
+                    # get all factors for QA
+                    rnstats = rn.stats()
 
             rn.close()
 
