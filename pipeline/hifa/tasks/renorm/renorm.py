@@ -11,9 +11,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
+    def __init__(self, renorm_applied, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
         super(RenormResults, self).__init__()
-        self.pipeline_casa_task = 'Renorm'
+        self.renorm_applied = renorm_applied
         self.vis = vis
         self.apply = apply
         self.threshold = threshold
@@ -35,6 +35,7 @@ class RenormResults(basetask.Results):
 
     def __repr__(self):
         return (f'RenormResults:\n'
+                f'\trenorm_applid={self.renorm_applied}\n'
                 f'\tvis={self.vis}\n'
                 f'\tapply={self.apply}\n'
                 f'\tthreshold={self.threshold}\n'
@@ -73,7 +74,7 @@ class RenormInputs(vdp.StandardInputs):
         self.excludechan = excludechan
 
 @task_registry.set_equivalent_casa_task('hifa_renorm')
-@task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
+@task_registry.set_casa_commands_comment('Renormalize data affected by strong line emission.')
 class Renorm(basetask.StandardTaskTemplate):
     Inputs = RenormInputs
 
@@ -90,6 +91,8 @@ class Renorm(basetask.StandardTaskTemplate):
         if 'ALMA Band 10' in bands:
             LOG.warning('Running hifa_renorm on ALMA Band 10 (DSB) data')
 
+        renorm_applied = False
+
         # call the renorm code
         try:
             rn = ACreNorm(inp.vis)
@@ -97,10 +100,19 @@ class Renorm(basetask.StandardTaskTemplate):
             corrApplied = rn.checkApply()
             corrColExists = rn.correxists
 
+            stats = {}
+            rnstats = {}
+
             if not rn.tdm_only:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                                spws=inp.spw, excludechan=inp.excludechan)
                 rn.plotSpectra()
+
+                # if we tried to renormalize and it was done, store info in the results
+                #   so that it can be passed to the manifest and used during restore
+                if inp.apply and rn.checkApply():
+                    renorm_applied = True
+
                 alltdm = False
 
             if corrColExists and not corrApplied:
@@ -108,15 +120,13 @@ class Renorm(basetask.StandardTaskTemplate):
                 stats = rn.rnpipestats
                 # get all factors for QA
                 rnstats = rn.stats()
-            else:
-                stats = {}
-                rnstats = {}
+
             rn.close()
 
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm)
+            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, e)
+            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, e)
 
         return result
 

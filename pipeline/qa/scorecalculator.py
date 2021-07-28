@@ -2854,6 +2854,18 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+def score_renorm(result):
+    if result.renorm_applied:
+        msg = 'Renormalization applied'
+        score = 0.9
+    else:
+        msg = ''
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='score_renormalize',
+                            metric_score=score,
+                            metric_units='')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 def score_fluxservice(result):
     """

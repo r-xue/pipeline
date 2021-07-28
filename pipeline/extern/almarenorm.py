@@ -347,6 +347,15 @@
 #                       diagnostic plots, plotting into a subdirectory, plotting by spectral
 #                       window instead of subplots for plotSpectra(), creation of a dictionary
 #                       for PL purposes (self.rnpipestats).
+#
+# ALadded (2021July20) - Considerable changes from last update. Please see PIPE-1179 for the epic
+#                        which is tracking all the tickets/changes related to this. To summarize
+#                        the changes: high frequency (B9/10) data now properly shows image sideband
+#                        (PIPE-1188), single and full polarization properly handled (PIPE-1180),
+#                        PDF creation of all plots (PIPE-1168), misc fixes including plot improvements
+#                        (PIPE-1175), consistent application across all fields of sources (PIPE-1176),
+#                        changes to number of divisions to improve fitting. Additionally, random
+#                        fixes mostly due to new implementation.
 # 
 ########################################################################
 # LM final version provided to JAO - 04 JUNE 2021
@@ -451,7 +460,7 @@ class ACreNorm(object):
 
         # Version
 
-        self.RNversion='v1.1-2021/07/06-alipnick'
+        self.RNversion='v1.2-2021/07/20-alipnick'
 
         # LM added 
         # file for logger named per EB and runtime - will make a new file every run
@@ -735,7 +744,7 @@ class ACreNorm(object):
             mytb.close()
             print('ERROR: '+str(datacolumn)+' does NOT exist!')
             self.logReNorm.write('ERROR: '+str(datacolumn)+' does NOT exist!\n') # LM added 
-            return
+            raise RuntimeError(str(datacolumn)+' does not exist.')
 
         ddid=str(list(self.msmeta.datadescids(spw)))
         st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
@@ -758,7 +767,7 @@ class ACreNorm(object):
         if mytb.colnames().count(datacolumn)==0:
             mytb.close()
             print('ERROR: '+str(datacolumn)+' does NOT exist!')
-            return
+            raise RuntimeError(str(datacolumn)+' does not exist.')
 
         ddid=str(list(self.msmeta.datadescids(spw)))
         st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
@@ -945,11 +954,12 @@ class ACreNorm(object):
         self.nfit=nfit
 
         if type(spws)!=list:
-            return str('Please specify spws as a list.')
+            print('Please specify spws as a list.')
+            raise TypeError('input parameter "spws" must be a list')
 
         if type(scans)!=list:
-            return str('Please specify scans as a list.')
-            
+            print('Please specify scans as a list.')
+            raise TypeError('input parameter "scans" must be a list')
 
         # the spws to process (Tsys spws)
         tsysspecspws=[]
@@ -1185,7 +1195,7 @@ class ACreNorm(object):
 
 
     # LM added / edited lots
-    def renormalize(self,spws=[],targscans=[],nfit=5,bwthresh=120e6,bwthreshspw={},bwdiv='odd',docorr=False,editAC = False, excludespws=[],excludeants=[],excludechan={},fthresh=0.01,datacolumn='CORRECTED_DATA',fixOutliers=True,mededge=0.01,excflagged=True, diagspectra=True, antdiagspectra=True, verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85, docorrThresh=None):
+    def renormalize(self,spws=[],targscans=[],nfit=5,bwthresh=120e6,bwthreshspw={},bwdiv='odd',docorr=False,editAC = False, excludespws=[],excludeants=[],excludechan={},fthresh=0.01,datacolumn='CORRECTED_DATA',fixOutliers=True,mededge=0.01,excflagged=True, diagSpectra=True, antHeuristicsSpectra=True, verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85, docorrThresh=None):
         """
         spws=[]  - to manually set only certain SPW to be analysed and/or corrected
         targscans=[]  - to manually set only certain scans to be analysed and/or corrected
@@ -1257,7 +1267,7 @@ class ACreNorm(object):
                      1.0) if that antenna is fully flagged. Useful as usually the PL flagged 
                     antennas and these should not be included in the scaling process
                     and could otherwise confuse the scaling and diagnostic plots
-        diagspectra=True  - plot extra diagnostic spectra, made a scaling spectra plot 
+        diagSpectra=True  - plot extra diagnostic spectra, made a scaling spectra plot 
                       for each SPW, scan, field. Both XX and YY and all ants on same plot
                       and the respective median representative spectra - these will show
                       the actual correct that will be applied per antenna - if there are 
@@ -1283,7 +1293,7 @@ class ACreNorm(object):
                             must exceed along with docorr=True for the reNorm correction to be applied
                             if this param is set to a string None, then automatically use the 
                             values - per band set by ALMA - hard value at 1.02 (i.e. 2%).
-        antdiagspectra=True - plot extra diagnostic plots per antenna for diagnosing and fixing bad AC data. 
+        antHeuristicsSpectra=True - plot extra diagnostic plots per antenna for diagnosing and fixing bad AC data. 
                             setting to False will set the "doPlot" option to False within the calcRenorm call.
             
 
@@ -1311,8 +1321,8 @@ class ACreNorm(object):
             usefthresh=fthresh
 
         print('')
-        print('Using fractional alarm indication threshold for ReNorm ='+str(usefthresh))
-        self.logReNorm.write('Using fractional alarm indication threshold for ReNorm ='+str(usefthresh)+'\n') # LM Added
+        print('Using fractional alarm indication threshold for ReNorm = '+str(usefthresh*100)+'%')
+        self.logReNorm.write('Using fractional alarm indication threshold for ReNorm ='+str(usefthresh*100)+'%\n') # LM Added
 
         # LM added 
         if correctATM:
@@ -1326,7 +1336,7 @@ class ACreNorm(object):
                 print('Correction of CORRECTED_DATA requested, but column does not exist! Cannot procede.')
                 self.logReNorm.write('Correction of CORRECTED_DATA requested, but column does not exist! Cannot procede.\n') # LM Added
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                return
+                raise RuntimeError('Correction of CORRECTED_DATA requested but column does not exist.')
 
                 # old code from George where DATA was copied to CORRECTED ? LM never used 
                 #print 'Creating CORRECTED_DATA column.'
@@ -1348,7 +1358,7 @@ class ACreNorm(object):
                 print('')
                 self.logReNorm.write('Correction requested, but these data have already been ReNormalized! Cannot procede.\n') # LM Added
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                return
+                raise Exception('Correction requested but these data have already been renormalized.')
 
         else:
             print('No corrections will be applied (docorr=False)!')
@@ -1367,7 +1377,7 @@ class ACreNorm(object):
                 print(' set to None for automatic thresholding during apply, or input a float to use') 
                 self.logReNorm.write('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly! Cannot procede.\n') # LM Added
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                return
+                raise TypeError('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly.')
             if docorrThresh > 1.5:
                 print('WARNING: Correction of CORRECTED_DATA requested, but docorrThresh is set very high')
                 print('         docorrThresh is a factor above which to apply the ReNormalization')
@@ -1456,7 +1466,7 @@ class ACreNorm(object):
                 print(' excludeants requires a list of antenna ID(s) or antenna Name(s)')
                 print(' e.g. [0,1] or ["DA44","DA45"]')
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                return
+                raise TypeError('excludeants requires a list of antenna ID(s) or antenna name(s)')
             else:  # note this does not check if the Antenna is actually in the Antenna Names list
                 if type(excludeants[0]) is str:
                     # convert to antenna ID
@@ -1474,7 +1484,7 @@ class ACreNorm(object):
             self.logReNorm.write('For each spw, scan, field will exclude fully flagged antennas\n') # LM added
 
         # LM added - diagspectra
-        if diagspectra:
+        if diagSpectra:
             print('Will plot diagnostic spectra per spw, scan, field')
             self.logReNorm.write('Will plot diagnostic spectra per spw, scan, field\n') # LM added
 
@@ -1485,27 +1495,27 @@ class ACreNorm(object):
                 print(' excludechan requires a string dict input')
                 print(' e.g. {"22":"100~150"}')
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                return
+                raise TypeError("excludechan parameter requires a string dict input.")
             for excch in excludechan.keys():
                 if type(excch) is not str:
                     print(' excludechan requires a string dict input')
                     print(' e.g. {"22":"100~150"}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise TypeError('excludechan parameter requires a string dict input')
                 if int(excch) not in spws:
-                    print(' excludechan SPW specified is not a SPW of this dataset')
+                    print(' excludechan specified SPW '+excch+' is not a SPW of this dataset')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise SyntaxError('Inconsistent input parameters: excludechan contains spws not in spw parameter')
                 if type(excludechan[excch]) is not str:
                     print(' excludechan requires a string dict input for channels')
                     print(' e.g. {"22":"100~150"}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise TypeError('excludechan requires a stringdict input for channels')
                 if '~' not in excludechan[excch]:
                     print(' excludechan requires a channel range separator of "~"')
                     print(' e.g. {"22":"100~150"}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise SyntaxError('excludechan requires a channel range separator of "~" (tilde)')
 
         # LM added - bwthreshspw (dictionary)
         if bwthreshspw:
@@ -1514,26 +1524,28 @@ class ACreNorm(object):
                 print(' bwthreshspw requires a string dict input')
                 print(' e.g. {"22":120e6}')
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                return
+                raise TypeError('bwthreshspw requires a string dict input')
             for spwth in bwthreshspw.keys():
                 if type(spwth) is not str:
                     print(' bwthreshspw requires the spw as a string input')
                     print(' e.g. {"22":120e6}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise TypeError('bwthreshspw requires the spw as a string input')
                 if int(spwth) not in spws:
                     print(' bwthreshspw SPW specified is not a SPW of this dataset')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise SyntaxError('bwthreshspw SPW specified is not a SPW of this dataset')
                 if type(bwthreshspw[spwth]) is not float:
                     print(' bwthreshspw requires a float for the bw-threshold')
                     print(' e.g. {"22":120e6}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    return
+                    raise TypeError('bwthreshspw requires a float for the bw threshold')
 
         # AL added - Want to loop over sources so we can disentangle fields and sources and better plot what is happening
         # for mosaics and multi-target observations. 
         target_list = pl.unique(self.msmeta.namesforfields(self.msmeta.fieldsforintent('*TARGET*')))
+        print('Found targets: '+str(target_list))
+        self.logReNorm.write('Found targets: '+str(target_list)+'\n')
         for target in target_list:
             self.rnstats['N'][target] = {}
             self.rnstats['N_thresh'][target] = {}
@@ -1671,8 +1683,8 @@ class ACreNorm(object):
                     # Same as previous but if second_pass_required is set to True, we need to apply the correction and run through the scan loop again.
                     elif npass==1 and second_pass_required:
                         second_pass = True
-                        print('\nThreshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans and fields.')
-                        self.logReNorm.write('Threshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans and fields.\n')
+                        print('\nThreshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans, fields, and polarizations.')
+                        self.logReNorm.write('Threshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans, fields, and polarizations.\n')
                     else:
                         pass
 
@@ -1724,12 +1736,12 @@ class ACreNorm(object):
                                 continue
 
                             # initiate the self.scalingValues dictionary
-                            if 'spw'+str(ispw) not in self.scalingValues.keys():
-                                        self.scalingValues['spw'+str(ispw)]={}
-                            if 'scan'+str(iscan) not in self.scalingValues['spw'+str(ispw)].keys():
-                                        self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]={}
-                            if 'field'+str(ifld) not in self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)].keys():
-                                        self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]['field'+str(ifld)]=1.0 # default no scaling
+                            if str(ispw) not in self.scalingValues.keys():
+                                self.scalingValues[str(ispw)]={}
+                            if str(iscan) not in self.scalingValues[str(ispw)].keys():
+                                self.scalingValues[str(ispw)][str(iscan)]={}
+                            if str(ifld) not in self.scalingValues[str(ispw)][str(iscan)].keys():
+                                self.scalingValues[str(ispw)][str(iscan)][str(ifld)]=1.0 # default no scaling
 
                             # LM added 
                             # AutoCorr is divided by B (can be BANDPASS or PHASE cal AutoCorr) 
@@ -1844,9 +1856,12 @@ class ACreNorm(object):
                                     # usually over the sharp peak transition - e.g. ALMA-IMF wideband SPW
                                     # -- Note, this might not be required since 2021 May - Luke coded ATM correction function -- 
                                     if str(ispw) in excludechan.keys():
-                                        exloch=int(excludechan[str(ispw)].split('~')[0])
-                                        exhich=int(excludechan[str(ispw)].split('~')[1]) + 1 
-                                        N[:,exloch:exhich,:].fill(1.0)
+                                        ranges = [rng.strip() for rng in excludechan[str(ispw)].split(';')]
+                                        for rng in ranges:
+                                            rng = rng.split('~')
+                                            exloch = int(rng[0])
+                                            exhich = int(rng[1])
+                                            N[:,exloch:exhich,:].fill(1.0)
 
                                 # LM added - the checking and fixing of outlier antennas compared to a representative median spectrumd
                                 if fixOutliers: 
@@ -1856,7 +1871,7 @@ class ACreNorm(object):
 
                                     if len(AntChk) > 0:
                                         # pass badant to the fix code for channel by channel investigation and correction
-                                        self.calcFixReNorm(N,AntChk,iscan,ispw,ifld,doplot=antdiagspectra,verbose=verbose) 
+                                        self.calcFixReNorm(N,AntChk,iscan,ispw,ifld,doplot=antHeuristicsSpectra,verbose=verbose) 
 
                                 # No need to do any of this on the second round of data 
                                 if not second_pass:            
@@ -1884,7 +1899,7 @@ class ACreNorm(object):
                                     # this is really the ant level what will be applied as a scaling
                                     #
                                     # skip these if second pass...
-                                    if diagspectra:
+                                    if diagSpectra:
                                         if docorr:
                                             self.plotdiagSpectra(N, iscan, ispw, ifld, plotATM=plotATM) # , threshline=hardLim ) # show threshold line, optional - not sure I like it but coded 
                                         else:
@@ -1973,7 +1988,7 @@ class ACreNorm(object):
                                     self.rnstats['rNmdev'][:,:,spws.index(ispw),targscans.index(iscan)]=pl.median(pl.absolute(N-1.0),1)
 
                                     # write in the max value for this SPW, scan, field into the self.scalingValues dictionary
-                                    self.scalingValues['spw'+str(ispw)]['scan'+str(iscan)]['field'+str(ifld)]=pl.mean(Nmax) # average the correlations
+                                    self.scalingValues[str(ispw)][str(iscan)][str(ifld)]=pl.mean(Nmax) # average the correlations
 
                                     # Need to move this part out of the docorr check so that we can add a check to above thresh, then add to 
                                     # to the dictionary. Then after each scan/field, we check for it to be above the limit and update it each
@@ -2063,7 +2078,7 @@ class ACreNorm(object):
                     fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'), self.msmeta.fieldsforname(trg)) # fields for target
                     fields = pl.intersect1d(fields, self.msmeta.fieldsforscan(scan)) # fields for given scan
                     for field in fields:
-                        pipe_target_sv.append(self.scalingValues['spw'+str(spw)]['scan'+str(scan)]['field'+str(field)])
+                        pipe_target_sv.append(self.scalingValues[str(spw)][str(scan)][str(field)])
                         pipe_target_fld.append(field)
                 self.rnpipestats[trg][spw]['max_rn'] = max(pipe_target_sv)
                 self.rnpipestats[trg][spw]['max_rn_field'] = pipe_target_fld[pl.where(pl.array(pipe_target_sv) == self.rnpipestats[trg][spw]['max_rn'])[0][0]]
@@ -2093,6 +2108,10 @@ class ACreNorm(object):
     # such that dNchan remains an integer number or remainng 'non-fitted' chans are in the edge
     # also added forced divide - with same rule. Else defaults to power 2 
     # bwthresh Luke's default is 120e6
+    #
+    # AL - added a check for minimum number of channels so that divisions don't get so small that 
+    #      that overfitting occurs.
+    #    - changed so that ~2GHz spws will get split into only 7 sections rather than 17
     def calcChanRanges(self,spw,bwthresh=120e6,bwdiv='odd',onlyfdm=True, edge=0.01,verbose=False):
         
         Tbw=self.msmeta.bandwidths(spw)
@@ -2102,13 +2121,24 @@ class ACreNorm(object):
         dNchan=nchan
 
         # Only do non-trivial segments if bwthresh exceeded AND spw is FDM (lots of channels)
-        #   (This prevents TDM spws, which are wide and low-res, from being segmented)
+        #   (This prevents TDM spws, which are wide and low-res, from being segmented. Not really
+        #   necessary since we specifically exclude TDM windows but will protect against future changes.)
         
-        # First check the number of channels explicitly, if less than 128, no need to divide the window up.
+        # First check the number of channels explicitly. If we have a small number of channels, we don't want
+        # to accidentally divide up the spectrum into a ridiculous number of divisions and overfit. 
+        # Less than 128, no need to divide the window up at all, from there scale up to a max of 7.
         if nchan <= 128:
             print(' **Small number of channels found, will not divide up the spw.')
             self.logReNorm.write(' **Small number of channels found, will not divide up the spw.')
+            if type(bwdiv) is int:
+                print(' Ignoring input bwdiv of '+str(bwdiv)+' since number of channels is already small.')
             return (nseg,dNchan)
+        elif nchan <= 300:
+            max_divs = 3.0
+        elif nchan <= 550:
+            max_divs = 5.0
+        else:
+            max_divs = 7.0
         # check first if we are forcing a divide
         if type(bwdiv) is int and spw in self.fdmspws:
             # make float so we can check dNchan
@@ -2125,11 +2155,16 @@ class ACreNorm(object):
                 print(" Will default to power of 2 division based on bwthresh ")
                 nseg=max(0,2**int(ceil(log(Tbw/bwthresh)/log(2))))
                 dNchan=int(nchan/nseg)
-
         elif Tbw>bwthresh and spw in self.fdmspws:
             if bwdiv=='odd':
                 # work out best odd divisibile when dNchan is an int
-                nseg=Tbw/bwthresh # need as a float here
+                # need to avoid splitting up wide spws into too many slices which can cause major issues
+                if Tbw > 1.8e9:
+                    nseg=min(max_divs,Tbw/bwthresh) # need as a float here, but also don't go above max divisions
+                else:
+                    nseg=Tbw/bwthresh
+                if nseg > max_divs:
+                    nseg = max_divs
                 dNchan=nchan/nseg
                 while not dNchan.is_integer():
                     # if not integer right away
@@ -2178,308 +2213,237 @@ class ACreNorm(object):
     def stats(self):
         return self.rnstats
 
-    # LM note - these are respresentative spectra of the cumilative of averages all scans (and fields)
-    #           the is now code to ignore the flagged antennas, i.e. scaling set to exactly 1.0
-    #           and the ATM profiles are now plotted - the bandpass is used as its just 
-    #           a representative profile for the plots
-    #
-    # AL added - ability to plot by frequency rather than channel, PIPE 1168 (4)
-    #          - ability to plot spws individually and created for each source, PIPE 1168 (1)
-    def plotSpectra(self,hardcopy=True, plotATM=True, titlein=None, subplot=False, plotfreq=True, plotDivisions=True, createpdf=True):
+    def plotSpectra(self, hardcopy=True, plotATM=True, titlein=None, plotDivisions=True, createpdf=True):
+        """
+        Purpose:
+            This function makes a summary plot of the renormalization spectrum for every spectral 
+            window that has been evaluated for a renormalization correction. The plots are a 
+            cumulative average over all scans and fields for each antenna and correlation. For 
+            sources that have multiple fields per scan (mosaics), only those fields that exceed 
+            the threshold are shown in the plot. This also means that even single pointings that 
+            oscillate around the threshold will have only those scans that exceed the threshold 
+            included in the summary plot created. Additionally, any antenna that were fully flagged
+            during calibration will have their renormalization values set to 1.0.
+            
+            Note that renormalization() must be run before this can be run.
 
-        #print('Using fractional alarm threshold='+str(self.fthresh))
+        Inputs:
+            createpdf : boolean : OPTIONAL
+                This is a boolean switch to create a PDF of the summary plot using the 
+                convert_plots_pdf() function. This will only trigger if hardcopy is also set 
+                to True.
+                Default: True
 
-        # If data not yet collected, complain (eventually collect it?)
-        if len(self.rnstats)==0:
+            hardcopy : boolean : OPTIONAL
+                This is a boolean switch to create a hardcopy of the plot as a PNG file. If 
+                this is set to False, the plots will be shown interactively but not saved.
+                Default: True
+
+            plotATM : boolean : OPTIONAL
+                This is a boolean switch to include the ATM transmission curves in the plots.
+                The bandpass is used as the representative ATM transmission curve. Note that 
+                in Bands 9 and 10, the image sideband transmission curve is also shown as a 
+                black line. 
+                Default: True
+
+            plotDivisions: boolean: OPTIONAL
+                This is a boolean switch to include vertical lines at all locations where the 
+                spectral window was broken up during the calcReNorm() stage when the spectral
+                window renormalization spectrum was fit to flatten the spectrum. 
+                Default: True
+
+            titlein: string: OPTIONAL
+                This allows one to introduce their own title text. 
+                Default: None
+        """
+        # Check that renormalize() has been run
+        if len(self.rnstats) == 0:
             print('Please run renormalize before plotting!')
             return
-            #self.renormalize(spws=spws,doplot=False,docorr=False)
-            #doSpws=self.rnstats['spws']
-
-
+        
+        # Grab the spws that exist after running renormalize() (i.e. if someone chose to only
+        # run a few spws rather than all available, only those that were processed are grarbbed).
         doSpws=self.rnstats['spws']
         nSpw=len(doSpws)
-        
+
+        # Grab all available targets. (probably better to get this from list(self.rnstats['N'].keys())...)
         target_list = pl.unique(self.msmeta.namesforfields(self.msmeta.fieldsforintent('*TARGET*')))
 
+        # Loop over all targets and make a separate summary plot for each target
         for target in target_list:
-            nXspw,nYspw = self.xyplots(nSpw)
             pl.ioff()
-            if subplot:
-                pfig=pl.figure(11,figsize=(14,9))
-                pl.ioff()
-                pfig.clf()
-
-            k=1
+            # Loop over all spws being processed to make a summary for each target/spw
             for spw in doSpws:
-                ispw=self.rnstats['spws'].index(spw)
-
-                if plotfreq:
-                    freqs = self.msmeta.chanfreqs(spw,'GHz')
-                
-                # Check self.rnstats to see if the threshold was ever reached. If it wasn't, 
-                # N_thresh = 0 because it was initialized but never filled.
+                freqs = self.msmeta.chanfreqs(spw,'GHz')
+                # renormalize() will populate the N_thresh dictionary for each target/spw
+                # only if a target/spw/scan/field exceeds the threshold. This allows us to
+                # plot a summary that only has the fields that exceed the threshold shown 
+                # which prevents the renormalization factor being washed out by fields with
+                # no emission. If no field exceeded the threshold then the dictionary is 
+                # simply filled with zeros and we fall back to the total cumulative sum. 
                 if pl.sum(self.rnstats['N_thresh'][target][str(spw)]) == 0.0:
                     N=self.rnstats['N'][target][str(spw)]
                 else:
                     N=self.rnstats['N_thresh'][target][str(spw)]
+
                 (nCor,nCha,nAnt)=N.shape
+
+                # Initialize the figure
+                fig = pl.figure(figsize=(10,8))
+                ax_rn = fig.add_subplot(111, frame_on=False)
+                ax_rn.set_ylabel('Renorm Amplitude')
+                ax_rn.set_xlabel('Frequency (GHz)')
+                ax_rn.minorticks_on()
+
+                # Setup secondary x-axis to display channels
+                ax_rn1 = ax_rn.twiny()
+                ax_rn1.set_xlabel('Channel')
+                ax_rn1.minorticks_on()
                 
-                # Setup the figure
-                if subplot:
-                    pl.subplot(nYspw,nXspw,k)
-                else:
-                    pl.figure(figsize=(10,8))
-
-                pl.ioff()
-                # Set labels appropriately depending on option choices.
-                if subplot:
-                    if (k-1)%nXspw==0:
-                        pl.ylabel('Renorm Amplitude')
-                    if k>(nSpw-nXspw):
-                        if not plotfreq:
-                            pl.xlabel('Channel')
-                        else:
-                            pl.xlabel('Frequency (GHz)')
-
-                else:
-                    pl.ylabel('Renorm Amplitude')
-                    if not plotfreq:
-                        pl.xlabel('Channel')
-                    else:
-                        pl.xlabel('Frequency (GHz)')
                 
-                if subplot:
-                    if k==1:
-                        if titlein:
-                            titleTEXT = str(titlein)+' \n'+self.msname+' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))+'>'
-                            pl.title(titleTEXT,{'horizontalalignment': 'left', 'fontsize': 'medium','verticalalignment': 'bottom'})
-                        else:
-                            pl.title(self.msname+'\nTarget='+target+' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))+'>',{'horizontalalignment': 'left', 'fontsize': 'medium','verticalalignment': 'bottom'})
+                # If user input a title, set it up, otherwise use default
+                if titlein:
+                    titleText =  str(titlein)+' \n'+self.msname+' Nant='+str(self.nAnt) \
+                            +' <Nscan='+str(len(self.rnstats['scans']))+'>'
+                    pl.title(titleText,{'fontsize': 'medium'})
                 else:
-                    if titlein:
-                        titleTEXT = str(titlein)+' \n'+self.msname+' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))+'>'
-                        pl.title(titleTEXT,{'horizontalalignment': 'left', 'fontsize': 'medium','verticalalignment': 'bottom'})
-                    else:
-                        #pl.title(self.msname+' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))+'> spw='+str(spw),{'horizontalalignment': 'left', 'fontsize': 'medium','verticalalignment': 'bottom'})
-                        pl.title(self.msname+'\nTarget='+target+' Spw='+str(spw)+' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))+'>',{'fontsize': 'medium'})
-
-                k+=1
-                style=['r:','b:']
+                    ax_rn.set_title(self.msname+'\nTarget='+target+' Spw='+str(spw)
+                            +' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))
+                            +'>',{'fontsize': 'medium'})
+                
+                # For each antenna/correlation, plot the cummulative sum, making the correlations
+                # unique colors.
+                style = ['r:','b:']
                 for iant in range(nAnt):
                     for icor in range(nCor):
-                        if not plotfreq:
-                            pl.plot(N[icor,:,iant],style[icor])
-                        else:
-                            pl.plot(freqs, N[icor,:,iant],style[icor])
-
-                # LM added 1.0 check for fully flagged ants
-                #Nm = pl.mean(N,2)
-                Nm = pl.nanmean(pl.where(N!=1,N,pl.nan),2) 
-                # becuase some antennas are flagged and get a scaling of 1.0
-                # considerably skewing the mean 
-                Nm[:][pl.isnan(Nm[:])]=1.0
-                # for those data where part of the spw is excluded due to and ATM line
+                        ax_rn.plot(freqs, N[icor,:,iant],style[icor])
                 
-                #if not plotfreq:
+                # Find the mean of the spectrum over all antennas, ignoring any antennas that have 
+                # had all their values set to 1.0 (due to flagging).
+                Nm = pl.nanmean(pl.where(N!=1, N, pl.nan), 2)
+                Nm[:][pl.isnan(Nm[:])] = 1.0
+
+                # Plot the mean renormalization spectrum
                 style = ['r-', 'b-']
-                if not plotfreq:
-                    for icor in range(nCor):
-                        pl.plot(Nm[icor,:],style[icor])
-                        #pl.plot(Nm[icor,:],'b-')
-                else:
-                    for icor in range(nCor):
-                        pl.plot(freqs, Nm[icor,:], style[icor])
-                        #pl.plot(freqs, Nm[icor,:],'b-')
+                for icor in range(nCor):
+                    ax_rn.plot(freqs, Nm[icor,:], style[icor])
                 
-                # Find the average of the max fields
-                #fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'), self.msmeta.fieldsforname(target))
-                #if len(fields) > 1:
-                #    max_values = []
-                #    for field in fields:
-                #        first_scan = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'),self.msmeta.scansforfield(field))[0]
-                #        if self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)] > self.bandThresh[self.Band]:
-                #            max_values.append(self.scalingValues['spw'+str(spw)]['scan'+str(first_scan)]['field'+str(field)])
-                #    if max_values:
-                #        Nmax = pl.mean(max_values)
-                #    else:
-                #        Nmax = None
-                #else:
+                # Get the max value of the mean renormalization spectrum for each correlation
                 if nCor == 1:
-                    Nxmax=Nm[0,:].max()
-                    Nymax=Nxmax
+                    Nxmax = Nm[0,:].max()
+                    Nymax = Nxmax
                 elif nCor == 2:
-                    Nxmax=Nm[0,:].max()
-                    Nymax=Nm[1,:].max()
+                    Nxmax = Nm[0,:].max()
+                    Nymax = Nm[1,:].max()
+                
+                # If the max of the mean spectrum in either correlation is above the alarm theshold
+                # (fthresh), then draw a line at that amplidude, centered in the plot. 
+                if Nxmax >= (1.0+self.fthresh) or Nymax >= (1.0+self.fthresh):
+                    fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
+                    fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
+                    ax_rn.plot([fmin,fmax],[Nxmax]*2,'r-')
+                    ax_rn.text(fmin,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),
+                            ha='right',va='center',color='r',size='x-small')
+                    if nCor == 2:
+                        ax_rn.plot([fmin,fmax],[Nymax]*2,'b-')
+                        ax_rn.text(fmax,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),
+                                va='center',color='b',size='x-small')
 
-                #if len(fields) == 1:
-                if Nxmax>=(1.+self.fthresh) or Nymax>=(1.+self.fthresh):
-                    if not plotfreq:
-                        pl.plot([3*nCha/8,5*nCha/8],[Nxmax]*2,'r-')
-                        pl.text(3*nCha/8,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
-                        if nCor == 2:
-                            pl.plot([3*nCha/8,5*nCha/8],[Nymax]*2,'b-')
-                            pl.text(5*nCha/8,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),va='center',color='b',size='x-small')
-                    else:
-                        fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
-                        fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
-                        pl.plot([fmin,fmax],[Nxmax]*2,'r-')
-                        pl.text(fmin,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
-                        if nCor == 2:
-                            pl.plot([fmin,fmax],[Nymax]*2,'b-')
-                            pl.text(fmax,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),va='center',color='b',size='x-small')
-                #else:
-                #    if Nmax:
-                #        if not plotfreq:
-                #            pl.plot([3*nCha/8,5*nCha/8],[Nmax]*2,'r-')
-                #            pl.text(3*nCha/8,Nxmax,'<RN>='+str(floor(Nmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
-                #        else:
-                #            fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
-                #            fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
-                #            pl.plot([fmin,fmax],[Nmax]*2,'r-')
-                #            pl.text(fmin,Nmax,'<RN>='+str(floor(Nmax*10000.0)/10000.0),ha='right',va='center',color='r',size='x-small')
+                # Grab the plot limits and set them for making it "look pretty"
+                lims = list(ax_rn.axis())
+                lims[0]=min(freqs)*0.99999
+                lims[1]=max(freqs)*1.00001
+                lims[2]=min(0.999,lims[2])
+                lims[3]=max(1.15*lims[3]-0.15*lims[2],1.01)
+                ax_rn.axis(lims)
 
-                #print(ispw, Nxmax, Nymax)
-
-                lims=list(pl.axis())
-                if not plotfreq:
-                    lims[0]=-1
-                    lims[1]=nCha+1
-                    lims[2]=min(0.999,lims[2])
-                    lims[3]=max(1.15*lims[3]-0.15*lims[2],1.01)
-                else:
-                    lims[0]=min(freqs)*0.99999
-                    lims[1]=max(freqs)*1.00001
-                    lims[2]=min(0.999,lims[2])
-                    lims[3]=max(1.15*lims[3]-0.15*lims[2],1.01)
-                pl.axis(lims)
-
-                dy=lims[2]*0.1+lims[3]*0.9
-                if subplot:
-                    if not plotfreq:
-                        pl.text(nCha/20,dy,'Spw='+str(spw))
-                    else:
-                        pl.text((lims[1]-lims[0])*.06+lims[0], dy, 'Spw='+str(spw))
-
+                # If True, draw thin, dotted lines at the locations where the renormalization 
+                # spectrum was broken up during the fitting process.
                 if plotDivisions:
                     dNchan = self.rnstats['inputs'][target][str(spw)]['dNchan']
                     nseg = self.rnstats['inputs'][target][str(spw)]['num_segments']
-                    # If there is only 1 segment, no lines to draw
                     if nseg == 1:
-                        plotDivisions=False
+                        plotDivisions = False
                     else:
-                        xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-                        if plotfreq:
-                            pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
-                        else:
-                            pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
-
+                        xlocs = [iseg*dNchan for iseg in range(1,nseg)]
+                        ax_rn.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', 
+                                colors='grey', alpha=0.5, zorder=10)
+                
+                # Set the channels labels in the correct direction since the LSB will have
+                # "backward" frequencies and here the frequencies are always shown low to high.
+                if freqs[0] > freqs[-1]:
+                    ax_rn1.set_xlim(len(freqs),0)
+                else:
+                    ax_rn1.set_xlim(0,len(freqs))
+                
+                # If option selected, add the atmospheric profile to the plots, using the 
+                # bandpass as the profile. 
                 if plotATM:
-                    # for refernce its easiest to only plot the bandpass ATM profile as representative 
-                    # its ONLY for the plot and even if PhaseAC used, the BP ATM is still extracted 
-                    # in renormalize if correctATM=True - so the else below works 
-                    Bscanatm=self.getBscan(spw,verbose=False)
+                    # Setup the axis to draw on, using the same frequency axis
+                    ax_atm = ax_rn.twinx()
+                    # Grab the bandpass scan and protect against multiple existing
+                    Bscanatm = self.getBscan(spw, verbose=False)
                     if type(Bscanatm) is list:
                         Bscanatm = Bscanatm[0]
+                    # If renormalize(correctATM=True) was run, the ATM profile already exists
+                    # in a dictionary so use it. Otherwise, grab a new one and make sure to 
+                    # also grab the image sideband ATM profile if needed.
                     if len(self.atmtrans.keys())==0:
-                        # get the ATM profiles for the bandpass as they were not retrieved in the renormalize run (i.e. correctATM was false)                        
                         if self.Band in [9, 10]:
-                            ATMprof, ATMprof_imageSB = self.ATMtrans(Bscanatm, spw, verbose=False) # this is function to get ATM profiles
+                            ATMprof, ATMprof_imageSB = self.ATMtrans(Bscanatm, spw, verbose=False)
                         else:
-                            ATMprof = self.ATMtrans(Bscanatm, spw, verbose=False) 
+                            ATMprof = self.ATMtrans(Bscanatm, spw, verbose=False)
                     else:
-                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)] # this is the profiles stored in the dictionary from the renormalize run
-                    pl.twinx()
-                    if plotfreq:
-                        pl.plot(freqs, 100.*ATMprof, c='m', linestyle='-', linewidth=2)
-                        if self.Band in [9, 10]:
-                            pl.plot(freqs, 100.*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
-                    else:
-                        pl.plot(100.*ATMprof,c='m',linestyle='-',linewidth=2) 
-                        if self.Band in [9, 10]:
-                            pl.plot(100.*ATMprof_imageSB,c='k',linestyle='-',linewidth=2) 
-
-                    # channels is not called its just the shape of the data e.g. N[0,:,iAnt] = chans - this is the same as the ATMprof as we get it using the SPW data
-                    pl.xlim(lims[0], lims[1])
-                    #pl.ylim(0,100)
-                    if self.Band in [9,10]:
-                        peak = max(pl.maximum(ATMprof,ATMprof_imageSB)*100.)+10
-                        pl.ylim(peak-100,peak)
-                    else:
-                        peak = max(ATMprof*100.)+10
-                        pl.ylim(peak-100,peak)
-                    pl.ticklabel_format(style='plain', useOffset=False)
-
-                    # Setup for properly labelling the y-axis so that labels below 0 are blanked (because they have no meaning).
-                    # initialize the axes so we can read the labels
-                    #ax = pl.gca()
-                    #print(ax.get_yticklabels()[2])
-                    #pl.draw()
-                    # get the axes
-                    #ax = pl.gca()
-                    #grab the label strings
-                    #ylabels = ax.get_yticklabels()
-                    #print(ylabels[0])
-                    # iterate over the labels and if any are located below 0, blank them out
-                    #ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
-                    #print(ylabels)
-                    # set the new label names
-                    #ax.set_yticklabels(ylabels)
+                        # Currently, correctATM will not properly handle Bands 9 and 10 but
+                        # eventually the image sideband will need to be added here.
+                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)]
                     
-                    if subplot:
-                        if (k-1)%nXspw==0:  
-                            if self.Band in [9, 10]:
-                                pl.ylabel('ATM transmission (%), Image Sideband')
-                            else:
-                                pl.ylabel('ATM transmission (%)') 
+                    # Plot the ATM profile
+                    ax_atm.plot(freqs, 100*ATMprof, c='m', linestyle='-', linewidth=2)
+                    if self.Band in [9, 10]:
+                        ax_atm.plot(freqs, 100*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
+                    ax_atm.yaxis.tick_right()
+                    if self.Band in [9, 10]:
+                        peak = max(pl.maximum(ATMprof, ATMprof_imageSB)*100.)+10
+                        ax_atm.set_ylabel('ATM Transmission (%), Image Sideband')
                     else:
-                        if self.Band in [9, 10]:
-                            pl.ylabel('ATM transmission (%), Image Sideband')
-                        else:
-                            pl.ylabel('ATM transmission (%)')
-
-                # if we didn't plotATM, we still want to properly display ticklabels
-                else:
-                    # CASA 6 units change unless specified
-                    pl.ticklabel_format(style='plain', useOffset=False)
-            
-            # Add pl.twiny() here and set the second x-axis to channels. Need to make sure they are going in the right direction!
-
-                if not subplot:
-                    if hardcopy:
-                        if not os.path.exists('RN_plots'):
-                            os.mkdir('RN_plots')
-                        fname=self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png'
-                        print('Saving hardcopy plot: '+fname)
-                        pl.savefig('./RN_plots/'+fname)
-                        pl.close()
-                        # If there is already an entry here, then the threshold was reached. Save the output filename to the pipe dictionary.
-                        if self.rnpipestats[target][str(spw)]:
-                            self.rnpipestats[target][str(spw)]['spec_plot'] = fname
-                        if createpdf:
-                            self.convert_plots_pdf(target, spw)
-                    else:
-                        pl.show()
-                        try:
-                            raw_input('Please close plot and press ENTER to continue.')
-                        except NameError:
-                            input('Please close plot and press ENTER to continue.')
-
-            if subplot:
-                if nXspw == 3:
-                    pl.subplots_adjust(wspace=0.35)
-                else:
-                    pl.subplots_adjust(wspace=0.3)
-
+                        peak = max(ATMprof*100)+10
+                        ax_atm.set_ylabel('ATM Transmission (%)')
+                    ax_atm.yaxis.set_label_position('right')
+                    
+                    # Enforce a range of 100
+                    ax_atm.set_ylim(peak-100,peak)
+                    
+                    # Make sure that we don't label values that are less than 0 since that
+                    # has no physical meaning.
+                    fig.canvas.draw()
+                    yticks = [yt for yt in ax_atm.get_yticks()]
+                    ax_atm.set_yticklabels(['' if yt<0 else str(int(yt)) for yt in yticks])
+                
+                # If option is selected, save a hardcopy of the plots. Othersie, produce 
+                # interactive plot and wait for user input to go on to the next plot.
                 if hardcopy:
+                    # Ensure the plots directory exists, if not, create it.
                     if not os.path.exists('RN_plots'):
                         os.mkdir('RN_plots')
-                    fname=self.msname+'_'+target+'_ReNormSpectra.png'
+                    fname = self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png'
                     print('Saving hardcopy plot: '+fname)
                     pl.savefig('./RN_plots/'+fname)
                     pl.close()
+                    # Save the filename of the plot to the rnpipestats dictionary so Pipeline
+                    # can easily reference it.
+                    self.rnpipestats[target][str(spw)]['spec_plot'] = fname
+                    if createpdf:
+                        self.convert_plots_pdf(target, spw)
                 else:
                     pl.show()
+                    # Python 2 vs. 3, raw_input() changed to input()
+                    try:
+                        raw_input('Please close plot and press ENTER to continue.')
+                    except NameError:
+                        input('Please close plot and press ENTER to continue.')
+
+
 
     # George's default code
     def plotScanStats(self,hardcopy=True):
@@ -2599,7 +2563,7 @@ class ACreNorm(object):
                 elif nCor==2:
                     X[icor,:,irow]*=(rN[icor,:,a1[irow]]*rN[icor,:,a2[irow]])
                 elif nCor==4:
-                    X[icor,:,irow]*=(rN[icor/2,:,a1[irow]]*rN[icor%2,:,a2[irow]])
+                    X[icor,:,irow]*=(rN[int(icor/2),:,a1[irow]]*rN[int(icor%2),:,a2[irow]])
                     
         self.putXCdata(scan,spw,field,X,datacolumn)
 
@@ -2906,23 +2870,38 @@ class ACreNorm(object):
                 # can make 100+ plots, so if heursitics trusted they don't really need investigation
                 # mostly for testing and deep dives later if needed
                 if doplot:
+
+                    # Initialize figure and clear buffer
                     pl.ioff()
                     pl.clf()
-                    pl.plot(Rorig[jcor,:,jant],c='r',linestyle='--', label='Orig. Spec.') # orignal spec 
-                    pl.plot(Rcomp,c='b',label='Divided (comp) spec.',alpha=0.5)
-                    pl.plot(M[jcor],c='g',linewidth='2', label='Median Spec.')# Med spec 
-                    pl.plot(R[jcor,:,jant],c='k',label='New Spec.') # new spec 
-                    pl.plot(thresharr[jcor],c='0.5',alpha=0.5,linestyle='--',linewidth='3',label='Threshold')
-                
+                    fig = pl.figure(figsize=(10,8))
+                    ax = fig.add_subplot(111,frame_on=False)
+
+                    # Plot the original renorm spectrum, the comparison median spectrum, 
+                    # the adjusted spectra, and the threshold.
+                    ax.plot(Rorig[jcor,:,jant],c='r',linestyle='--', label='Orig. Spec.') # orignal spec 
+                    ax.plot(Rcomp,c='b',label='Divided (comp) spec.',alpha=0.5)
+                    ax.plot(M[jcor],c='g',linewidth='2', label='Median Spec.')# Med spec 
+                    ax.plot(R[jcor,:,jant],c='k',label='New Spec.') # new spec 
+                    ax.plot(thresharr[jcor],c='0.5',alpha=0.5,linestyle='--',linewidth='3',label='Threshold')
+                    
+                    # Plot any birdies/outliers that have been found
                     for lineP in lineOut[jcor]:
-                        pl.plot(lineP,0.999,c='y',marker='s')
-                    pl.plot(lineOut[jcor][0],0.999,c='y',marker='s', label='Outlier Chns.')# to get the single label
+                        ax.plot(lineP,0.999,c='y',marker='s')
+                    ax.plot(lineOut[jcor][0],0.999,c='y',marker='s', label='Outlier Chns.')# to get the single label
+
+                    # Find the data edges to set plot size
                     pltmin=pl.array([R[jcor,:,jant].min(0),0.9977,Rorig[jcor,:,jant].min(0)]).min(0)
                     Pmax = pl.array([R[jcor,:,jant].max(0),1.015,Rcomp.max(0),thresharr[jcor].max(0)]).max(0)
                     pltmax= 1.+(Pmax-1.)*1.10
-                    pl.axis([0.0,M.shape[1],pltmin,pltmax])
+                    ax.axis([0.0,M.shape[1],pltmin,pltmax])
+
+                    # If a substitution was made above, inform on plot
                     if plttxt[jcor]:
-                        pl.text(0,1.+(Pmax-1.)*1.04,plttxt[jcor])
+                        ax.text(0,1.+(Pmax-1.)*1.04,plttxt[jcor])
+
+                    # If selected, plot the locations where the spectrum was broken up 
+                    # during fitting
                     if plotDivisions:
                         target = self.msmeta.namesforfields(fldin)[0]
                         dNchan = self.rnstats['inputs'][target][str(spwin)]['dNchan']
@@ -2932,19 +2911,28 @@ class ACreNorm(object):
                             plotDivisions=False
                         else:
                             xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-                            pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)                        
-                    pl.xlabel('Channels')
-                    pl.ylabel('ReNorm Scaling')
-                    fname=self.msname+'_ReNormHeuristicOutlierAnt_'+self.AntName[jant]+'_spw'+str(spwin)+'_scan'+str(scanin)+'_field'+str(fldin)+'_'+corPrt[jcor]
+                            ax.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)                        
+                    ax.set_xlabel('Channels')
+                    ax.set_ylabel('ReNorm Scaling')
+                    fname=self.msname+'_ReNormHeuristicOutlierAnt_'+self.AntName[jant]+'_spw' \
+                            +str(spwin)+'_scan'+str(scanin)+'_field'+str(fldin)+'_'+corPrt[jcor]
                     #pl.title(fname,{'horizontalalignment': 'center', 'fontsize': 'medium','verticalalignment': 'bottom'})
-                    pl.title(self.msname+'\nAntenna '+self.AntName[jant]+' Spw: '+str(spwin)+' Scan: '+str(scanin)+' Field: '+str(fldin)+' Corr: '+corPrt[jcor], {'fontsize': 'medium'})
+                    ax.set_title(self.msname+'\nAntenna '+self.AntName[jant]+' Spw: '+str(spwin)
+                            +' Scan: '+str(scanin)+' Field: '+str(fldin)+' Corr: '+corPrt[jcor], 
+                            {'fontsize': 'medium'})
 
                     # legend lines
-                    #pl.legend(loc=(0.70,0.5),prop={'size':8})#fontsize='small')
-                    pl.legend(loc='lower center',bbox_to_anchor=(0.5,-0.28),prop={'size':8},ncol=3)#fontsize='small')
-                    pl.subplots_adjust(bottom=0.25)
-                    # CASA 6 units change unless specificed
-                    pl.ticklabel_format(style='plain', useOffset=False)
+                    ax.legend(loc='lower center',bbox_to_anchor=(0.5,-0.28),prop={'size':8},ncol=3)#fontsize='small')
+                    fig.subplots_adjust(bottom=0.20)
+                    
+                    # Create secondary x-axis with frequency labels
+                    freqs = self.msmeta.chanfreqs(spwin,'GHz')
+                    ax1 = ax.twiny()
+                    ax1.set_xlabel('Frequency (GHz)')
+                    ax1.set_xlim(freqs[0],freqs[-1])
+                    ax1.ticklabel_format(useOffset=False)
+
+                    # Save a hardcopy of the plots if desired or show plots interactively
                     if hardcopy:
                         if not os.path.exists('RN_plots'):
                             os.mkdir('RN_plots')
@@ -2954,79 +2942,119 @@ class ACreNorm(object):
                         pl.savefig('./RN_plots/'+fname+'.png')
                         pl.close('all')
                     else:
-                        # if not hardcopy, the plots are currently show to screen interactively - i.e. for Luke's huristic checking
                         pl.show()
 
             
 
-    # LM added function - main diagnostic spectra at lowest level - scaling that each spw, scan, field, ant, correlation will have
+    # Main diagnostic spectra at lowest level - scaling that each spw, scan, field, ant, correlation will have
     # these plots should look good
-    # plotATM will just show the Target ATM transmission profile 
-    #
-    # AL updated - added target name to plot file names
-    #            - changed format of plot titles
-    #            - added plotfreq=True parameter to plot xaxis in frequency or plotfreq=False for channels
-    def plotdiagSpectra(self, R, scanin, spwin, fldin, threshline=None,plotATM=True, plotfreq=True, plotDivisions=True):
-        ##M = pl.median(R,2) # median spectra for each pol - in principle all ants should be the same per field
-        # the above is a problem if there are too many 1.0's from flagged data - median ends up being 1.0
+    def plotdiagSpectra(self, R, scanin, spwin, fldin, threshline=None,plotATM=True, plotDivisions=True):
+        """
+        Purpose: 
+            This creates diagnotic spectra at the per field per spectral window level for each scan.
+            Each antenna and correlation are plotted for each field.
+        Inputs:
+            R : numpy.array
+                This is the renormalization spectrum that you wish to plot. Requires data in the form
+                of a numpy array in the shape [correlation, channel, antenna] such that [0,:,0] would
+                be the 0-th correlation (XX), all channels, for the 0-th antenna (e.g. DA45) and would
+                be the found renormalization spectrum.
+
+            scanin : int
+                This is the scan number which corresponds to the renormalization spectrum supplied.
+
+            spwin : int
+                This is the spectral window number which corresponds to the renormalization spectrum
+                supplied.
+
+            fldin : int
+                This is the field number which corresponds to the normalization spectrum supplied.
+
+            plotATM : boolean : OPTIONAL
+                This option will plot (or not) the atmospheric transmission profile for the input
+                spectrum.
+                Default: True
+
+            plotDivisions : boolean : OPTIONAL
+                This option will plot (or not) the division lines as vertical, grey, dotted lines
+                at all the locations where the renormalization spectrum was broken up during the
+                fitting stage.
+                Default: True
+
+            threshLine : float or None : OPTIONAL
+                This option allows the user to draw a line of the plot to represent the threshold
+                level.
+                Default: None
+
+        """
+        # Grab the median renormalization spectrum, avoiding values set to exactly 1.0 since that
+        # indicates that an antenna has been completely flagged and skews the median. Then, reset 
+        # spectrum after found.
         M = pl.nanmedian(pl.where(R!=1,R,pl.nan),2)
-        M[:][pl.isnan(M[:])]=1.0 # for excluded chan ranges which are 'nan'
-        #need to set back to 1.0, otherwise median has nan values
-        # and rest of stats max, min, etc do not deal with it
+        M[:][pl.isnan(M[:])]=1.0 
         
-        if plotfreq:
-            freqs = self.msmeta.chanfreqs(spwin, 'GHz')
+        # Grab the frequencies
+        freqs = self.msmeta.chanfreqs(spwin, 'GHz')
         
-        # Simple scaling to obide by for plots
-        # to try somewhat keep default axes
+        # Simple scaling to abide by for plots to try somewhat keep default axes
         # but as we do a diag for each spw, scan, fld as the scaling spectrum is 
         # found, then we don't store or compare between and get an 'overall' 
         # range for plotting 
         maxVal=[1.0,1.01,1.02,1.05,1.1,1.2,1.3,1.4,1.5,2.0]
-        plMax = [plM for plM in maxVal if plM >= R.max()][0]
+        try:
+            plMax = [plM for plM in maxVal if plM >= R.max()][0]
+        except IndexError:
+            plMax = 2.0
+            print('\n\tWARNING!!!!')
+            print('\tUNREALISTICALLY HIGH RENORM VALUE FOUND!! THERE ARE LIKELY CORRELATOR \
+                    ISSUES WITH SCAN '+str(scanin)+' OR THE FITTING HAS DIVERGED.\n')
         if plMax == 1.0:
             plMax == 1.01 
         plMin = min(R.min(), 0.995)
     
+        # Grab the target name
         target = self.msmeta.namesforfields(fldin)[0]
 
-        # only works for cross corr 
-        #corPrt=['XX','YY']
-        #if R.shape[0] == 2:
+        # Initialize the plot
         pl.close('all')
         pl.ioff()
         pl.clf()
-        pl.figure(figsize=(10,8))
-        pl.ioff()
+        fig = pl.figure(figsize=(10,8))
+        ax_rn = fig.add_subplot(111, frame_on=False)
+        ax_rn.set_ylabel('Renorm Amplitude')
+        ax_rn.set_xlabel('Frequeycy (GHz)')
+        ax_rn.minorticks_on()
+        
+        # Initialize secondary x-axis and label channels in the correct direction
+        ax_rn1 = ax_rn.twiny()
+        ax_rn1.set_xlabel('Channel')
+        if freqs[0] > freqs[-1]:
+            ax_rn1.set_xlim(len(freqs),0)
+        else:
+            ax_rn1.set_xlim(0,len(freqs))
+        ax_rn1.minorticks_on()
+
+        # Plot renormalization spectrum for each antenna and correlation using 
+        # different styles. Also plot median spectrum.
         corColor=['r','b']
         medColor=['k','g']
         medLine=[':','--']
-        if plotfreq:
-            for iCor in range(R.shape[0]):
-                for allAnt in range(R.shape[2]):
-                    pl.plot(freqs, R[iCor,:,allAnt],c=corColor[iCor],alpha=0.5)
-                pl.plot(freqs, M[iCor],c=medColor[iCor],linewidth='4',linestyle=medLine[iCor])
-            if threshline and threshline < plMax:
-                pl.plot([min(freqs),max(freqs)],[threshline,threshline],linestyle='-',c='c',linewidth='2')
-            pl.xlabel('Frequency (GHz)')
-        else:
-            for iCor in range(R.shape[0]):
-                for allAnt in range(R.shape[2]):
-                    pl.plot(R[iCor,:,allAnt],c=corColor[iCor],alpha=0.5)
-                pl.plot(M[iCor],c=medColor[iCor],linewidth='4',linestyle=medLine[iCor])
-            if threshline and threshline < plMax:
-                pl.plot([0,R.shape[1]],[threshline,threshline],linestyle='-',c='c',linewidth='2')
-            pl.xlabel('Channels')
-        pl.ylabel('ReNorm Scaling')  
-        fnameM=self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spwin)+'_scan'+str(scanin)+'_field'+str(fldin)
-        #pl.title(fnameM,{'horizontalalignment': 'center', 'fontsize': 'large','verticalalignment': 'bottom'})
-        pl.title(self.msname+'\nTarget: '+target+' Spw: '+str(spwin)+' Scan: '+str(scanin)+' Field: '+str(fldin), {'fontsize': 'medium'})
-        pl.ticklabel_format(useOffset=False)
-        if plotfreq:
-            pl.xlim(min(freqs)*0.99999, max(freqs)*1.00001)
-        else:
-            pl.xlim(-1,R.shape[1]+1)
-        pl.ylim(plMin,plMax)
+        for iCor in range(R.shape[0]):
+            for iAnt in range(R.shape[2]):
+                ax_rn.plot(freqs, R[iCor,:,iAnt],c=corColor[iCor],alpha=0.5)
+            ax_rn.plot(freqs, M[iCor],c=medColor[iCor],linewidth='4',linestyle=medLine[iCor])
+
+        # If supplied, plot a threshold line
+        if threshline and threshline < plMax:
+            ax_rn.plot([min(freqs),max(freqs)],[threshline,threshline],linestyle='-',c='c',linewidth='2')
+
+        # Set the labels and such
+        ax_rn.set_title(self.msname+'\nTarget: '+target+' Spw: '+str(spwin)+' Scan: '+str(scanin)+' Field: '+str(fldin), {'fontsize': 'medium'})
+        ax_rn.ticklabel_format(useOffset=False)
+        ax_rn.set_xlim(min(freqs)*0.99999, max(freqs)*1.00001)
+        ax_rn.set_ylim(plMin,plMax)
+
+        # If selected, plot the locations where the spectrum was divided during the fitting proces
         if plotDivisions:
             dNchan = self.rnstats['inputs'][target][str(spwin)]['dNchan']
             nseg = self.rnstats['inputs'][target][str(spwin)]['num_segments']
@@ -3034,12 +3062,13 @@ class ACreNorm(object):
                 plotDivisions=False
             else:
                 xlocs = [iseg*dNchan for iseg in range(1,nseg)]                    
-                if plotfreq:
-                    pl.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
-                else:
-                    pl.vlines(xlocs, 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+                ax_rn.vlines(freqs[xlocs], 0.5, 1.5, linestyles='dotted', colors='grey', alpha=0.5, zorder=10)
+
+        # If selected, plot the atmospheric transmission profile(s). Note that in Bands 9 and 10,
+        # the image sideband atmospheric transmission profile is also plotted.
         if plotATM:
-            # plot the ATM line
+            # If renormalize(correctATM=True) was used, then the ATM profile already exists in
+            # a dictionary, use that. Otherwise, grab the profile and image sideband if necessary.
             if len(self.atmtrans.keys())==0:
                 if self.Band in [9, 10]:
                     ATMprof, ATMprof_imageSB = self.ATMtrans(scanin, spwin, verbose=False)
@@ -3047,47 +3076,29 @@ class ACreNorm(object):
                     ATMprof=self.ATMtrans(scanin,spwin,verbose=False)
             else:
                 ATMprof=self.atmtrans[target][str(spwin)][str(scanin)]
-            pl.twinx()
-            if plotfreq:
-                pl.plot(freqs, 100.*ATMprof,c='m',linestyle='-',linewidth=2)
-                if self.Band in [9, 10]:
-                    pl.plot(freqs, 100.*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
-                pl.xlim(min(freqs)*0.99999, max(freqs)*1.00001)
-            else: 
-                pl.plot(100.*ATMprof,c='m',linestyle='-',linewidth=2) 
-                if self.Band in [9, 10]:
-                    pl.plot(100.*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
-                pl.xlim(-1,R.shape[1]+1)
-            #pl.ylim(0,100)
+            # Setup secondary y-axis using the same frequency axis and plot the profile(s).
+            ax_atm = ax_rn.twinx()
+            ax_atm.plot(freqs, 100.*ATMprof,c='m',linestyle='-',linewidth=2)
+            if self.Band in [9, 10]:
+                ax_atm.plot(freqs, 100.*ATMprof_imageSB, c='k', linestyle='-', linewidth=2)
             if self.Band in [9,10]:
                 peak = max(pl.maximum(ATMprof,ATMprof_imageSB)*100.)+10
-                pl.ylim(peak-100,peak)
+                ax_atm.set_ylabel('ATM Transmission (%), Image Sideband')                
             else:
                 peak = max(ATMprof*100.)+10
-                pl.ylim(peak-100,peak)
-            pl.ticklabel_format(style='plain', useOffset=False)
-
-            # Setup for properly labelling the y-axis so that labels below 0 are blanked (because they have no meaning).
-            # update the axes so we can read the labels
-            #pl.draw()
-            # get the axes
-            #ax = pl.gca()
-            #grab the label strings
-            #ylabels = ax.get_yticklabels()
-            # iterate over the labels and if any are located below 0, blank them out
-            #ylabels = ['' if ylabel.get_position()[1] < 0 else int(ylabel.get_position()[1]) for ylabel in ylabels]
-            # set the new label names
-            #ax.set_yticklabels(ylabels)
-
-            if self.Band in [9, 10]:
-                pl.ylabel('ATM Transmission (%), Image Sideband')
-            else:
-                pl.ylabel('ATM Transmission (%)')
-        else:
-            # CASA 6 units change unless specificed
-            pl.ticklabel_format(style='plain', useOffset=False)
+                ax_atm.set_ylabel('ATM Transmission (%)')                
+            ax_atm.set_ylim(peak-100,peak)
+            ax_atm.yaxis.set_label_position('right')
+            
+            # Avoid labelling values less than 0% since they have no physical meaning.
+            fig.canvas.draw()
+            yticks = [yt for yt in ax_atm.get_yticks()]
+            ax_atm.set_yticklabels(['' if yt<0 else str(int(yt)) for yt in yticks])
+        
+        # Save the plotted figure, setting up the plot directory if it doesn't already exist.
         if not os.path.exists('RN_plots'):
             os.mkdir('RN_plots')
+        fnameM=self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spwin)+'_scan'+str(scanin)+'_field'+str(fldin)        
         pl.savefig('./RN_plots/'+fnameM+'.png')
         pl.close('all')
 
@@ -3597,7 +3608,7 @@ class ACreNorm(object):
             dec = '%+f:%s:%s' % (float(d), dm, ds)
         else:
             print("Invalid format for RA/Dec string: ", radec1)
-            return
+            raise SyntaxError('Invalid format for RA/Dec string: '+str(radec1))
         tokens = ra.strip().split(':')
         hours = 0
         for i,t in enumerate(tokens):
@@ -3694,7 +3705,8 @@ class ACreNorm(object):
                     if wsdict[w].find(preferredStation) >= 0:
                         preferredStationID = w
                 if preferredStationID is None:
-                    print("Preferred station (%s) not found in this dataset. Using all." % (preferredStation))
+                    if verbose:
+                        print("Preferred station (%s) not found in this dataset. Using all." % (preferredStation))
                 else:
                     indices = pl.where(stations == preferredStationID)
                     mjdsec = pl.array(mjdsec)[indices]
@@ -3926,25 +3938,38 @@ class ACreNorm(object):
             # All files names are deterministic, we want to sort on the scan number, then on field number.
             return int(fn.split('scan')[-1].split('_')[0]), int(fn.split('field')[-1].split('.')[0])
 
-        # First create the montaged files of the ReNormDiagnosticCheck plots. Defaults stolen from AU tools.
+        # Defaults stolen from AU tools.
         tile = '2x4'
         geometry = '1000x800+2+2'
-        pngs = glob.glob('./RN_plots/'+self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spw)+'_scan*_field*.png')
-        if len(pngs) == 0:
-            print('No PNGs found! Exiting without creating a PDF.')
-            self.logReNorm.write('No PNGs found! Exiting without creating a PDF.\n')
-            return
-        pngs.sort(key=diagnostic_sort) # sort file names by scan number, then by field to get the right order
-        # Add the summary spectra plot to the beginning of the file
-        pngs = ['./RN_plots/'+self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png']+pngs
+
+        # Create a list of PNGs starting with the summary plot
+        if os.path.exists('./RN_plots/'+self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png'):
+            pngs = ['./RN_plots/'+self.msname+'_'+target+'_spw'+str(spw)+'_ReNormSpectra.png']
+        else:
+            print('No summary PNG found! Has plotSpectra() been run? Exiting without creating PDF.')
+            self.logReNorm.write('No summary PNG found! Has plotSpectra() been run? Exiting without creating PDF.')
+            raise OSError('No summary PNG found within '+os.path.join(os.getcwd(),'RN_plots')+'. Has plotSpectra() been run?')
+
+        # Add the antenna diagnostic plots next
+        diag_pngs = glob.glob('./RN_plots/'+self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spw)+'_scan*_field*.png')
+        if len(diag_pngs) == 0:
+            print('No diagnostic PNGs found! Only the summary spectrum will be included.')
+            self.logReNorm.write('No diagnostic PNGs found! Only the summary spectrum will be included.\n')
+        else:
+            diag_pngs.sort(key=diagnostic_sort) # sort file names by scan number, then by field to get the right order
+            # Add the diagnostic PNGs to the list
+            pngs += diag_pngs
+
         # Add the outlier antenna plots
-        fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'),self.msmeta.fieldsforname(target))
         if include_heuristics:
+            fields = pl.intersect1d(self.msmeta.fieldsforintent('*TARGET*'),self.msmeta.fieldsforname(target))            
             ant_pngs = glob.glob('./RN_plots/'+self.msname+'_ReNormHeuristicOutlierAnt_*_spw'+str(spw)+'_scan*field'+str(fields)+'*.png')
             if len(ant_pngs) != 0:
                 ant_pngs.sort()
-                pngs = pngs+ant_pngs
-        pages = int(ceil(len(pngs)/8.)) # Figure out how many pages are needed. We will create tiles of 2 columns x 4 rows
+                pngs += ant_pngs
+
+        # Figure out how many pages are needed. We will create tiles of 2 columns x 4 rows
+        pages = int(ceil(len(pngs)/8.)) 
         j = 0
         montaged_pngs = [] # Keep the list of newly created montages
         for i in range(pages):
