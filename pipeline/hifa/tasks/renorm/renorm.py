@@ -73,7 +73,7 @@ class RenormInputs(vdp.StandardInputs):
         self.excludechan = excludechan
 
 @task_registry.set_equivalent_casa_task('hifa_renorm')
-@task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
+@task_registry.set_casa_commands_comment('Renormalize data affected by strong line emission.')
 class Renorm(basetask.StandardTaskTemplate):
     Inputs = RenormInputs
 
@@ -97,20 +97,21 @@ class Renorm(basetask.StandardTaskTemplate):
             corrApplied = rn.checkApply()
             corrColExists = rn.correxists
 
+            stats = {}
+            rnstats = {}
+
             if not rn.tdm_only:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                                spws=inp.spw, excludechan=inp.excludechan)
                 rn.plotSpectra()
                 alltdm = False
 
-            if corrColExists and not corrApplied:
-                # get stats (dictionary) indexed by source, spw
-                stats = rn.rnpipestats
-                # get all factors for QA
-                rnstats = rn.stats()
-            else:
-                stats = {}
-                rnstats = {}
+                if corrColExists and not corrApplied:
+                    # get stats (dictionary) indexed by source, spw
+                    stats = rn.rnpipestats
+                    # get all factors for QA
+                    rnstats = rn.stats()
+
             rn.close()
 
             result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm)
