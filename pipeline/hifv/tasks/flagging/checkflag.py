@@ -634,16 +634,19 @@ class Checkflag(basetask.StandardTaskTemplate):
         return amp_range
 
     def _get_amp_range2(self, field='', spw='', scan='', intent='', datacolumn='corrected', correlation='', uvrange=''):
-        """Get amplitude min/max for the amp. vs. freq summary plots, with ms.statistic()."""
+        """Get amplitude min/max for the amp. vs. freq summary plots, with ms.statistic().
+        
+        - doquantiles=False to improve performance (CASR-550/CAS-13031)
+        """
         amp_range = [0., 0.]
 
         try:
             with casa_tools.MSReader(self.inputs.vis) as msfile:
-                stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False,
-                                          field=field, scan=scan, spw=spw, reportingaxes='',
-                                          correlation=correlation, uvrange=uvrange)
-                print(stats)
-                amp_range = [stats['']['min'], stats['']['max']]
+                stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False, useflags=True,
+                                          field=field, scan=scan, intent=intent, spw=spw,
+                                          correlation=correlation, uvrange=uvrange,
+                                          reportingaxes='', doquantiles=False)
+            amp_range = [stats['']['min'], stats['']['max']]
         except Exception as ex:
             LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
