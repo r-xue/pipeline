@@ -564,9 +564,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             LOG.info('tclean used %d iterations' % tclean_iterdone)
 
             if tclean_stopcode == 0 and tclean_iterdone > 0:
-                result.error = CleanBaseError('CASA error: tclean exit status 0 for Field: %s SPW: %s' %
-                                              (inputs.field, inputs.spw), 'tclean exited without reaching global stopping criterion.')
-                LOG.warning('CASA error: tclean exit status 0 for Field: %s SPW: %s' %
+                LOG.warning('tclean exit status 0 for Field: %s SPW: %s:. the image may not be cleaned as expected.' %
                             (inputs.field, inputs.spw))
 
             if tclean_stopcode == 1:
