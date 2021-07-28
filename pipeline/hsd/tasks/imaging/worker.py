@@ -16,10 +16,10 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
 from . import resultobjects
-from . import observatory_policy
 from .. import common
-from ..common import utils
 from ..common import direction_utils as dirutil
+from ..common import observatory_policy
+from ..common import utils
 
 LOG = infrastructure.get_logger(__name__)
 

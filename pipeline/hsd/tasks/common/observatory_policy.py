@@ -10,7 +10,7 @@ from pipeline.domain import MeasurementSet
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
 from pipeline.infrastructure.launcher import Context
-from ..common import utils as sdutils
+from . import utils as sdutils
 
 
 LOG = infrastructure.get_logger(__name__)

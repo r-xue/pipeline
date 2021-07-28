@@ -16,7 +16,7 @@ from .. import common
 from ..common import compress
 
 from .accumulator import Accumulator
-from . import observatory_policy
+from ..common import observatory_policy
 
 LOG = infrastructure.get_logger(__name__)
 DO_TEST = True
