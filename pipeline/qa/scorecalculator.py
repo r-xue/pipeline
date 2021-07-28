@@ -2916,9 +2916,9 @@ def score_fluxservice(result):
         msg = "Flux catalog service not used."
         for setjy_result in result.setjy_results:
             measurements = setjy_result.measurements
-            for measurement in measurements:
+            for measurement in measurements.items():
                 try:
-                    fluxorigin = measurement[0].origin
+                    fluxorigin = measurement[1][0].origin
                     if fluxorigin == 'Source.xml':
                         score = 0.3
                         msg = "Flux catalog service not used.  Source.xml is the origin."
