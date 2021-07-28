@@ -6,7 +6,7 @@ import pipeline.infrastructure.utils as utils
 
 def get_fraction(flagged, total):
    if total == 0 or flagged < 0.0:
-       return 'N/A'
+       return 'N/A' 
    else:
        return '%0.1f%%' % (100.0 * float(flagged) / float(total))
 
@@ -132,11 +132,19 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
             <th scope="col">Total</th>
 	</thead>
 	<tbody>
-	% for tr in per_eb_summary_table_rows:
+	% for tr, subpage in zip(per_eb_summary_table_rows, statistics_subpages):
+        <%
+            subpage_html = os.path.join( dirname, subpage['html'] )
+        %>
 		<tr>
 		% for td in tr:
-			${td}
+			${td} 
 		% endfor
+        <TD>
+        <a href="${subpage_html}" class="replace" data-vis="${subpage['vis']}">
+        Plots
+        </a>
+        </TD>
 		</tr>
 	%endfor
 	</tbody>
@@ -146,7 +154,7 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 
 <H2 id="summarytableperfield" class="jumptarget">Flag Summary per Field and SpW</H2>
 <table class="table table-bordered table-striped" summary="Flag Summary per Field and SpW">
-	<caption>Flag summary of ON-source target scans per source and SpW (in number of spectral channels).</caption>
+	<caption>Flag summary of ON-source target scans per source and SpW <(in number of spectral channels).</caption>
     <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Field</th>
@@ -219,3 +227,4 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 		</tbody>
 		</table>
 	%endfor <!-- end of per field loop -->
+

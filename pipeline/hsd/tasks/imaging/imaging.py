@@ -1129,6 +1129,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                                      spwid,
                                                                                      msobj.get_antenna(antid)[0].name,
                                                                                      str(pol_names)))
+            if raster_info is None:
+                LOG.warn('Raster scan analysis failed. Skipping further calculation.')
+                continue
+
             dt = datatable_dict[msobj.basename]
             _index_list = common.get_index_list_for_ms(dt, [msobj.origin_ms], [antid], [fieldid],
                                                        [spwid])
@@ -1158,8 +1162,6 @@ class SDImaging(basetask.StandardTaskTemplate):
             mean_tsys_per_pol = dt.getcol('TSYS').take(_index_list, axis=-1).mean(axis=-1)
             LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
             # obtain Wx, and Wy
-#             raster_info = _analyze_raster_pattern(dt, msobj, fieldid, spwid, antid, polids[0])
-            assert raster_info is not None
             width = cqa.getvalue(cqa.convert(raster_info.width, ang_unit))[0]
             height = cqa.getvalue(cqa.convert(raster_info.height, ang_unit))[0]
             # obtain T_OS,f
@@ -1254,6 +1256,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                 sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
                 N += 1.0
 
+        if N == 0:
+            LOG.warn('No rms estimate is available.')
+            return failed_rms
+
         theoretical_rms = numpy.sqrt(sq_rms)/N
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return cqa.quantity(theoretical_rms, imageunit)
@@ -1287,7 +1293,24 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+    try:
+        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+    except Exception:
+        LOG.warn('Failed to detect gaps between raster scans. Fall back to time domain analysis. Result might not be correct.')
+        try:
+            dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
+            se_small = [(v[0], v[-1]) for v in dtrow_list]
+            se_large = [(v[0], v[-1]) for v in dtrow_list_large]
+            gap_r = []
+            for sl, el in se_large:
+                for i, (ss, es) in enumerate(se_small):
+                    if ss == sl:
+                        gap_r.append(i)
+                        break
+            gap_r.append(len(dtrow_list))
+        except Exception:
+            LOG.warn('Could not find gaps between raster scans. No result is produced.')
+            return None
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)
