@@ -194,7 +194,7 @@ class Applycals(applycal.IFApplycal):
         applied = [callibrary.CalApplication(calto, calfroms)
                    for calto, calfroms in merged.items()]
 
-        result = happlycal.ApplycalResults(applied)
+        result = happlycal.ApplycalResults(applied=applied, data_type=self.applied_data_type)
 
         if inputs.flagsum:
             result.summaries = [stats_before, stats_after]

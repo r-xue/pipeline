@@ -37,8 +37,9 @@ import copy
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
+from pipeline.domain import DataType
 from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
@@ -49,6 +50,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class EditimlistInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
     cfcache = vdp.VisDependentProperty(default='')
@@ -207,7 +211,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(EditimlistInputs)
+#api.ImagingMeasurementSetsPreferred.register(EditimlistInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_editimlist')

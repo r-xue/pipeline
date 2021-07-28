@@ -1,15 +1,17 @@
 import contextlib
-import json
 import os
 import shutil
 import tarfile
+from typing import Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.datatype import DataType
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline import environment
 from . import fluxes
@@ -217,11 +219,20 @@ class ImportData(basetask.StandardTaskTemplate):
         rel_to_import = [os.path.relpath(f, abs_output_dir) for f in to_import]
 
         observing_run = ms_reader.get_observing_run(rel_to_import)
+        data_type = DataType.RAW
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', inputs.session, ms.basename)
             if inputs.asimaging:
                 LOG.info('Importing %s as an imaging measurement set', ms.basename)
                 ms.is_imaging_ms = True
+                data_type = DataType.REGCAL_CONTLINE_SCIENCE
+
+            # Set data_type
+            col = get_datacolumn_name(ms.name)
+            if col is not None:
+                ms.set_data_column(data_type, col)
+            else:
+                LOG.error('No data column found in {}'.format(ms.basename))
 
             ms.session = inputs.session
 
@@ -343,6 +354,26 @@ class ImportData(basetask.StandardTaskTemplate):
             template_text = FLAGGING_TEMPLATE_HEADER.replace('___TITLESTR___', titlestr)
             with open(outfile, 'w') as f:
                 f.writelines(template_text)
+
+def get_datacolumn_name(msname: str) -> Optional[str]:
+    """
+    Return a name of data column in MeasurementSet (MS).
+
+    Args:
+        msname: A path of MS
+
+    Returns:
+        Search for 'DATA' and 'FLOAT_DATA' columns in MS and returns the first
+        matching column in MS. Returns None if no match is found.
+    """
+    search_cols = ['DATA', 'FLOAT_DATA']
+    with casa_tools.TableReader(msname) as tb:
+        tb_cols = tb.colnames()
+        for col in search_cols:
+            if col in tb_cols:
+                return col
+    return None
+
 
 
 FLAGGING_TEMPLATE_HEADER = '''#

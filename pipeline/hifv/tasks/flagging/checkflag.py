@@ -7,8 +7,10 @@ import datetime
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.heuristics import (RflagDevHeuristic,
-                                      set_add_model_column_parameters)
+
+from pipeline.domain import DataType
+from pipeline.hifv.heuristics import set_add_model_column_parameters
+from pipeline.hifv.heuristics import RflagDevHeuristic
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 from .displaycheckflag import checkflagSummaryChart
@@ -20,6 +22,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class CheckflagInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     checkflagmode = vdp.VisDependentProperty(default='')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
     growflags = vdp.VisDependentProperty(default=False)

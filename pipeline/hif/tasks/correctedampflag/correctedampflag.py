@@ -8,6 +8,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.h.tasks.common.arrayflaggerbase import FlagCmd
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
@@ -411,6 +412,8 @@ class CorrectedampflagInputs(vdp.StandardInputs):
     """
     CorrectedampflagInputs defines the inputs for the Correctedampflag pipeline task.
     """
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
     # Lower sigma threshold for identifying outliers as a result of "bad
     # baselines" and/or "bad antennas" within baselines (across all
     # timestamps); equivalent to:
