@@ -3,7 +3,19 @@
     <task category="pipeline" name="hifa_importdata" type="function">
 
         <shortdescription>Imports data into the interferometry pipeline</shortdescription>
-        <description>Imports data into the interferometry pipeline.</description>
+        <description>
+            The hifa_importdata task loads the specified visibility data into the pipeline
+            context unpacking and / or converting it as necessary.
+
+            If the 'overwrite' input parameter is set to False and the task is
+            asked to convert an input ASDM input to an MS, then when the output
+            MS already exists in the output directory, the importasdm
+            conversion step is skipped, and instead the existing MS will be
+            imported instead.
+
+            results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+            the results object for the pipeline task is returned.
+        </description>
 
         <input>
             <param name="vis" type="stringVec">
@@ -54,7 +66,12 @@
 
             <param name="overwrite" subparam="true" type="bool">
                 <shortdescription>Overwrite existing files on import</shortdescription>
-                <description>Overwrite existing files on import</description>
+                <description>Overwrite existing files on import.
+                    Can only be set in pipelinemode='interactive'.
+                    When converting ASDM to MS, if overwrite=False and the MS
+                    already exists in output directory, then this existing MS
+                    dataset will be used instead.
+                </description>
                 <value>False</value>
             </param>
 
@@ -183,95 +200,6 @@
         <returns>any</returns>
 
         <example>
-The hifa_importdata task loads the specified visibility data into the pipeline
-context unpacking and / or converting it as necessary.
-
-
-Keyword arguments
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-
-session -- List of sessions to which the visibility files belong. Defaults
-    to a single session containing all the visibility files, otherwise
-    a session must be assigned to each vis file.
-
-    default: []
-    example: session=['session_1', 'session_2']
-
-
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-asis -- ASDM tables to convert as is.
-
-    default: 'SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR'
-    example: asis='Receiver', asis=''
-
-process_caldevice -- Ingest the ASDM caldevice table.
-
-    default: False
-    example: process_caldevice=True
-
-overwrite -- Overwrite existing MSes on output.
-
-    default: False
-
-nocopy -- When importing an MS, disable copying of the MS to the working
-    directory.
-
-    default: False
-
-bdfflags -- Apply BDF flags on line.
-
-    default: True
-
-ocorr_mode -- Read in cross- and auto-correlation data(ca), cross-
-    correlation data only (co), or autocorrelation data only (ao).
-
-    default: ca
-
-lazy -- Use the lazy filter import.
-
-    default: False
-
-dbservice -- Use online flux catalog on import.
-
-    default: False
-
-ocorr_mode -- Read in cross- and auto-correlation data(ca), cross-
-    correlation data only (co), or autocorrelation data only (ao).
-
-    default: ca
-
-createmms -- Create a multi-MeasurementSet ('true') ready for full parallel 
-    processing, or a standard MeasurementSet ('false'). The default setting
-    ('automatic') creates an MMS if running in a cluster environment.
-
-    default: 'false'
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-    do not execute (False).
-
-    default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-
-    default: True
-
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-
-Examples
-
 1. Load an ASDM list in the ../rawdata subdirectory into the context:
 
     hifa_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e',
