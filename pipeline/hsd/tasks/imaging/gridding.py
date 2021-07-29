@@ -16,6 +16,7 @@ from .. import common
 from ..common import compress
 
 from .accumulator import Accumulator
+from ..common import observatory_policy
 
 LOG = infrastructure.get_logger(__name__)
 DO_TEST = True
@@ -144,13 +145,15 @@ class GriddingBase(basetask.StandardTaskTemplate):
         self.nchan = reference_spw.num_channels
         # beam size
         grid_size = casa_tools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
+        imaging_policy = observatory_policy.get_imaging_policy(context)
+        grid_factor = imaging_policy.get_beam_size_pixel()
         self.grid_ra = grid_size
         self.grid_dec = grid_size
 
         combine_radius = self.grid_ra
         kernel_width = 0.5 * combine_radius
         allowance = self.grid_ra * 0.1
-        spacing = self.grid_ra / 9.0
+        spacing = self.grid_ra / grid_factor
         DataIn = self.files
         LOG.info('DataIn=%s'%(DataIn))
         grid_table = self.dogrid(DataIn, kernel_width, combine_radius, allowance, spacing, is_eph_obj, datatable_dict=datatable_dict)

@@ -14,9 +14,9 @@ def get_td_for_percent_flagged(flagsummary, step):
 
     pflagged = (100.0 * flagged / total)
     if step == 'before' and pflagged > 1.0:
-        return '<td class="warning">{:.1f}%</td>'.format(pflagged)
+        return '<td class="warning">{:.3f}%</td>'.format(pflagged)
 
-    return '<td>{:.1f}%</td>'.format(pflagged)
+    return '<td>{:.3f}%</td>'.format(pflagged)
 
 comp_descriptions = {'nmedian'    : 'Flag T<sub>sys</sub> spectra with high median values.',
                  	 'derivative' : 'Flag T<sub>sys</sub> spectra with high median derivative (ringing).',

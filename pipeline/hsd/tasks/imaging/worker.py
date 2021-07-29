@@ -1,6 +1,7 @@
 import os
 import math
 import shutil
+from typing import Dict, List, NewType, Optional, Tuple
 
 import numpy
 
@@ -13,21 +14,43 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
 from . import resultobjects
 from .. import common
-from ..common import utils
-from ..common import utils as sdutils
 from ..common import direction_utils as dirutil
+from ..common import observatory_policy
+from ..common import utils
 
 LOG = infrastructure.get_logger(__name__)
 
+Quantity = NewType('Quantity', Dict)
+Angle = NewType('Angle', Dict)
+Direction = NewType('Direction', Dict)
 
-def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list):
+
+def ImageCoordinateUtil(
+    context: Context,
+    ms_names: List[str],
+    ant_list: List[Optional[int]],
+    spw_list: List[int],
+    fieldid_list: List[int]
+) -> Tuple[str, Angle, Angle, int, int, Direction]:
     """
-    An utility function to calculate spatial coordinate of image for ALMA
+    Calculate spatial coordinate of image.
 
     Items in ant_list can be None, which indicates that the function will take into
     account pointing data from all the antennas in MS.
+
+    Args:
+        context: Pipeline context
+        ms_names: List of MS names
+        ant_list: List of antenna ids. List elements could be None.
+        spw_list: List of spw ids.
+        fieldid_list: List of field ids.
+    Returns:
+        Six tuple containing phasecenter, horizontal and vertical cell sizes,
+        horizontal and vertical number of pixels, and direction of the origin
+        (for moving targets).
     """
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
@@ -41,17 +64,10 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     is_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_eph_obj
     is_known_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_known_eph_obj
 
+    imaging_policy = observatory_policy.get_imaging_policy(context)
+
     # qa tool
     qa = casa_tools.quanta
-    ### ALMA specific part ###
-    # the number of pixels per beam
-    grid_factor = 9.0
-    # recommendation by EOC
-    fwhmfactor = 1.13
-    # hard-coded for ALMA-TP array
-    diameter_m = 12.0
-    obscure_alma = 0.75
-    ### END OF ALMA part ###
 
     # msmd-less implementation
     spw = ref_msobj.get_spectral_window(ref_spw)
@@ -63,7 +79,8 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         me_center = fields[0].mdirection
 
     # cellx and celly
-    theory_beam_arcsec = sdbeamutil.primaryBeamArcsec(freq_hz, diameter_m, obscure_alma, 10.0, fwhmfactor=fwhmfactor)
+    theory_beam_arcsec = imaging_policy.get_beam_size_arcsec(ref_msobj, ref_spw)
+    grid_factor = imaging_policy.get_beam_size_pixel()
     grid_size = qa.quantity(theory_beam_arcsec, 'arcsec')
     cellx = qa.div(grid_size, grid_factor)
     celly = cellx
@@ -85,7 +102,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
             # get org_direction
             org_direction = msobj.get_fields(field_id)[0].source.org_direction
 
-        datatable_name = sdutils.get_data_table_path(context, msobj)
+        datatable_name = utils.get_data_table_path(context, msobj)
         datatable = DataTable(name=datatable_name, readonly=True)
 
         if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
@@ -281,7 +298,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         ant_name = rep_ms.antennas[antid_list[0]].name
         source_name = rep_ms.fields[fieldid_list[0]].clean_name
         phasecenter, cellx, celly, nx, ny, org_direction = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
-                                                                fieldid_list)
+                                                                                            fieldid_list)
 
         status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode, edge, phasecenter,
                                   cellx, celly, nx, ny)
@@ -318,7 +335,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         if coord_set:
             return params
         else:
-            params = ALMAImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
+            params = ImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
             if not params:
                 raise RuntimeError( "No valid data" )
             return params
@@ -326,7 +343,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
     def _do_imaging(self, infiles, antid_list, spwid_list, fieldid_list, imagename, imagemode, edge, phasecenter, cellx,
                     celly, nx, ny):
         context = self.inputs.context
-        is_nro = sdutils.is_nro(context)
         reference_data = context.observing_run.get_ms(infiles[0])
         ref_spwid = spwid_list[0]
 
@@ -419,12 +435,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         truncate = gwidth = jwidth = -1  # defaults (not used)
 
         # PIPE-689: convsupport should be 3 for NRO Pipeline
-        if is_nro:
-            convsupport = 3
-        else:
-            convsupport = 6
+        imaging_policy = observatory_policy.get_imaging_policy(context)
+        convsupport = imaging_policy.get_convsupport()
 
-#         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
 
         # phasecenter=TRACKFIELD only for sources with ephemeris table
