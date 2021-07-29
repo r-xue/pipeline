@@ -1,9 +1,12 @@
+import numpy as np
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils import utils
+from pipeline.infrastructure import casa_tools
 
 __all__ = [
     'FlagDeterALMA',
@@ -116,6 +119,17 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         if ncorr * spw.num_channels > 256:
             raise ValueError('Spectral window {} is an FDM spectral window, skipping the TDM edge flagging'
                              'heuristics.'.format(spw.id))
+
+    def _get_partialpol_cmds(self):
+        """
+        ALMA specific step to identify and flag data where only part of the
+        polarization products are flagged.
+        Returns list of flagging commands.
+        Returns:
+            List of flagging commands.
+        """
+        # Run default partialpol channel flagging first (PIPE-1028: should return and empty list at the moment).
+        return load_partialpols_alma(self.inputs.ms)
 
     def _get_edgespw_cmds(self):
         # Run default edge channel flagging first.
@@ -250,3 +264,140 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
             to_flag = ['{}:{}'.format(spw.id, chan_to_flag)]
 
         return to_flag
+
+
+def load_partialpols_alma(ms):
+    """Retrieve the relevant data to extend partial polarization flagging to all the polarizations.
+    It returns a list of dictionaries that contain the following keys: "antenna1", "antenna2",
+    "time_start", "time_end", "channels".
+
+    :param ms: Measurement set to load
+    :return: list containing flagging command as string
+    :rtype: list[dict]
+    """
+    # all_spws = ms.get_spectral_windows()
+    spws_ids, datadescids = get_partialpol_spws(ms.name)
+    params = []
+    with casa_tools.TableReader(ms.name) as table:
+        for spw, ddid in zip(spws_ids, datadescids):  # Iterate over relevant spws
+            table_sel = table.query(f"DATA_DESC_ID == {ddid}")
+            flags = table_sel.getcol('FLAG')
+            shape = np.shape(flags)
+            n_pol = shape[0]
+            if n_pol > 1:  # There is data (n_pol != 0) and data are not single polarization
+                LOG.debug(f"Potential Partial Polarization data found for DATA_DESC_IDs {ddid}")
+                folded_flags = np.sum(flags, axis=0)
+                # Retrieve and show some useful information
+                for i in range(n_pol + 1):
+                    n_i = np.sum(folded_flags == i)  # Number of scans with i polarizations flagged
+                    if (i > 0) and (i < n_pol):
+                        LOG.debug(f" Polarization data partially flagged - {i} out of {n_pol} pols flagged:  N = {n_i}")
+                    elif i == 0:
+                        LOG.debug(f" Polarization data completely unflagged: N = {n_i}")
+                    else:
+                        LOG.debug(f" Polarization data completely flagged:  N = {n_i}")
+                to_extend_idx = (folded_flags > 0) & (folded_flags < n_pol)  # Identify the partial polarization scans
+                if np.sum(to_extend_idx) >= 0:  # Run only if there are partial polarization scans
+                    ant1 = table_sel.getcol('ANTENNA1')
+                    ant2 = table_sel.getcol('ANTENNA2')
+                    time = table_sel.getcol('TIME')
+                    interval = table_sel.getcol('INTERVAL')
+                    params_spw = get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval)
+                    # Add the spw and time_unit to the params
+                    time_unit = table_sel.getcolkeyword('TIME', 'QuantumUnits')[0]
+                    # Add the spw and time_unit to the dictionaries
+                    updated_params_spw = [{**d, "spw": spw, "time_unit": time_unit} for d in params_spw]
+                    params.extend(updated_params_spw)
+            else:
+                LOG.debug(f"No Partial Polarization data found for DATA_DESC_IDs {ddid}")
+
+    commands = convert_params_to_commands(ms, params)
+    return commands
+
+
+def get_partialpol_spws(ms_name):
+    """Obtain the spws and DATA_DESC_IDs required for the Partial Polarization flagging agent.
+    According to the comments in PIPE-1028 they ara all non-WVR/non-SQLD spws which includes the Science ones.
+
+    :param ms_name: Name of the Measurement Set
+    :return: List of spws.ids and DATA_DESC_IDs
+    """
+    # Note: In all the examples checked, spw id and DATA_DESC_ID are the same, but as this may not be always true and
+    #  Todd uses this translation in his code, both sets of data (spws and DATA_DESC_IDs) are retrieved.
+    # Note: In the examples checked, non-Science spws do not have usable data.
+    with casa_tools.MSMDReader(ms_name) as msmd:
+        spws = msmd.almaspws(fdm=True, tdm=True)
+        datadescids = [msmd.datadescids(spw=spw)[0] for spw in spws]
+    return list(spws), datadescids
+
+
+def get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval):
+    """Get the parameters that identify points where partial polarizations need to be flagged.
+    This function should be called only if the data presents more than one polarization.
+    At the moment it only handles data with 3 dimensions (n_pol, n_channels, n_params).
+
+    :param flags: numpy array with the flags with shape (n_pol, n_channels, n_params)
+    :param ant1: numpy array with the antenna1s with shape (n_params, )
+    :param ant2: numpy array with the antenna2s with shape (n_params, )
+    :param time: numpy array with the times with shape (n_params, )
+    :param interval: numpy array with the intervals with shape (n_params, )
+    :return params: list of dictionaries with the set of params to identify partial polarizations
+      The dictionaries contain the keys "ant1", "ant2", "time", "interval", and "channels". This last
+      parameter is a numerical list of values that can be compressed later
+    """
+    shape = np.shape(flags)
+    # Check: Is there any chance that there are data with only 2 dimensions?
+    if len(shape) != 3:
+        LOG.error("Partial Polarization flagging: Data whith no channel information are not handled by the pipeline yet")
+    n_pol, n_channels, n_params = shape
+    # Create a table of shape (n_channels, n_params) with the number of pols flagged
+    folded_flags = np.sum(flags, axis=0)
+    # Check if the number indicates a partial polarization
+    to_extend_idx = (folded_flags > 0) & (folded_flags < n_pol)
+    # Identify the sets of parameters that have partial polarizations
+    params_to_check = np.sum(to_extend_idx, axis=0)
+    params = []
+    # Iterate only through the sets of parameters with partial polarizations
+    for param_set_idx in np.where(params_to_check)[0]:
+        # Get the numerical values of the channels that have partial polarizations
+        channel_sel = list(np.where(to_extend_idx[:, param_set_idx])[0])
+        params.append({
+            "ant1": ant1[param_set_idx],
+            "ant2": ant2[param_set_idx],
+            "time": time[param_set_idx],
+            "interval": interval[param_set_idx],
+            "channels": channel_sel
+        })
+    return params
+
+
+def convert_params_to_commands(ms, params, ant_id_map=None):
+    """Convert the identified partial polarization parameters to flagging commands
+
+    :param ms: Measurement Set to get the antenna id map
+    :param params: List of dictionaries with the parameters
+    :param ant_id_map: Dictionary mapping antenna IDs to their names (optional)
+    """
+    if ant_id_map is None:
+        ant_id_map = {ant.id: ant.name for ant in ms.antennas}
+    commands = []
+    for param in params:
+        # Antennas
+        antenna_str = "{}&&{}".format(ant_id_map[param["ant1"]], ant_id_map[param["ant2"]])
+        # spw and channels
+        ch_str = '{}:'.format(param["spw"])
+        ch_ranges = channel_ranges(param["channels"])
+        ch_str += ";".join(["{}~{}".format(down, up) if down != up else "{}".format(down) for down, up in ch_ranges])
+        # Times
+        time_start = casa_tools.quanta.quantity(param["time"] - 0.5 * param["interval"], param["time_unit"])
+        time_end = casa_tools.quanta.quantity(param["time"] + 0.5 * param["interval"], param["time_unit"])
+        time_str_start = casa_tools.quanta.time(time_start, prec=9, form="ymd")[0]
+        time_str_end = casa_tools.quanta.time(time_end, prec=9, form="ymd")[0]
+        time_str = "{}~{}".format(time_str_start, time_str_end)
+        # Combine
+        command = "antenna='{}' spw='{}' timerange='{}' reason='partialpol'".format(antenna_str, ch_str, time_str)
+        commands.append(command)
+    return commands
+
+
+
