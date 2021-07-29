@@ -241,7 +241,7 @@ class SkyDisplay(object):
                 for k, v in band.items():
                     band_spws.setdefault(v, []).append(k)
                 for k, v in band_spws.items():
-                    for spw in image_info['spw'].split(','):
+                    for spw in image_info['virtspw'].split(','):
                         if int(spw) in v:
                             image_info['band'] = k
                             del image_info['virtspw']
