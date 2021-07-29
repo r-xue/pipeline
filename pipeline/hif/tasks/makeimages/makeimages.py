@@ -2,11 +2,12 @@ import os
 import tempfile
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
@@ -19,6 +20,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImagesInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
@@ -99,7 +103,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
+#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimages')
@@ -136,9 +140,10 @@ class MakeImages(basetask.StandardTaskTemplate):
             for (target, task) in task_queue:
                 try:
                     worker_result = task.get_result()
-                except exceptions.PipelineException:
+                except exceptions.PipelineException as ex:
                     result.add_result(TcleanResult(), target, outcome='failure')
-                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}'.format(target['field'], target['spw'], target['specmode']))
+                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}.\nException from hif_tclean: {!s}'.format(
+                        target['field'], target['spw'], target['specmode'], ex))
                 else:
                     # Note add_result() removes 'heuristics' from worker_result
                     heuristics = target['heuristics']

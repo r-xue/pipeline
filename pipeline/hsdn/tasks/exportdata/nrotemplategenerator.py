@@ -5,6 +5,7 @@ import os
 
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
+import pipeline.hsd.tasks.common.observatory_policy as observatory_policy
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -147,6 +148,8 @@ def generate_script(context, scriptname, configname):
     vis = myms.basename
     antennalist = [a.id for a in myms.antennas]
     source = myms.get_fields(intent='TARGET')[0].clean_name
+    imaging_policy = observatory_policy.get_imaging_policy(context)
+    convsupport = imaging_policy.get_convsupport()
 
     s = template.safe_substitute(processspw=processspw,
                                  baselinerange=blrange,
@@ -155,6 +158,7 @@ def generate_script(context, scriptname, configname):
                                  cell=cell,
                                  phasecenter=phasecenter,
                                  imsize=imsize,
+                                 convsupport=convsupport,
                                  vis=vis,
                                  antennalist=antennalist,
                                  source=source,

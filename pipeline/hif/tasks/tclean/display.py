@@ -148,7 +148,7 @@ class CleanSummary(object):
                     with casa_tools.ImageReader(imagename) as image:
                         miscinfo = image.miscinfo()
 
-                    parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
+                    parameters = {k: miscinfo[k] for k in ['virtspw', 'iter'] if k in miscinfo}
                     parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
                     parameters['type'] = 'spectra'
                     try:
@@ -156,7 +156,7 @@ class CleanSummary(object):
                     except:
                         parameters['prefix'] = None
 
-                    virtual_spw = parameters['spw']
+                    virtual_spw = parameters['virtspw']
                     imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
                     if imaging_mss != []:
                         ref_ms = imaging_mss[0]

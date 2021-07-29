@@ -589,6 +589,9 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Collect images to be examined and stored in TcleanResult
         im_names = {}
 
+        # Using virtual spw setups for all interferometry pipelines
+        virtspw = True
+
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             im_names['model'] = model_name
             im_names['image'] = image_name
@@ -619,9 +622,10 @@ class CleanBase(basetask.StandardTaskTemplate):
                     name_list = ['{}.{}'.format(im_name, mterm) for mterm in ['tt0', 'tt1']]
             for name in name_list:
                 if os.path.exists(name):
-                    imageheader.set_miscinfo(name=name, spw=inputs.spw, field=inputs.field,
+                    imageheader.set_miscinfo(name=name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                              type=im_type, iter=iter,
-                                             intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                             intent=inputs.intent, specmode=inputs.orig_specmode,
+                                             robust=inputs.robust, weighting=inputs.weighting,
                                              is_per_eb=inputs.is_per_eb,
                                              context=context)
             # Store in TcleanResult

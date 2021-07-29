@@ -1,4 +1,7 @@
+"""Provide a class to store logical representation of field."""
 import pprint
+
+import numpy as np
 
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import utils
@@ -7,7 +10,36 @@ _pprinter = pprint.PrettyPrinter(width=1e99)
 
 
 class Field(object):
-    def __init__(self, field_id, name, source_id, time, direction):
+    """
+    A class to store logical representation of a field.
+
+    Attributes:
+        id: The numerical identifier of this field within the
+            FIELD subtable of the MeasurementSet
+        source_id: A source ID associated with this field
+        time: A list of the unique times for this field
+        name: Field name
+        intents: A list of unique scan intents associated with this field
+        states: A list of unique State objects associated with this field
+        valid_spws: A list of unique SpectralWindow objects associated with
+            this field
+        flux_densities: A list of unique flux measurments from setjy
+        data_column: a dictionary of data type (key) and data column name
+            (value) combination
+    """
+
+    def __init__(self, field_id: int, name: str, source_id: int,
+                 time: np.ndarray, direction: dict):
+        """
+        Initialize Field class.
+
+        Args:
+            field_id: Field ID
+            name: Field name
+            source_id: A source ID associated with this field
+            time: A list of the unique times for this field
+            direction: A direction measures for the phasecenter of this field
+        """
         self.id = field_id
         self.source_id = source_id
         self.time = time
@@ -19,6 +51,8 @@ class Field(object):
         self.states = set()
         self.valid_spws = set()
         self.flux_densities = set()
+
+        self.data_column = {}
 
     def __repr__(self):
         name = self.name

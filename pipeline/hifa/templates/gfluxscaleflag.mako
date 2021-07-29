@@ -13,7 +13,7 @@ def percent_flagged(flagsummary):
     if total is 0:
         return 'N/A'
     else:
-        return '%0.1f%%' % (100.0 * flagged / total)
+        return '%0.3f%%' % (100.0 * flagged / total)
 
 _types = {
     'before': 'Calibrated data before flagging',
