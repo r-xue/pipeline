@@ -948,7 +948,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def _get_stat_chans(self, imagename: str,
                         combined_rms_exclude: List[Tuple[float, float]],
-                        edge: Tuple[int, int]=(0,0)) -> List[Tuple[int,int]]:
+                        edge: Tuple[int, int]=(0,0)) -> List[int]:
         """
         Return a list of channel ranges to calculate image statistics.
 
@@ -957,7 +957,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             combined_rms_exclude: A list of frequency ranges to exclude
             edge: The left and right edge channels to exclude
         Retruns:
-            A list of channel ranges to INCLUDE in calculation of image statistics.
+            A 1-d list of channel ranges to INCLUDE in calculation of image
+            statistics, e.g., [imin0, imax0, imin0, imax0, ...]
         """
         with casa_tools.ImageReader(imagename) as ia:
             cs = ia.coordsys()
@@ -1529,7 +1530,7 @@ def invert_ranges(id_range_list: List[Tuple[int,int]],
         edge: The left and right edges to exclude
 
     Returns:
-        A 1-d list of inverted ranges., e.g., [imin0, imax0, imin1, imax1, ...]
+        A 1-d list of inverted ranges
 
     Examples:
         >>> id_range_list = [[5,10],[15,20]]
