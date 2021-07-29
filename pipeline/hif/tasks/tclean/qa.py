@@ -114,7 +114,8 @@ class TcleanQAHandler(pqa.QAPlugin):
                         try:
                             ms_do = context.observing_run.get_ms(result.vis[0])
                             field_id = [field.id for field in ms_do.fields if utils.dequote(field.name) == utils.dequote(fieldname)][0]
-                            fluxresult = [fr for fr in ms_do.derived_fluxes[str(field_id)] if fr.spw_id == spwid][0]
+                            real_spwid = context.observing_run.virtual2real_spw_id(spwid, ms_do)
+                            fluxresult = [fr for fr in ms_do.derived_fluxes[str(field_id)] if fr.spw_id == real_spwid][0]
                             gfluxscale = float(fluxresult.I.to_units(measures.FluxDensityUnits.MILLIJANSKY))
                             gfluxscale_err = float(fluxresult.uncertainty.I.to_units(measures.FluxDensityUnits.MILLIJANSKY))
                         except Exception as e:
