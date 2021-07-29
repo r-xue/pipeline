@@ -1013,8 +1013,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         rep_angle = numpy.nanmedian([cqa.getvalue(r.scan_angle) for r in raster_infos if r is not None])
         center_ra = numpy.nanmedian(__extract_values('center_ra', center_unit))
         center_dec = numpy.nanmedian(__extract_values('center_dec', center_unit))
-        width = rep_width - beam_size*2.
-        height = rep_height - beam_size*2.
+        width = max(rep_width - beam_size*2., 0.0)
+        height = max(rep_height - beam_size*2., 0.0)
         if org_direction is not None:
             (center_ra, center_dec) = direction_utils.direction_recover(center_ra,
                                                                         center_dec,
@@ -1035,7 +1035,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         Retrun a list of raster information.
 
-        Each raster infromation is analized for element wise combination of
+        Each raster infromation is analyzed for element wise combination of
         infile, antenna, field, and SpW IDs in input parameter lists.
 
         Args:
@@ -1415,14 +1415,16 @@ def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
     rg = casa_tools.regionmanager
     with casa_tools.ImageReader(imagename) as ia:
         cs = ia.coordsys()
-        chan_sel = rg.frombcs(csys=cs.torecord(), shape=ia.shape(), chans=chans)
+        try:
+            chan_sel = rg.frombcs(csys=cs.torecord(), shape=ia.shape(), chans=chans)
+        finally:
+            cs.done()            
+            rg.done()
         subim = ia.subimage(region=chan_sel)
         try:
             stat = subim.statistics(region=region)
         finally:
             subim.close()
-            cs.done()
-            rg.done()
     return stat
 
 ### Utility methods to calcluate channel ranges
@@ -1443,8 +1445,7 @@ def convert_frequency_ranges_to_channels(range_list: List[Tuple[float,float]],
     ref_world = cs.referencevalue()['numeric']
     LOG.info("Aggregated spectral line frequency ranges of combined image = {}".format(str(range_list)))
     channel_ranges = [] # should be list for sort
-    for i in range(len(range_list)):
-        segment = range_list[i]
+    for segment in range_list:
         ref_world[faxis] = segment[0]
         start_chan = cs.topixel(ref_world)['numeric'][faxis]
         ref_world[faxis] = segment[1]
@@ -1522,7 +1523,8 @@ def invert_ranges(id_range_list: List[Tuple[int,int]],
     Return invert ID ranges.
 
     Args:
-        id_range_list: A list of min/max ID ranges to invert
+        id_range_list: A list of min/max ID ranges to invert. The list should
+            be sorted in the ascending order of min IDs.
         num_ids: A number of IDs to consider
         edge: The left and right edges to exclude
 
