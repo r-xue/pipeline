@@ -990,8 +990,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             beam: Beam size dictionary of image.
 
         Retruns:
-            Region expression string of a rotating box. Return None if there is
-            no valid region of interest.
+            Region expression string of a rotating box.
+            Returns None if no valid region of interest is defined.
         """
         cqa = casa_tools.quanta
         beam_unit = cqa.getunit(beam['major'])
@@ -1005,7 +1005,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             break
         if angle_unit is None:
             LOG.warn('No valid raster information available.')
-            return ''
+            return None
 
         def __value_in_unit(quantity: dict, unit: str) -> float:
             # Get value(s) of quantity in a specified unit
