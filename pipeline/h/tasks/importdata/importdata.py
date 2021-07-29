@@ -1,5 +1,4 @@
 import contextlib
-import json
 import os
 import shutil
 import tarfile
@@ -290,31 +289,44 @@ class ImportData(basetask.StandardTaskTemplate):
 
     def _do_importasdm(self, asdm):
         inputs = self.inputs
-        vis = self._asdm_to_vis_filename(asdm)
-        outfile = os.path.join(inputs.output_dir,
-                               os.path.basename(asdm) + '.flagonline.txt')
 
         if inputs.save_flagonline:
             # Create the standard calibration flagging template file
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the calibration pipeline')
+
             # Create the standard Tsys calibration flagging template file.
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtsystemplate.txt')
             self._make_template_flagfile(template_flagsfile,
                                          'User Tsys flagging commands file for the calibration pipeline')
+
             # Create the imaging targets file
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
-        createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
-
-        with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
-
         # PIPE-1200: do not call CASA's importasdm if the output MS already
         # exists on disk and overwrite is set to False, to avoid Exception.
+        vis = self._asdm_to_vis_filename(asdm)
         if os.path.exists(vis) and not inputs.overwrite:
-            LOG.info(f"Skipping importasdm for ASDM {asdm}; output directory for measurement set already exists.")
+            LOG.info(f"Skipping call to CASA 'importasdm' for ASDM {asdm}"
+                     f" because output MS {os.path.basename(vis)} already"
+                     f" exists in output directory"
+                     f" {os.path.abspath(inputs.output_dir)}, and the input"
+                     f" parameter 'overwrite' is set to False. Will import the"
+                     f" existing MS data into the pipeline instead.")
         else:
+            # Derive input parameters for importasdm.
+            # Set filename for saving flag commands.
+            outfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagonline.txt')
+            # Decide whether to create an MMS based on requested mode and
+            # whether MPI is available.
+            createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
+            # Set choice of whether to use pointing correction; try to retrieve
+            # from inputs (e.g. set by hsd pipeline), but otherwise default to
+            # False.
+            with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
+
+            # Create importasdm task.
             task = casa_tasks.importasdm(asdm=asdm,
                                          vis=vis,
                                          savecmds=inputs.save_flagonline,
@@ -332,13 +344,14 @@ class ImportData(basetask.StandardTaskTemplate):
             except Exception as ee:
                 LOG.warning(f"Caught importasdm exception: {ee}")
 
-        for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
-            asdm_source = os.path.join(asdm, xml_filename)
-            if os.path.exists(asdm_source):
-                vis_source = os.path.join(vis, xml_filename)
-                LOG.info('Copying %s from ASDM to measurement set', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, asdm_source, vis_source)
-                shutil.copyfile(asdm_source, vis_source)
+            # Copy across extra files from ASDM to MS.
+            for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
+                asdm_source = os.path.join(asdm, xml_filename)
+                if os.path.exists(asdm_source):
+                    vis_source = os.path.join(vis, xml_filename)
+                    LOG.info('Copying %s from ASDM to measurement set', xml_filename)
+                    LOG.trace('Copying %s: %s to %s', xml_filename, asdm_source, vis_source)
+                    shutil.copyfile(asdm_source, vis_source)
 
     def _make_template_flagfile(self, outfile, titlestr):
         # Create a new file if overwrite is true and the file
