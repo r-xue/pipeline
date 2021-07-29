@@ -1377,7 +1377,7 @@ class ACreNorm(object):
                 print(' set to None for automatic thresholding during apply, or input a float to use') 
                 self.logReNorm.write('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly! Cannot procede.\n') # LM Added
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                raise TypeError('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly.')
+                raise TypeError('Correction of CORRECTED_DATA requested, but docorrThresh is set incorrectly. Use None or float.')
             if docorrThresh > 1.5:
                 print('WARNING: Correction of CORRECTED_DATA requested, but docorrThresh is set very high')
                 print('         docorrThresh is a factor above which to apply the ReNormalization')
@@ -1458,7 +1458,6 @@ class ACreNorm(object):
         self.rnstats['N']={}
         self.rnstats['N_thresh']={} # AL added - same as N except only populated when the hardLim is reached
 
-
         # LM added - excludeants function
         if len(excludeants) > 0:
             # check type
@@ -1466,7 +1465,7 @@ class ACreNorm(object):
                 print(' excludeants requires a list of antenna ID(s) or antenna Name(s)')
                 print(' e.g. [0,1] or ["DA44","DA45"]')
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                raise TypeError('excludeants requires a list of antenna ID(s) or antenna name(s)')
+                raise TypeError('excludeants requires a list of antenna ID(s) or antenna name(s) (e.g. [0,1] or ["DA44", "DA55"]')
             else:  # note this does not check if the Antenna is actually in the Antenna Names list
                 if type(excludeants[0]) is str:
                     # convert to antenna ID
@@ -1775,15 +1774,17 @@ class ACreNorm(object):
                                     if str(ispw) not in self.atmtrans[str(fldname)].keys():
                                         self.atmtrans[str(fldname)][str(ispw)]={}
                                     if str(iscan) not in self.atmtrans[str(fldname)][str(ispw)].keys():
+                                        self.atmtrans[str(fldname)][str(ispw)][str(iscan)] = {}
+                                    if str(ifld) not in self.atmtrans[str(fldname)][str(ispw)][str(iscan)].keys():
                                         # now we know this field, spw and scan is not filled and we will calc it
                                         # otherwise we just use what's there - i.e for a mosaic it doesn't redo for each ifld
                                         # because the atm trans model reads scan level only
-                                        self.atmtrans[str(fldname)][str(ispw)][str(iscan)]=self.ATMtrans(iscan,ispw,verbose=verbose)
+                                        self.atmtrans[str(fldname)][str(ispw)][str(iscan)][str(ifld)]=self.ATMtrans(iscan,ispw,ifld=ifld,verbose=verbose)
 
                                     # check if we want to do the fix, it the ATM line is not strong
                                     # its pointless calculation to work out the are differences
                                     # between the BandPass and Target pointings
-                                    if min(self.atmtrans[str(fldname)][str(ispw)][str(iscan)])<limATM:
+                                    if min(self.atmtrans[str(fldname)][str(ispw)][str(iscan)][str(ifld)])<limATM:
                                         # * check now the global as if the ATM code previously didn't
                                         # * find the correct PWV, only nominal values were input
                                         # * and we probably don't want to use those for ATM correction
@@ -2275,6 +2276,17 @@ class ACreNorm(object):
             # Loop over all spws being processed to make a summary for each target/spw
             for spw in doSpws:
                 freqs = self.msmeta.chanfreqs(spw,'GHz')
+                
+                # Not all targets are in all scans, we need to iterate over only those scans containing the target
+                target_scans = pl.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
+                # Make an additional cut to catch only those scans which contain the current spw (usually only relevant
+                # for spectral scan datasets)
+                target_scans = pl.intersect1d(target_scans, self.msmeta.scansforspw(spw))
+                # if the user specified scans during renormalize() then the full scan list might 
+                # not be included
+                target_scans = pl.intersect1d(target_scans, self.rnstats['scans'])
+                nscans= len(target_scans)
+
                 # renormalize() will populate the N_thresh dictionary for each target/spw
                 # only if a target/spw/scan/field exceeds the threshold. This allows us to
                 # plot a summary that only has the fields that exceed the threshold shown 
@@ -2285,13 +2297,23 @@ class ACreNorm(object):
                     N=self.rnstats['N'][target][str(spw)]
                 else:
                     N=self.rnstats['N_thresh'][target][str(spw)]
+                    # If this part is triggered then only some scans/fields triggered meaning
+                    # that not all scans may be in the final plot. Therefore, properly display
+                    # the number of averaged scans in the title.
+                    nscans=0
+                    for tscan in target_scans:
+                        for fld in self.scalingValues[str(spw)][str(tscan)].keys():
+                            if self.scalingValues[str(spw)][str(tscan)][fld] > self.bandThresh[self.Band]:
+                                nscans+=1
+                                break
+
 
                 (nCor,nCha,nAnt)=N.shape
 
                 # Initialize the figure
                 fig = pl.figure(figsize=(10,8))
                 ax_rn = fig.add_subplot(111, frame_on=False)
-                ax_rn.set_ylabel('Renorm Amplitude')
+                ax_rn.set_ylabel('Renorm Scaling')
                 ax_rn.set_xlabel('Frequency (GHz)')
                 ax_rn.minorticks_on()
 
@@ -2304,11 +2326,11 @@ class ACreNorm(object):
                 # If user input a title, set it up, otherwise use default
                 if titlein:
                     titleText =  str(titlein)+' \n'+self.msname+' Nant='+str(self.nAnt) \
-                            +' <Nscan='+str(len(self.rnstats['scans']))+'>'
+                            +' <Nscan='+str(nscans)+'>'
                     pl.title(titleText,{'fontsize': 'medium'})
                 else:
                     ax_rn.set_title(self.msname+'\nTarget='+target+' Spw='+str(spw)
-                            +' Nant='+str(self.nAnt)+' <Nscan='+str(len(self.rnstats['scans']))
+                            +' Nant='+str(self.nAnt)+' <Nscan='+str(nscans)
                             +'>',{'fontsize': 'medium'})
                 
                 # For each antenna/correlation, plot the cummulative sum, making the correlations
@@ -2396,7 +2418,8 @@ class ACreNorm(object):
                     else:
                         # Currently, correctATM will not properly handle Bands 9 and 10 but
                         # eventually the image sideband will need to be added here.
-                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)]
+                        bpfld = self.getfieldforscan(self.getBscan(spw,verbose=False)[0])[0]
+                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)][str(bpfld)]
                     
                     # Plot the ATM profile
                     ax_atm.plot(freqs, 100*ATMprof, c='m', linestyle='-', linewidth=2)
@@ -3075,7 +3098,7 @@ class ACreNorm(object):
                 else:
                     ATMprof=self.ATMtrans(scanin,spwin,verbose=False)
             else:
-                ATMprof=self.atmtrans[target][str(spwin)][str(scanin)]
+                ATMprof=self.atmtrans[target][str(spwin)][str(scanin)][str(fldin)]
             # Setup secondary y-axis using the same frequency axis and plot the profile(s).
             ax_atm = ax_rn.twinx()
             ax_atm.plot(freqs, 100.*ATMprof,c='m',linestyle='-',linewidth=2)
@@ -3174,7 +3197,7 @@ class ACreNorm(object):
 
         # LM coded for aU independence 
         mydirection=self.renormradec2rad(self.renormdirection2radec(self.msmeta.phasecenter(ifld))) # not truncated then
-        myscantime = min(self.msmeta.timesforscan(iscan))
+        myscantime = pl.median(self.msmeta.timesforscan(iscan)) # AL switched to median time
         # message filter as this function prints ALMA's position each call
         casalog.filterMsg('Position:')
         azel=self.renormcomputeAzElFromRADecMJD(mydirection,myscantime/86400)
@@ -3305,7 +3328,7 @@ class ACreNorm(object):
             return transmission
 
     # LM added 
-    def ATMcorrection(self,R,inscan, inspw, infld, calscan, calfld, verbose=False):
+    def ATMcorrection(self,R,inscan, inspw, infld, calscan, calname, verbose=False):
         # this is the code that will do the real difference between the 
         # bandpass and the input target and make a correction to the 
         # R, i.e the target AC / Bp AC
@@ -3331,9 +3354,10 @@ class ACreNorm(object):
         #           - except why does it show up as emission then?....
         #    - I guess this more comes down to "how (mathematically) is the atmospheric transmission profile actually effecting the values of the AC 
         #      spectrum?" The answer to that question should shed light on how to "undo" it's effects so that we can make the proper ratio.
-        ratioATM = self.atmtrans[fldnam][str(inspw)][str(inscan)] / self.atmtrans[calfld][str(inspw)][calscan]
-        #trg_atm = self.atmtrans[fldnam][str(inspw)][str(inscan)]
-        #cal_atm = self.atmtrans[calfld][str(inspw)][calscan]
+        #ratioATM = self.atmtrans[fldnam][str(inspw)][str(inscan)] / self.atmtrans[calfld][str(inspw)][calscan]
+        trg_atm = self.atmtrans[fldnam][str(inspw)][str(inscan)][str(infld)]
+        cal_atm = self.atmtrans[calname][str(inspw)][str(calscan)]
+        ratioATM = cal_atm/trg_atm
         #ratioATM = abs(trg_atm - cal_atm)/((trg_atm*cal_atm)/2.)
         ratioMed = pl.array(pl.median(ratioATM))
         # shift to baseline of average 1.0
