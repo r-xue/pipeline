@@ -35,7 +35,7 @@ class RenormResults(basetask.Results):
 
     def __repr__(self):
         return (f'RenormResults:\n'
-                f'\trenorm_applid={self.renorm_applied}\n'
+                f'\trenorm_applied={self.renorm_applied}\n'
                 f'\tvis={self.vis}\n'
                 f'\tapply={self.apply}\n'
                 f'\tthreshold={self.threshold}\n'

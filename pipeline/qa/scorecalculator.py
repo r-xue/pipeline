@@ -45,6 +45,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_renorm',                                    # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -2857,7 +2858,7 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 def score_renorm(result):
     if result.renorm_applied:
         msg = 'Renormalization applied'
-        score = 0.9
+        score = score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
     else:
         msg = ''
         score = 1.0
