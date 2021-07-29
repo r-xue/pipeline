@@ -25,6 +25,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <th scope="col" colspan="2">Proper Motion</th>
             <th scope="col" rowspan="2"># Pointings</th>
             <th scope="col" rowspan="2">Intent</th>
+			<!-- Only display ephemeris information for ALMA, PIPE-627 -->
+		 	% if ms.antenna_array.name == 'ALMA':
+				<th scope="col" rowspan="2">Ephemeris Table (sampling interval)</th>
+			% endif
         </tr>
         <tr>
 		  % if list(ms.sources).pop().frame.upper() == 'GALACTIC':
@@ -58,6 +62,14 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 		  <td>${source.pm_y}</td>
 		  <td>${num_pointings}</td>
 		  <td>${', '.join(sorted([i for i in source.intents]))}</td>
+		  <!-- Only display ephemeris information for ALMA, PIPE-627 -->
+		  % if ms.antenna_array.name == 'ALMA':
+		  	<td>${source.ephemeris_table} <!-- If there is no ephemeris table, this value is "" --> 
+		  	% if source.is_eph_obj: 
+		  	${"(%.1f minutes)" % (source.avg_spacing)}
+		  	%endif
+		  	</td>
+		  %endif
 		</tr>
 		% endif
 	% endfor
