@@ -1462,7 +1462,7 @@ def convert_frequency_ranges_to_channels(range_list: List[Tuple[float,float]],
     channel_ranges.sort()
     return merge_ranges(channel_ranges)
 
-def convert_range_list_to_string(range_list: List[Tuple[int, int]]) -> str:
+def convert_range_list_to_string(range_list: List[int]) -> str:
     """
     Convert a list of index ranges to string.
 
@@ -1471,7 +1471,7 @@ def convert_range_list_to_string(range_list: List[Tuple[int, int]]) -> str:
     Retruns:
         A string in form, e.g., 'imin0~imax0;imin1~imax1'
     Examples:
-        >>> convert_range_list_to_string( [[5, 10], [15, 20]] )
+        >>> convert_range_list_to_string( [5, 10, 15, 20] )
         '5~10;15~20'
     """
     stat_chans = str(';').join([ '{:d}~{:d}'.format(range_list[iseg], range_list[iseg+1]) for iseg in range(0, len(range_list), 2) ])
@@ -1518,7 +1518,7 @@ def merge_ranges(range_list: List[Tuple[Number,Number]]) -> List[Tuple[Number,Nu
     return merged
 
 def invert_ranges(id_range_list: List[Tuple[int,int]],
-                  num_ids: int, edge: Tuple[int,int]) -> List[Tuple[int,int]]:
+                  num_ids: int, edge: Tuple[int,int]) -> List[int]:
     """
     Return invert ID ranges.
 
@@ -1529,14 +1529,14 @@ def invert_ranges(id_range_list: List[Tuple[int,int]],
         edge: The left and right edges to exclude
 
     Returns:
-        A list of inverted ranges.
+        A 1-d list of inverted ranges., e.g., [imin0, imax0, imin1, imax1, ...]
 
     Examples:
         >>> id_range_list = [[5,10],[15,20]]
         >>> num_ids = 30
         >>> edge = (2,3)
         >>> invert_ranges(id_range_list, num_ids, edge)
-        [[2, 4], [11, 14], [21, 26]]
+        [2, 4, 11, 14, 21, 26]
     """
     inverted_list = []
     if len(id_range_list) == 0:
