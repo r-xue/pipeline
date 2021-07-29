@@ -684,13 +684,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                 region = self._get_stat_region(raster_infos, org_direction, beam)
 
                 # Image statistics
-                statval = calc_image_statistics(imagename, stat_chans, region)
-                if len(statval['rms']):
-                    image_rms = statval['rms'][0]
-                    LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
-                else:
-                    LOG.warn('Could not get image statistics. Potentially no valid pixel in region of interest.')
+                if region is None:
+                    LOG.warn('Could not get valid region of interest to calculate image statistics.')
                     image_rms = -1.0
+                else:
+                    statval = calc_image_statistics(imagename, stat_chans, region)
+                    if len(statval['rms']):
+                        image_rms = statval['rms'][0]
+                        LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                    else:
+                        LOG.warn('Could not get image statistics. Potentially no valid pixel in region of interest.')
+                        image_rms = -1.0
                 # Theoretical RMS
                 LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
                 theoretical_rms = self.calculate_theoretical_image_rms(combined_infiles, combined_antids,
@@ -972,7 +976,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def _get_stat_region(self, raster_infos: List[RasterInfo],
                          org_direction: Optional[dict],
-                         beam: dict) -> str:
+                         beam: dict) -> Optional[str]:
         """
         Retrun region to calculate statistics.
 
@@ -986,7 +990,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             beam: Beam size dictionary of image.
 
         Retruns:
-            Region expression string of a rotating box.
+            Region expression string of a rotating box. Return None if there is
+            no valid region of interest.
         """
         cqa = casa_tools.quanta
         beam_unit = cqa.getunit(beam['major'])
@@ -1014,8 +1019,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         rep_angle = numpy.nanmedian([cqa.getvalue(r.scan_angle) for r in raster_infos if r is not None])
         center_ra = numpy.nanmedian(__extract_values('center_ra', center_unit))
         center_dec = numpy.nanmedian(__extract_values('center_dec', center_unit))
-        width = max(rep_width - beam_size*2., 0.0)
-        height = max(rep_height - beam_size*2., 0.0)
+        width = rep_width - beam_size*2.
+        height = rep_height - beam_size*2.
+        if width <=0 or height <=0: # No valid region selected.
+            return None
         if org_direction is not None:
             (center_ra, center_dec) = direction_utils.direction_recover(center_ra,
                                                                         center_dec,
