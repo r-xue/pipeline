@@ -1136,9 +1136,13 @@ class SDImaging(basetask.StandardTaskTemplate):
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
                     LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
+                    t.close()
                     return failed_rms
-                unit = t.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
-                t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(t.getcol('INTERVAL').mean(), unit), time_unit))[0]
+                try:
+                    unit = t.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
+                    t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(t.getcol('INTERVAL').mean(), unit), time_unit))[0]
+                finally:
+                    t.close()
             LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(t_sub_on, time_unit, t_sub_off, time_unit))
             # obtain factors by convolution function (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
