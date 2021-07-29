@@ -500,7 +500,9 @@ class TcleanResult(basetask.Results):
 
     def set_tclean_stopreason(self, tclean_stopcode):
         # tclean exit conditions:
-        #   https://open-confluence.nrao.edu/display/~ttsutsum/tclean+exit+conditions
+        #   https://open-bitbucket.nrao.edu/projects/CASA/repos/casa6/browse/casatasks/src/modules/imagerhelpers/imager_base.py 
+        #   Search 'stopreasons'
+        # See also CAS-6692 for additional information
         stopreasons = ['global stopping criterion not reached',  # CAS-13532
                        'iteration limit',
                        'threshold',

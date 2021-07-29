@@ -564,7 +564,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             LOG.info('tclean used %d iterations' % tclean_iterdone)
 
             if tclean_stopcode == 0 and tclean_iterdone > 0:
-                LOG.warning('tclean exit status 0 for Field: %s SPW: %s:. the image may not be cleaned as expected.' %
+                LOG.warning('tclean exit status 0 for Field: %s SPW: %s: the image may not be cleaned as expected.' %
                             (inputs.field, inputs.spw))
 
             if tclean_stopcode == 1:
