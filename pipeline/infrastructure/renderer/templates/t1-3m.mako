@@ -220,7 +220,7 @@ def flagcolortable(flagpct):
 				        flagpct = 100.0*flagtable[fieldkey][name][spw][antenna]['flagged']/flagtable[fieldkey][name][spw][antenna]['total']
 			            %>
 			            <td bgcolor="${flagcolortable(flagpct)}">
-						${"{:5.2f}".format(flagpct)}
+						${"{:5.3f}".format(flagpct)}
 			            </td>
 			        % endfor
 		
