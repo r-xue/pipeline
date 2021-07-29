@@ -68,7 +68,7 @@ def total_for_mses(mses, row):
 	if total is 0:
 		return 'N/A'
 	else:
-		return '%0.1f%%' % (100.0 * flagged / total)
+		return '%0.3f%%' % (100.0 * flagged / total)
 
 def total_for_agent(agent, row, mses=flags.keys()):
 	flagged = 0
@@ -84,7 +84,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 	if total is 0:
 		return 'N/A'
 	else:
-		return '%0.1f%%' % (100.0 * flagged / total)
+		return '%0.3f%%' % (100.0 * flagged / total)
 
 def agent_data(agent, ms):
 	if agent not in flags[ms]:
@@ -189,7 +189,7 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 <table class="table table-bordered table-striped"
 	   summary="Flagged Data">
 	<caption>Summary of flagged data. Each cell states the amount of data
-	flagged as a fraction of the spec ified data selection, with the
+	flagged as a fraction of the specified data selection, with the
 	<em>Flagging Agent</em> columns giving this information per flagging agent.
 	<br>The percentages in each successive column represent the additional data flagged by applying that column's agent (after the previous agents have been applied).
 	</caption>
