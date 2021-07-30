@@ -4,16 +4,17 @@ import os
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 agent_description = {
-	'before'   : 'Before Task',
-	'intents'  : 'Unwanted Intents',
-	'qa0'      : 'QA0',
-	'qa2'      : 'QA2',
-	'online'   : 'Online Flags',
-	'pointing' : 'Pointing Flags',
-	'template' : 'Flagging Template',
-	'autocorr' : 'Autocorrelations',
-	'shadow'   : 'Shadowed Antennas',
-	'edgespw'  : 'Edge Channels'
+	'before'    : 'Before Task',
+	'intents'   : 'Unwanted Intents',
+	'qa0'       : 'QA0',
+	'qa2'       : 'QA2',
+	'online'    : 'Online Flags',
+	'partialpol': 'Partial Polarization',
+	'pointing'  : 'Pointing Flags',
+	'template'  : 'Flagging Template',
+	'autocorr'  : 'Autocorrelations',
+	'shadow'    : 'Shadowed Antennas',
+	'edgespw'   : 'Edge Channels'
 
 }
 
