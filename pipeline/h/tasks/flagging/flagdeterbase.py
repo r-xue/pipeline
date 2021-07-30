@@ -338,7 +338,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
         ordered_agents = ['before', 'anos', 'intents', 'qa0', 'qa2', 'online',
-                          'partialpol', 'template', 'autocorr',
+                          'template', 'partialpol', 'autocorr',
                           'shadow', 'pointing', 'edgespw', 'clip', 'quack',
                           'baseband']
 
@@ -435,13 +435,6 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
                     flag_cmds.extend(self._read_flagfile(inputs.fileonline))
                     flag_cmds.append("mode='summary' name='online'")
 
-        # Flag Partial Polarizations
-        if inputs.partialpol:
-            to_flag = self._get_partialpol_cmds()
-            if to_flag:
-                flag_cmds.extend(to_flag)
-                flag_cmds.append("mode='summary' name='partialpol'")
-
         # Flag template?
         if inputs.template:
             if not os.path.exists(inputs.filetemplate):
@@ -451,6 +444,13 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
             else:
                 flag_cmds.extend(self._read_flagfile(inputs.filetemplate))
                 flag_cmds.append("mode='summary' name='template'")
+
+        # Flag Partial Polarizations
+        if inputs.partialpol:
+            to_flag = self._get_partialpol_cmds()
+            if to_flag:
+                flag_cmds.extend(to_flag)
+                flag_cmds.append("mode='summary' name='partialpol'")
 
         # Flag autocorrelations?
         if inputs.autocorr:
@@ -510,8 +510,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         Its functionality may be overridden in classes that inherit from FlagDeterBase.
         PIPE-1028: By default this base task will just return an empty list.
         """
-        to_flag = []
-        return to_flag
+        return []
 
     def _get_edgespw_cmds(self):
         """

@@ -128,11 +128,9 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         """
         ALMA specific step to identify and flag data where only part of the
         polarization products are flagged.
-        Returns list of flagging commands.
         Returns:
             List of flagging commands.
         """
-        # Run default partialpol channel flagging first (PIPE-1028: should return and empty list at the moment).
         return load_partialpols_alma(self.inputs.ms)
 
     def _get_edgespw_cmds(self):
@@ -361,7 +359,7 @@ def get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval):
     shape = np.shape(flags)
     # Check: Is there any chance that there are data with only 2 dimensions?
     if len(shape) != 3:
-        LOG.error("Partial Polarization flagging: Data whith no channel information are not handled by the pipeline yet")
+        LOG.error("Partial Polarization flagging: Data with no channel information are not handled by the pipeline yet")
     n_pol, n_channels, n_params = shape
     # Create a table of shape (n_channels, n_params) with the number of pols flagged
     folded_flags = np.sum(flags, axis=0)
