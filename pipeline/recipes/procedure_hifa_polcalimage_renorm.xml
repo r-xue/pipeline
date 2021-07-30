@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_polcalimage</ProcedureTitle>
+    <ProcedureTitle>hifa_polcalimage_renorm</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>

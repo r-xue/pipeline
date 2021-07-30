@@ -1,6 +1,6 @@
-pipeline/recipes/procedure_hifa_polcal_renorm.xml<ProcessingProcedure>
+<ProcessingProcedure>
 
-    <ProcedureTitle>hifa_polcal</ProcedureTitle>
+    <ProcedureTitle>hifa_polcal_renorm</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
