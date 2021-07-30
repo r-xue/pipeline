@@ -303,8 +303,11 @@ class RestoreData(basetask.StandardTaskTemplate):
                         rn = ACreNorm(vis)
                         LOG.info(f'Renormalizing {vis}')
                         rn.renormalize(docorr=rn_params['apply'], docorrThresh=rn_params['threshold'], correctATM=rn_params['correctATM'],
-                                        spws=rn_params['spw'], excludechan=rn_params['excludechan'])
-                        applied = True
+                                        spws=rn_params['spw'], excludechan=rn_params['excludechan'], targscans=[7])
+                        if rn_params['apply'] and rn.checkApply():
+                            applied = True
+                        else:
+                            LOG.error('Failed application of renormalization for {vis}')
                     except Exception as e:
                         LOG.error('Failure in running renormalization heuristic: {}'.format(e))
 

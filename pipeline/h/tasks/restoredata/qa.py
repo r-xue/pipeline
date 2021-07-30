@@ -1,10 +1,9 @@
-import collections
-import os
-
+import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+import pipeline.infrastructure.utils as utils
+
 from . import restoredata
 
 LOG = logging.get_logger(__name__)
@@ -12,7 +11,6 @@ LOG = logging.get_logger(__name__)
 class RestoreQAHandler(pqa.QAPlugin):
     result_cls = restoredata.RestoreResults
     child_cls = None
-    generating_task = restoredata.Restore
 
     def handle(self, context, result):
         # Check to see if renorm was applied
@@ -25,6 +23,11 @@ class RestoreListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing RestoreResults.
     """
+    result_cls = basetask.ResultsList
+    child_cls = restoredata.RestoreDataResults
 
     def handle(self, context, result):
-        pass
+        # collate the QAScores from each child result, pulling them into our
+        # own QAscore list
+        collated = utils.flatten([r.qa.pool for r in result])
+        result.qa.pool[:] = collated
