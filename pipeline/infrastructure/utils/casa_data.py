@@ -1,7 +1,7 @@
 """
 Utilities to work with the CASA data files
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from glob import glob
 import hashlib
 import json
@@ -169,6 +169,35 @@ class IERSInfo():
             return date <= self.info["IERSeop2000_last"]
         else:
             return False
+
+    def date_message_type(self, date: datetime) -> str:
+        """Check if and where a date falls within the time ranges covered by the IERSeop2000 table and the IERSpredict table, and return a string indicating what kind of message should be displayed about this.
+        See PIPE-734 and PIPE-1231 for more information.
+
+        GOOD: Date is lower than or equal to the last entry of the IERSeop2000 table
+        INFO: Date is greater than the last entry of the IERSeop2000 table but less than three months after that entry (the normal maximum delay between table updates,) so the predicted IERS table will be used.
+        WARN: Date is greater than the last entry of the IERSeop2000 table + 3 months, but less than the last entry of the IERSpredict table, so WARN and use the predicted table
+        CRITICAL: Date is greater than the last entry of the IERSpredicted table, or one or both of the IERS tables are missing, so issue a critical ALERT
+        """
+        maximum_delay = timedelta(weeks=13) # 3 months is the normal maximum delay for table updates (see PIPE-1231)
+
+        iers_eop_last = self.info["IERSeop2000_last"]
+        iers_eop_predict_last = self.info["IERSpredict_last"]
+
+        if iers_eop_last is None:
+            return "CRITICAL"
+        if date <= iers_eop_last:
+            return "GOOD"
+        elif (date > iers_eop_last) and (date <= (iers_eop_last + maximum_delay) ):
+            return "INFO"
+
+        # Comparisons with predicted IERS
+        if  iers_eop_predict_last is None:
+            return "CRITICAL"
+        elif (date > (iers_eop_last + maximum_delay)) and (date <= iers_eop_predict_last):
+            return "WARN"
+        else:
+            return "CRITICAL"
 
     def __call__(self):
         return self.info
