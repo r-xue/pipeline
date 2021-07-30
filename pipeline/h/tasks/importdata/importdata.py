@@ -242,11 +242,12 @@ class ImportData(basetask.StandardTaskTemplate):
         # Log IERS tables information (PIPE-734)
         LOG.info(environment.iers_info)
 
-        fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
+        fluxservice, combined_results, qastatus = self._get_fluxes(inputs.context, observing_run)
 
         results.mses.extend(observing_run.measurement_sets)
         results.setjy_results = combined_results
         results.fluxservice = fluxservice
+        results.qastatus = qastatus
 
         return results
 
@@ -273,7 +274,8 @@ class ImportData(basetask.StandardTaskTemplate):
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
         # Flux service not used, return None by default
-        return None, combined_results
+        # QA flux service messaging, return None by default
+        return None, combined_results, None
 
     def _analyse_filenames(self, filenames, vis):
         to_import = set()
