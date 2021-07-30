@@ -1175,6 +1175,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
                     if t.nrows == 0:
                         LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
+                        t.close()
                         return failed_rms
                     try:
                         tc = t.getcol('CPARAM')
