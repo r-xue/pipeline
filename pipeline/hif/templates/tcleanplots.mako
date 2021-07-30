@@ -122,15 +122,21 @@ def get_plot(plots, prefix, field, spw, i, colname):
 		         		</div>
 		            % endif
 		        </td>
-		    % endfor <!-- /colname loop -->			
+		    % endfor <!-- /colname loop -->	
 		</tr>
 
 	</tbody>
 </table>
 </div>
 
-%if 'mom0_fc' in colorder:
 <ul>
+<li>
+The inset in the PSF image (when present) corresponds to the central 41 pixels of the PSF. 
+When the beam shape is significantly non-Gaussian, the dotted contour of the 50% level 
+of the PSF image will become distinctly visible apart from the fitted synthesized beam, 
+which is shown as the solid contour.
+</li>
+%if 'mom0_fc' in colorder: 
 <li>
 The Line-free Moment 0 and Moment 8 images are created from the line-free
 (continuum) channels identified in the hif_findcont stage. In the absence of
@@ -147,6 +153,9 @@ shows the noise level per channel. Additionally, the atmospheric transmission
 is shown by a magenta line and the hif_findcont channel ranges by cyan lines.
 <br>
 More details about all these plots can be found in the ALMA Pipeline User Guide.
-</li>
-</ul>
+</li> 
 %endif
+</ul>
+
+
+

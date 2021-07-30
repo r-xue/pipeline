@@ -1,3 +1,4 @@
+import certifi
 import os
 import ssl
 import urllib
@@ -77,16 +78,14 @@ class ALMAImportData(importdata.ImportData):
                 url = ''
 
             try:
-                # ignore HTTPS certificate
-                ssl_context = ssl._create_unverified_context()
+                ssl_context = ssl.create_default_context(cafile=certifi.where())
                 response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
             except Exception as e:
                 try:
                     LOG.warn('Unable to execute initial test query with primary flux service.')
-                    # ignore HTTPS certificate
-                    ssl_context = ssl._create_unverified_context()
+                    ssl_context = ssl.create_default_context(cafile=certifi.where())
                     baseurl = FLUX_SERVICE_URL_BACKUP
                     url = baseurl + testquery
                     if baseurl == '':

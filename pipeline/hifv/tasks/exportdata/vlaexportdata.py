@@ -43,14 +43,13 @@ class VLAExportData(exportdata.ExportData):
     Inputs = VLAExportDataInputs
 
     def prepare(self):
+        results = super().prepare()
 
-        results = super(VLAExportData, self).prepare()
-
-        oussid = self.get_oussid(self.inputs.context) # returns string of 'unknown' for VLA
+        oussid = self.get_oussid(self.inputs.context)  # returns string of 'unknown' for VLA
 
         # Make the imaging vislist and the sessions lists.
         #     Force this regardless of the value of imaging_only_products
-        session_list, session_names, session_vislists, vislist = super(VLAExportData, self)._make_lists(
+        session_list, session_names, session_vislists, vislist = super()._make_lists(
             self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=False)
 
         # Export the auxiliary file products into a single tar file
@@ -93,18 +92,8 @@ class VLAExportData(exportdata.ExportData):
                                                        project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
-        # if ps is None:
-        #     script_file = os.path.join(context.report_dir, script_name)
-        #     out_script_file = os.path.join(products_dir, script_name)
-        # elif ps.ousstatus_entity_id == 'unknown':
-        #     script_file = os.path.join(context.report_dir, script_name)
-        #     out_script_file = os.path.join(products_dir, script_name)
-        # else:
-        #     # ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
-        #     script_file = os.path.join(context.report_dir, script_name)
-        #     out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
 
-        LOG.info('Creating casa restore script %s' % (script_file))
+        LOG.info('Creating casa restore script %s', script_file)
 
         # This is hardcoded.
         tmpvislist = []
@@ -145,8 +134,7 @@ finally:
         with open(script_file, 'w') as casa_restore_file:
             casa_restore_file.write(template)
 
-        LOG.info('Copying casa restore script %s to %s' % \
-                 (script_file, out_script_file))
+        LOG.info('Copying casa restore script %s to %s', script_file, out_script_file)
         if not self._executor._dry_run:
             shutil.copy(script_file, out_script_file)
 
@@ -163,8 +151,8 @@ finally:
         try:
             report_xml = report_generator.get_report_xml(context)
             vlaifaqua.export_to_disk(report_xml, aqua_file)
-        except:
-            LOG.error('Error generating the pipeline AQUA report')
+        except Exception as e:
+            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
             return 'Undefined'
 
         ps = context.project_structure
@@ -172,13 +160,7 @@ finally:
                                                      project_structure=ps,
                                                      ousstatus_entity_id=oussid,
                                                      output_dir=products_dir)
-        # if ps is None:
-        #     out_aqua_file = os.path.join(products_dir, aquareport_name)
-        # elif ps.ousstatus_entity_id == 'unknown':
-        #     out_aqua_file = os.path.join(products_dir, aquareport_name)
-        # else:
-        #     out_aqua_file = os.path.join(products_dir, oussid + '.' + aquareport_name)
 
-        LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
+        LOG.info('Copying AQUA report %s to %s', aqua_file, out_aqua_file)
         shutil.copy(aqua_file, out_aqua_file)
         return os.path.basename(out_aqua_file)

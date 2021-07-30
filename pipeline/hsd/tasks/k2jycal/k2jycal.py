@@ -2,9 +2,10 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
-from pipeline.infrastructure import task_registry
 from . import jyperkreader
 from . import worker
 from . import jyperkdbaccess
@@ -15,6 +16,8 @@ LOG = infrastructure.get_logger(__name__)
 class SDK2JyCalInputs(vdp.StandardInputs):
 
     reffile = vdp.VisDependentProperty(default='jyperk.csv')
+    dbservice = vdp.VisDependentProperty(default=False)
+    endpoint = vdp.VisDependentProperty(default='asdm')
 
     @vdp.VisDependentProperty
     def infiles(self):
@@ -36,8 +39,9 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         namer = caltable_heuristic.AmpCaltable()
         # ignore caltable to avoid circular reference
         casa_args = self._get_task_args(ignore=('caltable',))
-        return namer.calculate(output_dir=self.output_dir,
-                               stage=self.context.stage, **casa_args)
+        return relative_path(namer.calculate(output_dir=self.output_dir,
+                                             stage=self.context.stage,
+                                             **casa_args))
 
     def __init__(self, context, output_dir=None, infiles=None, caltable=None,
                  reffile=None, dbservice=None, endpoint=None):
@@ -101,12 +105,20 @@ class SDK2JyCalResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hsd_k2jycal')
 @task_registry.set_casa_commands_comment('The Kelvin to Jy calibration tables are generated.')
 class SDK2JyCal(basetask.StandardTaskTemplate):
+    """Generate calibration table of Jy/K factors."""
+    
     Inputs = SDK2JyCalInputs
 
     def prepare(self):
+        """
+        Try accessing the DB if dbstatus=True and set Jy/K factors to jyperk_query.csv.
+        
+        Args:
+            None
+        Returns:
+            SDK2JyCalResults
+        """
         inputs = self.inputs
-
-        # obtain Jy/K factors
         factors_list = []
         reffile = None
         # dbstatus represents the response from the DB as well as whether or not
@@ -119,20 +131,23 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         if inputs.dbservice is True:
             # Try accessing Jy/K DB if dbservice is True
             reffile = 'jyperk_query.csv'
-            factors_list = self._query_factors()
-            if len(factors_list) > 0:
-                dbstatus = True
-                # export factors for future reference
-                export_jyperk(reffile, factors_list)
-            else:
-                dbstatus = False
+            jsondata = self._query_factors()
+            if len(jsondata) > 0:
+                factors_list = jsondata['filtered']
+                if jsondata['allsuccess'] is True:
+                    dbstatus = True
+                else:
+                    dbstatus = False
+                if len(factors_list) > 0:
+                    # export factors for future reference
+                    export_jyperk(reffile, factors_list)
 
-        if (inputs.dbservice is False) or (len(factors_list) == 0):
+        if (inputs.dbservice is False) or (len(jsondata) == 0):
             # Read scaling factor file
-            reffile = os.path.abspath(os.path.expandvars(os.path.expanduser(inputs.reffile)))
+            reffile = relative_path(inputs.reffile, inputs.context.output_dir)
             factors_list = self._read_factors(reffile)
 
-        LOG.debug('factors_list=%s' % factors_list)
+#        LOG.debug('factors_list=%s' % factors_list)
         if len(factors_list) == 0:
             LOG.error('No scaling factors available')
             return SDK2JyCalResults(vis=os.path.basename(inputs.vis), pool=[])
@@ -197,7 +212,6 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         query = impl(self.inputs.context)
         try:
             factors_list = query.getJyPerK(vis)
-
             # warn if result is empty
             if len(factors_list) == 0:
                 LOG.warn('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))

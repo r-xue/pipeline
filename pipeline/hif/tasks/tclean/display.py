@@ -3,6 +3,7 @@ import copy
 import os
 
 import matplotlib
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -147,7 +148,7 @@ class CleanSummary(object):
                     with casa_tools.ImageReader(imagename) as image:
                         miscinfo = image.miscinfo()
 
-                    parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
+                    parameters = {k: miscinfo[k] for k in ['virtspw', 'iter'] if k in miscinfo}
                     parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
                     parameters['type'] = 'spectra'
                     try:
@@ -155,7 +156,7 @@ class CleanSummary(object):
                     except:
                         parameters['prefix'] = None
 
-                    virtual_spw = parameters['spw']
+                    virtual_spw = parameters['virtspw']
                     imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
                     if imaging_mss != []:
                         ref_ms = imaging_mss[0]
@@ -176,3 +177,82 @@ class CleanSummary(object):
                     plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 
         return [p for p in plot_wrappers if p is not None]
+
+
+class TcleanMajorCycleSummaryFigure(object):
+    """Tclean major cycle summery statistics plot with two panels, contains:
+
+    Flux density cleaned vs. major cycle
+    Plot of Peak Residual per major cycle
+
+    Note that as of 04.2021 no clear tclean return dictionary was available and the unit
+    of the flux and RMS was determined empirically.
+
+    See PIPE-991."""
+
+    def __init__(self, context, result, major_cycle_stats):
+        self.context = context
+        self.majorcycle_stats = major_cycle_stats
+        self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+        self.filebase = result.targets[0]['imagename'].replace('STAGENUMBER', '%s_0' % result.stage_number)
+        self.figfile = self._get_figfile()
+        self.units = ['Jy', 'Jy/pixel']
+        self.title = 'Major cycle statistics'
+        self.xlabel = 'Minor iterations done'
+        self.ylabel = ['Flux density cleaned [%s]' % self.units[0], 'Peak residual [%s]' % self.units[1]]
+        self.unitfactor = [1.0, 1.0]
+
+    def plot(self):
+        if os.path.exists(self.figfile):
+            LOG.debug('Returning existing tclean major cycle summary plot')
+            return self._get_plot_object()
+
+        LOG.info('Creating major cycle statistics plot.')
+
+        fig, (ax0, ax1) = plt.subplots(2, 1, )
+        fig.set_dpi(150.0)
+
+        ax0.set_title(self.title, fontsize=10)
+        ax1.set_xlabel(self.xlabel, fontsize=8)
+        ax0.set_ylabel(self.ylabel[0], fontsize=8)
+        ax1.set_ylabel(self.ylabel[1], fontsize=8)
+
+        ax0.tick_params(axis='both', which='both', labelsize=8)
+        ax1.tick_params(axis='both', which='both', labelsize=8)
+
+        ax0.set_yscale('log')
+        ax1.set_yscale('log')
+
+        x0 = 0
+        for iter, item in self.majorcycle_stats.items():
+            if item['nminordone_array'] is not None:
+                # get quantities
+                x = item['nminordone_array'] + x0
+                ax0_y = item['totalflux_array'] * self.unitfactor[0]
+                ax1_y = item['peakresidual_array'] * self.unitfactor[1]
+                # increment last iteration
+                x0 = x[-1]
+                # scatter plot
+                ax0.plot(x, ax0_y, 'b+')
+                ax1.plot(x, ax1_y, 'b+')
+                # Vertical line and annotation at major cycle end
+                ax0.axvline(x0, linewidth=1, linestyle='dotted', color='k')
+                ax1.axvline(x0, linewidth=1, linestyle='dotted', color='k')
+                ax0.annotate(f'iter{iter}', xy=(x0, ax0.get_ylim()[0]), xycoords='data',
+                             xytext=(-10, 6), textcoords='offset points', size=8, rotation=90)
+
+        fig.tight_layout()
+        fig.savefig(self.figfile)
+        plt.close()
+
+        return self._get_plot_object()
+
+    def _get_figfile(self):
+        return os.path.join(self.reportdir,
+                            'major_cycle_stats.png')
+
+    def _get_plot_object(self):
+        return logger.Plot(self.figfile,
+                           x_axis=self.xlabel,
+                           y_axis='/'.join(self.ylabel))
+

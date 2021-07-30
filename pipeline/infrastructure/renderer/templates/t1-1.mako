@@ -10,6 +10,7 @@ import os
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.utils as utils
+from pipeline.environment import iers_info
 
 def tablerow_cmp(tr1, tr2):
     # sort rows by:
@@ -123,6 +124,34 @@ $(document).ready(function() {
                                             data-selectable="true"
                                             data-options='{"touch" : false}'
                                             data-src="#hidden-environment">environment</a>)</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>IERSeop2000 Version</th>
+                    % if iers_eop_2000_version != 'NOT FOUND':
+                        <td>${iers_eop_2000_version} (last date: ${utils.format_datetime(iers_eop_2000_last_date)})</td>
+                    % else:
+                        <td>
+                            <p class="danger alert-danger">
+                                <span class="glyphicon glyphicon-remove-sign"></span> IERSeop2000 Table not found.
+                            </p>
+                        </td>
+                    % endif
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>IERSpredict Version</th>
+                    % if iers_predict_version != 'NOT FOUND':
+                        <td>${iers_predict_version}</td>
+                    % else:
+                        <td>
+                            <p class="danger alert-danger">
+                                <span class="glyphicon glyphicon-remove-sign"></span> IERSpredict Table not found.
+                            </p>
+                        </td>
+                    % endif
                     <td></td>
                     <td></td>
                 </tr>
@@ -245,7 +274,17 @@ $(document).ready(function() {
                                     <td>${utils.commafy(row.receivers, quotes=False)}</td>
                                     <td>${row.num_antennas}</td>
                                     <td>${utils.format_datetime(row.time_start)}</td>
-                                    <td>${utils.format_datetime(row.time_end)}</td>
+                                    % if iers_info.validate_date(row.time_end):
+                                         <td>${utils.format_datetime(row.time_end)}
+                                         </td>
+                                    % else:
+                                        <td>${utils.format_datetime(row.time_end)}
+                                            <p class="danger alert-danger">
+                                                <span class="glyphicon glyphicon-remove-sign"></span> MS dates not fully covered
+                                                by the IERS Tables
+                                            </p>
+                                        </td>
+                                    % endif
                                     <td>${row.time_on_source}</td>
                                     <td>${str(row.baseline_min)}</td>
                                     <td>${str(row.baseline_max)}</td>

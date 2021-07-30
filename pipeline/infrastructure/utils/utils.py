@@ -2,25 +2,28 @@
 The utils module contains general-purpose uncategorised utility functions and
 classes.
 """
+import collections
 import copy
 import itertools
 import operator
+import os
 import re
 import string
-from typing import Union, List, Dict, Sequence
+from typing import Collection, Dict, List, Tuple, Optional, Sequence, Union
 
 import bisect
 import numpy as np
 
-from .conversion import range_to_list
+from .conversion import range_to_list, dequote
 from .. import casa_tools
 from .. import logging
 
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
-           'get_si_prefix']
+           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
+           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
+           'place_repr_source_first']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -252,6 +255,21 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     return rxmap
 
 
+def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
+    """
+    Returns a dictionary of spectral specs mapped to corresponding spectral
+    window IDs for requested list of spectral window objects.
+
+    :param spws: list of spectral window objects
+    :return: dictionary with spectral spec as keys, and corresponding
+    list of spectral window IDs as values.
+    """
+    spwmap = collections.defaultdict(list)
+    for spw in sorted(spws, key=lambda s: s.id):
+        spwmap[spw.spectralspec].append(spw.id)
+    return spwmap
+
+
 def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
     """Wrapper around quanta.quantity() that handles None input.
 
@@ -323,3 +341,74 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
         idx = max(idx-1, 0)
 
         return sp_list[idx].strip(), 10.**sp_pow[idx]
+
+
+def absolute_path(name: str) -> str:
+    """Return an absolute path of a given file."""
+    return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
+
+
+def relative_path(name: str, start: Optional[str]=None) -> str:
+    """
+    Retun a relative path of a given file with respect a given origin.
+
+    Args:
+        name: A path to file.
+        start: An origin of relative path. If the start is not given, the
+            current directory is used as the origin of relative path.
+
+    Examples:
+    >>> relative_path('/root/a/b.txt', '/root/c')
+    '../a/b.txt'
+    >>> relative_path('../a/b.txt', './c')
+    '../../a/b.txt'
+    """
+    if start is not None:
+        start = absolute_path(start)
+    return os.path.relpath(absolute_path(name), start)
+
+
+def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
+    """Count occurrences of a task result in the context.results list.
+
+    Loop over the content of the context.results list and compare taskname to the pipeline_casa_task
+    attribute of each result object. Increase counter if taskname substring is found in the attribute.
+
+    The order number is determined by counting the number of previous execution of
+    the task, based on the content of the context.results list. The introduction
+    of this method is necessary because VLASS-SE-CONT imaging happens in multiple
+    stages (hif_makeimages calls). Imaging parameters change from stage to stage,
+    therefore it is necessary to know what is the current stage ordinal number.
+    """
+    count = 0
+    for r in context.results:
+        # Work around the fact that r has read() method in some cases (e.g. editimlist)
+        # but not in others (e.g. in tclean renderer)
+        try:
+            if taskname in r.read().pipeline_casa_task:
+                count += 1
+        except AttributeError:
+            if taskname in r.pipeline_casa_task:
+                count += 1
+    return count
+
+
+def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source: str) -> Union[List[str], List[Tuple]]:
+    """
+    Place representative source first in a list of source names
+    or tuples with source name as first tuple element.
+    """
+    try:
+        itemtype = type(itemlist[0])
+        if itemtype is str:
+            repr_source_index = [dequote(item) for item in itemlist].index(dequote(repr_source))
+        elif itemtype is tuple or itemtype is list:
+            repr_source_index = [dequote(item[0]) for item in itemlist].index(dequote(repr_source))
+        else:
+            raise Exception('Cannot handle items of type {}'.format(itemtype))
+        repr_source_entry = itemlist.pop(repr_source_index)
+        itemlist = [repr_source_entry] + itemlist
+    except ValueError:
+        LOG.warning('Could not reorder field list to place representative source first')
+
+    return itemlist

@@ -4,16 +4,14 @@ import datetime
 import itertools
 import math
 import os
-
-import matplotlib.gridspec as gridspec
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from matplotlib.axes import Axes
-from matplotlib.text import Text
-from matplotlib.patches import Polygon
-from matplotlib.lines import Line2D
 from typing import Generator, List, NoReturn, Optional, Tuple, Union
+
+from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
+from matplotlib.axes import Axes
+from matplotlib.dates import date2num, DateFormatter, MinuteLocator
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
@@ -67,6 +65,20 @@ def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
     """
     datetime_list = [mjd_to_datetime(x) for x in mjd_list]
     return date2num(datetime_list)
+
+
+def is_invalid_axis_range(xmin: float, xmax: float, ymin: float, ymax: float) -> bool:
+    axis_ranges = [xmin, xmax, ymin, ymax]
+
+    def _is_invalid(v):
+        # check if given value is Inf or NaN or masked
+        return (np.isfinite(v) is False) or np.ma.is_masked(v)
+
+    zero_range_x = xmax - xmin == 0
+    zero_range_y = ymax - ymin == 0
+    invalid_values = any(map(_is_invalid, axis_ranges))
+
+    return zero_range_x or zero_range_y or invalid_values
 
 
 class CustomDateFormatter(DateFormatter):
@@ -208,7 +220,7 @@ class SpectralImage(object):
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
-    def _load_coordsys(self, coordsys: casa_tools.casatools.coordsys) -> None:
+    def _load_coordsys(self, coordsys: casa_coordsys) -> None:
         """Load axes information of coordinate system.
 
         Args:
@@ -226,7 +238,7 @@ class SpectralImage(object):
         self.refvals = coordsys.referencevalue()['numeric']
         self.increments = coordsys.increment()['numeric']
 
-    def _load_id_coord_types(self, coord_types: casa_tools.casatools.coordsys) -> None:
+    def _load_id_coord_types(self, coord_types: casa_coordsys) -> None:
         """Load indices for coordinate axes.
 
         Args:
@@ -1222,8 +1234,8 @@ class SDSparseMapPlotter(object):
         """
         overlay_atm_transmission = self.atm_transmission is not None
 
-        spmin = averaged_data.min()
-        spmax = averaged_data.max()
+        spmin = np.nanmin(averaged_data)
+        spmax = np.nanmax(averaged_data)
         dsp = spmax - spmin
         spmin -= dsp * 0.1
         if overlay_atm_transmission:
@@ -1275,14 +1287,33 @@ class SDSparseMapPlotter(object):
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
 
-        LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
-
         plt.gcf().sca(self.axes.axes_integsp)
         plt.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = plt.axis()
-        plt.axis((global_xmin, global_xmax, spmin, spmax))
+
+        LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
+        LOG.info('spmin=%s, spmax=%s', spmin, spmax)
+
+        # do not create plots if any of specified axis ranges
+        # are invalid
+        if is_invalid_axis_range(global_xmin, global_xmax, spmin, spmax):
+            LOG.warning(
+                'Invalid axis range for averaged spectrum. Plot %s will not be created.',
+                os.path.basename(figfile)
+            )
+            return False
+
+        try:
+            # PIPE-1140
+            plt.axis((global_xmin, global_xmax, spmin, spmax))
+        except Exception:
+            LOG.warning(
+                'Axis configuration for %s failed. Plot will not be created.',
+                os.path.basename(figfile)
+            )
+            return False
         fedge_span = None
         if self.edge is not None:
             (ch1, ch2) = self.edge

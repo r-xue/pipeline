@@ -9,11 +9,12 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class AnalyzealphaResults(basetask.Results):
-    def __init__(self, max_location=None, alpha_and_error=None):
+    def __init__(self, max_location=None, alpha_and_error=None, image_at_max=None):
         super(AnalyzealphaResults, self).__init__()
         self.pipeline_casa_task = 'Analyzealpha'
         self.max_location = max_location
         self.alpha_and_error = alpha_and_error
+        self.image_at_max = image_at_max
 
     def merge_with_context(self, context):
         """
@@ -81,6 +82,11 @@ class Analyzealpha(basetask.StandardTaskTemplate):
 
                 subim_worldcoords = image.toworld(stats['maxpos'][:2], 's')
 
+                image_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
+                image_at_max = image_val['value']['value']
+                image_at_max_string = '{:.4e}'.format(image_at_max)
+                LOG.info('|* Restored image value at max {}'.format(image_at_max_string))
+
             # Extract the value of that pixel from the alpha subimage
             with casa_tools.ImageReader(alphafile) as image:
                 # TODO possibly replace round with round_half_up in python3 pipeline
@@ -99,7 +105,7 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
             LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
 
-        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error)
+        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error, image_at_max=image_at_max)
 
     def analyse(self, results):
         return results

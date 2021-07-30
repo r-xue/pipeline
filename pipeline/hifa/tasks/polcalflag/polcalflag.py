@@ -13,7 +13,6 @@ from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
-from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -183,7 +182,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
             if cafflags:
                 # Make "after calibration, after flagging" plots for the weblog
                 LOG.info('Creating "after calibration, after flagging" plots')
-                result.plots['after'] = plot_fn(suffix='after')
+                result.plots['after'] = plot_fn(flagcmds=cafflags, suffix='after')
 
                 # Restore the "after_pcflag_applycal" backup of the flagging
                 # state, so that the "before plots" only show things needing
@@ -195,7 +194,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
             # Make "after calibration, before flagging" plots for the weblog
             LOG.info('Creating "after calibration, before flagging" plots')
-            result.plots['before'] = plot_fn(suffix='before')
+            result.plots['before'] = plot_fn(flagcmds=cafflags, suffix='before')
 
         finally:
             # Restore the "pre-polcalflag" backup of the flagging state.
@@ -260,7 +259,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
         # boil it down to just the valid spws for these fields and request
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
+        for spectral_spec, tuning_spw_ids in utils.get_spectralspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 
@@ -650,7 +649,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
         return antenna_id_to_name
 
 
-def create_plots(inputs, context, suffix=''):
+def create_plots(inputs, context, flagcmds, suffix=''):
     """
     Return amplitude vs time plots for the given data column.
 
@@ -666,9 +665,18 @@ def create_plots(inputs, context, suffix=''):
     calto = callibrary.CalTo(vis=inputs.vis)
     output_dir = context.output_dir
 
+    # Amplitude vs time plots
     amp_time_plots = AmpVsXChart('time', context, output_dir, calto, suffix=suffix).plot()
 
-    return {'time': amp_time_plots}
+    # Amplitude vs UV distance plots shall contain only the fields that were flagged
+    flagged_spws = {flagcmd.spw for flagcmd in flagcmds}
+    spw_field_dict = {int(spw): ','.join(sorted({flagcmd.field for flagcmd in flagcmds if flagcmd.spw==spw})) for spw in flagged_spws}
+    amp_uvdist_plots = AmpVsXChart('uvdist', context, output_dir, calto, suffix=suffix, field=spw_field_dict).plot()
+
+    for spw, field in spw_field_dict.items():
+        LOG.info(f'Fields flagged for {inputs.vis} spw {spw}: {field}')
+
+    return {'time': amp_time_plots, 'uvdist': amp_uvdist_plots}
 
 
 class AmpVsXChart(applycal_displays.SpwSummaryChart):

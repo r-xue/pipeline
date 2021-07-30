@@ -10,14 +10,14 @@ def get_fraction(flagged, total):
    else:
        return '%0.1f%%' % (100.0 * float(flagged) / float(total))
 
-FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
-FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
+FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys before postbl prebl postrmean prermean postrms prerms link")
+FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys before postbl prebl postrmean prermean postrms prerms link")
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="header" />
 
-<%block name="title">Flag data by Tsys, weather, and statistics of spectra</%block>
+<%block name="title">Flag data by Tsys and statistics of spectra</%block>
 
 <%
 def make_detailed_table(result, stage_dir, fieldname):
@@ -37,7 +37,7 @@ def make_detailed_table(result, stage_dir, fieldname):
            vspw = pcontext.observing_run.real2virtual_spw_id(spw, ms)
            pol = summary['pol']
            nrows = summary['nrow']
-           flags = summary['nflags']
+           flags = summary['nflags_list']
            cell_elems = [asdm_name, spw, ant_name, pol, nrows, flags[0]]
            for nflg in flags:
                cell_elems.append(get_fraction(nflg, nrows))
@@ -67,8 +67,8 @@ try:
        for summary in summaries:
             if summary['field'] not in unique_fields:
                 unique_fields.append(summary['field'])
-
-   flag_types = ['Total', 'Tsys', 'Weather', 'User', 'After calibration']
+ 
+   flag_types = ['Total', 'Tsys', 'After calibration']
    fit_flags = ['Baseline RMS', 'Running mean', 'Expected RMS']
 except Exception as e:
    print('hsd_imaging html template exception:{}'.format(e))
@@ -82,15 +82,14 @@ except Exception as e:
 	<li> eliminate rapid variation of spectra using deviation from the running mean (Running mean)</li>
 	<li> eliminate spectra with remarkably large RMS than expected (Expected RMS)</li>
 	<li> eliminate spectra with outlier Tsys value</li>
-	<li> by weather (currently disabled)</li>
-	<li> by user defined threshold (currently disabled)</li>
 </ol>
 For 1.-3., the RMSes of spectra before and after baseline fit are obtained using line free channels.
 </p>
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#summarytable">Flag Summary</a></li>
+<li><a href="#summarytablepereb">Flag Summary per EB</a></li>
+<li><a href="#summarytableperfield">Flag Summary per Field and SpW</a></li>
 <li><a href="#detailtable">Flag by Reason</a></li>
   <ul>
 %for field in unique_fields:
@@ -100,9 +99,54 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 </ul>
 
 
-<H2 id="summarytable" class="jumptarget">Flag Summary</H2>
-<table class="table table-bordered table-striped" summary="Flag Summary">
-	<caption>flag summary of ON-source target scans per source and spw</caption>
+<H2 id="summarytablepereb" class="jumptarget">Flag Summary per EB</H2>
+<table class="table table-bordered table-striped" summary="Flag Summary per EB">
+	<caption>Summary of flagged solutions.<br>
+            "Flags by Reason" states the amount of solutions flagged (in number of data rows) as a fraction of the specified data. 
+            Pre-fit metrics are performed on calibrated spectra before the baseline-fit, 
+            while the post-fit ones are performed on data after the baseline-fit.<br>
+            "Flagged Fraction" indicates the amount of data flagged (in number of spectral channels). 
+    </caption>
+    <thead>
+	    <tr>
+	        <th scope="col" rowspan="3">Measurement Set</th>
+	        <th scope="col" colspan="7">Flags by Reason</th>
+	        <th scope="col" rowspan="2" colspan=3>Flagged Fraction</th>
+            <th scope="col" rowspan="3">Flagging Details</th>
+		</tr>
+		<tr>
+	        <th scope="col" colspan="2">Baseline RMS</th>
+	        <th scope="col" colspan="2">Running mean</th>
+	        <th scope="col" colspan="2">Expected RMS</th>
+	        <th scope="col" rowspan="2">Outlier Tsys</th>
+	    </tr>
+        <tr>
+            <th scope="col">Post-fit</th>
+            <th scope="col">Pre-fit</th>
+            <th scope="col">Post-fit</th>
+            <th scope="col">Pre-fit</th>
+            <th scope="col">Post-fit</th>
+            <th scope="col">Pre-fit</th>
+            <th scope="col">Before</th>
+            <th scope="col">Additional</th>
+            <th scope="col">Total</th>
+	</thead>
+	<tbody>
+	% for tr in per_eb_summary_table_rows:
+		<tr>
+		% for td in tr:
+			${td}
+		% endfor
+		</tr>
+	%endfor
+	</tbody>
+</table>
+
+
+
+<H2 id="summarytableperfield" class="jumptarget">Flag Summary per Field and SpW</H2>
+<table class="table table-bordered table-striped" summary="Flag Summary per Field and SpW">
+	<caption>Flag summary of ON-source target scans per source and SpW (in number of spectral channels).</caption>
     <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Field</th>
@@ -120,7 +164,7 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 	    </tr>
 	</thead>
 	<tbody>
-	% for tr in sumary_table_rows:
+	% for tr in per_field_summary_table_rows:
 		<tr>
 		% for td in tr:
 			${td}
@@ -137,8 +181,12 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 	<table class="table table-bordered table-striped " summary="${field}">
 	<thead>
 		<tr>
-			<th colspan="5">Data Selection</th>
-			<th colspan="2">Flagged Total</th>
+            %if dovirtual:
+    			<th colspan="6">Data Selection</th>
+	        %else:
+        		<th colspan="5">Data Selection</th>
+            %endif
+   			<th colspan="2">Flagged Total</th>
 			%for ftype in flag_types[1:]:
 				<th rowspan="2">${ftype}</th>
 			%endfor

@@ -347,6 +347,11 @@ class T1_1Renderer(RendererBase):
         # pipeline execution start, end and duration
         exec_start = context.results[0].timestamps.start
         exec_end = context.results[-1].timestamps.end
+        # IERS information (PIPE-734)
+        iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
+        iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
+        iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]
+        iers_info = environment.iers_info
         # remove unnecessary precision for execution duration
         dt = exec_end - exec_start
         exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
@@ -461,6 +466,10 @@ class T1_1Renderer(RendererBase):
             'pipeline_doclink': pipeline_doclink,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
+            'iers_eop_2000_version': iers_eop_2000_version,
+            'iers_eop_2000_last_date': iers_eop_2000_last_date,
+            'iers_predict_version': iers_predict_version,
+            'iers_info': iers_info,
             'array_names': utils.commafy(array_names),
             'exec_start': exec_start_fmt,
             'exec_end': exec_end_fmt,
@@ -773,6 +782,8 @@ class T2_1DetailsRenderer(object):
 
         num_antennas = len(ms.antennas)
         num_baselines = int(num_antennas * (num_antennas-1) / 2)
+        ant_diam_counter = collections.Counter([a.diameter for a in ms.antennas])
+        ant_diam = ["{:d} of {:d} m".format(n_ant, int(diam)) for diam, n_ant in ant_diam_counter.items()]
 
         time_start = utils.get_epoch_as_datetime(ms.start_time)
         time_end = utils.get_epoch_as_datetime(ms.end_time)
@@ -869,6 +880,7 @@ class T2_1DetailsRenderer(object):
             'baseline_min'    : baseline_min,
             'baseline_max'    : baseline_max,
             'num_antennas'    : num_antennas,
+            'ant_diameters'   : utils.commafy(ant_diam, quotes=False),
             'num_baselines'   : num_baselines,
             'time_start'      : utils.format_datetime(time_start),
             'time_end'        : utils.format_datetime(time_end),
@@ -1038,6 +1050,9 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         task = summary.AzElChart(context, ms)
         azel_plot = task.plot()
 
+        task = summary.SunTrackChart(context, ms)
+        suntrack_plot = task.plot()
+
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
@@ -1054,6 +1069,7 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         return {'pcontext': context,
                 'ms': ms,
                 'azel_plot': azel_plot,
+                'suntrack_plot': suntrack_plot,
                 'el_vs_time_plot': el_vs_time_plot,
                 'plot_uv': plot_uv,
                 'dirname': dirname}

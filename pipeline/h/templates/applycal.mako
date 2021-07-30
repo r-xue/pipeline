@@ -594,7 +594,7 @@ def format_spwmap(spwmap, scispws):
 
 
 <%self:plot_group plot_dict="${science_amp_vs_freq_plots}"
-				  url_fn="${lambda x: 'science_amp_vs_freq-all_data.html'}"
+				  url_fn="${lambda x: science_amp_vs_freq_subpages[x]}"
 				  data_spw="${True}"
 				  data_field="${True}"
                   data_vis="${True}"
@@ -613,14 +613,17 @@ def format_spwmap(spwmap, scispws):
             identified as the field with the highest median channel-averaged amplitude,
             calculated over all science spectral windows. The atmospheric transmission
             for each spectral window is overlayed on each plot in pink.</p>
+
+        <p>Data are plotted for all antennas and correlations, with different
+            spectral windows shown in different colours.</p>
     % else: #Single dish (source = field, so far)
 		<p>Calibrated amplitude vs frequency plots of each source in each
 		measurement set. The atmospheric transmission for each spectral window is
         overlayed on each plot in pink.</p>
-	% endif
 
 		<p>Data are plotted for all antennas and correlations, with different
-		spectral windows shown in different colours.</p>
+                antennas shown in different colours.</p>
+	% endif
 	</%def>
 
 	<%def name="mouseover(plot)">Click to show amplitude vs frequency for spw ${plot.parameters['spw']}</%def>

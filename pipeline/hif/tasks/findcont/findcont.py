@@ -22,7 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 class FindContInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
-    hm_weighting = vdp.VisDependentProperty(default='briggs')
+    hm_weighting = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -125,6 +125,14 @@ class FindCont(basetask.StandardTaskTemplate):
                         mosweight = target['mosweight']
                     else:
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
+
+                    # Determine weighting and perchanweightdensity parameters
+                    if inputs.hm_weighting in (None, ''):
+                        weighting = image_heuristics.weighting('cube')
+                        perchanweightdensity = image_heuristics.perchanweightdensity('cube')
+                    else:
+                        weighting = inputs.hm_weighting
+                        perchanweightdensity = inputs.hm_perchanweightdensity
 
                     # Usually the inputs value takes precedence over the one from the target list.
                     # For PIPE-557 it was necessary to fill target['vis'] in hif_makeimlist to filter
@@ -246,19 +254,15 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     width = '%.7fMHz' % (channel_width / 1e6)
 
-                    # Starting with CASA 4.7.79 tclean can calculate chanchunks automatically.
-                    chanchunks = -1
-
                     parallel = mpihelpers.parse_mpi_input_parameter(inputs.parallel)
 
                     real_spwsel = context.observing_run.get_real_spwsel([str(spwid)]*len(vislist), vislist)
 
-                    # Set special phasecenter for ephemeris objects.
+                    # Set special phasecenter, frame and specmode for ephemeris objects.
                     # Needs to be done here since the explicit coordinates are
                     # used in heuristics methods upstream.
                     if image_heuristics.is_eph_obj(target['field']):
                         phasecenter = 'TRACKFIELD'
-                        parallel = False
                         # 'REST' does not yet work (see CAS-8965, CAS-9997)
                         #outframe = 'REST'
                         outframe = ''
@@ -291,19 +295,31 @@ class FindCont(basetask.StandardTaskTemplate):
                                             intent=utils.to_CASA_intent(inputs.ms[0], target['intent']),
                                             field=target['field'], start=start, width=width, nchan=nchan,
                                             outframe=outframe, scan=scanidlist, specmode=specmode, gridder=gridder,
-                                            mosweight=mosweight, perchanweightdensity=inputs.hm_perchanweightdensity,
+                                            mosweight=mosweight, perchanweightdensity=perchanweightdensity,
                                             pblimit=0.2, niter=0, threshold='0mJy', deconvolver='hogbom',
                                             interactive=False, imsize=target['imsize'], cell=target['cell'],
-                                            phasecenter=phasecenter, stokes='I', weighting=inputs.hm_weighting,
+                                            phasecenter=phasecenter, stokes='I', weighting=weighting,
                                             robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
                                             restoringbeam=[], pbcor=False, usepointing=usepointing,
-                                            savemodel='none', chanchunks=chanchunks, parallel=parallel)
+                                            savemodel='none', parallel=parallel)
                     self._executor.execute(job)
 
                     # Try detecting continuum frequency ranges
 
                     # Determine the representative source name and spwid for the ms
                     repsource_name, repsource_spwid = ref_ms.get_representative_source_spw()
+
+                    # Determine reprBW mode
+                    repr_target, _, repr_spw, _, reprBW_mode, real_repr_target, _, _, _, _ = image_heuristics.representative_target()
+                    real_repr_spw = context.observing_run.virtual2real_spw_id(int(repr_spw), ref_ms)
+                    real_repr_spw_obj = ref_ms.get_spectral_window(real_repr_spw)
+
+                    if reprBW_mode in ['nbin', 'repr_spw']:
+                        # Approximate reprBW with nbin
+                        physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
+                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+                    else:
+                        reprBW_nbin = 1
 
                     spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
@@ -313,7 +329,8 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            psf_cube='%s.psf' % findcont_basename,
                                                            single_continuum=single_continuum,
                                                            is_eph_obj=image_heuristics.is_eph_obj(target['field']),
-                                                           ref_ms_name=ref_ms.name)
+                                                           ref_ms_name=ref_ms.name,
+                                                           nbin=reprBW_nbin)
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '

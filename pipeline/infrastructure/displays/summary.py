@@ -19,6 +19,7 @@ from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from . import plotmosaic
 from . import plotpwv
 from . import plotweather
+from . import plotsuntrack
 
 LOG = infrastructure.get_logger(__name__)
 DISABLE_PLOTMS = False
@@ -85,6 +86,47 @@ class AzElChart(object):
                            command=str(task))
 
 
+class SunTrackChart(object):
+    def __init__(self, context, ms):
+        self.context = context
+        self.ms = ms
+        self.figfile = self._get_figfile()
+
+    def plot(self):
+        if os.path.exists(self.figfile):
+            LOG.debug('Returning existing SunTrack plot')
+            return self._get_plot_object()
+
+        LOG.debug('Creating new SunTrack plot')
+        try:
+            # Based on the analysisUtils method
+            plotsuntrack.plot_suntrack(vis=self.ms.name, figfile=self.figfile, elvstime=True)
+        except:
+            return None
+        finally:
+            # plot suntrack does not close the plot! work around that here rather
+            # than editing the code as we might lose the fix (again..)
+            try:
+                plt.close()
+            except:
+                pass
+
+        return self._get_plot_object()
+
+    def _get_figfile(self):
+        session_part = self.ms.session
+        ms_part = self.ms.basename
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
+                            ms_part, 'solar_el_vs_time.png')
+
+    def _get_plot_object(self):
+        return logger.Plot(self.figfile,
+                           x_axis='Azimuth',
+                           y_axis='Elevation',
+                           parameters={'vis': self.ms.basename})
+
+
 class WeatherChart(object):
     def __init__(self, context, ms):
         self.context = context
@@ -124,6 +166,7 @@ class WeatherChart(object):
                            x_axis='Time',
                            y_axis='Weather',
                            parameters={'vis': self.ms.basename})
+
 
 
 class ElVsTimeChart(object):
@@ -928,6 +971,16 @@ class UVChart(object):
             source_spwid = None
         else:
             source_spwid = self.context.project_performance_parameters.representative_spwid
+
+        # Determine first target and first science spw for that target (even in multi-band data) for VLA
+        if self.context.project_summary.telescope in ('VLA', 'EVLA'):
+            fieldobjs = self.ms.get_fields(intent='TARGET')
+            first_field = fieldobjs[0]
+            source_name = first_field.name
+            source_spwobjlist = list(first_field.valid_spws)
+            source_spwidlist = [spw.id for spw in source_spwobjlist]
+            source_spwidlist.sort()
+            source_spwid = source_spwidlist[0]
 
         # Determine the representative source name and spwid for the ms
         repsource_name, repsource_spwid = self.ms.get_representative_source_spw(source_name=source_name,

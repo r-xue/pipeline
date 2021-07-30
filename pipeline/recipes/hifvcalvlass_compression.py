@@ -69,13 +69,13 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Do the flux density bootstrapping -- fits spectral index of
         # calibrators with a power-law and puts fit in model column
-        hifv_fluxboot2(fitorder=2)
+        hifv_fluxboot(fitorder=2)
 
         # Make the final calibration tables
         hifv_finalcals(pipelinemode=pipelinemode)
 
         # Polarization calibration
-        hifv_circfeedpolcal (pipelinemode=pipelinemode)
+        hifv_circfeedpolcal(pipelinemode=pipelinemode)
 
         # Flag the finalampgaincal.g calibration table
         hifv_flagcal(pipelinemode=pipelinemode)
@@ -91,6 +91,9 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Plotting Summary
         hifv_plotsummary(pipelinemode=pipelinemode)
+
+        # Apply time offsets to the pointing table
+        hifv_fixpointing(pipelinemode=pipelinemode)        
 
         # Make a list of expected point source calibrators to be cleaned
         # hif_makeimlist(intent='PHASE,BANDPASS', pipelinemode=pipelinemode)

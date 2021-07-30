@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9}
 %>
 
@@ -14,13 +15,13 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
 
 % for ms in delay_subpages.keys():
     <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, delay_subpages[ms]), pcontext.report_dir)}">Delay plots </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, delay_subpages[ms])}">Delay plots </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, phasegain_subpages[ms]), pcontext.report_dir)}">Gain phase </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phasegain_subpages[ms])}">Gain phase </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolamp_subpages[ms]), pcontext.report_dir)}">BP Amp solution </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_subpages[ms])}">BP Amp solution </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolphase_subpages[ms]), pcontext.report_dir)}">BP Phase solution </a>
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphase_subpages[ms])}">BP Phase solution </a>
     </h4>
 %endfor
 

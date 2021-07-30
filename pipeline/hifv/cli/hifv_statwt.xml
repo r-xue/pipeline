@@ -16,9 +16,11 @@
     </param>
 
     <param name="datacolumn" type="string">
-    <shortdescription>Data column to use to compute weights. Supported values are &quot;data&quot;, &quot;corrected&quot;, &quot;residual&quot;, and &quot;residual_data&quot; (case insensitive, minimum match supported).</shortdescription>
-    <description>Data column to use to compute weights. Supported values are &quot;data&quot;, &quot;corrected&quot;, &quot;residual&quot;, and &quot;residual_data&quot; (case insensitive, minimum match supported).</description>
-    <value>corrected</value>
+        <shortdescription>Column used to compute weights</shortdescription>
+        <description>Data column used to compute weights. Supported values are
+                     &quot;data&quot;, &quot;corrected&quot;, &quot;residual&quot;, and &quot;residual_data&quot;
+                     (case insensitive, minimum match supported).</description>
+        <value>corrected</value>
     </param>
 
     <param name="pipelinemode" type="string">
@@ -41,6 +43,15 @@
         <shortdescription>Always write the model column, even if it already exists</shortdescription>
         <description>Always write the model column, even if it already exists</description>
         <value>False</value>
+    </param>
+
+    <param type="string" name="statwtmode">
+        <shortdescription>Weight statistics mode</shortdescription>
+        <description>Sets the weighting parameters for general VLA ('VLA') or VLASS
+                     Single Epoch ('VLASS-SE') use case. Note that the 'VLASS-SE'
+                     mode is meant to be used with datacolumn='residual_data'.
+                     Default is 'VLA'.</description>
+        <value>VLA</value>
     </param>
 
     <param name="dryrun" subparam="true" type="bool">
@@ -94,6 +105,9 @@ Examples
 
 hifv_statwt()
 
+2. Statistical weighting of the visibilities in the Very Large Array Sky Survey Single Epoch use case:
+
+hifv_statwt(mode='vlass-se', datacolumn='residual_data')
 
 </example>
 </task>

@@ -176,20 +176,29 @@ def uvcontfit(*v, **k):
     return _get_job(task_uvcontfit.uvcontfit, *v, **k)
 
 
-def sdimaging(*v, **k):
-    return _get_job(casatasks.sdimaging, *v, **k)
+def sdatmcor(*v, **k) -> JobRequest:
+    """Wrap casatasks.sdatmcor
+
+    Returns:
+        JobRequest instance
+    """
+    return _get_job(casatasks.sdatmcor, *v, **k)
 
 
-def tsdimaging(*v, **k):
-    return _get_job(casatasks.tsdimaging, *v, **k)
+def sdbaseline(*v, **k):
+    return _get_job(casatasks.sdbaseline, *v, **k)
 
 
 def sdcal(*v, **k):
     return _get_job(casatasks.sdcal, *v, **k)
 
 
-def sdbaseline(*v, **k):
-    return _get_job(casatasks.sdbaseline, *v, **k)
+def sdimaging(*v, **k):
+    return _get_job(casatasks.sdimaging, *v, **k)
+
+
+def tsdimaging(*v, **k):
+    return _get_job(casatasks.tsdimaging, *v, **k)
 
 
 def copyfile(*v, **k):
