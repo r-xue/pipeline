@@ -426,7 +426,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         sum_keys = ['flagged', 'total']
 
         # Set into single dictionary report (single spw) if only one dict returned
-        if not all([key.startswith('report') for key in in_stat]):
+        if any([not key.startswith('report') for key in in_stat]) or (not in_stat):
             in_stat = {'report0': in_stat}
 
         for rep_summary in in_stat.values(): # per report loop

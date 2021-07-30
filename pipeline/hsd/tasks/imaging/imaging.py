@@ -1133,16 +1133,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                 return failed_rms
             LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
             with casa_tools.TableReader(skytab) as tb:
+                interval_unit = tb.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
                     LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
                     t.close()
                     return failed_rms
                 try:
-                    unit = t.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
-                    t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(t.getcol('INTERVAL').mean(), unit), time_unit))[0]
+                    interval = t.getcol('INTERVAL')
                 finally:
                     t.close()
+            t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(interval.mean(), interval_unit), time_unit))[0]
             LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(t_sub_on, time_unit, t_sub_off, time_unit))
             # obtain factors by convolution function (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
@@ -1175,7 +1176,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                     if t.nrows == 0:
                         LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
                         return failed_rms
-                    tc = t.getcol('CPARAM')
+                    try:
+                        tc = t.getcol('CPARAM')
+                    finally:
+                        t.close()
                     jy_per_k = (1./tc.mean(axis=-1).real**2).mean()
                     LOG.info('Jy/K factor = {}'.format(jy_per_k))
             ang = cqa.getvalue(cqa.convert(raster_info.scan_angle, 'rad'))[0] + 0.5*numpy.pi
