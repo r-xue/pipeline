@@ -2858,7 +2858,7 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 def score_renorm(result):
     if result.renorm_applied:
         msg = 'Renormalization applied'
-        score = score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
     else:
         msg = ''
         score = 1.0
