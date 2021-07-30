@@ -321,7 +321,7 @@ class PipelineManifest(object):
         Get the hifa_renorm element
         """
         for asdm in self.get_ous().findall(f".//asdm[@name=\'{asdm_name}\']"):
-            return asdm.find('hifa_renorm').attrib
+            return getattr(asdm.find('hifa_renorm'), 'attrib', None)
         else:
             return None
 
