@@ -304,8 +304,10 @@ class ImportData(basetask.StandardTaskTemplate):
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
-        # PIPE-1200: do not call CASA's importasdm if the output MS already
-        # exists on disk and overwrite is set to False, to avoid Exception.
+        # PIPE-1200: if the output MS already exists on disk and overwrite is
+        # set to False, then skip the remaining steps of calling CASA's
+        # importasdm (to avoid Exception) and copying over XML files, and
+        # return early.
         vis = self._asdm_to_vis_filename(asdm)
         if os.path.exists(vis) and not inputs.overwrite:
             LOG.info(f"Skipping call to CASA 'importasdm' for ASDM {asdm}"
@@ -314,44 +316,45 @@ class ImportData(basetask.StandardTaskTemplate):
                      f" {os.path.abspath(inputs.output_dir)}, and the input"
                      f" parameter 'overwrite' is set to False. Will import the"
                      f" existing MS data into the pipeline instead.")
-        else:
-            # Derive input parameters for importasdm.
-            # Set filename for saving flag commands.
-            outfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagonline.txt')
-            # Decide whether to create an MMS based on requested mode and
-            # whether MPI is available.
-            createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
-            # Set choice of whether to use pointing correction; try to retrieve
-            # from inputs (e.g. set by hsd pipeline), but otherwise default to
-            # False.
-            with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
+            return
 
-            # Create importasdm task.
-            task = casa_tasks.importasdm(asdm=asdm,
-                                         vis=vis,
-                                         savecmds=inputs.save_flagonline,
-                                         outfile=outfile,
-                                         process_caldevice=inputs.process_caldevice,
-                                         asis=inputs.asis,
-                                         overwrite=inputs.overwrite,
-                                         bdfflags=inputs.bdfflags,
-                                         lazy=inputs.lazy,
-                                         with_pointing_correction=with_pointing_correction,
-                                         ocorr_mode=inputs.ocorr_mode,
-                                         createmms=createmms)
-            try:
-                self._executor.execute(task)
-            except Exception as ee:
-                LOG.warning(f"Caught importasdm exception: {ee}")
+        # Derive input parameters for importasdm.
+        # Set filename for saving flag commands.
+        outfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagonline.txt')
+        # Decide whether to create an MMS based on requested mode and whether
+        # MPI is available.
+        createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
+        # Set choice of whether to use pointing correction; try to retrieve
+        # from inputs (e.g. set by hsd pipeline), but otherwise default to
+        # False.
+        with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
 
-            # Copy across extra files from ASDM to MS.
-            for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
-                asdm_source = os.path.join(asdm, xml_filename)
-                if os.path.exists(asdm_source):
-                    vis_source = os.path.join(vis, xml_filename)
-                    LOG.info('Copying %s from ASDM to measurement set', xml_filename)
-                    LOG.trace('Copying %s: %s to %s', xml_filename, asdm_source, vis_source)
-                    shutil.copyfile(asdm_source, vis_source)
+        # Create importasdm task.
+        task = casa_tasks.importasdm(asdm=asdm,
+                                     vis=vis,
+                                     savecmds=inputs.save_flagonline,
+                                     outfile=outfile,
+                                     process_caldevice=inputs.process_caldevice,
+                                     asis=inputs.asis,
+                                     overwrite=inputs.overwrite,
+                                     bdfflags=inputs.bdfflags,
+                                     lazy=inputs.lazy,
+                                     with_pointing_correction=with_pointing_correction,
+                                     ocorr_mode=inputs.ocorr_mode,
+                                     createmms=createmms)
+        try:
+            self._executor.execute(task)
+        except Exception as ee:
+            LOG.warning(f"Caught importasdm exception: {ee}")
+
+        # Copy across extra files from ASDM to MS.
+        for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
+            asdm_source = os.path.join(asdm, xml_filename)
+            if os.path.exists(asdm_source):
+                vis_source = os.path.join(vis, xml_filename)
+                LOG.info(f'Copying {xml_filename} from ASDM to measurement set')
+                LOG.trace(f'Copying {xml_filename}: {asdm_source} to {vis_source}')
+                shutil.copyfile(asdm_source, vis_source)
 
     def _make_template_flagfile(self, outfile, titlestr):
         # Create a new file if overwrite is true and the file
