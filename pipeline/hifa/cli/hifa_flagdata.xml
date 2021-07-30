@@ -9,6 +9,7 @@ measurements including:
 
 o applying online flags
 o applying a flagging template
+o partial polarization flagging
 o autocorrelation data flagging
 o shadowed antenna data flagging
 o scan-based flagging by intent or scan number
@@ -119,6 +120,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <param name="online" type="bool">
         <shortdescription>Apply the online flags</shortdescription>
         <description>Apply the online flags.</description>
+        <value type="bool">True</value>
+    </param>
+
+    <param name="partialpol" type="bool">
+        <shortdescription>Flag partial polarization products</shortdescription>
+        <description>Identify integrations in multi-polarisation data where part
+            of the polarization products are already flagged, and flag the other
+            polarization products in those integrations.
+        </description>
         <value type="bool">True</value>
     </param>
 

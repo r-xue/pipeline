@@ -24,6 +24,9 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     edgespw = vdp.VisDependentProperty(default=True)
     flagbackup = vdp.VisDependentProperty(default=True)
     fracspw = vdp.VisDependentProperty(default=0.03125)
+    # PIPE-1028: in hifa_flagdata, flag integrations with only partial
+    # polarization products.
+    partialpol = vdp.VisDependentProperty(default=True)
     template = vdp.VisDependentProperty(default=True)
 
     # new property for ACA correlator
@@ -35,12 +38,13 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, partialpol=None,
+                 qa0=None, qa2=None):
         super(FlagDeterALMAInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
             tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
             fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template, filetemplate=filetemplate,
-            hm_tbuff=hm_tbuff, tbuff=tbuff)
+            hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol)
 
         # solution parameters
         self.qa0 = qa0
@@ -267,16 +271,17 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
 
 
 def load_partialpols_alma(ms):
-    """Retrieve the relevant data to extend partial polarization flagging to all the polarizations.
-    It returns a list of dictionaries that contain the following keys: "antenna1", "antenna2",
-    "time_start", "time_end", "channels".
+    """Retrieve the relevant data to extend partial polarization flagging to all the polarizations (see PIPE-1028).
+    It returns the list of flagging commands required to flag the partial polarization.
 
     :param ms: Measurement set to load
-    :return: list containing flagging command as string
-    :rtype: list[dict]
+    :return: list containing flagging commands as strings
+    :rtype: List[str]
     """
-    # all_spws = ms.get_spectral_windows()
     spws_ids, datadescids = get_partialpol_spws(ms.name)
+    # NOTE: The previous call takes care of translating spws to DATA_DESC_IDs but it may not be necessary and it
+    #  is possible that it can be replaced by a function similar to the one in the following comment:
+    # all_spws = ms.get_spectral_windows()
     params = []
     with casa_tools.TableReader(ms.name) as table:
         for spw, ddid in zip(spws_ids, datadescids):  # Iterate over relevant spws
@@ -287,7 +292,7 @@ def load_partialpols_alma(ms):
             if n_pol > 1:  # There is data (n_pol != 0) and data are not single polarization
                 LOG.debug(f"Potential Partial Polarization data found for DATA_DESC_IDs {ddid}")
                 folded_flags = np.sum(flags, axis=0)
-                # Retrieve and show some useful information
+                # Retrieve and show some useful information for debugging
                 for i in range(n_pol + 1):
                     n_i = np.sum(folded_flags == i)  # Number of scans with i polarizations flagged
                     if (i > 0) and (i < n_pol):
@@ -319,8 +324,11 @@ def get_partialpol_spws(ms_name):
     """Obtain the spws and DATA_DESC_IDs required for the Partial Polarization flagging agent.
     According to the comments in PIPE-1028 they ara all non-WVR/non-SQLD spws which includes the Science ones.
 
+    Note that there is a chance that this function can be refactored using one on the pipeline domain object
+    functions. If the translation of spw to DATA_DESC_ID is not required, this function may not be needed at all.
+
     :param ms_name: Name of the Measurement Set
-    :return: List of spws.ids and DATA_DESC_IDs
+    :return: List of spws.ids and list of DATA_DESC_IDs (with the same length)
     """
     # Note: In all the examples checked, spw id and DATA_DESC_ID are the same, but as this may not be always true and
     #  Todd uses this translation in his code, both sets of data (spws and DATA_DESC_IDs) are retrieved.
@@ -341,9 +349,14 @@ def get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval):
     :param ant2: numpy array with the antenna2s with shape (n_params, )
     :param time: numpy array with the times with shape (n_params, )
     :param interval: numpy array with the intervals with shape (n_params, )
-    :return params: list of dictionaries with the set of params to identify partial polarizations
-      The dictionaries contain the keys "ant1", "ant2", "time", "interval", and "channels". This last
-      parameter is a numerical list of values that can be compressed later
+    :return: List of dictionaries with the set of params to identify partial polarizations.
+      The dictionaries contain the keys:
+       * "ant1" - ID of the antenna1,
+       * "ant2" - ID of the antenna2,
+       * "time" - Central time of the 'scan',
+       * "interval" - Duration of the 'scan', and
+       * "channels"- a list of numerical values of affected channels that can be compressed later.
+    :rtype: List[Dict]
     """
     shape = np.shape(flags)
     # Check: Is there any chance that there are data with only 2 dimensions?
@@ -372,11 +385,13 @@ def get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval):
 
 
 def convert_params_to_commands(ms, params, ant_id_map=None):
-    """Convert the identified partial polarization parameters to flagging commands
+    """Convert the identified partial polarization parameters to flagging commands.
 
-    :param ms: Measurement Set to get the antenna id map
+    :param ms: Measurement Set to get the antenna id map (it can be None if ant_id_map is entered)
     :param params: List of dictionaries with the parameters
-    :param ant_id_map: Dictionary mapping antenna IDs to their names (optional)
+    :param ant_id_map: Dictionary mapping antenna IDs to their names (optional; overrides data from ms)
+    :return: List of flagging commands
+    :rtype: List[str]
     """
     if ant_id_map is None:
         ant_id_map = {ant.id: ant.name for ant in ms.antennas}

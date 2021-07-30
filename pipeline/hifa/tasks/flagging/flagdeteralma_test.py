@@ -49,6 +49,7 @@ OUTPUT_PARTIALPOL = [
 
 @skip_if_no_data_repo
 def test_get_partialpol_spws_gets_correct_spw_list():
+    """Test that partialpol gets the correct spws as mentioned in PIPE-1028"""
     spws, ddids = get_partialpol_spws(MS_NAME)
     spws_alt, ddids_alt = get_partialpol_spws(MS_NAME_ALT)
     assert spws == [0]
@@ -105,7 +106,8 @@ def test_get_partialpol_flag_cmd_params(flags, expected):
 def test_params_amd_commands_for_real_data():
     """
     This test is not a unit test as it combines get_partialpol_flag_cmd_params and convert_params_to_commands.
-    It is
+    It is a test on real data with partial polarization. The data correspond to the spw 27 of the reference
+    dataset mentioned in PIPEREQ-70: uid://A002/Xe5ce70/X8b7
     """
     raw_data = np.load(PIPE1028DATA)
     flags = raw_data['flags']

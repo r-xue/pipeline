@@ -111,6 +111,11 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
         A boolean indicating whether online flags are to be applied.
 
+    .. py:attribute:: partialpol
+
+        A boolean stating whether to flag polarization products where part of
+        the polarizations are flagged.
+
     .. py:attribute:: fileonline
 
         The filename of the ASCII file containing online flagging commands.
@@ -166,6 +171,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
         return ','.join(self.ms.intents.intersection(intents_to_flag))
 
     online = vdp.VisDependentProperty(default=True)
+    partialpol = vdp.VisDependentProperty(default=False)
     scan = vdp.VisDependentProperty(default=True)
     scannumber = vdp.VisDependentProperty(default='')
     shadow = vdp.VisDependentProperty(default=True)
@@ -199,7 +205,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None):
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, partialpol=None):
         super(FlagDeterBaseInputs, self).__init__()
 
         # pipeline inputs
@@ -220,6 +226,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
         self.fracspw = fracspw
         self.fracspwfps = fracspwfps
         self.online = online
+        self.partialpol = partialpol
         self.fileonline = fileonline
         self.template = template
         self.filetemplate = filetemplate
