@@ -165,11 +165,6 @@ class SDBLFlagSummary(object):
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
 
-                # create html file with summary table
-                htmlName = self.create_summary_table( self.ms, datatable, polid, is_baselined, plots,
-                                                      dt_idx, flagRule, FlaggedRows, FlaggedRowsCategory,
-                                                      FigFileDir, FigFileRoot )
-
                 # show flags on LOG
                 self.show_flags( dt_idx, is_baselined, FlaggedRows, FlaggedRowsCategory )
                 # create summary data
@@ -177,17 +172,8 @@ class SDBLFlagSummary(object):
 
                 t1 = time.time()
 
-                # dict to list conversion (only for compatibility)
-                # will be removed once "Flag by Reason" table is removed
-                nflags_list = list(nflags.values())
-
                 LOG.info('Plot flags End: Elapsed time = %.1f sec' % (t1 - t0) )
-                flagSummary.append({'html': htmlName, 'name': asdm,
-                                    'antenna': ant_name, 'field': field_name,
-                                    'spw': spwid, 'pol': pol,
-                                    'nrow': len(dt_idx), 'nflags': nflags,
-                                    'nflags_list': nflags_list,
-                                    'baselined': is_baselined})
+                flagSummary.append( { 'nrow': len(dt_idx), 'nflags': nflags } )
                 flagplotter = None
 
         end_time = time.time()
@@ -380,7 +366,7 @@ class SDBLFlagSummary(object):
             FlaggedRows         : flagged rows
             FlaggedRowsCategory : flagged rows by category
         Returns:
-            List of flag countes
+            Dictionary of flag counts
         """
         # Flag counts
         flag_nums = collections.OrderedDict()
@@ -406,107 +392,3 @@ class SDBLFlagSummary(object):
         return flag_nums
 
 
-    def create_summary_table( self, msobj:MeasurementSet, datatable:DataTable, polid:int, is_baselined:bool,
-                              plots:List[str], ids:List[int],
-                              FlagRule:Dict, FlaggedRows:List[int], FlaggedRowsCategory:Dict,
-                              FigFileDir:Optional[str], FigFileRoot:str ) -> str:
-        """
-        Create summary table for detail page.
-
-        Args:
-            msobj               : Measurement Set Object
-            datatable           : DataTable
-            polid               : polarization ID
-            is_baselined        : True if baselined, Fause if not
-            plots               : List of figure filenames
-            ids                 : row numbers
-            FlagRule            : Flag Rule
-            FlaggedRows         : flagged rows
-            FlaggedRowsCategory : flagged rows by category
-            FigFileDir          : directory to output figure files
-            FigFileRoot         : basename of figure files
-        Returns:
-            html file name
-        """
-        NROW = len( ids )
-
-        # Create Flagging Summary Page
-        if FigFileDir is not None:
-            Filename = FigFileDir+FigFileRoot+'.html'
-            if os.access(Filename, os.F_OK):
-                os.remove(Filename)
-            # Assuming single MS, antenna, field, spw, and polid
-            ID0 = ids[0]
-            antid = datatable.getcell('ANTENNA', ID0)
-            fieldid = datatable.getcell('FIELD_ID', ID0)
-            spwid = datatable.getcell('IF', ID0)
-            asdm = asdm = common.asdm_name_from_ms(msobj)
-            ant_name = msobj.get_antenna(antid)[0].name
-            field_name = msobj.get_fields(field_id=fieldid)[0].name
-            ddobj = msobj.get_data_description(spw=spwid)
-            pol_name = ddobj.corr_axis[polid]
-
-            Out = open(Filename, 'w')
-            print('<body>', file=Out)
-            print('<p class="ttl">Data Summary</p>', file=Out)
-            # A table of data summary
-            print('<table border="0"  cellpadding="3">', file=Out)
-            print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Name', asdm), file=Out)
-            print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Antenna', ant_name), file=Out)
-            print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Field', field_name), file=Out)
-            print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Spw ID', spwid), file=Out)
-            print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Pol', pol_name), file=Out)
-            print('</table>\n', file=Out)
-
-            print('<HR><p class="ttl">Flagging Status</p>', file=Out)
-            # A table of flag statistics summary
-            print('<table border="1">', file=Out)
-            print('<tr align="center" class="stt"><th>&nbsp</th><th>isActive?</th><th>SigmaThreshold<th>Flagged spectra</th><th>Flagged ratio(%)</th></tr>', file=Out)
-            print(self._format_table_row_html('Tsys', FlagRule['TsysFlag']['isActive'], FlagRule['TsysFlag']['Threshold'], len(FlaggedRowsCategory['TsysFlag']), NROW), file=Out)
-            print(self._format_table_row_html('Online', True, "-", len(FlaggedRowsCategory['OnlineFlag']), NROW), file=Out)
-            print(self._format_table_row_html('RMS baseline (pre-fit)', FlagRule['RmsPreFitFlag']['isActive'], FlagRule['RmsPreFitFlag']['Threshold'], len(FlaggedRowsCategory['RmsPreFitFlag']), NROW), file=Out)
-            rmspostfitflag_thres = FlagRule['RmsPostFitFlag']['Threshold'] if is_baselined else "SKIPPED"
-            print(self._format_table_row_html('RMS baseline (post-fit)', FlagRule['RmsPostFitFlag']['isActive'], rmspostfitflag_thres, len(FlaggedRowsCategory['RmsPostFitFlag']), NROW), file=Out)
-            print(self._format_table_row_html('Running Mean (pre-fit)', FlagRule['RunMeanPreFitFlag']['isActive'], FlagRule['RunMeanPreFitFlag']['Threshold'], len(FlaggedRowsCategory['RunMeanPreFitFlag']), NROW), file=Out)
-            runmeanpostfitflag_thres = FlagRule['RunMeanPostFitFlag']['Threshold'] if is_baselined else "SKIPPED"
-            print(self._format_table_row_html('Running Mean (post-fit)', FlagRule['RunMeanPostFitFlag']['isActive'], runmeanpostfitflag_thres, len(FlaggedRowsCategory['RunMeanPostFitFlag']), NROW), file=Out)
-            print(self._format_table_row_html('Expected RMS (pre-fit)', FlagRule['RmsExpectedPreFitFlag']['isActive'], FlagRule['RmsExpectedPreFitFlag']['Threshold'], len(FlaggedRowsCategory['RmsExpectedPreFitFlag']), NROW), file=Out)
-            rmsexpectedpostfitflag_thres = FlagRule['RmsExpectedPostFitFlag']['Threshold'] if is_baselined else "SKIPPED"
-            print(self._format_table_row_html('Expected RMS (post-fit)', FlagRule['RmsExpectedPostFitFlag']['isActive'], rmsexpectedpostfitflag_thres, len(FlaggedRowsCategory['RmsExpectedPostFitFlag']), NROW), file=Out)
-            print('<tr align="center" class="stt"><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%.1f</th></tr>' % ('Total Flagged', '-', '-', len(FlaggedRows), len(FlaggedRows)*100.0/NROW), file=Out)
-            print('<tr><td colspan=4>%s</td></tr>' % ("Note: flags in grey background are permanent, <br> which are not reverted or changed during the iteration cycles."), file=Out)
-            print('</table>\n', file=Out)
-            # NOTE for not is_baselined
-            if not is_baselined: print('ATTENTION: flag by post-fit spectra are skipped due to absence of baseline-fitting in previous stages.\n', file=Out)
-            # Plot figures
-            print('<HR>\nNote to all the plots below: short green vertical lines indicate position gaps; short cyan vertical lines indicate time gaps\n<HR>', file=Out)
-            for plot in plots:
-                print('<img src="./%s">\n<HR>' % (plot['file']), file=Out)
-            print('</body>', file=Out)
-            Out.close()
-
-        return os.path.basename(Filename)
-
-
-    def _format_table_row_html( self, label:str, isactive:bool, threshold:str, nflag:int, ntotal:int ) -> str:
-        """
-        Format the html string for table row for "Flag by Reason".
-
-        Args:
-            label     : label sring
-            isactive  : active flag for the criteria
-            threshold : threshold value
-            nflag     : Number of flagged rows
-            ntotal    : Number of total rows
-        Returns:
-            html string
-        """
-        valid_flag = isactive and (threshold != 'SKIPPED')
-
-        html_str =  '<tr align="center" class="stp">'
-        html_str += '<th>{}</th><th>{}</th><th>{}</th>'.format(label, isactive, threshold)
-        html_str += '<th>{}</th>'.format(nflag if valid_flag else "N/A")
-        html_str += "<th>{:.1f}</th>".format(100.0*nflag/ntotal if valid_flag else "N/A")
-        html_str += '</tr>'
-
-        return html_str
