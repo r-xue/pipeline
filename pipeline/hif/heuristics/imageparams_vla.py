@@ -153,7 +153,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
         """VLA auto-boxing parameters.
 
-        See PIPE-677 for TARGTE-specific heuristic
+        See PIPE-677 for TARGET-specific heuristic
         """
         sidelobethreshold = None
         noisethreshold = None
