@@ -127,10 +127,10 @@ class IERSInfo():
             vs_version = "NOT FOUND"
         return vs_version
 
-    def get_IERSeop2000_last_entry(self) -> float:
-        """Get the last entry in the MJD column of the table IERSeop2000
+    def get_IERS_last_entry(self, name:str="IERSeop2000") -> float:
+        """Get the last entry in the MJD column of the specified IERS table. Defaults to IERSeop2000.
         """
-        table_name = os.path.join(self.iers_path, "IERSeop2000")
+        table_name = os.path.join(self.iers_path, name)
         try:
             with casa_tools.TableReader(table_name) as table:
                 last_mjd = table.getcol('MJD')[-1]
@@ -143,14 +143,22 @@ class IERSInfo():
             * IERSpredict version
             * IERSeop2000 version
             * IERSeop2000 last MJD entry
+            * IERSeop2000 last datetime entry
+            * IERSpredict last datetime entry
         """
         versions = {table: self.get_IERS_version(table) for table in self.IERS_tables}
-        last_mjd = self.get_IERSeop2000_last_entry()
+        last_mjd = self.get_IERS_last_entry("IERSeop2000")
         if last_mjd != "NOT FOUND":
             last_dt = from_mjd_to_datetime(last_mjd)
         else:
             last_dt = None
-        self.info = {"versions": versions, "IERSeop2000_last_MJD": last_mjd, "IERSeop2000_last": last_dt}
+        # Get the same information for the prediected IERS (see PIPE-1231).
+        last_mjd_predict = self.get_IERS_last_entry("IERSpredict")
+        if last_mjd_predict != "NOT FOUND":
+            last_dt_predict = from_mjd_to_datetime(last_mjd_predict)
+        else:
+            last_dt_predict = None
+        self.info = {"versions": versions, "IERSeop2000_last_MJD": last_mjd, "IERSeop2000_last": last_dt, "IERSpredict_last": last_dt_predict}
 
     def validate_date(self, date: datetime) -> bool:
         """Check if a date is lower or equal than the last entry of the IERSeop2000 table.

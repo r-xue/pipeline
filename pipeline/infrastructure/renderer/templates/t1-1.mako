@@ -144,7 +144,7 @@ $(document).ready(function() {
                 <tr>
                     <th>IERSpredict Version</th>
                     % if iers_predict_version != 'NOT FOUND':
-                        <td>${iers_predict_version}</td>
+                        <td>${iers_predict_version} (last date: ${utils.format_datetime(iers_predict_last_date)}) </td>
                     % else:
                         <td>
                             <p class="danger alert-danger">
