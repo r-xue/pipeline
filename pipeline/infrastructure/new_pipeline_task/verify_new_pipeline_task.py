@@ -68,7 +68,7 @@ class NewTask():
             h_save()
         except NameError as ee:
             print('ERROR: {msg}'.format(msg=str(ee)))
-            print('\tTry using runsetup to register the new task with CASA first.')
+            print("\tTry using 'python3 setup.py install' to register the new task with CASA first.")
 
 
 if __name__ == '__main__':

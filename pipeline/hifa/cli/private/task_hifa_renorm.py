@@ -1,20 +1,17 @@
 import sys
 
+from casatasks import casalog
+
 import pipeline.h.cli.utils as utils
 
 
-def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None,
-                  scan=None, scannumber=None, intents=None, edgespw=None,
-                  fracspw=None, fracspwfps=None, online=None, fileonline=None,
-                  template=None, filetemplate=None, hm_tbuff=None, tbuff=None,
-                  partialpol=None, qa0=None, qa2=None, pipelinemode=None,
-                  flagbackup=None, dryrun=None, acceptresults=None):
-    ##########################################################################
+def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, spw=None,
+                excludechan=None, pipelinemode=None, dryrun=None, acceptresults=None):
+
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #
     #                                                                        #
-    ##########################################################################
 
     # create a dictionary containing all the arguments given in the
     # constructor

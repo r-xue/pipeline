@@ -33,7 +33,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     # niter
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms,
-                         mask_frac_rad=0.0) -> int:
+                         mask_frac_rad=0.0, intent='TARGET') -> int:
         """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)

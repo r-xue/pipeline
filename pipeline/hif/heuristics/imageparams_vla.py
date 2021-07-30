@@ -199,7 +199,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0) -> int:
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET') -> int:
         """Adjustment of number of cleaning iterations due to mask size.
 
         Uses residual_robust_rms instead threshold to compute the new niter value.

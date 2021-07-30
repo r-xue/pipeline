@@ -70,7 +70,7 @@ class ALMAImportData(importdata.ImportData):
         # get the flux measurements from Source.xml for each MS
 
         if self.inputs.dbservice:
-            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206'
+            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206&VERBOSE=1'
             # Test for service response
             baseurl = FLUX_SERVICE_URL
             url = baseurl + testquery
@@ -79,8 +79,9 @@ class ALMAImportData(importdata.ImportData):
 
             try:
                 ssl_context = ssl.create_default_context(cafile=certifi.where())
+                LOG.info('Attempting test query at: {!s}'.format(url))
                 response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
-                xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
             except Exception as e:
                 try:
@@ -90,8 +91,9 @@ class ALMAImportData(importdata.ImportData):
                     url = baseurl + testquery
                     if baseurl == '':
                         url = ''
+                    LOG.info('Attempting test query at backup: {!s}'.format(url))
                     response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
-                    xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                    xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
                 except Exception as e2:
                     if url == '':
@@ -101,9 +103,11 @@ class ALMAImportData(importdata.ImportData):
                     LOG.warn(msg+'\nProceeding without using the online flux catalog service.')
                     xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice = 'FAIL'
+                    qastatus = None
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
             fluxservice = None
+            qastatus = None
         # write/append them to flux.csv
 
         # Cycle 1 hack for exporting the field intents to the CSV file:
@@ -119,4 +123,4 @@ class ALMAImportData(importdata.ImportData):
         # re-read from flux.csv, which will include any user-coded values
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
-        return fluxservice, combined_results
+        return fluxservice, combined_results, qastatus

@@ -17,7 +17,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         self.imaging_mode = 'VLASS-SE-CUBE'
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET'):
         """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)
