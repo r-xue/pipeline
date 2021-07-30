@@ -565,6 +565,11 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_totalflux = tclean_result['summaryminor'][2, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
+
+            if tclean_stopcode == 0 and tclean_iterdone > 0:
+                LOG.warning('tclean exit status 0 for Field: %s SPW: %s: the image may not be cleaned as expected.' %
+                            (inputs.field, inputs.spw))
+
             if tclean_stopcode == 1:
                 result.error = CleanBaseError('tclean reached niter limit. Field: %s SPW: %s' %
                                               (inputs.field, inputs.spw), 'Reached niter limit')
