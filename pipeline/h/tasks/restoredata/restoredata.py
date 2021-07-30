@@ -303,7 +303,7 @@ class RestoreData(basetask.StandardTaskTemplate):
                         rn = ACreNorm(vis)
                         LOG.info(f'Renormalizing {vis}')
                         rn.renormalize(docorr=rn_params['apply'], docorrThresh=rn_params['threshold'], correctATM=rn_params['correctATM'],
-                                        spws=rn_params['spw'], excludechan=rn_params['excludechan'], targscans=[7])
+                                        spws=rn_params['spw'], excludechan=rn_params['excludechan'])
                         if rn_params['apply'] and rn.checkApply():
                             applied = True
                         else:
