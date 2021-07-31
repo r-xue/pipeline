@@ -409,6 +409,8 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                     .... },
                                 .... },
                 'report1': ....}
+                The keys, 'reportN', could be omitted if flagdata command
+                lists only one summary command.
 
         Returns:
             Accumulated per source flag statistics dictionary in the form,
@@ -422,7 +424,11 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         out_stat = {'type': 'summary'}
         ignore_keys = ['name', 'type']
         sum_keys = ['flagged', 'total']
-        
+
+        # Set into single dictionary report (single spw) if only one dict returned
+        if any([not key.startswith('report') for key in in_stat]) or (not in_stat):
+            in_stat = {'report0': in_stat}
+
         for rep_summary in in_stat.values(): # per report loop
             for source, source_summary in rep_summary.items(): # per source loop
                 if source in ignore_keys: continue
