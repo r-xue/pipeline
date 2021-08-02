@@ -975,12 +975,9 @@ class SourceTable(object):
         sourcenames = msmd.sourcenames()
         directions = [v for _, v in sorted(msmd.sourcedirs().items(), key=lambda d: int(d[0]))]
         propermotions = [v for _, v in sorted(msmd.propermotions().items(), key=lambda pm: int(pm[0]))]
-        eph_sourcenames, ephemeris_tables, avg_spacings = SourceTable._get_eph_sourcenames(msmd.name()) # HERE
+        eph_sourcenames, ephemeris_tables, avg_spacings = SourceTable._get_eph_sourcenames(msmd.name())
         is_eph_objs = [sourcename in eph_sourcenames for sourcename in sourcenames]
 
-        # construct something so that ephemeris_tables and avg_spacings are set only if it's an ephemeris object
-        # do without list comprehension first
-        LOG.debug(is_eph_objs, ephemeris_tables, avg_spacings)
         table_list = []
         spacings_list = []
         for sourcename in sourcenames:
@@ -1023,12 +1020,11 @@ class SourceTable(object):
                 keywords = tb.getkeywords()
                 eph_sourcename = keywords['NAME']
                 eph_sourcenames.append(eph_sourcename)
-                # Add the average spacing in minutes of the MJD column of the ephemeris table. PIPE-627
+                # Add the average spacing in minutes of the MJD column of the ephemeris table (see PIPE-627).
                 if 'MJD' in tb.colnames():
                     mjd = tb.getcol('MJD')
                     avg_spacings[eph_sourcename] = numpy.diff(mjd).mean()*1440 # Convert fractional day to minutes
-                #ephemeris_table_names = [os.path.splitext(os.path.basename(table_path))[0] for table_path in ephemeris_tables]
-                # Return file names not whole paths for the ephemeris tables
+                # Return file names (not whole paths) for the ephemeris tables (see PIPE-627)
                 ephemeris_table_names[eph_sourcename] = os.path.splitext(os.path.basename(ephemeris_table))[0]
 
         return eph_sourcenames, ephemeris_table_names, avg_spacings
