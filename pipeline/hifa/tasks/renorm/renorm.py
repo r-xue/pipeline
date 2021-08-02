@@ -96,6 +96,11 @@ class Renorm(basetask.StandardTaskTemplate):
         # call the renorm code
         try:
             rn = ACreNorm(inp.vis)
+
+            # Store "all TDM" information before trying the renormalization so
+            # that the weblog is rendered properly.
+            alltdm = rn.tdm_only
+
             # Check if the correction has already been applied
             corrApplied = rn.checkApply()
             corrColExists = rn.correxists
@@ -103,7 +108,7 @@ class Renorm(basetask.StandardTaskTemplate):
             stats = {}
             rnstats = {}
 
-            if not rn.tdm_only:
+            if not alltdm:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                                spws=inp.spw, excludechan=inp.excludechan)
                 rn.plotSpectra()
@@ -112,8 +117,6 @@ class Renorm(basetask.StandardTaskTemplate):
                 #   so that it can be passed to the manifest and used during restore
                 if inp.apply and rn.checkApply():
                     renorm_applied = True
-
-                alltdm = False
 
                 if corrColExists and not corrApplied:
                     # get stats (dictionary) indexed by source, spw
