@@ -127,7 +127,7 @@ def test_IERSInfo_get_IERS_version_method():
 @skip_if_no_data_repo
 def test_IERSInfo_get_IERSeop2000_last_entry_method():
     iers_info = IERSInfo(iers_path=GEODETIC_PATH)
-    mjd = iers_info.get_IERSeop2000_last_entry()
+    mjd = iers_info.get_IERS_last_entry()
     assert mjd == 59184.0
 
 
@@ -154,7 +154,7 @@ def test_string_representation_for_IERS_info():
     assert str(iers_info) == (
         'IERS table information => {"versions": {"IERSpredict": "0623.0351", '
         '"IERSeop2000": "0001.0144"}, "IERSeop2000_last_MJD": 59184.0, '
-        '"IERSeop2000_last": "2020-12-01 00:00:00"}'
+        '"IERSeop2000_last": "2020-12-01 00:00:00", "IERSpredict_last": "2021-04-25 00:00:00"'
     )
 
 
@@ -187,5 +187,5 @@ def test_string_representation_for_IERS_info_when_data_is_not_found():
     assert str(iers_info) == (
         'IERS table information => {"versions": {"IERSpredict": "NOT FOUND", '
         '"IERSeop2000": "NOT FOUND"}, "IERSeop2000_last_MJD": "NOT FOUND", '
-        '"IERSeop2000_last": null}'
+        '"IERSeop2000_last": null, "IERSpredict_last": null}'
     )
