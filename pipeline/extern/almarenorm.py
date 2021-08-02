@@ -2350,25 +2350,28 @@ class ACreNorm(object):
                 for icor in range(nCor):
                     ax_rn.plot(freqs, Nm[icor,:], style[icor])
                 
-                # Get the max value of the mean renormalization spectrum for each correlation
+                # Find max over all ants then the mean of that, ignoring any flagged antenna. 
+                # This matches the values calculated by renormalize(). Because of discrete 
+                # sampling and noise, the max of the mean spectrum does not necessarily equal 
+                # the mean value of the maxes from each antenna because some antenna may peak 
+                # in different channels for lines that spread over multiple channels.
                 if nCor == 1:
-                    Nxmax = Nm[0,:].max()
+                    Nxmax = pl.nanmean(pl.where(N.max(1)!=1, N.max(1), pl.nan),1)[0] 
                     Nymax = Nxmax
                 elif nCor == 2:
-                    Nxmax = Nm[0,:].max()
-                    Nymax = Nm[1,:].max()
+                    Nxmax, Nymax = pl.nanmean(pl.where(N.max(1)!=1, N.max(1), pl.nan),1) 
                 
-                # If the max of the mean spectrum in either correlation is above the alarm theshold
-                # (fthresh), then draw a line at that amplidude, centered in the plot. 
+                # If the max in either correlation is above the alarm theshold (fthresh), 
+                # then draw a line at that amplidude, centered in the plot. 
                 if Nxmax >= (1.0+self.fthresh) or Nymax >= (1.0+self.fthresh):
                     fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
                     fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
                     ax_rn.plot([fmin,fmax],[Nxmax]*2,'r-')
-                    ax_rn.text(fmin,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),
+                    ax_rn.text(fmin,Nxmax,'<X>='+str(round(Nxmax, 4)),
                             ha='right',va='center',color='r',size='x-small')
                     if nCor == 2:
                         ax_rn.plot([fmin,fmax],[Nymax]*2,'b-')
-                        ax_rn.text(fmax,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),
+                        ax_rn.text(fmax,Nymax,'<Y>='+str(round(Nymax, 4)),
                                 va='center',color='b',size='x-small')
 
                 # Grab the plot limits and set them for making it "look pretty"
@@ -2418,8 +2421,7 @@ class ACreNorm(object):
                     else:
                         # Currently, correctATM will not properly handle Bands 9 and 10 but
                         # eventually the image sideband will need to be added here.
-                        bpfld = self.getfieldforscan(self.getBscan(spw,verbose=False)[0])[0]
-                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)][str(bpfld)]
+                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)]
                     
                     # Plot the ATM profile
                     ax_atm.plot(freqs, 100*ATMprof, c='m', linestyle='-', linewidth=2)
@@ -3357,6 +3359,7 @@ class ACreNorm(object):
         #ratioATM = self.atmtrans[fldnam][str(inspw)][str(inscan)] / self.atmtrans[calfld][str(inspw)][calscan]
         trg_atm = self.atmtrans[fldnam][str(inspw)][str(inscan)][str(infld)]
         cal_atm = self.atmtrans[calname][str(inspw)][str(calscan)]
+        #ratioATM = trg_atm/cal_atm #TEST
         ratioATM = cal_atm/trg_atm
         #ratioATM = abs(trg_atm - cal_atm)/((trg_atm*cal_atm)/2.)
         ratioMed = pl.array(pl.median(ratioATM))
