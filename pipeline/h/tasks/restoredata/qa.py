@@ -8,8 +8,8 @@ from . import restoredata
 
 LOG = logging.get_logger(__name__)
 
-class RestoreQAHandler(pqa.QAPlugin):
-    result_cls = restoredata.RestoreResults
+class RestoreDataQAHandler(pqa.QAPlugin):
+    result_cls = restoredata.RestoreDataResults
     child_cls = None
 
     def handle(self, context, result):
@@ -19,7 +19,7 @@ class RestoreQAHandler(pqa.QAPlugin):
 
         result.qa.pool.extend(scores)
 
-class RestoreListQAHandler(pqa.QAPlugin):
+class RestoreDataListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing RestoreResults.
     """
