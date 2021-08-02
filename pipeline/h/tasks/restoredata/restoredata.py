@@ -301,15 +301,17 @@ class RestoreData(basetask.StandardTaskTemplate):
                     rn_params = {key:ast.literal_eval(val) if val else val for key,val in params.items()}
                     try:
                         rn = ACreNorm(vis)
-                        LOG.info(f'Renormalizing {vis}')
+                        LOG.info(f'Renormalizing {vis} with hifa_renorm {params}')
                         rn.renormalize(docorr=rn_params['apply'], docorrThresh=rn_params['threshold'], correctATM=rn_params['correctATM'],
                                         spws=rn_params['spw'], excludechan=rn_params['excludechan'])
                         if rn_params['apply'] and rn.checkApply():
                             applied = True
                         else:
-                            LOG.error('Failed application of renormalization for {vis}')
+                            LOG.error(f'Failed application of renormalization for {vis} {params}')
                     except Exception as e:
-                        LOG.error('Failure in running renormalization heuristic: {}'.format(e))
+                        LOG.error(f'Failure in running renormalization heuristic: {e}')
+                else:
+                    LOG.info(f'Not calling hifa_renorm for {vis} - no renorm call in manifest.')
 
         return applied
 

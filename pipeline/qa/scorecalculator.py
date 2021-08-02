@@ -2902,10 +2902,10 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 
 def score_renorm(result):
     if result.renorm_applied:
-        msg = 'Renormalization applied'
+        msg = 'Restore successful with renormalization applied'
         score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
     else:
-        msg = ''
+        msg = 'Restore successful'
         score = 1.0
 
     origin = pqa.QAOrigin(metric_name='score_renormalize',
