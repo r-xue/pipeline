@@ -105,6 +105,9 @@ class Renorm(basetask.StandardTaskTemplate):
             corrApplied = rn.checkApply()
             corrColExists = rn.correxists
 
+            stats = {}
+            rnstats = {}
+
             if not alltdm:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                                spws=inp.spw, excludechan=inp.excludechan)
@@ -120,9 +123,6 @@ class Renorm(basetask.StandardTaskTemplate):
                     stats = rn.rnpipestats
                     # get all factors for QA
                     rnstats = rn.stats()
-                else:
-                    stats = {}
-                    rnstats = {}
 
             rn.close()
 
