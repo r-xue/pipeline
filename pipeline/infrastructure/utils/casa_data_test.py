@@ -154,9 +154,8 @@ def test_string_representation_for_IERS_info():
     assert str(iers_info) == (
         'IERS table information => {"versions": {"IERSpredict": "0623.0351", '
         '"IERSeop2000": "0001.0144"}, "IERSeop2000_last_MJD": 59184.0, '
-        '"IERSeop2000_last": "2020-12-01 00:00:00", "IERSpredict_last": "2021-04-25 00:00:00"'
+        '"IERSeop2000_last": "2020-12-01 00:00:00", "IERSpredict_last": "2021-04-25 00:00:00"}'
     )
-
 
 def test_from_mjd_to_datetime():
     assert from_mjd_to_datetime(59184.0) == datetime(2020, 12, 1, 0, 0)
