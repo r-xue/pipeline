@@ -46,7 +46,7 @@
 
     <param name="excludechan" subparam="true" type="string">
         <shortdescription>Channels to exclude</shortdescription>
-        <description>Channels to exclude, e.g. excludechan={'22':'100~150'}</description>
+        <description>Channels to exclude, e.g. excludechan="{'22':'100~150'}"</description>
         <value/>
     </param>
 
