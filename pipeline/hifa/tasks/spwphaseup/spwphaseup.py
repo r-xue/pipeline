@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import List, Optional, Tuple
 
 import numpy
 
@@ -111,6 +111,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # default one to one spw mapping.
         LOG.info("The spw mapping mode for {} is {}".format(inputs.ms.basename, inputs.hm_spwmapmode))
 
+        snrs = []
+        spwids = []
         low_combined_phasesnr_spws = []
         if inputs.hm_spwmapmode == 'auto':
 
@@ -181,10 +183,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         LOG.info('Computing spw phaseup table for {} is {}'.format(inputs.ms.basename, inputs.hm_spwmapmode))
         phaseupresult = self._do_phaseup()
 
+        # Collect SNR info.
+        snr_info = self._get_snr_info(spwids, snrs)
+
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
                                    phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws,
-                                   unregister_existing=inputs.unregister_existing)
+                                   unregister_existing=inputs.unregister_existing, snr_info=snr_info)
 
         return result
 
@@ -351,10 +356,34 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return tuning_result
 
+    def _get_snr_info(self, spwids: List[int], snrs: List[float]) -> List[Tuple[int, float]]:
+        """
+        Helper method that takes phase SNR info from the SNR test, and returns
+        return phase SNR info for all SpWs specified in inputs.spw.
+
+        Args:
+            spwids: list of SpW IDs for which phase SNRs were determined.
+            snrs: list of phase SNRs.
+
+        Returns:
+            List of tuples, specifying SpW ID and corresponding phase SNR.
+        """
+        spw_snr = {str(k): v for k, v in zip(spwids, snrs)}
+        snr_info = []
+        # Create entry for each SpW specified by inputs.
+        for spwid in self.inputs.spw.split(','):
+            # If no SNR info was available, set to None, otherwise use the
+            # derived value.
+            snr = None
+            if spwid in spw_snr:
+                snr = spw_snr[spwid]
+            snr_info.append((spwid, snr))
+        return snr_info
+
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis=None, phaseup_result=None, combine_spwmap=None, phaseup_spwmap=None,
-                 low_combined_phasesnr_spws=None, unregister_existing: Optional[bool] = False):
+                 low_combined_phasesnr_spws=None, unregister_existing: Optional[bool] = False, snr_info=None):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -372,6 +401,7 @@ class SpwPhaseupResults(basetask.Results):
         self.phaseup_spwmap = phaseup_spwmap
         self.low_combined_phasesnr_spws = low_combined_phasesnr_spws
         self.unregister_existing = unregister_existing
+        self.snr_info = snr_info
 
     def merge_with_context(self, context):
         if self.vis is None:

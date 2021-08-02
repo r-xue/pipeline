@@ -257,13 +257,19 @@ class MetaDataReader(object):
         # per-antenna row list for the data without pointing data
         # key: antenna id
         # value: list of rows to be flagged
-        flagdict1 = self.generate_flagdict_for_invalid_pointing_data()
+        try:
+            flagdict1 = self.generate_flagdict_for_invalid_pointing_data()
+        except Exception:
+            flagdict1 = {}
 
         # PIPE-647
         # per-spw, per-antenna row list for uniform image rms
         # key: (spw id, antenna id) tuple
         # value: list of rows to be flagged
-        flagdict2 = self.generate_flagdict_for_uniform_rms()
+        try:
+            flagdict2 = self.generate_flagdict_for_uniform_rms()
+        except Exception:
+            flagdict2 = {}
 
         # do nothing if no rows to be flagged
         nflag1 = sum(map(len, flagdict1.values()))

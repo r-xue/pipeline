@@ -1252,19 +1252,19 @@ finally:
                 continue
             LOG.info('Saving final image %s to FITS file %s', os.path.basename(image), os.path.basename(fitsfile))
 
-            # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
+            # PIPE-325: abbreviate 'spw' and/or 'virtspw' for FITS header when spw string is "too long"
             with casa_tools.ImageReader(image) as img:
                 info = img.miscinfo()
                 if 'spw' in info:
-                    spw_kw = 'spw'
-                elif 'virtspw' in info:
-                    spw_kw = 'virtspw'
-                else:
-                    spw_kw = None
-                if (spw_kw is not None) and (len(info[spw_kw]) >= 68):
-                    spw_sorted = sorted([int(x) for x in info[spw_kw].split(',')])
-                    info[spw_kw] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
-                    img.setmiscinfo(info)
+                    if len(info['spw']) >= 68:
+                        spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
+                        info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                        img.setmiscinfo(info)
+                if 'virtspw' in info:
+                    if len(info['virtspw']) >= 68:
+                        spw_sorted = sorted([int(x) for x in info['virtspw'].split(',')])
+                        info['virtspw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                        img.setmiscinfo(info)
 
             if not self._executor._dry_run:
                 task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile, velocity=False, optical=False,
@@ -1278,6 +1278,7 @@ finally:
                     fits_keywords = dict()
                     # Loop through FITS keywords.
                     for key in ['object', 'obsra', 'obsdec', 'intent', 'specmode',
+                                'spw', 'virtspw', 'spwisvrt',
                                 'naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
                                 'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
                                 'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
@@ -1288,12 +1289,6 @@ finally:
                         except:
                             # Some images do not have beam, robust or weight keywords
                             fits_keywords[key] = 'N/A'
-
-                    # Write spw or virtspw only if they exist (no default value)
-                    if 'spw' in ff[0].header:
-                        fits_keywords['spw'] = '{}'.format(str(ff[0].header['spw']))
-                    if 'virtspw' in ff[0].header:
-                        fits_keywords['virtspw'] = '{}'.format(str(ff[0].header['virtspw']))
 
                     if 'nspwnam' in ff[0].header:
                         nspwnam = ff[0].header['nspwnam']

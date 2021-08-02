@@ -963,7 +963,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
-                                                           residual_max, new_threshold, residual_robust_rms)
+                                                           residual_max, new_threshold, residual_robust_rms, intent=inputs.intent)
         sequence_manager.niter = new_niter
 
         # Save corrected sensitivity in iter0 result object for 'cube' and
