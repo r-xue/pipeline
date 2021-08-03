@@ -144,7 +144,7 @@ $(document).ready(function() {
                 <tr>
                     <th>IERSpredict Version</th>
                     % if iers_predict_version != 'NOT FOUND':
-                        <td>${iers_predict_version}</td>
+                        <td>${iers_predict_version} (last date: ${utils.format_datetime(iers_predict_last_date)}) </td>
                     % else:
                         <td>
                             <p class="danger alert-danger">
@@ -274,14 +274,20 @@ $(document).ready(function() {
                                     <td>${utils.commafy(row.receivers, quotes=False)}</td>
                                     <td>${row.num_antennas}</td>
                                     <td>${utils.format_datetime(row.time_start)}</td>
-                                    % if iers_info.validate_date(row.time_end):
-                                         <td>${utils.format_datetime(row.time_end)}
+                                    <td>${utils.format_datetime(row.time_end)}
+                                    % if iers_info.validate_date(row.time_end): 
                                          </td>
+                                    % elif iers_info.date_message_type(row.time_end) == "INFO":
+                                            <p>MS dates not fully covered by IERSeop2000. CASA will use IERSpredict.</p>
+                                        </td>
+                                    % elif iers_info.date_message_type(row.time_end) == "WARN":
+                                            <p class="warning alert-warning"> 
+                                                <span class="glyphicon glyphicon-exclamation-sign"></span> MS dates not fully covered by IERSeop2000. CASA will use IERSpredict.
+                                            </p>
+                                        </td>
                                     % else:
-                                        <td>${utils.format_datetime(row.time_end)}
                                             <p class="danger alert-danger">
-                                                <span class="glyphicon glyphicon-remove-sign"></span> MS dates not fully covered
-                                                by the IERS Tables
+                                                <span class="glyphicon glyphicon-remove-sign"></span> MS dates not fully covered by IERSpredict. Please update your data repository.
                                             </p>
                                         </td>
                                     % endif
