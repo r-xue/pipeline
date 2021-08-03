@@ -64,7 +64,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     if image_item.sourcename == ref_ms.representative_target[0]:
                         image_rms.append(tr)
                     else:
-                        image_rms_notreps.append(tr)                    
+                        image_rms_notreps.append(tr)
         image_rms.extend(image_rms_notreps)
 
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
