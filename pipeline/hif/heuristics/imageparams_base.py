@@ -1898,6 +1898,10 @@ class ImageParamsHeuristics(object):
 
         return new_niter
 
+    def niter_by_iteration(self, iteration, hm_masking, niter):
+        """Tclean niter heuristic at each iteration."""
+        return niter
+
     def niter(self):
         return None
 
@@ -2048,6 +2052,10 @@ class ImageParamsHeuristics(object):
         # the default is set to False here.
         return False
 
+    def tclean_stopcode_ignore(self, iteraton, hm_masking):
+        """tclean stop code(s) to be ignored for warning messages."""
+        return []
+
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
 
         """Determine if another tclean iteration is necessary."""
@@ -2064,8 +2072,8 @@ class ImageParamsHeuristics(object):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_nsigma):
-
+    def nsigma(self, iteration, hm_nsigma, hm_masking):
+        """Tclean nsigma parameter heuristics."""
         return hm_nsigma
 
     def savemodel(self, iteration):
