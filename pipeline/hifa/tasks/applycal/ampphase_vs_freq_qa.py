@@ -151,7 +151,7 @@ def get_best_fits_per_ant(wrapper):
                         slope=ValueAndUncertainty(value=0., unc=0.),
                         intercept=ValueAndUncertainty(
                             value=np.ma.average(np.ma.abs(visibilities)),
-                            unc=np.ma.std(np.ma.abs(visibilities)))
+                            unc=np.ma.average(np.ma.abs(ta_sigma)))
                     )
                 except TypeError:
                     # Antenna probably flagged..
@@ -163,7 +163,7 @@ def get_best_fits_per_ant(wrapper):
                         slope=ValueAndUncertainty(value=0., unc=0.),
                         intercept=ValueAndUncertainty(
                             value=np.ma.average(np.ma.angle(visibilities)),
-                            unc=np.ma.std(np.ma.angle(visibilities)))
+                            unc=np.ma.average(np.ma.angle(ta_sigma)))
                     )
                 except TypeError:
                     # Antenna probably flagged..
