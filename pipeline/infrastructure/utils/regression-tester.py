@@ -218,7 +218,7 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
                             input_dir='pl-regressiontest/uid___A002_X85c183_X36f',
                             visname='uid___A002_X85c183_X36f',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f/' +
-                                            'uid___A002_X85c183_X36f.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+                                            'uid___A002_X85c183_X36f.casa-6.2.1-2-pipeline-2021.2.0.94-PIPE-1235.results.txt'))
 
     pr.run()
 
@@ -235,7 +235,7 @@ def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression(
                             input_dir=input_dir,
                             visname='uid___A002_X85c183_X36f_SPW15_23.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
-                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.1-2-pipeline-2021.2.0.94-PIPE-1235.results.txt'))
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
