@@ -210,7 +210,7 @@ class NewTask():
         shutil.copy(temp_mako.name, weblog_mako)
         os.unlink(temp_mako.name)
 
-        print('\n\tNow use runsetup to make the new pipeline task visible within CASA.\n')
+        print("\n\tNow use 'python3 setup.py install' to make the new pipeline task visible within CASA.\n")
 
 
 if __name__ == '__main__':

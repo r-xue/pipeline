@@ -10,11 +10,14 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2021 from PIPE-824: (as of June 10, 2021)
+Code changes for Pipeline2021 from PIPE-824: (as of July 20, 2021)
 0) fix for PRTSPR-50321
 1) change .rstrip('.image')+'.mask' to .replace('.image','.mask')
 2) fix for PIPE-1181 (protection for all joint mask pixels between pb=0.20-21)
-3) add nbin=1 parameter in prepration for PIPE-949
+3) add nbin=1 parameter in preparation for PIPE-849
+4) fix for PIPE-1211 (does not revert to first range in Result6)
+5) add separate ALL_CONTINUUM fraction threshold of 0.91 for nchan<75 (PIPE-825)
+6) fix for PIPE-1213 (and correction to roundFigures, unused by current PL)
 
 Code changes for Pipeline2020: 
 0) fix for PIPE-554 (bug found in cube imaging of calibrators by ARI-L project)
@@ -157,6 +160,7 @@ except:
     from casatools import image as iatool
     from casatools import ms as mstool
     from casatools import quanta as qatool
+    from casatools import regionmanager as rgtool # used by peakOverMad
 #    print("imported casatasks and casatools individually")
 
 if casaVersion < '5.9.9':
@@ -199,7 +203,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.112 2021/06/30 16:06:36 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.115 2021/07/21 11:16:56 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -215,7 +219,8 @@ def casalogPost(mystring, debug=True, priority='INFO'):
     
 SFC_FACTOR_WHEN_MOM8MASK_EXISTS = 0.8  # was 0.6 on Jan 26; 0.5 was too low on 2015.1.00131.S G09_0847+0045 spw 17
                                         # 0.8 was too high on 2018.1.00828.S
-ALL_CONTINUUM_CRITERION = 0.925 # was 0.94 for 2019 Jan 17 test  
+ALL_CONTINUUM_CRITERION = 0.925 # for totalChannels >= 75 (was 0.94 for 2019 Jan 17 test  )
+ALL_CONTINUUM_CRITERION_TDM_FULLPOL = 0.91 # for totalChannels < 75
 DYNAMIC_RANGE_LIMIT_PLOT = 800
 AMENDMASK_PIXEL_RATIO_EXCEEDED = -1
 AMENDMASK_PIXELS_ABOVE_THRESHOLD_EXCEEDED = -2
@@ -644,8 +649,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     if img == '' and meanSpectrumFile != '' and vis != '':
         print("If you specify meanSpectrumFile and vis, then you must also specify img (needed only to retrieve the osbserving date and direction).")
         return
-    if userJointMask != '' and amendMaskIterations > 0:
-        print("You cannot set userJointMask at the same time as amendMaskIterations>0")
+    if userJointMask != '' and amendMaskIterations != 0:
+        print("You cannot set userJointMask at the same time as amendMaskIterations != 0")
         return
     img = img.rstrip('/')
     if type(centralArcsec) == str:
@@ -710,7 +715,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         if pbcube is not None:
             if os.path.exists(pbcube):
                 casalogPost("Found PB cube: %s" % (pbcube))
-        elif amendMaskIterations > 0:
+        elif amendMaskIterations != 0:
             casalogPost("No PB cube found, cannot use amendMask option.")
             return
     # Look for the .psf image if it was not specified
@@ -919,7 +924,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             centralArcsecField = centralArcsec
             if img != '':
                 npixels = float(nchan)*(centralArcsec**2/abs(cdelt2)/abs(cdelt1))
-    if amendMaskIterations > 0:
+    if amendMaskIterations != 0:
         # 0=normal run, 1=after amending mask (if necessary), 2=extraMask or onlyExtraMask (if necessary) 
         # 3=lower sigmaFindContinuum (if necessary)
         selection = ''
@@ -2054,6 +2059,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                     ###########################################################################################
                     casalogPost("No intersection: Reverting to first channel selection")
                     channelList = channelList0  # reverting
+                    selection = convertChannelListIntoSelection(channelList) # this line was added to fix PIPE-1211
                     # derive 4-letter codes and update the final line of the plot legend
                     warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
                     channelRanges = len(selection.split(separator))
@@ -3162,14 +3168,20 @@ def onlyExtraMaskYesOrNo(badAtmosphere, median, momDiffSNR, momDiffSNRCube,
                 casalogPost('  because (cubePeak-cubeMedian)=%f <= (sigmaThreshold*MADCubeOutside)=%f' % (cubePeak-cubeMedian, sigmaThreshold*MADCubeOutside))
     return decision, onlyExtraMaskLevel, sigmaUsed
 
-def allContinuumSelected(selection, nchan, fraction=ALL_CONTINUUM_CRITERION):
+def allContinuumSelected(selection, nchan, fraction=ALL_CONTINUUM_CRITERION, 
+                         fraction2=ALL_CONTINUUM_CRITERION_TDM_FULLPOL):
     """
     Returns True if only one range is selected and that range covers sufficient
     bandwidth (default fraction = 92.5%)
     nchan: number of channels in the spectrum
-    fraction: default = 0.925 which is 92.5%
+    fraction: for nchan >= 75 (default = 0.925 which is 92.5%)
+    fraction2: for nchan < 75 (default = 0.91)
     """
     ranges = selection.split(';')
+    if nchan < 75:
+        threshold = fraction2
+    else:
+        threshold = fraction
     if len(ranges) == 1:
         if ranges[0].find('~') > 0:
             c0,c1 = [int(i) for i in ranges[0].split('~')]
@@ -3182,11 +3194,11 @@ def allContinuumSelected(selection, nchan, fraction=ALL_CONTINUUM_CRITERION):
 #        if c0 <= fraction*nchan and c1 >= (1-fraction)*(nchan-1):
 #       Range is not required to be centered:
         myfraction = (c1-c0+1)*1.0 / nchan
-        if (myfraction >= fraction):
-            casalogPost("continuum fraction: %d-%d: %f >= %f" % (c0,c1,myfraction, fraction))
+        if (myfraction >= threshold):
+            casalogPost("continuum fraction: %d-%d: %f >= %f" % (c0,c1,myfraction, threshold))
             return True
         else:
-            casalogPost("continuum fraction: %d-%d: %f < %f" % (c0,c1,myfraction, fraction))
+            casalogPost("continuum fraction: %d-%d: %f < %f" % (c0,c1,myfraction, threshold))
     return False
 
 def byteDecode(buffer):
@@ -3659,8 +3671,9 @@ def versionStringToArray(versionString):
 def casaVersionCompare(comparitor, versionString):
     """
     This function is called by meanSpectrum.
-    Uses cu.compare_version in CASA >=5, otherwise uses string comparison
-    No longer works in CASA 6.
+    Uses cu.compare_version in CASA5, uses string comparison in CASA4 and 6.
+    (but is not used by meanSpectrumMethod='mom0mom8jointMask' which is 
+     the Pipeline default)
     """
     if casaMajorVersion < 5:
         if comparitor == '>=':
@@ -3674,9 +3687,21 @@ def casaVersionCompare(comparitor, versionString):
         else:
             print("Unknown comparitor: ", comparitor)
             return False
-    else:
+    elif casaMajorVersion == 5:
         version = versionStringToArray(versionString)
         comparison = cu.compare_version(comparitor, version)
+    else: # casa 6
+        if comparitor == '>=':
+            comparison = casaVersion >= versionString
+        elif comparitor == '>':
+            comparison = casaVersion > versionString
+        elif comparitor == '<':
+            comparison = casaVersion < versionString
+        elif comparitor == '<=':
+            comparison = casaVersion <= versionString
+        else:
+            print("Unknown comparitor: ", comparitor)
+            return False
     return comparison
 
 def getFreqType(img):
@@ -5698,25 +5723,27 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         casalogPost("min method: computing MAD and median of %d channels used as the baseline" % (len(intensityAllBaselineChannels)))
         mad = MAD(intensityAllBaselineChannels)
         madOriginal = MAD(allBaselineOriginalChannels)
-#        casalogPost("MAD of all baseline channels = %f (%s)" % (mad,intensityAllBaselineChannels))
         casalogPost("MAD of all baseline channels = %f" % (mad))
         if (fitResult is not None):
             casalogPost("MAD of original baseline channels (before removal of fit) = %f" % (madOriginal))
         if (mad < 1e-17 or madOriginal < 1e-17): 
             casalogPost("min method: avoiding blocks of identical-valued channels")
             if (len(originalSpectrum) > 10):
+                # first avoid values that propagate from either edge
                 myspectrum = spectrum[np.where((originalSpectrum != originalSpectrum[0]) * (originalSpectrum != originalSpectrum[-1]))]
+                # next avoid identical zeroes  (PIPE-1213)
+                myspectrum = myspectrum[np.where(myspectrum != 0.0)] # possible fix for PIPE-1213
             else: # original logic, prior to linear fit removal
-                myspectrum = spectrum[np.where(spectrum != intensityAllBaselineChannels[0])]
+                idx = np.where(spectrum != intensityAllBaselineChannels[0])
+                myspectrum = spectrum[idx]
             idx = np.argsort(myspectrum)
             intensityAllBaselineChannels = myspectrum[idx[:nBaselineChannels]] 
-#            allBaselineXChannels = idx[:nBaselineChannels]
-            for i in range(len(idx)):
-                casalogPost("idx[%d] = %d" % (i,idx[i]))
-            casalogPost("len(allBaselineXChannels)=%d, shape(idx)=%s, nBaselineChannels=%d" % (len(allBaselineXChannels), str(np.shape(idx)), nBaselineChannels))
-            allBaselineXChannels = allBaselineXChannels[idx][:nBaselineChannels]
+            allBaselineXChannels = idx[:nBaselineChannels]  # was commented out in PL2020
+#            for i in range(len(idx)):
+#                casalogPost("idx[%d] = %d has %.3f" % (i,idx[i],myspectrum[idx[i]]))
+#            casalogPost("len(allBaselineXChannels)=%d, shape(idx)=%s, nBaselineChannels=%d" % (len(allBaselineXChannels), str(np.shape(idx)), nBaselineChannels))
+#            allBaselineXChannels = allBaselineXChannels[idx][:nBaselineChannels]  # was used in PL2020, caused crash PIPE-1213
             casalogPost("            computing MAD and median of %d channels used as the baseline" % (len(intensityAllBaselineChannels)))
-            mad = MAD(intensityAllBaselineChannels)
         mad = MAD(intensityAllBaselineChannels)
         median = nanmedian(intensityAllBaselineChannels)
         casalogPost("min method: median intensity of %d channels used as the baseline: %f, mad: %f" % (len(intensityAllBaselineChannels), median, mad))
@@ -6028,7 +6055,10 @@ def splitListIntoContiguousListsAndTrim(totalChannels, channels, trimChannels=0.
         trimChannels = pickAutoTrimChannels(totalChannels, length, maxTrim, medianWidthOfRanges)
     mylists = splitListIntoContiguousLists(channels)
     channels = []
-    trimLimitForEdgeRegion = 3
+    if totalChannels < 75:
+        trimLimitForEdgeRegion = 2
+    else:
+        trimLimitForEdgeRegion = 3
     for i,mylist in enumerate(mylists):
         trimChan = trimChannels
         if verbose:
@@ -6046,18 +6076,19 @@ def splitListIntoContiguousListsAndTrim(totalChannels, channels, trimChannels=0.
                 # If there was only one list of 1 or 2 channels, then don't trim it away!
                 channels += mylist[:1]
             continue
-        # Limit the trimming of the edge closest to the edge of the spw to 3 channels,
+        # Limit the trimming of the edge closest to the edge of the spw to trimLimitForEdgeRegion (i.e., 2 or 3)
         # in order to preserve bandwidth.
         if (i==0 and trimChan > trimLimitForEdgeRegion):
             if (len(mylists)==1):
                 # It is the only window so limit the trim on the far edge too
+#                print("trim case 0: %d-%d --> %d-%d" % (mylist[0], mylist[-1], mylist[trimLimitForEdgeRegion],mylist[-trimLimitForEdgeRegion]))
                 channels += mylist[trimLimitForEdgeRegion:-trimLimitForEdgeRegion]
             else:
                 channels += mylist[trimLimitForEdgeRegion:-trimChan]
         elif (i==len(mylists)-1 and trimChan > trimLimitForEdgeRegion):
             channels += mylist[trimChan:-trimLimitForEdgeRegion]
         else:
-            # It is not an edge window, or it is an edge window and trimChan<=3
+            # It is either not an edge window, or it is an edge window and trimChan<=trimLimitForEdgeRegion
             channels += mylist[trimChan:-trimChan]
     return(np.array(channels))
 
@@ -6077,7 +6108,7 @@ def roundFigures(value, digits):
     """
     This function is called by runFindContinuum and drawYlabel.
     This function rounds a floating point value to a number of significant 
-    figures.
+    figures.  Was originally taken from analysisUtils.
     value: value to be rounded (between 1e-20 and 1e+20)
     digits: number of significant digits, both before or after decimal point
     Returns: a floating point value
@@ -6086,8 +6117,8 @@ def roundFigures(value, digits):
         if (np.log10(np.abs(value)) % 1 < np.log10(5)):
             digits -= 1
     for r in range(-20,20):
-        if (round_half_up(value,r) != 0.0):
-            value = round_half_up(value,r+digits)
+        if (round(value,r) != 0.0):
+            value = round(value,r+digits)
             break
     return(value)
 

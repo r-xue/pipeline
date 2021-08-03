@@ -147,14 +147,14 @@ class MaskDeviation(object):
             with_flag = False
 
         if with_flag:
-            work_data = np.ma.masked_array(self.data, self.flag)
+            mdata = np.ma.masked_array(self.data, self.flag)
         else:
-            work_data = self.data
+            mdata = self.data
 
-        self.stdSP = work_data.std(axis=0)
-        self.meanSP = work_data.mean(axis=0)
-        self.maxSP = work_data.max(axis=0)
-        self.minSP = work_data.min(axis=0)
+        self.stdSP = mdata.std(axis=0)
+        self.meanSP = mdata.mean(axis=0)
+        self.maxSP = mdata.max(axis=0)
+        self.minSP = mdata.min(axis=0)
         self.ymax = self.maxSP.max()
         self.ymin = self.minSP.min()
 

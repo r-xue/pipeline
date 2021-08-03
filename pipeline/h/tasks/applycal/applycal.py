@@ -1,7 +1,7 @@
 import collections
 import copy
 import os
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -9,6 +9,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.callibrary import IntervalCalState
@@ -102,7 +103,8 @@ class ApplycalResults(basetask.Results):
     ApplycalResults is the results class for the pipeline Applycal task.
     """
 
-    def __init__(self, applied=None, callib_map: Dict[str, str]=None):
+    def __init__(self, applied=None, callib_map: Dict[str, str]=None,
+                 data_type: Optional[DataType]=None):
         """
         Construct and return a new ApplycalResults.
 
@@ -121,6 +123,7 @@ class ApplycalResults(basetask.Results):
         self.applied = set()
         self.applied.update(applied)
         self.callib_map = dict(callib_map)
+        self.data_type = data_type
 
     def merge_with_context(self, context):
         """
@@ -136,6 +139,14 @@ class ApplycalResults(basetask.Results):
         for calapp in self.applied:
             LOG.trace('Marking %s as applied' % calapp.as_applycal())
             context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
+
+        # Update data_column
+        if self.data_type is not None:
+            msobj = context.observing_run.get_ms(self.inputs['vis'])
+            colname = 'CORRECTED_DATA'
+            # Temporal workaround: restoredata merges context twice
+            if msobj.get_data_column(self.data_type) != colname:
+                msobj.set_data_column(self.data_type, colname)
 
     def __repr__(self):
         s = 'ApplycalResults:\n'
@@ -165,6 +176,8 @@ class Applycal(basetask.StandardTaskTemplate):
     on-the-fly calibration arguments.
     """
     Inputs = ApplycalInputs
+    # DataType to be set for a new column
+    applied_data_type = DataType.REGCAL_CONTLINE_ALL
 
     def __init__(self, inputs):
         super(Applycal, self).__init__(inputs)
@@ -253,7 +266,8 @@ class Applycal(basetask.StandardTaskTemplate):
         vis_to_callib = {job.kw['vis']: job.kw['callib'] for job in jobs
                          if job.fn_name == 'applycal' and 'callib' in job.kw}
 
-        result = ApplycalResults(applied_calapps, callib_map=vis_to_callib)
+        result = ApplycalResults(applied_calapps, callib_map=vis_to_callib,
+                                 data_type=self.applied_data_type)
 
         # add and reshape the flagdata results if required
         if inputs.flagsum:

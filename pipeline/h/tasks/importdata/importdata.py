@@ -1,15 +1,17 @@
 import contextlib
-import json
 import os
 import shutil
 import tarfile
+from typing import Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.datatype import DataType
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline import environment
 from . import fluxes
@@ -217,11 +219,20 @@ class ImportData(basetask.StandardTaskTemplate):
         rel_to_import = [os.path.relpath(f, abs_output_dir) for f in to_import]
 
         observing_run = ms_reader.get_observing_run(rel_to_import)
+        data_type = DataType.RAW
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', inputs.session, ms.basename)
             if inputs.asimaging:
                 LOG.info('Importing %s as an imaging measurement set', ms.basename)
                 ms.is_imaging_ms = True
+                data_type = DataType.REGCAL_CONTLINE_SCIENCE
+
+            # Set data_type
+            col = get_datacolumn_name(ms.name)
+            if col is not None:
+                ms.set_data_column(data_type, col)
+            else:
+                LOG.error('No data column found in {}'.format(ms.basename))
 
             ms.session = inputs.session
 
@@ -231,11 +242,12 @@ class ImportData(basetask.StandardTaskTemplate):
         # Log IERS tables information (PIPE-734)
         LOG.info(environment.iers_info)
 
-        fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
+        fluxservice, combined_results, qastatus = self._get_fluxes(inputs.context, observing_run)
 
         results.mses.extend(observing_run.measurement_sets)
         results.setjy_results = combined_results
         results.fluxservice = fluxservice
+        results.qastatus = qastatus
 
         return results
 
@@ -262,7 +274,8 @@ class ImportData(basetask.StandardTaskTemplate):
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
         # Flux service not used, return None by default
-        return None, combined_results
+        # QA flux service messaging, return None by default
+        return None, combined_results, None
 
     def _analyse_filenames(self, filenames, vis):
         to_import = set()
@@ -290,26 +303,47 @@ class ImportData(basetask.StandardTaskTemplate):
 
     def _do_importasdm(self, asdm):
         inputs = self.inputs
-        vis = self._asdm_to_vis_filename(asdm)
-        outfile = os.path.join(inputs.output_dir,
-                               os.path.basename(asdm) + '.flagonline.txt')
 
         if inputs.save_flagonline:
             # Create the standard calibration flagging template file
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the calibration pipeline')
+
             # Create the standard Tsys calibration flagging template file.
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtsystemplate.txt')
             self._make_template_flagfile(template_flagsfile,
                                          'User Tsys flagging commands file for the calibration pipeline')
+
             # Create the imaging targets file
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
-        createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
+        # PIPE-1200: if the output MS already exists on disk and overwrite is
+        # set to False, then skip the remaining steps of calling CASA's
+        # importasdm (to avoid Exception) and copying over XML files, and
+        # return early.
+        vis = self._asdm_to_vis_filename(asdm)
+        if os.path.exists(vis) and not inputs.overwrite:
+            LOG.info(f"Skipping call to CASA 'importasdm' for ASDM {asdm}"
+                     f" because output MS {os.path.basename(vis)} already"
+                     f" exists in output directory"
+                     f" {os.path.abspath(inputs.output_dir)}, and the input"
+                     f" parameter 'overwrite' is set to False. Will import the"
+                     f" existing MS data into the pipeline instead.")
+            return
 
+        # Derive input parameters for importasdm.
+        # Set filename for saving flag commands.
+        outfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagonline.txt')
+        # Decide whether to create an MMS based on requested mode and whether
+        # MPI is available.
+        createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
+        # Set choice of whether to use pointing correction; try to retrieve
+        # from inputs (e.g. set by hsd pipeline), but otherwise default to
+        # False.
         with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
 
+        # Create importasdm task.
         task = casa_tasks.importasdm(asdm=asdm,
                                      vis=vis,
                                      savecmds=inputs.save_flagonline,
@@ -327,12 +361,13 @@ class ImportData(basetask.StandardTaskTemplate):
         except Exception as ee:
             LOG.warning(f"Caught importasdm exception: {ee}")
 
+        # Copy across extra files from ASDM to MS.
         for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
             asdm_source = os.path.join(asdm, xml_filename)
             if os.path.exists(asdm_source):
                 vis_source = os.path.join(vis, xml_filename)
-                LOG.info('Copying %s from ASDM to measurement set', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, asdm_source, vis_source)
+                LOG.info(f'Copying {xml_filename} from ASDM to measurement set')
+                LOG.trace(f'Copying {xml_filename}: {asdm_source} to {vis_source}')
                 shutil.copyfile(asdm_source, vis_source)
 
     def _make_template_flagfile(self, outfile, titlestr):
@@ -343,6 +378,26 @@ class ImportData(basetask.StandardTaskTemplate):
             template_text = FLAGGING_TEMPLATE_HEADER.replace('___TITLESTR___', titlestr)
             with open(outfile, 'w') as f:
                 f.writelines(template_text)
+
+def get_datacolumn_name(msname: str) -> Optional[str]:
+    """
+    Return a name of data column in MeasurementSet (MS).
+
+    Args:
+        msname: A path of MS
+
+    Returns:
+        Search for 'DATA' and 'FLOAT_DATA' columns in MS and returns the first
+        matching column in MS. Returns None if no match is found.
+    """
+    search_cols = ['DATA', 'FLOAT_DATA']
+    with casa_tools.TableReader(msname) as tb:
+        tb_cols = tb.colnames()
+        for col in search_cols:
+            if col in tb_cols:
+                return col
+    return None
+
 
 
 FLAGGING_TEMPLATE_HEADER = '''#

@@ -6,7 +6,7 @@ import pipeline.infrastructure.utils as utils
 
 def get_fraction(flagged, total):
    if total == 0 or flagged < 0.0:
-       return 'N/A'
+       return 'N/A' 
    else:
        return '%0.1f%%' % (100.0 * float(flagged) / float(total))
 
@@ -18,62 +18,6 @@ FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nr
 <%block name="header" />
 
 <%block name="title">Flag data by Tsys and statistics of spectra</%block>
-
-<%
-def make_detailed_table(result, stage_dir, fieldname):
-   rel_path = os.path.basename(stage_dir)   ### stage#
-   rows = []
-   for r in result:
-       summaries = r.outcome['summary']
-       vis = r.inputs['vis']
-       ms = pcontext.observing_run.get_ms(vis)
-       for summary in summaries:
-           if summary['field'] != fieldname:
-               continue
-           html_name = summary['html']
-           asdm_name = summary['name']
-           ant_name = summary['antenna']
-           spw = summary['spw']
-           vspw = pcontext.observing_run.real2virtual_spw_id(spw, ms)
-           pol = summary['pol']
-           nrows = summary['nrow']
-           flags = summary['nflags_list']
-           cell_elems = [asdm_name, spw, ant_name, pol, nrows, flags[0]]
-           for nflg in flags:
-               cell_elems.append(get_fraction(nflg, nrows))
-#            htext = '<a class="replace-pre" href="%s">details</a>' % (os.path.join(rel_path, html_name),)
-           htext = '<a href="%s">details</a>' % (os.path.join(rel_path, html_name),)
-           cell_elems.append(htext)
-           if dovirtual:
-               cell_elems.insert(1, vspw)
-               trow = FlagDetailTRV(*cell_elems)
-           else:
-               trow = FlagDetailTR(*cell_elems)
-           rows.append(trow)
-   if len(rows) == 0:
-       return []
-   return utils.merge_td_columns(rows, num_to_merge=4)
-
-try:
-   stage_number = result.stage_number
-   stage_dir = os.path.join(pcontext.report_dir,'stage%d'%(stage_number))
-   if not os.path.exists(stage_dir):
-       os.mkdir(stage_dir)
-
-   trim_name = lambda s : s if not s.startswith('"') or not s.endswith('"') else s[1:-1]
-   unique_fields = []
-   for r in result:
-       summaries = r.outcome['summary']
-       for summary in summaries:
-            if summary['field'] not in unique_fields:
-                unique_fields.append(summary['field'])
- 
-   flag_types = ['Total', 'Tsys', 'After calibration']
-   fit_flags = ['Baseline RMS', 'Running mean', 'Expected RMS']
-except Exception as e:
-   print('hsd_imaging html template exception:{}'.format(e))
-   raise
-%>
 
 <!-- short description of what the task does -->
 <p>This task flags spectra by several criteria:
@@ -90,12 +34,6 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 <ul>
 <li><a href="#summarytablepereb">Flag Summary per EB</a></li>
 <li><a href="#summarytableperfield">Flag Summary per Field and SpW</a></li>
-<li><a href="#detailtable">Flag by Reason</a></li>
-  <ul>
-%for field in unique_fields:
-	<li><a href="#${trim_name(field)}">${field}</a></li>
-%endfor
-  </ul>
 </ul>
 
 
@@ -132,11 +70,19 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
             <th scope="col">Total</th>
 	</thead>
 	<tbody>
-	% for tr in per_eb_summary_table_rows:
+	% for tr, subpage in zip(per_eb_summary_table_rows, statistics_subpages):
+        <%
+            subpage_html = os.path.join( dirname, subpage['html'] )
+        %>
 		<tr>
 		% for td in tr:
-			${td}
+			${td} 
 		% endfor
+        <TD>
+        <a href="${subpage_html}" class="replace" data-vis="${subpage['vis']}">
+        Plots
+        </a>
+        </TD>
 		</tr>
 	%endfor
 	</tbody>
@@ -146,7 +92,7 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 
 <H2 id="summarytableperfield" class="jumptarget">Flag Summary per Field and SpW</H2>
 <table class="table table-bordered table-striped" summary="Flag Summary per Field and SpW">
-	<caption>Flag summary of ON-source target scans per source and SpW (in number of spectral channels).</caption>
+	<caption>Flag summary of ON-source target scans per source and SpW <(in number of spectral channels).</caption>
     <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Field</th>
@@ -175,47 +121,3 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 </table>
 
 
-<H2 id="detailtable" class="jumptarget">Flag by Reason</H2>
-%for field in unique_fields:
-	<H3 id="${trim_name(field)}" class="jumptarget">${field}</H3>
-	<table class="table table-bordered table-striped " summary="${field}">
-	<thead>
-		<tr>
-            %if dovirtual:
-    			<th colspan="6">Data Selection</th>
-	        %else:
-        		<th colspan="5">Data Selection</th>
-            %endif
-   			<th colspan="2">Flagged Total</th>
-			%for ftype in flag_types[1:]:
-				<th rowspan="2">${ftype}</th>
-			%endfor
-			%for fflag in fit_flags:
-				<th colspan="2">${fflag}</th>
-			%endfor
-			<th rowspan="2">Plots</th>
-		</tr>
-		<tr>
-		    %if dovirtual:
-			<th>Name</th><th>vspw</th><th>spw</th><th>Ant.</th><th>Pol</th><th># of rows</th>
-			<th>row #</th><th>fraction</th>
-			%else:
-			<th>Name</th><th>spw</th><th>Ant.</th><th>Pol</th><th># of rows</th>
-			<th>row #</th><th>fraction</th>
-			%endif
-			%for fflag in fit_flags:
-				<th>post-fit</th><th>pre-fit</th>
-			%endfor
-		</tr>
-		</thead>
-		<tbody>
-		% for tr in make_detailed_table(result, stage_dir, field):
-			<tr>
-			% for td in tr:
-				${td}
-			% endfor
-			</tr>
-		%endfor <!-- end of table row loop -->
-		</tbody>
-		</table>
-	%endfor <!-- end of per field loop -->
