@@ -49,11 +49,12 @@
     </param>
 
     <param name="growflags" type="bool">
-        <shortdescription>Grow flags in time and frequenct at the end of the chosen checkflagmode</shortdescription>
-        <description>Grow flags in time and frequenct at the end of the following checkflagmodes:
-            'bpd', 'allcals', 'semi' and ''.
+        <shortdescription>Grow flags in time and frequenct at the end of the VLA calibrator checkflagmode</shortdescription>
+        <description>Grow flags in time at the end of the following checkflagmodes:
+            default=True, for 'bpd-vla', 'allcals-vla', 'bpd', and 'allcals'  
+            default=False, for '' and 'semi'            
         </description>
-        <value>False</value>
+        <value>True</value>
     </param>    
 
     <param name="pipelinemode" type="string">
@@ -107,6 +108,14 @@
                 <default param="vis"><value type="stringVec"/></default>
 	    </equals>
 	</when>
+	<when param="checkflagmode">
+	    <equals type="string" value="">
+            <default param="growflags"><value type="bool">False</value></default>
+	    </equals>
+	    <equals type="string" value="semi">
+            <default param="growflags"><value type="bool">False</value></default>
+	    </equals>
+	</when>    
     </constraints>
 
 </input>
