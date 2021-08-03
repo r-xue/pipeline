@@ -53,7 +53,7 @@ def test_get_partialpol_spws_gets_correct_spw_list():
     spws, ddids = get_partialpol_spws(MS_NAME)
     spws_alt, ddids_alt = get_partialpol_spws(MS_NAME_ALT)
     assert spws == [0]
-    assert spws_alt == [4, 6, 8, 10, 16, 18, 20, 22]
+    assert spws_alt == [18]
 
 
 @skip_if_no_data_repo
@@ -68,7 +68,7 @@ def test_get_partialpol_spws_gets_correct_datadescids_list():
     spws, ddids = get_partialpol_spws(MS_NAME)
     spws_alt, ddids_alt = get_partialpol_spws(MS_NAME_ALT)
     assert ddids == [0]
-    assert ddids_alt == [4, 6, 8, 10, 16, 18, 20, 22]
+    assert ddids_alt == [18]
 
 
 @skip_if_no_data_repo
