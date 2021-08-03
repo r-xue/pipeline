@@ -6,6 +6,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.hifv.heuristics import get_amp_range
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
@@ -37,39 +38,62 @@ class checkflagSummaryChart(object):
 
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
-        corrstring = self.ms.get_vla_corrstring()
 
         plotms_args = {'vis': self.ms.name,
                        'xaxis': 'freq', 'yaxis': 'amp',
                        'xdatacolumn': '', 'ydatacolumn': 'corrected',
-                       'selectdata': True, 'field': '', 'scan': '', 'correlation': corrstring,
+                       'selectdata': True, 'field': '', 'scan': '', 'correlation': '',
                        'averagedata': True, 'avgtime': '1e8', 'avgscan': False,
                        'transform': False, 'extendflag': False,
-                       'coloraxis': 'antenna2',
+                       'coloraxis': 'antenna2', 'plotrange': [0, 0, 0, 0],
                        'plotfile': figfile, 'overwrite': True, 'clearplots': True, 'showgui': False}
-
         plotms_args.update(self.plotms_args)
 
+        # scan averging for all calibrator plots
+        if 'cal' in prefix:
+            plotms_args.update(avgscan=True)
         if prefix == 'BPcal':
             plotms_args.update(field=self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string)
             plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string)
-            plotms_args.update(avgscan=True)
         if prefix == 'delaycal':
             plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].delay_scan_select_string)
-            plotms_args.update(avgscan=True)
-        if prefix == 'allcals':
-            plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string)
-        if prefix == 'targets':
-            fieldids = [field.id for field in self.ms.get_fields(intent='TARGET')]
-            fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
-            plotms_args.update(field=fieldselect, intent='*TARGET*')
-        if prefix == 'targets-vlass':
-            plotms_args.update(ydatacolumn='data', intent='*TARGET*')
+
+        LOG.debug('Select Field: {!r}'.format(plotms_args['field']))
+        LOG.debug('Select Scan: {!r}'.format(plotms_args['scan']))
+        LOG.debug('Select Spw: {!r}'.format(plotms_args['spw']))
+        LOG.debug('Select Intent: {!r}'.format(plotms_args['intent']))
+        LOG.debug('Select Column: {!r}'.format(plotms_args['ydatacolumn']))
+        LOG.debug('Select Correlation: {!r}'.format(plotms_args['correlation']))
+
+        if self.suffix == 'before':
+            plotms_args.update(title='Amp vs. Frequency (before flagging), {}'.format(prefix))
+        if self.suffix == 'after':
+            plotms_args.update(title='Amp vs. Frequency (after flagging), {}'.format(prefix))
+        if self.suffix == 'after-autoscale':
+            plotms_args.update(title='Amp vs. Frequency (after flagging, autoscale), {}'.format(prefix))
+
+        if self.suffix == 'before':
+            LOG.info('Estimating the amplitude range of unflagged data for {} {}'.format(self.suffix, prefix))
+            amp_range = get_amp_range(self.ms.name, field=plotms_args['field'],
+                                      scan=plotms_args['scan'],
+                                      spw=plotms_args['spw'],
+                                      intent=plotms_args['intent'], datacolumn=plotms_args['ydatacolumn'],
+                                      correlation=plotms_args['correlation'])
+            amp_d = amp_range[1]-amp_range[0]
+            plotms_args.update(plotrange=[0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d])
+        if self.suffix == 'after':
+            for plot in self.result.plots['before']:
+                if plot.parameters['type'] == prefix:
+                    plotms_args.update(plotrange=plot.parameters['plotms_args']['plotrange'])
+        if self.suffix == 'after-autoscale':
+            plotms_args.update(plotrange=[0, 0, 0, 0])
+
+        LOG.info('Creating {}'.format(plotms_args['title']))
 
         job = casa_tasks.plotms(**plotms_args)
         job.execute(dry_run=False)
 
-        return
+        return plotms_args
 
     def get_figfile(self, prefix):
         stage_dir = os.path.join(self.context.report_dir, 'stage{}'.format(self.result.stage_number))
@@ -91,7 +115,7 @@ class checkflagSummaryChart(object):
         if not os.path.exists(figfile):
             LOG.trace('Checkflag summary plot not found. Creating new plot.')
             try:
-                self.create_plot(prefix)
+                plotms_args = self.create_plot(prefix)
             except Exception as ex:
                 LOG.error('Could not create ' + prefix + ' plot.')
                 LOG.exception(ex)
@@ -101,6 +125,7 @@ class checkflagSummaryChart(object):
                               parameters={'vis': self.ms.basename,
                                           'type': prefix,
                                           'version': self.suffix,
+                                          'plotms_args': plotms_args,
                                           'spw': ''})
         return wrapper
 

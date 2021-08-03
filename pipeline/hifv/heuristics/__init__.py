@@ -5,4 +5,4 @@ from .uvrange import uvrange
 from .vlascanheuristics import VLAScanHeuristics
 from .bandpass import do_bandpass, weakbp, computeChanFlag, removeRows
 from .vip_helper_functions import run_bdsf, mask_from_catalog, edit_pybdsf_islands, cat_to_ds9_rgn
-from .rfi import RflagDevHeuristic
+from .rfi import RflagDevHeuristic, get_amp_range, mssel_valid

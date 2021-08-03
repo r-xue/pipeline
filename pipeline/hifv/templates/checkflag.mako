@@ -22,7 +22,7 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
                                   url_fn="${lambda ms:  'noop'}">
 
         <%def name="title()">
-            Checkflag Summary Plot
+            Checkflag Summary Plot: Calibrated amplitude vs Frequency
         </%def>
 
         <%def name="preamble()">

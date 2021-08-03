@@ -7,6 +7,7 @@ import numpy as np
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
+from pipeline.infrastructure import casa_tools
 import pkg_resources
 
 LOG = infrastructure.get_logger(__name__)
@@ -225,3 +226,64 @@ class RflagDevHeuristic(api.Heuristic):
                             spw_id, spw_sefd, chanwidth_mhz,  spw_rms_scale[spw_id]['rms_scale']))
 
         return spw_rms_scale
+
+
+def mssel_valid(vis, field='', spw='', scan='', intent='', correlation='', uvdist=''):
+    """Check if the data selection is valid (i.e. not a null selection).
+
+    This method is used as a secondary "null" selection check for flagdata() calls.
+    Ideally, the primary "corr_type_string" check should be sufficient.
+    """
+    with casa_tools.MSReader(vis) as msfile:
+        staql = {'field': field, 'spw': spw, 'scan': scan,
+                 'scanintent': intent, 'polarization': correlation, 'uvdist': uvdist}
+        select_valid = msfile.msselect(staql, onlyparse=True)
+    return select_valid
+
+
+def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='corrected', correlation='', uvrange=''):
+    """Get amplitude min/max for the amp. vs. freq summary plots, with ms.statistic().
+
+    - doquantiles=False to improve performance (CASR-550/CAS-13031)
+    """
+    amp_range = [0., 0.]
+
+    try:
+        with casa_tools.MSReader(vis) as msfile:
+            stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False, useflags=True,
+                                      field=field, scan=scan, intent=intent, spw=spw,
+                                      correlation=correlation, uvrange=uvrange,
+                                      reportingaxes='', doquantiles=False)
+        amp_range = [stats['']['min'], stats['']['max']]
+    except Exception as ex:
+        LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+
+    return amp_range
+
+
+def get_amp_range_old(vis, field='', spw='', scan='', intent='', datacolumn='corrected'):
+    """Get amplitude min/max for the amp. vs. freq summary plots, with ms.range()."""
+    amp_range = [0., 0.]
+
+    try:
+        with casa_tools.MSReader(vis) as msfile:
+            staql = {'field': field, 'spw': spw, 'scan': scan, 'scanintent': intent}
+            r_msselect = msfile.msselect(staql, onlyparse=False)
+            # ms.range always works on whole rows in MS, and ms.selectpolarization() won't affect its result.
+            # r_msselect = msfile.selectpolarization(['RR','LL']) # doesn't work as expected.
+            if not r_msselect:
+                LOG.warn("Null selection from the field/spw/scan combination.")
+            else:
+                if datacolumn == 'corrected':
+                    item = 'corrected_amplitude'
+                if datacolumn == 'data':
+                    item = 'amplitude'
+                if datacolumn == 'model':
+                    item = 'model_amplitude'
+                # ms.range (notably val_min) results were seen to be affected by blocksize
+                # we increase the blocksize from 10MB (default) to 100MB
+                amp_range = msfile.range([item], useflags=True, blocksize=100)[item].tolist()
+    except Exception as ex:
+        LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+
+    return amp_range

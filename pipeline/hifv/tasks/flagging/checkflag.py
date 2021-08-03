@@ -10,7 +10,7 @@ import pipeline.infrastructure.vdp as vdp
 
 from pipeline.domain import DataType
 from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.hifv.heuristics import RflagDevHeuristic
+from pipeline.hifv.heuristics import RflagDevHeuristic, get_amp_range, mssel_valid
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 from .displaycheckflag import checkflagSummaryChart
@@ -118,26 +118,20 @@ class Checkflag(basetask.StandardTaskTemplate):
             if summarydict is not None:
                 summaries.append(summarydict)
 
-        # PIPE-502/995/987: save the before/after-flagging summary plot for most calibrator-related checkflagmodes, and 'vlass-imaging'/'targe-vla'
+        # PIPE-502/995/987: save the before/after-flagging summary plot for most calibrator checkflagmodes, and 'vlass-imaging'/'targe-vla'
         if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'target-vla',
                                          'bpd', 'allcals',
                                          'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
 
             fieldselect, scanselect, intentselect, columnselect = self._select_data()
-
-            LOG.info('Estimating the amplitude range of unflagged data for summary plots')
-            amp_range = self._get_amp_range2(field=fieldselect, scan=scanselect, spw=self.sci_spws,
-                                             intent=intentselect, datacolumn=columnselect,
-                                             correlation=self.corrstring)
-            amp_d = amp_range[1]-amp_range[0]
-            summary_plotrange = [0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d]
-            LOG.info('Creating before-flagging summary plots')
-            plotms_args_overrides = {'plotrange': summary_plotrange,
-                                     'ydatacolumn': columnselect,
-                                     'title': 'Amp vs. Frequency (before flagging)'}
-            summaryplot_before = self._create_summaryplots(suffix='before', plotms_args=plotms_args_overrides)
-            plots['before'] = summaryplot_before
-            plots['plotrange'] = summary_plotrange
+            plot_selectdata = {'field':  fieldselect,
+                               'scan': scanselect,
+                               'spw': self.sci_spws,
+                               'intent': intentselect,
+                               'ydatacolumn': columnselect,
+                               'correlation': self.corrstring}
+            plots['before'] = self._create_summaryplots(suffix='before', plotms_args=plot_selectdata)
+            plots['selectdata'] = plot_selectdata
 
         # PIPE-987: backup flagversion before rfi flagging
         now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
@@ -329,7 +323,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                     polselect = correlation.split('_')[1]
                     if not (polselect in self.corr_type_string or polselect == self.corrstring):
                         continue
-                    if not self._mssel_validate(field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
+                    if not mssel_valid(self.inputs.vis, field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
                         continue
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
@@ -356,7 +350,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                     polselect = correlation.split('_')[1]
                     if not (polselect in self.corr_type_string or polselect == self.corrstring):
                         continue
-                    if not self._mssel_validate(field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
+                    if not mssel_valid(self.inputs.vis, field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
                         continue
                 timecutoff = 4. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
                 freqcutoff = 3. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
@@ -418,7 +412,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         if self.inputs.checkflagmode == 'vlass-imaging':
             # use the 'data' column by default as 'vlass-imaging' is working on target-only MS.
-            columnselect='data'
+            columnselect = 'data'
 
         LOG.debug('FieldSelect:  {}'.format(repr(fieldselect)))
         LOG.debug('ScanSelect:   {}'.format(repr(scanselect)))
@@ -462,7 +456,25 @@ class Checkflag(basetask.StandardTaskTemplate):
         """
         rflag_standard = tfcrop_standard = growflag_standard = None
 
-        if self.inputs.checkflagmode in ('bpd-vla', 'bpd-vlass'):
+        if self.inputs.checkflagmode in ('bpd-vla'):
+            # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
+            #           with an optional growflag step specified by the 'growflags' task argument
+            rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('residual', 'REAL_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('residual', 'REAL_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
+            tfcrop_standard = [('corrected', 'ABS_RL', 3.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LR', 3.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
+            if self.inputs.growflags:
+                growflag_standard = {'growtime': 100,
+                                    'growfreq': 100,
+                                    'growaround': True,
+                                    'flagneartime': True,
+                                    'flagnearfreq': False}
+
+        if self.inputs.checkflagmode in ('bpd-vlass'):
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
@@ -476,9 +488,27 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'growfreq': 100,
                                  'growaround': True,
                                  'flagneartime': True,
-                                 'flagnearfreq': True}
+                                 'flagnearfreq': True}                                 
 
-        if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass'):
+        if self.inputs.checkflagmode in ('allcals-vla'):
+            # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
+            #           with an optional growflag step specified by the 'growflags' task argument
+            rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
+            tfcrop_standard = [('corrected', 'ABS_RL', 3.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LR', 3.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
+            if self.inputs.growflags:
+                growflag_standard = {'growtime': 100,
+                                    'growfreq': 100,
+                                    'growaround': True,
+                                    'flagneartime': True,
+                                    'flagnearfreq': False}
+
+        if self.inputs.checkflagmode in ('allcals-vlass'):
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
@@ -492,18 +522,19 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'growfreq': 100,
                                  'growaround': True,
                                  'flagneartime': True,
-                                 'flagnearfreq': True}
+                                 'flagnearfreq': True}                                 
 
         if self.inputs.checkflagmode == 'target-vla':
             # PIPE-685/CARS-540: apply three incremental 'rflag' iterations; no tfcrop follows; growflags at the end
+            # PIPE-987: disable growflags
             rflag_standard = [('corrected', '', 4.5, True),
                               ('corrected', '', 4.5, True),
                               ('corrected', '', 4.5, True)]
-            growflag_standard = {'growtime': 50,
-                                 'growfreq': 50,
-                                 'growaround': True,
-                                 'flagneartime': True,
-                                 'flagnearfreq': True}
+            # growflag_standard = {'growtime': 50,
+            #                      'growfreq': 50,
+            #                      'growaround': True,
+            #                      'flagneartime': True,
+            #                      'flagnearfreq': True}
 
         if self.inputs.checkflagmode == 'target-vlass':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
@@ -605,66 +636,10 @@ class Checkflag(basetask.StandardTaskTemplate):
         results_tmp = basetask.ResultsList()
         results_tmp.inputs = self.inputs.as_dict()
         results_tmp.stage_number = self.inputs.context.task_counter
-        ms = os.path.basename(results_tmp.inputs['vis'])
-        summary_plots[ms] = checkflagSummaryChart(
+        results_tmp.plots = {}
+        summary_plots = checkflagSummaryChart(
             self.inputs.context, results_tmp, suffix=suffix, plotms_args=plotms_args).plot()
 
         return summary_plots
 
-    def _get_amp_range(self, field='', spw='', scan='', intent='', datacolumn='corrected'):
-        """Get amplitude min/max for the amp. vs. freq summary plots, with ms.range()."""
-        amp_range = [0., 0.]
 
-        try:
-            with casa_tools.MSReader(self.inputs.vis) as msfile:
-                staql = {'field': field, 'spw': spw, 'scan': scan, 'scanintent': intent}
-                r_msselect = msfile.msselect(staql, onlyparse=False)
-                # ms.range always works on whole rows in MS, and ms.selectpolarization() won't affect its result.
-                # r_msselect = msfile.selectpolarization(['RR','LL']) # doesn't work as expected.
-                if not r_msselect:
-                    LOG.warn("Null selection from the field/spw/scan combination.")
-                else:
-                    if datacolumn == 'corrected':
-                        item = 'corrected_amplitude'
-                    if datacolumn == 'data':
-                        item = 'amplitude'
-                    if datacolumn == 'model':
-                        item = 'model_amplitude'
-                    # ms.range (notably val_min) results were seen to be affected by blocksize
-                    # we increase the blocksize from 10MB (default) to 100MB
-                    amp_range = msfile.range([item], useflags=True, blocksize=100)[item].tolist()
-        except Exception as ex:
-            LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
-
-        return amp_range
-
-    def _get_amp_range2(self, field='', spw='', scan='', intent='', datacolumn='corrected', correlation='', uvrange=''):
-        """Get amplitude min/max for the amp. vs. freq summary plots, with ms.statistic().
-        
-        - doquantiles=False to improve performance (CASR-550/CAS-13031)
-        """
-        amp_range = [0., 0.]
-
-        try:
-            with casa_tools.MSReader(self.inputs.vis) as msfile:
-                stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False, useflags=True,
-                                          field=field, scan=scan, intent=intent, spw=spw,
-                                          correlation=correlation, uvrange=uvrange,
-                                          reportingaxes='', doquantiles=False)
-            amp_range = [stats['']['min'], stats['']['max']]
-        except Exception as ex:
-            LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
-
-        return amp_range
-
-    def _mssel_validate(self, field='', spw='', scan='', intent='', correlation='', uvdist=''):
-        """Check if the data selection is valid (i.e. not a null selection).
-
-        This method is used as a secondary "null" selection check for flagdata() calls.
-        Ideally, the primary "corr_type_string" check should be sufficient.
-        """
-        with casa_tools.MSReader(self.inputs.vis) as msfile:
-            staql = {'field': field, 'spw': spw, 'scan': scan,
-                     'scanintent': intent, 'polarization': correlation, 'uvdist': uvdist}
-            select_valid = msfile.msselect(staql, onlyparse=True)
-        return select_valid

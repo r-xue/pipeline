@@ -215,18 +215,21 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for result in results:
             ms = os.path.basename(result.inputs['vis'])
             try:
-                plots = result.plots['before'][ms]
+                plots = result.plots['before']
             except Exception:
                 plots = []
             try:
-                plotrange = result.plots['plotrange']
+                plot_selectdata = result.plots['selectdata']
             except Exception:
-                plotrange = [0, 0, 0, 0]
+                plot_selectdata = {}
 
-            plotms_args_overrides = {'plotrange': plotrange, 'title': 'Amp vs. Frequency (after flagging)'}
             plotter = displaycheckflag.checkflagSummaryChart(context, result,
-                                                             suffix='after', plotms_args=plotms_args_overrides)
+                                                             suffix='after', plotms_args=plot_selectdata)
             plots.extend(plotter.plot())
+            plotter = displaycheckflag.checkflagSummaryChart(context, result,
+                                                             suffix='after-autoscale', plotms_args=plot_selectdata)
+            plots.extend(plotter.plot())
+
             summary_plots[ms] = plots
             if result.inputs['checkflagmode'] == 'vlass-imaging':
                 percentagemap_plots[ms] = [displaycheckflag.checkflagPercentageMap(context, result).plot()]
