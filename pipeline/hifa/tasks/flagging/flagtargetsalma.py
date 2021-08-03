@@ -4,9 +4,10 @@ import string
 from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -56,6 +57,8 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
         The filename of the ASCII file that contains the flagging template 
     """    
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     flagbackup = vdp.VisDependentProperty (default=False)
     template = vdp.VisDependentProperty(default=True)
@@ -108,7 +111,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
 # tell the infrastructure to prefentially apply the targets
 # flags to the split MS(s)
-api.ImagingMeasurementSetsPreferred.register(FlagTargetsALMAInputs)
+#api.ImagingMeasurementSetsPreferred.register(FlagTargetsALMAInputs)
 
 
 class FlagTargetsALMAResults(basetask.Results):

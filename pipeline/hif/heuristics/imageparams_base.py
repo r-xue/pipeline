@@ -1844,7 +1844,7 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET'):
         """Adjustment of number of cleaning iterations due to mask size.
 
         Circular mask is assumed with a radius equal to mask_frac_rad times the longest image dimension
