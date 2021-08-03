@@ -320,7 +320,8 @@ def load_partialpols_alma(ms):
 
 def get_partialpol_spws(ms_name):
     """Obtain the spws and DATA_DESC_IDs required for the Partial Polarization flagging agent.
-    According to the comments in PIPE-1028 they ara all non-WVR/non-SQLD spws which includes the Science ones.
+    According to the comments in PIPE-1028 they are all non-WVR/non-SQLD spws with an intent that
+    starts with OBSERVE_TARGET or CALIBRATE_PHASE (which includes the Science spws).
 
     Note that there is a chance that this function can be refactored using one on the pipeline domain object
     functions. If the translation of spw to DATA_DESC_ID is not required, this function may not be needed at all.
@@ -328,11 +329,15 @@ def get_partialpol_spws(ms_name):
     :param ms_name: Name of the Measurement Set
     :return: List of spws.ids and list of DATA_DESC_IDs (with the same length)
     """
+
     # Note: In all the examples checked, spw id and DATA_DESC_ID are the same, but as this may not be always true and
     #  Todd uses this translation in his code, both sets of data (spws and DATA_DESC_IDs) are retrieved.
     # Note: In the examples checked, non-Science spws do not have usable data.
     with casa_tools.MSMDReader(ms_name) as msmd:
-        spws = msmd.almaspws(fdm=True, tdm=True)
+        spws_fdm_tdm = msmd.almaspws(fdm=True, tdm=True)
+        spws_observe_target = msmd.spwsforintent('OBSERVE_TARGET*')
+        spws_calibrate_phase = msmd.spwsforintent('CALIBRATE_PHASE*')
+        spws = np.intersect1d(np.union1d(spws_observe_target, spws_calibrate_phase), spws_fdm_tdm)
         datadescids = [msmd.datadescids(spw=spw)[0] for spw in spws]
     return list(spws), datadescids
 
