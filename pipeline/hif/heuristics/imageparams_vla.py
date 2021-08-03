@@ -101,7 +101,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return None, None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
-        job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw), axis='uvrange', useflags=True)
+        job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw), axis='uvrange', useflags=False)
         uv_stat = job.execute(dry_run=False) # returns stat in meter
         max_bl = uv_stat['DATA_DESC_ID=%s' % max_freq_spw]['max'] / mean_wave_m
 
@@ -110,13 +110,24 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         uvul = 0.05 * max_bl
 
         uvrange_SBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
+
+        try:
+            mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
+        except Exception as e:
+            LOG.warn(e)
+            LOG.warn("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(str(field), real_spwids_str))
+            return '>0.0klambda', 1.0
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
         uvrange_MBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
+        try:
+            mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
+        except Exception as e:
+            LOG.warn(e)
+            LOG.warn("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(str(field), real_spwids_str))
+            return '>0.0klambda', 1.0
 
         # Compare amplitudes and decide on return value
         ratio = p95_SBL / mean_MBL
