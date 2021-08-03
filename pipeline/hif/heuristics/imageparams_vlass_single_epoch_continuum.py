@@ -33,7 +33,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     # niter
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms,
-                         mask_frac_rad=0.0) -> int:
+                         mask_frac_rad=0.0, intent='TARGET') -> int:
         """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)
@@ -311,7 +311,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float) -> Union[float, None]:
+    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma

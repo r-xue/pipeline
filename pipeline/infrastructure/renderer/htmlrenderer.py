@@ -351,6 +351,7 @@ class T1_1Renderer(RendererBase):
         iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
         iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
         iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]
+        iers_predict_last_date = environment.iers_info.info["IERSpredict_last"]
         iers_info = environment.iers_info
         # remove unnecessary precision for execution duration
         dt = exec_end - exec_start
@@ -469,6 +470,7 @@ class T1_1Renderer(RendererBase):
             'iers_eop_2000_version': iers_eop_2000_version,
             'iers_eop_2000_last_date': iers_eop_2000_last_date,
             'iers_predict_version': iers_predict_version,
+            'iers_predict_last_date': iers_predict_last_date,
             'iers_info': iers_info,
             'array_names': utils.commafy(array_names),
             'exec_start': exec_start_fmt,
