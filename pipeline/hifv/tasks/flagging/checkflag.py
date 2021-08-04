@@ -538,7 +538,6 @@ class Checkflag(basetask.StandardTaskTemplate):
                                ('corrected', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
                                ('corrected', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
 
-
         if self.inputs.checkflagmode == 'target-vlass':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),

@@ -6,7 +6,10 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.renderer.logger as logger
-from pipeline.hifv.heuristics import get_amp_range
+
+from pipeline.hifv.heuristics.rfi import plotms_get_xyrange
+from pipeline.hifv.heuristics.rfi import plotms_get_autorange
+#from pipeline.hifv.heuristics import get_amp_range
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
@@ -72,26 +75,42 @@ class checkflagSummaryChart(object):
         if self.suffix == 'after-autoscale':
             plotms_args.update(title='Amp vs. Frequency (after flagging, autoscale), {}'.format(prefix))
 
-        if self.suffix == 'before':
-            LOG.info('Estimating the amplitude range of unflagged data for {} {}'.format(self.suffix, prefix))
-            amp_range = get_amp_range(self.ms.name, field=plotms_args['field'],
-                                      scan=plotms_args['scan'],
-                                      spw=plotms_args['spw'],
-                                      intent=plotms_args['intent'], datacolumn=plotms_args['ydatacolumn'],
-                                      correlation=plotms_args['correlation'])
-            amp_d = amp_range[1]-amp_range[0]
-            plotms_args.update(plotrange=[0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d])
+        # do amplitude range estimation for before-flagging plots (by analyzing selected data in MS)
+        # note: not used due to the I/O cost.
+        # if self.suffix == 'before':
+        #     LOG.info('Estimating the amplitude range of unflagged averaged data for {} {}'.format(prefix, self.suffix))
+        #     timespan = 'scan' if plotms_args['avgscan'] else ''
+        #     amp_range = get_amp_range(self.ms.name, field=plotms_args['field'],
+        #                               scan=plotms_args['scan'], spw=plotms_args['spw'],
+        #                               intent=plotms_args['intent'], datacolumn=plotms_args['ydatacolumn'],
+        #                               correlation=plotms_args['correlation'],
+        #                               timeaverage=plotms_args['averagedata'], timebin=plotms_args['avgtime'], timespan=timespan)
+        #     amp_d = amp_range[1]-amp_range[0]
+        #     plotms_args.update(plotrange=[0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d])
+
         if self.suffix == 'after':
             for plot in self.result.plots['before']:
                 if plot.parameters['type'] == prefix:
                     plotms_args.update(plotrange=plot.parameters['plotms_args']['plotrange'])
+
         if self.suffix == 'after-autoscale':
             plotms_args.update(plotrange=[0, 0, 0, 0])
 
         LOG.info('Creating {}'.format(plotms_args['title']))
 
+        # obtain the casalog position before plotms
+        logfile = casa_tools.log.logfile()
+        size_before = os.path.getsize(logfile)
+
+        # run plotms
         job = casa_tasks.plotms(**plotms_args)
         job.execute(dry_run=False)
+
+        # estimate the plotrange from CASAplotms autoscale.
+        with open(logfile, 'r') as joblog:
+            joblog.seek(size_before)
+            plotms_log = joblog.readlines()
+        plotms_args.update(plotrange=plotms_get_autorange(plotms_get_xyrange(plotms_log)))
 
         return plotms_args
 
