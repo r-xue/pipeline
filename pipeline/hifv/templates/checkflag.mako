@@ -22,7 +22,7 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
                                   url_fn="${lambda ms:  'noop'}">
 
         <%def name="title()">
-            Checkflag Summary Plot: Calibrated amplitude vs Frequency
+            Calibrated amplitude vs Frequency
         </%def>
 
         <%def name="preamble()">
@@ -31,11 +31,11 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
         <%def name="mouseover(plot)">Summary window</%def>
 
         <%def name="fancybox_caption(plot)">
-            Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},  ${plot.parameters['version']} flagging
+            ${plot.parameters[‘plotms_args’][‘title’]}
         </%def>
 
         <%def name="caption_title(plot)">
-            Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},  ${plot.parameters['version']} flagging
+            ${plot.parameters[‘plotms_args’][‘title’]}
         </%def>
 </%self:plot_group>
 
