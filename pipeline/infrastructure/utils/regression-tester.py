@@ -23,8 +23,8 @@ LOG = infrastructure.get_logger(__name__)
 class PipelineRegression(object):
     """Pipeline regression test class called from pytest."""
 
-    def __init__(self, recipe: str = None, input_dir: str = None, visname: str = None,
-                 expectedoutput: str = None, output_dir: str = None):
+    def __init__(self, recipe: Optional[str] = None, input_dir: Optional[str] = None, visname: Optional[str] = None,
+                 expectedoutput: Optional[str] = None, output_dir: Optional[str] = None):
         """Constractor of PilelineRegression.
         
         Args:
