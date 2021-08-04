@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage</ProcedureTitle>
+    <ProcedureTitle>hifa_calimage_renorm</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
@@ -183,6 +183,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_renorm</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">apply</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

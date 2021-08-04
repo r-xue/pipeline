@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage</ProcedureTitle>
+    <ProcedureTitle>hifa_cal_renorm</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
@@ -183,112 +183,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_renorm</Command>
         <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_exportdata</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">breakpoint</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_mstransform</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_flagtargets</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">mfs</Value>
+                <Keyword xmlns="">apply</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_findcont</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontfit</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontsub</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">repBW</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
 
