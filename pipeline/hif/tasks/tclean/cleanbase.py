@@ -528,7 +528,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             if usepointing is not None:
                 tclean_job_parameters['usepointing'] = usepointing
 
-        if inputs.mosweight is not None:
+        if inputs.mosweight not in (None, ''):
             tclean_job_parameters['mosweight'] = inputs.mosweight
         else:
             mosweight = inputs.heuristics.mosweight(inputs.intent, inputs.field)
