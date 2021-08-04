@@ -426,7 +426,6 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['fastnoise'] = fastnoise
 
         else:
-            #tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
             tclean_job_parameters['fastnoise'] = True
             if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
