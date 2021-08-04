@@ -45,7 +45,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
-    hm_fastnoise = vdp.VisDependentProperty(default=True)
+    hm_fastnoise = vdp.VisDependentProperty(default=None)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -410,7 +410,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif growiterations is not None:
                 tclean_job_parameters['growiterations'] = growiterations
 
-            if inputs.hm_dogrowprune != -999:
+            if inputs.hm_dogrowprune not in (None, ''):
                 tclean_job_parameters['dogrowprune'] = inputs.hm_dogrowprune
             elif dogrowprune is not None:
                 tclean_job_parameters['dogrowprune'] = dogrowprune
@@ -420,10 +420,14 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif minpercentchange is not None:
                 tclean_job_parameters['minpercentchange'] = minpercentchange
 
-            tclean_job_parameters['fastnoise'] = fastnoise
+            if inputs.hm_fastnoise not in (None, ''):
+                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            elif fastnoise is not None:
+                tclean_job_parameters['fastnoise'] = fastnoise
 
         else:
-            tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            #tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            tclean_job_parameters['fastnoise'] = True
             if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
