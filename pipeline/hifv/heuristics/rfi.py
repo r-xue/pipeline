@@ -1,13 +1,16 @@
-
 import collections
 import copy
+import uuid
 
 import matplotlib.pyplot as plt
 import numpy as np
+import shutil
+import re
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, casa_tasks
 import pkg_resources
 
 LOG = infrastructure.get_logger(__name__)
@@ -241,19 +244,55 @@ def mssel_valid(vis, field='', spw='', scan='', intent='', correlation='', uvdis
     return select_valid
 
 
-def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='corrected', correlation='', uvrange=''):
-    """Get amplitude min/max for the amp. vs. freq summary plots, with ms.statistic().
+def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='corrected',
+                  correlation='', uvrange='',
+                  useflags=True,
+                  timeaverage=True, timebin='1e8s', timespan=''):
+    """Get amplitude min/max from a MS after applying data selection and time-averging."""
+    amp_range = [0., 0.]
 
+    try:
+        if timeaverage:
+            vis_averaged = '{}.ms'.format(uuid.uuid4())
+            job = casa_tasks.mstransform(vis=vis, outputvis=vis_averaged, field=field, spw=spw, scan=scan, intent=intent,
+                                         datacolumn=datacolumn, correlation=correlation, uvrange=uvrange,
+                                         timeaverage=timeaverage, timebin=timebin, timespan=timespan,
+                                         keepflags=False)
+            job.execute(dry_run=False)
+            amp_range = _get_amp_range1(vis_averaged, datacolumn='data', useflags=useflags)
+            shutil.rmtree(vis_averaged, ignore_errors=True)
+        else:
+            if correlation == '' and uvrange == '':
+                amp_range = _get_amp_range1(vis, field=field, spw=spw, scan=scan,
+                                            intent=intent, datacolumn=datacolumn, useflags=useflags)
+            else:
+                amp_range = _get_amp_range2(vis, field=field, spw=spw, scan=scan, intent=intent, datacolumn=datacolumn,
+                                            correlation=correlation, uvrange=uvrange,
+                                            useflags=useflags)
+    except Exception as ex:
+        LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+
+    return amp_range
+
+
+def _get_amp_range2(vis, field='', spw='', scan='', intent='', datacolumn='corrected',
+                    correlation='', uvrange='',
+                    useflags=True):
+    """Get amplitude min/max from a MS, with ms.statistic().
+
+    This approach offers additional data selection capaibility (e.g. correlation, uvrange), but lack of pre-averging capability
     - doquantiles=False to improve performance (CASR-550/CAS-13031)
+    - ms.statistics(timeaverge=True) doesn't seem to work properly at this moment (likely doing scalar-averging)
     """
     amp_range = [0., 0.]
 
     try:
         with casa_tools.MSReader(vis) as msfile:
-            stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False, useflags=True,
+            stats = msfile.statistics(column=datacolumn, complex_value='amp', useweights=False, useflags=useflags,
                                       field=field, scan=scan, intent=intent, spw=spw,
                                       correlation=correlation, uvrange=uvrange,
-                                      reportingaxes='', doquantiles=False)
+                                      reportingaxes='', doquantiles=False,
+                                      timeaverage=False, timebin='0s', timespan='')
         amp_range = [stats['']['min'], stats['']['max']]
     except Exception as ex:
         LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
@@ -261,29 +300,83 @@ def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='correct
     return amp_range
 
 
-def get_amp_range_old(vis, field='', spw='', scan='', intent='', datacolumn='corrected'):
-    """Get amplitude min/max for the amp. vs. freq summary plots, with ms.range()."""
+def _get_amp_range1(vis, field='', spw='', scan='', intent='', datacolumn='corrected',
+                    useflags=True):
+    """Get amplitude min/max from a MS, with ms.range().
+
+    This is the quickest method, but doesn't offer correlation-based selection or pre-averging capability
+    """
     amp_range = [0., 0.]
 
     try:
         with casa_tools.MSReader(vis) as msfile:
-            staql = {'field': field, 'spw': spw, 'scan': scan, 'scanintent': intent}
-            r_msselect = msfile.msselect(staql, onlyparse=False)
-            # ms.range always works on whole rows in MS, and ms.selectpolarization() won't affect its result.
-            # r_msselect = msfile.selectpolarization(['RR','LL']) # doesn't work as expected.
-            if not r_msselect:
-                LOG.warn("Null selection from the field/spw/scan combination.")
-            else:
-                if datacolumn == 'corrected':
-                    item = 'corrected_amplitude'
-                if datacolumn == 'data':
-                    item = 'amplitude'
-                if datacolumn == 'model':
-                    item = 'model_amplitude'
-                # ms.range (notably val_min) results were seen to be affected by blocksize
-                # we increase the blocksize from 10MB (default) to 100MB
-                amp_range = msfile.range([item], useflags=True, blocksize=100)[item].tolist()
+            if not (field == '' and spw == '' and scan == '' and intent == ''):
+                staql = {'field': field, 'spw': spw, 'scan': scan, 'scanintent': intent}
+                r_msselect = msfile.msselect(staql, onlyparse=False)
+                # ms.range always works on whole rows in MS, and ms.selectpolarization() won't affect its result.
+                # r_msselect = msfile.selectpolarization(['RR','LL']) # doesn't work as expected.
+                if not r_msselect:
+                    LOG.warn("Null selection from the field/spw/scan combination.")
+                    return amp_range
+            if datacolumn == 'corrected':
+                item = 'corrected_amplitude'
+            if datacolumn == 'data':
+                item = 'amplitude'
+            if datacolumn == 'model':
+                item = 'model_amplitude'
+            # ms.range (notably val_min) results were seen to be affected by blocksize
+            # we increase the blocksize from 10MB (default) to 100MB
+            amp_range = msfile.range([item], useflags=useflags, blocksize=100)[item].tolist()
     except Exception as ex:
         LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
     return amp_range
+
+
+def plotms_get_xyrange(plotms_log):
+    """Parse the CASAplotms log to obatin the range of plotted data points."""
+    try:
+        xyrange = [0, 0, 0, 0]
+        idx = 0
+        for log_line in plotms_log:
+            log_msg = re.split("\t+", log_line)[3]
+            if ' to ' in log_msg and '(flagged)' in log_msg and '(unflagged)' in log_msg:
+                LOG.debug(log_line.rstrip())
+                dd = re.findall(r"[-+]?\d*\.\d+|\d+", log_msg)
+                axis_label = log_msg.split()[0]
+                xyrange[idx] = float(dd[0])
+                xyrange[idx+1] = float(dd[1])
+                idx += 2
+    except Exception as ex:
+        LOG.warn("Exception: Unable to obtain the plotted data range from CASAplotms log. {!s}".format(str(ex)))
+        return [0, 0, 0, 0]
+
+    return xyrange
+
+
+def plotms_get_autorange(xyrange):
+    """Estimate the autoscale plotrange from CASAplotms based on data range.
+
+    The algorithm is translated from casa6/casa5/code/display/QtPlotter:QtDrawSettings::adjustAxis
+    """
+    autorange = [0, 0, 0, 0]
+    for idx in [0, 2]:
+
+        MinTicks = 4
+        vmin = xyrange[idx]
+        vmax = xyrange[idx+1]
+
+        grossStep = (vmax - vmin) / MinTicks
+        step = pow(10, np.floor(np.log10(grossStep)))
+        if (5 * step < grossStep):
+            step *= 5
+        elif (2 * step < grossStep):
+            step *= 2
+
+        numTicks = int(np.ceil(vmax / step) - np.floor(vmin / step))
+        autorange[idx] = np.floor(vmin / step) * step
+        autorange[idx+1] = np.ceil(vmax / step) * step
+
+    LOG.debug('estimated autoscale plotrange from CASAplotms: {!r}'.format(autorange))
+
+    return autorange
