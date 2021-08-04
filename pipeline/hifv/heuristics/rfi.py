@@ -342,7 +342,7 @@ def plotms_get_xyrange(plotms_log):
             log_msg = re.split("\t+", log_line)[3]
             if ' to ' in log_msg and '(flagged)' in log_msg and '(unflagged)' in log_msg:
                 LOG.debug(log_line.rstrip())
-                dd = re.findall(r"[-+]?\d*\.\d+|\d+", log_msg)
+                dd = re.findall(r"[-+]?\d+\.\d+(?:e-?\d+)?", log_msg)
                 axis_label = log_msg.split()[0]
                 xyrange[idx] = float(dd[0])
                 xyrange[idx+1] = float(dd[1])
