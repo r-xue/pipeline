@@ -344,11 +344,13 @@ def plotms_get_xyrange(plotms_log):
         for log_line in plotms_log:
             log_msg = re.split("\t+", log_line)[3]
             if ' to ' in log_msg and '(flagged)' in log_msg and '(unflagged)' in log_msg:
-                LOG.debug(log_line.rstrip())
-                dd = re.findall(r"[-+]?\d+\.\d+(?:e-?\d+)?", log_msg)
-                axis_label = log_msg.split()[0]
-                xyrange[idx] = float(dd[0])
-                xyrange[idx+1] = float(dd[1])
+                LOG.debug(log_msg.rstrip())
+                # expected number formats: 1, 1.2, 1e3, 1.2e3, 1.2e+3, 1.2e-3, -1.2e-3, ...
+                dd = re.findall(r"[-+]?\d+(?:\.\d+)?(?:e[-+]?\d+)?", log_msg)
+                if len(dd) == 4:
+                    axis_label = log_msg.split()[0]
+                    xyrange[idx] = float(dd[0])
+                    xyrange[idx+1] = float(dd[1])
                 idx += 2
     except Exception as ex:
         LOG.warn("Exception: Unable to obtain the plotted data range from CASAplotms log. {!s}".format(str(ex)))
