@@ -1,7 +1,11 @@
 import argparse
 import os
+import re
 import string
 import xml.dom.minidom as minidom
+
+
+INDENT = '        '
 
 
 def get_recipe_dir():
@@ -41,10 +45,13 @@ def parse_parameter(node):
     return get_data(key_element), get_data(value_element)
 
 
-def get_short_description_for_task(taskname):
-    task_category, _ = taskname.split('_')
+def get_short_description_for_task(task_name):
+    if task_name == 'breakpoint':
+        return ''
+
+    task_category, _ = task_name.split('_')
     cli_dir = get_cli_dir(task_category)
-    task_xml = os.path.join(cli_dir, f'{taskname}.xml')
+    task_xml = os.path.join(cli_dir, f'{task_name}.xml')
     print(f'task_xml is {task_xml}')
     assert os.path.exists(task_xml)
     root_element = minidom.parse(task_xml)
@@ -59,9 +66,6 @@ def get_short_description_for_task(taskname):
 def parse_command(node):
     command_element = get_element(node, 'Command', expect_unique=True)
     command = get_data(command_element)
-
-    if command == 'breakpoint':
-        return None
 
     parameter_set_element = get_element(node, 'ParameterSet', expect_unique=True)
     parameter_elements = get_element(parameter_set_element, 'Parameter')
@@ -88,7 +92,6 @@ def parse(procedure_abs_path):
     # ProcessingCommand
     command_elements = get_element(procedure_element, 'ProcessingCommand')
     commands = [parse_command(e) for e in command_elements]
-    commands = [c for c in commands if c is not None]
     print(f'command list is:')
     for command in commands:
         print(f'{command}')
@@ -96,18 +99,25 @@ def parse(procedure_abs_path):
     return func_name, commands
 
 
-def c2p(command):
-    print(f'c2p: command is {command}')
-    assert len(command) == 1
-    task_name, config = list(command.items())[0]
-    assert 'comment' in config
-    comment = config['comment']
-    assert 'parameter' in config
-    parameter = config['parameter']
-    indent = '        '
-    procedure = ''
-    if comment:
-        procedure += f'{indent}# {comment}\n'
+def get_comment(task_name, config):
+    comment = config.get('comment', '')
+    prefix = f'{INDENT}# '
+    if task_name == 'breakpoint':
+        comment = prefix + f' ---- {task_name} ----'
+    elif comment:
+        comment = comment.strip('\n')
+        # handle multi-line comment
+        comment = re.sub('\n +', f'\n{prefix}', comment)
+        comment = prefix + comment + '\n'
+    return comment
+
+
+def get_execution_command(task_name, config):
+    parameter = config.get('parameter', '')
+
+    # breakpoint
+    if task_name == 'breakpoint':
+        return ''
 
     if parameter:
         custom_args = ', '.join([f'{k}=\'{v}\'' for k, v in parameter.items()])
@@ -121,13 +131,25 @@ def c2p(command):
         args = f'vis=vislist, {args}'
 
     # construct function call
-    procedure += f'{indent}{task_name}({args})'
+    command = f'{INDENT}{task_name}({args})'
 
     if is_importdata:
-        procedure += '''
+        command += '''
 
         if importonly:
             raise Exception(IMPORT_ONLY)'''
+
+    return command
+
+
+def c2p(command):
+    print(f'c2p: command is {command}')
+    assert len(command) == 1
+    task_name, config = list(command.items())[0]
+    procedure = get_comment(task_name, config)
+
+    command = get_execution_command(task_name, config)
+    procedure += command
 
     return procedure
 
@@ -138,8 +160,7 @@ def to_procedure(commands):
 
 def export(func_name, commands, script_name):
     text = '''# General imports
-
-import traceback'
+import traceback
 
 # Pipeline imports
 from pipeline.infrastructure import casa_tools
