@@ -107,6 +107,9 @@ class checkflagSummaryChart(object):
         job.execute(dry_run=False)
 
         # estimate the plotrange from CASAplotms autoscale.
+        # note: The y-axis tick position from a manual-scaling plotms might be different from autoscale,
+        #       even the manual-range is the same as the one from autoscale version. 
+
         with open(logfile, 'r') as joblog:
             joblog.seek(size_before)
             plotms_log = joblog.readlines()

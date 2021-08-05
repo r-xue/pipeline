@@ -70,6 +70,11 @@ plot_caption = 'Percentage Flagged Map'
         </%def>
 </%self:plot_group>
 
+%endif
+
+
+% if result[0].inputs['checkflagmode'] in ( 'vlass-imaging', 'bpd-vla', 'allcals-vla', 'target-vla'):
+
 <%
 
 # these functions are defined in template scope so we have access to the flags

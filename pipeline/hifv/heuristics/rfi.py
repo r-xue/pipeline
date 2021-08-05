@@ -359,20 +359,27 @@ def plotms_get_autorange(xyrange):
 
     The algorithm is translated from casa6/casa5/code/display/QtPlotter:QtDrawSettings::adjustAxis
     """
-    autorange = [0, 0, 0, 0]
+    autorange = [0., 0., 0., 0.]
     for idx in [0, 2]:
 
-        MinTicks = 4
+        MinTicks = 5
         vmin = xyrange[idx]
         vmax = xyrange[idx+1]
 
-        grossStep = (vmax - vmin) / MinTicks
-        step = pow(10, np.floor(np.log10(grossStep)))
-        if (5 * step < grossStep):
-            step *= 5
-        elif (2 * step < grossStep):
-            step *= 2
+        # get base
+        grossStep = (vmax - vmin) / (MinTicks-1.)
+        step = 10.**np.floor(np.log10(grossStep))
 
+        # try increasing base by x5 or x2 and check against the required minimal majortick number
+        numTicks = int(np.ceil(vmax/step/5.0) - np.floor(vmin/step/5.0))
+        if numTicks >= MinTicks:
+            step *= 5.0
+        else:
+            numTicks = int(np.ceil(vmax/step/2.0) - np.floor(vmin/step/2.0))
+            if numTicks >= MinTicks:
+                step *= 2.0
+
+        # final accepted setting
         numTicks = int(np.ceil(vmax / step) - np.floor(vmin / step))
         autorange[idx] = np.floor(vmin / step) * step
         autorange[idx+1] = np.ceil(vmax / step) * step
