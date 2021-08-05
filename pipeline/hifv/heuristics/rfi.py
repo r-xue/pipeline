@@ -205,22 +205,25 @@ class RflagDevHeuristic(api.Heuristic):
 
                         try:
                             sedf_per_band = self.vla_sefd[band.capitalize()]
+                            min_freq_mhz = float(spw_info[0].to_units(measures.FrequencyUnits.MEGAHERTZ))
+                            max_freq_mhz = float(spw_info[1].to_units(measures.FrequencyUnits.MEGAHERTZ))
                             mean_freq_mhz = float(spw_info[2].to_units(measures.FrequencyUnits.MEGAHERTZ))
                             chanwidth_mhz = float(spw_info[3].to_units(measures.FrequencyUnits.MEGAHERTZ))
                             spw_sefd = np.interp(mean_freq_mhz, sedf_per_band[:, 0],
-                                                 sedf_per_band[:, 1], left=np.nan, right=np.nan)
-                            if mean_freq_mhz < min(sedf_per_band[:, 0]) or mean_freq_mhz > max(sedf_per_band[:, 0]):
+                                                 sedf_per_band[:, 1], left=None, right=None)
+                            if max_freq_mhz < min(sedf_per_band[:, 0]) or min_freq_mhz > max(sedf_per_band[:, 0]):
                                 LOG.warn(
-                                    "The mean frequency of spw {!s} from {!s}#{!s}  is out of the SEFD profile coverage.".format(spw_id, band, baseband))
+                                    "spw {!s} from {!s}#{!s}  is out of the SEFD profile coverage: \
+                                    use the nearest SEFD data point instead.".format(spw_id, band, baseband))
 
                         except Exception as ex:
                             LOG.warn("Exception: Fail to query SEFD for {!s}. {!s}".format(spw_id, str(ex)))
                             spw_sefd = np.nan
 
                         if np.isnan(spw_sefd):
-                            LOG.warn("The SEFD information of spw {!s} is not avaialble.\
-                                    The rms scale caclulation will use a fidudial SEFD of 500Jy, \
-                                    equivalent to the assumption of unfirm SEFD within each baseband. ".format(spw_id))
+                            LOG.warn("The SEFD information of spw {!s} is not available.\
+                                    The rms scale caclulation will use a fiducial SEFD of 500Jy, \
+                                    equivalent to the assumption of uniform SEFD within each baseband. ".format(spw_id))
                             spw_sefd = 500.
                         spw_rms_scale[spw_id] = {'rms_scale': spw_sefd/chanwidth_mhz**0.5,
                                                  'sefd_jy': spw_sefd,
@@ -365,6 +368,9 @@ def plotms_get_autorange(xyrange):
         MinTicks = 5
         vmin = xyrange[idx]
         vmax = xyrange[idx+1]
+
+        if vmin >= vmax:
+            continue
 
         # get base
         grossStep = (vmax - vmin) / (MinTicks-1.)
