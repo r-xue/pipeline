@@ -234,6 +234,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
+        stats = {}
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
             LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
@@ -253,9 +254,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                     org_direction,
                                                                     grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
+                stats.update(plot_manager.baseline_quality_stat)
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list
+        results.outcome['baseline_quality_stat'] = stats
         return results
 
 

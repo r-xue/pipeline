@@ -106,6 +106,7 @@ class BaselineSubtractionPlotManager(object):
         self.datatable = datatable
         stage_number = self.context.task_counter
         self.stage_dir = os.path.join(self.context.report_dir, "stage%d" % stage_number)
+        self.baseline_quality_stat = dict()
 
         if basetask.DISABLE_WEBLOG:
             self.pool = None
@@ -301,6 +302,7 @@ class BaselineSubtractionPlotManager(object):
         plotter.set_edge(edge)
         plotter.set_atm_transmission(atm_transmission, atm_frequency)
         plotter.set_global_scaling()
+        plotter.set_binning()
         if utils.is_nro(self.context):
             plotter.set_channel_axis()
         for ipol in range(npol):
@@ -316,6 +318,10 @@ class BaselineSubtractionPlotManager(object):
             #LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
             if os.path.exists(postfit_figfile):
                 plot_list['post_fit'][ipol] = postfit_figfile
+                stat = plotter.get_binned_stat()
+                if len(stat) > 0:
+                    self.baseline_quality_stat[postfit_figfile] = stat
+        plotter.unset_binning()
 
         del postfit_integrated_data
 

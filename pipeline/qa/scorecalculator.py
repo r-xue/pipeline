@@ -2206,6 +2206,58 @@ def score_sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, li
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+@log_qa
+def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
+                              pol: str, stat: List[tuple]) -> pqa.QAScore:
+    """
+    Return Pipeline QA score of baseline quality.
+
+    Args:
+        vis: MS name
+        source: source name
+        ant: antenna name
+        spw: virtual spw
+        pol: polarization
+        stat: a list of binned statistics
+
+    Returns:
+        Pipeline QA score of baseline quality.
+    """
+    def calc_score(value: float, low_limit: float, lowlim_score: float,
+                   up_limit: float, uplim_score: float, slope_low_score: float,
+                   slope_up_score: float) -> float:
+        """
+        Calculate slope + platform type of score.
+
+        * minlim_socre is returned if value < low_limit
+        * uplim_score is returned if value > up_limit
+        * in between low_limit and up_limit, score changes monotonically in
+            1st order fit between slope_low_score to slope_up_score.
+            The scores can be descrete, w.r.t. lowlim_score and uplim_score.
+        """
+        assert low_limit <= up_limit
+        if value < low_limit: return lowlim_score
+        elif value > up_limit: return uplim_score
+        else:
+            return slope_low_score + (value-low_limit)*(slope_up_score-slope_low_score)/(up_limit-low_limit)
+    scores = []
+    LOG.trace(f'Statistics for {vis}: {source}, {ant}, {spw}, {pol}')
+    for s in stat:
+        min_score = calc_score(s.bin_min_ratio, -1.25, 0, -0.5, 0.25, 0.175, 0.25)
+        max_score = calc_score(s.bin_max_ratio, 0.5, 0.25, 1.25, 0.0, 0.25, 0.175)
+        diff_score = calc_score(s.bin_diff_ratio, 0.75, 0.5, 2.0, 0.0, 0.5, 0.0)
+        total_score = min_score + max_score + diff_score
+        scores.append(total_score)
+        LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
+        LOG.trace(f'total score = {total_score} (min: {min_score}, max: {max_score}, diff: {diff_score})')
+    final_score = min(scores)
+    shortmsg = 'Poor Baseline flatness'
+    longmsg = f'Baline flatness of {vis}, {source}, {ant}, {spw}, {pol}'
+    origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
+                          metric_score=len(stat),
+                          metric_units='Statistics of binned spectra')
+
+    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
 def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err):
