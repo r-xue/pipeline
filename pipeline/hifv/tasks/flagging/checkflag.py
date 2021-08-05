@@ -105,9 +105,10 @@ class Checkflag(basetask.StandardTaskTemplate):
             LOG.warning("Unrecognized option for checkflagmode. RFI flagging not executed.")
             return CheckflagResults(summaries=summaries)
 
+        fieldselect, scanselect, intentselect, columnselect = self._select_data()
+
         # abort if no target is found
         if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
-            fieldselect, _, _, _ = self._select_data()
             if not fieldselect:
                 LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
                 return CheckflagResults(summaries=summaries)
@@ -115,7 +116,8 @@ class Checkflag(basetask.StandardTaskTemplate):
         # PIPE-502/995: run the before-flagging summary in most checkflagmodes, including 'vlass-imaging'
         # PIPE-757: skip in all VLASS calibration checkflagmodes: 'bpd-vlass', 'allcals-vlass', and 'target-vlass'
         if self.inputs.checkflagmode not in ('bpd-vlass', 'allcals-vlass', 'target-vlass'):
-            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before')
+            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='before',
+                                      field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws)
             summarydict = self._executor.execute(job)
             if summarydict is not None:
                 summaries.append(summarydict)
@@ -124,8 +126,6 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'target-vla',
                                          'bpd', 'allcals',
                                          'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
-
-            fieldselect, scanselect, intentselect, columnselect = self._select_data()
             plot_selectdata = {'field':  fieldselect,
                                'scan': scanselect,
                                'spw': self.sci_spws,
@@ -148,7 +148,9 @@ class Checkflag(basetask.StandardTaskTemplate):
         self.do_rfi_flag()
 
         # PIPE-502/757/995: get after-flagging statistics
-        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after')
+        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after',
+                                    field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws)        
+        
         summarydict = self._executor.execute(job)
         if summarydict is not None:
             summaries.append(summarydict)
