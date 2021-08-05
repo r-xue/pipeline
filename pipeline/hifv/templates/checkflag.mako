@@ -108,6 +108,13 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
 
 <h4>Measurement Set: ${os.path.basename(ms)}</h4>
 
+% if result[0].inputs['checkflagmode'] in ( 'bpd-vla', 'allcals-vla', 'target-vla'):
+    <ul>
+        <li> field select: ${repr(dataselect[ms]['field'])}
+        <li> scan select: ${repr(dataselect[ms]['scan'])}
+    </ul>
+%endif
+
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
 	<caption></caption>
 	<thead>

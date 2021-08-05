@@ -11,6 +11,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hifv.heuristics import set_add_model_column_parameters
 from pipeline.hifv.heuristics import RflagDevHeuristic, get_amp_range, mssel_valid
+from pipeline.hifv.heuristics import cont_file_to_CASA
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 from .displaycheckflag import checkflagSummaryChart
@@ -41,7 +42,7 @@ class CheckflagInputs(vdp.StandardInputs):
 
 
 class CheckflagResults(basetask.Results):
-    def __init__(self, jobs=None, results=None, summaries=None, plots=None):
+    def __init__(self, jobs=None, results=None, summaries=None, plots=None, dataselect=None):
 
         if jobs is None:
             jobs = []
@@ -51,6 +52,8 @@ class CheckflagResults(basetask.Results):
             summaries = []
         if plots is None:
             plots = {}
+        if dataselect is None:
+            dataselect = {}
 
         super(CheckflagResults, self).__init__()
 
@@ -58,6 +61,7 @@ class CheckflagResults(basetask.Results):
         self.results = results
         self.summaries = summaries
         self.plots = plots
+        self.dataselect = dataselect
 
     def __repr__(self):
         s = 'Checkflag (rflag mode) results:\n'
@@ -144,12 +148,29 @@ class Checkflag(basetask.StandardTaskTemplate):
                                      merge='replace')
         self._executor.execute(job)
 
-        # run rfi flagging heuristics
-        self.do_rfi_flag()
+        # decide on if we use cont.dat for target-vla
+        use_contdat = False
+        if self.inputs.checkflagmode == 'target-vla':
+            fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
+            if fielddict != {}:
+                LOG.info('cont.dat file present.  Using VLA Spectral Line Heuristics for checkflagmode=target-vla.')
+                use_contdat = True
+
+        if use_contdat:
+            # cont.dat is present for target-vla, do the field-by-field flagging
+            for field in fielddict:
+                self.do_rfi_flag(fieldselect=field, scanselect=scanselect,
+                                 intentselect=intentselect, spwselect=fielddict[field])
+        else:
+            # all other situations
+            self.do_rfi_flag(fieldselect=fieldselect, scanselect=scanselect,
+                             intentselect=intentselect, spwselect=self.sci_spws)
+
+
 
         # PIPE-502/757/995: get after-flagging statistics
         job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after',
-                                    field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws)        
+                                  field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws)
         
         summarydict = self._executor.execute(job)
         if summarydict is not None:
@@ -158,13 +179,17 @@ class Checkflag(basetask.StandardTaskTemplate):
         checkflag_result = CheckflagResults()
         checkflag_result.summaries = summaries
         checkflag_result.plots = plots
+        checkflag_result.dataselect = {'field': fieldselect,
+                                       'scan': scanselect,
+                                       'intent': intentselect,
+                                       'spw': self.sci_spws}
 
         return checkflag_result
 
     def analyse(self, results):
         return results
 
-    def _do_extendflag(self, mode='extend', field=None,  scan=None, intent='',
+    def _do_extendflag(self, mode='extend', field=None,  scan=None, intent='', spw='',
                        ntime='scan', extendpols=True, flagbackup=False,
                        growtime=100.0, growfreq=60.0, growaround=False,
                        flagneartime=False, flagnearfreq=False):
@@ -174,7 +199,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'field': field,
                      'scan': scan,
                      'intent': intent,
-                     'spw': self.sci_spws,
+                     'spw': spw,
                      'ntime': ntime,
                      'combinescans': False,
                      'extendpols': extendpols,
@@ -194,7 +219,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return job, result
 
-    def _do_tfcropflag(self, mode='tfcrop', field=None, correlation=None, scan=None, intent='',
+    def _do_tfcropflag(self, mode='tfcrop', field=None, correlation=None, scan=None, intent='', spw='',
                        ntime=0.45, datacolumn='corrected', flagbackup=False,
                        freqcutoff=3.0, timecutoff=4.0, savepars=True,
                        extendflags=False):
@@ -211,7 +236,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'correlation': correlation,
                      'scan': scan,
                      'intent': intent,
-                     'spw': self.sci_spws,
+                     'spw': spw,
                      'ntime': ntime,
                      'combinescans': False,
                      'datacolumn': datacolumn,
@@ -230,11 +255,11 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         # a seperate flagdata(mode='extent',...) call if 'extendflags' is a dictionary
         if isinstance(extendflags, dict):
-            self._do_extendflag(field=field, scan=scan, intent=intent, **extendflags)
+            self._do_extendflag(field=field, scan=scan, intent=intent, spw=spw, **extendflags)
 
         return
 
-    def _do_rflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
+    def _do_rflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='', spw='',
                   ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
                   freqdevscale=4.0, timedev='', freqdev='', savepars=True,
                   calcftdev=True, useheuristic=True, ignore_sefd=False,
@@ -260,7 +285,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'correlation': correlation,
                      'scan': scan,
                      'intent': intent,
-                     'spw': self.sci_spws,
+                     'spw': spw,
                      'ntime': ntime,
                      'combinescans': False,
                      'datacolumn': datacolumn,
@@ -302,11 +327,11 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         # a seperate flagdata(mode='extent',...) call if 'extendflags' is a dictionary
         if isinstance(extendflags, dict):
-            self._do_extendflag(field=field, scan=scan, intent=intent, **extendflags)
+            self._do_extendflag(field=field, scan=scan, intent=intent, spw=spw, **extendflags)
 
         return
 
-    def do_rfi_flag(self):
+    def do_rfi_flag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
         """Do RFI flagging using multiple passes of rflag/tfcrop/extend."""
         
         fieldselect, scanselect, intentselect, _ = self._select_data()
@@ -327,13 +352,15 @@ class Checkflag(basetask.StandardTaskTemplate):
                     polselect = correlation.split('_')[1]
                     if not (polselect in self.corr_type_string or polselect == self.corrstring):
                         continue
-                    if not mssel_valid(self.inputs.vis, field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
+                    if not mssel_valid(self.inputs.vis, field=fieldselect, correlation=polselect,
+                                       scan=scanselect, intent=intentselect):
                         continue
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
                                'correlation': correlation,
                                'scan': scanselect,
                                'intent': intentselect,
+                               'spw': spwselect,
                                'ntime': 'scan',
                                'timedevscale': scale,
                                'freqdevscale': scale,
@@ -363,6 +390,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                'correlation': correlation,
                                'scan': scanselect,
                                'intent': intentselect,
+                               'spw': spwselect,
                                'timecutoff': timecutoff,
                                'freqcutoff': freqcutoff,
                                'ntime': self.tint,
@@ -375,7 +403,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         if growflag_standard is not None:
             self._do_extendflag(
-                field=fieldselect, scan=scanselect, intent=intentselect, flagbackup=flagbackup, **growflag_standard)
+                field=fieldselect, scan=scanselect, intent=intentselect, spw=spwselect, flagbackup=flagbackup, **growflag_standard)
 
         return
 

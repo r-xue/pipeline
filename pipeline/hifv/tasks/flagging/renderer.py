@@ -211,6 +211,7 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         summary_plots = {}
         percentagemap_plots = {}
+        dataselect = {}
 
         for result in results:
             ms = os.path.basename(result.inputs['vis'])
@@ -237,9 +238,12 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 percentagemap_plots[ms] = []
             percentagemap_plots[ms] = [p for p in percentagemap_plots[ms] if p is not None]
 
+            dataselect[ms] = result.dataselect
+
         ctx.update({'flags': flag_totals,
                     'agents': ['before', 'after'],
                     'summary_plots': summary_plots,
+                    'dataselect': dataselect,
                     'percentagemap_plots': percentagemap_plots,
                     'dirname': weblog_dir})
 
