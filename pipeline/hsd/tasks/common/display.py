@@ -991,7 +991,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             LOG.trace('Lines: %s', a.lines)
             LOG.trace('Patches: %s', a.patches)
             LOG.trace('Texts: %s', a.texts)
-            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:]):
+            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:], a.collections[:]):
                 LOG.trace('Removing %s...', obj)
                 obj.remove()
 
@@ -1433,13 +1433,14 @@ class SDSparseMapPlotter(object):
                             binned_data, bin_edges, _ = scipy.stats.binned_statistic(unmasked_idx,
                                                                                      masked_data.compressed(),
                                                                                      statistic='mean', bins = nbin)
-                            #binned_freq = [ch_to_freq(0.5*(bin_edges[i]+bin_edges[i+1])) for i in range(len(bin_edges)-1)]
-                            #plt.plot(binned_freq, binned_data, 'ro')
+                            binned_freq = [ch_to_freq(0.5*(bin_edges[i]+bin_edges[i+1]), frequency) for i in range(len(bin_edges)-1)]
+                            plt.plot(binned_freq, binned_data, 'ro')
                             stddev = masked_data.std()
-                            #plt.ylim(-3.*stddev, 3*stddev)
-                            #plt.hline(stddev, linestyle='-')
-                            bin_min = binned_data.min()
-                            bin_max = binned_data.max()
+                            ymin = -3.*stddev
+                            ymax = 3*stddev
+                            plt.hlines([-stddev, stddev], frequency[0], frequency[-1], colors='k', linestyles='dotted')
+                            bin_min = np.nanmin(binned_data)
+                            bin_max = np.nanmax(binned_data)
                             stat = BinnedStat(bin_min_ratio=bin_min/stddev,
                                               bin_max_ratio=bin_max/stddev,
                                               bin_diff_ratio=(bin_max-bin_min)/stddev)

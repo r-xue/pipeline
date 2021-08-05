@@ -49,6 +49,7 @@ class SDBaselineQAHandler(pqa.QAPlugin):
                 continue
             p = plot.parameters
             scores.append(qacalc.score_sd_baseline_quality(p['vis'], plot.field, p['ant'], p['spw'], p['pol'], stat))
+            del plot
         result.qa.pool.extend(scores)
 
 def _get_plot(plots: List[logger.Plot], figfile: str) -> Optional[Union[compress.CompressedObj, logger.Plot]]:

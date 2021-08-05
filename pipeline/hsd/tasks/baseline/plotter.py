@@ -201,9 +201,12 @@ class BaselineSubtractionPlotManager(object):
             elif plot_type == 'post_fit':
                 ptype = 'sd_sparse_map_after_subtraction_raw'
                 data = self.postfit_data
-            else:
-                ptype = 'sd_sparse_map_before_sutraction_avg'
+            elif plot_type == 'pre_fit_avg':
+                ptype = 'sd_sparse_map_before_subtraction_avg'
                 data = self.prefit_data
+            else:
+                ptype = 'sd_sparce_map_after_subtraction_flatness'
+                data = self.postfit_data
             for pol, figfile in plots.items():
                 if os.path.exists(figfile):
                     parameters = {'intent': 'TARGET',
@@ -302,7 +305,6 @@ class BaselineSubtractionPlotManager(object):
         plotter.set_edge(edge)
         plotter.set_atm_transmission(atm_transmission, atm_frequency)
         plotter.set_global_scaling()
-        plotter.set_binning()
         if utils.is_nro(self.context):
             plotter.set_channel_axis()
         for ipol in range(npol):
@@ -318,9 +320,27 @@ class BaselineSubtractionPlotManager(object):
             #LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
             if os.path.exists(postfit_figfile):
                 plot_list['post_fit'][ipol] = postfit_figfile
+
+        # baseline flatness check
+        plot_list['post_fit_flatness'] = {}
+        plotter.unset_global_scaling()
+        plotter.set_binning()
+        for ipol in range(npol):
+            postfit_qa_figfile = postfit_figfile_prefix + '_flatness_pol%s.png' % ipol
+            #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
+            if lines_map is not None:
+                plotter.setup_lines(line_range, lines_map[ipol])
+            else:
+                plotter.setup_lines(line_range)
+            plotter.plot(postfit_map_data[:, :, ipol, :],
+                         postfit_integrated_data[ipol],
+                         frequency, figfile=postfit_qa_figfile)
+            #LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
+            if os.path.exists(postfit_qa_figfile):
+                plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
                 stat = plotter.get_binned_stat()
                 if len(stat) > 0:
-                    self.baseline_quality_stat[postfit_figfile] = stat
+                    self.baseline_quality_stat[postfit_qa_figfile] = stat
         plotter.unset_binning()
 
         del postfit_integrated_data
@@ -348,7 +368,7 @@ class BaselineSubtractionPlotManager(object):
         # plot pre-fit spectra
         plot_list['pre_fit'] = {}
         plotter.setup_reference_level(None)
-        plotter.unset_global_scaling()
+        #plotter.unset_global_scaling()
         for ipol in range(npol):
             prefit_figfile = prefit_figfile_prefix + '_pol%s.png'%(ipol)
             #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))

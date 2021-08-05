@@ -2241,7 +2241,7 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
         else:
             return slope_low_score + (value-low_limit)*(slope_up_score-slope_low_score)/(up_limit-low_limit)
     scores = []
-    LOG.trace(f'Statistics for {vis}: {source}, {ant}, {spw}, {pol}')
+    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {spw}, {pol}')
     for s in stat:
         min_score = calc_score(s.bin_min_ratio, -1.25, 0, -0.5, 0.25, 0.175, 0.25)
         max_score = calc_score(s.bin_max_ratio, 0.5, 0.25, 1.25, 0.0, 0.25, 0.175)
@@ -2250,9 +2250,14 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
         scores.append(total_score)
         LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
         LOG.trace(f'total score = {total_score} (min: {min_score}, max: {max_score}, diff: {diff_score})')
-    final_score = min(scores)
-    shortmsg = 'Poor Baseline flatness'
-    longmsg = f'Baline flatness of {vis}, {source}, {ant}, {spw}, {pol}'
+    final_score = np.nanmin(scores)
+    quality = 'Good'
+    if final_score <= 0.66:
+        quality='Poor'
+    elif final_score <= 0.9:
+        quality='Moderate'
+    shortmsg = f'{quality} baseline flatness'
+    longmsg = f'{quality} baline flatness in {vis}, {source}, {ant}, {spw}, {pol}'
     origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
                           metric_score=len(stat),
                           metric_units='Statistics of binned spectra')
