@@ -77,10 +77,15 @@ def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, type=Non
                 ]
             else:
                 spw_names = ['N/A']
+            # Write spw IDs. For some observatories these are virtual IDs because of
+            # changing real IDs for the same frequency setup between MSes. In that case
+            # we also write the "virtspw" and "spwisvrt" keywords.
+            info['spw'] = unique_spws
             if virtspw:
                 info['virtspw'] = unique_spws
+                info['spwisvrt'] = True
             else:
-                info['spw'] = unique_spws
+                info['spwisvrt'] = False
             info['nspwnam'] = len(spw_names)
             for i, spw_name in enumerate(spw_names):
                 info['spwnam{:02d}'.format(i+1)] = spw_name

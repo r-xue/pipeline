@@ -12,10 +12,10 @@ are available in the rawdata_dir in the format produced by the
 hifa_exportdata task.
 
 hsd_restoredata assumes that the following entities are available in the raw
-data directory
+data directory:
 
 o the ASDMs to be restored
-o for each ASDM in the input list
+o for each ASDM in the input list:
    o a compressed tar file of the final flagversions file, e.g.
      uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
    o a text file containing the applycal instructions, e.g.
@@ -23,15 +23,19 @@ o for each ASDM in the input list
    o a compressed tar file containing the caltables for the parent session,
      e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
 
-hsd_restoredata performs the following operations
+hsd_restoredata performs the following operations:
 
-o imports the ASDM(s))
+o imports the ASDM(s)
 o removes the default MS.flagversions directory created by the filler
 o restores the final MS.flagversions directory stored by the pipeline
 o restores the final set of pipeline flags to the MS
 o restores the final calibration state of the MS
 o restores the final calibration tables for each MS
 o applies the calibration tables to each MS
+
+When importing the ASDM and converting it to a Measurement Set (MS), if the
+output MS already exists in the output directory, then the importasdm
+conversion step is skipped, and the existing MS will be imported instead.
 
 Output:
 

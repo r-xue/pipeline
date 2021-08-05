@@ -76,7 +76,6 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                 except Exception as ex:
                     LOG.error('Could not create plotbandpass summary plots')
                     LOG.exception(ex)
-                    return None
 
         wrappers = []
         for spw_id, figfile in self._figfile.items():

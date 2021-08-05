@@ -3,8 +3,10 @@ import os
 import shutil
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
+from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure.utils import utils
 from pipeline.infrastructure import task_registry
 from . import almaifaqua
 
@@ -82,6 +84,8 @@ class ALMAExportData(exportdata.ExportData):
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
             manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
             self._add_to_manifest(manifest_file, auxfproducts, auxcaltables, auxcalapplys, pipe_aqua_reportfile)
+
+        self._export_renorm_to_manifest(results.manifest)
 
         return results
 
@@ -185,3 +189,46 @@ finally:
         LOG.info('Copying AQUA report %s to %s', aqua_file, out_aqua_file)
         shutil.copy(aqua_file, out_aqua_file)
         return os.path.basename(out_aqua_file)
+
+    def _export_renorm_to_manifest(self, manifest_name):
+        # look for hifa_renorm in the results (PIPE-1185)
+        taskname = 'hifa_renorm'
+        n_renorm_calls = utils.get_task_result_count(self.inputs.context, taskname)
+        LOG.debug(f'hifa_renorm was previously called {n_renorm_calls} times.')
+        LOG.debug(f'  Looking for the most recent where renorm was applied')
+
+        found_applied_renorm = False
+        for rr in reversed(self.inputs.context.results):
+            try:
+                if hasattr(rr.read()[0], "pipeline_casa_task"):
+                    thistaskname = rr.read()[0].pipeline_casa_task
+                elif hasattr(rr.read(), "pipeline_casa_task"):
+                    thistaskname = rr.read().pipeline_casa_task
+            except(TypeError, IndexError, AttributeError) as ee:
+                LOG.debug(f'Could not get task name for {rr.read()}: {ee}')
+                continue
+            if taskname in thistaskname:
+                for renormresult in rr.read():  # there's a renormresult for each vis
+                    if renormresult.renorm_applied:
+                        # if hifa_renorm indicates the data was renormalized,
+                        #   store the parameters in the manifest with parameters so that
+                        #   the renormalization can be performed again during a restore
+                        pipemanifest = manifest.PipelineManifest('')
+                        manifest_file = os.path.join(self.inputs.products_dir, manifest_name)
+                        pipemanifest.import_xml(manifest_file)
+                        inputs = dict(renormresult.inputs)
+                        try:
+                            del inputs['vis']
+                        except(KeyError):
+                            LOG.error('vis not in hifa_renorm inputs')
+
+                        pipemanifest.add_renorm(renormresult.vis, inputs)
+                        pipemanifest.write(manifest_file)
+
+                    # we found applied renorm, so stop search the results
+                    found_applied_renorm = True
+
+            if found_applied_renorm:
+                break
+
+        return

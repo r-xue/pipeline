@@ -45,6 +45,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_renorm',                                    # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -328,7 +329,7 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
         longmsg = ('No model data column found in %s' % s)
         shortmsg = 'MODELDATA empty'
 
-    score = linear_score(f, 0.0, 1.0, 1.0, 0.5)
+    score = linear_score(f, 0.0, 1.0, 1.0, 0.9)
 
     origin = pqa.QAOrigin(metric_name='score_ms_model_data_column_present',
                           metric_score=f,
@@ -654,6 +655,50 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
 
     return scores
 
+
+@log_qa
+def score_samecalobjects(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+    """
+        Check if BP/Phcal/Ampcal are all the same object and score appropriately
+    """
+    alma_recipes = {'hifa_cal', 'hifa_calimage', 'hifa_calsurvey', 'hifa"image', 'hifa_polcal', 'hifa_polcalimage'}
+
+    # Sort to ensure presentation consistency
+    mses = sorted(mses, key=lambda ms: ms.basename)
+
+    # We are just considering ALMA recipes.   True if an ALMA recipe, false if not
+    alma_recipes_expected = recipe_name in alma_recipes
+
+    # holds the final list of QA scores
+    scores: List[pqa.QAScore] = []
+
+    if alma_recipes_expected:
+        for ms in mses:
+            # Get list of calibrator names
+            calfields = ms.get_fields(intent='AMPLITUDE,PHASE,BANDPASS')
+            calfieldnames = [field.name for field in calfields]
+
+            # Check for any duplicate names in the list of calibrator field names
+            # samefieldnames = all(element == calfieldnames[0] for element in calfieldnames)
+            samefieldnames = any(calfieldnames.count(x) > 1 for x in calfieldnames)
+            if samefieldnames:
+                scorevalue = 0.3
+                msg = "Some calibrators are the same object."
+            else:
+                scorevalue = 1.0
+                msg = "Calibrators are different objects."
+
+            origin = pqa.QAOrigin(metric_name='score_samecalobjects',
+                                  metric_score=scorevalue,
+                                  metric_units='samecalobjects')
+
+            score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg, origin=origin)
+
+            scores.append(score)
+
+    return scores
+
+
 @log_qa
 def score_missing_intents(mses, array_type='ALMA_12m'):
     """
@@ -674,9 +719,9 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
         }
     else:
         score_map = {
-            'PHASE': -1.0,
-            'BANDPASS': -0.1,
-            'AMPLITUDE': -0.1
+            'PHASE': -0.7,
+            'BANDPASS': -0.7,
+            'AMPLITUDE': -0.7
         }
 
     required = set(score_map.keys())
@@ -685,7 +730,7 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
     all_ok = True
     complaints = []
 
-    # hold names of MSes this QA will be applicable to 
+    # hold names of MSes this QA will be applicable to
     applies_to = set()
 
     # analyse each MS
@@ -717,7 +762,7 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
                           metric_units='Score based on missing calibration intents')
 
     return pqa.QAScore(
-        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin, 
+        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin,
         applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
@@ -2880,6 +2925,7 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin)
 
 
+@log_qa
 def score_science_spw_names(mses, virtual_science_spw_names):
     """
     Check that all MSs have the same set of spw names. If this is
@@ -2911,7 +2957,20 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+def score_renorm(result):
+    if result.renorm_applied:
+        msg = 'Restore successful with renormalization applied'
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+    else:
+        msg = 'Restore successful'
+        score = 1.0
 
+    origin = pqa.QAOrigin(metric_name='score_renormalize',
+                            metric_score=score,
+                            metric_units='')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+@log_qa
 def score_fluxservice(result):
     """
     If the primary FS query fails and the backup is invoked,
@@ -2921,22 +2980,60 @@ def score_fluxservice(result):
     """
 
     if result.inputs['dbservice'] is False:
-        msg = "Flux catalog service not used."
         score = 1.0
+        msg = "Flux catalog service not used."
+        for setjy_result in result.setjy_results:
+            measurements = setjy_result.measurements
+            for measurement in measurements.items():
+                try:
+                    fluxorigin = measurement[1][0].origin
+                    if fluxorigin == 'Source.xml':
+                        score = 0.3
+                        msg = "Flux catalog service not used.  Source.xml is the origin."
+                except Exception as e:
+                    LOG.debug("Skip since there is not a flux measurement")
+
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
     elif result.inputs['dbservice'] is True:
+        msg = ""
         if result.fluxservice is 'FIRSTURL':
-            msg = "Flux catalog service used."
+            msg += "Flux catalog service used.  "
             score = 1.0
         elif result.fluxservice is 'BACKUPURL':
-            msg = 'Backup flux catalog service used.'
+            msg += "Backup flux catalog service used.  "
             score = 0.9
         elif result.fluxservice is 'FAIL':
-            msg = 'Neither primary or backup flux service could be queried.  ASDM values used.'
-            score = 0.6
+            msg += "Neither primary or backup flux service could be queried.  ASDM values used."
+            score = 0.3
+
+        agecounter = 0
+        if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
+            for setjy_result in result.setjy_results:
+                measurements = setjy_result.measurements
+                for measurement in measurements.items():
+                    try:
+                        fieldid = measurement[0]
+                        mm = result.mses[0]
+                        fieldobjs = mm.get_fields(field_id=fieldid)
+                        intentlist = []
+                        for fieldobj in fieldobjs:
+                            intentlist.append(fieldobj.intents)
+
+                        # PIPE-1124.  Only determine QA age scoring if 'AMPLITUDE' intent is present for a source.
+                        if 'AMPLTIUDE' in intentlist:
+                            age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
+                            if int(abs(age)) > 14:
+                                agecounter = agecounter + 1
+                    except IndexError:
+                        LOG.debug("Skip since there is no age present")
+
+            # Any sources with age of nearest monitoring point greater than 14 days?
+            if agecounter > 0:
+                score = 0.5
+                msg += "Age of nearest monitor point is greater than 14 days."
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
@@ -2944,6 +3041,84 @@ def score_fluxservice(result):
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
+@log_qa
+def score_fluxservicemessages(result):
+    """
+    Report any flux service messaging and status codes
+    """
+    if result.inputs['dbservice'] is False:
+        score = 1.0
+        longmsg = "Flux catalog service not used.  No warning messages reported."
+        shortmsg = longmsg
+    elif result.inputs['dbservice'] is True:
+        score = 1.0
+        longmsg = "No warning messages from the flux catalog service."
+        shortmsg = longmsg
+        if result.qastatus:
+            longmsg = ""
+            for qacode in result.qastatus:
+                if qacode['clarification']:
+                    score = 0.5
+                    # Queries a per source, so there may be more than one message returned.
+                    longmsg += "Source: {!s},  Status code: {!s},     Message: {!s}\n".format(qacode['source'],
+                                                                                            qacode['status_code'],
+                                                                                            qacode['clarification'])
+                    shortmsg = "Flux service returned warning messages."
+
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_messaging',
+                          metric_score=score,
+                          metric_units='flux service messaging')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_fluxservicestatuscodes(result):
+    """
+    Report any flux service codes for status_code > 1
+    """
+    if result.inputs['dbservice'] is False:
+        score = 1.0
+        msg = "Flux catalog service not used.  No status codes to report."
+    elif result.inputs['dbservice'] is True:
+        score = 1.0
+        msg = "Flux catalog service status queries returned code 0 or 1."
+        if result.qastatus:
+            scores = []
+            for qacode in result.qastatus:
+                # Status code can be 0,1,2,3
+                if int(qacode['status_code']) > 1:
+                    score = 0.3
+                    msg = "A query of the flux catalog service returned a status code: {!s}".format(str(qacode['status_code']))
+
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_statuscode',
+                          metric_score=score,
+                          metric_units='flux service status code')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_fluxcsv(result):
+    """
+    Check for existence of flux.csv file on import
+    """
+
+    if os.path.exists('flux.csv'):
+        score = 1.0
+        msg = 'flux.csv exists on disk'
+    else:
+        score = 0.3
+        msg = "flux.csv does not exist"
+
+    origin = pqa.QAOrigin(metric_name='score_fluxcsv',
+                          metric_score=score,
+                          metric_units='flux csv')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+
+
+
+@log_qa
 def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score

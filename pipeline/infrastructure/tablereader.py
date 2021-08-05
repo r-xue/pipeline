@@ -962,8 +962,8 @@ class SourceTable(object):
         return [SourceTable._create_source(*row) for row in no_dups]
 
     @staticmethod
-    def _create_source(source_id, name, direction, proper_motion, is_eph_obj):
-        return domain.Source(source_id, name, direction, proper_motion, is_eph_obj)
+    def _create_source(source_id, name, direction, proper_motion, is_eph_obj, table_names, avg_spacings):
+        return domain.Source(source_id, name, direction, proper_motion, is_eph_obj, table_names, avg_spacings)
 
     @staticmethod
     def _read_table(msmd):
@@ -975,10 +975,21 @@ class SourceTable(object):
         sourcenames = msmd.sourcenames()
         directions = [v for _, v in sorted(msmd.sourcedirs().items(), key=lambda d: int(d[0]))]
         propermotions = [v for _, v in sorted(msmd.propermotions().items(), key=lambda pm: int(pm[0]))]
-        eph_sourcenames = SourceTable._get_eph_sourcenames(msmd.name())
+        eph_sourcenames, ephemeris_tables, avg_spacings = SourceTable._get_eph_sourcenames(msmd.name())
         is_eph_objs = [sourcename in eph_sourcenames for sourcename in sourcenames]
 
-        all_sources = list(zip(ids, sourcenames, directions, propermotions, is_eph_objs))
+        table_list = []
+        spacings_list = []
+        for sourcename in sourcenames:
+            if sourcename in eph_sourcenames:
+                table_list.append(ephemeris_tables[sourcename])
+                spacings_list.append(avg_spacings[sourcename])
+            else: 
+                table_list.append("")
+                spacings_list.append("")
+
+
+        all_sources = list(zip(ids, sourcenames, directions, propermotions, is_eph_objs, table_list, spacings_list))
 
         # Only return sources for which scans are present.
         # Create a mapping of source id to a boolean of whether any
@@ -1002,12 +1013,21 @@ class SourceTable(object):
         ephemeris_tables = glob.glob(msname+'/FIELD/EPHEM*.tab')
 
         eph_sourcenames = []
+        avg_spacings = {}
+        ephemeris_table_names = {}
         for ephemeris_table in ephemeris_tables:
             with casa_tools.TableReader(ephemeris_table) as tb:
                 keywords = tb.getkeywords()
-                eph_sourcenames.append(keywords['NAME'])
+                eph_sourcename = keywords['NAME']
+                eph_sourcenames.append(eph_sourcename)
+                # Add the average spacing in minutes of the MJD column of the ephemeris table (see PIPE-627).
+                if 'MJD' in tb.colnames():
+                    mjd = tb.getcol('MJD')
+                    avg_spacings[eph_sourcename] = numpy.diff(mjd).mean()*1440 # Convert fractional day to minutes
+                # Return file names (not whole paths) for the ephemeris tables (see PIPE-627)
+                ephemeris_table_names[eph_sourcename] = os.path.splitext(os.path.basename(ephemeris_table))[0]
 
-        return eph_sourcenames
+        return eph_sourcenames, ephemeris_table_names, avg_spacings
 
 
 class StateTable(object):
