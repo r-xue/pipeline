@@ -64,7 +64,7 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
         hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='allcals-vla')
 
         # Re-run semi-final delay and bandpass calibrations
-        hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
+        # hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
 
         # Flag spws that have no calibration at this point
         # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='delay.k', bpcaltable='BPcal.b')
