@@ -310,6 +310,9 @@ class Checkflag(basetask.StandardTaskTemplate):
                 LOG.debug("This is likely a dryrun test! Proceed with timedev/freqdev=''.")
                 ftdev = None
             else:
+                if jobresult['nreport'] == 0:
+                    LOG.info("Null data selection for the Rflag sequence. Continue.")
+                    return
                 if useheuristic:
                     ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
                     rflagdev = RflagDevHeuristic(ms, ignore_sefd=ignore_sefd)
@@ -352,7 +355,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                     polselect = correlation.split('_')[1]
                     if not (polselect in self.corr_type_string or polselect == self.corrstring):
                         continue
-                    if not mssel_valid(self.inputs.vis, field=fieldselect, correlation=polselect,
+                    if not mssel_valid(self.inputs.vis, field=fieldselect, spw=spwselect, correlation=polselect,
                                        scan=scanselect, intent=intentselect):
                         continue
                 method_args = {'mode': 'rflag',
@@ -381,7 +384,8 @@ class Checkflag(basetask.StandardTaskTemplate):
                     polselect = correlation.split('_')[1]
                     if not (polselect in self.corr_type_string or polselect == self.corrstring):
                         continue
-                    if not mssel_valid(self.inputs.vis, field=fieldselect, correlation=polselect, scan=scanselect, intent=intentselect):
+                    if not mssel_valid(self.inputs.vis, field=fieldselect, spw=spwselect, correlation=polselect,
+                                       scan=scanselect, intent=intentselect):
                         continue
                 timecutoff = 4. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
                 freqcutoff = 3. if tfcropThreshMultiplier is None else tfcropThreshMultiplier
