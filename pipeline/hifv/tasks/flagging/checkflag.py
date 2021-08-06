@@ -337,7 +337,6 @@ class Checkflag(basetask.StandardTaskTemplate):
     def do_rfi_flag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
         """Do RFI flagging using multiple passes of rflag/tfcrop/extend."""
         
-        fieldselect, scanselect, intentselect, _ = self._select_data()
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
         flagbackup = False
         calcftdev = True
