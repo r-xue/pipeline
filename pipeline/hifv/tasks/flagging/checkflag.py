@@ -166,15 +166,13 @@ class Checkflag(basetask.StandardTaskTemplate):
             self.do_rfi_flag(fieldselect=fieldselect, scanselect=scanselect,
                              intentselect=intentselect, spwselect=self.sci_spws)
 
-
-
-        # PIPE-502/757/995: get after-flagging statistics
-        job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after',
-                                  field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws)
-        
-        summarydict = self._executor.execute(job)
-        if summarydict is not None:
-            summaries.append(summarydict)
+        # PIPE-502/757/995: get after-flagging statistics, NOT for bpd-vlass and allcals-vlass
+        if self.inputs.checkflagmode not in ('bpd-vlass', 'allcals-vlass'):
+            job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary', name='after',
+                                      field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws)
+            summarydict = self._executor.execute(job)
+            if summarydict is not None:
+                summaries.append(summarydict)
 
         checkflag_result = CheckflagResults()
         checkflag_result.summaries = summaries
