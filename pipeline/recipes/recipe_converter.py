@@ -45,9 +45,30 @@ def parse_parameter(node):
     return get_data(key_element), get_data(value_element)
 
 
-def get_short_description_for_task(task_name):
+def get_short_description(tree):
+    node = filter(
+        lambda x: x.parentNode.nodeName == 'task',
+        tree.getElementsByTagName('shortdescription')
+    )
+    short_desc_node = next(node)
+    short_desc = get_data(short_desc_node).strip('\n').strip()
+    return short_desc
+
+
+def get_param_types(tree):
+    node = filter(
+        lambda x: x.parentNode.nodeName == 'input',
+        tree.getElementsByTagName('param')
+    )
+    type_dict = dict(
+        (x.getAttribute('name'), x.getAttribute('type')) for x in node
+    )
+    return type_dict
+
+
+def get_task_property(task_name):
     if task_name == 'breakpoint':
-        return ''
+        return {}
 
     task_category, _ = task_name.split('_')
     cli_dir = get_cli_dir(task_category)
@@ -55,12 +76,15 @@ def get_short_description_for_task(task_name):
     print(f'task_xml is {task_xml}')
     assert os.path.exists(task_xml)
     root_element = minidom.parse(task_xml)
-    node = filter(
-        lambda x: x.parentNode.nodeName == 'task',
-        root_element.getElementsByTagName('shortdescription')
-    )
-    short_desc = next(node)
-    return get_data(short_desc).strip('\n').strip()
+    short_desc = get_short_description(root_element)
+    type_dict = get_param_types(root_element)
+
+    task_property = {
+        'comment': short_desc,
+        'parameter_types': type_dict
+    }
+
+    return task_property
 
 
 def parse_command(node):
@@ -71,10 +95,10 @@ def parse_command(node):
     parameter_elements = get_element(parameter_set_element, 'Parameter')
     parameters = dict(parse_parameter(p) for p in parameter_elements)
     print(f'command is {command}')
-    short_description = get_short_description_for_task(command)
+    task_property = get_task_property(command)
     print(f'parameters are {parameters}')
-    return {command: {'comment': short_description,
-                      'parameter': parameters}}
+    task_property['parameter'] = parameters
+    return {command: task_property}
 
 
 def parse(procedure_abs_path):
@@ -119,8 +143,20 @@ def get_execution_command(task_name, config):
     if task_name == 'breakpoint':
         return ''
 
+    # param_types = get_parameter_types(task_name)
+    param_types = config['parameter_types']
+
     if parameter:
-        custom_args = ', '.join([f'{k}=\'{v}\'' for k, v in parameter.items()])
+        def construct_arg(key, value):
+            value_type = param_types[key]
+            # TODO: handle variant and any types properly
+            if value_type in ('string', 'variant', 'any'):
+                arg = f'{key}=\'{value}\''
+            else:
+                arg = f'{key}={value}'
+            return arg
+
+        custom_args = ', '.join([construct_arg(k, v) for k, v in parameter.items()])
         args = f'{custom_args}, pipelinemode=\'interactive\''
     else:
         args = 'pipelinemode=\'automatic\''
@@ -143,7 +179,7 @@ def get_execution_command(task_name, config):
 
 
 def c2p(command):
-    print(f'c2p: command is {command}')
+    print(f'c2p: command is {list(command.keys())[0]}')
     assert len(command) == 1
     task_name, config = list(command.items())[0]
     procedure = get_comment(task_name, config)
@@ -167,6 +203,7 @@ from pipeline.infrastructure import casa_tools
 
 IMPORT_ONLY = 'Import only'
 
+
 # Run the procedure
 def ${func_name}(vislist, importonly=False, pipelinemode='automatic', interactive=True):
     echo_to_screen = interactive
@@ -187,7 +224,6 @@ ${procedure}
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
 
     finally:
-
         # Save the results to the context
         h_save()
 
