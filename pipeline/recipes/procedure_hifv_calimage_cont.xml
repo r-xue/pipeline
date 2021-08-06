@@ -75,13 +75,6 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
-    <ProcessingCommand>
-        <Command xmlns="">hifv_semiFinalBPdcals</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_solint</Command>

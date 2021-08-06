@@ -49,7 +49,7 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='allcals-vla')
 
         # Re-run semi-final delay and bandpass calibrations
-        hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
+        # hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
 
         # Determine solint for scan-average equivalent
         hifv_solint(pipelinemode=pipelinemode)
