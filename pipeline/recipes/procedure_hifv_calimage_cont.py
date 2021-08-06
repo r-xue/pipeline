@@ -91,6 +91,9 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         # Make clean cont images for the selected targets
         hif_makeimages(hm_cyclefactor=3.0)
 
+        # apply a primary beam correction on target images
+        hifv_pbcor(pipelinemode=pipelinemode)        
+
         # Export the data
         hifv_exportdata(pipelinemode=pipelinemode)
 
