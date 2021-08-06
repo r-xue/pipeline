@@ -228,13 +228,19 @@ class PipelineManifest(object):
         eltree.SubElement(ous, "piperequest", name=ppr_file)
 
     @staticmethod
-    def add_images(ous, imagelist, imtype):
+    def add_images(ous, imagelist, imtype, extra_attributes_list=None):
         """
         Add a list of images to the OUS element. Note that this does not have
         to be an ous element, e.d. an asdm element will do
         """
-        for image in imagelist:
-            eltree.SubElement(ous, "image", name=image, imtype=imtype)
+        for i, image in enumerate(imagelist):
+            # "manualstring" is a special attribute requested in PIPE-1105 to
+            # distinguish pipeline products from manually reduced ones. For
+            # pipeline runs "manualstring" is always "N/A".
+            if extra_attributes_list is None:
+                eltree.SubElement(ous, "image", name=image, imtype=imtype, manualstring="N/A")
+            else:
+                eltree.SubElement(ous, "image", name=image, imtype=imtype, manualstring="N/A", **extra_attributes_list[i])
 
     @staticmethod
     def add_pipescript(ous, pipescript):
@@ -301,6 +307,23 @@ class PipelineManifest(object):
         Add the AQUA report to the OUS element
         """
         eltree.SubElement(ous, "aqua_report", name=aqua_report)
+
+    def add_renorm(self, asdm_name, inputs):
+        """
+        Add the renormalization parameters to a asdm element
+        """
+        for asdm in self.get_ous().findall(f".//asdm[@name=\'{asdm_name}\']"):
+            newinputs = {key:str(value) for (key,value) in inputs.items()} # stringify the values
+            eltree.SubElement(asdm, "hifa_renorm", newinputs)
+
+    def get_renorm(self, asdm_name):
+        """
+        Get the hifa_renorm element
+        """
+        for asdm in self.get_ous().findall(f".//asdm[@name=\'{asdm_name}\']"):
+            return getattr(asdm.find('hifa_renorm'), 'attrib', None)
+        else:
+            return None
 
     def write(self, filename):
         """

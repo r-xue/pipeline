@@ -29,10 +29,18 @@ class RasterScanHeuristicsFailure(Exception):
 class HeuristicsParameter(object):
     """Holds tunable parameters for RasterScanHeuristic."""
 
+    # Threshold for contiguous sequence
     AngleThreshold = 45
+
+    # Thresholds for histogram
     AngleHistogramThreshold = 0.3
     AngleHistogramSparseness = 0.5
     AngleHistogramBinWidth = 1
+
+    # Angle tolerance for "turn-around scan"
+    TurnaroundAngleTolerance = 10
+
+    # Distance threshold factor
     # for std
     # DistanceThresholdFactor = 5
     # for MAD
@@ -461,7 +469,8 @@ def find_angle_gap(angle_deg: np.ndarray) -> List[int]:
     # check if the pattern is round-trip rasetr
     # 1. check if number of peaks in angle histogram is 2 (assuming round-trip scan)
     # 2. difference of peak angles is around 180deg
-    is_round_trip_raster = ((num_peak == 2) and (abs(180 - abs(peak_values[1] - peak_values[0]))) <= 5)
+    tolerance = HeuristicsParameter.TurnaroundAngleTolerance
+    is_round_trip_raster = ((num_peak == 2) and (abs(180 - abs(peak_values[1] - peak_values[0]))) <= tolerance)
     if not (is_one_way_raster or is_round_trip_raster):
         msg = 'Scan pattern is not likely to be raster scan.'
         LOG.warn(msg)

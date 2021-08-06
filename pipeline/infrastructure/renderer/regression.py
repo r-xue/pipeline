@@ -45,6 +45,9 @@ from pipeline.infrastructure.basetask import Results, ResultsList, StandardTaskT
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.taskregistry import task_registry
 from pipeline.infrastructure import logging
+from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults, SDRestoreData
+from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreDataResults, NRORestoreData
+from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
@@ -421,6 +424,85 @@ class SDImagingRegressionExtractor(RegressionExtractor):
         prefix = get_prefix(result, self.generating_task)
 
         d = OrderedDict()
+        qa_entries = extract_qa_score_regression(prefix, result)
+        d.update(qa_entries)
+
+        return d
+
+
+class SDRestoredataRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for sd_restoredata.
+
+    The extracted values are:
+        - the number of flagged and scanned rows after this task
+    """
+
+    result_cls = SDRestoreDataResults
+    child_cls = None
+    generating_task = SDRestoreData
+
+    def handle(self, result:SDRestoreDataResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: SDRestoreDataResults object
+        
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+        for session, mses in result.flagging_summaries.items():
+            for ms_name, ms in mses.items():
+                for target_name, target in ms.items():
+                    if isinstance(target, dict):
+                        d['{}.target_{}.num_rows_flagged'.format(prefix, target_name)] = int(target['flagged'])
+                        for scan_id, v in target['scan'].items():
+                            d['{}.target_{}.scan_{}.num_rows_flagged'.format(prefix, target_name, scan_id)] = int(v['flagged'])
+
+        qa_entries = extract_qa_score_regression(prefix, result)
+        d.update(qa_entries)
+
+        return d
+
+
+class NRORestoredataRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hsdn_restoredata.
+
+    The extracted values are:
+        - the number of flagged and scanned rows after this task
+    """
+
+    result_cls = NRORestoreDataResults
+    child_cls = None
+    generating_task = NRORestoreData
+
+    def handle(self, result: NRORestoreDataResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: NRORestoreDataInputs object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+        for session, mses in result.flagging_summaries.items():
+            for ms_name, ms in mses.items():
+                for target_name, target in ms.items():
+                    if isinstance(target, dict):
+                        d['{}.target_{}.num_rows_flagged'.format(prefix, target_name)] = int(target['flagged'])
+                        for scan_id, v in target['scan'].items():
+                            d['{}.target_{}.scan_{}.num_rows_flagged'.format(prefix, target_name, scan_id)] = int(
+                                v['flagged'])
+
         qa_entries = extract_qa_score_regression(prefix, result)
         d.update(qa_entries)
 

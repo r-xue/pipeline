@@ -412,6 +412,9 @@ class MetricXmlGenerator(object):
             'Value': convert to string
             'Asdm': return basename minus extension
             'QaScore': convert to string
+            'QaMessage': convert to string
+            'Units': convert to string
+            'Session': convert to string
 
         :param metric_name: metric to match
         :param formatters: (optional) dict string formatters
@@ -424,7 +427,9 @@ class MetricXmlGenerator(object):
             'Value': str,
             'Asdm': vis_to_asdm,
             'QaScore': str,
-            'Session': str,
+            'QaMessage': str,
+            'Units': str,
+            'Session': str
         }
         if formatters:
             self.attr_formatters.update(formatters)
@@ -464,11 +469,14 @@ class MetricXmlGenerator(object):
 
         origin = qa_score.origin
         score_value = str(qa_score.score)
+        score_message = str(qa_score.longmsg)
 
         init_args = dict(
             Name=self.attr_formatters['Name'](origin.metric_name),
             Value=self.attr_formatters['Value'](origin.metric_score),
-            QaScore=self.attr_formatters['QaScore'](score_value)
+            Units=self.attr_formatters['Units'](origin.metric_units),
+            QaScore=self.attr_formatters['QaScore'](score_value),
+            QaMessage=self.attr_formatters['QaMessage'](score_message)
         )
 
         target_asdms = qa_score.applies_to.vis

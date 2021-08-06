@@ -8,6 +8,7 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.infrastructure import task_registry
 from . import inspection
+from pipeline.hsd.tasks.common.inspection_util import merge_reduction_group
 
 
 LOG = infrastructure.get_logger(__name__)
@@ -59,25 +60,8 @@ class SDImportDataResults(basetask.Results):
         context.observing_run.org_directions = self.org_directions
 
     def __merge_reduction_group(self, observing_run, reduction_group_list):
-        if not hasattr(observing_run, 'ms_reduction_group'):
-            LOG.info('Adding ms_reduction_group to observing_run')
-            observing_run.ms_reduction_group = {}
-
-        # merge reduction group
         for reduction_group in reduction_group_list:
-            for myid, mydesc in reduction_group.items():
-                matched_id = -1
-                for group_id, group_desc in observing_run.ms_reduction_group.items():
-                    if group_desc == mydesc:
-                        LOG.info('merge input group %s to group %s' % (myid, group_id))
-                        matched_id = group_id
-                        LOG.info('number of members before merge: %s' % (len(group_desc)))
-                        group_desc.merge(mydesc)
-                        LOG.info('number of members after merge: %s' % (len(group_desc)))
-                if matched_id == -1:
-                    LOG.info('add new group')
-                    key = len(observing_run.ms_reduction_group)
-                    observing_run.ms_reduction_group[key] = mydesc
+            merge_reduction_group(observing_run, reduction_group)
 
     def __repr__(self):
         return 'SDImportDataResults:\n\t{0}'.format(
@@ -146,7 +130,7 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
+        LOG.error('Error importing {!s}'.format(os.path.basename(vis)))
         LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
         import traceback
         tb = traceback.format_exc()

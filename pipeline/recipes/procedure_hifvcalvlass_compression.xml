@@ -149,7 +149,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_fluxboot2</Command>
+        <Command xmlns="">hifv_fluxboot</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">fitorder</Keyword>

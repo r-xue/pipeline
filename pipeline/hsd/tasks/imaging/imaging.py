@@ -1,6 +1,8 @@
 import collections
 import math
 import os
+from numbers import Number
+from typing import Dict, List, Optional, Tuple
 
 import numpy
 
@@ -11,13 +13,15 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable
+from pipeline.domain import DataTable, DataType
+from pipeline.domain import MeasurementSet
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.hsd.heuristics import rasterscan
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import Context
 from pipeline.infrastructure import task_registry
 from . import gridding
 from . import sdcombine
@@ -28,21 +32,27 @@ from . import detectcontamination
 from .. import common
 from ..baseline import baseline
 from ..common import compress
+from ..common import direction_utils
 from ..common import rasterutil
 from ..common import utils as sdutils
 
 LOG = infrastructure.get_logger(__name__)
 
 SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
-# RasterInfo: width=map extent along scan, height=map extent perpendicular to scan
+# RasterInfo: center_ra, center_dec = R.A. and Declination of map center 
+#             width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
-RasterInfo = collections.namedtuple('RasterInfo', 'width height scan_angle row_separation row_duration')
+RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width height scan_angle row_separation row_duration')
 
 
 class SDImagingInputs(vdp.StandardInputs):
     """
     Inputs for imaging
     """
+    # Search order of input vis
+    processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     spw = vdp.VisDependentProperty(default='')
     pol = vdp.VisDependentProperty(default='')
@@ -158,9 +168,16 @@ class SDImaging(basetask.StandardTaskTemplate):
         # set some information to image header
         image_item = result.outcome['image']
         imagename = image_item.imagename
+        # check if data is NRO
+        is_nro = sdutils.is_nro(context)
+        if is_nro:
+            virtspw = False
+        else:
+            virtspw = True
         for name in (imagename, imagename+'.weight'):
             imageheader.set_miscinfo(name=name,
                                      spw=','.join(map(str, spwlist)),
+                                     virtspw=virtspw,
                                      field=image_item.sourcename,
                                      nfield=1,
                                      type='singledish',
@@ -209,8 +226,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         else:
             LOG.info('No SDBaselineResults available. Set edge as [0,0]')
             edge = [0, 0]
-
-        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename)))
+        # dt_dict: key=input MS, value=datatable corresponding to the MS
+        dt_dict = dict((ms.basename, DataTable(sdutils.get_data_table_path(context, ms)))
                        for ms in ms_list)
 
         # loop over reduction group (spw and source combination)
@@ -218,7 +235,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug('Processing Reduction Group {}'.format(group_id))
             LOG.debug('Group Summary:')
             for m in group_desc:
-                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(os.path.basename(m.ms.work_data),
+                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(m.ms.basename,
                                                                                     m.antenna_id, m.antenna_name,
                                                                                     m.spw_id,
                                                                                     m.field_id, m.field_name))
@@ -277,7 +294,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             LOG.debug('Members to be processed:')
             for i in range(len(member_list)):
-                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(os.path.basename(ms_list[i].work_data),
+                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(ms_list[i].basename,
                                                                     antenna_list[i],
                                                                     spwid_list[i],
                                                                     fieldid_list[i]))
@@ -342,7 +359,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 source_name = group_desc.field_name.replace(' ', '_')
 
                 # filenames for gridding
-                infiles = [ms.work_data for ms in msobjs]
+                infiles = [ms.name for ms in msobjs]
 
                 LOG.debug('infiles={}'.format(infiles))
 
@@ -376,10 +393,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # Step 1.
                 # Initialize weight column based on baseline RMS.
-                original_ms = [msobj.name for msobj in msobjs]
-                work_ms = [msobj.work_data for msobj in msobjs]
+                origin_ms = [msobj.origin_ms for msobj in msobjs]
+                work_ms = [msobj.name for msobj in msobjs]
                 weighting_inputs = vdp.InputsContainer(weighting.WeightMS, context,
-                                                       infiles=original_ms, outfiles=work_ms,
+                                                       infiles=origin_ms, outfiles=work_ms,
                                                        antenna=antids, spwid=spwids, fieldid=fieldids)
                 weighting_task = weighting.WeightMS(weighting_inputs)
                 weighting_result = self._executor.execute(weighting_task, merge=False,
@@ -394,7 +411,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if not coord_set:
                     # PIPE-313: evaluate map extent using pointing data from all the antenna in the data
                     dummyids = [None for _ in antids]
-                    image_coord = worker.ALMAImageCoordinateUtil(context, infiles, dummyids, spwids, fieldids)
+                    image_coord = worker.ImageCoordinateUtil(context, infiles, dummyids, spwids, fieldids)
                     if not image_coord:  # No valid data is found
                         continue
                     coord_set = True
@@ -513,7 +530,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(rms_exclude_freq)))
                     combined_rms_exclude.extend(rms_exclude_freq)
 
-                    file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    file_index = [common.get_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
@@ -537,7 +554,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         tocombine_images_nro.append(imagename_nro)
                         tocombine_org_directions_nro.append(org_direction)
 
-                    file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    file_index = [common.get_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result_nro,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
@@ -555,7 +572,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                 continue
             # reference MS
-            ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
+            ref_ms = context.observing_run.get_ms(name=combined_infiles[0])
 
             # image name
             # image name should be based on virtual spw id
@@ -647,68 +664,49 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # calculate RMS of line free frequencies in a combined image
                 LOG.info('Calculate sensitivity of combined image')
-                rep_bw = ref_ms.representative_target[2]
-                rep_spwid = ref_ms.get_representative_source_spw()[1]
-                is_representative_spw = (rep_spwid==combined_spws[0] and rep_bw is not None)
                 with casa_tools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
                     faxis = cs.findaxisbyname('spectral')
-                    num_chan = ia.shape()[faxis]
                     chan_width = cs.increment()['numeric'][faxis]
                     brightnessunit = ia.brightnessunit()
                     beam = ia.restoringbeam()
-                ref_world = cs.referencevalue()['numeric']
                 qcell = list(cs.increment(format='q', type='direction')['quantity'].values())  # cs.increment(format='s', type='direction')['string']
-#                 rms_exclude_freq = self._merge_ranges(combined_rms_exclude)
-                LOG.info("Aggregated spectral line frequency ranges of combined image = {}".format(str(combined_rms_exclude)))
-                combined_rms_exclude_chan = [] # should be list for sort
-                for i in range(len(combined_rms_exclude)):
-                    segment = combined_rms_exclude[i]
-                    ref_world[faxis] = segment[0]
-                    start_chan = cs.topixel(ref_world)['numeric'][faxis]
-                    ref_world[faxis] = segment[1]
-                    end_chan = cs.topixel(ref_world)['numeric'][faxis]
-                    # handling of LSB
-                    min_chan = min(start_chan, end_chan)
-                    max_chan = max(start_chan, end_chan)
-                    #LOG.info("#####Freq to Chan: [{:f}, {:f}] -> [{:f}, {:f}]".format(segment[0], segment[1], min_chan, max_chan))
-                    if max_chan < -0.5 or min_chan > num_chan - 0.5: #out of range
-                        #LOG.info("#####Omitting channel range [{:f}, {:f}]".format(min_chan, max_chan))
-                        continue
-                    combined_rms_exclude_chan.append([max(int(min_chan), 0),
-                                           min(int(max_chan), num_chan-1)])
-                combined_rms_exclude_chan.sort()
-                rms_exclude_chan = self._merge_ranges(combined_rms_exclude_chan)
-                LOG.info("Merged spectral line channel ranges of combined image = {}".format(str(rms_exclude_chan)))
-                include_channel_range = []
-                if len(rms_exclude_chan) == 0:
-                    include_channel_range = [edge[0], num_chan-1-edge[1]]
-                else:
-                    if rms_exclude_chan[0][0] > edge[0]:
-                        include_channel_range.extend([edge[0], rms_exclude_chan[0][0]-1])
-                    for j in range(len(rms_exclude_chan)-1):
-                        start_include = rms_exclude_chan[j][1]+1
-                        end_include = rms_exclude_chan[j+1][0]-1
-                        if start_include <= end_include:
-                            include_channel_range.extend([start_include, end_include])
-                    if rms_exclude_chan[-1][1] + 1 < num_chan-1-edge[1]:
-                        include_channel_range.extend([rms_exclude_chan[-1][1] + 1, num_chan-1-edge[1]])
-                LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_channel_range)))
 
-                stat_chans = str(';').join([ '{:d}~{:d}'.format(include_channel_range[iseg], include_channel_range[iseg+1]) for iseg in range(0, len(include_channel_range), 2) ])
+                # Define image channels to calculate statistics
+                include_channel_range = self._get_stat_chans(imagename, combined_rms_exclude, edge)
+                stat_chans = convert_range_list_to_string(include_channel_range)
+
+                # Define region to calculate statistics
+                raster_infos = self.get_raster_info_list(context, combined_infiles,
+                                                         combined_antids,
+                                                         combined_fieldids,
+                                                         combined_spws, dt_dict)
+                region = self._get_stat_region(raster_infos, org_direction, beam)
+
                 # Image statistics
-                imstat_job = casa_tasks.imstat(imagename=imagename, chans=stat_chans)
-                statval = self._executor.execute(imstat_job)
-                image_rms = statval['rms'][0]
-                LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                if region is None:
+                    LOG.warn('Could not get valid region of interest to calculate image statistics.')
+                    image_rms = -1.0
+                else:
+                    statval = calc_image_statistics(imagename, stat_chans, region)
+                    if len(statval['rms']):
+                        image_rms = statval['rms'][0]
+                        LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                    else:
+                        LOG.warn('Could not get image statistics. Potentially no valid pixel in region of interest.')
+                        image_rms = -1.0
                 # Theoretical RMS
                 LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
                 theoretical_rms = self.calculate_theoretical_image_rms(combined_infiles, combined_antids,
                                                                        combined_fieldids, combined_spws,
-                                                                       combined_pols, qcell, chan_width, brightnessunit,
+                                                                       combined_pols, raster_infos, qcell,
+                                                                       chan_width, brightnessunit,
                                                                        dt_dict)
 
                 # estimate
+                rep_bw = ref_ms.representative_target[2]
+                rep_spwid = ref_ms.get_representative_source_spw()[1]
+                is_representative_spw = (rep_spwid==combined_spws[0] and rep_bw is not None)
                 if is_representative_spw:
                     # skip estimate if data is Cycle 2 and earlier + th effective BW is nominal (= chan_width)
                     spwobj = ref_ms.get_spectral_window(rep_spwid)
@@ -745,7 +743,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
 
-                file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
                 sensitivity = Sensitivity(array='TP',
                                           field=source_name,
                                           spw=str(combined_spws[0]),
@@ -795,7 +793,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
 
-                    file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
                     self._finalize_worker_result(context, imager_result,
                                                  sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
@@ -812,8 +810,9 @@ class SDImaging(basetask.StandardTaskTemplate):
     def _get_rms_exclude_freq_range_image(self, to_frame, chanmap_ranges, edge,
                                           msobj_list, antid_list, spwid_list, fieldid_list):
         """
-        A utility method to obtain combined list of frequency ranges of
-        deviation mask, channel map ranges, and edges.
+        Return a combined list of frequency ranges.
+
+        This method combines deviation mask, channel map ranges, and edges.
 
         Arguments
             to_frame    : the frequency frame of output
@@ -858,7 +857,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             min_chan = 0
             max_chan = spwobj.num_channels - 1
             exclude_channel_range = [[max(min_chan, x[0]), min(max_chan, x[1])]
-                                     for x in self._merge_ranges(exclude_range)]
+                                     for x in merge_ranges(exclude_range)]
             LOG.info("{} : channel map and deviation mask channel ranges in MS frame = {}".format(msobj.basename, str(exclude_channel_range)))
             # define frequency ranges of RMS
             exclude_freq_range = numpy.zeros(2*len(exclude_channel_range))
@@ -902,52 +901,15 @@ class SDImaging(basetask.StandardTaskTemplate):
         if len(image_rms_freq_range) == 0:
             return image_rms_freq_range
 
-        return self._merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range)//2, 2), 'C'))
-
-    def _merge_ranges(self, range_list):
-        """
-        A utility method to merge overlapping ranges in range_list.
-
-        Argument
-            range_list    : a list of ranges to merge, e.g., [ [min0,max0], [min1,max1], .... ]
-                            each range in the list should be in ascending order (min0 <= max0)
-                            there is no assumption in the order of ranges, e.g., min0 w.r.t min1
-        Returns
-            a list of merged ranges
-            e.g., [[min_merged0,max_marged0], [min_merged1,max_merged1], ....]
-        """
-        #LOG.info("#####Merge ranges: {}".format(str(range_list)))
-        num_range = len(range_list)
-        if num_range == 0:
-            return []
-        merged = [range_list[0][0:2]]
-        for i in range(1, num_range):
-            segment = range_list[i]
-            if len(segment) < 2:
-                raise ValueError("segments in range list much have 2 elements")
-            overlap = -1
-            for j in range(len(merged)):
-                if segment[1] < merged[j][0] or segment[0] > merged[j][1]:  # no overlap
-                    continue
-                else:
-                    overlap = j
-                    break
-            if overlap < 0:
-                merged.append(segment[0:2])
-            else:
-                merged[j][0] = min(merged[j][0], segment[0])
-                merged[j][1] = max(merged[j][1], segment[1])
-        # Check if further merge is necessary
-        while len(merged) < num_range:
-            num_range = len(merged)
-            merged = self._merge_ranges(merged)
-        #LOG.info("#####Merged: {}".format(str(merged)))
-        return merged
+        return merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range)//2, 2), 'C'))
 
     def get_imagename(self, source, spwids, antenna=None, asdm=None, stokes=None):
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
-        namer = filenamer.Image()
+        if is_nro:
+            namer = filenamer.Image(virtspw=False)
+        else:
+            namer = filenamer.Image()
         if self.inputs.is_ampcal:
             nameroot = asdm
             if nameroot is None:
@@ -988,8 +950,140 @@ class SDImaging(basetask.StandardTaskTemplate):
         imagename = namer.get_filename()
         return imagename
 
+    def _get_stat_chans(self, imagename: str,
+                        combined_rms_exclude: List[Tuple[float, float]],
+                        edge: Tuple[int, int]=(0,0)) -> List[int]:
+        """
+        Return a list of channel ranges to calculate image statistics.
+
+        Args:
+            imagename: A name of image
+            combined_rms_exclude: A list of frequency ranges to exclude
+            edge: The left and right edge channels to exclude
+        Retruns:
+            A 1-d list of channel ranges to INCLUDE in calculation of image
+            statistics, e.g., [imin0, imax0, imin0, imax0, ...]
+        """
+        with casa_tools.ImageReader(imagename) as ia:
+            cs = ia.coordsys()
+            faxis = cs.findaxisbyname('spectral')
+            num_chan = ia.shape()[faxis]
+        exclude_chan_ranges = convert_frequency_ranges_to_channels(combined_rms_exclude, cs, num_chan)
+        LOG.info("Merged spectral line channel ranges of combined image = {}".format(str(exclude_chan_ranges)))
+        include_chan_ranges = invert_ranges(exclude_chan_ranges, num_chan, edge)
+        LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_chan_ranges)))
+        return include_chan_ranges
+
+    def _get_stat_region(self, raster_infos: List[RasterInfo],
+                         org_direction: Optional[dict],
+                         beam: dict) -> Optional[str]:
+        """
+        Retrun region to calculate statistics.
+
+        Median width, height, and position angle is adopted as a reference
+        map extent and then the width and height will be shrinked by 2 beam
+        size in each direction.
+
+        Arg:
+            raster_infos: A list of RasterInfo to calculate region from.
+            org_direction: A measure of direction of origin for ephemeris obeject.
+            beam: Beam size dictionary of image.
+
+        Retruns:
+            Region expression string of a rotating box.
+            Returns None if no valid region of interest is defined.
+        """
+        cqa = casa_tools.quanta
+        beam_unit = cqa.getunit(beam['major'])
+        assert cqa.getunit(beam['minor']) == beam_unit
+        beam_size = numpy.sqrt(cqa.getvalue(beam['major'])*cqa.getvalue(beam['minor']))[0]
+        center_unit = 'deg'
+        angle_unit = None
+        for r in raster_infos:
+            if r is None: continue
+            angle_unit = cqa.getunit(r.scan_angle)
+            break
+        if angle_unit is None:
+            LOG.warn('No valid raster information available.')
+            return None
+
+        def __value_in_unit(quantity: dict, unit: str) -> float:
+            # Get value(s) of quantity in a specified unit
+            return cqa.getvalue(cqa.convert(quantity, unit))
+        def __extract_values(value: str, unit: str) -> Number:
+            # Extract valid values of specified attributes in list
+            return [__value_in_unit(getattr(r, value), unit) for r in raster_infos if r is not None]
+
+        rep_width = numpy.nanmedian(__extract_values('width', beam_unit))
+        rep_height = numpy.nanmedian(__extract_values('height', beam_unit))
+        rep_angle = numpy.nanmedian([cqa.getvalue(r.scan_angle) for r in raster_infos if r is not None])
+        center_ra = numpy.nanmedian(__extract_values('center_ra', center_unit))
+        center_dec = numpy.nanmedian(__extract_values('center_dec', center_unit))
+        width = rep_width - beam_size*2.
+        height = rep_height - beam_size*2.
+        if width <=0 or height <=0: # No valid region selected.
+            return None
+        if org_direction is not None:
+            (center_ra, center_dec) = direction_utils.direction_recover(center_ra,
+                                                                        center_dec,
+                                                                        org_direction)
+        center = [cqa.tos(cqa.quantity(center_ra, center_unit)),
+                  cqa.tos(cqa.quantity(center_dec, center_unit))]
+
+        region = "rotbox[{}, [{}{}, {}{}], {}{}]".format(center,
+                                                         width, beam_unit,
+                                                         height, beam_unit,
+                                                         rep_angle, angle_unit)
+        return region
+
+    def get_raster_info_list(self, context: Context, infiles: List[str],
+                             antids: List[int], fieldids: List[int],
+                             spwids: List[int],
+                             datatable_dict: Dict[str, DataTable]) -> List[RasterInfo]:
+        """
+        Retrun a list of raster information.
+
+        Each raster infromation is analyzed for element wise combination of
+        infile, antenna, field, and SpW IDs in input parameter lists.
+
+        Args:
+            context: Pipeline context to work on
+            infiles: A list of MS names
+            antids: A list of antenna IDs. Must be the same lengh as infile.
+            fieldids: A list of field IDs. Must be the same lengh as infile.
+            spwids: A list of SpW IDs. Must be the same lengh as infile.
+            datatable_dict: A dictionary of MS name (key) and DataTable
+                instance (value) pair
+
+        Returns:
+            A list of RasterInfo. If raster information could not be obtained,
+            the corresponding elements in the list will be None.
+        """
+        assert len(infiles) == len(antids)
+        assert len(infiles) == len(fieldids)
+        assert len(infiles) == len(spwids)
+        raster_info_list = []
+        for (infile, antid, fieldid, spwid) in zip(infiles, antids, fieldids, spwids):
+            msobj = context.observing_run.get_ms(name=infile)
+            # Non raster data set.
+            if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
+                f = msobj.get_fields(field_id=fieldid)[0]
+                LOG.warn('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
+                raster_info_list.append(None)
+            dt = datatable_dict[msobj.basename]
+            try:
+                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
+            except Exception:
+                f = msobj.get_fields(field_id=fieldid)[0]
+                a = msobj.get_antenna(antid)[0]
+                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
+                raster_info_list.append(None)
+        assert len(infiles) == len(raster_info_list)
+        return raster_info_list
+
     def calculate_theoretical_image_rms(self, infiles, antids, fieldids, spwids,
-                                        pols, cell, bandwidth, imageunit, datatable_dict):
+                                        pols, raster_infos, cell, bandwidth,
+                                        imageunit, datatable_dict):
         """
         Calculate theoretical RMS of an image (PIPE-657).
 
@@ -999,6 +1093,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             fieldids: a list of field IDs, e.g., [1, 1]
             spwids: a list of SpW IDs, e.g., [17, 17]
             pols: a list of polarization strings, e.g., [['XX', 'YY'], ['XX', 'YY']]
+            raster_infos: a list of RasterInfo
             cell: cell size of an image
             bandwidth: channel width of an image
             imageunit: the brightness unit of image. If unit is not 'K', Jy/K factor is used to convert unit (need Jy/K factor applied in a previous stage)
@@ -1016,6 +1111,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         assert len(infiles) == len(fieldids)
         assert len(infiles) == len(spwids)
         assert len(infiles) == len(pols)
+        assert len(infiles) == len(raster_infos)
         sq_rms = 0.0
         N = 0.0
         time_unit = 's'
@@ -1025,8 +1121,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         bandwidth = numpy.abs(bandwidth)
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
-        for (infile, antid, fieldid, spwid, pol_names) in zip(infiles, antids, fieldids, spwids, pols):
-            msobj = context.observing_run.get_ms(sdutils.get_parent_ms_name(context, infile))
+        for (infile, antid, fieldid, spwid, pol_names, raster_info) in zip(infiles, antids, fieldids, spwids, pols, raster_infos):
+            msobj = context.observing_run.get_ms(name=infile)
+            callist = context.observing_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_ALL])
+            calmsobj = sdutils.match_origin_ms(callist, msobj.origin_ms)
             dd_corrs = msobj.get_data_description(spw=spwid).corr_axis
             polids = [dd_corrs.index(p) for p in pol_names if p in dd_corrs]
             field_name = msobj.get_fields(field_id=fieldid)[0].name
@@ -1034,13 +1132,17 @@ class SDImaging(basetask.StandardTaskTemplate):
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
                 LOG.warn('Unable to calculate RMS of non-Raster map. '+error_msg)
                 return failed_rms
-            LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(os.path.basename(infile),
+            LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(msobj.basename,
                                                                                      field_name,
                                                                                      spwid,
                                                                                      msobj.get_antenna(antid)[0].name,
                                                                                      str(pol_names)))
+            if raster_info is None:
+                LOG.warn('Raster scan analysis failed. Skipping further calculation.')
+                continue
+
             dt = datatable_dict[msobj.basename]
-            _index_list = common.get_index_list_for_ms(dt, [msobj.basename], [antid], [fieldid],
+            _index_list = common.get_index_list_for_ms(dt, [msobj.origin_ms], [antid], [fieldid],
                                                        [spwid])
             if len(_index_list) == 0: #this happens when permanent flag is set to all selection.
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
@@ -1068,7 +1170,6 @@ class SDImaging(basetask.StandardTaskTemplate):
             mean_tsys_per_pol = dt.getcol('TSYS').take(_index_list, axis=-1).mean(axis=-1)
             LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
             # obtain Wx, and Wy
-            raster_info = _analyze_raster_pattern(dt, msobj, fieldid, spwid, antid, polids[0])
             width = cqa.getvalue(cqa.convert(raster_info.width, ang_unit))[0]
             height = cqa.getvalue(cqa.convert(raster_info.height, ang_unit))[0]
             # obtain T_OS,f
@@ -1090,17 +1191,17 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('- total time on source = {} {}'.format(t_on_tot, time_unit))
             LOG.info('- flagged Fraction = {} %'.format(100*frac_flagged))
             # obtain calibration tables applied
-            calto = callibrary.CalTo(vis=msobj.name, field=str(fieldid))
+            calto = callibrary.CalTo(vis=calmsobj.name, field=str(fieldid))
             calst = context.callibrary.get_calstate(calto)
             # obtain T_sub,on, T_sub,off
             t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
-            sky_field = msobj.calibration_strategy['field_strategy'][fieldid]
+            sky_field = calmsobj.calibration_strategy['field_strategy'][fieldid]
             try:
                 skytab = ''
                 caltabs = context.callibrary.applied.get_caltable('ps')
                 ### For some reasons, sky caltable is not registered to calstate
                 for cto, cfrom in context.callibrary.applied.merged().items():
-                    if cto.vis == msobj.name and (cto.field == '' or fieldid in [f.id for f in msobj.get_fields(name=cto.field)]):
+                    if cto.vis == calmsobj.name and (cto.field == '' or fieldid in [f.id for f in calmsobj.get_fields(name=cto.field)]):
                         for cf in cfrom:
                             if cf.gaintable in caltabs:
                                 skytab=cf.gaintable
@@ -1113,12 +1214,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                 return failed_rms
             LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
             with casa_tools.TableReader(skytab) as tb:
+                interval_unit = tb.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
                     LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
+                    t.close()
                     return failed_rms
-                unit = t.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
-                t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(t.getcol('INTERVAL').mean(), unit), time_unit))[0]
+                try:
+                    interval = t.getcol('INTERVAL')
+                finally:
+                    t.close()
+            t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(interval.mean(), interval_unit), time_unit))[0]
             LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(t_sub_on, time_unit, t_sub_off, time_unit))
             # obtain factors by convolution function (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
@@ -1150,8 +1256,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                     t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
                     if t.nrows == 0:
                         LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
+                        t.close()
                         return failed_rms
-                    tc = t.getcol('CPARAM')
+                    try:
+                        tc = t.getcol('CPARAM')
+                    finally:
+                        t.close()
                     jy_per_k = (1./tc.mean(axis=-1).real**2).mean()
                     LOG.info('Jy/K factor = {}'.format(jy_per_k))
             ang = cqa.getvalue(cqa.convert(raster_info.scan_angle, 'rad'))[0] + 0.5*numpy.pi
@@ -1163,29 +1273,36 @@ class SDImaging(basetask.StandardTaskTemplate):
                 sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
                 N += 1.0
 
+        if N == 0:
+            LOG.warn('No rms estimate is available.')
+            return failed_rms
+
         theoretical_rms = numpy.sqrt(sq_rms)/N
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return cqa.quantity(theoretical_rms, imageunit)
 
 
-def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
+def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
+                            fieldid: int, spwid: int, antid: int) -> RasterInfo:
     """
-    Analyze raster scan pattern from pointing in DataTable
-    Parameters:
+    Analyze raster scan pattern from pointing in DataTable.
+
+    Args:
         datatable: DataTable instance
         msobj: MS class instance to process
         fieldid: a field ID to process
         spwid: an SpW ID to process
         antid: an antenna ID to process
         polid: a polarization ID to process
-    Returns a named Tuple
+    Returns: a named Tuple of RasterInfo
     """
+    origin_basename = os.path.basename(msobj.origin_ms)
     metadata = rasterutil.read_datatable(datatable)
     pflag = metadata.pflag
     ra = metadata.ra
     dec = metadata.dec
     exposure = datatable.getcol('EXPOSURE')
-    timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=msobj.basename, pol=None)
+    timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=origin_basename, pol=None)
     # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
     # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
     dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)
@@ -1193,7 +1310,24 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+    try:
+        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+    except Exception:
+        LOG.warn('Failed to detect gaps between raster scans. Fall back to time domain analysis. Result might not be correct.')
+        try:
+            dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
+            se_small = [(v[0], v[-1]) for v in dtrow_list]
+            se_large = [(v[0], v[-1]) for v in dtrow_list_large]
+            gap_r = []
+            for sl, el in se_large:
+                for i, (ss, es) in enumerate(se_small):
+                    if ss == sl:
+                        gap_r.append(i)
+                        break
+            gap_r.append(len(dtrow_list))
+        except Exception:
+            LOG.warn('Could not find gaps between raster scans. No result is produced.')
+            return None
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)
@@ -1257,7 +1391,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     # find complate raster
     num_row_int = rasterutil.find_most_frequent(num_integration)
     complete_idx = numpy.where(num_integration >= num_row_int)
-    # raster scan parameters (TODO: projection?)
+    # raster scan parameters
     row_duration = numpy.array(duration)[complete_idx].mean()
     row_delta_ra = numpy.abs(delta_ra)[complete_idx].mean()
     row_delta_dec = numpy.abs(delta_dec)[complete_idx].mean()
@@ -1266,10 +1400,15 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     sign_dec = +1.0 if delta_dec[complete_idx[0][0]] >= 0 else -1.0
     scan_angle = math.atan2(sign_dec*row_delta_dec, sign_ra*row_delta_ra)
     hight = numpy.max(height_list)
-    raster_info = RasterInfo(cqa.quantity(width, radec_unit), cqa.quantity(hight, radec_unit),
+    center = (cqa.quantity(0.5*(center_ra.min()+center_ra.max()), radec_unit),
+              cqa.quantity(0.5*(center_dec.min()+center_dec.max()), radec_unit))
+    raster_info = RasterInfo(center[0], center[1],
+                             cqa.quantity(width, radec_unit), cqa.quantity(hight, radec_unit),
                              cqa.quantity(scan_angle, 'rad'), cqa.quantity(row_separation, radec_unit),
                              cqa.quantity(row_duration, exp_unit))
     LOG.info('Raster Information')
+    LOG.info('- Map Center: [{}, {}]'.format(cqa.angle(raster_info.center_ra, prec=8, form='time')[0],
+                                             cqa.angle(raster_info.center_dec, prec=8)[0]))
     LOG.info('- Scan Extent: [{}, {}] (scan direction: {})'.format(cqa.tos(raster_info.width),
                                                                    cqa.tos(raster_info.height),
                                                                    cqa.tos(raster_info.scan_angle)))
@@ -1277,3 +1416,156 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     LOG.info('- Raster row scan duration = {}'.format(cqa.tos(cqa.convert(raster_info.row_duration, 's'))))
     return raster_info
 
+def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
+    """
+    Retrun image statistics with channel and region selection.
+
+    Args:
+        imagename: Path to image to calculate statistics
+        chans: Channel range selection string, e.g., '0~110;240~300'
+        region: Region definition string.
+
+    Returns:
+        A dictionary of statistic values returned by ia.statistics.
+    """
+    LOG.info("Calculateing image statistics of chans='{}', region='{}' in {}".format(chans, region, imagename))
+    rg = casa_tools.regionmanager
+    with casa_tools.ImageReader(imagename) as ia:
+        cs = ia.coordsys()
+        try:
+            chan_sel = rg.frombcs(csys=cs.torecord(), shape=ia.shape(), chans=chans)
+        finally:
+            cs.done()            
+            rg.done()
+        subim = ia.subimage(region=chan_sel)
+        try:
+            stat = subim.statistics(region=region)
+        finally:
+            subim.close()
+    return stat
+
+### Utility methods to calcluate channel ranges
+def convert_frequency_ranges_to_channels(range_list: List[Tuple[float,float]],
+                                    cs, num_chan: int) -> List[Tuple[int,int]]:
+    """
+    Convert frequency ranges to channel ones.
+
+    Args:
+        range_list: A list of min/max frequency ranges,
+            e.g., [[fmin0,fmax0],[fmin1, fmax1],...]
+        cs: A coordinate system to convert world values to pixel one
+        num_chan: the number of channels in frequency axis
+    Returns:
+        A list of min/max channels, e.g., [[imin0, imax0],[imin1,imax1],...]
+    """
+    faxis = cs.findaxisbyname('spectral')
+    ref_world = cs.referencevalue()['numeric']
+    LOG.info("Aggregated spectral line frequency ranges of combined image = {}".format(str(range_list)))
+    channel_ranges = [] # should be list for sort
+    for segment in range_list:
+        ref_world[faxis] = segment[0]
+        start_chan = cs.topixel(ref_world)['numeric'][faxis]
+        ref_world[faxis] = segment[1]
+        end_chan = cs.topixel(ref_world)['numeric'][faxis]
+        # handling of LSB
+        min_chan = min(start_chan, end_chan)
+        max_chan = max(start_chan, end_chan)
+        #LOG.info("#####Freq to Chan: [{:f}, {:f}] -> [{:f}, {:f}]".format(segment[0], segment[1], min_chan, max_chan))
+        if max_chan < -0.5 or min_chan > num_chan - 0.5: #out of range
+            #LOG.info("#####Omitting channel range [{:f}, {:f}]".format(min_chan, max_chan))
+            continue
+        channel_ranges.append([max(int(min_chan), 0),
+                               min(int(max_chan), num_chan-1)])
+    channel_ranges.sort()
+    return merge_ranges(channel_ranges)
+
+def convert_range_list_to_string(range_list: List[int]) -> str:
+    """
+    Convert a list of index ranges to string.
+
+    Args:
+        range_list: A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
+    Retruns:
+        A string in form, e.g., 'imin0~imax0;imin1~imax1'
+    Examples:
+        >>> convert_range_list_to_string( [5, 10, 15, 20] )
+        '5~10;15~20'
+    """
+    stat_chans = str(';').join([ '{:d}~{:d}'.format(range_list[iseg], range_list[iseg+1]) for iseg in range(0, len(range_list), 2) ])
+    return stat_chans
+
+def merge_ranges(range_list: List[Tuple[Number,Number]]) -> List[Tuple[Number,Number]]:
+    """
+    Merge overlapping ranges in range_list.
+
+    Args:
+        range_list    : a list of ranges to merge, e.g., [ [min0,max0], [min1,max1], .... ]
+                        each range in the list should be in ascending order (min0 <= max0)
+                        there is no assumption in the order of ranges, e.g., min0 w.r.t min1
+    Returns:
+        a list of merged ranges
+        e.g., [[min_merged0,max_marged0], [min_merged1,max_merged1], ....]
+    """
+    #LOG.info("#####Merge ranges: {}".format(str(range_list)))
+    num_range = len(range_list)
+    if num_range == 0:
+        return []
+    merged = [range_list[0][0:2]]
+    for i in range(1, num_range):
+        segment = range_list[i]
+        if len(segment) < 2:
+            raise ValueError("segments in range list much have 2 elements")
+        overlap = -1
+        for j in range(len(merged)):
+            if segment[1] < merged[j][0] or segment[0] > merged[j][1]:  # no overlap
+                continue
+            else:
+                overlap = j
+                break
+        if overlap < 0:
+            merged.append(segment[0:2])
+        else:
+            merged[j][0] = min(merged[j][0], segment[0])
+            merged[j][1] = max(merged[j][1], segment[1])
+    # Check if further merge is necessary
+    while len(merged) < num_range:
+        num_range = len(merged)
+        merged = merge_ranges(merged)
+    #LOG.info("#####Merged: {}".format(str(merged)))
+    return merged
+
+def invert_ranges(id_range_list: List[Tuple[int,int]],
+                  num_ids: int, edge: Tuple[int,int]) -> List[int]:
+    """
+    Return invert ID ranges.
+
+    Args:
+        id_range_list: A list of min/max ID ranges to invert. The list should
+            be sorted in the ascending order of min IDs.
+        num_ids: A number of IDs to consider
+        edge: The left and right edges to exclude
+
+    Returns:
+        A 1-d list of inverted ranges
+
+    Examples:
+        >>> id_range_list = [[5,10],[15,20]]
+        >>> num_ids = 30
+        >>> edge = (2,3)
+        >>> invert_ranges(id_range_list, num_ids, edge)
+        [2, 4, 11, 14, 21, 26]
+    """
+    inverted_list = []
+    if len(id_range_list) == 0:
+        inverted_list = [edge[0], num_ids-1-edge[1]]
+    else:
+        if id_range_list[0][0] > edge[0]:
+            inverted_list.extend([edge[0], id_range_list[0][0]-1])
+        for j in range(len(id_range_list)-1):
+            start_include = id_range_list[j][1]+1
+            end_include = id_range_list[j+1][0]-1
+            if start_include <= end_include:
+                inverted_list.extend([start_include, end_include])
+        if id_range_list[-1][1] + 1 < num_ids-1-edge[1]:
+            inverted_list.extend([id_range_list[-1][1] + 1, num_ids-1-edge[1]])
+    return inverted_list

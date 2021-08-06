@@ -1,3 +1,4 @@
+import copy
 import logging
 import sys
 import time
@@ -298,9 +299,14 @@ class CapturingHandler(logging.Handler):
             exc_type, exc_value, tb = record.exc_info
             record.exc_info = (exc_type, exc_value, Traceback(tb))
 
-        record.msg = self.format(record)
+        # Copy record and call format method to avoid multiple formatting
+        # which causes an error. This is necessary because CapturingHandler.emit
+        # could be called against the same instance multiple times
+        # (e.g., when task calls are nested by subtask calls).
+        rec_copy = copy.deepcopy(record)
+        rec_copy.msg = self.format(rec_copy)
 
-        self.buffer.append(record)
+        self.buffer.append(rec_copy)
 
     def flush(self):
         """

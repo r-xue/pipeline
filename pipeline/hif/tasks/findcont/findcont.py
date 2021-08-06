@@ -4,12 +4,13 @@ import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -20,8 +21,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     parallel = vdp.VisDependentProperty(default='automatic')
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_weighting = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -31,7 +35,7 @@ class FindContInputs(vdp.StandardInputs):
         # objects from the inputs' clean_list.
         return copy.deepcopy(self.context.clean_list_pending)
 
-    def __init__(self, context, output_dir=None, vis=None, target_list=None, mosweight=None,
+    def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
                  hm_perchanweightdensity=None, hm_weighting=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
@@ -39,7 +43,7 @@ class FindContInputs(vdp.StandardInputs):
         self.vis = vis
 
         self.target_list = target_list
-        self.mosweight = mosweight
+        self.hm_mosweight = hm_mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_weighting = hm_weighting
         self.parallel = parallel
@@ -47,7 +51,7 @@ class FindContInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(FindContInputs)
+#api.ImagingMeasurementSetsPreferred.register(FindContInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_findcont')
@@ -119,9 +123,9 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Determine the gridder mode
                     image_heuristics = target['heuristics']
                     gridder = image_heuristics.gridder(target['intent'], target['field'])
-                    if inputs.mosweight not in (None,):
-                        mosweight = inputs.mosweight
-                    elif target['mosweight'] not in (None,):
+                    if inputs.hm_mosweight not in (None, ''):
+                        mosweight = inputs.hm_mosweight
+                    elif target['mosweight'] not in (None, ''):
                         mosweight = target['mosweight']
                     else:
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
@@ -309,6 +313,18 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Determine the representative source name and spwid for the ms
                     repsource_name, repsource_spwid = ref_ms.get_representative_source_spw()
 
+                    # Determine reprBW mode
+                    repr_target, _, repr_spw, _, reprBW_mode, real_repr_target, _, _, _, _ = image_heuristics.representative_target()
+                    real_repr_spw = context.observing_run.virtual2real_spw_id(int(repr_spw), ref_ms)
+                    real_repr_spw_obj = ref_ms.get_spectral_window(real_repr_spw)
+
+                    if reprBW_mode in ['nbin', 'repr_spw']:
+                        # Approximate reprBW with nbin
+                        physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
+                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+                    else:
+                        reprBW_nbin = 1
+
                     spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
                     (cont_range, png, single_range_channel_fraction, warning_strings) = \
@@ -317,7 +333,8 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            psf_cube='%s.psf' % findcont_basename,
                                                            single_continuum=single_continuum,
                                                            is_eph_obj=image_heuristics.is_eph_obj(target['field']),
-                                                           ref_ms_name=ref_ms.name)
+                                                           ref_ms_name=ref_ms.name,
+                                                           nbin=reprBW_nbin)
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '

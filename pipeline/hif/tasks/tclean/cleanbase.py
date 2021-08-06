@@ -12,6 +12,8 @@ import pipeline.infrastructure.imageheader as imageheader
 from pipeline import environment
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import logging
+
 from .resultobjects import TcleanResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -35,7 +37,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     intent = vdp.VisDependentProperty(default='')
     iter = vdp.VisDependentProperty(default=0)
     mask = vdp.VisDependentProperty(default='')
-    hm_dogrowprune = vdp.VisDependentProperty(default=True)
+    hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_masking = vdp.VisDependentProperty(default='auto')
@@ -43,7 +45,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
-    hm_fastnoise = vdp.VisDependentProperty(default=True)
+    hm_fastnoise = vdp.VisDependentProperty(default=None)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -51,7 +53,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=5000)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_npixels = vdp.VisDependentProperty(default=0)
     nterms = vdp.VisDependentProperty(default=None)
     orig_specmode = vdp.VisDependentProperty(default='')
@@ -413,7 +415,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif growiterations is not None:
                 tclean_job_parameters['growiterations'] = growiterations
 
-            if inputs.hm_dogrowprune != -999:
+            if inputs.hm_dogrowprune not in (None, ''):
                 tclean_job_parameters['dogrowprune'] = inputs.hm_dogrowprune
             elif dogrowprune is not None:
                 tclean_job_parameters['dogrowprune'] = dogrowprune
@@ -423,10 +425,16 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif minpercentchange is not None:
                 tclean_job_parameters['minpercentchange'] = minpercentchange
 
-            tclean_job_parameters['fastnoise'] = fastnoise
+            if inputs.hm_fastnoise not in (None, ''):
+                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            elif fastnoise is not None:
+                tclean_job_parameters['fastnoise'] = fastnoise
 
         else:
-            tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            if inputs.hm_fastnoise not in (None, ''):
+                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            else:
+                tclean_job_parameters['fastnoise'] = True
             if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
@@ -531,14 +539,14 @@ class CleanBase(basetask.StandardTaskTemplate):
             if usepointing is not None:
                 tclean_job_parameters['usepointing'] = usepointing
 
-        if inputs.mosweight is not None:
+        if inputs.mosweight not in (None, ''):
             tclean_job_parameters['mosweight'] = inputs.mosweight
         else:
             mosweight = inputs.heuristics.mosweight(inputs.intent, inputs.field)
             if mosweight is not None:
                 tclean_job_parameters['mosweight'] = mosweight
 
-        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
+        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma, inputs.hm_masking)
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
         tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
@@ -557,6 +565,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Record last tclean command for weblog
         result.set_tclean_command(str(job))
 
+        tclean_stopcode_ignore = inputs.heuristics.tclean_stopcode_ignore(iter, inputs.hm_masking)
         if inputs.niter > 0:
             tclean_stopcode = tclean_result['stopcode']
             tclean_iterdone = tclean_result['iterdone']
@@ -567,11 +576,16 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_totalflux = tclean_result['summaryminor'][2, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
+
+            if tclean_stopcode == 0 and tclean_iterdone > 0:
+                LOG.warning('tclean exit status 0 for Field: %s SPW: %s: the image may not be cleaned as expected.' %
+                            (inputs.field, inputs.spw))
+
             if tclean_stopcode == 1:
                 result.error = CleanBaseError('tclean reached niter limit. Field: %s SPW: %s' %
                                               (inputs.field, inputs.spw), 'Reached niter limit')
-                LOG.warning('tclean reached niter limit of %d for %s / spw%s !' %
-                            (tclean_niter, utils.dequote(inputs.field), inputs.spw))
+                LOG.log(logging.INFO if tclean_stopcode in tclean_stopcode_ignore else logging.WARNING,
+                        'tclean reached niter limit of {} for {} / spw{} / iter{} !'.format(tclean_niter, utils.dequote(inputs.field), inputs.spw, iter))
 
             result.set_tclean_stopcode(tclean_stopcode)
             result.set_tclean_stopreason(tclean_stopcode)
@@ -585,11 +599,14 @@ class CleanBase(basetask.StandardTaskTemplate):
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                                               (tclean_stopcode, inputs.field, inputs.spw),
                                               'tclean stopped to prevent divergence.')
-                LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
-                            (tclean_stopcode, inputs.field, inputs.spw))
+                LOG.log(logging.INFO if tclean_stopcode in tclean_stopcode_ignore else logging.WARNING,
+                        'tclean stopped to prevent divergence (stop code {}). Field: {} SPW: {} iter{} !'.format(tclean_stopcode, inputs.field, inputs.spw, iter))
 
         # Collect images to be examined and stored in TcleanResult
         im_names = {}
+
+        # Using virtual spw setups for all interferometry pipelines
+        virtspw = True
 
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             im_names['model'] = model_name
@@ -621,9 +638,10 @@ class CleanBase(basetask.StandardTaskTemplate):
                     name_list = ['{}.{}'.format(im_name, mterm) for mterm in ['tt0', 'tt1']]
             for name in name_list:
                 if os.path.exists(name):
-                    imageheader.set_miscinfo(name=name, spw=inputs.spw, field=inputs.field,
+                    imageheader.set_miscinfo(name=name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
                                              type=im_type, iter=iter,
-                                             intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                             intent=inputs.intent, specmode=inputs.orig_specmode,
+                                             robust=inputs.robust, weighting=inputs.weighting,
                                              is_per_eb=inputs.is_per_eb,
                                              context=context)
             # Store in TcleanResult

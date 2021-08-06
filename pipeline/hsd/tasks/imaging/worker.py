@@ -1,6 +1,7 @@
 import os
 import math
 import shutil
+from typing import Dict, List, NewType, Optional, Tuple
 
 import numpy
 
@@ -10,33 +11,51 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable
+from pipeline.domain import DataTable, DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
 from . import resultobjects
 from .. import common
-from ..common import utils
-from ..common import utils as sdutils
 from ..common import direction_utils as dirutil
+from ..common import observatory_policy
+from ..common import utils
 
 LOG = infrastructure.get_logger(__name__)
 
+Quantity = NewType('Quantity', Dict)
+Angle = NewType('Angle', Dict)
+Direction = NewType('Direction', Dict)
 
-def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list):
+
+def ImageCoordinateUtil(
+    context: Context,
+    ms_names: List[str],
+    ant_list: List[Optional[int]],
+    spw_list: List[int],
+    fieldid_list: List[int]
+) -> Tuple[str, Angle, Angle, int, int, Direction]:
     """
-    An utility function to calculate spatial coordinate of image for ALMA
+    Calculate spatial coordinate of image.
 
     Items in ant_list can be None, which indicates that the function will take into
     account pointing data from all the antennas in MS.
+
+    Args:
+        context: Pipeline context
+        ms_names: List of MS names
+        ant_list: List of antenna ids. List elements could be None.
+        spw_list: List of spw ids.
+        fieldid_list: List of field ids.
+    Returns:
+        Six tuple containing phasecenter, horizontal and vertical cell sizes,
+        horizontal and vertical number of pixels, and direction of the origin
+        (for moving targets).
     """
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
 
-    idx = utils.get_parent_ms_idx(context, ms_names[0])
-    if idx >= 0 and idx < len(context.observing_run.measurement_sets):
-        ref_msobj = context.observing_run.measurement_sets[idx]
-    else:
-        raise ValueError("The reference ms, %s, not registered to context" % ms_names[0])
+    ref_msobj = context.observing_run.get_ms(ms_names[0])
     ref_fieldid = fieldid_list[0]
     ref_spw = spw_list[0]
     source_name = ref_msobj.fields[ref_fieldid].name
@@ -45,17 +64,10 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     is_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_eph_obj
     is_known_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_known_eph_obj
 
+    imaging_policy = observatory_policy.get_imaging_policy(context)
+
     # qa tool
     qa = casa_tools.quanta
-    ### ALMA specific part ###
-    # the number of pixels per beam
-    grid_factor = 9.0
-    # recommendation by EOC
-    fwhmfactor = 1.13
-    # hard-coded for ALMA-TP array
-    diameter_m = 12.0
-    obscure_alma = 0.75
-    ### END OF ALMA part ###
 
     # msmd-less implementation
     spw = ref_msobj.get_spectral_window(ref_spw)
@@ -67,7 +79,8 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         me_center = fields[0].mdirection
 
     # cellx and celly
-    theory_beam_arcsec = sdbeamutil.primaryBeamArcsec(freq_hz, diameter_m, obscure_alma, 10.0, fwhmfactor=fwhmfactor)
+    theory_beam_arcsec = imaging_policy.get_beam_size_arcsec(ref_msobj, ref_spw)
+    grid_factor = imaging_policy.get_beam_size_pixel()
     grid_size = qa.quantity(theory_beam_arcsec, 'arcsec')
     cellx = qa.div(grid_size, grid_factor)
     celly = cellx
@@ -76,21 +89,20 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     LOG.info('cell=%s' % (qa.tos(cellx)))
 
     # nx, ny and center
-    parent_mses = [utils.get_parent_ms_name(context, name) for name in ms_names]
     ra0 = []
     dec0 = []
     outref = None
     org_direction = None
-    for vis, ant_id, field_id, spw_id in zip(parent_mses, ant_list, fieldid_list, spw_list):
+    for vis, ant_id, field_id, spw_id in zip(ms_names, ant_list, fieldid_list, spw_list):
 
+        msobj = context.observing_run.get_ms(vis)
         # get first org_direction if source if ephemeris source
         # if is_eph_obj and org_direction==None:
         if ( is_eph_obj or is_known_eph_obj ) and org_direction==None:
             # get org_direction
-            msobj = context.observing_run.get_ms(vis)
             org_direction = msobj.get_fields(field_id)[0].source.org_direction
 
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(vis))
+        datatable_name = utils.get_data_table_path(context, msobj)
         datatable = DataTable(name=datatable_name, readonly=True)
 
         if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
@@ -101,15 +113,14 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
 
         if ant_id is None:
             # take all the antennas into account
-            msobj = context.observing_run.get_ms(vis)
             num_antennas = len(msobj.antennas)
-            _vislist = [vis for _ in range(num_antennas)]
+            _vislist = [msobj.origin_ms for _ in range(num_antennas)]
             _antlist = [i for i in range(num_antennas)]
             _fieldlist = [field_id for _ in range(num_antennas)]
             _spwlist = [spw_id for _ in range(num_antennas)]
             index_list = sorted(common.get_index_list_for_ms(datatable, _vislist, _antlist, _fieldlist, _spwlist))
         else:
-            index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
+            index_list = sorted(common.get_index_list_for_ms(datatable, [msobj.origin_ms], [ant_id], [field_id], [spw_id]))
 
         # if is_eph_obj:
         if is_eph_obj or is_known_eph_obj:
@@ -217,6 +228,10 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     Inputs for imaging worker
     NOTE: infile should be a complete list of MSes
     """
+    # Search order of input vis
+    processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     outfile = vdp.VisDependentProperty(default='')
     mode = vdp.VisDependentProperty(default='LINE')
@@ -245,8 +260,8 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         super(SDImagingWorkerInputs, self).__init__()
 
         self.context = context
-        self.infiles = infiles
-        self.outfile = outfile
+        self.infiles = infiles # input MS names
+        self.outfile = outfile # output image name
         self.mode = mode
         self.antids = antids
         self.spwids = spwids
@@ -277,14 +292,13 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         spwid_list = inputs.spwids
         fieldid_list = inputs.fieldids
         imagemode = inputs.mode
-        file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
-        mses = context.observing_run.measurement_sets
-        v_spwids = [context.observing_run.real2virtual_spw_id(i, mses[j]) for i, j in zip(spwid_list, file_index)]
-        rep_ms = mses[file_index[0]]
+        mses = [context.observing_run.get_ms(name) for name in infiles]
+        v_spwids = [context.observing_run.real2virtual_spw_id(i, ms) for i, ms in zip(spwid_list, mses)]
+        rep_ms = mses[0]
         ant_name = rep_ms.antennas[antid_list[0]].name
         source_name = rep_ms.fields[fieldid_list[0]].clean_name
         phasecenter, cellx, celly, nx, ny, org_direction = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
-                                                                fieldid_list)
+                                                                                            fieldid_list)
 
         status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode, edge, phasecenter,
                                   cellx, celly, nx, ny)
@@ -321,7 +335,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         if coord_set:
             return params
         else:
-            params = ALMAImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
+            params = ImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
             if not params:
                 raise RuntimeError( "No valid data" )
             return params
@@ -329,12 +343,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
     def _do_imaging(self, infiles, antid_list, spwid_list, fieldid_list, imagename, imagemode, edge, phasecenter, cellx,
                     celly, nx, ny):
         context = self.inputs.context
-        is_nro = sdutils.is_nro(context)
-        idx = utils.get_parent_ms_idx(context, infiles[0])
-        if idx >= 0 and idx < len(context.observing_run.measurement_sets):
-            reference_data = context.observing_run.measurement_sets[idx]
-        else:
-            raise ValueError("The reference ms, %s, not registered to context" % infiles[0])
+        reference_data = context.observing_run.get_ms(infiles[0])
         ref_spwid = spwid_list[0]
 
         LOG.debug('Members to be processed:')
@@ -426,12 +435,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         truncate = gwidth = jwidth = -1  # defaults (not used)
 
         # PIPE-689: convsupport should be 3 for NRO Pipeline
-        if is_nro:
-            convsupport = 3
-        else:
-            convsupport = 6
+        imaging_policy = observatory_policy.get_imaging_policy(context)
+        convsupport = imaging_policy.get_convsupport()
 
-#         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
 
         # phasecenter=TRACKFIELD only for sources with ephemeris table

@@ -225,7 +225,7 @@ class ImageParamsHeuristics(object):
                         fintents_list = [fld.intents for fld in fields if utils.dequote(fld.name) == utils.dequote(f)]
                         for fintents in fintents_list:
                             for fintent in fintents:
-                                field_intent_result.update((f, fintent))
+                                field_intent_result.update([(f, fintent)])
 
         # eliminate redundant copies of field/intent keys that map to the
         # same data - to prevent duplicate images being produced
@@ -1844,7 +1844,7 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET'):
         """Adjustment of number of cleaning iterations due to mask size.
 
         Circular mask is assumed with a radius equal to mask_frac_rad times the longest image dimension
@@ -1897,6 +1897,10 @@ class ImageParamsHeuristics(object):
                      '' % (old_niter, new_niter))
 
         return new_niter
+
+    def niter_by_iteration(self, iteration, hm_masking, niter):
+        """Tclean niter heuristic at each iteration."""
+        return niter
 
     def niter(self):
         return None
@@ -2048,6 +2052,10 @@ class ImageParamsHeuristics(object):
         # the default is set to False here.
         return False
 
+    def tclean_stopcode_ignore(self, iteraton, hm_masking):
+        """tclean stop code(s) to be ignored for warning messages."""
+        return []
+
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
 
         """Determine if another tclean iteration is necessary."""
@@ -2064,8 +2072,8 @@ class ImageParamsHeuristics(object):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_nsigma):
-
+    def nsigma(self, iteration, hm_nsigma, hm_masking):
+        """Tclean nsigma parameter heuristics."""
         return hm_nsigma
 
     def savemodel(self, iteration):

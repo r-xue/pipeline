@@ -50,8 +50,8 @@ def clean_extendable_keys(data, key, num_keys=None):
 
 
 # Add information to image header
-def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, intent=None, specmode=None,
-                 robust=None, is_per_eb=None, context=None):
+def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, type=None, iter=None, intent=None, specmode=None,
+                 robust=None, weighting=None, is_per_eb=None, context=None):
     """Define miscellaneous image information."""
     if name == '':
         return
@@ -77,7 +77,15 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
                 ]
             else:
                 spw_names = ['N/A']
+            # Write spw IDs. For some observatories these are virtual IDs because of
+            # changing real IDs for the same frequency setup between MSes. In that case
+            # we also write the "virtspw" and "spwisvrt" keywords.
             info['spw'] = unique_spws
+            if virtspw:
+                info['virtspw'] = unique_spws
+                info['spwisvrt'] = True
+            else:
+                info['spwisvrt'] = False
             info['nspwnam'] = len(spw_names)
             for i, spw_name in enumerate(spw_names):
                 info['spwnam{:02d}'.format(i+1)] = spw_name
@@ -118,6 +126,9 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
 
         if robust is not None:
             info['robust'] = robust
+
+        if weighting is not None:
+            info['weight'] = weighting
 
         if is_per_eb is not None:
             info['per_eb'] = is_per_eb

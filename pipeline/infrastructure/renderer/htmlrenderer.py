@@ -351,6 +351,7 @@ class T1_1Renderer(RendererBase):
         iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
         iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
         iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]
+        iers_predict_last_date = environment.iers_info.info["IERSpredict_last"]
         iers_info = environment.iers_info
         # remove unnecessary precision for execution duration
         dt = exec_end - exec_start
@@ -469,6 +470,7 @@ class T1_1Renderer(RendererBase):
             'iers_eop_2000_version': iers_eop_2000_version,
             'iers_eop_2000_last_date': iers_eop_2000_last_date,
             'iers_predict_version': iers_predict_version,
+            'iers_predict_last_date': iers_predict_last_date,
             'iers_info': iers_info,
             'array_names': utils.commafy(array_names),
             'exec_start': exec_start_fmt,
@@ -624,7 +626,13 @@ class T1_3MRenderer(RendererBase):
             warning_msgs = utils.get_logrecords(results_list, logging.WARNING)
             tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
-            if 'applycal' in get_task_description(result, context):
+        # Update flag table (search from the last to the first task)
+        flag_update_tasks = ['applycal', 'hsd_blflag']
+        for result in context.results[-1::-1]:
+            task_description = get_task_description(result, context)
+            update_flag_table = any([t in task_description for t in flag_update_tasks])
+            if update_flag_table:
+                LOG.debug('Updating flagging summary table by results in {}'.format(task_description))
                 try:
                     for resultitem in result:
                         vis = os.path.basename(resultitem.inputs['vis'])
@@ -658,6 +666,7 @@ class T1_3MRenderer(RendererBase):
                             flagtable['Source name: '+ field + ', Intents: ' + intents] = fieldtable
 
                         flagtables[ms.basename] = flagtable
+                    break
 
                 except:
                     LOG.debug('No flag summary table available yet from applycal')

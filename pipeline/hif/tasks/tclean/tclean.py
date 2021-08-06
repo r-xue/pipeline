@@ -7,18 +7,20 @@ import shutil
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pipelineqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
+from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
 from .vlassmaskthresholdsequence import VlassMaskThresholdSequence
@@ -29,6 +31,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class TcleanInputs(cleanbase.CleanBaseInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     # simple properties ------------------------------------------------------------------------------------------------
 
     calcsb = vdp.VisDependentProperty(default=False)
@@ -180,7 +185,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(TcleanInputs)
+#api.ImagingMeasurementSetsPreferred.register(TcleanInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_tclean')
@@ -282,9 +287,12 @@ class Tclean(cleanbase.CleanBase):
         if inputs.deconvolver in (None, ''):
             inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw)
 
-        # Determine weighting and perchanweightdensity
+        # Determine weighting
         if inputs.weighting in (None, ''):
             inputs.weighting = self.image_heuristics.weighting(inputs.specmode)
+
+        # Determine perchanweightdensity
+        if inputs.hm_perchanweightdensity in (None, ''):
             inputs.hm_perchanweightdensity = self.image_heuristics.perchanweightdensity(inputs.specmode)
 
         # Determine nterms
@@ -583,6 +591,11 @@ class Tclean(cleanbase.CleanBase):
                                                             gridder=inputs.gridder, threshold=threshold,
                                                             sensitivity=sensitivity, niter=inputs.niter)
         # Auto-boxing
+        elif inputs.hm_masking == 'auto' and self.image_heuristics.imaging_mode == 'VLA':
+            sequence_manager = VlaAutoMaskThresholdSequence(multiterm=multiterm,
+                                                            gridder=inputs.gridder, threshold=threshold,
+                                                            sensitivity=sensitivity, niter=inputs.niter)
+        # Auto-boxing
         elif inputs.hm_masking == 'auto':
             sequence_manager = AutoMaskThresholdSequence(multiterm=multiterm,
                                                          gridder=inputs.gridder, threshold=threshold,
@@ -766,7 +779,7 @@ class Tclean(cleanbase.CleanBase):
             new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
                 self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
+            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
 
             seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                     self.pblimit_cleanmask, iteration=iteration)
@@ -959,7 +972,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
-                                                           residual_max, new_threshold, residual_robust_rms)
+                                                           residual_max, new_threshold, residual_robust_rms, intent=inputs.intent)
         sequence_manager.niter = new_niter
 
         # Save corrected sensitivity in iter0 result object for 'cube' and
@@ -990,10 +1003,6 @@ class Tclean(cleanbase.CleanBase):
             else:
                 new_cleanmask = '%s.iter%s.cleanmask' % (rootname, iteration)
 
-            threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
-            savemodel = self.image_heuristics.savemodel(iteration)
-
             # perform an iteration.
             if (inputs.specmode == 'cube') and (not inputs.cleancontranges):
                 seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
@@ -1008,13 +1017,18 @@ class Tclean(cleanbase.CleanBase):
             new_pname = '%s.iter%s' % (rootname, iteration)
             self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
                                ignore='mask' if do_not_copy_mask else None)
+            
+            threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
+            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
+            savemodel = self.image_heuristics.savemodel(iteration)
+            niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
             LOG.info('    Threshold %s', threshold)
-            LOG.info('    Niter %s', seq_result.niter)
+            LOG.info('    Niter %s', niter)
 
-            result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=seq_result.niter, nsigma=nsigma,
+            result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=nsigma,
                                     threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
                                     result=result)
 
@@ -1142,6 +1156,7 @@ class Tclean(cleanbase.CleanBase):
                                                   width=inputs.width,
                                                   weighting=inputs.weighting,
                                                   robust=inputs.robust,
+                                                  mosweight=inputs.mosweight,
                                                   uvtaper=inputs.uvtaper,
                                                   restoringbeam=inputs.restoringbeam,
                                                   iter=iternum,
@@ -1229,10 +1244,13 @@ class Tclean(cleanbase.CleanBase):
         self._executor.execute(job)
         assert os.path.exists(outfile)
 
+        # Using virtual spw setups for all interferometry pipelines
+        virtspw = True
+
         # Update the metadata in the MOM8_FC image.
-        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw,
+        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw, virtspw=virtspw,
                                  field=self.inputs.field, iter=iter, type=mom_type,
-                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                 intent=self.inputs.intent, specmode=self.inputs.orig_specmode,
                                  context=context)
 
     # Calculate a "mom0_fc" and "mom8_fc" image: this is a moment 0 and 8

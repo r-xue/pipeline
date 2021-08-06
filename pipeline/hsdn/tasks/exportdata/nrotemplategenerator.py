@@ -5,6 +5,7 @@ import os
 
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
+import pipeline.hsd.tasks.common.observatory_policy as observatory_policy
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -83,21 +84,6 @@ def generate_csv(context, datafile):
     return os.path.exists(datafile)
 
 
-def split_template(s):
-    separator = '##############################################'
-
-    lines = s.split('\n')
-
-    _lineno = [i for i, line in enumerate(lines) if line.startswith(separator)]
-    assert len(_lineno) == 1
-    lineno = _lineno[0]
-
-    config_part = '\n'.join(lines[:lineno])
-    script_part = '\n'.join(lines[lineno + 1:])
-
-    return config_part, script_part
-
-
 def generate_script(context, scriptname, configname):
     tmp = get_template('template.txt')
     template = generate_template(tmp)
@@ -162,6 +148,8 @@ def generate_script(context, scriptname, configname):
     vis = myms.basename
     antennalist = [a.id for a in myms.antennas]
     source = myms.get_fields(intent='TARGET')[0].clean_name
+    imaging_policy = observatory_policy.get_imaging_policy(context)
+    convsupport = imaging_policy.get_convsupport()
 
     s = template.safe_substitute(processspw=processspw,
                                  baselinerange=blrange,
@@ -170,14 +158,12 @@ def generate_script(context, scriptname, configname):
                                  cell=cell,
                                  phasecenter=phasecenter,
                                  imsize=imsize,
+                                 convsupport=convsupport,
                                  vis=vis,
                                  antennalist=antennalist,
                                  source=source,
                                  config=os.path.basename(configname))
 
-    config_part, script_part = split_template(s)
-
-    export_template(scriptname, script_part)
-    export_template(configname, config_part)
+    export_template(scriptname, s)
 
     return os.path.exists(scriptname) and os.path.exists(configname)

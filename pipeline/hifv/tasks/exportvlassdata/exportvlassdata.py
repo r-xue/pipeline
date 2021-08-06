@@ -4,6 +4,7 @@ import fnmatch
 import os
 import shutil
 import tarfile
+import re
 import pyfits
 
 import pipeline as pipeline
@@ -191,7 +192,17 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         fits_list = []
         for image in images_list:
             fitsfile = os.path.join(inputs.products_dir, image + '.fits')
+
+            # PIPE-1182: Strip stage number off exported image fits files
+            #   Look for "sX_Y.", where X and Y are one or more digits at the start of the image name
+            pattern = '^s\d+_\d*\.'
+            mm = re.search(pattern, image)
+            if mm:
+                LOG.info(f'Removing "{mm.group()}" from "{image}" before exporting to FITS.')
+                fitsfile = fitsfile.replace(mm.group(), '')
+
             task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile)
+
             self._executor.execute(task)
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
@@ -688,14 +699,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 header['radesys'] = 'ICRS'
 
             # OBJECT
-            # We assume that the FITS name follows the convention described in PIPE-968, and directly
-            # extract the 'OBJECT' name (first FIELD name of the image) from it.
+            # We assume that the FITS name follows the convention described in PIPE-968 (minus the stage
+            #    prefixes) and directly extract the 'OBJECT' name (first FIELD name of the image) from it.
+
             filename_components = os.path.basename(fitsname).split('.')
             object_name = ''
-            if img_mode.startswith('VLASS-QL'):
-                object_name = filename_components[4]
-            if img_mode.startswith('VLASS-SE'):
-                object_name = filename_components[5]
+            object_name = filename_components[4]
             if object_name != '' and header['object'].upper() != object_name.upper():
                 header['object'] = object_name
 

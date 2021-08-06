@@ -160,7 +160,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         with casa_tools.ImageReader(src) as image:
             info = image.miscinfo()
             info['type'] = masktype
-            info['spw'] = spw
+            info['virtspw'] = spw
             info['field'] = field
             image.setmiscinfo(info)
 
@@ -172,7 +172,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         fullsize_relpath = os.path.relpath(plot_obj.abspath, context.report_dir)
         thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
-        title = 'Detected continuum ranges for %s spw %s' % (field, spw)
+        title = 'Mask used for spectrum for %s spw %s' % (field, spw)
 
         html_args = {
             'fullsize': fullsize_relpath,

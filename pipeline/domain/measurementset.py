@@ -1,44 +1,93 @@
+"""Provide a class to store logical representation of MeasurementSet."""
 import collections
 import contextlib
 import itertools
 import operator
 import os
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+if TYPE_CHECKING: # Avoid circular import. Used only for type annotation.
+    from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
+
 from . import measures
 from . import spectralwindow
+from .antennaarray import AntennaArray
+from .datatype import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class MeasurementSet(object):    
-    def __init__(self, name, session=None):
-        self.name = name
-        self.array_name = None
-        self.representative_target = (None, None, None)
-        self.representative_window = None
-        self.science_goals = {}
-        self.antenna_array = None
-        self.data_descriptions = []
-        self.spectral_windows = []
-        self.spectralspec_spwmap = {}
-        self.fields = []
-        self.states = []
-        self.reference_spwmap = None
-        self.phaseup_spwmap = None
-        self.combine_spwmap = None
-        self.derived_fluxes = None
-        self.flagcmds = []
-        self.session = session
-        self.filesize = self._calc_filesize() 
-        self.is_imaging_ms = False
-        self.is_line_ms = False
-        self.work_data = name
+class MeasurementSet(object):
+    """
+    A class to store logical representation of a MeasurementSet (MS).
+
+    Attributes:
+        name: A path to MeasurementSet
+        session: Session name of MS
+        antenna_array: Antenna array information
+        array_name: Name of array configuration
+        derived_fluxes: Flux measurements
+        flagcmds: A list of flag commands
+        filesize: Disk size of MS
+        representative_target: A tuple of the name of representative source,
+            frequency and bandwidth.
+        representative_window: A representative spectral window name
+        science_goals: A science goal information consists of min/max
+            acceptable angular resolution, max allowed beam ratio, sensitivity,
+            dynamic range and SB name.
+        data_descriptions: A list of DataDescription objects associated with MS
+        spectral_windows: A list of SpectralWindow objects associated with MS
+        spectralspec_spwmap: SpectralSpec mapping
+        fields: A list of Field objects associated with MS
+        states: A list of State objects associated with MS
+        reference_spwmap: Reference spectral window map
+        phaseup_spwmap: Spectral window mapping used in spwphaseup calibration
+        combine_spwmap: Spectral window mapping used to increase S/N ratio
+        data_column: A dictionary to store data type (key) and corresponding
+            data column (value)
+        reference_antenna_locked: If True, reference antenna is locked to
+            prevent modification
+        is_imaging_ms: If True, the MS is for imaging (interferometry only)
+        origin_ms: A path to the first generation MeasurementSet from which
+            the current MS is generated.
+    """
+
+    def __init__(self, name: str, session: Optional[str]=None):
+        """
+        Initialize MeasurmentSet class.
+
+        Args:
+            name: A path to MS
+            session: Session name of MS
+        """
+        self.name: str = name
+        self.session: Optional[str] = session
+        self.antenna_array: Optional[AntennaArray] = None
+        self.array_name: str = None
+        self.derived_fluxes: Optional[collections.defaultdict] = None
+        self.flagcmds: List[str] = []
+        self.filesize: measures.FileSize = self._calc_filesize()
+        self.representative_target: Tuple[Optional[str], Optional[dict],
+                                          Optional[dict]] = (None, None, None)
+        self.representative_window: Optional[str] = None
+        self.science_goals: dict = {}
+        self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
+        self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
+        self.spectralspec_spwmap: dict = {}
+        self.fields: Union[RetrieveByIndexContainer, list] = []
+        self.states: Union[RetrieveByIndexContainer, list] = []
+        self.reference_spwmap: Optional[List[int]] = None
+        self.phaseup_spwmap: Optional[List[int]] = None
+        self.combine_spwmap: Optional[List[int]] = None
+        self.is_imaging_ms: bool = False
+        self.is_line_ms: bool = False
+        self.origin_ms: str = name
+        self.data_column: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
@@ -1103,3 +1152,68 @@ class MeasurementSet(object):
         if value is None:
             value = 'session_1'
         self._session = value
+
+    def set_data_column(self, dtype: DataType, column: str,
+                        spw: Optional[str]=None, field: Optional[str]=None,
+                        overwrite: bool=False):
+        """
+        Set data type and column.
+
+        Set data type and column to MS domain object or to selected spectral
+        window and field. If both spw and field are None, data column
+        information of MS domain object is set. If both spw and field are not
+        None, data column information of both spectral windows and fields
+        selected by the string selection syntaxes are set.
+
+        Args:
+            dtype: data type to set
+            column: name of column in MS associated with the data type
+            spw: spectral window selection string
+            field: field selection string
+            overwrite: if True existing data colum is overwritten by the new
+                column. If False and if type is already associated with other
+                column, the function raises ValueError.
+
+        Raises:
+            ValueError: An error raised when the column does not exist
+                or the type is already associated with a column and would not
+                be overwritten.
+        """
+        # Check existence of the column
+        with casa_tools.TableReader(self.name) as table:
+            cols = table.colnames()
+        if column not in cols:
+            raise ValueError('Column {} does not exists in {}'.format(column, self.basename))
+        if spw is None and field is None: # Update MS domain object
+            if not overwrite and dtype in self.data_column:
+                raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+            self.data_column[dtype] = column
+            LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
+            return
+        # Update Spw
+        if spw is not None:
+            for s in self.get_spectral_windows(task_arg=spw, science_windows_only=False):
+                if not overwrite and dtype in s.data_column.keys():
+                    raise ValueError('Data type {} is already associated with {} in spw {}'.format(dtype, s.data_column[dtype], s.id))
+                s.data_column[dtype] = column
+        # Update field
+        if field is not None:
+            for f in self.get_fields(field):
+                if not overwrite and dtype in f.data_column.keys():
+                    raise ValueError('Data type {} is already associated with {} in field {}'.format(dtype, f.data_column[dtype], f.id))
+                f.data_column[dtype] = column
+
+    def get_data_column(self, dtype: DataType) -> Optional[str]:
+        """
+        Retun a column name associated with a DataType in MS domain object.
+
+        Args:
+            dtype: DataType to fetch column name for
+
+        Returns:
+            A name of column of a dtype. Returns None if dtype is not defined
+            in the MS.
+        """
+        if not (dtype in self.data_column.keys()):
+            return None
+        return self.data_column[dtype]

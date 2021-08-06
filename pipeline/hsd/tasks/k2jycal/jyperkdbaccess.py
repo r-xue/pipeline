@@ -7,6 +7,7 @@ import re
 import ssl
 import string
 import urllib
+from typing import Iterable, List
 
 import numpy
 
@@ -116,30 +117,27 @@ class ALMAJyPerKDatabaseAccessBase(object):
         if array_name != 'ALMA':
             raise RuntimeError('{} is not ALMA data'.format(basename))
 
-    def getJyPerK(self, vis):
+    def getJyPerK(self, vis: str) -> dict:
         """
-        getJyPerK returns list of Jy/K conversion factors with their
-        meta data (MS name, antenna name, spwid, and pol string).
+        Return list of Jy/K conversion factors with their meta data.
 
-        Arguments:
-            vis {str} -- Name of MS
+        Args:
+            vis: Name of MS
 
         Returns:
-            [list] -- List of Jy/K conversion factors with meta data
+            Dictionary consists of list of Jy/K conversion factors with meta data and allsuccess (True or False).
         """
         # sanity check
         self.validate(vis)
 
         # get Jy/K value from DB
         jyperk = self.get(vis)
-
+        allsuccess = jyperk['allsuccess']
+        
         # convert to pipeline-friendly format
         formatted = self.format_jyperk(vis, jyperk)
-        #LOG.info('formatted = {}'.format(formatted))
         filtered = self.filter_jyperk(vis, formatted)
-        #LOG.info('filtered = {}'.format(filtered))
-
-        return filtered
+        return {'filtered': filtered, 'allsuccess': allsuccess}
 
     def get_params(self, vis):
         raise NotImplementedError
@@ -247,8 +245,18 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
                 subparam = {'vis': vis, 'spwid': spw.id}
                 yield QueryStruct(param=params, subparam=subparam)
 
-    def access(self, queries):
+    def access(self, queries: Iterable[ResponseStruct]) -> dict:
+        """
+        Convert queries to response.
+
+        Args:
+            queries: Queries to DB
+
+        Returns:
+            Dictionary including response from DB
+        """
         data = []
+        allsuccess = True
         for result in queries:
             # response from DB
             response = result.response
@@ -268,8 +276,9 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
             antenna = response['query']['antenna']
             data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
                          'Polarization': polarization, 'factor': factor})
-
-        return {'query': '', 'data': data, 'total': len(data)}
+            allsuccess = allsuccess and response['success']
+       
+        return {'query': '', 'data': data, 'total': len(data), 'allsuccess': allsuccess}
 
     def _aux_params(self):
         return {}
@@ -285,7 +294,16 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         # subparam is vis
         yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=vis)
 
-    def access(self, queries):
+    def access(self, queries: Iterable[ResponseStruct]) -> dict:
+        """
+        Convert queries to response.
+
+        Args:
+            queries: Queries to DB
+
+        Returns:
+            response: Dictionary consists of response from DB
+        """
         responses = list(queries)
 
         # there should be only one query
@@ -294,6 +312,7 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         response = responses[0].response
         response['total'] = response['data']['length']
         response['data'] = response['data']['factors']
+        response['allsuccess'] = response['success']
         return response
 
 
@@ -369,7 +388,8 @@ def get_mean_temperature(vis):
 
 def get_mean_elevation(context, vis, antenna_id):
     dt_name = context.observing_run.ms_datatable_name
-    basename = os.path.basename(vis.rstrip('/'))
+    ms = context.observing_run.get_ms(vis)
+    basename = os.path.basename(ms.origin_ms)
     with casa_tools.TableReader(os.path.join(dt_name, basename, 'RO')) as tb:
         try:
             t = tb.query('ANTENNA=={}&&SRCTYPE==0'.format(antenna_id))

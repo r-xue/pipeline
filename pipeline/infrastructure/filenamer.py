@@ -193,21 +193,27 @@ class FileNameComponentBuilder(object):
         self._source = source_name
         return self
 
-    def spectral_window_nochan(self, window):
+    def spectral_window_nochan(self, window, virtspw=False):
         if window not in [None, 'None', '']:
             spw_inlist = window.split(',')
             spw_outlist = []
             for spw in spw_inlist:
                 item = spw.split(':')[0]
                 spw_outlist.append(item)
-            self._spectral_window = 'spw' + sort_spws(','.join(spw_outlist))
+            if virtspw:
+                self._spectral_window = 'virtspw' + sort_spws(','.join(spw_outlist))
+            else:
+                self._spectral_window = 'spw' + sort_spws(','.join(spw_outlist))
         else:
             self._spectral_window = None
         return self
 
-    def spectral_window(self, window):
+    def spectral_window(self, window, virtspw=False):
         if window not in [None, 'None', '']:
-            self._spectral_window = 'spw' + sort_spws(str(window))
+            if virtspw:
+                self._spectral_window = 'virtspw' + sort_spws(str(window))
+            else:
+                self._spectral_window = 'spw' + sort_spws(str(window))
         else:
             self._spectral_window = None
         return self
@@ -630,7 +636,11 @@ class CASALog(NamingTemplate):
 
 
 class Image(NamingTemplate):
-    def __init__(self):
+    def __init__(self, virtspw=False):
+        # If virtspw is True, the filename will contain "virtspw" instead of "spw".
+        # It was considered for PL2021, but deferred to later. In that case the
+        # above default should be changed to True.
+        self.virtspw = virtspw
         super(Image, self).__init__()
 
     def flag_marks(self, flag_marks):
@@ -669,7 +679,7 @@ class Image(NamingTemplate):
         return self
 
     def spectral_window(self, window):
-        self._associations.spectral_window(window)
+        self._associations.spectral_window(window, virtspw=self.virtspw)
         return self
 
     def specmode(self, specmode):

@@ -174,7 +174,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
             with casa_tools.ImageReader(cleanmask) as image:
-                flattened_mask_image = image.collapse(function='max', axes=[2, 3], outfile=flattened_mask)
+                flattened_mask_image = image.collapse(
+                    function='max', axes=[2, 3], outfile=flattened_mask, overwrite=True)
                 try:
                     npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), robust=False)['npts']
                     if npoints_mask.shape != (0,):
@@ -233,13 +234,13 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
                     if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
                         # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
-                        LOG.warn('Using full annulus for noise spectrum due to voluminous mask.')
+                        LOG.warn('Using full annulus for noise spectrum due to voluminous mask "%s".' % (os.path.basename(cleanmask)))
                         statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
                                                                     pb_name, pblimit_cleanmask)
                         image_stats = None
                 except Exception as e:
                     # Try full annulus as a fallback
-                    LOG.exception('Using full annulus for noise spectrum due to voluminous mask.', exc_info=e)
+                    LOG.exception('Using full annulus for noise spectrum due to voluminous mask "%s".' % (os.path.basename(cleanmask)), exc_info=e)
                     statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
                                                                 pb_name, pblimit_cleanmask)
                     image_stats = None

@@ -10,19 +10,20 @@ Think of it as a place for a new team member to look for useful bits of informat
 
 How to restore a pipeline context:
 
-```
+```python
 CASA <1>: context = h_resume(filename='last')
 ```
+
 or
 
-```
+```python
 CASA <1>: import pipeline
 CASA <2>: context = pipeline.Pipeline(context='last').context
 ```
 
 Read a result from the context:
 
-```
+```python
 CASA <1>: result = context.results[3].read()[0]
 ```
 
@@ -32,14 +33,15 @@ CASA <1>: result = context.results[3].read()[0]
 
 ### Domain Object
 
-```
+```python
 CASA <1>: import pipeline
 CASA <2>: context = pipeline.Pipeline(context='last').context
-
 CASA <3>: vis = 'myvis.ms'
 CASA <4>: m = context.observing_run.get_ms(vis)
 ```
+
 and then use the domain object to get an Spectral Window object
-```
+
+```python
 CASA <5>: spws=m.get_spectral_windows()
 ```

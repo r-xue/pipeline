@@ -3,12 +3,12 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=None,
-                  scannumber=None, intents=None, edgespw=None, fracspw=None,
-                  fracspwfps=None, online=None, fileonline=None, template=None,
-                  filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
-                  pipelinemode=None, flagbackup=None, dryrun=None,
-                  acceptresults=None):
+def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None,
+                  scan=None, scannumber=None, intents=None, edgespw=None,
+                  fracspw=None, fracspwfps=None, online=None, partialpol=None,
+                  fileonline=None, template=None, filetemplate=None, hm_tbuff=None,
+                  tbuff=None, qa0=None, qa2=None, pipelinemode=None,
+                  flagbackup=None, dryrun=None, acceptresults=None):
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

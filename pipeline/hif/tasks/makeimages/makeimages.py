@@ -2,11 +2,12 @@ import os
 import tempfile
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
@@ -19,11 +20,14 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImagesInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
-    hm_dogrowprune = vdp.VisDependentProperty(default=True)
+    hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_masking = vdp.VisDependentProperty(default='auto')
@@ -31,9 +35,9 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
-    hm_fastnoise = vdp.VisDependentProperty(default=True)
+    hm_fastnoise = vdp.VisDependentProperty(default=None)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_npixels = vdp.VisDependentProperty(default=0)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -61,7 +65,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
-                 cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
+                 cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
                  ):
@@ -92,14 +96,14 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
         self.calcsb = calcsb
-        self.mosweight = mosweight
+        self.hm_mosweight = hm_mosweight
         self.parallel = parallel
         self.overwrite_on_export = overwrite_on_export
 
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
+#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimages')
@@ -136,9 +140,10 @@ class MakeImages(basetask.StandardTaskTemplate):
             for (target, task) in task_queue:
                 try:
                     worker_result = task.get_result()
-                except exceptions.PipelineException:
+                except exceptions.PipelineException as ex:
                     result.add_result(TcleanResult(), target, outcome='failure')
-                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}'.format(target['field'], target['spw'], target['specmode']))
+                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}.\nException from hif_tclean: {!s}'.format(
+                        target['field'], target['spw'], target['specmode'], ex))
                 else:
                     # Note add_result() removes 'heuristics' from worker_result
                     heuristics = target['heuristics']
@@ -370,10 +375,13 @@ class CleanTaskFactory(object):
         if target['is_per_eb']:
             task_args['is_per_eb'] = target['is_per_eb']
 
-        if inputs.mosweight is None:
+        if inputs.hm_mosweight not in (None, ''):
+            task_args['mosweight'] = inputs.hm_mosweight
+        elif target['mosweight'] not in (None, ''):
             task_args['mosweight'] = target['mosweight']
         else:
-            task_args['mosweight'] = inputs.mosweight
+            task_args['mosweight'] = image_heuristics.mosweight(task_args['intent'], task_args['field'])
+
 
         if inputs.hm_cyclefactor not in (None, -999.0):
             # The tclean task argument was already called "cyclefactor"

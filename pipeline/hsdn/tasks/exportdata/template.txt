@@ -61,7 +61,7 @@ phasecenter = ${phasecenter}
 imsize = ${imsize}
 
 gridfunction = 'SF'
-convsupport = 6
+convsupport = ${convsupport}
 truncate = -1
 gwidth = -1
 jwidth = -1
@@ -71,23 +71,13 @@ jwidth = -1
 
 import os
 import shutil
-import casac
+import casatools
 
-try:
-    import inspect
-    filename = inspect.getframeinfo(inspect.currentframe()).filename
-    path = os.path.dirname(os.path.abspath(filename))
-    execfile(os.path.join(path, '${config}'))
-except IOError as e:
-    raise IOError('"${config}" is missing! Please check if config script is available!')
-except Exception as e:
-    print('Exception: {}'.format(str(e)))
-    raise
 
 # function to re-evaluate image mask for combined image
 def update_mask(image, weightimage):
     # image analysis tool
-    ia = casac.casac.image()
+    ia = casatools.image()
 
     # safe path to the image
     #   - escape colon which has special meaning in LEL
@@ -160,8 +150,8 @@ infile = ms_name
 
 # Define output filenames --
 if outputfile_prefix is None or len(outputfile_prefix) == 0:
-    baseline_outputfile = infile.rstrip('/') + '_bl'
-    baseline_paramfile = infile.rstrip('/') + '_blparam.txt'
+    baseline_outputfile = os.path.basename(infile.rstrip('/')) + '_bl'
+    baseline_paramfile = os.path.basename(infile.rstrip('/')) + '_blparam.txt'
 else:
     baseline_outputfile = '{}.ms_bl'.format(outputfile_prefix)
     baseline_paramfile = '{}_blparam.txt'.format(outputfile_prefix)
@@ -244,7 +234,7 @@ if Do_MakeImages:
             weightimages = ['{}.weight'.format(s) for s in validimages]
 
             # wexpr will be just a sum of images, e.g. "IM0+IM1+IM2+IM3"
-            wexpr = '+'.join(map(lambda x: 'IM{}'.format(x), range(num_images)))
+            wexpr = '+'.join(['IM{}'.format(x) for x in range(num_images)])
             immath(imagename=weightimages,
                 mode='evalexpr',
                 outfile=weightimage,
@@ -259,7 +249,7 @@ if Do_MakeImages:
                 shutil.rmtree(outputimage)
 
             # cexpr will be weighted sum of images, e.g. "(IM0*IM4+IM1*IM5+IM2*IM6+IM3+IM7)/IM8"
-            cexpr = '(' + '+'.join(map(lambda x: 'IM{}*IM{}'.format(x, x+num_images), range(num_images))) + ')/IM{}'.format(2 * num_images)
+            cexpr = '(' + '+'.join(['IM{}*IM{}'.format(x, x+num_images) for x in range(num_images)]) + ')/IM{}'.format(2 * num_images)
 
             immath(
                 imagename=imagename,
