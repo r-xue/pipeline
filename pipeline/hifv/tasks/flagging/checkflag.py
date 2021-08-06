@@ -491,20 +491,20 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode == 'bpd-vla':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             #           with an optional growflag step specified by the 'growflags' task argument
-            rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('residual', 'REAL_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('residual', 'REAL_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
-            tfcrop_standard = [('corrected', 'ABS_RL', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('corrected', 'ABS_LR', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('corrected', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('corrected', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
+            rflag_standard = [('corrected', 'ABS_RL', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LR', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('residual', 'REAL_RR', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('residual', 'REAL_LL', 5.0, {'growtime': 100., 'growfreq': 100.})]
+            tfcrop_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
             if self.inputs.growflags:
                 growflag_standard = {'growtime': 100,
                                      'growfreq': 100,
                                      'growaround': True,
-                                     'flagneartime': True,
-                                     'flagnearfreq': False}
+                                     'flagneartime': False,
+                                     'flagnearfreq': True}
 
         if self.inputs.checkflagmode == 'bpd-vlass':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
@@ -525,20 +525,20 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode == 'allcals-vla':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
             #           with an optional growflag step specified by the 'growflags' task argument
-            rflag_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('corrected', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('corrected', 'ABS_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
-            tfcrop_standard = [('corrected', 'ABS_RL', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('corrected', 'ABS_LR', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('corrected', 'ABS_RR', 3.0, {'growtime': 100., 'growfreq': 100.}),
-                               ('corrected', 'ABS_LL', 3.0, {'growtime': 100., 'growfreq': 100.})]
+            rflag_standard = [('corrected', 'ABS_RL', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LR', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_RR', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LL', 5.0, {'growtime': 100., 'growfreq': 100.})]
+            tfcrop_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
+                               ('corrected', 'ABS_LL', 4.0, {'growtime': 100., 'growfreq': 100.})]
             if self.inputs.growflags:
                 growflag_standard = {'growtime': 100,
                                      'growfreq': 100,
                                      'growaround': True,
-                                     'flagneartime': True,
-                                     'flagnearfreq': False}
+                                     'flagneartime': False,
+                                     'flagnearfreq': True}
 
         if self.inputs.checkflagmode == 'allcals-vlass':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
