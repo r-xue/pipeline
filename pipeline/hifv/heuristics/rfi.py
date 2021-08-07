@@ -243,7 +243,7 @@ def mssel_valid(vis, field='', spw='', scan='', intent='', correlation='', uvdis
     with casa_tools.MSReader(vis) as msfile:
         staql = {'field': field, 'spw': spw, 'scan': scan,
                  'scanintent': intent, 'polarization': correlation, 'uvdist': uvdist}
-        select_valid = msfile.msselect(staql, onlyparse=True)
+        select_valid = msfile.msselect(staql, onlyparse=False)
     return select_valid
 
 
@@ -262,16 +262,12 @@ def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='correct
                                          timeaverage=timeaverage, timebin=timebin, timespan=timespan,
                                          keepflags=False)
             job.execute(dry_run=False)
-            amp_range = _get_amp_range1(vis_averaged, datacolumn='data', useflags=useflags)
+            amp_range = _get_amp_range2(vis_averaged, datacolumn='data', useflags=useflags)
             shutil.rmtree(vis_averaged, ignore_errors=True)
         else:
-            if correlation == '' and uvrange == '':
-                amp_range = _get_amp_range1(vis, field=field, spw=spw, scan=scan,
-                                            intent=intent, datacolumn=datacolumn, useflags=useflags)
-            else:
-                amp_range = _get_amp_range2(vis, field=field, spw=spw, scan=scan, intent=intent, datacolumn=datacolumn,
-                                            correlation=correlation, uvrange=uvrange,
-                                            useflags=useflags)
+            amp_range = _get_amp_range2(vis, field=field, spw=spw, scan=scan, intent=intent, datacolumn=datacolumn,
+                                        correlation=correlation, uvrange=uvrange,
+                                        useflags=useflags)
     except Exception as ex:
         LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
@@ -307,7 +303,9 @@ def _get_amp_range1(vis, field='', spw='', scan='', intent='', datacolumn='corre
                     useflags=True):
     """Get amplitude min/max from a MS, with ms.range().
 
-    This is the quickest method, but doesn't offer correlation-based selection or pre-averging capability
+    This is the quickest method, but doesn't offer correlation-based selection or pre-averging capability.
+    In addition, ms.range can't handle data selection including mutiple descriptions with varying data shape.
+    see: https://casa.nrao.edu/docs/casaref/ms.range.html
     """
     amp_range = [0., 0.]
 
