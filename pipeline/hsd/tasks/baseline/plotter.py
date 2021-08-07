@@ -484,7 +484,7 @@ class BaselineSubtractionPlotManager(object):
                 plt.axvspan(fmin, fmax, ymin=ymin*0.95, ymax=ymin, color='red')
         plt.hlines([-stddev, 0.0, stddev], frequency[0], frequency[-1], colors='k', linestyles='dashed')
         plt.plot(binned_freq, binned_data, 'ro')
-        plt.title('Spatially Averaged spectrum')
+        plt.title('Spatially Averaged Spectrum')
         plt.ylabel(f'Intensity ({brightnessunit})')
         plt.xlabel('Frequency (GHz)')
         plt.axis((xmin, xmax, ymin, ymax))
