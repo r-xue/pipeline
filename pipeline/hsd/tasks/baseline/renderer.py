@@ -75,7 +75,6 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         # profile map before and after baseline subtracton
         maptype_list = ['before', 'after', 'before', 'after']
         subtype_list = ['raw', 'raw', 'avg', 'flatness']
-        type_title = dict(raw='Raw', avg='Averaged', flatness='Flatness')
         for maptype, subtype in zip(maptype_list, subtype_list):
             plot_list = self._plots_per_field_with_type(sparsemap_plots, maptype, subtype)
             summary = self._summary_plots(plot_list)
@@ -85,8 +84,11 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             for inner in plot_list.values():
                 for plot in inner:
                     flattened.append(plot)
-            datatype = type_title[subtype]
-            plot_title = '{} Sparse Profile Map {} Baseline Subtraction'.format(datatype, maptype.lower())
+            if subtype != 'flatness':
+                datatype = 'Raw' if subtype == 'raw' else 'Averaged'
+                plot_title = '{} Sparse Profile Map {} Baseline Subtraction'.format(datatype, maptype.lower())
+            else:
+                plot_title = 'Flatness Plot {} Baseline Subtraction'.format(maptype.lower())
             renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_ant_field_spw_pol_plots.mako',
                                                       context,
                                                       results,

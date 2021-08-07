@@ -24,6 +24,9 @@ LOG = infrastructure.get_logger(__name__)
 # A named tuple to store statistics of baseline quality
 BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
 
+# Type definition
+MaskedArray = numpy.ma.core.MaskedArray
+
 class PlotterPool(object):
     def __init__(self):
         self.pool = {}
@@ -437,15 +440,10 @@ class BaselineSubtractionPlotManager(object):
         if deviation_mask is not None:
             for chmin, chmax in deviation_mask:
                 masked_data.mask[chmin:chmax+1] = True
-        unmasked_idx = numpy.where(masked_data.mask == False)[0]
-        nvalid = len(unmasked_idx)
-        nbin = 20 if nvalid >= 512 else 10
-        if nvalid < nbin: # not enough valid data
+        nbin = 20 if len(frequency) >= 512 else 10
+        binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+        if binned_data.count() <  2: # not enough valid data
             return binned_stat
-        binned_data, bin_edges, _ = scipy.stats.binned_statistic(unmasked_idx,
-                                                                 masked_data.compressed(),
-                                                                 statistic='mean', bins = nbin)
-        binned_freq = [display.ch_to_freq(0.5*(bin_edges[i]+bin_edges[i+1]), frequency) for i in range(len(bin_edges)-1)]
         stddev = masked_data.std()
         bin_min = numpy.nanmin(binned_data)
         bin_max = numpy.nanmax(binned_data)
@@ -854,3 +852,39 @@ def median_index(arr):
             return sorted_index[0]
         else:
             return sorted_index[len(arr) // 2]
+
+def binned_mean_ma(x: List[float], masked_data: MaskedArray,
+                   nbin: int) -> Tuple[numpy.ndarray, MaskedArray]:
+    """
+    Bin an array.
+
+    Return an array of averaged values of masked_data in each bin.
+    An element of binned_data is masked if any of elements in masked_data that
+    contribute to the bin is masked.
+
+    Args:
+        x: Abcissa value of each element in masked_data.
+        masked_data: Data to be binned. The length of array must be equal to that of x.
+        nbin: The number of bin.
+    Returns:
+        Arrays of binned abcissa and binned data
+    """
+    ndata = len(masked_data)
+    assert nbin < ndata
+    assert len(x)==ndata
+    bin_width = ndata/nbin # float
+    # Prepare return values
+    binned_data = numpy.ma.masked_array(numpy.zeros(nbin), mask=False)
+    binned_x = numpy.zeros(nbin)
+    #bin_edges = [x[0]]
+    min_i = 0
+    for i in range(nbin):
+        max_i = min(int(numpy.floor((i+1)*bin_width)), ndata-1)
+        #bin_edges.append(x[max_i])
+        binned_x[i] = numpy.mean(x[min_i:max_i+1])
+        if any(masked_data.mask[min_i:max_i+1]==True):
+            binned_data.mask[i] = True
+        else:
+            binned_data[i] = numpy.nanmean(masked_data[min_i:max_i+1])
+        min_i = max_i+1
+    return binned_x, binned_data
