@@ -1,6 +1,5 @@
 """Set of base classes and utility functions for display modules."""
 import abc
-import collections
 import datetime
 import itertools
 import math
@@ -13,7 +12,6 @@ from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
@@ -37,9 +35,6 @@ sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 
 NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
-
-# A named tuple to store statistics of baseline quality
-BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
 
 def mjd_to_datetime(val: float) -> datetime.datetime:
     """Convert MJD to datetime instance.
@@ -991,7 +986,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             LOG.trace('Lines: %s', a.lines)
             LOG.trace('Patches: %s', a.patches)
             LOG.trace('Texts: %s', a.texts)
-            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:], a.collections[:]):
+            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:]):
                 LOG.trace('Removing %s...', obj)
                 obj.remove()
 
@@ -1026,8 +1021,6 @@ class SDSparseMapPlotter(object):
         self.atm_transmission = None
         self.atm_frequency = None
         self.channel_axis = False
-        self.binning = False
-        self.binned_stat = []
 
     @property
     def nh(self) -> int:
@@ -1135,22 +1128,6 @@ class SDSparseMapPlotter(object):
             level: Reference level. Defaults to 0.0.
         """
         self.reference_level = level
-
-    def set_binning(self) -> None:
-        """Enable calculation of binned statistics"""
-        self.binning = True
-
-    def unset_binning(self) -> None:
-        """Disable calculation of binned statistics."""
-        self.binning = False
-
-    def get_binned_stat(self):
-        """
-        Return and reset binned statistics
-        """
-        stat = self.binned_stat
-        self.binned_stat = []
-        return stat
 
     def set_global_scaling(self) -> None:
         """Enable global scaling.
@@ -1311,7 +1288,6 @@ class SDSparseMapPlotter(object):
 
         plt.gcf().sca(self.axes.axes_integsp)
         plt.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
-        masked_data = np.ma.masked_array(averaged_data, mask=False)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = plt.axis()
@@ -1348,43 +1324,18 @@ class SDSparseMapPlotter(object):
             plt.axvspan(fedge0, fedge1, color='lightgray')
             plt.axvspan(fedge2, fedge3, color='lightgray')
             fedge_span = (fedge0, fedge1, fedge2, fedge3)
-            masked_data.mask[0:ch1] = True
-            masked_data.mask[len(masked_data)-ch2-1:] = True
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
                 LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
                 plt.axvspan(fmin, fmax, color='cyan')
-                masked_data.mask[int(chmin):int(np.ceil(chmax))+1] = True
         if self.deviation_mask is not None:
             LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
                 plt.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
-                masked_data.mask[chmin:chmax+1] = True
-        if self.binning:
-            unmasked_idx = np.where(masked_data.mask == False)[0]
-            nvalid = len(unmasked_idx)
-            nbin = 20 if nvalid >= 512 else 10
-            if nvalid >= nbin:
-                binned_data, bin_edges, _ = scipy.stats.binned_statistic(unmasked_idx,
-                                                                         masked_data.compressed(),
-                                                                         statistic='mean', bins = nbin)
-                binned_freq = [ch_to_freq(0.5*(bin_edges[i]+bin_edges[i+1]), frequency) for i in range(len(bin_edges)-1)]
-                plt.plot(binned_freq, binned_data, 'ro')
-                stddev = masked_data.std()
-                ymin = -3.*stddev
-                ymax = 3*stddev
-                plt.ylim(ymin, ymax)
-                plt.hlines([-stddev, stddev], frequency[0], frequency[-1], colors='k', linestyles='dotted')
-                bin_min = np.nanmin(binned_data)
-                bin_max = np.nanmax(binned_data)
-                stat = BinnedStat(bin_min_ratio=bin_min/stddev,
-                                  bin_max_ratio=bin_max/stddev,
-                                  bin_diff_ratio=(bin_max-bin_min)/stddev)
-                self.binned_stat.append(stat)
 
         if overlay_atm_transmission:
             plt.gcf().sca(self.axes.axes_atm)
@@ -1437,41 +1388,15 @@ class SDSparseMapPlotter(object):
                 plt.gcf().sca(self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv])
                 if map_data[x][y].min() > NoDataThreshold:
                     plt.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
-#                     masked_data = np.ma.masked_array(map_data[x][y], mask=False)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
                         for chmin, chmax in self.lines_map[x][y]:
                             fmin = ch_to_freq(chmin, frequency)
                             fmax = ch_to_freq(chmax, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             plt.axvspan(fmin, fmax, color='cyan')
-#                             masked_data.mask[chmin:chmax+1] = True
                     if fedge_span is not None:
                         plt.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
                         plt.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
-#                     if self.binning:
-#                         masked_data.mask[0:self.edge[0]] = True
-#                         masked_data.mask[len(masked_data)-self.edge[1]-1:] = True
-#                         for ch1, ch2 in self.deviation_mask:
-#                             masked_data.mask[ch1:ch2+1] = True
-#                         unmasked_idx = np.where(masked_data.mask == False)[0]
-#                         nvalid = len(unmasked_idx)
-#                         nbin = 20 if nvalid >= 512 else 10
-#                         if nvalid >= nbin:
-#                             binned_data, bin_edges, _ = scipy.stats.binned_statistic(unmasked_idx,
-#                                                                                      masked_data.compressed(),
-#                                                                                      statistic='mean', bins = nbin)
-#                             binned_freq = [ch_to_freq(0.5*(bin_edges[i]+bin_edges[i+1]), frequency) for i in range(len(bin_edges)-1)]
-#                             plt.plot(binned_freq, binned_data, 'ro')
-#                             stddev = masked_data.std()
-#                             ymin = -3.*stddev
-#                             ymax = 3*stddev
-#                             plt.hlines([-stddev, stddev], frequency[0], frequency[-1], colors='k', linestyles='dotted')
-#                             bin_min = np.nanmin(binned_data)
-#                             bin_max = np.nanmax(binned_data)
-#                             stat = BinnedStat(bin_min_ratio=bin_min/stddev,
-#                                               bin_max_ratio=bin_max/stddev,
-#                                               bin_diff_ratio=(bin_max-bin_min)/stddev)
-#                             self.binned_stat.append(stat)
 
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:

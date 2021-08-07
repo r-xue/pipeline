@@ -229,7 +229,7 @@ for baseline subtraction.</p>
 
 <h2 id="flatnessafterbaseline" class="jumptarget">Flatness of Baseline After Baseline Subtraction</h2>
 
-<p>Red dots show mean baseline level of binned baseline channels. Dotted lines show standard deviation of beaseline channels. Red lines show zero-level.  </p>
+<p>Red dots show mean baseline level of binned baseline channels. Dashed lines show standard deviation of baseline channels and zero level. </p>
 
 % for field in sparsemap_subpage_after_flatness:
     <h3><a class="replace"
