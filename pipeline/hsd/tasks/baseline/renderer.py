@@ -88,7 +88,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                 datatype = 'Raw' if subtype == 'raw' else 'Averaged'
                 plot_title = '{} Sparse Profile Map {} Baseline Subtraction'.format(datatype, maptype.lower())
             else:
-                plot_title = 'Flatness Plot {} Baseline Subtraction'.format(maptype.lower())
+                plot_title = 'Baseline Flatness {} Baseline Subtraction'.format(maptype.lower())
             renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_ant_field_spw_pol_plots.mako',
                                                       context,
                                                       results,
