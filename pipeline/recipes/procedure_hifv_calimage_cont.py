@@ -64,8 +64,11 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         # Apply all the calibrations and check the calibrated data
         hifv_applycals(pipelinemode=pipelinemode)
 
-        # Now run all calibrated data, including the target, through rflag
+        # Now run all calibrated data, including the target, through rflag/tfcropflag/extendflag
         hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='target-vla')
+
+        # Now run all calibrated data, including the target, through rflag
+        hifv_targetflag(pipelinemode=pipelinemode, intents='*TARGET*')        
 
         # Calculate data weights based on standard deviation within each spw
         hifv_statwt(pipelinemode=pipelinemode)
