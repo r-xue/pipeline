@@ -558,7 +558,7 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
     """
     pol_intents = {'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'}
     # these recipes are allowed to process polarisation data
-    pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
+    pol_recipes = {'hifa_polcal', 'hifa_polcalimage', 'hifa_polcal_renorm', 'hifa_polcalimage_renorm'}
 
     # Sort to ensure presentation consistency
     mses = sorted(mses, key=lambda ms: ms.basename)
