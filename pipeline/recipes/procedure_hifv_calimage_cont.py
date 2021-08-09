@@ -25,8 +25,8 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hifv_hanning(pipelinemode=pipelinemode)
 
         # Flag known bad data
-        hifv_flagdata(pipelinemode=pipelinemode, scan=True, hm_tbuff='1.5int', fracspw=0.01,
-                      intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
+        hifv_flagdata(pipelinemode=pipelinemode, scan=True, hm_tbuff='1.5int',
+                       intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
 
         # Fill model columns for primary calibrators
         hifv_vlasetjy(pipelinemode=pipelinemode)
@@ -39,17 +39,17 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hifv_testBPdcals(pipelinemode=pipelinemode)
 
         # Flag possible RFI on BP calibrator using rflag
-        hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='bpd-vla')
+        hifv_checkflag(pipelinemode=pipelinemode)
 
         # DO SEMI-FINAL DELAY AND BANDPASS CALIBRATIONS
         # (semi-final because we have not yet determined the spectral index of the bandpass calibrator)
         hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
 
         # Use flagdata rflag mode again on calibrators
-        hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='allcals-vla')
+        hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='semi')
 
         # Re-run semi-final delay and bandpass calibrations
-        # hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
+        hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
 
         # Determine solint for scan-average equivalent
         hifv_solint(pipelinemode=pipelinemode)
@@ -64,11 +64,8 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         # Apply all the calibrations and check the calibrated data
         hifv_applycals(pipelinemode=pipelinemode)
 
-        # Now run all calibrated data, including the target, through rflag/tfcropflag/extendflag
-        hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='target-vla')
-
         # Now run all calibrated data, including the target, through rflag
-        hifv_targetflag(pipelinemode=pipelinemode, intents='*TARGET*')        
+        hifv_targetflag(pipelinemode=pipelinemode, intents='*CALIBRATE*,*TARGET*')
 
         # Calculate data weights based on standard deviation within each spw
         hifv_statwt(pipelinemode=pipelinemode)
@@ -80,7 +77,7 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hif_makeimlist(intent='PHASE,BANDPASS', specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean images for the selected calibrators
-        hif_makeimages(hm_masking='centralregion')
+        hif_makeimages(hm_masking='none')
 
         # Split out the target data
         hif_mstransform(pipelinemode=pipelinemode)
