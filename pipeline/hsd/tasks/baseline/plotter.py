@@ -459,8 +459,12 @@ class BaselineSubtractionPlotManager(object):
         #plt.figure(5555)
         plt.clf()
         plt.plot(frequency, spectrum, color='b', linestyle='-', linewidth=0.4)
+        plt.axis((xmin, xmax, ymin, ymax))
         plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
         plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
+        plt.title('Spatially Averaged Spectrum')
+        plt.ylabel(f'Intensity ({brightnessunit})')
+        plt.xlabel('Frequency (GHz)')
         if edge is not None:
             (ch1, ch2) = edge
             fedge0 = ch_to_freq(0, frequency)
@@ -473,19 +477,14 @@ class BaselineSubtractionPlotManager(object):
             for chmin, chmax in line_range:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
                 plt.axvspan(fmin, fmax, color='cyan')
         if deviation_mask is not None:
             for chmin, chmax in deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                plt.axvspan(fmin, fmax, ymin=ymin*0.95, ymax=ymin, color='red')
+                plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
         plt.hlines([-stddev, 0.0, stddev], frequency[0], frequency[-1], colors='k', linestyles='dashed')
         plt.plot(binned_freq, binned_data, 'ro')
-        plt.title('Spatially Averaged Spectrum')
-        plt.ylabel(f'Intensity ({brightnessunit})')
-        plt.xlabel('Frequency (GHz)')
-        plt.axis((xmin, xmax, ymin, ymax))
         plt.savefig(figfile, format='png', dpi=260)
         return binned_stat
         
@@ -882,7 +881,7 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
         max_i = min(int(numpy.floor((i+1)*bin_width)), ndata-1)
         #bin_edges.append(x[max_i])
         binned_x[i] = numpy.mean(x[min_i:max_i+1])
-        if any(masked_data.mask[min_i:max_i+1]==True):
+        if any(masked_data.mask[min_i:max_i+1]):
             binned_data.mask[i] = True
         else:
             binned_data[i] = numpy.nanmean(masked_data[min_i:max_i+1])
