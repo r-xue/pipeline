@@ -7,8 +7,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">RFI Flagging</%block>
 
-<p>Flag possible RFI using rflag and tfcrop; checkflagmode=${repr(result[0].inputs['checkflagmode'])}</p>
+<p>Flag possible RFI using rflag and tfcrop; checkflagmode=${repr(result[0].inputs['checkflagmode'])}.</p>
 
+% if result[0].inputs['checkflagmode'] == 'target-vla':
+If a file with continuum regions is specified, then the task will only flag those spw and frequency ranges per the pipeline spectral line heuristics.
+%endif
 
 % if result[0].inputs['checkflagmode'] in ('bpd-vla','allcals-vla', 'target-vla', 'bpd', 'allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
 
@@ -109,9 +112,13 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
 <h4>Measurement Set: ${os.path.basename(ms)}</h4>
 
 % if result[0].inputs['checkflagmode'] in ( 'bpd-vla', 'allcals-vla', 'target-vla'):
+    <p>Summary Data Selection Parameter(s)</p>
     <ul>
-        <li> field select: ${repr(dataselect[ms]['field'])}
-        <li> scan select: ${repr(dataselect[ms]['scan'])}
+        % for key, value in dataselect[ms].items():
+            % if value!='':
+                <li> ${key}: ${repr(value)}
+            %endif
+        % endfor
     </ul>
 %endif
 

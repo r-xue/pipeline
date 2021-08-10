@@ -1,16 +1,17 @@
 import collections
 import copy
+import re
+import shutil
 import uuid
 
 import matplotlib.pyplot as plt
 import numpy as np
-import shutil
-import re
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-from pipeline.infrastructure import casa_tools, casa_tasks
+from pipeline.infrastructure import casa_tasks, casa_tools
+
 import pkg_resources
 
 LOG = infrastructure.get_logger(__name__)
@@ -250,20 +251,24 @@ def mssel_valid(vis, field='', spw='', scan='', intent='', correlation='', uvdis
 def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='corrected',
                   correlation='', uvrange='',
                   useflags=True,
-                  timeaverage=True, timebin='1e8s', timespan=''):
+                  timeaverage=True, timebin='1e8s', timespan='', vis_averaged=None):
     """Get amplitude min/max from a MS after applying data selection and time-averging."""
     amp_range = [0., 0.]
 
     try:
         if timeaverage:
-            vis_averaged = '{}.ms'.format(uuid.uuid4())
-            job = casa_tasks.mstransform(vis=vis, outputvis=vis_averaged, field=field, spw=spw, scan=scan, intent=intent,
+            if vis_averaged is None:
+                vis_tmp = '{}.ms'.format(uuid.uuid4())
+            else:
+                vis_tmp = vis_averaged
+            job = casa_tasks.mstransform(vis=vis, outputvis=vis_tmp, field=field, spw=spw, scan=scan, intent=intent,
                                          datacolumn=datacolumn, correlation=correlation, uvrange=uvrange,
                                          timeaverage=timeaverage, timebin=timebin, timespan=timespan,
-                                         keepflags=False)
+                                         keepflags=False, reindex=False)
             job.execute(dry_run=False)
-            amp_range = _get_amp_range2(vis_averaged, datacolumn='data', useflags=useflags)
-            shutil.rmtree(vis_averaged, ignore_errors=True)
+            amp_range = _get_amp_range2(vis_tmp, datacolumn='data', useflags=useflags)
+            if vis_averaged is None:
+                shutil.rmtree(vis_tmp, ignore_errors=True)
         else:
             amp_range = _get_amp_range2(vis, field=field, spw=spw, scan=scan, intent=intent, datacolumn=datacolumn,
                                         correlation=correlation, uvrange=uvrange,

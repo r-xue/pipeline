@@ -216,19 +216,21 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for result in results:
             ms = os.path.basename(result.inputs['vis'])
             try:
-                plots = result.plots['before']
+                plotms_dataselect = result.vis_averaged['plotms_dataselect']
             except Exception:
-                plots = []
-            try:
-                plot_selectdata = result.plots['selectdata']
-            except Exception:
-                plot_selectdata = {}
+                plotms_dataselect = {}
+            plots = []
 
             plotter = displaycheckflag.checkflagSummaryChart(context, result,
-                                                             suffix='after', plotms_args=plot_selectdata)
+                                                             suffix='before',
+                                                             plotms_args=plotms_dataselect)
             plots.extend(plotter.plot())
             plotter = displaycheckflag.checkflagSummaryChart(context, result,
-                                                             suffix='after-autoscale', plotms_args=plot_selectdata)
+                                                             suffix='after',
+                                                             plotms_args=plotms_dataselect)
+            plots.extend(plotter.plot())
+            plotter = displaycheckflag.checkflagSummaryChart(context, result,
+                                                             suffix='after-autoscale', plotms_args=plotms_dataselect)
             plots.extend(plotter.plot())
 
             summary_plots[ms] = plots

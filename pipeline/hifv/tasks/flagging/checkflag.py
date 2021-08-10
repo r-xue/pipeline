@@ -1,16 +1,18 @@
 import collections
 import copy
 import os
+import datetime
+import shutil
 
 import numpy as np
-import datetime 
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 
 from pipeline.domain import DataType
 from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.hifv.heuristics import RflagDevHeuristic, get_amp_range, mssel_valid
+from pipeline.hifv.heuristics import RflagDevHeuristic, mssel_valid
 from pipeline.hifv.heuristics import cont_file_to_CASA
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
@@ -42,7 +44,7 @@ class CheckflagInputs(vdp.StandardInputs):
 
 
 class CheckflagResults(basetask.Results):
-    def __init__(self, jobs=None, results=None, summaries=None, plots=None, dataselect=None):
+    def __init__(self, jobs=None, results=None, summaries=None, vis_averaged=None, dataselect=None):
 
         if jobs is None:
             jobs = []
@@ -50,8 +52,8 @@ class CheckflagResults(basetask.Results):
             results = []
         if summaries is None:
             summaries = []
-        if plots is None:
-            plots = {}
+        if vis_averaged is None:
+            vis_averaged = {}
         if dataselect is None:
             dataselect = {}
 
@@ -60,7 +62,7 @@ class CheckflagResults(basetask.Results):
         self.jobs = jobs
         self.results = results
         self.summaries = summaries
-        self.plots = plots
+        self.vis_averaged = vis_averaged
         self.dataselect = dataselect
 
     def __repr__(self):
@@ -95,8 +97,8 @@ class Checkflag(basetask.StandardTaskTemplate):
         # a string representing science spws
         self.sci_spws = ','.join([str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True)])
 
-        summaries = []  # Flagging statistics summaries for VLA QA scoring (CAS-10910/10916/10921)
-        plots = {}      # Summary plots
+        summaries = []      # Flagging statistics summaries for VLA QA scoring (CAS-10910/10916/10921)
+        vis_averaged = {}   # Time-averaged MS and stats for summary plots
 
         if self.inputs.checkflagmode == 'vlass-imaging':
             LOG.info('Checking for model column')
@@ -126,18 +128,20 @@ class Checkflag(basetask.StandardTaskTemplate):
             if summarydict is not None:
                 summaries.append(summarydict)
 
-        # PIPE-502/995/987: save the before/after-flagging summary plot for most calibrator checkflagmodes, and 'vlass-imaging'/'targe-vla'
+        # PIPE-502/995/987: save before-flagging time-averged MS and its amp-related stats for weblog
         if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'target-vla',
                                          'bpd', 'allcals',
                                          'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
-            plot_selectdata = {'field':  fieldselect,
-                               'scan': scanselect,
-                               'spw': self.sci_spws,
-                               'intent': intentselect,
-                               'ydatacolumn': columnselect,
-                               'correlation': self.corrstring}
-            plots['before'] = self._create_summaryplots(suffix='before', plotms_args=plot_selectdata)
-            plots['selectdata'] = plot_selectdata
+            vis_averaged_before, vis_ampstats_before = self._create_timeavg_ms(suffix='before')
+            vis_averaged.update(before=vis_averaged_before, before_amp=vis_ampstats_before)
+            plotms_dataselect = {'field':  fieldselect,
+                                 'scan': scanselect,
+                                 'spw': self.sci_spws,
+                                 'intent': intentselect,
+                                 'ydatacolumn': 'data',
+                                 'correlation': self.corrstring}
+            vis_averaged['plotms_dataselect'] = plotms_dataselect
+            # plots['before'] = self._create_summaryplots(suffix='before', plotms_args=plot_selectdata)
 
         # PIPE-987: backup flagversion before rfi flagging
         now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
@@ -174,9 +178,16 @@ class Checkflag(basetask.StandardTaskTemplate):
             if summarydict is not None:
                 summaries.append(summarydict)
 
+        # PIPE-502/995/987: save after-flagging time-averaged MS and its amp-related stats for weblog
+        if self.inputs.checkflagmode in ('allcals-vla', 'bpd-vla', 'target-vla',
+                                         'bpd', 'allcals',
+                                         'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
+            vis_averaged_after, vis_ampstats_after = self._create_timeavg_ms(suffix='after')
+            vis_averaged.update(after=vis_averaged_after, after_amp=vis_ampstats_after)
+
         checkflag_result = CheckflagResults()
         checkflag_result.summaries = summaries
-        checkflag_result.plots = plots
+        checkflag_result.vis_averaged = vis_averaged
         checkflag_result.dataselect = {'field': fieldselect,
                                        'scan': scanselect,
                                        'intent': intentselect,
@@ -662,6 +673,40 @@ class Checkflag(basetask.StandardTaskTemplate):
                 tclean_result = self._executor.execute(job)
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
+
+    def _create_timeavg_ms(self, suffix='before'):
+
+        stage_number = self.inputs.context.task_counter
+        vis_averaged_name = [self.inputs.vis, 'hifv_checkflag', 's'+str(stage_number),
+                             suffix, self.inputs.checkflagmode, 'averaged']
+        vis_averaged_name = '.'.join(list(filter(None, vis_averaged_name)))
+
+        LOG.info('Saving the time-averaged visibility of selected data to {}'.format(vis_averaged_name))
+        LOG.debug('Estimating the amplitude range of unflagged averaged data for {} : {}'.format(vis_averaged_name, suffix))
+
+        # do cross-scan averging for calibrator checkflagmodes
+        if self.inputs.checkflagmode in ('target-vla', 'vlass-imaging'):
+            timespan = ''
+        else:
+            timespan = 'scan'
+
+        fieldselect, scanselect, intentselect, columnselect = self._select_data()
+
+        shutil.rmtree(vis_averaged_name, ignore_errors=True)
+        job = casa_tasks.mstransform(vis=self.inputs.vis, outputvis=vis_averaged_name,
+                                     field=fieldselect, spw=self.sci_spws, scan=scanselect,
+                                     intent=intentselect, datacolumn=columnselect,
+                                     correlation=self.corrstring,
+                                     timeaverage=True, timebin='1e8', timespan=timespan,
+                                     keepflags=False, reindex=False)
+        job.execute(dry_run=False)
+
+        with casa_tools.MSReader(vis_averaged_name) as msfile:
+            vis_ampstats = msfile.statistics(column='data', complex_value='amp', useweights=False, useflags=True,
+                                             reportingaxes='', doquantiles=False,
+                                             timeaverage=False, timebin='0s', timespan='')
+
+        return vis_averaged_name, vis_ampstats
 
     def _create_summaryplots(self, suffix='before', plotms_args={}):
         """Preload the display class to generate before-flagging plot(s)."""

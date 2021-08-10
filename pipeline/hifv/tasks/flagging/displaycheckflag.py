@@ -7,10 +7,6 @@ import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.renderer.logger as logger
 
-from pipeline.hifv.heuristics.rfi import plotms_get_xyrange
-from pipeline.hifv.heuristics.rfi import plotms_get_autorange
-#from pipeline.hifv.heuristics import get_amp_range
-
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
@@ -40,80 +36,49 @@ class checkflagSummaryChart(object):
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
+
         figfile = self.get_figfile(prefix)
 
-        plotms_args = {'vis': self.ms.name,
+        if self.suffix == 'before':
+            vis = self.result.vis_averaged['before']
+            vis_stats = self.result.vis_averaged['before_amp']
+            amp_range = [vis_stats['']['min'], vis_stats['']['max']]
+            title = 'Amp vs. Frequency (before flagging), {}'.format(prefix)
+        if self.suffix == 'after':
+            vis = self.result.vis_averaged['after']
+            vis_stats = self.result.vis_averaged['before_amp']
+            amp_range = [vis_stats['']['min'], vis_stats['']['max']]
+            title = 'Amp vs. Frequency (after flagging), {}'.format(prefix)
+        if self.suffix == 'after-autoscale':
+            vis = self.result.vis_averaged['after']
+            amp_range = [0., 0.]
+            title = 'Amp vs. Frequency (after flagging, autoscale), {}'.format(prefix)
+
+        # use the time-averged MS from the task to make the CASAplotms callmodify the plotms() call args.
+        plotms_args = {'vis': vis,
                        'xaxis': 'freq', 'yaxis': 'amp',
-                       'xdatacolumn': '', 'ydatacolumn': 'corrected',
+                       'xdatacolumn': '', 'ydatacolumn': 'data',
                        'selectdata': True, 'field': '', 'scan': '', 'correlation': '',
-                       'averagedata': True, 'avgtime': '1e8', 'avgscan': False,
+                       'averagedata': False, 'avgtime': '1e8', 'avgscan': False,
                        'transform': False, 'extendflag': False,
                        'coloraxis': 'antenna2', 'plotrange': [0, 0, 0, 0],
                        'plotfile': figfile, 'overwrite': True, 'clearplots': True, 'showgui': False}
         plotms_args.update(self.plotms_args)
+        plotms_args.update(title=title)
+        amp_d = amp_range[1]-amp_range[0]
+        plotms_args.update(plotrange=[0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d])
 
-        # scan averging for all calibrator plots
-        if 'cal' in prefix:
-            plotms_args.update(avgscan=True)
         if prefix == 'BPcal':
             plotms_args.update(field=self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string)
             plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string)
         if prefix == 'delaycal':
             plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].delay_scan_select_string)
 
-        LOG.debug('Select Field: {!r}'.format(plotms_args['field']))
-        LOG.debug('Select Scan: {!r}'.format(plotms_args['scan']))
-        LOG.debug('Select Spw: {!r}'.format(plotms_args['spw']))
-        LOG.debug('Select Intent: {!r}'.format(plotms_args['intent']))
-        LOG.debug('Select Column: {!r}'.format(plotms_args['ydatacolumn']))
-        LOG.debug('Select Correlation: {!r}'.format(plotms_args['correlation']))
-
-        if self.suffix == 'before':
-            plotms_args.update(title='Amp vs. Frequency (before flagging), {}'.format(prefix))
-        if self.suffix == 'after':
-            plotms_args.update(title='Amp vs. Frequency (after flagging), {}'.format(prefix))
-        if self.suffix == 'after-autoscale':
-            plotms_args.update(title='Amp vs. Frequency (after flagging, autoscale), {}'.format(prefix))
-
-        # do amplitude range estimation for before-flagging plots (by analyzing selected data in MS)
-        # note: not used due to the I/O cost.
-        # if self.suffix == 'before':
-        #     LOG.info('Estimating the amplitude range of unflagged averaged data for {} {}'.format(prefix, self.suffix))
-        #     timespan = 'scan' if plotms_args['avgscan'] else ''
-        #     amp_range = get_amp_range(self.ms.name, field=plotms_args['field'],
-        #                               scan=plotms_args['scan'], spw=plotms_args['spw'],
-        #                               intent=plotms_args['intent'], datacolumn=plotms_args['ydatacolumn'],
-        #                               correlation=plotms_args['correlation'],
-        #                               timeaverage=plotms_args['averagedata'], timebin=plotms_args['avgtime'], timespan=timespan)
-        #     amp_d = amp_range[1]-amp_range[0]
-        #     plotms_args.update(plotrange=[0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d])
-
-        if self.suffix == 'after':
-            for plot in self.result.plots['before']:
-                if plot.parameters['type'] == prefix:
-                    plotms_args.update(plotrange=plot.parameters['plotms_args']['plotrange'])
-
-        if self.suffix == 'after-autoscale':
-            plotms_args.update(plotrange=[0, 0, 0, 0])
-
         LOG.info('Creating {}'.format(plotms_args['title']))
-
-        # obtain the casalog position before plotms
-        logfile = casa_tools.log.logfile()
-        size_before = os.path.getsize(logfile)
 
         # run plotms
         job = casa_tasks.plotms(**plotms_args)
         job.execute(dry_run=False)
-
-        # estimate the plotrange from CASAplotms autoscale.
-        # note: The y-axis tick position from a manual-scaling plotms might be different from autoscale,
-        #       even the manual-range is the same as the one from autoscale version. 
-
-        with open(logfile, 'r') as joblog:
-            joblog.seek(size_before)
-            plotms_log = joblog.readlines()
-        plotms_args.update(plotrange=plotms_get_autorange(plotms_get_xyrange(plotms_log)))
 
         return plotms_args
 
@@ -188,8 +153,8 @@ class checkflagPercentageMap(object):
             fig.savefig(self.figfile, bbox_inches='tight')
             plt.close(fig)
 
-        except:
-            LOG.warn('Could not create the flagging percentage map plot')
+        except Exception as ex:
+            LOG.warn('Exception: Could not create the flagging percentage map plot. {!s}'.format(str(ex)))
             return None
 
         return self._get_plot_object()
