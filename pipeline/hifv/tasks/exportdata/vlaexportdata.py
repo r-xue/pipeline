@@ -1,10 +1,13 @@
 import os
 import shutil
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure.filenamer import fitsname
 from . import vlaifaqua
 
 LOG = infrastructure.get_logger(__name__)
@@ -44,6 +47,45 @@ class VLAExportData(exportdata.ExportData):
 
     def prepare(self):
         results = super().prepare()
+
+        # PIPE-1205
+        PbcorFits = collections.namedtuple('PbcorFits', 'pbcorimage pbcorfits nonpbcor_fits')
+        # results.targetimages[0] is the same as self.inputs.context.sciimlist.get_imlist()
+
+        # for each target in the targetimages results
+        for target in results.targetimages[0]:
+            fitsqueue = []
+            if target['multiterm']:
+                for nt in range(target['multiterm']):
+                    pbcorimage = target['imagename'] + f'.pbcor.tt{nt}'
+                    non_pbcorimage = target['imagename'] + f'.tt{nt}'
+                    fitsfile = fitsname(self.inputs.products_dir, pbcorimage)
+                    nonpbcor_fits = fitsname(self.inputs.products_dir, non_pbcorimage)
+                    if os.path.exists(pbcorimage) and fitsfile not in target['fitsfiles']:
+                        fitsqueue.append(PbcorFits(pbcorimage, fitsfile, nonpbcor_fits))
+            else:
+                pbcorimage = target['imagename'] + '.pbcor'
+                fitsfile = fitsname(self.inputs.products_dir, pbcorimage)
+                nonpbcor_fits = fitsname(self.inputs.products_dir, target['imagename'])
+                if os.path.exists(pbcorimage) and fitsfile not in target['fitsfiles']:
+                    fitsqueue.append(PbcorFits(pbcorimage, fitsfile, nonpbcor_fits))
+
+            for ee in fitsqueue:
+                # make the pbcor FITS images
+                task = casa_tasks.exportfits(imagename=ee.pbcorimage, fitsimage=ee.pbcorfits, velocity=False, optical=False,
+                                        bitpix=-32, minpix=0, maxpix=-1, overwrite=True, dropstokes=False,
+                                        stokeslast=True)
+                self._executor.execute(task)
+
+                # add new pbcor fits to'fitsfiles'
+                target['fitsfiles'].append(ee.pbcorfits)
+                # add new pbcor fits to fitslist
+                results.targetimages[1].append(ee.pbcorfits)
+
+                # if there's a non-pbcor image in 'fitsfiles' move it to 'auxfitsfiles'
+                if ee.nonpbcor_fits in target['fitsfiles']:
+                    target['auxfitsfiles'].append(ee.nonpbcor_fits)
+                    target['fitsfiles'].remove(ee.nonpbcor_fits)
 
         oussid = self.get_oussid(self.inputs.context)  # returns string of 'unknown' for VLA
 
