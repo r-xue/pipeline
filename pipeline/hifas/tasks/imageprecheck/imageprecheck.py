@@ -374,11 +374,13 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range
         # (see robust_values_to_check).
         if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
-            # Calculate 80th percentile baseline, used to set an uper limit on uvtaper
             l80, min_diameter = image_heuristics.calc_percentile_baseline_length(80.)
+            # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper
+            l80 = image_heuristics.calc_length_of_nth_baseline(190) # FIXME: change to more appropriate variable name
             reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
             # self.calc_uvtaper method is only available in hifas_imageprecheck
             try:
+                LOG.info("Running calc uvtaper!")
                 hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
                                                beam_user=user_desired_beam,
                                                l80=l80, repr_freq=repr_freq)
@@ -522,7 +524,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
 
     def calc_uvtaper(self, beam_natural=None,  beam_user=None, l80=None, repr_freq=None):
         """
-        This code will take a given beam and a  desired beam size and calculate the necessary
+        This code will take a given beam and a desired beam size and calculate the necessary
         UV-tapering parameters needed for tclean to recreate that beam.
 
         UV-tapering parameter larger than the 80 percentile baseline is not allowed.
@@ -533,6 +535,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         :param repr_freq: representative frequency, dictionary with unit and value keywords.
         :return: uv_taper needed to recreate user_beam in tclean
         """
+        LOG.info("In calc_uvtaper")
         if beam_natural is None:
             return []
         if beam_user is None:
@@ -570,13 +573,34 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
                  utils.round_half_up(uvtaper_value / 1000., 2))
 
         # Determine maximum allowed uvtaper
-        uvtaper_limit = l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
+        # PIPE-1104: Limit such that the image includes the baselines from at least 20 antennas.
+        # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
+
+        # for now, just code in here (rough draft) HERE
+        # get the measurement set(s) to do this for... if more than one ms, first do the first, 
+        # then figure out how to make one big list (see over in heuristis for example...?)
+        ms0 = context.observing_run.get_measurement_sets()[0] 
+        lengths = [baseline.length for baseline in ms0.antenna_array.baselines]   
+        lengths_floats = [float(dist.value) for dist in lengths]
+        if len(lengths_floats) >= 190:
+            length_190th_baseline = lengths_floats[189]
+            LOG.info("Length of 190th baseline: ", length_190th_baseline)
+        else:
+            # default to the robust = 2.0 beam (does this imply no tapering, or maybe default tapering...)
+            length_190th_baseline = lengths_floats[-1] # NOT the desired behavior
+            LOG.warn('Could not calculate uvtaper upper limit due to having fewer than 20 antennas. ')
+
+        uvtaper_limit = length_190th_baseline / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
                         cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
+        # Old limit
+#        uvtaper_limit = l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
+#                       cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
 
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
-            LOG.warn('uvtaper is smaller than allowed upper limit of %.2fklambda (80 percentile baseline), using the limit value' %
+#            LOG.warn('uvtaper is smaller than allowed upper limit of %.2fklambda (80 percentile baseline), using the limit value' %
+#                    utils.round_half_up(uvtaper_limit / 1000., 2))
+            LOG.warn('uvtaper is smaller than allowed upper limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
                     utils.round_half_up(uvtaper_limit / 1000., 2))
-
         return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]
