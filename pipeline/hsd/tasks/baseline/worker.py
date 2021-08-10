@@ -164,6 +164,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         vis = self.inputs.vis
         ms = self.inputs.ms
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
@@ -201,7 +202,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
             blparam_heuristic = self.Heuristics(switchpoly=self.inputs.switchpoly)
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, origin_ms, ms,
+            out_blparam = blparam_heuristic(self.datatable, ms, rowmap,
                                             antenna_id, field_id, spw_id,
                                             fit_order, formatted_edge,
                                             deviationmask, blparam)
