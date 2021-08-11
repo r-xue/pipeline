@@ -5,7 +5,6 @@ from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy
-import scipy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -426,7 +425,22 @@ class BaselineSubtractionPlotManager(object):
                          edge: Tuple[int, int], brightnessunit: str,
                          figfile: str) -> List[BinnedStat]:
         """
-        Calculate baseline flatness of a pectrum and create a plot
+        Calculate baseline flatness of a pectrum and create a plot.
+
+        Args:
+            spectrum: A spectrum to analyze flatness and plot.
+            frequency: Frequency values of each element in spectrum.
+            line_range: ID ranges in spectrum array that should be considered
+                as spectral lines and eliminated from inspection of flatness.
+            deviation_mask: ID ranges of deviation mask. These ranges are also
+                eliminated from inspection of flatness.
+            edge: Number of elements in left and right edges that should be
+                eliminates from inspection of flatness.
+            brightnessunit: Brightness unit of spectrum.
+            figfile: A file name to save figure.
+
+        Returns:
+            Statistic information to evaluate flatness of baseline.
         """
         binned_stat = []
         masked_data = numpy.ma.masked_array(spectrum, mask=False)
@@ -864,7 +878,7 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     Args:
         x: Abcissa value of each element in masked_data.
         masked_data: Data to be binned. The length of array must be equal to that of x.
-        nbin: The number of bin.
+        nbin: Number of bins.
     Returns:
         Arrays of binned abcissa and binned data
     """

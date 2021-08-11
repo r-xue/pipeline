@@ -12,6 +12,7 @@ import os
 from typing import List
 
 import numpy as np
+from scipy import interpolate
 from scipy.special import erf
 
 import pipeline.domain as domain
@@ -2268,29 +2269,19 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
     Returns:
         Pipeline QA score of baseline quality.
     """
-    def calc_score(value: float, low_limit: float, lowlim_score: float,
-                   up_limit: float, uplim_score: float, slope_low_score: float,
-                   slope_up_score: float) -> float:
-        """
-        Calculate slope + platform type of score.
-
-        * minlim_socre is returned if value < low_limit
-        * uplim_score is returned if value > up_limit
-        * in between low_limit and up_limit, score changes monotonically in
-            1st order fit between slope_low_score to slope_up_score.
-            The scores can be descrete, w.r.t. lowlim_score and uplim_score.
-        """
-        assert low_limit <= up_limit
-        if value < low_limit: return lowlim_score
-        elif value > up_limit: return uplim_score
-        else:
-            return slope_low_score + (value-low_limit)*(slope_up_score-slope_low_score)/(up_limit-low_limit)
     scores = []
     LOG.trace(f'Statistics of {vis}: {source}, {ant}, {spw}, {pol}')
+    # See PIPE-1073 for details of QA metrics.
     for s in stat:
-        min_score = calc_score(s.bin_min_ratio, -1.25, 0, -0.5, 0.25, 0.175, 0.25)
-        max_score = calc_score(s.bin_max_ratio, 0.5, 0.25, 1.25, 0.0, 0.25, 0.175)
-        diff_score = calc_score(s.bin_diff_ratio, 0.75, 0.5, 2.0, 0.0, 0.5, 0.0)
+        min_score = interpolate.interp1d([-1.25, -0.5], [0.175, 0.25],
+                                         kind='linear', bounds_error=False,
+                                         fill_value=(0.0, 0.25))(s.bin_min_ratio)
+        max_score = interpolate.interp1d([0.5, 1.25], [0.25, 0.175],
+                                         kind='linear', bounds_error=False,
+                                         fill_value=(0.25, 0.0))(s.bin_max_ratio)
+        diff_score = interpolate.interp1d([0.75, 2.0], [0.5, 0.0],
+                                          kind='linear', bounds_error=False,
+                                          fill_value=(0.5, 0.0)) (s.bin_diff_ratio)
         total_score = min_score + max_score + diff_score
         scores.append(total_score)
         LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
