@@ -3,11 +3,9 @@ import copy
 import math
 import os
 import time
-from typing import Any, Optional
+from typing import Dict, Generator, List, Optional, Tuple
 
 import numpy
-
-from typing import Dict, Generator, List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -53,6 +51,7 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def bl_ms(self):
+        """MeasurementSet domain object of baselined MS."""
         bl_list = self.context.observing_run.get_measurement_sets_of_type([DataType.BASELINED])
         match = sdutils.match_origin_ms(bl_list, self.ms.origin_ms)
         return match
@@ -335,8 +334,38 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
         return sdutils.make_row_map_between_ms(origin_ms, ms.name)
 
-    def calcStatistics(self, DataTable, container, NCHAN, Nmean, TimeTable, polids, edge, is_baselined,
-                       deviation_mask=None, rowmapIn = None, rowmapOut = None):
+    def calcStatistics(self, DataTable: DataTable, container: BLFlagTableContainer,
+                       NCHAN: int, Nmean: int, TimeTable: List[List[List[int]]],
+                       polids: List[int], edge: List[int], is_baselined: bool,
+                       deviation_mask: Optional[List[Tuple[int, int]]]=None,
+                       rowmapIn: Optional[Dict[int,int]] = None,
+                       rowmapOut: Optional[Dict[int,int]] = None
+                       ) -> Tuple[numpy.ndarray, Dict[int, numpy.ndarray],
+                                  Dict[int, numpy.ndarray]]:
+        """
+        Calculate statistics of spectra before and after baseline subtaction.
+
+        Args:
+            DataTable: DataTable instance of MSes to calculate statistics.
+            container: A BLFlagTableContainer instance that holds table objects
+                of MSes before and after baseline subtaction.
+            NCHAN: Number of channels in a spectrum.
+            Nmean: Number of channels to average to calculate running mean.
+            TimeTable: A grouped list of row IDs in DataTable in a same raster
+                row.
+            polids: Polarization IDs selection.
+            edge: Number of left and right edge channels to be excluded from
+                statistics.
+            is_baselined: Whether or not baseline subtraction has been performed.
+            deviation_mask: Deviation mask ranges. The ranges will be excluded
+                from statistics.
+            rowmapIn: Row map of dictionary of baselined MS.
+            rowmapOut: Row map dictionary of baselined MS.
+
+        Returns:
+            A tuple of DataTable indices, and corresponding statistics and
+            number of flagged channels.
+        """
         DataIn = container.calvis
         DataOut = container.blvis
         if rowmapIn is None:
