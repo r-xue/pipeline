@@ -376,7 +376,6 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
             # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104. 
             length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190) 
-            LOG.info("calculated length of 190th baseline as: ", length_of_190th_baseline)
             reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
             # self.calc_uvtaper method is only available in hifas_imageprecheck
             try:
@@ -534,7 +533,6 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         :param repr_freq: representative frequency, dictionary with unit and value keywords.
         :return: uv_taper needed to recreate user_beam in tclean
         """
-        LOG.info("in calc_uvtaper")
         if beam_natural is None:
             return []
         if beam_user is None:
@@ -576,11 +574,9 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
         uvtaper_limit = tapering_limit / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
                         cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-        LOG.info("uvtaper limit is: ", uvtaper_limit)
-        
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
-            LOG.warn('uvtaper is smaller than allowed upper limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
+            LOG.warn('uvtaper is smaller than allowed limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
                     utils.round_half_up(uvtaper_limit / 1000., 2))
         return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]
