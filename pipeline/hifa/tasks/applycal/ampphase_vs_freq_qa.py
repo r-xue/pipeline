@@ -115,6 +115,7 @@ def get_best_fits_per_ant(wrapper):
         bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
         band_midpoint = (np.ma.max(frequencies) + np.ma.min(frequencies)) / 2.0
         frequency_scale = 1.0 / bandwidth
+
         amp_model_fn = get_linear_function(band_midpoint, frequency_scale)
         ang_model_fn = get_angular_linear_function(band_midpoint, frequency_scale)
 
@@ -147,11 +148,12 @@ def get_best_fits_per_ant(wrapper):
             else:
                 # 'Fit' the amplitude
                 try:
+                    amp_vis = np.ma.abs(visibilities)
                     amplitude_fit = LinearFitParameters(
-                        slope=ValueAndUncertainty(value=0., unc=0.),
+                        slope=ValueAndUncertainty(value=0., unc=1.0e06),
                         intercept=ValueAndUncertainty(
-                            value=np.ma.average(np.ma.abs(visibilities)),
-                            unc=np.ma.average(np.ma.abs(ta_sigma)))
+                            value=np.ma.median(amp_vis),
+                            unc=np.ma.std(amp_vis)/np.sqrt(np.sum(~amp_vis.mask)))
                     )
                 except TypeError:
                     # Antenna probably flagged..
@@ -159,11 +161,12 @@ def get_best_fits_per_ant(wrapper):
                     continue
                 # 'Fit' the phase
                 try:
+                    phase_vis = np.ma.angle(visibilities)
                     phase_fit = LinearFitParameters(
-                        slope=ValueAndUncertainty(value=0., unc=0.),
+                        slope=ValueAndUncertainty(value=0., unc=1.0e06),
                         intercept=ValueAndUncertainty(
-                            value=np.ma.average(np.ma.angle(visibilities)),
-                            unc=np.ma.average(np.ma.angle(ta_sigma)))
+                            value=np.ma.median(phase_vis),
+                            unc=np.ma.std(phase_vis)/np.sqrt(np.sum(~phase_vis.mask)))
                     )
                 except TypeError:
                     # Antenna probably flagged..
