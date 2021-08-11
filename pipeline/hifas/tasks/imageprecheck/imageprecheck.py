@@ -575,27 +575,16 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Determine maximum allowed uvtaper
         # PIPE-1104: Limit such that the image includes the baselines from at least 20 antennas.
         # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
-
-        # for now, just code in here (rough draft) HERE
         # get the measurement set(s) to do this for... if more than one ms, first do the first, 
         # then figure out how to make one big list (see over in heuristis for example...?)
-        ms0 = context.observing_run.get_measurement_sets()[0] 
-        lengths = [baseline.length for baseline in ms0.antenna_array.baselines]   
-        lengths_floats = [float(dist.value) for dist in lengths]
-        if len(lengths_floats) >= 190:
-            length_190th_baseline = lengths_floats[189]
-            LOG.info("Length of 190th baseline: ", length_190th_baseline)
-        else:
-            # default to the robust = 2.0 beam (does this imply no tapering, or maybe default tapering...)
-            length_190th_baseline = lengths_floats[-1] # NOT the desired behavior
-            LOG.warn('Could not calculate uvtaper upper limit due to having fewer than 20 antennas. ')
+        # update to use more appropriate variable name than l80
 
-        uvtaper_limit = length_190th_baseline / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
+        uvtaper_limit = l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
                         cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-        # Old limit
-#        uvtaper_limit = l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
-#                       cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
 
+        # Old limit
+#       uvtaper_limit = l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
+#                       cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
