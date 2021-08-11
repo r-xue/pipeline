@@ -202,22 +202,24 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return np.median(percentileBaselineLengths), min_diameter
 
-    def calc_length_of_nth_baseline(self, n):
+    def calc_length_of_nth_baseline(self, n:int):
         """Calculate the length of the nth baseline for the vis list used in the heuristics instance."""
-        LOG.info("called calc with n=: ", n)
+        LOG.info("called calc_length_of_nth_baseline with n=: ", n)
         baseline_lengths = []
-        for msname in self.vislist: #is this correct, or should just do for one ms? 
+        for msname in self.vislist:
             ms_do = self.observing_run.get_ms(msname)
-            lengths = [baseline.length for baseline in ms_do.antenna_array.baselines]
-            lengths_floats = [float(dist.value) for dist in lengths] # does this do correct conversion to meters? (See above) #FIXME
+            ms_baseline_lengths = [float(baseline.length.to_units(measures.DistanceUnits.METRE))
+                                    for baseline in ms_do.antenna_array.baselines]
+            #lengths = [baseline.length for baseline in ms_do.antenna_array.baselines]
+            #lengths_floats = [float(dist.value) for dist in lengths] # does this do correct conversion to meters? (See above) #FIXME
             LOG.info("ms: ", msname)
-            baseline_lengths += lengths_floats
-            baseline_lengths.sort()
+            ms_baseline_lengths.sort()
+            if(len(ms_baseline_lengths) >= n):
+                baseline_lengths.append(ms_baseline_lengths[n-1])
             LOG.info("current list:", baseline_lengths)
-        if(len(baseline_lengths) >= n):
-            return baseline_lengths[n-1]
-        else: 
-            return None # good idea? 
+
+        LOG.info("ending baseline lengths is:", baseline_lengths)
+        return np.median(baseline_lengths) # fails if []
 
     def get_autobox_params(self, iteration, intent, specmode, robust):
         """Default auto-boxing parameters for ALMA main array and ACA."""
