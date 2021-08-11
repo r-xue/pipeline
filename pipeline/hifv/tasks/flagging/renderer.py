@@ -206,32 +206,36 @@ class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         flag_totals = {}
         for r in results:
-            flag_totals = utils.dict_merge(flag_totals,
-                                           self.flags_for_result(r, context))
+            if r.summaries:
+                flag_totals = utils.dict_merge(flag_totals,
+                                               self.flags_for_result(r, context))
 
         summary_plots = {}
         percentagemap_plots = {}
         dataselect = {}
 
         for result in results:
-            ms = os.path.basename(result.inputs['vis'])
-            try:
-                plotms_dataselect = result.vis_averaged['plotms_dataselect']
-            except Exception:
-                plotms_dataselect = {}
-            plots = []
 
-            plotter = displaycheckflag.checkflagSummaryChart(context, result,
-                                                             suffix='before',
-                                                             plotms_args=plotms_dataselect)
-            plots.extend(plotter.plot())
-            plotter = displaycheckflag.checkflagSummaryChart(context, result,
-                                                             suffix='after',
-                                                             plotms_args=plotms_dataselect)
-            plots.extend(plotter.plot())
-            plotter = displaycheckflag.checkflagSummaryChart(context, result,
-                                                             suffix='after-autoscale', plotms_args=plotms_dataselect)
-            plots.extend(plotter.plot())
+            ms = os.path.basename(result.inputs['vis'])
+            if 'plotms_dataselect' in result.vis_averaged:
+                plotms_dataselect = result.vis_averaged['plotms_dataselect']
+            else:
+                plotms_dataselect = {}
+
+            plots = []
+            if 'before' in result.vis_averaged:
+                plotter = displaycheckflag.checkflagSummaryChart(context, result,
+                                                                 suffix='before',
+                                                                 plotms_args=plotms_dataselect)
+                plots.extend(plotter.plot())
+            if 'after' in result.vis_averaged:
+                plotter = displaycheckflag.checkflagSummaryChart(context, result,
+                                                                 suffix='after',
+                                                                 plotms_args=plotms_dataselect)
+                plots.extend(plotter.plot())
+                plotter = displaycheckflag.checkflagSummaryChart(context, result,
+                                                                 suffix='after-autoscale', plotms_args=plotms_dataselect)
+                plots.extend(plotter.plot())
 
             summary_plots[ms] = plots
             if result.inputs['checkflagmode'] == 'vlass-imaging':

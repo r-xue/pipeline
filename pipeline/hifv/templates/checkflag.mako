@@ -13,17 +13,18 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 If a file with continuum regions is specified, then the task will only flag those spw and frequency ranges per the pipeline spectral line heuristics.
 %endif
 
-% if result[0].inputs['checkflagmode'] in ('bpd-vla','allcals-vla', 'target-vla', 'bpd', 'allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
 
 <%
-plot_caption = 'Calibrated bandpass after flagging'
-if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
-    plot_caption = 'Calibrated targets after flagging'
+is_summary_plots = False
+for ms in summary_plots:
+    is_summary_plots = bool(summary_plots[ms])
 %>
+
+% if result[0].inputs['checkflagmode'] in ('bpd-vla','allcals-vla', 'target-vla', 'bpd', 'allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging') and is_summary_plots:
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
-
+        
         <%def name="title()">
             Calibrated amplitude vs Frequency
         </%def>
@@ -40,10 +41,10 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
         <%def name="caption_title(plot)">
             ${plot.parameters['plotms_args']['title']}
         </%def>
+
 </%self:plot_group>
 
 %endif
-
 
 
 % if result[0].inputs['checkflagmode'] == 'vlass-imaging' :
@@ -101,13 +102,12 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * (flagged2-flagged1) / total)
-    
 
 %>
 
-<h2 id="flagged_data_summary" class="jumptarget">Checkflag Summary</h2>
-
 % for ms in flags.keys():
+
+<h3 id="flagged_data_summary" class="jumptarget">Checkflag Summary</h3>
 
 <h4>Measurement Set: ${os.path.basename(ms)}</h4>
 

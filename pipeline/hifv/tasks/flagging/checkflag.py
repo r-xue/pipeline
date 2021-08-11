@@ -100,9 +100,6 @@ class Checkflag(basetask.StandardTaskTemplate):
         summaries = []      # Flagging statistics summaries for VLA QA scoring (CAS-10910/10916/10921)
         vis_averaged = {}   # Time-averaged MS and stats for summary plots
 
-        if self.inputs.checkflagmode == 'vlass-imaging':
-            LOG.info('Checking for model column')
-            self._check_for_modelcolumn()
 
         # abort if the mode selection is not recognized
         if self.inputs.checkflagmode not in ('bpd-vla', 'allcals-vla', 'target-vla',
@@ -113,11 +110,21 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         fieldselect, scanselect, intentselect, columnselect = self._select_data()
 
-        # abort if no target is found
-        if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
-            if not fieldselect:
-                LOG.warning("No scans with intent=TARGET are present.  CASA task flagdata not executed.")
-                return CheckflagResults(summaries=summaries)
+        # abort if fieldselect is an empty string.
+        if not fieldselect:
+            LOG.warning("No scans with selected intent(s) from checkflagmode={!r}. RFI flagging not executed.".format(
+                self.inputs.checkflagmode))
+            return CheckflagResults(summaries=summaries)
+
+        # abort if the data selection criteria lead to NUll selection
+        if not mssel_valid(self.inputs.vis, field=fieldselect, scan=scanselect, intent=intentselect, spw=self.sci_spws):
+            LOG.warning("Null data selection from checkflagmode={!r}. RFI flagging not executed.".format(
+                self.inputs.checkflagmode))
+            return CheckflagResults(summaries=summaries)
+
+        if self.inputs.checkflagmode == 'vlass-imaging':
+            LOG.info('Checking for model column')
+            self._check_for_modelcolumn()
 
         # PIPE-502/995: run the before-flagging summary in most checkflagmodes, including 'vlass-imaging'
         # PIPE-757: skip in all VLASS calibration checkflagmodes: 'bpd-vlass', 'allcals-vlass', and 'target-vlass'
