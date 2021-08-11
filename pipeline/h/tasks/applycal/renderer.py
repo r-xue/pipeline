@@ -106,6 +106,8 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # it doesn't matter that the subpages dict is repeatedly redefined.
             # The only purpose of the returned dict is to map the vis to a
             # non-existing page, which will disable the link.
+
+            # could I put it in here? 
             plots, amp_vs_freq_subpages = self.create_plots(
                 context,
                 result,

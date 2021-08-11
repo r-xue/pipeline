@@ -235,7 +235,7 @@ class SpwComposite(common.LeafComposite):
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, ant='', field='', intent='', **kwargs):
         ms = context.observing_run.get_ms(calto.vis)
-
+        LOG.debug("In SpwCompositeClass: ", kwargs)
         children = []
         for spw in ms.get_spectral_windows(calto.spw):
             # For PIPE-690 it was requested to create plots only for a certain spw/field
@@ -255,7 +255,15 @@ class SpwComposite(common.LeafComposite):
             kwargs_copy = dict(kwargs)
             kwargs_copy['avgchannel'] = kwargs.get('avgchannel', str(spw.num_channels))
 
-            leaf_obj = self.leaf_class(context, output_dir, calto, xaxis, yaxis, spw=spw.id, ant=ant, field=field_spec,
+            # check here: if field has a size > 1, create multiple leaf_objs, slow to test? 
+            if (len(field_spec) > 1):
+                LOG.debug("field is larger than one and contains:")
+                for field_name in field_spec: 
+                    LOG.debug("name of field:", field_name)
+                    leaf_obj = self.leaf_class(context, output_dir, calto, xaxis, yaxis, spw=spw.id, ant=ant, field=field_name,
+                                       intent=intent, **kwargs_copy)
+            else:
+                leaf_obj = self.leaf_class(context, output_dir, calto, xaxis, yaxis, spw=spw.id, ant=ant, field=field_spec,
                                        intent=intent, **kwargs_copy)
             children.append(leaf_obj)
 
