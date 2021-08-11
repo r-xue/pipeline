@@ -366,6 +366,14 @@ class Checkflag(basetask.StandardTaskTemplate):
                     if not mssel_valid(self.inputs.vis, field=fieldselect, spw=spwselect, correlation=polselect,
                                        scan=scanselect, intent=intentselect):
                         continue
+                if datacolumn == 'residual':
+                    # fall back to the corrected datacolumn if MODEL is not filled by setjy() 
+                    with casa_tools.TableReader(self.inputs.vis) as table:
+                        is_model_present = 'MODEL_DATA' in table.colnames()
+                    if not is_model_present:
+                        datacolumn = 'corrected'
+                        LOG.info("MODEL_DATA column is not found in {}".format(self.inputs.vis))
+                        LOG.info("Switching the rflag column selection from RESIDUAL to CORRECTED")
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
                                'correlation': correlation,
