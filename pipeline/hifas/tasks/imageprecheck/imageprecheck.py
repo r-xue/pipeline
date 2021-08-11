@@ -576,7 +576,8 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
         uvtaper_limit = tapering_limit / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
                         cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-
+        LOG.info("uvtaper limit is: ", uvtaper_limit)
+        
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit

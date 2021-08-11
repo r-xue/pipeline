@@ -210,8 +210,6 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             ms_do = self.observing_run.get_ms(msname)
             ms_baseline_lengths = [float(baseline.length.to_units(measures.DistanceUnits.METRE))
                                     for baseline in ms_do.antenna_array.baselines]
-            #lengths = [baseline.length for baseline in ms_do.antenna_array.baselines]
-            #lengths_floats = [float(dist.value) for dist in lengths] # does this do correct conversion to meters? (See above) #FIXME
             LOG.info("ms: ", msname)
             ms_baseline_lengths.sort()
             if(len(ms_baseline_lengths) >= n):
@@ -219,7 +217,11 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             LOG.info("current list:", baseline_lengths)
 
         LOG.info("ending baseline lengths is:", baseline_lengths)
-        return np.median(baseline_lengths) # fails if []
+        if(len(baseline_lengths) > 0): 
+            return np.median(baseline_lengths)
+        else: 
+            return None
+            
 
     def get_autobox_params(self, iteration, intent, specmode, robust):
         """Default auto-boxing parameters for ALMA main array and ACA."""
