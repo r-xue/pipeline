@@ -529,7 +529,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
 
         :param beam_natural: natural beam, dictionary with major, minor and positionangle keywords
         :param beam_user: desired beam, dictionary with major, minor and positionangle keywords
-        :param : 190th baseline in meters. uvtaper larger than this baseline is not allowed
+        :param tapering_limit: 190th baseline in meters. uvtaper larger than this baseline is not allowed
         :param repr_freq: representative frequency, dictionary with unit and value keywords.
         :return: uv_taper needed to recreate user_beam in tclean
         """
