@@ -150,7 +150,7 @@ def get_best_fits_per_ant(wrapper):
             else:
                 LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
                 # 'Fit' the amplitude
-                try:
+                try:  # NOTE: PIPE-401 This try block may not be necessary
                     amp_vis = np.ma.abs(visibilities)
                     n_channels_unmasked = np.sum(~amp_vis.mask)
                     if n_channels_unmasked != 0:
@@ -172,7 +172,7 @@ def get_best_fits_per_ant(wrapper):
                             ant, pol))
                     continue
                 # 'Fit' the phase
-                try:
+                try:  # NOTE: PIPE-401 This try block may not be necessary
                     phase_vis = np.ma.angle(visibilities)
                     n_channels_unmasked = np.sum(~phase_vis.mask)
                     if n_channels_unmasked != 0:
