@@ -460,10 +460,8 @@ class Tclean(cleanbase.CleanBase):
                 channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
                 # Skip 1 km/s
                 extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
-                extra_skip_frequency_hz = float(qaTool.getvalue(qaTool.sub(freq0, utils.velocity_to_frequency(qaTool.quantity(1.0, 'km/s'), freq0))))
             else:
                 extra_skip_channels = 0
-                extra_skip_frequency_hz = 0.0
 
             if inputs.nchan not in (None, -1):
                 if1 = if0 + channel_width * inputs.nchan
@@ -494,7 +492,7 @@ class Tclean(cleanbase.CleanBase):
                 # Thus shift by 0.5 channels if no start is supplied.
                 # Additionally skipping the edge channel (cf. "- 2" above)
                 # means a correction of 1.5 channels.
-                inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width + extra_skip_frequency_hz) / 1e9)
+                inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             inputs.width = '%.7fMHz' % (channel_width / 1e6)
