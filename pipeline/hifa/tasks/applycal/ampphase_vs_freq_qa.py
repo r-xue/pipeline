@@ -135,7 +135,8 @@ def get_best_fits_per_ant(wrapper):
                     amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; amp. vs frequency)'.format(
+                        ant, pol))
                     continue
                 # Fit the phase
                 try:
@@ -143,34 +144,54 @@ def get_best_fits_per_ant(wrapper):
                     phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; phase vs frequency)'.format(
+                        ant, pol))
                     continue
             else:
+                LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
                 # 'Fit' the amplitude
                 try:
                     amp_vis = np.ma.abs(visibilities)
-                    amplitude_fit = LinearFitParameters(
-                        slope=ValueAndUncertainty(value=0., unc=1.0e06),
-                        intercept=ValueAndUncertainty(
-                            value=np.ma.median(amp_vis),
-                            unc=np.ma.std(amp_vis)/np.sqrt(np.sum(~amp_vis.mask)))
-                    )
+                    n_channels_unmasked = np.sum(~amp_vis.mask)
+                    if n_channels_unmasked != 0:
+                        amplitude_fit = LinearFitParameters(
+                            slope=ValueAndUncertainty(value=0., unc=1.0e06),
+                            intercept=ValueAndUncertainty(
+                                value=np.ma.median(amp_vis),
+                                unc=np.ma.std(amp_vis)/np.sqrt(n_channels_unmasked))
+                        )
+                    else:
+                        LOG.info(
+                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
+                                ant, pol))
+                        continue
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info(
+                        'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
+                            ant, pol))
                     continue
                 # 'Fit' the phase
                 try:
                     phase_vis = np.ma.angle(visibilities)
-                    phase_fit = LinearFitParameters(
-                        slope=ValueAndUncertainty(value=0., unc=1.0e06),
-                        intercept=ValueAndUncertainty(
-                            value=np.ma.median(phase_vis),
-                            unc=np.ma.std(phase_vis)/np.sqrt(np.sum(~phase_vis.mask)))
-                    )
+                    n_channels_unmasked = np.sum(~phase_vis.mask)
+                    if n_channels_unmasked != 0:
+                        phase_fit = LinearFitParameters(
+                            slope=ValueAndUncertainty(value=0., unc=1.0e06),
+                            intercept=ValueAndUncertainty(
+                                value=np.ma.median(phase_vis),
+                                unc=np.ma.std(phase_vis)/np.sqrt(n_channels_unmasked)
+                            )
+                        )
+                    else:
+                        LOG.info(
+                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
+                                ant, pol))
+                        continue
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
+                        ant, pol))
                     continue
 
             fit_obj = AntennaFit(ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)
