@@ -227,9 +227,9 @@ for baseline subtraction.</p>
 	<div class="clearfix"></div><!--  flush plots, break to next row -->
 %endfor
 
-<h2 id="flatnessafterbaseline" class="jumptarget">Flatness of Baseline After Baseline Subtraction</h2>
+<h2 id="flatnessafterbaseline" class="jumptarget">Baseline Flatness After baseline Subtraction</h2>
 
-<p>Red dots show mean baseline level of binned baseline channels. Dashed lines show standard deviation of baseline channels and zero level. </p>
+<p>Red dots show binned spectrum of baseline channels. Dashed lines show 1 sigma of raw spectrum and zero level. </p>
 
 % for field in sparsemap_subpage_after_flatness:
     <h3><a class="replace"

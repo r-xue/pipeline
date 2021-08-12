@@ -145,7 +145,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                 p = x.decompress()
             else:
                 p = x
-            if p.parameters['type'].find(type_string) != -1 and p.parameters['type'].find(subtype_string) != -1:
+            if type_string in p.parameters['type'] and subtype_string in p.parameters['type']:
                 key = p.field
                 if key in plot_group:
                     plot_group[key].append(x)

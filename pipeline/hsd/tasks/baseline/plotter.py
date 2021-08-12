@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy
+from numpy.ma.core import MaskedArray
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -15,7 +16,7 @@ from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import utils
 from ..common import compress
 from ..common import display
-from ..common.display import sd_polmap, ch_to_freq
+from ..common.display import DPIDetail, ch_to_freq, sd_polmap
 from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
@@ -23,8 +24,6 @@ LOG = infrastructure.get_logger(__name__)
 # A named tuple to store statistics of baseline quality
 BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
 
-# Type definition
-MaskedArray = numpy.ma.core.MaskedArray
 
 class PlotterPool(object):
     def __init__(self):
@@ -212,9 +211,11 @@ class BaselineSubtractionPlotManager(object):
             elif plot_type == 'pre_fit_avg':
                 ptype = 'sd_sparse_map_before_subtraction_avg'
                 data = self.prefit_data
-            else:
-                ptype = 'sd_sparce_map_after_subtraction_flatness'
+            elif plot_type == 'post_fit_flatness':
+                ptype = 'sd_spectrum_after_subtraction_flatness'
                 data = self.postfit_data
+            else:
+                raise Exception('Unrecognized plot type.')
             for pol, figfile in plots.items():
                 if os.path.exists(figfile):
                     parameters = {'intent': 'TARGET',
@@ -425,22 +426,23 @@ class BaselineSubtractionPlotManager(object):
                          edge: Tuple[int, int], brightnessunit: str,
                          figfile: str) -> List[BinnedStat]:
         """
-        Calculate baseline flatness of a pectrum and create a plot.
+        Calculate baseline flatness of a spectrum and create a plot.
 
         Args:
-            spectrum: A spectrum to analyze flatness and plot.
+            spectrum: A spectrum to analyze baseline flatness and plot.
             frequency: Frequency values of each element in spectrum.
             line_range: ID ranges in spectrum array that should be considered
-                as spectral lines and eliminated from inspection of flatness.
+                as spectral lines and eliminated from inspection of baseline
+                flatness.
             deviation_mask: ID ranges of deviation mask. These ranges are also
-                eliminated from inspection of flatness.
+                eliminated from inspection of baseline flatness.
             edge: Number of elements in left and right edges that should be
-                eliminates from inspection of flatness.
+                eliminates from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
             figfile: A file name to save figure.
 
         Returns:
-            Statistic information to evaluate flatness of baseline.
+            Statistic information to evaluate baseline flatness.
         """
         binned_stat = []
         masked_data = numpy.ma.masked_array(spectrum, mask=False)
@@ -468,9 +470,8 @@ class BaselineSubtractionPlotManager(object):
         # create a plot
         xmin = min(frequency[0], frequency[-1])
         xmax = max(frequency[0], frequency[-1])
-        ymin = -3.*stddev
+        ymin = -3*stddev
         ymax = 3*stddev
-        #plt.figure(5555)
         plt.clf()
         plt.plot(frequency, spectrum, color='b', linestyle='-', linewidth=0.4)
         plt.axis((xmin, xmax, ymin, ymax))
@@ -497,9 +498,9 @@ class BaselineSubtractionPlotManager(object):
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
                 plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
-        plt.hlines([-stddev, 0.0, stddev], frequency[0], frequency[-1], colors='k', linestyles='dashed')
+        plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
         plt.plot(binned_freq, binned_data, 'ro')
-        plt.savefig(figfile, format='png', dpi=260)
+        plt.savefig(figfile, format='png', dpi=DPIDetail)
         return binned_stat
         
 
@@ -889,11 +890,9 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     # Prepare return values
     binned_data = numpy.ma.masked_array(numpy.zeros(nbin), mask=False)
     binned_x = numpy.zeros(nbin)
-    #bin_edges = [x[0]]
     min_i = 0
     for i in range(nbin):
         max_i = min(int(numpy.floor((i+1)*bin_width)), ndata-1)
-        #bin_edges.append(x[max_i])
         binned_x[i] = numpy.mean(x[min_i:max_i+1])
         if any(masked_data.mask[min_i:max_i+1]):
             binned_data.mask[i] = True

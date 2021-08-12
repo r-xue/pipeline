@@ -2253,7 +2253,7 @@ def score_sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, li
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
-def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
+def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
                               pol: str, stat: List[tuple]) -> pqa.QAScore:
     """
     Return Pipeline QA score of baseline quality.
@@ -2262,7 +2262,7 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
         vis: MS name
         source: source name
         ant: antenna name
-        spw: virtual spw
+        vspw: virtual spw ID
         pol: polarization
         stat: a list of binned statistics
 
@@ -2270,7 +2270,7 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
         Pipeline QA score of baseline quality.
     """
     scores = []
-    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {spw}, {pol}')
+    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
     # See PIPE-1073 for details of QA metrics.
     for s in stat:
         min_score = interpolate.interp1d([-1.25, -0.5], [0.175, 0.25],
@@ -2293,7 +2293,7 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, spw: str,
     elif final_score <= 0.9:
         quality='Moderate'
     shortmsg = f'{quality} baseline flatness'
-    longmsg = f'{quality} baline flatness in {vis}, {source}, {ant}, {spw}, {pol}'
+    longmsg = f'{quality} baseline flatness in {vis}, {source}, {ant}, virtual spw {vspw}, {pol}'
     origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
                           metric_score=len(stat),
                           metric_units='Statistics of binned spectra')
