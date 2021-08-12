@@ -227,10 +227,12 @@ class FindCont(basetask.StandardTaskTemplate):
                         freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                         freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
                         channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
-                        # Skip 1 km/s or at least 5 channels
-                        extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
+                        # Skip 1 km/s
+                        extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
+                        extra_skip_frequency_hz = float(qaTool.getvalue(qaTool.sub(freq0, utils.velocity_to_frequency(qaTool.quantity(1.0, 'km/s'), freq0))))
                     else:
                         extra_skip_channels = 0
+                        extra_skip_frequency_hz = 0.0
 
                     if target['nchan'] not in (None, -1):
                         if1 = if0 + channel_width * target['nchan']
@@ -248,11 +250,13 @@ class FindCont(basetask.StandardTaskTemplate):
                         else:
                             nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
-                    # tclean interprets the start frequency as the center of the
-                    # first channel. We have, however, an edge to edge range.
-                    # Thus shift by 0.5 channels if no start is supplied.
                     if target['start'] == '':
-                        start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                        # tclean interprets the start frequency as the center of the
+                        # first channel. We have, however, an edge to edge range.
+                        # Thus shift by 0.5 channels if no start is supplied.
+                        # Additionally skipping the edge channel (cf. "- 2" above)
+                        # means a correction of 1.5 channels.
+                        start = '%.10fGHz' % ((if0 + 1.5 * channel_width + extra_skip_frequency_hz) / 1e9)
                     else:
                         start = target['start']
 
