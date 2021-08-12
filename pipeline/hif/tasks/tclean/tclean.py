@@ -287,9 +287,12 @@ class Tclean(cleanbase.CleanBase):
         if inputs.deconvolver in (None, ''):
             inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw)
 
-        # Determine weighting and perchanweightdensity
+        # Determine weighting
         if inputs.weighting in (None, ''):
             inputs.weighting = self.image_heuristics.weighting(inputs.specmode)
+
+        # Determine perchanweightdensity
+        if inputs.hm_perchanweightdensity in (None, ''):
             inputs.hm_perchanweightdensity = self.image_heuristics.perchanweightdensity(inputs.specmode)
 
         # Determine nterms
@@ -1153,6 +1156,7 @@ class Tclean(cleanbase.CleanBase):
                                                   width=inputs.width,
                                                   weighting=inputs.weighting,
                                                   robust=inputs.robust,
+                                                  mosweight=inputs.mosweight,
                                                   uvtaper=inputs.uvtaper,
                                                   restoringbeam=inputs.restoringbeam,
                                                   iter=iternum,

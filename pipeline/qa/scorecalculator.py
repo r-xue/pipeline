@@ -45,6 +45,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_renorm',                                    # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -557,7 +558,7 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
     """
     pol_intents = {'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'}
     # these recipes are allowed to process polarisation data
-    pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
+    pol_recipes = {'hifa_polcal', 'hifa_polcalimage', 'hifa_polcal_renorm', 'hifa_polcalimage_renorm'}
 
     # Sort to ensure presentation consistency
     mses = sorted(mses, key=lambda ms: ms.basename)
@@ -2899,6 +2900,18 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+def score_renorm(result):
+    if result.renorm_applied:
+        msg = 'Restore successful with renormalization applied'
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+    else:
+        msg = 'Restore successful'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='score_renormalize',
+                            metric_score=score,
+                            metric_units='')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 @log_qa
 def score_fluxservice(result):

@@ -127,6 +127,7 @@ class BaselineSubtractionPlotManager(object):
 
         origin_ms = self.context.observing_run.get_ms(self.ms.origin_ms)
         self.out_rowmap = utils.make_row_map(origin_ms, blvis)
+        self.in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         self.prefit_data = ms.name
         self.postfit_data = blvis
 
@@ -240,6 +241,7 @@ class BaselineSubtractionPlotManager(object):
         prefit_data = self.prefit_data
         postfit_data = self.postfit_data
         out_rowmap = self.out_rowmap
+        in_rowmap = self.in_rowmap
 
         dtrows = self.datatable.getcol('ROW')
 
@@ -319,7 +321,6 @@ class BaselineSubtractionPlotManager(object):
 
         del postfit_integrated_data
 
-        in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
                                                            num_ra, num_dec,
                                                            nchan, npol, rowlist,

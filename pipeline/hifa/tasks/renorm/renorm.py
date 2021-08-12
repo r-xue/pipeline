@@ -11,9 +11,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
+    def __init__(self, renorm_applied, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, exception=None):
         super(RenormResults, self).__init__()
-        self.pipeline_casa_task = 'Renorm'
+        self.renorm_applied = renorm_applied
         self.vis = vis
         self.apply = apply
         self.threshold = threshold
@@ -35,6 +35,7 @@ class RenormResults(basetask.Results):
 
     def __repr__(self):
         return (f'RenormResults:\n'
+                f'\trenorm_applied={self.renorm_applied}\n'
                 f'\tvis={self.vis}\n'
                 f'\tapply={self.apply}\n'
                 f'\tthreshold={self.threshold}\n'
@@ -90,6 +91,8 @@ class Renorm(basetask.StandardTaskTemplate):
         if 'ALMA Band 10' in bands:
             LOG.warning('Running hifa_renorm on ALMA Band 10 (DSB) data')
 
+        renorm_applied = False
+
         # call the renorm code
         try:
             rn = ACreNorm(inp.vis)
@@ -110,6 +113,11 @@ class Renorm(basetask.StandardTaskTemplate):
                                spws=inp.spw, excludechan=inp.excludechan)
                 rn.plotSpectra()
 
+                # if we tried to renormalize and it was done, store info in the results
+                #   so that it can be passed to the manifest and used during restore
+                if inp.apply and rn.checkApply():
+                    renorm_applied = True
+
                 if corrColExists and not corrApplied:
                     # get stats (dictionary) indexed by source, spw
                     stats = rn.rnpipestats
@@ -118,10 +126,10 @@ class Renorm(basetask.StandardTaskTemplate):
 
             rn.close()
 
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm)
+            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
-            result = RenormResults(inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, e)
+            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, e)
 
         return result
 
