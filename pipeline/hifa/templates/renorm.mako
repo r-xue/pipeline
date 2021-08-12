@@ -18,8 +18,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <hr/>
 
-<p><b>MS/Source/SPW that trigger the need for renormalization above a threshold of ${result[0].threshold} highlighted in red.<b></p>
-
+<p><b>MS/Source/SPW that trigger the need for renormalization above a threshold of ${result[0].threshold} highlighted in red.</b></p>
+<p><em>Please refer to the Pipeline User's Guide (linked to this weblog's Home page) for more details on renormalization and interpretation of the plots.</em></p>
 <table class="table table-bordered table-striped" summary="Renormalization results">
 	<caption>Renormalization results</caption>
     <thead>
