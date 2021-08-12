@@ -109,7 +109,7 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
 
 <h3 id="flagged_data_summary" class="jumptarget">Checkflag Summary</h3>
 
-<h4>Measurement Set: ${os.path.basename(ms)}</h4>
+<h4>${os.path.basename(ms)}</h4>
 
 % if result[0].inputs['checkflagmode'] in ( 'bpd-vla', 'allcals-vla', 'target-vla'):
     <p>Summary Data Selection Parameter(s)</p>

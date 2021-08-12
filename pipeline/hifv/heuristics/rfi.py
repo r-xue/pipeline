@@ -56,7 +56,6 @@ class RflagDevHeuristic(api.Heuristic):
     @staticmethod
     def _plot_vla_sefd(sefd, baseband_spws=None, figfile='vla_sefd.png'):
         """Generate the VLA SEFD summary plot."""
-
         fig, ax = plt.subplots(figsize=(8, 4))
 
         for band, sefd_per_band in sefd.items():
@@ -92,20 +91,19 @@ class RflagDevHeuristic(api.Heuristic):
         """Derive the corrected freqdev/timedev for applying rflag.
 
         Args:
-            rflag_report:  the "rflag" report dictionary in the returne from flagdata(action='calculation',mode='rflag',..)
-                           flagdata_result['report0']
+            rflag_report:  the "rflag" report dictionary in the returne from flagdata(action='calculation',mode='rflag'):
+                           e.g., flagdata_result['report0'].
 
-        - The return report structure of flagdata(action='calculation',mode='rflag',..) from
-        the freq-domain and time-domain analysis (see additional details in flagdata documenttaion) is exepcted
-        to be:
+        - The return report structure of flagdata(action='calculation',mode='rflag',..) from the freq/time-domain analysis 
+          (see additional details in flagdata documenttaion) is exepcted to be:
             report['freqdev'|'timedev']:    (sum_i(nspw_of_field_i), 3) 
             report['*dev'][:, 0]:           FldId
             report['*dev'][:, 1]:           SpwId
             report['freqdev'][:, 2]:        Estimated freqdev/timedev
                                             note: this is not the "clipping" threshold (which is defined as dev*devscale).
-        
-        - the median-based rflag threshold reset scheme (within each baseband/field) is summarized in CAS-11598 and PIPE-685/987
-        - A completely flagged spw+field data selection is still show up in flagdata reports, but the value will be 0.0.
+ 
+        - The median-based rflag threshold reset scheme (within each baseband/field) is summarized in CAS-11598 and PIPE-685/987
+        - As of CASA ver 6.2.1, a completely flagged spw+field data selection will show up in flagdata reports, with freqdev/timedev=0.0
         """
 
         new_report = copy.deepcopy(rflag_report)
@@ -174,16 +172,16 @@ class RflagDevHeuristic(api.Heuristic):
         """[summary]
 
         Args:
-            ms ([type]): [description]
-            sefd_database ([type]): [description]
-            science_windows_only (bool, optional): [description]. Defaults to True.
+            science_windows_only (bool, optional): Defaults to True.
+            ignore_sefd (bool, optional): Default to False.
 
         Returns:
-            [type]: [description]
-        
+            spw_rms_scale: the expected relative rms scales of each spw (see below)
+
         By default, the rms scaling factor per spw (spw_rms_scale) is defined as: SEFD_jy/chanwidth_mhz^0.5.
-        If ignore_sefd=True, spw_rms_scale would be simplily as: 1/chanwidth_mhz^0.5. This is equiavelent to the VLASS specific assumption of a uniform SEFD (see PIPE-685/987).
-        Note: spw_rms_scale is only useful in a relative sense when comparing threstical rms from different spws from same scans.
+        If ignore_sefd=True, spw_rms_scale would be simply defined as 1/chanwidth_mhz^0.5. This is equivalent
+        to the VLASS-specific assumption of a uniform SEFD (see PIPE-685/987).
+        Note: spw_rms_scale is only useful in a relative sense when comparing theoretical rms of different spws from same scans.
         """
 
         spw_rms_scale = dict()
@@ -252,7 +250,10 @@ def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='correct
                   correlation='', uvrange='',
                   useflags=True,
                   timeaverage=True, timebin='1e8s', timespan='', vis_averaged=None):
-    """Get amplitude min/max from a MS after applying data selection and time-averging."""
+    """Get amplitude min/max from a MS after applying data selection and time-averging.
+
+    note: currently not used.
+    """
     amp_range = [0., 0.]
 
     try:
@@ -287,6 +288,7 @@ def _get_amp_range2(vis, field='', spw='', scan='', intent='', datacolumn='corre
     This approach offers additional data selection capaibility (e.g. correlation, uvrange), but lack of pre-averging capability
     - doquantiles=False to improve performance (CASR-550/CAS-13031)
     - ms.statistics(timeaverge=True) doesn't seem to work properly at this moment (likely doing scalar-averging)
+    note: currently not used.
     """
     amp_range = [0., 0.]
 
@@ -311,6 +313,7 @@ def _get_amp_range1(vis, field='', spw='', scan='', intent='', datacolumn='corre
     This is the quickest method, but doesn't offer correlation-based selection or pre-averging capability.
     In addition, ms.range can't handle data selection including mutiple descriptions with varying data shape.
     see: https://casa.nrao.edu/docs/casaref/ms.range.html
+    note: currently not used.
     """
     amp_range = [0., 0.]
 
@@ -340,7 +343,10 @@ def _get_amp_range1(vis, field='', spw='', scan='', intent='', datacolumn='corre
 
 
 def plotms_get_xyrange(plotms_log):
-    """Parse the CASAplotms log to obatin the range of plotted data points."""
+    """Parse the CASAplotms log to obatin the range of plotted data points.
+
+    note: currently not used.
+    """
     try:
         xyrange = [0, 0, 0, 0]
         idx = 0
@@ -366,6 +372,7 @@ def plotms_get_autorange(xyrange):
     """Estimate the autoscale plotrange from CASAplotms based on data range.
 
     The algorithm is translated from casa6/casa5/code/display/QtPlotter:QtDrawSettings::adjustAxis
+    note: currently not used.
     """
     autorange = [0., 0., 0., 0.]
     for idx in [0, 2]:
