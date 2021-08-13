@@ -4,12 +4,13 @@ import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -20,8 +21,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     parallel = vdp.VisDependentProperty(default='automatic')
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_weighting = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -31,7 +35,7 @@ class FindContInputs(vdp.StandardInputs):
         # objects from the inputs' clean_list.
         return copy.deepcopy(self.context.clean_list_pending)
 
-    def __init__(self, context, output_dir=None, vis=None, target_list=None, mosweight=None,
+    def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
                  hm_perchanweightdensity=None, hm_weighting=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
@@ -39,7 +43,7 @@ class FindContInputs(vdp.StandardInputs):
         self.vis = vis
 
         self.target_list = target_list
-        self.mosweight = mosweight
+        self.hm_mosweight = hm_mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_weighting = hm_weighting
         self.parallel = parallel
@@ -47,7 +51,7 @@ class FindContInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(FindContInputs)
+#api.ImagingMeasurementSetsPreferred.register(FindContInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_findcont')
@@ -119,9 +123,9 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Determine the gridder mode
                     image_heuristics = target['heuristics']
                     gridder = image_heuristics.gridder(target['intent'], target['field'])
-                    if inputs.mosweight not in (None,):
-                        mosweight = inputs.mosweight
-                    elif target['mosweight'] not in (None,):
+                    if inputs.hm_mosweight not in (None, ''):
+                        mosweight = inputs.hm_mosweight
+                    elif target['mosweight'] not in (None, ''):
                         mosweight = target['mosweight']
                     else:
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])

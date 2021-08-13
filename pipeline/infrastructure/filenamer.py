@@ -636,7 +636,10 @@ class CASALog(NamingTemplate):
 
 
 class Image(NamingTemplate):
-    def __init__(self, virtspw=True):
+    def __init__(self, virtspw=False):
+        # If virtspw is True, the filename will contain "virtspw" instead of "spw".
+        # It was considered for PL2021, but deferred to later. In that case the
+        # above default should be changed to True.
         self.virtspw = virtspw
         super(Image, self).__init__()
 

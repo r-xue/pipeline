@@ -55,10 +55,6 @@
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">hm_masking</Keyword>
-                <Value xmlns="">none</Value>
-            </Parameter>
-            <Parameter>
                 <Keyword xmlns="">hm_cyclefactor</Keyword>
                 <Value xmlns="">3.0</Value>
             </Parameter>

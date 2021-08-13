@@ -308,6 +308,23 @@ class PipelineManifest(object):
         """
         eltree.SubElement(ous, "aqua_report", name=aqua_report)
 
+    def add_renorm(self, asdm_name, inputs):
+        """
+        Add the renormalization parameters to a asdm element
+        """
+        for asdm in self.get_ous().findall(f".//asdm[@name=\'{asdm_name}\']"):
+            newinputs = {key:str(value) for (key,value) in inputs.items()} # stringify the values
+            eltree.SubElement(asdm, "hifa_renorm", newinputs)
+
+    def get_renorm(self, asdm_name):
+        """
+        Get the hifa_renorm element
+        """
+        for asdm in self.get_ous().findall(f".//asdm[@name=\'{asdm_name}\']"):
+            return getattr(asdm.find('hifa_renorm'), 'attrib', None)
+        else:
+            return None
+
     def write(self, filename):
         """
         Convert the document to a nicely formatted XML string

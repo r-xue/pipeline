@@ -1,6 +1,7 @@
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.applycal import applycal
 from pipeline.infrastructure import task_registry
 from ..importdata import almaimportdata
 
@@ -33,3 +34,10 @@ class ALMARestoreData(restoredata.RestoreData):
                                         dbservice=False, asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
         importdata_task = almaimportdata.ALMAImportData(container)
         return self._executor.execute(importdata_task, merge=True)
+
+    # PIPE-1165: override applycal method to include polarisation intents.
+    def _do_applycal(self):
+        container = vdp.InputsContainer(applycal.Applycal, self.inputs.context,
+                                        intent='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE')
+        applycal_task = applycal.Applycal(container)
+        return self._executor.execute(applycal_task, merge=True)

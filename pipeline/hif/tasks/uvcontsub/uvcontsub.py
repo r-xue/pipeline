@@ -1,14 +1,18 @@
 import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class UVcontSubInputs(applycal.ApplycalInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     applymode = vdp.VisDependentProperty(default='calflag')
     flagsum = vdp.VisDependentProperty(default=False)
     intent = vdp.VisDependentProperty(default='TARGET')
@@ -21,12 +25,14 @@ class UVcontSubInputs(applycal.ApplycalInputs):
 
 
 # Register this as an imaging MS(s) preferred task
-api.ImagingMeasurementSetsPreferred.register(UVcontSubInputs)
+#api.ImagingMeasurementSetsPreferred.register(UVcontSubInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
 class UVcontSub(applycal.Applycal):
     Inputs = UVcontSubInputs
+    # DataType to be set for a new column
+    applied_data_type = DataType.REGCAL_LINE_SCIENCE
 
     # Override prepare method with one which sets and unsets the VI1CAL
     # environment variable.

@@ -8,13 +8,15 @@ _pprinter = pprint.PrettyPrinter()
 
 
 class Source(object):
-    def __init__(self, source_id, name, direction, proper_motion, is_eph_obj):
+    def __init__(self, source_id, name, direction, proper_motion, is_eph_obj, table_name, avg_spacing):
         self.id = source_id
         self.name = name
         self.fields = []
         self._direction = direction
         self._proper_motion = proper_motion
         self.is_eph_obj = is_eph_obj
+        self._ephemeris_table = table_name
+        self._avg_spacing = avg_spacing
 
     def __repr__(self):
         # use pretty printer so we have consistent ordering of dicts
@@ -78,6 +80,16 @@ class Source(object):
     @property
     def gb(self):
         return self.dec
+
+    @property
+    def ephemeris_table(self):
+        """Returns the name of the ephemeris table associated with this Source or "" if not an ephemeris source. """
+        return self._ephemeris_table
+
+    @property
+    def avg_spacing(self):
+        """ Returns the average spacing between table entries in the ephemeris table if this is an ephemeris source or "" """
+        return self._avg_spacing
 
     def __format_pm(self, axis):
         qa = casa_tools.quanta

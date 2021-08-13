@@ -367,7 +367,8 @@ def compute_elevation_difference(context, results):
                         selected.close()
 
                     # access DataTable to get elevation 
-                    ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
+                    ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name,
+                                                     os.path.basename(ms.origin_ms), 'RO')
                     with casa_tools.TableReader(ro_datatable_name) as tb:
                         selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'
                                             ''.format(spw_id, antenna_id, field_id_on))

@@ -19,7 +19,7 @@ from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import absolute_path
+from pipeline.infrastructure.utils import absolute_path, relative_path
 from . import compress
 
 LOG = infrastructure.get_logger(__name__)
@@ -99,12 +99,9 @@ def asdm_name_from_ms(ms_domain: MeasurementSet) -> str:
     asdm = ms_basename[:index_for_suffix] if index_for_suffix > 0 else ms_basename
     return asdm
 
-
-def get_parent_ms_idx(context: Context, msname: str) -> int:
+def get_ms_idx(context: Context, msname: str) -> int:
     """
     Return an index of a given MeasurementSet (MS) in Pipeline Context.
-
-    This method maps both work_data and original MS to a proper index.
 
     Args:
         context: A Pipeline Context to be investigated.
@@ -118,30 +115,41 @@ def get_parent_ms_idx(context: Context, msname: str) -> int:
     for idx in range(len(mslist)):
         msobj = mslist[idx]
         search_list = [msobj.name, msobj.basename]
-        if hasattr(msobj, "work_data"):
-            search_list += [msobj.work_data, os.path.basename(msobj.work_data)]
         if msname in search_list:
             idx_found = idx
             break
     return idx_found
 
-
-def get_parent_ms_name(context: Context, msname: str) -> str:
+def get_data_table_path(context: Context, msobj: MeasurementSet) -> str:
     """
-    Return a name of corresponding parent MeasurementSet in Pipeline Context.
-
-    This method maps both work_data and original MeasurementSet (MS) to a
-    proper name of original MS.
+    Return the path of DataTable.
 
     Args:
-        context: A Pipeline Context to be investigated.
-        msname: A name of MS to look into.
+        context: A Pipeline Context
+        msobj: An MS domain object to get DataTable path for
 
     Returns:
-        A name of original MS. The return value is '', if no match is found.
+        A relative path of DataTable of a given msobj
     """
-    idx = get_parent_ms_idx(context, msname)
-    return context.observing_run.measurement_sets[idx].name if idx >= 0 else ""
+    origin_ms_name = os.path.basename(msobj.origin_ms)
+    return relative_path(os.path.join(context.observing_run.ms_datatable_name, origin_ms_name))
+
+def match_origin_ms(ms_list: List[MeasurementSet], origin_name: str) -> MeasurementSet:
+    """
+    Return an MS domain object that has the same origin_ms as origin_name.
+
+    Args:
+        ms_list: List of MS domain objects to match.
+        origin_name: The name of origin MS
+
+    Returns:
+        MS domain object of the first matching MS. Return None if not match is
+        found.
+    """
+    for ms in ms_list:
+        if ms.origin_ms == origin_name:
+            return ms
+    return None
 
 
 class ProgressTimer(object):
@@ -427,7 +435,7 @@ def iterate_group_member(group_desc: dict,
         yield member.ms, member.field_id, member.antenna_id, member.spw_id
 
 
-def get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
+def get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
                           antennaid_list: List[int], fieldid_list: List[int],
                           spwid_list: List[int])  -> numpy.ndarray:
     """
@@ -435,7 +443,7 @@ def get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
 
     Args:
         datatable: A datatable instance.
-        vis_list: A list of MeasurementSet (MS) name.
+        origin_vis_list: A list of origin MeasurementSet (MS) name.
         antennaid_list: A list of antenna IDs to select for a correspoinding
             elements of vis_list.
         fieldid_list: A list of field IDs to select for a correspoinding
@@ -446,11 +454,12 @@ def get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
     Retruns:
         An array of row IDs in datatable
     """
-    return numpy.fromiter(_get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
+    return numpy.fromiter(_get_index_list_for_ms(datatable, origin_vis_list,
+                                                 antennaid_list, fieldid_list,
                                                 spwid_list), dtype=numpy.int64)
 
 
-def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
+def _get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
                            antennaid_list: List[int], fieldid_list: List[int],
                            spwid_list: List[int]
                            ) -> Generator[int, None, None]:
@@ -459,7 +468,7 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
 
     Args:
         datatable: A datatable instance.
-        vis_list: A list of MeasurementSet (MS) name.
+        origin_vis_list: A list of origin MeasurementSet (MS) name.
         antennaid_list: A list of antenna IDs to select for a correspoinding
             elements of vis_list.
         fieldid_list: A list of field IDs to select for a correspoinding
@@ -473,7 +482,7 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
     # use time_table instead of data selection
     #online_flag = datatable.getcolslice('FLAG_PERMANENT', [0, OnlineFlagIndex], [-1, OnlineFlagIndex], 1)[0]
     #LOG.info('online_flag=%s'%(online_flag))
-    for (_vis, _field, _ant, _spw) in zip(vis_list, fieldid_list, antennaid_list, spwid_list):
+    for (_vis, _field, _ant, _spw) in zip(origin_vis_list, fieldid_list, antennaid_list, spwid_list):
         try:
             time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
         except RuntimeError as e:
@@ -494,7 +503,7 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
 def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
                            member_list: List[int]) -> collections.defaultdict:
     """
-    Return row IDs of datatable correspond to selected reductions groups.
+    Return row IDs of datatable of selected reductions group members.
 
     Args:
         datatable_dict: A dictionary that stores DataTable (values) of each
@@ -505,16 +514,17 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
         member_id_list: A list of member IDs in group_desc to yield.
 
     Returns:
-        Keys of the returned dictionary are names of MSes and values are numpy
-        arrays of row IDs in corresponding datatables.
+        Keys of the returned dictionary are names of origin MSes and values are
+        numpy arrays of row IDs in corresponding datatables.
     """
     # use time_table instead of data selection
     index_dict = collections.defaultdict(list)
     for (_ms, _field, _ant, _spw) in iterate_group_member(group_desc, member_list):
         print('{0} {1} {2} {3}'.format(_ms.basename, _field, _ant, _spw))
-        _vis = _ms.name
-        datatable = datatable_dict[_ms.basename]
-        time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
+        origin_ms_basename = os.path.basename(_ms.origin_ms)
+        datatable = datatable_dict[origin_ms_basename]
+        time_table = datatable.get_timetable(_ant, _spw, None,
+                                             origin_ms_basename, _field)
         # time table separated by large time gap
         the_table = time_table[1]
         def _g():
@@ -525,7 +535,7 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
                     if any(online_flag == 1):
                         yield row
         arr = numpy.fromiter(_g(), dtype=numpy.int64)
-        index_dict[_ms.basename].extend(arr)
+        index_dict[origin_ms_basename].extend(arr)
     for vis in index_dict:
         index_dict[vis] = numpy.asarray(index_dict[vis])
     return index_dict
@@ -661,32 +671,28 @@ class EchoDictionary(dict):
         """Destructor of EchoDictionary class."""
         return x
 
-
-def make_row_map_for_baselined_ms(ms: MeasurementSet,
-                                  table_container=None) -> dict:
+def make_row_map_between_ms(src_ms: MeasurementSet, derived_vis: str,
+                            table_container=None) -> dict:
     """
-    Make row mapping between a MeasurementSet (MS) and an associating MS.
-
-    Mapping is done between an input MS and work_data associated to it.
+    Make row mapping between source and derived MSes.
 
     Args:
-        ms: A MeasurementSet (MS) domain object.
+        src_ms: An MS domain object of source MS.
+        derived_vis: A name of derived MS
         table_container: A container class that stores table tool instances
             of calibrated and associating MS.
 
     Returns:
-        A row mapping dictionary. A key is row ID of calibrated MS and
-        a corresponding value is that of baselined MS.
+        A row mapping dictionary. A key is row ID of source MS and
+        a corresponding value is that of derived MS.
     """
-    work_data = ms.work_data
     src_tb = None
     derived_tb = None
     if table_container is not None:
         src_tb = table_container.tb1
         derived_tb = table_container.tb2
 
-    return make_row_map(ms, work_data, src_tb, derived_tb)
-
+    return make_row_map(src_ms, derived_vis, src_tb, derived_tb)
 
 #@profiler
 def make_row_map(src_ms: MeasurementSet, derived_vis: str,
@@ -707,8 +713,7 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
         A row mapping dictionary. A key is row ID of calibrated MS and
         a corresponding value is that of baselined MS.
     """
-    ms = src_ms
-    vis0 = ms.name
+    vis0 = src_ms.name
     vis1 = derived_vis
 
     rowmap = {}
@@ -728,7 +733,7 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
     derived_ddid_map = make_ddid_map(vis1)
     LOG.trace('derived_ddid_map=%s' % derived_ddid_map)
 
-    scans = ms.get_scans(scan_intent='TARGET')
+    scans = src_ms.get_scans(scan_intent='TARGET')
     scan_numbers = [s.id for s in scans]
     fields = {}
     states = {}
@@ -875,12 +880,12 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
                 for field_id in fields[scan_number]:
                     LOG.trace('FIELD_ID %s' % field_id)
 
-                    for antenna in ms.antennas:
+                    for antenna in src_ms.antennas:
                         antenna_id = antenna.id
                         LOG.trace('ANTENNA_ID %s' % antenna_id)
 
-                        for spw in ms.get_spectral_windows(science_windows_only=True):
-                            data_desc = ms.get_data_description(spw=spw)
+                        for spw in src_ms.get_spectral_windows(science_windows_only=True):
+                            data_desc = src_ms.get_data_description(spw=spw)
                             data_desc_id = data_desc.id
                             pol_id = data_desc.pol_id
                             spw_id = spw.id

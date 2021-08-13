@@ -84,7 +84,7 @@ except:
                         <a href="${fullsize_relpath}"
                            data-fancybox="clean-summary-images"
                            title='<div class="pull-left">Iteration: ${row.plot.parameters['iter']}<br>
-                                  Spw: ${row.plot.parameters['spw']}<br>
+                                  Spw: ${row.plot.parameters['virtspw']}<br>
                                   Field: ${html.escape(row.field, True)}</div><div class="pull-right"><a href="${fullsize_relpath}">Full Size</a></div>'>
                           <img src="${thumbnail_relpath}"
                                title="Iteration ${row.plot.parameters['iter']}: image"
