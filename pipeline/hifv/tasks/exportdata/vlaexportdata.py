@@ -7,6 +7,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.filenamer import fitsname
 from . import vlaifaqua
 
@@ -72,6 +73,7 @@ class VLAExportData(exportdata.ExportData):
 
             for ee in fitsqueue:
                 # make the pbcor FITS images
+                self._shorten_spwlist(ee.pbcorimage)
                 task = casa_tasks.exportfits(imagename=ee.pbcorimage, fitsimage=ee.pbcorfits, velocity=False, optical=False,
                                         bitpix=-32, minpix=0, maxpix=-1, overwrite=True, dropstokes=False,
                                         stokeslast=True)
@@ -119,6 +121,24 @@ class VLAExportData(exportdata.ExportData):
             self._add_to_manifest(manifest_file, auxfproducts, False, [], pipe_aqua_reportfile)
 
         return results
+
+    def _shorten_spwlist(self, image):
+        # PIPE-325: abbreviate 'spw' and/or 'virtspw' for FITS header when spw string is "too long"
+        # TODO: elevate this function to h exportdata after the PL2021 release so that it can be used
+        #   here as well as in h_exportdata.  Too close to a release candidate at the moment to disrupt
+        #   ALMA validation.
+        with casa_tools.ImageReader(image) as img:
+            info = img.miscinfo()
+            if 'spw' in info:
+                if len(info['spw']) >= 68:
+                    spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
+                    info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                    img.setmiscinfo(info)
+            if 'virtspw' in info:
+                if len(info['virtspw']) >= 68:
+                    spw_sorted = sorted([int(x) for x in info['virtspw'].split(',')])
+                    info['virtspw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                    img.setmiscinfo(info)
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         """
