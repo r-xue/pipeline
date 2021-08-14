@@ -832,19 +832,12 @@ class T2_1DetailsRenderer(object):
         vla_basebands = ''
 
         if context.project_summary.telescope not in ('ALMA', 'NRO'):
-        # All VLA basebands
+            # All VLA basebands
 
             vla_basebands = []
-
-            banddict = collections.defaultdict(lambda: collections.defaultdict(list))
-
-            for spw in ms.get_spectral_windows():
-                try:
-                    band = spw.name.split('#')[0].split('_')[1]
-                    baseband = spw.name.split('#')[1]
-                    banddict[band][baseband].append({str(spw.id): (spw.min_frequency, spw.max_frequency)})
-                except:
-                    LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+            banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+            if len(banddict) == 0:
+                LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
 
             for band in banddict:
                 for baseband in banddict[band]:
@@ -853,12 +846,13 @@ class T2_1DetailsRenderer(object):
                     maxfreqs = []
                     for spwitem in banddict[band][baseband]:
                         # TODO: review if this relies on order of keys.
-                        spws.append(list(spwitem.keys())[0])
+                        spws.append(str([*spwitem][0]))
                         minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
                         maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
                     bbandminfreq = min(minfreqs)
                     bbandmaxfreq = max(maxfreqs)
-                    vla_basebands.append(band+': '+baseband+':  '+ str(bbandminfreq)+ ' to '+ str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
+                    vla_basebands.append(band+': '+baseband+':  ' + str(bbandminfreq) + ' to ' +
+                                         str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
 
             vla_basebands = '<tr><th>VLA Bands: Basebands:  Freq range: [spws]</th><td>'+'<br>'.join(vla_basebands)+'</td></tr>'
 
