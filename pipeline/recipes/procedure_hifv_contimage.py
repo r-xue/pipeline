@@ -34,6 +34,9 @@ def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interact
         # Make clean cont images for the selected targets
         hif_makeimages(hm_cyclefactor=3.0)
 
+        # apply a primary beam correction on target images
+        hifv_pbcor(pipelinemode=pipelinemode) 
+
         # Export the data
         hifv_exportdata(imaging_products_only=True, pipelinemode=pipelinemode)
 

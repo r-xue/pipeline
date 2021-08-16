@@ -107,7 +107,7 @@ class MaskLine(basetask.StandardTaskTemplate):
                         yield indexer.perms2serial(origin_basename, i)
         # index_list stores serial DataTable row IDs of all group members
         index_list = numpy.fromiter(_g(), dtype=numpy.int64)
-        LOG.info('index_list=%s', index_list)
+        LOG.debug('index_list=%s', index_list)
         t1 = time.time()
         LOG.info('Elapsed time for generating index_list: {0} sec'.format(t1 - t0))
         # LOG.trace('all(spwid == {}) ? {}', spwid_list[0], numpy.all(dt.getcol('IF').take(index_list) == spwid_list[0]))

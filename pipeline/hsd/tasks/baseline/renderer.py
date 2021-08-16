@@ -73,8 +73,8 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     'dovirtual': dovirtual})
 
         # profile map before and after baseline subtracton
-        maptype_list = ['before', 'after', 'before']
-        subtype_list = ['raw', 'raw', 'avg']
+        maptype_list = ['before', 'after', 'before', 'after']
+        subtype_list = ['raw', 'raw', 'avg', 'flatness']
         for maptype, subtype in zip(maptype_list, subtype_list):
             plot_list = self._plots_per_field_with_type(sparsemap_plots, maptype, subtype)
             summary = self._summary_plots(plot_list)
@@ -84,8 +84,11 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             for inner in plot_list.values():
                 for plot in inner:
                     flattened.append(plot)
-            datatype = 'Raw' if subtype == 'raw' else 'Averaged'
-            plot_title = '{} Sparse Profile Map {} Baseline Subtraction'.format(datatype, maptype.lower())
+            if subtype != 'flatness':
+                datatype = 'Raw' if subtype == 'raw' else 'Averaged'
+                plot_title = '{} Sparse Profile Map {} Baseline Subtraction'.format(datatype, maptype.lower())
+            else:
+                plot_title = 'Baseline Flatness {} Baseline Subtraction'.format(maptype.lower())
             renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_ant_field_spw_pol_plots.mako',
                                                       context,
                                                       results,
@@ -142,7 +145,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                 p = x.decompress()
             else:
                 p = x
-            if p.parameters['type'].find(type_string) != -1 and p.parameters['type'].find(subtype_string) != -1:
+            if type_string in p.parameters['type'] and subtype_string in p.parameters['type']:
                 key = p.field
                 if key in plot_group:
                     plot_group[key].append(x)
