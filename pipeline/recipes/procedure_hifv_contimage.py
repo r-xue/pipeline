@@ -22,6 +22,11 @@ def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interact
         if importonly:
             raise Exception(IMPORT_ONLY)
 
+        # Flag target data using flagtemplate.txt
+        hifv_flagdata(intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*,*UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*',
+                      quack=False, autocorr=False, baseband=False, edgespw=False,
+                      clip=False, online=False, shadow=False, scan=True)
+
         # Split out the target data
         hif_mstransform(pipelinemode=pipelinemode)
 
