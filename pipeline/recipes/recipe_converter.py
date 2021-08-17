@@ -70,7 +70,7 @@ def get_task_property(task_name):
     if task_name == 'breakpoint':
         return {}
 
-    task_category, _ = task_name.split('_')
+    task_category = task_name.split('_')[0]
     cli_dir = get_cli_dir(task_category)
     task_xml = os.path.join(cli_dir, f'{task_name}.xml')
     print(f'task_xml is {task_xml}')
