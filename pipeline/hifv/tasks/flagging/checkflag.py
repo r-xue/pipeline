@@ -520,8 +520,8 @@ class Checkflag(basetask.StandardTaskTemplate):
             #           with an optional growflag step specified by the 'growflags' task argument
             rflag_standard = [('corrected', 'ABS_RL', 5.0, {'growtime': 100., 'growfreq': 100.}),
                               ('corrected', 'ABS_LR', 5.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('residual', 'REAL_RR', 5.0, {'growtime': 100., 'growfreq': 100.}),
-                              ('residual', 'REAL_LL', 5.0, {'growtime': 100., 'growfreq': 100.})]
+                              ('corrected', 'ABS_RR', 5.0, {'growtime': 100., 'growfreq': 100.}),
+                              ('corrected', 'ABS_LL', 5.0, {'growtime': 100., 'growfreq': 100.})]
             tfcrop_standard = [('corrected', 'ABS_RL', 4.0, {'growtime': 100., 'growfreq': 100.}),
                                ('corrected', 'ABS_LR', 4.0, {'growtime': 100., 'growfreq': 100.}),
                                ('corrected', 'ABS_RR', 4.0, {'growtime': 100., 'growfreq': 100.}),
