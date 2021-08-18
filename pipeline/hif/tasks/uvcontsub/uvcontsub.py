@@ -57,8 +57,13 @@ class UVcontSub(applycal.Applycal):
         result = UVcontSubResults()
         result.applycal_result = applycal_result
 
-        # Create *_line.ms datasets using subtracted data from the corrected column
+        # Create line MS using subtracted data from the corrected column
         outputvis = inputs.vis.replace('_cont', '_line')
+        # Check if it already exists and remove it
+        if os.path.exists(outputvis):
+            LOG.info('Removing {} from disk'.format(outputvis))
+            shutil.rmtree(outputvis)
+        # Run mstransform to create new line MS.
         mstransform_args = {'vis': inputs.vis, 'outputvis': outputvis, 'datacolumn': 'corrected'}
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
         try:
@@ -91,7 +96,7 @@ class UVcontSub(applycal.Applycal):
             ms.session = self.inputs.ms.session
             ms.is_imaging_ms = True
             ms.is_line_ms = True
-        result.mses.extend(observing_run.measurement_sets)
+        result.line_mses.extend(observing_run.measurement_sets)
 
         return result
 
@@ -117,23 +122,36 @@ class UVcontSubResults(basetask.Results):
         self.applycal_result = None
         self.vis = None
         self.outputvis = None
-        self.mses = []
+        self.line_mses = []
 
     def merge_with_context(self, context):
         # Check for an output vis
-        if not self.mses:
+        if not self.line_mses:
             LOG.error('No hif_mstransform results to merge')
             return
 
         target = context.observing_run
 
-        # Adding mses to context
-        for ms in self.mses:
+        # Register applied calibrations
+        for calapp in self.applycal_result.applied:
+            LOG.trace('Marking %s as applied' % calapp.as_applycal())
+            context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
+
+        # Adding line mses to context
+        for ms in self.line_mses:
+            # Check if MS with the same name had already been registered and remove it
+            try:
+                index = [os.path.basename(existing_ms.name) for existing_ms in target.measurement_sets].index(os.path.basename(ms.name))
+                LOG.info('Removing {} from context'.format(ms.name))
+                target.measurement_sets.pop(index)
+            except:
+                # Exception happens if name is not found. No special handling needed.
+                pass
             LOG.info('Adding {} to context'.format(ms.name))
             target.add_measurement_set(ms)
 
         # Create targets flagging template file if it does not already exist
-        for ms in self.mses:
+        for ms in self.line_mses:
             if not ms.is_imaging_ms:
                 continue
             template_flagsfile = os.path.join(
@@ -141,7 +159,9 @@ class UVcontSubResults(basetask.Results):
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
         # Initialize callibrary
-        for ms in self.mses:
+        for ms in self.line_mses:
+            # TODO: Check for existing entries for the line MS and remove them.
+            #       This is probably only the case for future selfcal use cases.
             calto = callibrary.CalTo(vis=ms.name)
             LOG.info('Registering {} with callibrary'.format(ms.name))
             context.callibrary.add(calto, [])
