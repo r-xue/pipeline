@@ -38,8 +38,6 @@ class UVcontSubInputs(applycal.ApplycalInputs):
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
 class UVcontSub(applycal.Applycal):
     Inputs = UVcontSubInputs
-    # DataType to be set for a new column
-    applied_data_type = DataType.REGCAL_LINE_SCIENCE
 
     # Override prepare method with one which sets and unsets the VI1CAL
     # environment variable.
@@ -94,6 +92,7 @@ class UVcontSub(applycal.Applycal):
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
+            ms.set_data_column(DataType.REGCAL_LINE_SCIENCE, 'DATA')
             ms.is_imaging_ms = True
             ms.is_line_ms = True
         result.line_mses.extend(observing_run.measurement_sets)
