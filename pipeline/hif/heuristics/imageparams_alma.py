@@ -202,6 +202,22 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return np.median(percentileBaselineLengths), min_diameter
 
+    def calc_length_of_nth_baseline(self, n: int):
+        """Calculate the length of the nth baseline for the vis list used in the heuristics instance."""
+        baseline_lengths = []
+        for msname in self.vislist:
+            ms_do = self.observing_run.get_ms(msname)
+            ms_baseline_lengths = [float(baseline.length.to_units(measures.DistanceUnits.METRE))
+                                    for baseline in ms_do.antenna_array.baselines]
+            ms_baseline_lengths.sort()
+            if(len(ms_baseline_lengths) >= n):
+                baseline_lengths.append(ms_baseline_lengths[n-1])
+
+        if(len(baseline_lengths) > 0): 
+            return np.median(baseline_lengths)
+        else: 
+            return None
+            
     def get_autobox_params(self, iteration, intent, specmode, robust):
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
