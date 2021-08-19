@@ -1,10 +1,28 @@
+"""
+recipe_conversion.py - conversion script from procedure xml file to Python code.
+
+Please run the script with -h option to see complete usage.
+
+Usage:
+
+    python3 /path/to/recipe_converter.py [recipe] [script]
+
+    or
+
+    casa -c /path/to/recipe_converter.py [recipe] [script]
+
+"""
 import argparse
 import os
 import re
 import string
+from typing import List, Tuple, Union
 import xml.dom.minidom as minidom
 
+# type alias
+DOM = Union[minidom.Document, minidom.Element]
 
+# special strings for recipe conversion
 INDENT = '        '
 TEMPLATE_TEXT = '''# General imports
 import traceback
@@ -42,14 +60,32 @@ ${procedure}
 '''
 
 
-def get_recipe_dir():
+def get_recipe_dir() -> str:
+    """Return absolute path to recipe directory.
+
+    Basically, this returns the directory where this file is located.
+
+    Returns:
+        Absolute path to recipe directory.
+    """
     recipe_dir, _ = os.path.split(__file__)
     recipe_dir = os.path.abspath(recipe_dir)
     print(f'recipe directory is {recipe_dir}')
     return recipe_dir
 
 
-def get_cli_dir(category):
+def get_cli_dir(category: str) -> str:
+    """Return path to cli directory for given category.
+
+    Note that this function does not check the existence of
+    cli directory.
+
+    Args:
+        category: Category name (h, hif, hifa, hifv, hsd, hsdn, etc.)
+
+    Returns:
+        Path to cli directory.
+    """
     recipe_dir = get_recipe_dir().rstrip('/')
     pipeline_root_dir, _ = os.path.split(recipe_dir)
     cli_dir = os.path.join(pipeline_root_dir, f'{category}/cli')
@@ -57,7 +93,19 @@ def get_cli_dir(category):
     return cli_dir
 
 
-def get_element(node, tag_name, expect_unique=False):
+def get_element(node: DOM, tag_name: str, expect_unique: bool = False) -> Union[DOM, List[DOM]]:
+    """Get (list of) DOM object whose name matches tag_name.
+
+    Args:
+        node: Parent DOM object.
+        tag_name: Tag name.
+        expect_unique: Return single DOM object if True.
+                       Defaults to False.
+
+    Returns:
+        List of DOM objects whose name is tag_name, or the first DOM object
+        in the list if expect_unique is True.
+    """
     elements = node.getElementsByTagName(tag_name)
 
     if expect_unique:
@@ -69,17 +117,43 @@ def get_element(node, tag_name, expect_unique=False):
     return return_value
 
 
-def get_data(node):
+def get_data(node: DOM) -> str:
+    """Extract data from DOM object.
+
+    Return string 'data' if node represents <tag>data</tag>.
+
+    Args:
+        node: DOM object
+
+    Returns:
+        Data string.
+    """
     return node.firstChild.data
 
 
-def parse_parameter(node):
+def parse_parameter(node: DOM) -> Tuple[str, str]:
+    """Parse DOM object corresponding to Parameter tag in procedure xml file.
+
+    Args:
+        node: DOM object corresponding to Parameter tag
+
+    Returns:
+        Parameter name and its value.
+    """
     key_element = get_element(node, 'Keyword', expect_unique=True)
     value_element = get_element(node, 'Value', expect_unique=True)
     return get_data(key_element), get_data(value_element)
 
 
-def get_short_description(tree):
+def get_short_description(tree: DOM) -> str:
+    """Extract task short description.
+
+    Args:
+        tree: DOM object corresponding to task xml file (taskname.xml).
+
+    Returns:
+        Task short description.
+    """
     node = filter(
         lambda x: x.parentNode.nodeName == 'task',
         tree.getElementsByTagName('shortdescription')
@@ -89,7 +163,15 @@ def get_short_description(tree):
     return short_desc
 
 
-def get_param_types(tree):
+def get_param_types(tree: DOM) -> dict:
+    """Extract list of parameters and value types.
+
+    Args:
+        tree: DOM object corresponding to task xml file (taskname.xml).
+
+    Returns:
+        Dictionary holding (param_name_str, param_type_str) pair.
+    """
     node = filter(
         lambda x: x.parentNode.nodeName == 'input',
         tree.getElementsByTagName('param')
@@ -100,7 +182,17 @@ def get_param_types(tree):
     return type_dict
 
 
-def get_task_property(task_name):
+def get_task_property(task_name: str) -> dict:
+    """Get task property from task xml file.
+
+    Args:
+        task_name: Pipeline task name.
+
+    Returns:
+        Pipeline task property, including the comment (taken from
+        the shortdescription tag) and the parameter_types dictionary
+        holding (param_name_str, param_type_str) pair.
+    """
     if task_name == 'breakpoint':
         return {}
 
@@ -121,7 +213,33 @@ def get_task_property(task_name):
     return task_property
 
 
-def parse_command(node):
+def parse_command(node: DOM) -> dict:
+    """Parse DOM object into dictionary.
+
+    The node parameter must be the object corresponding to
+    ProcessingCommand tag in the procedure xml file
+
+    Args:
+        node: DOM object to be parsed.
+
+    Returns:
+        Dictionary representation of DOM object.
+
+        Return value has the follwoing structure:
+
+            {task_name: {
+                'comment': str,
+                'parameter': dict,
+                'parameter_types': dict,
+            }}
+
+        where comment is a string taken from pipeline task xml file
+        (shortdescription tag), parameter is a dictionary of the pair
+        of parameter name and value specified in procedure xml file,
+        and parameter_types is a dictionary of the pair of parameter
+        name and its type also taken from pipeline task xml file.
+
+    """
     command_element = get_element(node, 'Command', expect_unique=True)
     command = get_data(command_element)
 
@@ -135,7 +253,15 @@ def parse_command(node):
     return {command: task_property}
 
 
-def parse(procedure_abs_path):
+def parse(procedure_abs_path: str) -> Tuple[str, List[dict]]:
+    """Parse procedure xml file.
+
+    Args:
+        procedure_abs_path: Absolute path to the procedure xml file.
+
+    Returns:
+        Pipeline recipe name with the list of commands.
+    """
     root_element = minidom.parse(procedure_abs_path)
 
     # ProcessingProcedure
@@ -157,7 +283,20 @@ def parse(procedure_abs_path):
     return func_name, commands
 
 
-def get_comment(task_name, config):
+def get_comment(task_name: str, config: dict) -> str:
+    """Generate comment for given task from the configuration.
+
+    The function refers comment field of config. Multi-line comment
+    is properly handled.
+
+    Args:
+        task_name: Pipeline task name.
+        config: Pipeline task configuration.
+
+    Returns:
+        Comment for pipeline task. If task_name is 'breakpoint',
+        the comment indicating breakpoint will be returned.
+    """
     comment = config.get('comment', '')
     prefix = f'{INDENT}# '
     if task_name == 'breakpoint':
@@ -170,7 +309,22 @@ def get_comment(task_name, config):
     return comment
 
 
-def get_execution_command(task_name, config):
+def get_execution_command(task_name: str, config: dict) -> str:
+    """Generate execution command from given task name and configuration.
+
+    The config parameter should have at least two fields: parameter and
+    parameter_types. The parameter field should be the dictionary with
+    (param_name_str, param_value_str) pair while the parameter_types field
+    should be the dictionary with (param_name_str, param_type_str) pair.
+
+    Args:
+        task_name: Pipeline task name.
+        config: Pipeline task configuration.
+
+    Returns:
+        Task execution command string. If task_name is 'breakpoint',
+        empty string will be returned.
+    """
     parameter = config.get('parameter', '')
 
     # breakpoint
@@ -212,7 +366,29 @@ def get_execution_command(task_name, config):
     return command
 
 
-def c2p(command):
+def c2p(command: dict) -> str:
+    """Convert pipeline command dictionary into string.
+
+    The command parameter should be the dictionary returned by
+    parse_command.
+
+    Args:
+        command: Pipeline task and its custom parameters.
+
+    Returns:
+        Python code snippet invoking given pipeline task.
+        The string will look like the following:
+
+            # task shortdescription taken from the task xml file
+            taskname(pipelinemode='automatic')
+
+        or, if parameters are customized in the procedure xml file,
+
+            # task shortdescription taken from the task xml file
+            taskname(custom_param=custom_value, pipelinemode='interactive')
+
+        Note that there will be some additional code for importdata stage.
+    """
     print(f'c2p: command is {list(command.keys())[0]}')
     assert len(command) == 1
     task_name, config = list(command.items())[0]
@@ -224,11 +400,26 @@ def c2p(command):
     return procedure
 
 
-def to_procedure(commands):
+def to_procedure(commands: List[dict]) -> str:
+    """Convert list of commands to string that represents Python code snippet.
+
+    Args:
+        commands: List of pipeline tasks and their custom parameters.
+
+    Returns:
+        Python code snippet that executes pipeline tasks sequentially.
+    """
     return '\n\n'.join([c2p(command) for command in commands])
 
 
-def export(func_name, commands, script_name):
+def export(func_name: str, commands: List[dict], script_name: str) -> None:
+    """Export parsed information as a Python script.
+
+    Args:
+        func_name: Name of the function defined in the Python script.
+        commands: List of pipeline tasks and their custom parameters.
+        script_name: Output script name.
+    """
     template = string.Template(TEMPLATE_TEXT)
     procedure = to_procedure(commands)
     with open(script_name, 'w') as f:
@@ -238,7 +429,16 @@ def export(func_name, commands, script_name):
         ))
 
 
-def main(recipe_name, script_name):
+def main(recipe_name: str, script_name: str) -> None:
+    """Generate Python script from procedure xml file.
+
+    Args:
+        recipe_name: Recipe name. Will be translated into xml file name,
+                           procedure_<recipe_name>.xml.
+        script_name: Output script name.
+    Raises:
+        FileNotFoundError: Procedure xml file does not exist.
+    """
     procedure = f'procedure_{recipe_name}.xml'
 
     print(f'__file__ is {__file__}')
