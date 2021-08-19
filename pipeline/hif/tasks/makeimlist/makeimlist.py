@@ -287,7 +287,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
 
             if datacolumn != '':
-                LOG.info(f'Manual overriding of datacolumn to {datacolumn}. Data type based datacolumn would have been {columns[0]}.')
+                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
             else:
                 if columns[0] == 'DATA':
                     datacolumn = 'data'
