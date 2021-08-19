@@ -4,7 +4,6 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.contfilehandler as contfilehandler
@@ -22,7 +21,7 @@ LOG = infrastructure.get_logger(__name__)
 # uvcontfit task written by the pipeline.
 class UVcontFitInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.RAW]
 
     @vdp.VisDependentProperty
     def caltable(self):
@@ -139,11 +138,6 @@ class UVcontFitInputs(vdp.StandardInputs):
         d['append'] = append
 
         return d
-
-
-# tell the infrastructure to give us mstransformed data when possible by
-# registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(UVcontFitInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontfit')

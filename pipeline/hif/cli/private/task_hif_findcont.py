@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweightdensity=None, hm_weighting=None,
-                 parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                 datacolumn=None, parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

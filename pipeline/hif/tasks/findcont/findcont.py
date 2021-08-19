@@ -1,10 +1,10 @@
 import copy
 import os
+import collections
 import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.mpihelpers as mpihelpers
@@ -21,12 +21,14 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContInputs(vdp.StandardInputs):
-    # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    # Must use empty data type list to allow for user override and
+    # automatic determination depending on specmode, field and spw.
+    processing_data_type = []
 
-    parallel = vdp.VisDependentProperty(default='automatic')
     hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_weighting = vdp.VisDependentProperty(default=None)
+    datacolumn = vdp.VisDependentProperty(default='')
+    parallel = vdp.VisDependentProperty(default='automatic')
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -36,7 +38,7 @@ class FindContInputs(vdp.StandardInputs):
         return copy.deepcopy(self.context.clean_list_pending)
 
     def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
-                 hm_perchanweightdensity=None, hm_weighting=None, parallel=None):
+                 hm_perchanweightdensity=None, hm_weighting=None, datacolumn=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir
@@ -46,12 +48,8 @@ class FindContInputs(vdp.StandardInputs):
         self.hm_mosweight = hm_mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_weighting = hm_weighting
+        self.datacolumn = datacolumn
         self.parallel = parallel
-
-
-# tell the infrastructure to give us mstransformed data when possible by
-# registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(FindContInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_findcont')
@@ -77,10 +75,43 @@ class FindCont(basetask.StandardTaskTemplate):
         # single measurement set
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
-        if any((ms.is_imaging_ms for ms in context.observing_run.get_measurement_sets(inputs.vis))):
-            datacolumn = 'data'
+
+        if inputs.datacolumn not in (None, ''):
+            datacolumn = inputs.datacolumn
         else:
-            datacolumn = 'corrected'
+            datacolumn = ''
+
+        # Select the correct vis list
+        if inputs.vis in ('', [''], [], None):
+            datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
+            ms_objects_and_columns, selected_datatype = context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
+
+            if ms_objects_and_columns == collections.OrderedDict():
+                LOG.error('No data found for continuum finding.')
+                result = FindContResult({}, [], 0, 0, 0)
+                return result
+
+            LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
+            if selected_datatype == DataType.RAW:
+                LOG.warn('Falling back to raw data for continuum finding.')
+
+            columns = list(ms_objects_and_columns.values())
+            if not all(column == columns[0] for column in columns):
+                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+
+            if datacolumn != '':
+                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+            else:
+                if columns[0] == 'DATA':
+                    datacolumn = 'data'
+                elif columns[0] == 'CORRECTED_DATA':
+                    datacolumn = 'corrected'
+                else:
+                    LOG.warn(f'Unknown column name {columns[0]}')
+                    datacolumn = ''
+
+            inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
         findcont_heuristics = findcont.FindContHeuristics(context)
 

@@ -224,7 +224,6 @@ class ImportData(basetask.StandardTaskTemplate):
             LOG.debug('Setting session to %s for %s', inputs.session, ms.basename)
             if inputs.asimaging:
                 LOG.info('Importing %s as an imaging measurement set', ms.basename)
-                ms.is_imaging_ms = True
                 data_type = DataType.REGCAL_CONTLINE_SCIENCE
 
             # Set data_type

@@ -6,7 +6,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.domain import DataType
@@ -29,10 +28,6 @@ class UVcontSubInputs(applycal.ApplycalInputs):
         super(UVcontSubInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
                                               antenna=antenna, intent=intent, parang=parang, applymode=applymode,
                                               flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
-
-
-# Register this as an imaging MS(s) preferred task
-#api.ImagingMeasurementSetsPreferred.register(UVcontSubInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
@@ -93,7 +88,6 @@ class UVcontSub(applycal.Applycal):
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
             ms.set_data_column(DataType.REGCAL_LINE_SCIENCE, 'DATA')
-            ms.is_imaging_ms = True
         result.line_mses.extend(observing_run.measurement_sets)
 
         return result
@@ -150,8 +144,6 @@ class UVcontSubResults(basetask.Results):
 
         # Create targets flagging template file if it does not already exist
         for ms in self.line_mses:
-            if not ms.is_imaging_ms:
-                continue
             template_flagsfile = os.path.join(
                 self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')

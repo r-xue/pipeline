@@ -157,11 +157,7 @@ class CleanSummary(object):
                         parameters['prefix'] = None
 
                     virtual_spw = parameters['virtspw']
-                    imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
-                    if imaging_mss != []:
-                        ref_ms = imaging_mss[0]
-                    else:
-                        ref_ms = self.context.observing_run.measurement_sets[0]
+                    ref_ms = self.context.observing_run.measurement_sets[0]
                     real_spw = self.context.observing_run.virtual2real_spw_id(virtual_spw, ref_ms)
                     real_spw_obj = ref_ms.get_spectral_window(real_spw)
                     if real_spw_obj.receiver is not None and real_spw_obj.freq_lo is not None:

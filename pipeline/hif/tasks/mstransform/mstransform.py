@@ -188,7 +188,6 @@ class Mstransform(basetask.StandardTaskTemplate):
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
-            ms.is_imaging_ms = True
             LOG.debug('Setting data_column and origin_ms.')
             ms.origin_ms = self.inputs.ms.origin_ms
             ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
@@ -230,8 +229,6 @@ class MstransformResults(basetask.Results):
 
         # Create targets flagging template file if it does not already exist
         for ms in self.mses:
-            if not ms.is_imaging_ms:
-                continue
             template_flagsfile = os.path.join(
                 self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')

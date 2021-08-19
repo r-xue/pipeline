@@ -279,6 +279,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.linesfile = None
                 return result
 
+            LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for imaging.')
             if selected_datatype == DataType.RAW:
                 LOG.warn('Falling back to raw data for imaging.')
 
@@ -942,9 +943,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             #  future configurations by removing this character.
                             antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                        for v in filtered_vislist]
-
-                            any_non_imaging_ms = any([not inputs.context.observing_run.get_ms(vis).is_imaging_ms
-                                                      for vis in filtered_vislist])
 
                             target = CleanTarget(
                                 antenna=antenna,

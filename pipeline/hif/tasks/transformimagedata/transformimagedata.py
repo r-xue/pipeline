@@ -204,7 +204,6 @@ class Transformimagedata(mssplit.MsSplit):
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
-            ms.is_imaging_ms = True
             ms.origin_ms = self.inputs.ms.origin_ms
             self._set_data_column_to_ms(ms)
 

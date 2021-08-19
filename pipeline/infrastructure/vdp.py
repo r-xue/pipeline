@@ -439,6 +439,7 @@ class InputsContainer(object):
                 LOG.error('Unable to get processing data type from input class.')
 #                 # note that for ModeInputs this queries whether the ModeInputs is
 #                 # registered for imaging MSes, not the Inputs that is selected.
+# Note that the imaging_preferred flag has been removed as part of the work for PIPE-1062, PIPE-1112 and PIPE-1222.
 #                 imaging_preferred = issubclass(self._task_cls.Inputs, api.ImagingMeasurementSetsPreferred)
 #                 ms_pool = self._context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)
                 
