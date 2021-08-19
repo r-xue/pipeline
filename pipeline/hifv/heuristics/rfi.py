@@ -12,6 +12,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 from pipeline.infrastructure import casa_tasks, casa_tools
 
+from .vlascanheuristics import VLAScanHeuristics
+
 import pkg_resources
 
 LOG = infrastructure.get_logger(__name__)
@@ -405,3 +407,45 @@ def plotms_get_autorange(xyrange):
     LOG.debug('estimated autoscale plotrange from CASAplotms: {!r}'.format(autorange))
 
     return autorange
+
+
+def test_checkflag_dataselect(vis):
+    """Test rfi flagging field/scan selection.
+
+    exemple:
+        from pipeline.hifv.heuristics.rfi import test_checkflag_dataselect
+        test_checkflag_dataselect('13A-398.sb17165245.eb19476558.56374.213876608796.ms')
+        test_checkflag_dataselect('16A-197.sb32730185.eb32962865.57682.3425903125.ms')
+    """
+    vis_scan = VLAScanHeuristics(vis)
+    vis_scan.calibratorIntents()
+
+    mode_list = ['bpd', 'allcals']
+
+    for modeselect in mode_list:
+
+        # select bpd calibrators
+        if modeselect in ('bpd-vla', 'bpd-vlass', '', 'bpd'):
+            fieldselect = vis_scan.checkflagfields
+            scanselect = vis_scan.testgainscans
+
+        # select all calibrators but not bpd cals
+        if modeselect in ('allcals-vla', 'allcals-vlass', 'allcals'):
+            fieldselect = vis_scan.calibrator_field_select_string.split(',')
+            scanselect = vis_scan.calibrator_scan_select_string.split(',')
+            checkflagfields = vis_scan.checkflagfields.split(',')
+            testgainscans = vis_scan.testgainscans.split(',')
+            fieldselect = ','.join([fieldid for fieldid in fieldselect if fieldid not in checkflagfields])
+            scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
+
+        # select all calibrators
+        if modeselect == 'semi':
+            fieldselect = vis_scan.calibrator_field_select_string
+            scanselect = vis_scan.calibrator_scan_select_string
+
+        if modeselect == 'vlass-imaging':
+            # use the 'data' column by default as 'vlass-imaging' is working on target-only MS.
+            columnselect = 'data'
+        LOG.info('checkflagmode = {!r}'.format(modeselect+'*'))
+        LOG.info('  FieldSelect:  {}'.format(repr(fieldselect)))
+        LOG.info('  ScanSelect:   {}'.format(repr(scanselect)))
