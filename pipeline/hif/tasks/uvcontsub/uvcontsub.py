@@ -139,7 +139,7 @@ class UVcontSubResults(basetask.Results):
         for ms in self.line_mses:
             # Check if MS with the same name had already been registered and remove it
             try:
-                index = [os.path.basename(existing_ms.name) for existing_ms in target.measurement_sets].index(os.path.basename(ms.name))
+                index = [existing_ms.basename for existing_ms in target.measurement_sets].index(ms.basename)
                 LOG.info('Removing {} from context'.format(ms.name))
                 target.measurement_sets.pop(index)
             except:
