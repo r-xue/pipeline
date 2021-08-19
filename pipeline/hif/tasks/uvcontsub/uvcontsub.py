@@ -94,7 +94,6 @@ class UVcontSub(applycal.Applycal):
             ms.session = self.inputs.ms.session
             ms.set_data_column(DataType.REGCAL_LINE_SCIENCE, 'DATA')
             ms.is_imaging_ms = True
-            ms.is_line_ms = True
         result.line_mses.extend(observing_run.measurement_sets)
 
         return result

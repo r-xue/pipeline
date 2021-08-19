@@ -11,7 +11,8 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                    calmaxpix=None, phasecenter=None,
                    nchan=None, start=None, width=None, nbins=None,
                    robust=None, uvtaper=None, clearlist=None, per_eb=None,
-                   calcsb=None, parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                   calcsb=None, datacolumn=None, parallel=None, pipelinemode=None,
+                   dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #
