@@ -6,6 +6,40 @@ import xml.dom.minidom as minidom
 
 
 INDENT = '        '
+TEMPLATE_TEXT = '''# General imports
+import traceback
+
+# Pipeline imports
+from pipeline.infrastructure import casa_tools
+
+IMPORT_ONLY = 'Import only'
+
+
+# Run the procedure
+def ${func_name}(vislist, importonly=False, pipelinemode='automatic', interactive=True):
+    echo_to_screen = interactive
+    casa_tools.post_to_log("Beginning pipeline run ...")
+
+    try:
+        # Initialize the pipeline
+        h_init()
+
+${procedure}
+
+    except Exception as e:
+        if str(e) == IMPORT_ONLY:
+            casa_tools.post_to_log("Exiting after import step ...", echo_to_screen=echo_to_screen)
+        else:
+            casa_tools.post_to_log("Error in procedure execution ...", echo_to_screen=echo_to_screen)
+            errstr = traceback.format_exc()
+            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
+
+    finally:
+        # Save the results to the context
+        h_save()
+
+        casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
+'''
 
 
 def get_recipe_dir():
@@ -195,42 +229,7 @@ def to_procedure(commands):
 
 
 def export(func_name, commands, script_name):
-    text = '''# General imports
-import traceback
-
-# Pipeline imports
-from pipeline.infrastructure import casa_tools
-
-IMPORT_ONLY = 'Import only'
-
-
-# Run the procedure
-def ${func_name}(vislist, importonly=False, pipelinemode='automatic', interactive=True):
-    echo_to_screen = interactive
-    casa_tools.post_to_log("Beginning pipeline run ...")
-
-    try:
-        # Initialize the pipeline
-        h_init()
-
-${procedure}
-
-    except Exception as e:
-        if str(e) == IMPORT_ONLY:
-            casa_tools.post_to_log("Exiting after import step ...", echo_to_screen=echo_to_screen)
-        else:
-            casa_tools.post_to_log("Error in procedure execution ...", echo_to_screen=echo_to_screen)
-            errstr = traceback.format_exc()
-            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
-
-    finally:
-        # Save the results to the context
-        h_save()
-
-        casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
-'''
-    template = string.Template(text)
-    # TODO: properly handle breakpoint
+    template = string.Template(TEMPLATE_TEXT)
     procedure = to_procedure(commands)
     with open(script_name, 'w') as f:
         f.write(template.safe_substitute(
