@@ -1,5 +1,6 @@
 import collections
 import os
+import numpy
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -17,13 +18,18 @@ class T2_4MDetailsALMAAntposRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def update_mako_context(self, mako_context, pipeline_context, results):
         table_rows = make_antpos_table(pipeline_context, results)
-        mako_context.update({'table_rows': table_rows})
+        # Sort by total offset, from highest-to-lowest, see: PIPE-77
+        table_rows_by_offset = make_antpos_table(pipeline_context, results, sort_by=lambda x: float(getattr(x, 'total')), reverse=True)
+        threshold = 0.49 # FIXME, temporary test value, needs to default to representative_frequency and then be converted to meters for comparison with the x,y,z offsets
+        mako_context.update({'table_rows': table_rows,
+                             'table_rows_by_offset': table_rows_by_offset,
+                             'threshold': threshold})
 
 
-AntposTR = collections.namedtuple('AntposTR', 'vis antenna x y z')
+AntposTR = collections.namedtuple('AntposTR', 'vis antenna x y z total')
 
 
-def make_antpos_table(context, results):
+def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'), reverse=False): #FIXME: add docs and type hinting
 
     # Will hold all the antenna offset table rows for the results
     rows = []
@@ -46,10 +52,12 @@ def make_antpos_table(context, results):
             xoffset = '%0.2e' % item[1][0]
             yoffset = '%0.2e' % item[1][1]
             zoffset = '%0.2e' % item[1][2]
+            total_offset = '%0.2e' % item[1][3]
 
-            tr = AntposTR(vis_cell, antname, xoffset, yoffset, zoffset)
+            tr = AntposTR(vis_cell, antname, xoffset, yoffset, zoffset, total_offset)
             rows.append(tr)
 
+    rows.sort(key=sort_by, reverse=reverse)
     return utils.merge_td_columns(rows)
 
 
@@ -59,7 +67,9 @@ def make_xyzoffsets_list (offsets_list):
 
     xyz_list = []
     for i in range (0, len(offsets_list), 3):
-        xyz_list.append((offsets_list[i], offsets_list[i+1], offsets_list[i+2]))
+        x, y, z = offsets_list[i], offsets_list[i+1], offsets_list[i+2]
+        total_offset = numpy.linalg.norm([x, y, z])
+        xyz_list.append((x, y, z, total_offset))
     return xyz_list
 
 
