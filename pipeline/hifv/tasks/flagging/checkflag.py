@@ -378,7 +378,10 @@ class Checkflag(basetask.StandardTaskTemplate):
                     #   The usage of 'RESIDUAL' is only valid if the model of bpd source(s) is properly filled *AND*
                     #   the first-order gain/passband calibration has been applied in 'CORRECTED'.
                     #   Here we check each field from the data selection and see if they all meet the above requirements.
-                    LOG.info("Determing if we can use the RESIDUAL column for rflag:")
+                    #   We only examine the parallel hand amplitude: 
+                    #       - setjy() has only I models for 3C48/3C138/3C286/3C147.
+                    #       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.
+                    LOG.info("Determining if we can use the RESIDUAL column for rflag:")
                     if self._is_model_setjy():
                         LOG.info("  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.")
                     else:
