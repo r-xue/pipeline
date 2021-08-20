@@ -337,7 +337,9 @@ def get_execution_command(task_name: str, config: dict) -> str:
     args = 'pipelinemode=pipelinemode'
     if parameter:
         def construct_arg(key, value):
-            value_type = param_types[key]
+            # default value type is string
+            value_type = param_types.get(key, 'string')
+
             # TODO: handle variant and any types properly
             if value_type in ('string', 'variant', 'any'):
                 arg = f'{key}=\'{value}\''
