@@ -745,7 +745,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return True, if the below requirements are met:
             - the model column is present.
-            - none of selected field(s) contain a model of 1Jy point source at phasecenter.
+            - none of selected field(s) contain a model of 1Jy point source at the phasecenter (in the parallel hands)
         """
         fieldselect, scanselect, intentselect, columnselect = self._select_data()
         is_model_setjy = True
@@ -763,7 +763,8 @@ class Checkflag(basetask.StandardTaskTemplate):
                              'scanintent': intentselect, 'polarization': '', 'uvdist': ''}
                     if msfile.msselect(staql, onlyparse=False):
                         vis_ampstats = msfile.statistics(field=field, scan=scanselect, intent=intentselect,
-                                                         column='model', complex_value='amp', useweights=False, useflags=False,
+                                                         correlation='RR,LL', column='model',
+                                                         complex_value='amp', useweights=False, useflags=False,
                                                          reportingaxes='', doquantiles=False,
                                                          timeaverage=False, timebin='0s', timespan='')
                         vis_ampstats = vis_ampstats['']

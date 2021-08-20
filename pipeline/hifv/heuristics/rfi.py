@@ -106,6 +106,10 @@ class RflagDevHeuristic(api.Heuristic):
  
         - The median-based rflag threshold reset scheme (within each baseband/field) is summarized in CAS-11598 and PIPE-685/987
         - As of CASA ver 6.2.1, a completely flagged spw+field data selection will show up in flagdata reports, with freqdev/timedev=0.0
+        - The time/freq-domain analysis of rflag derives thresholds based on statistical properties of visibility around 
+          a presumably flat base. However, poorly-performed antennas or high-amplitude short baselines (e.g. extended source) might 
+          generate enough outliers in the time-frequency space and become slightly over-flagged along with true RFI.
+          see https://casaguides.nrao.edu/index.php?title=VLA_CASA_Flagging-CASA5.7.0
         """
 
         new_report = copy.deepcopy(rflag_report)
@@ -183,7 +187,10 @@ class RflagDevHeuristic(api.Heuristic):
         By default, the rms scaling factor per spw (spw_rms_scale) is defined as: SEFD_jy/chanwidth_mhz^0.5.
         If ignore_sefd=True, spw_rms_scale would be simply defined as 1/chanwidth_mhz^0.5. This is equivalent
         to the VLASS-specific assumption of a uniform SEFD (see PIPE-685/987).
-        Note: spw_rms_scale is only useful in a relative sense when comparing theoretical rms of different spws from same scans.
+
+        Note: spw_rms_scale is only useful in a relative sense when comparing theoretical rms of different spws 
+        from the same integration/baseline. The actual visibility noise variation over time/frequency/baseline 
+        could be better modeled with additional antenna-based gain/bandpass information.
         """
 
         spw_rms_scale = dict()
