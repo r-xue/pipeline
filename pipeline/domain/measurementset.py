@@ -52,7 +52,6 @@ class MeasurementSet(object):
             data column (value)
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
-        is_imaging_ms: If True, the MS is for imaging (interferometry only)
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
     """
@@ -84,7 +83,6 @@ class MeasurementSet(object):
         self.reference_spwmap: Optional[List[int]] = None
         self.phaseup_spwmap: Optional[List[int]] = None
         self.combine_spwmap: Optional[List[int]] = None
-        self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
 
