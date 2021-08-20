@@ -334,6 +334,7 @@ def get_execution_command(task_name: str, config: dict) -> str:
     # param_types = get_parameter_types(task_name)
     param_types = config['parameter_types']
 
+    args = 'pipelinemode=pipelinemode'
     if parameter:
         def construct_arg(key, value):
             value_type = param_types[key]
@@ -345,9 +346,7 @@ def get_execution_command(task_name: str, config: dict) -> str:
             return arg
 
         custom_args = ', '.join([construct_arg(k, v) for k, v in parameter.items()])
-        args = f'{custom_args}, pipelinemode=\'interactive\''
-    else:
-        args = 'pipelinemode=\'automatic\''
+        args = f'{custom_args}, {args}'
 
     # special handling for importdata task
     is_importdata = 'importdata' in task_name
@@ -380,12 +379,12 @@ def c2p(command: dict) -> str:
         The string will look like the following:
 
             # task shortdescription taken from the task xml file
-            taskname(pipelinemode='automatic')
+            taskname(pipelinemode=pipelinemode)
 
         or, if parameters are customized in the procedure xml file,
 
             # task shortdescription taken from the task xml file
-            taskname(custom_param=custom_value, pipelinemode='interactive')
+            taskname(custom_param=custom_value, pipelinemode=pipelinemode)
 
         Note that there will be some additional code for importdata stage.
     """
