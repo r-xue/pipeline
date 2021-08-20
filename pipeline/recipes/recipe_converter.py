@@ -13,6 +13,7 @@ Usage:
 
 """
 import argparse
+import glob
 import os
 import re
 import string
@@ -457,6 +458,19 @@ def main(recipe_name: str, script_name: str) -> None:
 
     # export commands as Python script
     export(func_name, commands, script_name)
+
+
+def generate_all():
+    recipe_dir = get_recipe_dir()
+
+    recipe_xml_files = glob.glob(f'{recipe_dir}/procedure_*.xml')
+    for r in recipe_xml_files:
+        xml_file = os.path.basename(r)
+        print(xml_file)
+        recipe_name = re.sub(r'procedure_(.*).xml', r'\1', xml_file)
+        script_name = recipe_name + '.py'
+        print(recipe_name)
+        main(recipe_name, script_name)
 
 
 if __name__ == '__main__':
