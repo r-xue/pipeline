@@ -475,6 +475,7 @@ def generate_all():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert procedure xml file into Python script')
+    parser.add_argument('-a', '--all', action='store_true', dest='generate_all', help='process all procedure files in the recipes directory. user-supplied recipe and script names will be omitted.')
     parser.add_argument('recipe', type=str, nargs='?', default='hsd_calimage',
                         help='recipe type. will be translated to xml file name, "procedure_<recipe>.xml"')
     parser.add_argument('script', type=str, nargs='?', default=None,
@@ -483,8 +484,14 @@ if __name__ == '__main__':
 
     recipe_name = args.recipe
     script_name = args.script
-    if script_name is None:
-        script_name = f'{recipe_name}.py'
+    flag_generate_all = args.generate_all
+    print(f'generate_all={flag_generate_all}')
 
-    main(recipe_name, script_name)
+    if flag_generate_all:
+        generate_all()
+    else:
+        if script_name is None:
+            script_name = f'{recipe_name}.py'
+
+        main(recipe_name, script_name)
 
