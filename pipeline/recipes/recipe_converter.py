@@ -14,11 +14,17 @@ Usage:
 """
 import argparse
 import glob
+import logging
 import os
 import re
 import string
+import sys
 from typing import List, Tuple, Union
 import xml.dom.minidom as minidom
+
+# logger
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+LOG = logging.getLogger(os.path.basename(__file__))
 
 # type alias
 DOM = Union[minidom.Document, minidom.Element]
@@ -71,7 +77,7 @@ def get_recipe_dir() -> str:
     """
     recipe_dir, _ = os.path.split(__file__)
     recipe_dir = os.path.abspath(recipe_dir)
-    print(f'recipe directory is {recipe_dir}')
+    LOG.debug(f'recipe directory is {recipe_dir}')
     return recipe_dir
 
 
@@ -90,7 +96,7 @@ def get_cli_dir(category: str) -> str:
     recipe_dir = get_recipe_dir().rstrip('/')
     pipeline_root_dir, _ = os.path.split(recipe_dir)
     cli_dir = os.path.join(pipeline_root_dir, f'{category}/cli')
-    print(f'cli directory is {cli_dir}')
+    LOG.debug(f'cli directory is {cli_dir}')
     return cli_dir
 
 
@@ -200,7 +206,7 @@ def get_task_property(task_name: str) -> dict:
     task_category = task_name.split('_')[0]
     cli_dir = get_cli_dir(task_category)
     task_xml = os.path.join(cli_dir, f'{task_name}.xml')
-    print(f'task_xml is {task_xml}')
+    LOG.debug(f'task_xml is {task_xml}')
     assert os.path.exists(task_xml)
     root_element = minidom.parse(task_xml)
     short_desc = get_short_description(root_element)
@@ -247,9 +253,9 @@ def parse_command(node: DOM) -> dict:
     parameter_set_element = get_element(node, 'ParameterSet', expect_unique=True)
     parameter_elements = get_element(parameter_set_element, 'Parameter')
     parameters = dict(parse_parameter(p) for p in parameter_elements)
-    print(f'command is {command}')
+    LOG.debug(f'command is {command}')
     task_property = get_task_property(command)
-    print(f'parameters are {parameters}')
+    LOG.debug(f'parameters are {parameters}')
     task_property['parameter'] = parameters
     return {command: task_property}
 
@@ -272,14 +278,14 @@ def parse(procedure_abs_path: str) -> Tuple[str, List[dict]]:
     title_element = get_element(procedure_element, 'ProcedureTitle', expect_unique=True)
     func_name = get_data(title_element)
 
-    print(f'function name is {func_name}')
+    LOG.debug(f'function name is {func_name}')
 
     # ProcessingCommand
     command_elements = get_element(procedure_element, 'ProcessingCommand')
     commands = [parse_command(e) for e in command_elements]
-    print(f'command list is:')
+    LOG.debug(f'command list is:')
     for command in commands:
-        print(f'{command}')
+        LOG.debug(f'{command}')
 
     return func_name, commands
 
@@ -391,7 +397,7 @@ def c2p(command: dict) -> str:
 
         Note that there will be some additional code for importdata stage.
     """
-    print(f'c2p: command is {list(command.keys())[0]}')
+    LOG.debug(f'c2p: command is {list(command.keys())[0]}')
     assert len(command) == 1
     task_name, config = list(command.items())[0]
     procedure = get_comment(task_name, config)
@@ -443,9 +449,9 @@ def main(recipe_name: str, script_name: str) -> None:
     """
     procedure = f'procedure_{recipe_name}.xml'
 
-    print(f'__file__ is {__file__}')
-    print(f'recipe is {recipe_name}')
-    print(f'procedure is {procedure}')
+    LOG.debug(f'__file__ is {__file__}')
+    LOG.info(f'recipe is {recipe_name}')
+    LOG.info(f'procedure is {procedure}')
 
     recipe_dir = get_recipe_dir()
 
@@ -466,16 +472,18 @@ def generate_all():
     recipe_xml_files = glob.glob(f'{recipe_dir}/procedure_*.xml')
     for r in recipe_xml_files:
         xml_file = os.path.basename(r)
-        print(xml_file)
+        LOG.debug(xml_file)
         recipe_name = re.sub(r'procedure_(.*).xml', r'\1', xml_file)
         script_name = recipe_name + '.py'
-        print(recipe_name)
+        LOG.info(f'Processing {recipe_name}...')
         main(recipe_name, script_name)
+        LOG.info(f'Finished processing {recipe_name}.')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert procedure xml file into Python script')
     parser.add_argument('-a', '--all', action='store_true', dest='generate_all', help='process all procedure files in the recipes directory. user-supplied recipe and script names will be omitted.')
+    parser.add_argument('-d', '--debug', action='store_true', dest='debug', help='debug mode')
     parser.add_argument('recipe', type=str, nargs='?', default='hsd_calimage',
                         help='recipe type. will be translated to xml file name, "procedure_<recipe>.xml"')
     parser.add_argument('script', type=str, nargs='?', default=None,
@@ -485,9 +493,16 @@ if __name__ == '__main__':
     recipe_name = args.recipe
     script_name = args.script
     flag_generate_all = args.generate_all
-    print(f'generate_all={flag_generate_all}')
+    flag_debug = args.debug
+
+    if flag_debug:
+        LOG.info('running in debug mode...')
+        LOG.setLevel(logging.DEBUG)
+
+    LOG.debug(f'generate_all={flag_generate_all}')
 
     if flag_generate_all:
+        LOG.info('Generating recipe scrpts for all procedure files.')
         generate_all()
     else:
         if script_name is None:
