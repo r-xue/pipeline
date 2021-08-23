@@ -13,7 +13,7 @@ rsc_path = ""
 % else:
     <h4>Antenna Position Offsets</h4>
 
-    <p>The following antenna position x, y, z offsets were used to calibrate the antenna positions. Values above a threshold of ${threshold} wavelengths = FIXMEmm are bolded.</p>
+    <p>The following antenna position x, y, z offsets were used to calibrate the antenna positions. Values above a threshold of ${"%0.2f" % threshold_in_wavelengths} wavelengths = ${"%0.2f" % threshold_in_mm} mm are bolded.</p>
 
     <table class="table table-bordered table-striped" summary="Antenna Position Offsets">
         <caption>Antenna position offsets (sorted by antenna name) per measurement set.</caption>
@@ -33,11 +33,11 @@ rsc_path = ""
         ## Bold table rows where the total offset is greater than a threshold. See PIPE-77.
         <%
             import re
-            comparison = re.sub("<.*?>", "", tr[-1]).strip()
+            comparison = re.sub("<.*?>", "", tr[-2]).strip()
             if comparison != '' :
                 comparison=float(comparison)
         %>
-            %if comparison != '' and comparison > threshold:
+            %if comparison != '' and comparison > threshold_in_mm:
                 <tr style="font-weight:bold">
             %else:
                 <tr>
@@ -52,7 +52,7 @@ rsc_path = ""
 
     <h4>Antenna Position Offsets Sorted By Total Offset</h4>
 
-    <p>The following antenna position x, y, z offsets were used to calibrate the antenna positions. Values above a threshold of ${threshold} wavelengths = FIXMEmm are bolded.</p>
+    <p>The following antenna position x, y, z offsets were used to calibrate the antenna positions. Values above a threshold of ${"%0.2f" % threshold_in_wavelengths} wavelengths = ${"%0.2f" % threshold_in_mm} mm are bolded.</p>
 
     <table class="table table-bordered table-striped" summary="Antenna Position Offsets">
         <caption>Antenna position offsets (sorted by total offset) per measurement set.</caption>
@@ -72,11 +72,11 @@ rsc_path = ""
         ## Bold table rows where the total offset is greater than a threshold. See PIPE-77.
         <%
             import re
-            comparison = re.sub("<.*?>", "", tr[-1]).strip()
+            comparison = re.sub("<.*?>", "", tr[-2]).strip()
             if comparison != '' :
                 comparison=float(comparison)
         %>
-            %if comparison != '' and comparison > threshold:
+            %if comparison != '' and comparison > threshold_in_mm:
                 <tr style="font-weight:bold">
             %else:
                 <tr>
