@@ -374,13 +374,21 @@ class Checkflag(basetask.StandardTaskTemplate):
                                        scan=scanselect, intent=intentselect):
                         continue
                 if datacolumn == 'residual':
-                    # fall back to the corrected datacolumn if MODEL is not filled by setjy() 
-                    with casa_tools.TableReader(self.inputs.vis) as table:
-                        is_model_present = 'MODEL_DATA' in table.colnames()
-                    if not is_model_present:
+                    # PIPE-1256: determine if we can use the 'RESIDUAL' column in the 'bpd-vlass/vla' mode.
+                    #   The usage of 'RESIDUAL' is only valid if the model of bpd source(s) is properly filled *AND*
+                    #   the first-order gain/passband calibration has been applied in 'CORRECTED'.
+                    #   Here we check each field from the data selection and see if they all meet the above requirements.
+                    #   We only examine the parallel hand amplitude: 
+                    #       - setjy() has only I models for 3C48/3C138/3C286/3C147.
+                    #       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.
+                    LOG.info("Determining if we can use the RESIDUAL column for rflag:")
+                    if self._is_model_setjy():
+                        LOG.info("  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.")
+                    else:
                         datacolumn = 'corrected'
-                        LOG.info("MODEL_DATA column is not found in {}".format(self.inputs.vis))
-                        LOG.info("Switching the rflag column selection from RESIDUAL to CORRECTED")
+                        correlation = correlation.replace('REAL_', 'ABS_')
+                        LOG.info("  MODEL_DATA s not found or the model(s) from selected data contains 1Jy point source(s).")
+                    LOG.info("  Use the {} column and correlation = {!r} for rflag".format(datacolumn.upper(), correlation))
                 method_args = {'mode': 'rflag',
                                'field': fieldselect,
                                'correlation': correlation,
@@ -735,4 +743,40 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return summary_plots
 
+    def _is_model_setjy(self):
+        """Check the model column status of selected fields.
+
+        return True, if the below requirements are met:
+            - the model column is present.
+            - none of selected field(s) contain a model of 1Jy point source at the phasecenter (in the parallel hands)
+        """
+        fieldselect, scanselect, intentselect, columnselect = self._select_data()
+        is_model_setjy = True
+
+        # set False if the MODEL column is not present.
+        with casa_tools.TableReader(self.inputs.vis) as table:
+            if 'MODEL_DATA' not in table.colnames():
+                is_model_setjy = False
+
+        if is_model_setjy:
+            with casa_tools.MSReader(self.inputs.vis) as msfile:
+                # we expect fieldselect is not an empty string here...
+                for field in fieldselect.split(','):
+                    staql = {'field': field, 'spw': self.sci_spws, 'scan': scanselect,
+                             'scanintent': intentselect, 'polarization': '', 'uvdist': ''}
+                    if msfile.msselect(staql, onlyparse=False):
+                        vis_ampstats = msfile.statistics(field=field, scan=scanselect, intent=intentselect,
+                                                         correlation='RR,LL', column='model',
+                                                         complex_value='amp', useweights=False, useflags=False,
+                                                         reportingaxes='', doquantiles=False,
+                                                         timeaverage=False, timebin='0s', timespan='')
+                        vis_ampstats = vis_ampstats['']
+                        LOG.debug('checking the MODEL amplitude stats of field = {!r}:\n{!r}'.format(
+                            field, vis_ampstats))
+                        if vis_ampstats['min'] == 1 and vis_ampstats['max'] == 1:
+                            is_model_setjy = False
+                            break
+                        msfile.reset()
+
+        return is_model_setjy
 
