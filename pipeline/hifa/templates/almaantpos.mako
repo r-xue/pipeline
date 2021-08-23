@@ -29,7 +29,7 @@ rsc_path = ""
         </tr>
         </thead>
         <tbody>
-        % for tr in table_rows_by_offset:
+        % for tr in table_rows:
         ## Bold table rows where the total offset is greater than a threshold. See PIPE-77.
         <%
             import re

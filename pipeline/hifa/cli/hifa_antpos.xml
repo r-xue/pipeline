@@ -21,6 +21,8 @@ Contents of example 'antennapos.csv' file:
   uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,&quot;No comment&quot;
   uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,&quot;No comment&quot;
 
+The offset values in this file are in meters. 
+
 The corrections are used to generate a calibration table which is recorded
 in the pipeline context and applied to the raw visibility data, on the fly to
 generate other calibration tables, or permanently to generate calibrated
@@ -129,6 +131,15 @@ provides an antenna position determination service.
             or reject them (False).
         </description>
         <value>True</value>
+    </param>
+
+    <param name="threshold" type="double">
+        <shortdescription>Highlight antenna position offsets greater than this value in the weblog.</shortdescription>
+        <description>Highlight antenna position offsets greater than this value in the weblog. Units are wavelengths and the default is 1.0.
+          
+          Example: threshold=1.0
+        </description>
+        <value>1.0</value>
     </param>
 
     <constraints>
