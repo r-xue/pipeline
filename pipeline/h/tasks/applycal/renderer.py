@@ -86,6 +86,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         phase_vs_freq_subpages = {}
         amp_vs_uv_subpages = {}
 
+        LOG.debug("creating amp vs. time summary plots in renderer")
         amp_vs_time_summary_plots, amp_vs_time_subpages = self.create_plots(
             context,
             result,
@@ -93,6 +94,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
+        LOG.debug("creating phase vs. time summary plots in renderer")
         phase_vs_time_summary_plots, phase_vs_time_subpages = self.create_plots(
             context,
             result,
@@ -100,6 +102,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
+        LOG.debug("creating amp vs. freq summary plots in renderer")
         amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['AMPLITUDE'],
                         ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
@@ -116,6 +119,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for vis, vis_plots in plots.items():
                 amp_vs_freq_summary_plots[vis].extend(vis_plots)
 
+        LOG.debug("creating phase vs. freq summary plots in renderer")
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, phase_vs_freq_subpages = self.create_plots(
@@ -130,6 +134,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # CAS-7659: Add plots of all calibrator calibrated amp vs uvdist to
         # the WebLog applycal page
+        LOG.debug("creating amp vs. uv summary plots in renderer")
         amp_vs_uv_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['AMPLITUDE'], ['PHASE'], ['BANDPASS'], ['CHECK'],
                         ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
@@ -144,11 +149,13 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         # CAS-5970: add science target plots to the applycal page
+        LOG.debug("creating science summary plots in renderer")
         (science_amp_vs_freq_summary_plots,
          science_amp_vs_freq_subpages,
          science_amp_vs_uv_summary_plots,
          uv_max) = self.create_science_plots(context, result)
 
+        LOG.debug("creating corrected ratio to antenna1 plots in renderer")
         corrected_ratio_to_antenna1_plots = utils.OrderedDefaultdict(list)
         corrected_ratio_to_uv_dist_plots = {}
         for r in result:
@@ -197,6 +204,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # bad antennas to be identified while keeping the overall number of
         # plots relatively unchanged.
         #
+        LOG.debug("creating all detail plots in renderer")
         amp_vs_time_detail_plots, amp_vs_time_subpages = self.create_plots(
             context,
             result,
@@ -260,8 +268,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         callib_map = copy_callibrary(result, context.report_dir)
 
         # PIPE-396: Suppress redundant plots from hifa_applycal
+        LOG.debug("deduplicating amp. vs freq")
         amp_vs_freq_summary_plots = deduplicate(context, amp_vs_freq_summary_plots)
+        LOG.debug("deduplicating amp. vs UV")
         amp_vs_uv_summary_plots = deduplicate(context, amp_vs_uv_summary_plots)
+        LOG.debug("deduplicating corrected ratio to antenna 1")
         corrected_ratio_to_antenna1_plots = deduplicate(context, corrected_ratio_to_antenna1_plots)
 
         ctx.update({
@@ -921,7 +932,7 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
     """
     # holds the final deduplicated list of plots
     deduplicated: List[Plot] = []
-
+    LOG.debug("deduplication started")
     # General algorithm is 'what scan does this spw and intent correspond to? 
     # Has this scan already been plotted? If so, discard the plot.'
     #
@@ -974,5 +985,5 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
                 plots_for_scan[scan_ids].parameters['intent'] = new_intent
 
         deduplicated.extend(plots_for_scan.values())
-
+    LOG.debug("deduplication complete")
     return deduplicated
