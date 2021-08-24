@@ -45,10 +45,6 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_tsysflag</Command>
         <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">byfield</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
