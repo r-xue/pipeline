@@ -466,7 +466,8 @@ def main(recipe_name: str, script_name: str) -> None:
     export(func_name, commands, script_name)
 
 
-def generate_all():
+def generate_all() -> None:
+    """Generate recipe scripts from all procedure files in the recipe directory."""
     recipe_dir = get_recipe_dir()
 
     recipe_xml_files = glob.glob(f'{recipe_dir}/procedure_*.xml')
