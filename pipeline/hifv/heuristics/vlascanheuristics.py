@@ -1058,13 +1058,10 @@ class VLAScanHeuristics(object):
                     self.numSpws2 -= 1
 
             # Here we pass through a set construct to get the unique union.
-            self.testgainscans=  buildSelectionString(set
-                 (msmd.scansforintent("CALIBRATE_BANDPASS*").tolist() +
-                  msmd.scansforintent("CALIBRATE_DELAY*").tolist()))
-
-            self.checkflagfields=  buildSelectionString(set
-                 (msmd.fieldsforintent("CALIBRATE_BANDPASS*").tolist() +
-                  msmd.fieldsforintent("CALIBRATE_DELAY*").tolist()))
+            self.testgainscans = buildSelectionString(
+                list(filter(None, set(self.bandpass_scan_select_string.split(',')+self.delay_scan_select_string.split(',')))))
+            self.checkflagfields = buildSelectionString(
+                list(filter(None, set(self.bandpass_field_select_string.split(',')+self.delay_field_select_string.split(',')))))
 
         return True
 

@@ -12,6 +12,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 from pipeline.infrastructure import casa_tasks, casa_tools
 
+from .vlascanheuristics import VLAScanHeuristics
+
 import pkg_resources
 
 LOG = infrastructure.get_logger(__name__)
@@ -104,6 +106,10 @@ class RflagDevHeuristic(api.Heuristic):
  
         - The median-based rflag threshold reset scheme (within each baseband/field) is summarized in CAS-11598 and PIPE-685/987
         - As of CASA ver 6.2.1, a completely flagged spw+field data selection will show up in flagdata reports, with freqdev/timedev=0.0
+        - The time/freq-domain analysis of rflag derives thresholds based on statistical properties of visibility around 
+          a presumably flat base. However, poorly-performed antennas or high-amplitude short baselines (e.g. extended source) might 
+          generate enough outliers in the time-frequency space and become slightly over-flagged along with true RFI.
+          see https://casaguides.nrao.edu/index.php?title=VLA_CASA_Flagging-CASA5.7.0
         """
 
         new_report = copy.deepcopy(rflag_report)
@@ -181,7 +187,10 @@ class RflagDevHeuristic(api.Heuristic):
         By default, the rms scaling factor per spw (spw_rms_scale) is defined as: SEFD_jy/chanwidth_mhz^0.5.
         If ignore_sefd=True, spw_rms_scale would be simply defined as 1/chanwidth_mhz^0.5. This is equivalent
         to the VLASS-specific assumption of a uniform SEFD (see PIPE-685/987).
-        Note: spw_rms_scale is only useful in a relative sense when comparing theoretical rms of different spws from same scans.
+
+        Note: spw_rms_scale is only useful in a relative sense when comparing theoretical rms of different spws 
+        from the same integration/baseline. The actual visibility noise variation over time/frequency/baseline 
+        could be better modeled with additional antenna-based gain/bandpass information.
         """
 
         spw_rms_scale = dict()
@@ -405,3 +414,45 @@ def plotms_get_autorange(xyrange):
     LOG.debug('estimated autoscale plotrange from CASAplotms: {!r}'.format(autorange))
 
     return autorange
+
+
+def test_checkflag_dataselect(vis):
+    """Test rfi flagging field/scan selection.
+
+    exemple:
+        from pipeline.hifv.heuristics.rfi import test_checkflag_dataselect
+        test_checkflag_dataselect('13A-398.sb17165245.eb19476558.56374.213876608796.ms')
+        test_checkflag_dataselect('16A-197.sb32730185.eb32962865.57682.3425903125.ms')
+    """
+    vis_scan = VLAScanHeuristics(vis)
+    vis_scan.calibratorIntents()
+
+    mode_list = ['bpd', 'allcals']
+
+    for modeselect in mode_list:
+
+        # select bpd calibrators
+        if modeselect in ('bpd-vla', 'bpd-vlass', '', 'bpd'):
+            fieldselect = vis_scan.checkflagfields
+            scanselect = vis_scan.testgainscans
+
+        # select all calibrators but not bpd cals
+        if modeselect in ('allcals-vla', 'allcals-vlass', 'allcals'):
+            fieldselect = vis_scan.calibrator_field_select_string.split(',')
+            scanselect = vis_scan.calibrator_scan_select_string.split(',')
+            checkflagfields = vis_scan.checkflagfields.split(',')
+            testgainscans = vis_scan.testgainscans.split(',')
+            fieldselect = ','.join([fieldid for fieldid in fieldselect if fieldid not in checkflagfields])
+            scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
+
+        # select all calibrators
+        if modeselect == 'semi':
+            fieldselect = vis_scan.calibrator_field_select_string
+            scanselect = vis_scan.calibrator_scan_select_string
+
+        if modeselect == 'vlass-imaging':
+            # use the 'data' column by default as 'vlass-imaging' is working on target-only MS.
+            columnselect = 'data'
+        LOG.info('checkflagmode = {!r}'.format(modeselect+'*'))
+        LOG.info('  FieldSelect:  {}'.format(repr(fieldselect)))
+        LOG.info('  ScanSelect:   {}'.format(repr(scanselect)))
