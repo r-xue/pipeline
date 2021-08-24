@@ -133,7 +133,7 @@ provides an antenna position determination service.
         <value>True</value>
     </param>
 
-    <param name="threshold" type="double">
+    <param name="threshold" subparam="true" type="double">
         <shortdescription>Highlight antenna position offsets greater than this value in the weblog.</shortdescription>
         <description>Highlight antenna position offsets greater than this value in the weblog. Units are wavelengths and the default is 1.0.
           

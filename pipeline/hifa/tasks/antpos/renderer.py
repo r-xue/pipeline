@@ -21,8 +21,7 @@ class T2_4MDetailsALMAAntposRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         table_rows, _ = make_antpos_table(pipeline_context, results)
         # Sort by total offset, from highest-to-lowest, see: PIPE-77
         table_rows_by_offset, rep_wavelength = make_antpos_table(pipeline_context, results, sort_by=lambda x: float(getattr(x, 'total')), reverse=True)
-        threshold_in_wavelengths = 1.0 # FIXME: temp test value, needs to be a task parameter
-        print("FIXME :", [result.inputs for result in results])
+        threshold_in_wavelengths = results[0].inputs['threshold']
         threshold_in_mm = threshold_in_wavelengths * rep_wavelength
         mako_context.update({'table_rows': table_rows,
                              'table_rows_by_offset': table_rows_by_offset,
