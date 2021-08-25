@@ -86,6 +86,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         phase_vs_freq_subpages = {}
         amp_vs_uv_subpages = {}
 
+        LOG.debug("creating amp vs. time summary plots in renderer")
         amp_vs_time_summary_plots, amp_vs_time_subpages = self.create_plots(
             context,
             result,
@@ -93,6 +94,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
+        LOG.debug("creating phase vs. time summary plots in renderer")
         phase_vs_time_summary_plots, phase_vs_time_subpages = self.create_plots(
             context,
             result,
@@ -100,6 +102,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
+        LOG.debug("creating amp vs. freq summary plots in renderer")
         amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['AMPLITUDE'],
                         ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
@@ -118,6 +121,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for vis, vis_plots in plots.items():
                 amp_vs_freq_summary_plots[vis].extend(vis_plots)
 
+        LOG.debug("creating phase vs. freq summary plots in renderer")
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, phase_vs_freq_subpages = self.create_plots(
@@ -132,6 +136,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # CAS-7659: Add plots of all calibrator calibrated amp vs uvdist to
         # the WebLog applycal page
+        LOG.debug("creating amp vs. uv summary plots in renderer")
         amp_vs_uv_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['AMPLITUDE'], ['PHASE'], ['BANDPASS'], ['CHECK'],
                         ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
@@ -146,11 +151,13 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         # CAS-5970: add science target plots to the applycal page
+        LOG.debug("creating science summary plots in renderer")
         (science_amp_vs_freq_summary_plots,
          science_amp_vs_freq_subpages,
          science_amp_vs_uv_summary_plots,
          uv_max) = self.create_science_plots(context, result)
 
+        LOG.debug("creating corrected ratio to antenna1 plots in renderer")
         corrected_ratio_to_antenna1_plots = utils.OrderedDefaultdict(list)
         corrected_ratio_to_uv_dist_plots = {}
         for r in result:
@@ -199,6 +206,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # bad antennas to be identified while keeping the overall number of
         # plots relatively unchanged.
         #
+        LOG.debug("creating all detail plots in renderer")
         amp_vs_time_detail_plots, amp_vs_time_subpages = self.create_plots(
             context,
             result,
@@ -262,9 +270,13 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         callib_map = copy_callibrary(result, context.report_dir)
 
         # PIPE-396: Suppress redundant plots from hifa_applycal
+        LOG.debug("deduplicating amp. vs freq")
         amp_vs_freq_summary_plots = deduplicate(context, amp_vs_freq_summary_plots)
+        LOG.debug("deduplicating amp. vs UV")
         amp_vs_uv_summary_plots = deduplicate(context, amp_vs_uv_summary_plots)
+        LOG.debug("deduplicating corrected ratio to antenna 1")
         corrected_ratio_to_antenna1_plots = deduplicate(context, corrected_ratio_to_antenna1_plots)
+        LOG.debug("finished deduplication rounds") 
 
         ctx.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
@@ -635,7 +647,7 @@ class ApplycalAmpVsFreqPerAntSciencePlotRenderer(basetemplates.JsonPlotRenderer)
         Args:
             context: Pipeline context
             result:  Applycal Results
-            plots:   Liost of Plot instances
+            plots:   List of Plot instances
         """
         vis = utils.get_vis_from_plots(plots)
 
@@ -923,7 +935,7 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
     """
     # holds the final deduplicated list of plots
     deduplicated: List[Plot] = []
-
+    LOG.debug("deduplication started: %s", plots)
     # General algorithm is 'what scan does this spw and intent correspond to? 
     # Has this scan already been plotted? If so, discard the plot.'
     #
@@ -936,6 +948,7 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
     # sort and group the plots.
     spw_fn = lambda plot: plot.parameters['spw']
     intent_fn = lambda plot: plot.parameters['intent']
+#    field_fn = lambda plot: plot.parameters['field']
 
     # First, group plots by spw
     plots_by_spw = sorted(plots, key=spw_fn)
@@ -952,29 +965,36 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
         for intent, spw_intent_plots in itertools.groupby(spw_plots_by_intent, intent_fn):
             # Store group iterator as a list
             spw_intent_plots = list(spw_intent_plots)  
-
+            
             # This should result in a single plot. If not, bail. Failsafe
             # behaviour is to return original list of plots. It's better to
             # have duplicates present than exceptions.
             if len(spw_intent_plots) != 1:
                 LOG.warning('Plot deduplication cancelled. '
                             'Could not process ambiguous plot for spw %s intent %s', spw, intent)
-                return plots
-            plot = spw_intent_plots[0]
-
-            scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw)})
-            scan_ids = ','.join(str(s) for s in scan_ids)
-            if scan_ids not in plots_for_scan:
-                LOG.debug('Retaining plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
-                plots_for_scan[scan_ids] = plot
+                for local_plot in spw_intent_plots:
+                    print("parameters dict :", str(local_plot.parameters))
+                    scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw, field=local_plot.parameters['field'])}) # include field?
+                    scan_ids = ','.join(str(s) for s in scan_ids)
+                    scan_ids = scan_ids + str(local_plot.parameters['field'])
+                    print("SCAN IDS: ", scan_ids)
+                    plots_for_scan[scan_ids] = local_plot
+#                return plots
             else:
-                LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
-                # intents are strings inside lists, e.g., ['BANDPASS']
-                old_intent = intent_fn(plots_for_scan[scan_ids])
-                new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
-                LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
-                plots_for_scan[scan_ids].parameters['intent'] = new_intent
+                plot = spw_intent_plots[0]
+                scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw)})
+                scan_ids = ','.join(str(s) for s in scan_ids)
+                if scan_ids not in plots_for_scan:
+                    LOG.debug('Retaining plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
+                    plots_for_scan[scan_ids] = plot
+                else:
+                    LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
+                    # intents are strings inside lists, e.g., ['BANDPASS']
+                    old_intent = intent_fn(plots_for_scan[scan_ids])
+                    new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
+                    LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
+                    plots_for_scan[scan_ids].parameters['intent'] = new_intent
 
         deduplicated.extend(plots_for_scan.values())
-
+    LOG.debug("deduplication complete")
     return deduplicated
