@@ -12,7 +12,7 @@ from glob import glob
 
 import numpy as np
 import pipeline.infrastructure as infrastructure
-import pyfits
+import astropy.io.fits as apfits
 
 from pipeline.infrastructure import casa_tools
 from scipy.stats import linregress
@@ -94,7 +94,7 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     # the intention is that this finds the model from the 'iter0' dirty image
     # but it really just needs any image for the shape and csys
 
-    hdu = pyfits.open(catalog_fits_file)
+    hdu = apfits.open(catalog_fits_file)
 
     catalog_dat = hdu[1].data
 
@@ -323,7 +323,7 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     /users/jmarvil/scripts/edit_pybdsf_islands.py
     """
 
-    hdu = pyfits.open(catalog_fits_file)
+    hdu = apfits.open(catalog_fits_file)
     catalog_dat = hdu[1].data
 
     islands, island_counts = np.unique(catalog_dat['Isl_id'], return_counts=True)
