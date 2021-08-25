@@ -43,7 +43,8 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
             "Flags by Reason" states the amount of solutions flagged (in number of data rows) as a fraction of the specified data. 
             Pre-fit metrics are performed on calibrated spectra before the baseline-fit, 
             while the post-fit ones are performed on data after the baseline-fit.<br>
-            "Flagged Fraction" indicates the amount of data flagged (in number of spectral channels). 
+            "Flagged Fraction" indicates the amount of data flagged (in number of spectral channels). <br>
+            The fractions are with respect to data selected by selection parameters.
     </caption>
     <thead>
 	    <tr>
@@ -92,7 +93,10 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 
 <H2 id="summarytableperfield" class="jumptarget">Flag Summary per Field and SpW</H2>
 <table class="table table-bordered table-striped" summary="Flag Summary per Field and SpW">
-	<caption>Flag summary of ON-source target scans per source and SpW <(in number of spectral channels).</caption>
+	<caption>
+	Flag summary of ON-source target scans per source and SpW (in number of spectral channels).<br>
+	The fractions are with respect to data selected by selection parameters.
+	</caption>
     <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Field</th>

@@ -175,6 +175,7 @@ def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:
                 raise RuntimeError('No flag summary for field "{}"'.format(fieldobj.name))
             accum_flag[ms.name]['flagdata_before'] += before[field]['flagged']
             accum_flag[ms.name]['flagdata_after']  += after[field]['flagged']
+            assert before[field]['total'] == after[field]['total']
             accum_flag[ms.name]['flagdata_total']  += after[field]['total']
 
     return accum_flag
@@ -247,6 +248,7 @@ def accumulate_flag_per_source_spw(context, results):
                 # sum up incremental flags
                 accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
                 accum_flag[field][vspw]['after'] += flagval['flagged']
+                assert flagval['total'] == before[field]['spw'][spw]['total']
                 accum_flag[field][vspw]['total'] += flagval['total']
                 accum_flag[field][vspw]['additional'] += (flagval['flagged']-before[field]['spw'][spw]['flagged'])
     return accum_flag
