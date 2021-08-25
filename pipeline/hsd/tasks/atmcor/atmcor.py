@@ -216,7 +216,9 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
             Return empty string if k2jycal caltable is not applied.
         """
         applied_state = self.context.callibrary.applied
-        caltables = applied_state.get_caltable(caltypes=('amp', 'gaincal'))
+        calto = callibrary.CalTo(vis=self.vis)
+        state_for_vis = applied_state.trimmed(self.context, calto)
+        caltables = state_for_vis.get_caltable(caltypes=('amp', 'gaincal'))
 
         k2jycal_caltable = ''
         if len(caltables) > 0:
