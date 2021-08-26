@@ -314,6 +314,9 @@ def load_partialpols_alma(ms):
             else:
                 LOG.debug(f"No Partial Polarization data found for DATA_DESC_IDs {ddid}")
 
+            # Free resources held by table selection.
+            table_sel.close()
+
     commands = convert_params_to_commands(ms, params)
     return commands
 
