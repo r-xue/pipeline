@@ -179,7 +179,9 @@ class SkyDisplay(object):
 
             # plot data
             if 'cmap' not in imshow_args:
-                imshow_args['cmap'] = copy.deepcopy(plt.cm.jet)
+                # matplotlib Colormap has its own __copy__ implementation:
+                #   https://github.com/matplotlib/matplotlib/blob/v3.3.x/lib/matplotlib/colors.py#L616
+                imshow_args['cmap'] = copy.copy(plt.cm.jet)
             imshow_args['cmap'].set_bad('k', 1.0)
             im = ax.imshow(mdata.T, interpolation='nearest', origin='lower', aspect='equal',
                            extent=[blc[0], trc[0], blc[1], trc[1]], **imshow_args)

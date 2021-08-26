@@ -127,7 +127,7 @@ def get_best_fits_per_ant(wrapper):
                 LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
                 continue
 
-            median_sn = np.ma.median(np.ma.abs(visibilities) / np.ma.abs(ta_sigma))
+            median_sn = np.ma.median(np.ma.abs(visibilities).real / np.ma.abs(ta_sigma).real)
             if median_sn > 3:  # PIPE-401: Check S/N and either fit or use average
                 # Fit the amplitude
                 try:
@@ -151,7 +151,7 @@ def get_best_fits_per_ant(wrapper):
                 LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
                 # 'Fit' the amplitude
                 try:  # NOTE: PIPE-401 This try block may not be necessary
-                    amp_vis = np.ma.abs(visibilities)
+                    amp_vis = np.ma.abs(visibilities).real
                     n_channels_unmasked = np.sum(~amp_vis.mask)
                     if n_channels_unmasked != 0:
                         amplitude_fit = LinearFitParameters(
@@ -173,7 +173,7 @@ def get_best_fits_per_ant(wrapper):
                     continue
                 # 'Fit' the phase
                 try:  # NOTE: PIPE-401 This try block may not be necessary
-                    phase_vis = np.ma.angle(visibilities)
+                    phase_vis = np.ma.angle(visibilities).real
                     n_channels_unmasked = np.sum(~phase_vis.mask)
                     if n_channels_unmasked != 0:
                         phase_fit = LinearFitParameters(
