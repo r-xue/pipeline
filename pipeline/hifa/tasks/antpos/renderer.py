@@ -31,7 +31,9 @@ class T2_4MDetailsALMAAntposRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 AntposTR = collections.namedtuple('AntposTR', 'vis antenna x y z total total_wavelengths')
 
 
-def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'), reverse=False): #FIXME: add docs and type hinting
+def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'), reverse=False):
+    """
+    """
     # Will hold all the antenna offset table rows for the results
     rows = []
 
