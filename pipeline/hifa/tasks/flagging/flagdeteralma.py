@@ -393,13 +393,14 @@ def get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval):
     n_pol, n_channels, n_params = shape
     # Create a table of shape (n_channels, n_params) with the number of pols flagged
     folded_flags = np.sum(flags, axis=0)
-    # Check if the number indicates a partial polarization
+    # Identify where polarization data is partially flagged.
     to_extend_idx = (folded_flags > 0) & (folded_flags < n_pol)
-    # Identify the sets of parameters that have partial polarizations
-    params_to_check = np.sum(to_extend_idx, axis=0)
+    # Identify the sets of parameters that have partial polarizations for any
+    # of the channels.
+    param_sets_to_check = np.where(np.any(to_extend_idx, axis=0))[0]
     params = []
     # Iterate only through the sets of parameters with partial polarizations
-    for param_set_idx in np.where(params_to_check)[0]:
+    for param_set_idx in param_sets_to_check:
         # Get the numerical values of the channels that have partial polarizations
         channel_sel = list(np.where(to_extend_idx[:, param_set_idx])[0])
         params.append({
