@@ -284,12 +284,22 @@ def load_partialpols_alma(ms):
     #  all_spws = ms.get_spectral_windows()
     spws_ids, datadescids = get_partialpol_spws(ms.name)
 
+    # PIPE-1245: restrict evaluation of partial polarization flagging to scans
+    # that do not cover the following intents:
+    unwanted_intents = {'ATMOSPHERE', 'FOCUS', 'POINTING'}
+    scan_ids = [scan.id for scan in ms.get_scans() if not scan.intents.intersection(unwanted_intents)]
+    spw_scan_selections = iter((spw, dd, scan) for spw, dd in zip(spws_ids, datadescids) for scan in scan_ids)
+
+    # Initialize flagging command parameters.
     params = []
+
     with casa_tools.TableReader(ms.name) as table:
-        for spw, ddid in zip(spws_ids, datadescids):  # Iterate over relevant spws
+        # Run evaluation for each combination of SpW id (with corresponding
+        # data_desc_id) and scan id.
+        for spw, ddid, scan in spw_scan_selections:  # Iterate over relevant spws
 
             # Create table selection for current spw and get flag column.
-            table_sel = table.query(f"DATA_DESC_ID == {ddid}")
+            table_sel = table.query(f"DATA_DESC_ID == {ddid} && SCAN_NUMBER == {scan}")
             flags = table_sel.getcol('FLAG')
 
             # Number of polarisations present.
@@ -298,8 +308,8 @@ def load_partialpols_alma(ms):
             # For multi-pol data, assess if there are any rows where part of
             # the polarisation is flagged.
             if n_pol > 1:
-                LOG.debug(f"Multiple polarization data found for DATA_DESC_IDs {ddid}, checking if any polarization"
-                          f" data are partially flagged.")
+                LOG.debug(f"Multiple polarization data found for DATA_DESC_IDs {ddid}, scan {scan}, checking if any"
+                          f" polarization data are partially flagged.")
 
                 # Count how often no pols, some pols, and/or all pols are
                 # flagged.
@@ -334,7 +344,7 @@ def load_partialpols_alma(ms):
                     updated_params_spw = [{**d, "spw": spw, "time_unit": time_unit} for d in params_spw]
                     params.extend(updated_params_spw)
             else:
-                LOG.debug(f"No multiple polarization data found for DATA_DESC_IDs {ddid}.")
+                LOG.debug(f"No multiple polarization data found for DATA_DESC_IDs {ddid}, scan {scan}.")
 
             # Free resources held by table selection.
             table_sel.close()
