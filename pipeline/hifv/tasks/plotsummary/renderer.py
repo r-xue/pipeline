@@ -331,7 +331,13 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 source_spwobjlist = list(first_field.valid_spws)
                 source_spwidlist = [spw.id for spw in source_spwobjlist]
                 source_spwidlist.sort()
-                overrides['spws'] = ','.join([str(spwid) for spwid in source_spwidlist])
+                # PIPE-1259 - filter out scans that are not TARGET intent
+                spwlist_forscan = []
+                for spw_id in source_spwidlist:
+                    scan = m.get_scans(scan_intent=intentselection, field=field, spw=spw_id)
+                    if scan:
+                        spwlist_forscan.append(spw_id)
+                overrides['spws'] = ','.join([str(spwid) for spwid in spwlist_forscan])
 
             LOG.info("PlotSummary Plotting:" + 'Field ' + str(field) + ', ' + str(m.get_fields(field_id=field)[0].name))
 
