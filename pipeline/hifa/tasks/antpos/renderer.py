@@ -33,6 +33,8 @@ AntposTR = collections.namedtuple('AntposTR', 'vis antenna x y z total total_wav
 
 def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'), reverse=False):
     """
+    Creates an antenna positions table, returning the table rows and also the representative wavelength for the data (to later be used to determine whether offsets
+    are above or below a threshold given in units of this wavelength.)
     """
     # Will hold all the antenna offset table rows for the results
     rows = []
@@ -45,7 +47,7 @@ def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'),
         if hasattr(ms, 'representative_target') and ms.representative_target[1] is not None:
             rep_freq = casa_tools.quanta.getvalue(casa_tools.quanta.convert(ms.representative_target[1]))[0]
         else:
-            # if there is no representative frequency, use the center of the first spw, see PIPE-77.
+            # If there is no representative frequency, use the center of the first spw, see PIPE-77.
             first_spw = ms.get_spectral_windows()[0]
             rep_freq = float(first_spw.centre_frequency.value)
 
