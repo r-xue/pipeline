@@ -110,9 +110,9 @@ class UnitFormat(object):
 
 file_size = UnitFormat()
 file_size.addUnitOfMagnitude(1, '{0:.0f} bytes')
-file_size.addUnitOfMagnitude(1024, '{0:.1f} KB')
-file_size.addUnitOfMagnitude(1024 * 1024, '{0:.1f} MB')
-file_size.addUnitOfMagnitude(1024 * 1024 * 1024, '{0:.1f} GB')
+file_size.addUnitOfMagnitude(1024, '{0:.1f} KiB')
+file_size.addUnitOfMagnitude(1024 * 1024, '{0:.1f} MiB')
+file_size.addUnitOfMagnitude(1024 * 1024 * 1024, '{0:.1f} GiB')
 
 # Create a Unit for measuring lengths
 distance = UnitFormat()
