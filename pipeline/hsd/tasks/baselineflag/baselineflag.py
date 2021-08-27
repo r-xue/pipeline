@@ -1,5 +1,6 @@
 import os
 import collections
+from typing import List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -259,8 +260,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
 
         # sumarize flag before execution
         full_intent = utils.to_CASA_intent(inputs.ms, inputs.intent)
+        in_ant_auto = in_ant if len(in_ant)==0 else in_ant+'&&&'
         flagdata_summary_job = casa_tasks.flagdata(vis=bl_name, mode='summary',
-                                                   antenna=in_ant, field=in_field,
+                                                   antenna=in_ant_auto, field=in_field,
                                                    spw=in_spw, intent=full_intent,
                                                    spwcorr=True, fieldcnt=True,
                                                    name='before')
@@ -376,7 +378,12 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         detailed_flag_job = casa_tasks.flagdata(vis=bl_name, mode='list', inpfile=flagkwargs, flagbackup=False)
         detailed_flag_result = self._executor.execute(detailed_flag_job)
         # Statistics for task weblog
-        stats_after = self.__reorganize_flag_stat(detailed_flag_result)
+        field_sel = stats_before.keys()
+        bl_ms = context.observing_run.get_ms(name=bl_name)
+        spw_sel = [str(s.id) for s in bl_ms.get_spectral_windows(in_spw)]
+        ant_sel = [a.name for a in bl_ms.get_antenna(in_ant)]
+        stats_after = self.__reorganize_flag_stat(detailed_flag_result,
+                                                  field_sel, spw_sel, ant_sel)
         stats_after['name'] = 'after'
 
         outcome = {'flagdata_summary': [stats_before, stats_after],
@@ -392,7 +399,8 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def __reorganize_flag_stat(self, in_stat: dict) -> dict:
+    def __reorganize_flag_stat(self, in_stat: dict, field_sel: List[str],
+                               spw_sel: List[str], ant_sel: List[str]) -> dict:
         """
         Reorganize flag statistics dictionary.
 
@@ -403,22 +411,25 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         Args:
             in_stats: flag statistic dictionary by list mode in the form,
                 {'report0': {'sourcename': {'flagged': 0, 'total': 222222,
-                                            'spw': {'9': {'flagged': 0, 'total': 111111},
-                                                            '11': ....},
+                                            'spw': {'9': {'flagged': 0, 'total': 111111}},
                                             'antenna': {....},
                                                     .... },
                                 .... },
                 'report1': ....}
                 The keys, 'reportN', could be omitted if flagdata command
-                lists only one summary command.
+                lists only one summary command. Note each report should
+                summarize flag statistics of single spectral window.
+            field_sel: list of field names to filter
+            spw_sel: list of spw id strings to filter
+            ant_sel: list of antenna names to filter
 
         Returns:
-            Accumulated per source flag statistics dictionary in the form,
-                 {'sourcename': {'flagged': 222, 'total': 777777,
+            Accumulated per source and spw flag statistics dictionary in the form,
+                 {'sourcename': {
+                                 'flagged': 222, 'total': 777777,
                                  'spw': {'9': {'flagged': 111, 'total': 444444},
-                                              '11': ....},
-                                'antenna': {....},
-                                     .... },
+                                             '11': ...}
+                                    },
                     .... }
         """
         out_stat = {'type': 'summary'}
@@ -432,19 +443,23 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         for rep_summary in in_stat.values(): # per report loop
             for source, source_summary in rep_summary.items(): # per source loop
                 if source in ignore_keys: continue
+                spw = list(source_summary['spw'].keys())
+                assert len(spw) == 1
+                spw = spw[0]
+                if source not in field_sel or spw not in spw_sel:
+                    continue
                 if not source in out_stat: # source names
                     out_stat[source] = dict((k, 0) for k in sum_keys)
-                for gtype, summary in source_summary.items(): # group type loop (e.g., spw)
-                    if gtype in sum_keys: # flagged and total
-                        out_stat[source][gtype] += summary
-                        continue
-                    elif gtype not in out_stat[source]:
-                        out_stat[source][gtype] = dict()
-                    for idx, id_val in summary.items(): # per (e.g., spw) ID loop
-                        if idx not in out_stat[source][gtype]:
-                            out_stat[source][gtype][idx] = dict((k, 0) for k in sum_keys)
-                        for k in sum_keys:
-                            out_stat[source][gtype][idx][k] += id_val[k]
+                    out_stat[source]['spw'] = dict()
+                ant_summary = source_summary['antenna']
+                for ant, summary in ant_summary.items(): # per antenna loop
+                    if ant not in ant_sel: continue
+                    for gtype in sum_keys: # 'total' and 'flagged'
+                        out_stat[source][gtype] += summary[gtype]
+                    if spw not in out_stat[source]['spw']:
+                        out_stat[source]['spw'][spw] = dict((k, 0) for k in sum_keys)
+                    for k in sum_keys: # 'total' and 'flagged'
+                        out_stat[source]['spw'][spw][k] += summary[k]
         return out_stat
 
 
