@@ -81,10 +81,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
      <value>-999</value>
   </param>
 
-  <param name="hm_dogrowprune" subparam="true" type="bool">
+  <param name="hm_dogrowprune" subparam="true" type="any">
     <shortdescription>Do pruning on the grow mask</shortdescription>
-    <description>Do pruning on the grow mask</description>
-    <value>True</value>
+    <description>Do pruning on the grow mask
+
+                 Defaults to '' to enable the automatic heuristics calculation.
+                 Can be set to True or False manually.
+    </description>
+    <any type="variant"/>
+    <value type="string"/>
   </param>
 
   <param name="hm_minpercentchange" subparam="true" type="double">
@@ -93,10 +98,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
      <value>-999.0</value>
   </param>
 
-  <param name="hm_fastnoise" type="bool">
+  <param name="hm_fastnoise" type="any">
     <shortdescription>Faster noise calucation for automask or nsigma stopping</shortdescription>
-    <description>Faster noise calucation for automask or nsigma stopping</description>
-    <value>True</value>
+    <description>Faster noise calucation for automask or nsigma stopping
+
+                 Defaults to '' to enable the automatic heuristics calculation.
+                 Can be set to True or False manually.
+    </description>
+    <any type="variant"/>
+    <value type="string"/>
   </param>
 
   <param name="hm_nsigma" type="double">
@@ -105,10 +115,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>0.0</value>
   </param>
 
-  <param name="hm_perchanweightdensity" type="bool">
+  <param name="hm_perchanweightdensity" type="any">
     <shortdescription>Calculate the weight density for each channel independently</shortdescription>
-    <description>Calculate the weight density for each channel independently</description>
-    <value>False</value>
+    <description>Calculate the weight density for each channel independently
+
+                 Defaults to '' to enable the automatic heuristics calculation.
+                 Can be set to True or False manually.
+    </description>
+    <any type="variant"/>
+    <value type="string"/>
   </param>
 
   <param name="hm_npixels" type="int">
@@ -179,10 +194,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>False</value>
   </param>
 
-  <param name="mosweight" type="bool">
+  <param name="hm_mosweight" type="any">
     <shortdescription>Mosaic weighting</shortdescription>
-    <description>Mosaic weighting</description>
-    <value>False</value>
+    <description>Mosaic weighting
+
+                 Defaults to '' to enable the automatic heuristics calculation.
+                 Can be set to True or False manually.
+    </description>
+    <any type="variant"/>
+    <value type="string"/>
   </param>
 
   <param name="overwrite_on_export" type="bool">

@@ -5,7 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hif_findcont(vis=None, target_list=None, mosweight=None, hm_perchanweightdensity=None, hm_weighting=None,
+def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweightdensity=None, hm_weighting=None,
                  parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################

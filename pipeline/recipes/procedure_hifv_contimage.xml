@@ -9,6 +9,48 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_flagdata</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">intents</Keyword>
+                <Value xmlns="">*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*,*UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">quack</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">autocorr</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">baseband</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">edgespw</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">clip</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">online</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">shadow</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">scan</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>    
+
+    <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
         </ParameterSet>
@@ -41,6 +83,12 @@
                 <Keyword xmlns="">hm_cyclefactor</Keyword>
                 <Value xmlns="">3.0</Value>
             </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
+        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
 

@@ -25,7 +25,7 @@ class FindContInputs(vdp.StandardInputs):
     processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     parallel = vdp.VisDependentProperty(default='automatic')
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_weighting = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -35,7 +35,7 @@ class FindContInputs(vdp.StandardInputs):
         # objects from the inputs' clean_list.
         return copy.deepcopy(self.context.clean_list_pending)
 
-    def __init__(self, context, output_dir=None, vis=None, target_list=None, mosweight=None,
+    def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
                  hm_perchanweightdensity=None, hm_weighting=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
@@ -43,7 +43,7 @@ class FindContInputs(vdp.StandardInputs):
         self.vis = vis
 
         self.target_list = target_list
-        self.mosweight = mosweight
+        self.hm_mosweight = hm_mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_weighting = hm_weighting
         self.parallel = parallel
@@ -123,9 +123,9 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Determine the gridder mode
                     image_heuristics = target['heuristics']
                     gridder = image_heuristics.gridder(target['intent'], target['field'])
-                    if inputs.mosweight not in (None,):
-                        mosweight = inputs.mosweight
-                    elif target['mosweight'] not in (None,):
+                    if inputs.hm_mosweight not in (None, ''):
+                        mosweight = inputs.hm_mosweight
+                    elif target['mosweight'] not in (None, ''):
                         mosweight = target['mosweight']
                     else:
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
@@ -227,8 +227,8 @@ class FindCont(basetask.StandardTaskTemplate):
                         freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                         freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
                         channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
-                        # Skip 1 km/s or at least 5 channels
-                        extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
+                        # Skip 1 km/s
+                        extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
                     else:
                         extra_skip_channels = 0
 
@@ -248,11 +248,13 @@ class FindCont(basetask.StandardTaskTemplate):
                         else:
                             nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
-                    # tclean interprets the start frequency as the center of the
-                    # first channel. We have, however, an edge to edge range.
-                    # Thus shift by 0.5 channels if no start is supplied.
                     if target['start'] == '':
-                        start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                        # tclean interprets the start frequency as the center of the
+                        # first channel. We have, however, an edge to edge range.
+                        # Thus shift by 0.5 channels if no start is supplied.
+                        # Additionally skipping the edge channel (cf. "- 2" above)
+                        # means a correction of 1.5 channels.
+                        start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
                     else:
                         start = target['start']
 

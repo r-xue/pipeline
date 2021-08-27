@@ -287,9 +287,12 @@ class Tclean(cleanbase.CleanBase):
         if inputs.deconvolver in (None, ''):
             inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw)
 
-        # Determine weighting and perchanweightdensity
+        # Determine weighting
         if inputs.weighting in (None, ''):
             inputs.weighting = self.image_heuristics.weighting(inputs.specmode)
+
+        # Determine perchanweightdensity
+        if inputs.hm_perchanweightdensity in (None, ''):
             inputs.hm_perchanweightdensity = self.image_heuristics.perchanweightdensity(inputs.specmode)
 
         # Determine nterms
@@ -455,8 +458,8 @@ class Tclean(cleanbase.CleanBase):
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
                 channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
-                # Skip 1 km/s or at least 5 channels
-                extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
+                # Skip 1 km/s
+                extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
             else:
                 extra_skip_channels = 0
 
@@ -487,7 +490,9 @@ class Tclean(cleanbase.CleanBase):
                 # tclean interprets the start frequency as the center of the
                 # first channel. We have, however, an edge to edge range.
                 # Thus shift by 0.5 channels if no start is supplied.
-                inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                # Additionally skipping the edge channel (cf. "- 2" above)
+                # means a correction of 1.5 channels.
+                inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             inputs.width = '%.7fMHz' % (channel_width / 1e6)
@@ -1153,6 +1158,7 @@ class Tclean(cleanbase.CleanBase):
                                                   width=inputs.width,
                                                   weighting=inputs.weighting,
                                                   robust=inputs.robust,
+                                                  mosweight=inputs.mosweight,
                                                   uvtaper=inputs.uvtaper,
                                                   restoringbeam=inputs.restoringbeam,
                                                   iter=iternum,
