@@ -170,6 +170,35 @@ def get_short_description(tree: DOM) -> str:
     return short_desc
 
 
+def get_parameter_type(element: DOM) -> Tuple:
+    """Get parameter type from param tag.
+
+    Args:
+        element: DOM object corresponding to parameter definition (param tag).
+
+    Returns:
+        (primary_type, subtypes) tuple. If primary_type is either 'any' or
+        'variant', subtypes holds the list of allowed types. Otherwise,
+        subtypes is empty and only the type specified by primary_type is
+        allowed.
+    """
+    assert element.hasAttribute('name') and element.hasAttribute('type')
+    primary_type = element.getAttribute('type')
+    subtypes = []
+    if primary_type in ('any', 'variant'):
+        any_tags = element.getElementsByTagName('any') + element.getElementsByTagName('variant')
+        if len(any_tags) == 0:
+            subtype_tags = element.getElementsByTagName('type')
+            subtypes = [t.firstChild.data.strip() for t in subtype_tags]
+        else:
+            attr_names = ['limittype', 'limittypes']
+            tag = any_tags[0]
+            subtypes = ' '.join([tag.getAttribute(name) for name in attr_names]).strip().split()
+
+    type_desc = (primary_type, subtypes)
+    return type_desc
+
+
 def get_param_types(tree: DOM) -> dict:
     """Extract list of parameters and value types.
 
@@ -177,14 +206,14 @@ def get_param_types(tree: DOM) -> dict:
         tree: DOM object corresponding to task xml file (taskname.xml).
 
     Returns:
-        Dictionary holding (param_name_str, param_type_str) pair.
+        Dictionary holding (param_name_str, param_type_tuple) pair.
     """
     node = filter(
         lambda x: x.parentNode.nodeName == 'input',
         tree.getElementsByTagName('param')
     )
     type_dict = dict(
-        (x.getAttribute('name'), x.getAttribute('type')) for x in node
+        (x.getAttribute('name'), get_parameter_type(x)) for x in node
     )
     return type_dict
 
@@ -198,7 +227,8 @@ def get_task_property(task_name: str) -> dict:
     Returns:
         Pipeline task property, including the comment (taken from
         the shortdescription tag) and the parameter_types dictionary
-        holding (param_name_str, param_type_str) pair.
+        holding (param_name_str, param_type_tuple) pair where
+        param_type_tuple is a pair of (primary_type, subtypes).
     """
     if task_name == 'breakpoint':
         return {}
@@ -322,7 +352,8 @@ def get_execution_command(task_name: str, config: dict) -> str:
     The config parameter should have at least two fields: parameter and
     parameter_types. The parameter field should be the dictionary with
     (param_name_str, param_value_str) pair while the parameter_types field
-    should be the dictionary with (param_name_str, param_type_str) pair.
+    should be the dictionary with (param_name_str, param_type_tuple) pair
+    where param_type_tuple is (primary_type, subtypes) pair .
 
     Args:
         task_name: Pipeline task name.
@@ -345,7 +376,8 @@ def get_execution_command(task_name: str, config: dict) -> str:
     if parameter:
         def construct_arg(key, value):
             # default value type is string
-            value_type = param_types.get(key, 'string')
+            type_dict = param_types.get(key, ('string', []))
+            value_type, value_subtypes = type_dict
 
             # TODO: handle variant and any types properly
             if value_type in ('string', 'variant', 'any'):
