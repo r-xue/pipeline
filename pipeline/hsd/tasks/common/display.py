@@ -36,7 +36,6 @@ sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
 
-
 def mjd_to_datetime(val: float) -> datetime.datetime:
     """Convert MJD to datetime instance.
 
@@ -1337,6 +1336,7 @@ class SDSparseMapPlotter(object):
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
                 plt.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
+
         if overlay_atm_transmission:
             plt.gcf().sca(self.axes.axes_atm)
             amin = 100

@@ -1,8 +1,11 @@
 import collections
-import os
-
-import numpy
 import itertools
+import os
+from typing import List, Optional, Tuple
+
+import matplotlib.pyplot as plt
+import numpy
+from numpy.ma.core import MaskedArray
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -13,10 +16,13 @@ from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import utils
 from ..common import compress
 from ..common import display
-from ..common.display import sd_polmap
+from ..common.display import DPIDetail, ch_to_freq, sd_polmap
 from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
+
+# A named tuple to store statistics of baseline quality
+BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
 
 
 class PlotterPool(object):
@@ -106,6 +112,7 @@ class BaselineSubtractionPlotManager(object):
         self.datatable = datatable
         stage_number = self.context.task_counter
         self.stage_dir = os.path.join(self.context.report_dir, "stage%d" % stage_number)
+        self.baseline_quality_stat = dict()
 
         if basetask.DISABLE_WEBLOG:
             self.pool = None
@@ -127,6 +134,7 @@ class BaselineSubtractionPlotManager(object):
 
         origin_ms = self.context.observing_run.get_ms(self.ms.origin_ms)
         self.out_rowmap = utils.make_row_map(origin_ms, blvis)
+        self.in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         self.prefit_data = ms.name
         self.postfit_data = blvis
 
@@ -200,9 +208,14 @@ class BaselineSubtractionPlotManager(object):
             elif plot_type == 'post_fit':
                 ptype = 'sd_sparse_map_after_subtraction_raw'
                 data = self.postfit_data
-            else:
-                ptype = 'sd_sparse_map_before_sutraction_avg'
+            elif plot_type == 'pre_fit_avg':
+                ptype = 'sd_sparse_map_before_subtraction_avg'
                 data = self.prefit_data
+            elif plot_type == 'post_fit_flatness':
+                ptype = 'sd_spectrum_after_subtraction_flatness'
+                data = self.postfit_data
+            else:
+                raise Exception('Unrecognized plot type.')
             for pol, figfile in plots.items():
                 if os.path.exists(figfile):
                     parameters = {'intent': 'TARGET',
@@ -240,6 +253,7 @@ class BaselineSubtractionPlotManager(object):
         prefit_data = self.prefit_data
         postfit_data = self.postfit_data
         out_rowmap = self.out_rowmap
+        in_rowmap = self.in_rowmap
 
         dtrows = self.datatable.getcol('ROW')
 
@@ -317,9 +331,6 @@ class BaselineSubtractionPlotManager(object):
             if os.path.exists(postfit_figfile):
                 plot_list['post_fit'][ipol] = postfit_figfile
 
-        del postfit_integrated_data
-
-        in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
                                                            num_ra, num_dec,
                                                            nchan, npol, rowlist,
@@ -392,7 +403,106 @@ class BaselineSubtractionPlotManager(object):
 
         plotter.done()
 
+        # baseline flatness plots
+        plot_list['post_fit_flatness'] = {}
+        for ipol in range(npol):
+            postfit_qa_figfile = postfit_figfile_prefix + '_flatness_pol%s.png' % ipol
+            stat = self.analyze_and_plot_flatness(postfit_integrated_data[ipol],
+                                                  frequency, line_range,
+                                                  deviation_mask,  edge, bunit,
+                                                  postfit_qa_figfile)
+            if os.path.exists(postfit_qa_figfile):
+                plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
+                if len(stat) > 0:
+                    self.baseline_quality_stat[postfit_qa_figfile] = stat
+
+        del postfit_integrated_data
+
         return plot_list
+    
+    def analyze_and_plot_flatness(self, spectrum: List[float], frequency: List[float],
+                         line_range: Optional[List[Tuple[float, float]]],
+                         deviation_mask: Optional[List[Tuple[int, int]]],
+                         edge: Tuple[int, int], brightnessunit: str,
+                         figfile: str) -> List[BinnedStat]:
+        """
+        Calculate baseline flatness of a spectrum and create a plot.
+
+        Args:
+            spectrum: A spectrum to analyze baseline flatness and plot.
+            frequency: Frequency values of each element in spectrum.
+            line_range: ID ranges in spectrum array that should be considered
+                as spectral lines and eliminated from inspection of baseline
+                flatness.
+            deviation_mask: ID ranges of deviation mask. These ranges are also
+                eliminated from inspection of baseline flatness.
+            edge: Number of elements in left and right edges that should be
+                eliminates from inspection of baseline flatness.
+            brightnessunit: Brightness unit of spectrum.
+            figfile: A file name to save figure.
+
+        Returns:
+            Statistic information to evaluate baseline flatness.
+        """
+        binned_stat = []
+        masked_data = numpy.ma.masked_array(spectrum, mask=False)
+        if edge is not None:
+            (ch1, ch2) = edge
+            masked_data.mask[0:ch1] = True
+            masked_data.mask[len(masked_data)-ch2-1:] = True
+        if line_range is not None:
+            for chmin, chmax in line_range:
+                masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
+        if deviation_mask is not None:
+            for chmin, chmax in deviation_mask:
+                masked_data.mask[chmin:chmax+1] = True
+        nbin = 20 if len(frequency) >= 512 else 10
+        binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+        if binned_data.count() <  2: # not enough valid data
+            return binned_stat
+        stddev = masked_data.std()
+        bin_min = numpy.nanmin(binned_data)
+        bin_max = numpy.nanmax(binned_data)
+        stat = BinnedStat(bin_min_ratio=bin_min/stddev,
+                          bin_max_ratio=bin_max/stddev,
+                          bin_diff_ratio=(bin_max-bin_min)/stddev)
+        binned_stat.append(stat)
+        # create a plot
+        xmin = min(frequency[0], frequency[-1])
+        xmax = max(frequency[0], frequency[-1])
+        ymin = -3*stddev
+        ymax = 3*stddev
+        plt.clf()
+        plt.plot(frequency, spectrum, color='b', linestyle='-', linewidth=0.4)
+        plt.axis((xmin, xmax, ymin, ymax))
+        plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
+        plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
+        plt.title('Spatially Averaged Spectrum')
+        plt.ylabel(f'Intensity ({brightnessunit})')
+        plt.xlabel('Frequency (GHz)')
+        if edge is not None:
+            (ch1, ch2) = edge
+            fedge0 = ch_to_freq(0, frequency)
+            fedge1 = ch_to_freq(ch1-1, frequency)
+            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
+            fedge3 = ch_to_freq(len(frequency)-1, frequency)
+            plt.axvspan(fedge0, fedge1, color='lightgray')
+            plt.axvspan(fedge2, fedge3, color='lightgray')
+        if line_range is not None:
+            for chmin, chmax in line_range:
+                fmin = ch_to_freq(chmin, frequency)
+                fmax = ch_to_freq(chmax, frequency)
+                plt.axvspan(fmin, fmax, color='cyan')
+        if deviation_mask is not None:
+            for chmin, chmax in deviation_mask:
+                fmin = ch_to_freq(chmin, frequency)
+                fmax = ch_to_freq(chmax, frequency)
+                plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
+        plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
+        plt.plot(binned_freq, binned_data, 'ro')
+        plt.savefig(figfile, format='png', dpi=DPIDetail)
+        return binned_stat
+        
 
 
 def generate_grid_panel_map(ngrid, npanel, num_plane=1):
@@ -756,3 +866,37 @@ def median_index(arr):
             return sorted_index[0]
         else:
             return sorted_index[len(arr) // 2]
+
+def binned_mean_ma(x: List[float], masked_data: MaskedArray,
+                   nbin: int) -> Tuple[numpy.ndarray, MaskedArray]:
+    """
+    Bin an array.
+
+    Return an array of averaged values of masked_data in each bin.
+    An element of binned_data is masked if any of elements in masked_data that
+    contribute to the bin is masked.
+
+    Args:
+        x: Abcissa value of each element in masked_data.
+        masked_data: Data to be binned. The length of array must be equal to that of x.
+        nbin: Number of bins.
+    Returns:
+        Arrays of binned abcissa and binned data
+    """
+    ndata = len(masked_data)
+    assert nbin < ndata
+    assert len(x)==ndata
+    bin_width = ndata/nbin # float
+    # Prepare return values
+    binned_data = numpy.ma.masked_array(numpy.zeros(nbin), mask=False)
+    binned_x = numpy.zeros(nbin)
+    min_i = 0
+    for i in range(nbin):
+        max_i = min(int(numpy.floor((i+1)*bin_width)), ndata-1)
+        binned_x[i] = numpy.mean(x[min_i:max_i+1])
+        if any(masked_data.mask[min_i:max_i+1]):
+            binned_data.mask[i] = True
+        else:
+            binned_data[i] = numpy.nanmean(masked_data[min_i:max_i+1])
+        min_i = max_i+1
+    return binned_x, binned_data

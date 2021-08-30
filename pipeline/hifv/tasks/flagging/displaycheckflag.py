@@ -23,54 +23,64 @@ class checkflagSummaryChart(object):
         # self.caltable = result.final[0].gaintable
 
     def plot(self):
-        # Default
         plots = [None]
 
-        if self.result.inputs['checkflagmode'] == 'bpd' or self.result.inputs['checkflagmode'] == 'bpd-vlass':
+        if self.result.inputs['checkflagmode'] in ('bpd', 'bpd-vlass', 'bpd-vla'):
             plots = [self.get_plot_wrapper('BPcal'), self.get_plot_wrapper('delaycal')]
-        if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
+        if self.result.inputs['checkflagmode'] in ('allcals', 'allcals-vlass', 'allcals-vla'):
             plots = [self.get_plot_wrapper('allcals')]
         if self.result.inputs['checkflagmode'] == 'vlass-imaging':
             plots = [self.get_plot_wrapper('targets-vlass')]
+        if self.result.inputs['checkflagmode'] == 'target-vla':
+            plots = [self.get_plot_wrapper('targets')]
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
+
         figfile = self.get_figfile(prefix)
-        corrstring = self.ms.get_vla_corrstring()
 
-        plotms_args = {'vis': self.ms.name,
+        if self.suffix == 'before':
+            vis = self.result.vis_averaged['before']
+            vis_stats = self.result.vis_averaged['before_amp']
+            amp_range = [vis_stats['']['min'], vis_stats['']['max']]
+            title = 'Amp vs. Frequency (before flagging), {}'.format(prefix)
+        if self.suffix == 'after':
+            vis = self.result.vis_averaged['after']
+            vis_stats = self.result.vis_averaged['before_amp']
+            amp_range = [vis_stats['']['min'], vis_stats['']['max']]
+            title = 'Amp vs. Frequency (after flagging), {}'.format(prefix)
+        if self.suffix == 'after-autoscale':
+            vis = self.result.vis_averaged['after']
+            amp_range = [0., 0.]
+            title = 'Amp vs. Frequency (after flagging, autoscale), {}'.format(prefix)
+
+        # use the time-averged MS from the task to make the CASAplotms callmodify the plotms() call args.
+        plotms_args = {'vis': vis,
                        'xaxis': 'freq', 'yaxis': 'amp',
-                       'xdatacolumn': '', 'ydatacolumn': 'corrected',
-                       'selectdata': True, 'field': '', 'scan': '', 'correlation': corrstring,
-                       'averagedata': True, 'avgtime': '1e8', 'avgscan': False,
+                       'xdatacolumn': '', 'ydatacolumn': 'data',
+                       'selectdata': True, 'field': '', 'scan': '', 'correlation': '',
+                       'averagedata': False, 'avgtime': '1e8', 'avgscan': False,
                        'transform': False, 'extendflag': False,
-                       'coloraxis': 'antenna2',
+                       'coloraxis': 'antenna2', 'plotrange': [0, 0, 0, 0],
                        'plotfile': figfile, 'overwrite': True, 'clearplots': True, 'showgui': False}
-
         plotms_args.update(self.plotms_args)
+        plotms_args.update(title=title)
+        amp_d = amp_range[1]-amp_range[0]
+        plotms_args.update(plotrange=[0, 0, max(0, amp_range[0]-0.1*amp_d), amp_range[1]+0.1*amp_d])
 
-        if self.result.inputs['checkflagmode'] == 'bpd' or self.result.inputs['checkflagmode'] == 'bpd-vlass':
-            bandpass_field_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string
-            bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
-            delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
-            if prefix == 'BPcal':
-                plotms_args.update(field=bandpass_field_select_string,
-                                   scan=bandpass_scan_select_string, avgscan=True)
-                job = casa_tasks.plotms(**plotms_args)
-            if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-                plotms_args.update(scan=delay_scan_select_string, avgscan=True)
-                job = casa_tasks.plotms(**plotms_args)
+        if prefix == 'BPcal':
+            plotms_args.update(field=self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string)
+            plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string)
+        if prefix == 'delaycal':
+            plotms_args.update(scan=self.context.evla['msinfo'][self.ms.name].delay_scan_select_string)
 
-        if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
-            calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
-            plotms_args.update(scan=calibrator_scan_select_string, avgscan=False)
-            job = casa_tasks.plotms(**plotms_args)
+        LOG.info('Creating {}'.format(plotms_args['title']))
 
-        if self.result.inputs['checkflagmode'] == 'vlass-imaging':
-            plotms_args.update(ydatacolumn='data', avgscan=False)
-            job = casa_tasks.plotms(**plotms_args)
-
+        # run plotms
+        job = casa_tasks.plotms(**plotms_args)
         job.execute(dry_run=False)
+
+        return plotms_args
 
     def get_figfile(self, prefix):
         stage_dir = os.path.join(self.context.report_dir, 'stage{}'.format(self.result.stage_number))
@@ -81,34 +91,30 @@ class checkflagSummaryChart(object):
         return os.path.join(stage_dir, fig_basename)
 
     def get_plot_wrapper(self, prefix):
-        figfile = self.get_figfile(prefix)
 
         if prefix == 'delaycal':
             bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
             delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
-            plot_delaycal = bandpass_scan_select_string != delay_scan_select_string
-        else:
-            plot_delaycal = False
+            if bandpass_scan_select_string == delay_scan_select_string:
+                return None
 
-        if (prefix == 'BPcal' or plot_delaycal or prefix == 'allcals' or prefix == 'allcals-vlass' or prefix == 'targets-vlass'):
-            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
-                                  parameters={'vis': self.ms.basename,
-                                              'type': prefix,
-                                              'version': self.suffix,
-                                              'spw': ''})
+        figfile = self.get_figfile(prefix)
+        if not os.path.exists(figfile):
+            LOG.trace('Checkflag summary plot not found. Creating new plot.')
+            try:
+                plotms_args = self.create_plot(prefix)
+            except Exception as ex:
+                LOG.error('Could not create ' + prefix + ' plot.')
+                LOG.exception(ex)
+                return None
 
-            if not os.path.exists(figfile):
-                LOG.trace('Checkflag summary plot not found. Creating new plot.')
-                try:
-                    self.create_plot(prefix)
-                except Exception as ex:
-                    LOG.error('Could not create ' + prefix + ' plot.')
-                    LOG.exception(ex)
-                    return None
-
-            return wrapper
-
-        return None
+        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
+                              parameters={'vis': self.ms.basename,
+                                          'type': prefix,
+                                          'version': self.suffix,
+                                          'plotms_args': plotms_args,
+                                          'spw': ''})
+        return wrapper
 
 
 class checkflagPercentageMap(object):
@@ -147,8 +153,8 @@ class checkflagPercentageMap(object):
             fig.savefig(self.figfile, bbox_inches='tight')
             plt.close(fig)
 
-        except:
-            LOG.warn('Could not create the flagging percentage map plot')
+        except Exception as ex:
+            LOG.warn('Exception: Could not create the flagging percentage map plot. {!s}'.format(str(ex)))
             return None
 
         return self._get_plot_object()

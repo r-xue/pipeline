@@ -37,7 +37,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     intent = vdp.VisDependentProperty(default='')
     iter = vdp.VisDependentProperty(default=0)
     mask = vdp.VisDependentProperty(default='')
-    hm_dogrowprune = vdp.VisDependentProperty(default=True)
+    hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_masking = vdp.VisDependentProperty(default='auto')
@@ -45,7 +45,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
-    hm_fastnoise = vdp.VisDependentProperty(default=True)
+    hm_fastnoise = vdp.VisDependentProperty(default=None)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -53,7 +53,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=5000)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_npixels = vdp.VisDependentProperty(default=0)
     nterms = vdp.VisDependentProperty(default=None)
     orig_specmode = vdp.VisDependentProperty(default='')
@@ -410,7 +410,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif growiterations is not None:
                 tclean_job_parameters['growiterations'] = growiterations
 
-            if inputs.hm_dogrowprune != -999:
+            if inputs.hm_dogrowprune not in (None, ''):
                 tclean_job_parameters['dogrowprune'] = inputs.hm_dogrowprune
             elif dogrowprune is not None:
                 tclean_job_parameters['dogrowprune'] = dogrowprune
@@ -420,10 +420,16 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif minpercentchange is not None:
                 tclean_job_parameters['minpercentchange'] = minpercentchange
 
-            tclean_job_parameters['fastnoise'] = fastnoise
+            if inputs.hm_fastnoise not in (None, ''):
+                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            elif fastnoise is not None:
+                tclean_job_parameters['fastnoise'] = fastnoise
 
         else:
-            tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            if inputs.hm_fastnoise not in (None, ''):
+                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            else:
+                tclean_job_parameters['fastnoise'] = True
             if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
@@ -528,7 +534,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             if usepointing is not None:
                 tclean_job_parameters['usepointing'] = usepointing
 
-        if inputs.mosweight is not None:
+        if inputs.mosweight not in (None, ''):
             tclean_job_parameters['mosweight'] = inputs.mosweight
         else:
             mosweight = inputs.heuristics.mosweight(inputs.intent, inputs.field)
