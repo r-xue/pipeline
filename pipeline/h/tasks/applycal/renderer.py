@@ -114,7 +114,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots, amp_vs_freq_subpages = self.create_plots(
                 context,
                 result,
-                applycal.AmpVsFrequencySummaryChart,
+                applycal.AmpVsFrequencyFieldSummaryChart, #HERE
                 intents
             )
 
@@ -143,7 +143,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots, amp_vs_uv_subpages = self.create_plots(
                 context,
                 result,
-                applycal.AmpVsUVSummaryChart,
+                applycal.AmpVsUVFieldSummaryChart,
                 intents
             )
 

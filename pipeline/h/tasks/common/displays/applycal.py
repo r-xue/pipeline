@@ -597,7 +597,7 @@ class BasebandSummaryChart(PlotmsBasebandComposite):
         super(BasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
 
 
-class AmpVsUVSummaryChart(SpwFieldSummaryChart):
+class AmpVsUVSummaryChart(SpwSummaryChart):
     """
     Create an amplitude vs UV distance plot for each spw, overplotting by antenna, with separate plots for each field.
     """
@@ -619,8 +619,34 @@ class AmpVsUVSummaryChart(SpwFieldSummaryChart):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsUVSummaryChart, self).__init__(context, output_dir, calto, xaxis='uvdist', yaxis='amp',
-                                                  intent=intent, **plot_args)
+        super().__init__(context, output_dir, calto, xaxis='uvdist', yaxis='amp',
+                         intent=intent, **plot_args)
+
+class AmpVsUVFieldSummaryChart(SpwFieldSummaryChart):
+    """
+    Create an amplitude vs UV distance plot for each spw, overplotting by antenna, with separate plots for each field.
+    """
+
+    def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **overrides):
+        LOG.debug("AmpVsUVSummaryChart __init__")
+
+        plot_args = {
+            'ydatacolumn': ydatacolumn,
+            'avgtime': '',
+            'avgscan': False,
+            'avgbaseline': False,
+            'avgchannel': '9000',
+            'plotrange': [0, 0, 0, 0],
+            'coloraxis': 'corr',
+            'overwrite': True,
+            # PIPE-310: set yselfscale=True for amp vs UVdist plots
+            'yselfscale': True
+        }
+        plot_args.update(**overrides)
+
+        super().__init__(context, output_dir, calto, xaxis='uvdist', yaxis='amp',
+                         intent=intent, **plot_args)
+
 
 
 class AmpVsUVBasebandSummaryChart(BasebandSummaryChart):
@@ -716,7 +742,7 @@ class PhaseVsTimeSummaryChart(SpwSummaryChart):
                                                       intent=intent, **plot_args)
 
 
-class AmpVsFrequencySummaryChart(SpwFieldSummaryChart):
+class AmpVsFrequencySummaryChart(SpwSummaryChart):
     """
     Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.
     """
@@ -742,6 +768,33 @@ class AmpVsFrequencySummaryChart(SpwFieldSummaryChart):
 
         super(AmpVsFrequencySummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
                                                          intent=intent, **plot_args)
+
+class AmpVsFrequencyFieldSummaryChart(SpwFieldSummaryChart):
+    """
+    Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.
+    """
+
+    def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
+        LOG.debug("AmpVsFrequencySummaryChart __init__")
+
+        plot_args = {
+            'ydatacolumn': ydatacolumn,
+            'avgchannel': '',
+            'avgtime': '1e8',
+            'avgscan': True,
+            'avgantenna': True,
+            'plotrange': [0, 0, 0, 0],
+            'correlation': '',
+            'coloraxis': 'antenna1',
+            'overwrite': True,
+            'showatm': True,
+            # CAS-10875: applycal plots should have global y-scale per source/dataset
+            'yselfscale': True,
+        }
+        plot_args.update(kwargs)
+
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
+                         intent=intent, **plot_args)
 
 
 class VLAAmpVsFrequencyBasebandSummaryChart(BasebandSummaryChart):
