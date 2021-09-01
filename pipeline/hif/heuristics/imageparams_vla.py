@@ -48,13 +48,13 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         def get_mean_amplitude(vis, uvrange=None, axis='amplitude', field='', spw=None):
             stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
-                        'useflags': True, 'field':field, 'spw': spw,
+                        'useflags': True, 'field': field, 'spw': spw,
                         'correlation': 'LL,RR'}
             job = casa_tasks.visstat(**stat_arg)
             stats = job.execute(dry_run=False)  # returns stat in meter
 
             # Get means of spectral windows with data in the selected uvrange
-            spws_means = [v['mean'] for (k,v) in stats.items() if numpy.isfinite(v['mean'])]
+            spws_means = [v['mean'] for (k, v) in stats.items() if numpy.isfinite(v['mean'])]
 
             # Determine mean and 95% percentile
             mean = numpy.mean(spws_means)
@@ -71,7 +71,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         #
         qa = casa_tools.quanta
         #
-        LOG.info('Computing uvrange heuristics for field="{:s}", spwsids={:s}'.format(field, ','.join([str(spw) for spw in spwids])))
+        LOG.info('Computing uvrange heuristics for field="{:s}", spwsids={:s}'.format(
+            field, ','.join([str(spw) for spw in spwids])))
 
         # Can it be that more than one visibility (ms file) is used?
         vis = self.vislist[0]
@@ -100,7 +101,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return None, None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
-        job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw), axis='uvrange', useflags=True)
+        job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw), axis='uvrange', useflags=False)
         uv_stat = job.execute(dry_run=False) # returns stat in meter
         max_bl = uv_stat['DATA_DESC_ID=%s' % max_freq_spw]['max'] / mean_wave_m
 
@@ -109,13 +110,24 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         uvul = 0.05 * max_bl
 
         uvrange_SBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
+
+        try:
+            mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
+        except Exception as e:
+            LOG.warn(e)
+            LOG.warn("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(str(field), real_spwids_str))
+            return '>0.0klambda', 1.0
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
         uvrange_MBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
+        try:
+            mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
+        except Exception as e:
+            LOG.warn(e)
+            LOG.warn("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(str(field), real_spwids_str))
+            return '>0.0klambda', 1.0
 
         # Compare amplitudes and decide on return value
         ratio = p95_SBL / mean_MBL
@@ -149,6 +161,33 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return pblimit_image, pblimit_cleanmask
 
+    def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
+        """VLA auto-boxing parameters.
+
+        See PIPE-677 for TARGET-specific heuristic
+        """
+        sidelobethreshold = None
+        noisethreshold = None
+        lownoisethreshold = None
+        negativethreshold = None
+        minbeamfrac = None
+        growiterations = None
+        dogrowprune = None
+        minpercentchange = None
+        fastnoise = None
+
+        if 'TARGET' in intent:
+            # iter1, shallow clean, with pruning off, other automasking settings are the default
+            if iteration in [1, 2]:
+                sidelobethreshold = 2.0
+                minbeamfrac = 0.0
+            # iter2, same settings, but pruning is turned back on
+            if iteration == 2:
+                minbeamfrac = 0.3
+
+        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
+                dogrowprune, minpercentchange, fastnoise)
+
     def nterms(self, spwspec) -> Union[int, None]:
         """Tclean nterms parameter heuristics.
 
@@ -171,7 +210,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0) -> int:
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET') -> int:
         """Adjustment of number of cleaning iterations due to mask size.
 
         Uses residual_robust_rms instead threshold to compute the new niter value.
@@ -183,7 +222,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             mask_frac_rad = 0.05
 
         # VLA specific threshold
-        threshold_vla = casa_tools.quanta.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
+        # set to nsigma=4.0, rather than a hm_masking-specific nsigma value
+        nsigma = 4.0
+        threshold_vla = casa_tools.quanta.quantity(nsigma * residual_robust_rms, 'Jy')
 
         # Set allowed niter range
         max_niter = 1000000
@@ -191,7 +232,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         # Compute new niter
         new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold_vla, residual_robust_rms,
-                                        mask_frac_rad=mask_frac_rad)
+                                             mask_frac_rad=mask_frac_rad)
         # Apply limits
         if new_niter < min_niter:
             LOG.info('niter heuristic: Modified niter %d is smaller than lower limit (%d)' % (new_niter, min_niter))
@@ -201,17 +242,72 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             new_niter = max_niter
         return new_niter
 
+    def niter_by_iteration(self, iteration, hm_masking, niter):
+        """Tclean niter heuristic at each iteration.
+
+        PIPE-677: niter=50 for iteration=1 of the VLA auto-masking tclean call.
+        """
+        if iteration == 1 and hm_masking == 'auto':
+            new_niter = 50
+            LOG.info('niter heuristic for iteration={} / hm_masking={}: Modified niter to {} from {}'.format(iteration,
+                     hm_masking, new_niter, niter))
+            return new_niter
+        else:
+            return niter
+
     def specmode(self) -> str:
         """Tclean specmode parameter heuristics.
         See PIPE-683 and CASR-543"""
         return 'cont'
 
-    def nsigma(self, iteration, hm_nsigma):
-        """See PIPE-678 and CASR-543"""
+    def nsigma(self, iteration, hm_nsigma, hm_masking):
+        """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
         else:
-            return 5.0
+            # PIPE-678: VLA 'none' set to 5.0
+            # PIPE-677: VLA automasking set to 4.0, reduce from 5.0
+            if hm_masking == 'auto':
+                return 4.0
+            else:
+                return 5.0
+
+    def tclean_stopcode_ignore(self, iteration, hm_masking):
+        """Tclean stop code(s) to be ignored for warning messages.
+
+        PIPE-667: We will ignore tclean_stopcode=1 (i.e., niter is reached) for iter1 of the VLA automasking sequence.
+        """
+        if iteration == 1 and hm_masking == 'auto':
+            return [1]
+        return []
+
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
+        """Determine if another tclean iteration is necessary.
+
+        automasking mode (PIPE-677):
+            VLA auto-masking heuristics for TARGET performs two-stage iterations with slightly different auto-multithresh parameters
+            iteration=0: keep_iteration=True
+            iteration=1: 
+                stopcode=0 (no minor or major cycles?): keep_iteration=False
+                stopcode=1 (iteration limit): keep_iteration=True
+                stopcode=5,6 (doesn't converge): keep_iteration=False
+                stopcode=7 (no mask generated from automask): keep_iteration=False
+                stopcode=others: keep_iteration=True
+            iteration>=2: keep_iteration=False
+        
+        other modes:
+            iteration=0: keep_iteration=True
+            iteration=1: keep_iteration=False
+        """
+        if iteration == 0:
+            return True, hm_masking
+        elif iteration == 1 and hm_masking == 'auto' and 'TARGET' in intent:
+            if tclean_stopcode in [5, 6, 7]:
+                return False, hm_masking
+            else:
+                return True, hm_masking
+        else:
+            return False, hm_masking
 
     def threshold(self, iteration: int, threshold: Union[str, float], hm_masking: str) -> Union[str, float]:
         """Tclean threshold parameter heuristics.

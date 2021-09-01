@@ -3,17 +3,15 @@ import copy
 import math
 import os
 import time
+from typing import Dict, Generator, List, Optional, Tuple
 
 import numpy
-
-from typing import Dict, List
-from pipeline.domain import MeasurementSet
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable
+from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.domain.datatable import OnlineFlagIndex, TsysFlagIndex
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
@@ -29,10 +27,14 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
     Inputs for imaging worker
     NOTE: infile should be a complete list of MSes
     """
+    # Search order of input vis
+    processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+
     edge = vdp.VisDependentProperty(default=(0, 0))
 
     def __init__(self, context, clip_niteration, vis, antenna_list, fieldid_list, spwid_list, pols_list, nchan,
-                 flagRule, edge=None, rowmap=None):
+                 flagRule, edge=None):
         super(SDBLFlagWorkerInputs, self).__init__()
 
         self.context = context
@@ -46,8 +48,14 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
         # not used
         self.nchan = nchan
         self.edge = edge
-        self.rowmap = rowmap
-                                             
+
+    @vdp.VisDependentProperty
+    def bl_ms(self):
+        """MeasurementSet domain object of baselined MS."""
+        bl_list = self.context.observing_run.get_measurement_sets_of_type([DataType.BASELINED])
+        match = sdutils.match_origin_ms(bl_list, self.ms.origin_ms)
+        return match
+
 class SDBLFlagWorkerResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
         super(SDBLFlagWorkerResults, self).__init__(task, success, outcome)
@@ -60,39 +68,70 @@ class SDBLFlagWorkerResults(common.SingleDishResults):
 
 
 class BLFlagTableContainer(object):
+    """
+    Container class to store table tools of two MSes.
+
+    The class stores two table tools for two MSes normally for calibrated and
+    baselined ones.
+
+    Attributes:
+        ms: A MS domain object (normally calibrated MS)
+        bl_ms: A MS domain object (normally baselined MS)
+        tb1: A table tool instance that accesses ms
+        tb2: A table tool instance that accesses bl_ms
+        is_baselined: True if ms has baselined at least once
+    """
+
     def __init__(self, tb1, tb2):
+        """Initialize BLFlagTableContainer class."""
         self.tb1 = tb1
         self.tb2 = tb2
 
     @property
-    def calvis(self):
+    def calvis(self) -> str:
+        """Return a name of calibrated MS."""
         return self.tb1.name()
 
     @property
-    def blvis(self):
+    def blvis(self)-> Optional[str]:
+        """Return a name of baselined MS."""
         if self.tb2 is None:
             return None
         else:
             return self.tb2.name()
 
-
 @contextlib.contextmanager
-def open_cal_bl_tables(ms, is_baselined):
+def open_cal_bl_tables(
+        ms: MeasurementSet,bl_ms: Optional[MeasurementSet]=None
+) -> Generator[BLFlagTableContainer, None, None]:
+    """
+    Yield BLFlagTableContainer.
+
+    BLflagTableContainer contains two tables of MSes before and after baseline
+    subtraction. The tables will be closed in the second iteration.
+
+    Args:
+        ms: MS domain object of MS before baseline subtraction
+        bl_ms: MS domain object of MS after baseline subtraction
+
+    Yields:
+        BLFlagTableContainer instance that holds table tool instances
+        of given ms and bl_ms.
+    """
     tb1 = casa_tools._logging_table_cls()
-    if is_baselined:
+    if bl_ms is not None:
         tb2 = casa_tools._logging_table_cls()
     else:
         tb2 = None
     try:
         tb1.open(ms.name, nomodify=False)
         if tb2 is not None:
-            tb2.open(ms.work_data, nomodify=False)
+            tb2.open(bl_ms.name, nomodify=False)
         yield BLFlagTableContainer(tb1, tb2)
     finally:
         tb1.close()
         if tb2 is not None:
             tb2.close()
-
 
 class SDBLFlagWorker(basetask.StandardTaskTemplate):
     """
@@ -134,9 +173,12 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         pols_list = self.inputs.pols_list
         flagRule = self.inputs.flagRule
         edge = self.inputs.edge
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename)
+        datatable_name = sdutils.get_data_table_path(context, ms)
         datatable = DataTable(name=datatable_name, readonly=False)
-        rowmap = self.inputs.rowmap
+        bl_ms = self.inputs.bl_ms if self.inputs.bl_ms is not None else ms
+        bl_name = bl_ms.name
+        row_map_ms = self.get_row_map(ms.name)
+        row_map_bl_ms = row_map_ms if ms.name==bl_name else self.get_row_map(bl_name)
 
         LOG.debug('Members to be processed in worker class:')
         for (a, f, s, p) in zip(antid_list, fieldid_list, spwid_list, pols_list):
@@ -166,7 +208,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             LOG.debug('Performing flag for %s Antenna %d Field %d Spw %d' % (ms.basename, antid, fieldid, spwid))
 
             filename_in = ms.name
-            filename_out = ms.work_data
+            filename_out = bl_name
             nchan = ms.spectral_windows[spwid].num_channels
 
             LOG.info("*** Processing: {} ***" .format(os.path.basename(ms.name)))
@@ -180,7 +222,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             LOG.debug('deviation mask for %s antenna %d field %d spw %d is %s' %
                       (ms.basename, antid, fieldid, spwid, deviation_mask))
 
-            time_table = datatable.get_timetable(antid, spwid, None, ms.basename, fieldid)
+            time_table = datatable.get_timetable(antid, spwid, None, os.path.basename(ms.origin_ms), fieldid)
             # Select time gap list: 'subscan': large gap; 'raster': small gap
             if flagRule['Flagging']['ApplicableDuration'] == "subscan":
                 TimeTable = time_table[1]
@@ -194,7 +236,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             LOG.info(f'is_baselined = {is_baselined}')
 
             # open table via container
-            with open_cal_bl_tables(ms, is_baselined) as container:
+            with open_cal_bl_tables(ms, bl_ms) as container:
                 if not is_baselined:
                     LOG.warn("No baseline subtraction operated to {} Field {} Antenna {} Spw {}. Skipping flag by post fit"
                              " spectra.".format(ms.basename, fieldid, antid, spwid))
@@ -206,8 +248,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                     flagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
                     # include MASKLIST to cache
                     with_masklist = True
-                elif rowmap is None:
-                    rowmap = sdutils.make_row_map_for_baselined_ms(ms, container)
                 LOG.debug("FLAGRULE = %s" % str(flagRule_local))
 
                 # Calculate Standard Deviation and Diff from running mean
@@ -216,7 +256,8 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 polids = [ddobj.get_polarization_id(pol) for pol in pollist]
                 dt_idx, tmpdict, _ = self.calcStatistics(datatable, container, nchan, nmean,
                                                          TimeTable, polids, edge,
-                                                         is_baselined, rowmap, deviation_mask)
+                                                         is_baselined, deviation_mask,
+                                                         row_map_ms, row_map_bl_ms)
             t1 = time.time()
             LOG.info('Standard Deviation and diff calculation End: Elapse time = %.1f sec' % (t1 - t0))
 
@@ -254,8 +295,8 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
             # Generate flag command file
             filename = ("%s_ant%d_field%d_spw%d_blflag.txt" %
-                        (os.path.basename(ms.work_data), antid, fieldid, spwid))
-            do_flag = self.generateFlagCommandFile(datatable, ms, antid, fieldid, spwid, pollist, filename)
+                        (os.path.basename(bl_ms.basename), antid, fieldid, spwid))
+            do_flag = self.generateFlagCommandFile(datatable, bl_ms, antid, fieldid, spwid, pollist, filename)
             if not os.path.exists(filename):
                 raise RuntimeError('Failed to create flag command file %s' % filename)
             if do_flag:
@@ -287,8 +328,50 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def calcStatistics(self, DataTable, container, NCHAN, Nmean, TimeTable, polids, edge, is_baselined, rowmap,
-                       deviation_mask=None):
+    def get_row_map(self, vis: str) -> dict:
+        """Return row map between vis and origin_ms"""
+        ms = self.inputs.context.observing_run.get_ms(vis)
+        origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        return sdutils.make_row_map_between_ms(origin_ms, ms.name)
+
+    def calcStatistics(self, DataTable: DataTable, container: BLFlagTableContainer,
+                       NCHAN: int, Nmean: int, TimeTable: List[List[List[int]]],
+                       polids: List[int], edge: List[int], is_baselined: bool,
+                       deviation_mask: Optional[List[Tuple[int, int]]]=None,
+                       rowmapIn: Optional[Dict[int,int]] = None,
+                       rowmapOut: Optional[Dict[int,int]] = None
+                       ) -> Tuple[numpy.ndarray, Dict[int, numpy.ndarray],
+                                  Dict[int, numpy.ndarray]]:
+        """
+        Calculate statistics of spectra before and after baseline subtaction.
+
+        Args:
+            DataTable: DataTable instance of MSes to calculate statistics.
+            container: A BLFlagTableContainer instance that holds table objects
+                of MSes before and after baseline subtaction.
+            NCHAN: Number of channels in a spectrum.
+            Nmean: Number of channels to average to calculate running mean.
+            TimeTable: A grouped list of row IDs in DataTable in a same raster
+                row.
+            polids: Polarization IDs selection.
+            edge: Number of left and right edge channels to be excluded from
+                statistics.
+            is_baselined: Whether or not baseline subtraction has been performed.
+            deviation_mask: Deviation mask ranges. The ranges will be excluded
+                from statistics.
+            rowmapIn: Row map of dictionary of baselined MS.
+            rowmapOut: Row map dictionary of baselined MS.
+
+        Returns:
+            A tuple of DataTable indices, and corresponding statistics and
+            number of flagged channels.
+        """
+        DataIn = container.calvis
+        DataOut = container.blvis
+        if rowmapIn is None:
+            rowmapIn = self.get_row_map(DataIn)
+        if rowmapOut is None:
+            rowmapOut = self.get_row_map(DataOut)
         # Calculate Standard Deviation and Diff from running mean
         NROW = len([series for series in utils.flatten(TimeTable)])//2
         # parse edge
@@ -341,14 +424,15 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             FlIn = numpy.zeros((npol, nrow, NCHAN), dtype=numpy.int16)
             FlOut = numpy.zeros((npol, nrow, NCHAN), dtype=numpy.int16)
             for index in range(len(chunks[0])):
-                data_row_in = chunks[0][index]
+                origin_row = chunks[0][index]
+                data_row_in = rowmapIn[origin_row]
                 tmpd = tbIn.getcell(datacolIn, data_row_in)
                 tmpf = tbIn.getcell('FLAG', data_row_in)
                 for ip, polid in enumerate(polids):
                     SpIn[ip, index] = tmpd[polid].real
                     FlIn[ip, index] = tmpf[polid]
                 if is_baselined:
-                    data_row_out = rowmap[data_row_in]
+                    data_row_out = rowmapOut[origin_row]
                     tmpd = tbOut.getcell(datacolOut, data_row_out)
                     tmpf = tbOut.getcell('FLAG', data_row_out)
                     for ip, polid in enumerate(polids):
@@ -787,7 +871,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             filename: output flag command file name
         Returns if there is any valid flag command in file.
         """
-        dt_ids = common.get_index_list_for_ms(datatable, [msobj.name],
+        dt_ids = common.get_index_list_for_ms(datatable, [msobj.origin_ms],
                                               [antid], [fieldid], [spwid])
         ant_name = msobj.get_antenna(antid)[0].name
         ddobj = msobj.get_data_description(spw=spwid)
@@ -800,7 +884,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             fout.write("#"*60+"\n")
             fout.write("# Flag command file for Statistic Flags\n")
             fout.write("# Filename: %s\n" % filename)
-            fout.write("# MS name: %s\n" % os.path.basename(msobj.work_data))
+            fout.write("# MS name: %s\n" % os.path.basename(msobj.basename))
             fout.write("# Antenna: %s\n" % ant_name)
             fout.write("# Field ID: %d\n" % fieldid)
             fout.write("# SPW: %d\n" % spwid)

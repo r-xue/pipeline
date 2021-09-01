@@ -499,7 +499,12 @@ class TcleanResult(basetask.Results):
         return self._tclean_stopreason
 
     def set_tclean_stopreason(self, tclean_stopcode):
-        stopreasons = ['iteration limit',
+        # tclean exit conditions:
+        #   https://open-bitbucket.nrao.edu/projects/CASA/repos/casa6/browse/casatasks/src/modules/imagerhelpers/imager_base.py 
+        #   Search 'stopreasons'
+        # See also CAS-6692 for additional information
+        stopreasons = ['global stopping criterion not reached',  # CAS-13532
+                       'iteration limit',
                        'threshold',
                        'force stop',
                        'no change in peak residual across two major cycles',
@@ -507,9 +512,9 @@ class TcleanResult(basetask.Results):
                        'peak residual increased by more than 3 times from the minimum reached',
                        'zero mask',
                        'any combination of n-sigma and other valid exit criterion']
-        assert 0 < tclean_stopcode <= len(stopreasons),\
+        assert 0 <= tclean_stopcode <= len(stopreasons)-1,\
             "tclean stop code {} does not index into stop reasons list".format(tclean_stopcode)
-        self._tclean_stopreason = stopreasons[tclean_stopcode-1]
+        self._tclean_stopreason = stopreasons[tclean_stopcode]
 
     @property
     def tclean_iterdone(self):

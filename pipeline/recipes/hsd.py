@@ -47,6 +47,9 @@ def hsdms(vislist, importonly=False, pipelinemode='automatic',
         # Apply the calibrations
         hsd_applycal(pipelinemode=pipelinemode)
 
+        # Calibration of residual atmospheric transmission
+        hsd_atmcor(pipelinemode=pipelinemode)
+
         # # Improve line mask for baseline subtraction by executing 
         # # hsd_baseline and hsd_blflag iteratively
         for i in range(ITERATION):

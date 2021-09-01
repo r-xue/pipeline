@@ -22,6 +22,11 @@ def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interact
         if importonly:
             raise Exception(IMPORT_ONLY)
 
+        # Flag target data using flagtemplate.txt
+        hifv_flagdata(intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*,*UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*',
+                      quack=False, autocorr=False, baseband=False, edgespw=False,
+                      clip=False, online=False, shadow=False, scan=True)
+
         # Split out the target data
         hif_mstransform(pipelinemode=pipelinemode)
 
@@ -32,7 +37,10 @@ def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interact
         hif_makeimlist(specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean cont images for the selected targets
-        hif_makeimages(hm_masking='none', hm_cyclefactor=3.0)
+        hif_makeimages(hm_cyclefactor=3.0)
+
+        # apply a primary beam correction on target images
+        hifv_pbcor(pipelinemode=pipelinemode) 
 
         # Export the data
         hifv_exportdata(imaging_products_only=True, pipelinemode=pipelinemode)

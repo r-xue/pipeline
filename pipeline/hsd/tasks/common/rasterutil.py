@@ -381,12 +381,18 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
     ndmapdict = {}
     for key, dtrow_list in dtrowdict.items():
         # Here, we need to re-execute find_raster_gap because we cannot
-        # rely on large gap sored in datatable to separate raster map.
+        # rely on large gap stored in datatable to separate raster map.
         # That is because there might be malformed raster scan which
         # cannot be handled by rasterscan heuristic. In such case,
         # traditional grouping2 heuristic, which is time-domain heuristic,
-        # is trigged.
-        raster_gap = rasterscan.find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
+        # is triggered.
+        try:
+            raster_gap = rasterscan.find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
+        except rasterscan.RasterScanHeuristicsFailure:
+            # exclude combination of (field_id, spw_id, antenna_id) held by key
+            # from the subsequent analysis
+            continue
+
         idx_list = [
             np.concatenate(dtrow_list[s:e]) for s, e in zip(raster_gap[:-1], raster_gap[1:])
         ]

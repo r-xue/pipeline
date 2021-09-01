@@ -3,9 +3,10 @@ import math
 import pipeline.domain.measures as measures
 import pipeline.hifa.tasks.imageprecheck.imageprecheck as hifa_task_imageprecheck
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hifa.heuristics import imageprecheck
@@ -73,6 +74,9 @@ class ImagePreCheckResults(hifa_task_imageprecheck.ImagePreCheckResults):
 
 
 class ImagePreCheckInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
     desired_angular_resolution = vdp.VisDependentProperty(default='')
@@ -86,7 +90,7 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)
+#api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)
 
 
 @task_registry.set_equivalent_casa_task('hifas_imageprecheck')
@@ -370,14 +374,14 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range
         # (see robust_values_to_check).
         if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
-            # Calculate 80th percentile baseline, used to set an uper limit on uvtaper
-            l80, min_diameter = image_heuristics.calc_percentile_baseline_length(80.)
+            # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104. 
+            length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190) 
             reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
             # self.calc_uvtaper method is only available in hifas_imageprecheck
             try:
                 hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
                                                beam_user=user_desired_beam,
-                                               l80=l80, repr_freq=repr_freq)
+                                               tapering_limit=length_of_190th_baseline, repr_freq=repr_freq)
             except:
                 hm_uvtaper = []
             if hm_uvtaper != []:
@@ -516,16 +520,16 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
     def analyse(self, results):
         return super().analyse(results)
 
-    def calc_uvtaper(self, beam_natural=None,  beam_user=None, l80=None, repr_freq=None):
+    def calc_uvtaper(self, beam_natural=None,  beam_user=None, tapering_limit=None, repr_freq=None):
         """
-        This code will take a given beam and a  desired beam size and calculate the necessary
+        This code will take a given beam and a desired beam size and calculate the necessary
         UV-tapering parameters needed for tclean to recreate that beam.
 
         UV-tapering parameter larger than the 80 percentile baseline is not allowed.
 
         :param beam_natural: natural beam, dictionary with major, minor and positionangle keywords
         :param beam_user: desired beam, dictionary with major, minor and positionangle keywords
-        :param l80: 80th percentile baseline in meters. uvtaper larger than this baseline is not allowed
+        :param tapering_limit: 190th baseline in meters. uvtaper larger than this baseline is not allowed
         :param repr_freq: representative frequency, dictionary with unit and value keywords.
         :return: uv_taper needed to recreate user_beam in tclean
         """
@@ -533,7 +537,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
             return []
         if beam_user is None:
             return []
-        if l80 is None:
+        if tapering_limit is None:
             return []
         if repr_freq is None:
             return []
@@ -566,13 +570,13 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
                  utils.round_half_up(uvtaper_value / 1000., 2))
 
         # Determine maximum allowed uvtaper
-        uvtaper_limit = l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
+        # PIPE-1104: Limit such that the image includes the baselines from at least 20 antennas.
+        # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
+        uvtaper_limit = tapering_limit / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
                         cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
-            LOG.warn('uvtaper is smaller than allowed upper limit of %.2fklambda (80 percentile baseline), using the limit value' %
+            LOG.warn('uvtaper is smaller than allowed limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
                     utils.round_half_up(uvtaper_limit / 1000., 2))
-
         return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]

@@ -351,6 +351,7 @@ class T1_1Renderer(RendererBase):
         iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
         iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
         iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]
+        iers_predict_last_date = environment.iers_info.info["IERSpredict_last"]
         iers_info = environment.iers_info
         # remove unnecessary precision for execution duration
         dt = exec_end - exec_start
@@ -469,6 +470,7 @@ class T1_1Renderer(RendererBase):
             'iers_eop_2000_version': iers_eop_2000_version,
             'iers_eop_2000_last_date': iers_eop_2000_last_date,
             'iers_predict_version': iers_predict_version,
+            'iers_predict_last_date': iers_predict_last_date,
             'iers_info': iers_info,
             'array_names': utils.commafy(array_names),
             'exec_start': exec_start_fmt,
@@ -624,7 +626,13 @@ class T1_3MRenderer(RendererBase):
             warning_msgs = utils.get_logrecords(results_list, logging.WARNING)
             tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
-            if 'applycal' in get_task_description(result, context):
+        # Update flag table (search from the last to the first task)
+        flag_update_tasks = ['applycal', 'hsd_blflag']
+        for result in context.results[-1::-1]:
+            task_description = get_task_description(result, context)
+            update_flag_table = any([t in task_description for t in flag_update_tasks])
+            if update_flag_table:
+                LOG.debug('Updating flagging summary table by results in {}'.format(task_description))
                 try:
                     for resultitem in result:
                         vis = os.path.basename(resultitem.inputs['vis'])
@@ -658,6 +666,7 @@ class T1_3MRenderer(RendererBase):
                             flagtable['Source name: '+ field + ', Intents: ' + intents] = fieldtable
 
                         flagtables[ms.basename] = flagtable
+                    break
 
                 except:
                     LOG.debug('No flag summary table available yet from applycal')
@@ -823,19 +832,12 @@ class T2_1DetailsRenderer(object):
         vla_basebands = ''
 
         if context.project_summary.telescope not in ('ALMA', 'NRO'):
-        # All VLA basebands
+            # All VLA basebands
 
             vla_basebands = []
-
-            banddict = collections.defaultdict(lambda: collections.defaultdict(list))
-
-            for spw in ms.get_spectral_windows():
-                try:
-                    band = spw.name.split('#')[0].split('_')[1]
-                    baseband = spw.name.split('#')[1]
-                    banddict[band][baseband].append({str(spw.id): (spw.min_frequency, spw.max_frequency)})
-                except:
-                    LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+            banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+            if len(banddict) == 0:
+                LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
 
             for band in banddict:
                 for baseband in banddict[band]:
@@ -844,12 +846,13 @@ class T2_1DetailsRenderer(object):
                     maxfreqs = []
                     for spwitem in banddict[band][baseband]:
                         # TODO: review if this relies on order of keys.
-                        spws.append(list(spwitem.keys())[0])
+                        spws.append(str([*spwitem][0]))
                         minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
                         maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
                     bbandminfreq = min(minfreqs)
                     bbandmaxfreq = max(maxfreqs)
-                    vla_basebands.append(band+': '+baseband+':  '+ str(bbandminfreq)+ ' to '+ str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
+                    vla_basebands.append(band+': '+baseband+':  ' + str(bbandminfreq) + ' to ' +
+                                         str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
 
             vla_basebands = '<tr><th>VLA Bands: Basebands:  Freq range: [spws]</th><td>'+'<br>'.join(vla_basebands)+'</td></tr>'
 

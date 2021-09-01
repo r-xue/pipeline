@@ -170,15 +170,23 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return '%.3gJy' % (new_threshold), DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET'):
         """Adjustment of number of cleaning iterations due to mask size.
 
         See base class method for parameter description."""
         if mask_frac_rad == 0.0:
             mask_frac_rad = 0.45    # ALMA specific parameter
 
-        return super().niter_correction(niter, cell, imsize, residual_max, threshold, residual_robust_rms,
-                                        mask_frac_rad=mask_frac_rad)
+        new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold, residual_robust_rms,
+                                             mask_frac_rad=mask_frac_rad, intent=intent)
+
+        # Limit ALMA calibrator niter to 3000
+        if intent != 'TARGET' and new_niter > 3000:
+            LOG.info('niter heuristic: Modified niter from %d to 3000 due to calibrator intent'
+                     '' % (new_niter))
+            new_niter = 3000
+
+        return new_niter
 
     def calc_percentile_baseline_length(self, percentile):
         """Calculate percentile baseline length for the vis list used in this heuristics instance."""
@@ -194,6 +202,22 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return np.median(percentileBaselineLengths), min_diameter
 
+    def calc_length_of_nth_baseline(self, n: int):
+        """Calculate the length of the nth baseline for the vis list used in the heuristics instance."""
+        baseline_lengths = []
+        for msname in self.vislist:
+            ms_do = self.observing_run.get_ms(msname)
+            ms_baseline_lengths = [float(baseline.length.to_units(measures.DistanceUnits.METRE))
+                                    for baseline in ms_do.antenna_array.baselines]
+            ms_baseline_lengths.sort()
+            if(len(ms_baseline_lengths) >= n):
+                baseline_lengths.append(ms_baseline_lengths[n-1])
+
+        if(len(baseline_lengths) > 0): 
+            return np.median(baseline_lengths)
+        else: 
+            return None
+            
     def get_autobox_params(self, iteration, intent, specmode, robust):
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
