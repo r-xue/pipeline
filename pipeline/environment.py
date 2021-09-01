@@ -67,7 +67,10 @@ def _host_distribution():
 
 
 def _linux_os_release():
-    """Get the Linux distribution name."""
+    """Get the Linux distribution name.
+
+    Note: verified on CentOS/RHEL/Ubuntu/Fedora
+    """
     try:
         os_release = {}
         with open('/etc/os-release') as f:
