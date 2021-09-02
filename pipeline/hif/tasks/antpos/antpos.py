@@ -147,7 +147,6 @@ class AntposInputs(vdp.StandardInputs):
                     LOG.error(msg)
                     raise Exception(msg)
                 if ms_name != msbasename:
-                    LOG.info("Skipping row %s in antenna position file: %s. This row contains antenna positions for %s, which does not match the basename of the measurement set: %s" % (reader.line_num, filename, ms_name, msbasename))
                     continue
                 antennas.append(ant_name)
                 parameters.extend(
