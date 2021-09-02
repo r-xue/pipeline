@@ -20,7 +20,7 @@ class T2_4MDetailsALMAAntposRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, mako_context, pipeline_context, results):
         table_rows, _ = make_antpos_table(pipeline_context, results)
         # Sort by total offset, from highest-to-lowest, see: PIPE-77
-        table_rows_by_offset, rep_wavelength = make_antpos_table(pipeline_context, results, sort_by=lambda x: (getattr(x, 'vis'), float(getattr(x, 'total'))), reverse=True)
+        table_rows_by_offset, rep_wavelength = make_antpos_table(pipeline_context, results, sort_by=lambda x: float(getattr(x, 'total')), reverse=True)
         threshold_in_wavelengths = results[0].inputs['threshold']
         threshold_in_mm = threshold_in_wavelengths * rep_wavelength
         mako_context.update({'table_rows': table_rows,
@@ -31,7 +31,7 @@ class T2_4MDetailsALMAAntposRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 AntposTR = collections.namedtuple('AntposTR', 'vis antenna x y z total total_wavelengths')
 
 
-def make_antpos_table(context, results, sort_by=lambda x: (getattr(x, 'vis'), getattr(x, 'antenna')), reverse=False):
+def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'), reverse=False):
     """
     Creates an antenna positions table, returning the table rows and also the representative wavelength for the data (to later be used to determine whether offsets
     are above or below a threshold given in units of this wavelength.)
@@ -72,7 +72,12 @@ def make_antpos_table(context, results, sort_by=lambda x: (getattr(x, 'vis'), ge
             tr = AntposTR(vis_cell, antname, xoffset, yoffset, zoffset, total_offset, total_offset_in_wavelengths)
             rows.append(tr)
 
+    # First sort by the secondary (passed-in) sort
     rows.sort(key=sort_by, reverse=reverse)
+
+    # Then do primary sort by measurement set name
+    rows.sort(key=lambda x: getattr(x, 'vis'))
+
     return utils.merge_td_columns(rows), rep_wavelength
 
 
