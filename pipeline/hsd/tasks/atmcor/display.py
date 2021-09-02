@@ -1,10 +1,14 @@
 """Plotter for atmcor stage."""
 import os
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain.measurementset import MeasurementSet
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.jobrequest import JobRequest
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -144,10 +148,11 @@ class PlotmsRealVsFreqPlotter(object):
         )
         return os.path.join(self.output_dir, plotfile)
 
-    def get_plot(self, plotfile: str) -> logger.Plot:
+    def get_plot(self, task: 'JobRequest', plotfile: str) -> logger.Plot:
         """Generate Plot object.
 
         Args:
+            task: JobRequest for plotms task call
             plotfile: name of the plot file
 
         Returns:
@@ -164,7 +169,7 @@ class PlotmsRealVsFreqPlotter(object):
             x_axis='Frequency',
             y_axis='Real',
             parameters=parameters,
-            command='hsd_atmcor'
+            command=str(task)
         )
         return plot
 
@@ -203,5 +208,5 @@ class PlotmsRealVsFreqPlotter(object):
         else:
             task.execute()
 
-        plot = self.get_plot(plotfile)
+        plot = self.get_plot(task, plotfile)
         return plot
