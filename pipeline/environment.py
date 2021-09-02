@@ -80,7 +80,7 @@ def _linux_os_release():
                     os_release[line_split[0].upper()] = line_split[1].strip().strip('"')
         linux_dist = '{NAME} {VERSION}'.format(**os_release)
     except Exception as e:
-        linux_dist = 'Unknown'
+        linux_dist = 'Linux (unknown distribution)'
 
     return linux_dist
 
