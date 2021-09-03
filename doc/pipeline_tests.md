@@ -23,7 +23,7 @@ On a multi-core system, `pytest-xdist` can speed things up significantly, e.g.,
     walltime   0m21.744s # with pytest-xdist
     walltime   2m13.076s # without pytest-xdist
 
-*to-do*: add `doctest`-related examples
+A summary of various test framworks and tools is available in [PIPE-806](https://open-jira.nrao.edu/browse/PIPE-806).
 
 ## Regression tests
 
