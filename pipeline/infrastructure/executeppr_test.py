@@ -134,7 +134,7 @@ def create_example_alma_ppr(input_parameter_str):
 """
     return StringIO(template_ppr.format(input_parameter_str))
 
-@pytest.mark.filterwarnings("ignore:.*async is deprecated*:DeprecationWarning")
+
 @pytest.mark.parametrize("input_str, expected_value", test_parameter_values)
 def test_xmlobjectifier_casttype(input_str, expected_value):
     """Test the parameter value paraser from pipeline.external.XmlObjectifier."""

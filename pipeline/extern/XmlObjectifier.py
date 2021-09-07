@@ -313,7 +313,7 @@ class XmlObject(minidom.Document):
             raise XmlObjectifierError('No XML string or filename specified')
         dom.documentElement.normalize()
         for attr in dir(dom):
-            if '__' not in attr:
+            if '__' not in attr and attr != 'async':
                 try:
                     setattr(self, attr, getattr(dom, attr))
                 except:

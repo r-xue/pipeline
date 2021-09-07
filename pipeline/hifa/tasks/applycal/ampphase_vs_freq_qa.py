@@ -127,6 +127,9 @@ def get_best_fits_per_ant(wrapper):
                 LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
                 continue
 
+            # PIPE-884: as of NumPy ver1.20, ma.abs() doesn't convert MaskedArray fill_value to float automatically. This 
+            # introduces a casting-related ComplexWarning when the result is passed to ma.median(). We mitigate the warning 
+            # by using the real part of filled value explicitly. See also below.
             median_sn = np.ma.median(np.ma.abs(visibilities).real / np.ma.abs(ta_sigma).real)
             if median_sn > 3:  # PIPE-401: Check S/N and either fit or use average
                 # Fit the amplitude
