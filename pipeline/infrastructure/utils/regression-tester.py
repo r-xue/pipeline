@@ -280,3 +280,19 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     shutil.copytree(input_products, './products')
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
+
+def test_uid___A002_Xe79954_X9137__procedure_hifa_calsurvey__regression():
+    """Run ALMA cal+survey regression on a calibration survey test dataset
+ 
+    Recipe name:                procedure_hifa_calsurvey
+    Dataset:                    uid___A002_Xe79954_X9137
+    Expected results version:   casa-6.3.0-45-pipeline-2021.3.0.1
+    """
+    pr = PipelineRegression(recipe='procedure_hifa_calsurvey.xml',
+                            input_dir = 'pl-regressiontest/uid___A002_Xe79954_X9137',
+                            visname='uid___A002_Xe79954_X9137.ms',
+                            expectedoutput=('pl-regressiontest/uid___A002_Xe79954_X9137/' +
+                                            'uid___A002_Xe79954_X9137.casa-6.3.0-45-pipeline-2021.3.0.1.results.txt'),
+                            output_dir='uid_A002_Xe79954_X9137_test')
+ 
+    pr.run()
