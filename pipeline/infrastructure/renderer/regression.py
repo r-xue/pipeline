@@ -360,7 +360,9 @@ class FluxbootRegressionExtractor(RegressionExtractor):
     Regression test result extractor for hifv_fluxboot.
 
     The extracted values are:
-       - the flux_densities list
+       - the flux_densities value (single spw)
+       - spectral index list values
+
     """
 
     result_cls = FluxbootResults
@@ -369,14 +371,14 @@ class FluxbootRegressionExtractor(RegressionExtractor):
 
     def handle(self, result: FluxbootResults) -> OrderedDict:
         """
-                Extract values for testing.
+        Extract values for testing.
 
-                Args:
-                    result: FluxbootResults object
+        Args:
+            result: FluxbootResults object
 
-                Returns:
-                    OrderedDict[str, float]
-                """
+        Returns:
+            OrderedDict[str, float]
+        """
         prefix = get_prefix(result, self.generating_task)
 
         flux_densities = result.flux_densities
