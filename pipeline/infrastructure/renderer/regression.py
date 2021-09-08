@@ -47,6 +47,7 @@ from pipeline.infrastructure.taskregistry import task_registry
 from pipeline.infrastructure import logging
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults, SDRestoreData
 from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreDataResults, NRORestoreData
+from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -352,6 +353,43 @@ class SDApplycalRegressionExtractor(ApplycalRegressionExtractor):
     result_cls = ApplycalResults
     child_cls = None
     generating_task = HpcSDApplycal
+
+
+class FluxbootRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_fluxboot.
+
+    The extracted values are:
+       - the flux_densities list
+    """
+
+    result_cls = FluxbootResults
+    child_cls = None
+    generating_task = Fluxboot
+
+    def handle(self, result: FluxbootResults) -> OrderedDict:
+        """
+                Extract values for testing.
+
+                Args:
+                    result: FluxbootResults object
+
+                Returns:
+                    OrderedDict[str, float]
+                """
+        prefix = get_prefix(result, self.generating_task)
+
+        flux_densities = result.flux_densities
+        spindex = result.spindex_results
+
+        d = OrderedDict()
+        d['{}.flux_densities'.format(prefix)] = flux_densities[0][0]
+        d['{}.spindex'.format(prefix)] = float(spindex[0]['spix'])
+        d['{}.curvature'.format(prefix)] = float(spindex[0]['curvature'])
+        d['{}.delta'.format(prefix)] = float(spindex[0]['delta'])
+        d['{}.gamma'.format(prefix)] = float(spindex[0]['gamma'])
+
+        return d
 
 
 class SDBLFlagRegressionExtractor(RegressionExtractor):
