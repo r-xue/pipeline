@@ -361,7 +361,7 @@ class FluxbootRegressionExtractor(RegressionExtractor):
 
     The extracted values are:
        - the flux_densities value (single spw)
-       - spectral index list values
+       - spectral index list values (spix, curvature, delta, gamma coefficients)
 
     """
 
