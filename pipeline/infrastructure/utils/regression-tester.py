@@ -289,9 +289,9 @@ def test_uid___A002_Xe79954_X9137__procedure_hifa_calsurvey__regression():
     Expected results version:   casa-6.2.1-2-pipeline-2021.3.0.6
     """
     pr = PipelineRegression(recipe='procedure_hifa_calsurvey.xml',
-                            input_dir = 'pl-regressiontest/calsurvey',
+                            input_dir = 'pl-regressiontest/uid___A002_Xe79954_X9137_calsurvey',
                             visname='uid___A002_Xe79954_X9137.ms',
-                            expectedoutput=('pl-regressiontest/calsurvey/' +
+                            expectedoutput=('pl-regressiontest/uid___A002_Xe79954_X9137_calsurvey/' +
                                             'uid___A002_Xe79954_X9137.casa-6.2.1-2-pipeline-2021.3.0.6.results.txt'),
                             output_dir='uid_A002_Xe79954_X9137_test')
  
