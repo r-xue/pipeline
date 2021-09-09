@@ -11,9 +11,12 @@ import time
 from glob import glob
 
 import numpy as np
-import pipeline.infrastructure as infrastructure
-import astropy.io.fits as apfits
 
+import astropy.io.fits as apfits
+import astropy.units as u
+from astropy.coordinates import ICRS, Angle, SkyCoord
+
+import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from scipy.stats import linregress
 
@@ -357,14 +360,6 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     rejected_islands = list(set.union(set(large_islands), set(linear_islands), set(numerous_islands)))
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
     num_rejected_islands = len(list(rejected_islands))
-
-    try:
-        import astropy.units as u
-        from astropy.coordinates import FK4, FK5, ICRS, Angle, Galactic, SkyCoord
-    except ImportError as e:
-        LOG.debug('Import error: {!s}'.format(e))
-        raise Exception(
-            "Astropy is not installed, which is required to run hifv_vlassmasking(maskingmode='vlass-se-tier-2',..)")
 
     rahrstr = phasecenter.split()[1] + ' hours'
     declist = phasecenter.split()[2].split('.')
