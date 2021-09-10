@@ -1,15 +1,26 @@
+"""
+The hsd_importdata task loads the specified visibility data into the pipeline
+context unpacking and / or converting it as necessary.
+"""
+
 import os
+from typing import Dict, List
 
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-from pipeline.infrastructure.utils import relative_path
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-from pipeline.infrastructure import task_registry
-from . import inspection
+import pipeline.infrastructure.vdp as vdp
+from memory_profiler import profile
+from pipeline.domain import FluxMeasurement
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.tasks.common.inspection_util import merge_reduction_group
+from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.utils import relative_path
 
+from . import inspection
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -20,9 +31,29 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
 
-    def __init__(self, context=None, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
-                 overwrite=None, nocopy=None, bdfflags=None, save_flagonline=None, lazy=None,
-                 with_pointing_correction=None, createmms=None, ocorr_mode=None):
+    def __init__(self, context: Context = None, vis: str = None, output_dir: str = None, asis: str = None,
+                 process_caldevice: bool = None, session: str = None, overwrite: bool = None, nocopy: bool = None,
+                 bdfflags: bool = None, save_flagonline: bool = None, lazy: bool = None,
+                 with_pointing_correction: bool = None, createmms: str = None, ocorr_mode: str = None):
+        """
+        The constructor of SDImportDataInputs.
+
+        Args:
+            context: pipeline context
+            vis: List of input visibility data
+            output_dir: path of output directory
+            asis: Extra ASDM tables to convert as is
+            process_caldevice: Import the caldevice table from the ASDM
+            session: List of visibility data sessions
+            overwrite: Overwrite existing files on import
+            nocopy: Disable copying of MS to working directory
+            bdfflags: Apply BDF flags on import
+            save_flagonline: Save flag commands, flagging template, imaging targets, to text files
+            lazy: use the lazy filler to import data
+            with_pointing_correction: Apply pointing correction to DIRECTION
+            createmms: Create an MMS
+            ocorr_mode: Correlation data mode
+        """
         super(SDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                  process_caldevice=process_caldevice, session=session,
                                                  overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
@@ -43,7 +74,18 @@ class SDImportDataResults(basetask.Results):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses=None, reduction_group_list=None, datatable_prefix=None, setjy_results=None, org_directions=None):
+    def __init__(self, mses:List[MeasurementSet]=None, reduction_group_list:List[MSReductionGroupDesc]=None, datatable_prefix:str=None, 
+                 setjy_results:List[FluxMeasurement]=None, org_directions:Dict[str, str]=None):
+        """
+        The constructor of SDImportDataResults class.
+        
+        Args:
+            mses: list of MeasurementSet domain objects
+            reduction_group_list: list of MSReductionGroupDesc
+            datatable_prefix: table name prefix of MeasurementSet
+            setjy_results: the flux results generated from Source.xml.
+            org_directions:
+        """
         super(SDImportDataResults, self).__init__()
         self.mses = [] if mses is None else mses
         self.reduction_group_list = reduction_group_list
@@ -71,9 +113,23 @@ class SDImportDataResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hsd_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class SDImportData(importdata.ImportData):
+    """
+    Data import execution task of SingleDish.
+
+    This class extends importdata.ImportData class, and methods execute main logics depends on it.
+    """
+
     Inputs = SDImportDataInputs
 
-    def prepare(self, **parameters):
+    def prepare(self, **parameters) -> SDImportDataResults:
+        """
+        Prepare job requests for execution.
+
+        Args:
+            parameters: the parameters to pass through from the superclass.
+        Returns:
+            SDImportDataResults : result object
+        """
         # get results object by running super.prepare()
         results = super(SDImportData, self).prepare()
 
