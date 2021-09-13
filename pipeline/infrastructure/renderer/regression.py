@@ -48,6 +48,7 @@ from pipeline.infrastructure import logging
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults, SDRestoreData
 from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreDataResults, NRORestoreData
 from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
+from pipeline.hifv.tasks.fluxscale.solint import Solint, SolintResults
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -384,8 +385,10 @@ class FluxbootRegressionExtractor(RegressionExtractor):
         flux_densities = result.flux_densities
         spindex = result.spindex_results
 
+
         d = OrderedDict()
-        d['{}.flux_densities'.format(prefix)] = flux_densities[0][0]
+        for spw in result.spws:
+            d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[spw][0]
         d['{}.spindex'.format(prefix)] = float(spindex[0]['spix'])
         d['{}.curvature'.format(prefix)] = float(spindex[0]['curvature'])
         d['{}.delta'.format(prefix)] = float(spindex[0]['delta'])
@@ -393,6 +396,42 @@ class FluxbootRegressionExtractor(RegressionExtractor):
 
         return d
 
+
+class SolintRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_solint.
+
+    The extracted values are:
+       - long solution interval per band
+       - short solution interval per band
+       - shortsol2 variable interval per band
+
+    """
+
+    result_cls = SolintResults
+    child_cls = None
+    generating_task = Solint
+
+    def handle(self, result: SolintResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: SolintResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        for band, value in result.longsolint.items():
+            d['{}.longsolint.{}-band'.format(prefix, band)] = value
+            d['{}.short_solint.{}-band'.format(prefix, band)] = result.short_solint[band]
+            d['{}.shortsol2.{}-band'.format(prefix, band)] = result.shortsol2[band]
+
+        return d
 
 class SDBLFlagRegressionExtractor(RegressionExtractor):
     """
