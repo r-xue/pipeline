@@ -49,6 +49,10 @@ from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults, SDR
 from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreDataResults, NRORestoreData
 from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
 from pipeline.hifv.tasks.fluxscale.solint import Solint, SolintResults
+from pipeline.hifv.tasks.priorcals import Priorcals
+from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
+from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
+from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -432,6 +436,73 @@ class SolintRegressionExtractor(RegressionExtractor):
             d['{}.shortsol2.{}-band'.format(prefix, band)] = result.shortsol2[band]
 
         return d
+
+
+class PriorcalsRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_priorcals
+
+    The extracted values are:
+       - Opacities per spw
+    """
+
+    result_cls = PriorcalsResults
+    child_cls = None
+    generating_task = Priorcals
+
+    def handle(self, result: PriorcalsResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: PriorcalResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        for idx, opacity in enumerate(result.oc_result.opacities):
+            spw = result.oc_result.spw[idx]
+            d['{}.opacity.spw_{}'.format(prefix, spw)] = opacity
+
+        return d
+
+
+class VLASetjyRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_vlasetjy
+
+    The extracted values are:
+       - Stokes I flux value per field
+    """
+
+    result_cls = FluxCalibrationResults
+    child_cls = None
+    generating_task = VLASetjy
+
+    def handle(self, result: FluxCalibrationResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: FluxCalibrationResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        for field, fluxlist in result.measurements.items():
+            flux_I = float(fluxlist[0].I.value)
+            d['{}.flux.I'.format(prefix)] = flux_I
+
+        return d
+
 
 class SDBLFlagRegressionExtractor(RegressionExtractor):
     """
