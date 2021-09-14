@@ -598,16 +598,22 @@ class _SentinelMap(Colormap):
 
         for sentinel, rgb in self.sentinels.items():
             r, g, b = rgb
+            # PIPE-1266: due to finite numerical precision, the scaledData may
+            # get slightly altered within Matplotlib, which means any injected
+            # sentinel values may not re-appear with the exact same value as
+            # those registered in self.sentinels. Therefore, look for values
+            # that are close to the sentinel within a very small tolerance.
+            mask = np.isclose(scaledData, sentinel, rtol=1.e-12, atol=1.e-12)
             if np.ndim(rgba) == 3:
-                rgba[:, :, 0][scaledData == sentinel] = r * mult
-                rgba[:, :, 1][scaledData == sentinel] = g * mult
-                rgba[:, :, 2][scaledData == sentinel] = b * mult
+                rgba[:, :, 0][mask] = r * mult
+                rgba[:, :, 1][mask] = g * mult
+                rgba[:, :, 2][mask] = b * mult
                 if alpha is not None:
                     rgba[:, :, 3] = alpha * mult
             elif np.ndim(rgba) == 2:
-                rgba[:, 0][scaledData == sentinel] = r * mult
-                rgba[:, 1][scaledData == sentinel] = g * mult
-                rgba[:, 2][scaledData == sentinel] = b * mult
+                rgba[:, 0][mask] = r * mult
+                rgba[:, 1][mask] = g * mult
+                rgba[:, 2][mask] = b * mult
                 if alpha is not None:
                     rgba[:, 3] = alpha * mult
 
@@ -626,9 +632,14 @@ class _SentinelNorm(Normalize):
     def __call__(self, value, clip=None):
 
         # remove sentinels, keeping a mask of where they were.
+        # PIPE-1266: due to finite numerical precision, the scaledData may get
+        # slightly altered within Matplotlib, which means any injected sentinel
+        # values may not re-appear with the exact same value as those
+        # registered in self.sentinels. Therefore, look for values that are
+        # close to the sentinel within a very small tolerance.
         sentinel_mask = np.zeros(np.shape(value), np.bool)
         for sentinel in self.sentinels:
-            sentinel_mask += (value == sentinel)
+            sentinel_mask += np.isclose(value, sentinel, rtol=1.e-12, atol=1.e-12)
         sentinel_values = value[sentinel_mask]
 
         actual_data = value[np.logical_not(sentinel_mask)]
