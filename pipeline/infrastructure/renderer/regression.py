@@ -53,6 +53,7 @@ from pipeline.hifv.tasks.priorcals import Priorcals
 from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
 from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
+from pipeline.hifv.tasks.statwt.statwt import Statwt, StatwtResults
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -500,6 +501,38 @@ class VLASetjyRegressionExtractor(RegressionExtractor):
         for field, fluxlist in result.measurements.items():
             flux_I = float(fluxlist[0].I.value)
             d['{}.flux.I'.format(prefix)] = flux_I
+
+        return d
+
+
+class VLAStatwtRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_statwt
+
+    The extracted values are:
+       - mean and variance
+    """
+
+    result_cls = StatwtResults
+    child_cls = None
+    generating_task = Statwt
+
+    def handle(self, result: StatwtResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: StatwtResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        d['{}.mean'.format(prefix)] = result.jobs[0]['mean']
+        d['{}.variance'.format(prefix)] = result.jobs[0]['variance']
 
         return d
 
