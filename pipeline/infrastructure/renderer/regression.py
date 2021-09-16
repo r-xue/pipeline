@@ -54,6 +54,10 @@ from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
 from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 from pipeline.hifv.tasks.statwt.statwt import Statwt, StatwtResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportData, VLAImportDataResults
+from pipeline.hifv.tasks.flagging.flagdetervla import FlagDeterVLA, FlagDeterVLAResults
+from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcalsResults
+from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -533,6 +537,143 @@ class VLAStatwtRegressionExtractor(RegressionExtractor):
 
         d['{}.mean'.format(prefix)] = result.jobs[0]['mean']
         d['{}.variance'.format(prefix)] = result.jobs[0]['variance']
+
+        return d
+
+
+class VLAImportDataRegressionExtractor(RegressionExtractor):
+    """
+        Regression test result extractor for hifv_importdata
+
+        The extracted values are:
+           - number of antennas :)
+           - max integration time
+        """
+
+    result_cls = VLAImportDataResults
+    child_cls = None
+    generating_task = VLAImportData
+
+    def handle(self, result: VLAImportDataResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: VLAImportDataResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        d['{}.numantennas'.format(prefix)] = len(result.mses[0].antennas)
+        d['{}.vla_max_integration_time'.format(prefix)] = result.mses[0].get_vla_max_integration_time()
+
+        return d
+
+
+class FlagDeterVLARegressionExtractor(RegressionExtractor):
+    """
+        Regression test result extractor for hifv_flagdata
+
+        The extracted values are:
+           - number of flags per category
+        """
+
+    result_cls = FlagDeterVLAResults
+    child_cls = None
+    generating_task = FlagDeterVLA
+
+    def handle(self, result: FlagDeterVLAResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: FlagDeterVLAResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        flag_categories = [y['name'] for y in result.summaries]
+
+        for i, summary in enumerate(result.summaries):
+            d['{}.flagged.{}'.format(prefix, flag_categories[i])] = summary['flagged']
+
+        return d
+
+
+class testBPdcalsRegressionExtractor(RegressionExtractor):
+    """
+        Regression test result extractor for hifv_testBPdcals
+
+        The extracted values are:
+           - number of flagged solutions per band for bandpass and delay
+        """
+
+    result_cls = testBPdcalsResults
+    child_cls = None
+    generating_task = testBPdcals
+
+    def handle(self, result: testBPdcalsResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: testBPdcalsResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        for band, flagdict in result.flaggedSolnApplycalbandpass.items():
+            d['{}.bandpass.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+
+        for band, flagdict in result.flaggedSolnApplycaldelay.items():
+            d['{}.delay.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+
+        return d
+
+
+class semiFinalBPdcalsRegressionExtractor(RegressionExtractor):
+    """
+        Regression test result extractor for hifv_semiFinalBPdcals
+
+        The extracted values are:
+           - number of flagged solutions per band for bandpass and delay
+        """
+
+    result_cls = semiFinalBPdcalsResults
+    child_cls = None
+    generating_task = semiFinalBPdcals
+
+    def handle(self, result: semiFinalBPdcalsResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: semiFinalBPdcalsResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        for band, flagdict in result.flaggedSolnApplycalbandpass.items():
+            d['{}.bandpass.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+
+        for band, flagdict in result.flaggedSolnApplycaldelay.items():
+            d['{}.delay.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
 
         return d
 
