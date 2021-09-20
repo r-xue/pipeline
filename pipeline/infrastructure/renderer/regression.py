@@ -58,6 +58,8 @@ from pipeline.hifv.tasks.importdata.importdata import VLAImportData, VLAImportDa
 from pipeline.hifv.tasks.flagging.flagdetervla import FlagDeterVLA, FlagDeterVLAResults
 from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcalsResults
 from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
+from pipeline.hifv.tasks.finalcals.finalcals import Finalcals, FinalcalsResults
+from pipeline.hifv.tasks.finalcals.applycals import Applycals
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -365,6 +367,18 @@ class SDApplycalRegressionExtractor(ApplycalRegressionExtractor):
     generating_task = HpcSDApplycal
 
 
+class VLAApplycalRegressionExtractor(ApplycalRegressionExtractor):
+    """
+    Regression test result extractor for hifv_applycals
+
+    It extends ApplycalRegressionExtractor in order to use the same extraction logic.
+    """
+
+    result_cls = ApplycalResults
+    child_cls = None
+    generating_task = Applycals
+
+
 class FluxbootRegressionExtractor(RegressionExtractor):
     """
     Regression test result extractor for hifv_fluxboot.
@@ -393,7 +407,6 @@ class FluxbootRegressionExtractor(RegressionExtractor):
 
         flux_densities = result.flux_densities
         spindex = result.spindex_results
-
 
         d = OrderedDict()
         for spw in result.spws:
@@ -603,7 +616,7 @@ class FlagDeterVLARegressionExtractor(RegressionExtractor):
         flag_categories = [y['name'] for y in result.summaries]
 
         for i, summary in enumerate(result.summaries):
-            d['{}.flagged.{}'.format(prefix, flag_categories[i])] = summary['flagged']
+            d['{}.flagged.{}'.format(prefix, flag_categories[i])] = int(summary['flagged'])
 
         return d
 
@@ -635,10 +648,10 @@ class testBPdcalsRegressionExtractor(RegressionExtractor):
         d = OrderedDict()
 
         for band, flagdict in result.flaggedSolnApplycalbandpass.items():
-            d['{}.bandpass.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+            d['{}.bandpass.flagged.{}-band'.format(prefix, band)] = int(flagdict['all']['flagged'])
 
         for band, flagdict in result.flaggedSolnApplycaldelay.items():
-            d['{}.delay.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+            d['{}.delay.flagged.{}-band'.format(prefix, band)] = int(flagdict['all']['flagged'])
 
         return d
 
@@ -670,10 +683,43 @@ class semiFinalBPdcalsRegressionExtractor(RegressionExtractor):
         d = OrderedDict()
 
         for band, flagdict in result.flaggedSolnApplycalbandpass.items():
-            d['{}.bandpass.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+            d['{}.bandpass.flagged.{}-band'.format(prefix, band)] = int(flagdict['all']['flagged'])
 
         for band, flagdict in result.flaggedSolnApplycaldelay.items():
-            d['{}.delay.flagged.{}-band'.format(prefix, band)] = flagdict['all']['flagged']
+            d['{}.delay.flagged.{}-band'.format(prefix, band)] = int(flagdict['all']['flagged'])
+
+        return d
+
+
+class FinalcalsRegressionExtractor(RegressionExtractor):
+    """
+        Regression test result extractor for hifv_finalcals
+
+        The extracted values are:
+           - number of flagged solutions for bandpass and delay
+        """
+
+    result_cls = FinalcalsResults
+    child_cls = None
+    generating_task = Finalcals
+
+    def handle(self, result: FinalcalsResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: FinalcalsResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        d = OrderedDict()
+
+        d['{}.bandpass.flagged'.format(prefix)] = int(result.flaggedSolnApplycalbandpass['all']['flagged'])
+
+        d['{}.delay.flagged'.format(prefix)] = int(result.flaggedSolnApplycaldelay['all']['flagged'])
 
         return d
 
