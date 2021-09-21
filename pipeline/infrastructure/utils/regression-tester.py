@@ -7,6 +7,8 @@ test_* methods for testing.
 
 import os
 import shutil
+import logging
+import datetime
 import pytest
 from typing import Tuple, Optional, List
 
@@ -170,6 +172,7 @@ class PipelineRegression(object):
         os.symlink(input_vis, f'rawdata/{os.path.basename(input_vis)}')
         os.chdir('working')
         os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
+        self.__reset_logfiles()
         if telescope is 'alma':
             almappr.executeppr(f'../{os.path.basename(ppr_path)}', importonly=False)
         elif telescope is 'vla':
@@ -190,7 +193,18 @@ class PipelineRegression(object):
         except FileExistsError:
             LOG.warning(f"Directory working exists.  Continuing")
         os.chdir('working')
+        self.__reset_logfiles()
         pipeline.recipereducer.reduce(vis=[input_vis], procedure=self.recipe)
+
+    def __reset_logfiles(self):
+        """Put CASA/Pipeline logfiles into the test working directory."""
+        casacalls_log_hdlr = logging.getLogger('CASACALLS').handlers[0]
+        casacalls_log_filename = casacalls_log_hdlr.baseFilename
+        casacalls_log_hdlr.baseFilename = os.path.basename(casacalls_log_filename)
+
+        current_casalog = casa_tools.casalog.logfile()
+        now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+        casa_tools.casalog.setlogfile(f'casa-{now_str}.log')
 
 # The methods below are test methods called from pytest.
 

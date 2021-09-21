@@ -10,9 +10,10 @@ $ <casadir>/bin/python3 -m pytest -v pipeline/
 
 Alternatively, use
 ```console
-$ <casadir>/bin/casa --nogui --nologger --logfile /dev/null -c "import pytest; pytest.main(['-v', '.'])" 
+$ <casadir>/bin/casa --nogui --nologger --nologfile -c "import pytest; pytest.main(['-v', '.'])" 
 ```
 However, this will use `casashell` (i.e., `python3 -m casashell`), which slightly slows things down.
+The `--nologfile` (equivalent to `--logfile /dev/null`) here can prevent generating CASA log files in your pipeline repository directory.
 
 If `pytest-xdist` and `pytest-cov` are avilable, you can also try:
 ```console
