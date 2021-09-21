@@ -60,6 +60,8 @@ from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcals
 from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
 from pipeline.hifv.tasks.finalcals.finalcals import Finalcals, FinalcalsResults
 from pipeline.hifv.tasks.finalcals.applycals import Applycals
+from pipeline.hifv.tasks.flagging.checkflag import Checkflag, CheckflagResults
+from pipeline.hifv.tasks.flagging.targetflag import Targetflag, TargetflagResults
 from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
@@ -377,6 +379,86 @@ class VLAApplycalRegressionExtractor(ApplycalRegressionExtractor):
     result_cls = ApplycalResults
     child_cls = None
     generating_task = Applycals
+
+
+class CheckflagRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_checkflag
+
+    Extract flagging summaries from CheckflagResults
+    """
+
+    result_cls = CheckflagResults
+    child_cls = None
+    generating_task = Checkflag
+
+    def handle(self, result: CheckflagResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: CheckflagResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        summaries_by_name = {s['name']: s for s in result.summaries}
+
+        num_flags_before = summaries_by_name['before']['flagged']
+        num_flags_after = summaries_by_name['after']['flagged']
+
+        d = OrderedDict()
+        d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
+        d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
+
+        flag_summary_before = summaries_by_name['before']
+        for scan_id, v in flag_summary_before['scan'].items():
+            d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+
+        flag_summary_after = summaries_by_name['after']
+        for scan_id, v in flag_summary_after['scan'].items():
+            d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+
+        return d
+
+
+class TargetflagRegressionExtractor(RegressionExtractor):
+    """
+    Regression test result extractor for hifv_targetflag
+
+    Extract flagging summaries from TargetflagResults
+    """
+
+    result_cls = TargetflagResults
+    child_cls = None
+    generating_task = Targetflag
+
+    def handle(self, result: TargetflagResults) -> OrderedDict:
+        """
+        Extract values for testing.
+
+        Args:
+            result: TargetflagResults object
+
+        Returns:
+            OrderedDict[str, float]
+        """
+        prefix = get_prefix(result, self.generating_task)
+
+        summaries_by_name = {s['name']: s for s in result.summarydict}
+
+        num_flags_summary = summaries_by_name['Summary']['flagged']
+
+        d = OrderedDict()
+        d['{}.num_rows_flagged.summary'.format(prefix)] = int(num_flags_summary)
+
+        flag_summary = summaries_by_name['Summary']
+        for scan_id, v in flag_summary['scan'].items():
+            d['{}.scan_{}.num_rows_flagged.summary'.format(prefix, scan_id)] = int(v['flagged'])
+
+        return d
 
 
 class FluxbootRegressionExtractor(RegressionExtractor):
