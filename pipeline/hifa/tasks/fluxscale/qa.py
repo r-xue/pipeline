@@ -587,6 +587,10 @@ def get_dtype(tb, col):
         return col, CASA_DATA_TYPES[col_dtype]
 
     elif tb.isvarcol(col):
+        # PIPE-1323: pre-check if the first row of this column is an empty cell, a scenario in which
+        # the RuntimeError exception and a CASA 'SEVERE' message will be triggered.
+        if not tb.iscelldefined(col, 0):
+            return None
         try:
             shapes_string = tb.getcolshapestring(col)
         except RuntimeError:
