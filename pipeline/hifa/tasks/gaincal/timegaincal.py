@@ -398,10 +398,11 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         }
         result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
+        # Replace the CalApplication in the result to adjust values for spwmap,
+        # and interp.
         result_calapp = result.final[0]
         overrides = get_phaseup_overrides(inputs.ms)
         calapp = callibrary.copy_calapplication(result_calapp, **overrides)
-
         result.final = [calapp]
         result.pool = [calapp]
 

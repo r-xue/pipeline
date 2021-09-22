@@ -42,12 +42,12 @@ class MeasurementSet(object):
             dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
-        spectralspec_spwmap: SpectralSpec mapping
+        spectralspec_spwmap: Mapping between SpectralSpec and spectral window IDs.
         fields: A list of Field objects associated with MS
         states: A list of State objects associated with MS
+        spwmaps: Spectral window mapping to use for combining/mapping, split by
+            (intent, field), used in ALMA interferometry calibration tasks.
         reference_spwmap: Reference spectral window map
-        phaseup_spwmap: Spectral window mapping used in spwphaseup calibration
-        combine_spwmap: Spectral window mapping used to increase S/N ratio
         data_column: A dictionary to store data type (key) and corresponding
             data column (value)
         reference_antenna_locked: If True, reference antenna is locked to
@@ -78,7 +78,6 @@ class MeasurementSet(object):
         self.science_goals: dict = {}
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
-        self.spectralspec_spwmap: dict = {}
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
@@ -87,6 +86,15 @@ class MeasurementSet(object):
         self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
+
+        # Dictionary to map each SpectralSpec to list of corresponding spectral
+        # window IDs (PIPE-1132).
+        self.spectralspec_spwmap: dict = {}
+
+        # Dictionary with collections of spectral window maps for mapping or
+        # combining spws, split by (intent, field). This is used in several
+        # ALMA ('hifa') calibration tasks.
+        self.spwmaps: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with

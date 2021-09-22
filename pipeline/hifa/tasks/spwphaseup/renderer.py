@@ -11,7 +11,7 @@ from pipeline.infrastructure.basetask import ResultsList
 LOG = logging.get_logger(__name__)
 
 SnrTR = collections.namedtuple('SnrTR', 'vis threshold spw snr')
-SpwMaps = collections.namedtuple('SpwMaps', 'ms spwmap scispws')
+SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 
 
@@ -29,16 +29,10 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
 
-            if result.combine_spwmap:
-                spwmap = result.combine_spwmap
-            else:
-                spwmap = result.phaseup_spwmap
+            # Get info on spectral window mappings.
+            spwmaps.extend(self.get_spwmaps(result, ms))
 
-            # Get science spws
-            science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-
-            spwmaps.append(SpwMaps(ms.basename, spwmap, science_spw_ids))
-
+            # Get info on phase caltable.
             applications.extend(self.get_gaincal_applications(context, result.phaseup_result, ms))
 
         # Generate rows for phase SNR table.
@@ -89,7 +83,28 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         return applications
 
+    def get_spwmaps(self, result, ms):
+        spwmaps = []
 
+        # Get science spws
+        science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+
+        if result.spwmaps:
+            for (intent, field), spwmapping in result.spwmaps.items():
+                # Get field ID.
+                fieldid = ms.get_fields(name=[field])[0].id
+
+                # Get scan IDs
+                scanids = ", ".join(str(scan.id) for scan in ms.get_scans(scan_intent=intent, field=field))
+
+                # Append info on spwmap to list.
+                spwmaps.append(SpwMapInfo(ms.basename, intent, field, fieldid, spwmapping.combine, spwmapping.spwmap,
+                                          scanids, science_spw_ids))
+
+        return spwmaps
+
+
+# FIXME: update to derive separately for each IntentField
 def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
     """
     Return list of strings containing HTML TD columns, representing rows for
