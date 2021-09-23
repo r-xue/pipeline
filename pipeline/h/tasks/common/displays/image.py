@@ -310,10 +310,6 @@ class ImageDisplay(object):
         data[nodata != 0] = 5.0
         sentinels[5.0] = cc.to_rgb('indigo')
 
-        # set my own colormap and normalise to plot sentinels
-        cmap = _SentinelMap(plt.cm.gray, sentinels=sentinels)
-        norm = _SentinelNorm(sentinels=list(sentinels.keys()))
-
         # calculate vmin, vmax without the sentinels. Leaving norm to do
         # this is not sufficient; the standard Normalize gets called
         # by something in matplotlib and initialises vmin and vmax incorrectly.
@@ -328,6 +324,10 @@ class ImageDisplay(object):
             vmax = actual_data.max()
         else:
             vmin = vmax = 0.0
+
+        # set my own colormap and normalise to plot sentinels
+        cmap = _SentinelMap(plt.cm.gray, sentinels=sentinels)
+        norm = _SentinelNorm(vmin=vmin, vmax=vmax, sentinels=list(sentinels.keys()))
 
         # make antenna x antenna plots square
         aspect = 'auto'
@@ -405,7 +405,7 @@ class ImageDisplay(object):
 
         # Plot the image array; transpose data to get [x,y] into [row,column]
         # expected by matplotlib
-        img = ax.imshow(np.transpose(data), cmap=cmap, norm=norm, vmin=vmin, vmax=vmax, interpolation='nearest',
+        img = ax.imshow(np.transpose(data), cmap=cmap, norm=norm, interpolation='nearest',
                         origin='lower', aspect=aspect, extent=extent)
 
         # Set y-axis title, only add this to the first panel.
@@ -624,10 +624,8 @@ class _SentinelNorm(Normalize):
     """Normalise but leave sentinel values unchanged."""
 
     def __init__(self, vmin=None, vmax=None, clip=True, sentinels=[]):
-        self.vmin = vmin
-        self.vmax = vmax
-        self.clip = clip
         self.sentinels = sentinels
+        super().__init__(vmin, vmax, clip)
 
     def __call__(self, value, clip=None):
 
