@@ -97,9 +97,8 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     # the intention is that this finds the model from the 'iter0' dirty image
     # but it really just needs any image for the shape and csys
 
-    hdu = apfits.open(catalog_fits_file)
-
-    catalog_dat = hdu[1].data
+    with apfits.open(catalog_fits_file) as hdu:
+        catalog_dat = hdu[1].data
 
     '''
     model_for_mask = glob('*' + inext)
@@ -416,13 +415,11 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     hdu[1].data = catalog_dat[~np.in1d(catalog_dat['Isl_id'], linear_islands)]
 
     edited_catalog_fits_file = catalog_fits_file.replace('.fits', '') + '.edited.fits'
-    with open(edited_catalog_fits_file, 'w') as out1:
-        hdu.writeto(out1)
+    hdu.writeto(edited_catalog_fits_file, overwrite=True)
 
     hdu.close()
 
-    LOG.info('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
-                                                                + '.edited.fits'))
+    LOG.info('wrote catalog of accepted islands to: {0}'.format(edited_catalog_fits_file))
 
     return edited_catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg
 
