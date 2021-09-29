@@ -59,11 +59,30 @@ def _host_distribution():
     """
     system = platform.system()
     if system == 'Linux':
-        return ' '.join(platform.linux_distribution())
+        return _linux_os_release()
     elif system == 'Darwin':
         return 'MacOS {!s}'.format(platform.mac_ver()[0])
     else:
         raise NotImplemented('Could not get host OS for system {!s}'.format(system))
+
+
+def _linux_os_release():
+    """Get the Linux distribution name.
+
+    Note: verified on CentOS/RHEL/Ubuntu/Fedora
+    """
+    try:
+        os_release = {}
+        with open('/etc/os-release') as f:
+            for line in f:
+                line_split = line.split('=')
+                if len(line_split) == 2:
+                    os_release[line_split[0].upper()] = line_split[1].strip().strip('"')
+        linux_dist = '{NAME} {VERSION}'.format(**os_release)
+    except Exception as e:
+        linux_dist = 'Linux (unknown distribution)'
+
+    return linux_dist
 
 
 def _hostname():

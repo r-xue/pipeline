@@ -11,9 +11,12 @@ import time
 from glob import glob
 
 import numpy as np
-import pipeline.infrastructure as infrastructure
-import pyfits
 
+import astropy.io.fits as apfits
+import astropy.units as u
+from astropy.coordinates import ICRS, Angle, SkyCoord
+
+import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from scipy.stats import linregress
 
@@ -94,9 +97,8 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     # the intention is that this finds the model from the 'iter0' dirty image
     # but it really just needs any image for the shape and csys
 
-    hdu = pyfits.open(catalog_fits_file)
-
-    catalog_dat = hdu[1].data
+    with apfits.open(catalog_fits_file) as hdu:
+        catalog_dat = hdu[1].data
 
     '''
     model_for_mask = glob('*' + inext)
@@ -323,7 +325,7 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     /users/jmarvil/scripts/edit_pybdsf_islands.py
     """
 
-    hdu = pyfits.open(catalog_fits_file)
+    hdu = apfits.open(catalog_fits_file)
     catalog_dat = hdu[1].data
 
     islands, island_counts = np.unique(catalog_dat['Isl_id'], return_counts=True)
@@ -357,14 +359,6 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     rejected_islands = list(set.union(set(large_islands), set(linear_islands), set(numerous_islands)))
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
     num_rejected_islands = len(list(rejected_islands))
-
-    try:
-        import astropy.units as u
-        from astropy.coordinates import FK4, FK5, ICRS, Angle, Galactic, SkyCoord
-    except ImportError as e:
-        LOG.debug('Import error: {!s}'.format(e))
-        raise Exception(
-            "Astropy is not installed, which is required to run hifv_vlassmasking(maskingmode='vlass-se-tier-2',..)")
 
     rahrstr = phasecenter.split()[1] + ' hours'
     declist = phasecenter.split()[2].split('.')
@@ -421,13 +415,11 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     hdu[1].data = catalog_dat[~np.in1d(catalog_dat['Isl_id'], linear_islands)]
 
     edited_catalog_fits_file = catalog_fits_file.replace('.fits', '') + '.edited.fits'
-    with open(edited_catalog_fits_file, 'w') as out1:
-        hdu.writeto(out1)
+    hdu.writeto(edited_catalog_fits_file, overwrite=True)
 
     hdu.close()
 
-    LOG.info('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
-                                                                + '.edited.fits'))
+    LOG.info('wrote catalog of accepted islands to: {0}'.format(edited_catalog_fits_file))
 
     return edited_catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg
 

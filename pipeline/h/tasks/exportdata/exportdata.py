@@ -38,6 +38,8 @@ import shutil
 import sys
 import tarfile
 
+import astropy.io.fits as apfits
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -1118,13 +1120,6 @@ finally:
         """
         Export the images to FITS files.
         """
-
-        try:
-            import astropy.io.fits as apfits
-        except ImportError as e:
-            LOG.debug('Import error: {!s}'.format(e))
-            raise Exception(
-                "Astropy is not installed, which is required to run h*_exportdata when images/cubes exist.")
 
         # Create the image list
         images_list = []

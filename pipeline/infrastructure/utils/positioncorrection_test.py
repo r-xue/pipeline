@@ -2,7 +2,7 @@ import os
 import shutil
 from typing import Union, Dict, Tuple
 
-import pyfits
+import astropy.io.fits as apfits
 import pytest
 
 from .. import casa_tools
@@ -67,7 +67,7 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
     do_wide_field_pos_cor(fitsname=local_fitsname, obs_long=obs_long, obs_lat=obs_lat)
 
     # Obtain corrected reference coordinates
-    with pyfits.open(local_fitsname, mode='readonly') as hdulist:
+    with apfits.open(local_fitsname, mode='readonly') as hdulist:
         header = hdulist[0].header
         ra_deg_head = casa_tools.quanta.convert({'value': header['crval1'], 'unit': header['cunit1']}, 'deg')
         dec_deg_head = casa_tools.quanta.convert({'value': header['crval2'], 'unit': header['cunit2']}, 'deg')
