@@ -176,6 +176,35 @@ class MinifyCSSCommand(distutils.cmd.Command):
             f.write('\n')
 
 
+class SubprocessScheduler:
+    def __init__(self, concurrency=1):
+        self._maxlen = concurrency
+        self.procs = []
+        self.outputs = []
+        self.returncodes = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.__join()
+
+    def add(self, process):
+        if len(self.procs) >= self._maxlen:
+            self.__join()
+
+        assert isinstance(process, subprocess.Popen)
+        self.procs.append(process)
+
+    def __join(self):
+        self.outputs.extend(map(lambda p: p.communicate(), self.procs))
+        ret = list(map(lambda p: p.returncode, self.procs))
+        self.procs.clear()
+        if any([r != 0 for r in ret]):
+            raise RuntimeError('Failed to execute process')
+        self.returncodes.extend(ret)
+
+
 class BuildMyTasksCommand(distutils.cmd.Command):
     description = 'Generate the CASA CLI bindings'
     user_options = [('inplace', 'i', 'Generate CLI bindings in src directory')]
@@ -200,46 +229,55 @@ class BuildMyTasksCommand(distutils.cmd.Command):
             self.build_path = os.path.join(dir_path, build_py_cmd.build_lib)
 
     def run(self):
-        for d in PIPELINE_PACKAGES:
-            cli_dir = os.path.join('pipeline', d, 'cli')
-            cli_module = '.'.join(['pipeline', d, 'cli'])
-            src_dir = os.path.join(self.build_path, cli_dir)
-            if not os.path.exists(src_dir):
-                continue
+        obj = self.distribution.get_command_obj('build')
+        parallel = obj.parallel if obj.parallel else 1
+        concurrency = max(1, parallel)
+        if concurrency > 1:
+            self.announce(f'Number of parallel processes: {concurrency}', level=distutils.log.INFO)
+        else:
+            self.announce('Serial build', level=distutils.log.INFO)
+        with SubprocessScheduler(concurrency=concurrency) as sched:
+            for d in PIPELINE_PACKAGES:
+                cli_dir = os.path.join('pipeline', d, 'cli')
+                cli_module = '.'.join(['pipeline', d, 'cli'])
+                src_dir = os.path.join(self.build_path, cli_dir)
+                if not os.path.exists(src_dir):
+                    continue
 
-            cli_init_py = os.path.join(src_dir, '__init__.py')
-            # Remove old init module to avoid incompatible code and duplication
-            if os.path.exists(cli_init_py):
-                os.remove(cli_init_py)
+                cli_init_py = os.path.join(src_dir, '__init__.py')
+                # Remove old init module to avoid incompatible code and duplication
+                if os.path.exists(cli_init_py):
+                    os.remove(cli_init_py)
 
-            gotasks_dir = os.path.join(src_dir, 'gotasks')
-            gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
-            # Remove old init module to avoid incompatible code and duplication
-            if os.path.exists(gotasks_init_py):
-                os.remove(gotasks_init_py)
+                gotasks_dir = os.path.join(src_dir, 'gotasks')
+                gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
+                # Remove old init module to avoid incompatible code and duplication
+                if os.path.exists(gotasks_init_py):
+                    os.remove(gotasks_init_py)
 
-            for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
-                self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
-                subprocess.check_output([
-                    'buildmytasks',
-                    '--module',
-                    cli_module,
-                    xml_file
-                ], cwd=src_dir)
+                for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
+                    self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
+                    p = subprocess.Popen([
+                        'buildmytasks',
+                        '--module',
+                        cli_module,
+                        xml_file
+                    ], cwd=src_dir, stdout=subprocess.PIPE)
+                    sched.add(p)
 
-                root, _ = os.path.splitext(xml_file)
-                import_statement = 'from .{} import {}'.format(root, root)
-                with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
-                    import_exists = any(import_statement in line for line in init_file)
-                    if not import_exists:
-                        init_file.seek(0, os.SEEK_END)
-                        init_file.write('{}\n'.format(import_statement))
+                    root, _ = os.path.splitext(xml_file)
+                    import_statement = 'from .{} import {}'.format(root, root)
+                    with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
+                        import_exists = any(import_statement in line for line in init_file)
+                        if not import_exists:
+                            init_file.seek(0, os.SEEK_END)
+                            init_file.write('{}\n'.format(import_statement))
 
-                with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
-                    import_exists = any(import_statement in line for line in init_file)
-                    if not import_exists:
-                        init_file.seek(0, os.SEEK_END)
-                        init_file.write('{}\n'.format(import_statement))
+                    with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
+                        import_exists = any(import_statement in line for line in init_file)
+                        if not import_exists:
+                            init_file.seek(0, os.SEEK_END)
+                            init_file.write('{}\n'.format(import_statement))
 
 
 class VersionCommand(distutils.cmd.Command):
@@ -298,7 +336,7 @@ def _get_git_version():
             dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
             version = version + dirty
         return version
-    else: 
+    else:
         # Retrieve info about current commit.
         try:
             # Set version to latest tag, number of commits since tag, and latest
