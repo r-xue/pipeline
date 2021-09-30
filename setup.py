@@ -1,7 +1,6 @@
 import collections
 import distutils.cmd
 import distutils.log
-import multiprocessing
 import os
 import shutil
 import subprocess
@@ -201,54 +200,46 @@ class BuildMyTasksCommand(distutils.cmd.Command):
             self.build_path = os.path.join(dir_path, build_py_cmd.build_lib)
 
     def run(self):
-        nproc = min(os.cpu_count(), len(PIPELINE_PACKAGES))
-        self.announce(f'Running buildmytasks with {nproc} processes...', level=distutils.log.INFO)
-        pool = multiprocessing.Pool(nproc)
         for d in PIPELINE_PACKAGES:
-            pool.apply_async(self.run_for_package, (d,))
-        pool.close()
-        pool.join()
+            cli_dir = os.path.join('pipeline', d, 'cli')
+            cli_module = '.'.join(['pipeline', d, 'cli'])
+            src_dir = os.path.join(self.build_path, cli_dir)
+            if not os.path.exists(src_dir):
+                continue
 
-    def run_for_package(self, d):
-        cli_dir = os.path.join('pipeline', d, 'cli')
-        cli_module = '.'.join(['pipeline', d, 'cli'])
-        src_dir = os.path.join(self.build_path, cli_dir)
-        if not os.path.exists(src_dir):
-            return
+            cli_init_py = os.path.join(src_dir, '__init__.py')
+            # Remove old init module to avoid incompatible code and duplication
+            if os.path.exists(cli_init_py):
+                os.remove(cli_init_py)
 
-        cli_init_py = os.path.join(src_dir, '__init__.py')
-        # Remove old init module to avoid incompatible code and duplication
-        if os.path.exists(cli_init_py):
-            os.remove(cli_init_py)
+            gotasks_dir = os.path.join(src_dir, 'gotasks')
+            gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
+            # Remove old init module to avoid incompatible code and duplication
+            if os.path.exists(gotasks_init_py):
+                os.remove(gotasks_init_py)
 
-        gotasks_dir = os.path.join(src_dir, 'gotasks')
-        gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
-        # Remove old init module to avoid incompatible code and duplication
-        if os.path.exists(gotasks_init_py):
-            os.remove(gotasks_init_py)
+            for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
+                self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
+                subprocess.check_output([
+                    'buildmytasks',
+                    '--module',
+                    cli_module,
+                    xml_file
+                ], cwd=src_dir)
 
-        for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
-            self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
-            subprocess.check_output([
-                'buildmytasks',
-                '--module',
-                cli_module,
-                xml_file
-            ], cwd=src_dir)
+                root, _ = os.path.splitext(xml_file)
+                import_statement = 'from .{} import {}'.format(root, root)
+                with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
+                    import_exists = any(import_statement in line for line in init_file)
+                    if not import_exists:
+                        init_file.seek(0, os.SEEK_END)
+                        init_file.write('{}\n'.format(import_statement))
 
-            root, _ = os.path.splitext(xml_file)
-            import_statement = 'from .{} import {}'.format(root, root)
-            with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
-                import_exists = any(import_statement in line for line in init_file)
-                if not import_exists:
-                    init_file.seek(0, os.SEEK_END)
-                    init_file.write('{}\n'.format(import_statement))
-
-            with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
-                import_exists = any(import_statement in line for line in init_file)
-                if not import_exists:
-                    init_file.seek(0, os.SEEK_END)
-                    init_file.write('{}\n'.format(import_statement))
+                with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
+                    import_exists = any(import_statement in line for line in init_file)
+                    if not import_exists:
+                        init_file.seek(0, os.SEEK_END)
+                        init_file.write('{}\n'.format(import_statement))
 
 
 class VersionCommand(distutils.cmd.Command):
@@ -307,7 +298,7 @@ def _get_git_version():
             dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
             version = version + dirty
         return version
-    else:
+    else: 
         # Retrieve info about current commit.
         try:
             # Set version to latest tag, number of commits since tag, and latest
