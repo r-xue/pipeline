@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+
 # This script has to be run within the Git repository. It will inspect the
 # state of the current tree/branch in the workspace.
 
