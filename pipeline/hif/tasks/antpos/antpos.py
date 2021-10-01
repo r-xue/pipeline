@@ -1,5 +1,6 @@
 import csv
 import os
+import warnings
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -199,7 +200,11 @@ class Antpos(basetask.StandardTaskTemplate):
         if inputs.hm_antpos == 'file' and gencal_args['antenna'] == '':
             LOG.info('No antenna position offsets are defined')
         else:
-            self._executor.execute(gencal_job)
+            # PIPE-1309: we put the casa task call under the catch_warnings contextmanager to prevent
+            # gencal(caltype='antpos') from raising UserWarnings as exceptions. This could be
+            # removed after CAS-13614 is fixed.
+            with warnings.catch_warnings():
+                self._executor.execute(gencal_job)
 
         calto = callibrary.CalTo(vis=inputs.vis)
         # careful now! Calling inputs.caltable mid-task will remove the
