@@ -190,11 +190,7 @@ class SubprocessScheduler:
         self.__join()
 
     def add(self, process):
-        assert isinstance(process, subprocess.Popen)
-        self.procs.append(process)
-
-        if len(self.procs) >= self._maxlen:
-            self.__join()
+        self.__update(process)
 
     def __join(self):
         if len(self.procs) > 0:
@@ -204,6 +200,20 @@ class SubprocessScheduler:
             if any([r != 0 for r in ret]):
                 raise RuntimeError('Failed to execute process')
             self.returncodes.extend(ret)
+
+    def __update(self, process):
+        assert isinstance(process, subprocess.Popen)
+
+        while len(self.procs) >= self._maxlen:
+            p = self.procs.pop(0)
+            self.outputs.append(p.communicate())
+            r = p.returncode
+            if r != 0:
+                self.__join()
+                raise RuntimeError('Failed to execute process')
+            self.returncodes.append(r)
+
+        self.procs.append(process)
 
 
 class BuildMyTasksCommand(distutils.cmd.Command):
