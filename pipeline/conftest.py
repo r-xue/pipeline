@@ -3,24 +3,32 @@
 import os
 import pytest
 
+from casatasks import casalog
+
 
 def redirect_casalog():
     """Redirect casalog to /dev/null before executeting tests.
 
-    We first clean up the default logfile created when casatasks is imported,
-    and then redirect casa-*.log to dev/null
+    We clean up the default logfile potentially created from the CASA session initialization, 
+    and then redirect logging to `dev/null`.
     """
-    from casatasks import casalog
-    current_casalog = casalog.logfile()
-    if os.path.exists(current_casalog) and current_casalog != '/dev/null':
-        os.remove(current_casalog)
-    casalog.setlogfile('/dev/null')
+    last_casalog = casalog.logfile()
+    if last_casalog != '/dev/null':
+        try:
+            os.remove(last_casalog)
+        except OSError as e:
+            pass
+        casalog.setlogfile('/dev/null')
 
 
-redirect_casalog()
+def pytest_sessionstart(session):
+    """Redirect casalog for the master process (if needed)."""
+    workerinput = getattr(session.config, 'workerinput', None)
+    if workerinput is None:
+        redirect_casalog()
 
 
 @pytest.fixture(scope="session", autouse=True)
 def redirect_casalog_for_workers():
-    """Remove casalog for worker threads."""
+    """Remove casalog for each session/worker."""
     return redirect_casalog()
