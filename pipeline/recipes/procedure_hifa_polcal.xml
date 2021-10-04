@@ -223,6 +223,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_renorm</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifa_exportdata</Command>
         <ParameterSet>
         </ParameterSet>

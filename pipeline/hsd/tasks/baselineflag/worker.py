@@ -3,11 +3,9 @@ import copy
 import math
 import os
 import time
-from typing import Any, Optional
+from typing import Dict, Generator, List, Optional, Tuple
 
 import numpy
-
-from typing import Dict, Generator, List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -51,6 +49,12 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
         self.nchan = nchan
         self.edge = edge
 
+    @vdp.VisDependentProperty
+    def bl_ms(self):
+        """MeasurementSet domain object of baselined MS."""
+        bl_list = self.context.observing_run.get_measurement_sets_of_type([DataType.BASELINED])
+        match = sdutils.match_origin_ms(bl_list, self.ms.origin_ms)
+        return match
 
 class SDBLFlagWorkerResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
@@ -169,13 +173,12 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         pols_list = self.inputs.pols_list
         flagRule = self.inputs.flagRule
         edge = self.inputs.edge
-        origin_ms = context.observing_run.get_ms(ms.origin_ms)
         datatable_name = sdutils.get_data_table_path(context, ms)
         datatable = DataTable(name=datatable_name, readonly=False)
-        bl_list = context.observing_run.get_measurement_sets_of_type([DataType.BASELINED])
-        match = sdutils.match_origin_ms(bl_list, ms.origin_ms)
-        bl_ms = match if match is not None else ms
+        bl_ms = self.inputs.bl_ms if self.inputs.bl_ms is not None else ms
         bl_name = bl_ms.name
+        row_map_ms = self.get_row_map(ms.name)
+        row_map_bl_ms = row_map_ms if ms.name==bl_name else self.get_row_map(bl_name)
 
         LOG.debug('Members to be processed in worker class:')
         for (a, f, s, p) in zip(antid_list, fieldid_list, spwid_list, pols_list):
@@ -219,7 +222,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             LOG.debug('deviation mask for %s antenna %d field %d spw %d is %s' %
                       (ms.basename, antid, fieldid, spwid, deviation_mask))
 
-            time_table = datatable.get_timetable(antid, spwid, None, origin_ms.basename, fieldid)
+            time_table = datatable.get_timetable(antid, spwid, None, os.path.basename(ms.origin_ms), fieldid)
             # Select time gap list: 'subscan': large gap; 'raster': small gap
             if flagRule['Flagging']['ApplicableDuration'] == "subscan":
                 TimeTable = time_table[1]
@@ -245,8 +248,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                     flagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
                     # include MASKLIST to cache
                     with_masklist = True
-#                 elif rowmap is None:
-#                     rowmap = sdutils.make_row_map_for_baselined_ms(ms, container)
                 LOG.debug("FLAGRULE = %s" % str(flagRule_local))
 
                 # Calculate Standard Deviation and Diff from running mean
@@ -255,7 +256,8 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 polids = [ddobj.get_polarization_id(pol) for pol in pollist]
                 dt_idx, tmpdict, _ = self.calcStatistics(datatable, container, nchan, nmean,
                                                          TimeTable, polids, edge,
-                                                         is_baselined, deviation_mask)
+                                                         is_baselined, deviation_mask,
+                                                         row_map_ms, row_map_bl_ms)
             t1 = time.time()
             LOG.info('Standard Deviation and diff calculation End: Elapse time = %.1f sec' % (t1 - t0))
 
@@ -326,14 +328,50 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def calcStatistics(self, DataTable, container, NCHAN, Nmean, TimeTable, polids, edge, is_baselined,
-                       deviation_mask=None):
+    def get_row_map(self, vis: str) -> dict:
+        """Return row map between vis and origin_ms"""
+        ms = self.inputs.context.observing_run.get_ms(vis)
+        origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        return sdutils.make_row_map_between_ms(origin_ms, ms.name)
+
+    def calcStatistics(self, DataTable: DataTable, container: BLFlagTableContainer,
+                       NCHAN: int, Nmean: int, TimeTable: List[List[List[int]]],
+                       polids: List[int], edge: List[int], is_baselined: bool,
+                       deviation_mask: Optional[List[Tuple[int, int]]]=None,
+                       rowmapIn: Optional[Dict[int,int]] = None,
+                       rowmapOut: Optional[Dict[int,int]] = None
+                       ) -> Tuple[numpy.ndarray, Dict[int, numpy.ndarray],
+                                  Dict[int, numpy.ndarray]]:
+        """
+        Calculate statistics of spectra before and after baseline subtaction.
+
+        Args:
+            DataTable: DataTable instance of MSes to calculate statistics.
+            container: A BLFlagTableContainer instance that holds table objects
+                of MSes before and after baseline subtaction.
+            NCHAN: Number of channels in a spectrum.
+            Nmean: Number of channels to average to calculate running mean.
+            TimeTable: A grouped list of row IDs in DataTable in a same raster
+                row.
+            polids: Polarization IDs selection.
+            edge: Number of left and right edge channels to be excluded from
+                statistics.
+            is_baselined: Whether or not baseline subtraction has been performed.
+            deviation_mask: Deviation mask ranges. The ranges will be excluded
+                from statistics.
+            rowmapIn: Row map of dictionary of baselined MS.
+            rowmapOut: Row map dictionary of baselined MS.
+
+        Returns:
+            A tuple of DataTable indices, and corresponding statistics and
+            number of flagged channels.
+        """
         DataIn = container.calvis
         DataOut = container.blvis
-        in_ms = self.inputs.context.observing_run.get_ms(os.path.basename(DataIn))
-        origin_ms = self.inputs.context.observing_run.get_ms(in_ms.origin_ms)
-        rowmapIn = sdutils.make_row_map_between_ms(origin_ms, DataIn)
-        rowmapOut = sdutils.make_row_map_between_ms(origin_ms, DataOut)
+        if rowmapIn is None:
+            rowmapIn = self.get_row_map(DataIn)
+        if rowmapOut is None:
+            rowmapOut = self.get_row_map(DataOut)
         # Calculate Standard Deviation and Diff from running mean
         NROW = len([series for series in utils.flatten(TimeTable)])//2
         # parse edge

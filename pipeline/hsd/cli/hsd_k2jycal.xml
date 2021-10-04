@@ -15,7 +15,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <shortdescription>Access Jy/K DB or not</shortdescription>
         <description>Whether or not accessing Jy/K DB to retrieve conversion factors.
         </description>
-        <value>False</value>
+        <value>True</value>
     </param>
 
     <param name="endpoint" subparam="true" type="string">

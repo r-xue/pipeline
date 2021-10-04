@@ -53,9 +53,14 @@ class PbcorimagesSummary(object):
                         with casa_tools.ImageReader(pbcor_imagename) as image:
                             self.result.pbcor_stats[basename] = image.statistics(robust=True)
                     else:
-                        plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
-                                                            x_axis='Primary Beam Response', y_axis='Num. of Pixel',
-                                                            reportdir=stage_dir, boxsize=1.0).plot())
+                        try:
+                            if self.context.imaging_mode.startswith('VLASS'):
+                                plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
+                                                                      x_axis='Primary Beam Response', y_axis='Num. of Pixel',
+                                                                      reportdir=stage_dir, boxsize=1.0).plot())
+                        except Exception as ex:
+                            pass
+
             plot_dict[basename] = [p for p in plot_wrappers if p is not None]
 
         return plot_dict

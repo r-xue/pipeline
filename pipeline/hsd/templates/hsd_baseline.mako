@@ -94,6 +94,7 @@ line detection stage.</p>
 <li><a href="#rawbeforebaseline">Raw Spectral Data Before Baseline Subtraction</a></li>
 <li><a href="#avgbeforebaseline">Averaged Spectral Data Before Baseline Subtraction</a></li>
 <li><a href="#rawafterbaseline">Raw Spectral Data After Baseline Subtraction</a></li>
+<li><a href="#flatnessafterbaseline">Baseline Flatness After baseline Subtraction</a></li>
 <li><a href="#clusteranalysis">Line Detection by Clustering Analysis</a></li>
 </ul>
 
@@ -207,6 +208,48 @@ for baseline subtraction.</p>
 	                <div class="caption">
 	                    <h4>
 	                        <a href="${os.path.join(dirname, sparsemap_subpage_after_raw[field])}"
+	                           class="replace"
+	                           data-spw="${plot.parameters['spw']}"
+	                           data-field="${field}">
+	                           ${get_spw_exp(plot.parameters['spw'])}
+	                        </a>
+	                    </h4>
+	                    <p>Antenna: ${plot.parameters['ant']}<br>
+	                        Field: ${plot.parameters['field']}<br>
+	                        ${get_spw_desc(plot.parameters['spw'])}<br>
+	                        Polarisation: ${plot.parameters['pol']}
+	                    </p>
+	                </div>
+	            </div>
+	        </div>
+        % endif
+    % endfor
+	<div class="clearfix"></div><!--  flush plots, break to next row -->
+%endfor
+
+<h2 id="flatnessafterbaseline" class="jumptarget">Baseline Flatness After baseline Subtraction</h2>
+
+<p>Red dots show binned spectrum of baseline channels. Dashed lines show 1 sigma of raw spectrum and zero level. </p>
+
+% for field in sparsemap_subpage_after_flatness:
+    <h3><a class="replace"
+           href="${os.path.join(dirname, sparsemap_subpage_after_flatness[field])}"
+           data-field="${field}">${field}</a>
+    </h3>
+    % for plot in sparsemap_after_flatness[field]:
+        % if os.path.exists(plot.thumbnail):
+	        <div class="col-md-3">
+	            <div class="thumbnail">
+	                <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
+	                   data-fancybox="thumbs">
+	                    <img class="lazyload"
+                             data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
+	                         title="${spmap_plot_title(plot.parameters['spw'], apply_bl=True)}">
+	                </a>
+	
+	                <div class="caption">
+	                    <h4>
+	                        <a href="${os.path.join(dirname, sparsemap_subpage_after_flatness[field])}"
 	                           class="replace"
 	                           data-spw="${plot.parameters['spw']}"
 	                           data-field="${field}">

@@ -986,6 +986,47 @@ class MeasurementSet(object):
 
         return critfrac
 
+    def get_vla_baseband_spws(self, science_windows_only=True,
+                              return_select_list=True, warning=True):
+        """Get the SPW information from individual VLA band/baseband.
+
+        Args:
+            science_windows_only (bool, optional): Defaults to True.
+            return_select_list (bool, optional): return spw list of each baseband. Defaults to True.
+            warning (bool, optional): Defaults to True.
+
+        Returns:
+            baseband_spws: spws info of individual basebands as baseband_spws[band][baseband]
+            baseband_spws_list: spw_list of individual basebands
+                e.g., [[0,1,2,3],[4,5,6,7]]
+        """
+
+        baseband_spws = collections.defaultdict(lambda: collections.defaultdict(list))
+
+        for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
+            try:
+                band = spw.name.split('#')[0].split('_')[1]
+                baseband = spw.name.split('#')[1]
+                min_freq = spw.min_frequency
+                max_freq = spw.max_frequency
+                mean_freq = spw.mean_frequency
+                chan_width = spw.channels[0].getWidth()
+                baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
+            except Exception as ex:
+                if warning:
+                    LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                else:
+                    pass
+
+        if return_select_list:
+            baseband_spws_list = []
+            for band in baseband_spws.values():
+                for baseband in band.values():
+                    baseband_spws_list.append([[*spw_info][0] for spw_info in baseband])
+            return baseband_spws, baseband_spws_list
+        else:
+            return baseband_spws
+
     def get_median_integration_time(self, intent=None):
         """Get the median integration time used to get data for the given
         intent.

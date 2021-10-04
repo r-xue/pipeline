@@ -1,10 +1,15 @@
 import numpy
+import os
+from typing import List, Optional, Union
 
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+
+from ..common import compress
 from . import baseline
 
 LOG = logging.get_logger(__name__)
@@ -37,7 +42,32 @@ class SDBaselineQAHandler(pqa.QAPlugin):
                                                             field_id_list, 
                                                             spw_id_list, 
                                                             lines_list))
+        for figfile, stat in result.outcome['baseline_quality_stat'].items():
+            plot = _get_plot(result.outcome['plots'], figfile)
+            if plot is None:
+                LOG.warn(f'Unable to find plot instance for {figfile}')
+                continue
+            p = plot.parameters
+            scores.append(qacalc.score_sd_baseline_quality(p['vis'], plot.field, p['ant'], p['spw'], p['pol'], stat))
+            del plot
         result.qa.pool.extend(scores)
+
+def _get_plot(plots: List[logger.Plot], figfile: str) -> Optional[Union[compress.CompressedObj, logger.Plot]]:
+    """
+    Return Plot instance that matches figure file name.
+
+    Args:
+        plots: A list of plot objects
+        figfile: The name of figure file
+    Returns:
+        Plot instance. Returns None if no match is found.
+    """
+    for p in plots:
+        if isinstance(p, compress.CompressedObj):
+            p = p.decompress()
+        if p.basename == os.path.basename(figfile):
+            return p
+    return None
 
 
 class SDBaselineListQAHandler(pqa.QAPlugin):

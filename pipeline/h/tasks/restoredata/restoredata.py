@@ -28,6 +28,7 @@ results.accept(context)
 import glob
 import os
 import re
+import ast
 import sys
 import shutil
 import tarfile
@@ -42,6 +43,8 @@ from pipeline.infrastructure import utils
 from .. import applycal
 from .. import importdata
 from ..common import manifest
+
+from pipeline.extern.almarenorm import ACreNorm
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -146,7 +149,7 @@ class RestoreDataInputs(vdp.StandardInputs):
 
 class RestoreDataResults(basetask.Results):
     def __init__(self, importdata_results=None, applycal_results=None, flagging_summaries=None,
-                 casa_version_orig=None, pipeline_version_orig=None, orig_mpi_servers=0):
+                 casa_version_orig=None, pipeline_version_orig=None, orig_mpi_servers=0, renorm_applied=False):
         """
         Initialise the results objects.
         """
@@ -158,6 +161,7 @@ class RestoreDataResults(basetask.Results):
         self.casa_version_orig = casa_version_orig
         self.pipeline_version_orig = pipeline_version_orig
         self.orig_mpi_servers = orig_mpi_servers
+        self.renorm_applied = renorm_applied
 
     def merge_with_context(self, context):
         if self.importdata_results:
@@ -267,12 +271,49 @@ class RestoreData(basetask.StandardTaskTemplate):
         # pipeline manifest.
         casa_version, pipeline_version, num_mpi = self._extract_casa_pipeline_version(pipemanifest)
 
+        # If necessary, renormalize ALMA IF data
+        renorm_applied = self._do_renormalize(pipemanifest, session_names=session_names, session_vislists=session_vislists)
+
         # Return the results object, which will be used for the weblog
         return RestoreDataResults(import_results, apply_results, flagging_summaries, casa_version, pipeline_version,
-                                  num_mpi)
+                                  num_mpi, renorm_applied)
 
     def analyse(self, results):
         return results
+
+    def _do_renormalize(self, pipemanifest, session_names=None, session_vislists=None):
+        # read the manifest and look for a renorm element(s).  there should be one per EB
+        # if it's there, do the renorm steps using the stored params, but do not
+        # create the plots
+
+        applied = False
+
+        # Loop over sessions
+        for index, session in enumerate(session_names):
+
+            # Get the visibility list for that session.
+            vislist = session_vislists[index]
+
+            for vis in vislist:
+                # for each non-target asdm/vis in the manifest structure
+                params = pipemanifest.get_renorm(vis)
+                if params:
+                    rn_params = {key:ast.literal_eval(val) if val else val for key,val in params.items()}
+                    try:
+                        rn = ACreNorm(vis)
+                        LOG.info(f'Renormalizing {vis} with hifa_renorm {params}')
+                        rn.renormalize(docorr=rn_params['apply'], docorrThresh=rn_params['threshold'], correctATM=rn_params['correctATM'],
+                                        spws=rn_params['spw'], excludechan=rn_params['excludechan'])
+                        if rn_params['apply'] and rn.checkApply():
+                            applied = True
+                        else:
+                            LOG.error(f'Failed application of renormalization for {vis} {params}')
+                    except Exception as e:
+                        LOG.error(f'Failure in running renormalization heuristic: {e}')
+                else:
+                    LOG.info(f'Not calling hifa_renorm for {vis} - no renorm call in manifest.')
+
+        return applied
 
     def _do_copy_manifest_toraw(self, template):
         """

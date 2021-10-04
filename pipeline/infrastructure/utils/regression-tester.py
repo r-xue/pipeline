@@ -23,7 +23,8 @@ LOG = infrastructure.get_logger(__name__)
 class PipelineRegression(object):
     """Pipeline regression test class called from pytest."""
 
-    def __init__(self, recipe: str, input_dir: str, visname: str, expectedoutput: str):
+    def __init__(self, recipe: Optional[str] = None, input_dir: Optional[str] = None, visname: Optional[str] = None,
+                 expectedoutput: Optional[str] = None, output_dir: Optional[str] = None):
         """Constractor of PilelineRegression.
         
         Args:
@@ -31,6 +32,7 @@ class PipelineRegression(object):
             input_dir: path to directory contains input files
             visname: name of MeadurementSet
             expectedoutput: path to a file that defines expected output of a test
+            output_dir: path to directory to output. If None, it sets visname
         """
         self.recipe = recipe
         self.input_dir = input_dir
@@ -38,14 +40,15 @@ class PipelineRegression(object):
         self.expectedoutput = expectedoutput
         self.testinput = f'{input_dir}/{visname}'
         self.current_path = os.getcwd()
+        self.output_dir = output_dir if output_dir else visname
         self.__initialize_working_folder()
 
     def __initialize_working_folder(self):
         """Initialize a root folder for task execution."""
-        if os.path.isdir(self.visname):
-            shutil.rmtree(self.visname)
-        os.mkdir(self.visname)
-        os.chdir(self.visname)
+        if os.path.isdir(self.output_dir):
+            shutil.rmtree(self.output_dir)
+        os.mkdir(self.output_dir)
+        os.chdir(self.output_dir)
 
     def __sanitize_regression_string(self, instring: str) -> Tuple:
         """Sanitize to get numeric values, remove newline chars and change to float.
@@ -218,24 +221,22 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
                             input_dir='pl-regressiontest/uid___A002_X85c183_X36f',
                             visname='uid___A002_X85c183_X36f',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f/' +
-                                            'uid___A002_X85c183_X36f.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+                                            'uid___A002_X85c183_X36f.casa-6.2.1-2-pipeline-2021.2.0.94-PIPE-1235.results.txt'))
 
     pr.run()
 
 
-def test_uid___A002_X85c183_X36f_SPW15_23_procedure_hsd_restoredata__regression():
+def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
     """Run ALMA single-dish restoredata regression on the observation data of M100.
 
-    Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f_SPW15_23
     Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
-    pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
-                            input_dir=input_dir,
+    pr = PipelineRegression(input_dir=input_dir,
                             visname='uid___A002_X85c183_X36f_SPW15_23.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
-                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
+                                            'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.1-2-pipeline-2021.2.0.94-PIPE-1235.results.txt'))
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
@@ -257,3 +258,25 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
                             expectedoutput=('pl-regressiontest/mg2-20170525142607-180419/' +
                                             'mg2-20170525142607-180419.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
     pr.run()
+
+
+def test_uid___mg2_20170525142607_180419__PPR__regression():
+    """Run ALMA single-dish cal+image regression for restore nobeyama recipe.
+
+    Dataset:                    mg2-20170525142607-180419
+    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
+    """
+
+    input_dir = 'pl-regressiontest/mg2-20170525142607-180419'
+
+    pr = PipelineRegression(input_dir=input_dir,
+                            visname='mg2-20170525142607-180419.ms',
+                            expectedoutput=(f'{input_dir}/' +
+                                            'mg2-20170525142607-180419_PPR.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'),
+                            output_dir='mg2-20170525142607-180419_PPR')
+
+    # copy files use restore task into products folder
+    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+    shutil.copytree(input_products, './products')
+
+    pr.run(ppr=f'{input_dir}/PPR.xml')

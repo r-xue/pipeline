@@ -115,6 +115,7 @@ def get_best_fits_per_ant(wrapper):
         bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
         band_midpoint = (np.ma.max(frequencies) + np.ma.min(frequencies)) / 2.0
         frequency_scale = 1.0 / bandwidth
+
         amp_model_fn = get_linear_function(band_midpoint, frequency_scale)
         ang_model_fn = get_angular_linear_function(band_midpoint, frequency_scale)
 
@@ -126,7 +127,10 @@ def get_best_fits_per_ant(wrapper):
                 LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
                 continue
 
-            median_sn = np.ma.median(np.ma.abs(visibilities) / np.ma.abs(ta_sigma))
+            # PIPE-884: as of NumPy ver1.20, ma.abs() doesn't convert MaskedArray fill_value to float automatically. This 
+            # introduces a casting-related ComplexWarning when the result is passed to ma.median(). We mitigate the warning 
+            # by using the real part of filled value explicitly. See also below.
+            median_sn = np.ma.median(np.ma.abs(visibilities).real / np.ma.abs(ta_sigma).real)
             if median_sn > 3:  # PIPE-401: Check S/N and either fit or use average
                 # Fit the amplitude
                 try:
@@ -134,7 +138,8 @@ def get_best_fits_per_ant(wrapper):
                     amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; amp. vs frequency)'.format(
+                        ant, pol))
                     continue
                 # Fit the phase
                 try:
@@ -142,32 +147,54 @@ def get_best_fits_per_ant(wrapper):
                     phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; phase vs frequency)'.format(
+                        ant, pol))
                     continue
             else:
+                LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
                 # 'Fit' the amplitude
-                try:
-                    amplitude_fit = LinearFitParameters(
-                        slope=ValueAndUncertainty(value=0., unc=0.),
-                        intercept=ValueAndUncertainty(
-                            value=np.ma.average(np.ma.abs(visibilities)),
-                            unc=np.ma.std(np.ma.abs(visibilities)))
-                    )
+                try:  # NOTE: PIPE-401 This try block may not be necessary
+                    amp_vis = np.ma.abs(visibilities).real
+                    n_channels_unmasked = np.sum(~amp_vis.mask)
+                    if n_channels_unmasked != 0:
+                        amplitude_fit = LinearFitParameters(
+                            slope=ValueAndUncertainty(value=0., unc=1.0e06),
+                            intercept=ValueAndUncertainty(
+                                value=np.ma.median(amp_vis),
+                                unc=np.ma.std(amp_vis)/np.sqrt(n_channels_unmasked))
+                        )
+                    else:
+                        LOG.info(
+                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
+                                ant, pol))
+                        continue
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info(
+                        'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
+                            ant, pol))
                     continue
                 # 'Fit' the phase
-                try:
-                    phase_fit = LinearFitParameters(
-                        slope=ValueAndUncertainty(value=0., unc=0.),
-                        intercept=ValueAndUncertainty(
-                            value=np.ma.average(np.ma.angle(visibilities)),
-                            unc=np.ma.std(np.ma.angle(visibilities)))
-                    )
+                try:  # NOTE: PIPE-401 This try block may not be necessary
+                    phase_vis = np.ma.angle(visibilities).real
+                    n_channels_unmasked = np.sum(~phase_vis.mask)
+                    if n_channels_unmasked != 0:
+                        phase_fit = LinearFitParameters(
+                            slope=ValueAndUncertainty(value=0., unc=1.0e06),
+                            intercept=ValueAndUncertainty(
+                                value=np.ma.median(phase_vis),
+                                unc=np.ma.std(phase_vis)/np.sqrt(n_channels_unmasked)
+                            )
+                        )
+                    else:
+                        LOG.info(
+                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
+                                ant, pol))
+                        continue
                 except TypeError:
                     # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
+                        ant, pol))
                     continue
 
             fit_obj = AntennaFit(ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)

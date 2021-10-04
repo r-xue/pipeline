@@ -38,13 +38,13 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, partialpol=None,
+                 partialpol=None, fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None,
                  qa0=None, qa2=None):
         super(FlagDeterALMAInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
             tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
-            fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template, filetemplate=filetemplate,
-            hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol)
+            fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template,
+            filetemplate=filetemplate, hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol)
 
         # solution parameters
         self.qa0 = qa0
@@ -276,31 +276,63 @@ def load_partialpols_alma(ms):
     :return: list containing flagging commands as strings
     :rtype: List[str]
     """
+
+    # Get the spw IDs and corresponding DATA DESC IDs for which to assess the
+    # partial polarization flagging.
+    # TODO: This function takes care of translating spws to DATA_DESC_IDs but it may not be necessary and it
+    #  is possible that it can be replaced by the pipeline domain object function, such as:
+    #  all_spws = ms.get_spectral_windows()
     spws_ids, datadescids = get_partialpol_spws(ms.name)
-    # NOTE: The previous call takes care of translating spws to DATA_DESC_IDs but it may not be necessary and it
-    #  is possible that it can be replaced by a function similar to the one in the following comment:
-    # all_spws = ms.get_spectral_windows()
+
+    # PIPE-1245: restrict evaluation of partial polarization flagging to scans
+    # that do not cover the following intents:
+    unwanted_intents = {'ATMOSPHERE', 'FOCUS', 'POINTING'}
+    scan_ids = [scan.id for scan in ms.get_scans() if not scan.intents.intersection(unwanted_intents)]
+    spw_scan_selections = iter((spw, dd, scan) for spw, dd in zip(spws_ids, datadescids) for scan in scan_ids)
+
+    # Initialize flagging command parameters.
     params = []
+
     with casa_tools.TableReader(ms.name) as table:
-        for spw, ddid in zip(spws_ids, datadescids):  # Iterate over relevant spws
-            table_sel = table.query(f"DATA_DESC_ID == {ddid}")
+        # Run evaluation for each combination of SpW id (with corresponding
+        # data_desc_id) and scan id.
+        for spw, ddid, scan in spw_scan_selections:  # Iterate over relevant spws
+
+            # Create table selection for current spw and get flag column.
+            table_sel = table.query(f"DATA_DESC_ID == {ddid} && SCAN_NUMBER == {scan}")
             flags = table_sel.getcol('FLAG')
-            shape = np.shape(flags)
-            n_pol = shape[0]
-            if n_pol > 1:  # There is data (n_pol != 0) and data are not single polarization
-                LOG.debug(f"Potential Partial Polarization data found for DATA_DESC_IDs {ddid}")
-                folded_flags = np.sum(flags, axis=0)
-                # Retrieve and show some useful information for debugging
-                for i in range(n_pol + 1):
-                    n_i = np.sum(folded_flags == i)  # Number of scans with i polarizations flagged
-                    if (i > 0) and (i < n_pol):
-                        LOG.debug(f" Polarization data partially flagged - {i} out of {n_pol} pols flagged:  N = {n_i}")
-                    elif i == 0:
-                        LOG.debug(f" Polarization data completely unflagged: N = {n_i}")
+
+            # Number of polarisations present.
+            n_pol = len(flags)
+
+            # For multi-pol data, assess if there are any rows where part of
+            # the polarisation is flagged.
+            if n_pol > 1:
+                LOG.debug(f"Multiple polarization data found for DATA_DESC_IDs {ddid}, scan {scan}, checking if any"
+                          f" polarization data are partially flagged.")
+
+                # Count how often no pols, some pols, and/or all pols are
+                # flagged.
+                npolflag = dict.fromkeys(range(n_pol + 1), 0)
+                for k, v in zip(*np.unique(np.count_nonzero(flags, axis=0), return_counts=True)):
+                    npolflag[k] = v
+
+                # Report how often n number of pols are flagged, and assess
+                # if any there are any occurrences where polarisation data is
+                # partially flagged.
+                do_partial_pol = False
+                for nflag, n in npolflag.items():
+                    if nflag == 0:
+                        LOG.debug(f" Polarization data completely unflagged: N = {n}")
+                    elif nflag < n_pol:
+                        LOG.debug(f" Polarization data partially flagged - {nflag} out of {n_pol}: N = {n}")
+                        if n > 0:
+                            do_partial_pol = True
                     else:
-                        LOG.debug(f" Polarization data completely flagged:  N = {n_i}")
-                to_extend_idx = (folded_flags > 0) & (folded_flags < n_pol)  # Identify the partial polarization scans
-                if np.sum(to_extend_idx) >= 0:  # Run only if there are partial polarization scans
+                        LOG.debug(f" Polarization data completely flagged: N = {n}")
+
+                # Continue with actual flagging of partial polarization rows.
+                if do_partial_pol:
                     ant1 = table_sel.getcol('ANTENNA1')
                     ant2 = table_sel.getcol('ANTENNA2')
                     time = table_sel.getcol('TIME')
@@ -312,7 +344,10 @@ def load_partialpols_alma(ms):
                     updated_params_spw = [{**d, "spw": spw, "time_unit": time_unit} for d in params_spw]
                     params.extend(updated_params_spw)
             else:
-                LOG.debug(f"No Partial Polarization data found for DATA_DESC_IDs {ddid}")
+                LOG.debug(f"No multiple polarization data found for DATA_DESC_IDs {ddid}, scan {scan}.")
+
+            # Free resources held by table selection.
+            table_sel.close()
 
     commands = convert_params_to_commands(ms, params)
     return commands
@@ -368,13 +403,14 @@ def get_partialpol_flag_cmd_params(flags, ant1, ant2, time, interval):
     n_pol, n_channels, n_params = shape
     # Create a table of shape (n_channels, n_params) with the number of pols flagged
     folded_flags = np.sum(flags, axis=0)
-    # Check if the number indicates a partial polarization
+    # Identify where polarization data is partially flagged.
     to_extend_idx = (folded_flags > 0) & (folded_flags < n_pol)
-    # Identify the sets of parameters that have partial polarizations
-    params_to_check = np.sum(to_extend_idx, axis=0)
+    # Identify the sets of parameters that have partial polarizations for any
+    # of the channels.
+    param_sets_to_check = np.where(np.any(to_extend_idx, axis=0))[0]
     params = []
     # Iterate only through the sets of parameters with partial polarizations
-    for param_set_idx in np.where(params_to_check)[0]:
+    for param_set_idx in param_sets_to_check:
         # Get the numerical values of the channels that have partial polarizations
         channel_sel = list(np.where(to_extend_idx[:, param_set_idx])[0])
         params.append({

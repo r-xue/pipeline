@@ -34,6 +34,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         cqa = casa_tools.quanta
         plots = []
         image_rms = []
+        image_rms_notreps = []
         for r in results:
             if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
@@ -60,7 +61,11 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
                                     cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
                                     trms, irms)
-                    image_rms.append(tr)
+                    if image_item.sourcename == ref_ms.representative_target[0]:
+                        image_rms.append(tr)
+                    else:
+                        image_rms_notreps.append(tr)
+        image_rms.extend(image_rms_notreps)
 
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
 

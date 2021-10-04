@@ -12,6 +12,7 @@ import os
 from typing import List
 
 import numpy as np
+from scipy import interpolate
 from scipy.special import erf
 
 import pipeline.domain as domain
@@ -45,6 +46,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_renorm',                                    # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -557,7 +559,7 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
     """
     pol_intents = {'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'}
     # these recipes are allowed to process polarisation data
-    pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
+    pol_recipes = {'hifa_polcal', 'hifa_polcalimage', 'hifa_polcal_renorm', 'hifa_polcalimage_renorm'}
 
     # Sort to ensure presentation consistency
     mses = sorted(mses, key=lambda ms: ms.basename)
@@ -2250,6 +2252,53 @@ def score_sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, li
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+@log_qa
+def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
+                              pol: str, stat: List[tuple]) -> pqa.QAScore:
+    """
+    Return Pipeline QA score of baseline quality.
+
+    Args:
+        vis: MS name
+        source: source name
+        ant: antenna name
+        vspw: virtual spw ID
+        pol: polarization
+        stat: a list of binned statistics
+
+    Returns:
+        Pipeline QA score of baseline quality.
+    """
+    scores = []
+    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
+    # See PIPE-1073 for details of QA metrics.
+    for s in stat:
+        min_score = interpolate.interp1d([-1.25, -0.5], [0.175, 0.25],
+                                         kind='linear', bounds_error=False,
+                                         fill_value=(0.0, 0.25))(s.bin_min_ratio)
+        max_score = interpolate.interp1d([0.5, 1.25], [0.25, 0.175],
+                                         kind='linear', bounds_error=False,
+                                         fill_value=(0.25, 0.0))(s.bin_max_ratio)
+        diff_score = interpolate.interp1d([0.75, 2.0], [0.5, 0.0],
+                                          kind='linear', bounds_error=False,
+                                          fill_value=(0.5, 0.0)) (s.bin_diff_ratio)
+        total_score = min_score + max_score + diff_score
+        scores.append(total_score)
+        LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
+        LOG.trace(f'total score = {total_score} (min: {min_score}, max: {max_score}, diff: {diff_score})')
+    final_score = np.nanmin(scores)
+    quality = 'Good'
+    if final_score <= 0.66:
+        quality='Poor'
+    elif final_score <= 0.9:
+        quality='Moderate'
+    shortmsg = f'{quality} baseline flatness'
+    longmsg = f'{quality} baseline flatness in {vis}, {source}, {ant}, virtual spw {vspw}, {pol}'
+    origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
+                          metric_score=len(stat),
+                          metric_units='Statistics of binned spectra')
+
+    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
 def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err):
@@ -2899,6 +2948,18 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+def score_renorm(result):
+    if result.renorm_applied:
+        msg = 'Restore successful with renormalization applied'
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+    else:
+        msg = 'Restore successful'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='score_renormalize',
+                            metric_score=score,
+                            metric_units='')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 @log_qa
 def score_fluxservice(result):

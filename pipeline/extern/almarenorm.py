@@ -460,7 +460,7 @@ class ACreNorm(object):
 
         # Version
 
-        self.RNversion='v1.2-2021/07/20-alipnick'
+        self.RNversion='v1.3-2021/08/05-alipnick'
 
         # LM added 
         # file for logger named per EB and runtime - will make a new file every run
@@ -2350,25 +2350,28 @@ class ACreNorm(object):
                 for icor in range(nCor):
                     ax_rn.plot(freqs, Nm[icor,:], style[icor])
                 
-                # Get the max value of the mean renormalization spectrum for each correlation
+                # Find max over all ants then the mean of that, ignoring any flagged antenna. 
+                # This matches the values calculated by renormalize(). Because of discrete 
+                # sampling and noise, the max of the mean spectrum does not necessarily equal 
+                # the mean value of the maxes from each antenna because some antenna may peak 
+                # in different channels for lines that spread over multiple channels.
                 if nCor == 1:
-                    Nxmax = Nm[0,:].max()
+                    Nxmax = pl.nanmean(pl.where(N.max(1)!=1, N.max(1), pl.nan),1)[0] 
                     Nymax = Nxmax
                 elif nCor == 2:
-                    Nxmax = Nm[0,:].max()
-                    Nymax = Nm[1,:].max()
+                    Nxmax, Nymax = pl.nanmean(pl.where(N.max(1)!=1, N.max(1), pl.nan),1) 
                 
-                # If the max of the mean spectrum in either correlation is above the alarm theshold
-                # (fthresh), then draw a line at that amplidude, centered in the plot. 
+                # If the max in either correlation is above the alarm theshold (fthresh), 
+                # then draw a line at that amplidude, centered in the plot. 
                 if Nxmax >= (1.0+self.fthresh) or Nymax >= (1.0+self.fthresh):
                     fmin = 3./8.*max(freqs) + 5./8.*min(freqs)
                     fmax = 5./8.*max(freqs) + 3./8.*min(freqs)
                     ax_rn.plot([fmin,fmax],[Nxmax]*2,'r-')
-                    ax_rn.text(fmin,Nxmax,'<X>='+str(floor(Nxmax*10000.0)/10000.0),
+                    ax_rn.text(fmin,Nxmax,'<X>='+str(round(Nxmax, 4)),
                             ha='right',va='center',color='r',size='x-small')
                     if nCor == 2:
                         ax_rn.plot([fmin,fmax],[Nymax]*2,'b-')
-                        ax_rn.text(fmax,Nymax,'<Y>='+str(floor(Nymax*10000.0)/10000.0),
+                        ax_rn.text(fmax,Nymax,'<Y>='+str(round(Nymax, 4)),
                                 va='center',color='b',size='x-small')
 
                 # Grab the plot limits and set them for making it "look pretty"
@@ -2418,8 +2421,7 @@ class ACreNorm(object):
                     else:
                         # Currently, correctATM will not properly handle Bands 9 and 10 but
                         # eventually the image sideband will need to be added here.
-                        bpfld = self.getfieldforscan(self.getBscan(spw,verbose=False)[0])[0]
-                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)][str(bpfld)]
+                        ATMprof = self.atmtrans['BandPass'][str(spw)][str(Bscanatm)]
                     
                     # Plot the ATM profile
                     ax_atm.plot(freqs, 100*ATMprof, c='m', linestyle='-', linewidth=2)
@@ -3157,26 +3159,60 @@ class ACreNorm(object):
 
     # LM added - ATM transmission profile code - aU code dependancy 
     def ATMtrans(self, iscan, ispw, ifld=None, verbose=False):
-        # main point of this code to calculate the ATM transmission profile
-        # this can be used later in an attempt to remove 
-        # large  ATM lines in the scaling specta don't always 'fit-out'
+        """
+        Purpose:
+            This function will return the atmospheric model for the input spectral window
+            and scan. In the case of a Band 9 or 10 spectral window, the atmospheric model
+            for the image sideband is also returned. 
 
+        Inputs:
+            iscan : int
+                The user input scan from which to get the atmospheric model. This is used
+                to find the observation time, elevation, and weather information.
+
+            ispw : int
+                The user input spectral window.
+
+            ifld : int : OPTIONAL
+                The user input field ID. This is optional but in the case of mosaics, can
+                make the atmospheric model slightly more accurate. 
+                Default: None
+
+            verbose : boolean : OPTIONAL
+                Setting to True will output additional information as the atmospheric profile 
+                is calculated.
+                Default: False
+        
+        Returns:
+            transmission: numpy.array
+            (transmission, transmission_SB): numpy.arrays : ONLY FOR BANDS 9 AND 10
+                This is a 1-D array with the same length as the number of channels of the input 
+                scan/spw. The values of the array consist of the atmospheric transmission by 
+                channel as a fraction between 0.0 and 1.0.
+
+        """
         if verbose:
             print('  Getting ATM transmission profile for spw='+str(ispw)+' and scan='+str(iscan))
         self.logReNorm.write('  Getting ATM transmission profile for spw='+str(ispw)+' and scan='+str(iscan)+'\n') # LM added
 
-        # as sometimes the code was passing scans as single element lists
-        # it breaks some msmd calls - make a check - but have tried to pass mainly the bandpass scan as an int now 
+        # Input iscan should be type(int) but if not, attempt to use the first index.
         if type(iscan) is list:
             iscan=iscan[0]
 
-        ## find the field if none was input
+        # Find the field if none supplied
         if ifld is None:
-            # get field from scan
-            ifld = int(self.msmeta.fieldsforscan(iscan)[0]) 
-            # for a mosaic it will use the first pointing position for that scan
+            # Find all fields associated with this scan
+            ifld = self.msmeta.fieldsforscan(iscan)
+            # If there is more than 1 field, it is a mosaic. Take the central field value, hoping
+            # that it is near the center...
+            if len(ifld) > 1:
+                print('   Input scan is a mosaic but no field was supplied. Will attempt to use \
+                        central field number.\n')
+                ifld = int(floor(pl.median(ifld)))
+            else:
+                ifld = int(ifld[0]) 
 
-        # fixed parameters adopted from Todd's aU and plotbandpass3 code
+        # Fixed parameters adopted from Todd's aU and plotbandpass3 code
         # - could make options later but probably not required for what we need this function to do
         dP=5.0
         dPm=1.1
@@ -3186,81 +3222,74 @@ class ACreNorm(object):
         nbands = 1
         telescopeName = 'ALMA'
 
-
-        numchan=self.msmeta.nchan(ispw)  # numchan=len(freqs)  # is this the same YES
-        freqs = self.msmeta.chanfreqs(ispw,'GHz')  # this or above ??
+        # Get x-axis information
+        numchan=self.msmeta.nchan(ispw)  
+        freqs = self.msmeta.chanfreqs(ispw,'GHz')  
         reffreq=0.5*(freqs[int(numchan/2)-1]+freqs[int(numchan/2)])
 
-        # aU dependnet method
-        #azel = aU.computeAzElForScan(self.msname,iscan,mymsmd=self.msmeta) 
-        ## OR
-
-        # LM coded for aU independence 
-        mydirection=self.renormradec2rad(self.renormdirection2radec(self.msmeta.phasecenter(ifld))) # not truncated then
-        myscantime = pl.median(self.msmeta.timesforscan(iscan)) # AL switched to median time
-        # message filter as this function prints ALMA's position each call
-        casalog.filterMsg('Position:')
-        azel=self.renormcomputeAzElFromRADecMJD(mydirection,myscantime/86400)
+        # Get some metadata information about the scan. We need the sky location in Azimuth 
+        # and Elevation to know the airmass contribution. Here we use the median scan time to
+        # calculate the Elevation, assuming that scan times aren't ridiculously long, that should
+        # be good enough for the entire scan. The times will also help us read the weather
+        # tables to get the right PWV values out. 
+        mydirection=self.renormradec2rad(self.renormdirection2radec(self.msmeta.phasecenter(ifld))) 
+        scanTimes = self.msmeta.timesforscan(iscan)
+        myscantime = pl.median(scanTimes) 
+        scanLength = scanTimes[-1] - scanTimes[0]        
+        casalog.filterMsg('Position:') # message filter as this function prints ALMA's position each call
+        azel=self.renormcomputeAzElFromRADecMJD(mydirection,myscantime/86400.)
         casalog.clearFilterMsgList()
-        airmass = 1.0/pl.cos((90-azel[1])*pl.pi/180.)
+        airmass = 1.0/pl.cos((90.-azel[1])*pl.pi/180.)
 
-        # get weather params from analysisUtils
-        #weatherResult=aU.getWeather(self.msname, scan=str(iscan), mymsmd=self.msmeta,getSolarDirection=False)
-        # now separate code
+        # Get weather results from the MS tables and populate variables from results.
         weatherResult = self.renormWeather(iscan, verbose=False) 
-        myqa =qatool()
-        if self.Band in [9,10]:
-            nbands = 2
-            freqs_SB, chansep_SB, center_SB, width_SB = self.getImageSBFreqs(ispw)
-            #fCenter = aU.create_casa_quantity(myqa,reffreq,'GHz')# thetool.quantity(value, unit)
-            fCenter = myqa.quantity([reffreq, center_SB],'GHz')# thetool.quantity(value, unit)
-            chansep=(freqs[-1]-freqs[0])/(numchan-1)
-            #fResolution = aU.create_casa_quantity(myqa,chansep,'GHz')
-            #fWidth = aU.create_casa_quantity(myqa,numchan*chansep,'GHz')
-            fResolution = myqa.quantity([chansep, chansep_SB],'GHz')
-            fWidth = myqa.quantity([numchan*chansep, width_SB],'GHz')
-        else:
-            #fCenter = aU.create_casa_quantity(myqa,reffreq,'GHz')# thetool.quantity(value, unit)
-            fCenter = myqa.quantity(reffreq,'GHz')# thetool.quantity(value, unit)
-            chansep=(freqs[-1]-freqs[0])/(numchan-1)
-            #fResolution = aU.create_casa_quantity(myqa,chansep,'GHz')
-            #fWidth = aU.create_casa_quantity(myqa,numchan*chansep,'GHz')
-            fResolution = myqa.quantity(chansep,'GHz')
-            fWidth = myqa.quantity(numchan*chansep,'GHz')
         P= weatherResult[0]['pressure']
         H= weatherResult[0]['humidity']
         T= weatherResult[0]['temperature']+273.15
-        #pwvmedian=aU.getMedianPWV(self.msname)[0]  # this returns 0, if no info is found - even ACA appear to have the main ASDM_CALWVR table saved
-        pwvmedian=self.renormMedianPWV(verbose=False) 
-        if pwvmedian == 0:
-            self.corrATM=False
-            # get the band and then set these from quartiles:
-            pwvmedian = self.usePWV[self.Band] # so at least it will make resonable plots
-            # set global correction of correctATM = False
-            # if we don't have the correct PWV the models are off
-
-        # sometimes weather values passed are zeros, even if going through the full weather code
+        # Sometimes weather values passed are zeros, even if going through the full weather code.
+        # In those cases, set to the default values. 
         if P == 0:
             P = 563.0
         if H == 0:
             H = 20.0
         if T == 0:
             T = 273.15    
-        
-        # note this is more or less from inside Todd's aU of CalcAtmTransmission
-        # from Plotbandpass3.py code
-        
-        myat=attool()
 
-        ## below is aU dependent 
-        #ATMresult = myat.initAtmProfile(humidity=H, temperature=aU.create_casa_quantity(myqa,T,"K"),
-        #                         altitude=aU.create_casa_quantity(myqa,5059,"m"),
-        #                         pressure=aU.create_casa_quantity(myqa,P,'mbar'),
-        #                         atmType=atmType,
-        #                         h0=aU.create_casa_quantity(myqa, h0,"km"),
-        #                         maxAltitude=aU.create_casa_quantity(myqa, maxAltitude,"km"),
-        #                         dP=aU.create_casa_quantity(myqa, dP,"mbar"),
-        #                         dPm=dPm)
+        # Get the median PWV. 
+        # The PWV measurements are taken before or after scans, so we create a timerange over
+        # which to look for those measurements and take the median of those found values. 
+        # If none are found, then we fall back to using the PWV for the Band from the 
+        # sensitivity calculator.
+        timerange = [scanTimes[0] - scanLength / 2., scanTimes[0] + scanLength/2.]
+        pwvmedian=self.renormMedianPWV(timerange, verbose=False) 
+        if pwvmedian == 0:
+            self.corrATM=False
+            # get the band and then set these from quartiles
+            pwvmedian = self.usePWV[self.Band] # so at least it will make resonable plots
+
+        # Need the inputs to be in a specific form (dictionary) which the quanta tool does for us.
+        myqa = qatool()
+
+        # Gather frequency information into the form we'll need to make the model.
+        # For Bands 9 and 10, the spectral window also has atmospheric contributions from the 
+        # image sideband which we must also calculate. 
+        if self.Band in [9,10]:
+            nbands = 2
+            freqs_SB, chansep_SB, center_SB, width_SB = self.getImageSBFreqs(ispw)
+            fCenter = myqa.quantity([reffreq, center_SB],'GHz')
+            chansep=(freqs[-1]-freqs[0])/(numchan-1)
+            fResolution = myqa.quantity([chansep, chansep_SB],'GHz')
+            fWidth = myqa.quantity([numchan*chansep, width_SB],'GHz')
+        else:
+            fCenter = myqa.quantity(reffreq,'GHz')
+            chansep=(freqs[-1]-freqs[0])/(numchan-1)
+            fResolution = myqa.quantity(chansep,'GHz')
+            fWidth = myqa.quantity(numchan*chansep,'GHz')
+
+        # Setup the CASA atmosphere tool and generate the model. 
+        # Note this is more or less from inside Todd's aU of CalcAtmTransmission
+        # from Plotbandpass3.py code
+        myat=attool()
         ATMresult = myat.initAtmProfile(humidity=H, temperature=myqa.quantity(T,"K"),
                                  altitude=myqa.quantity(5059,"m"),
                                  pressure=myqa.quantity(P,'mbar'),
@@ -3272,23 +3301,23 @@ class ACreNorm(object):
         # CASA 5 vs 6 check
         if type(ATMresult) == tuple:
             ATMresult = ATMresult[0]
-    
+        
+        # This sets the frequency information and the PWV measurement
         myat.initSpectralWindow(nbands,fCenter,fWidth,fResolution)
-        #myat.setUserWH2O(aU.create_casa_quantity(myqa,pwvmedian,'mm'))
         myat.setUserWH2O(myqa.quantity(pwvmedian,'mm'))
 
-        dry = pl.array(myat.getDryOpacitySpec(0)[1])
-        wet = pl.array(myat.getWetOpacitySpec(0)[1]['value'])
-        transmission = pl.exp(-airmass*(wet+dry))
+        # Now calculate the model based on inputs provided above and get the transmission out
+        dry = pl.array(myat.getDryOpacitySpec(0)[1]) # CO, O3, etc. 
+        wet = pl.array(myat.getWetOpacitySpec(0)[1]['value']) # water absorption
+        transmission = pl.exp(-airmass*(wet+dry)) # e^-tau; 
         if self.Band in [9,10]:
             dry_SB = pl.array(myat.getDryOpacitySpec(1)[1])
             wet_SB = pl.array(myat.getWetOpacitySpec(1)[1]['value'])
             transmission_SB = pl.exp(-airmass*(wet_SB+dry_SB))
 
-
+        # Close the tools
         myat.close()
         myqa.done()
-
 
         # caution, there is a netsideband affect - LSB and USB
         # if netsideband %2 == 0 then sense = 2, else 1
@@ -3300,12 +3329,6 @@ class ACreNorm(object):
         measFreqRef = mytb.getcol('MEAS_FREQ_REF')
         spwname=mytb.getcol('NAME')
         mytb.close()
-
-        orignalspws = range(len(measFreqRef)) ## think this is literally just a list
-        # I can't see how this is different if MS use ddid and i've got fdm SPW? 
-        # i.e. orignalspw[31] = 31 
-        # maybe I don't need as I HAVE the Spw ..
-
 
         sense=0
         # LSB are =1, USB are +2 - lower need reversing
@@ -3347,21 +3370,23 @@ class ACreNorm(object):
         #
         # AL - Is this the right order??? Souldn't it be Bandpass/Target?? Also, does it make sense to subtract the medians 
         #      first rather than multiplying the ratio and then subtract the median?
-        #    - I confirmed that by dividing out the atmo profiles of the target and bandpass from each AC spectrum before
-        #      doing the initial divide to create ToB, you get the same answer and using the Bandpass_atm/Target_atm as the ratio
-        #      here. So IF that is the right thing to do, it's equivilent. It SEEMS like it, if you want to account for the atmosphere
-        #      attenuating the power then you would divide that factor out. 
-        #           - except why does it show up as emission then?....
-        #    - I guess this more comes down to "how (mathematically) is the atmospheric transmission profile actually effecting the values of the AC 
-        #      spectrum?" The answer to that question should shed light on how to "undo" it's effects so that we can make the proper ratio.
+        #       - The order is indeed correct. The ACs are basically Tsys measurements which are a 
+        #         measure of the sky brightness which has an atmospheric contribution equal to e^tau.
+        #         Therefore, to mitigate this effect, we must multiply by e^-tau which we estimate
+        #         via the atmospheric model. 
+        #       - I do think that using the median causes ill effects and is the wrong thing to do.
+        #         It ends up changing the line peaks even away from the atm features. Therefore, I 
+        #         removed it. 
+        #    - There are additional effects that are still present because 1) the models aren't perfect
+        #      but 2) there are additional terms for when a line is located in an atm line because that
+        #      line is being attenuated by e^-tau. Currently, all we are doing is the simple first step.
         #ratioATM = self.atmtrans[fldnam][str(inspw)][str(inscan)] / self.atmtrans[calfld][str(inspw)][calscan]
         trg_atm = self.atmtrans[fldnam][str(inspw)][str(inscan)][str(infld)]
         cal_atm = self.atmtrans[calname][str(inspw)][str(calscan)]
-        ratioATM = cal_atm/trg_atm
-        #ratioATM = abs(trg_atm - cal_atm)/((trg_atm*cal_atm)/2.)
-        ratioMed = pl.array(pl.median(ratioATM))
+        ratioATM = trg_atm/cal_atm 
+        #ratioMed = pl.array(pl.median(ratioATM))
         # shift to baseline of average 1.0
-        ratioATM = ratioATM + (1.0 - ratioMed)
+        #ratioATM = ratioATM + (1.0 - ratioMed)
 
         for jcor in range(R.shape[0]):
             for lpant in range(R.shape[2]):
@@ -3372,10 +3397,11 @@ class ACreNorm(object):
                 # ATM profile we have to divide by BP ATM
                 # essntially we are multiplying R by (Tar_ATM/BP_ATM) - NB first test was doing just that and result were actually good
                 ## OLD FIRST WAY R[jcor,:,lpant] = R[jcor,:,lpant] * (self.atmtrans[fldnam][str(inspw)][str(inscan)] / self.atmtrans[calfld][str(inspw)][calscan])
+                R[jcor,:,lpant] = R[jcor,:,lpant] * ratioATM
 
                 # - improved method - set already R to ~1.0 median and the ATM ratio spectrum (done above), then correct (more notes below)
-                medR = pl.array(pl.median(R[jcor,:,lpant]))
-                R[jcor,:,lpant] = (R[jcor,:,lpant]+(1.0-medR)) * ratioATM
+                #medR = pl.array(pl.median(R[jcor,:,lpant]))
+                #R[jcor,:,lpant] = (R[jcor,:,lpant]+(1.0-medR)) * ratioATM                
 
         # LM notes:
 
@@ -3794,7 +3820,7 @@ class ACreNorm(object):
 
 
 
-    def renormMedianPWV(self, verbose=False):
+    def renormMedianPWV(self, myTimes=[0,99999999999], verbose=False):
         """
         Extracts the PWV measurements from the WVR on all antennas all times.  
         First, it tries to find the ASDM_CALWVR
@@ -3808,7 +3834,6 @@ class ACreNorm(object):
         the analysis utilities
         """
         pwvmean = 0  ## actually is the median 
-        myTimes = [0,99999999999]
         if (verbose):
             print("in renormMedianPWV with myTimes = ", myTimes)
         try:

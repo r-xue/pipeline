@@ -107,8 +107,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                         break
         return colname
 
-    def calculate(self, datatable: DataTable, origin_ms: MeasurementSet,
-                  ms: MeasurementSet, antenna_id: int, field_id: int,
+    def calculate(self, datatable: DataTable, ms: MeasurementSet,
+                  rowmap: dict, antenna_id: int, field_id: int,
                   spw_id: int, fit_order: Union[str, int],
                   edge: Tuple[int, int], deviation_mask: List[dict],
                   blparam: str) -> str:
@@ -119,8 +119,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         Args:
             datatable: DataTable instance
-            origin_ms: MS domain object of origin MS.
-            ms: MS domain object to calculate fitting parameters.
+            ms: MS domain object to calculate fitting parameters
+            rowmap: Row map dictionary between origin_ms and ms
             antenna_id: Antenna ID to process
             field_id: Field ID to process
             spw_id: Spw ID to process
@@ -197,9 +197,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         if DEBUG() or TRACE():
             LOG.debug('data column name is "{}"'.format(datacolumn))
-
-        # row ID map between vis (value) and origin_ms (key)
-        rowmap = make_row_map_between_ms(origin_ms, vis)
 
         # open blparam file (append mode)
         with open(blparam, 'a') as blparamfileobj:

@@ -149,12 +149,13 @@ class Circfeedpolcal(polarization.Polarization):
 
         tablesToAdd[0][2] = []  # Default for KCROSS table
         if self.inputs.mbdkcross:
-            # baseband_spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
-            baseband_spws = self.vla_basebands(science_windows_only=True)
+            _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
+
             addcallib = False
-            if len(baseband_spws) == 1:
+            if len(baseband_spwstr) == 1:
                 addcallib = True
-            for spws in baseband_spws:
+            for spws in baseband_spwstr:
                 LOG.info("Executing gaincal on baseband with spws={!s}".format(spws))
                 self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws,
                                 combine='scan,spw', addcallib=addcallib)
@@ -528,41 +529,16 @@ class Circfeedpolcal(polarization.Polarization):
 
         return fluxcalfieldname, fluxcalfieldid, fluxcal
 
-    def vla_basebands(self, science_windows_only=True):
-
-        vlabasebands = []
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-
-        banddict = collections.defaultdict(lambda: collections.defaultdict(list))
-
-        for spw in m.get_spectral_windows(science_windows_only=science_windows_only):
-            try:
-                band = spw.name.split('#')[0].split('_')[1]
-                baseband = spw.name.split('#')[1]
-                banddict[band][baseband].append({str(spw.id): (spw.min_frequency, spw.max_frequency)})
-            except Exception as ex:
-                LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
-
-        for band in banddict:
-            for baseband in banddict[band]:
-                spws = []
-                for spwitem in banddict[band][baseband]:
-                    # TODO: review if this relies on order of keys.
-                    spws.append(list(spwitem.keys())[0])
-                vlabasebands.append(','.join(spws))
-
-        return vlabasebands
-
     def do_spwmap(self):
         """
         Returns: spwmap for use with gaintable in callibrary (polcal and applycal)
         """
-
-        vlabasebands = self.vla_basebands(science_windows_only=False)
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
+        baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
         spwmap = []
-
-        for spwstr in vlabasebands:
+        for spwstr in baseband_spwstr:
             spwlist = [int(spw) for spw in spwstr.split(',')]
             basebandmap = [spwlist[0]] * len(spwlist)
             spwmap.extend(basebandmap)

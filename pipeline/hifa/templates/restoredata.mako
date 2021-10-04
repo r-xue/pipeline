@@ -7,7 +7,7 @@ def sanitise_value(value):
     return value
 
 def percentage_flagged(flag):
-    return "{:.1%}".format(flag['flagged'] / flag['total'])
+    return "{:.3%}".format(flag['flagged'] / flag['total'])
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>

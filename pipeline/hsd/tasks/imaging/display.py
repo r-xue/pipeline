@@ -1073,21 +1073,31 @@ class SDRmsMapDisplay(SDImageDisplay):
 
         rms = self.__get_rms()
         nvalid = self.__get_num_valid()
+
+        # threshold percentages (minimum and maximum)
+        beam_pix = self.beam_size * abs(self.ny/(self.dec_max - self.dec_min))
+        length = 4*(self.nx*self.ny)**0.5
+        thres_min = 1  # 1 percent
+        thres_max = (1.0 - (length*beam_pix/6.0)/(self.nx*self.ny))*100
+        
         npol_data = rms.shape[2]
-#         for pol in xrange(self.npol):
+#        for pol in xrange(self.npol):
         for pol in range(npol_data):
             rms_map = rms[:, :, pol] * (nvalid[:, :, pol] > 0)
             rms_map = numpy.flipud(rms_map.transpose())
-            #LOG.debug('rms_map=%s'%(rms_map))
+            rms_map_v = rms_map[~numpy.isnan(rms_map)]
+            rms_map_v = rms_map[numpy.nonzero(rms_map)]
+            if len(rms_map_v) == 0:
+                continue
+            # threshold values (minimum and maximum)
+            q_min, q_max = numpy.nanpercentile(rms_map_v, [thres_min, thres_max])
             # 2008/9/20 DEC Effect
-            image = plt.imshow(rms_map, interpolation='nearest', aspect=self.aspect, extent=Extent)
+            image = plt.imshow(rms_map, vmin=q_min, vmax=q_max, interpolation='nearest', aspect=self.aspect, extent=Extent)
             xlim = rms_axes.get_xlim()
             ylim = rms_axes.get_ylim()
 
             # colorbar
-            rmsmin = rms_map.min()
-            rmsmax = rms_map.max()
-            if not (rmsmin == rmsmax):
+            if not (q_min == q_max):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
                     if rms_colorbar is None:
                         rms_colorbar = plt.colorbar(shrink=0.8)
@@ -1095,7 +1105,7 @@ class SDRmsMapDisplay(SDImageDisplay):
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
                     else:
-                        rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
+                        rms_colorbar.mappable.set_clim((q_min, q_max))
                         rms_colorbar.draw_all()
                     # set_clim and draw_all clears y-label
                     rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)

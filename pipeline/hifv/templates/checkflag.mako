@@ -7,22 +7,26 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">RFI Flagging</%block>
 
-<p>Flag possible RFI using rflag and tfcrop; checkflagmode=${result[0].inputs['checkflagmode']}</p>
+<p>Flag possible RFI using rflag and tfcrop; checkflagmode=${repr(result[0].inputs['checkflagmode'])}.</p>
 
+% if result[0].inputs['checkflagmode'] == 'target-vla':
+If a file with continuum regions is specified, then the task will only flag those spw and frequency ranges per the pipeline spectral line heuristics.
+%endif
 
-% if result[0].inputs['checkflagmode'] in ('bpd','allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
 
 <%
-plot_caption = 'Calibrated bandpass after flagging'
-if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
-    plot_caption = 'Calibrated targets after flagging'
+is_summary_plots = False
+for ms in summary_plots:
+    is_summary_plots = bool(summary_plots[ms])
 %>
+
+% if result[0].inputs['checkflagmode'] in ('bpd-vla','allcals-vla', 'target-vla', 'bpd', 'allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging') and is_summary_plots:
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
-
+        
         <%def name="title()">
-            Checkflag Summary Plot
+            Calibrated amplitude vs Frequency
         </%def>
 
         <%def name="preamble()">
@@ -31,16 +35,16 @@ if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
         <%def name="mouseover(plot)">Summary window</%def>
 
         <%def name="fancybox_caption(plot)">
-            Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},  ${plot.parameters['version']} flagging
+            ${plot.parameters['plotms_args']['title']}
         </%def>
 
         <%def name="caption_title(plot)">
-            Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},  ${plot.parameters['version']} flagging
+            ${plot.parameters['plotms_args']['title']}
         </%def>
+
 </%self:plot_group>
 
 %endif
-
 
 
 % if result[0].inputs['checkflagmode'] == 'vlass-imaging' :
@@ -70,6 +74,11 @@ plot_caption = 'Percentage Flagged Map'
         </%def>
 </%self:plot_group>
 
+%endif
+
+
+% if result[0].inputs['checkflagmode'] in ( 'vlass-imaging', 'bpd-vla', 'allcals-vla', 'target-vla'):
+
 <%
 
 # these functions are defined in template scope so we have access to the flags
@@ -93,15 +102,25 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * (flagged2-flagged1) / total)
-    
 
 %>
 
-<h2 id="flagged_data_summary" class="jumptarget">Checkflag Summary</h2>
-
 % for ms in flags.keys():
 
-<h4>Measurement Set: ${os.path.basename(ms)}</h4>
+<h3 id="flagged_data_summary" class="jumptarget">Checkflag Summary</h3>
+
+<h4>${os.path.basename(ms)}</h4>
+
+% if result[0].inputs['checkflagmode'] in ( 'bpd-vla', 'allcals-vla', 'target-vla'):
+    <p>Summary Data Selection Parameter(s)</p>
+    <ul>
+        % for key, value in dataselect[ms].items():
+            % if value!='':
+                <li> ${key}: ${repr(value)}
+            %endif
+        % endfor
+    </ul>
+%endif
 
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
 	<caption></caption>

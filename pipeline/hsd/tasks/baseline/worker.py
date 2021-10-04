@@ -164,6 +164,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         vis = self.inputs.vis
         ms = self.inputs.ms
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
@@ -201,7 +202,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
             blparam_heuristic = self.Heuristics(switchpoly=self.inputs.switchpoly)
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, origin_ms, ms,
+            out_blparam = blparam_heuristic(self.datatable, ms, rowmap,
                                             antenna_id, field_id, spw_id,
                                             fit_order, formatted_edge,
                                             deviationmask, blparam)
@@ -234,6 +235,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
+        stats = {}
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
             LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
@@ -253,9 +255,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                     org_direction,
                                                                     grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
+                stats.update(plot_manager.baseline_quality_stat)
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list
+        results.outcome['baseline_quality_stat'] = stats
         return results
 
 
