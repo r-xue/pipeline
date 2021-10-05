@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None, pipelinemode=None,
-                dryrun=None, acceptresults=None):
+                dryrun=None, acceptresults=None, threshold=None):
 
     ##########################################################################
     #                                                                        #

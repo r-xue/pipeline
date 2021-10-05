@@ -13,13 +13,16 @@ Corrections can be input by hand, read from a file on disk, or in the future
 by querying an ALMA database service.
 
 The antenna positions file is in 'csv' format containing 6 comma-delimited
-columns as shown below. The default name of this file is 'antennapos.csv'.
+columns as shown below. This file should not include blank lines, including
+after the end of the last entry. The default name of this file is 'antennapos.csv'.
 
 Contents of example 'antennapos.csv' file:
 
   ms,antenna,xoffset,yoffset,zoffset,comment
   uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,&quot;No comment&quot;
   uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,&quot;No comment&quot;
+
+The offset values in this file are in meters. 
 
 The corrections are used to generate a calibration table which is recorded
 in the pipeline context and applied to the raw visibility data, on the fly to
@@ -129,6 +132,15 @@ provides an antenna position determination service.
             or reject them (False).
         </description>
         <value>True</value>
+    </param>
+
+    <param name="threshold" subparam="true" type="double">
+        <shortdescription>Highlight antenna position offsets greater than this value in the weblog.</shortdescription>
+        <description>Highlight antenna position offsets greater than this value in the weblog. Units are wavelengths and the default is 1.0.
+          
+          Example: threshold=1.0
+        </description>
+        <value>1.0</value>
     </param>
 
     <constraints>
