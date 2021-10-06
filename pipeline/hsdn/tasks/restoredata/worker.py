@@ -108,7 +108,7 @@ class SDAmpCalWorker(basetask.StandardTaskTemplate):
         name = result.vis
         if len(result.ms_factors) == 0:
             result.factors_ok = False
-            LOG.warn("No factor data is given for MS '%s'" % name)
+            LOG.warning("No factor data is given for MS '%s'" % name)
             return result
 
         ms = self.inputs.context.observing_run.get_ms(name)
@@ -117,7 +117,7 @@ class SDAmpCalWorker(basetask.StandardTaskTemplate):
             spwid = spw.id
             if spwid not in result.ms_factors:
                 result.factors_ok = False
-                LOG.warn("No factor data is given for Spw=%d of %s" % (spwid, name))
+                LOG.warning("No factor data is given for Spw=%d of %s" % (spwid, name))
                 continue
             ddid = ms.get_data_description(spw=spwid)
             pol_list = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
@@ -130,7 +130,7 @@ class SDAmpCalWorker(basetask.StandardTaskTemplate):
                     result.ms_factors[spwid][ant_name] = all_ant_factor
                 elif ant_name not in result.ms_factors[spwid]:
                     result.factors_ok = False
-                    LOG.warn("No factor data is given for Spw=%d, Ant=%s of %s" % (spwid, ant_name, name))
+                    LOG.warning("No factor data is given for Spw=%d, Ant=%s of %s" % (spwid, ant_name, name))
                     continue
                 is_anonymous_pol = 'I' in result.ms_factors[spwid][ant_name]
                 all_pol_factor = result.ms_factors[spwid][ant_name].pop('I') if is_anonymous_pol else {}
@@ -142,8 +142,8 @@ class SDAmpCalWorker(basetask.StandardTaskTemplate):
                     ok = self.__check_factor(result.ms_factors, spwid, ant_name, pol)
                     result.factors_ok &= ok
                     if not ok:
-                        LOG.warn("No factor data is given for Spw=%d, Ant=%s, Pol=%s of %s" %
-                                 (spwid, ant_name, pol, name))
+                        LOG.warning("No factor data is given for Spw=%d, Ant=%s, Pol=%s of %s" %
+                                    (spwid, ant_name, pol, name))
         # LOG information
         sep = "*"*40
         LOG.info("")

@@ -48,7 +48,7 @@ class CircfeedpolcalResults(polarization.PolarizationResults):
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
         if not self.final:
-            LOG.warn('No circfeedpolcal results to add to the callibrary')
+            LOG.warning('No circfeedpolcal results to add to the callibrary')
             return
 
         for calapp in self.final:
@@ -200,7 +200,7 @@ class Circfeedpolcal(polarization.Polarization):
         if self.inputs.leakage_poltype:
             poltype = self.inputs.leakage_poltype
             self.calstrategy = "Calibration Strategy OVERRIDE: User-defined leakage_poltype of " + str(poltype)
-            LOG.warn(self.calstrategy)
+            LOG.warning(self.calstrategy)
 
         # Determine the first POLANGLE FIELD
         polanglefield = ''
@@ -524,7 +524,7 @@ class Circfeedpolcal(polarization.Polarization):
 
             self._executor.execute(job)
         except Exception as ex:
-            LOG.warn("Exception: Problem with circfeedpolcal setjy. {!s}".format(str(ex)))
+            LOG.warning("Exception: Problem with circfeedpolcal setjy. {!s}".format(str(ex)))
             return None
 
         return fluxcalfieldname, fluxcalfieldid, fluxcal

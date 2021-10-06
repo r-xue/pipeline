@@ -69,7 +69,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             if 'Position correction ' in str(header['history']):
                 message = "Positions are already corrected in  {}".format(fitsname)
                 try:
-                    LOG.warn(message)
+                    LOG.warning(message)
                 except NameError:
                     print(message)
                 return None
@@ -117,7 +117,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
     else:
         message = 'Image {} does not exist. No position correction was done.'.format(fitsname)
         try:
-            LOG.warn(message)
+            LOG.warning(message)
         except NameError:
             print(message)
 

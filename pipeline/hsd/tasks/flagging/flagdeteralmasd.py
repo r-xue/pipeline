@@ -314,7 +314,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         # apply flag commands in flagpointing.txt
         if self.inputs.pointing:
             if not os.path.exists(self.inputs.filepointing):
-                LOG.warn(
+                LOG.warning(
                     'Pointing flag file \'{}\' was not found. Pointing '
                     'flagging for {} disabled.'
                     .format(self.inputs.filepointing, self.inputs.ms.basename)

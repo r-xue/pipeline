@@ -2033,8 +2033,8 @@ class ImageParamsHeuristics(object):
                 cond2 = bmaj > 2.0 * bmaj_median
                 if np.logical_or(cond1, cond2).any():
                     bad_psf_fit = True
-                    LOG.warn('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
-                             ' results for this cube carefully, there are likely data issues.' % (field, spw))
+                    LOG.warning('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
+                                ' results for this cube carefully, there are likely data issues.' % (field, spw))
             except:
                 pass
 

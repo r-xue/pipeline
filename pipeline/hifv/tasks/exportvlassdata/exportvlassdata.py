@@ -122,7 +122,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if hasattr(self.inputs.context, 'imaging_mode'):
             img_mode = self.inputs.context.imaging_mode
         else:
-            LOG.warn("imaging_mode property does not exist in context, alpha images will not be written.")
+            LOG.warning("imaging_mode property does not exist in context, alpha images will not be written.")
             img_mode = None
 
         images_list = []
@@ -328,7 +328,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if hasattr(self.inputs.context, 'imaging_mode'):
             img_mode = self.inputs.context.imaging_mode
         else:
-            LOG.warn("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
+            LOG.warning("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
             img_mode = None
 
         # SE Cont imaging mode export for VLASS
@@ -347,7 +347,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 self.selfcaltable = selfcal_result.caltable
             else:
                 self.selfcaltable = ''
-                LOG.warn('Unable to locate self-cal table.')
+                LOG.warning('Unable to locate self-cal table.')
 
             # Identify flagversion
             self.flagversion = os.path.basename(self.inputs.vis)+'.flagversions'
@@ -716,6 +716,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             hdulist.close()
 
         else:
-            LOG.warn('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
+            LOG.warning('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
 
         return

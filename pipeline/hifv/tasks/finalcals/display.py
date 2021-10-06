@@ -121,7 +121,7 @@ class finalDelaysPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -137,7 +137,7 @@ class finalDelaysPerAntennaChart(object):
                                                    'file': os.path.basename(real_figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack." + str(ex))
+                    LOG.warning("Unable to add plot to stack." + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -209,7 +209,7 @@ class finalphaseGainPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -223,7 +223,7 @@ class finalphaseGainPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -317,7 +317,7 @@ class finalbpSolAmpPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -333,7 +333,7 @@ class finalbpSolAmpPerAntennaChart(object):
                                                    'file': os.path.basename(real_figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -428,7 +428,7 @@ class finalbpSolPhasePerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -444,7 +444,7 @@ class finalbpSolPhasePerAntennaChart(object):
                                                    'file': os.path.basename(real_figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -518,7 +518,7 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -532,7 +532,7 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -615,7 +615,7 @@ class finalAmpTimeCalPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -629,7 +629,7 @@ class finalAmpTimeCalPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -706,7 +706,7 @@ class finalAmpFreqCalPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -722,7 +722,7 @@ class finalAmpFreqCalPerAntennaChart(object):
                                                    'file': os.path.basename(real_figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -796,7 +796,7 @@ class finalPhaseGainCalPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Problem with plotting " + filename + str(ex))
+                        LOG.warning("Problem with plotting " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -810,7 +810,7 @@ class finalPhaseGainCalPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack.  " + str(ex))
+                    LOG.warning("Unable to add plot to stack.  " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]

@@ -52,16 +52,16 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     If figfile is not a string, the file created will be <ms>.pwv.png.
     """
     if not os.path.exists(ms):
-        LOG.warn("Could not find  ms: %s" % ms)
+        LOG.warning("Could not find  ms: %s" % ms)
         return
 
     if not os.path.exists(ms+'/ASDM_CALWVR') and not os.path.exists(ms+'/ASDM_CALATMOSPHERE'):
         # Confirm that it is ALMA data
         observatory = getObservatoryName(ms)
         if observatory.find('ALMA') < 0 and observatory.find('ACA') < 0:
-            LOG.warn("This is not ALMA data.  No PWV plot made.")
+            LOG.warning("This is not ALMA data.  No PWV plot made.")
         else:
-            LOG.warn("Could not find either %s/ASDM_CALWVR or ASDM_CALATMOSPHERE" % ms)
+            LOG.warning("Could not find either %s/ASDM_CALWVR or ASDM_CALATMOSPHERE" % ms)
         return
 
     try:
@@ -71,7 +71,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         if observatory.find('ALMA') < 0 and observatory.find('ACA') < 0:
             LOG.info("This is not ALMA data.  No ASDM_CALWVR or ASDM_CALATMOSPHERE")
         else:
-            LOG.warn("Could not open %s/ASDM_CALWVR nor ASDM_CALATMOSPHERE" % ms)
+            LOG.warning("Could not open %s/ASDM_CALWVR nor ASDM_CALATMOSPHERE" % ms)
         return
 
     # Initialize plotting
@@ -161,7 +161,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     elif len(figfile) > 0:
         plt.savefig(figfile)
     else:
-        LOG.warn("Failed to create PWV plot")
+        LOG.warning("Failed to create PWV plot")
     plt.clf()
     plt.close()
 
@@ -183,7 +183,7 @@ def readPWVFromMS(vis):
     elif os.path.exists("%s/ASDM_CALATMOSPHERE" % vis):
         time, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
     else:
-        LOG.warn("Did not find ASDM_CALWVR nor ASDM_CALATMOSPHERE")
+        LOG.warning("Did not find ASDM_CALWVR nor ASDM_CALATMOSPHERE")
         return[[0], [1], [0]]
 
     return [time, pwv, antenna]
@@ -197,13 +197,13 @@ def readPWVFromASDM_CALATMOSPHERE(vis):
         if vis.find('.ms') < 0:
             vis += '.ms'
             if not os.path.exists(vis):
-                LOG.warn("Could not find measurement set")
+                LOG.warning("Could not find measurement set")
                 return
             elif not os.path.exists(vis+'/ASDM_CALATMOSPHERE'):
-                LOG.warn("Could not find ASDM_CALATMOSPHERE in the measurement set")
+                LOG.warning("Could not find ASDM_CALATMOSPHERE in the measurement set")
                 return
         else:
-            LOG.warn("Could not find measurement set")
+            LOG.warning("Could not find measurement set")
             return
 
     with casa_tools.TableReader(vis + "/ASDM_CALATMOSPHERE") as table:
@@ -226,7 +226,7 @@ def getObservatoryName(ms):
         with casa_tools.TableReader(obsTable) as table:
             myName = table.getcell('TELESCOPE_NAME')
     except:
-        LOG.warn("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
+        LOG.warning("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
         myName = ''
     return myName
 

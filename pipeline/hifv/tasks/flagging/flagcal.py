@@ -22,7 +22,7 @@ class FlagcalResults(basetask.Results):
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
         if not self.final:
-            LOG.warn('No flagcal results')
+            LOG.warning('No flagcal results')
             return
 
     def __repr__(self):

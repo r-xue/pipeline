@@ -489,7 +489,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     for spw in map(str, observed_spwids_list):
                                         valid_data[vis][field_intent][str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw, vislist=[vis])[field_intent]
                                         if not valid_data[vis][field_intent][str(spw)] and vis in observed_vis_list:
-                                            LOG.warn('Data for EB {}, field {}, spw {} is completely flagged.'.format(os.path.basename(vis), field_intent[0], spw))
+                                            LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
+                                                os.path.basename(vis), field_intent[0], spw))
                                         # Aggregated value per vislist (replace with lookup pattern later)
                                         if str(spw) not in valid_data[str(vislist)][field_intent]:
                                             valid_data[str(vislist)][field_intent][str(spw)] = valid_data[vis][field_intent][str(spw)]
@@ -573,7 +574,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
                             except Exception as e:
                                 # problem defining uvrange
-                                LOG.warn(e)
+                                LOG.warning(e)
                                 pass
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
@@ -635,7 +636,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                         except Exception as e:
                             # problem defining center
-                            LOG.warn(e)
+                            LOG.warning(e)
                             pass
                 else:
                     for field_intent in field_intent_list:
@@ -693,7 +694,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     max_y_size = imsizes[(field_intent[0], spwspec)][1]
                             except Exception as e:
                                 # problem defining imsize
-                                LOG.warn(e)
+                                LOG.warning(e)
                                 pass
 
                         if max_x_size == 1 or max_y_size == 1:
@@ -726,7 +727,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                   self.heuristics.nchan_and_width(field_intent=field_intent[1], spwspec=spwspec)
                             except Exception as e:
                                 # problem defining nchan and width
-                                LOG.warn(e)
+                                LOG.warning(e)
                                 pass
 
                 else:
@@ -792,9 +793,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                         no_cont_ranges = False
                         if (field_intent[1] == 'TARGET' and specmode == 'cont' and
                                 all([v == 'NONE' for v in spwsel_spwid_dict.values()])):
-                            LOG.warn('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
-                                     ' image from the full bandwidth from all spws, but this should be used with'
-                                     ' caution.')
+                            LOG.warning('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
+                                        ' image from the full bandwidth from all spws, but this should be used with'
+                                        ' caution.')
                             no_cont_ranges = True
 
                         for spwid in adjusted_spwspec.split(','):
@@ -802,16 +803,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if field_intent[1] == 'TARGET' and not no_cont_ranges:
                                 if spwsel_spwid == 'NONE':
                                     if specmode == 'cont':
-                                        LOG.warn('Spw {!s} will not be used in creating the aggregate continuum image'
-                                                 ' of {!s} because no continuum range was found.'
-                                                 ''.format(spwid, field_intent[0]))
+                                        LOG.warning('Spw {!s} will not be used in creating the aggregate continuum image'
+                                                    ' of {!s} because no continuum range was found.'
+                                                    ''.format(spwid, field_intent[0]))
                                     else:
-                                        LOG.warn('Spw {!s} will not be used for {!s} because no continuum range was'
-                                                 ' found.'.format(spwid, field_intent[0]))
+                                        LOG.warning('Spw {!s} will not be used for {!s} because no continuum range was'
+                                                    ' found.'.format(spwid, field_intent[0]))
                                         spwspec_ok = False
                                     continue
                                 #elif (spwsel_spwid == ''):
-                                #    LOG.warn('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
+                                #    LOG.warning('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
 
                             all_continuum = all_continuum and all_continuum_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
 
@@ -825,8 +826,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
                             if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
-                                LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE'
-                                         '' % spwsel_spwid_refer)
+                                LOG.warning('Frequency selection is specified in %s but must be in LSRK or SOURCE'
+                                            '' % spwsel_spwid_refer)
                                 # TODO: skip this field and/or spw ?
 
                             actual_spwspec_list.append(spwid)
@@ -857,8 +858,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 else:
                                     nbin = nbins_dict[spwspec]
                             except:
-                                LOG.warn('Could not determine binning factor for spw %s. Using default channel width.'
-                                         '' % adjusted_spwspec)
+                                LOG.warning('Could not determine binning factor for spw %s. Using default channel width.'
+                                            '' % adjusted_spwspec)
                                 nbin = -1
                         else:
                             nbin = -1

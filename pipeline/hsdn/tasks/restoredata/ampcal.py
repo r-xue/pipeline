@@ -72,7 +72,7 @@ class SDAmpCalResults(basetask.Results):
 
     def merge_with_context(self, context):
         if not self.final:
-            LOG.warn('No results to merge')
+            LOG.warning('No results to merge')
             return
 
         for calapp in self.final:
@@ -114,7 +114,7 @@ class SDAmpCal(basetask.StandardTaskTemplate):
         LOG.info('factors_list=%s' % factors_list)
 
         if len(factors_list) == 0:
-            LOG.warn('No factor data available')
+            LOG.warning('No factor data available')
             return SDAmpCalResults(vis=os.path.basename(inputs.vis), pool=[], reffile=inputs.reffile)
 
         # generate scaling factor dictionary

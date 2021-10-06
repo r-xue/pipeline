@@ -370,7 +370,8 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
-                            LOG.warn('RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+                            LOG.warning(
+                                'RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or raster_heuristic_ok is False:
@@ -525,7 +526,7 @@ class SDInspection(object):
 #                                  field_name=None):
 #         if fraction <= 0 or fraction > 1.0:
 #             raise ValueError("overlap fraction should be between 0.0 and 1.0")
-#         LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
+#         LOG.warning("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
 #                  " over long period.")
 #         match = False
 #         for group_key, group_desc in reduction_group.items():
@@ -571,8 +572,8 @@ def match_field_name(name1, name2):
 #         is_match = lambda s: re.match(pattern, s) is not None
         if re.match(pattern, suffix) is not None:
             if pattern == old_pattern:
-                LOG.warn("OFF source field identified using old field name heuristics. You may want to review field"
-                         " mapping carefully.")
+                LOG.warning("OFF source field identified using old field name heuristics. You may want to review field"
+                            " mapping carefully.")
             return True
 
     return False

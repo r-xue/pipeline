@@ -100,7 +100,7 @@ def read_fluxes_nodb(ms):
         try:
             source = ms.sources[int(source_id)]
         except Exception as e:
-            LOG.warn("Source index error with: {!s} ".format(source_id))
+            LOG.warning("Source index error with: {!s} ".format(source_id))
 
         # all elements must contain data to proceed
         if flux_text is None or frequency_text is None:

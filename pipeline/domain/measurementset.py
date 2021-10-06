@@ -1014,7 +1014,7 @@ class MeasurementSet(object):
                 baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
             except Exception as ex:
                 if warning:
-                    LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                    LOG.warning("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
                 else:
                     pass
 

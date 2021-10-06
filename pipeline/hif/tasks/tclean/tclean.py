@@ -511,8 +511,8 @@ class Tclean(cleanbase.CleanBase):
 
                 if inputs.intent == 'TARGET':
                     if (spwsel_spwid == 'NONE') and self.image_heuristics.warn_missing_cont_ranges():
-                        LOG.warn('No continuum frequency range information detected for %s, spw %s.' % (inputs.field,
-                                                                                                        spwid))
+                        LOG.warning('No continuum frequency range information detected for %s, spw %s.' % (inputs.field,
+                                                                                                           spwid))
 
                 if spwsel_spwid in ('ALL', '', 'NONE'):
                     if self.image_heuristics.is_eph_obj(inputs.field):
@@ -523,7 +523,8 @@ class Tclean(cleanbase.CleanBase):
                     _, spwsel_spwid_refer = spwsel_spwid.split()
 
                 if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
-                    LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE' % spwsel_spwid_refer)
+                    LOG.warning('Frequency selection is specified in %s but must be in LSRK or SOURCE' %
+                                spwsel_spwid_refer)
 
                 inputs.spwsel_lsrk['spw%s' % spwid] = spwsel_spwid
             inputs.spwsel_all_cont = all_continuum
@@ -908,7 +909,8 @@ class Tclean(cleanbase.CleanBase):
                     result.error = '%s/%s/spw%s clean error: no valid beams' % (inputs.field, inputs.intent, inputs.spw)
                     return result
                 elif bad_psf_channels.shape != (0,):
-                    LOG.warn('Found bad PSF fits for SPW %s in channels %s' % (inputs.spw, ','.join(map(str, bad_psf_channels))))
+                    LOG.warning('Found bad PSF fits for SPW %s in channels %s' %
+                                (inputs.spw, ','.join(map(str, bad_psf_channels))))
                     # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
                     # In the future, we might use the PIPE-375 method to calculate unskewed
                     # common beam in case of PSF fit problems.  For implementation details see

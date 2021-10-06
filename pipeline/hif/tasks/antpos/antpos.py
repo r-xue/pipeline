@@ -34,7 +34,7 @@ class AntposResults(basetask.Results):
         See :method:`~pipeline.api.Results.merge_with_context`
         """
         if not self.final:
-            LOG.warn('No antenna position results to merge')
+            LOG.warning('No antenna position results to merge')
             return
 
         for calapp in self.final:
@@ -166,7 +166,7 @@ class AntposInputs(vdp.StandardInputs):
         parameters = []
 
         if not os.path.exists(filename):
-            LOG.warn('Antenna position offsets file does not exist')
+            LOG.warning('Antenna position offsets file does not exist')
             return ','.join(antennas), parameters
 
         with open(filename, 'rt') as f:
