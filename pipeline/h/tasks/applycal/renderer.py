@@ -106,10 +106,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # it doesn't matter that the subpages dict is repeatedly redefined.
             # The only purpose of the returned dict is to map the vis to a
             # non-existing page, which will disable the link.
+
             plots, amp_vs_freq_subpages = self.create_plots(
                 context,
                 result,
-                applycal.AmpVsFrequencySummaryChart,
+                applycal.AmpVsFrequencyFieldSummaryChart,
                 intents
             )
 
@@ -136,7 +137,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots, amp_vs_uv_subpages = self.create_plots(
                 context,
                 result,
-                applycal.AmpVsUVSummaryChart,
+                applycal.AmpVsUVFieldSummaryChart,
                 intents
             )
 
@@ -633,7 +634,7 @@ class ApplycalAmpVsFreqPerAntSciencePlotRenderer(basetemplates.JsonPlotRenderer)
         Args:
             context: Pipeline context
             result:  Applycal Results
-            plots:   Liost of Plot instances
+            plots:   List of Plot instances
         """
         vis = utils.get_vis_from_plots(plots)
 
@@ -934,6 +935,7 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
     # sort and group the plots.
     spw_fn = lambda plot: plot.parameters['spw']
     intent_fn = lambda plot: plot.parameters['intent']
+    field_fn = lambda plot: plot.parameters['field']
 
     # First, group plots by spw
     plots_by_spw = sorted(plots, key=spw_fn)
@@ -951,28 +953,30 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
             # Store group iterator as a list
             spw_intent_plots = list(spw_intent_plots)  
 
-            # This should result in a single plot. If not, bail. Failsafe
-            # behaviour is to return original list of plots. It's better to
-            # have duplicates present than exceptions.
-            if len(spw_intent_plots) != 1:
-                LOG.warning('Plot deduplication cancelled. '
-                            'Could not process ambiguous plot for spw %s intent %s', spw, intent)
-                return plots
-            plot = spw_intent_plots[0]
+            # Try something new... does this fail if no fields? (i.e. need to move back in 'if')?
+            spw_intent_plots_by_field = sorted(spw_intent_plots, key=field_fn)
+            for field, spw_intent_field_plots in itertools.groupby(spw_intent_plots_by_field, field_fn):
+                spw_intent_field_plots = list(spw_intent_field_plots)
 
-            scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw)})
-            scan_ids = ','.join(str(s) for s in scan_ids)
-            if scan_ids not in plots_for_scan:
-                LOG.debug('Retaining plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
-                plots_for_scan[scan_ids] = plot
-            else:
-                LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
-                # intents are strings inside lists, e.g., ['BANDPASS']
-                old_intent = intent_fn(plots_for_scan[scan_ids])
-                new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
-                LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
-                plots_for_scan[scan_ids].parameters['intent'] = new_intent
-
+                # This should result in a single plot. If not, bail. Failsafe
+                # behaviour is to return original list of plots. It's better to
+                # have duplicates present than exceptions.
+                if len(spw_intent_field_plots) != 1:
+                    LOG.warning('Plot deduplication cancelled. '
+                           'Could not process ambiguous plot for spw %s intent %s field', spw, intent, field)
+                else: 
+                    plot = spw_intent_field_plots[0]
+                    scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw, field=field)})
+                    scan_ids = ','.join(str(s) for s in scan_ids)
+                    if scan_ids not in plots_for_scan:
+                        LOG.debug('Retaining plot for scan %s (spw=%s intent=%s field=%s)', scan_ids, spw, intent, field)
+                        plots_for_scan[scan_ids] = plot
+                    else:
+                        LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s field=%s)', scan_ids, spw, intent, field)
+                        # intents are strings inside lists, e.g., ['BANDPASS']
+                        old_intent = intent_fn(plots_for_scan[scan_ids])
+                        new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
+                        LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
+                        plots_for_scan[scan_ids].parameters['intent'] = new_intent 
         deduplicated.extend(plots_for_scan.values())
-
     return deduplicated
