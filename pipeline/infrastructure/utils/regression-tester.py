@@ -281,18 +281,19 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
-def test_uid___A002_Xe79954_X9137__procedure_hifa_calsurvey__regression():
+def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression():
     """Run ALMA cal+survey regression on a calibration survey test dataset
  
     Recipe name:                procedure_hifa_calsurvey
-    Dataset:                    uid___A002_Xe79954_X9137
-    Expected results version:   casa-6.2.1-2-pipeline-2021.3.0.6
+    Dataset:                    uid___A002_Xee1eb6_Xc58d_pipeline.ms
+    Expected results version:   casa-6.3.0-48-pipeline-2021.3.0.5
     """
+    input_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey/'
     pr = PipelineRegression(recipe='procedure_hifa_calsurvey.xml',
-                            input_dir = 'pl-regressiontest/uid___A002_Xe79954_X9137_calsurvey',
-                            visname='uid___A002_Xe79954_X9137.ms',
-                            expectedoutput=('pl-regressiontest/uid___A002_Xe79954_X9137_calsurvey/' +
-                                            'uid___A002_Xe79954_X9137.casa-6.2.1-2-pipeline-2021.3.0.6.results.txt'),
-                            output_dir='uid_A002_Xe79954_X9137_test')
+                            input_dir = input_directory,
+                            visname='uid___A002_Xee1eb6_Xc58d_pipeline_processed.ms',
+                            expectedoutput=(input_directory +
+                                           'uid___A002_Xee1eb6_Xc58d.casa-6.3.0-482-pipeline-2021.3.0.5.results.txt'),
+                            output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output')
  
     pr.run()
