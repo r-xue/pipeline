@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+
 # This script has to be run within the Git repository. It will inspect the
 # state of the current tree/branch in the workspace.
 
@@ -41,6 +42,11 @@ print ("\n");
 sub get_last_branch_tag () {
     my $gitbranch = shift;
     my $branchpattern = qr/^$gitbranch-\d+/;
+    if($gitbranch =~ /(^PIPE-(\d)+)/) {
+       $mungedbranch = $1 ;
+       $branchpattern = qr/$mungedbranch-\d+/;
+       #print ("$branchpattern\n");
+    }
     my $delim="-";
     return get_last_tag($gitbranch,$branchpattern,$delim)
 }
