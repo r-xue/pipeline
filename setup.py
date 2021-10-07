@@ -179,9 +179,6 @@ class MinifyCSSCommand(distutils.cmd.Command):
 class SubprocessScheduler:
     def __init__(self, concurrency=1):
         self._maxlen = concurrency
-        self.procs = []
-        self.outputs = []
-        self.returncodes = []
 
     def __enter__(self):
         return self
@@ -196,12 +193,10 @@ class SubprocessScheduler:
     def __join(self):
         if len(self.procs) > 0:
             list(map(lambda p: p.communicate(), self.procs))
-            # self.outputs.extend(map(lambda p: p.communicate(), self.procs))
             ret = list(map(lambda p: p.returncode, self.procs))
             self.procs.clear()
             if any([r != 0 for r in ret]):
                 raise RuntimeError('Failed to execute process')
-            # self.returncodes.extend(ret)
 
     def __update(self, process):
         self.procs.append(process)
@@ -209,12 +204,10 @@ class SubprocessScheduler:
         while len(self.procs) >= self._maxlen:
             p = self.procs.pop(0)
             p.communicate()
-            # self.outputs.append(p.communicate())
             r = p.returncode
             if r != 0:
                 self.__join()
                 raise RuntimeError('Failed to execute process')
-            # self.returncodes.append(r)
 
 
 class BuildMyTasksCommand(distutils.cmd.Command):
