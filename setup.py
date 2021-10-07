@@ -275,6 +275,9 @@ class BuildMyTasksCommand(distutils.cmd.Command):
                     os.remove(cli_init_py)
 
                 gotasks_dir = os.path.join(src_dir, 'gotasks')
+                if not os.path.exists(gotasks_dir):
+                    os.mkdir(gotasks_dir)
+
                 gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
                 # Remove old init module to avoid incompatible code and duplication
                 if os.path.exists(gotasks_init_py):
