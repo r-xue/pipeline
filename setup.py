@@ -179,6 +179,7 @@ class MinifyCSSCommand(distutils.cmd.Command):
 class SubprocessScheduler:
     def __init__(self, concurrency=1):
         self._maxlen = concurrency
+        self.procs = []
 
     def __enter__(self):
         return self
