@@ -845,7 +845,7 @@ class Executor(object):
         # ensure the casa commands log does not contain hardcoded paths
         # specific to where the pipeline ran.
         if os.path.isdir(self._context.output_dir):
-            job_str = re.sub('%s/' % self._context.output_dir, '', str(job))
+            job_str = re.sub(r'%s/' % self._context.output_dir, '', str(job))
         else:
             job_str = str(job)
 
@@ -928,7 +928,7 @@ def write_pipeline_casa_tasks(context):
 
     task_string = '\n'.join(['    %s' % t for t in pipeline_tasks])
     # replace the working directory with ''
-    task_string = re.sub('%s/' % context.output_dir, '', task_string)
+    task_string = re.sub(r'%s/' % context.output_dir, '', task_string)
 
     state_commands = []
     for o in (context.project_summary, context.project_structure, context.project_performance_parameters):

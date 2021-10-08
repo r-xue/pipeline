@@ -360,7 +360,7 @@ def plotms_get_xyrange(plotms_log):
         xyrange = [0, 0, 0, 0]
         idx = 0
         for log_line in plotms_log:
-            log_msg = re.split("\t+", log_line)[3]
+            log_msg = re.split(r"\t+", log_line)[3]
             if ' to ' in log_msg and '(flagged)' in log_msg and '(unflagged)' in log_msg:
                 LOG.debug(log_msg.rstrip())
                 # expected number formats: 1, 1.2, 1e3, 1.2e3, 1.2e+3, 1.2e-3, -1.2e-3, ...

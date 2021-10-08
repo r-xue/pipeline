@@ -203,8 +203,8 @@ class SDInspection(object):
             spw_domain = self.ms.spectral_windows[thisspw]
             #LOG.debug('spw.name=\'%s\''%(spw_domain.name))
             #LOG.debug('spw.intents=%s'%(spw_domain.intents))
-            if (re.search('^WVR#', spw_domain.name) is not None or
-                    re.search('#CH_AVG$', spw_domain.name) is not None or
+            if (re.search(r'^WVR#', spw_domain.name) is not None or
+                    re.search(r'#CH_AVG$', spw_domain.name) is not None or
                     'TARGET' not in spw_domain.intents):
                 continue
 
@@ -436,7 +436,7 @@ class SDInspection(object):
         science_windows = ms.get_spectral_windows(science_windows_only=True)
         tsys_windows = [spw for spw in ms.spectral_windows
                         if 'ATMOSPHERE' in spw.intents and
-                        re.search('(CH_AVG|SQLD|WVR)', spw.name) is None]
+                        re.search(r'(CH_AVG|SQLD|WVR)', spw.name) is None]
         LOG.debug('tsys_windows={spws}'.format(spws=[spw.id for spw in tsys_windows]))
         TOL = 1.0e-3
         for spwa in tsys_windows:

@@ -799,7 +799,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     plt.plot(freqs * 1e-9, noise, 'k-')
 
     # Plot continuum frequency ranges
-    fpattern = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+    fpattern = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
     cont_freq_ranges = fpattern.findall(image_robust_rms_and_spectra['cont_freq_ranges'].replace(';', ''))
     for cont_freq_range in cont_freq_ranges:
         fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))

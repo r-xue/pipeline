@@ -156,7 +156,7 @@ class ImageParamsHeuristics(object):
         elif os.path.isfile(linesfile):
             LOG.info('Using line frequency ranges from %s to calculate continuum frequency selections.' % (linesfile))
 
-            p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+            p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
             try:
                 line_regions = p.findall(open(linesfile, 'r').read().replace('\n', '').replace(';', '').replace(' ', ''))
             except Exception:
@@ -1259,7 +1259,7 @@ class ImageParamsHeuristics(object):
         spw_topo_chan_param_lists = []
         spw_topo_freq_param_dict = collections.defaultdict(dict)
         spw_topo_chan_param_dict = collections.defaultdict(dict)
-        p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+        p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
         total_topo_freq_ranges = []
         topo_freq_ranges = []
         num_channels = []

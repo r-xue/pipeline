@@ -845,7 +845,7 @@ class Tclean(cleanbase.CleanBase):
 
             # Determine fractional flux outside of mask for final image (only VLASS-SE-CONT imaging stage 1)
             outmaskratio = self.image_heuristics.get_outmaskratio(iteration, result.image + extension,
-                                                                  re.sub('\.image$', '.pb', result.image) + extension,
+                                                                  re.sub(r'\.image$', '.pb', result.image) + extension,
                                                                   new_cleanmask)
             result.set_outmaskratio(iteration, outmaskratio)
 

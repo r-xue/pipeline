@@ -142,7 +142,7 @@ class Fluxscale(basetask.StandardTaskTemplate):
 
         # fields in the fluxscale output dictionary are identified by a 
         # numeric field ID                  
-        for field_id in [key for key in output if re.match('\d+', key)]:
+        for field_id in [key for key in output if re.match(r'\d+', key)]:
             # flux values themselves are now held at the same dictionary
             # level as field names, spwidx, etc. The only way to identify
             # them is by a numeric key corresponding to the spw.
