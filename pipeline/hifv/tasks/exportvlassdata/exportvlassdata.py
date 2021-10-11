@@ -195,7 +195,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
             # PIPE-1182: Strip stage number off exported image fits files
             #   Look for "sX_Y.", where X and Y are one or more digits at the start of the image name
-            pattern = '^s\d+_\d*\.'
+            pattern = r'^s\d+_\d*\.'
             mm = re.search(pattern, image)
             if mm:
                 LOG.info(f'Removing "{mm.group()}" from "{image}" before exporting to FITS.')

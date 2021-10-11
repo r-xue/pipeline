@@ -26,7 +26,7 @@ DECrotation = 0
 
 DPISummary = 90
 
-dsyb = '$^\circ$'
+dsyb = r'$^\circ$'
 hsyb = ':'
 msyb = ':'
 

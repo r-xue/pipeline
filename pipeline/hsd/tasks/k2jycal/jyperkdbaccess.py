@@ -347,7 +347,7 @@ def vis_to_uid(vis):
         str -- Corresponding ASDM uid
     """
     basename = os.path.basename(vis.rstrip('/'))
-    pattern = '^uid___A[0-9][0-9][0-9]_X[0-9a-f]+_X[0-9a-f]+\.ms$'
+    pattern = r'^uid___A[0-9][0-9][0-9]_X[0-9a-f]+_X[0-9a-f]+\.ms$'
     if re.match(pattern, basename):
         return basename.replace('___', '://').replace('_', '/').replace('.ms', '')
     else:
