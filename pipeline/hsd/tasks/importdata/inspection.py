@@ -25,9 +25,8 @@ LOG = infrastructure.get_logger(__name__)
 class SDInspection(object):
     """Inspection class for hsd_importdata."""
 
-    def __init__(self, context: Context, table_name: str, ms: MeasurementSet = None):
-        """
-        Initialise SDInspection class.
+    def __init__(self, context: Context, table_name: str, ms: MeasurementSet=None):
+        """Initialise SDInspection class.
 
         Args:
             context: pipeline context
@@ -38,9 +37,8 @@ class SDInspection(object):
         self.table_name = table_name
         self.ms = ms
 
-    def execute(self, dry_run: bool = True) -> Union[List[MSReductionGroupDesc], Dict]:
-        """
-        Execute inspection process.
+    def execute(self, dry_run: bool = True) -> Tuple[List[MSReductionGroupDesc], Dict[str, Union[str, Dict]]]:
+        """Execute inspection process.
 
         This method calls execute method of reader.py.
 

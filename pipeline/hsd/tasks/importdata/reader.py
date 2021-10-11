@@ -33,7 +33,7 @@ def get_value_in_deg(quantity: Dict[str, Any]) -> float:
     Args:
         quantity: value for convert
     Returns:
-        converted value
+        float: converted value
     """
     qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
@@ -45,7 +45,7 @@ def mjdsec2str(t: float) -> str:
     Args:
         t: datetime
     Returns:
-        formated datetime string
+        str: formated datetime
     """
     qa = casa_tools.quanta
     return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
@@ -59,7 +59,7 @@ def get_state_id(ms:MeasurementSet, spw:str, intent:str) -> numpy.array:
         spw: spectrum window
         intent: specify intent for obsmode
     Returns:
-        state IDs
+        array: state IDs
     """
     states = (s for s in ms.states if intent in s.intents)
     obs_modes = set()
@@ -83,7 +83,7 @@ def merge_timerange(timerange_list: List[List]) -> List[List]:
     Args:
         timerange_list: list of timerange
     Returns:
-        a list of merged time range
+        List: merged time ranges
     """
     timegap_list = numpy.asarray([l1[0] - l0[1] for l0, l1 in zip(timerange_list, timerange_list[1:])])
     LOG.info(f'timegap_list is {timegap_list}')
@@ -120,7 +120,7 @@ def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
     Args:
         commands: List of (spw, antenna, timerange) string tuples.
     Returns:
-        Merged list of (spw, antenna, timerange) string tuples.
+        List: Merged list of (spw, antenna, timerange) string tuples.
     """
     LOG.debug('INPUT: %s', commands)
     # merge command using utils.dict_merge
@@ -289,7 +289,7 @@ class MetaDataReader(object):
         """Property:name.
         
         Returns:
-            property of this class:name
+            str: ms.name
         """
         return self.ms.name
 
@@ -297,7 +297,7 @@ class MetaDataReader(object):
         """Return datatable.
         
         Returns:
-            an object of DataTable
+            DataTable: self.datatable
         """
         return self.datatable
 
@@ -305,7 +305,7 @@ class MetaDataReader(object):
         """Get target spectral window.
 
         Returns:
-            List of spectral window
+            List: spectral windows
         """
         if not hasattr(self, 'name'):
             return []
@@ -318,7 +318,7 @@ class MetaDataReader(object):
         """Get target data description.
 
         Returns:
-            array of data description id
+            array: data description ids
         """
         science_windows = self.detect_target_spw()
         ms = self.ms
@@ -400,11 +400,11 @@ class MetaDataReader(object):
 
         return self.invalid_pointing_data
 
-    def generate_flagdict_for_uniform_rms(self) -> List[int]:
+    def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple, numpy.array]:
         """Apply flagging heuristics.
 
         Returns:
-            Dict: dictionary contains list of row IDs for datatable
+            Dict: contains list of row IDs for datatable
         """
         # keys for dictionary are (spw_id, antenna_id) tuples
         flagdict = rasterutil.flag_raster_map(self.datatable)
@@ -454,7 +454,7 @@ class MetaDataReader(object):
         cmd_merged = merge_flagcmd(cmdlist)
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
-    def execute(self, dry_run: bool = True) -> Dict:
+    def execute(self, dry_run: bool = True) -> Dict[str, Union[str, Dict]]:
         """Execute reading MeasurementSet and sub tables into datatable.
 
         Args:
@@ -883,8 +883,7 @@ class MetaDataReader(object):
         return org_directions
 
     def _get_outref(self) -> str:
-        """
-        Get direction reference for target.
+        """Get direction reference for target.
 
         Returns:
             str: direction reference

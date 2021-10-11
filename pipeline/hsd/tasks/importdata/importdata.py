@@ -15,6 +15,7 @@ import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain.observingrun import ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.tasks.common.inspection_util import merge_reduction_group
 from pipeline.infrastructure import task_registry
@@ -27,10 +28,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class SDImportDataInputs(importdata.ImportDataInputs):
-    """
-    Class of inputs of sdimportdata.
+    """Class of inputs of SDImportData.
 
-    This class extends importdata.ImportDataInputs .
+    This class extends importdata.ImportDataInputs.
     """
 
     asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
@@ -38,12 +38,11 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
 
-    def __init__(self, context: Context = None, vis: str = None, output_dir: str = None, asis: str = None,
-                 process_caldevice: bool = None, session: str = None, overwrite: bool = None, nocopy: bool = None,
-                 bdfflags: bool = None, save_flagonline: bool = None, lazy: bool = None,
-                 with_pointing_correction: bool = None, createmms: str = None, ocorr_mode: str = None):
-        """
-        Initialise SDImportDataInputs class.
+    def __init__(self, context: Context=None, vis: str=None, output_dir: str=None, asis: str=None,
+                 process_caldevice: bool=None, session: str=None, overwrite: bool=None, nocopy: bool=None,
+                 bdfflags: bool=None, save_flagonline: bool=None, lazy: bool=None,
+                 with_pointing_correction: bool=None, createmms: str=None, ocorr_mode: str=None):
+        """Initialise SDImportDataInputs class.
 
         Args:
             context: pipeline context
@@ -70,8 +69,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
 
 
 class SDImportDataResults(basetask.Results):
-    """
-    SDImportDataResults is an equivalent class with ImportDataResults.
+    """SDImportDataResults is an equivalent class with ImportDataResults.
 
     Purpose of SDImportDataResults is to replace QA scoring associated
     with ImportDataResults with single dish specific QA scoring, which
@@ -82,17 +80,15 @@ class SDImportDataResults(basetask.Results):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses: List[MeasurementSet] = None, reduction_group_list: List[MSReductionGroupDesc] = None, 
-                 datatable_prefix: str = None, setjy_results: List[FluxMeasurement] = None, 
-                 org_directions: Dict[str, str] = None):
-        """
-        Initialise SDImportDataResults class.
+    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None, 
+                 datatable_prefix: str=None, setjy_results: List[FluxMeasurement]=None, org_directions: Dict[str, str]=None):
+        """Initialise SDImportDataResults class.
         
         Args:
             mses: list of MeasurementSet domain objects
             reduction_group_list: list of MSReductionGroupDesc
             datatable_prefix: table name prefix of MeasurementSet
-            setjy_results: the flux results generated from Source.xml.
+            setjy_results: the flux results generated from Source.xml
             org_directions: dict of Direction objects of the origin
         """
         super(SDImportDataResults, self).__init__()
@@ -105,8 +101,7 @@ class SDImportDataResults(basetask.Results):
         self.results = importdata.ImportDataResults(mses=mses, setjy_results=setjy_results)
 
     def merge_with_context(self, context: Context):
-        """
-        Override method of basetask.Results.merge_with_context.
+        """Override method of basetask.Results.merge_with_context.
 
         Args:
             context: pipeline context
@@ -116,19 +111,22 @@ class SDImportDataResults(basetask.Results):
         context.observing_run.ms_datatable_name = self.datatable_prefix
         context.observing_run.org_directions = self.org_directions
 
-    def __merge_reduction_group(self, observing_run, reduction_group_list):
-        """
-        Call merge_reduction_group.
+    def __merge_reduction_group(self, observing_run:ObservingRun, reduction_group_list:List[MSReductionGroupDesc]):
+        """Call merge_reduction_group.
 
         Args:
             observing_run: pipeline.domain.observingrun.ObservingRun object
-            reduction_group_list: list of MSDeductionGroupDesc
+            reduction_group_list: list of MSReductionGroupDesc
         """
         for reduction_group in reduction_group_list:
             merge_reduction_group(observing_run, reduction_group)
 
-    def __repr__(self):
-        """Override of __repr__."""
+    def __repr__(self) -> str:
+        """Override of __repr__.
+        
+        Returns:
+            str: repr string
+        """
         return 'SDImportDataResults:\n\t{0}'.format(
                 '\n\t'.join([ms.name for ms in self.mses]))
 
@@ -136,8 +134,7 @@ class SDImportDataResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hsd_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class SDImportData(importdata.ImportData):
-    """
-    Data import execution task of SingleDish.
+    """Data import execution task of SingleDish.
 
     This class extends importdata.ImportData class, and methods execute main logics depends on it.
     """
@@ -145,8 +142,7 @@ class SDImportData(importdata.ImportData):
     Inputs = SDImportDataInputs
 
     def prepare(self, **parameters: Dict[str, Any]) -> SDImportDataResults:
-        """
-        Prepare job requests for execution.
+        """Prepare job requests for execution.
 
         Args:
             parameters: the parameters to pass through from the superclass.
@@ -227,14 +223,17 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
     Inputs = HpcSDImportDataInputs
     Task = SDImportData
 
-    def __init__(self, inputs):
-        """Initialize HpcSDImportData class."""
+    def __init__(self, inputs:HpcSDImportDataInputs):
+        """Initialize HpcSDImportData class.
+        
+        Args:
+            inputs: HpcSDImportDataInputs
+        """
         super(HpcSDImportData, self).__init__(inputs)
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis, exception) -> basetask.FailedTaskResults:
-        """
-        Return result when exception occured on pararellization.
+        """Return result when exception occured on pararellization.
 
         Args:
             vis: List of input visibility data
