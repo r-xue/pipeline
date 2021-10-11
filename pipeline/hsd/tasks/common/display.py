@@ -189,6 +189,26 @@ class SingleDishDisplayInputs(object):
 class SpectralImage(object):
     """Representation of four-dimensional spectral image."""
 
+    @property
+    def data(self):
+        """Retrun image data."""
+        if hasattr(self, 'imagename') and self.imagename:
+            with casa_tools.ImageReader(self.imagename) as ia:
+                data = ia.getchunk()
+        else:
+            data = np.zeros([], dtype=float)
+        return data
+
+    @property
+    def mask(self):
+        """Return image mask."""
+        if hasattr(self, 'imagename') and self.imagename:
+            with casa_tools.ImageReader(self.imagename) as ia:
+                mask = ia.getchunk(getmask=True)
+        else:
+            mask = np.zeros([], dtype=bool)
+        return mask
+
     def __init__(self, imagename: str) -> None:
         """Construct SpectralImage instance.
 
@@ -196,14 +216,13 @@ class SpectralImage(object):
             imagename: Name of the image.
         """
         qa = casa_tools.quanta
+        self.imagename = imagename
         # read data to storage
         with casa_tools.ImageReader(imagename) as ia:
             self.image_shape = ia.shape()
             coordsys = ia.coordsys()
             self._load_coordsys(coordsys)
             coordsys.done()
-            self.data = ia.getchunk()
-            self.mask = ia.getchunk(getmask=True)
             bottom = ia.toworld(np.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
             top = ia.toworld(self.image_shape - 1, 'q')['quantity']
             direction_keys = ['*{}'.format(x + 1) for x in self.id_direction]
@@ -362,6 +381,7 @@ class SpectralImage(object):
 
 class SDImageDisplayInputs(SingleDishDisplayInputs):
     """Manages input data for plotter classes for single dish images."""
+    MAP_MOMENT = 8
 
     def __init__(self,
                  context: infrastructure.launcher.Context,
@@ -373,11 +393,17 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
             result: Pipeline task execution result.
         """
         super(SDImageDisplayInputs, self).__init__(context, result)
+        self.image = SpectralImage(self.imagename)
 
     @property
     def imagename(self) -> str:
         """Return name of the single dish image."""
         return self.result.outcome['image'].imagename
+
+    @property
+    def moment_imagename(self) -> str:
+        """Return name of the moment image."""
+        return self.imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
 
     @property
     def spw(self) -> int:
@@ -501,6 +527,14 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
 
+    def get_moment_image_instance(self) -> Optional[SpectralImage]:
+        """Return SpectralImage instance generated from moment image."""
+        if os.path.exists(self.moment_imagename):
+            v = SpectralImage(self.moment_imagename)
+        else:
+            v = None
+        return v
+
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     """Base plotter class for single-dish calibration tasks."""
@@ -564,17 +598,17 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
             inputs: Inputs instance.
         """
         self.inputs = inputs
-        self.context = self.inputs.context
-        self.stage_dir = self.inputs.stage_dir
-        self.image = None
+        # self.context = self.inputs.context
+        # self.stage_dir = self.inputs.stage_dir
+        # self.image = None
         self.imagename = self.inputs.imagename
-        self.spw = self.inputs.spw
-        self.antenna = self.inputs.antenna
-        self.vis = self.inputs.vis
+        # self.spw = self.inputs.spw
+        # self.antenna = self.inputs.antenna
+        # self.vis = self.inputs.vis
 
     def init(self) -> None:
         """Initialize plotter using specifiec image."""
-        self.image = SpectralImage(self.imagename)
+        # self.image = SpectralImage(self.imagename)
         qa = casa_tools.quanta
         self.nchan = self.image.nchan
         self.nx = self.image.nx
@@ -607,6 +641,36 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
 
         # 2008/9/20 Dec Effect has been taken into account
         self.aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
+
+    @property
+    def context(self):
+        """Return Pipeline context."""
+        return self.inputs.context
+
+    @property
+    def stage_dir(self):
+        """Return weblog subdirectory."""
+        return self.inputs.stage_dir
+
+    @property
+    def image(self):
+        """Return SpectralImage instance."""
+        return self.inputs.image
+
+    @property
+    def spw(self):
+        """Return spw."""
+        return self.inputs.spw
+
+    @property
+    def antenna(self):
+        """Return antenna."""
+        return self.inputs.antenna
+
+    @property
+    def vis(self):
+        """Return MS name."""
+        return self.inputs.vis
 
     @property
     def data(self) -> Optional[np.ndarray]:

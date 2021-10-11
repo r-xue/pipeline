@@ -114,10 +114,10 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
         plot_list = []
 
-#         masked_data = self.data * self.mask
+        data = self.data
+        mask = self.mask
         for pol in range(self.npol):
-#             Total = masked_data.take([pol], axis=self.id_stokes).squeeze()
-            Total = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+            Total = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
             Total = numpy.flipud(Total.transpose())
             tmin = Total.min()
             tmax = Total.max()
@@ -200,7 +200,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
 class SDMomentMapDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8911
-    MAP_MOMENT = 8
+    # MAP_MOMENT = 8
     MAP_TITLE = "Max Intensity Map"
 
     def __init__(self, inputs):
@@ -208,14 +208,14 @@ class SDMomentMapDisplay(SDImageDisplay):
     #         if hasattr(self.inputs, 'momentmap_name'):
     #             self.imagename = self.inputs.momentmap_name
     #         else:
-        self.imagename = self.inputs.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
+        # self.imagename = self.inputs.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
 
     def init(self):
-        if os.path.exists(self.imagename):
-            os.system('rm -rf %s'%(self.imagename))
-        job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.MAP_MOMENT], outfile=self.imagename)
+        if os.path.exists(self.inputs.moment_imagename):
+            os.system('rm -rf %s'%(self.inputs.moment_imagename))
+        job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.inputs.MAP_MOMENT], outfile=self.inputs.moment_imagename)
         job.execute(dry_run=False)
-        assert os.path.exists(self.imagename)
+        assert os.path.exists(self.inputs.moment_imagename)
         super(self.__class__, self).init()
 
     def plot(self):
@@ -255,8 +255,12 @@ class SDMomentMapDisplay(SDImageDisplay):
 
         plot_list = []
 
+        image = self.inputs.get_moment_image_instance()
+        assert image is not None
+        data = image.data
+        mask = image.mask
         for pol in range(self.npol):
-            masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+            masked_data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
             Total = numpy.flipud(masked_data.transpose())
             del masked_data
 
@@ -540,10 +544,12 @@ class SDSparseMapDisplay(SDImageDisplay):
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
 
         # loop over pol
+        data = self.data
+        mask = self.mask
         for pol in range(self.npol):
             Plot = numpy.zeros((num_panel, num_panel, (chan1 - chan0)), numpy.float32) + NoData
-            TotalSP = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0, 1))
-            isvalid = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
+            TotalSP = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0, 1))
+            isvalid = numpy.any(mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
             Nsp = sum(isvalid.flatten())
             LOG.info('Nsp=%s' % Nsp)
             TotalSP /= Nsp
@@ -557,7 +563,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                     y0 = y * STEP
                     y1 = (y + 1) * STEP
                     valid_index = isvalid[x0:x1, y0:y1].nonzero()
-                    chunk = self._get_array_chunk(self.data, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes) * self._get_array_chunk(self.mask, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes)
+                    chunk = self._get_array_chunk(data, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes) * self._get_array_chunk(mask, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes)
                     valid_sp = chunk[valid_index[0], valid_index[1], :]
                     Plot[x][y] = valid_sp.mean(axis=0)
                     del valid_index, chunk, valid_sp
@@ -775,6 +781,8 @@ class SDChannelMapDisplay(SDImageDisplay):
         Sp_integ = self.__get_integrated_spectra()
         # loop over detected lines
         ValidCluster = 0
+        data = self.data
+        mask = self.mask
         for line_window in line_list:
             # shift channel according to the edge parameter
             ChanC = int(line_window[0] + 0.5 - self.edge[0])
@@ -833,7 +841,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             for pol in range(self.npol):
                 plotted_objects = []
 
-                masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+                masked_data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
 
                 # Integrated Spectrum
                 t0 = time.time()
@@ -1289,14 +1297,16 @@ class SDSpectralMapDisplay(SDImageDisplay):
         reference_data = self.context.observing_run.measurement_sets[self.inputs.msid_list[0]]
         is_baselined = reference_data.get_data_column(DataType.BASELINED) is not None
 
+        data = self.data
+        mask = self.mask
         for pol in range(self.npol):
-            data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+            data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
             Npanel = 0
 
             # to eliminate max/min value due to bad pixel or bad fitting,
             #  1/10-th value from max and min are used instead
 #             valid_index = numpy.where(self.num_valid_spectrum[:,:,pol] > 0)
-            mask2d = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
+            mask2d = numpy.any(mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
             valid_index = mask2d.nonzero()
             valid_data = data[valid_index[0], valid_index[1], chan0:chan1]
             ListMax = valid_data.max(axis=1)
@@ -1396,6 +1406,15 @@ class SDSpectralMapDisplay(SDImageDisplay):
 class SDSpectralImageDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8910
 
+    def __plot(self, display_cls, prologue=None, epilogue=None):
+        worker = display_cls(self.inputs)
+        if prologue:
+            prologue(worker)
+        plot_list = worker.plot()
+        if epilogue:
+            epilogue(worker)
+        return plot_list
+
     @casa5style_plot
     def plot(self):
         if ShowPlot:
@@ -1410,28 +1429,32 @@ class SDSpectralImageDisplay(SDImageDisplay):
 
         plot_list = []
         t0 = time.time()
-        worker = SDSparseMapDisplay(self.inputs)
-        worker.enable_atm()
-        plot_list.extend(worker.plot())
+        plot_list.extend(
+            self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
+        )
         t1 = time.time()
-        worker = SDChannelMapDisplay(self.inputs)
-        plot_list.extend(worker.plot())
+        LOG.debug('sparse_map: elapsed time %s sec'%(t1-t0))
+        plot_list.extend(
+            self.__plot(SDChannelMapDisplay)
+        )
         t2 = time.time()
+        LOG.debug('channel_map: elapsed time %s sec'%(t2-t1))
         # skip spectral map (detailed profile map) if the data is NRO
         if not self.inputs.isnro:
-            worker = SDSpectralMapDisplay(self.inputs)
-            plot_list.extend(worker.plot())
+            plot_list.extend(
+                self.__plot(SDSpectralMapDisplay)
+            )
         t3 = time.time()
-        worker = SDRmsMapDisplay(self.inputs)
-        plot_list.extend(worker.plot())
-        t4 = time.time()
-        worker = SDMomentMapDisplay(self.inputs)
-        plot_list.extend(worker.plot())
-        t5 = time.time()
-        LOG.debug('sparse_map: elapsed time %s sec'%(t1-t0))
-        LOG.debug('channel_map: elapsed time %s sec'%(t2-t1))
         LOG.debug('spectral_map: elapsed time %s sec'%(t3-t2))
+        plot_list.extend(
+            self.__plot(SDRmsMapDisplay)
+        )
+        t4 = time.time()
         LOG.debug('rms_map: elapsed time %s sec'%(t4-t3))
+        plot_list.extend(
+            self.__plot(SDMomentMapDisplay)
+        )
+        t5 = time.time()
         LOG.debug('moment_map: elapsed time %s sec'%(t5-t4))
 
         # contamination plots
