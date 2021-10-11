@@ -1,26 +1,55 @@
+"""Inspection module for importdata."""
+
 import os
 import re
+from typing import Any, Dict, List, Set, Tuple, Union
 
 import numpy
-
 import pipeline.infrastructure as infrastructure
+from pipeline.domain.datatable import DataTableImpl
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.hsd.tasks.common.inspection_util import (inspect_reduction_group,
+                                                       set_beam_size)
 # import pipeline.domain.singledish as singledish
 from pipeline.infrastructure import casa_tools
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.infrastructure.launcher import Context
+
 from ... import heuristics
 from . import reader
-from pipeline.hsd.tasks.common.inspection_util import inspect_reduction_group, set_beam_size
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDInspection(object):
-    def __init__(self, context, table_name, ms=None):
+    """Inspection class for hsd_importdata."""
+
+    def __init__(self, context: Context, table_name: str, ms: MeasurementSet = None):
+        """
+        Initialise SDInspection class.
+
+        Args:
+            context: pipeline context
+            table_name: table name for inspection
+            ms: MeasurementSet object for inspection
+        """
         self.context = context
         self.table_name = table_name
         self.ms = ms
 
-    def execute(self, dry_run=True):
+    def execute(self, dry_run: bool = True) -> Union[List[MSReductionGroupDesc], Dict]:
+        """
+        Execute inspection process.
+
+        This method calls execute method of reader.py.
+
+        Args:
+            dry_run: dry run flag
+        Return:
+            reduction_group: list of MSReductionGroupDesc
+            org_directions: dict of org_direction
+        """
         if dry_run:
             return None
 
@@ -175,7 +204,18 @@ class SDInspection(object):
 # 
 #         return reduction_group
 
-    def __select_data(self, datatable, ms_ant_map, startrow=0, nrow=-1):
+    def __select_data(self, datatable: DataTableImpl, ms_ant_map: Dict[int, MeasurementSet], 
+                      startrow: int=0, nrow: int=-1) -> Tuple[Dict[int, Set[int]], Dict[int, Set[int]], Dict[int, Set[int]]]:
+        """Get specified data from datatable.
+
+        Args:
+            datatable: DataTable
+            ms_ant_map: not use
+            startrow: start row of DataTable to get data
+            nrow: end of range of row
+        Returns:
+            Dict of antenna id/spectral window/field id
+        """
         ms_name = self.ms.name
         filename = datatable.getkeyword('FILENAME')
         assert os.path.basename(ms_name) == os.path.basename(filename)
@@ -222,7 +262,20 @@ class SDInspection(object):
 
         return by_antenna, by_spw, by_field
 
-    def _group_data(self, datatable, position_group_id, time_group_id_small, time_group_id_large, startrow=0, nrow=-1):
+    def _group_data(self, datatable: DataTableImpl, position_group_id: int, time_group_id_small: int, time_group_id_large: int,
+                    startrow: int=0, nrow: int=-1) -> Dict[str,Union[numpy.array,Dict[int,Any]]]:
+        """Get group data from DataTable.
+
+        Args:
+            datatable: DataTable
+            position_group_id: position group id
+            time_group_id_small: time group range id, min
+            time_group_id_large: time group range id, max
+            startrow: start row number to read
+            nrow: row count to read
+        Returns:
+            Dict of grouping
+        """
         ms_ant_map = {}
         id_ant_map = {}
         ant_offset = 0
@@ -427,6 +480,7 @@ class SDInspection(object):
         return grouping_result
 
     def _inspect_calibration_strategy(self):
+        """Inspect calibration strategy and set it to MeasurementSet."""
         ms = self.ms
         tsys_transfer = []
         calibration_type_heuristic = heuristics.CalibrationTypeHeuristics()
@@ -543,12 +597,20 @@ class SDInspection(object):
 #         return match
 
 
-def match_field_name(name1, name2):
+def match_field_name(name1: str, name2: str) -> bool:
     """
-    Returns True if two (field) names match search patterns, i.e.,
+    Return True if two (field) names match search patterns.
+    
+    i.e.,
     either (name2 == name1 + pattern) or (name1 == name2 + pattern).
     Otherwise, returns False.
     Note the method returns False for the exact match, i.e., name1 == name2.
+
+    Args:
+        name1: matching string 1
+        name2: matching string 2
+    Returns:
+        boolean matched them
     """
     trim_name = lambda s: s[1:-1] if s.startswith('"') and s.endswith('"') else s
     name1 = trim_name(name1)

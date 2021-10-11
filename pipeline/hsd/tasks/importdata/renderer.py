@@ -1,8 +1,13 @@
-import collections
+"""Renderer module for importdata."""
 
-import pipeline.infrastructure.logging as logging
+import collections
+from typing import Any, Dict
+
 import pipeline.h.tasks.importdata.renderer as super_renderer
+import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.basetask import Results
+from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 
@@ -10,12 +15,28 @@ DeductionGroupTR = collections.namedtuple('ReductionGroupTR', 'id fmin fmax fiel
 
 
 class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImportDataRenderer):
-    def __init__(self, uri='hsd_importdata.mako',
-                 description='Register measurement sets with the pipeline', 
-                 always_rerender=False):
+    """Renders detailed HTML output for the task."""
+
+    def __init__(self, uri:str='hsd_importdata.mako',
+                 description:str='Register measurement sets with the pipeline', 
+                 always_rerender:bool=False):
+        """Initialise of instance.
+
+        Args:
+            uri: uri of mako file
+            description: description of this instance
+            always_rerender: rerendering flag
+        """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).__init__(uri, description, always_rerender)
 
-    def update_mako_context(self, mako_context, pipeline_context, result):
+    def update_mako_context(self, mako_context:Dict[str, Any], pipeline_context: Context, result: Results):
+        """Update mako context.
+
+        Args:
+            mako_context: dict of mako context
+            pipeline_context: Pipeline context
+            result: Result object
+        """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).update_mako_context(mako_context, pipeline_context, result)
 
         # collect antennas of each MS and SPW combination
