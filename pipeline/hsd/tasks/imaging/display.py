@@ -535,6 +535,8 @@ class SDSparseMapDisplay(SDImageDisplay):
 
                     tolsrk = numpy.vectorize(_tolsrk)
                     atm_freq = tolsrk(atm_freq)
+
+                    me.done()
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
 
         # loop over pol
@@ -1079,7 +1081,7 @@ class SDRmsMapDisplay(SDImageDisplay):
         length = 4*(self.nx*self.ny)**0.5
         thres_min = 1  # 1 percent
         thres_max = (1.0 - (length*beam_pix/6.0)/(self.nx*self.ny))*100
-        
+
         npol_data = rms.shape[2]
 #        for pol in xrange(self.npol):
         for pol in range(npol_data):
