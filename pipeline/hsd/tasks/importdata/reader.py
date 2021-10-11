@@ -1,39 +1,66 @@
+"""This module is implemented classes for importdata to read MeasurementSet."""
+
 import collections
 import glob
 import itertools
 import os
 import shutil
 import string
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy
-from typing import List, Tuple
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.datatable import DataTableImpl as DataTable
+from numpy.core.defchararray import array
 from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
+from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.hsd.tasks.common import mjd_to_datestring, TableSelector
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.tasks.common import TableSelector, mjd_to_datestring
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
 
-from ..common import rasterutil
 from ..common import direction_utils as dirutil
+from ..common import rasterutil
 
 LOG = infrastructure.get_logger(__name__)
 
 
-def get_value_in_deg(quantity):
+def get_value_in_deg(quantity: Dict[str, Any]) -> float:
+    """Convert value in degree.
+    
+    Args:
+        quantity: value for convert
+    Returns:
+        converted value
+    """
     qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
 
 
-def mjdsec2str(t):
+def mjdsec2str(t: float) -> str:
+    """Convert datetime to string.
+
+    Args:
+        t: datetime
+    Returns:
+        formated datetime string
+    """
     qa = casa_tools.quanta
     return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
 
 
-def get_state_id(ms, spw, intent):
+def get_state_id(ms:MeasurementSet, spw:str, intent:str) -> numpy.array:
+    """Get state ID from MeasurementSet.
+
+    Args:
+        ms: MeasurementSet
+        spw: spectrum window
+        intent: specify intent for obsmode
+    Returns:
+        state IDs
+    """
     states = (s for s in ms.states if intent in s.intents)
     obs_modes = set()
     for s in states:
@@ -50,7 +77,14 @@ def get_state_id(ms, spw, intent):
     return numpy.fromiter(state_ids, dtype=numpy.int32)
 
 
-def merge_timerange(timerange_list):
+def merge_timerange(timerange_list: List[List]) -> List[List]:
+    """Merge time ranges.
+
+    Args:
+        timerange_list: list of timerange
+    Returns:
+        a list of merged time range
+    """
     timegap_list = numpy.asarray([l1[0] - l0[1] for l0, l1 in zip(timerange_list, timerange_list[1:])])
     LOG.info(f'timegap_list is {timegap_list}')
 
@@ -63,7 +97,12 @@ def merge_timerange(timerange_list):
     return timerange_merged
 
 
-def initialize_template(flagtemplate):
+def initialize_template(flagtemplate: str):
+    """Initialise flag template.
+
+    Args:
+        flagtemplate: path of flag template
+    """
     # remove existing template file
     if os.path.exists(flagtemplate):
         os.remove(flagtemplate)
@@ -74,13 +113,12 @@ def initialize_template(flagtemplate):
 
 
 def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
-    """
-    Primitive merge of flag command. Merge flag commands that have exactly
-    same timerange but different antennas/spws.
+    """Primitive merge of flag command.
+    
+    Merge flag commands that have exactly same timerange but different antennas/spws.
 
     Args:
         commands: List of (spw, antenna, timerange) string tuples.
-
     Returns:
         Merged list of (spw, antenna, timerange) string tuples.
     """
@@ -129,7 +167,14 @@ def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
     return merged
 
 
-def write_flagcmd(flagtemplate, cmd_list, reason=''):
+def write_flagcmd(flagtemplate:str, cmd_list:List[str], reason:str=''):
+    """Write command list to flagtemplate file.
+
+    Args:
+        flagtemplate: filename of flagtemplate
+        cmd_list: list of command
+        reason: reason string
+    """
     sanitized = reason.replace(' ', '_')
     template = string.Template(f"mode='manual' spw='$spw' antenna='$antenna&&&' timerange='$timerange' reason='SDPL:{sanitized}'\n")
 
@@ -138,8 +183,22 @@ def write_flagcmd(flagtemplate, cmd_list, reason=''):
             f.write(template.safe_substitute(spw=spw, antenna=antenna, timerange=timerange))
 
 
-def set_nominal_direction(ant, srctype, az, el, ra, dec,
-                          shift_ra, shift_dec, offset_ra, offset_dec):
+def set_nominal_direction(ant: numpy.array, srctype: numpy.array, az: numpy.array, el: numpy.array, ra: numpy.array, dec: numpy.array,
+                          shift_ra: numpy.array, shift_dec: numpy.array, offset_ra: numpy.array, offset_dec: numpy.array):
+    """Set nominal direction.
+
+    Args:
+        ant: antenna id
+        srctype: target state ids
+        az: pointing direction:AZ
+        el: pointing direction:EL
+        ra: pointing direction:RA
+        dec: pointing direction:DEC
+        shift_ra: pointing direction:Shift RA
+        shift_dec: pointing direction:Shift DEC
+        offset_ra: pointing direction:Offset RA
+        offset_dec: pointing direction:Offset DEC
+    """
     # check if there are NaN's
     isvalid = numpy.logical_not(numpy.isnan(az))
     if numpy.all(isvalid):
@@ -191,11 +250,15 @@ def set_nominal_direction(ant, srctype, az, el, ra, dec,
 
 
 class MetaDataReader(object):
-    def __init__(self, context, ms, table_name):
-        """
-        context -- pipeline context
-        mses -- list of measurementset domain objects
-        table_name -- name of DataTable
+    """MetaData reading class."""
+
+    def __init__(self, context: Context, ms: MeasurementSet, table_name: str):
+        """Initialize this class.
+
+        Args:
+            context: pipeline context
+            mses: list of measurementset domain objects
+            table_name: name of DataTable
         """
         self.context = context
         self.ms = ms
@@ -222,13 +285,28 @@ class MetaDataReader(object):
         initialize_template(self.flagtemplate)
 
     @property
-    def name(self):
+    def name(self) -> str:
+        """Property:name.
+        
+        Returns:
+            property of this class:name
+        """
         return self.ms.name
 
-    def get_datatable(self):
+    def get_datatable(self) -> DataTable:
+        """Return datatable.
+        
+        Returns:
+            an object of DataTable
+        """
         return self.datatable
 
-    def detect_target_spw(self):
+    def detect_target_spw(self) -> List:
+        """Get target spectral window.
+
+        Returns:
+            List of spectral window
+        """
         if not hasattr(self, 'name'):
             return []
 
@@ -236,7 +314,12 @@ class MetaDataReader(object):
         spws = ms.get_spectral_windows(science_windows_only=True)
         return [x.id for x in spws]
 
-    def detect_target_data_desc(self):
+    def detect_target_data_desc(self) -> numpy.array:
+        """Get target data description.
+
+        Returns:
+            array of data description id
+        """
         science_windows = self.detect_target_spw()
         ms = self.ms
 
@@ -249,10 +332,21 @@ class MetaDataReader(object):
         dds = numpy.fromiter(_g(), dtype=numpy.int32)
         return dds
 
-    def register_invalid_pointing_data(self, antenna_id, row):
+    def register_invalid_pointing_data(self, antenna_id: int, row: int):
+        """Register invalid pointing data.
+
+        Args:
+            antenna_id: antenna id
+            row: DataTable row
+        """
         self.invalid_pointing_data[antenna_id].append(row)
 
-    def generate_flagcmd(self):
+    def generate_flagcmd(self) -> Dict:
+        """Generate flag command.
+
+        Returns:
+            Dict: generated flag commands
+        """
         # PIPE-646
         # per-antenna row list for the data without pointing data
         # key: antenna id
@@ -293,7 +387,12 @@ class MetaDataReader(object):
         self._generate_flagcmd(self.flagtemplate, flagdict1, reason='missing pointing data')
         self._generate_flagcmd(self.flagtemplate, flagdict2, reason='uniform image rms')
 
-    def generate_flagdict_for_invalid_pointing_data(self):
+    def generate_flagdict_for_invalid_pointing_data(self) -> collections.defaultdict:
+        """Return invalid pointing data of this object.
+
+        Returns:
+            collections.defaultdict: dictionary of invalid pointing data
+        """
         if len(self.invalid_pointing_data) > 0:
             LOG.warn('{}: There are rows without corresponding POINTING data'.format(self.ms.basename))
             LOG.warn('Affected antennas are: {}'.format(' '.join(
@@ -301,15 +400,25 @@ class MetaDataReader(object):
 
         return self.invalid_pointing_data
 
-    def generate_flagdict_for_uniform_rms(self):
-        # apply flagging heuristics
-        # returns dictionary containing list of row IDs for datatable
+    def generate_flagdict_for_uniform_rms(self) -> List[int]:
+        """Apply flagging heuristics.
+
+        Returns:
+            Dict: dictionary contains list of row IDs for datatable
+        """
         # keys for dictionary are (spw_id, antenna_id) tuples
         flagdict = rasterutil.flag_raster_map(self.datatable)
 
         return flagdict
 
-    def _generate_flagcmd(self, flagtemplate, flag_dict, reason=''):
+    def _generate_flagcmd(self, flagtemplate: str, flag_dict: Dict[Union[Tuple[str, int],int], List[int]], reason:str=''):
+        """Generate flag template command.
+
+        Args:
+            flagtemplate: filename of flagtemplate
+            flag_dict: dictionary of flags
+            reason: reason string
+        """
         datatable = self.datatable
         cmdlist = []
         for key, rowlist in flag_dict.items():
@@ -345,7 +454,14 @@ class MetaDataReader(object):
         cmd_merged = merge_flagcmd(cmdlist)
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
-    def execute(self, dry_run=True):
+    def execute(self, dry_run: bool = True) -> Dict:
+        """Execute reading MeasurementSet and sub tables into datatable.
+
+        Args:
+            dry_run: flag of dry run
+        Returns:
+            Dict: dictionary of ephemeris sources
+        """
         if dry_run:
             return
 
@@ -766,7 +882,13 @@ class MetaDataReader(object):
 
         return org_directions
 
-    def _get_outref(self):
+    def _get_outref(self) -> str:
+        """
+        Get direction reference for target.
+
+        Returns:
+            str: direction reference
+        """
         outref = None
 
         if self.ms.representative_target[0] is not None:
@@ -801,10 +923,28 @@ class MetaDataReader(object):
         return outref
 
     @staticmethod
-    def _get_azelref():
+    def _get_azelref() -> os.strerror:
+        """Return error string.
+
+        Returns:
+            os.strerror: error string
+        """
         return 'AZELGEO'
 
-    def get_reference_direction( self, source_name, ephem_table, is_known_eph_obj, mepoch, mposition, outframe):
+    def get_reference_direction(self, source_name:str, ephem_table:str, is_known_eph_obj:bool, mepoch:Dict[str, Union[Dict[str, Any], Any]], 
+                                mposition:Dict[str, Union[Dict[str, Any], Any]], outframe:str) -> Dict[str, Union[str, Dict]]:
+        """Get reference direction.
+
+        Args:
+            source_name: source name (ex:'Venus')
+            ephem_table: ephemeris table name
+            is_known_eph_obj: known ephemeris flag
+            mepoc: dict of time
+            mposition: dict of position
+            outframe: direction reference (ex:'ICRS')
+        Returns:
+            Dict: reference direction
+        """
         me = casa_tools.measures
 
         if ephem_table != "":
