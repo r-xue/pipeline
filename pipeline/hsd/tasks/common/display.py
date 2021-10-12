@@ -7,10 +7,13 @@ import os
 from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
 from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
+
+import matplotlib
+import matplotlib.figure as figure
 from matplotlib.axes import Axes
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 import matplotlib.gridspec as gridspec
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -806,11 +809,12 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         - Sparse profile map
     """
 
-    def __init__(self, nh: int, nv: int, brightnessunit: str,
+    def __init__(self, fig: figure.Figure, nh: int, nv: int, brightnessunit: str,
                  ticksize: int, clearpanel: bool = True, figure_id: int = None) -> None:
         """Construct SparseMapAxesManager instance.
 
         Args:
+            fig: matplotlib.figure.Figure instance
             nh: Number of panels along vertical axis.
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
@@ -819,6 +823,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             figure_id: Figure id. Defaults to None.
         """
         super(SparseMapAxesManager, self).__init__()
+        self.figure = fig
         self.nh = nh
         self.nv = nv
         self.ticksize = ticksize
@@ -833,9 +838,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             self.figure_id = self.MATPLOTLIB_FIGURE_ID()
         else:
             self.figure_id = figure_id
-        self.figure = plt.figure(self.figure_id, dpi=DPIDetail)
-        if clearpanel:
-            plt.clf()
 
         _f = form4(self.nv)
         self.gs_top = gridspec.GridSpec(1, 1,
@@ -868,16 +870,19 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             Axes: Axes instance for integrated spectrum.
         """
         if self._axes_integsp is None:
-            plt.figure(self.figure_id)
-            axes = plt.subplot(self.gs_top[:, :])
+            axes = self.figure.add_subplot(self.gs_top[:, :])
             axes.cla()
             axes.xaxis.get_major_formatter().set_useOffset(False)
             axes.yaxis.get_major_formatter().set_useOffset(False)
-            plt.xlabel('Frequency(GHz)', size=(self.ticksize + 1))
-            plt.ylabel('Intensity({})'.format(self.brightnessunit), size=(self.ticksize + 1))
-            plt.xticks(size=self.ticksize)
-            plt.yticks(size=self.ticksize)
-            plt.title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
+            axes.set_xlabel('Frequency(GHz)', size=(self.ticksize + 1))
+            axes.set_ylabel('Intensity({})'.format(self.brightnessunit), size=(self.ticksize + 1))
+            xlabels = axes.get_xticklabels()
+            for label in xlabels:
+                label.set_fontsize(self.ticksize)
+            ylabels = axes.get_yticklabels()
+            for label in ylabels:
+                label.set_fontsize(self.ticksize)
+            axes.set_title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
 
             self._axes_integsp = axes
         return self._axes_integsp
@@ -893,7 +898,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             List[Axes]: List of Axes instances for profile map.
         """
         if self._axes_spmap is None:
-            plt.figure(self.figure_id)
             self._axes_spmap = list(self.__axes_spmap())
 
         return self._axes_spmap
@@ -910,17 +914,16 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             Axes: Axes instance for ATM transmission.
         """
         if self._axes_atm is None:
-            plt.figure(self.figure_id)
             self._axes_atm = self.axes_integsp.twinx()
             self._axes_atm.set_position(self.axes_integsp.get_position())
             ylabel = self._axes_atm.set_ylabel('ATM Transmission', size=self.ticksize)
             ylabel.set_color('m')
             self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize - 1)
             self._axes_atm.yaxis.set_major_locator(
-                plt.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
+                matplotlib.ticker.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
             )
             self._axes_atm.yaxis.set_major_formatter(
-                plt.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
+                matplotlib.ticker.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
             )
         return self._axes_atm
 
@@ -935,9 +938,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             Axes: Axes for channel axis.
         """
         if self._axes_chan is None:
-            active = plt.gca()
             try:
-                plt.figure(self.figure_id)
                 self.__adjust_integsp_for_chan()
                 self._axes_chan = self.axes_integsp.twiny()
                 self._axes_chan.set_position(self.axes_integsp.get_position())
@@ -946,9 +947,11 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
                 self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
                 self._axes_chan.tick_params(axis='x', pad=0)
-                plt.xticks(size=self.ticksize - 1)
+                xlabels = self._axes_chan.get_xticklabels()
+                for label in xlabels:
+                    label.set_fontsize(self.ticksize - 1)
             finally:
-                plt.sca(active)
+                pass
         return self._axes_chan
 
     def __adjust_integsp_for_chan(self) -> None:
@@ -957,9 +960,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         Adjust size of Axes for integrated spectrum to locate channel axis
         at the top of the panel.
         """
-        active = plt.gca()
         try:
-            plt.sca(self._axes_integsp)
             a = self._axes_integsp
             bbox = a.get_position().get_points()
             blc = bbox[0]
@@ -972,7 +973,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             a.set_position((left, bottom, width, height))
             a.title.set_position((0.5, 1.2))
         finally:
-            plt.sca(active)
+            pass
 
     def __axes_spmap(self) -> Generator[Axes, None, None]:
         """Create Axes instances for sparse profile map.
@@ -983,10 +984,10 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         """
         for x in range(self.nh):
             for y in range(self.nv):
-                axes = plt.subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
+                axes = self.figure.add_subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
                 axes.cla()
-                axes.yaxis.set_major_locator(plt.NullLocator())
-                axes.xaxis.set_major_locator(plt.NullLocator())
+                axes.yaxis.set_major_locator(matplotlib.ticker.NullLocator())
+                axes.xaxis.set_major_locator(matplotlib.ticker.NullLocator())
 
                 yield axes
 
@@ -1013,26 +1014,26 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         else:
             xaxislabel = pointing.HHMMSSss
         for x in range(self.nh):
-            a1 = plt.subplot(self.gs_bottom[-1, self.nh - x])
+            a1 = self.figure.add_subplot(self.gs_bottom[-1, self.nh - x])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                plt.text(0.5, 0.5, xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0),
-                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
+                a1.text(0.5, 0.5, xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0),
+                        horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
                 a1.texts[0].set_text(xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0))
         for y in range(self.nv):
-            a1 = plt.subplot(self.gs_bottom[self.nv - y - 1, 0])
+            a1 = self.figure.add_subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                plt.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0),
-                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
+                a1.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0),
+                        horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
                 a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0))
-        a1 = plt.subplot(self.gs_bottom[-1, 0])
+        a1 = self.figure.add_subplot(self.gs_bottom[-1, 0])
         a1.set_axis_off()
         ralabel, declabel = self.get_axes_labels()
-        plt.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize + 1))
-        plt.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize + 1))
+        a1.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize + 1))
+        a1.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize + 1))
 
     def clear_plot_objects(self) -> None:
         """Remove all plot objects from Axes.
@@ -1050,7 +1051,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             LOG.trace('Lines: %s', a.lines)
             LOG.trace('Patches: %s', a.patches)
             LOG.trace('Texts: %s', a.texts)
-            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:]):
+            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:], a.images[:]):
                 LOG.trace('Removing %s...', obj)
                 obj.remove()
 
@@ -1075,7 +1076,8 @@ class SDSparseMapPlotter(object):
         elif step == 1:
             ticksize = 10 - int(max(nh, nv)) // 2
         ticksize = max(ticksize, 3)
-        self.axes = SparseMapAxesManager(nh, nv, brightnessunit, ticksize, clearpanel, figure_id)
+        fig = figure.Figure(dpi=DPIDetail)
+        self.axes = SparseMapAxesManager(fig, nh, nv, brightnessunit, ticksize, clearpanel, figure_id)
         self.lines_averaged = None
         self.lines_map = None
         self.reference_level = None
@@ -1270,10 +1272,7 @@ class SDSparseMapPlotter(object):
         """
         axes = self.axes.axes_chan
         f = np.asarray(frequency)
-        active = plt.gca()
-        plt.sca(axes)
-        plt.xlim((np.argmin(f), np.argmax(f)))
-        plt.sca(active)
+        axes.set_xlim((np.argmin(f), np.argmax(f)))
 
     def plot(self,
              map_data: np.ndarray, averaged_data: np.ndarray,
@@ -1296,6 +1295,7 @@ class SDSparseMapPlotter(object):
             bool: Whether or not if plot is successful.
         """
         overlay_atm_transmission = self.atm_transmission is not None
+        LOG.debug(f'overlay_atm_transmission = {overlay_atm_transmission}')
 
         spmin = np.nanmin(averaged_data)
         spmax = np.nanmax(averaged_data)
@@ -1350,11 +1350,11 @@ class SDSparseMapPlotter(object):
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
 
-        plt.gcf().sca(self.axes.axes_integsp)
-        plt.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
+        axes = self.axes.axes_integsp
+        axes.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
-        (_xmin, _xmax, _ymin, _ymax) = plt.axis()
+        (_xmin, _xmax, _ymin, _ymax) = axes.axis()
 
         LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
         LOG.info('spmin=%s, spmax=%s', spmin, spmax)
@@ -1370,7 +1370,7 @@ class SDSparseMapPlotter(object):
 
         try:
             # PIPE-1140
-            plt.axis((global_xmin, global_xmax, spmin, spmax))
+            axes.axis([global_xmin, global_xmax, spmin, spmax])
         except Exception:
             LOG.warning(
                 'Axis configuration for %s failed. Plot will not be created.',
@@ -1385,30 +1385,30 @@ class SDSparseMapPlotter(object):
             fedge1 = ch_to_freq(ch1-1, frequency)
             fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
             fedge3 = ch_to_freq(len(frequency)-1, frequency)
-            plt.axvspan(fedge0, fedge1, color='lightgray')
-            plt.axvspan(fedge2, fedge3, color='lightgray')
+            axes.axvspan(fedge0, fedge1, color='lightgray')
+            axes.axvspan(fedge2, fedge3, color='lightgray')
             fedge_span = (fedge0, fedge1, fedge2, fedge3)
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
                 LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
-                plt.axvspan(fmin, fmax, color='cyan')
+                axes.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
             LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                plt.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
+                axes.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
 
         if overlay_atm_transmission:
-            plt.gcf().sca(self.axes.axes_atm)
+            axes_atm = self.axes.axes_atm
             amin = 100
             amax = 0
             for (_t, f) in zip(self.atm_transmission, self.atm_frequency):
                 # fraction -> percentage
                 t = _t * 100
-                plt.plot(f, t, color='m', linestyle='-', linewidth=0.4)
+                axes_atm.plot(f, t, color='m', linestyle='-', linewidth=0.4)
                 amin = min(amin, t.min())
                 amax = max(amax, t.max())
 
@@ -1424,7 +1424,7 @@ class SDSparseMapPlotter(object):
                 elif ymax < 98:
                     ymax += 2
 
-            plt.axis((global_xmin, global_xmax, ymin, ymax))
+            axes_atm.axis([global_xmin, global_xmax, ymin, ymax])
 
         is_valid_fit_result = (fit_result is not None and fit_result.shape == map_data.shape)
 
@@ -1449,18 +1449,18 @@ class SDSparseMapPlotter(object):
                         ymax = global_ymax
                     LOG.debug('Per panel scaling turned on: ymin=%s, ymax=%s (global ymin=%s, ymax=%s)',
                               ymin, ymax, global_ymin, global_ymax)
-                plt.gcf().sca(self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv])
+                axes = self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv]
                 if map_data[x][y].min() > NoDataThreshold:
-                    plt.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
+                    axes.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
                         for chmin, chmax in self.lines_map[x][y]:
                             fmin = ch_to_freq(chmin, frequency)
                             fmax = ch_to_freq(chmax, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
-                            plt.axvspan(fmin, fmax, color='cyan')
+                            axes.axvspan(fmin, fmax, color='cyan')
                     if fedge_span is not None:
-                        plt.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
-                        plt.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
+                        axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+                        axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
 
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:
@@ -1470,19 +1470,16 @@ class SDSparseMapPlotter(object):
                     #                   x, y, chmin, chmax)
                     #        plot_helper.axvspan(fmin, fmax, color='cyan')
                     if is_valid_fit_result:
-                        plt.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
+                        axes.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
                     elif self.reference_level is not None and ymin < self.reference_level and self.reference_level < ymax:
-                        plt.axhline(self.reference_level, color='r', linewidth=0.4)
+                        axes.axhline(self.reference_level, color='r', linewidth=0.4)
                 else:
-                    plt.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', ha='center', va='center',
+                    axes.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', ha='center', va='center',
                                      size=(self.ticksize + 1))
-                plt.axis((xmin, xmax, ymin, ymax))
-
-        if ShowPlot:
-            plt.draw()
+                axes.axis([xmin, xmax, ymin, ymax])
 
         if figfile is not None:
-            plt.savefig(figfile, format='png', dpi=DPIDetail)
+            self.axes.figure.savefig(figfile, format='png', dpi=DPIDetail)
         LOG.debug('figfile=\'%s\'', figfile)
 
         self.axes.clear_plot_objects()
@@ -1491,8 +1488,10 @@ class SDSparseMapPlotter(object):
 
     def done(self) -> None:
         """Clean up plot."""
-        plt.close()
+        fig = self.axes.figure
         del self.axes
+        fig.clf()
+        del fig
 
 
 def ch_to_freq(ch: float, frequency: List[float]) -> float:
