@@ -1,6 +1,6 @@
 import collections
 import os
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy
 
@@ -9,7 +9,9 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hif.tasks.gaincal import gtypegaincal
+from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
@@ -91,7 +93,7 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
     def __init__(self, context, vis=None, output_dir=None, caltable=None, intent=None, hm_spwmapmode=None,
                  phasesnr=None, bwedgefrac=None, hm_nantennas=None, maxfracflagged=None,
                  maxnarrowbw=None, minfracmaxbw=None, samebb=None, unregister_existing=None, **parameters):
-        super(SpwPhaseupInputs, self).__init__(context, vis=vis, output_dir=output_dir, **parameters)
+        super().__init__(context, vis=vis, output_dir=output_dir, **parameters)
         self.caltable = caltable
         self.intent = intent
         self.hm_spwmapmode = hm_spwmapmode
@@ -113,6 +115,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Simplify the inputs
         inputs: SpwPhaseupInputs = self.inputs
 
+        # Intents to derive separate SpW mappings for:
+        spwmap_intents = 'CHECK,PHASE'
+
+        # Do not derive separate SpW mappings for fields that also cover any of
+        # these calibrator intents:
+        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE'
+
         # PIPE-629: if requested, unregister old spwphaseup calibrations from
         # local copy of context, to stop these from being pre-applied during
         # this stage.
@@ -120,7 +129,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             self._unregister_spwphaseup()
 
         # Derive the optimal spectral window maps.
-        spwmaps = self._derive_spwmaps()
+        spwmaps = self._derive_spwmaps(spwmap_intents, exclude_intents)
 
         # Compute the spw-to-spw phase offsets ("phaseup") cal table.
         LOG.info('Computing spw phaseup table for {}'.format(inputs.ms.basename))
@@ -147,7 +156,22 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return result
 
-    def _derive_spwmaps(self):
+    def _derive_spwmaps(self, spwmap_intents: str, exclude_intents: str) -> Dict:
+        """
+        Compute separate optimal spectral window mapping for each field
+        covering one of the intents specified by "spwmap_intents", unless the
+        field is already covered by a calibrator intent specified in
+        "exclude_intents".
+
+        Args:
+            spwmap_intents: intents to derive separate SpW mappings for.
+            exclude_intents: do not derive separate SpW mappings for fields
+                that also cover any of these calibrator intents.
+
+        Returns:
+            Dictionary with (Intent, Field) combinations as keys and
+            corresponding spectral window mapping as values.
+        """
         # Simplify the inputs
         inputs: SpwPhaseupInputs = self.inputs
 
@@ -157,13 +181,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Initialize collection of spectral window maps and corresponding
         # SNR info.
         spwmaps = {}
-
-        # Intents to derive separate spwmaps for:
-        spwmap_intents = 'CHECK,PHASE'
-
-        # Do not derive separate spwmsp for fields that also cover any of these
-        # calibrator intents:
-        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE'
 
         # Identify the combinations of intent and fields for which to derive a
         # separate spwmap.
@@ -177,7 +194,17 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return spwmaps
 
-    def _derive_spwmap_for_intent_field(self, intent, field):
+    def _derive_spwmap_for_intent_field(self, intent: str, field: str) -> SpwMapping:
+        """
+        Derive optimal spectral window mapping for specified intent and field.
+
+        Args:
+            intent: intent for which to derive SpW mapping.
+            field: field for which to derive SpW mapping.
+
+        Returns:
+            SpwMapping object, representing the spectral window mapping.
+        """
         # Simplify the inputs
         inputs: SpwPhaseupInputs = self.inputs
 
@@ -193,8 +220,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         low_combinedsnr_spws = []
 
         # Initialize lists needed to assess SNR info that is to be shown in
-        # task weblog; these will get populated if an SNR test is run (depending
-        # on the spw mapping mode).
+        # task weblog; these will get populated if an SNR test is run
+        # (depending on the spw mapping mode).
         snrs = []
         spwids = []
 
@@ -291,7 +318,23 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return SpwMapping(combine, spwmap, low_combinedsnr_spws, snr_info)
 
-    def _do_snrtest(self, intent, field):
+    def _do_snrtest(self, intent: str, field: str) -> Tuple[bool, List, List, List]:
+        """
+        Run gaincal SNR task to perform SNR test for specified intent and
+        field.
+
+        Args:
+            intent: intent for which to derive SpW mapping.
+            field: field for which to derive SpW mapping.
+
+        Returns:
+            Tuple containing
+              * Boolean to denote whether no SNRs were derived for any SpW.
+              * list of SpW IDs for which SNR was derived
+              * list of derived SNRs
+              * list of booleans denoting whether derived SNR
+                was good (>= SNR threshold)
+        """
 
         # Simplify inputs.
         inputs = self.inputs
@@ -333,20 +376,20 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return nosnr, spwids, snrs, goodsnrs
 
-    def _do_combined_snr_test(self, spwlist, perspwsnr, spwmap):
+    def _do_combined_snr_test(self, spwlist: List, perspwsnr: List, spwmap: List) -> List:
         """
         Calculate combined SNRs from the "per-SpW SNR" and return a list of SpW
         IDs that does not meet phase SNR threshold. Grouping of SpWs is
         specified by input parameter spwmap.
 
         For each grouped SpWs, combined SNR is calculated by:
-            combined SNR = numpy.linalg.nrom(list of per SpW SNR in a group)
+            combined SNR = numpy.linalg.norm(list of per SpW SNR in a group)
 
         Args:
             spwlist: List of spw IDs to calculate combined SNR
             perspwsnr: List of SNRs of each SpW
-            spwmap: A spectral window map that specifies which SpW IDs should
-                be combined together.
+            spwmap: List representing a spectral window map that specifies
+                which SpW IDs should be combined together.
 
         Returns:
             List of spectral window IDs whose combined phase SNR is below the
@@ -373,7 +416,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     snr = perspwsnr[i]
                     if snr is None:
                         LOG.error('SNR not calculated for spw={}. Cannot calculate combined SNR'.format(spwid))
-                        return False, [], [], []
+                        return []
                     snrlist.append(perspwsnr[i])
                     combined_idx.append(i)
 
@@ -392,7 +435,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return low_snr_spwids
 
-    def _do_phaseup(self):
+    def _do_phaseup(self) -> GaincalResults:
         inputs = self.inputs
         ms = inputs.ms
 
@@ -451,9 +494,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         return tuning_result
 
     @staticmethod
-    def _get_intent_field(ms, intents, exclude_intents=None):
+    def _get_intent_field(ms: MeasurementSet, intents: str, exclude_intents: str = None) -> List[Tuple[str, str]]:
         # If provided, convert "intents to exclude" into set of strings.
-        if exclude_intents is not None:
+        if exclude_intents is None:
+            exclude_intents = set()
+        else:
             exclude_intents = set(exclude_intents.split(','))
 
         intent_field = []
@@ -515,11 +560,12 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis=None, phaseup_result=None, spwmaps=None, unregister_existing: Optional[bool] = False):
+    def __init__(self, vis: str = None, phaseup_result: GaincalResults = None, spwmaps: Dict = None,
+                 unregister_existing: Optional[bool] = False):
         """
         Initialise the phaseup spw mapping results object.
         """
-        super(SpwPhaseupResults, self).__init__()
+        super().__init__()
 
         if spwmaps is None:
             spwmaps = {}

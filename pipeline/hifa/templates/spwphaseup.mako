@@ -38,7 +38,7 @@ and the caltable containing per spw phase offsets.</p>
 	<tbody>
     % for spwmap in spwmaps:
 		<tr>
-			<td>${os.path.basename(spwmap.ms)}</td>
+			<td>${spwmap.ms}</td>
             <td>${spwmap.field} (#${spwmap.fieldid})</td>
             <td>${spwmap.intent}</td>
             <td>${spwmap.scanids}</td>
@@ -57,7 +57,9 @@ and the caltable containing per spw phase offsets.</p>
     <thead>
 	    <tr>
 	        <th>Measurement Set</th>
-	        <th>Phase SNR threshold</th>
+            <th>Phase SNR threshold</th>
+            <th>Field</th>
+            <th>Intent</th>
             <th>Spectral Window</th>
             <th>Estimated SNR</th>
         </tr>
