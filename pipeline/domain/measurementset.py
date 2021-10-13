@@ -11,7 +11,7 @@ import numpy as np
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-if TYPE_CHECKING: # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 from . import measures
@@ -42,7 +42,8 @@ class MeasurementSet(object):
             dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
-        spectralspec_spwmap: Mapping between SpectralSpec and spectral window IDs.
+        spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
+            spectral window IDs.
         fields: A list of Field objects associated with MS
         states: A list of State objects associated with MS
         spwmaps: Spectral window mapping to use for combining/mapping, split by
@@ -57,9 +58,9 @@ class MeasurementSet(object):
             the current MS is generated.
     """
 
-    def __init__(self, name: str, session: Optional[str]=None):
+    def __init__(self, name: str, session: Optional[str] = None):
         """
-        Initialize MeasurmentSet class.
+        Initialize a MeasurementSet object.
 
         Args:
             name: A path to MS
@@ -68,7 +69,7 @@ class MeasurementSet(object):
         self.name: str = name
         self.session: Optional[str] = session
         self.antenna_array: Optional[AntennaArray] = None
-        self.array_name: str = None
+        self.array_name: str = ''
         self.derived_fluxes: Optional[collections.defaultdict] = None
         self.flagcmds: List[str] = []
         self.filesize: measures.FileSize = self._calc_filesize()
@@ -1218,7 +1219,7 @@ class MeasurementSet(object):
             column: name of column in MS associated with the data type
             spw: spectral window selection string
             field: field selection string
-            overwrite: if True existing data colum is overwritten by the new
+            overwrite: if True existing data column is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
 
@@ -1253,7 +1254,7 @@ class MeasurementSet(object):
 
     def get_data_column(self, dtype: DataType) -> Optional[str]:
         """
-        Retun a column name associated with a DataType in MS domain object.
+        Return a column name associated with a DataType in MS domain object.
 
         Args:
             dtype: DataType to fetch column name for
