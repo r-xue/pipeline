@@ -28,6 +28,21 @@ def pytest_sessionstart(session):
         redirect_casalog()
 
 
+def pytest_addoption(parser):
+    parser.addoption("--collect-tests", action="store_true", default=False,
+                     help="collect tests and export test node ids to a plain text file `collected_tests.txt`")
+
+
+def pytest_collection_finish(session):
+    if session.config.getoption('--collect-tests'):
+        with open('collected_tests.txt', 'w') as f:
+            for item in session.items:
+                node_id = '{}::{}'.format(item.fspath, item.name)
+                print(node_id)
+                f.write(node_id+'\n')
+        pytest.exit('Tests collection completed.')
+
+
 @pytest.fixture(scope="session", autouse=True)
 def redirect_casalog_for_workers():
     """Remove casalog for each session/worker."""
