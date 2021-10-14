@@ -609,6 +609,9 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         # self.antenna = self.inputs.antenna
         # self.vis = self.inputs.vis
 
+        # Figure instance for plotting
+        self.figure = figure.Figure()
+
     def init(self) -> None:
         """Initialize plotter using specifiec image."""
         # self.image = SpectralImage(self.imagename)
@@ -1059,7 +1062,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
 class SDSparseMapPlotter(object):
     """Plotter for sparse spectral map."""
 
-    def __init__(self, nh: int, nv: int, step: int, brightnessunit: str,
+    def __init__(self, fig: figure.Figure, nh: int, nv: int, step: int, brightnessunit: str,
                  clearpanel: bool = True, figure_id: Optional[int] = None) -> None:
         """Construct SDSparseMapPlotter instance.
 
@@ -1076,7 +1079,7 @@ class SDSparseMapPlotter(object):
         elif step == 1:
             ticksize = 10 - int(max(nh, nv)) // 2
         ticksize = max(ticksize, 3)
-        fig = figure.Figure(dpi=DPIDetail)
+        fig.set_dpi(DPIDetail)
         self.axes = SparseMapAxesManager(fig, nh, nv, brightnessunit, ticksize, clearpanel, figure_id)
         self.lines_averaged = None
         self.lines_map = None

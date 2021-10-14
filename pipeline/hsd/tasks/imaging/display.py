@@ -35,9 +35,9 @@ HHMMSSss = pointing.HHMMSSss
 LOG = infrastructure.get_logger(__name__)
 
 
-class ChannelAveragedAxesManager(MapAxesManagerBase):
+class ImageAxesManager(MapAxesManagerBase):
     def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
-        super(ChannelAveragedAxesManager, self).__init__()
+        super(ImageAxesManager, self).__init__()
         self.figure = fig
         self.xformatter = xformatter
         self.yformatter = yformatter
@@ -45,15 +45,38 @@ class ChannelAveragedAxesManager(MapAxesManagerBase):
         self.ylocator = ylocator
         self.xrotation = xrotation
         self.yrotation = yrotation
-        self.isgray = (colormap == 'gray')
 
         self.ticksize = ticksize
 
-        self._axes_tpmap = None
+        self.cmap = 'gray' if colormap == 'gray' else 'jet'
+
+    def set_colorbar_for(self, axes: matplotlib.axes.Axes, value_min: float, value_max: float, value_unit: str, shrink: float = 1.0):
+        # axes should contain one AxesImage
+        assert len(axes.images) == 1
+        colorbar = getattr(axes, 'colorbar', None)
+        if colorbar is None:
+            norm = matplotlib.colors.Normalize(value_min, value_max)
+            colorbar = self.figure.colorbar(matplotlib.cm.ScalarMappable(norm, self.cmap), shrink=shrink, ax=axes)
+            for t in colorbar.ax.get_yticklabels():
+                fontsize = t.get_fontsize() * 0.5
+                t.set_fontsize(fontsize)
+            axes.colorbar = colorbar
+        else:
+            colorbar.mappable.set_clim((value_min, value_max))
+            colorbar.draw_all()
+            # set_clim and draw_all clears y-label
+        fontsize = colorbar.ax.get_yticklabels()[0].get_fontsize()
+        colorbar.ax.set_ylabel('[%s]' % value_unit, fontsize=fontsize)
+
+
+class SingleImageAxesManager(ImageAxesManager):
+    def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
+        super(SingleImageAxesManager, self).__init__(fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap)
+        self._image_axes = None
 
     @property
-    def axes_tpmap(self):
-        if self._axes_tpmap is None:
+    def image_axes(self):
+        if self._image_axes is None:
             axes = self.figure.add_axes([0.25, 0.25, 0.5, 0.5])
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
@@ -67,14 +90,13 @@ class ChannelAveragedAxesManager(MapAxesManagerBase):
             for label in ylabels:
                 label.set_rotation(self.yrotation)
                 label.set_fontsize(self.ticksize)
-            axes.set_title('Baseline RMS Map', size=self.ticksize)
             xlabel, ylabel = self.get_axes_labels()
             axes.set_xlabel(xlabel, size=self.ticksize)
             axes.set_ylabel(ylabel, size=self.ticksize)
 
-            self._axes_tpmap = axes
+            self._image_axes = axes
 
-        return self._axes_tpmap
+        return self._image_axes
 
 
 class SDChannelAveragedImageDisplay(SDImageDisplay):
@@ -89,7 +111,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                                                                               self.direction_reference)
 
         # Plotting
-        fig = figure.Figure()
+        fig = self.figure
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
@@ -97,15 +119,13 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
         colormap = 'color'
         TickSize = 6
 
-        axes_manager = ChannelAveragedAxesManager(fig, RAformatter, DECformatter,
-                                                  RAlocator, DEClocator,
-                                                  RArotation, DECrotation,
-                                                  TickSize, colormap)
+        axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
+                                              RAlocator, DEClocator,
+                                              RArotation, DECrotation,
+                                              TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
-        axes_tpmap = axes_manager.axes_tpmap
-        tpmap_colorbar = None
+        axes_tpmap = axes_manager.image_axes
         beam_circle = None
-        cmap = 'gray' if colormap == 'gray' else 'jet'
 
         plot_list = []
 
@@ -131,17 +151,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                 #if not ((Ymax == Ymin) and (Xmax == Xmin)):
                 #if not all(image_shape[id_direction] <= 1):
                 if self.nx > 1 or self.ny > 1:
-                    if tpmap_colorbar is None:
-                        norm = matplotlib.colors.Normalize(tmin, tmax)
-                        tpmap_colorbar = fig.colorbar(matplotlib.cm.ScalarMappable(norm, cmap), shrink=0.8, ax=axes_tpmap)
-                        for t in tpmap_colorbar.ax.get_yticklabels():
-                            newfontsize = t.get_fontsize()*0.5
-                            t.set_fontsize(newfontsize)
-                    else:
-                        tpmap_colorbar.mappable.set_clim((tmin, tmax))
-                        tpmap_colorbar.draw_all()
-                    # set_clim and draw_all clears y-label
-                    tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
+                    axes_manager.set_colorbar_for(axes_tpmap, tmin, tmax, self.brightnessunit, shrink=0.8)
 
             # draw beam pattern
             if beam_circle is None:
@@ -182,18 +192,6 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
         return plot_list
 
-# class SDMomentMapDisplayInputs(SDImageDisplayInputs):
-#     MAP_MOMENT = 8
-#     def __init__(self, context, result):
-#         super(SDMomentMapDisplayInputs,self).__init__(context, result)
-#         # obtain integrated image using immoments task
-#         print self.imagename
-#         #job = casa_tasks.immoments(imagename=self.imagename, moments=[0], outfile=self.momentmap_name)
-#
-#     @property
-#     def momentmap_name(self):
-#         return self.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
-
 
 class SDMomentMapDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8911
@@ -224,7 +222,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                                                                               self.direction_reference)
 
         # Plotting
-        fig = figure.Figure()
+        fig = self.figure
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
@@ -232,15 +230,13 @@ class SDMomentMapDisplay(SDImageDisplay):
         colormap = 'color'
         TickSize = 6
 
-        axes_manager = ChannelAveragedAxesManager(fig, RAformatter, DECformatter,
+        axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
                                                   RAlocator, DEClocator,
                                                   RArotation, DECrotation,
                                                   TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
-        axes_tpmap = axes_manager.axes_tpmap
-        tpmap_colorbar = None
+        axes_tpmap = axes_manager.image_axes
         beam_circle = None
-        cmap = 'gray' if colormap == 'gray' else 'jet'
 
         plot_list = []
 
@@ -255,7 +251,6 @@ class SDMomentMapDisplay(SDImageDisplay):
 
             # 2008/9/20 DEC Effect
             im = axes_tpmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            # im = plt.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
             tmin = Total.min()
             tmax = Total.max()
             del Total
@@ -269,19 +264,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                 #if not ((Ymax == Ymin) and (Xmax == Xmin)):
                 #if not all(image_shape[id_direction] <= 1):
                 if self.nx > 1 or self.ny > 1:
-                    if tpmap_colorbar is None:
-                        norm = matplotlib.colors.Normalize(tmin, tmax)
-                        tpmap_colorbar = fig.colorbar(matplotlib.cm.ScalarMappable(norm, cmap), shrink=0.8, ax=axes_tpmap)
-                        newfontsize = None
-                        for t in tpmap_colorbar.ax.get_yticklabels():
-                            newfontsize = t.get_fontsize()*0.5
-                            t.set_fontsize(newfontsize)
-                    else:
-                        tpmap_colorbar.mappable.set_clim((tmin, tmax))
-                        tpmap_colorbar.draw_all()
-                    #if newfontsize is None: # no ticks in colorbar likely invalid TP map
-                    # set_clim and draw_all clears y-label
-                    tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
+                    axes_manager.set_colorbar_for(axes_tpmap, tmin, tmax, self.brightnessunit, shrink=0.8)
 
             # draw beam pattern
             if beam_circle is None:
@@ -322,7 +305,7 @@ class SDMomentMapDisplay(SDImageDisplay):
         return plot_list
 
 
-class ChannelMapAxesManager(ChannelAveragedAxesManager):
+class ChannelMapAxesManager(ImageAxesManager):
     def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap, nh, nv,
                  brightnessunit):
         super(ChannelMapAxesManager, self).__init__(fig, xformatter, yformatter,
@@ -453,15 +436,6 @@ class SDSparseMapDisplay(SDImageDisplay):
     def __plot_sparse_map(self):
 
         # Plotting routine
-        # Mark = '-b'
-        # if ShowPlot:
-        #     plt.ion()
-        # else:
-        #     plt.ioff()
-        # plt.figure(self.MATPLOTLIB_FIGURE_ID)
-        # if ShowPlot:
-        #     plt.ioff()
-
         num_panel = min(max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1), self.MaxPanel)
         STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) // num_panel) + 1
         NH = (self.x_max - self.x_min) // STEP + 1
@@ -472,7 +446,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         chan0 = 0
         chan1 = self.nchan
 
-        plotter = SDSparseMapPlotter(NH, NV, STEP, self.brightnessunit)
+        plotter = SDSparseMapPlotter(self.figure, NH, NV, STEP, self.brightnessunit)
         plotter.direction_reference = self.direction_reference
 
         plot_list = []
@@ -736,13 +710,6 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # How to coordinate the map
         TickSize = 6
-        # if ShowPlot:
-        #     plt.ion()
-        # else:
-        #     plt.ioff()
-        # plt.figure(self.MATPLOTLIB_FIGURE_ID)
-        # if ShowPlot:
-        #     plt.ioff()
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
@@ -751,22 +718,19 @@ class SDChannelMapDisplay(SDImageDisplay):
         Reverse = (self.velocity[0] < self.velocity[1])
 
         # Initialize axes
-        fig = figure.Figure()
+        fig = self.figure
         axes_manager = ChannelMapAxesManager(fig, RAformatter, DECformatter,
                                              RAlocator, DEClocator,
                                              RArotation, DECrotation,
                                              TickSize, colormap,
                                              self.NhPanel, self.NvPanel,
                                              self.brightnessunit)
-        cmap = 'gray' if colormap == 'gray' else 'jet'
         axes_manager.direction_reference = self.direction_reference
         axes_integmap = axes_manager.axes_integmap
-        integmap_colorbar = None
         beam_circle = None
         axes_integsp1 = axes_manager.axes_integsp_full
         axes_integsp2 = axes_manager.axes_integsp_zoom
         axes_chmap = axes_manager.axes_chmap
-        chmap_colorbar = [None for v in range(self.NvPanel)]
 
         Sp_integ = self.__get_integrated_spectra()
         # loop over detected lines
@@ -859,17 +823,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 #print "min=%s, max of Total=%s" % (Total.min(),Total.max())
                 if not (Total.min() == Total.max()):
                     if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
-                        if integmap_colorbar is None:
-                            norm = matplotlib.colors.Normalize(Total.min(), Total.max())
-                            integmap_colorbar = fig.colorbar(matplotlib.cm.ScalarMappable(norm, cmap), shrink=0.8, ax=axes_integmap)
-                            for t in integmap_colorbar.ax.get_yticklabels():
-                                newfontsize_integ = t.get_fontsize()*0.5
-                                t.set_fontsize(newfontsize_integ)
-                        else:
-                            integmap_colorbar.mappable.set_clim((Total.min(), Total.max()))
-                            integmap_colorbar.draw_all()
-                        # set_clim and draw_all clears y-label
-                        integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_integ)
+                        axes_manager.set_colorbar_for(axes_integmap, Total.min(), Total.max(), f'{self.brightnessunit} km/s', shrink=0.8)
 
                 # draw beam pattern
                 if beam_circle is None:
@@ -955,19 +909,8 @@ class SDChannelMapDisplay(SDImageDisplay):
                         x = i % self.NhPanel
                         if x == (self.NhPanel - 1):
                             y = int(i // self.NhPanel)
-                            if chmap_colorbar[y] is None:
-                                norm = matplotlib.colors.Normalize(Vmin, Vmax)
-                                # removed shrink=0.8
-                                cb = fig.colorbar(matplotlib.cm.ScalarMappable(norm, cmap), ax=axes_chmap[i])
-                                for t in cb.ax.get_yticklabels():
-                                    newfontsize_cmap = t.get_fontsize()*0.5
-                                    t.set_fontsize(newfontsize_cmap)
-                                chmap_colorbar[y] = cb
-                            else:
-                                chmap_colorbar[y].mappable.set_clim(Vmin, Vmax)
-                                chmap_colorbar[y].draw_all()
-                            # set_clim and draw_all clears y-label
-                            chmap_colorbar[y].ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_cmap)
+                            axes_manager.set_colorbar_for(axes_chmap[i], Vmin, Vmax, f'{self.brightnessunit} km/s')
+
                         axes_chmap[i].set_title(Title[i], size=TickSize)
 
                 t4 = time.time()
@@ -1015,16 +958,6 @@ class SDChannelMapDisplay(SDImageDisplay):
         return plot_list
 
 
-class RmsMapAxesManager(ChannelAveragedAxesManager):
-    @property
-    def axes_rmsmap(self):
-        return self.axes_tpmap
-
-    def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
-        super(RmsMapAxesManager, self).__init__(fig, xformatter, yformatter, xlocator, ylocator,
-                                                xrotation, yrotation, ticksize, colormap)
-
-
 class SDRmsMapDisplay(SDImageDisplay):
     #MATPLOTLIB_FIGURE_ID = 8910
 
@@ -1032,7 +965,7 @@ class SDRmsMapDisplay(SDImageDisplay):
         self.init()
 
         t1 = time.time()
-        plot_list = self.__plot_channel_map()
+        plot_list = self.__plot()
         t2 = time.time()
         LOG.debug('__plot_channel_map: elapsed time %s sec'%(t2-t1))
 
@@ -1056,7 +989,7 @@ class SDRmsMapDisplay(SDImageDisplay):
                 array3d[pol, :, :] = numpy.array(array2d[pol]).reshape((self.ny, self.nx))
         return numpy.flipud(array3d.transpose())
 
-    def __plot_channel_map(self):
+    def __plot(self):
         fig = figure.Figure()
 
         colormap = 'color'
@@ -1073,15 +1006,13 @@ class SDRmsMapDisplay(SDImageDisplay):
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
         (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span, self.direction_reference)
 
-        axes_manager = RmsMapAxesManager(fig, RAformatter, DECformatter,
-                                         RAlocator, DEClocator,
-                                         RArotation, DECrotation,
-                                         TickSize, colormap)
+        axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
+                                              RAlocator, DEClocator,
+                                              RArotation, DECrotation,
+                                              TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
-        rms_axes = axes_manager.axes_rmsmap
-        rms_colorbar = None
+        rms_axes = axes_manager.image_axes
         beam_circle = None
-        cmap = 'gray' if colormap == 'gray' else 'jet'
 
         rms = self.__get_rms()
         nvalid = self.__get_num_valid()
@@ -1111,17 +1042,8 @@ class SDRmsMapDisplay(SDImageDisplay):
             # colorbar
             if not (q_min == q_max):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
-                    if rms_colorbar is None:
-                        norm = matplotlib.colors.Normalize(q_min, q_max)
-                        rms_colorbar = fig.colorbar(matplotlib.cm.ScalarMappable(norm, cmap), shrink=0.8, ax=rms_axes)
-                        for t in rms_colorbar.ax.get_yticklabels():
-                            newfontsize = t.get_fontsize()*0.5
-                            t.set_fontsize(newfontsize)
-                    else:
-                        rms_colorbar.mappable.set_clim((q_min, q_max))
-                        rms_colorbar.draw_all()
-                    # set_clim and draw_all clears y-label
-                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
+                    axes_manager.set_colorbar_for(rms_axes, q_min, q_max, self.brightnessunit, shrink=0.8)
+
             del rms_map
 
             # draw beam pattern
@@ -1130,10 +1052,11 @@ class SDRmsMapDisplay(SDImageDisplay):
 
             rms_axes.set_xlim(xlim)
             rms_axes.set_ylim(ylim)
+            rms_axes.set_title('Baseline RMS Map', size=TickSize)
 
             FigFileRoot = self.inputs.imagename + '.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
-            fig.savefig(plotfile, format='png', dpi=DPISummary)
+            fig.savefig(plotfile, format='png', dpi=DPIDetail)
 
             image.remove()
 
