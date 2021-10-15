@@ -3,6 +3,7 @@ import itertools
 import os
 from typing import List, Optional, Tuple
 
+import matplotlib.figure as figure
 import matplotlib.pyplot as plt
 import numpy
 from numpy.ma.core import MaskedArray
@@ -32,7 +33,8 @@ class PlotterPool(object):
 
     def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist,
                        direction_reference=None, brightnessunit='Jy/beam'):
-        plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec,
+        fig = figure.Figure()
+        plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec,
                                              step=1, brightnessunit=brightnessunit,
                                              figure_id=self.figure_id)
         plotter.direction_reference = direction_reference
@@ -419,7 +421,7 @@ class BaselineSubtractionPlotManager(object):
         del postfit_integrated_data
 
         return plot_list
-    
+
     def analyze_and_plot_flatness(self, spectrum: List[float], frequency: List[float],
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
@@ -502,7 +504,7 @@ class BaselineSubtractionPlotManager(object):
         plt.plot(binned_freq, binned_data, 'ro')
         plt.savefig(figfile, format='png', dpi=DPIDetail)
         return binned_stat
-        
+
 
 
 def generate_grid_panel_map(ngrid, npanel, num_plane=1):
