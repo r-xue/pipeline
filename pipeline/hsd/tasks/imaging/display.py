@@ -1,12 +1,16 @@
+"""Set of plotting classes for hsd_imaging task."""
 import itertools
 import math
 import os
 import time
+from typing import Callable, Generator, List, Optional, Union
 
 import numpy
 import matplotlib
 # import matplotlib.pyplot as plt
+import matplotlib.axes as axes
 import matplotlib.figure as figure
+import matplotlib.ticker as ticker
 from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
@@ -36,7 +40,26 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class ImageAxesManager(MapAxesManagerBase):
-    def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
+    """Axes manager for figure containing ImageAxes instance."""
+
+    def __init__(self, fig: figure.Figure,
+                 xformatter: ticker.Formatter, yformatter: ticker.Formatter,
+                 xlocator: ticker.Locator, ylocator: ticker.Locator,
+                 xrotation: float, yrotation: float,
+                 ticksize: int, colormap: str) -> None:
+        """Construct ImageAxesManager instance.
+
+        Args:
+            fig: matplotlib.figure.Figure instance
+            xformatter: tick formatter for x-axis
+            yformatter: tick formatter for y-axis
+            xlocator: tick locator for x-axis
+            ylocator: tick locator for y-axis
+            xrotation: rotation angle of x-axis label
+            yrotation: rotation angle of y-axis label
+            ticksize: tick label size
+            colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
+        """
         super(ImageAxesManager, self).__init__()
         self.figure = fig
         self.xformatter = xformatter
@@ -50,7 +73,21 @@ class ImageAxesManager(MapAxesManagerBase):
 
         self.cmap = 'gray' if colormap == 'gray' else 'jet'
 
-    def set_colorbar_for(self, axes: matplotlib.axes.Axes, value_min: float, value_max: float, value_unit: str, shrink: float = 1.0):
+    def set_colorbar_for(self, axes: axes.Axes,
+                         value_min: float, value_max: float, value_unit: str,
+                         shrink: float = 1.0):
+        """Set colorbar associated with given Axes instance.
+
+        Axes is supposed to contain ImageAxes inside. If Axes already has colorbar,
+        it reuses the existing one rather than creating new instance.
+
+        Args:
+            axes: Axes instance
+            value_min: minimum value of the range of colorbar
+            value_max: maximum value of the range of colorbar
+            value_unit: unit of the value
+            shrink: shrink parameter for colorbar. Defaults to 1.0.
+        """
         # axes should contain one AxesImage
         assert len(axes.images) == 1
         colorbar = getattr(axes, 'colorbar', None)
@@ -70,12 +107,37 @@ class ImageAxesManager(MapAxesManagerBase):
 
 
 class SingleImageAxesManager(ImageAxesManager):
-    def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
+    """Axes manager for figure containing single ImageAxes instance."""
+
+    def __init__(self, fig: figure.Figure,
+                 xformatter: ticker.Formatter, yformatter: ticker.Formatter,
+                 xlocator: ticker.Locator, ylocator: ticker.Locator,
+                 xrotation: float, yrotation: float,
+                 ticksize: int, colormap: str) -> None:
+        """Construct SingleImageAxesManager instance.
+
+        Args:
+            fig: matplotlib.figure.Figure instance
+            xformatter: tick formatter for x-axis
+            yformatter: tick formatter for y-axis
+            xlocator: tick locator for x-axis
+            ylocator: tick locator for y-axis
+            xrotation: rotation angle of x-axis label
+            yrotation: rotation angle of y-axis label
+            ticksize: tick label size
+            colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
+        """
         super(SingleImageAxesManager, self).__init__(fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap)
         self._image_axes = None
 
     @property
-    def image_axes(self):
+    def image_axes(self) -> axes.Axes:
+        """Return Axes instance for the image.
+
+        Returns:
+            Axes instance. The instance is created only once and
+            return existing one for the subsequent access.
+        """
         if self._image_axes is None:
             axes = self.figure.add_axes([0.25, 0.25, 0.5, 0.5])
             axes.xaxis.set_major_formatter(self.xformatter)
@@ -100,9 +162,16 @@ class SingleImageAxesManager(ImageAxesManager):
 
 
 class SDChannelAveragedImageDisplay(SDImageDisplay):
+    """Plotter to create a color map for channel averaged spw."""
+
     MATPLOTLIB_FIGURE_ID = 8911
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of color maps for channel averaged spw.
+
+        Returns:
+            List of plot objects.
+        """
         self.init()
 
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
@@ -194,18 +263,30 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
 
 class SDMomentMapDisplay(SDImageDisplay):
+    """Plotter to create a moment map."""
+
     MATPLOTLIB_FIGURE_ID = 8911
     # MAP_MOMENT = 8
     MAP_TITLE = "Max Intensity Map"
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: SDImageDisplayInputs) -> None:
+        """Create SDMomentMapDisplay instance.
+
+        Args:
+            Inputs instance.
+        """
         super(self.__class__, self).__init__(inputs)
     #         if hasattr(self.inputs, 'momentmap_name'):
     #             self.imagename = self.inputs.momentmap_name
     #         else:
         # self.imagename = self.inputs.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
 
-    def init(self):
+    def init(self) -> None:
+        """Do some initialization for moment map.
+
+        Execute immoments task to generate moment image as well as
+        performing generic initialization defined in the super class.
+        """
         if os.path.exists(self.inputs.moment_imagename):
             os.system('rm -rf %s'%(self.inputs.moment_imagename))
         job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.inputs.MAP_MOMENT], outfile=self.inputs.moment_imagename)
@@ -213,7 +294,12 @@ class SDMomentMapDisplay(SDImageDisplay):
         assert os.path.exists(self.inputs.moment_imagename)
         super(self.__class__, self).init()
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of moment maps.
+
+        Returns:
+            List of plot objects.
+        """
         self.init()
 
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
@@ -306,8 +392,40 @@ class SDMomentMapDisplay(SDImageDisplay):
 
 
 class ChannelMapAxesManager(ImageAxesManager):
-    def __init__(self, fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap, nh, nv,
-                 brightnessunit):
+    """Creates and manages Axes instances for channel map.
+
+    Channel map consists of the following Axes:
+
+        - Integrated intensity map (top right)
+        - Integrated spectrum with spectral line location (top center)
+        - Close up of integrated spectrum with ranges for each channel map (top left)
+        - Tiled channel map
+    """
+
+    def __init__(self, fig: figure.Figure,
+                 xformatter: ticker.Formatter, yformatter: ticker.Formatter,
+                 xlocator: ticker.Locator, ylocator: ticker.Locator,
+                 xrotation: float, yrotation: float,
+                 ticksize: int, colormap: str,
+                 nh: int, nv: int, brightnessunit: str):
+        """Construct ChannelMapAxesManager instance.
+
+        The constructor generates (nh * nv) axes for channel map.
+
+        Args:
+            fig: matplotlib.figure.Figure instance
+            xformatter: tick formatter for x-axis
+            yformatter: tick formatter for y-axis
+            xlocator: tick locator for x-axis
+            ylocator: tick locator for y-axis
+            xrotation: rotation angle of x-axis label
+            yrotation: rotation angle of y-axis label
+            ticksize: tick label size
+            colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
+            nh: number of channel maps in horizontal direction
+            nv: number of channel maps in vertical direction
+            brightnessunit: unit of the data to be displayed
+        """
         super(ChannelMapAxesManager, self).__init__(fig, xformatter, yformatter,
                                                     xlocator, ylocator,
                                                     xrotation, yrotation,
@@ -327,7 +445,15 @@ class ChannelMapAxesManager(ImageAxesManager):
         self._axes_chmap = None
 
     @property
-    def axes_integmap(self):
+    def axes_integmap(self) -> axes.Axes:
+        """Create Axes instance for integrated intensity map.
+
+        Creates and returns Axes instance for integrated intensity
+        map, which is located at the top right of the figure.
+
+        Returns:
+            Axes instance for integrated intensity map.
+        """
         if self._axes_integmap is None:
             axes = self.figure.add_axes([self.left, self.bottom, 0.98 - self.left, self.height])
 
@@ -352,7 +478,15 @@ class ChannelMapAxesManager(ImageAxesManager):
         return self._axes_integmap
 
     @property
-    def axes_integsp_full(self):
+    def axes_integsp_full(self) -> axes.Axes:
+        """Create Axes instance for integrated spectrum.
+
+        Creates and returns Axes instance for integrated spectrum,
+        which is located at the top center of the figure.
+
+        Returns:
+            Axes instance for integrated spectrum.
+        """
         if self._axes_integsp_full is None:
             left = 0.6-self.width
             axes = self.figure.add_axes([left, self.bottom, self.width, self.height])
@@ -369,7 +503,15 @@ class ChannelMapAxesManager(ImageAxesManager):
         return self._axes_integsp_full
 
     @property
-    def axes_integsp_zoom(self):
+    def axes_integsp_zoom(self) -> axes.Axes:
+        """Create Axes instance for close up view of integrated spectrum.
+
+        Creates and returns Axes instance for close up view of
+        integrated spectrum, which is located at the top left of the figure.
+
+        Returns:
+            Axes instance for close up view of integrated spectrum.
+        """
         if self._axes_integsp_zoom is None:
             left = 0.3-self.width
             axes = self.figure.add_axes([left, self.bottom, self.width, self.height])
@@ -384,13 +526,29 @@ class ChannelMapAxesManager(ImageAxesManager):
         return self._axes_integsp_zoom
 
     @property
-    def axes_chmap(self):
+    def axes_chmap(self) -> List[axes.Axes]:
+        """Create Axes instances for channel map.
+
+        Creates and returns Axes instance for channel map,
+        which is tiled at the bottom of the figure.
+
+        Returns:
+            List of Axes instances for channel map.
+        """
         if self._axes_chmap is None:
             self._axes_chmap = list(self.__axes_chmap())
 
         return self._axes_chmap
 
-    def __axes_chmap(self):
+    def __axes_chmap(self) -> Generator[axes.Axes, None, None]:
+        """Create Axes instances for channel map.
+
+        Axes instances are tiled at the bottom of the figure.
+        Total number of instances is self.nh * self.nv.
+
+        Yields:
+            Axes instances corresponding to individual map.
+        """
 #         chmap_hfrac = 0.92 # leave some room for colorbar
 #         offset = 0.01
         for i in range(self.nchmap):
@@ -414,6 +572,8 @@ class ChannelMapAxesManager(ImageAxesManager):
 
 
 class SDSparseMapDisplay(SDImageDisplay):
+    """Plotter to create a sparse profile map."""
+
     #MATPLOTLIB_FIGURE_ID = 8910
     MaxPanel = 8
 
@@ -421,20 +581,30 @@ class SDSparseMapDisplay(SDImageDisplay):
 #     def num_valid_spectrum(self):
 #         return self.inputs.num_valid_spectrum
 
-    def enable_atm(self):
+    def enable_atm(self) -> None:
+        """Enable overlay of ATM transmission curve."""
         self.showatm = True
 
-    def disable_atm(self):
+    def disable_atm(self)-> None:
+        """Disable overlay of ATM transmission curve."""
         self.showatm = False
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of sparse profile maps.
 
+        Returns:
+            List of Plot instances.
+        """
         self.init()
 
         return self.__plot_sparse_map()
 
-    def __plot_sparse_map(self):
+    def __plot_sparse_map(self) -> List[logger.Plot]:
+        """Create list of sparse profile maps.
 
+        Returns:
+            List of Plot instances.
+        """
         # Plotting routine
         num_panel = min(max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1), self.MaxPanel)
         STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) // num_panel) + 1
@@ -559,16 +729,16 @@ class SDSparseMapDisplay(SDImageDisplay):
 
         return plot_list
 
-    def _get_array_chunk(self, data, blc, trc, axes):
+    def _get_array_chunk(self, data: numpy.ndarray, blc: List[int], trc: List[int], axes: List[int]) -> numpy.ndarray:
         """
-        Returns a slice of an array
+        Return a slice of an array.
 
         data : an array that could be sliced
         blc : a list of minimum index in each dimention of axes to slice
         trc : a list of maximum index in each dimention of axes to slice
               Note trc is used for the second parameter to construct slice.
               Hence, the indices of last elements in returned array is trc-1
-        axes : a list of demention of axes in cube blc and trc corresponds
+        axes : a list of dimention of axes in cube blc and trc corresponds
         """
         array_shape = data.shape
         ndim = len(array_shape)
@@ -582,6 +752,8 @@ class SDSparseMapDisplay(SDImageDisplay):
 
 
 class SDChannelMapDisplay(SDImageDisplay):
+    """Plotter to create a channel map."""
+
     #MATPLOTLIB_FIGURE_ID = 8910
     NumChannelMap = 15
     NhPanel = 5
@@ -590,8 +762,12 @@ class SDChannelMapDisplay(SDImageDisplay):
     #NhPanel = 4
     #NvPanel = 3
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of channel maps.
 
+        Returns:
+            List of Plot instances.
+        """
         self.init()
 
         if self.stokes_string != 'I':
@@ -599,7 +775,8 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return self.__plot_channel_map()
 
-    def __valid_lines(self):
+    def __valid_lines(self) -> List[List[int]]:
+        """Return list of chnnel ranges of valid spectral lines."""
         group_desc = self.inputs.reduction_group
         ant_index = self.inputs.antennaid_list
         spwid_list = self.inputs.spwid_list
@@ -624,7 +801,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                         line_list.append(ll)
         return line_list
 
-    def __get_integrated_spectra(self):
+    def __get_integrated_spectra(self) -> numpy.ma.masked_array:
+        """Compute integrated spectrum from the image.
+
+        Image weights provided by the weight image is taken into account.
+
+        Returns:
+            Integrated spectrum as masked array.
+        """
         imagename = self.inputs.imagename
         weightname = self.inputs.imagename + '.weight'
         new_id_stokes = 0 if self.id_stokes < self.id_spectral else 1
@@ -677,7 +861,12 @@ class SDChannelMapDisplay(SDImageDisplay):
                     sp_ave[pol, :] = curr_sp
         return sp_ave
 
-    def __plot_channel_map(self):
+    def __plot_channel_map(self) -> List[logger.Plot]:
+        """Create list of channel maps.
+
+        Returns:
+            List of Plot instances.
+        """
         colormap = 'color'
         scale_max = False
         scale_min = False
@@ -959,27 +1148,56 @@ class SDChannelMapDisplay(SDImageDisplay):
 
 
 class SDRmsMapDisplay(SDImageDisplay):
+    """Plotter to create a baseline rms map."""
+
     #MATPLOTLIB_FIGURE_ID = 8910
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of baseline rms maps.
+
+        Returns:
+            List of Plot instances.
+        """
         self.init()
 
         t1 = time.time()
         plot_list = self.__plot()
         t2 = time.time()
-        LOG.debug('__plot_channel_map: elapsed time %s sec'%(t2-t1))
+        LOG.debug('__plot: elapsed time %s sec'%(t2-t1))
 
         return plot_list
 
-    def __get_rms(self):
+    def __get_rms(self) -> numpy.ndarray:
+        """Compute baseline rms for each spatial pixel.
+
+        Returns:
+            Two-dimensional array of baseline rms.
+        """
         # reshape rms to a 3d array in shape, (nx_im, ny_im, npol_data)
         return self.__reshape_grid_table_values(self.inputs.result.outcome['rms'], float)
 
-    def __get_num_valid(self):
+    def __get_num_valid(self) -> numpy.ndarray:
+        """Compute number of valid spectra associated with each spatial pixel.
+
+        Returns:
+            Two-dimentional array of number of valid spectra
+        """
         # reshape validsp to a 3d array in shape, (nx_im, ny_im, npol_data)
         return self.__reshape_grid_table_values(self.inputs.result.outcome['validsp'], int)
 
-    def __reshape_grid_table_values(self, array2d, dtype=None):
+    def __reshape_grid_table_values(self, array2d, dtype=None) -> numpy.ndarray:
+        """Reshape input 2-D array into 3-D array.
+
+        The input two-dimensional array with shape (npol, nx * ny) into
+        three-dimensional array with shape (nx, ny, npol).
+
+        Args:
+            array2d: Input two-dimensional array.
+            dtype: Array data type. Defaults to None.
+
+        Returns:
+            Reshaped array.
+        """
         # reshape 2d array in shape, (npol, nx*ny), to (nx, ny, npol)
         npol_data = len(array2d)
         # retruned value will be transposed
@@ -989,7 +1207,12 @@ class SDRmsMapDisplay(SDImageDisplay):
                 array3d[pol, :, :] = numpy.array(array2d[pol]).reshape((self.ny, self.nx))
         return numpy.flipud(array3d.transpose())
 
-    def __plot(self):
+    def __plot(self) -> List[logger.Plot]:
+        """Create list of baseline rms maps.
+
+        Returns:
+            List of Plot instances.
+        """
         fig = figure.Figure()
 
         colormap = 'color'
@@ -1084,7 +1307,22 @@ class SDRmsMapDisplay(SDImageDisplay):
 
 
 class SpectralMapAxesManager(MapAxesManagerBase):
-    def __init__(self, fig, nh, nv, brightnessunit, locator, ticksize):
+    """Creates and manages Axes instances for detailed spectral map."""
+
+    def __init__(self, fig: figure.Figure, nh: int, nv: int,
+                 brightnessunit: str, locator: ticker.Locator, ticksize: int) -> None:
+        """Create SpectralMapAxesManager instance.
+
+        Total number of Axes instances in the figure is nh * nv.
+
+        Args:
+            fig: figure.Figure instance
+            nh: number of Axes instances in horizontal direction
+            nv: number of Axes instances in vertical direction
+            brightnessunit: unit for the image
+            locator: locator for x-axis
+            ticksize: tick label size
+        """
         super(SpectralMapAxesManager, self).__init__()
         self.figure = fig
         self.nh = nh
@@ -1096,13 +1334,33 @@ class SpectralMapAxesManager(MapAxesManagerBase):
         self._axes = None
 
     @property
-    def axes_list(self):
+    def axes_list(self) -> List[axes.Axes]:
+        """Return list of Axes instances for the profile map.
+
+        Translation of one-dimensional list into two-dimensional location
+        is needed.
+
+          - The first Axes corresponds to the bottom left panel
+          - The first to (nh-1)-th Axes form the bottom row of the profile map
+          - The nh-th to (2*nh-1)-th Axes form the next row, which is right above
+            the bottom row
+          - Similarly, the list is translated into nv rows in total
+          - The last Axes corresponds to the top right panel
+
+        Returns:
+            List of Axes instances.
+        """
         if self._axes is None:
             self._axes = list(self.__axes_list())
 
         return self._axes
 
-    def __axes_list(self):
+    def __axes_list(self) -> Generator[axes.Axes, None, None]:
+        """Create list of Axes instances for detailed profile map.
+
+        Yields:
+            Axes instance corresponding to each panel of profile map.
+        """
         npanel = self.nh * self.nv
         for ipanel in range(npanel):
             x = ipanel % self.nh
@@ -1129,15 +1387,34 @@ class SpectralMapAxesManager(MapAxesManagerBase):
 
 
 class SDSpectralMapDisplay(SDImageDisplay):
+    """Plotter for detailed spectral map."""
+
     #MATPLOTLIB_FIGURE_ID = 8910
     MaxNhPanel = 5
     MaxNvPanel = 5
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create detailed profile map.
+
+        If provided image is so large that its number of spatial pixels
+        exceed the number of panels for single sparse map, multiple
+        image files are created.
+
+        Returns:
+            List of detailed profile maps.
+        """
         self.init()
         return self.__plot_spectral_map()
 
-    def __get_strides(self):
+    def __get_strides(self) -> List[int]:
+        """Return the stride for creating profile map.
+
+        The stride represents the number of spatial pixels that are combined into
+        single profile map.
+
+        Returns:
+            List of strides in horizontal and vertical directions.
+        """
         qa = casa_tools.quanta
         units = self.image.units
         factors = []
@@ -1146,7 +1423,16 @@ class SDSpectralMapDisplay(SDImageDisplay):
             factors.append(int(numpy.round(abs(self.grid_size / cell))))
         return factors
 
-    def __plot_spectral_map(self):
+    def __plot_spectral_map(self) -> List[logger.Plot]:
+        """Create detailed profile map.
+
+        If provided image is so large that its number of spatial pixels
+        exceed the number of panels for single sparse map, multiple
+        image files are created.
+
+        Returns:
+            List of detailed profile maps.
+        """
         fig = figure.Figure()
 
         (STEPX, STEPY) = self.__get_strides()
@@ -1328,9 +1614,27 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
 
 class SDSpectralImageDisplay(SDImageDisplay):
+    """Plotter for science spectral window."""
+
     MATPLOTLIB_FIGURE_ID = 8910
 
-    def __plot(self, display_cls, prologue=None, epilogue=None):
+    def __plot(self, display_cls: SDImageDisplay,
+               prologue: Optional[Callable[[SDImageDisplay], None]] = None,
+               epilogue: Optional[Callable[[SDImageDisplay], None]] = None) -> List[logger.Plot]:
+        """Generate Plot list using given display class.
+
+        Args:
+            display_cls: display class
+            prologue: Function to execute before plot method is called.
+                      The function must take SDImageDisplay instance as its argument.
+                      Defaults to None.
+            epilogue: Function to execute after plot method is called.
+                      The function must take SDImageDisplay instance as its argument.
+                      Defaults to None.
+
+        Returns:
+            List of Plot instances.
+        """
         worker = display_cls(self.inputs)
         if prologue:
             prologue(worker)
@@ -1340,7 +1644,21 @@ class SDSpectralImageDisplay(SDImageDisplay):
         return plot_list
 
     @casa5style_plot
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create Plot instances for science spectral windows.
+
+        It creates the following plots from the single inputs.
+        They are returned as a plain list.
+
+          - sparse spectral map
+          - channel map
+          - detailed spectral map
+          - baseline rms map
+          - moment map (max intensity map)
+
+        Returns:
+            List of Plot instances.
+        """
         plot_list = []
         t0 = time.time()
         plot_list.extend(
@@ -1376,7 +1694,15 @@ class SDSpectralImageDisplay(SDImageDisplay):
 
         return plot_list
 
-    def add_contamination_plot(self):
+    def add_contamination_plot(self) -> List[logger.Plot]:
+        """Return list of Plot instances for contamination plot.
+
+        Plot instance is created only when input has valid file
+        name of contamination plot for "combined" image.
+
+        Returns:
+            List of Plot instances.
+        """
         context = self.inputs.context
         plotfile = os.path.join(self.stage_dir, self.inputs.contamination_plot)
         if self.inputs.antenna == 'COMBINED' and os.path.exists(plotfile):
@@ -1401,7 +1727,18 @@ class SDSpectralImageDisplay(SDImageDisplay):
             return []
 
 
-def SDImageDisplayFactory(mode):
+def SDImageDisplayFactory(mode: str) -> Union[SDChannelAveragedImageDisplay, SDSpectralImageDisplay]:
+    """Return appropriate display class for plotting.
+
+    If mode is "TP", SDChannelAveragedImageDisplay is returned.
+    Otherwise, SDSpectralImageDisplay is returned.
+
+    Args:
+        mode: Type of the spectral window.
+
+    Returns:
+        Appropriate display class
+    """
     LOG.debug('MODE=%s'%(mode))
     if mode == 'TP':
         return SDChannelAveragedImageDisplay

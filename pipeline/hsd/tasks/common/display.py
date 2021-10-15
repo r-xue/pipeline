@@ -70,6 +70,18 @@ def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
 
 
 def is_invalid_axis_range(xmin: float, xmax: float, ymin: float, ymax: float) -> bool:
+    """Check if given range is valid.
+
+    Args:
+        xmin: lower limit of the x-axis. Can be NaN or Inf.
+        xmax: upper limit of the x-axis. Can be NaN or Inf.
+        ymin: lower limit of the y-axis. Can be NaN or Inf.
+        ymax: upper limit of the y-axis. Can be NaN or Inf.
+
+    Returns:
+        Return False if any of xmin, xmax, ymin, ymax is NaN or Inf.
+        Otherwise, True is returned.
+    """
     axis_ranges = [xmin, xmax, ymin, ymax]
 
     def _is_invalid(v):
@@ -193,7 +205,7 @@ class SpectralImage(object):
     """Representation of four-dimensional spectral image."""
 
     @property
-    def data(self):
+    def data(self) -> np.ndarray:
         """Retrun image data."""
         if hasattr(self, 'imagename') and self.imagename:
             with casa_tools.ImageReader(self.imagename) as ia:
@@ -203,8 +215,8 @@ class SpectralImage(object):
         return data
 
     @property
-    def mask(self):
-        """Return image mask."""
+    def mask(self) -> np.ndarray:
+        """Return boolean image mask."""
         if hasattr(self, 'imagename') and self.imagename:
             with casa_tools.ImageReader(self.imagename) as ia:
                 mask = ia.getchunk(getmask=True)
@@ -384,6 +396,7 @@ class SpectralImage(object):
 
 class SDImageDisplayInputs(SingleDishDisplayInputs):
     """Manages input data for plotter classes for single dish images."""
+
     MAP_MOMENT = 8
 
     def __init__(self,
@@ -649,32 +662,32 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
 
     @property
-    def context(self):
+    def context(self) -> infrastructure.launcher.Context:
         """Return Pipeline context."""
         return self.inputs.context
 
     @property
-    def stage_dir(self):
+    def stage_dir(self) -> str:
         """Return weblog subdirectory."""
         return self.inputs.stage_dir
 
     @property
-    def image(self):
+    def image(self) -> SpectralImage:
         """Return SpectralImage instance."""
         return self.inputs.image
 
     @property
-    def spw(self):
-        """Return spw."""
+    def spw(self) -> int:
+        """Return spw id."""
         return self.inputs.spw
 
     @property
-    def antenna(self):
-        """Return antenna."""
+    def antenna(self) -> str:
+        """Return antenna name."""
         return self.inputs.antenna
 
     @property
-    def vis(self):
+    def vis(self) -> str:
         """Return MS name."""
         return self.inputs.vis
 
@@ -1067,6 +1080,7 @@ class SDSparseMapPlotter(object):
         """Construct SDSparseMapPlotter instance.
 
         Args:
+            fig: matplotlib.figure.Figure instance
             nh: Number of panels along vertical axis.
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
