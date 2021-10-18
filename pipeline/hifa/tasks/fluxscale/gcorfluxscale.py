@@ -3,6 +3,7 @@ import operator
 import os
 import uuid
 from functools import reduce
+from typing import List, Set, Tuple
 
 import numpy as np
 import scipy.stats as stats
@@ -16,6 +17,7 @@ import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import applycal
@@ -545,20 +547,54 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # of antennas.
         self._do_phasecal_for_amp_calibrator(filtered_refant, minblperant, resantenna, uvrange)
 
-        # PIPE-1154: for PHASE calibrator and CHECK source fields, create
-        # separate phase solutions for each combination of intent, field, and
-        # use optimal gaincal parameters based on spwmapping registered in the
-        # measurement set.
-        pc_intents = {'CHECK', 'PHASE'}
-        for intent in pc_intents:
-            if intent in inputs.transintent:
-                self._do_phasecal_per_field_for_intent(intent, allantenna, filtered_refant)
+        # Identify unique transfer intents, whether PHASE/CHECK are present
+        # among the transfer intents, and what non-PHASE/CHECK intents are
+        # present.
+        trans_intents = set(self.inputs.transintent.split(','))
+        pc_intents = {'CHECK', 'PHASE'} & trans_intents
+        non_pc_intents = trans_intents - pc_intents
+
+        # PIPE-1154: identify which fields covered the PHASE calibrator and/or
+        # CHECK source intent while not also covering one of the other
+        # calibrator intents (typically AMPLITUDE, BANDPASS, POL*). For these
+        # fields, derive separate phase solutions for each combination of
+        # intent, field, and use optimal gaincal parameters based on spwmapping
+        # registered in the measurement set.
+        amp_intent = set(self.inputs.refintent.split(','))
+        exclude_intents = amp_intent | non_pc_intents
+        intent_field_to_assess = self._get_intent_field(inputs.ms, intents=pc_intents,
+                                                        exclude_intents=exclude_intents)
+        for intent, field in intent_field_to_assess:
+            self._do_phasecal_for_intent_field(intent, field, allantenna, filtered_refant)
 
         # PIPE-1154: for the remaining calibrator intents, compute phase
         # solutions using full set of antennas.
-        other_calintents = set(self.inputs.transintent.split(',')) - pc_intents
-        if other_calintents:
-            self._do_phasecal_for_other_calibrators(other_calintents, allantenna, filtered_refant)
+        if non_pc_intents:
+            self._do_phasecal_for_other_calibrators(non_pc_intents, allantenna, filtered_refant)
+
+    @staticmethod
+    def _get_intent_field(ms: MeasurementSet, intents: Set, exclude_intents: Set = None) -> List[Tuple[str, str]]:
+        if exclude_intents is None:
+            exclude_intents = set()
+
+        intent_field = []
+        for intent in intents:
+            for field in ms.get_fields(intent=intent):
+                # Check whether found field also covers any of the intents to
+                # skip.
+                excluded_intents_found = field.intents.intersection(exclude_intents)
+                if not excluded_intents_found:
+                    intent_field.append((intent, field.name))
+                else:
+                    # Log a message to explain why no phase caltable will be
+                    # derived for this particular combination of field and
+                    # intent.
+                    excluded_intents_str = ", ".join(sorted(excluded_intents_found))
+                    LOG.debug(f'{ms.basename}: will not derive phase calibration for field {field.name} (#{field.id})'
+                              f' and intent {intent} because this field also covers calibrator intent(s)'
+                              f' {excluded_intents_str}')
+
+        return intent_field
 
     def _do_phasecal_for_amp_calibrator(self, refant, minblperant, antenna, uvrange):
         inputs = self.inputs
@@ -573,21 +609,18 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                              minsnr=inputs.minsnr, refant=refant, minblperant=minblperant, spwmap=None,
                              interp=None, merge=True)
 
-    def _do_phasecal_per_field_for_intent(self, intent, antenna, refant):
+    def _do_phasecal_for_intent_field(self, intent, field, antenna, refant):
         inputs = self.inputs
 
-        # Create separate phase solutions for each field covered by requested
-        # intent.
-        for field in inputs.ms.get_fields(intent=intent):
-            # Get optimal phase solution parameters for current intent and
-            # field, based on spw mapping info in MS.
-            combine, interp, solint, spwmap = self._get_phasecal_params(intent, field.name)
+        # Get optimal phase solution parameters for current intent and
+        # field, based on spw mapping info in MS.
+        combine, interp, solint, spwmap = self._get_phasecal_params(intent, field)
 
-            # Create phase caltable and merge it into the local context.
-            LOG.info(f'Compute phase gaincal table for intent={intent}, field={field.name}.')
-            self._do_gaincal(field=field.name, intent=intent, gaintype='G', calmode='p', combine=combine,
-                             solint=solint, antenna=antenna, uvrange='', minsnr=inputs.minsnr, refant=refant,
-                             spwmap=spwmap, interp=interp, merge=True)
+        # Create phase caltable and merge it into the local context.
+        LOG.info(f'Compute phase gaincal table for intent={intent}, field={field}.')
+        self._do_gaincal(field=field, intent=intent, gaintype='G', calmode='p', combine=combine,
+                         solint=solint, antenna=antenna, uvrange='', minsnr=inputs.minsnr, refant=refant,
+                         spwmap=spwmap, interp=interp, merge=True)
 
     def _do_phasecal_for_other_calibrators(self, intent, antenna, refant):
         inputs = self.inputs
