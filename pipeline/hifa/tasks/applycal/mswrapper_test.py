@@ -60,8 +60,13 @@ def test_create_averages_from_ms_produces_comparable_corrected_data():
     old_wrapper = MSWrapper.create_from_ms(ms.name, SCAN_ID, SPW_ID)
     V_old = calc_vk(old_wrapper)
     nt.assert_array_almost_equal(
-        wrapper_mimic_old.V['corrected_data'],
-        V_old['corrected_data'],
+        wrapper_mimic_old.V['corrected_data'].real,
+        V_old['corrected_data'].real,
+        6  # decimal places
+    )
+    nt.assert_array_almost_equal(
+        wrapper_mimic_old.V['corrected_data'].imag,
+        V_old['corrected_data'].imag,
         6  # decimal places
     )
 

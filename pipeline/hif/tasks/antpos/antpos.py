@@ -1,5 +1,6 @@
 import csv
 import os
+import warnings
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -111,41 +112,6 @@ class AntposInputs(vdp.StandardInputs):
                 'antenna': antenna,
                 'parameter': offsets}
 
-    def _read_antpos_txtfile(self, filename):
-        """
-        Read and return the contents of a file or list of files.
-        """
-        # If the input is a list of flagging command file names, call this
-        # function recursively.  Otherwise, read in the file and return its
-        # contents
-        # FIXME: missing _add_file method
-        if isinstance(filename, list):
-            return ''.join([self._add_file(f) for f in filename])
-
-        # This assumes a very simple antenna offsets file format
-        #    Blank lines are skipped
-        #    Comment lines start with # and are skipped
-        #    Each line must contain at least 4 white spaced delimited fields
-        #        containing the antenna name, x offset, y offset, and z offset
-        # Rewrite this when we know the real format
-        antennas = []
-        parameters = []
-        with open(filename, 'r') as datafile:
-            for line in datafile:
-                if not line.strip():
-                    continue
-                if line.startswith('#'):
-                    continue
-                fields = line.split()
-                if len(fields) < 4:
-                    continue
-                antennas.append(fields[0])
-                parameters.extend(
-                    [float(fields[1]), float(fields[2]), float(fields[3])])
-
-        # Convert the list to a string since CASA wants it that way?
-        return ','.join(antennas), parameters
-
     @staticmethod
     def _read_antpos_csvfile(filename, msbasename):
         """
@@ -160,7 +126,6 @@ class AntposInputs(vdp.StandardInputs):
         #    yoffset in meters
         #    zoffset in meters
         #    comment
-        # Rewrite this when we know the real format
         antennas = []
         parameters = []
 
@@ -176,7 +141,12 @@ class AntposInputs(vdp.StandardInputs):
 
             # Loop over the rows
             for row in reader:
-                (ms_name, ant_name, xoffset, yoffset, zoffset, _) = row
+                if len(row) == 6: 
+                    (ms_name, ant_name, xoffset, yoffset, zoffset, _) = row
+                else:
+                    msg = "Cannot read antenna position file: %s. Row %s is not correctly formatted." % (filename, reader.line_num)
+                    LOG.error(msg)
+                    raise Exception(msg)
                 if ms_name != msbasename:
                     continue
                 antennas.append(ant_name)
@@ -193,13 +163,16 @@ class Antpos(basetask.StandardTaskTemplate):
 
     def prepare(self):
         inputs = self.inputs
-
         gencal_args = inputs.to_casa_args()
         gencal_job = casa_tasks.gencal(caltype='antpos', **gencal_args)
         if inputs.hm_antpos == 'file' and gencal_args['antenna'] == '':
             LOG.info('No antenna position offsets are defined')
         else:
-            self._executor.execute(gencal_job)
+            # PIPE-1309: we put the casa task call under the catch_warnings contextmanager to prevent
+            # gencal(caltype='antpos') from raising UserWarnings as exceptions. This could be
+            # removed after CAS-13614 is fixed.
+            with warnings.catch_warnings():
+                self._executor.execute(gencal_job)
 
         calto = callibrary.CalTo(vis=inputs.vis)
         # careful now! Calling inputs.caltable mid-task will remove the

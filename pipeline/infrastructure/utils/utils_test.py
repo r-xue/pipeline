@@ -5,6 +5,8 @@ import numpy as np
 import pytest
 
 from pipeline import domain
+from pipeline.infrastructure import casa_tools
+
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first
@@ -81,18 +83,17 @@ def test_approx_equal(x: float, y: float, tol: float, expected: bool):
     assert approx_equal(x, y, tol=tol) == expected
 
 
-params_test_get_num_calltable_pol = [('uid___A002_Xc46ab2_X15ae_spw16_17_small.ms.hifa_'
+params_test_get_num_calltable_pol = [('uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms.hifa_'
                                       'timegaincal.s17_7.spw0.solintinf.gacal.tbl', 1),
-                                     ('uid___A002_Xc46ab2_X15ae_spw16_17_small.ms.hifa_'
+                                     ('uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms.hifa_'
                                       'timegaincal.s17_2.spw0.solintinf.gpcal.tbl', 2)]
 
 
-@pytest.mark.skip(reason="Currently no general online pipeline date storage is available for test datasets.")
 @pytest.mark.parametrize('caltable, expected', params_test_get_num_calltable_pol)
 def test_get_num_caltable_polarizations(caltable: str, expected: int):
     """Test get_num_caltable_polarizations()
     """
-    assert get_num_caltable_polarizations(caltable=caltable) == expected
+    assert get_num_caltable_polarizations(caltable=casa_tools.utils.resolve('pl-unittest/'+caltable)) == expected
 
 
 params_flagged_intervals = [([], []), ([1, 2], [(0, 0)]),

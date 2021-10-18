@@ -17,7 +17,6 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.utils import relative_path
 from .. import common
-from ..k2jycal import k2jycal
 
 LOG = logging.get_logger(__name__)
 
@@ -209,35 +208,34 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         return datacolumn
 
-    def get_k2jycal_result(self) -> Optional[k2jycal.SDK2JyCalResults]:
-        """Find k2jycal results instance from the context.
+    def get_caltable_from_callibrary(self) -> str:
+        """Retrieve k2jycal caltable name from callibrary.
 
         Returns:
-            k2jycal results instance or None
+            Name of the caltable.
+            Return empty string if k2jycal caltable is not applied.
         """
-        results = self.context.results
-        result = None
-        for r in map(lambda x: x.read(), results):
-            if isinstance(r, k2jycal.SDK2JyCalResults):
-                result = r
-                break
-            elif isinstance(r, basetask.ResultsList) and isinstance(r[0], k2jycal.SDK2JyCalResults):
-                result = r[0]
-                break
-        return result
+        applied_state = self.context.callibrary.applied
+        calto = callibrary.CalTo(vis=self.vis)
+        state_for_vis = applied_state.trimmed(self.context, calto)
+        caltables = state_for_vis.get_caltable(caltypes=('amp', 'gaincal'))
+
+        k2jycal_caltable = ''
+        if len(caltables) > 0:
+            k2jycal_caltable = caltables.pop()
+
+        return k2jycal_caltable
 
     def get_gainfactor(self) -> Union[float, str]:
-        """Retrieve k2jycal table from k2jycal results.
+        """Retrieve k2jycal table from callibrary.
 
         Returns:
             name of the k2jycal table or 1.0
         """
-        result = self.get_k2jycal_result()
+        k2jycal_caltable = self.get_caltable_from_callibrary()
         gainfactor = 1.0
-        if result is not None:
-            final = result.final
-            if len(final) > 0:
-                gainfactor = final[0].gaintable
+        if k2jycal_caltable:
+            gainfactor = k2jycal_caltable
         return gainfactor
 
     def to_casa_args(self) -> dict:
