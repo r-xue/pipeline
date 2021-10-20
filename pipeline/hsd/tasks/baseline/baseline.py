@@ -1,3 +1,4 @@
+"""Spectral baseline subtraction stage."""
 import collections
 import os
 
