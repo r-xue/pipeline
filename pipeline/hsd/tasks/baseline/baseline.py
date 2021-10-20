@@ -407,7 +407,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 plot_list.extend(result.outcome['plot_list'])
             if 'baseline_quality_stat' in result.outcome:
                 baseline_quality_stat.update(result.outcome['baseline_quality_stat'])
-                
+
 
         outcome = {'baselined': baselined,
                    'vis_map': vis_map,
