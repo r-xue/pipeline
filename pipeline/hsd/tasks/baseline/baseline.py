@@ -4,6 +4,8 @@ import os
 
 import numpy
 
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -19,6 +21,9 @@ from .. import common
 from ..common import compress
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 # import memory_profiler
 LOG = infrastructure.get_logger(__name__)
@@ -47,12 +52,14 @@ class SDBaselineInputs(vdp.StandardInputs):
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
-    def vis(self):
+    def vis(self) -> str:
+        """Return input MS name."""
         return self.infiles
 
     # handle conversion from string to bool
     @switchpoly.convert
-    def switchpoly(self, value):
+    def switchpoly(self, value: Any) -> bool:
+        """Convert switchpoly value into bool."""
         converted = None
         if isinstance(value, bool):
             converted = value
@@ -68,9 +75,51 @@ class SDBaselineInputs(vdp.StandardInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, infiles=None, antenna=None, spw=None, pol=None, field=None,
-                 linewindow=None, linewindowmode=None, edge=None, broadline=None, fitorder=None,
-                 fitfunc=None, switchpoly=None, clusteringalgorithm=None, deviationmask=None, parallel=None):
+    def __init__(self,
+                 context: Context,
+                 infiles: Optional[List[str]] = None,
+                 antenna: Optional[List[str]] = None,
+                 spw: Optional[List[str]] = None,
+                 pol: Optional[List[str]] = None,
+                 field: Optional[List[str]] = None,
+                 linewindow: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 linewindowmode: Optional[str] = None,
+                 edge: Optional[Tuple[int, int]] = None,
+                 broadline: Optional[bool] = None,
+                 fitorder: Optional[int] = None,
+                 fitfunc: Optional[str] = None,
+                 switchpoly: Optional[bool] = None,
+                 clusteringalgorithm: Optional[str] = None,
+                 deviationmask: Optional[bool] = None,
+                 parallel: Optional[str] = None):
+        """Construct SDBaselineInputs instance.
+
+        Args:
+            context: Pipeline context
+            infiles: Name of MS(s) to process. Defaults to all regirstered data.
+            antenna: Antenna selection. Defaults to all antennas.
+            spw: Spectral window selection. Defaults to all science spws.
+            pol: Polarization selection. Defaults to all polarizations.
+            field: Field selection. Defaults to all science fields.
+            linewindow: Manual line window. Defaults to None.
+            linewindowmode: Line window handling mode. 'replace' exclusively uses manual line window
+                            while 'merge' merges manual line window into automatic line detection
+                            and validation result. Defaults to 'replace'.
+            edge: Edge channels to exclude. Defaults to None.
+            broadline: Detect broadline component or not. Defaults to None.
+            fitorder: Manual fit order. Defaults to run heuristics to determine fit order.
+            fitfunc: Fit function to use. Only cubic spline ('spline' or 'cspline') is available
+                     so far.
+            switchpoly: Whther or not fall back to low order polynomial fit when large mask
+                        exist at the edge of spw. Defaults to True.
+            clusteringalgorithm: Clustering algorithm to use. Choices are 'kmean', 'hierarchy',
+                                 or 'both', which merges results from two clustering algorithms.
+                                 Defaults to 'hierarchy'.
+            deviationmask: Apply deviation mask or not. Defaults to True.
+            parallel: Turn on/off parallel execution. If 'true', baseline subtraction is performed
+                      in parallel if available. The 'automatic' option use parallel execution
+                      only if it is available. Defaults to 'automatic'.
+        """
         super(SDBaselineInputs, self).__init__()
 
         self.context = context
@@ -90,7 +139,12 @@ class SDBaselineInputs(vdp.StandardInputs):
         self.deviationmask = deviationmask
         self.parallel = parallel
 
-    def to_casa_args(self):
+    def to_casa_args(self) -> dict:
+        """Convert Inputs instance into task execution parameter.
+
+        Returns:
+            Task execution parameter as kwargs.
+        """
         infiles = self.infiles
         if isinstance(self.infiles, list):
             self.infiles = infiles[0]
