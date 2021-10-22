@@ -39,13 +39,13 @@ class NROImportDataInputs(importdata.ImportDataInputs):
             nocopy: Disable copying of MS to working directory
             createmms: Create an MMS
         """
-        #no-op parameters for MS
-        asis=''
-        process_caldevice=False
-        bdfflags=False
-        lazy=False
-        ocorr_mode='ao'
-        save_flagonline=False
+        # no-op parameters for MS
+        asis = ''
+        process_caldevice = False
+        bdfflags = False
+        lazy = False
+        ocorr_mode = 'ao'
+        save_flagonline = False
 
         super(NROImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                   process_caldevice=process_caldevice, session=session,
@@ -56,20 +56,20 @@ class NROImportDataInputs(importdata.ImportDataInputs):
 
 class NROImportDataResults(sd_importdata.SDImportDataResults):
     """NROImportDataResults is an equivalent class with ImportDataResults.
-    
-    Purpose of NROImportDataResults is to replace QA scoring associated 
-    with ImportDataResults with single dish specific QA scoring, which 
+
+    Purpose of NROImportDataResults is to replace QA scoring associated
+    with ImportDataResults with single dish specific QA scoring, which
     is associated with this class.
 
     ImportDataResults holds the results of the ImportData task. It contains
-    the resulting MeasurementSet domain objects and optionally the additional 
+    the resulting MeasurementSet domain objects and optionally the additional
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None, 
+    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None,
                  datatable_prefix: str=None, setjy_results: List[FluxMeasurement]=None):
         """Initialise NROImportDataResults class.
-        
+
         Args:
             mses: list of MeasurementSet domain objects
             reduction_group_list: list of MSReductionGroupDesc
@@ -102,7 +102,7 @@ class NROImportData(sd_importdata.SDImportData):
     This class extends importdata.ImportData class, and methods execute main logics depends on it.
     """
 
-    Inputs = NROImportDataInputs 
+    Inputs = NROImportDataInputs
 
     def prepare(self, **parameters: Dict[str, Any]) -> NROImportDataResults:
         """Prepare job requests for execution.

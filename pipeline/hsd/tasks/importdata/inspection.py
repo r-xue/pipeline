@@ -68,7 +68,7 @@ class SDInspection(object):
         LOG.debug('table_name=%s' % table_name)
 
         dry_run = not os.path.exists(self.ms.name)
-        #worker.set_name(ms.name)
+        # worker.set_name(ms.name)
         org_directions = worker.execute(dry_run=dry_run)
 
         datatable = worker.get_datatable()
@@ -90,7 +90,7 @@ class SDInspection(object):
 
         # merge grouping result with MS-based DataTable
         position_group = grouping_result['POSGRP']
-        LOG.debug('len(position_group) = %s appended_row = %s'%(len(position_group), appended_row))
+        LOG.debug('len(position_group) = %s appended_row = %s' % (len(position_group), appended_row))
         LOG.debug('position_group = %s' % position_group)
         datatable.putcol('POSGRP', position_group[startrow:], startrow=startrow, nrow=appended_row)
 
@@ -120,11 +120,11 @@ class SDInspection(object):
                 LOG.debug('Adding %s' % key)
                 datatable.putkeyword(key, value)
             LOG.debug('after: %s' % (datatable.getkeyword(key)))
-        #datatable.putkeyword('POSGRP_LIST', grouping_result['POSGRP_LIST'])
+        # datatable.putkeyword('POSGRP_LIST', grouping_result['POSGRP_LIST'])
         time_group = grouping_result['TIMEGRP']
         time_group_list = grouping_result['TIMEGRP_LIST']
-        #datatable.putkeyword('TIMEGAP_S', time_gap[0])
-        #datatable.putkeyword('TIMEGAP_L', time_gap[1])
+        # datatable.putkeyword('TIMEGAP_S', time_gap[0])
+        # datatable.putkeyword('TIMEGAP_L', time_gap[1])
         for group_id, member_list in reduction_group.items():
             for member in member_list:
                 ms = member.ms
@@ -239,8 +239,8 @@ class SDInspection(object):
             thisfield = field_id[i]
 
             spw_domain = self.ms.spectral_windows[thisspw]
-            #LOG.debug('spw.name=\'%s\''%(spw_domain.name))
-            #LOG.debug('spw.intents=%s'%(spw_domain.intents))
+            # LOG.debug('spw.name=\'%s\''%(spw_domain.name))
+            # LOG.debug('spw.intents=%s'%(spw_domain.intents))
             if (re.search('^WVR#', spw_domain.name) is not None or
                     re.search('#CH_AVG$', spw_domain.name) is not None or
                     'TARGET' not in spw_domain.intents):
@@ -261,7 +261,7 @@ class SDInspection(object):
         return by_antenna, by_spw, by_field
 
     def _group_data(self, datatable: DataTableImpl, position_group_id: int, time_group_id_small: int, time_group_id_large: int,
-                    startrow: int=0, nrow: int=-1) -> Dict[str,Union[numpy.array,Dict[int,Any]]]:
+                    startrow: int=0, nrow: int=-1) -> Dict[str, Union[numpy.array, Dict[int, Any]]]:
         """Get group data from DataTable.
 
         Args:
@@ -333,7 +333,7 @@ class SDInspection(object):
         for ant, vant in by_antenna.items():
             LOG.debug('Start ant %s' % ant)
             pattern_dict = {}
-            #ms = ms_ant_map[ant]
+            # ms = ms_ant_map[ant]
             observatory = ms.antenna_array.name
             _beam_size = ms.beam_sizes[id_ant_map[ant]]
             for i in (0, 1):
@@ -363,7 +363,7 @@ class SDInspection(object):
                     posgrp_list[ant][spw][field_id] = []
                     timegrp_list[ant][spw][field_id] = None
 
-                    #for (pol,vpol) in self.by_pol.items():
+                    # for (pol,vpol) in self.by_pol.items():
                     id_list = numpy.fromiter(vant & vspw & vfield, dtype=numpy.int32)
                     if len(id_list) == 0:
                         continue
@@ -375,19 +375,19 @@ class SDInspection(object):
                     time_sel = numpy.take(elapsed, id_list)
                     beam_sel = numpy.take(beam, id_list)
 
-                    ### new GroupByPosition with translation ###
-                    update_pos = (last_ra is None or \
-                                  len(ra_sel) != len(last_ra) or \
-                                  len(dec_sel) != len(last_dec) or \
-                                  not (all(ra_sel==last_ra) and \
-                                       all(dec_sel==last_dec)))
+                    # new GroupByPosition with translation
+                    update_pos = (last_ra is None or
+                                  len(ra_sel) != len(last_ra) or
+                                  len(dec_sel) != len(last_dec) or
+                                  not (all(ra_sel == last_ra) and
+                                       all(dec_sel == last_dec)))
                     if update_pos:
                         (pos_dict, pos_gap) = pos_heuristic2(ra_sel, dec_sel,
                                                              r_combine, r_allowance)
                         last_ra = ra_sel
                         last_dec = dec_sel
 
-                        ### ObsPatternAnalysis ###
+                        # ObsPatternAnalysis
                         # 2014/02/04 TN
                         # Temporary workaround for TP acceptance data issue
                         # Observing pattern is always 'RASTER' for ALMA
@@ -396,8 +396,8 @@ class SDInspection(object):
                         else:
                             pattern = obs_heuristic2(pos_dict)
 
-                    ### prepare for Self.Datatable ###
-                    #posgrp_list[ant][spw][pol] = []
+                    # prepare for Self.Datatable
+                    # posgrp_list[ant][spw][pol] = []
                     LOG.debug('pos_dict = %s' % pos_dict)
                     LOG.debug('last_ra = %s last_dec = %s' % (last_ra, last_dec))
                     for k, v in pos_dict.items():
@@ -410,7 +410,7 @@ class SDInspection(object):
                             posgrp[_id] = posgrp_id
                         posgrp_list[ant][spw][field_id].append(posgrp_id)
                         posgrp_id += 1
-                    ###
+                    #
 
                     raster_heuristic_ok = False
                     if pattern == 'RASTER':
@@ -421,24 +421,25 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
-                            LOG.warn('RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+                            LOG.warn('RasterScanHeuristics failed with the following error. ' +
+                                     'Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or raster_heuristic_ok is False:
-                        ### new GroupByTime with translation ###
+                        # new GroupByTime with translation
                         time_diff = time_sel[1:] - time_sel[:-1]
-                        update_time = (last_time is None \
-                                       or len(time_diff) != len(last_time) or \
+                        update_time = (last_time is None or 
+                                       len(time_diff) != len(last_time) or
                                        not all(time_diff == last_time))
                         if update_time:
                             (time_table, time_gap) = time_heuristic2(time_sel, time_diff)
                             last_time = time_diff
 
-                        ### new MergeGapTable with translation ###
+                        # new MergeGapTable with translation
                         if update_pos or update_time:
                             (merge_table, merge_gap) = merge_heuristic2(time_gap, time_table, pos_gap, beam_sel)
 
-                    ### prepare for Self.Datatable ###
+                    # prepare for Self.Datatable
                     keys = ['small', 'large']
                     grp_list = {}
                     for idx, key in enumerate(keys):
@@ -461,17 +462,17 @@ class SDInspection(object):
                     pattern_dict[spw][field_id] = pattern
 
             # register observing pattern to domain object
-            #self[ant].pattern = pattern_dict
+            # self[ant].pattern = pattern_dict
             observing_pattern[ant] = pattern_dict
 
-        grouping_result= {}
+        grouping_result = {}
         grouping_result['POSGRP'] = posgrp
         grouping_result['POSGRP_REP'] = posgrp_rep
         grouping_result['POSGRP_LIST'] = posgrp_list
         grouping_result['TIMEGRP_LIST'] = timegrp_list
         grouping_result['TIMEGRP'] = timegrp
         grouping_result['TIMEGAP'] = timegap
-        #grouping_result['OBSERVING_PATTERN'] = observing_pattern
+        # grouping_result['OBSERVING_PATTERN'] = observing_pattern
 
         ms.observing_pattern = observing_pattern
 
@@ -572,7 +573,7 @@ class SDInspection(object):
 #                 match = group_key
 #                 break
 #         return match
-# 
+#
 #     def __find_match_by_coverage(self, nchan, min_frequency, max_frequency, reduction_group, fraction=0.99,
 #                                  field_name=None):
 #         if fraction <= 0 or fraction > 1.0:
@@ -598,7 +599,7 @@ class SDInspection(object):
 def match_field_name(name1: str, name2: str) -> bool:
     """
     Return True if two (field) names match search patterns.
-    
+
     i.e.,
     either (name2 == name1 + pattern) or (name1 == name2 + pattern).
     Otherwise, returns False.
@@ -628,7 +629,7 @@ def match_field_name(name1: str, name2: str) -> bool:
     off_pattern = '^_OFF_[0-9]+$'
     old_pattern = '^_[0-9]+$'  # old and unofficial field name pattern
     for pattern in (off_pattern, old_pattern):
-#         is_match = lambda s: re.match(pattern, s) is not None
+        # is_match = lambda s: re.match(pattern, s) is not None
         if re.match(pattern, suffix) is not None:
             if pattern == old_pattern:
                 LOG.warn("OFF source field identified using old field name heuristics. You may want to review field"

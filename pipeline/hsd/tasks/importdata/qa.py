@@ -15,7 +15,7 @@ LOG = logging.get_logger(__name__)
 
 class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
     """ImportDataQAHandler class for Single Dish.
-    
+
     Extending another QAHandler does not automatically register the extending
     implemention with the pipeline's QA handling system, even if the class being
     extended extends QAPlugin. Extending classes must also extend QAPlugin to be
@@ -26,7 +26,7 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
     child_cls = None
     generating_task = importdata.SDImportData
 
-    def _check_intents(self, mses:List[MeasurementSet]) -> QAScore:
+    def _check_intents(self, mses: List[MeasurementSet]) -> QAScore:
         """
         Check each measurement set in the list for a set of required intents.
 
@@ -34,7 +34,7 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
 
         Args:
             mses: list of MeasurementSet
-        
+
         Returns:
             QAScore object
         """

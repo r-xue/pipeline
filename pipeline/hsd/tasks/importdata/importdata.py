@@ -80,10 +80,10 @@ class SDImportDataResults(basetask.Results):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None, 
+    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None,
                  datatable_prefix: str=None, setjy_results: List[FluxMeasurement]=None, org_directions: Dict[str, str]=None):
         """Initialise SDImportDataResults class.
-        
+
         Args:
             mses: list of MeasurementSet domain objects
             reduction_group_list: list of MSReductionGroupDesc
@@ -111,7 +111,7 @@ class SDImportDataResults(basetask.Results):
         context.observing_run.ms_datatable_name = self.datatable_prefix
         context.observing_run.org_directions = self.org_directions
 
-    def __merge_reduction_group(self, observing_run:ObservingRun, reduction_group_list:List[MSReductionGroupDesc]):
+    def __merge_reduction_group(self, observing_run: ObservingRun, reduction_group_list: List[MSReductionGroupDesc]):
         """Call merge_reduction_group.
 
         Args:
@@ -123,12 +123,11 @@ class SDImportDataResults(basetask.Results):
 
     def __repr__(self) -> str:
         """Override of __repr__.
-        
+
         Returns:
             str: repr string
         """
-        return 'SDImportDataResults:\n\t{0}'.format(
-                '\n\t'.join([ms.name for ms in self.mses]))
+        return 'SDImportDataResults:\n\t{0}'.format('\n\t'.join([ms.name for ms in self.mses]))
 
 
 @task_registry.set_equivalent_casa_task('hsd_importdata')
@@ -179,7 +178,7 @@ class SDImportData(importdata.ImportData):
         return myresults
 
 
-### Tier-0 parallelization
+# Tier-0 parallelization
 class HpcSDImportDataInputs(SDImportDataInputs):
     """SDImportDataInputs class for parallelization."""
 
@@ -223,9 +222,9 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
     Inputs = HpcSDImportDataInputs
     Task = SDImportData
 
-    def __init__(self, inputs:HpcSDImportDataInputs):
+    def __init__(self, inputs: HpcSDImportDataInputs):
         """Initialize HpcSDImportData class.
-        
+
         Args:
             inputs: HpcSDImportDataInputs
         """
@@ -248,5 +247,3 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
         if tb.startswith('None'):
             tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
         return basetask.FailedTaskResults(self.__class__, exception, tb)
-
-
