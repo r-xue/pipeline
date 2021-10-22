@@ -4,7 +4,7 @@ import os
 
 import numpy
 
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -23,6 +23,7 @@ from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduc
 from ..common import utils
 
 if TYPE_CHECKING:
+    from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
 
 # import memory_profiler
@@ -30,9 +31,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class SDBaselineInputs(vdp.StandardInputs):
-    """
-    Inputs for baseline subtraction
-    """
+    """Inputs for baseline subtraction task."""
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -91,7 +90,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                  switchpoly: Optional[bool] = None,
                  clusteringalgorithm: Optional[str] = None,
                  deviationmask: Optional[bool] = None,
-                 parallel: Optional[str] = None):
+                 parallel: Optional[str] = None) -> None:
         """Construct SDBaselineInputs instance.
 
         Args:
@@ -157,12 +156,37 @@ class SDBaselineInputs(vdp.StandardInputs):
 
 
 class SDBaselineResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of baseline subtraction task."""
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct SDBaselineResults instance.
+
+        Args:
+            task: Task class that produced the result. Defaults to None.
+            success: Whether task execution is successful or not. Defaults to None.
+            outcome: Outcome of the task execution. Defaults to None.
+        """
         super(SDBaselineResults, self).__init__(task, success, outcome)
         self.out_mses = []
 
     #@utils.profiler
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context) -> None:
+        """Merge result instance into context.
+
+        Merge of the result instance of baseline subtraction task includes
+        the following updates to Pipeline context,
+
+          - register measurementset domain object for the output of sdbaseline
+            task to Pipeline context, namely measurement_sets list and
+            reduction_group
+          - register detected spectral lines to reduction group
+          - register deviation mask to each measurementset domain object
+
+        Args:
+            context: Pipeline context.
+        """
         super(SDBaselineResults, self).merge_with_context(context)
 
         # register output MS domain object and reduction_group to context
@@ -221,7 +245,12 @@ class SDBaselineResults(common.SingleDishResults):
                 out_ms = target.get_ms(name=self.outcome['vis_map'][ms.name])
                 out_ms.deviation_mask = ms.deviation_mask
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string summarizing the outcome.
+
+        Returns:
+            summary of the outcome.
+        """
         return '\n'.join(['Reduction Group {0}: member {1}'.format(b['group_id'], b['members'])
                           for b in self.outcome['baselined']])
 
@@ -233,11 +262,25 @@ class SDBaselineResults(common.SingleDishResults):
     'This stage performs a pipeline calculation without running any CASA commands to be put in this file.'
 )
 class SDBaseline(basetask.StandardTaskTemplate):
+    """Baseline subtraction task."""
     Inputs = SDBaselineInputs
     is_multi_vis_task = True
 
 #    @memory_profiler.profile
-    def prepare(self):
+    def prepare(self) -> SDBaselineResults:
+        """Perform baseline subtraction.
+
+        The method first evaluates deviation mask for each MS if the mask
+        is not available, then perform line detection by combining all
+        spectral data, and finally perform baseline subtraction using
+        sdbaseline task.
+
+        Returns:
+            SDBaselineResults instance that holds list of output MS names
+            with the mapping between input MS names, necessary data for
+            weblog rendering, and the metric representing the quality of
+            the baseline subtraction.
+        """
         LOG.debug('Starting SDMDBaseline.prepare')
         inputs = self.inputs
         context = inputs.context
@@ -346,8 +389,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     if (fieldid, antennaid, spwid) not in ms.deviation_mask:
                         LOG.debug('Evaluating deviation mask for %s field %s antenna %s spw %s',
                                   ms.basename, fieldid, antennaid, spwid)
-                        #mask_list = self.evaluate_deviation_mask(ms.name, fieldid, antennaid, spwid,
-                        #                                         consider_flag=True)
                         dvparams[ms.name][0].append(fieldid)
                         dvparams[ms.name][1].append(antennaid)
                         dvparams[ms.name][2].append(spwid)
@@ -476,7 +517,19 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return results
 
-    def analyse(self, result):
+    def analyse(self, result: SDBaselineResults) -> SDBaselineResults:
+        """Generate measurementset domain object for output MS.
+
+        The method generates measumentsets objects from output MSes
+        of SDBaseline task. Newly created objects are registered to
+        results instance.
+
+        Args:
+            result: SDBaselineResults instance
+
+        Returns:
+            SDBaselineResults instance
+        """
         # Generate domain object of baselined MS
         for infile, outfile in result.outcome['vis_map'].items():
             in_ms = self.inputs.context.observing_run.get_ms(infile)
@@ -486,44 +539,84 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return result
 
-    @staticmethod
-    def evaluate_deviation_mask(vis, field_id, antenna_id, spw_id, consider_flag=False):
-        """
-        Create deviation mask using MaskDeviation heuristic
-        """
-        h = MaskDeviationHeuristic()
-        mask_list = h.calculate(vis=vis, field_id=field_id, antenna_id=antenna_id, spw_id=spw_id,
-                                consider_flag=consider_flag)
-        return mask_list
-
 
 class HeuristicsTask(object):
-    def __init__(self, heuristics_cls, *args, **kwargs):
+    """Executor for heuristics class. It is an adaptor to mpihelper framework."""
+    def __init__(self, heuristics_cls: Type[Heuristic], *args: Any, **kwargs: Any) -> None:
+        """Construct HeuristicsTask instance.
+
+        Args:
+            heuristics_cls: Heuristic class to run
+        """
         self.heuristics = heuristics_cls()
         #print(args, kwargs)
         self.args = args
         self.kwargs = kwargs
         #print(self.args, self.kwargs)
 
-    def execute(self, dry_run=False):
+    def execute(self, dry_run: bool = False) -> Any:
+        """Perform Heuristics and return its result.
+
+        Args:
+            dry_run: Set True to enalbe dry-run mode. Defaults to False.
+
+        Returns:
+            Heuristics result. Actual contents of return value
+            depends on the Heuristics class.
+        """
         if dry_run:
             return []
 
         return self.heuristics.calculate(*self.args, **self.kwargs)
 
-    def get_executable(self):
+    def get_executable(self) -> Callable[[], Any]:
+        """Return function that runs execute method.
+
+        Returns:
+            Function to run execute method
+        """
         return lambda: self.execute(dry_run=False)
 
 
 class DeviationMaskHeuristicsTask(HeuristicsTask):
-    def __init__(self, heuristics_cls, vis, field_list, antenna_list, spw_list, consider_flag=False):
+    """Executor class specialized to MaskDeviationHeuristic."""
+    def __init__(self,
+                 heuristics_cls: Type[MaskDeviationHeuristic],
+                 vis: str,
+                 field_list: List[int],
+                 antenna_list: List[int],
+                 spw_list: List[int],
+                 consider_flag: bool = False) -> None:
+        """Construct DeviationMaskHeuristicsTask instance.
+
+        Executes heuristics to find deviation masks for given set of
+        field id, antenna id, and spw ids. Those ids are taken from
+        field_list, antenna_list, and spw_list via zip so that their
+        length must be identical.
+
+        Args:
+            heuristics_cls: Heuristics class
+            vis: Name of the MS
+            field_list: List of field ids to process
+            antenna_list: List of antenna ids to process
+            spw_list: List of spectral window ids to process
+            consider_flag: Consider flag when perofrming heuristics. Defaults to False.
+        """
         super(DeviationMaskHeuristicsTask, self).__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
         self.vis = vis
         self.field_list = field_list
         self.antenna_list = antenna_list
         self.spw_list = spw_list
 
-    def execute(self, dry_run=False):
+    def execute(self, dry_run: bool = False) -> dict:
+        """Execute heuristics.
+
+        Args:
+            dry_run: Set True to enable dry-run mode. Defaults to False.
+
+        Returns:
+            Deviation mask for each set of field id, antenna id, and spw id.
+        """
         if dry_run:
             return {}
 
@@ -535,7 +628,27 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
         return result
 
 
-def deviation_mask_heuristic(vis, field_list, antenna_list, spw_list, consider_flag=False, parallel=None):
+def deviation_mask_heuristic(
+        vis: str,
+        field_list: List[int],
+        antenna_list: List[int],
+        spw_list: List[int],
+        consider_flag: bool = False,
+        parallel: Optional[bool] = None) -> Tuple[str, Union[mpihelpers.SyncTask, mpihelpers.AsyncTask]]:
+    """Prepare task instance that can be executed in mpihelpers framework.
+
+    Args:
+        vis: Name of MS
+        field_list: List of field ids to process
+        antenna_list: List of antenna ids to process
+        spw_list: List of spectral window ids to process
+        consider_flag: Consider flag when performing heuristics. Defaults to False.
+        parallel: Parallel execution or not. Currently disabled.
+                  Task is always executed in serial mode. Defaults to None.
+
+    Returns:
+        Name of the MS and the task instance for mpihelpers framework.
+    """
     #parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
     mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic, vis=vis, field_list=field_list,
                             antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag)
@@ -548,7 +661,13 @@ def deviation_mask_heuristic(vis, field_list, antenna_list, spw_list, consider_f
     return vis, task
 
 
-def test_deviation_mask_heuristic(spw=None):
+def test_deviation_mask_heuristic(spw: Optional[int] = None) -> None:
+    """Test deviation mask heuristic.
+
+    Args:
+        spw: spectral window id to process.
+             Defaults to None (spw 17).
+    """
     import glob
     vislist = glob.glob('uid___A002_X*.ms')
     print('vislist={0}'.format(vislist))
