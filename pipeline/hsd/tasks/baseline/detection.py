@@ -1,9 +1,11 @@
+"""Spectral line detection task."""
 # import os
 import collections
 import math
 import numpy
 import os
 import time
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type, Union
 
 import matplotlib.pyplot as plt
 
@@ -19,12 +21,16 @@ from .. import common
 from ..common import utils
 from . import rules
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+
 NoData = common.NoData
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class DetectLineInputs(vdp.StandardInputs):
+    """Inputs for spectral line detection task."""
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -33,17 +39,43 @@ class DetectLineInputs(vdp.StandardInputs):
     broadline = vdp.VisDependentProperty(default=True)
 
     @property
-    def windowmode(self):
+    def windowmode(self) -> str:
+        """Return windowmode (Default 'replace')."""
         return getattr(self, '_windowmode', 'replace')
 
     @windowmode.setter
-    def windowmode(self, value):
+    def windowmode(self, value: str) -> None:
+        """Set windowmode.
+
+        Args:
+            value: windowmode value. Should be either 'replace' or 'merge'.
+
+        Raises:
+            ValueError: Invalid windowmode value.
+        """
         if value not in ['replace', 'merge']:
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
         self._windowmode = value
 
-    def __init__(self, context, group_id=None, window=None,
-                 windowmode=None, edge=None, broadline=None):
+    def __init__(self,
+                 context: Context,
+                 group_id: int,
+                 window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 windowmode: Optional[str] = None,
+                 edge: Optional[Tuple[int, int]] = None,
+                 broadline: Optional[bool] = None) -> None:
+        """Construct DetectLineInputs instance.
+
+        Args:
+            context: Pipeline context
+            group_id: Reduction group id.
+            window: Manual line window. Defaults to None.
+            windowmode: Line window handling mode. 'replace' exclusively uses manual line window
+                        while 'merge' merges manual line window into automatic line detection
+                        and validation result. Defaults to 'replace'.
+            edge: Edge channels to exclude. Defaults to None.
+            broadline: Detect broadline component or not. Defaults to None.
+        """
         super(DetectLineInputs, self).__init__()
 
         self.context = context
@@ -55,36 +87,80 @@ class DetectLineInputs(vdp.StandardInputs):
 
 
 class DetectLineResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of spectral line detection task."""
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct DetectLineResults instance.
+
+        Args:
+            task: Task class that produced the result. Defaults to None.
+            success: Whether task execution is successful or not. Defaults to None.
+            outcome: Outcome of the task execution. Defaults to None.
+        """
         super(DetectLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context) -> None:
+        """Merge result instance into context.
+
+        No specific merge operation is done.
+
+        Args:
+            context: Pipeline context.
+        """
         LOG.debug('DetectLineResults.merge_with_context')
         super(DetectLineResults, self).merge_with_context(context)
 
     @property
-    def signals(self):
+    def signals(self) -> collections.OrderedDict:
+        """Return detected spectral lines and associated spatial coordinates.
+
+        Returns:
+            Detected lines associated with spatial coordinates
+        """
         return self._get_outcome('signals')
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string representing the outcome.
+
+        Returns:
+            Empty string
+        """
         return ''
 
 
 class DetectLine(basetask.StandardTaskTemplate):
+    """Spectral line detection task."""
     Inputs = DetectLineInputs
     LineFinder = heuristics.HeuristicsLineFinder
     ThresholdFactor = 3.0
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: DetectLineInputs) -> None:
+        """Construct DetectLine instance.
+
+        In addition to the construction process of superclass,
+        it initializes LineFinder heuristics instance.
+
+        Args:
+            inputs: DetectLineInputs instance.
+        """
         super(DetectLine, self).__init__(inputs)
         self.line_finder = self.LineFinder()
 
-    def prepare(self, datatable_dict=None, grid_table=None, spectral_data=None):
-        """
+    def prepare(self,
+                datatable_dict: dict,
+                grid_table: List[Union[int, float, numpy.ndarray]],
+                spectral_data: Optional[numpy.ndarray] = None) -> DetectLineResults:
+        """Find spectral line feature.
+
         The process finds emission lines and determines protection regions for baselinefit
+
+        Args:
+            datatable_dict: Dictionary holding datatable instance per MS.
+            grid_table: Metadata for gridding. See simplegrid.py for detail.
+            spectral_data: Gridded spectral data.
         """
-        assert grid_table is not None
-        assert datatable_dict is not None
         spectra = spectral_data
         masks = (spectra != NoData)
         window = self.inputs.window
@@ -232,7 +308,19 @@ class DetectLine(basetask.StandardTaskTemplate):
 
         return result
 
-    def plot_detectrange(self, sp, protected, fname):
+    def plot_detectrange(self,
+                         sp: numpy.ndarray,
+                         protected: List[int],
+                         fname: str) -> None:
+        """Plot detected line range for testing.
+
+        Args:
+            sp: Spectrald data
+            protected: Detected line ranges in channels. One-dimensional
+                       list containing start and end channels for detected
+                       lines alternatively.
+            fname: File name for output PNG file.
+        """
         print(protected, fname)
         plt.clf()
         plt.plot(sp)
@@ -242,22 +330,50 @@ class DetectLine(basetask.StandardTaskTemplate):
             plt.plot(protected[i], (y, y), 'r')
         plt.savefig(fname, format='png')
 
-    def MaskBinning(self, data, Bin, offset=0):
+    def MaskBinning(self,
+                    data: numpy.ndarray,
+                    Bin: int,
+                    offset: int = 0) -> numpy.ndarray:
+        """Perform Binning for mask array.
+
+        Args:
+            data: boolean mask array
+            Bin: Binning width
+            offset: Offset channel to start binning. Defaults to 0.
+
+        Returns:
+            Mask array after binning
+        """
         if Bin == 1:
             return data
         else:
             return numpy.array([data[i:i+Bin].min() for i in range(offset, len(data)-Bin+1, Bin)], dtype=numpy.bool)
 
-    def SpBinning(self, data, Bin, offset=0):
+    def SpBinning(self,
+                  data: numpy.ndarray,
+                  Bin: int,
+                  offset: int = 0) -> numpy.ndarray:
+        """Perform Binning for spectral data array.
+
+        Args:
+            data: float mask array
+            Bin: Binning width
+            offset: Offset channel to start binning. Defaults to 0.
+
+        Returns:
+            Spectral data array after binning
+        """
         if Bin == 1:
             return data
         else:
             return numpy.array([data[i:i+Bin].mean() for i in range(offset, len(data)-Bin+1, Bin)], dtype=numpy.float)
 
-    def analyse(self, result):
+    def analyse(self, result: DetectLineResults) -> DetectLineResults:
+        """Analyse result. Do nothing."""
         return result
 
-    def _detect(self, spectrum, mask, threshold, tweak, edge):
+    def _detect(self,
+                spectrum: numpy.ndarray, mask, threshold, tweak, edge):
         nchan = len(spectrum)
         (EdgeL, EdgeR) = edge
         Nedge = EdgeR + EdgeL
