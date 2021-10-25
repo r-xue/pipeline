@@ -22,6 +22,7 @@ from ..common import utils
 from . import rules
 
 if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
     from pipeline.infrastructure.launcher import Context
 
 NoData = common.NoData
@@ -373,7 +374,24 @@ class DetectLine(basetask.StandardTaskTemplate):
         return result
 
     def _detect(self,
-                spectrum: numpy.ndarray, mask, threshold, tweak, edge):
+                spectrum: numpy.ndarray,
+                mask: numpy.ndarray,
+                threshold: float,
+                tweak: bool,
+                edge: List[int]) -> List[int]:
+        """Perform spectral line detection on given spectral data with mask.
+
+        Args:
+            spectrum: Spectral data
+            mask: Channel mask
+            threshold: Threshold for linedetection
+            tweak: if True, spectral line ranges are extended to cover line edges.
+            edge: Edge channels to exclude
+
+        Returns:
+            A list of start and end indices of spectral lines. The indices of
+            lines are in the order of, e.g., [start1, end1, ..., startN, endN].
+        """
         nchan = len(spectrum)
         (EdgeL, EdgeR) = edge
         Nedge = EdgeR + EdgeL
@@ -434,6 +452,7 @@ class DetectLine(basetask.StandardTaskTemplate):
                     flag = True
         return protected
 
+
 class LineWindowParser(object):
     """
     LineWindowParser is a parser for line window parameter.
@@ -460,13 +479,23 @@ class LineWindowParser(object):
     Note that frequencies are interpreted as the value in LSRK frame.
     Note also that frequencies given as a floating point number is interpreted
     as the value in Hz.
-    """
-    def __init__(self, ms, window):
-        """
-        Constructor
 
-        ms -- ms domain object
-        window -- line window parameter
+    Usage:
+        parser = LineWindowParser(ms, window)
+        parser.parse(field_id)
+        for spwid in spwids:
+            parsed = parser.get_result(spwid)
+
+    """
+    def __init__(self,
+                 ms: MeasurementSet,
+                 window: Union[str, dict, List[int], List[float], List[str]]) -> None:
+        """
+        Construct LineWindowParser instance.
+
+        Args:
+            ms: ms domain object
+            window: line window parameter
         """
         self.ms = ms
         self.window = window
@@ -478,7 +507,14 @@ class LineWindowParser(object):
         # measure tool
         self.me = casa_tools.measures
 
-    def parse(self, field_id):
+    def parse(self, field_id: int) -> None:
+        """Parse given parameter into dictionary.
+
+        Result is cached as parsed attribute.
+
+        Args:
+            field_id: Field id to use
+        """
         # convert self.window into dictionary
         if isinstance(self.window, str):
             if self.window.strip().startswith('{'):
@@ -532,7 +568,16 @@ class LineWindowParser(object):
         for spwid in self.science_spw:
             assert spwid in self.parsed
 
-    def get_result(self, spw_id):
+    def get_result(self, spw_id: int) -> List[int]:
+        """Return parsed line windows for given spw id.
+
+        Args:
+            spw_id: spw id
+
+        Returns:
+            Line windows as one-dimensional list that provides start/end channels
+            of line windows alternatively.
+        """
         if spw_id not in self.science_spw:
             LOG.info('Non-science spectral window was specified. Returning default window [].')
             return []
@@ -547,7 +592,18 @@ class LineWindowParser(object):
 
         return self.parsed[spw_id]
 
-    def _string2dict(self, window):
+    def _string2dict(self, window: str) -> dict:
+        """Convert line window string into dict.
+
+        Args:
+            window: Line window in the form of channel selection string
+
+        Raises:
+            RuntimeError: String is not compatible with channel selection syntax
+
+        Returns:
+            Dictionary containing line window list per spw
+        """
         # utilize ms tool to convert selection string into lists
         with casa_tools.MSReader(self.ms.name) as ms:
             try:
@@ -579,16 +635,44 @@ class LineWindowParser(object):
 
         return new_window
 
-    def _list2dict(self, window):
+    def _list2dict(self, window: List[int]) -> dict:
+        """Convert line window list into dict.
+
+        Simply applies the given line window list to all spws.
+
+        Args:
+            window: Line window in the form of channel list
+
+        Returns:
+            Dictionary containing line window list per spw
+        """
         # apply given window to all science windows
 
         return dict((spwid, window) for spwid in self.science_spw)
 
-    def _dict2dict(self, window):
+    def _dict2dict(self, window: dict) -> dict:
+        """Convert line window dict into another dict.
+
+        Simply converts dict key to integer.
+
+        Args:
+            window: Line window list in the form of dict
+
+        Returns:
+            Dictionary containing line window list per spw
+        """
         # key should be an integer
         return dict((int(spw), value) for spw, value in window.items())
 
-    def _exclude_non_science_spws(self, window):
+    def _exclude_non_science_spws(self, window: dict) -> dict:
+        """Filter line windows only for science spws.
+
+        Args:
+            window: Line window list per spw
+
+        Returns:
+            Filtered dict of line window list per spw
+        """
         # filter non-science windows
         # set default window to science windows if not specified
         new_window = {}
@@ -600,7 +684,25 @@ class LineWindowParser(object):
 
         return new_window
 
-    def _freq2chan(self, spwid, window):
+    def _freq2chan(self,
+                   spwid: int,
+                   window: Union[List[str], List[float], List[int]]) -> List[int]:
+        """Convert frequency selection into channel selection.
+
+        If float values are given, they are interpreted as the value in Hz.
+        Input frequency values should be in LSRK frame. LSRK frequencies are
+        converted to the frame in which spw is defined.
+
+        If int values are given, input window list is simply sorted and
+        returned as it is.
+
+        Args:
+            spwid: spw id to process
+            window: Line window list in frequency domain
+
+        Returns:
+            Line window list in channel domain
+        """
         # window must be a list
         assert isinstance(window, list), "Unexpected value for 'window', must be a list."
 
@@ -656,7 +758,18 @@ class LineWindowParser(object):
         assert len(new_window) == 1
         return new_window[0]
 
-    def _lsrk2topo(self, spwid, window):
+    def _lsrk2topo(self, spwid: int, window: List[str]) -> List[str]:
+        """Apply frame conversion to line window frequencies in LSRK as needed.
+
+        Args:
+            spwid: spw id
+            window: Line window list in LSRK frequency
+
+        Returns:
+            Line window list in the frame that spw is defined. In the case
+            of ALMA data, spw is defined in TOPO frame so the returned
+            frequency values are the ones in TOPO.
+        """
         # if frequency frame for target spw is LSRK, just return input window
         spw = self.ms.get_spectral_window(spwid)
         frame = spw.frame
@@ -673,10 +786,31 @@ class LineWindowParser(object):
         new_window = ['{value}{unit}'.format(**x['m0']) for x in new_mfreq]
         return new_window
 
-    def _construct_msselection(self, spwid, window):
+    def _construct_msselection(self, spwid: int, window: List[str]) -> str:
+        """Construct channel selection string for given spw.
+
+        Args:
+            spwid: spw id to apply selection
+            window: line window list in the form of string quantity list
+
+        Returns:
+            channel selection string for the spw
+        """
         return '{0}:{1}~{2}'.format(spwid, window[0], window[1])
 
-    def _measure_init(self, field_id):
+    def _measure_init(self, field_id: int) -> None:
+        """Initialize measure tool.
+
+        Initialize measure tool from scratch. Set required measures
+        for frequency conversion extracted from the MS domain object.
+
+          - time measure from observation start time
+          - position measure from antenna array position
+          - direction measur from the field specified by field_id
+
+        Args:
+            field_id: Reference field id for direction measure
+        """
         self._measure_done()
         # position is an observatory position
         position = self.ms.antenna_array.position
@@ -693,11 +827,13 @@ class LineWindowParser(object):
         self.me.doframe(direction)
         self.me.doframe(epoch)
 
-    def _measure_done(self):
+    def _measure_done(self) -> None:
+        """Close meaure tool."""
         self.me.done()
 
 
-def test_parser(ms):
+def test_parser(ms: MeasurementSet) -> None:
+    """Test LineWindowParser."""
     target_fields = ms.get_fields(intent='TARGET')
     field_id = target_fields[0].id
     science_spws = ms.get_spectral_windows(science_windows_only=True)
