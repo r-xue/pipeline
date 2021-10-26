@@ -855,7 +855,7 @@ class SingleDishPointingChart(object):
     def __init__(self,
                  context: infrastructure.launcher.Context,
                  ms: MeasurementSet,
-                 antenna: Antenna,
+                 antenna: Antenna=None,
                  target_field_id: Optional[int]=None,
                  reference_field_id: Optional[int]=None,
                  target_only: bool=True,
@@ -908,7 +908,8 @@ class SingleDishPointingChart(object):
             return None
 
     @casa5style_plot
-    def plot(self, revise_plot: bool=False) -> Optional[Plot]:
+    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None, reference_field_id: Optional[int]=None,
+             target_only: bool=None, ofs_coord: bool=None) -> Optional[Plot]:
         """
         Generate a plot object.
 
@@ -921,11 +922,21 @@ class SingleDishPointingChart(object):
         Returns:
             Plot: A Plot object.
         """
-        if revise_plot == False and os.path.exists(self.figfile):
+        if revise_plot is False and os.path.exists(self.figfile):
             return self._get_plot_object()
 
         ms = self.ms
+        if antenna is not None:
+            self.antenna = antenna
         antenna_id = self.antenna.id
+        if target_field_id is not None:
+            self.target_field = self.__get_field(target_field_id)
+        if reference_field_id is not None:
+            self.reference_field = self.__get_field(reference_field_id)
+        if target_only is not None:
+            self.target_only = target_only
+        if ofs_coord is not None:
+            self.ofs_coord = ofs_coord
 
         datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
         datatable = DataTable()

@@ -1160,26 +1160,19 @@ class T2_2_7Renderer(T2_2_XRendererBase):
         target_pointings = []
         whole_pointings = []
         offset_pointings = []
+        task = pointing.SingleDishPointingChart(context, ms)
         if is_singledish_ms(context):
             for antenna in ms.antennas:
                 for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
-                    task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=True)
-                    plotres = task.plot()
+                    plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference, target_only=True)
                     # for missing antenna, spw, field combinations
                     if plotres is None: continue
                     target_pointings.append(plotres)
 
                     # pointing pattern with OFF-SOURCE intents
-                    task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=False)
-                    plotres = task.plot()
+                    plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference, target_only=False)
                     if plotres is not None:
                         whole_pointings.append(plotres)
 
@@ -1188,12 +1181,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     source_name = target_field.source.name
                     if target_field.source.is_eph_obj or target_field.source.is_known_eph_obj:
                         LOG.info('generating offset pointing plot for {}'.format(source_name))
-                        task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                                target_field_id=target,
-                                                                reference_field_id=reference, 
-                                                                target_only=True,
-                                                                ofs_coord=True)
-                        plotres = task.plot()
+                        plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference, target_only=True, ofs_coord=True)
                         if plotres is not None:
                             LOG.info('Adding offset pointing plot for {} (antenna {})'.format(source_name, antenna.name))
                             offset_pointings.append(plotres)
