@@ -886,6 +886,9 @@ class SingleDishPointingChart(object):
         self.ofs_coord = ofs_coord
         self.figfile = self._get_figfile()
         self.axes_manager = PointingAxesManager()
+        self.datatable = DataTable()
+        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
+        self.datatable.importdata(datatable_name, minimal=False, readonly=True)
 
     def __get_field(self, field_id: Optional[int]):
         """Get field domain object.
@@ -938,10 +941,6 @@ class SingleDishPointingChart(object):
         if ofs_coord is not None:
             self.ofs_coord = ofs_coord
 
-        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
-        datatable = DataTable()
-        datatable.importdata(datatable_name, minimal=False, readonly=True)
-
         target_spws = ms.get_spectral_windows(science_windows_only=True)
         # Search for the first available SPW, antenna combination
         # observing_pattern is None for invalid combination.
@@ -960,12 +959,12 @@ class SingleDishPointingChart(object):
         beam_size = casa_tools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
         beam_size_in_deg = casa_tools.quanta.getvalue(beam_size)
         obs_pattern = ms.observing_pattern[antenna_id][spw_id]
-        antenna_ids = datatable.getcol('ANTENNA')
-        spw_ids = datatable.getcol('IF')
+        antenna_ids = self.datatable.getcol('ANTENNA')
+        spw_ids = self.datatable.getcol('IF')
         if self.target_field is None or self.reference_field is None:
             # plot pointings regardless of field
             if self.target_only == True:
-                srctypes = datatable.getcol('SRCTYPE')
+                srctypes = self.datatable.getcol('SRCTYPE')
                 func = lambda j, k, l: j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids, srctypes)
@@ -974,9 +973,9 @@ class SingleDishPointingChart(object):
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids)
         else:
-            field_ids = datatable.getcol('FIELD_ID')
+            field_ids = self.datatable.getcol('FIELD_ID')
             if self.target_only == True:
-                srctypes = datatable.getcol('SRCTYPE')
+                srctypes = self.datatable.getcol('SRCTYPE')
                 field_id = [self.target_field.id]
                 func = lambda f, j, k, l: f in field_id and j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
@@ -994,25 +993,25 @@ class SingleDishPointingChart(object):
             racol = 'RA'
             deccol = 'DEC'
         LOG.debug('column names: {}, {}'.format(racol, deccol))
-        if racol not in datatable.colnames() or deccol not in datatable.colnames():
+        if racol not in self.datatable.colnames() or deccol not in self.datatable.colnames():
             return None
 
-        RA = datatable.getcol(racol)[dt_rows]
+        RA = self.datatable.getcol(racol)[dt_rows]
         if len(RA) == 0:  # no row found
             LOG.warn('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
                      (antenna_id, spw_id, str(field_id), ms.basename))
             LOG.warn('Skipping pointing plots.')
             return None
-        DEC = datatable.getcol(deccol)[dt_rows]
+        DEC = self.datatable.getcol(deccol)[dt_rows]
         FLAG = np.zeros(len(RA), dtype=int)
         rows = np.where(dt_rows == True)[0]
         assert len(RA) == len(rows)
         for (i, row) in enumerate(rows):
-            pflags = datatable.getcell('FLAG_PERMANENT', row)
+            pflags = self.datatable.getcell('FLAG_PERMANENT', row)
             # use flag for pol 0
             FLAG[i] = pflags[0][OnlineFlagIndex]
 
-        self.axes_manager.direction_reference = datatable.direction_ref
+        self.axes_manager.direction_reference = self.datatable.direction_ref
         self.axes_manager.ofs_coord = self.ofs_coord
 
         plt.clf()
