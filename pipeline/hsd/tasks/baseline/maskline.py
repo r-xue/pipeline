@@ -1,4 +1,4 @@
-"""Baseline subtraction mask creation task."""
+"""Task to create channel mask for baseline subtraction."""
 import os
 import time
 
