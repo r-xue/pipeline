@@ -1,5 +1,8 @@
+"""Baseline subtraction mask creation task."""
 import os
 import time
+
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type, Union
 
 import numpy
 
@@ -16,12 +19,17 @@ from . import validation
 from .. import common
 from ..common import utils
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
+
 LOG = infrastructure.get_logger(__name__)
 
 NoData = common.NoData
 
 
 class MaskLineInputs(vdp.StandardInputs):
+    """Inputs for mask creation task."""
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -32,15 +40,44 @@ class MaskLineInputs(vdp.StandardInputs):
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
 
     @property
-    def group_desc(self):
+    def group_desc(self) -> MSReductionGroupDesc:
+        """Return reduction group description."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def reference_member(self):
+    def reference_member(self) -> MSReductionGroupMember:
+        """Return reference member of reduction group.
+
+        The first member in the list is returned.
+        """
         return self.group_desc[self.member_list[0]]
 
-    def __init__(self, context, iteration, group_id, member_list,
-                 window=None, windowmode=None, edge=None, broadline=None, clusteringalgorithm=None):
+    def __init__(self,
+                 context: Context,
+                 iteration: int,
+                 group_id: int,
+                 member_list: List[int],
+                 window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 windowmode: Optional[str] = None,
+                 edge: Optional[Tuple[int, int]] = None,
+                 broadline: Optional[bool] = None,
+                 clusteringalgorithm: Optional[str] = None) -> None:
+        """Construct MaskLineInputs instance.
+
+        Args:
+            context: Pipeline context
+            iteration: Iteration counter for baseline/blflag loop
+            group_id: Reduction group id.
+            member_list: List of member indices for the reduction group members
+            window: Manual line window. Defaults to None.
+            windowmode: Line window handling mode. 'replace' exclusively uses manual line window
+                        while 'merge' merges manual line window into automatic line detection
+                        and validation result. Defaults to 'replace'.
+            edge: Edge channels to exclude. Defaults to None.
+            broadline: Detect broadline component or not. Defaults to None.
+            clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
+                                 'hierarchi', or 'both'. Defaults to 'hierarchy'.
+        """
         super(MaskLineInputs, self).__init__()
 
         self.context = context
@@ -55,20 +92,50 @@ class MaskLineInputs(vdp.StandardInputs):
 
 
 class MaskLineResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of mask creation task."""
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct MaskLineResults instance.
+
+        Args:
+            task: Task class that produced the result. Defaults to None.
+            success: Whether task execution is successful or not. Defaults to None.
+            outcome: Outcome of the task execution. Defaults to None.
+        """
         super(MaskLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context) -> None:
+        """Merge result instance into context.
+
+        No specific merge operation is done.
+
+        Args:
+            context: Pipeline context.
+        """
         super(MaskLineResults, self).merge_with_context(context)
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string representing the outcome.
+
+        Returns:
+            Empty string
+        """
         return ''
 
 
 class MaskLine(basetask.StandardTaskTemplate):
+    """Task to create channel mask for baseline subtraction.
+
+    MaskLine task creates channel mask by performing spectral
+    line detection (DetectLine task) and validation of detected
+    lines (ValidateLine task).
+    """
     Inputs = MaskLineInputs
 
-    def prepare(self):
+    def prepare(self) -> MaskLineResults:
+        """Create channel mask."""
         context = self.inputs.context
 
         start_time = time.time()
@@ -242,5 +309,9 @@ class MaskLine(basetask.StandardTaskTemplate):
 
         return result
 
-    def analyse(self, result):
+    def analyse(self, result: MaskLineResults) -> MaskLineResults:
+        """Analyse results instance generated by prepare.
+
+        Do nothing.
+        """
         return result
