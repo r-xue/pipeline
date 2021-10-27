@@ -299,7 +299,6 @@ class Solint(basetask.StandardTaskTemplate):
                      'keepmms': True,
                      'field': '',
                      'spw': '',
-                     # 'width'        : int(max(channels)),
                      'width': 1,
                      'antenna': '',
                      'timebin': '0s',

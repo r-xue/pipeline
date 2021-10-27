@@ -98,7 +98,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
     def _do_semifinal(self, band, spwlist):
 
-        LOG.info("EXECUTING FOR BAND {!s}  spws: {!s}".format(band, ','.join(spwlist)))
+        LOG.info("Executing for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
@@ -118,12 +118,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         tablebase = tableprefix + str(stage_number) + '_3.' + 'BPinitialgain'
 
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
-        soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
-        solints = ['int', '3.0s', '10.0s']
-        soltime = soltimes[0]
-        solint = solints[0]
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
         context = self.inputs.context
@@ -172,7 +167,6 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                             executor=self._executor, spw=','.join(spwlist))
         else:
             LOG.debug("Using REGULAR heuristics")
-            interp = ''
             do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
                         spw=','.join(spwlist), ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
                         solint='inf', append=False, executor=self._executor)
@@ -199,7 +193,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
-        tst_delay_spw = m.get_vla_tst_delay_spw(spwlist=spwlist)
+        tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
@@ -310,11 +304,9 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         # refantlist = [x for x in refant_csvstring.split(',')]
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        # critfrac = self.inputs.context.evla['msinfo'][m.name].critfrac
         critfrac = m.get_vla_critfrac()
 
         if fracFlaggedSolns > critfrac:
-            # RefAntOutput.pop(0)
             RefAntOutput = np.delete(RefAntOutput, 0)
             self.inputs.context.observing_run.measurement_sets[0].reference_antenna = ','.join(RefAntOutput)
             LOG.info("Not enough good solutions, trying a different reference antenna.")

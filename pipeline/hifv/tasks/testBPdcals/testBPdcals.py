@@ -222,7 +222,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
     def _do_testBPdcals(self, band, spwlist):
 
-        LOG.info("EXECUTING FOR BAND {!s}  spws: {!s}".format(band, ','.join(spwlist)))
+        LOG.info("Executing for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
@@ -421,7 +421,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
-        tst_delay_spw = m.get_vla_tst_delay_spw(spwlist=spwlist)
+        tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 

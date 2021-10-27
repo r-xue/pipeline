@@ -18,7 +18,7 @@ def _find_spw(vis, bands, context):
 
     with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
         channels = table.getcol('NUM_CHAN')
-        originalBBClist = table.getcol('BBC_NO')
+        # originalBBClist = table.getcol('BBC_NO')
         spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
         reference_frequencies = table.getcol('REF_FREQUENCY')
 
@@ -76,15 +76,8 @@ class Opcal(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        # spw2band = context.evla['msinfo'][m.name].spw2band
         spw2band = m.get_vla_spw2band()
         bands = list(spw2band.values())
-
-        # with casa_tools.MSReader(inputs.vis) as ms:
-        #     ms_summary = ms.summary()
-
-        # startdate = ms_summary['BeginTime']
-
         seasonal_weight = 1.0
 
         try:
