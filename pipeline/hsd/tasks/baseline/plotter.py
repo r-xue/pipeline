@@ -1,7 +1,8 @@
+"""Plotter for baseline subtraction result."""
 import collections
 import itertools
 import os
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, Generator, List, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy
@@ -19,6 +20,10 @@ from ..common import display
 from ..common.display import DPIDetail, ch_to_freq, sd_polmap
 from ..common import direction_utils as dirutil
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+
+
 LOG = infrastructure.get_logger(__name__)
 
 # A named tuple to store statistics of baseline quality
@@ -26,12 +31,38 @@ BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio b
 
 
 class PlotterPool(object):
-    def __init__(self):
+    """Pool class to hold resources for plotting.
+
+    TODO: this is not useful. should be removed in future.
+          create_plotter must be separated from the class.
+    """
+    def __init__(self) -> None:
+        """Construct PlotterPool instance."""
         self.pool = {}
         self.figure_id = display.SparseMapAxesManager.MATPLOTLIB_FIGURE_ID()
 
-    def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist,
-                       direction_reference=None, brightnessunit='Jy/beam'):
+    def create_plotter(self,
+                       num_ra: int,
+                       num_dec: int,
+                       num_plane: int,
+                       ralist: List[float],
+                       declist: List[float],
+                       direction_reference: Optional[str] = None,
+                       brightnessunit: str = 'Jy/beam') -> display.SDSparseMapPlotter:
+        """Create plotter instance.
+
+        Args:
+            num_ra: Number of panels along horizontal axis
+            num_dec: Number of panels along vertical axis
+            num_plane: Not used
+            ralist: List of RA values for labeling
+            declist: List of Dec values for labeling
+            direction_reference: Directon reference string. Defaults to None.
+            brightnessunit: Brightness unit string. Defaults to 'Jy/beam'.
+
+        Returns:
+            Plotter instance
+        """
         plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec,
                                              step=1, brightnessunit=brightnessunit,
                                              figure_id=self.figure_id)
@@ -39,13 +70,24 @@ class PlotterPool(object):
         plotter.setup_labels_absolute( ralist, declist )
         return plotter
 
-    def done(self):
+    def done(self) -> None:
+        """Close plotters registered to the pool."""
         for plotter in self.pool.values():
             plotter.done()
 
 
 class PlotDataStorage(object):
-    def __init__(self):
+    """Storage class to hold array data for plotting."""
+    def __init__(self) -> None:
+        """Construct PlotDataStorage instance.
+
+        Initializes storage with zero-length array and data array refers to
+        storage. Storage is one-dimensional array whose length is npol * nchan
+        for integrated data while nh * nv * npol * nchan. On the other hand,
+        data array is multi-dimensional array that share the memory with
+        storage. Shape of the data array is (npol, nchan) for integrated data
+        while (nh, nv, npol, nchan) for profile map data.
+        """
         self.map_data_storage = numpy.zeros((0), dtype=float)
         self.integrated_data_storage = numpy.zeros((0), dtype=float)
         self.map_mask_storage = numpy.zeros((0), dtype=bool)
@@ -55,7 +97,19 @@ class PlotDataStorage(object):
         self.map_mask = self.map_mask_storage
         self.integrated_mask = self.integrated_mask_storage
 
-    def resize_storage(self, num_ra, num_dec, num_pol, num_chan):
+    def resize_storage(self, num_ra: int, num_dec: int, num_pol: int, num_chan: int) -> None:
+        """Resize storage.
+
+        Resize storage array if necessary, i.e., only when current size is less than
+        requested size calculated from input args. Data array refers storage but is
+        reshaped to match the number of panels of sparse profile map.
+
+        Args:
+            num_ra: Number of panels along horizontal axis
+            num_dec: Number of panels along vertical axis
+            num_pol: Number of polarizations
+            num_chan: Number of spectral channels
+        """
         num_integrated = num_pol * num_chan
         num_map = num_ra * num_dec * num_integrated
         if len(self.map_data_storage) < num_map:
@@ -72,15 +126,50 @@ class PlotDataStorage(object):
 
 
 class BaselineSubtractionPlotManager(object):
+    """Manages any operation necessary to produce baseline subtraction plot."""
     @staticmethod
-    def _generate_plot_meta_table(spw_id, polarization_ids, grid_table):
+    def _generate_plot_meta_table(
+        spw_id: int,
+        polarization_ids: List[int],
+        grid_table: List[Union[int, float, numpy.ndarray]]
+    ) -> Generator[List[Union[int, float]], None, None]:
+        """Extract necessary data from grid_table.
+
+        Rows of grid_table are filtered by spw and polarization ids,
+        and only spatial location of the grid are extracted.
+
+        Args:
+            spw_id: spw id for filtering
+            polarization_ids: polarization ids for filtering
+            grid_table: grid_table generated by simplegrid module
+
+        Yields:
+            List of spatial position information (pixel and world)
+        """
         for row in grid_table:
             if row[0] == spw_id and row[1] in polarization_ids:
                 new_row_entry = row[2:6]
                 yield new_row_entry
 
     @staticmethod
-    def generate_plot_meta_table(spw_id, polarization_ids, grid_table):
+    def generate_plot_meta_table(
+        spw_id: int,
+        polarization_ids: List[int],
+        grid_table: List[Union[int, float, numpy.ndarray]]
+    ) -> List[List[Union[int, float]]]:
+        """Return metadata table for plotting.
+
+        Metadata table for given spw and polarization ids contains
+        spatial position information in both pixel and world coordinates.
+
+        Args:
+            spw_id (): spw id for filtering
+            polarization_ids (): polarization ids for filtering
+            grid_table (): grid_table generated by simplegrid module
+
+        Returns:
+            Metadata table
+        """
         new_table = list(BaselineSubtractionPlotManager._generate_plot_meta_table(spw_id,
                                                                                   polarization_ids,
                                                                                   grid_table))
@@ -419,7 +508,7 @@ class BaselineSubtractionPlotManager(object):
         del postfit_integrated_data
 
         return plot_list
-    
+
     def analyze_and_plot_flatness(self, spectrum: List[float], frequency: List[float],
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
@@ -502,7 +591,6 @@ class BaselineSubtractionPlotManager(object):
         plt.plot(binned_freq, binned_data, 'ro')
         plt.savefig(figfile, format='png', dpi=DPIDetail)
         return binned_stat
-        
 
 
 def generate_grid_panel_map(ngrid, npanel, num_plane=1):
@@ -866,6 +954,7 @@ def median_index(arr):
             return sorted_index[0]
         else:
             return sorted_index[len(arr) // 2]
+
 
 def binned_mean_ma(x: List[float], masked_data: MaskedArray,
                    nbin: int) -> Tuple[numpy.ndarray, MaskedArray]:
