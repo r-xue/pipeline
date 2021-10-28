@@ -5,7 +5,7 @@ import os
 import shutil
 import tarfile
 import re
-import pyfits
+import astropy.io.fits as apfits
 
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
@@ -688,7 +688,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         if os.path.exists(fitsname):
             # Open FITS image and obtain header
-            hdulist = pyfits.open(fitsname, mode='update')
+            hdulist = apfits.open(fitsname, mode='update')
             header = hdulist[0].header
 
             # DATE-OBS and DATE-END keywords

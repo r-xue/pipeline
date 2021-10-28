@@ -20,13 +20,25 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
     # Force the offset input to be from a file
     hm_antpos = vdp.VisDependentProperty(default='file')
+    threshold = vdp.VisDependentProperty(default=1.0)
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, hm_antpos=None, antposfile=None, antenna=None,
-                 offsets=None):
+                 offsets=None, threshold=None):
         super(ALMAAntposInputs, self).__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, hm_antpos=hm_antpos, antposfile=antposfile,
             antenna=antenna, offsets=offsets)
+        self.threshold = threshold
 
+    def __str__(self):
+        s = 'AlmaAntposInputs:\n'
+        s += '\tvis: %s\n' % self.vis
+        s += '\tcaltable: %s\n' % self.caltable
+        s += '\thm_antpos: %s\n' % self.hm_antpos
+        s += '\tantposfile: %s\n' % self.antposfile
+        s += '\tantenna: %s\n' % self.antenna
+        s += '\toffsets: %s\n' % self.offsets
+        s += '\tthreshold: %s\n' % self.threshold
+        return s
 
 @task_registry.set_equivalent_casa_task('hifa_antpos')
 class ALMAAntpos(antpos.Antpos):

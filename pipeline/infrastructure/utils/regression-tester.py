@@ -280,3 +280,60 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     shutil.copytree(input_products, './products')
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
+
+
+def test_13A_537__procedure_hifv__regression():
+    """Run VLA calibration regression for standard procedure_hifv.xml recipe.
+
+    Recipe name:                procedure_hifv
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
+    """
+
+    input_dir = 'pl-regressiontest/13A-537'
+
+    pr = PipelineRegression(recipe='procedure_hifv.xml',
+                            input_dir=input_dir,
+                            visname='13A-537.sb24066356.eb24324502.56514.05971091435',
+                            expectedoutput=(f'{input_dir}/' +
+                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'))
+
+    pr.run(telescope='vla')
+
+
+def test_13A_537__calibration__PPR__regression():
+    """Run VLA calibration regression with a PPR file.
+
+    PPR name:                   PPR_13A-537.xml
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
+    """
+
+    input_dir = 'pl-regressiontest/13A-537'
+
+    pr = PipelineRegression(input_dir=input_dir,
+                            visname='13A-537.sb24066356.eb24324502.56514.05971091435',
+                            expectedoutput=(f'{input_dir}/' +
+                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'))
+
+    pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla')
+
+
+def test_13A_537__restore__PPR__regression():
+    """Run VLA calibration restoredata regression with a PPR file
+
+    PPR name:                   PPR_13A-537_restore.xml
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
+    """
+    input_dir = 'pl-regressiontest/13A-537'
+    pr = PipelineRegression(input_dir=input_dir,
+                            visname='13A-537.sb24066356.eb24324502.56514.05971091435',
+                            expectedoutput=(f'{input_dir}/' +
+                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'))
+
+    # copy files use restore task into products folder
+    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+    shutil.copytree(input_products, './products')
+
+    pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
