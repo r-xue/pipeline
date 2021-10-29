@@ -73,7 +73,7 @@
                      processing, or a standard MeasurementSet ('false'). The default setting
                      ('automatic') creates an MMS if running in a cluster environment.
         </description>
-    <value>automatic</value>
+    <value>false</value>
         <allowed kind="enum">
             <value>automatic</value>
             <value>true</value>

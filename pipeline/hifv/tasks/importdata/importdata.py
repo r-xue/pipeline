@@ -23,6 +23,7 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='co')
     bdfflags = vdp.VisDependentProperty(default=False)
     process_caldevice = vdp.VisDependentProperty(default=True)
+    createmms = vdp.VisDependentProperty(default='false')
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
