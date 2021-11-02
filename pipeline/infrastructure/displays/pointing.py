@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 from matplotlib.ticker import Locator, Formatter
 import numpy as np
-from pipeline.domain import datatable
 
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
@@ -30,6 +29,7 @@ DPISummary = 90
 dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
+
 
 def Deg2HMS(x: float, prec: int=0) -> List[str]:
     """

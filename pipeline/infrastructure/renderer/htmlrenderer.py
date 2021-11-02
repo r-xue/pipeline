@@ -866,8 +866,6 @@ class T2_1DetailsRenderer(object):
             reference = field_strategy[target]
             LOG.debug('target field id %s / reference field id %s' % (target, reference))
             task = pointing.SingleDishPointingChart(context, ms)
-            # task.prepare(antenna=antenna, target_field_id=target,
-            #              reference_field_id=reference, target_only=True)
             pointing_plot = task.plot(antenna=antenna, target_field_id=target,
                                       reference_field_id=reference, target_only=True)
         else:
