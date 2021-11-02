@@ -865,11 +865,11 @@ class T2_1DetailsRenderer(object):
             target = list(field_strategy.keys())[0]
             reference = field_strategy[target]
             LOG.debug('target field id %s / reference field id %s' % (target, reference))
-            task = pointing.SingleDishPointingChart(context, ms, antenna,
-                                                    target_field_id=target,
-                                                    reference_field_id=reference,
-                                                    target_only=True)
-            pointing_plot = task.plot()
+            task = pointing.SingleDishPointingChart(context, ms)
+            # task.prepare(antenna=antenna, target_field_id=target,
+            #              reference_field_id=reference, target_only=True)
+            pointing_plot = task.plot(antenna=antenna, target_field_id=target,
+                                      reference_field_id=reference, target_only=True)
         else:
             pointing_plot = None
 
@@ -1166,13 +1166,15 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                 for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
-                    plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference, target_only=True)
+                    plotres = task.plot(antenna=antenna, target_field_id=target,
+                                        reference_field_id=reference, target_only=True)
                     # for missing antenna, spw, field combinations
                     if plotres is None: continue
                     target_pointings.append(plotres)
 
                     # pointing pattern with OFF-SOURCE intents
-                    plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference, target_only=False)
+                    plotres = task.plot(antenna=antenna, target_field_id=target,
+                                        reference_field_id=reference, target_only=False)
                     if plotres is not None:
                         whole_pointings.append(plotres)
 
@@ -1181,7 +1183,10 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     source_name = target_field.source.name
                     if target_field.source.is_eph_obj or target_field.source.is_known_eph_obj:
                         LOG.info('generating offset pointing plot for {}'.format(source_name))
-                        plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference, target_only=True, ofs_coord=True)
+                        # task.prepare(antenna=antenna, target_field_id=target, reference_field_id=reference,
+                        #              target_only=True, ofs_coord=True)
+                        plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference,
+                                            target_only=True, ofs_coord=True)
                         if plotres is not None:
                             LOG.info('Adding offset pointing plot for {} (antenna {})'.format(source_name, antenna.name))
                             offset_pointings.append(plotres)

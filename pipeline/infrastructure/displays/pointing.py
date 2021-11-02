@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 from matplotlib.ticker import Locator, Formatter
 import numpy as np
+from pipeline.domain import datatable
 
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
@@ -854,40 +855,17 @@ class SingleDishPointingChart(object):
     """
     def __init__(self,
                  context: infrastructure.launcher.Context,
-                 ms: MeasurementSet,
-                 antenna: Antenna=None,
-                 target_field_id: Optional[int]=None,
-                 reference_field_id: Optional[int]=None,
-                 target_only: bool=True,
-                 ofs_coord: bool=False
-                ) -> None:
-        """
-        Initialize SingleDishPointingChart class.
+                 ms: MeasurementSet) -> None:
+        """Initialize SingleDishPointingChart class.
 
         Args:
             context: pipeline context object.
             ms: MeasurementSet domain object.
-            antenna: Antenna domain object.
-            target_field_id: ID for target (ON_SOURCE) field.
-            reference_field_id: ID for reference (OFF_SOURCE) field.
-            target_only: Whether plot ON_SOURCE only (True) or
-                         both ON_SOURCE and OFF_SOURCE.
-            ofs_coord: Use offset coordinate or not.
-                will be in degree (DMS). Otherwise, it will be in hour angle
-                (HMS). Use offset coordinate or not.
-
         """
         self.context = context
         self.ms = ms
-        self.antenna = antenna
-        self.target_field = self.__get_field(target_field_id)
-        self.reference_field = self.__get_field(reference_field_id)
-        self.target_only = target_only
-        self.ofs_coord = ofs_coord
-        self.figfile = self._get_figfile()
-        self.axes_manager = PointingAxesManager()
         self.datatable = DataTable()
-        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
+        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(self.ms.origin_ms))
         self.datatable.importdata(datatable_name, minimal=False, readonly=True)
 
     def __get_field(self, field_id: Optional[int]):
@@ -911,35 +889,37 @@ class SingleDishPointingChart(object):
             return None
 
     @casa5style_plot
-    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None, reference_field_id: Optional[int]=None,
-             target_only: bool=None, ofs_coord: bool=None) -> Optional[Plot]:
-        """
-        Generate a plot object.
+    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None,
+             reference_field_id: Optional[int]=None, target_only: bool=True, ofs_coord: bool=False) -> Optional[Plot]:
+        """Generate a plot object.
 
         If plot file exists and revise_plot is False, Plot object
         based on existing file is returned.
 
         Args:
-            revice_plot: Overwrite existing plot or not.
+            revise_plot (bool): Overwrite existing plot or not. Defaults to False.
+            antenna (Antenna): Antenna domain object. Defaults to None.
+            target_field_id (Optional[int]): ID for target (ON_SOURCE) field. Defaults to None.
+            reference_field_id (Optional[int]): ID for reference (OFF_SOURCE) field. Defaults to None.
+            target_only (bool): Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.
+            ofs_coord (bool): Use offset coordinate or not. Defaults to False.
 
         Returns:
-            Plot: A Plot object.
+            Optional[Plot]: A Plot object.
         """
+        self.antenna = antenna
+        self.target_field = self.__get_field(target_field_id)
+        self.reference_field = self.__get_field(reference_field_id)
+        self.target_only = target_only
+        self.ofs_coord = ofs_coord
+        self.figfile = self._get_figfile()
+        self.axes_manager = PointingAxesManager()
+
         if revise_plot is False and os.path.exists(self.figfile):
             return self._get_plot_object()
 
         ms = self.ms
-        if antenna is not None:
-            self.antenna = antenna
         antenna_id = self.antenna.id
-        if target_field_id is not None:
-            self.target_field = self.__get_field(target_field_id)
-        if reference_field_id is not None:
-            self.reference_field = self.__get_field(reference_field_id)
-        if target_only is not None:
-            self.target_only = target_only
-        if ofs_coord is not None:
-            self.ofs_coord = ofs_coord
 
         target_spws = ms.get_spectral_windows(science_windows_only=True)
         # Search for the first available SPW, antenna combination
