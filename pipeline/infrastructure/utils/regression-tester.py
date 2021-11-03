@@ -130,7 +130,7 @@ class PipelineRegression(object):
             [LOG.warning(x) for x in errors]
             n_errors = len(errors)
             if n_errors > 0:
-                pytest.fail("Failed to match {0} result value{1} within tolerence{1} :\n{2}".format(
+                pytest.fail("Failed to match {0} result value{1} within tolerance{1} :\n{2}".format(
                     n_errors, '' if n_errors == 1 else 's', '\n'.join(errors)), pytrace=True)
 
     def __save_new_results_to(self, new_file: str, new_results: List[str]):
