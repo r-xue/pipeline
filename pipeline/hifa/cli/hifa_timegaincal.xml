@@ -153,17 +153,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string">inf</value>
     </param>
 
-     <param name="combine" type="string">
-        <shortdescription>Data axes which to combine for solve (scan, spw, and/or field)</shortdescription>
-        <description>Data axes to combine for solving. Options are '', 'scan', 'spw',
-          'field' or any comma-separated combination.
-
-          default: ''
-          example: combine=''
-        </description>
-        <value type="string"/>
-     </param>
-
     <param name="refant" subparam="true" type="string">
         <shortdescription>Reference antenna names</shortdescription>
         <description>Reference antenna name(s) in priority order. Defaults to most recent
