@@ -41,7 +41,7 @@ def fitsname(products_dir, imagename, version=1):
        FITS file name."""
 
     # Need to remove stage / iter information
-    #fitsname = re.sub('\.s\d+.*\.iter.*\.', '.', imagename)
+    # fitsname = re.sub(r'\.s\d+.*\.iter.*\.', '.', imagename)
     fitsname = re.sub(r'\.s\d+[_]\d+\.', '.', imagename)
     fitsname = re.sub(r'\.iter\d+\.image', '', fitsname)
     fitsname = re.sub(r'\.iter\d+\.image.sd', '.sd', fitsname)
@@ -51,7 +51,7 @@ def fitsname(products_dir, imagename, version=1):
     # .pb must be tried after .pbcor.image !
     fitsname = re.sub(r'\.iter\d+\.pb', '.pb', fitsname)
     fitsfile = os.path.join(products_dir,
-                             os.path.basename(fitsname) + '.fits')
+                            os.path.basename(fitsname) + '.fits')
 
     # update fitsname
     if version > 1:
