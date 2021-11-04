@@ -151,7 +151,7 @@ class DetectLine(basetask.StandardTaskTemplate):
 
     def prepare(self,
                 datatable_dict: dict,
-                grid_table: List[Union[int, float, numpy.ndarray]],
+                grid_table: List[List[Union[int, float, numpy.ndarray]]],
                 spectral_data: Optional[numpy.ndarray] = None) -> DetectLineResults:
         """Find spectral line feature.
 
@@ -161,6 +161,12 @@ class DetectLine(basetask.StandardTaskTemplate):
             datatable_dict: Dictionary holding datatable instance per MS.
             grid_table: Metadata for gridding. See simplegrid.py for detail.
             spectral_data: Gridded spectral data.
+
+        Returns:
+            DetectLineResults instance
+
+        Raises:
+            RuntimeError: Too large edge masks
         """
         spectra = spectral_data
         masks = (spectra != NoData)
@@ -370,7 +376,13 @@ class DetectLine(basetask.StandardTaskTemplate):
             return numpy.array([data[i:i+Bin].mean() for i in range(offset, len(data)-Bin+1, Bin)], dtype=numpy.float)
 
     def analyse(self, result: DetectLineResults) -> DetectLineResults:
-        """Analyse result. Do nothing."""
+        """Analyse result.
+
+        Do nothing.
+
+        Returns:
+            DetectLineResults instance
+        """
         return result
 
     def _detect(self,

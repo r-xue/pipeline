@@ -135,7 +135,7 @@ class BaselineSubtractionPlotManager(object):
     def _generate_plot_meta_table(
         spw_id: int,
         polarization_ids: List[int],
-        grid_table: List[Union[int, float, numpy.ndarray]]
+        grid_table: List[List[Union[int, float, numpy.ndarray]]]
     ) -> Generator[List[Union[int, float]], None, None]:
         """Extract necessary data from grid_table.
 
@@ -159,7 +159,7 @@ class BaselineSubtractionPlotManager(object):
     def generate_plot_meta_table(
         spw_id: int,
         polarization_ids: List[int],
-        grid_table: List[Union[int, float, numpy.ndarray]]
+        grid_table: List[List[Union[int, float, numpy.ndarray]]]
     ) -> List[List[Union[int, float]]]:
         """Return metadata table for plotting.
 
@@ -197,7 +197,7 @@ class BaselineSubtractionPlotManager(object):
         antenna_id: int,
         spw_id: int,
         polarization_ids: List[int],
-        grid_table: List[Union[int, float, numpy.ndarray]],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
         grid_list: List[Tuple[int, int]]
     ) -> Generator[numpy.ndarray, None, None]:
         """Yield list of datatable row ids that matches selection.
@@ -229,7 +229,7 @@ class BaselineSubtractionPlotManager(object):
         antenna_id: int,
         spw_id: int,
         polarization_ids: List[int],
-        grid_table: List[Union[int, float, numpy.ndarray]],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
         plot_table: List[List[Union[int, float]]],
         each_plane: List[int]
     ) -> List[int]:
@@ -338,7 +338,7 @@ class BaselineSubtractionPlotManager(object):
         antenna_id: int,
         spw_id: int,
         org_direction: dirutil.Direction,
-        grid_table: Optional[List[Union[int, float, numpy.ndarray]]] = None,
+        grid_table: Optional[List[List[Union[int, float, numpy.ndarray]]]] = None,
         deviation_mask: Optional[List[Tuple[int, int]]] = None,
         channelmap_range: Optional[List[Tuple[int, int, bool]]] = None,
         edge: Optional[List[int]] = None,
@@ -456,7 +456,7 @@ class BaselineSubtractionPlotManager(object):
         self,
         prefit_figfile_prefix: str,
         postfit_figfile_prefix: str,
-        grid_table: List[Union[int, float, numpy.ndarray]],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
         deviation_mask: Optional[List[Tuple[int, int]]],
         line_range: Optional[List[Tuple[int, int]]],
         org_direction: dirutil.Direction,
@@ -856,7 +856,7 @@ def analyze_plot_table(
     antid: int,
     virtual_spwid: int,
     polids: List[int],
-    grid_table: List[Union[int, float, numpy.ndarray]],
+    grid_table: List[List[Union[int, float, numpy.ndarray]]],
     org_direction: dirutil.dirutil.Direction
 ) -> Tuple[int, int, int, List[dict]]:
     """Create and analyze plot table.
