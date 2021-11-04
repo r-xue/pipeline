@@ -8,7 +8,8 @@ from pipeline.infrastructure.tablereader import MeasurementSetReader
 from .weblog import (
     OrderedDefaultdict,
     merge_td_columns,
-    total_time_on_target_on_source
+    total_time_on_target_on_source,
+    total_time_on_source
 )
 
 
@@ -147,3 +148,14 @@ def test_total_time_on_target_on_source():
     assert total_time_on_target_on_source(MS) == datetime.timedelta(0, 40, 320000)
     assert total_time_on_target_on_source(MS, autocorr_only=True) == datetime.timedelta(0, 40, 320000)
 
+
+def test_total_time_on_source():
+    assert total_time_on_source(MS.scans) == datetime.timedelta(0, 40, 319999)
+
+## PIPE-876 - There are some remaining functions to test which could not be included in this ticket:
+# * get_logrecords: It requires a result object to work which is complex and expensive to mock.
+# * get_intervals: It requires a context object and a CalApplication object which are also complex and expensive to
+#  mock.
+# The strategy of loading a (relocatable) context to perform some tests was considered but this context can become
+#  outdated as the pipeline is developed and the tests would be meaningless unless the object is updated. This update
+#  can be expensive in terms of computing time or human maintenance.
