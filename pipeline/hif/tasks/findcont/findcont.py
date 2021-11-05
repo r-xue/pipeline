@@ -186,8 +186,8 @@ class FindCont(basetask.StandardTaskTemplate):
                     if target['start'] != '':
                         if0 = qaTool.convert(target['start'], 'Hz')['value']
                         if if0 < if0_auto:
-                            LOG.error('Supplied start frequency %s < f_low_native for Field %s '
-                                      'SPW %s' % (target['start'], target['field'], target['spw']))
+                            LOG.error('Supplied start frequency (%s Hz) < f_low_native (%s Hz) for Field %s '
+                                      'SPW %s' % (if0, if0_auto, target['field'], target['spw']))
                             continue
                         LOG.info('Using supplied start frequency %s' % (target['start']))
 
@@ -235,8 +235,8 @@ class FindCont(basetask.StandardTaskTemplate):
                     if target['nchan'] not in (None, -1):
                         if1 = if0 + channel_width * target['nchan']
                         if if1 > if1_auto:
-                            LOG.error('Calculated stop frequency %s GHz > f_high_native for Field %s '
-                                      'SPW %s' % (if1, target['field'], target['spw']))
+                            LOG.error('Calculated stop frequency (%s Hz) > f_high_native (%s Hz) for Field %s '
+                                      'SPW %s' % (if1, if1_auto, target['field'], target['spw']))
                             continue
                         LOG.info('Using supplied nchan %d' % (target['nchan']))
                         nchan = target['nchan']

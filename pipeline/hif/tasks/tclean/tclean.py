@@ -385,8 +385,8 @@ class Tclean(cleanbase.CleanBase):
 
                 if0 = qaTool.convert(inputs.start, 'Hz')['value']
                 if if0 < if0_auto:
-                    LOG.error('Supplied start frequency %s < f_low (%s)for Field %s SPW %s' % (if0, if0_auto, inputs.field,
-                                                                                           inputs.spw))
+                    LOG.error('Supplied start frequency (%s Hz) < f_low_native (%s Hz) for Field %s '
+                              'SPW %s' % (if0, if0_auto, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
@@ -466,9 +466,8 @@ class Tclean(cleanbase.CleanBase):
             if inputs.nchan not in (None, -1):
                 if1 = if0 + channel_width * inputs.nchan
                 if if1 > if1_auto:
-                    LOG.error('Calculated stop frequency %s GHz > f_high_native for Field %s SPW %s' % (if1,
-                                                                                                        inputs.field,
-                                                                                                        inputs.spw))
+                    LOG.error('Calculated stop frequency (%s Hz) > f_high_native (%s Hz) for Field %s '
+                              'SPW % s' % (if1, if1_auto, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
