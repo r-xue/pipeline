@@ -1202,7 +1202,7 @@ class MeasurementSet(object):
 
     def get_data_column(self, dtype: DataType) -> Optional[str]:
         """
-        Retun a column name associated with a DataType in MS domain object.
+        Return a column name associated with a DataType in MS domain object.
 
         Args:
             dtype: DataType to fetch column name for

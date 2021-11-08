@@ -1,8 +1,9 @@
 import os
+import collections
 import shutil
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
 
 import numpy as np
-import collections
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -19,11 +20,26 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class testBPdcalsInputs(vdp.StandardInputs):
+    """Inputs class for the hifv_testBPdcals pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from vdp.StandardInputs.
+
+    """
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
+        """
+        Args:
+            context (:obj:): Pipeline context
+            vis(str, optional): String name of the measurement set
+            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
+            refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
+            doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw
+                                          Used in the flagging of bad deformatters heuristics
+
+        """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -35,11 +51,38 @@ class testBPdcalsInputs(vdp.StandardInputs):
 
 
 class testBPdcalsResults(basetask.Results):
+    """Results class for the hifv_testBPdcals pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from basetask.Results.
+
+    """
     def __init__(self, final=None, pool=None, preceding=None, gain_solint1=None,
                  shortsol1=None, vis=None, bpdgain_touse=None, gtypecaltable=None,
                  ktypecaltable=None, bpcaltable=None, flaggedSolnApplycalbandpass=None,
                  flaggedSolnApplycaldelay=None, result_amp=None, result_phase=None,
                  amp_collection=None, phase_collection=None, num_antennas=None, ignorerefant=None):
+        """
+        Args:
+            vis(str): String name of the measurement set
+            final(List): Calibration list - not used
+            pool(List): Calibration List - not used
+            preceding(Boolean):
+            gain_solint1(Dict):  Dict of csv strings, keyed by band
+            shortsol1(Dict):  Integration time determined from heuristics (1,3,10 x max int time) keyed by band
+            bpdgain_touse(Dict):  Dictionary of tables per band
+            gtypecaltable(Dict): Dictionary of tables per band
+            ktypecaltable(Dict): Dictionary of tables per band
+            bpcaltable(Dict): Dictionary of tables per band
+            flaggedSolnApplycalbandpass(Dict): returned from getCalFlaggedSoln for bpdgain_touse (per band)
+            flaggedSolnApplycaldelay(Dict): returned from getCalFlaggedSoln for ktypecaltable (per band)
+            result_amp(Dict):  Bad deformatters amp flagging list per band
+            result_phase(Dict): Bad deformatters phase flagging list per band
+            amp_collection(Dict):  Bad deformatters amp weblog table per band
+            phase_collection(Dict): Bad deformatters phase weblog table per band
+            num_antennas(Dict):  Number of antennas (same per band, but included for weblog formatting)
+            ignorerefant(List):  List of antennas removed if a baseband is determined to be bad for >50% of antennas.
+
+        """
 
         if final is None:
             final = []
@@ -88,43 +131,25 @@ class testBPdcalsResults(basetask.Results):
         context.evla['msinfo'][m.name].ignorerefant = self.ignorerefant
 
 
-class FlagBadDeformattersResults(basetask.Results):
-    def __init__(self, jobs=None, result_amp=None, result_phase=None,
-                 amp_collection=None, phase_collection=None,
-                 num_antennas=None):
-
-        if amp_collection is None:
-            amp_collection = {}
-        if phase_collection is None:
-            phase_collection = {}
-        if jobs is None:
-            jobs = []
-        if result_amp is None:
-            result_amp = {}
-        if result_phase is None:
-            result_phase = {}
-
-        super(FlagBadDeformattersResults, self).__init__()
-
-        self.jobs = jobs
-        self.result_amp = result_amp
-        self.result_phase = result_phase
-        self.amp_collection = amp_collection
-        self.phase_collection = phase_collection
-        self.num_antennas = num_antennas
-
-    def __repr__(self):
-        s = 'Bad deformatter results:\n'
-        for job in self.jobs:
-            s += '%s performed. Statistics to follow?' % str(job)
-        return s
-
-
 @task_registry.set_equivalent_casa_task('hifv_testBPdcals')
 class testBPdcals(basetask.StandardTaskTemplate):
+    """Class for the testBPdcals pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from basetask.StandardTaskTemplate
+
+    """
     Inputs = testBPdcalsInputs
 
     def prepare(self):
+        """Bulk of task execution occurs here.
+
+        Args:
+            None
+
+        Returns:
+            testBPdcalsResults()
+
+        """
         self.ignorerefant = []
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -154,22 +179,20 @@ class testBPdcals(basetask.StandardTaskTemplate):
         for band, spwlist in band2spw.items():
 
             for i in [0, 1, 2]:
-                LOG.debug("    RUNNNING FIRST PART TESTBPDCALS    ")
+                LOG.debug("    RUNNING FIRST PART TESTBPDCALS    ")
                 gain_solint1perband, shortsol1perband, vis, bpdgain_tousename, gtypecaltablename, ktypecaltablename, bpcaltablename, \
                 flaggedSolnApplycalbandpassperband, flaggedSolnApplycaldelayperband, refant = self._do_testBPdcals(band, spwlist)
 
-                #import pdb; pdb.set_trace()
-
-                # If an entire baseband is determined to be bad for >50% of antennas,
-                # the pipeline should do the following:
-                '''
+                """
+                If an entire baseband is determined to be bad for >50% of antennas,
+                the pipeline should do the following:
                 1.  Do not flag any data due to bad deformatters.
                 2.  Remove the first reference antenna from the refant list and ignore that antenna in refant calculations
                         for the **entire pipeline run**
                 3.  Recalculate the reference antenna list
                 4.  Re-run hifv_testbpdcals and hifv_flagbaddef
                 5.  Repeat up to three times and then just drive ahead.
-                '''
+                """
 
                 LOG.debug("    RUNNING SECOND PART BADDEFORMATTERS    ")
                 result_amp_perband, result_phase_perband, amp_collection_perband, phase_collection_perband, \
@@ -218,9 +241,39 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                   num_antennas=num_antennas, ignorerefant=self.ignorerefant)
 
     def analyse(self, results):
+        """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
+
+        Override method of basetask.StandardTaskTemplate.analyze()
+
+        Args:
+            results (list of class: `~pipeline.infrastructure.jobrequest.JobRequest`):
+                the job requests generated by :func:`~SimpleTask.prepare`
+
+        Returns:
+            class:`~pipeline.api.Result`
+        """
         return results
 
-    def _do_testBPdcals(self, band, spwlist):
+    def _do_testBPdcals(self, band: str, spwlist: List[str]):
+        """Execute testBPdcals heuristics per band and spwlist
+
+        Args:
+            band(str):  String band single letter identifier -  'L'  'U'  'X' etc.
+            spwlist(List):  List of string values for spws - ['0', '1', '2', '3']
+
+        Returns:
+            gain_solint1(str):  solution interval value
+            shortsol1(str):  Integration time determined from heuristics (1,3,10 x max int time)
+            vis:  MS name
+            bpdgain_touse(str):  bp'd gain table used
+            gtypecaltable(str):  G-type table from gaincal
+            ktypecaltable(str):  K-type table from gaincal
+            bpcaltable(str):     BP cal table
+            flaggedSolnApplycalbandpass(Dict):  returned from getCalFlaggedSoln for bpdgain_tous
+            flaggedSolnApplycaldelay(Dict): returned from getCalFlaggedSoln for ktypecaltable
+            RefAntOutput(str):  Reference antenna used
+
+        """
 
         LOG.info("Executing for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
@@ -254,7 +307,6 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 LOG.info("Removing table: {!s}".format(tablename))
                 shutil.rmtree(tablename)
 
-        context = self.inputs.context
         refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
@@ -265,7 +317,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
 
-        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
+        self._do_gtype_delaycal(caltable=gtypecaltable, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
         LOG.info("Initial phase calibration on delay calibrator complete for band {!s}".format(band))
 
@@ -277,7 +329,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         flagcount = 0
         while fracFlaggedSolns > critfrac and flagcount < 4:
             self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
-                                    context=context, RefAntOutput=RefAntOutput, spw=','.join(spwlist))
+                                    RefAntOutput=RefAntOutput, spw=','.join(spwlist))
             flaggedSolnResult = getCalFlaggedSoln(ktypecaltable)
             (fracFlaggedSolns, RefAntOutput) = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
             LOG.info("Fraction of flagged solutions = " + str(flaggedSolnResult['all']['fraction']))
@@ -296,12 +348,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
         # pipeline has failed; will need to implement a mode to cope with weak
         # calibrators (later)
 
-        context = self.inputs.context
-
         bpdgain_touse = tablebase + table_suffix[0]
 
         self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
-                                solint=solint, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
+                                solint=solint, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
         flaggedSolnResult1 = getCalFlaggedSoln(tablebase + table_suffix[0])
         LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -321,10 +371,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
             soltime = soltimes[1]
             solint = solints[1]
 
-            context = self.inputs.context
-
             self._do_gtype_bpdgains(tablebase + table_suffix[1], addcaltable=ktypecaltable,
-                                    solint=solint, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
+                                    solint=solint, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
             flaggedSolnResult3 = getCalFlaggedSoln(tablebase + table_suffix[1])
             LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -347,10 +395,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
                     soltime = soltimes[2]
                     solint = solints[2]
 
-                    context = self.inputs.context
-
                     self._do_gtype_bpdgains(tablebase + table_suffix[2], addcaltable=ktypecaltable, solint=solint,
-                                            context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
+                                            RefAntOutput=RefAntOutput, spwlist=spwlist)
                     flaggedSolnResult10 = getCalFlaggedSoln(tablebase + table_suffix[2])
                     LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
                              str(flaggedSolnResult10['all']['fraction']))
@@ -379,13 +425,13 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         if self.inputs.weakbp:
             # LOG.info("USING WEAKBP HEURISTICS")
-            interp = weakbp(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
+            interp = weakbp(self.inputs.vis, bpcaltable, context=self.inputs.context, RefAntOutput=RefAntOutput,
                             ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False,
                             executor=self._executor, spw=','.join(spwlist))
         else:
             # LOG.info("Using REGULAR heuristics")
             interp = ''
-            do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
+            do_bandpass(self.inputs.vis, bpcaltable, context=self.inputs.context, RefAntOutput=RefAntOutput,
                         spw=','.join(spwlist), ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
                         solint='inf', append=False, executor=self._executor)
 
@@ -408,7 +454,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         LOG.info("Applying test calibrations to BP and delay calibrators for band {!s}".format(band))
 
-        self._do_applycal(context=context, ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
+        self._do_applycal(ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
                           bpcaltable=bpcaltable, interp=interp, spw=','.join(spwlist))
 
         flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
@@ -417,12 +463,23 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return gain_solint1, shortsol1, self.inputs.vis, bpdgain_touse, gtypecaltable,\
                ktypecaltable, bpcaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay, RefAntOutput[0]
 
-    def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None, spwlist=[]):
+    def _do_gtype_delaycal(self, caltable: str = None, RefAntOutput: List[str] = None, spwlist: List[str] = []) -> bool:
+        """Perform a G-Type delay calibration with CASA task gaincal
+
+        Args:
+            caltable(str): Name of the caltable to be created
+            RefAntOutput(List): List of string antenna values to use as reference antennas - ['ea01', 'ea24', ...]
+            spwlist(List): List of string values for spws pertaining to the particular band - ['0', '1', '2', ...]
+
+        Returns:
+            Boolean
+
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
+        delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
-        delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
+        delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
         delaycal_task_args = {'vis': self.inputs.vis,
@@ -466,11 +523,24 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None, spw=''):
+    def _do_ktype_delaycal(self, caltable: str = None, addcaltable: str = None,
+                           RefAntOutput: List[str] = None, spw: str = '') -> bool:
+        """Perform a K-Type delay calibration with CASA task gaincal
+
+        Args:
+            caltable(str): Name of the caltable to be created
+            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter
+            RefAntOutput(List): List of string antenna values to use as reference antennas - ['ea01', 'ea24', ...]
+            spw(str): csv string values for spws pertaining to the particular band - '0,1,2,3,4,5,6'
+
+        Returns:
+            Boolean
+
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
-        delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
+        delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
+        delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
@@ -516,7 +586,20 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _check_flagSolns(self, flaggedSolnResult, RefAntOutput):
+    def _check_flagSolns(self, flaggedSolnResult: Dict, RefAntOutput: List[str] = None) -> (float, List[str]):
+        """Change reference antenna list based on a critical fraction of flagged solutions
+            (defined in the domain ms object)
+
+        Args:
+            flaggedSolnResult(Dict): Breakdown of flagged solutions
+            RefAntOutput(List): List of string antenna values to use as reference antennas - ['ea01', 'ea24', ...]
+
+        Returns:
+            fracFlaggedSolns(float):  fraction of flagged solutions used in this function
+            RefAntOutput(List): List of string antenna values to use as reference antennas - ['ea01', 'ea24', ...]
+                                Modified if fraction of flagged solutions is greater than critical fraction
+
+        """
 
         if flaggedSolnResult['all']['total'] > 0:
             fracFlaggedSolns = flaggedSolnResult['antmedian']['fraction']
@@ -534,13 +617,26 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return fracFlaggedSolns, RefAntOutput
 
-    def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, RefAntOutput=None,
-                           spwlist=[]):
+    def _do_gtype_bpdgains(self, caltable: str, addcaltable: str = None, solint: str = 'int',
+                           RefAntOutput: List[str] = None, spwlist: List[str] = []) -> bool:
+        """Perform a G-Type cal with CASA task gaincal on the bp'd gaintable
+
+        Args:
+            caltable(str): Name of the caltable to be created
+            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter
+            solint(str):  String value for solint keyword of CASA task gaincal
+            RefAntOutput(List): List of string antenna values to use as reference antennas - ['ea01', 'ea24', ...]
+            spwlist(List): List of string values for spws pertaining to the particular band - ['0', '1', '2', ...]
+
+        Returns:
+            Boolean
+
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
-        delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
-        bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
+        delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
+        bandpass_scan_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
         if delay_scan_select_string == bandpass_scan_select_string:
@@ -599,7 +695,16 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_clipflag(self, bpcaltable):
+    def _do_clipflag(self, bpcaltable: str):
+        """Execute CASA task flagdata on the bpcaltable
+
+        Args:
+            bpcaltable(str):  caltable to flag
+
+        Returns:
+            Executed job
+
+        """
 
         task_args = {'vis': bpcaltable,
                      'mode': 'clip',
@@ -615,11 +720,24 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None, spw=''):
-        """Run CASA task applycal"""
+    def _do_applycal(self, ktypecaltable: str = None, bpdgain_touse: str = None, bpcaltable: str = None,
+                     interp: str = None, spw: str = ''):
+        """Run CASA task applycal with tables from priorcals task plus those generated in testBPdcals
+
+        Args:
+            ktypecaltable(str): output from K-type gaincal
+            bpgain_touse(str): gaintable determined to be used from heuristics
+            bpcaltable(str): BP caltable to use
+            interp(str): applycal CASA task keyword
+            spw(str): csv string values for spws pertaining to the particular band - '0,1,2,3,4,5,6'
+
+        Returns:
+            Executed job
+
+        """
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        testgainscans = context.evla['msinfo'][m.name].testgainscans
+        testgainscans = self.inputs.context.evla['msinfo'][m.name].testgainscans
 
         AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         AllCalTables.append(ktypecaltable)
@@ -648,8 +766,22 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _run_baddeformatters(self, bpcaltable):
-        # Setting control parameters as method arguments
+    def _run_baddeformatters(self, bpcaltable: str):
+        """Setting control parameters as method arguments
+
+        Args:
+            bpcaltable(str): BP cal table to use
+
+        Return:
+            result_amp(List): Bad deformatters amp flagging
+            result_phase(List): Bad deformatters phase flagging
+            amp_collection(Dict): Collection for weblog display
+            phase_collection(Dict):  Collection for weblog display
+            num_antennas(int): Number of antennas (for weblog convenience)
+            amp_job(Dict):  flagdata result from the amplitude execution
+            phase_job(Dict):  flagdata result from the phase execution
+
+        """
 
         method_args = {'testq': 'amp',  # Which quantity to test? ['amp','phase','real','imag']
                        'tstat': 'rat',  # Which stat to use?['min','max','mean','var']or'rat'=min/max or 'diff'=max-min
@@ -680,34 +812,33 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return result_amp, result_phase, amp_collection, phase_collection, num_antennas, amp_job, phase_job
 
-    def _do_flag_baddeformatters(self, testq=None, tstat=None, doprintall=True,
-                                 testlimit=None, testunder=True, nspwlimit=4,
-                                 doflagundernspwlimit=True,
-                                 doflagemptyspws=False,
-                                 calBPtablename=None, flagreason=None):
+    def _do_flag_baddeformatters(self, testq: str = None, tstat: str = None, doprintall: bool = True,
+                                 testlimit: float = None, testunder: bool = True, nspwlimit: int = 4,
+                                 doflagundernspwlimit: bool = True, doflagemptyspws: bool = False,
+                                 calBPtablename: str = None, flagreason: str = None):
         """Determine bad deformatters in the MS and flag them
            Looks for bandpass solutions that have small ratio of min/max amplitudes
+
+        Args:
+            testq(str): Which quantity to test? ['amp','phase','real','imag']                    Original script: 'amp'
+            tstat(str): Which stat to use? ['min','max','mean','var'] or 'rat'=min/max or 'diff'=max-min
+                        Original script: 'rat'
+            doprintall(bool): Print detailed flagging stats                                      Original script: True
+            testlimit(float): Limit for test (flag values under/over this limit)                 Original script: 0.15
+            testunder(bool): Will flag values under limit                                        Original script: True
+            nspwlimit(int): Number of spw per baseband to trigger flagging entire baseband       Original script: 4
+            doflagundernspwlimit(bool): Flag individual spws when below nspwlimit                Original script: True
+            doflagemptyspws(bool): Flag data for spws with no unflagged channel solutions in any poln?
+            calBPtablename(str): caltable name
+            flagreason(str): Reason for flagging
+
+        Returns:
+            flaglist(List): phase or amp flagging commands list
+            weblogflagdict(Dict): collection for weblog display
+            num_antennas(int):  number of antennas
+            job(Dict):  Result of flagdata execution
+
         """
-
-        # Which quantity to test? ['amp','phase','real','imag']
-        # testq = 'amp'
-
-        # Which stat to use? ['min','max','mean','var'] or 'rat'=min/max or 'diff'=max-min
-        # tstat = 'rat'
-
-        # Print detailed flagging stats
-        # doprintall = True
-
-        # From original script...
-        # Limit for test (flag values under/over this limit)
-        # testlimit = 0.15
-        # testunder = True
-        # Number of spw per baseband to trigger flagging entire baseband
-        # nspwlimit = 4
-        # Flag individual spws when below nspwlimit
-        # doflagundernspwlimit = True
-        # Flag data for spws with no unflagged channel solutions in any poln?
-        # doflagemptyspws = False
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         num_antennas = len(m.antennas)
