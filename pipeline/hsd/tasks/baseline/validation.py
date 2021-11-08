@@ -1,7 +1,9 @@
+"""Task to perform line validation based on clustering analysis."""
 import collections
 import math
 import time
 from math import sqrt
+from typing import TYPE_CHECKING, Any, List, NewType, Optional, Tuple, Type, Union
 
 import numpy
 import numpy.linalg as LA
@@ -17,19 +19,17 @@ from . import rules
 from .. import common
 from ..common import utils
 
+if TYPE_CHECKING:
+    from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
+    from pipeline.infrastructure.launcher import Context
+
+ClusteringResult = NewType('ClusteringResult', Tuple[int, List[List[Union[int, bool]]], List[int], List[List[Union[int, float, bool]]]])
+
 LOG = infrastructure.get_logger(__name__)
 
 
-def ValidationFactory(pattern):
-    if pattern == 'RASTER':
-        return ValidateLineRaster
-    elif pattern == 'SINGLE-POINT' or pattern == 'MULTI-POINT':
-        return ValidateLineSinglePointing
-    else:
-        raise ValueError('Invalid observing pattern')
-
-
 class ValidateLineInputs(vdp.StandardInputs):
+    """Inputs class for line validation tasks."""
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -42,26 +42,76 @@ class ValidateLineInputs(vdp.StandardInputs):
     clusteringalgorithm = vdp.VisDependentProperty(default=rules.ClusterRule['ClusterAlgorithm'])
 
     @property
-    def group_desc(self):
+    def group_desc(self) -> MSReductionGroupDesc:
+        """Return reduction group instance of the current group."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def reference_member(self):
+    def reference_member(self) -> MSReductionGroupMember:
+        """Return the first reduction group member instance in the current group."""
         return self.group_desc[self.member_list[0]]
 
     @property
-    def windowmode(self):
+    def windowmode(self) -> str:
+        """Return windowmode value. Defaults to 'replace'."""
         return getattr(self, '_windowmode', 'replace')
 
     @windowmode.setter
-    def windowmode(self, value):
+    def windowmode(self, value: str) -> None:
+        """Set windowmode value.
+
+        Args:
+            value: Either 'replace' or 'merge'
+
+        Raises:
+            ValueError: Invalid windowmode value
+        """
         if value not in ['replace', 'merge']:
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
         self._windowmode = value
 
-    def __init__(self, context, group_id, member_list, iteration, grid_ra, grid_dec,
-                 window=None, windowmode=None, edge=None, nsigma=None, xorder=None, yorder=None,
-                 broad_component=None, clusteringalgorithm=None):
+    def __init__(self,
+                 context: Context,
+                 group_id: int,
+                 member_list: List[int],
+                 iteration: int,
+                 grid_ra: float,
+                 grid_dec: float,
+                 window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 windowmode: Optional[str] = None,
+                 edge: Optional[Tuple[int, int]] = None,
+                 nsigma: Optional[float] = None,
+                 xorder: Optional[int] = None,
+                 yorder: Optional[int] = None,
+                 broad_component: Optional[bool] = None,
+                 clusteringalgorithm: Optional[str] = None) -> None:
+        """Construct ValidateLineInputs instance.
+
+        Args:
+            context: Pipeline context
+            group_id: Reduction group ID
+            member_list: List of reduction group member IDs
+            iteration: Iteration counter for baseline/blflag loop
+            grid_ra: Horizontal (longitudinal) spacing of spatial grids.
+                        The value should be the one without declination correction.
+            grid_dec: Vertical (latitudinal) spacing of spatial grids.
+            window: Manual line window. Defaults to None.
+            windowmode: Line window handling mode. 'replace' exclusively uses manual line window
+                        while 'merge' merges manual line window into automatic line detection
+                        and validation result. Defaults to 'replace'.
+            edge: Edge channels to exclude. Defaults to None.
+            nsigma: Threshold for iterative N-sigma clipping. No iterative clipping is done if
+                    nsigma is None or negative value. Defaults to None.
+            xorder: Polynomial order for two-dimensional fitting of line properties
+                    along horizontal (longitudinal) axis. The order is automatically determined
+                    if None or negative value is given. Defaults to None.
+            yorder: Polynomial order for two-dimensional fitting of line properties
+                    along vertical (latitudinal) axis. The order is automatically determined
+                    if None or negative value is given. Defaults to None.
+            broad_component: Process broad component if True. Defaults to False.
+            clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
+                                 'hierarchi', or 'both'. Defaults to 'hierarchy'.
+        """
         super(ValidateLineInputs, self).__init__()
 
         self.context = context
@@ -81,39 +131,86 @@ class ValidateLineInputs(vdp.StandardInputs):
 
 
 class ValidateLineResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of line validation."""
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct ValidateLineResults instance.
+
+        Args:
+            task: Task class that produced the result. Defaults to None.
+            success: Whether task execution is successful or not. Defaults to None.
+            outcome: Outcome of the task execution. Defaults to None.
+        """
         super(ValidateLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context) -> None:
+        """Merge result instance into context.
+
+        No specific merge operation is done.
+
+        Args:
+            context: Pipeline context.
+        """
         super(ValidateLineResults, self).merge_with_context(context)
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string representing the outcome.
+
+        Returns:
+            Empty string
+        """
         return ''
 
 
 class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
+    """Line validation task for single/multi pointing observation.
+
+    This class is for single-pointing or multi-pointing (collection of
+    fields with single-pointing).
+    """
     Inputs = ValidateLineInputs
 
-    def prepare(self, datatable_dict=None, index_list=None, grid_table=None, detect_signal=None):
-        """
-        ValidateLine class for single-pointing or multi-pointing (collection of
-        fields with single-pointing). Accept all detected lines without
-        clustering analysis.
+    def prepare(self,
+                datatable_dict: dict,
+                index_list: List[int],
+                grid_table: Any = None,
+                detect_signal: Optional[dict] = None):
+        """Perform line validation for single/multi pointing observation.
 
-         detect_signal = {ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
-                                         [LineStartChannel2, LineEndChannel2],
-                                         [LineStartChannelN, LineEndChannelN]]],
-                         IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
-                                         [LineStartChannelN, LineEndChannelN]]]}
+        Accept all detected lines without clustering analysis.
 
-        lines: output parameter
-           [LineCenter, LineWidth, Validity]  OK: Validity = True; NG: Validity = False
+        Args:
+            datatable_dict: Dictionary holding datatable instance per MS.
+            index_list: List of consecutive datatable row numbers. Defaults to None.
+            grid_table: Not used
+            detect_signal: List of detected lines per spatial position. Its format is
+                           as follows.
+
+                detect_signal = {
+                    ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    [LineStartChannel2, LineEndChannel2],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]],
+                    IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]]
+                }
+
+        Returns:
+            ValidateLineResults instance, which contains list of line parameters
+            with validation results. The list is stored in outcome['lines'] and
+            its format is as follows:
+
+                [LineCenter, LineWidth, Validity]
+
+            where Validity is boolean value that indicates whether or not the
+            detected line is validated. OK (validated) for True while NG for False.
         """
         window = self.inputs.window
         windowmode = self.inputs.windowmode
 
-        assert datatable_dict is not None
-        assert index_list is not None
         assert detect_signal is not None
 
         # indexer translates serial index into per-MS index
@@ -200,11 +297,19 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
 
         return result
 
-    def analyse(self, result):
+    def analyse(self, result: ValidateLineResults) -> ValidateLineResults:
+        """Analyse results instance generated by prepare.
+
+        Do nothing.
+
+        Returns:
+            ValidateLineResutls instance
+        """
         return result
 
 
 class ValidateLineRaster(basetask.StandardTaskTemplate):
+    """Line validation task for OTF raster observation."""
     Inputs = ValidateLineInputs
 
     CLUSTER_WHITEN = 1.0
@@ -221,14 +326,61 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     DebugOutVer = [0, 0]
 
     @property
-    def MaxFWHM(self):
+    def MaxFWHM(self) -> int:
+        """Return maximum FWHM to consider for line validation.
+
+        Max FWHM is 1/3 of total number of channels excluding edge channels
+        specified by inputs.edge.
+
+        Returns:
+            Maximum FWHM in number of channels
+        """
         num_edge = sum(self.inputs.edge)
         spw = self.inputs.reference_member.spw
         nchan = spw.num_channels
         return int(max(0, nchan - num_edge) // 3)
 
-    def validate_cluster(self, clustering_algorithm, clustering_result,
-                         index_list, detect_signal, PosList, Region2):
+    def validate_cluster(
+        self,
+        clustering_algorithm: str,
+        clustering_result: ClusteringResult,
+        index_list: List[int],
+        detect_signal: dict,
+        PosList: numpy.ndarray,
+        Region2: numpy.ndarray
+    ) -> Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]:
+        """Validate cluster detected by clustering analysis.
+
+        This method validates clusters detected in line center vs line width space.
+        Validation utilizes spatial distribution of lines associated with the cluster.
+        Property of validated lines are interpolated in two-dimensional space and
+        set to each spatial data point.
+
+        Args:
+            clustering_algorithm: Clustering algorithm name (not used)
+            clustering_result: Clustering result
+            index_list: List of consecutive datatable row numbers
+            detect_signal: List of detected lines per spatial position. Its format is
+                           as follows.
+
+                detect_signal = {
+                    ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    [LineStartChannel2, LineEndChannel2],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]],
+                    IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]]
+                }
+            PosList: List of pointings (RA and Dec) of ON_SOURCE data
+            Region2: List of line properties (line width and line center)
+                     for each data
+
+        Returns:
+            4-tuple of final line properties for each ON_SOURCE pointings (RealSignal),
+            line property of detected clusters (lines), line property for plotting
+            (channelmap_range), and flag per validation stage for each cluster (cluster_flag).
+        """
         # input parameters
         grid_ra = self.inputs.grid_ra
         grid_dec = self.inputs.grid_dec
@@ -333,29 +485,49 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return RealSignal, lines, channelmap_range, cluster_flag
 
-    def prepare(self, datatable_dict=None, index_list=None, grid_table=None, detect_signal=None):
-        """
-        2D fit line characteristics calculated in Process3
-        Sigma clipping iterations will be applied if nsigma is positive
+    def prepare(self, datatable_dict, index_list, grid_table, detect_signal):
+        """Validate spectral lines detected by detection module.
+
+        As a first step, clustering analysis is applied to detected lines
+        in line width vs line center space. Detected clusters are then
+        analyzed and set True/False flag based on the spatial distribution
+        of the cluster members in celestial coordinate. Finally, cluster
+        line properties are interpolated in two-dimensional celestial space
+        and are propagated into each ON_SOURCE data point.
+
+        Sigma clipping iterations will be applied if inputs.nsigma is positive
         order < 0 : automatic determination of fitting order (max = 5)
 
-         detect_signal = {ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1, Binning],
-                                         [LineStartChannel2, LineEndChannel2, Binning],
-                                         [LineStartChannelN, LineEndChannelN, Binning]]],
-                         IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1, Binning],
-                                         [LineStartChannelN, LineEndChannelN, Binning]]]}
+        Args:
+            datatable_dict: Dictionary holding datatable instance per MS.
+            index_list: List of consecutive datatable row numbers. Defaults to None.
+            grid_table: Metadata for gridding. See simplegrid.py for detail.
+            detect_signal: List of detected lines per spatial position. Its format is
+                           as follows.
 
-        lines: output parameter
-           [LineCenter, LineWidth, Validity]  OK: Validity = True; NG: Validity = False
+                detect_signal = {
+                    ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    [LineStartChannel2, LineEndChannel2],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]],
+                    IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]]
+                }
+
+        Returns:
+            ValidateLineResults instance, which contains list of line parameters
+            with validation results. The list is stored in outcome['lines'] and
+            its format is as follows:
+
+                [LineCenter, LineWidth, Validity]
+
+            where Validity is boolean value that indicates whether or not the
+            detected line is validated. OK (validated) for True while NG for False.
         """
         window = self.inputs.window
         windowmode = self.inputs.windowmode
         LOG.debug('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
-
-        assert datatable_dict is not None
-        assert grid_table is not None
-        assert index_list is not None
-        assert detect_signal is not None
 
         # indexer translates serial index into per-MS index
         indexer = DataTableIndexer(self.inputs.context)
@@ -607,10 +779,43 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return result
 
-    def analyse(self, result):
+    def analyse(self, result: ValidateLineResults) -> ValidateLineResults:
+        """Analyse results instance generated by prepare.
+
+        Do nothing.
+
+        Returns:
+            ValidateLineResutls instance
+        """
         return result
 
-    def _merge_cluster_info(self, algorithm, cluster_score, detected_lines, cluster_property, cluster_scale):
+    def _merge_cluster_info(
+        self,
+        algorithm: str,
+        cluster_score: List[List[int]],
+        detected_lines: numpy.ndarray,
+        cluster_property: List[List[Union[int, bool]]],
+        cluster_scale: float) -> None:
+        """Merge information on clustering analysis into "cluster_info" attribute.
+
+        Merges args into "cluster_info" attribute according to the following rule:
+
+            - cluster_score for kmean takes priority over the one for hierarchy
+            - detected_lines is registered only once (since detected_lines is an
+              input for clustering analysis and should be the same among clustering
+              algorithm)
+            - cluster_property is accumulated
+            - cluster_scale is registered only once (since the value is shared
+              among clustering algorithm)
+
+        Args:
+            algorithm: Clustering algorithm. Either 'kmean' or 'hierarchy'.
+            cluster_score: Cluster score vs number of clusters
+            detected_lines: List of line properties per grid position
+            cluster_property: List of properties (line width, line center) for
+                              each detected clusters
+            cluster_scale: Scaling factor
+        """
         actions = {
             'cluster_score': ('kmean', cluster_score),
             'detected_lines': ('skip', detected_lines),
@@ -625,7 +830,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             elif action == algorithm:
                 self.cluster_info[key] = value
 
-    def _merge_cluster_result(self, result_list):
+    def _merge_cluster_result(
+        self,
+        result_list: List[Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]]
+    ) -> Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]:
         if len(result_list) == 1:
             return tuple(result_list[0])
 
@@ -2067,3 +2275,25 @@ class SVDSolver2D(object):
 
         LOG.trace('best eps: %s (score %s)', intlog(best_eps), best_score)
         return best_ans
+
+
+def ValidationFactory(pattern: str) -> Union[Type[ValidateLineRaster],Type[ValidateLineSinglePointing]]:
+    """Return appropriate task class according to observing pattern.
+
+    The pattern string must be in uppercase letters.
+
+    Args:
+        pattern: Observing pattern
+
+    Raises:
+        ValueError: Invalid observing pattern
+
+    Returns:
+        Task class. Either ValidateLineRaster or ValidateLineSinglePointing.
+    """
+    if pattern == 'RASTER':
+        return ValidateLineRaster
+    elif pattern == 'SINGLE-POINT' or pattern == 'MULTI-POINT':
+        return ValidateLineSinglePointing
+    else:
+        raise ValueError('Invalid observing pattern')
