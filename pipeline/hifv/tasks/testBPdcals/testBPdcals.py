@@ -190,7 +190,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 2.  Remove the first reference antenna from the refant list and ignore that antenna in refant calculations
                         for the **entire pipeline run**
                 3.  Recalculate the reference antenna list
-                4.  Re-run hifv_testbpdcals and hifv_flagbaddef
+                4.  Re-run hifv_testbpdcals and flagbaddef
                 5.  Repeat up to three times and then just drive ahead.
                 """
 
