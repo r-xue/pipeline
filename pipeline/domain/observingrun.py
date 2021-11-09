@@ -180,7 +180,7 @@ class ObservingRun(object):
         :type target_ms: domain.MeasurementSet
         """
         spw_id = None
-        for spw in target_ms.spectral_windows:
+        for spw in target_ms.get_spectral_windows(science_windows_only=True):
             if spw.name == spw_name:
                 spw_id = spw.id
         return spw_id
