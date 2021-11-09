@@ -380,6 +380,24 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             4-tuple of final line properties for each ON_SOURCE pointings (RealSignal),
             line property of detected clusters (lines), line property for plotting
             (channelmap_range), and flag per validation stage for each cluster (cluster_flag).
+
+            cluster_flag is data for plotting clustering analysis results.
+            It stores GridCluster quantized by given thresholds.
+            it is defined as integer array and one digit is assigned to
+            one clustering stage in each integer value:
+
+                1st digit: detection
+                2nd digit: validation
+                3rd digit: smoothing
+                4th digit: final
+
+            If GridCluster value exceeds any threshold, corresponding
+            digit is incremented. For example, flag 3210 stands for,
+
+                value didn't exceed any thresholds in detection, and
+                exceeded one (out of three) threshold in validation, and
+                exceeded two (out of three) thresholds in smoothing, and
+                exceeded three (out of four) thresholds in final.
         """
         # input parameters
         grid_ra = self.inputs.grid_ra
@@ -834,6 +852,17 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self,
         result_list: List[Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]]
     ) -> Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]:
+        """Merge multiple clustering analysis results into one.
+
+        Take union on detected clusters. If length of result_list is 1, simply return
+        the first item.
+
+        Args:
+            result_list: List of clustering analysis result
+
+        Returns:
+            Merged result
+        """
         if len(result_list) == 1:
             return tuple(result_list[0])
 
@@ -848,32 +877,45 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return merged_RealSignal, merged_lines, merged_channelmap_ranges, merged_flag
 
-    def clean_detect_signal(self, DS):
-        """
+    def clean_detect_signal(self, detect_signal: dict) -> dict:
+        """Exclude false detections from detected lines.
+
         Spectra in each grid positions are splitted into 3 groups along time series.
         Group of spectra is then combined to 1 spectrum. So, one grid position has
         3 combined spectra.
         Suppose that the real signal is correlated but the error is not, we can
         clean false signals (not correlated) in advance of the validation stage.
-        detect_signal = {ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1, Binning],
-                                         [LineStartChannel2, LineEndChannel2, Binning],
-                                         [LineStartChannelN, LineEndChannelN, Binning]]],
-                         IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1, Binning],
-                                         [LineStartChannelN, LineEndChannelN, Binning]]]}
+
+        Args:
+            detect_signal: List of detected lines per spatial position. Its format is
+                           as follows.
+
+                detect_signal = {
+                    ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    [LineStartChannel2, LineEndChannel2],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]],
+                    IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]]
+                }
+
+        Returns:
+            detect_signal after cleaning
         """
         # grouping by position
         Gthreshold = 1.0 / 3600.
         # TODO: review whether the following relies on a specific order of keys.
-        DSkey = list(DS.keys())
+        DSkey = list(detect_signal.keys())
         PosGroup = []
         # PosGroup: [[ID,ID,ID],[ID,ID,ID],...,[ID,ID,ID]]
-        for ID in list(DS.keys()):
+        for ID in list(detect_signal.keys()):
             if ID in DSkey:
                 del DSkey[DSkey.index(ID)]
                 DStmp = DSkey[:]
                 PosGroup.append([ID])
                 for nID in DStmp:
-                    if abs(DS[ID][0] - DS[nID][0]) < Gthreshold and abs(DS[ID][1] - DS[nID][1]) < Gthreshold:
+                    if abs(detect_signal[ID][0] - detect_signal[nID][0]) < Gthreshold and abs(detect_signal[ID][1] - detect_signal[nID][1]) < Gthreshold:
                         del DSkey[DSkey.index(nID)]
                         PosGroup[-1].append(nID)
         LOG.debug('clean_detect_signal: PosGroup = %s', PosGroup)
@@ -881,21 +923,41 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             if len(PList) > 2:
                 data = collections.OrderedDict()
                 for i in PList:
-                    data[i] = DS[i][2]
+                    data[i] = detect_signal[i][2]
                 # threshold 0.7: identical line is detected in all 3 data: strict checking
                 # threshold 0.6: identical line is detected in 2 data out of 3
                 ret = self.clean_detect_line(data.copy(), threshold=0.7)
                 for i in PList:
-                    DS[i][2] = ret[i]
+                    detect_signal[i][2] = ret[i]
 
-        return DS
+        return detect_signal
 
-    def clean_detect_line(self, data, threshold=0.6):
-        """
-        Select only line candidates with good possibility by checking all spectra taken at the same position
-        data: {ID1: [[LineStart, LineEnd, Binning],,,],
-               ID2: [[LineStart, LineEnd, Binning],,,],
-               IDn: [[LineStart, LineEnd, Binning],,,]}
+    def clean_detect_line(self, data: collections.OrderedDict, threshold: float = 0.6) -> dict:
+        """Exclude false detection by comparing three signals.
+
+        Select only line candidates with good possibility by checking all spectra
+        taken at the same position. This method intends to three set of signals
+        that are supposed to be identified at the same spatial position. The threshold
+        parameter controls the condition of false detection. If identical lines are
+        found in two out of three signals, detection rate is 2/3 or 0.66666....
+        Therefore, threshold 0.6 corresponds to the condition that the signal is
+        true detection if is is found in two out of three signals. Larger threshold
+        such as 0.7 is more strict check, the signal must be found in all three.
+
+        Args:
+            data: List of properties of detected lines to be examined. Format is
+                  as follows
+
+                      {ID1: [[LineStart, LineEnd, Binning],,,],
+                       ID2: [[LineStart, LineEnd, Binning],,,],
+                       ...
+                       IDn: [[LineStart, LineEnd, Binning],,,]}
+            threshold: threshold for the exclusion. Ranges between 0 and 1.
+                       Defalts to 0.6.
+
+        Returns:
+            List of lines that are regarded as "true detection". For false
+            detection, dict value will be [-1, -1, 1].
         """
         ret = {}
         NSP = float(len(data))
@@ -928,9 +990,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return ret
 
-    def CheckLineIdentity(self, old, new, overlap=0.7):
-        """
-        True if the overlap of two lines is greater than the threshold
+    def CheckLineIdentity(self, old: List[float], new: List[float], overlap: float = 0.7) -> bool:
+        """Check if the given set of line ranges overlap.
+
+        True if the overlap of two lines is greater than the threshold.
+
         1L          1R          1L         1R          1L        1R       1L       1R
          [          ]           [          ]            [         ]       [         ]
          xxxxxxxxxxxx           xxxxxxxxxxxx            xxxxxxxxxxx       xxxxxxxxxxx
@@ -940,8 +1004,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         True if Num(x) / Num(o) >= overlap
 
-        old: [left, right, binning]
-        new: [left, right, binning]
+        Args:
+            old: Reference line range. [left, right, binning]
+            new: Comparing line range. [left, right, binning]
+            overlap: Threshold for overlap. Ranges between 0 and 1. Defaults to 0.7.
+
+        Returns:
+            Whether or not two lines overlap.
         """
         if(old[0] <= new[0] < old[1] or \
            old[0] < new[1] <= old[1] or \
@@ -953,7 +1022,33 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         else:
             return False
 
-    def clustering_kmean(self, Region, Region2):
+    def clustering_kmean(self, Region: List[int, float, bool], Region2: numpy.ndarray) -> ClusteringResult:
+        """Perform k-mean clustering analysis on detected lines.
+
+        Perform k-mean clustering analysis on detected lines with various
+        pre-defined number of clusters. Best number of clusters are
+        determined by the scoring scheme based on the distance between
+        origin of the cluster and the data regarded as a member of the
+        cluster.
+
+        Args:
+            Region: List of line properties with associated spatial coordinate.
+                    Format is as follows.
+
+                [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
+
+            Region2: List of line properties (line width and line center)
+                     for each data. Format is as follows.
+
+                [[Width, Center],[],[],,,[]]
+
+        Returns:
+            4-tuple representing clustering results, number of clusters,
+            list of cluster properties (Center, Width/WHITEN, T/F, ClusterRadius),
+            List of category indices indicating which lines belong to what
+            cluster, and list of line properties with associated spatial
+            coordinate (which is same format as Region).
+        """
         # Region = [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
         # Region2 = [[Width, Center],[],[],,,[]]
         MedianWidth = numpy.median(Region2[:, 0])
@@ -1073,10 +1168,22 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (BestNcluster, Bestlines, BestCategory, BestRegion)
 
-    def clustering_hierarchy(self, Region, Region2, nThreshold=3.0, nThreshold2=4.5, method='single'):
-    #def calc_clustering(self, nThreshold, method='ward'):
-        """
-        Hierarchical Clustering
+    def clustering_hierarchy(
+        self,
+        Region: List[int, float, bool],
+        Region2: numpy.ndarray,
+        nThreshold: float = 3.0,
+        nThreshold2: float = 4.5,
+        method: str = 'single'
+    ) -> ClusteringResult:
+        """ Perform hierarchical clustering analysis on detected lines.
+
+        Perform hierarchical clustering analysis that is a "bottom-up"
+        approach to configure the clusters that best represents the
+        distribution of the detected line properties. It starts with
+        the small clusters and combine them until certain condition
+        is met.
+
         method = 'ward'    : Ward's linkage method
                  'single'  : nearest point linkage method
                  'complete': farthest point linkage method
@@ -1093,6 +1200,31 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             self.Nthreshold
             self.Category
             self.Ncluster
+
+        Args:
+            Region: List of line properties with associated spatial coordinate.
+                    Format is as follows.
+
+                [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
+
+            Region2: List of line properties (line width and line center)
+                     for each data. Format is as follows.
+
+                [[Width, Center],[],[],,,[]]
+            nThreshold: Threshold factor for the hierarchical clustering analysis.
+                        It is used as a multiplicative factor for stddev of
+                        initial distance matrix.
+            nThreshold2: Another threshold factor for the hierarchical clustering analysis.
+                        It is used as a multiplicative factor for stddev of
+                        sub-cluster distance matrix.
+            method: Method name for linkage method of the hierarchical clustering analysis.
+
+        Returns:
+            4-tuple representing clustering results, number of clusters,
+            list of cluster properties (Center, Width/WHITEN, T/F, ClusterRadius),
+            List of category indices indicating which lines belong to what
+            cluster, and list of line properties with associated spatial
+            coordinate (which is same format as Region).
         """
         Data = self.set_data(Region2, ordering=[0, 1])  # Data: numpy[[width, center],[w,c],,,]
         Repeat = 3  # Number of artificial detection points to normalize the cluster distance
