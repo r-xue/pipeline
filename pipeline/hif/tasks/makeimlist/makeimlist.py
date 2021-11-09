@@ -1,6 +1,7 @@
 import copy
 import os
 import operator
+import collections
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -19,8 +20,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImListInputs(vdp.StandardInputs):
-    # Search order of input vis
-    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    # Must use empty data type list to allow for user override and
+    # automatic determination depending on specmode, field and spw.
+    processing_data_type = []
 
     # simple properties with no logic ----------------------------------------------------------------------------------
     calmaxpix = vdp.VisDependentProperty(default=300)
@@ -35,6 +37,7 @@ class MakeImListInputs(vdp.StandardInputs):
     clearlist = vdp.VisDependentProperty(default=True)
     per_eb = vdp.VisDependentProperty(default=False)
     calcsb = vdp.VisDependentProperty(default=False)
+    datacolumn = vdp.VisDependentProperty(default='')
     parallel = vdp.VisDependentProperty(default='automatic')
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
@@ -166,7 +169,8 @@ class MakeImListInputs(vdp.StandardInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
-                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, parallel=None, known_synthesized_beams=None):
+                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, datacolumn=None, parallel=None,
+                 known_synthesized_beams=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -193,6 +197,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.clearlist = clearlist
         self.per_eb = per_eb
         self.calcsb = calcsb
+        self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
 
@@ -248,6 +253,52 @@ class MakeImList(basetask.StandardTaskTemplate):
         # single measurement set
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
+
+        if inputs.datacolumn not in (None, ''):
+            datacolumn = inputs.datacolumn
+        else:
+            datacolumn = ''
+
+        # Select the correct vis list
+        if inputs.vis in ('', [''], [], None):
+            if inputs.intent == 'TARGET':
+                if inputs.specmode in ('mfs', 'cont'):
+                    datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                else:
+                    datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            else:
+                datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
+            ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
+
+            if ms_objects_and_columns == collections.OrderedDict():
+                result.set_info({'msg': 'No data found. No imaging targets were created.',
+                                 'intent': inputs.intent,
+                                 'specmode': inputs.specmode})
+                result.contfile = None
+                result.linesfile = None
+                return result
+
+            LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for imaging.')
+            if selected_datatype == DataType.RAW:
+                LOG.warn('Falling back to raw data for imaging.')
+
+            columns = list(ms_objects_and_columns.values())
+            if not all(column == columns[0] for column in columns):
+                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+
+            if datacolumn != '':
+                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+            else:
+                if columns[0] == 'DATA':
+                    datacolumn = 'data'
+                elif columns[0] == 'CORRECTED_DATA':
+                    datacolumn = 'corrected'
+                else:
+                    LOG.warn(f'Unknown column name {columns[0]}')
+                    datacolumn = ''
+
+            inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
@@ -893,9 +944,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                        for v in filtered_vislist]
 
-                            any_non_imaging_ms = any([not inputs.context.observing_run.get_ms(vis).is_imaging_ms
-                                                      for vis in filtered_vislist])
-
                             target = CleanTarget(
                                 antenna=antenna,
                                 field=field_intent[0],
@@ -922,6 +970,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 stokes='I',
                                 heuristics=target_heuristics,
                                 vis=filtered_vislist,
+                                datacolumn=datacolumn,
                                 is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                 usepointing=usepointing,
                                 mosweight=mosweight
