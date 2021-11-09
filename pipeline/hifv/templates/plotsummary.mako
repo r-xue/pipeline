@@ -93,8 +93,8 @@ def space_comma(s):
 
 <%self:plot_group plot_dict="${summary_plots}"
                   url_fn="${lambda ms: 'noop'}"
-                  break_rows_by=''
-                  sort_row_by='baseband,spw'>
+                  break_rows_by='field'
+                  sort_row_by='baseband'>
 
         <%def name="title()">
             VLA Pipeline Summary Plots
