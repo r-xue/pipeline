@@ -601,9 +601,11 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Compute phase caltable for the amplitude calibrator (set by
         # "refintent"). PIPE-1154: for amplitude calibrator, always use
-        # combine='' and gaintype="G".
+        # combine='' and gaintype="G", no spwmap or interp.
+        # Merge result into local task context so that the caltable is included
+        # in pre-apply for subsequent gaincal.
         LOG.info(f'Compute phase gaincal table for flux calibrator (intent={inputs.refintent},'
-                 f' field={inputs.reference}.')
+                 f' field={inputs.reference}).')
         _ = self._do_gaincal(field=inputs.reference, intent=inputs.refintent, gaintype="G", calmode='p',
                              combine='', solint=inputs.phaseupsolint, antenna=antenna, uvrange=uvrange,
                              minsnr=inputs.minsnr, refant=refant, minblperant=minblperant, spwmap=None,
@@ -616,7 +618,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # field, based on spw mapping info in MS.
         combine, interp, solint, spwmap = self._get_phasecal_params(intent, field)
 
-        # Create phase caltable and merge it into the local context.
+        # Create phase caltable and merge it into the local context so that the
+        # caltable is included in pre-apply for subsequent gaincal.
         LOG.info(f'Compute phase gaincal table for intent={intent}, field={field}.')
         self._do_gaincal(field=field, intent=intent, gaintype='G', calmode='p', combine=combine,
                          solint=solint, antenna=antenna, uvrange='', minsnr=inputs.minsnr, refant=refant,
@@ -628,18 +631,23 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # Intents as string for CASA input.
         intents_str = ",".join(intent)
 
-        # Identify fields that cover the provided intents.
+        # Identify fields that cover the provided intents. Note that
+        # inputs.transfer will skip any field that already covers the intent
+        # inputs.refintent (the amplitude calibrator), as that is covered by a
+        # separate gaincal.
         fields = ",".join(f.name for f in inputs.ms.get_fields(inputs.transfer)
                           if set(intent).intersection(set(f.intents)))
 
-        # PIPE-1154: the phase solves for the remaining calibrators should
-        # always use combine='', gaintype="G", no spwmap or interp.
-        # Merge result into local task context so that the caltable is included
-        # in pre-apply for subsequent gaincal.
-        LOG.info(f'Compute phase gaincal table for other calibrators (intent={intents_str}, field={fields}).')
-        _ = self._do_gaincal(field=fields, intent=intents_str, gaintype='G', calmode='p', combine='',
-                             solint=inputs.phaseupsolint, antenna=antenna, uvrange='', minsnr=inputs.minsnr,
-                             refant=refant, minblperant=None, spwmap=None, interp=None, merge=True)
+        # Only proceed if valid fields were found.
+        if fields:
+            # PIPE-1154: the phase solves for the remaining calibrators should
+            # always use combine='', gaintype="G", no spwmap or interp.
+            # Merge result into local task context so that the caltable is included
+            # in pre-apply for subsequent gaincal.
+            LOG.info(f'Compute phase gaincal table for other calibrators (intent={intents_str}, field={fields}).')
+            _ = self._do_gaincal(field=fields, intent=intents_str, gaintype='G', calmode='p', combine='',
+                                 solint=inputs.phaseupsolint, antenna=antenna, uvrange='', minsnr=inputs.minsnr,
+                                 refant=refant, minblperant=None, spwmap=None, interp=None, merge=True)
 
     def _get_phasecal_params(self, intent, field):
         inputs = self.inputs
