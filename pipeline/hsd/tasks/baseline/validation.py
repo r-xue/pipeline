@@ -94,7 +94,7 @@ class ValidateLineInputs(vdp.StandardInputs):
             member_list: List of reduction group member IDs
             iteration: Iteration counter for baseline/blflag loop
             grid_ra: Horizontal (longitudinal) spacing of spatial grids.
-                        The value should be the one without declination correction.
+                     The value should be the one without declination correction.
             grid_dec: Vertical (latitudinal) spacing of spatial grids.
             window: Manual line window. Defaults to None.
             windowmode: Line window handling mode. 'replace' exclusively uses manual line window
@@ -504,7 +504,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return RealSignal, lines, channelmap_range, cluster_flag
 
-    def prepare(self, datatable_dict, index_list, grid_table, detect_signal):
+    def prepare(self,
+                datatable_dict: dict,
+                index_list: numpy.ndarray,
+                grid_table: List[Union[int, float, numpy.ndarray]],
+                detect_signal: collections.OrderedDict
+    ) -> ValidateLineResults:
         """Validate spectral lines detected by detection module.
 
         As a first step, clustering analysis is applied to detected lines
@@ -1375,7 +1380,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         del Obs, OrderList
         return (Data)
 
-    def clean_cluster(self, Data, Category: List[int], Region, Nthreshold: float, NumParam: int):
+    def clean_cluster(self,
+                      Data: numpy.ndarray,
+                      Category: List[int],
+                      Region: List[int, float, bool],
+                      Nthreshold: float,
+                      NumParam: int
+    ) -> Tuple[List[int, float, bool], numpy.ndarray, numpy.ndarray, List[int]]:
         """Clean-up cluster by eliminating outliers
 
          Radius = StandardDeviation * nThreshold (circle/sphere)
@@ -1383,6 +1394,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         Args:
             Data: List of cluster properties with associated spatial coordinate.
             Category: Input category list representing membership information
+            Region: List of line properties with associated spatial coordinate.
+                    Format is as follows.
+
+                [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
+
             Nthreshold: Threshold factor for detecting outlier
             NumParam: Number of cluster properties
 
@@ -1654,15 +1670,41 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         lines: List[List[float, bool]],
         cluster_flag: numpy.ndarray
     ) -> Tuple[numpy.ndarray, List[List[float, bool]], numpy.ndarray]:
-        """Smooth cluster.
+        """Smooth cluster distribution.
+
+        This method implements the third phase of cluster validation process,
+        and is so-called "Smoothing Stage". It applies smoothing to spatial
+        cluster distribution and update validity flag of detected lines
+        according to the smoothed cluster distribution.
+
+        Smoothing kernel is given by,
+
+            6.0 if Dx=0 and Dy=0,
+            1.0 / (Dx**2 + Dy**2) if abs(Dx) + abs(Dy) < 4, and
+            0 otherwise
+
+        where Dx and Dy is distance from the center pixel. It looks like below.
+
+            [ 0.0,  0.2, 0.25,  0.2,  0.0]
+            [ 0.2,  0.5,  0.1,  0.5,  0.2]
+            [0.25,  0.1,  6.0,  0.1, 0.25]
+            [ 0.2,  0.5,  0.1,  0.5,  0.2]
+            [ 0.0,  0.2, 0.25,  0.2,  0.0]
+
+        Lines with too low detection value is flagged.
 
         Args:
-            GridCluster:
-            lines:
-            cluster_flag:
+            GridCluster: Three dimensional array representing spatial distribution of
+                         each cluster detected by the clustering analysis
+            lines: List of line properties with validity flag
+            cluster_flag: array data for plotting clustering analysis results
 
         Returns:
+            3-tuple of updated cluster information.
 
+              - Smoothed GridCluster
+              - List of line properties with updated validity flag
+              - Updated cluster_flag (flags for smoothing stage is appended)
         """
         # Rating:  [0.0, 0.4, 0.5, 0.4, 0.0]
         #          [0.4, 0.7, 1.0, 0.7, 0.4]
@@ -1729,8 +1771,74 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (GridCluster, lines, cluster_flag)
 
-    def final_stage(self, GridCluster, GridMember, Region, Region2, lines, category, grid_ra, grid_dec, broad_component, xorder, yorder, x0, y0, Grid2SpectrumID, index_list, PosList, cluster_flag):
+    def final_stage(
+        self,
+        GridCluster: numpy.ndarray,
+        GridMember: numpy.ndarray,
+        Region: List[int, float, bool],
+        Region2: numpy.ndarray,
+        lines: List[List[Union[int, bool]]],
+        category: List[int],
+        grid_ra: float,
+        grid_dec: float,
+        broad_component: bool,
+        xorder: int,
+        yorder: int,
+        x0: float,
+        y0: float,
+        Grid2SpectrumID: List[List[int]],
+        index_list: List[int],
+        PosList: numpy.ndarray,
+        cluster_flag: numpy.ndarray
+    ) -> Tuple[collections.OrderedDict, List[List[Union[int, bool]]], List[List[int, bool]], numpy.ndarray]:
+        """Distribute validated lines to each observed spectra.
 
+        This method implements the final phase of cluster validation process,
+        and is so-called "Final Stage". It performs two-dimensional least-square
+        fitting of line properties (center, width) on the grid configured onto
+        the celestial plane, and distribute those properties to each observed
+        spectra using least-square solution at their associated position.
+
+        Args:
+            GridCluster: Three dimensional array representing spatial distribution of
+                         each cluster detected by the clustering analysis
+            GridMember: Number of spectra at each grid position
+            Region: List of line properties with associated spatial coordinate.
+                    Format is as follows.
+
+                [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
+
+            Region2: List of line properties (line width and line center)
+                     for each data
+            lines: List of line properties with validity flag
+            category: List of cluster membership indices
+            grid_ra: Horizontal (longitudinal) spacing of spatial grids.
+                     The value should be the one with declination correction.
+            grid_dec: Vertical (latitudinal) spacing of spatial grids.
+            broad_component: Process broad component or not. Not used.
+            xorder: Order of the polynomial for horizontal fitting.
+                    If it is -1, order is automatically determined inside
+                    the method.
+            yorder: Order of the polynomial for vertical fitting.
+                    If it is -1, order is automatically determined inside
+                    the method.
+            x0: Horizontal position of the bottom left corner
+            y0: Vertical position of the bottom left corner
+            Grid2SpectrumID: Index mapping between serial list of gridded
+                             spectra and two-dimensional grid positions
+            index_list: List of consecutive datatable row numbers. Defaults to None.
+            PosList: List of pointings (RA and Dec) of ON_SOURCE data
+            cluster_flag: array data for plotting clustering analysis results
+
+        Returns:
+            4-tuple of the following data.
+
+              - List of validated line ranges distributed to each observed spectrum
+                using the least-square fitting of line parameters
+              - List of line properties with updated validity flag
+              - List of line properties dedicated to plotting
+              - Updated cluster_flag (flags for smoothing stage is appended)
+        """
         (Ncluster, nra, ndec) = GridCluster.shape
         xorder0 = xorder
         yorder0 = yorder
