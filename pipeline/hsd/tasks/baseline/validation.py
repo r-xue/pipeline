@@ -3,6 +3,7 @@ import collections
 import math
 import time
 from math import sqrt
+from numbers import Integral
 from typing import TYPE_CHECKING, Any, List, NewType, Optional, Tuple, Type, Union
 
 import numpy
@@ -1176,7 +1177,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         nThreshold2: float = 4.5,
         method: str = 'single'
     ) -> ClusteringResult:
-        """ Perform hierarchical clustering analysis on detected lines.
+        """Perform hierarchical clustering analysis on detected lines.
 
         Perform hierarchical clustering analysis that is a "bottom-up"
         approach to configure the clusters that best represents the
@@ -1326,8 +1327,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (Ncluster, Bestlines, Category, Region)
 
-    def set_data(self, Observation, ordering='none'):
-        """
+    def set_data(self, Observation: numpy.ndarray, ordering: Union[str,List[int]] = 'none') -> numpy.ndarray:
+        """Transpose axes of two-dimensional array data.
+
         Observation: numpy.array([[val1, val2, val3,..,valN],
                                   [val1, val2, val3,..,valN],
                                    ........................
@@ -1339,6 +1341,16 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self.Data: Observation data
         self.NumParam: Number of dimensions to be used for Clustering Analysis
         self.Factor: Set default Whitening factor (to be 1.0)
+
+        Args:
+            Observation: Two-dimensional array data
+            ordering: Axis order for output array
+
+        Raises:
+            ValueError: Given array is not two-dimensional
+
+        Returns:
+            Transposed array
         """
         if ordering != 'none':
             NumParam = len(ordering)
@@ -1363,20 +1375,23 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         del Obs, OrderList
         return (Data)
 
-    def clean_cluster(self, Data, Category, Region, Nthreshold, NumParam):
-        """
-        Clean-up cluster by eliminating outliers
+    def clean_cluster(self, Data, Category: List[int], Region, Nthreshold: float, NumParam: int):
+        """Clean-up cluster by eliminating outliers
+
          Radius = StandardDeviation * nThreshold (circle/sphere)
-        in:
-            Data
-            Category
-            Nthreshold
-            Ncluster
-        out:
-            Region: flag information is added
-            Range: Range[Ncluster][5]: [ClusterCenterX, ClusterCenterY, 0, 0, Threshold]
-            Stdev: Stdev[Ncluster][5]: [ClusterStddevX, ClusterStddevY, 0, 0, 0]
-            Category: renumbered category
+
+        Args:
+            Data: List of cluster properties with associated spatial coordinate.
+            Category: Input category list representing membership information
+            Nthreshold: Threshold factor for detecting outlier
+            NumParam: Number of cluster properties
+
+        Returns:
+            4-tuple of the following values.
+                Region: flag information is added
+                Range: Range[Ncluster][5]: [ClusterCenterX, ClusterCenterY, 0, 0, Threshold]
+                Stdev: Stdev[Ncluster][5]: [ClusterStddevX, ClusterStddevY, 0, 0, 0]
+                Category: renumbered category
         """
         IDX = numpy.array([x for x in range(len(Data))])
         Ncluster = Category.max()
@@ -1427,7 +1442,18 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #return (Region, Range, Stdev)
         return (Region, numpy.array(ValidRange), numpy.array(ValidStdev), Category)
 
-    def clustering_kmean_score(self, MeanDistance, MedianWidth, Ncluster, MemberRate):
+    def clustering_kmean_score(self, MeanDistance: float, MedianWidth: float, Ncluster: int, MemberRate: float) -> float:
+        """Compute score of the clusters.
+
+        Args:
+            MeanDistance: Mean distance from the center of the cluster
+            MedianWidth: Median value of the line width
+            Ncluster: Number of clusters
+            MemberRate: Fraction of the members that belong to any cluster
+
+        Returns:
+            Score of the cluster
+        """
         # Rating
         ### 2011/05/12 modified for (distance==0)
         ### 2014/11/28 further modified for (distance==0)
@@ -1435,14 +1461,56 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # (distance * numpy.transpose(Region[5])).mean(): average distance from each cluster center
         return(math.sqrt(MeanDistance**2.0 + (MedianWidth/2.0)**2.0) * (Ncluster+ 1.0/Ncluster) * ((1.0 - MemberRate) * 100.0 + 1.0))
 
-    def detection_stage(self, Ncluster, nra, ndec, ra0, dec0, grid_ra, grid_dec, category, Region, detect_signal):
-        """
-        Region = [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
-        detect_signal = {ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1, Binning],
-                                         [LineStartChannel2, LineEndChannel2, Binning],
-                                         [LineStartChannelN, LineEndChannelN, Binning]]],
-                         IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1, Binning],
-                                         [LineStartChannelN, LineEndChannelN, Binning]]]}
+    def detection_stage(
+        self,
+        Ncluster: int,
+        nra: int, ndec: int,
+        ra0: float, dec0: float,
+        grid_ra: float, grid_dec: float,
+        category: List[int],
+        Region: List[int, float, bool],
+        detect_signal: dict
+    ) -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]:
+        """Classify cluster members by their location on celestial coordinate.
+
+        This method implements the first phase of cluster validation process,
+        and is so-called "Detection Stage". It combines clustering analysis
+        result with spatial information of each detected line, and classify
+        cluster members by their location on celestial coordinate.
+
+        Args:
+            Ncluster: Number of clusters
+            nra: Number of horizontal grids on the sky
+            ndec: Number of vertical grids on the sky
+            grid_ra: Physical size of the horizontal grid in degree
+            grid_dec: Physical size of the vertical grid in degree
+            category: List of cluster membership indices
+            Region: List of line properties with associated spatial coordinate.
+                    Format is as follows.
+
+                [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
+
+            detect_signal: List of detected lines per spatial position. Its format is
+                           as follows.
+
+                detect_signal = {
+                    ID1: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    [LineStartChannel2, LineEndChannel2],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]],
+                    IDn: [RA, DEC, [[LineStartChannel1, LineEndChannel1],
+                                    ...,
+                                    [LineStartChannelN, LineEndChannelN]]]
+                }
+
+        Returns:
+            3-tuple of the following numpy arrays.
+
+                - Three dimensional array representing spatial distribution of
+                  each cluster detected by the clustering analysis.
+                - Number of spectra at each grid position. Value of the array ranges
+                  from 0 to 3 (either of 0, 1, 2, 3) but usually it is 3.
+                - array data for plotting clustering analysis results for detection stage
         """
         # Create Grid Parameter Space (Ncluster * nra * ndec)
         MinChanBinSp = 50.0
@@ -1500,7 +1568,48 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (GridCluster, GridMember, cluster_flag)
 
-    def validation_stage(self, GridCluster, GridMember, lines, cluster_flag):
+    def validation_stage(
+        self,
+        GridCluster: numpy.ndarray,
+        GridMember: numpy.ndarray,
+        lines: List[List[float, bool]],
+        cluster_flag: numpy.ndarray
+    ) -> Tuple[numpy.ndarray, numpy.ndarray, List[List[float, bool]], numpy.ndarray]:
+        """Validate clusters by their detection fraction on each grid.
+
+        This method implements the second phase of cluster validation process,
+        and is so-called "Validation Stage". It sets validation flag based on
+        the detection fraction on each grid.
+
+        Cluster is validated if number of spectrum which contains feature belongs
+        to the cluster is greater or equal to the half number of spectrum in the Grid.
+        Normally, 3 spectra are created for each grid positions, therefore,
+        GridMember[ra][dec] = 3 for most of the cases.
+
+        Normalized validity can be
+
+            - 1/3 (0.2<V) -> only one detection -> Qestionable
+            - 2/3 (0.5<V)-> two detections -> Marginal
+            - 3/3 (0.7<V)-> detected for all spectra -> Valid
+
+        Questionable lines are flagged.
+
+        Args:
+            GridCluster: Three dimensional array representing spatial distribution of
+                         each cluster detected by the clustering analysis
+            GridMember: Number of spectra at each grid position
+            lines: List of line properties with validity flag
+            cluster_flag: array data for plotting clustering analysis results
+
+        Returns:
+            4-tuple of the following arrays.
+
+                - Updated GridCluster normalized by GridMember
+                - Number of lines detected at each grid position (return GridMember as is)
+                - List of line properties with updated validity flag (Questionable lines are
+                  flagged out)
+                - array data for plotting clustering analysis results for validation stage
+        """
         # Validated if number of spectrum which contains feature belongs to the cluster is greater or equal to
         # the half number of spectrum in the Grid
         # Normally, 3 spectra are created for each grid positions,
@@ -1539,7 +1648,22 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (GridCluster, GridMember, lines, cluster_flag)
 
-    def smoothing_stage(self, GridCluster, lines, cluster_flag):
+    def smoothing_stage(
+        self,
+        GridCluster: numpy.ndarray,
+        lines: List[List[float, bool]],
+        cluster_flag: numpy.ndarray
+    ) -> Tuple[numpy.ndarray, List[List[float, bool]], numpy.ndarray]:
+        """Smooth cluster.
+
+        Args:
+            GridCluster:
+            lines:
+            cluster_flag:
+
+        Returns:
+
+        """
         # Rating:  [0.0, 0.4, 0.5, 0.4, 0.0]
         #          [0.4, 0.7, 1.0, 0.7, 0.4]
         #          [0.5, 1.0, 6.0, 1.0, 0.5]
@@ -1967,20 +2091,33 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (RealSignal, lines, channelmap_range, cluster_flag)
 
-    def CleanIsolation(self, nra, ndec, Original, Plane, GridMember):
-        """
-        Clean isolated cluster
-        return: if no cluster is left after the cleaning, n == 0
-          MemberList contains positions of cluster member with Marginal+Valid detection
-          MemberList[n]: [[(x00,y00),(x01,y01),........,(x0k-1,y0k-1)],
-                          [(x10,y10),(x11,y11),..,(x1i-1,y1i-1)],
-                                  ......
-                          [(xn-10,yn-10),(xn-11,yn-11),..,(xn-1i-1,yn-1j-1)]]
-          Realmember contains positions of cluster member with only Valid detection
-          Realmember[n]: [[(x00,y00),(x01,y01),..,(x0a-1,y0a-1)],
-                          [(x10,y10),(x11,y11),..,(x1b-1,y1b-1)],
-                                  ......
-                          [(xn-10,yn-10),(xn-11,yn-11),..,(xn-1c-1,yn-1c-1)]]
+    def CleanIsolation(self, nra: int, ndec: int, Original: numpy.ndarray, Plane: numpy.ndarray, GridMember):
+        """Clean spatially isolated cluster.
+
+        Pick up only Valid detections, and check if there are enough
+        surrounding pixels with Valid detection. Create subplane of the
+        cluster by collecting contiguous cluster members.
+
+        Args:
+            nra: Number of horizontal grids
+            ndec: Number of vertical grids
+            Original: Spatial distribution of Marginal+Valid detections.
+                      Value ranges from 0 to 1.
+            Plane: Integer binary flag, 0 (False) or 1 (True), indicating whether
+                   or not any cluster member exists in the grid.
+            GridMember: Number of spectra at each grid position. Value ranges
+                        from 0 to 3.
+
+        Returns:
+            2-tuple of cleaned clusters, MemberList and RealMember. If no cluster is
+            left after the cleaning, empty lists are returned.
+            MemberList contains positions of cluster member with Marginal+Valid detection
+            MemberList[n]: [[(x00,y00),(x01,y01),........,(x0k-1,y0k-1)],
+                            [(x10,y10),(x11,y11),..,(x1i-1,y1i-1)],
+                                    ......
+                            [(xn-10,yn-10),(xn-11,yn-11),..,(xn-1i-1,yn-1i-1)]]
+            Realmember contains number of cluster members with only Valid detection
+            RealMember: [Nvalid_00, Nvalid_01, ..., Nvalid_n-1i-1]
         """
         Nmember = []  # number of positions where value > self.Marginal in each SubCluster
         Realmember = []  # number of positions where value > self.Valid in each SubCluster
@@ -2033,7 +2170,33 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     del Nmember[n], Realmember[n], MemberList[n]
         return MemberList, Realmember
 
-    def DoBlur(self, Realmember, nra, ndec, SubPlane, ratio):
+    def DoBlur(self,
+               Realmember: int,
+               nra: int,
+               ndec: int,
+               SubPlane: numpy.ndarray,
+               ratio: Integral
+        ) -> Tuple[numpy.ndarray, numpy.ndarray]:
+        """Blur cluster subplane.
+
+        Convolve subplane data with two-dimensional boxcar kernal whose
+        radius depends on Realmember and ratio.
+
+            R_blur = sqrt(Realmember / pi) * ratio + 1.5
+
+        Args:
+            Realmember: Number of valid cluster members in the subplane
+            nra: Number of horizontal grids
+            ndec: Number of vertical grids
+            SubPlane: Spatial distribution of Valid detections.
+            ratio: Factor for blur radius
+
+        Returns:
+            2-tuple of numpy arrays. First one is an integer binary array
+            of whether original (pre-blur) pixels are Valid detection
+            while the second array is also an integer binary array
+            of whether blurred pixels are Valid or Marginal detection
+        """
         # Calculate Blur radius
         BlurF = sqrt(Realmember / 3.141592653) * ratio + 1.5
         Blur = int(BlurF)
@@ -2052,9 +2215,24 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # BlurPlane is not used for fitting but just extend the parameter determined in ValidPlane
         return (SubPlane > self.Valid) * 1, (convolve2d(SubPlane, kernel) > self.Marginal) * 1
 
-    def calc_ProtectMask(self, Center, Width, nchan, MinFWHM, MaxFWHM):
-        """
-        return ProtectMask: [MaskL, MaskR]
+    def calc_ProtectMask(self, Center: Integral, Width: Integral, nchan: int, MinFWHM: Integral, MaxFWHM: Integral) -> List[int]:
+        """Return ProtectMask according to Center and Width.
+
+        Return ProtectMask: [MaskL, MaskR]
+
+        This method translates a range of protected range given as (center, width) value
+        into (start, end) style. Effective width of the translated range is calculated
+        from the original with and the input parameters.
+
+        Args:
+            Center: Center of the range
+            Width: Width of the range
+            nchan: Number of channels of the spectrum
+            MinFWHM: Minimum FWHM
+            MaxFTHM: Maximum FWHM
+
+        Returns:
+            Range of protected range as (start, end) value.
         """
         # To keep broad line region, make allowance larger
         ### 2015/04/23 Allowance=MaxFWHM at x=MaxFWHM, Allowance=2xMinFWHM+10 at x=MinFWHM
@@ -2064,7 +2242,16 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.trace('Allowance = %s ProtectMask = %s' % (Allowance, ProtectMask))
         return ProtectMask
 
-    def __merge_lines(self, lines, nchan):
+    def __merge_lines(self, lines: List[List[Integral]], nchan: int) -> List[List[Integral]]:
+        """Merge overlapping lines.
+
+        Args:
+            lines: List of lines as (start, end) list
+            nchan: Number of channels
+
+        Returns:
+            Merged list of lines
+        """
         nlines = len(lines)
         if nlines < 1:
             return []
@@ -2097,7 +2284,53 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             nedges += 2
             return sorted_index[:nedges].reshape((nedges//2, 2)).tolist()
 
-    def __update_cluster_flag(self, cluster_flag, stage, GridCluster, threshold, factor):
+    def __update_cluster_flag(
+        self,
+        cluster_flag: numpy.ndarray,
+        stage: str,
+        GridCluster: numpy.ndarray,
+        threshold: List[Integral],
+        factor: int
+    ) -> numpy.ndarray:
+        """Update cluster flag array.
+
+        Set integer flag to cluster flag array (cluster_flag) according
+        to the detection rate and its threshold. Flag values are set to
+        the digit specified by the factor.
+
+        cluster_flag is data for plotting clustering analysis results.
+        It stores GridCluster quantized by given thresholds.
+        it is defined as integer array and one digit is assigned to
+        one clustering stage in each integer value:
+
+            1st digit: detection
+            2nd digit: validation
+            3rd digit: smoothing
+            4th digit: final
+
+        If GridCluster value exceeds any threshold, corresponding
+        digit is incremented. For example, flag 3210 stands for,
+
+            value didn't exceed any thresholds in detection, and
+            exceeded one (out of three) threshold in validation, and
+            exceeded two (out of three) thresholds in smoothing, and
+            exceeded three (out of four) thresholds in final.
+
+        Args:
+            cluster_flag: Two-dimensional array holding flag information
+            stage: Name of the cluster validation stage
+            GridCluster: Number of clusters detected in each spatial position.
+                         Each array element ranges from 0 (no cluster in the
+                         position) to 3 (detected cluster in all spectra in
+                         the position).
+            threshold: Threshold for cluster flag. This specifies the threshold
+                       for the detection rate, which ranges from 0 to 1. Important
+                       values for threshold is 0.333 (1/3), and 0.666 (2/3).
+            factor: Digit control factor
+
+        Returns:
+            Updated cluster flag array
+        """
         #cluster_flag = self.cluster_info['cluster_flag']
         for t in threshold:
             cluster_flag = cluster_flag + factor * (GridCluster > t)
@@ -2107,12 +2340,25 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         return cluster_flag
 
 
-def convolve2d(data, kernel, mode='nearest', cval=0.0):
-    """
-    2d convolution function.
+def convolve2d(data: numpy.ndarray, kernel: numpy.ndarray, mode: str = 'nearest', cval: float = 0.0) -> numpy.ndarray:
+    """Perform two-dimensional convolution.
 
-    mode = 'nearest'  use nearest pixel value for pixels beyond the edge
-           'constant' use cval for pixels beyond the edge
+    Perform two-dimensional convolution. This implements direct convolution
+    rather than FFT based one. Returne array has the same shape as the input.
+
+    Args:
+        data: Two-dimensional array to be convolved
+        kernel: Convolution kernel as two-dimensional array
+        mode: Mode to handle edge values. Two options are available.
+
+                - 'nearest'  use nearest pixel value for pixels beyond the edge
+                - 'constant' use cval for pixels beyond the edge
+
+              Defaults to 'nearest'.
+        cval: Constant value used when mode is 'constant'
+
+    Returns:
+        Colvolved data array with the same shape as input data array
     """
     (ndx, ndy) = data.shape
     (nkx, nky) = kernel.shape
@@ -2143,7 +2389,30 @@ def convolve2d(data, kernel, mode='nearest', cval=0.0):
     return cdata
 
 
-def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
+def _eval_poly(
+    xorder: int, yorder: int,
+    x: Integral, y: Integral,
+    xcoeff: List[Integral], ycoeff: List[Integral]
+) -> Tuple[Integral, Integral]:
+    """Evaluates sum of the polynomial terms.
+
+    It computes sum of two-dimensional polynomial terms
+    provided by xorder, yorder, xcoeff, and ycoeff.
+    While xorder and yorder indicates maximum order of
+    the polynomial, xcoeff and ycoeff provides coefficients
+    of each polynomial term.
+
+    Args:
+        xorder: Maximum polynomial order for x
+        yorder: Maximum polynomial order for y
+        x: x value
+        y: y value
+        xcoeff: Coefficients for polynomial
+        ycoeff: Coefficients for polynomial
+
+    Returns:
+        Sum of the polynomials
+    """
     xpoly = 0.0
     ypoly = 0.0
     yk = 1.0
@@ -2159,7 +2428,19 @@ def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
     return xpoly, ypoly
 
 
-def _to_validated_lines(detect_lines):
+def _to_validated_lines(detect_lines: dict) -> List[List[float, bool]]:
+    """Convert list of detected lines into list with flags.
+
+    In addition to the conversion from dict to list, it also converts
+    [chmin, chmax] style line information into [center, width] style
+    and adds flag information (initially all True).
+
+    Args:
+        detect_lines: List of detected lines
+
+    Returns:
+        Converted list of detected lines with flag
+    """
     # conversion from [chmin, chmax] to [center, width, T/F]
     lines = []
     for line_prop in detect_lines.values():
