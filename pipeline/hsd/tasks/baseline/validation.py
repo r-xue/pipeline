@@ -512,15 +512,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     ) -> ValidateLineResults:
         """Validate spectral lines detected by detection module.
 
-        As a first step, clustering analysis is applied to detected lines
-        in line width vs line center space. Detected clusters are then
+        As a first step, the method performs clustering analysis on detected
+        lines in line width vs line center space. Detected clusters are then
         analyzed and set True/False flag based on the spatial distribution
         of the cluster members in celestial coordinate. Finally, cluster
         line properties are interpolated in two-dimensional celestial space
-        and are propagated into each ON_SOURCE data point.
+        and are distributed to each ON_SOURCE data point.
 
         Sigma clipping iterations will be applied if inputs.nsigma is positive
-        order < 0 : automatic determination of fitting order (max = 5)
 
         Args:
             datatable_dict: Dictionary holding datatable instance per MS.
@@ -884,7 +883,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         return merged_RealSignal, merged_lines, merged_channelmap_ranges, merged_flag
 
     def clean_detect_signal(self, detect_signal: dict) -> dict:
-        """Exclude false detections from detected lines.
+        """Exclude false detections based on the detection rate.
 
         Spectra in each grid positions are splitted into 3 groups along time series.
         Group of spectra is then combined to 1 spectrum. So, one grid position has
@@ -1818,10 +1817,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             broad_component: Process broad component or not. Not used.
             xorder: Order of the polynomial for horizontal fitting.
                     If it is -1, order is automatically determined inside
-                    the method.
+                    the method (max 5).
             yorder: Order of the polynomial for vertical fitting.
                     If it is -1, order is automatically determined inside
-                    the method.
+                    the method (max 5).
             x0: Horizontal position of the bottom left corner
             y0: Vertical position of the bottom left corner
             Grid2SpectrumID: Index mapping between serial list of gridded
@@ -2560,9 +2559,16 @@ def _to_validated_lines(detect_lines: dict) -> List[List[float, bool]]:
 
 
 class SVDSolver2D(object):
+    """Least-square solver for two-dimensional polynomials based on SVD."""
     CONDITION_NUMBER_LIMIT = 1.0e-12
 
-    def __init__(self, xorder, yorder):
+    def __init__(self, xorder: int, yorder: int) -> None:
+        """Construct SVDSolver2D instance.
+
+        Args:
+            xorder: Maximum order of x-polynomial. Must be 0 or positive.
+            yorder: Maximum order of y-polynomial. Must be 0 or positive.
+        """
         self.xorder = xorder
         self.yorder = yorder
 
@@ -2582,7 +2588,15 @@ class SVDSolver2D(object):
         self.B = numpy.empty(self.L, dtype=numpy.float64)
         self.U = None
 
-    def set_data_points(self, x, y):
+    def set_data_points(self, x: Union[List[Integral], numpy.ndarray], y: Union[List[Integral], numpy.ndarray]) -> None:
+        """Set data array.
+
+        Configure design matrix from the input data arrays.
+
+        Args:
+            x: One-dimensional data array
+            y: One-dimensional data array
+        """
         nx = len(x)
         ny = len(y)
         LOG.trace('nx, ny = %s, %s', nx, ny)
@@ -2599,13 +2613,23 @@ class SVDSolver2D(object):
         self._set_design_matrix(x, y)
         #self._svd()
 
-    def _set_design_matrix(self, x, y):
-        # The design matrix G is a basis array that stores gj(xi)
-        # where g0  = 1,   g1  = x,     g2  = x^2      g3  = x^3,
-        #       g4  = y,   g5  = x y,   g6  = x^2 y,   g7  = x^3 y
-        #       g8  = y^2, g9  = x y^2, g10 = x^2 y^2, g11 = x^3 y^2
-        #       g12 = y^3, g13 = x y^3, g14 = x^2 y^3, g15 = x^3 y^3
-        # if xorder = 3 and yorder = 3
+    def _set_design_matrix(self, x: Union[List[Integral], numpy.ndarray], y: Union[List[Integral], numpy.ndarray]) -> None:
+        """Configure design matrix.
+
+        The design matrix G is a basis array that stores gj(xi)
+        where
+
+            g0  = 1,   g1  = x,     g2  = x^2      g3  = x^3,
+            g4  = y,   g5  = x y,   g6  = x^2 y,   g7  = x^3 y
+            g8  = y^2, g9  = x y^2, g10 = x^2 y^2, g11 = x^3 y^2
+            g12 = y^3, g13 = x y^3, g14 = x^2 y^3, g15 = x^3 y^3
+
+        when xorder = 3 and yorder = 3
+
+        Args:
+            x: One-dimensional data array
+            y: One-dimensional data array
+        """
         for k in range(self.N):
             yp = 1.0
             for i in range(self.yorder + 1):
@@ -2616,7 +2640,8 @@ class SVDSolver2D(object):
                     xp *= x[k]
                 yp *= y[k]
 
-    def _do_svd(self):
+    def _do_svd(self) -> None:
+        """Perform singular value decomposition (SVD)."""
         LOG.trace('G.shape=%s', self.G.shape)
         self.U, self.s, self.Vh = LA.svd(self.G, full_matrices=False)
         LOG.trace('U.shape=%s (N,L)=(%s,%s)', self.U.shape, self.N, self.L)
@@ -2627,7 +2652,12 @@ class SVDSolver2D(object):
         assert len(self.s) == self.L
         assert self.Vh.shape == (self.L, self.L)
 
-    def _svd_with_mask(self, nmask=0):
+    def _svd_with_mask(self, nmask: int = 0) -> None:
+        """Compute intermediate matrix for SVD least-square problem.
+
+        Args:
+            nmask: Number of singular values to be masked. Defaults to 0.
+        """
         if not hasattr(self, 's'):
             # do SVD
             self._do_svd()
@@ -2642,7 +2672,12 @@ class SVDSolver2D(object):
             for irow in range(self.L):
                 self.Vs[irow, icol] = self.Vh[icol, irow] * sinv
 
-    def _svd_with_eps(self, eps=1.0e-7):
+    def _svd_with_eps(self, eps: float = 1.0e-7) -> None:
+        """Compute intermediate matrix for SVD least-square problem.
+
+        Args:
+            eps: Threshold for masking singular values. Defaults to 1.0e-7.
+        """
         if not hasattr(self, 's'):
             # do SVD
             self._do_svd()
@@ -2661,7 +2696,16 @@ class SVDSolver2D(object):
             for irow in range(self.L):
                 self.Vs[irow, icol] = self.Vh[icol, irow] * sinv
 
-    def _svd(self, eps):
+    def _svd(self, eps: float) -> None:
+        """Perform singular value decomposition (SVD).
+
+        After SVD, singular values are compared with the threshold
+        determined by the max singular value with threshold factor,
+        eps, and values less than threshold are masked.
+
+        Args:
+            eps: Threshold factor for masking singular value
+        """
         LOG.trace('G.shape=%s', self.G.shape)
         self.U, s, Vh = LA.svd(self.G, full_matrices=False)
         LOG.trace('U.shape=%s (N,L)=(%s,%s)', self.U.shape, self.N, self.L)
@@ -2682,7 +2726,16 @@ class SVDSolver2D(object):
             for irow in range(self.L):
                 self.Vs[irow, icol] = Vh[icol, irow] * s[icol]
 
-    def _eval_poly_from_G(self, row, coeff):
+    def _eval_poly_from_G(self, row: int, coeff: numpy.ndarray) -> float:
+        """Evaluate polynomial with given coefficients.
+
+        Args:
+            row: Row id for the matrix
+            coeff: Polynomial coefficient. Least-square solution.
+
+        Returns:
+            Resulting value
+        """
         idx = 0
         poly = 0.0
         for k in range(self.yorder + 1):
@@ -2691,7 +2744,29 @@ class SVDSolver2D(object):
                 idx += 1
         return poly
 
-    def solve_with_mask(self, z, out=None, nmask=0):
+    def solve_with_mask(
+        self,
+        z: Union[List[Integral], numpy.ndarray],
+        out: Optional[numpy.ndarray] = None,
+        nmask: int = 0
+    ) -> numpy.ndarray:
+        """Solve least-square problem with SVD.
+
+        Find x which minimizes ||A x - b||^2 where A is design matrix and
+        b is a vector given as arg (denoted to z).
+
+        With this method, one can specify number of singular values to
+        be masked to obtain stable solution.
+
+        Args:
+            z: RHS vector
+            out: Storage for output solution. This is used when memory for the
+                 solution is allocated externally. Defaults to None.
+            nmask: Number of singular values to be masked. Defaults to 0.
+
+        Returns:
+            Least-square solution
+        """
         nz = len(z)
         assert nz == self.N
 
@@ -2713,7 +2788,28 @@ class SVDSolver2D(object):
 
         return A
 
-    def solve_with_eps(self, z, out=None, eps=1.0e-7):
+    def solve_with_eps(
+        self,
+        z: Union[List[Integral], numpy.ndarray],
+        out: Optional[numpy.ndarray] = None,
+        eps: float = 1.0e-7
+    ) -> numpy.ndarray:
+        """Solve least-square problem with SVD.
+
+        Find x which minimizes ||A x - b||^2 where A is design matrix and
+        b is a vector given as arg (denoted to z).
+
+        With this method, one can specify the threshold for singular values
+        to be masked to obtain stable solution.
+
+        Args:
+            z: RHS vector
+            out: Storage for output solution. Defaults to None.
+            eps: Threshold factor for masking singular values. Defaults to 1.0e-7.
+
+        Returns:
+            Least-square solution
+        """
         assert 0.0 <= eps
 
         nz = len(z)
@@ -2737,7 +2833,28 @@ class SVDSolver2D(object):
 
         return A
 
-    def solve_for(self, z, out=None, eps=1.0e-7):
+    def solve_for(
+        self,
+        z: Union[List[Integral], numpy.ndarray],
+        out: Optional[numpy.ndarray] = None,
+        eps: float = 1.0e-7
+    ) -> numpy.ndarray:
+        """Solve least-square problem with SVD.
+
+        Find x which minimizes ||A x - b||^2 where A is design matrix and
+        b is a vector given as arg (denoted to z).
+
+        With this method, one can specify the threshold for singular values
+        to be masked to obtain stable solution.
+
+        Args:
+            z: RHS vector
+            out: Storage for output solution. Defaults to None.
+            eps: Threshold factor for masking singular values. Defaults to 1.0e-7.
+
+        Returns:
+            Least-square solution
+        """
         assert 0.0 <= eps
 
         nz = len(z)
@@ -2761,7 +2878,37 @@ class SVDSolver2D(object):
 
         return A
 
-    def find_good_solution(self, z, threshold=0.05):
+    def find_good_solution(
+        self,
+        z: Union[List[Integral], numpy.ndarray],
+        threshold: float = 0.05
+    ) -> numpy.ndarray:
+        """Find the best least-square solution from candidate SVD solutions.
+
+        Find x which minimizes ||A x - b||^2 where A is design matrix and
+        b is a vector given as arg (denoted to z).
+
+        This method examines the solution with various masking threshold
+        for singular value, and find the best solution among them.
+        Range of masking threshold value is chosen empirically. Currently,
+        the values ranging from 10^-11 to 10^-3 are examined.
+
+        Solutions are scored based on the mean fractional deviation from
+        actual data. If fractional deviaion exceeds threshold given as
+        an argument, that will be noticed via the log message.
+        If fractional deviation exceeds 1.0, exception will be thrown.
+
+        Args:
+            z: RHS vector
+            threshold: Threshold for score. Should be 0 or positive value.
+                       Defaults to 0.05.
+
+        Raises:
+            RuntimeError: No good least-square solution is found
+
+        Returns:
+            The best least-square solution
+        """
         assert 0.0 <= threshold
         eps_list = [10**x for x in range(-11, -3)]
 
