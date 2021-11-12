@@ -468,8 +468,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
                                             fit_order=fitorder, switchpoly=switchpoly,
                                             edge=edge, blparam=blparam,
                                             deviationmask=deviationmask_list,
-                                            parallel=self.inputs.parallel,
-                                            org_directions_dict=org_directions_dict)
+                                            org_directions_dict=org_directions_dict,
+                                            parallel=self.inputs.parallel)
         fitter_task = worker_cls(fitter_inputs)
         fitter_results = self._executor.execute(fitter_task, merge=False)
 
