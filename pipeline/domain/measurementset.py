@@ -82,8 +82,6 @@ class MeasurementSet(object):
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
-        self.phaseup_spwmap: Optional[List[int]] = None
-        self.combine_spwmap: Optional[List[int]] = None
         self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
