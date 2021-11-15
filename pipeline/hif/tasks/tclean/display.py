@@ -163,7 +163,7 @@ class CleanSummary(object):
                     if real_spw_obj.receiver is not None and real_spw_obj.freq_lo is not None:
                         rec_info = {'type': real_spw_obj.receiver, 'LO1': real_spw_obj.freq_lo[0].str_to_precision(12)}
                     else:
-                        LOG.warn('Could not determine receiver type. Assuming TSB.')
+                        LOG.warning('Could not determine receiver type. Assuming TSB.')
                         rec_info = {'type': 'TSB', 'LO1': '0GHz'}
 
                     plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))

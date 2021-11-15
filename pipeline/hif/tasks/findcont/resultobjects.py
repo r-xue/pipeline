@@ -43,7 +43,7 @@ class FindContResult(basetask.Results):
                     for spwid in spwids.split(','):
                         if (self.cont_ranges['fields'][source_name][spwid] == ['NONE']) and (target['intent'] == 'TARGET'):
                             spwsel['spw%s' % (spwid)] = ''
-                            LOG.warn('No continuum frequency range information found for %s, spw %s.' % (target['field'], spwid))
+                            LOG.warning('No continuum frequency range information found for %s, spw %s.' % (target['field'], spwid))
                             all_continuum = False
                         elif self.cont_ranges['fields'][source_name][spwid] == ['ALL']:
                             spwsel['spw%s' % (spwid)] = 'ALL'
@@ -65,7 +65,8 @@ class FindContResult(basetask.Results):
 
                     new_spwids = ','.join(new_spwids)
                     if (new_spwids == '') and (target['intent'] == 'TARGET'):
-                        LOG.warn('No continuum selection for target %s, spw %s. Will not image this selection.' % (new_target['field'], new_target['spw']))
+                        LOG.warning('No continuum selection for target %s, spw %s. Will not image this selection.' % (
+                            new_target['field'], new_target['spw']))
                         target_ok = False
                     else:
                         new_target['spw'] = new_spwids

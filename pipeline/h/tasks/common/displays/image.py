@@ -342,7 +342,7 @@ class ImageDisplay(object):
 
         # look out for yaxis values that would trip up matplotlib
         if isinstance(ydata[0], str):
-            if re.match('\d+&\d+', ydata[0]):
+            if re.match(r'\d+&\d+', ydata[0]):
                 # baseline - replace & by . and convert to float
                 ydata_numeric = []
                 for b in ydata:

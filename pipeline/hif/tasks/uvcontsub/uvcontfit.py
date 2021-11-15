@@ -293,7 +293,7 @@ class UVcontFit(basetask.StandardTaskTemplate):
                         inputs.ms.basename, sname, int(spw_id)))
                     continue
                 elif cranges_spwsel[sname][spw_id] in ['NONE']:
-                    LOG.warn('Continuum region detection failed for MS %s source %s spw %d' % (
+                    LOG.warning('Continuum region detection failed for MS %s source %s spw %d' % (
                         inputs.ms.basename, sname, int(spw_id)))
                     continue
                 else:
@@ -441,7 +441,7 @@ class UVcontFitResults(basetask.Results):
         See :method:`~pipeline.api.Results.merge_with_context`
         """
         if not self.final:
-            LOG.warn('No UV continuum results to merge')
+            LOG.warning('No UV continuum results to merge')
             return
 
         for calapp in self.final:

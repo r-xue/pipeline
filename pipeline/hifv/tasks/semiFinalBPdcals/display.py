@@ -120,7 +120,7 @@ class DelaysPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -134,7 +134,7 @@ class DelaysPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -204,7 +204,7 @@ class semifinalphaseGainPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -219,7 +219,7 @@ class semifinalphaseGainPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -305,7 +305,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -319,7 +319,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -406,7 +406,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -420,7 +420,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
             # Get BPcal.b to close...

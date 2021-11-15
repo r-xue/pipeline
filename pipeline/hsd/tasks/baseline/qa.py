@@ -45,7 +45,7 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         for figfile, stat in result.outcome['baseline_quality_stat'].items():
             plot = _get_plot(result.outcome['plots'], figfile)
             if plot is None:
-                LOG.warn(f'Unable to find plot instance for {figfile}')
+                LOG.warning(f'Unable to find plot instance for {figfile}')
                 continue
             p = plot.parameters
             scores.append(qacalc.score_sd_baseline_quality(p['vis'], plot.field, p['ant'], p['spw'], p['pol'], stat))

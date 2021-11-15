@@ -90,10 +90,10 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, ver
             axis = lcs.findaxisbyname('spectral')
         except:
             if image.shape().shape[0] > 3:
-                LOG.warn("Can't find spectral axis. Assuming it is 3.")
+                LOG.warning("Can't find spectral axis. Assuming it is 3.")
                 axis = 3
             elif image.shape().shape[0] > 2:
-                LOG.warn("Can't find spectral axis. Assuming it is 2.")
+                LOG.warning("Can't find spectral axis. Assuming it is 2.")
                 axis = 2
             elif image.shape().shape[0] == 2:
                 LOG.error("No spectral axis found.")
@@ -174,7 +174,7 @@ def cubeFrameToTopo(img, freqrange='', prec=4, verbose=False,
     elif freqFrame == 'REST':
         # REST (or rather SOURCE) frame for ephemeris objects
         if msname == '':
-            LOG.warn('No MS provided for SOURCE/REST to TOPO conversion. Skipping frame conversion.')
+            LOG.warning('No MS provided for SOURCE/REST to TOPO conversion. Skipping frame conversion.')
             f0 = startFreq
             f1 = stopFreq
         else:
@@ -193,7 +193,7 @@ def cubeFrameToTopo(img, freqrange='', prec=4, verbose=False,
         f0 = startFreq
         f1 = stopFreq
     else:
-        LOG.warn('Unrecognized frequency frame type: %s. Skipping frame conversion.' % (freqFrame))
+        LOG.warning('Unrecognized frequency frame type: %s. Skipping frame conversion.' % (freqFrame))
         f0 = startFreq
         f1 = stopFreq
 
@@ -686,9 +686,9 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     # readback the values to be sure they got set
 
     if (myat.getRefFreq()['unit'] != 'GHz'):
-        LOG.warn("There is a unit mismatch for refFreq in the atm code.")
+        LOG.warning("There is a unit mismatch for refFreq in the atm code.")
     if (myat.getChanSep()['unit'] != 'MHz'):
-        LOG.warn("There is a unit mismatch for chanSep in the atm code.")
+        LOG.warning("There is a unit mismatch for chanSep in the atm code.")
     numchanModel = myat.getNumChan()
     freq0 = myat.getChanFreq(0)['value']
     freq1 = myat.getChanFreq(numchanModel-1)['value']
@@ -799,7 +799,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     plt.plot(freqs * 1e-9, noise, 'k-')
 
     # Plot continuum frequency ranges
-    fpattern = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+    fpattern = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
     cont_freq_ranges = fpattern.findall(image_robust_rms_and_spectra['cont_freq_ranges'].replace(';', ''))
     for cont_freq_range in cont_freq_ranges:
         fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))

@@ -91,18 +91,18 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 retval = json.load(response)
                 if not retval['success']:
                     msg = 'Failed to get a Jy/K factor from DB: {}'.format(retval['error'])
-                    LOG.warn(msg)
+                    LOG.warning(msg)
                     raise RuntimeError(msg)
                 yield ResponseStruct(response=retval, subparam=p.subparam)
         except urllib.error.HTTPError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
                 + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
-            LOG.warn(msg)
+            LOG.warning(msg)
             raise e
         except urllib.error.URLError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
                 + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
-            LOG.warn(msg)
+            LOG.warning(msg)
             raise e
 
     def validate(self, vis):
@@ -347,7 +347,7 @@ def vis_to_uid(vis):
         str -- Corresponding ASDM uid
     """
     basename = os.path.basename(vis.rstrip('/'))
-    pattern = '^uid___A[0-9][0-9][0-9]_X[0-9a-f]+_X[0-9a-f]+\.ms$'
+    pattern = r'^uid___A[0-9][0-9][0-9]_X[0-9a-f]+_X[0-9a-f]+\.ms$'
     if re.match(pattern, basename):
         return basename.replace('___', '://').replace('_', '/').replace('.ms', '')
     else:
