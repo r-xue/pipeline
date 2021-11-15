@@ -10,6 +10,7 @@ from pipeline.infrastructure.basetask import ResultsList
 
 LOG = logging.get_logger(__name__)
 
+PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
 SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
 SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
@@ -28,14 +29,18 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Generate rows for phase SNR table.
         snr_table_rows = get_snr_table_rows(context, results)
 
+        # Generate rows for phase calibrator mapping table.
+        pcal_table_rows = get_pcal_table_rows(context, results)
+
         # Get info on phase caltable.
         applications = get_gaincal_applications(context, results)
 
         # Update mako context.
         ctx.update({
-            'spwmaps': spwmaps,
+            'applications': applications,
+            'pcal_table_rows': pcal_table_rows,
             'snr_table_rows': snr_table_rows,
-            'applications': applications
+            'spwmaps': spwmaps,
         })
 
 
@@ -126,6 +131,32 @@ def get_spwmaps(context: Context, results: ResultsList) -> List[SpwMapInfo]:
     return spwmaps
 
 
+def get_pcal_table_rows(context: Context, results: ResultsList) -> List[str]:
+    """
+    Return list of strings containing HTML TD columns, representing rows for
+    the phase calibrator mapping table.
+
+    Args:
+        context: the pipeline context.
+        results: list of task results.
+
+    Returns:
+        List of strings containing rows for phase calibrator mapping table.
+    """
+    rows = []
+    for result in results:
+        if result.phasecal_mapping:
+            ms = context.observing_run.get_ms(result.vis)
+            for pfield, tcfields in result.phasecal_mapping.items():
+                # Compose phase field string.
+                pfieldid = ms.get_fields(name=[pfield])[0].id
+                field_str = f"{pfield} (#{pfieldid})"
+
+                rows.append(PhaseTR(ms.basename, field_str, ", ".join(sorted(tcfields))))
+
+    return utils.merge_td_columns(rows)
+
+
 def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
     """
     Return list of strings containing HTML TD columns, representing rows for
@@ -139,20 +170,18 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
         List of strings containing rows for phase SNR table.
     """
     rows = []
-
     for result in results:
-        ms = context.observing_run.get_ms(result.vis)
-
-        # Get phase SNR threshold, and present this in the table if the phase
-        # SNR test was run during task.
-        threshold = result.inputs['phasesnr']
-        spwmapmode = result.inputs['hm_spwmapmode']
-        if spwmapmode == 'auto':
-            thr_str = str(threshold)
-        else:
-            thr_str = f"N/A <p>(hm_spwmapmode='{spwmapmode}')"
-
         if result.spwmaps:
+            # Get phase SNR threshold, and present this in the table if the phase
+            # SNR test was run during task.
+            threshold = result.inputs['phasesnr']
+            spwmapmode = result.inputs['hm_spwmapmode']
+            if spwmapmode == 'auto':
+                thr_str = str(threshold)
+            else:
+                thr_str = f"N/A <p>(hm_spwmapmode='{spwmapmode}')"
+
+            ms = context.observing_run.get_ms(result.vis)
             for (intent, field), spwmapping in result.spwmaps.items():
                 # Compose field string.
                 fieldid = ms.get_fields(name=[field])[0].id

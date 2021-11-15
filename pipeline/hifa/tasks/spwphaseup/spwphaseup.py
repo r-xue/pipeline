@@ -128,6 +128,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         if inputs.unregister_existing:
             self._unregister_spwphaseup()
 
+        # Derive the mapping from phase fields to target/check fields.
+        phasecal_mapping = self._derive_phase_to_target_check_mapping(inputs.ms)
+
         # Derive the optimal spectral window maps.
         spwmaps = self._derive_spwmaps(spwmap_intents, exclude_intents)
 
@@ -137,7 +140,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, spwmaps=spwmaps,
-                                   unregister_existing=inputs.unregister_existing)
+                                   phasecal_mapping=phasecal_mapping, unregister_existing=inputs.unregister_existing)
 
         return result
 
@@ -155,6 +158,52 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         result.phaseup_result.error.update(missing)
 
         return result
+
+    @staticmethod
+    def _derive_phase_to_target_check_mapping(ms: MeasurementSet) -> Dict:
+        """
+        Derive mapping between PHASE calibrator fields (by name) and
+        corresponding fields (by name) with TARGET / CHECK intent that these
+        PHASE calibrators should calibrate.
+
+        PIPE-1154: This heuristic is intended for ALMA observing, and assumes
+        that the first scan of a TARGET / CHECK field is always preceded by a
+        scan of the corresponding PHASE calibrator. This method further assumes
+        that scan IDs increase sequentially with observing time.
+
+        Args:
+            ms: MeasurementSet to derive mapping for.
+
+        Returns:
+            Dictionary of PHASE field names (key) and set of names of
+            corresponding TARGET/CHECK fields (value).
+        """
+        # Get the PHASE field names.
+        phase_fields = [f.name for f in ms.get_fields(intent='PHASE')]
+
+        # Initialize the mapping for each PHASE calibrator field.
+        mapping = {f: set() for f in phase_fields}
+
+        # Get IDs of PHASE intent scans.
+        phase_scan_ids = [s.id for s in ms.get_scans(scan_intent='PHASE')]
+
+        for intent in ['CHECK', 'TARGET']:
+            # Get field names for current intent.
+            fields = [f.name for f in ms.get_fields(intent=intent)]
+
+            for field in fields:
+                # Get ID of first scan for current field with current intent.
+                first_scan_id = ms.get_scans(field=field, scan_intent=intent)[0].id
+
+                # Get ID of the PHASE intent scan that preceded the first scan,
+                # and name of corresponding field.
+                preceding_phase_scan_id = max([i for i in phase_scan_ids if i < first_scan_id])
+                preceding_phase_field = [f.name for f in ms.get_scans(scan_id=preceding_phase_scan_id)[0].fields][0]
+
+                # Update mapping with match.
+                mapping[preceding_phase_field].add(field)
+
+        return mapping
 
     def _derive_spwmaps(self, spwmap_intents: str, exclude_intents: str) -> Dict:
         """
@@ -561,7 +610,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis: str = None, phaseup_result: GaincalResults = None, spwmaps: Dict = None,
-                 unregister_existing: Optional[bool] = False):
+                 phasecal_mapping: Dict = None, unregister_existing: Optional[bool] = False):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -571,6 +620,7 @@ class SpwPhaseupResults(basetask.Results):
             spwmaps = {}
 
         self.vis = vis
+        self.phasecal_mapping = phasecal_mapping
         self.phaseup_result = phaseup_result
         self.spwmaps = spwmaps
         self.unregister_existing = unregister_existing
@@ -604,11 +654,14 @@ class SpwPhaseupResults(basetask.Results):
         # Merge the spw phaseup offset table
         self.phaseup_result.merge_with_context(context)
 
-        # Merge the spectral window mappings and the list of spws whose
-        # combined SNR does not meet the threshold.
         ms = context.observing_run.get_ms(name=self.vis)
         if ms:
+            # Merge the spectral window mappings and the list of spws whose
+            # combined SNR does not meet the threshold.
             ms.spwmaps = self.spwmaps
+
+            # Merge the phase calibrator mapping.
+            ms.phasecal_mapping = self.phasecal_mapping
 
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:

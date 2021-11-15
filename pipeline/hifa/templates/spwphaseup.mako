@@ -78,6 +78,30 @@ and the caltable containing per spw phase offsets.</p>
     <p>No information available on estimated phase signal to noise ratios.
 % endif
 
+% if pcal_table_rows:
+<table class="table table-bordered table-striped" summary="Phase calibrator mapping to target/check">
+    <caption>Mapping of phase calibrator fields to TARGET / CHECK fields.</caption>
+    <thead>
+        <tr>
+            <th>Measurement Set</th>
+            <th>Phase Field</th>
+            <th>TARGET/CHECK Fields</th>
+        </tr>
+    </thead>
+    <tbody>
+    % for tr in pcal_table_rows:
+        <tr>
+        % for td in tr:
+            ${td}
+        % endfor
+        </tr>
+    %endfor
+    </tbody>
+</table>
+% else:
+<p>No information available on mapping of phase calibrators to TARGET / CHECK fields.
+% endif
+
 <table class="table table-bordered" summary="Application Results">
         <caption>Applied calibrations and parameters used for caltable generation</caption>
     <thead>

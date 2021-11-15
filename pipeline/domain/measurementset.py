@@ -42,6 +42,8 @@ class MeasurementSet(object):
             dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
+        phasecal_mapping: A dictionary mapping phase calibrator fields to
+            corresponding fields with TARGET or CHECK intent.
         spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
             spectral window IDs.
         fields: A list of Field objects associated with MS
@@ -85,6 +87,10 @@ class MeasurementSet(object):
         self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
+
+        # Dictionary mapping phase calibrator fields to corresponding fields
+        # with TARGET / CHECK intents.
+        self.phasecal_mapping: dict = {}
 
         # Dictionary to map each SpectralSpec to list of corresponding spectral
         # window IDs (PIPE-1132).
