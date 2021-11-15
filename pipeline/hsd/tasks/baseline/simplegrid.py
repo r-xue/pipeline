@@ -338,7 +338,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
     def grid(self,
              grid_table: List[List[Union[int, float, numpy.ndarray]]],
-             datatable_dict: dict) -> Tuple[numpy.ndarray, List[List[int, float]]]:
+             datatable_dict: dict) -> Tuple[numpy.ndarray, List[List[Union[int, float]]]]:
         """Perform gridding operation according to grid_table.
 
         The process does re-map and combine spectrum for each position.

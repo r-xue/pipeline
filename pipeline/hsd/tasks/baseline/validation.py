@@ -349,7 +349,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         detect_signal: dict,
         PosList: numpy.ndarray,
         Region2: numpy.ndarray
-    ) -> Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]:
+    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]:
         """Validate cluster detected by clustering analysis.
 
         This method validates clusters detected in line center vs line width space.
@@ -855,8 +855,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def _merge_cluster_result(
         self,
-        result_list: List[Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]]
-    ) -> Tuple[dict, List[List[int, bool]], List[List[int, bool]], numpy.ndarray]:
+        result_list: List[Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]]
+    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]:
         """Merge multiple clustering analysis results into one.
 
         Take union on detected clusters. If length of result_list is 1, simply return
@@ -1027,7 +1027,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         else:
             return False
 
-    def clustering_kmean(self, Region: List[int, float, bool], Region2: numpy.ndarray) -> ClusteringResult:
+    def clustering_kmean(self, Region: List[Union[int, float, bool]], Region2: numpy.ndarray) -> ClusteringResult:
         """Perform k-mean clustering analysis on detected lines.
 
         Perform k-mean clustering analysis on detected lines with various
@@ -1175,7 +1175,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def clustering_hierarchy(
         self,
-        Region: List[int, float, bool],
+        Region: List[Union[int, float, bool]],
         Region2: numpy.ndarray,
         nThreshold: float = 3.0,
         nThreshold2: float = 4.5,
@@ -1382,10 +1382,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def clean_cluster(self,
                       Data: numpy.ndarray,
                       Category: List[int],
-                      Region: List[int, float, bool],
+                      Region: List[Union[int, float, bool]],
                       Nthreshold: float,
                       NumParam: int
-    ) -> Tuple[List[int, float, bool], numpy.ndarray, numpy.ndarray, List[int]]:
+    ) -> Tuple[List[Union[int, float, bool]], numpy.ndarray, numpy.ndarray, List[int]]:
         """Clean-up cluster by eliminating outliers
 
          Radius = StandardDeviation * nThreshold (circle/sphere)
@@ -1483,7 +1483,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ra0: float, dec0: float,
         grid_ra: float, grid_dec: float,
         category: List[int],
-        Region: List[int, float, bool],
+        Region: List[Union[int, float, bool]],
         detect_signal: dict
     ) -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]:
         """Classify cluster members by their location on celestial coordinate.
@@ -1587,9 +1587,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self,
         GridCluster: numpy.ndarray,
         GridMember: numpy.ndarray,
-        lines: List[List[float, bool]],
+        lines: List[List[Union[float, bool]]],
         cluster_flag: numpy.ndarray
-    ) -> Tuple[numpy.ndarray, numpy.ndarray, List[List[float, bool]], numpy.ndarray]:
+    ) -> Tuple[numpy.ndarray, numpy.ndarray, List[List[Union[float, bool]]], numpy.ndarray]:
         """Validate clusters by their detection fraction on each grid.
 
         This method implements the second phase of cluster validation process,
@@ -1666,9 +1666,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def smoothing_stage(
         self,
         GridCluster: numpy.ndarray,
-        lines: List[List[float, bool]],
+        lines: List[List[Union[float, bool]]],
         cluster_flag: numpy.ndarray
-    ) -> Tuple[numpy.ndarray, List[List[float, bool]], numpy.ndarray]:
+    ) -> Tuple[numpy.ndarray, List[List[Union[float, bool]]], numpy.ndarray]:
         """Smooth cluster distribution.
 
         This method implements the third phase of cluster validation process,
@@ -1774,7 +1774,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self,
         GridCluster: numpy.ndarray,
         GridMember: numpy.ndarray,
-        Region: List[int, float, bool],
+        Region: List[Union[int, float, bool]],
         Region2: numpy.ndarray,
         lines: List[List[Union[int, bool]]],
         category: List[int],
@@ -1789,7 +1789,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         index_list: List[int],
         PosList: numpy.ndarray,
         cluster_flag: numpy.ndarray
-    ) -> Tuple[collections.OrderedDict, List[List[Union[int, bool]]], List[List[int, bool]], numpy.ndarray]:
+    ) -> Tuple[collections.OrderedDict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]:
         """Distribute validated lines to each observed spectra.
 
         This method implements the final phase of cluster validation process,
@@ -2535,7 +2535,7 @@ def _eval_poly(
     return xpoly, ypoly
 
 
-def _to_validated_lines(detect_lines: dict) -> List[List[float, bool]]:
+def _to_validated_lines(detect_lines: dict) -> List[List[Union[float, bool]]]:
     """Convert list of detected lines into list with flags.
 
     In addition to the conversion from dict to list, it also converts

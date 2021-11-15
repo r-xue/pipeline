@@ -857,7 +857,7 @@ def analyze_plot_table(
     virtual_spwid: int,
     polids: List[int],
     grid_table: List[List[Union[int, float, numpy.ndarray]]],
-    org_direction: dirutil.dirutil.Direction
+    org_direction: dirutil.Direction
 ) -> Tuple[int, int, int, List[dict]]:
     """Create and analyze plot table.
 

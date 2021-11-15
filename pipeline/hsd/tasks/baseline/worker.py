@@ -21,7 +21,7 @@ from .. import common
 if TYPE_CHECKING:
     import numpy as np
 
-    import pipeline.infrastructure.api as api
+    from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
     from pipeline.hsd.tasks.common.utils import RGAccumulator
 
@@ -230,7 +230,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         return self.plan.get_grid_table_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def channelmap_range(self) -> List[List[List[int, bool]]]:
+    def channelmap_range(self) -> List[List[List[Union[int, bool]]]]:
         """Return list of line ranges to process.
 
         Returned list should conform with the list of MS and
@@ -294,13 +294,13 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
     Inputs = BaselineSubtractionWorkerInputs
 
     @abc.abstractproperty
-    def Heuristics(self) -> Type[api.Heuristics]:
+    def Heuristics(self) -> Type['Heuristic']:
         """ Return heuristics class.
 
         This abstract property must be implemented in each subclass.
 
         Returns:
-            A reference to the :class:`Heuristics` class.
+            A reference to the :class:`Heuristic` class.
         """
         raise NotImplementedError
 
