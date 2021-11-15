@@ -743,9 +743,9 @@ def _getParameters(ppsetObject):
 
     return numParams, paramsDict
 
-# Allow _target.ms or .ms endings: needed to import Measurement Sets (see PIPE-579 and PIPE-1082)
+# Allow _target.ms, _cont.ms or .ms endings: needed to import Measurement Sets (see PIPE-579 and PIPE-1082)
 def _sanitize_for_ms(vis_name):
-    for msend in ('_target.ms', '.ms'):
+    for msend in ('_target.ms', '_cont.ms', '.ms'):
         if vis_name.endswith(msend):
             return _sanitize_for_ms(vis_name[:-len(msend)])
     return vis_name
