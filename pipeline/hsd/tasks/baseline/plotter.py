@@ -40,6 +40,7 @@ class PlotterPool(object):
     TODO: this is not useful. should be removed in future.
           create_plotter must be separated from the class.
     """
+
     def __init__(self) -> None:
         """Construct PlotterPool instance."""
         self.pool = {}
@@ -82,6 +83,7 @@ class PlotterPool(object):
 
 class PlotDataStorage(object):
     """Storage class to hold array data for plotting."""
+
     def __init__(self) -> None:
         """Construct PlotDataStorage instance.
 
@@ -131,6 +133,7 @@ class PlotDataStorage(object):
 
 class BaselineSubtractionPlotManager(object):
     """Manages any operation necessary to produce baseline subtraction plot."""
+
     @staticmethod
     def _generate_plot_meta_table(
         spw_id: int,

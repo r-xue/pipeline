@@ -31,6 +31,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class ValidateLineInputs(vdp.StandardInputs):
     """Inputs class for line validation tasks."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -133,6 +134,7 @@ class ValidateLineInputs(vdp.StandardInputs):
 
 class ValidateLineResults(common.SingleDishResults):
     """Results class to hold the result of line validation."""
+
     def __init__(self,
                  task: Optional[Type[basetask.StandardTaskTemplate]] = None,
                  success: Optional[bool] = None,
@@ -171,6 +173,7 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
     This class is for single-pointing or multi-pointing (collection of
     fields with single-pointing).
     """
+
     Inputs = ValidateLineInputs
 
     def prepare(self,
@@ -311,6 +314,7 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
 
 class ValidateLineRaster(basetask.StandardTaskTemplate):
     """Line validation task for OTF raster observation."""
+
     Inputs = ValidateLineInputs
 
     CLUSTER_WHITEN = 1.0
@@ -1386,7 +1390,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                       Nthreshold: float,
                       NumParam: int
     ) -> Tuple[List[Union[int, float, bool]], numpy.ndarray, numpy.ndarray, List[int]]:
-        """Clean-up cluster by eliminating outliers
+        """Clean-up cluster by eliminating outliers.
 
          Radius = StandardDeviation * nThreshold (circle/sphere)
 
@@ -2501,7 +2505,7 @@ def _eval_poly(
     x: Integral, y: Integral,
     xcoeff: List[Integral], ycoeff: List[Integral]
 ) -> Tuple[Integral, Integral]:
-    """Evaluates sum of the polynomial terms.
+    """Evaluate sum of the polynomial terms.
 
     It computes sum of two-dimensional polynomial terms
     provided by xorder, yorder, xcoeff, and ycoeff.
@@ -2560,6 +2564,7 @@ def _to_validated_lines(detect_lines: dict) -> List[List[Union[float, bool]]]:
 
 class SVDSolver2D(object):
     """Least-square solver for two-dimensional polynomials based on SVD."""
+
     CONDITION_NUMBER_LIMIT = 1.0e-12
 
     def __init__(self, xorder: int, yorder: int) -> None:

@@ -40,6 +40,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
     Cluster validation plot displays validation result of all detected
     clusters in one panel.
     """
+
     def __init__(self,
                  clusters_to_plot: List[LineProperty],
                  nh: int,
@@ -244,6 +245,7 @@ class ClusterDisplay(object):
             displays spatial distribution of detected
             lines associated with the cluster
     """
+
     Inputs = SingleDishDisplayInputs
 
     def __init__(self, inputs: Inputs) -> None:
@@ -350,6 +352,7 @@ class ClusterDisplay(object):
 
 class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
     """Base class for plotter class."""
+
     MATPLOTLIB_FIGURE_ID = 8907
 
     def __init__(self,
@@ -414,7 +417,7 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def _plot(self) -> Generator[logger.Plot, None, None]:
-        """Generator to create plots.
+        """Yield plot objects.
 
         This must be implemented in each subclass.
         """
@@ -423,6 +426,7 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
 
 class ClusterScoreDisplay(ClusterDisplayWorker):
     """Plotter to create cluster score plot."""
+
     def _plot(self) -> Generator[logger.Plot, None, None]:
         """Yield plot object for cluster score plot.
 
@@ -454,6 +458,7 @@ class ClusterScoreDisplay(ClusterDisplayWorker):
 
 class ClusterPropertyDisplay(ClusterDisplayWorker):
     """Plotter to create cluster property display."""
+
     def _plot(self) -> Generator[logger.Plot, None, None]:
         """Yield plot object for cluster property plot.
 
@@ -501,6 +506,8 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
 
 
 class ClusterValidationDisplay(ClusterDisplayWorker):
+    """Display class for cluster validation result."""
+
     Description1 = {
         'detection': 'Clustering Analysis at Detection stage',
         'validation': 'Clustering Analysis at Validation stage',

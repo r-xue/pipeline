@@ -30,6 +30,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class BaselineSubtractionInputsBase(vdp.StandardInputs):
     """Base class of inputs for baseline subtraction task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -108,6 +109,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
 
 class BaselineSubtractionResults(common.SingleDishResults):
     """Results class to hold the result of baseline subtraction."""
+
     def __init__(self,
                  task: Optional[Type[basetask.StandardTaskTemplate]] = None,
                  success: Optional[bool] = None,
@@ -143,6 +145,7 @@ class BaselineSubtractionResults(common.SingleDishResults):
 
 class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     """Inputs class for baseline subtraction tasks."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -291,11 +294,12 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
 # Base class for workers
 class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
     """Abstract worker class for baseline subtraction."""
+
     Inputs = BaselineSubtractionWorkerInputs
 
     @abc.abstractproperty
     def Heuristics(self) -> Type['Heuristic']:
-        """ Return heuristics class.
+        """Return heuristics class.
 
         This abstract property must be implemented in each subclass.
 
@@ -319,6 +323,15 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                self.inputs.ms))
 
     def prepare(self) -> BaselineSubtractionResults:
+        """Perform baseline subtraction.
+
+        Call sdbaseline task with optimized parameters. Parameter values such
+        as function type, fitting order, etc. are optimized by the heuristics
+        class defined in Heuristics attribute.
+
+        Returns:
+            BaselineSubtractionResults instance
+        """
         vis = self.inputs.vis
         ms = self.inputs.ms
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
@@ -381,6 +394,17 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         return results
 
     def analyse(self, results: BaselineSubtractionResults) -> BaselineSubtractionResults:
+        """Generate plots from baseline subtraction results.
+
+        Args:
+            results: BaselineSubtractionResults instance
+
+        Raises:
+            RuntimeError: Source name is invalid or not found in the domain object
+
+        Returns:
+            BaselineSubtractionResults instance
+        """
         # plot
         # initialize plot manager
         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
@@ -429,6 +453,7 @@ class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
     segmented cubic spline fitting. Heuristics property returns
     CubicSplineFitParamConfig heuristics class.
     """
+
     Inputs = BaselineSubtractionWorkerInputs
     Heuristics = CubicSplineFitParamConfig
 
@@ -436,6 +461,7 @@ class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
 # Tier-0 Parallelization
 class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
     """Variant of BaselineSubtractionWorkerInputs for parallel processing."""
+
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
@@ -496,6 +522,7 @@ class HpcBaselineSubtractionWorker(sessionutils.ParallelTemplate):
     Note that this is abstract class. Task property must be implemented
     in each subclass.
     """
+
     Inputs = HpcBaselineSubtractionWorkerInputs
 
     def __init__(self, inputs: HpcBaselineSubtractionWorkerInputs) -> None:
@@ -531,6 +558,7 @@ class HpcCubicSplineBaselineSubtractionWorker(HpcBaselineSubtractionWorker):
 
     This executes CubicSplineBaselineSubtractionWorker in parallel.
     """
+
     Task = CubicSplineBaselineSubtractionWorker
 
     def __init__(self, inputs: HpcBaselineSubtractionWorkerInputs) -> None:

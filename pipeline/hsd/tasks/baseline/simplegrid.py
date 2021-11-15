@@ -30,6 +30,7 @@ DO_TEST = False
 
 class SDSimpleGriddingInputs(vdp.StandardInputs):
     """Inputs class for simple gridding task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -100,6 +101,7 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
 
 class SDSimpleGriddingResults(common.SingleDishResults):
     """Results class to hold the result of simple gridding task."""
+
     def __init__(self,
                  task: Optional[Type[basetask.StandardTaskTemplate]] = None,
                  success: Optional[bool] = None,
@@ -139,6 +141,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
     celestial coordinate with "BOX" gridding kernel. Approximate declination
     correction is applied.
     """
+
     Inputs = SDSimpleGriddingInputs
 
     def prepare(self,

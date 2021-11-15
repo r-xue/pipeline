@@ -24,6 +24,7 @@ LOG = logging.get_logger(__name__)
 
 class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """Generates task detail page for baseline subtraction task."""
+
     # Renderer class for stage summary
     def __init__(self,
                  template: str = 'hsd_baseline.mako',
@@ -292,6 +293,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
 
 class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
     """Custom JsonPlotRenderer for clustering plot."""
+
     def __init__(self, context: 'Context', result: 'Results', xytitle: str, plots: List['Plot']) -> None:
         """Construct SingleDishClusterPlotsRenderer instance.
 

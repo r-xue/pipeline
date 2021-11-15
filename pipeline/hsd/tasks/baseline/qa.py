@@ -21,6 +21,7 @@ LOG = logging.get_logger(__name__)
 
 class SDBaselineQAHandler(pqa.QAPlugin):
     """QA handler for baseline subtraction task."""
+
     result_cls = baseline.SDBaselineResults
     child_cls = None
 
@@ -90,6 +91,7 @@ def _get_plot(plots: List[logger.Plot], figfile: str) -> Optional[Union[compress
 
 class SDBaselineListQAHandler(pqa.QAPlugin):
     """QA handler to handle list of results."""
+
     result_cls = basetask.ResultsList
     child_cls = baseline.SDBaselineResults
 

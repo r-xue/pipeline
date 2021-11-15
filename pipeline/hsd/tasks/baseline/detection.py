@@ -32,6 +32,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class DetectLineInputs(vdp.StandardInputs):
     """Inputs for spectral line detection task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -41,7 +42,11 @@ class DetectLineInputs(vdp.StandardInputs):
 
     @property
     def windowmode(self) -> str:
-        """Return windowmode (Default 'replace')."""
+        """Return windowmode value.
+
+        Returns:
+            Windowmode string. Default is 'replace'.
+        """
         return getattr(self, '_windowmode', 'replace')
 
     @windowmode.setter
@@ -89,6 +94,7 @@ class DetectLineInputs(vdp.StandardInputs):
 
 class DetectLineResults(common.SingleDishResults):
     """Results class to hold the result of spectral line detection task."""
+
     def __init__(self,
                  task: Optional[Type[basetask.StandardTaskTemplate]] = None,
                  success: Optional[bool] = None,
@@ -133,6 +139,7 @@ class DetectLineResults(common.SingleDishResults):
 
 class DetectLine(basetask.StandardTaskTemplate):
     """Spectral line detection task."""
+
     Inputs = DetectLineInputs
     LineFinder = heuristics.HeuristicsLineFinder
     ThresholdFactor = 3.0
@@ -466,8 +473,8 @@ class DetectLine(basetask.StandardTaskTemplate):
 
 
 class LineWindowParser(object):
-    """
-    LineWindowParser is a parser for line window parameter.
+    """LineWindowParser is a parser for line window parameter.
+
     Supported format is as follows:
 
     [Single window list] -- apply to all spectral windows
@@ -499,6 +506,7 @@ class LineWindowParser(object):
             parsed = parser.get_result(spwid)
 
     """
+
     def __init__(self,
                  ms: 'MeasurementSet',
                  window: Union[str, dict, List[int], List[float], List[str]]) -> None:

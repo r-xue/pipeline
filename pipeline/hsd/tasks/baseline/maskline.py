@@ -30,6 +30,7 @@ NoData = common.NoData
 
 class MaskLineInputs(vdp.StandardInputs):
     """Inputs for mask creation task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -93,6 +94,7 @@ class MaskLineInputs(vdp.StandardInputs):
 
 class MaskLineResults(common.SingleDishResults):
     """Results class to hold the result of mask creation task."""
+
     def __init__(self,
                  task: Optional[Type[basetask.StandardTaskTemplate]] = None,
                  success: Optional[bool] = None,
@@ -132,6 +134,7 @@ class MaskLine(basetask.StandardTaskTemplate):
     line detection (DetectLine task) and validation of detected
     lines (ValidateLine task).
     """
+
     Inputs = MaskLineInputs
 
     def prepare(self) -> MaskLineResults:

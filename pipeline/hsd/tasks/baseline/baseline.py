@@ -32,6 +32,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class SDBaselineInputs(vdp.StandardInputs):
     """Inputs for baseline subtraction task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -157,6 +158,7 @@ class SDBaselineInputs(vdp.StandardInputs):
 
 class SDBaselineResults(common.SingleDishResults):
     """Results class to hold the result of baseline subtraction task."""
+
     def __init__(self,
                  task: Optional[Type[basetask.StandardTaskTemplate]] = None,
                  success: Optional[bool] = None,
@@ -263,6 +265,7 @@ class SDBaselineResults(common.SingleDishResults):
 )
 class SDBaseline(basetask.StandardTaskTemplate):
     """Baseline subtraction task."""
+
     Inputs = SDBaselineInputs
     is_multi_vis_task = True
 
@@ -542,6 +545,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
 class HeuristicsTask(object):
     """Executor for heuristics class. It is an adaptor to mpihelper framework."""
+
     def __init__(self, heuristics_cls: Type['Heuristic'], *args: Any, **kwargs: Any) -> None:
         """Construct HeuristicsTask instance.
 
@@ -580,6 +584,7 @@ class HeuristicsTask(object):
 
 class DeviationMaskHeuristicsTask(HeuristicsTask):
     """Executor class specialized to MaskDeviationHeuristic."""
+
     def __init__(self,
                  heuristics_cls: Type[MaskDeviationHeuristic],
                  vis: str,
