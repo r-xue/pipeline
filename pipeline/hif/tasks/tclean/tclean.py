@@ -424,8 +424,8 @@ class Tclean(cleanbase.CleanBase):
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
                 if abs(channel_width_manual) < channel_width_auto:
-                    LOG.error('User supplied channel width (%s) smaller than native '
-                              'value of %s GHz for Field %s SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw))
+                    LOG.error('User supplied channel width (%s Hz) smaller than native '
+                              'value (%s Hz) for Field %s SPW %s' % (channel_width_manual, channel_width_auto, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
