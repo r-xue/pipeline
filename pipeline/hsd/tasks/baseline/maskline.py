@@ -40,12 +40,12 @@ class MaskLineInputs(vdp.StandardInputs):
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
 
     @property
-    def group_desc(self) -> MSReductionGroupDesc:
+    def group_desc(self) -> 'MSReductionGroupDesc':
         """Return reduction group description."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def reference_member(self) -> MSReductionGroupMember:
+    def reference_member(self) -> 'MSReductionGroupMember':
         """Return reference member of reduction group.
 
         The first member in the list is returned.
@@ -53,7 +53,7 @@ class MaskLineInputs(vdp.StandardInputs):
         return self.group_desc[self.member_list[0]]
 
     def __init__(self,
-                 context: Context,
+                 context: 'Context',
                  iteration: int,
                  group_id: int,
                  member_list: List[int],
@@ -106,7 +106,7 @@ class MaskLineResults(common.SingleDishResults):
         """
         super(MaskLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: Context) -> None:
+    def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.

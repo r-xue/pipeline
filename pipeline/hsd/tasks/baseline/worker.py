@@ -121,7 +121,7 @@ class BaselineSubtractionResults(common.SingleDishResults):
         """
         super(BaselineSubtractionResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: Context) -> None:
+    def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.
@@ -217,7 +217,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         return self.plan.get_spw_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def grid_table(self) -> List[Union[int, float, np.ndarray]]:
+    def grid_table(self) -> List[Union[int, float, 'np.ndarray']]:
         """Return list of grid tables to process.
 
         Returned list should conform with the list of MS and
@@ -244,9 +244,9 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
 
     def __init__(
         self,
-        context: Context,
+        context: 'Context',
         vis: Optional[Union[str, List[str]]] = None,
-        plan: Optional[Union[RGAccumulator, List[RGAccumulator]]] =None,
+        plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_order: Optional[int] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
@@ -441,9 +441,9 @@ class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
 
     def __init__(
         self,
-        context: Context,
+        context: 'Context',
         vis: Optional[Union[str, List[str]]] = None,
-        plan: Optional[Union[RGAccumulator, List[RGAccumulator]]] =None,
+        plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_order: Optional[int] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,

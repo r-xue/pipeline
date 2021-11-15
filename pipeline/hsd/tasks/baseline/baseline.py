@@ -75,7 +75,7 @@ class SDBaselineInputs(vdp.StandardInputs):
     parallel = sessionutils.parallel_inputs_impl()
 
     def __init__(self,
-                 context: Context,
+                 context: 'Context',
                  infiles: Optional[List[str]] = None,
                  antenna: Optional[List[str]] = None,
                  spw: Optional[List[str]] = None,
@@ -172,7 +172,7 @@ class SDBaselineResults(common.SingleDishResults):
         self.out_mses = []
 
     #@utils.profiler
-    def merge_with_context(self, context: Context) -> None:
+    def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
         Merge of the result instance of baseline subtraction task includes
@@ -542,7 +542,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
 class HeuristicsTask(object):
     """Executor for heuristics class. It is an adaptor to mpihelper framework."""
-    def __init__(self, heuristics_cls: Type[Heuristic], *args: Any, **kwargs: Any) -> None:
+    def __init__(self, heuristics_cls: Type['Heuristic'], *args: Any, **kwargs: Any) -> None:
         """Construct HeuristicsTask instance.
 
         Args:

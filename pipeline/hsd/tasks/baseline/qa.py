@@ -24,7 +24,7 @@ class SDBaselineQAHandler(pqa.QAPlugin):
     result_cls = baseline.SDBaselineResults
     child_cls = None
 
-    def handle(self, context: Context, result: result_cls) -> None:
+    def handle(self, context: 'Context', result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
 
         QA scorering is performed based on the following metric:
@@ -93,7 +93,7 @@ class SDBaselineListQAHandler(pqa.QAPlugin):
     result_cls = basetask.ResultsList
     child_cls = baseline.SDBaselineResults
 
-    def handle(self, context: Context, result: result_cls) -> None:
+    def handle(self, context: 'Context', result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
 
         Collect and join QA scores from results instances included in the

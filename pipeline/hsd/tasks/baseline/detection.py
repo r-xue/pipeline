@@ -59,7 +59,7 @@ class DetectLineInputs(vdp.StandardInputs):
         self._windowmode = value
 
     def __init__(self,
-                 context: Context,
+                 context: 'Context',
                  group_id: int,
                  window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
                  windowmode: Optional[str] = None,
@@ -102,7 +102,7 @@ class DetectLineResults(common.SingleDishResults):
         """
         super(DetectLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: Context) -> None:
+    def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.
@@ -500,7 +500,7 @@ class LineWindowParser(object):
 
     """
     def __init__(self,
-                 ms: MeasurementSet,
+                 ms: 'MeasurementSet',
                  window: Union[str, dict, List[int], List[float], List[str]]) -> None:
         """
         Construct LineWindowParser instance.
@@ -844,7 +844,7 @@ class LineWindowParser(object):
         self.me.done()
 
 
-def test_parser(ms: MeasurementSet) -> None:
+def test_parser(ms: 'MeasurementSet') -> None:
     """Test LineWindowParser."""
     target_fields = ms.get_fields(intent='TARGET')
     field_id = target_fields[0].id

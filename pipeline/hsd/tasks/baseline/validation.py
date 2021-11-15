@@ -43,12 +43,12 @@ class ValidateLineInputs(vdp.StandardInputs):
     clusteringalgorithm = vdp.VisDependentProperty(default=rules.ClusterRule['ClusterAlgorithm'])
 
     @property
-    def group_desc(self) -> MSReductionGroupDesc:
+    def group_desc(self) -> 'MSReductionGroupDesc':
         """Return reduction group instance of the current group."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def reference_member(self) -> MSReductionGroupMember:
+    def reference_member(self) -> 'MSReductionGroupMember':
         """Return the first reduction group member instance in the current group."""
         return self.group_desc[self.member_list[0]]
 
@@ -72,7 +72,7 @@ class ValidateLineInputs(vdp.StandardInputs):
         self._windowmode = value
 
     def __init__(self,
-                 context: Context,
+                 context: 'Context',
                  group_id: int,
                  member_list: List[int],
                  iteration: int,
@@ -146,7 +146,7 @@ class ValidateLineResults(common.SingleDishResults):
         """
         super(ValidateLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: Context) -> None:
+    def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.

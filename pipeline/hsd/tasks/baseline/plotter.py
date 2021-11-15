@@ -263,7 +263,7 @@ class BaselineSubtractionPlotManager(object):
                                                                                grid_list))
         return list(itertools.chain.from_iterable(new_table))
 
-    def __init__(self, context: Context, datatable: DataTable) -> None:
+    def __init__(self, context: 'Context', datatable: 'DataTable') -> None:
         """Construct BaselineSubtractionPlotManager instance.
 
         Args:
@@ -288,7 +288,7 @@ class BaselineSubtractionPlotManager(object):
             self.prefit_storage = PlotDataStorage()
             self.postfit_storage = PlotDataStorage()
 
-    def initialize(self, ms: MeasurementSet, blvis: str) -> bool:
+    def initialize(self, ms: 'MeasurementSet', blvis: str) -> bool:
         """Initialize plot manager with given MS.
 
         Args:
@@ -1176,7 +1176,7 @@ def get_averaged_data(
 
 
 def get_lines(
-    datatable: DataTable,
+    datatable: 'DataTable',
     num_ra: int,
     num_pol: int,
     rowlist: List[dict]
@@ -1216,7 +1216,7 @@ def get_lines(
 
 def get_lines2(
     infile: str,
-    datatable: DataTable,
+    datatable: 'DataTable',
     num_ra: int,
     rowlist: dict,
     polids: List[int],
@@ -1291,7 +1291,7 @@ def get_lines2(
     return lines_map
 
 
-def median_index(arr: Iterable) -> Integral:
+def median_index(arr: Iterable) -> 'Integral':
     """Return array index that corresponds to median value.
 
     Args:

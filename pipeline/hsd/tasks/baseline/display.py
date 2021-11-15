@@ -45,10 +45,10 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
                  nh: int,
                  nv: int,
                  aspect_ratio: float,
-                 xformatter: Formatter,
-                 yformatter: Formatter,
-                 xlocator: Locator,
-                 ylocator: Locator,
+                 xformatter: 'Formatter',
+                 yformatter: 'Formatter',
+                 xlocator: 'Locator',
+                 ylocator: 'Locator',
                  xrotation: float,
                  yrotation: float,
                  ticksize: Union[float, str],
@@ -90,7 +90,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         self.legend_y = 0.85
 
     @property
-    def axes_legend(self) -> Axes:
+    def axes_legend(self) -> 'Axes':
         """Return Axes for legend."""
         if self._legend is None:
             # self._legend = plt.axes([0.0, 0.85, 1.0, 0.15])
@@ -100,7 +100,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         return self._legend
 
     @property
-    def axes_list(self) -> List[Tuple[LineProperty, Axes, float, float]]:
+    def axes_list(self) -> List[Tuple[LineProperty, 'Axes', float, float]]:
         """Return list of necessary resources to generate cluster validation plots.
 
         Returns:
@@ -112,7 +112,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
         return self._axes
 
-    def __axes_list(self) -> Generator[Tuple[LineProperty, Axes, float, float], None, None]:
+    def __axes_list(self) -> Generator[Tuple[LineProperty, 'Axes', float, float], None, None]:
         """Yield resources to generate cluster validation plot.
 
         Yields:
@@ -147,7 +147,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
             yield icluster, axes, tpos_x, tpos_y
 
-    def __calc_axes(self, fig: Figure, ix: int, iy: int) -> Tuple[float, float, float, float, float, float]:
+    def __calc_axes(self, fig: 'Figure', ix: int, iy: int) -> Tuple[float, float, float, float, float, float]:
         """Calculate parameters for Axes.
 
         Args:
@@ -255,7 +255,7 @@ class ClusterDisplay(object):
         self.inputs = inputs
 
     @property
-    def context(self) -> Context:
+    def context(self) -> 'Context':
         """Return Pipeline context."""
         return self.inputs.context
 
@@ -515,7 +515,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
     }
 
     def __init__(self,
-                 context: Context,
+                 context: 'Context',
                  group_id: int,
                  iteration: int,
                  cluster: dict,
@@ -757,7 +757,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             title_size = tick_size + 1
         return tick_size, label_size, title_size
 
-    def __marker_size(self, axes: Axes, nx: int, ny: int, tile_gap: float = 0.0) -> float:
+    def __marker_size(self, axes: 'Axes', nx: int, ny: int, tile_gap: float = 0.0) -> float:
         """Calculate marker size.
 
         Args:

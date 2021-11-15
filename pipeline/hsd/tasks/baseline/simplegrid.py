@@ -36,19 +36,19 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
     nplane = vdp.VisDependentProperty(default=3)
 
     @property
-    def group_desc(self) -> MSReductionGroupDesc:
+    def group_desc(self) -> 'MSReductionGroupDesc':
         """Return reduction group instance of the current group."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def member_ms(self) -> List[MeasurementSet]:
+    def member_ms(self) -> List['MeasurementSet']:
         """Return a list of unitque MS domain objects of group members."""
         duplicated_ms_names = [ self.group_desc[i].ms.name for i in self.member_list ]
         return [ms for ms in self.context.observing_run.measurement_sets \
                 if ms.name in duplicated_ms_names]
 
     @property
-    def reference_member(self) -> MSReductionGroupMember:
+    def reference_member(self) -> 'MSReductionGroupMember':
         """Return the first reduction group member instance in the current group."""
         return self.group_desc[self.member_list[0]]
 
@@ -72,7 +72,7 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
         self._windowmode = value
 
     def __init__(self,
-                 context: Context,
+                 context: 'Context',
                  group_id: int,
                  member_list: List[int],
                  window: Union[str, dict, List[int], List[float], List[str]],
@@ -113,7 +113,7 @@ class SDSimpleGriddingResults(common.SingleDishResults):
         """
         super(SDSimpleGriddingResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: Context) -> None:
+    def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.
