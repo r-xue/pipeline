@@ -134,8 +134,8 @@ class BpSolint(basetask.StandardTaskTemplate):
             # check if Tsys caltable exists in context
             caltable = self._get_tsys_caltable(inputs.ms.name)
             if caltable is None:
-                LOG.warn("No Tsys calibration table found for MS %s. Skipping strong atmospheric line check." % \
-                         inputs.ms.basename)
+                LOG.warning("No Tsys calibration table found for MS %s. Skipping strong atmospheric line check." %
+                            inputs.ms.basename)
             elif check_strong_atm_lines(inputs.ms, fieldlist, inputs.intent, spwlist, solint_dict, caltable):
                 LOG.info("Strong atmospheric line(s) detected in Tsys spectra. Recalculating solution interval with bpsnr = %f" % inputs.minbpsnr)
                 return self.prepare(bpsnr=inputs.minbpsnr)
@@ -349,8 +349,8 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
         fieldids = [fobj.id for fobj in scanobj.fields.intersection(frozenset(atmfields))]
         median_tsys = get_median_tsys_spectrum_from_caltable(tsysname, tsys_spw, fieldids[0])
         if median_tsys is None:
-            LOG.warn('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' % \
-                     (tsys_spw, tsys_info[spw]['tsys_scan']))
+            LOG.warning('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' %
+                        (tsys_spw, tsys_info[spw]['tsys_scan']))
             continue
 
         # Smooth median Tsys spectrum with kernel size, # of Tsys chans /16
@@ -424,7 +424,8 @@ def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate
         seltb = tb.query('SPECTRAL_WINDOW_ID == %s && FIELD_ID == %s' % (spwid, fieldid))
         if seltb.nrows() == 0:
             seltb.close()
-            LOG.warn('No matching Tsys measurement for SPW=%s and field=%s in Tsys caltable %s' % (spwid, fieldid, tsysname))
+            LOG.warning('No matching Tsys measurement for SPW=%s and field=%s in Tsys caltable %s' %
+                        (spwid, fieldid, tsysname))
             return None
         try: # axis order: [POL, FREQ, ROW]
             tsys = seltb.getcol('FPARAM')

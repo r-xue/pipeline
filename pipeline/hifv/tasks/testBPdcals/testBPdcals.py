@@ -190,8 +190,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 else:
                     # Criteria to finish not met - remove the first reference antenna from consideration
                     self.ignorerefant.append(refant)
-                    LOG.warn("A baseband is determined to be bad for >50% of antennas.  "
-                             "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
+                    LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
+                                "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
 
             gtypecaltable[band] = gtypecaltablename
             ktypecaltable[band] = ktypecaltablename
@@ -368,9 +368,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         bpdgain_touse = tablebase + table_suffix[2]
 
                         if fracFlaggedSolns10 > 0.05:
-                            LOG.warn("There is a large fraction of flagged solutions, " +
-                                     "there might be something wrong with your data.  " +
-                                     "The fraction of flagged solutions is " + str(fracFlaggedSolns10))
+                            LOG.warning("There is a large fraction of flagged solutions, " +
+                                        "there might be something wrong with your data.  " +
+                                        "The fraction of flagged solutions is " + str(fracFlaggedSolns10))
 
         LOG.info("Test amp and phase calibration on delay and bandpass calibrators complete for band {!s}".format(band))
         LOG.info("Using short solint = {!s} for band {!s}".format(str(gain_solint1), band))
@@ -925,3 +925,4 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         # If the flag commands are not executed.
         return [], collections.defaultdict(list), num_antennas, None
+        

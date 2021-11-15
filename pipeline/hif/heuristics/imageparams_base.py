@@ -156,7 +156,7 @@ class ImageParamsHeuristics(object):
         elif os.path.isfile(linesfile):
             LOG.info('Using line frequency ranges from %s to calculate continuum frequency selections.' % (linesfile))
 
-            p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+            p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
             try:
                 line_regions = p.findall(open(linesfile, 'r').read().replace('\n', '').replace(';', '').replace(' ', ''))
             except Exception:
@@ -1259,7 +1259,7 @@ class ImageParamsHeuristics(object):
         spw_topo_chan_param_lists = []
         spw_topo_freq_param_dict = collections.defaultdict(dict)
         spw_topo_chan_param_dict = collections.defaultdict(dict)
-        p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+        p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
         total_topo_freq_ranges = []
         topo_freq_ranges = []
         num_channels = []
@@ -2033,8 +2033,8 @@ class ImageParamsHeuristics(object):
                 cond2 = bmaj > 2.0 * bmaj_median
                 if np.logical_or(cond1, cond2).any():
                     bad_psf_fit = True
-                    LOG.warn('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
-                             ' results for this cube carefully, there are likely data issues.' % (field, spw))
+                    LOG.warning('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
+                                ' results for this cube carefully, there are likely data issues.' % (field, spw))
             except:
                 pass
 
