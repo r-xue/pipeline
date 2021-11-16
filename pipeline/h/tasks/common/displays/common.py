@@ -845,8 +845,8 @@ class PhaseVsBaselineData(object):
                 ant = set(self.data.antenna).pop()
                 spw = set(self.data.spw).pop()
                 scan = set(self.data.scan).pop()
-                LOG.warn('Floating point error (%s) calculating RMS offset for'
-                         ' Scan %s Spw %s Ant %s.' % (t, scan, spw, ant))
+                LOG.warning('Floating point error (%s) calculating RMS offset for'
+                            ' Scan %s Spw %s Ant %s.' % (t, scan, spw, ant))
 
             saved_handler = numpy.seterrcall(err_handler)
             saved_err = numpy.seterr(all='call')
@@ -869,8 +869,8 @@ class PhaseVsBaselineData(object):
                 ant = set(self.data.antenna).pop()
                 spw = set(self.data.spw).pop()
                 scan = set(self.data.scan).pop()
-                LOG.warn('Floating point error (%s) calculating unwrapped RMS for'
-                         ' Scan %s Spw %s Ant %s.' % (t, scan, spw, ant))
+                LOG.warning('Floating point error (%s) calculating unwrapped RMS for'
+                            ' Scan %s Spw %s Ant %s.' % (t, scan, spw, ant))
 
             saved_handler = numpy.seterrcall(err_handler)
             saved_err = numpy.seterr(all='call')

@@ -57,6 +57,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
+  <param name="datacolumn" type="string">
+    <shortdescription>Data column to image</shortdescription>
+    <description>Data column to image. Only to be used for manual overriding
+                 when the automatic choice by data type is not appropriate.
+    </description>
+    <value/>
+  </param>
+
   <param name="parallel" type="string">
     <shortdescription>Use MPI cluster where possible</shortdescription>
     <description>Use MPI cluster where possible</description>

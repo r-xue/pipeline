@@ -352,7 +352,7 @@ class DataTableImpl(object):
             subkey = 'SMALL'
         else:
             subkey = 'LARGE'
-        pattern = '^TIMETABLE_%s_.*' % subkey
+        pattern = r'^TIMETABLE_%s_.*' % subkey
         if numpy.any(numpy.fromiter((re.match(pattern, x) is not None for x in self.keywordnames()), dtype=bool)):
             group_id = 0
             for key in self.tb2.keywordnames():

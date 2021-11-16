@@ -137,7 +137,7 @@ class testDelaysPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -151,7 +151,7 @@ class testDelaysPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -225,7 +225,7 @@ class ampGainPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -240,7 +240,7 @@ class ampGainPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -316,7 +316,7 @@ class phaseGainPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -331,7 +331,7 @@ class phaseGainPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -426,7 +426,7 @@ class bpSolAmpPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -441,7 +441,7 @@ class bpSolAmpPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -536,7 +536,7 @@ class bpSolPhasePerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -551,7 +551,7 @@ class bpSolPhasePerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]

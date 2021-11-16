@@ -78,7 +78,7 @@ class ObservingRun(object):
                         return ms
             raise KeyError('No measurement set found with intent {0}'.format(intent))
 
-    def get_measurement_sets(self, names=None, intents=None, fields=None, imaging_preferred=False):
+    def get_measurement_sets(self, names=None, intents=None, fields=None):
         """
         Returns measurement sets matching the given arguments.
         """
@@ -106,14 +106,6 @@ class ObservingRun(object):
 
             candidates = [ms for ms in candidates
                           if fields_to_match.isdisjoint({field.name for field in ms.fields})]
-
-        # When requested, and if any imaging MeasurementSets have been
-        # registered with the context, filter out the non-imaging objects
-        if imaging_preferred:
-            imaging_flags = [getattr(ms, 'is_imaging_ms', False) for ms in candidates]
-            if any(imaging_flags):
-                candidates = [ms for ms, is_imaging_ms in zip(candidates, imaging_flags)
-                              if is_imaging_ms]
 
         return candidates
 
