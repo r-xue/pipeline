@@ -3,6 +3,8 @@ import itertools
 import operator
 import os
 
+import numpy as np
+
 import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as applycal_renderer
 import pipeline.infrastructure
@@ -24,6 +26,34 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         super(T2_4MDetailsplotsummaryRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @staticmethod
+    def get_baseband_desc(baseband_spws, spws_select=[]):
+
+        vla_basebands = []
+        vla_basebands_centfreq = []
+        banddict = baseband_spws
+        if len(banddict) == 0:
+            LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+
+        for band in banddict:
+            for baseband in banddict[band]:
+                spws = []
+                minfreqs = []
+                maxfreqs = []
+                for spwitem in banddict[band][baseband]:
+                    if (str([*spwitem][0]) in spws_select) or spws_select == []:
+                        spws.append(str([*spwitem][0]))
+                        minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
+                        maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
+                if len(spws) > 0:
+                    bbandminfreq = min(minfreqs)
+                    bbandmaxfreq = max(maxfreqs)
+                    vla_basebands.append(band.capitalize()+':'+baseband+':  ' + str(bbandminfreq) + ' to ' +
+                                         str(bbandmaxfreq))
+                    vla_basebands_centfreq.append((bbandminfreq+bbandmaxfreq)/2)
+        return vla_basebands, vla_basebands_centfreq
+
+
     def update_mako_context(self, ctx, context, results_list):
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results_list.stage_number)
@@ -41,10 +71,13 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                         self.caltypes_for_result(r))
 
         filesizes = {}
+        baseband_spws = {}
         for r in results_list:
             vis = r.inputs['vis']
             ms = context.observing_run.get_ms(vis)
             filesizes[os.path.basename(vis)] = ms._calc_filesize()
+            baseband_spws[os.path.basename(vis)] = ms.get_vla_baseband_spws(
+                science_windows_only=True, return_select_list=False, warning=False)
 
         # original plot summary plots
         summary_plots = {}
@@ -84,6 +117,10 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
+                    baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                        baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                    p.parameters['baseband_desc'] = baseband_desc
+                    p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                     p.parameters['intent_idx'] = intent_sort_order[','.join(p.parameters['intent'])]
                     field = m.get_fields(p.parameters['field'])[0]
                     p.parameters['fieldid'] = field.id
@@ -100,6 +137,10 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
+                    baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                        baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                    p.parameters['baseband_desc'] = baseband_desc
+                    p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                     p.parameters['intent_idx'] = intent_sort_order[','.join(p.parameters['intent'])]
                     field = m.get_fields(p.parameters['field'])[0]
                     p.parameters['fieldid'] = field.id
@@ -131,6 +172,10 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 for vis, vis_plots in plots.items():
                     vis_plots_mod = []
                     for p in vis_plots:
+                        baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                            baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                        p.parameters['baseband_desc'] = baseband_desc
+                        p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                         p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
                         field = m.get_fields(p.parameters['field'])[0]
                         p.parameters['fieldid'] = field.id
@@ -152,6 +197,10 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 for vis, vis_plots in plots.items():
                     vis_plots_mod = []
                     for p in vis_plots:
+                        baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                            baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                        p.parameters['baseband_desc'] = baseband_desc
+                        p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                         p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
                         field = m.get_fields(p.parameters['field'])[0]
                         p.parameters['fieldid'] = field.id
@@ -163,7 +212,17 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         else:
             use_pol_plots = False
 
-        (science_amp_vs_freq_summary_plots, uv_max) = self.create_science_plots(context, results_list, correlation=corrstring)
+        science_amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
+        (plots, uv_max) = self.create_science_plots(context, results_list, correlation=corrstring)
+        for vis, vis_plots in plots.items():
+            vis_plots_mod = []
+            for p in vis_plots:
+                baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                    baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                p.parameters['baseband_desc'] = baseband_desc
+                p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
+                vis_plots_mod.append(p)
+            science_amp_vs_freq_summary_plots[vis].extend(vis_plots_mod)
 
         if pipeline.infrastructure.generate_detail_plots(results_list):
             for result in results_list:
