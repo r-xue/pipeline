@@ -64,9 +64,9 @@ class testBPdcalsResults(basetask.Results):
         """
         Args:
             vis(str): String name of the measurement set
-            final(List): Calibration list - not used
-            pool(List): Calibration List - not used
-            preceding(Boolean):
+            final(List, optional): Calibration list applied - not used
+            pool(List, optional): Calibration list assesed - not used
+            preceding(List, optional): DEPRECATED results from worker tasks executed by this task
             gain_solint1(Dict):  Dict of csv strings, keyed by band
             shortsol1(Dict):  Integration time determined from heuristics (1,3,10 x max int time) keyed by band
             bpdgain_touse(Dict):  Dictionary of tables per band

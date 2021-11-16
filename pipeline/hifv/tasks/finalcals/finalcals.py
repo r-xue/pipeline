@@ -59,10 +59,9 @@ class FinalcalsResults(basetask.Results):
                  flaggedSolnApplycaldelay=None):
         """
         Args:
-            vis(str): String name of the measurement set
-            final(List): Calibration list - not used
-            pool(List): Calibration List - not used
-            preceding(Boolean):
+            final(List, optional): Calibration list applied - not used
+            pool(List, optional): Calibration list assesed - not used
+            preceding(List, optional): DEPRECATED results from worker tasks executed by this task
             bpdgain_touse(Dict):  Dictionary of tables per band
             gtypecaltable(Dict): Dictionary of tables per band
             ktypecaltable(Dict): Dictionary of tables per band

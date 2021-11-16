@@ -52,9 +52,9 @@ class semiFinalBPdcalsResults(basetask.Results):
                  flaggedSolnApplycaldelay=None):
         """
         Args:
-            final(List): Calibration list - not used
-            pool(List): Calibration List - not used
-            preceding(Boolean):
+            final(List, optional): Calibration list applied - not used
+            pool(List, optional): Calibration list assesed - not used
+            preceding(List, optional): DEPRECATED results from worker tasks executed by this task
             bpdgain_touse(Dict):  Dictionary of tables per band
             gtypecaltable(Dict): Dictionary of tables per band
             ktypecaltable(Dict): Dictionary of tables per band
