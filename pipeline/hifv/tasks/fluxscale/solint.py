@@ -316,8 +316,8 @@ class Solint(basetask.StandardTaskTemplate):
                                 bpdgain_touse = tablebase + table_suffix[3]
 
                                 if fracFlaggedSolnsScan > 0.05:
-                                    LOG.warn("Warning, large fraction of flagged solutions.  " +
-                                             "There might be something wrong with your data")
+                                    LOG.warning("Warning, large fraction of flagged solutions.  " +
+                                                "There might be something wrong with your data")
 
         LOG.info("ShortSol1: " + str(shortsol1))
         LOG.info("ShortSol2: " + str(shortsol2))
@@ -327,7 +327,7 @@ class Solint(basetask.StandardTaskTemplate):
         new_gain_solint1 = str(short_solint) + 's'
 
         if self.inputs.limit_short_solint:
-            LOG.warn("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
+            LOG.warning("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
             limit_short_solint = self.inputs.limit_short_solint
 
             short_solint_str = "{:.12f}".format(short_solint)
@@ -341,7 +341,7 @@ class Solint(basetask.StandardTaskTemplate):
                 combtime = ''
                 short_solint = limit_short_solint
                 new_gain_solint1 = short_solint
-                LOG.warn("   Note that since 'inf' was specified then combine='' for gaincal.")
+                LOG.warning("   Note that since 'inf' was specified then combine='' for gaincal.")
             # This comparison needed to change for Python 3
             elif str(limit_short_solint) <= short_solint_str:
                 short_solint = float(limit_short_solint)
@@ -362,7 +362,7 @@ class Solint(basetask.StandardTaskTemplate):
         LOG.info("Using short solint = " + str(new_gain_solint1))
 
         if abs(longsolint - short_solint) <= soltime:
-            LOG.warn('Short solint = long solint +/- integration time of {}s'.format(soltime))
+            LOG.warning('Short solint = long solint +/- integration time of {}s'.format(soltime))
 
         return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse
 
@@ -462,7 +462,7 @@ class Solint(basetask.StandardTaskTemplate):
                         old_field = new_field
 
                     except KeyError:
-                        LOG.warn("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
+                        LOG.warning("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
         longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'

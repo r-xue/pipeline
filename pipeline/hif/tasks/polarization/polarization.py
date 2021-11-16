@@ -20,7 +20,7 @@ class PolarizationResults(basetask.Results):
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
         if not self.final:
-            LOG.warn('No polarization results')
+            LOG.warning('No polarization results')
             return
 
     def __repr__(self):

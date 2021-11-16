@@ -1326,15 +1326,15 @@ def bpcal_score_RMS(RMS, RMSMax):
             # precision makes no practical difference.
             (_, minor_version, _) = scipy.version.short_version.split('.')
             if int(minor_version) < 12:
-                under_orig = scipy.geterr()['under']
+                under_orig = numpy.geterr()['under']
                 try:
-                    scipy.seterr(under='warn')
+                    numpy.seterr(under='warn')
                     score = scipy.special.erf(RMSMax / RMSTemp / math.sqrt(2.0))
                 except FloatingPointError:
                     msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (RMSMax / RMSTemp)
                     raise FloatingPointError(msg)
                 finally:
-                    scipy.seterr(under=under_orig)
+                    numpy.seterr(under=under_orig)
             else:
                 msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (RMSMax / RMSTemp)
                 raise FloatingPointError(msg)
@@ -1372,15 +1372,15 @@ def bpcal_score_SNR(SNR):
         # precision makes no practical difference.
         (_, minor_version, _) = scipy.version.short_version.split('.')
         if int(minor_version) < 12:
-            under_orig = scipy.geterr()['under']
+            under_orig = numpy.geterr()['under']
             try:
-                scipy.seterr(under='warn')
+                numpy.seterr(under='warn')
                 score = scipy.special.erf(SNR / math.sqrt(2.0))
             except FloatingPointError:
                 msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % SNR
                 raise FloatingPointError(msg)
             finally:
-                scipy.seterr(under=under_orig)
+                numpy.seterr(under=under_orig)
         else:
             msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % SNR
             raise FloatingPointError(msg)
@@ -1450,15 +1450,15 @@ def bpcal_score_flatness(values):
             # precision makes no practical difference.
             (_, minor_version, _) = scipy.version.short_version.split('.')
             if int(minor_version) < 12:
-                under_orig = scipy.geterr()['under']
+                under_orig = numpy.geterr()['under']
                 try:
-                    scipy.seterr(under='warn')
+                    numpy.seterr(under='warn')
                     flatnessScore = scipy.special.erf(0.001 / abs(1.0 - wEntropy) / math.sqrt(2.0))
                 except FloatingPointError:
                     msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (0.001 / abs(1.0 - wEntropy))
                     raise FloatingPointError(msg)
                 finally:
-                    scipy.seterr(under=under_orig)
+                    numpy.seterr(under=under_orig)
             else:
                 msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (0.001 / abs(1.0 - wEntropy))
                 raise FloatingPointError(msg)
@@ -1468,6 +1468,8 @@ def bpcal_score_flatness(values):
 
 # ------------------------------------------------------------------------------
 # TODO: Use usual MAD function from pipeline.
+
+@numpy.errstate(under='warn')
 def MAD(a, c=0.6745, axis=None):
     """
     Median Absolute Deviation along given axis of an array:
@@ -1477,10 +1479,6 @@ def MAD(a, c=0.6745, axis=None):
     c = 0.6745 is the constant to convert from MAD to std; it is used by
     default
     """
-
-    # Avoid underflow exceptions
-    under_orig = scipy.geterr()['under']
-    scipy.seterr(under='warn')
 
     a = ma.masked_where(a != a, a)
     if a.ndim == 1:
@@ -1494,8 +1492,6 @@ def MAD(a, c=0.6745, axis=None):
         else:
             aswp = a
         m = ma.median(ma.fabs(aswp - d) / c, axis=0)
-
-    scipy.seterr(under=under_orig)
 
     return m
 
@@ -1554,15 +1550,15 @@ def bpcal_score_derivative_deviation(values):
             except FloatingPointError:
                 (_, minor_version, _) = scipy.version.short_version.split('.')
                 if int(minor_version) < 12:
-                    under_orig = scipy.geterr()['under']
+                    under_orig = numpy.geterr()['under']
                     try:
-                        scipy.seterr(under='warn')
+                        numpy.seterr(under='warn')
                         ddScore = scipy.special.erf(fractionRatio / math.sqrt(2.0))
                     except FloatingPointError:
                         msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % fractionRatio
                         raise FloatingPointError(msg)
                     finally:
-                        scipy.seterr(under=under_orig)
+                        numpy.seterr(under=under_orig)
                 else:
                     msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % fractionRatio
                     raise FloatingPointError(msg)

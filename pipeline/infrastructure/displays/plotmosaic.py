@@ -90,9 +90,9 @@ def plot_mosaic(ms, source, figfile):
     title_string = '{}, {}, average freq.={}'.format(ms.basename, source.name,
                                                      unitformat.frequency.format(median_ref_freq))
     ax.set_title(title_string, size=12)
-    ra_string = '{:02d}$^{{\\rm h}}${:02d}$^{{\\rm m}}${:02.3f}$^{{\\rm s}}\!\!.$'.format(*mean_ra.toHms())
+    ra_string = r'{:02d}$^{{\rm h}}${:02d}$^{{\rm m}}${:02.3f}$^{{\rm s}}\!\!.$'.format(*mean_ra.toHms())
     ax.set_xlabel('Right ascension offset from {}'.format(ra_string))
-    dec_string = '{:02d}$\degree${:02d}$^\prime${:02.1f}$^{{\prime\prime}}$'.format(*mean_dec.toDms())
+    dec_string = r'{:02d}$\degree${:02d}$^\prime${:02.1f}$^{{\prime\prime}}$'.format(*mean_dec.toDms())
     ax.set_ylabel('Declination offset from {}'.format(dec_string))
 
     leg_lines = [legend_labels[i] for i in sorted(legend_labels)]
@@ -134,11 +134,11 @@ def get_arc_formatter(precision):
     """
     s = '{0:.' + str(precision) + 'f}'
     f = unitformat.UnitFormat(prefer_integers=True)
-    f.addUnitOfMagnitude(1. / 1000000, s + ' $\mu$as')
+    f.addUnitOfMagnitude(1. / 1000000, s + r' $\mu$as')
     f.addUnitOfMagnitude(1. / 1000, s + ' mas')
-    f.addUnitOfMagnitude(1., s + '$^{{\prime\prime}}$')
-    f.addUnitOfMagnitude(60., s + '$^\prime$')
-    f.addUnitOfMagnitude(3600., s + '$\degree$')
+    f.addUnitOfMagnitude(1., s + r'$^{{\prime\prime}}$')
+    f.addUnitOfMagnitude(60., s + r'$^\prime$')
+    f.addUnitOfMagnitude(3600., s + r'$\degree$')
     return f
 
 

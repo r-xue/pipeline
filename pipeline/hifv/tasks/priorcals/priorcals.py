@@ -91,7 +91,7 @@ def correct_ant_posns(vis_name, print_offsets=False):
     [obs_year, obs_month, obs_day, obs_time_string] = date_time[0].split('/')
     if int(obs_year) < 2010:
         if print_offsets:
-            LOG.warn('Does not work for VLA observations')
+            LOG.warning('Does not work for VLA observations')
         return [1, '', []]
     [obs_hour, obs_minute, obs_second] = obs_time_string.split(':')
     obs_time = 10000*int(obs_year) + 100*int(obs_month) + int(obs_day) + \
@@ -115,7 +115,7 @@ def correct_ant_posns(vis_name, print_offsets=False):
         response = urllib.request.urlopen(URL_BASE + '2010')
     except urllib.error.URLError as err:
         if print_offsets:
-            LOG.warn('No internet connection to antenna position correction URL {}'.format(err.reason))
+            LOG.warning('No internet connection to antenna position correction URL {}'.format(err.reason))
         return [2, '', []]
     response.close()
     for year in range(2010, current_year+1):
@@ -313,7 +313,7 @@ class Priorcals(basetask.StandardTaskTemplate):
 
         fracantcorrect = float(len(antcorrect)) / float(len(m.antennas))
         if fracantcorrect > 0.5:
-            LOG.warn("{:5.2f} percent of antennas needed position corrections.".format(100.0 * fracantcorrect))
+            LOG.warning("{:5.2f} percent of antennas needed position corrections.".format(100.0 * fracantcorrect))
 
         return result, antcorrect
 
@@ -351,4 +351,4 @@ class Priorcals(basetask.StandardTaskTemplate):
                                       "A correction for the online tropospheric delay model error WILL BE APPLIED!  " \
                                       "Tropospheric delay error correction coefficient="+str(-trdelscale/1000.0)+ " (ps/m) "
                     LOG.debug("EVLA 16B Online Trop Del Corr is ON, scale=" + str(trdelscale))
-                    LOG.warn(warning_message)
+                    LOG.warning(warning_message)

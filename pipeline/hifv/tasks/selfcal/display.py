@@ -86,7 +86,7 @@ class selfcalphaseGainPerAntennaChart(object):
                     job.execute(dry_run=False)
 
                 except Exception as ex:
-                    LOG.warn("Unable to plot " + filename + str(ex))
+                    LOG.warning("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -99,7 +99,7 @@ class selfcalphaseGainPerAntennaChart(object):
                                                'file': os.path.basename(figfile)})
                 plots.append(plot)
             except Exception as ex:
-                LOG.warn("Unable to add plot to stack.  " + str(ex))
+                LOG.warning("Unable to add plot to stack.  " + str(ex))
                 plots.append(None)
 
         return [p for p in plots if p is not None]

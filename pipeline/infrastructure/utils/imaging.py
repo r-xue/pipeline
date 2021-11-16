@@ -360,7 +360,10 @@ def merge_ranges(ranges: List[Tuple[Union[float, int]]]) -> Generator[List[Tuple
 
     """
     ranges = iter(sorted(ranges))
-    current_start, current_stop = next(ranges)
+    try:
+        current_start, current_stop = next(ranges)
+    except StopIteration:
+        return
     for start, stop in ranges:
         if start > current_stop:
             # Gap between segments: output current segment and start a new one.

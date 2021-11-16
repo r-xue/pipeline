@@ -487,8 +487,8 @@ def _get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
             time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
         except RuntimeError as e:
             # data could be missing. just skip.
-            LOG.warn('Exception reported from datatable.get_timetable:')
-            LOG.warn(str(e))
+            LOG.warning('Exception reported from datatable.get_timetable:')
+            LOG.warning(str(e))
             continue
         # time table separated by large time gap
         the_table = time_table[1]

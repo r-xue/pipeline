@@ -213,7 +213,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 else:
                     # Criteria to finish not met - remove the first reference antenna from consideration
                     self.ignorerefant.append(refant)
-                    LOG.warn("A baseband is determined to be bad for >50% of antennas.  "
+                    LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
                              "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
 
             gtypecaltable[band] = gtypecaltablename
@@ -414,7 +414,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         bpdgain_touse = tablebase + table_suffix[2]
 
                         if fracFlaggedSolns10 > 0.05:
-                            LOG.warn("There is a large fraction of flagged solutions, " +
+                            LOG.warning("There is a large fraction of flagged solutions, " +
                                      "there might be something wrong with your data.  " +
                                      "The fraction of flagged solutions is " + str(fracFlaggedSolns10))
 

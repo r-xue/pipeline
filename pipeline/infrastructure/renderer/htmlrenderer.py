@@ -378,7 +378,7 @@ class T1_1Renderer(RendererBase):
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
-            link = 'sidebar_%s' % re.sub('[^a-zA-Z0-9]', '_', ms.basename)
+            link = 'sidebar_%s' % re.sub(r'[^a-zA-Z0-9]', '_', ms.basename)
             href = os.path.join('t2-1.html?sidebar=%s' % link)
 
             num_antennas = len(ms.antennas)
@@ -1447,7 +1447,7 @@ class T2_4MDetailsDefaultRenderer(object):
 
             obj, _ = pydoc.resolve(taskname, forceload=0)
             page = pydoc.render_doc(obj)
-            return '<pre>%s</pre>' % re.sub('\x08.', '', page)
+            return '<pre>%s</pre>' % re.sub(r'\x08.', '', page)
         except Exception:
             return None
 

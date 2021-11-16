@@ -349,7 +349,7 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
 
     # rasterutil doesn't support multi-beam data
     if is_multi_beam(datatable):
-        LOG.warn('Currently rasterutil does not support multi-beam data. Raster flag is not applied.')
+        LOG.warning('Currently rasterutil does not support multi-beam data. Raster flag is not applied.')
         return rowdict
 
     metadata = read_datatable(datatable)

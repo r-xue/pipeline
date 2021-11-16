@@ -71,8 +71,8 @@ class Statwt(basetask.StandardTaskTemplate):
             self._check_for_modelcolumn()
 
         if self.inputs.statwtmode not in ['VLA', 'VLASS-SE']:
-            LOG.warn('Unkown mode \'%s\' was set. Known modes are [\'VLA\',\'VLASS-SE\']. '
-                     'Continuing in \'VLA\' mode.' % self.inputs.statwtmode)
+            LOG.warning('Unkown mode \'%s\' was set. Known modes are [\'VLA\',\'VLASS-SE\']. '
+                        'Continuing in \'VLA\' mode.' % self.inputs.statwtmode)
             self.inputs.statwtmode = 'VLA'
 
         fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)

@@ -23,6 +23,7 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='co')
     bdfflags = vdp.VisDependentProperty(default=False)
     process_caldevice = vdp.VisDependentProperty(default=True)
+    createmms = vdp.VisDependentProperty(default='false')
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
@@ -100,12 +101,12 @@ class VLAImportDataResults(basetask.Results):
             if scanNums.count(i + 1) == 1:
                 pass
             else:
-                LOG.warn("WARNING: Scan " + str(i + 1) + " is not present")
+                LOG.warning("WARNING: Scan " + str(i + 1) + " is not present")
                 missingScans += 1
                 missingScanStr = missingScanStr + str(i + 1) + ', '
 
         if missingScans > 0:
-            LOG.warn("WARNING: There were " + str(missingScans) + " missing scans in this MS")
+            LOG.warning("WARNING: There were " + str(missingScans) + " missing scans in this MS")
         else:
             LOG.info("No missing scans found.")
 

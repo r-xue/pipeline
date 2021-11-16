@@ -52,7 +52,6 @@ class MeasurementSet(object):
             data column (value)
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
-        is_imaging_ms: If True, the MS is for imaging (interferometry only)
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
     """
@@ -84,7 +83,6 @@ class MeasurementSet(object):
         self.reference_spwmap: Optional[List[int]] = None
         self.phaseup_spwmap: Optional[List[int]] = None
         self.combine_spwmap: Optional[List[int]] = None
-        self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
 
@@ -970,7 +968,7 @@ class MeasurementSet(object):
                 baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
             except Exception as ex:
                 if warning:
-                    LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                    LOG.warning("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
                 else:
                     pass
 

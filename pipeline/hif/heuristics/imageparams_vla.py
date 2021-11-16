@@ -96,8 +96,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         # Check for maximum frequency
         if max_mean_freq_Hz == 0.0:
-            LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={:s}. "
-                     "Using default uvrange.".format(','.join([str(spw) for spw in spwids])))
+            LOG.warning("Highest frequency spw and largest baseline cannot be determined for spwids={:s}. "
+                        "Using default uvrange.".format(','.join([str(spw) for spw in spwids])))
             return None, None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
@@ -114,8 +114,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         try:
             mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
         except Exception as e:
-            LOG.warn(e)
-            LOG.warn("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(str(field), real_spwids_str))
+            LOG.warning(e)
+            LOG.warning("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(
+                str(field), real_spwids_str))
             return '>0.0klambda', 1.0
 
         # Range for  50-55% bin
@@ -125,8 +126,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         try:
             mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
         except Exception as e:
-            LOG.warn(e)
-            LOG.warn("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(str(field), real_spwids_str))
+            LOG.warning(e)
+            LOG.warning("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(
+                str(field), real_spwids_str))
             return '>0.0klambda', 1.0
 
         # Compare amplitudes and decide on return value
