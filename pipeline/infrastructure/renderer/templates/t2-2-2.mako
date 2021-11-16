@@ -51,6 +51,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
+						<th>SDM_NUM_BIN</th> <!-- TODO: placeholder for actual column name -->
 			        	<th>Frequency Width</th>
 			        	<th>Velocity Width</th>
 			        </tr>
@@ -74,6 +75,7 @@ import pipeline.domain.measures as measures
 					  <td>${str(spw.bandwidth)}</td>
 					  <td>${', '.join(spw.transitions)}</td>
 					  <td>${spw.num_channels}</td>
+					  <td>${spw.sdm_num_bin}</td>
 					  <td>${spw.channels[0].getWidth()}</td>
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
@@ -137,6 +139,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
+						<th>SDM_NUM_BIN</th> <!-- TODO: placeholder for actual column name -->
 			        	<th>Frequency Width</th>
 			        	<th>Velocity Width</th>
 			        </tr>
@@ -158,6 +161,7 @@ import pipeline.domain.measures as measures
 						<td>${str(spw.bandwidth)}</td>
 					        <td>${','.join(spw.transitions)}</td>
 						<td>${spw.num_channels}</td>
+	                    <td>${spw.sdm_num_bin}</td>
 						<td>${spw.channels[0].getWidth()}</td>
 						<td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 						<%

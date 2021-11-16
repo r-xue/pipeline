@@ -478,10 +478,14 @@ class SpectralWindowTable(object):
                 LOG.info("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
                 receiver, freq_lo = None, None
 
-            # Store all info in a new SpectralWindow object.
+            #TODO: do i want to leave this table read in this location? 
+            sdm_num_bin = []
+            with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+                sdm_num_bin = table.getcol('SDM_NUM_BIN')
+
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
-                                        transitions=transitions)
+                                        transitions=transitions, sdm_num_bin=sdm_num_bin[i])
             spws.append(spw)
 
         return spws
@@ -1214,3 +1218,4 @@ class RetrieveByIndexContainer:
 
     def __str__(self):
         return '<RetrieveByIndexContainer({})>'.format(str(self.__items))
+                                                                                                                                                                                                            
