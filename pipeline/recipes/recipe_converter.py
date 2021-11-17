@@ -47,7 +47,7 @@ def ${func_name}(vislist, importonly=False, pipelinemode='automatic', interactiv
 
     try:
         # Initialize the pipeline
-        h_init()
+        h_init(${init_args})
 
 ${procedure}
 
@@ -452,30 +452,35 @@ def to_procedure(commands: List[dict]) -> str:
     return '\n\n'.join([c2p(command) for command in commands])
 
 
-def export(func_name: str, commands: List[dict], script_name: str) -> None:
+def export(func_name: str, commands: List[dict], script_name: str, plotlevel_summary: bool = False) -> None:
     """Export parsed information as a Python script.
 
     Args:
         func_name: Name of the function defined in the Python script.
         commands: List of pipeline tasks and their custom parameters.
         script_name: Output script name.
+        plotlevel_summary: Set True to initialize pipeline with "summary" plotlevel.
     """
     template = string.Template(TEMPLATE_TEXT)
     procedure = to_procedure(commands)
+    init_args = "plotlevel='summary'" if plotlevel_summary else ''
     with open(script_name, 'w') as f:
         f.write(template.safe_substitute(
             func_name=func_name,
-            procedure=procedure
+            procedure=procedure,
+            init_args=init_args
         ))
 
 
-def main(recipe_name: str, script_name: str) -> None:
+def main(recipe_name: str, script_name: str, plotlevel_summary: bool = False) -> None:
     """Generate Python script from procedure xml file.
 
     Args:
         recipe_name: Recipe name. Will be translated into xml file name,
                            procedure_<recipe_name>.xml.
         script_name: Output script name.
+        plotlevel_summary: Set True to initialize pipeline with "summary" plotlevel.
+
     Raises:
         FileNotFoundError: Procedure xml file does not exist.
     """
@@ -495,21 +500,34 @@ def main(recipe_name: str, script_name: str) -> None:
     func_name, commands = parse(procedure_abs_path)
 
     # export commands as Python script
-    export(func_name, commands, script_name)
+    export(func_name, commands, script_name, plotlevel_summary)
 
 
 def generate_all() -> None:
-    """Generate recipe scripts from all procedure files in the recipe directory."""
+    """Generate recipe scripts from all procedure files in the recipe directory.
+
+    Pipeline is initialized with plotlevel='summary' for the recipes listed in
+    summary_plotlevel_recipes.
+    """
     recipe_dir = get_recipe_dir()
 
     recipe_xml_files = glob.glob(f'{recipe_dir}/procedure_*.xml')
+    summary_plotlevel_recipes = [
+        'hifvcalvlass_compression',
+        'hifvcalvlass',
+        'hifv',
+        'hifv_calimage_cont',
+        'hifv_contimage',
+        'vlassQLIP'
+    ]
     for r in recipe_xml_files:
         xml_file = os.path.basename(r)
         LOG.debug(xml_file)
         recipe_name = re.sub(r'procedure_(.*).xml', r'\1', xml_file)
         script_name = recipe_name + '.py'
         LOG.info(f'Processing {recipe_name}...')
-        main(recipe_name, script_name)
+        plotlevel_summary = recipe_name in summary_plotlevel_recipes
+        main(recipe_name, script_name, plotlevel_summary)
         LOG.info(f'Finished processing {recipe_name}.')
 
 
@@ -517,6 +535,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert procedure xml file into Python script')
     parser.add_argument('-a', '--all', action='store_true', dest='generate_all', help='process all procedure files in the recipes directory. user-supplied recipe and script names will be omitted.')
     parser.add_argument('-d', '--debug', action='store_true', dest='debug', help='debug mode')
+    parser.add_argument('-s', '--plotlevel-summary', action='store_true', dest='summary', help='set plotlevel summary')
     parser.add_argument('recipe', type=str, nargs='?', default='hsd_calimage',
                         help='recipe type. will be translated to xml file name, "procedure_<recipe>.xml"')
     parser.add_argument('script', type=str, nargs='?', default=None,
@@ -527,6 +546,7 @@ if __name__ == '__main__':
     script_name = args.script
     flag_generate_all = args.generate_all
     flag_debug = args.debug
+    flag_summary = args.summary
 
     if flag_debug:
         LOG.info('running in debug mode...')
@@ -541,5 +561,4 @@ if __name__ == '__main__':
         if script_name is None:
             script_name = f'{recipe_name}.py'
 
-        main(recipe_name, script_name)
-
+        main(recipe_name, script_name, flag_summary)
