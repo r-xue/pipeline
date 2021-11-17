@@ -74,7 +74,7 @@ class plotsummarySummaryChart(object):
         for spw, band in spw2band.items():
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
-        
+
         # Add the "All" band key/value if the dataset is multi-band.
         if len(band2spw) > 1:
             band2spw['All'] = [spw for spws_per_band in band2spw.values() for spw in spws_per_band]
@@ -91,7 +91,7 @@ class plotsummarySummaryChart(object):
                 # Find if spwlist contents are in the valid_spws for this band **and** field
                 spwidlist = [int(spw) for spw in spwlist]
                 spwuselist = [str(spwid) for spwid in spwidlist if spwid in source_spwidlist]
-                
+
                 spwuse_str = ','.join(spwuselist)
                 # skip if the same spw combination has been plotted before (likley this specific field was observed in a single band)
                 if spwuse_str in spws_perband:
@@ -109,7 +109,8 @@ class plotsummarySummaryChart(object):
                                                    'spw': spwuse_str})
 
                     if not os.path.exists(figfile):
-                        LOG.info('Plotting amp vs. uvwave for field id='+str(field.id)+'  Band '+bandname+'.  Creating new plot.')
+                        LOG.info('Plotting amp vs. uvwave for field id='+str(field.id) +
+                                 '  Band '+bandname+'.  Creating new plot.')
 
                         try:
                             job = casa_tasks.plotms(vis=ms_active, xaxis='uvwave', yaxis='amp', ydatacolumn='corrected',
@@ -118,7 +119,8 @@ class plotsummarySummaryChart(object):
                                                     averagedata=True, avgchannel=str(max(channels)), avgtime='1e8',
                                                     avgscan=False, transform=False, extendflag=False, iteraxis='',
                                                     coloraxis='spw', plotrange=[],
-                                                    title='Field '+str(field.id)+', '+field.name + '   Band ' + bandname,
+                                                    title='Field '+str(field.id)+', '+field.name +
+                                                    '   Band ' + bandname,
                                                     xlabel='', ylabel='',  showmajorgrid=False, showminorgrid=False,
                                                     plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 

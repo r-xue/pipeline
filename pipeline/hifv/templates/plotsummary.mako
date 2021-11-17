@@ -132,9 +132,9 @@ def space_comma(s):
 % if amp_vs_freq_plots or phase_vs_freq_plots or  amp_vs_time_plots or amp_vs_uv_plots or phase_vs_uv_plots or phase_vs_time_plots:
 
 <%self:plot_group plot_dict="${amp_vs_freq_plots}"
-              url_fn="${lambda x: 'amp_vs_freq_%s.html' % sanitise(x)}"
-              data_field="${True}"
-              data_spw="${True}"
+                  url_fn="${lambda x: 'amp_vs_freq_%s.html' % sanitise(x)}"
+                  data_field="${True}"
+                  data_spw="${True}"
                   break_rows_by="field"
                   sort_row_by="intent_idx,field,baseband_centfreq">
 
@@ -311,7 +311,7 @@ def space_comma(s):
 				  data_spw="${True}"
 				  data_field="${True}"
                   break_rows_by="field"
-                  sort_row_by="field, baseband_centfreq">
+                  sort_row_by="field,baseband_centfreq">
 
 	<%def name="title()">
 		Science target: calibrated amplitude vs frequency
@@ -406,8 +406,8 @@ def space_comma(s):
 				  url_fn="${lambda x: 'science_amp_vs_uv_%s.html' % sanitise(x)}"
 				  data_baseband="${True}"
 				  data_field="${True}"
-                  break_rows_by="field"
-                  sort_row_by="intent,field,baseband_centfreq,spw">
+                  break_rows_by=""
+                  sort_row_by="intent,field,baseband,spw">
 
 	<%def name="title()">
 		Science targets: calibrated amplitude vs UV distance
@@ -454,7 +454,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="intent_idx"
+                  break_rows_by="field"
                   sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">
@@ -497,7 +497,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'amp_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="intent_idx"
+                  break_rows_by="field"
                   sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">

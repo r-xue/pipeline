@@ -26,34 +26,6 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         super(T2_4MDetailsplotsummaryRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    @staticmethod
-    def get_baseband_desc(baseband_spws, spws_select=[]):
-
-        vla_basebands = []
-        vla_basebands_centfreq = []
-        banddict = baseband_spws
-        if len(banddict) == 0:
-            LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
-
-        for band in banddict:
-            for baseband in banddict[band]:
-                spws = []
-                minfreqs = []
-                maxfreqs = []
-                for spwitem in banddict[band][baseband]:
-                    if (str([*spwitem][0]) in spws_select) or spws_select == []:
-                        spws.append(str([*spwitem][0]))
-                        minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
-                        maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
-                if len(spws) > 0:
-                    bbandminfreq = min(minfreqs)
-                    bbandmaxfreq = max(maxfreqs)
-                    vla_basebands.append(band.capitalize()+':'+baseband+':  ' + str(bbandminfreq) + ' to ' +
-                                         str(bbandmaxfreq))
-                    vla_basebands_centfreq.append((bbandminfreq+bbandmaxfreq)/2)
-        return vla_basebands, vla_basebands_centfreq
-
-
     def update_mako_context(self, ctx, context, results_list):
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results_list.stage_number)
@@ -71,7 +43,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                         self.caltypes_for_result(r))
 
         filesizes = {}
-        baseband_spws = {}
+        baseband_spws = {}  # VLA baseband lookup dictionary
         for r in results_list:
             vis = r.inputs['vis']
             ms = context.observing_run.get_ms(vis)
@@ -412,6 +384,36 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 fileobj.write(renderer.render())
 
         return plots
+
+    @staticmethod
+    def get_baseband_desc(baseband_spws, spws_select=[]):
+        """Get the baseband descriptions from a specifield spw list.
+
+        note: derived from a similar implementation in infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer 
+        """
+        vla_baseband_desc = []
+        vla_baseband_centfreq = []
+
+        if not baseband_spws:
+            LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+
+        for band in baseband_spws:
+            for baseband in baseband_spws[band]:
+                spws = []
+                minfreqs = []
+                maxfreqs = []
+                for spwitem in baseband_spws[band][baseband]:
+                    if (str([*spwitem][0]) in spws_select) or spws_select == []:
+                        spws.append(str([*spwitem][0]))
+                        minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
+                        maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
+                if len(spws) > 0:
+                    bbandminfreq = min(minfreqs)
+                    bbandmaxfreq = max(maxfreqs)
+                    vla_baseband_desc.append(band.capitalize()+':'+baseband+':  ' + str(bbandminfreq) + ' to ' +
+                                             str(bbandmaxfreq))
+                    vla_baseband_centfreq.append((bbandminfreq+bbandmaxfreq)/2)
+        return vla_baseband_desc, vla_baseband_centfreq
 
     @staticmethod
     def get_brightest_fields(ms, intent='TARGET'):
