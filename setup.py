@@ -176,9 +176,47 @@ class MinifyCSSCommand(distutils.cmd.Command):
             f.write('\n')
 
 
+class SubprocessScheduler:
+    def __init__(self, concurrency=1):
+        self._maxlen = concurrency
+        self.procs = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.__join()
+
+    def add(self, process):
+        assert isinstance(process, subprocess.Popen)
+        self.__update(process)
+
+    def __join(self):
+        if len(self.procs) > 0:
+            list(map(lambda p: p.communicate(), self.procs))
+            ret = list(map(lambda p: p.returncode, self.procs))
+            self.procs.clear()
+            if any([r != 0 for r in ret]):
+                raise RuntimeError('Failed to execute process')
+
+    def __update(self, process):
+        self.procs.append(process)
+
+        while len(self.procs) >= self._maxlen:
+            p = self.procs.pop(0)
+            p.communicate()
+            r = p.returncode
+            if r != 0:
+                self.__join()
+                raise RuntimeError('Failed to execute process')
+
+
 class BuildMyTasksCommand(distutils.cmd.Command):
     description = 'Generate the CASA CLI bindings'
-    user_options = [('inplace', 'i', 'Generate CLI bindings in src directory')]
+    user_options = [
+        ('inplace', 'i', 'Generate CLI bindings in src directory'),
+        ('parallel=', 'j', 'number of parallel build jobs')
+    ]
     boolean_options = ['inplace']
 
     def __init__(self, dist):
@@ -187,6 +225,7 @@ class BuildMyTasksCommand(distutils.cmd.Command):
     def initialize_options(self):
         """Set default values for options."""
         self.inplace = None
+        self.parallel = None
 
     def finalize_options(self):
         # get the path to this file
@@ -199,47 +238,68 @@ class BuildMyTasksCommand(distutils.cmd.Command):
             build_py_cmd = self.get_finalized_command('build_py')
             self.build_path = os.path.join(dir_path, build_py_cmd.build_lib)
 
+        if isinstance(self.parallel, str):
+            try:
+                self.parallel = int(self.parallel)
+            except ValueError:
+                raise Exception('prallel (-j) should be an integer')
+
+        if not self.parallel:
+            obj = self.distribution.get_command_obj('build')
+            self.parallel = obj.parallel if obj.parallel else 1
+
+        self.parallel = max(1, self.parallel)
+
     def run(self):
-        for d in PIPELINE_PACKAGES:
-            cli_dir = os.path.join('pipeline', d, 'cli')
-            cli_module = '.'.join(['pipeline', d, 'cli'])
-            src_dir = os.path.join(self.build_path, cli_dir)
-            if not os.path.exists(src_dir):
-                continue
+        if self.parallel > 1:
+            self.announce(f'Number of parallel processes: {self.parallel}', level=distutils.log.INFO)
+        else:
+            self.announce('Serial build', level=distutils.log.INFO)
+        with SubprocessScheduler(concurrency=self.parallel) as sched:
+            for d in PIPELINE_PACKAGES:
+                cli_dir = os.path.join('pipeline', d, 'cli')
+                cli_module = '.'.join(['pipeline', d, 'cli'])
+                src_dir = os.path.join(self.build_path, cli_dir)
+                if not os.path.exists(src_dir):
+                    continue
 
-            cli_init_py = os.path.join(src_dir, '__init__.py')
-            # Remove old init module to avoid incompatible code and duplication
-            if os.path.exists(cli_init_py):
-                os.remove(cli_init_py)
+                cli_init_py = os.path.join(src_dir, '__init__.py')
+                # Remove old init module to avoid incompatible code and duplication
+                if os.path.exists(cli_init_py):
+                    os.remove(cli_init_py)
 
-            gotasks_dir = os.path.join(src_dir, 'gotasks')
-            gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
-            # Remove old init module to avoid incompatible code and duplication
-            if os.path.exists(gotasks_init_py):
-                os.remove(gotasks_init_py)
+                gotasks_dir = os.path.join(src_dir, 'gotasks')
+                if not os.path.exists(gotasks_dir):
+                    os.mkdir(gotasks_dir)
 
-            for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
-                self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
-                subprocess.check_output([
-                    'buildmytasks',
-                    '--module',
-                    cli_module,
-                    xml_file
-                ], cwd=src_dir)
+                gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
+                # Remove old init module to avoid incompatible code and duplication
+                if os.path.exists(gotasks_init_py):
+                    os.remove(gotasks_init_py)
 
-                root, _ = os.path.splitext(xml_file)
-                import_statement = 'from .{} import {}'.format(root, root)
-                with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
-                    import_exists = any(import_statement in line for line in init_file)
-                    if not import_exists:
-                        init_file.seek(0, os.SEEK_END)
-                        init_file.write('{}\n'.format(import_statement))
+                for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
+                    self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
+                    p = subprocess.Popen([
+                        'buildmytasks',
+                        '--module',
+                        cli_module,
+                        xml_file
+                    ], cwd=src_dir, stdout=subprocess.PIPE)
+                    sched.add(p)
 
-                with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
-                    import_exists = any(import_statement in line for line in init_file)
-                    if not import_exists:
-                        init_file.seek(0, os.SEEK_END)
-                        init_file.write('{}\n'.format(import_statement))
+                    root, _ = os.path.splitext(xml_file)
+                    import_statement = 'from .{} import {}'.format(root, root)
+                    with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
+                        import_exists = any(import_statement in line for line in init_file)
+                        if not import_exists:
+                            init_file.seek(0, os.SEEK_END)
+                            init_file.write('{}\n'.format(import_statement))
+
+                    with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
+                        import_exists = any(import_statement in line for line in init_file)
+                        if not import_exists:
+                            init_file.seek(0, os.SEEK_END)
+                            init_file.write('{}\n'.format(import_statement))
 
 
 class VersionCommand(distutils.cmd.Command):
@@ -298,7 +358,7 @@ def _get_git_version():
             dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
             version = version + dirty
         return version
-    else: 
+    else:
         # Retrieve info about current commit.
         try:
             # Set version to latest tag, number of commits since tag, and latest

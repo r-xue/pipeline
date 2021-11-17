@@ -156,7 +156,7 @@ class ImageParamsHeuristics(object):
         elif os.path.isfile(linesfile):
             LOG.info('Using line frequency ranges from %s to calculate continuum frequency selections.' % (linesfile))
 
-            p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+            p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
             try:
                 line_regions = p.findall(open(linesfile, 'r').read().replace('\n', '').replace(';', '').replace(' ', ''))
             except Exception:
@@ -403,7 +403,8 @@ class ImageParamsHeuristics(object):
                                 continue
 
                             try:
-                                taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
+                                taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])}&&" \
+                                       f"{'||'.join(['ANTENNA2==%d' % i for i in antenna_ids[os.path.basename(vis)]])}"
                                 rtn = casa_tools.imager.selectvis(vis=vis,
                                                                   field=field, spw=real_spwid, scan=scanids,
                                                                   taql=taql, usescratch=False, writeaccess=False)
@@ -422,7 +423,7 @@ class ImageParamsHeuristics(object):
                             valid_scanids_list.append(scanids)
                             valid_real_spwid_list.append(','.join(map(str, valid_real_spwid_list_for_vis)))
                             valid_virtual_spwid_list.append(','.join(map(str, valid_virtual_spwid_list_for_vis)))
-                            valid_antenna_ids_list.append(','.join(map(str, antenna_ids[os.path.basename(vis)])))
+                            valid_antenna_ids_list.append(f"{','.join(map(str, antenna_ids[os.path.basename(vis)]))}&")
 
                     if not valid_data[(field, intent)]:
                         # no point carrying on for this field/intent
@@ -622,7 +623,8 @@ class ImageParamsHeuristics(object):
                         real_spwspec = ','.join([str(self.observing_run.virtual2real_spw_id(spwid, ms)) for spwid in spwspec.split(',')])
                         try:
                             antenna_ids = self.antenna_ids(field_intent[1], [os.path.basename(vis)])
-                            taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
+                            taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])}&&" \
+                                   f"{'||'.join(['ANTENNA2==%d' % i for i in antenna_ids[os.path.basename(vis)]])}"
                             rtn = casa_tools.imager.selectvis(vis=vis, field=field_intent[0],
                                                               taql=taql, spw=real_spwspec,
                                                               scan=scanids, usescratch=False, writeaccess=False)
@@ -1257,7 +1259,7 @@ class ImageParamsHeuristics(object):
         spw_topo_chan_param_lists = []
         spw_topo_freq_param_dict = collections.defaultdict(dict)
         spw_topo_chan_param_dict = collections.defaultdict(dict)
-        p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+        p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
         total_topo_freq_ranges = []
         topo_freq_ranges = []
         num_channels = []
@@ -1789,7 +1791,8 @@ class ImageParamsHeuristics(object):
                        and field in [fld.name for fld in scan.fields]]
             scanids = ','.join(scanids)
             antenna_ids = self.antenna_ids(intent, [os.path.basename(ms_do.name)])
-            taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])
+            taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])}&&" \
+                   f"{'||'.join(['ANTENNA2==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])}"
 
             try:
                 with casa_tools.SelectvisReader(ms_do.name, spw='%s:%s' % (real_spwid, chanrange), field=field,
@@ -2030,8 +2033,8 @@ class ImageParamsHeuristics(object):
                 cond2 = bmaj > 2.0 * bmaj_median
                 if np.logical_or(cond1, cond2).any():
                     bad_psf_fit = True
-                    LOG.warn('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
-                             ' results for this cube carefully, there are likely data issues.' % (field, spw))
+                    LOG.warning('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
+                                ' results for this cube carefully, there are likely data issues.' % (field, spw))
             except:
                 pass
 

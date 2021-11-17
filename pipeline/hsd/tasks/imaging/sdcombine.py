@@ -61,7 +61,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         def get_safe_path(path):
             #p = os.path.relpath(path, self.inputs.context.output_dir)
             LOG.debug('original path = "{}"'.format(path))
-            p = path.replace(':', '\:') if ':' in path else path
+            p = path.replace(':', r'\:') if ':' in path else path
             LOG.debug('safe path = "{}"'.format(p))
             return p
 

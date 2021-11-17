@@ -220,16 +220,16 @@ class RflagDevHeuristic(api.Heuristic):
                             spw_sefd = np.interp(mean_freq_mhz, sedf_per_band[:, 0],
                                                  sedf_per_band[:, 1], left=None, right=None)
                             if max_freq_mhz < min(sedf_per_band[:, 0]) or min_freq_mhz > max(sedf_per_band[:, 0]):
-                                LOG.warn(
+                                LOG.warning(
                                     "spw {!s} from {!s}#{!s}  is out of the SEFD profile coverage: \
                                     use the nearest SEFD data point instead.".format(spw_id, band, baseband))
 
                         except Exception as ex:
-                            LOG.warn("Exception: Fail to query SEFD for {!s}. {!s}".format(spw_id, str(ex)))
+                            LOG.warning("Exception: Fail to query SEFD for {!s}. {!s}".format(spw_id, str(ex)))
                             spw_sefd = np.nan
 
                         if np.isnan(spw_sefd):
-                            LOG.warn("The SEFD information of spw {!s} is not available.\
+                            LOG.warning("The SEFD information of spw {!s} is not available.\
                                     The rms scale caclulation will use a fiducial SEFD of 500Jy, \
                                     equivalent to the assumption of uniform SEFD within each baseband. ".format(spw_id))
                             spw_sefd = 500.
@@ -284,7 +284,7 @@ def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='correct
                                         correlation=correlation, uvrange=uvrange,
                                         useflags=useflags)
     except Exception as ex:
-        LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+        LOG.warning("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
     return amp_range
 
@@ -310,7 +310,7 @@ def _get_amp_range2(vis, field='', spw='', scan='', intent='', datacolumn='corre
                                       timeaverage=False, timebin='0s', timespan='')
         amp_range = [stats['']['min'], stats['']['max']]
     except Exception as ex:
-        LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+        LOG.warning("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
     return amp_range
 
@@ -334,7 +334,7 @@ def _get_amp_range1(vis, field='', spw='', scan='', intent='', datacolumn='corre
                 # ms.range always works on whole rows in MS, and ms.selectpolarization() won't affect its result.
                 # r_msselect = msfile.selectpolarization(['RR','LL']) # doesn't work as expected.
                 if not r_msselect:
-                    LOG.warn("Null selection from the field/spw/scan combination.")
+                    LOG.warning("Null selection from the field/spw/scan combination.")
                     return amp_range
             if datacolumn == 'corrected':
                 item = 'corrected_amplitude'
@@ -346,7 +346,7 @@ def _get_amp_range1(vis, field='', spw='', scan='', intent='', datacolumn='corre
             # we increase the blocksize from 10MB (default) to 100MB
             amp_range = msfile.range([item], useflags=useflags, blocksize=100)[item].tolist()
     except Exception as ex:
-        LOG.warn("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
+        LOG.warning("Exception: Unable to obtain the range of data amps. {!s}".format(str(ex)))
 
     return amp_range
 
@@ -360,7 +360,7 @@ def plotms_get_xyrange(plotms_log):
         xyrange = [0, 0, 0, 0]
         idx = 0
         for log_line in plotms_log:
-            log_msg = re.split("\t+", log_line)[3]
+            log_msg = re.split(r"\t+", log_line)[3]
             if ' to ' in log_msg and '(flagged)' in log_msg and '(unflagged)' in log_msg:
                 LOG.debug(log_msg.rstrip())
                 # expected number formats: 1, 1.2, 1e3, 1.2e3, 1.2e+3, 1.2e-3, -1.2e-3, ...
@@ -371,7 +371,7 @@ def plotms_get_xyrange(plotms_log):
                     xyrange[idx+1] = float(dd[1])
                 idx += 2
     except Exception as ex:
-        LOG.warn("Exception: Unable to obtain the plotted data range from CASAplotms log. {!s}".format(str(ex)))
+        LOG.warning("Exception: Unable to obtain the plotted data range from CASAplotms log. {!s}".format(str(ex)))
         return [0, 0, 0, 0]
 
     return xyrange

@@ -35,7 +35,7 @@ def _read_stream(stream):
         yield line
     else:
         pass
-        #LOG.warn('The line {0} is invalid format'.format(line))
+        #LOG.warning('The line {0} is invalid format'.format(line))
     for line in reader:
         LOG.debug('{0}'.format(line))
         if len(line) == 0 or len(line[0]) == 0 or line[0][0] == '#':
@@ -44,4 +44,4 @@ def _read_stream(stream):
             yield line
         else:
             pass
-            #LOG.warn('The line {0} is invalid format'.format(line))
+            #LOG.warning('The line {0} is invalid format'.format(line))

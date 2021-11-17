@@ -569,7 +569,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             # Make combined image
             if len(tocombine_images) == 0:
-                LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
+                LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                 continue
             # reference MS
             ref_ms = context.observing_run.get_ms(name=combined_infiles[0])
@@ -685,7 +685,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # Image statistics
                 if region is None:
-                    LOG.warn('Could not get valid region of interest to calculate image statistics.')
+                    LOG.warning('Could not get valid region of interest to calculate image statistics.')
                     image_rms = -1.0
                 else:
                     statval = calc_image_statistics(imagename, stat_chans, region)
@@ -693,7 +693,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         image_rms = statval['rms'][0]
                         LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
                     else:
-                        LOG.warn('Could not get image statistics. Potentially no valid pixel in region of interest.')
+                        LOG.warning('Could not get image statistics. Potentially no valid pixel in region of interest.')
                         image_rms = -1.0
                 # Theoretical RMS
                 LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
@@ -713,23 +713,25 @@ class SDImaging(basetask.StandardTaskTemplate):
                     if cqa.time(ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
                             spwobj.channels.chan_effbws[0] == numpy.abs(spwobj.channels.chan_widths[0]):
                         is_representative_spw = False
-                        LOG.warn("Cycle 2 and earlier project with nominal effective band width. Reporting RMS at native resolution.")
+                        LOG.warning("Cycle 2 and earlier project with nominal effective band width. Reporting RMS at native resolution.")
                     else:
                         if not cqa.isquantity(rep_bw): # assume Hz
                             rep_bw = cqa.quantity(rep_bw, 'Hz')
                         LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'kHz'))[0], chan_width*1.e-3))
                         factor = sensitivity_improvement.sensitivityImprovement(ref_ms.name, rep_spwid, cqa.tos(rep_bw))
                         if factor is None:
-                            LOG.warn('No image RMS improvement because representative bandwidth is narrower than native width')
+                            LOG.warning('No image RMS improvement because representative bandwidth is narrower than native width')
                             factor = 1.0
                         LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(factor, image_rms, image_rms/factor, brightnessunit))
                         image_rms = image_rms/factor
                         chan_width = numpy.abs(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'Hz'))[0])
                         theoretical_rms['value'] = theoretical_rms['value']/factor
                 elif rep_bw is None:
-                    LOG.warn("Representative bandwidth is not available. Skipping estimate of sensitivity in representative band width.")
+                    LOG.warning(
+                        "Representative bandwidth is not available. Skipping estimate of sensitivity in representative band width.")
                 elif rep_spwid is None:
-                    LOG.warn("Representative SPW is not available. Skipping estimate of sensitivity in representative band width.")
+                    LOG.warning(
+                        "Representative SPW is not available. Skipping estimate of sensitivity in representative band width.")
 
                 # calculate channel and frequency ranges of line free channels
                 ref_pixel = cs.referencepixel()['numeric']
@@ -774,7 +776,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             # NRO specific: generate combined image for each correlation
             if is_nro:
                 if len(tocombine_images_nro) == 0:
-                    LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
+                    LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                     continue
 
                 # image name
@@ -845,9 +847,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             deviation_mask = getattr(msobj, 'deviation_mask', {})
             exclude_range = deviation_mask.get((fieldid, antid, spwid), [])
             LOG.debug("#####{} : DEVIATION MASK = {}".format(msobj.basename, str(exclude_range)))
-            if len(exclude_range)==1 and exclude_range[0] == [0, spwobj.num_channels-1]:
+            if len(exclude_range) == 1 and exclude_range[0] == [0, spwobj.num_channels-1]:
                 # deviation mask is full channel range when all data are flagged
-                LOG.warn("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). Possibly all data flagged".format(msobj.basename, spwid, fieldid, antid))
+                LOG.warning("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). Possibly all data flagged".format(
+                    msobj.basename, spwid, fieldid, antid))
                 exclude_range = []
             if edge[0] > 0: exclude_range.append([0, edge[0]-1])
             if edge[1] > 0: exclude_range.append([spwobj.num_channels-edge[1], spwobj.num_channels-1])
@@ -1004,7 +1007,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             angle_unit = cqa.getunit(r.scan_angle)
             break
         if angle_unit is None:
-            LOG.warn('No valid raster information available.')
+            LOG.warning('No valid raster information available.')
             return None
 
         def __value_in_unit(quantity: dict, unit: str) -> float:
@@ -1068,7 +1071,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             # Non raster data set.
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
                 f = msobj.get_fields(field_id=fieldid)[0]
-                LOG.warn('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
+                LOG.warning('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
                 raster_info_list.append(None)
             dt = datatable_dict[msobj.basename]
             try:
@@ -1130,7 +1133,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             field_name = msobj.get_fields(field_id=fieldid)[0].name
             error_msg = 'Aborting calculation of theoretical thermal noise of Field {} and SpW {}'.format(field_name, spwid)
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
-                LOG.warn('Unable to calculate RMS of non-Raster map. '+error_msg)
+                LOG.warning('Unable to calculate RMS of non-Raster map. '+error_msg)
                 return failed_rms
             LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(msobj.basename,
                                                                                      field_name,
@@ -1138,7 +1141,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                                      msobj.get_antenna(antid)[0].name,
                                                                                      str(pol_names)))
             if raster_info is None:
-                LOG.warn('Raster scan analysis failed. Skipping further calculation.')
+                LOG.warning('Raster scan analysis failed. Skipping further calculation.')
                 continue
 
             dt = datatable_dict[msobj.basename]
@@ -1210,14 +1213,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.error('Could not find a sky caltable applied. '+error_msg)
                 raise
             if not os.path.exists(skytab):
-                LOG.warn('Could not find a sky caltable applied. '+error_msg)
+                LOG.warning('Could not find a sky caltable applied. '+error_msg)
                 return failed_rms
             LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
             with casa_tools.TableReader(skytab) as tb:
                 interval_unit = tb.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
-                    LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
+                    LOG.warning('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(
+                        spwid, antid, sky_field, os.path.basename(skytab), error_msg))
                     t.close()
                     return failed_rms
                 try:
@@ -1240,22 +1244,23 @@ class SDImaging(basetask.StandardTaskTemplate):
                     caltabs = context.callibrary.applied.get_caltable('amp')
                     found = caltabs.intersection(calst.get_caltable('amp'))
                     if len(found) == 0:
-                        LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
+                        LOG.warning('Could not find a Jy/K caltable applied. '+error_msg)
                         return failed_rms
                     if len(found) > 1:
-                        LOG.warn('More than one Jy/K caltables are found.')
+                        LOG.warning('More than one Jy/K caltables are found.')
                     k2jytab = found.pop()
                     LOG.info('Searching Jy/K factor in {}'.format(os.path.basename(k2jytab)))
                 except:
                     LOG.error('Could not find a Jy/K caltable applied. '+error_msg)
                     raise
                 if not os.path.exists(k2jytab):
-                    LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
+                    LOG.warning('Could not find a Jy/K caltable applied. '+error_msg)
                     return failed_rms
                 with casa_tools.TableReader(k2jytab) as tb:
                     t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
                     if t.nrows == 0:
-                        LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
+                        LOG.warning('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid,
+                                    antid, os.path.basename(k2jytab), error_msg))
                         t.close()
                         return failed_rms
                     try:
@@ -1274,7 +1279,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 N += 1.0
 
         if N == 0:
-            LOG.warn('No rms estimate is available.')
+            LOG.warning('No rms estimate is available.')
             return failed_rms
 
         theoretical_rms = numpy.sqrt(sq_rms)/N
@@ -1313,7 +1318,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except Exception:
-        LOG.warn('Failed to detect gaps between raster scans. Fall back to time domain analysis. Result might not be correct.')
+        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. Result might not be correct.')
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
@@ -1326,7 +1331,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
                         break
             gap_r.append(len(dtrow_list))
         except Exception:
-            LOG.warn('Could not find gaps between raster scans. No result is produced.')
+            LOG.warning('Could not find gaps between raster scans. No result is produced.')
             return None
 
     cqa = casa_tools.quanta

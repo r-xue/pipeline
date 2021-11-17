@@ -153,8 +153,8 @@ def associate(context, factors):
             session_name = ms.session
             if session_name == 'Session_default':
                 # Session_default is not supported, use Session_1 instead
-                LOG.warn('Session for %s is \'Session_default\'. Use \'Session_1\' for application of Jy/K factor. ' %
-                         ms.basename)
+                LOG.warning('Session for %s is \'Session_default\'. Use \'Session_1\' for application of Jy/K factor. ' %
+                            ms.basename)
                 session_id = 1
             else:
                 # session_name should be 'Session_X' where X is an integer

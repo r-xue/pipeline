@@ -310,10 +310,6 @@ class ImageDisplay(object):
         data[nodata != 0] = 5.0
         sentinels[5.0] = cc.to_rgb('indigo')
 
-        # set my own colormap and normalise to plot sentinels
-        cmap = _SentinelMap(plt.cm.gray, sentinels=sentinels)
-        norm = _SentinelNorm(sentinels=list(sentinels.keys()))
-
         # calculate vmin, vmax without the sentinels. Leaving norm to do
         # this is not sufficient; the standard Normalize gets called
         # by something in matplotlib and initialises vmin and vmax incorrectly.
@@ -329,6 +325,10 @@ class ImageDisplay(object):
         else:
             vmin = vmax = 0.0
 
+        # set my own colormap and normalise to plot sentinels
+        cmap = _SentinelMap(plt.cm.gray, sentinels=sentinels)
+        norm = _SentinelNorm(vmin=vmin, vmax=vmax, sentinels=list(sentinels.keys()))
+
         # make antenna x antenna plots square
         aspect = 'auto'
         cb_aspect = 50
@@ -342,7 +342,7 @@ class ImageDisplay(object):
 
         # look out for yaxis values that would trip up matplotlib
         if isinstance(ydata[0], str):
-            if re.match('\d+&\d+', ydata[0]):
+            if re.match(r'\d+&\d+', ydata[0]):
                 # baseline - replace & by . and convert to float
                 ydata_numeric = []
                 for b in ydata:
@@ -405,7 +405,7 @@ class ImageDisplay(object):
 
         # Plot the image array; transpose data to get [x,y] into [row,column]
         # expected by matplotlib
-        img = ax.imshow(np.transpose(data), cmap=cmap, norm=norm, vmin=vmin, vmax=vmax, interpolation='nearest',
+        img = ax.imshow(np.transpose(data), cmap=cmap, norm=norm, interpolation='nearest',
                         origin='lower', aspect=aspect, extent=extent)
 
         # Set y-axis title, only add this to the first panel.
@@ -598,16 +598,22 @@ class _SentinelMap(Colormap):
 
         for sentinel, rgb in self.sentinels.items():
             r, g, b = rgb
+            # PIPE-1266: due to finite numerical precision, the scaledData may
+            # get slightly altered within Matplotlib, which means any injected
+            # sentinel values may not re-appear with the exact same value as
+            # those registered in self.sentinels. Therefore, look for values
+            # that are close to the sentinel within a very small tolerance.
+            mask = np.isclose(scaledData, sentinel, rtol=1.e-12, atol=1.e-12)
             if np.ndim(rgba) == 3:
-                rgba[:, :, 0][scaledData == sentinel] = r * mult
-                rgba[:, :, 1][scaledData == sentinel] = g * mult
-                rgba[:, :, 2][scaledData == sentinel] = b * mult
+                rgba[:, :, 0][mask] = r * mult
+                rgba[:, :, 1][mask] = g * mult
+                rgba[:, :, 2][mask] = b * mult
                 if alpha is not None:
                     rgba[:, :, 3] = alpha * mult
             elif np.ndim(rgba) == 2:
-                rgba[:, 0][scaledData == sentinel] = r * mult
-                rgba[:, 1][scaledData == sentinel] = g * mult
-                rgba[:, 2][scaledData == sentinel] = b * mult
+                rgba[:, 0][mask] = r * mult
+                rgba[:, 1][mask] = g * mult
+                rgba[:, 2][mask] = b * mult
                 if alpha is not None:
                     rgba[:, 3] = alpha * mult
 
@@ -618,17 +624,20 @@ class _SentinelNorm(Normalize):
     """Normalise but leave sentinel values unchanged."""
 
     def __init__(self, vmin=None, vmax=None, clip=True, sentinels=[]):
-        self.vmin = vmin
-        self.vmax = vmax
-        self.clip = clip
         self.sentinels = sentinels
+        super().__init__(vmin, vmax, clip)
 
     def __call__(self, value, clip=None):
 
         # remove sentinels, keeping a mask of where they were.
+        # PIPE-1266: due to finite numerical precision, the scaledData may get
+        # slightly altered within Matplotlib, which means any injected sentinel
+        # values may not re-appear with the exact same value as those
+        # registered in self.sentinels. Therefore, look for values that are
+        # close to the sentinel within a very small tolerance.
         sentinel_mask = np.zeros(np.shape(value), np.bool)
         for sentinel in self.sentinels:
-            sentinel_mask += (value == sentinel)
+            sentinel_mask += np.isclose(value, sentinel, rtol=1.e-12, atol=1.e-12)
         sentinel_values = value[sentinel_mask]
 
         actual_data = value[np.logical_not(sentinel_mask)]

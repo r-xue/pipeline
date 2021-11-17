@@ -64,7 +64,8 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
             # Read reffile and insert the elements into a list "lines".
             reffile = r.reffile
             if not os.path.exists(reffile):
-                LOG.warn('The factor file is not found in current directory: os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
+                LOG.warning('The factor file is not found in current directory: os.path.exists(reffile) = {0}'.format(
+                    os.path.exists(reffile)))
                 metadata = ['No Data : No Data']
                 break
             else:
@@ -73,7 +74,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                     lines = f.readlines()
                 # Count the line numbers for the beginning of metadata part and the end of it.
                 if len(lines) == 0:
-                    LOG.warn('The factor file is invalid format: size of reffile = {0}'.format(len(lines)));
+                    LOG.warning('The factor file is invalid format: size of reffile = {0}'.format(len(lines)))
                     metadata = ['No Data : No Data']
                     break
                 else:

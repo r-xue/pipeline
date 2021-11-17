@@ -208,7 +208,7 @@ class Syspower(basetask.StandardTaskTemplate):
             with open(flag_file_name, 'r') as flag_file:
                 for line in flag_file:
                     try:
-                        r = re.search("antenna='ea(\d*)&&\*' timerange='(.*)' reason", line)
+                        r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)' reason", line)
                     except Exception as e:
                         r = False
                     if r:
@@ -372,14 +372,14 @@ class Syspower(basetask.StandardTaskTemplate):
                                 LOG.info(message.format(bband, pol, 100. * np.sum(rq_flag[2 * pol, 0, hits]) /
                                                                                   rq_flag[2 * pol, 0, hits].size))
                         except:
-                            LOG.warn('Error preparing final RQ table')
+                            LOG.warning('Error preparing final RQ table')
                             raise  # SystemExit('shape mismatch writing final RQ table')
 
             try:
                 tb.putcol('FPARAM', rq_par)
                 tb.putcol('FLAG', rq_flag)
             except Exception as ex:
-                LOG.warn('Error writing final RQ table - switched power will not be applied' + str(ex))
+                LOG.warning('Error writing final RQ table - switched power will not be applied' + str(ex))
 
         # create new table to plot pdiff template_table
         if os.path.isdir(template_table):
