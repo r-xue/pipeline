@@ -25,7 +25,6 @@ skip_if_no_data_repo = pytest.mark.skipif(
 )
 
 MS_NAME_DC = casa_tools.utils.resolve("pl-unittest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms")
-MS = MeasurementSetReader.get_measurement_set(MS_NAME_DC)
 
 
 def test_OrderedDefaultdict_insertion():
@@ -144,12 +143,16 @@ def test_merge_td_columns_vertical_align():
     assert merge_td_columns([(1, 1, 1), (1, 1, 1)], vertical_align=True) == expected_output
 
 
+@skip_if_no_data_repo
 def test_total_time_on_target_on_source():
+    MS = MeasurementSetReader.get_measurement_set(MS_NAME_DC)
     assert total_time_on_target_on_source(MS) == datetime.timedelta(0, 40, 320000)
     assert total_time_on_target_on_source(MS, autocorr_only=True) == datetime.timedelta(0, 40, 320000)
 
 
+@skip_if_no_data_repo
 def test_total_time_on_source():
+    MS = MeasurementSetReader.get_measurement_set(MS_NAME_DC)
     assert total_time_on_source(MS.scans) == datetime.timedelta(0, 40, 319999)
 
 ## PIPE-876 - There are some remaining functions to test which could not be included in this ticket:
