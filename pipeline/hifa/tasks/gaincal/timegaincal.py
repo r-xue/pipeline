@@ -93,10 +93,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         result.final.extend(target_phasecal_calapp)
 
         # Compute the phase solutions for all calibrators in inputs.intents.
-        # While the caltable may include solutions for the PHASE calibrator
-        # (if inputs.intent includes 'PHASE'), report the table as only
-        # applicable for bandpass, flux, and polarization, as that is how the
-        # caltable will be later added to the final task result.
+        # These phase cal results include solutions for the PHASE calibrator
+        # fields, and will be temporarily accepted into the local context to
+        # have these vailable as pre-apply in subsequent gaincals (in
+        # particular for computing residual phase offsets). But for the final
+        # task result, these phase solutions will only be registered as
+        # applicable to the bandpass, flux, and polarization calibrators.
         LOG.info('Computing phase gain table for bandpass, flux, and polarization calibrator.')
         cal_phase_results, max_phase_solint = self._do_phasecal_for_calibrators()
 
@@ -106,10 +108,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         for cpres in cal_phase_results:
             cpres.accept(inputs.context)
 
-        # Create a new CalApplication to mark the initial phase solutions for
-        # calibrators as only-to-be-applied-to AMPLITUDE, BANDPASS, and POL*
-        # calibrators. Add this new CalApp to the final task result, to be
-        # merged into the context / callibrary.
+        # Look through calibrator phasecal results for any CalApplications for
+        # caltables that are applicable to non-PHASE calibrators (i.e.
+        # AMPLITUDE, BANDPASS, and POL*). Add these CalApps to the final task
+        # result, to be merged into the context / callibrary.
         for cpres in cal_phase_results:
             cp_calapp = cpres.final[0]
             if cp_calapp.intent != 'PHASE':
@@ -348,60 +350,59 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Initialize output list of phase gaincal results.
         phasecal_results = []
 
-        # Split intents by PHASE and other calibrators.
+        # Split intents by PHASE and non-PHASE calibrators.
         p_intent = 'PHASE'
-        other_calintents = ','.join(set(inputs.intent.split(',')) - {p_intent})
+        np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
 
-        # PIPE-1154: For the non-PHASE calibrators, compute phase solutions
-        # with no spw mapping / combining.
-        if other_calintents:
-            othercal_result = self._do_phasecal_for_other_calibrators(other_calintents)
-            phasecal_results.append(othercal_result)
+        # PIPE-1154: first create a phase caltable for the non-PHASE
+        # calibrators.
+        if np_intents:
+            np_phasecal_result = self._do_phasecal_for_non_phase_calibrators(np_intents)
+            phasecal_results.append(np_phasecal_result)
 
-        # PIPE-1154: For the PHASE calibrator(s), create separate phase
-        # solutions for each PHASE field, and use optimal gaincal parameters
-        # based on spwmapping registered in the measurement set. These are
-        # not intended for the final result, but will be merged into the local
-        # task context, so that they are used in pre-apply when computing the
-        # residual phase offsets.
+        # PIPE-1154: next, compute the phase gain solutions for the PHASE
+        # calibrator fields. These solutions for the PHASE fields are not
+        # intended for the final result, but will be merged into the local task
+        # context, so that they are used in pre-apply when computing the
+        # residual phase offsets. Track the maximum phase solint that gets
+        # used, so the same value can be when computing the diagnostic
+        # amplitude caltable.
         max_phase_solint = None
         if p_intent in inputs.intent:
-            pcal_results, max_phase_solint = self._do_phasecal_for_phase_calibrator_fields(p_intent)
+            pcal_results, max_phase_solint = self._do_phasecal_for_phase_calibrators(p_intent)
             phasecal_results.extend(pcal_results)
 
         return phasecal_results, max_phase_solint
 
-    def _do_phasecal_for_other_calibrators(self, intent):
+    def _do_phasecal_for_non_phase_calibrators(self, intent: str):
         """
         This method is responsible for creating phase gain caltable(s) for the
         non-PHASE calibrators.
         """
         inputs = self.inputs
 
-        # If the user specified a filename, then add the intent, to
-        # ensure the filenames remain unique in case of multiple fields.
-        caltable = None
-        if inputs.calphasetable:
-            root, ext = os.path.splitext(inputs.calphasetable)
-            caltable = f'{root}.{intent}.{ext}'
+        # Identify fields covered by non-phase calibrators.
+        fields = ','.join([f.name for f in inputs.ms.get_fields(intent=intent)])
 
         # PIPE-645: for bandpass, amplitude, and polarisation intents, always
         # use minsnr set to 3.
         # PIPE-1154: for bandpass, amplitude, and polarisation intents, always
         # use combine='', solint=inputs.calsolint, no spwmap, and no interp.
-        phasecal_result = self._do_calibrator_phasecal(caltable=caltable, field=inputs.field, intent=intent,
-                                                       spw=inputs.spw, gaintype='G', combine='',
-                                                       solint=inputs.calsolint, minsnr=3.0, spwmap=None, interp=None)
+        phasecal_result = self._do_calibrator_phasecal(field=fields, intent=intent, spw=inputs.spw, gaintype='G',
+                                                       combine='', solint=inputs.calsolint, minsnr=3.0, interp=None,
+                                                       spwmap=None)
 
         return phasecal_result
 
-    def _do_phasecal_for_phase_calibrator_fields(self, intent):
+    def _do_phasecal_for_phase_calibrators(self, intent: str):
         """
         This method is responsible for creating phase gain caltable(s) for the
-        each field that covers a PHASE calibrator.
+        each field that covers a PHASE calibrator, using optimal gaincal
+        parameters based on the SpW mapping registered in the measurement set.
         """
         inputs = self.inputs
 
+        # Initialize list of phase gaincal results and solints used.
         phasecal_results = []
         solints = []
 
@@ -413,22 +414,14 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             # based on spw mapping info in MS.
             combine, gaintype, interp, lowsnr_spws, solint, spwmap = self._get_phasecal_params(intent, field.name)
 
-            # If the user specified a filename, then add the intent and field,
-            # to ensure the filenames remain unique in case of multiple fields.
-            caltable = None
-            if inputs.calphasetable:
-                root, ext = os.path.splitext(inputs.calphasetable)
-                caltable = f'{root}.{intent}.{field}{ext}'
-
             # PIPE-390: if not combining across spw, then no need to deal with
             # SpectralSpec, so create a gaincal solution for all SpWs, using
             # provided solint, gaintype, spwmap, and interp.
             if not combine:
-                phasecal_result = self._do_calibrator_phasecal(caltable=caltable, field=field.name, intent=intent,
-                                                               spw=inputs.spw, gaintype=gaintype, combine=combine,
-                                                               solint=solint, minsnr=inputs.calminsnr, spwmap=spwmap,
-                                                               interp=interp)
-                phasecal_results.append(phasecal_result)
+                phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=inputs.spw,
+                                                                     gaintype=gaintype, combine=combine, solint=solint,
+                                                                     minsnr=inputs.calminsnr, interp=interp,
+                                                                     spwmap=spwmap))
                 solints.append(solint)
 
             # Otherwise, a combined SpW solution is expected, and we need to
@@ -454,17 +447,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                     if ref_spw not in lowsnr_spws:
                         solint = inputs.calsolint
 
-                    # If an explicit output filename is defined, then add the
-                    # spw selection to ensure the filenames remain unique.
-                    if caltable:
-                        root, ext = os.path.splitext(caltable)
-                        caltable = f'{root}.{spw_sel}{ext}'
-
-                    phasecal_result = self._do_calibrator_phasecal(caltable=caltable, field=field.name, intent=intent,
-                                                                   spw=spw_sel, gaintype=gaintype, combine=combine,
-                                                                   solint=solint, minsnr=inputs.calminsnr,
-                                                                   spwmap=spwmap, interp=interp)
-                    phasecal_results.append(phasecal_result)
+                    phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=spw_sel,
+                                                                         gaintype=gaintype, combine=combine,
+                                                                         solint=solint, minsnr=inputs.calminsnr,
+                                                                         interp=interp, spwmap=spwmap))
                     solints.append(solint)
 
         # PIPE-1154: determine which was the longest solint used for any of the
@@ -475,13 +461,25 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         return phasecal_results, max_solint
 
     # Used to calibrate "selfcaled" targets
-    def _do_calibrator_phasecal(self, caltable=None, field=None, intent=None, spw=None, gaintype='G', combine=None,
-                                solint=None, minsnr=None, spwmap=None, interp=None):
+    def _do_calibrator_phasecal(self, field: str = None, intent: str = None, spw: str = None, gaintype: str = 'G',
+                                combine: str = None, solint: str = None, minsnr: float = None,
+                                interp: str = None, spwmap: List[int] = None):
         """
         This runs the gaincal for creating phase solutions intended for the
         calibrators (amplitude, bandpass, polarization, phase).
         """
         inputs = self.inputs
+
+        # Construct filename of output caltable:
+        # If provided, use the "calphasetable" parameter from top-level task
+        # inputs as a basename, but modify to ensure the filename is unique.
+        caltable = None
+        if inputs.calphasetable:
+            root, ext = os.path.splitext(inputs.calphasetable)
+            # Always add intent, and if the intent is PHASE then also add field
+            # name.
+            field_str = f'.{field}' if intent == 'PHASE' else ''
+            caltable = f'{root}.{intent}{field_str}{ext}'
 
         task_args = {
             'output_dir': inputs.output_dir,
@@ -502,27 +500,29 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
         # Modify the cal application for this caltable based on overrides.
-        # For the initial phase-ups, calwt is always False.
-        # Set intent.
+        # For the initial phase-ups, calwt is always False, and intent is set.
+        # Adjust the interpolation and SpW mapping if provided.
         calapp_overrides = {
             'calwt': False,
             'intent': intent,
         }
-
-        # Adjust the interp if provided.
         if interp:
             calapp_overrides['interp'] = interp
-
-        # Adjust the spw map if provided.
         if spwmap:
             calapp_overrides['spwmap'] = spwmap
 
+        # PIPE-1154: if adding solutions for a field with PHASE intent, then
+        # modify the CalApplication to ensure that solutions from this PHASE
+        # field are only applied to itself.
+        if intent == 'PHASE':
+            calapp_overrides['field'] = field
+            calapp_overrides['gainfield'] = field
+
         # Create a modified CalApplication and replace CalApp in result with
         # this new one.
-        original_calapp = result.final[0]
-        modified_calapp = callibrary.copy_calapplication(original_calapp, **calapp_overrides)
-        result.pool[0] = modified_calapp
-        result.final[0] = modified_calapp
+        modified_calapp = callibrary.copy_calapplication(result.final[0], **calapp_overrides)
+        result.final = [modified_calapp]
+        result.pool = [modified_calapp]
 
         return result
 
