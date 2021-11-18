@@ -85,13 +85,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # to the target, check source, and phase calibrator when the result for
         # this task is accepted.
         LOG.info('Computing phase gain table for target, check source, and phase calibrator.')
-        target_phase_results = self._do_phasecal_for_target()
+        target_phasecal_calapp = self._do_phasecal_for_target()
         # Add the solutions to final task result, for adopting into context
         # callibrary, but do not merge them into local task context, so they
         # are not used in pre-apply of subsequent gaincal calls.
-        for tpres in target_phase_results:
-            result.pool.extend(tpres.pool)
-            result.final.extend(tpres.final)
+        result.pool.extend(target_phasecal_calapp)
+        result.final.extend(target_phasecal_calapp)
 
         # Compute the phase solutions for all calibrators in inputs.intents.
         # While the caltable may include solutions for the PHASE calibrator
@@ -161,67 +160,96 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return result
 
+    @staticmethod
+    def _group_by_spectralspec(ms: MeasurementSet, spw_sel: str, spwmap: List[int]) -> Dict:
+        """
+        Group selected SpWs by SpectralSpec
+
+        Args:
+            ms: MeasurementSet to query for spectral specs.
+            spw_sel: A comma separated string of SpW IDs to analyze
+            spwmap: List representing spectral window mapping
+
+        Returns:
+            Dictionary of reference Spw ID (key) and SpW IDs associated to the
+            same SpectralSpec (value). Each value element is a comma separated
+            string of list of SpW IDs mapped to a same SpW ID. For example:
+            {0: '0,2', 3: '3,5'} means that SpWs (0, 2) and (3, 5) are
+            associated with a same SpectralSpec and their reference Spw IDs are
+            SpW 0 and 3, respectively.
+        """
+        grouped_spw = {}
+
+        if len(spwmap) == 0:  # No SpW combination
+            return grouped_spw
+
+        request_spws = set(ms.get_spectral_windows(task_arg=spw_sel))
+        for spws in utils.get_spectralspec_to_spwid_map(request_spws).values():
+            ref_spw = {spwmap[i] for i in spws}
+            assert len(ref_spw) == 1, 'A SpectralSpec is mapped to more than one SpWs'
+            grouped_spw[ref_spw.pop()] = str(',').join([str(i) for i in sorted(spws)])
+
+        LOG.debug('SpectralSpec grouping: {}'.format(grouped_spw))
+
+        return grouped_spw
+
     def _do_phasecal_for_target(self):
         """
         This method is responsible for creating phase gain caltable(s) that
         will be applicable to the TARGET, the CHECK source, and the PHASE
         calibrator.
 
+        Separate phase solutions are created for each PHASE field, and for each
+        SpectralSpec where not using "combine" SpW mapping.
+
         The resulting caltable(s) will be part of the final task result, with
         separate CalApplications to register the caltable(s) to be applicable
         to PHASE, as well as to TARGET/CHECK.
         """
         inputs = self.inputs
-
-        phasecal_results = []
-
-        # Split intents by PHASE and other calibrators.
-        p_intent = 'PHASE'
-        if p_intent in inputs.intent:
-            # Compute phase solutions for phase calibrator(s).
-            phasecal_results = self._do_phasecal_for_target_using_phase_calibrator_fields(p_intent)
-
-        return phasecal_results
-
-    def _do_phasecal_for_target_using_phase_calibrator_fields(self, intent):
-        """
-        This creates separate phase gain caltables for each PHASE field, and
-        for each SpectralSpec when not using "combine" SpW mapping.
-
-        Each resulting caltable will be part of the final task result, with
-        separate CalApplications to register the caltable to be applicable to
-        PHASE, as well as to TARGET/CHECK.
-        """
-        inputs = self.inputs
         ms = inputs.ms
+        p_intent = 'PHASE'
 
-        phasecal_results = []
+        # Initialize output list of CalApplications.
+        calapp_list = []
+
+        # Determine non-phase calibrator fields, to be added to gaincal solve
+        # for plotting purposes.
+        np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
+        np_fields = [f.name for f in inputs.ms.get_fields(intent=np_intents)]
 
         # Create separate phase solutions for each PHASE field. These solutions
         # are intended to be used as a temporary pre-apply when generating the
         # phase offsets caltable.
-        for field in inputs.ms.get_fields(intent=intent):
+        for field in inputs.ms.get_fields(intent=p_intent):
+            # Collect fields for which to run gaincal: current PHASE field
+            # and all non-phase calibrators.
+            gc_fields = ','.join(np_fields + [field.name])
+
+            # Retrieve from MS which TARGET/CHECK fields the gain solutions for
+            # the current PHASE field should be applied to.
+            tc_fields = ','.join(ms.phasecal_mapping.get(field.name, {}))
+
             # If the user specified a filename, then add the field name, to
             # ensure the filenames remain unique in case of multiple fields.
             caltable = None
             if inputs.targetphasetable:
                 root, ext = os.path.splitext(inputs.targetphasetable)
-                caltable = f'{root}.{field}{ext}'
+                caltable = f'{root}.{field.name}{ext}'
 
             # Get optimal phase solution parameters for current PHASE field,
             # based on spw mapping info in MS.
             # No need to capture optimal solint or "low SNR SpWs", as the
             # solint will be fixed to inputs.targetsolint.
-            combine, gaintype, interp, _, _, spwmap = self._get_phasecal_params(intent, field.name)
+            combine, gaintype, interp, _, _, spwmap = self._get_phasecal_params(p_intent, field.name)
 
             # PIPE-390: if not combining across spw, then no need to deal with
             # SpectralSpec, so create a gaincal solution for all SpWs, using
             # provided gaintype, spwmap, and interp.
             if not combine:
-                phasecal_result = self._do_target_phasecal(caltable=caltable, field=field.name, intent=intent,
-                                                           spw=inputs.spw, gaintype=gaintype, combine=combine,
-                                                           spwmap=spwmap, interp=interp)
-                phasecal_results.append(phasecal_result)
+                calapp_list.extend(self._do_target_phasecal(caltable=caltable, field=gc_fields, spw=inputs.spw,
+                                                            gaintype=gaintype, combine=combine, spwmap=spwmap,
+                                                            interp=interp, applyto=tc_fields))
 
             # Otherwise, a combined SpW solution is expected, and we need to
             # create separate solutions for each SpectralSpec grouping of Spws.
@@ -236,10 +264,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                     LOG.info(f'Processing spectral spec with spws {spw_sel}')
 
                     # Check if there are scans for current intent and SpWs.
-                    selected_scans = ms.get_scans(scan_intent=intent, spw=spw_sel)
+                    selected_scans = ms.get_scans(scan_intent=p_intent, spw=spw_sel)
                     if len(selected_scans) == 0:
-                        LOG.info('Skipping table generation for empty selection: spw={}, intent={}'
-                                 ''.format(spw_sel, intent))
+                        LOG.info(f'Skipping table generation for empty selection: spw={spw_sel}, intent={p_intent}')
                         continue
 
                     # If an explicit output filename is defined, then add the
@@ -249,15 +276,15 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                         caltable = f'{root}.{spw_sel}{ext}'
 
                     # Run phase calibration.
-                    phasecal_result = self._do_target_phasecal(caltable=caltable, field=field.name, intent=intent,
-                                                               spw=spw_sel, gaintype=gaintype, combine=combine,
-                                                               spwmap=spwmap, interp=interp)
-                    phasecal_results.append(phasecal_result)
+                    calapp_list.extend(self._do_target_phasecal(caltable=caltable, field=field.name, spw=spw_sel,
+                                                                gaintype=gaintype, combine=combine, spwmap=spwmap,
+                                                                interp=interp, applyto=tc_fields))
 
-        return phasecal_results
+        return calapp_list
 
-    def _do_target_phasecal(self, caltable=None, field=None, intent=None, spw=None, gaintype=None, combine=None,
-                            interp=None, spwmap=None):
+    def _do_target_phasecal(self, caltable: str = None, field: str = None, spw: str = None, gaintype: str = None,
+                            combine: str = None, interp: str = None, spwmap: List[int] = None,
+                            applyto: str = None) -> List:
         """
         This runs the gaincal for creating phase solutions intended for TARGET,
         CHECK, and PHASE. The result contains two CalApplications, one for
@@ -273,7 +300,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             'vis': inputs.vis,
             'caltable': caltable,
             'field': field,
-            'intent': intent,
+            'intent': inputs.intent,
             'spw': spw,
             'solint': inputs.targetsolint,
             'gaintype': gaintype,
@@ -286,28 +313,30 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         }
         result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
-        # Modify the cal application for this caltable based on overrides.
-        calapp_overrides = {}
+        # Create new CalApplications to correctly register caltable.
+        new_calapps = []
 
-        # Adjust the interp if provided.
+        # Define what overrides should be included in the cal application.
+        # Add overrides for interpolation and SpW mapping if provided.
+        calapp_overrides = {}
         if interp:
             calapp_overrides['interp'] = interp
-
-        # Adjust the spw map if provided.
         if spwmap:
             calapp_overrides['spwmap'] = spwmap
 
-        # Create two modified CalApplications, one for PHASE and another for
-        # TARGET and CHECK. See CAS-12214 for specification of gainfield.
-        result_calapp = result.final[0]
-        cal_calapp = callibrary.copy_calapplication(result_calapp, intent='PHASE', gainfield='nearest',
-                                                    **calapp_overrides)
-        target_calapp = callibrary.copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='',
-                                                       **calapp_overrides)
-        result.pool = [cal_calapp, target_calapp]
-        result.final = [cal_calapp, target_calapp]
+        # Create a modified CalApplication to register this caltable against
+        # the PHASE calibrator field itself.
+        new_calapps.append(callibrary.copy_calapplication(result.final[0], intent='PHASE', field=field,
+                                                          gainfield=field, **calapp_overrides))
 
-        return result
+        # If the current PHASE field was mapped to TARGET/CHECK field(s), then
+        # create a modified CalApplication to register this caltable against
+        # those TARGET/CHECK fields.
+        if applyto:
+            new_calapps.append(callibrary.copy_calapplication(result.final[0], intent='TARGET,CHECK', field=applyto,
+                                                              gainfield=field, **calapp_overrides))
+
+        return new_calapps
 
     def _do_phasecal_for_calibrators(self):
         """
@@ -662,39 +691,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 interp = 'linear,linear'
 
         return combine, gaintype, interp, lowsnr_spws, solint, spwmap
-
-    @staticmethod
-    def _group_by_spectralspec(ms: MeasurementSet, spw_sel: str, spwmap: List[int]) -> Dict:
-        """
-        Group selected SpWs by SpectralSpec
-
-        Args:
-            ms: MeasurementSet to query for spectral specs.
-            spw_sel: A comma separated string of SpW IDs to analyze
-            spwmap: List representing spectral window mapping
-
-        Returns:
-            Dictionary of reference Spw ID (key) and SpW IDs associated to the
-            same SpectralSpec (value). Each value element is a comma separated
-            string of list of SpW IDs mapped to a same SpW ID. For example:
-            {0: '0,2', 3: '3,5'} means that SpWs (0, 2) and (3, 5) are
-            associated with a same SpectralSpec and their reference Spw IDs are
-            SpW 0 and 3, respectively.
-        """
-        grouped_spw = {}
-
-        if len(spwmap) == 0:  # No SpW combination
-            return grouped_spw
-
-        request_spws = set(ms.get_spectral_windows(task_arg=spw_sel))
-        for spws in utils.get_spectralspec_to_spwid_map(request_spws).values():
-            ref_spw = {spwmap[i] for i in spws}
-            assert len(ref_spw) == 1, 'A SpectralSpec is mapped to more than one SpWs'
-            grouped_spw[ref_spw.pop()] = str(',').join([str(i) for i in sorted(spws)])
-
-        LOG.debug('SpectralSpec grouping: {}'.format(grouped_spw))
-
-        return grouped_spw
 
 
 def do_gtype_gaincal(context, executor, task_args):
