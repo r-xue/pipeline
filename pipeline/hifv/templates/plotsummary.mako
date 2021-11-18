@@ -135,7 +135,7 @@ def space_comma(s):
                   url_fn="${lambda x: 'amp_vs_freq_%s.html' % sanitise(x)}"
                   data_field="${True}"
                   data_spw="${True}"
-                  break_rows_by="field"
+                  break_rows_by="intent_idx"
                   sort_row_by="intent_idx,field,baseband_centfreq">
 
 	<%def name="title()">
@@ -175,7 +175,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="field"
+                  break_rows_by="intent_idx"
                   sort_row_by="intent_idx,field,baseband_centfreq">
 
 	<%def name="title()">
@@ -454,7 +454,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="field"
+                  break_rows_by="intent_idx"
                   sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">
@@ -497,7 +497,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'amp_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="field"
+                  break_rows_by="intent_idx"
                   sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">

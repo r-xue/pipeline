@@ -83,7 +83,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         for intents in [['PHASE'], ['BANDPASS']]:
             plots = self.create_plots(context,
                                       results_list,
-                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                      applycal.AmpVsFrequencyPerFieldBasebandSummaryChart,
                                       intents, correlation=corrstring)
 
             for vis, vis_plots in plots.items():
@@ -103,7 +103,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         for intents in [['PHASE'], ['BANDPASS']]:
             plots = self.create_plots(context,
                                       results_list,
-                                      applycal.PhaseVsFrequencyPerBasebandSummaryChart,
+                                      applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart,
                                       intents, correlation=corrstring)
 
             for vis, vis_plots in plots.items():
@@ -136,7 +136,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                          (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
                 plots = self.create_plots(context,
                                           results_list,
-                                          applycal.PhaseVsFrequencyPerBasebandSummaryChart,
+                                          applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart,
                                           intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
                                           avgbaseline=True, avgantenna=False, plotrange=[0, 0, -180, 180])
 
@@ -161,7 +161,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                          (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
                 plots = self.create_plots(context,
                                           results_list,
-                                          applycal.AmpVsFrequencyPerBasebandSummaryChart,
+                                          applycal.AmpVsFrequencyPerFieldBasebandSummaryChart,
                                           intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
                                           avgbaseline=True, avgantenna=False, plotrange=[])
 
@@ -293,7 +293,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for field in plotfields:
                 plots = self.science_plots_for_result(context,
                                                       result,
-                                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                                       [field.id],
                                                       uv_range, correlation=correlation)
 
@@ -315,7 +315,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 # detail pages; we don't create plots per spw or antenna
                 self.science_plots_for_result(context,
                                               result,
-                                              applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                              applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                               fields,
                                               uv_range,
                                               ApplycalAmpVsFreqSciencePlotRenderer, correlation=correlation)
@@ -356,7 +356,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             # the field is resolved to a list of all field IDs
             overrides['field'] = field
 
-            if plotter_cls.__name__ == 'VLAAmpVsFrequencyBasebandSummaryChart':
+            if plotter_cls.__name__ == 'AmpVsFrequencyPerBasebandSummaryChart':
                 fieldobjs = m.get_fields(intent=intentselection, field_id=field)
                 first_field = fieldobjs[0]
                 source_spwobjlist = list(first_field.valid_spws)
