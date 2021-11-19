@@ -51,7 +51,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
-						<th>Number of Bins</th>
+						<th>Online Spec. Avg.</th>
 			        	<th>Frequency Width</th>
 			        	<th>Velocity Width</th>
 			        </tr>
@@ -139,7 +139,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
-						<th>Number of Bins</th>
+						<th>Online Spec. Avg.</th>
 			        	<th>Frequency Width</th>
 			        	<th>Velocity Width</th>
 			        </tr>
