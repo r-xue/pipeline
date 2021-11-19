@@ -661,15 +661,14 @@ class SDSparseMapDisplay(SDImageDisplay):
                     me.doframe(direction_ref)
                     me.doframe(position_ref)
 
-                    def _tolsrk(x):
+                    def tolsrk(x):
                         # ATM is always in TOPO
                         m = me.frequency(rf='TOPO', v0=qa.quantity(x, 'GHz'))
                         converted = me.measure(v=m, rf=frame)
                         qout = qa.convert(converted['m0'], outunit='GHz')
                         return qout['value']
 
-                    tolsrk = numpy.vectorize(_tolsrk)
-                    atm_freq = tolsrk(atm_freq)
+                    atm_freq = numpy.fromiter(map(tolsrk, atm_freq), dtype=atm_freq.dtype)
 
                     me.done()
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
