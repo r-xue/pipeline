@@ -43,7 +43,7 @@ def enable_memstats():
                 total = measures.FileSize(cmd[1], measures.FileSizeUnits.KILOBYTES)
 
                 LOG.info('%s%s: private=%s shared=%s total=%s' % (
-                    msg, jobrequest.fn.__name__, str(private),
+                    msg, jobrequest.fn_name, str(private),
                     str(shared), str(total)))
 
             vm_accuracy = ps_mem.shared_val_accuracy()
@@ -150,7 +150,7 @@ def enable_fd_logs(interval_secs=60):
 
     def get_hook_fn(msg, start=False, cancel=False):
         def log_file_descriptors(jobrequest):
-            job_name = jobrequest.fn.__name__
+            job_name = jobrequest.fn_name
             if start:
                 if enable_fd_logs.interval:
                     enable_fd_logs.interval.stop()

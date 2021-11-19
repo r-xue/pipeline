@@ -646,7 +646,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                             # result.measurements.update(setjy_result.measurements)
                         except Exception:
                             # something has gone wrong, return an empty result
-                            LOG.warn(
+                            LOG.warning(
                                 "SetJy issue with field id=" + str(job.kw['field']) + " and spw=" + str(job.kw['spw']))
 
                     LOG.info("Merging flux scaling operation for setjy jobs for " + self.inputs.vis)
@@ -655,7 +655,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                         try:
                             self._executor.execute(job)
                         except Exception:
-                            LOG.warn(
+                            LOG.warning(
                                 "SetJy issue with field id=" + str(job.kw['field']) + " and spw=" + str(job.kw['spw']))
 
         return True

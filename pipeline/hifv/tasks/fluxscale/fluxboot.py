@@ -237,8 +237,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             try:
                                 self._executor.execute(job)
                             except Exception as e:
-                                LOG.warn("SetJy issue with field id=" + str(job.kw['field']) + " and spw="
-                                         + str(job.kw['spw']))
+                                LOG.warning("SetJy issue with field id=" + str(job.kw['field']) + " and spw="
+                                            + str(job.kw['spw']))
 
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
@@ -344,7 +344,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.info("Gain table " + caltable + " is ready for flagging.")
         else:
             caltable = self.inputs.caltable
-            LOG.warn("Caltable " + caltable + "has been flagged and will be used in the flux density bootstrapping.")
+            LOG.warning("Caltable " + caltable + "has been flagged and will be used in the flux density bootstrapping.")
 
         # ---------------------------------------------------------------------
         # Fluxboot stage
@@ -510,7 +510,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 fitorder = 1
         else:
             fitorder = 1
-            LOG.warn('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
+            LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
 
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
@@ -935,7 +935,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             jobs_vis.append(casa_tasks.setjy(**task_args))
 
             if abs(self.spix) > 5.0:
-                LOG.warn("abs(spix) > 5.0 - Fail")
+                LOG.warning("abs(spix) > 5.0 - Fail")
 
             # merge identical jobs into one job with a multi-spw argument
             LOG.info("Merging setjy jobs for {!s}".format(calMs))

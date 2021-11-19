@@ -198,7 +198,7 @@ def find_histogram_peak(hist: np.ndarray) -> List[int]:
     # if angle distribution is too wide, fail the heuristics
     if np.count_nonzero(mask) / len(mask) > sparseness:
         msg = 'Angle distribution is not likely to be the one for raster scan'
-        LOG.warn(msg)
+        LOG.warning(msg)
         raise RasterScanHeuristicsFailure(msg)
     return peak_indices
 
@@ -473,7 +473,7 @@ def find_angle_gap(angle_deg: np.ndarray) -> List[int]:
     is_round_trip_raster = ((num_peak == 2) and (abs(180 - abs(peak_values[1] - peak_values[0]))) <= tolerance)
     if not (is_one_way_raster or is_round_trip_raster):
         msg = 'Scan pattern is not likely to be raster scan.'
-        LOG.warn(msg)
+        LOG.warning(msg)
         raise RasterScanHeuristicsFailure(msg)
 
     # acceptable angle deviation from peak angle in degree
@@ -584,7 +584,7 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
     if np.any(delta == 1):
         # possibly one-way raster mapping which is not supported
         msg = 'The pattern seems to be raster but is not supported by this heuristics.'
-        LOG.warn(msg)
+        LOG.warning(msg)
         raise RasterScanHeuristicsFailure(msg)
     raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
     return raster_gap

@@ -33,7 +33,7 @@ rsc_path = ""
         ## Bold table rows where the total offset is greater than a threshold. See PIPE-77.
         <%
             import re
-            comparison = re.sub("<.*?>", "", tr[-2]).strip()
+            comparison = re.sub(r"<.*?>", "", tr[-2]).strip()
             if comparison != '' :
                 comparison=float(comparison)
         %>
@@ -72,7 +72,7 @@ rsc_path = ""
         ## Bold table rows where the total offset is greater than a threshold. See PIPE-77.
         <%
             import re
-            comparison = re.sub("<.*?>", "", tr[-2]).strip()
+            comparison = re.sub(r"<.*?>", "", tr[-2]).strip()
             if comparison != '' :
                 comparison=float(comparison)
         %>

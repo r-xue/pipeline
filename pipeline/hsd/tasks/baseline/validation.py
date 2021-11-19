@@ -847,8 +847,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 break
 
         if converged is False:
-            LOG.warn('Clustering analysis not converged. Number of clusters may be greater than upper limit'
-                     ' (MaxCluster=%s)', MaxCluster)
+            LOG.warning('Clustering analysis not converged. Number of clusters may be greater than upper limit'
+                        ' (MaxCluster=%s)', MaxCluster)
 
         cluster_info = {
             'algorithm': 'kmean',

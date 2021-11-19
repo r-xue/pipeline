@@ -497,7 +497,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         """
 
         # regex to match unix paths
-        unix_path = re.compile('((?:(\.{1,2})?\\/[\\w\\.\\-]+)+)', re.IGNORECASE | re.DOTALL)
+        unix_path = re.compile(r'((?:(\.{1,2})?\/[\w\.\-]+)+)', re.IGNORECASE | re.DOTALL)
 
         # define a function that replaces directory names with our new output
         # directory

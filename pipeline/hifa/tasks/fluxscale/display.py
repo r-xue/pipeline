@@ -17,7 +17,7 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
                 # the contained values cause problems with the underlying SWIG wrappers.
                 uvrangeplot = msfile.range(['uvdist'])['uvdist'].tolist()
         except:
-            LOG.warn("Unable to obtain plotting ranges for gfluxscale uvdist.")
+            LOG.warning("Unable to obtain plotting ranges for gfluxscale uvdist.")
             uvrangeplot = [0, 0]
 
         # Get amp min/max   for vertical axis
@@ -38,7 +38,7 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
             pltmin = ampmin - 0.05 * amprange
             pltmax = ampmax + 0.05 * amprange
         except:
-            LOG.warn("Unable to obtain plotting ranges for gfluxscale amps.")
+            LOG.warning("Unable to obtain plotting ranges for gfluxscale amps.")
             pltmin = 0
             pltmax = 0
         '''

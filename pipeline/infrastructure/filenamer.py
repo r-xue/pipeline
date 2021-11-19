@@ -41,17 +41,17 @@ def fitsname(products_dir, imagename, version=1):
        FITS file name."""
 
     # Need to remove stage / iter information
-    #fitsname = re.sub('\.s\d+.*\.iter.*\.', '.', imagename)
-    fitsname = re.sub('\.s\d+[_]\d+\.', '.', imagename)
-    fitsname = re.sub('\.iter\d+\.image', '', fitsname)
-    fitsname = re.sub('\.iter\d+\.image.sd', '.sd', fitsname)
-    fitsname = re.sub('\.iter\d+\.image.pbcor', '.pbcor', fitsname)
-    fitsname = re.sub('\.iter\d+\.mask', '.mask', fitsname)
-    fitsname = re.sub('\.iter\d+\.alpha', '.alpha', fitsname)
+    # fitsname = re.sub(r'\.s\d+.*\.iter.*\.', '.', imagename)
+    fitsname = re.sub(r'\.s\d+[_]\d+\.', '.', imagename)
+    fitsname = re.sub(r'\.iter\d+\.image', '', fitsname)
+    fitsname = re.sub(r'\.iter\d+\.image.sd', '.sd', fitsname)
+    fitsname = re.sub(r'\.iter\d+\.image.pbcor', '.pbcor', fitsname)
+    fitsname = re.sub(r'\.iter\d+\.mask', '.mask', fitsname)
+    fitsname = re.sub(r'\.iter\d+\.alpha', '.alpha', fitsname)
     # .pb must be tried after .pbcor.image !
-    fitsname = re.sub('\.iter\d+\.pb', '.pb', fitsname)
+    fitsname = re.sub(r'\.iter\d+\.pb', '.pb', fitsname)
     fitsfile = os.path.join(products_dir,
-                             os.path.basename(fitsname) + '.fits')
+                            os.path.basename(fitsname) + '.fits')
 
     # update fitsname
     if version > 1:

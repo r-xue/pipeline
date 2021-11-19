@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_lock_refant():
+def hifa_lock_refant(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

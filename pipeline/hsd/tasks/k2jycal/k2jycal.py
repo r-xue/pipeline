@@ -214,10 +214,10 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             factors_list = query.getJyPerK(vis)
             # warn if result is empty
             if len(factors_list) == 0:
-                LOG.warn('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))
+                LOG.warning('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))
         except Exception as e:
-            LOG.warn('{}: Query to Jy/K DB was failed due to the following error. Will fallback to reading CSV file.'.format(vis))
-            LOG.warn(str(e))
+            LOG.warning('{}: Query to Jy/K DB was failed due to the following error. Will fallback to reading CSV file.'.format(vis))
+            LOG.warning(str(e))
             factors_list = []
         return factors_list
 

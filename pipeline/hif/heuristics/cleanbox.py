@@ -197,10 +197,10 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             except:
                 num_axes = image.shape().shape[0]
                 if num_axes > 3:
-                    LOG.warn("Can't find spectral axis. Assuming it is 3.")
+                    LOG.warning("Can't find spectral axis. Assuming it is 3.")
                     freq_axis = 3
                 elif num_axes > 2:
-                    LOG.warn("Can't find spectral axis. Assuming it is 2.")
+                    LOG.warning("Can't find spectral axis. Assuming it is 2.")
                     freq_axis = 2
                 elif num_axes == 2:
                     LOG.error("No spectral axis found")
@@ -216,7 +216,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     if 'spectral' in msg_l and 'reference' in msg_l:
                         nonpbcor_image_non_cleanmask_freq_frame = msg.split(':')[1].strip()
             except:
-                LOG.warn('Cannot determine spectral reference in %s. Assuming it is LSRK.' % (nonpbcor_imagename))
+                LOG.warning('Cannot determine spectral reference in %s. Assuming it is LSRK.' % (nonpbcor_imagename))
                 nonpbcor_image_non_cleanmask_freq_frame = 'LSRK'
 
             # define mask outside the cleaned area
@@ -234,7 +234,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
                     if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
                         # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
-                        LOG.warn('Using full annulus for noise spectrum due to voluminous mask "%s".' % (os.path.basename(cleanmask)))
+                        LOG.warning('Using full annulus for noise spectrum due to voluminous mask "%s".' %
+                                    (os.path.basename(cleanmask)))
                         statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
                                                                     pb_name, pblimit_cleanmask)
                         image_stats = None
@@ -303,7 +304,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_non_cleanmask_rms_max = \
                 nonpbcor_image_non_cleanmask_rms = \
                     -999.0
-                LOG.warn('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
+                LOG.warning('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
 
             # Get the flux density spectrum in the clean mask area if available
             if nonpbcor_image_cleanmask_npoints not in (None, 0):
