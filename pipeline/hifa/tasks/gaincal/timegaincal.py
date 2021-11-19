@@ -218,16 +218,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Determine non-phase calibrator fields, to be added to gaincal solve
         # for plotting purposes.
         np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
-        np_fields = [f.name for f in inputs.ms.get_fields(intent=np_intents)]
+        np_fields = ','.join([f.name for f in inputs.ms.get_fields(intent=np_intents)])
 
         # Create separate phase solutions for each PHASE field. These solutions
         # are intended to be used as a temporary pre-apply when generating the
         # phase offsets caltable.
         for field in inputs.ms.get_fields(intent=p_intent):
-            # Collect fields for which to run gaincal: current PHASE field
-            # and all non-phase calibrators.
-            gc_fields = ','.join(np_fields + [field.name])
-
             # Retrieve from MS which TARGET/CHECK fields the gain solutions for
             # the current PHASE field should be applied to.
             tc_fields = ','.join(ms.phasecal_mapping.get(field.name, {}))
@@ -249,9 +245,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             # SpectralSpec, so create a gaincal solution for all SpWs, using
             # provided gaintype, spwmap, and interp.
             if not combine:
-                calapp_list.extend(self._do_target_phasecal(caltable=caltable, field=gc_fields, spw=inputs.spw,
+                calapp_list.extend(self._do_target_phasecal(caltable=caltable, field=field.name, spw=inputs.spw,
                                                             gaintype=gaintype, combine=combine, spwmap=spwmap,
-                                                            interp=interp, applyto=tc_fields))
+                                                            interp=interp, applyto=tc_fields, include_field=np_fields))
 
             # Otherwise, a combined SpW solution is expected, and we need to
             # create separate solutions for each SpectralSpec grouping of Spws.
@@ -280,13 +276,14 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                     # Run phase calibration.
                     calapp_list.extend(self._do_target_phasecal(caltable=caltable, field=field.name, spw=spw_sel,
                                                                 gaintype=gaintype, combine=combine, spwmap=spwmap,
-                                                                interp=interp, applyto=tc_fields))
+                                                                interp=interp, applyto=tc_fields,
+                                                                include_field=np_fields))
 
         return calapp_list
 
     def _do_target_phasecal(self, caltable: str = None, field: str = None, spw: str = None, gaintype: str = None,
                             combine: str = None, interp: str = None, spwmap: List[int] = None,
-                            applyto: str = None) -> List:
+                            applyto: str = None, include_field: str = None) -> List:
         """
         This runs the gaincal for creating phase solutions intended for TARGET,
         CHECK, and PHASE. The result contains two CalApplications, one for
@@ -295,13 +292,18 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         """
         inputs = self.inputs
 
+        # If provided, add additional fields to gaincal.
+        gc_fields = field
+        if include_field:
+            gc_fields = f'{field},{include_field}'
+
         # PIPE-1154: for phase solutions of target, check, phase, always use
         # solint=inputs.targetsolint.
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
             'caltable': caltable,
-            'field': field,
+            'field': gc_fields,
             'intent': inputs.intent,
             'spw': spw,
             'solint': inputs.targetsolint,
