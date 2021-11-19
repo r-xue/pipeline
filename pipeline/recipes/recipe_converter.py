@@ -124,7 +124,7 @@ def get_element(node: DOM, tag_name: str, expect_unique: bool = False) -> Union[
     return return_value
 
 
-def get_data(node: DOM) -> str:
+def get_data(node: minidom.Element) -> str:
     """Extract data from DOM object.
 
     Return string 'data' if node represents <tag>data</tag>.
@@ -170,7 +170,7 @@ def get_short_description(tree: DOM) -> str:
     return short_desc
 
 
-def get_parameter_type(element: DOM) -> Tuple:
+def get_parameter_type(element: minidom.Element) -> Tuple:
     """Get parameter type from param tag.
 
     Args:
