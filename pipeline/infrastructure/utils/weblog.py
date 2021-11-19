@@ -21,6 +21,22 @@ LOG = logging.get_logger(__name__)
 
 
 class OrderedDefaultdict(collections.OrderedDict):
+    """This class behaves as defaultdict from the collections module but maintaining the order of insertion.
+
+    It is usually called in our codebase using the following structure: my_list = utils.OrderedDefaultdict(list)
+    The dict can then be filled straight away: my_list[2] = [1, 2, 3]
+
+    For example,
+    >>> my_list = OrderedDefaultdict(list)
+    >>> my_list[2] = [1, 2, 3]
+    >>> my_list[1]
+    []
+    >>> my_list[2]
+    [1, 2, 3]
+
+    Note that from Python 3.8 this class should probably work as collections.defaultdict given that dicts now preserve
+    the insertion order as a feature and the __reverse__ method is implemented in dicts.
+    """
     def __init__(self, *args, **kwargs):
         if not args:
             self.default_factory = None
@@ -98,7 +114,7 @@ def get_vis_from_plots(plots):
     :return:
     """
     vis = {p.parameters['vis'] for p in plots}
-    vis = vis.pop() if len(vis) is 1 else 'all data'
+    vis = vis.pop() if len(vis) == 1 else 'all data'
     return vis
 
 
