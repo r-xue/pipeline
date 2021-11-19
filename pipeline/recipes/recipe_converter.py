@@ -341,7 +341,7 @@ def get_comment(task_name: str, config: dict) -> str:
     elif comment:
         comment = comment.strip('\n')
         # handle multi-line comment
-        comment = re.sub('\n +', f'\n{prefix}', comment)
+        comment = re.sub('\n *', f'\n{prefix}', comment)
         comment = prefix + comment + '\n'
     return comment
 
