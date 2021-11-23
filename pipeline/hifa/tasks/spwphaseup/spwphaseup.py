@@ -195,13 +195,34 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 # Get ID of first scan for current field with current intent.
                 first_scan_id = ms.get_scans(field=field, scan_intent=intent)[0].id
 
-                # Get ID of the PHASE intent scan that preceded the first scan,
-                # and name of corresponding field.
-                preceding_phase_scan_id = max([i for i in phase_scan_ids if i < first_scan_id])
-                preceding_phase_field = [f.name for f in ms.get_scans(scan_id=preceding_phase_scan_id)[0].fields][0]
+                # PIPE-1154: in standard ALMA observing, each first scan of a
+                # field with TARGET or CHECK intent should be preceded by a
+                # scan of its corresponding PHASE calibrator.
+                # Identify PHASE intent scans that preceded the first scan.
+                preceding_phase_scan_ids = [i for i in phase_scan_ids if i < first_scan_id]
+                if preceding_phase_scan_ids:
+                    # Pick nearest in time PHASE intent scan as the match, and
+                    # identify name of corresponding field.
+                    matching_phase_scan_id = max(preceding_phase_scan_ids)
+                else:
+                    # Identify PHASE intent scans that followed the first scan.
+                    following_phase_scan_ids = [i for i in phase_scan_ids if i > first_scan_id]
+                    if following_phase_scan_ids:
+                        # As a fall-back, pick nearest in time PHASE intent
+                        # scan after first field scan, but raise warning.
+                        matching_phase_scan_id = min(following_phase_scan_ids)
+                        LOG.warning(f"{ms.basename}: no PHASE scans found prior to the first scan for field {field}"
+                                    f" ({intent}), will match nearest PHASE scan that was taken after.")
+                    else:
+                        matching_phase_scan_id = None
+                        LOG.warning(f"{ms.basename}: no PHASE scans found prior or after first scan for field {field}"
+                                    f" ({intent}).")
 
-                # Update mapping with match.
-                mapping[preceding_phase_field].add(field)
+                # If a matching PHASE scan was found, then update mapping to
+                # link the corresponding PHASE field to current field.
+                if matching_phase_scan_id:
+                    matching_phase_field = [f.name for f in ms.get_scans(scan_id=matching_phase_scan_id)[0].fields][0]
+                    mapping[matching_phase_field].add(field)
 
         return mapping
 
