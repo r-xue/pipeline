@@ -606,7 +606,7 @@ def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
     rangeExpr = number('start') + TILDE + number('end')
     rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
-    boundary = [c for c in pyparsing.printables if c not in (' ', ',')]
+    boundary = ''.join([c for c in pyparsing.printables if c not in (' ', ',')])
     field_id = pyparsing.WordStart(boundary) + (rangeExpr | number) + pyparsing.WordEnd(boundary)
 
     casa_chars = ''.join([c for c in string.printable
@@ -658,7 +658,7 @@ def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndar
     rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
     # antenna-oriented 'by ID' expressions can be any of the above patterns
-    boundary = [c for c in pyparsing.printables if c not in (' ', ',')]
+    boundary = ''.join([c for c in pyparsing.printables if c not in (' ', ',')])
     numExpr = pyparsing.WordStart(boundary) + (rangeExpr | number) + pyparsing.WordEnd(boundary)
 
     # group the number so it converted to a node, fields in this case
