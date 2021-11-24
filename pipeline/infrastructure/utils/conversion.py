@@ -412,7 +412,7 @@ def safe_split(fields: str) -> List[str]:
     Returns:
         A list, taking account of field names within quotes.
     """
-    return pyparsing.commaSeparatedList.parseString(str(fields)).asList()
+    return pyparsing.pyparsing_common.comma_separated_list.parseString(str(fields)).asList()
 
 
 def dequote(s: str) -> str:
@@ -623,7 +623,7 @@ def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
     field_name.setParseAction(get_ids_for_matching)
 
     results = set()
-    for atom in pyparsing.commaSeparatedList.parseString(str(task_arg)):
+    for atom in pyparsing.pyparsing_common.comma_separated_list.parseString(str(task_arg)):
         for parser in [field_name('fields'), field_id('fields')]:
             for match in parser.searchString(atom):
                 results.update(match.asList())
