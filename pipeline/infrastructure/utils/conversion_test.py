@@ -1,9 +1,15 @@
+import collections
 import datetime
 
 import pytest
 
 from .conversion import commafy, dequote, flatten, format_datetime, format_timedelta, mjd_seconds_to_datetime,\
-    range_to_list, safe_split, unix_seconds_to_datetime
+    range_to_list, safe_split, unix_seconds_to_datetime, _parse_antenna, _parse_field, _parse_spw
+
+
+DomainMock = collections.namedtuple('DomainMock', ['id', 'name'])
+AntennaMock = DomainMock
+FieldMock = DomainMock
 
 
 @pytest.mark.parametrize("inp, kwargs, expected", [
@@ -124,3 +130,100 @@ def test_safe_split(inp, expected):
 def test_unix_seconds_to_datetime(inp, expected):
     """Test unix_seconds_to_datetime()"""
     assert unix_seconds_to_datetime(inp) == expected
+
+
+@pytest.mark.parametrize("inp, expected", [
+    ((None, None), TypeError),
+    ((None, [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    (('', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    (('*', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    (('0', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0]),
+    (('1', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [1]),
+    # it seems that _parse_antenna doesn't check availability of selected id
+    (('3', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [3]),
+    (('0~1', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    (('0,1', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    # check if returned list is sorted
+    (('1,0', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    # check if unique list is returned
+    (('0~1,1', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    (('Test00', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0]),
+    (('Test01', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [1]),
+    (('Test01,0', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0,1]),
+    (('Test03', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), []),
+    (('Test*', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+])
+def test__parse_antenna(inp, expected):
+    """Test _parse_antenna"""
+    if isinstance(expected, type) and issubclass(expected, Exception):
+        with pytest.raises(expected):
+            _parse_antenna(*inp)
+    else:
+        assert _parse_antenna(*inp) == expected
+
+
+@pytest.mark.parametrize("inp, expected", [
+    ((None, None), TypeError),
+    ((None, [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    (('', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    (('*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    (('0', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0]),
+    (('1', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [1]),
+    # it seems that _parse_field doesn't check availability of selected id
+    (('3', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [3]),
+    (('0,1', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    (('0~1', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    # check if returned list is sorted
+    (('1,0', [FieldMock(id=0, name='Test00'), FieldMock(id=1, name='Test01')]), [0, 1]),
+    # check if unique list is returned
+    (('0~1,1', [FieldMock(id=0, name='Test00'), FieldMock(id=1, name='Test01')]), [0, 1]),
+    (('Test*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    (('TestNW*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0]),
+    (('TestSE*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [1]),
+    (('TestSW*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), []),
+    (('TestSE*,0', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0,1]),
+])
+def test__parse_field(inp, expected):
+    """Test _parse_field"""
+    if isinstance(expected, type) and issubclass(expected, Exception):
+        with pytest.raises(expected):
+            _parse_field(*inp)
+    else:
+        assert _parse_field(*inp) == expected
+
+
+@pytest.mark.parametrize("inp, expected", [
+    ((None, None), None),
+    (('', [0, 1, 2]), [(0, set()), (1, set()), (2, set())]),
+    (('*', [0, 1, 2]), [(0, set()), (1, set()), (2, set())]),
+    (('1', [0, 1, 2]), [(1, set())]),
+    (('<2', [0, 1, 2]), [(0, set()), (1, set())]),
+    # operator '>' is not supported
+    (('>1', [0, 1, 2]), Exception),
+    (('0,2', [0, 1, 2]), [(0, set()), (2, set())]),
+    (('1~2', [0, 1, 2]), [(1, set()), (2, set())]),
+    # _parse_spw doesn't sort the result
+    (('1~2,0', [0, 1, 2]), [(1, set()), (2, set()), (0, set())]),
+    # check if unique list is returned
+    (('1~2,1', [0, 1, 2]), [(1, set()), (2, set())]),
+    # channel selection
+    (('0:0~6^2,2:6~38^4', [0, 1, 2]), [(0, set((0, 2, 4, 6))), (2, set((6, 10, 14, 18, 22, 26, 30, 34, 38)))]),
+])
+def test__parse_spw(inp, expected):
+    """Test _parse_spw"""
+    if isinstance(expected, type) and issubclass(expected, Exception):
+        with pytest.raises(expected):
+            _parse_spw(*inp)
+    else:
+        result = _parse_spw(*inp)
+        if expected is None:
+            assert result is None
+            return
+
+        assert len(result) == len(expected)
+        for rs, ex in zip(result, expected):
+            id = getattr(rs, 'spw', rs)
+            chan = getattr(rs, 'channels', set())
+            assert id == ex[0]
+            assert chan == ex[1]
+
