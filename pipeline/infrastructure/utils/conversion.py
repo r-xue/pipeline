@@ -682,14 +682,11 @@ def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndar
     # the complete expression
     atomExpr = pyparsing.Group(antenna_id_expr('antennas') | antenna_name_expr('antennas'))
 
-    # and we can have multiple items separated by commas
-    finalExpr = pyparsing.delimitedList(atomExpr('atom'), delim=',')('result')
-
-    parse_result = finalExpr.parseString(str(task_arg))
-
     results = set()
-    for atom in parse_result.result:
-        for ant in atom.antennas:
-            results.add(ant)
+    for substr in pyparsing.pyparsing_common.comma_separated_list.parseString(str(task_arg)):
+        atoms = atomExpr.parseString(substr)
+        for atom in atoms:
+            for ant in atom.antennas:
+                results.add(ant)
 
     return sorted(list(results))
