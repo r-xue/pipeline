@@ -305,8 +305,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # No SNR estimates available, default to simple narrow-to-wide spw
             # mapping.
             if nosnrs:
-                LOG.warn(f'No SNR estimates for any spws - Forcing simple spw mapping for'
-                         f' {inputs.ms.basename}, intent={intent}, field={field}')
+                LOG.warning(f'No SNR estimates for any spws - Forcing simple spw mapping for {inputs.ms.basename},'
+                            f' intent={intent}, field={field}')
                 spwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
                 LOG.info(f'Using spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
@@ -318,13 +318,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # No spws have good SNR values, use combined spw mapping, and test
             # which spws have too low combined phase SNR.
             elif len([goodsnr for goodsnr in goodsnrs if goodsnr is True]) == 0:
-                LOG.warn(f'Low SNR for all spws - Forcing combined spw mapping for {inputs.ms.basename},'
-                         f' intent={intent}, field={field}')
+                LOG.warning(f'Low SNR for all spws - Forcing combined spw mapping for {inputs.ms.basename},'
+                            f' intent={intent}, field={field}')
 
                 # Report spws for which no SNR estimate was available.
                 if None in goodsnrs:
-                    LOG.warn('Spws without SNR measurements {}'
-                             ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
+                    LOG.warning('Spws without SNR measurements {}'
+                                ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
                 # Create a spw mapping for combining spws.
                 spwmap = combine_spwmap(scispws)
@@ -340,12 +340,12 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # an SNR-based approach for, but fall back to combined spw mapping
             # if necessary.
             else:
-                LOG.warn(f'Some low SNR spws - using highest good SNR window for these in {inputs.ms.basename}')
+                LOG.warning(f'Some low SNR spws - using highest good SNR window for these in {inputs.ms.basename}')
 
                 # Report spws for which no SNR estimate was available.
                 if None in goodsnrs:
-                    LOG.warn('Spws without SNR measurements {}'
-                             ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
+                    LOG.warning('Spws without SNR measurements {}'
+                                ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
                 # Create an SRN-based spw mapping.
                 goodmap, spwmap, snrmap = snr_n2wspwmap(scispws, snrs, goodsnrs)
@@ -357,7 +357,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
                 # Otherwise, replace the spwmap with a combined spw map.
                 else:
-                    LOG.warn(f'Still unable to match all spws - Forcing combined spw mapping for {inputs.ms.basename}')
+                    LOG.warning(f'Still unable to match all spws - Forcing combined spw mapping for'
+                                f' {inputs.ms.basename}')
 
                     # Create a spw mapping for combining spws.
                     spwmap = combine_spwmap(scispws)

@@ -1,6 +1,7 @@
 import copy
 import os
 import operator
+import collections
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -19,8 +20,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImListInputs(vdp.StandardInputs):
-    # Search order of input vis
-    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    # Must use empty data type list to allow for user override and
+    # automatic determination depending on specmode, field and spw.
+    processing_data_type = []
 
     # simple properties with no logic ----------------------------------------------------------------------------------
     calmaxpix = vdp.VisDependentProperty(default=300)
@@ -35,6 +37,7 @@ class MakeImListInputs(vdp.StandardInputs):
     clearlist = vdp.VisDependentProperty(default=True)
     per_eb = vdp.VisDependentProperty(default=False)
     calcsb = vdp.VisDependentProperty(default=False)
+    datacolumn = vdp.VisDependentProperty(default='')
     parallel = vdp.VisDependentProperty(default='automatic')
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
@@ -166,7 +169,8 @@ class MakeImListInputs(vdp.StandardInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
-                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, parallel=None, known_synthesized_beams=None):
+                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, datacolumn=None, parallel=None,
+                 known_synthesized_beams=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -193,6 +197,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.clearlist = clearlist
         self.per_eb = per_eb
         self.calcsb = calcsb
+        self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
 
@@ -248,6 +253,52 @@ class MakeImList(basetask.StandardTaskTemplate):
         # single measurement set
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
+
+        if inputs.datacolumn not in (None, ''):
+            datacolumn = inputs.datacolumn
+        else:
+            datacolumn = ''
+
+        # Select the correct vis list
+        if inputs.vis in ('', [''], [], None):
+            if inputs.intent == 'TARGET':
+                if inputs.specmode in ('mfs', 'cont'):
+                    datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                else:
+                    datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            else:
+                datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
+            ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
+
+            if ms_objects_and_columns == collections.OrderedDict():
+                result.set_info({'msg': 'No data found. No imaging targets were created.',
+                                 'intent': inputs.intent,
+                                 'specmode': inputs.specmode})
+                result.contfile = None
+                result.linesfile = None
+                return result
+
+            LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for imaging.')
+            if selected_datatype == DataType.RAW:
+                LOG.warn('Falling back to raw data for imaging.')
+
+            columns = list(ms_objects_and_columns.values())
+            if not all(column == columns[0] for column in columns):
+                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+
+            if datacolumn != '':
+                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+            else:
+                if columns[0] == 'DATA':
+                    datacolumn = 'data'
+                elif columns[0] == 'CORRECTED_DATA':
+                    datacolumn = 'corrected'
+                else:
+                    LOG.warn(f'Unknown column name {columns[0]}')
+                    datacolumn = ''
+
+            inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
@@ -489,7 +540,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     for spw in map(str, observed_spwids_list):
                                         valid_data[vis][field_intent][str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw, vislist=[vis])[field_intent]
                                         if not valid_data[vis][field_intent][str(spw)] and vis in observed_vis_list:
-                                            LOG.warn('Data for EB {}, field {}, spw {} is completely flagged.'.format(os.path.basename(vis), field_intent[0], spw))
+                                            LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
+                                                os.path.basename(vis), field_intent[0], spw))
                                         # Aggregated value per vislist (replace with lookup pattern later)
                                         if str(spw) not in valid_data[str(vislist)][field_intent]:
                                             valid_data[str(vislist)][field_intent][str(spw)] = valid_data[vis][field_intent][str(spw)]
@@ -573,7 +625,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
                             except Exception as e:
                                 # problem defining uvrange
-                                LOG.warn(e)
+                                LOG.warning(e)
                                 pass
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
@@ -635,7 +687,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                         except Exception as e:
                             # problem defining center
-                            LOG.warn(e)
+                            LOG.warning(e)
                             pass
                 else:
                     for field_intent in field_intent_list:
@@ -693,7 +745,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     max_y_size = imsizes[(field_intent[0], spwspec)][1]
                             except Exception as e:
                                 # problem defining imsize
-                                LOG.warn(e)
+                                LOG.warning(e)
                                 pass
 
                         if max_x_size == 1 or max_y_size == 1:
@@ -726,7 +778,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                   self.heuristics.nchan_and_width(field_intent=field_intent[1], spwspec=spwspec)
                             except Exception as e:
                                 # problem defining nchan and width
-                                LOG.warn(e)
+                                LOG.warning(e)
                                 pass
 
                 else:
@@ -792,9 +844,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                         no_cont_ranges = False
                         if (field_intent[1] == 'TARGET' and specmode == 'cont' and
                                 all([v == 'NONE' for v in spwsel_spwid_dict.values()])):
-                            LOG.warn('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
-                                     ' image from the full bandwidth from all spws, but this should be used with'
-                                     ' caution.')
+                            LOG.warning('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
+                                        ' image from the full bandwidth from all spws, but this should be used with'
+                                        ' caution.')
                             no_cont_ranges = True
 
                         for spwid in adjusted_spwspec.split(','):
@@ -802,16 +854,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if field_intent[1] == 'TARGET' and not no_cont_ranges:
                                 if spwsel_spwid == 'NONE':
                                     if specmode == 'cont':
-                                        LOG.warn('Spw {!s} will not be used in creating the aggregate continuum image'
-                                                 ' of {!s} because no continuum range was found.'
-                                                 ''.format(spwid, field_intent[0]))
+                                        LOG.warning('Spw {!s} will not be used in creating the aggregate continuum image'
+                                                    ' of {!s} because no continuum range was found.'
+                                                    ''.format(spwid, field_intent[0]))
                                     else:
-                                        LOG.warn('Spw {!s} will not be used for {!s} because no continuum range was'
-                                                 ' found.'.format(spwid, field_intent[0]))
+                                        LOG.warning('Spw {!s} will not be used for {!s} because no continuum range was'
+                                                    ' found.'.format(spwid, field_intent[0]))
                                         spwspec_ok = False
                                     continue
                                 #elif (spwsel_spwid == ''):
-                                #    LOG.warn('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
+                                #    LOG.warning('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
 
                             all_continuum = all_continuum and all_continuum_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
 
@@ -825,8 +877,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
                             if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
-                                LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE'
-                                         '' % spwsel_spwid_refer)
+                                LOG.warning('Frequency selection is specified in %s but must be in LSRK or SOURCE'
+                                            '' % spwsel_spwid_refer)
                                 # TODO: skip this field and/or spw ?
 
                             actual_spwspec_list.append(spwid)
@@ -857,8 +909,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 else:
                                     nbin = nbins_dict[spwspec]
                             except:
-                                LOG.warn('Could not determine binning factor for spw %s. Using default channel width.'
-                                         '' % adjusted_spwspec)
+                                LOG.warning('Could not determine binning factor for spw %s. Using default channel width.'
+                                            '' % adjusted_spwspec)
                                 nbin = -1
                         else:
                             nbin = -1
@@ -893,9 +945,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                        for v in filtered_vislist]
 
-                            any_non_imaging_ms = any([not inputs.context.observing_run.get_ms(vis).is_imaging_ms
-                                                      for vis in filtered_vislist])
-
                             target = CleanTarget(
                                 antenna=antenna,
                                 field=field_intent[0],
@@ -922,6 +971,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 stokes='I',
                                 heuristics=target_heuristics,
                                 vis=filtered_vislist,
+                                datacolumn=datacolumn,
                                 is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                 usepointing=usepointing,
                                 mosweight=mosweight

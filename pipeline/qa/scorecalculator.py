@@ -2512,7 +2512,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
             # Log warnings only if they would not be logged by the QA system (score <= 0.66)
             if score > 0.66:
-                LOG.warn(longmsg)
+                LOG.warning(longmsg)
         else:
             if score <= 0.9:
                 longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
@@ -2834,7 +2834,7 @@ def score_sdimage_masked_pixels(context, result):
     LOG.debug('Total number of pixels to be included in: {}'.format(len(total_pixels)))
     masked_pixels = total_pixels[total_pixels == False]
     if len(total_pixels) == 0:
-        LOG.warn('No pixels associated with pointing data exist. QA score will be zero.')
+        LOG.warning('No pixels associated with pointing data exist. QA score will be zero.')
         metric_score = -1.0
     else:
         masked_fraction = float(len(masked_pixels)) / float(len(total_pixels))

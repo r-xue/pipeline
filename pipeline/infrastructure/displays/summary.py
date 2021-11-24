@@ -623,7 +623,7 @@ class PlotAntsChart(object):
         else:
             self.draw_pad_map_in_subplot(plf1, self.ms.antennas)
         plt.title('Antenna Positions for %s' % self.ms.basename)
-        plt.savefig(self.figfile, format='png', density=108)
+        plt.savefig(self.figfile, format='png', dpi=108)
         plt.clf()
         plt.close()
 

@@ -5,7 +5,7 @@ import os
 from typing import Union, Dict, Tuple
 
 import numpy as np
-import pyfits
+import astropy.io.fits as apfits
 
 from .. import casa_tools
 from .. import logging
@@ -62,14 +62,14 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
     if os.path.exists(fitsname):
         # Open FITS image and obtain header
-        with pyfits.open(fitsname, mode='update') as hdulist:
+        with apfits.open(fitsname, mode='update') as hdulist:
             header = hdulist[0].header
 
             # Check whether position correction was already applied
             if 'Position correction ' in str(header['history']):
                 message = "Positions are already corrected in  {}".format(fitsname)
                 try:
-                    LOG.warn(message)
+                    LOG.warning(message)
                 except NameError:
                     print(message)
                 return None
@@ -117,7 +117,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
     else:
         message = 'Image {} does not exist. No position correction was done.'.format(fitsname)
         try:
-            LOG.warn(message)
+            LOG.warning(message)
         except NameError:
             print(message)
 

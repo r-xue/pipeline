@@ -104,7 +104,7 @@ class CleanSummary(object):
                 if 'model' in iteration and os.path.exists(iteration['model'] + extension):
                     plot_wrappers.append(
                         sky.SkyDisplay().plot(self.context, iteration['model'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent, **{'cmap': copy.deepcopy(matplotlib.cm.seismic)}))
+                                                   intent=r.intent, **{'cmap': copy.copy(matplotlib.cm.seismic)}))
 
                 # MOM0_FC for this iteration (currently only last but allow for others in future).
                 if 'mom0_fc' in iteration and os.path.exists(iteration['mom0_fc'] + extension):
@@ -139,8 +139,8 @@ class CleanSummary(object):
                     collapse_function = 'max' if (('cube' in iteration.get('cleanmask', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
                     plot_wrappers.append(
                         sky.SkyDisplay().plot(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
-                                                   intent=r.intent, collapseFunction=collapse_function,
-                                                   **{'cmap': copy.deepcopy(matplotlib.cm.YlOrRd)}))
+                                              intent=r.intent, collapseFunction=collapse_function,
+                                              **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
 
                 # cube spectra for this iteration
                 if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
@@ -157,17 +157,13 @@ class CleanSummary(object):
                         parameters['prefix'] = None
 
                     virtual_spw = parameters['virtspw']
-                    imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
-                    if imaging_mss != []:
-                        ref_ms = imaging_mss[0]
-                    else:
-                        ref_ms = self.context.observing_run.measurement_sets[0]
+                    ref_ms = self.context.observing_run.measurement_sets[0]
                     real_spw = self.context.observing_run.virtual2real_spw_id(virtual_spw, ref_ms)
                     real_spw_obj = ref_ms.get_spectral_window(real_spw)
                     if real_spw_obj.receiver is not None and real_spw_obj.freq_lo is not None:
                         rec_info = {'type': real_spw_obj.receiver, 'LO1': real_spw_obj.freq_lo[0].str_to_precision(12)}
                     else:
-                        LOG.warn('Could not determine receiver type. Assuming TSB.')
+                        LOG.warning('Could not determine receiver type. Assuming TSB.')
                         rec_info = {'type': 'TSB', 'LO1': '0GHz'}
 
                     plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))

@@ -44,7 +44,7 @@ def plot_suntrack(vis='', figfile='', elvstime=True):
         with casa_tools.TableReader(obsTable) as table:
             observatory = table.getcell('TELESCOPE_NAME')
     except:
-        LOG.warn("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
+        LOG.warning("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
         return
 
     for scantime in t:

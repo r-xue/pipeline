@@ -453,7 +453,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 caltable = ampcal_result.final.pop().gaintable
             except:
                 caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
-                LOG.warn('Cannot compute compute the flux scaling table%s' % (os.path.basename(caltable)))
+                LOG.warning(f'Cannot compute compute the flux scaling table{os.path.basename(caltable)}')
 
             # To make the following fluxscale reliable the caltable
             # should contain gains for the same set of antennas for
@@ -466,8 +466,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 check_ok = False
         except:
             caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
-            LOG.warn('Cannot compute phase solution table%s for the phase '
-                     'and bandpass calibrator' % (os.path.basename(caltable)))
+            LOG.warning(f'Cannot compute phase solution table{os.path.basename(caltable)} for the phase and bandpass'
+                        f' calibrator')
             check_ok = False
 
         return ampcal_result, caltable, check_ok

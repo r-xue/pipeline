@@ -379,7 +379,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
                                  + " spw "+str(spw.id) + " using " + model_image)
 
                         if self.inputs.model:
-                            LOG.warn("Model override input.  Using {!s}".format(self.inputs.model))
+                            LOG.warning("Model override input.  Using {!s}".format(self.inputs.model))
                             model_image = self.inputs.model
 
                         task_args = {'vis'            : inputs.vis,
@@ -415,8 +415,8 @@ class VLASetjy(basetask.StandardTaskTemplate):
                         try:
                             setjy_dicts.append(self._executor.execute(job))
                         except:
-                            LOG.warn("SetJy issue with field id=" + str(job.kw['field'])
-                                     + " and spw=" + str(job.kw['spw']))
+                            LOG.warning("SetJy issue with field id=" + str(job.kw['field'])
+                                        + " and spw=" + str(job.kw['spw']))
 
         spw_seen = set()
         for setjy_dict in setjy_dicts:

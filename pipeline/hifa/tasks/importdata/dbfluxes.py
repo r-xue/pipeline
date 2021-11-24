@@ -135,13 +135,13 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     try:
         response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
     except IOError:
-        LOG.warn('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
+        LOG.warning('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
         raise
 
     try:
         dom = minidom.parse(response)
     except ExpatError:
-        LOG.warn('Could not parse source catalogue response')
+        LOG.warning('Could not parse source catalogue response')
         raise
 
     rowdict = {}
@@ -244,20 +244,20 @@ def add_catalogue_fluxes(measurements, ms):
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except IOError:
         # error contacting service
-        # LOG.warn("Could not contact the primary flux service at {!s}".format(flux_url))
+        # LOG.warning("Could not contact the primary flux service at {!s}".format(flux_url))
         flux_url = backup_url
         contact_fail = True
     except ExpatError:
         # error parsing the XML table
-        LOG.warn("Table parsing issue.")
-        LOG.warn("Could not contact the primary flux service at {!s}".format(flux_url))
+        LOG.warning("Table parsing issue.")
+        LOG.warning("Could not contact the primary flux service at {!s}".format(flux_url))
         flux_url = backup_url
         contact_fail = True
 
     if contact_fail:
         try:
             # Try the backup URL at JAO
-            LOG.warn("Switching to backup url at: {!s}".format(flux_url))
+            LOG.warning("Switching to backup url at: {!s}".format(flux_url))
             LOG.info("Test query...")
             fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
         except IOError:
@@ -341,5 +341,5 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     if clarification:
         LOG.info('         WARNING message returned: {!s}'.format(clarification))
     if catalogue_I == 'N/A':
-        LOG.warn('         **No flux returned from the flux catalogue service.**')
+        LOG.warning('         **No flux returned from the flux catalogue service.**')
     LOG.info("---------------------------------------------")
