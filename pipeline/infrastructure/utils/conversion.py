@@ -380,7 +380,7 @@ def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, n
         # spws, fields, field combinations, etc.) but it's probably not
         # worth the effort as cache entries left unoccupied should take
         # minimal space.
-        # PIPE-1008: 
+        # PIPE-1008:
         # increase maxsize to 40k entries for VLASS calibration
         # A typical VLASS observation can have 15-20k fields
         MSTOOL_SELECTEDINDICES_CACHE[ms_basename] = LoggingLRUCache(ms_basename, maxsize=40000)
