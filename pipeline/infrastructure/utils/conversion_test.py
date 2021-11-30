@@ -149,9 +149,10 @@ def test_unix_seconds_to_datetime(inp, expected):
     (('0~1,1', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
     (('Test00', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0]),
     (('Test01', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [1]),
-    (('Test01,0', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0,1]),
+    (('Test01,0', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
     (('Test03', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), []),
     (('Test*', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0, 1]),
+    (('Test00,0', [AntennaMock(id=0, name='Test00'), AntennaMock(id=1, name='Test01')]), [0]),
 ])
 def test__parse_antenna(inp, expected):
     """Test _parse_antenna"""
@@ -181,7 +182,8 @@ def test__parse_antenna(inp, expected):
     (('TestNW*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0]),
     (('TestSE*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [1]),
     (('TestSW*', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), []),
-    (('TestSE*,0', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0,1]),
+    (('TestSE*,0', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0, 1]),
+    (('TestNW*,0', [FieldMock(id=0, name='TestNW00'), FieldMock(id=1, name='TestSE01')]), [0]),
 ])
 def test__parse_field(inp, expected):
     """Test _parse_field"""
@@ -226,4 +228,3 @@ def test__parse_spw(inp, expected):
             chan = getattr(rs, 'channels', set())
             assert id == ex[0]
             assert chan == ex[1]
-
