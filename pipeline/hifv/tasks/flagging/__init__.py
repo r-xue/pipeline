@@ -32,7 +32,6 @@ weblog.add_renderer(Flagcal, basetemplates.T2_4MDetailsDefaultRenderer(uri='flag
 
 
 weblog.add_renderer(Flagtargetsdata,
-                    basetemplates.T2_4MDetailsDefaultRenderer(uri='flagtargetsdata.mako',
-                                                              description='Flagtargetsdata'),
+                    renderer.T2_4MDetailsFlagtargetsdataRenderer(description='VLA Flagtargetsdata'),
                     group_by=weblog.UNGROUPED)
 

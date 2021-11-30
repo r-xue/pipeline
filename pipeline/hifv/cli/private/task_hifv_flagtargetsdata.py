@@ -5,7 +5,8 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_flagtargetsdata(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, pipelinemode=None, flagbackup=None, dryrun=None,
+                         acceptresults=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
