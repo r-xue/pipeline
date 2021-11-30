@@ -96,12 +96,17 @@ def total_for_agent(agent, row, mses=flags.keys()):
 def space_comma(s):
 	return ', '.join(s.split(','))
 
+def num_bands(summary_plots):
+	bandname_list = [plot.parameters['bandname'] for plots in summary_plots.values() for plot in plots]
+	bandname_set = set([bandname for bandname in bandname_list if 'All' not in bandname])
+	return len(bandname_set)
+
 %>
 
 
 <%self:plot_group plot_dict="${summary_plots}"
                   url_fn="${lambda ms: 'noop'}"
-                  break_rows_by='field'
+                  break_rows_by="${'field' if num_bands(summary_plots)>1 else ''}"
                   sort_row_by='baseband'>
 
         <%def name="title()">
@@ -135,7 +140,7 @@ def space_comma(s):
                   url_fn="${lambda x: 'amp_vs_freq_%s.html' % sanitise(x)}"
                   data_field="${True}"
                   data_spw="${True}"
-                  break_rows_by="intent_idx"
+				  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
                   sort_row_by="intent_idx,field,baseband_centfreq">
 
 	<%def name="title()">
@@ -175,7 +180,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="intent_idx"
+                  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
                   sort_row_by="intent_idx,field,baseband_centfreq">
 
 	<%def name="title()">
@@ -310,7 +315,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'science_amp_vs_freq_%s.html' % sanitise(x)}"
 				  data_spw="${True}"
 				  data_field="${True}"
-                  break_rows_by="field"
+                  break_rows_by="${'field' if num_bands(summary_plots)>1 else ''}"
                   sort_row_by="field,baseband_centfreq">
 
 	<%def name="title()">
@@ -454,7 +459,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="intent_idx"
+                  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
                   sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">
@@ -497,7 +502,7 @@ def space_comma(s):
 				  url_fn="${lambda x: 'amp_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by="intent_idx"
+                  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
                   sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">
