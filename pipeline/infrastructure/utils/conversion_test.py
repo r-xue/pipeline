@@ -200,6 +200,8 @@ def test__parse_field(inp, expected):
     (('*', [0, 1, 2]), [(0, set()), (1, set()), (2, set())]),
     (('1', [0, 1, 2]), [(1, set())]),
     (('<2', [0, 1, 2]), [(0, set()), (1, set())]),
+    # it seems that _parse_spw doesn't check availability of selected id
+    (('3', [0, 1, 2]), [(3, set())]),
     # operator '>' is not supported
     (('>1', [0, 1, 2]), Exception),
     (('0,2', [0, 1, 2]), [(0, set()), (2, set())]),
