@@ -55,6 +55,7 @@ class MeasurementSet(object):
         is_imaging_ms: If True, the MS is for imaging (interferometry only)
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
+        software_version: placeholder name for version of ALMA software to be read in and added to the weblog
     """
 
     def __init__(self, name: str, session: Optional[str]=None):
@@ -87,6 +88,7 @@ class MeasurementSet(object):
         self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
+        self.software_version = None
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
@@ -1257,3 +1259,7 @@ class MeasurementSet(object):
         if not (dtype in self.data_column.keys()):
             return None
         return self.data_column[dtype]
+
+    def get_software_version() -> Optional[str]:
+        #TODO: Try to get table info, else, return None
+        return None
