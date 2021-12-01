@@ -866,9 +866,9 @@ class UVChart(object):
         self.spw_id = spw_id
 
         # Determine which field to plot.
-        self.field, self.field_name, self.intent = self._get_field_for_source(src_name)
+        self.field, self.field_name, self.intent = self._get_field_for_source(src_name) #TODO: add something to check for '', '', ''? Or is leaving that in the preferred outcome here? 
 
-        # Check to see if the selected field has the selected spw_id and that it is a science spectral window
+        # Check to see if the selected field has the selected spw_id
         selected_field = ms.get_fields(field_id=int(self.field))[0] # self.field is field_id as a string.
         selected_spw = ms.get_spectral_window(spw_id=self.spw_id)
         science_spws = ms.get_spectral_windows(science_windows_only=True)
@@ -881,13 +881,12 @@ class UVChart(object):
             print("VALID SPWS:")
             for spw in selected_field.valid_spws:
                 print(spw.id, spw.intents, spw.type)
-            print("SCIENCE SPWS:")
-            for spw in science_spws: 
-                print(spw.id, spw.intents, spw.type)
+
             possible_spws = selected_field.valid_spws.intersection(set(science_spws))
             possible_spws_filtered = [spw for spw in possible_spws if self.intent in spw.intents]
-            print("INTERSECTION OF ABOVE AND ALSO INCLUDING INTENTS: ")
-            for spw in  possible_spws_filtered:
+
+            print("INTERSECTION OF ABOVE WITH INTENTS: ")
+            for spw in possible_spws_filtered:
                 print(spw.id, spw.intents, spw.type)
 
             # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
@@ -902,7 +901,7 @@ class UVChart(object):
             print("NEW spw = ", self.spw_id, "TYPE: ", final_spw.type)
 
         # Determine number of channels in spw.
-        self.nchan = self._get_nchan_for_spw(spw_id)
+        self.nchan = self._get_nchan_for_spw(self.spw_id) #may have perviously produced incorrect output!
 
         # Set title of plot, modified by prefix if provided.
         self.title = 'UV coverage for {}'.format(self.ms.basename)
@@ -910,7 +909,7 @@ class UVChart(object):
             self.title = title_prefix + self.title
 
         # get max UV via unprojected baseline
-        spw = ms.get_spectral_window(spw_id)
+        spw = ms.get_spectral_window(self.spw_id) #may have previosly produced incorrect output!!
         wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
         bl_max = float(ms.antenna_array.max_baseline.length.to_units(DistanceUnits.METRE))
         self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
@@ -1059,7 +1058,7 @@ class UVChart(object):
             LOG.warning('More than one source called {} in {}. Taking first source'.format(src_name, self.ms.basename))
         src = sources_with_name[0]
 
-        # Identify fields covered by TARGET intent.
+        # Identify fields covered by an intent in preferred_intent_order, in order 
         for intent in self.preferred_intent_order:
             fields_with_intent = [f for f in src.fields if intent in f.intents]
             if fields_with_intent:
@@ -1067,7 +1066,7 @@ class UVChart(object):
                 break
         else:
             LOG.error("Source {} has no field with an intent in {}".format(src_name, self.preferred_intent_order))
-            return '', '', ''
+            return '', '', '' #TODO: check what this results in in terms of plotting outcome, etc. Does it throw errors when trying to use '' for other things? 
 
         return str(centre_field.id), centre_field.name, intent
 
