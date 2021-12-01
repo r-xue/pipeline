@@ -868,6 +868,39 @@ class UVChart(object):
         # Determine which field to plot.
         self.field, self.field_name, self.intent = self._get_field_for_source(src_name)
 
+        # Check to see if the selected field has the selected spw_id and that it is a science spectral window
+        selected_field = ms.get_fields(field_id=int(self.field))[0] # self.field is field_id as a string.
+        selected_spw = ms.get_spectral_window(spw_id=self.spw_id)
+        science_spws = ms.get_spectral_windows(science_windows_only=True)
+        
+        if not selected_spw in selected_field.valid_spws:
+            LOG.debug("WARNING: selected spwid is not in the list of valid_ids for the field") # debug, warning, or error? 
+            print(self.field, self.field_name, self.intent)
+
+            # Find first science spw in the list of valid spws for field (any other constraints?)
+            print("VALID SPWS:")
+            for spw in selected_field.valid_spws:
+                print(spw.id, spw.intents, spw.type)
+            print("SCIENCE SPWS:")
+            for spw in science_spws: 
+                print(spw.id, spw.intents, spw.type)
+            possible_spws = selected_field.valid_spws.intersection(set(science_spws))
+            possible_spws_filtered = [spw for spw in possible_spws if self.intent in spw.intents]
+            print("INTERSECTION OF ABOVE AND ALSO INCLUDING INTENTS: ")
+            for spw in  possible_spws_filtered:
+                print(spw.id, spw.intents, spw.type)
+
+            # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
+            if(len(possible_spws_filtered) < 1 ):
+                #LOG.warn? 
+                self.spw_id = None
+                return 
+
+            final_spw = sorted(possible_spws_filtered, key=operator.attrgetter('id'))[0]
+            print("OLD spw = ", self.spw_id, "TYPE:", selected_spw.type)
+            self.spw_id = str(final_spw.id)
+            print("NEW spw = ", self.spw_id, "TYPE: ", final_spw.type)
+
         # Determine number of channels in spw.
         self.nchan = self._get_nchan_for_spw(spw_id)
 
@@ -885,6 +918,11 @@ class UVChart(object):
     def plot(self):
         if DISABLE_PLOTMS:
             LOG.debug('Disabling UV coverage plot due to problems with plotms')
+            return None
+
+        # Don't plot if no spw was found for the field/source/intent
+        if self.spw_id is None: 
+            LOG.debug('Disabling UV coverage plot due to CONDITION') #TODO: insert condition
             return None
 
         # inputs based on analysisUtils.plotElevationSummary
@@ -950,12 +988,12 @@ class UVChart(object):
         if repr_src and repr_spw:
             return repr_src, str(repr_spw)
         elif repr_src and not repr_spw:
-            spw = self._get_first_science_spw()
+            spw = self._get_first_science_spw() # What if the representative source was not observed using the first science spw? 
             return repr_src, spw
 
         # If no representative source was identified, then return first source
         # and first science spw.
-        src, spw = self._get_preferred_source_and_science_spw()
+        src, spw = self._get_preferred_source_and_science_spw() # What if first source was not obesrved using first science spw?
 
         return src, spw
 
