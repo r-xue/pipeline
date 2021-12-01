@@ -511,9 +511,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Merge
         if merge:
-            # Modify the result so that this caltable is only applied to the
-            # intent(s) from which the calibration was derived.
-            calapp_overrides = dict(intent=intent)
+            # Define what overrides should be included in the cal application.
+            # Add overrides for field, interpolation, and SpW mapping if
+            # provided.
+            calapp_overrides = {}
 
             # Adjust the field if provided.
             if field:
