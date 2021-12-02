@@ -26,7 +26,7 @@ DECrotation = 0
 
 DPISummary = 90
 
-dsyb = '$^\circ$'
+dsyb = r'$^\circ$'
 hsyb = ':'
 msyb = ':'
 
@@ -978,9 +978,9 @@ class SingleDishPointingChart(object):
 
         RA = self.datatable.getcol(racol)[dt_rows]
         if len(RA) == 0:  # no row found
-            LOG.warn('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
-                     (antenna_id, spw_id, str(field_id), ms.basename))
-            LOG.warn('Skipping pointing plots.')
+            LOG.warning('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
+                        (antenna_id, spw_id, str(field_id), ms.basename))
+            LOG.warning('Skipping pointing plots.')
             return None
         DEC = self.datatable.getcol(deccol)[dt_rows]
         FLAG = np.zeros(len(RA), dtype=int)

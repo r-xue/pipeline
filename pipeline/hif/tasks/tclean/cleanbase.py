@@ -220,17 +220,6 @@ class CleanBase(basetask.StandardTaskTemplate):
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
 
-        # Set the data column
-        targetmslist = [vis for vis in inputs.vis if context.observing_run.get_ms(name=vis).is_imaging_ms]
-        if not inputs.datacolumn:
-            if len(targetmslist) > 0:
-                if inputs.specmode == 'cube':
-                    inputs.datacolumn = 'corrected'
-                else:
-                    inputs.datacolumn = 'data'
-            else:
-                inputs.datacolumn = 'corrected'
-
         # Remove MSs that do not contain data for the given field(s)
         scanidlist, visindexlist = inputs.heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
         inputs.vis = [inputs.vis[i] for i in visindexlist]

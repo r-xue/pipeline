@@ -554,7 +554,8 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         des_bminor = 1.0 / cqa.getvalue(cqa.convert(beam_user['minor'], 'arcsec'))
 
         if (des_bmajor > bmajor) or (des_bminor > bminor):
-            LOG.warn('uvtaper cannot be calculated for beam_user (%.2farcsec) larger than beam_natural (%.2farcsec)' % (1.0 / des_bmajor, 1.0 / bmajor))
+            LOG.warning('uvtaper cannot be calculated for beam_user (%.2farcsec) larger than beam_natural (%.2farcsec)' % (
+                1.0 / des_bmajor, 1.0 / bmajor))
             return []
 
         tap_bmajor = 1.0 / (bmajor * des_bmajor / (math.sqrt(bmajor ** 2 - des_bmajor ** 2)))
@@ -577,6 +578,6 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
-            LOG.warn('uvtaper is smaller than allowed limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
-                    utils.round_half_up(uvtaper_limit / 1000., 2))
+            LOG.warning('uvtaper is smaller than allowed limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
+                        utils.round_half_up(uvtaper_limit / 1000., 2))
         return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]

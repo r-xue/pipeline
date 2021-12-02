@@ -154,7 +154,7 @@ class checkflagPercentageMap(object):
             plt.close(fig)
 
         except Exception as ex:
-            LOG.warn('Exception: Could not create the flagging percentage map plot. {!s}'.format(str(ex)))
+            LOG.warning('Exception: Could not create the flagging percentage map plot. {!s}'.format(str(ex)))
             return None
 
         return self._get_plot_object()

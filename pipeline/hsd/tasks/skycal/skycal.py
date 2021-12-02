@@ -236,9 +236,9 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                     if eldmax >= threshold:
                         field_name = ms.fields[field_id].name
                         antenna_name = ms.antennas[antenna_id].name
-                        LOG.warn('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
-                                 ' exceeding the threshold {}deg'
-                                 ''.format(ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))
+                        LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
+                                    ' exceeding the threshold {}deg'
+                                    ''.format(ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))
 
         return result
 

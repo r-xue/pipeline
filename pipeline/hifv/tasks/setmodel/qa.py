@@ -34,8 +34,8 @@ class VLASetjyQAHandler(pqa.QAPlugin):
                                 longmsg='QA No VLA standard calibrator present, continuing with the FLUX calibrator'
                                         ' assuming a flux of 1 Jy.',
                                 shortmsg='No standard calibrator present.')
-            LOG.warn('QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1'
-                     ' Jy.')
+            LOG.warning('QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1'
+                        ' Jy.')
 
         scores = [score]
 

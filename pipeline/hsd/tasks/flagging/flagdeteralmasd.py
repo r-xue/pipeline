@@ -305,7 +305,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         # apply flag commands in flagpointing.txt
         if self.inputs.pointing:
             if not os.path.exists(self.inputs.filepointing):
-                LOG.warn(
+                LOG.warning(
                     'Pointing flag file \'{}\' was not found. Pointing '
                     'flagging for {} disabled.'
                     .format(self.inputs.filepointing, self.inputs.ms.basename)
@@ -316,7 +316,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
                 pointing_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
 
                 # insert flag commands between shadow and edgespw
-                idx = [i for i, c in enumerate(flag_cmds) if re.search("(mode|name)='shadow'", c)]
+                idx = [i for i, c in enumerate(flag_cmds) if re.search(r"(mode|name)='shadow'", c)]
                 assert len(idx) > 0
                 sep = idx[-1] + 1
                 flag_cmds = flag_cmds[:sep] + pointing_cmds + flag_cmds[sep:]

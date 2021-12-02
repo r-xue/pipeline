@@ -8,7 +8,6 @@ import pipeline.qa.scorecalculator as qacalc
 from . import checkflag
 from . import targetflag
 from . import flagdetervla
-from . import flagbaddeformatters
 
 LOG = logging.get_logger(__name__)
 
@@ -116,35 +115,3 @@ class CheckflagListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool[:] for r in result])
         result.qa.pool[:] = collated
 
-
-class FlagBadDeformattersQAHandler(pqa.QAPlugin):
-    result_cls = flagbaddeformatters.FlagBadDeformattersResults
-    child_cls = None
-    generating_task = flagbaddeformatters.FlagBadDeformatters
-
-    def handle(self, context, result):
-        # get a QA score for flagging
-        # 0%   of data flagged  --> 1
-        # 0%-30% of data flagged  --> 1 to 0
-        # > 30%  of data flagged  --> 0
-
-        score1 = qacalc.score_flagged_vla_baddef(result.amp_collection, result.phase_collection,
-                                                 result.num_antennas)
-        scores = [score1]
-
-        result.qa.pool[:] = scores
-
-
-class FlagBadDeformattersListQAHandler(pqa.QAPlugin):
-    """
-    QA handler for a list containing FlagBadDeformattersResults.
-    """
-    result_cls = collections.Iterable
-    child_cls = flagbaddeformatters.FlagBadDeformattersResults
-    generating_task = flagbaddeformatters.FlagBadDeformatters
-
-    def handle(self, context, result):
-        # collate the QAScores from each child result, pulling them into our
-        # own QAscore list
-        collated = utils.flatten([r.qa.pool[:] for r in result])
-        result.qa.pool[:] = collated
