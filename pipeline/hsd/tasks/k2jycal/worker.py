@@ -1,4 +1,7 @@
+"""Worker class for k2jycal task."""
 import os
+
+from typing import TYPE_CHECKING, Dict, Optional
 
 from numpy import sqrt
 
@@ -8,13 +11,35 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.callibrary as callibrary
 from pipeline.infrastructure import casa_tasks
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.callibrary import CalApplication
+
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDK2JyCalWorkerInputs(vdp.StandardInputs):
+    """Inputs class for SDK2JyCalWorker."""
+
     caltype = vdp.VisDependentProperty(default='amp', readonly=True)
 
-    def __init__(self, context, output_dir, vis, caltable, factors):
+    def __init__(
+        self,
+        context: 'Context',
+        output_dir: str,
+        vis: str,
+        caltable: str,
+        factors: Dict[str, Dict[int, Dict[str, Dict[str, float]]]]
+    ) -> None:
+        """Initialize SDK2JyCalWorkerInputs instance.
+
+        Args:
+            context: Pipeline context
+            output_dir: Output directory
+            vis: Name of MS
+            caltable: Name of caltable
+            factors: List of Jy/K conversion factors with meta data
+        """
         super(SDK2JyCalWorkerInputs, self).__init__()
 
         self.context = context
@@ -24,21 +49,48 @@ class SDK2JyCalWorkerInputs(vdp.StandardInputs):
         self.factors = factors
 
     # Convert to CASA gencal task arguments.
-    def to_casa_args(self):
+    def to_casa_args(self) -> Dict[str, str]:
+        """Convert Inputs instance into dictionary.
+
+        Returns:
+            kwargs for CASA task
+        """
         return {'vis': self.vis,
                 'caltable': self.caltable,
                 'caltype': self.caltype}
 
 
 class SDK2JyCalWorkerResults(basetask.Results):
-    def __init__(self, vis, calapp=None, factors={}):
+    """Result class for SDK2JyCalWorker task."""
+
+    def __init__(
+        self,
+        vis: str,
+        calapp: Optional['CalApplication'] = None,
+        factors: Dict[str, Dict[int, Dict[str, Dict[str, float]]]] = {}
+    ) -> None:
+        """Initialize SDK2JyCalWorkerResults instance.
+
+        Args:
+            vis: Name of MS
+            calapp: CalApplication instance. Defaults to None.
+            factors: List of Jy/K factors with meta data. Defaults to {}.
+        """
         super(SDK2JyCalWorkerResults, self).__init__()
         self.calapp = calapp
         self.vis = vis
         self.ms_factors = factors
         self.factors_ok = (calapp is not None)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge results instance with Pipeline context.
+
+        No merge operation is done here. Instead, only a few sanity checks
+        are performed.
+
+        Args:
+            context: Pipeline context
+        """
         if not os.path.exists(self.vis):
             LOG.error("Invalid MS name passed to Result class")
         if self.calapp is None:
@@ -46,12 +98,18 @@ class SDK2JyCalWorkerResults(basetask.Results):
 
 
 class SDK2JyCalWorker(basetask.StandardTaskTemplate):
-    """
-    Per MS caltable creation
-    """
-    Inputs = SDK2JyCalWorkerInputs    
+    """Per MS caltable creation."""
 
-    def prepare(self):
+    Inputs = SDK2JyCalWorkerInputs
+
+    def prepare(self) -> SDK2JyCalWorkerResults:
+        """Produce caltable for Jy/K conversion.
+
+        The method repeatedly calls gencal task to produce/update caltable.
+
+        Returns:
+            SDK2JyCalWorkerResults instance
+        """
         inputs = self.inputs
         vis = inputs.vis
         factors = inputs.factors
@@ -93,16 +151,23 @@ class SDK2JyCalWorker(basetask.StandardTaskTemplate):
                 self._executor.execute(gencal_job)
         # generate callibrary for the caltable
         calto = callibrary.CalTo(vis=common_params['vis'])
-        calfrom = callibrary.CalFrom(common_params['caltable'], 
+        calfrom = callibrary.CalFrom(common_params['caltable'],
                                      caltype=inputs.caltype,
                                      gainfield='', spwmap=None,
                                      interp='nearest,nearest')
         calapp = callibrary.CalApplication(calto, calfrom, origin)
         return SDK2JyCalWorkerResults(vis, calapp=calapp, factors=factors_used)
 
-    def analyse(self, result):
-        """
+    def analyse(self, result: SDK2JyCalWorkerResults) -> SDK2JyCalWorkerResults:
+        """Analyse k2jycal result produced by prepare.
+
         Define factors actually used and analyze if the factors are provided to all relevant data in MS.
+
+        Args:
+            result: SDK2JyCalWorkerResults instance
+
+        Returns:
+            updated SDK2JyCalWorkerResults instance
         """
         name = result.vis
         if len(result.ms_factors) == 0:
@@ -156,7 +221,23 @@ class SDK2JyCalWorker(basetask.StandardTaskTemplate):
         return result
 
     @staticmethod
-    def __check_factor(factors, spw, ant, pol):
+    def __check_factor(
+        factors: Dict[int, Dict[str, Dict[str, float]]],
+        spw: int,
+        ant: str,
+        pol: str
+    ) -> bool:
+        """Check if factor for given meta data is available.
+
+        Args:
+            factors: List of Jy/K factors with meta data
+            spw: Spectral window id
+            ant: Antenna name
+            pol: Polarization type
+
+        Returns:
+            Availability of the factor for given meta data
+        """
         if spw not in factors or factors[spw] is None:
             return False
         if ant not in factors[spw] or factors[spw][ant] is None:
