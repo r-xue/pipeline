@@ -1,3 +1,4 @@
+"""Module to access Jy/K DB (REST API)."""
 import certifi
 import collections
 import datetime
@@ -7,7 +8,8 @@ import re
 import ssl
 import string
 import urllib
-from typing import Iterable, List
+
+from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, NewType, Optional, Union
 
 import numpy
 
@@ -15,19 +17,36 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.domain.measurementset import MeasurementSet as MS
+    from pipeline.domain.spectralwindow import SpectralWindow
+
+
 LOG = infrastructure.get_logger(__name__)
 
+CasaQuantity = NewType('CasaQuantity', Dict[str, Union[str, float]])
+MEpoch = NewType('MEpoch', Dict[str, Union[str, CasaQuantity]])
 
 QueryStruct = collections.namedtuple('QueryStruct', ['param', 'subparam'])
 ResponseStruct = collections.namedtuple('ResponseStruct', ['response', 'subparam'])
 
 
 class ALMAJyPerKDatabaseAccessBase(object):
+    """Base class for DB access."""
+
     BASE_URL = 'https://asa.alma.cl/science/jy-kelvins'
     ENDPOINT_TYPE = None
 
     @property
-    def url(self):
+    def url(self) -> str:
+        """Construct URL to access.
+
+        ENDPOINT_TYPE property must be defined in each subclass.
+
+        Returns:
+            URL for DB (REST API)
+        """
         assert self.ENDPOINT_TYPE is not None, \
             '{} cannot be instantiated. Please use subclasses.'.format(self.__class__.__name__)
 
@@ -36,8 +55,9 @@ class ALMAJyPerKDatabaseAccessBase(object):
             s += '/'
         return s
 
-    def __init__(self, context=None):
-        """
+    def __init__(self, context: Optional['Context'] = None) -> None:
+        """Initialize ALMAJyPerKDatabaseAccessBase class.
+
         ALMAJyPerKDatabaseAccessBase is a base class for accessing Jy/K
         DB to retrieve conversion factor for ALMA TP data.
         ALMAJyPerKDatabaseAccessBase is kind of a template class that
@@ -63,12 +83,20 @@ class ALMAJyPerKDatabaseAccessBase(object):
                                  parameters. Required parameters depend on
                                  the API.
 
-        Keyword Arguments:
-            context {Context} -- Pipeline Context object (default: {None})
+        Args:
+            context: Pipeline Context (default: None)
         """
         self.context = context
 
-    def _get_observing_band(self, ms):
+    def _get_observing_band(self, ms: 'MS') -> numpy.ndarray:
+        """Extract observing band from MS domain object.
+
+        Args:
+            ms: MS domain object
+
+        Returns:
+            List of observing band name for science spws
+        """
         if self.context is None:
             return 'Unknown'
 
@@ -76,7 +104,21 @@ class ALMAJyPerKDatabaseAccessBase(object):
         bands = [spw.band for spw in spws]
         return numpy.unique(bands)
 
-    def _generate_query(self, url, params):
+    def _generate_query(self, url: str, params: List[Dict[str, Any]]) -> Generator[ResponseStruct, None, None]:
+        """Generate query and access DB (REST API).
+
+        Args:
+            url (): Base URL for DB access
+            params (): List of parameters for DB (REST API).
+
+        Raises:
+            RuntimeError: DB access succeeded but its return value was invalid
+            urllib.error.HTTPError: DB access failed
+            urllib.error.URLError: DB access failed
+
+        Yields:
+            Response from DB
+        """
         try:
             for p in params:
                 # encode params
@@ -105,7 +147,21 @@ class ALMAJyPerKDatabaseAccessBase(object):
             LOG.warning(msg)
             raise e
 
-    def validate(self, vis):
+    def validate(self, vis: str) -> None:
+        """Check if provided MS is valid or not.
+
+        The method raises exception if,
+
+            - MS is not registered to Pipeline context, or,
+            - MS is not ALMA data.
+
+        Args:
+            vis: Name of MS
+
+        Raises:
+            KeyError: MS is not registered to Pipeline context
+            RuntimeError: MS is not ALMA data
+        """
         basename = os.path.basename(vis.rstrip('/'))
         try:
             ms = self.context.observing_run.get_ms(vis)
@@ -118,8 +174,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
             raise RuntimeError('{} is not ALMA data'.format(basename))
 
     def getJyPerK(self, vis: str) -> dict:
-        """
-        Return list of Jy/K conversion factors with their meta data.
+        """Return list of Jy/K conversion factors with their meta data.
 
         Args:
             vis: Name of MS
@@ -133,35 +188,42 @@ class ALMAJyPerKDatabaseAccessBase(object):
         # get Jy/K value from DB
         jyperk = self.get(vis)
         allsuccess = jyperk['allsuccess']
-        
+
         # convert to pipeline-friendly format
         formatted = self.format_jyperk(vis, jyperk)
         filtered = self.filter_jyperk(vis, formatted)
         return {'filtered': filtered, 'allsuccess': allsuccess}
 
-    def get_params(self, vis):
-        raise NotImplementedError
+    def get_params(self, vis: str):
+        """Construct query parameter from MS.
 
-    def access(self, queries):
-        raise NotImplementedError
-
-    def get(self, vis):
+        This must be implemented in each subclass.
         """
-        Access Jy/K DB and return its response.
+        raise NotImplementedError
 
-        Arguments:
-            vis {str} -- Name of MS
+    def access(self, queries: Iterable[ResponseStruct]):
+        """Access Jy/K DB.
+
+        This must be implemented in each subclass.
+        """
+        raise NotImplementedError
+
+    def get(self, vis: str) -> Dict[str, Any]:
+        """Access Jy/K DB and return its response.
+
+        Args:
+            vis: Name of MS
 
         Raises:
-            urllib2.HTTPError
-            urllib2.URLError
+            urllib2.HTTPError: DB access failed
+            urllib2.URLError: DB access failed
 
         Returns:
-            [dict] -- Response from the DB as a dictionary. It should contain
-                      the following keys:
-                          'query' -- query data
-                          'total' -- number of data
-                          'data'  -- data
+            Response from the DB as a dictionary. It should contain
+            the following keys:
+                'query' -- query data
+                'total' -- number of data
+                'data'  -- data
         """
         # set URL
         url = self.url
@@ -177,8 +239,9 @@ class ALMAJyPerKDatabaseAccessBase(object):
         # 'data': response data
         return retval
 
-    def format_jyperk(self, vis, jyperk):
-        """
+    def format_jyperk(self, vis: str, jyperk: Dict[str, Any]) -> List[List[str]]:
+        """Format jyperk dictionary.
+
         Format given dictionary to the formatted list as below.
 
             [['MS_name', 'antenna_name', 'spwid', 'pol string', 'factor'],
@@ -186,12 +249,12 @@ class ALMAJyPerKDatabaseAccessBase(object):
              ...
              ['MS_name', 'antenna_name', 'spwid', 'pol string', 'factor']]
 
-        Arguments:
-            vis {str} -- Name of MS
-            jyperk {dict} -- Dictionary containing Jy/K factors with meta data
+        Args:
+            vis: Name of MS
+            jyperk: Dictionary containing Jy/K factors with meta data
 
         Returns:
-            [list] -- Formatted list of Jy/K factors
+            Formatted list of Jy/K factors
         """
         template = string.Template('$vis $Antenna $Spwid I $factor')
         data = jyperk['data']
@@ -199,7 +262,19 @@ class ALMAJyPerKDatabaseAccessBase(object):
         factors = [list(map(str, template.safe_substitute(vis=basename, **d).split())) for d in data]
         return factors
 
-    def filter_jyperk(self, vis, factors):
+    def filter_jyperk(self, vis: str, factors: List[List[str]]) -> List[List[str]]:
+        """Perform filtering of Jy/K DB response.
+
+        Returned list only contain the items for science spectral windows
+        in the given MS. Other items are discarded by the method.
+
+        Args:
+            vis: Name of MS
+            factors: List of Jy/K factors with meta data
+
+        Returns:
+            Filtered list of Jy/K factors with meta data
+        """
         ms = self.context.observing_run.get_ms(vis)
         science_windows = [x.id for x in ms.get_spectral_windows(science_windows_only=True)]
         filtered = [i for i in factors if (len(i) == 5) and (i[0] == ms.basename) and (int(i[2]) in science_windows)]
@@ -207,7 +282,17 @@ class ALMAJyPerKDatabaseAccessBase(object):
 
 
 class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
-    def get_params(self, vis):
+    """Base class for some query classes."""
+
+    def get_params(self, vis: str) -> Generator[QueryStruct, None, None]:
+        """Construct query parameter from MS.
+
+        Args:
+            vis: Name of MS
+
+        Yields:
+            Query parameter as QueryStruct instance
+        """
         ms = self.context.observing_run.get_ms(vis)
 
         # parameter dictionary
@@ -245,9 +330,8 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
                 subparam = {'vis': vis, 'spwid': spw.id}
                 yield QueryStruct(param=params, subparam=subparam)
 
-    def access(self, queries: Iterable[ResponseStruct]) -> dict:
-        """
-        Convert queries to response.
+    def access(self, queries: Iterable[ResponseStruct]) -> Dict[str, Any]:
+        """Convert queries to response.
 
         Args:
             queries: Queries to DB
@@ -277,26 +361,48 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
             data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
                          'Polarization': polarization, 'factor': factor})
             allsuccess = allsuccess and response['success']
-       
+
         return {'query': '', 'data': data, 'total': len(data), 'allsuccess': allsuccess}
 
-    def _aux_params(self):
+    def _aux_params(self) -> Dict[str, Any]:
+        """Return endpoint-specific parameters.
+
+        This returns empty dictionary. But it may be overridden by the subclasses.
+
+        Returns:
+            Endpoint-specific parameters
+        """
         return {}
 
-    def _extract_factor(self, response):
+    def _extract_factor(self, response: Dict[str, Any]):
+        """Extract Jy/K factor from the response.
+
+        This must be implemented in each subclass.
+        """
         raise NotImplementedError
 
 
 class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
+    """Class to access 'asdm' endpoint of Jy/K DB."""
+
     ENDPOINT_TYPE = 'asdm'
 
-    def get_params(self, vis):
+    def get_params(self, vis: str) -> Generator[QueryStruct, None, None]:
+        """Construct query parameter from MS.
+
+        ASDM endpoint only requires ASDM uid.
+
+        Args:
+            vis: Name of MS
+
+        Yields:
+            Query paramter as QueryStruct instance
+        """
         # subparam is vis
         yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=vis)
 
-    def access(self, queries: Iterable[ResponseStruct]) -> dict:
-        """
-        Convert queries to response.
+    def access(self, queries: Iterable[ResponseStruct]) -> Dict[str, Any]:
+        """Convert queries to response.
 
         Args:
             queries: Queries to DB
@@ -317,34 +423,62 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
 
 
 class JyPerKModelFitEndPoint(JyPerKAbstractEndPoint):
+    """Class to access 'model-fit' endpoint of Jy/K DB."""
+
     ENDPOINT_TYPE = 'model-fit'
 
-    def _extract_factor(self, response):
+    def _extract_factor(self, response: Dict[str, Any]) -> str:
+        """Extract Jy/K factor from the response.
+
+        Args:
+            response: Response from DB.
+
+        Returns:
+            Jy/K conversion factor
+        """
         return response['data']['factor']
 
 
 class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
+    """Class to access 'interpolation' endpoint of Jy/K DB."""
+
     ENDPOINT_TYPE = 'interpolation'
 
-    def _aux_params(self):
+    def _aux_params(self) -> Dict[str, Any]:
+        """Return endpoint-specific parameter.
+
+        Appends 'delta_days' value to the parameter.
+
+        Returns:
+            Endpoint-specific parameter
+        """
         return {'delta_days': 1000}
 
-    def _extract_factor(self, response):
+    def _extract_factor(self, response: Dict[str, Any]) -> str:
+        """Extract Jy/K factor from the response.
+
+        Args:
+            response: Response from DB.
+
+        Returns:
+            Jy/K conversion factor
+        """
         return response['data']['factor']['mean']
 
 
-def vis_to_uid(vis):
-    """
-    Convert MS name like uid___A002_Xabcd_X012 into uid://A002/Xabcd/X012
+def vis_to_uid(vis: str) -> str:
+    """Convert MS name into ASDM uid.
 
-    Arguments:
-        vis {str} -- Name of MS
+    This converts MS name like uid___A002_Xabcd_X012 into uid://A002/Xabcd/X012.
+
+    Args:
+        vis: Name of MS
 
     Raises:
-        RuntimeError:
+        RuntimeError: MS name is incompatible with ASDM uid
 
     Returns:
-        str -- Corresponding ASDM uid
+        Corresponding ASDM uid
     """
     basename = os.path.basename(vis.rstrip('/'))
     pattern = r'^uid___A[0-9][0-9][0-9]_X[0-9a-f]+_X[0-9a-f]+\.ms$'
@@ -354,7 +488,15 @@ def vis_to_uid(vis):
         raise RuntimeError('MS name is not appropriate for DB query: {}'.format(basename))
 
 
-def mjd_to_datestring(epoch):
+def mjd_to_datestring(epoch: MEpoch) -> str:
+    """Return string representation of MJD.
+
+    Args:
+        epoch: MEpoch dictionary created by measures.epoch
+
+    Returns:
+        MJD string
+    """
     # casa_tools
     me = casa_tools.measures
     qa = casa_tools.quanta
@@ -372,11 +514,29 @@ def mjd_to_datestring(epoch):
     return datestring
 
 
-def get_mean_frequency(spw):
+def get_mean_frequency(spw: 'SpectralWindow') -> float:
+    """Return mean frequency of the spectral window.
+
+    Args:
+        spw: Spectral window domain object
+
+    Returns:
+        Mean frequency of spectral window in Hz
+    """
     return float(spw.mean_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
 
 
-def get_mean_temperature(vis):
+def get_mean_temperature(vis: str) -> float:
+    """Return mean temperature for MS.
+
+    Take mean of the temperature measurement stored in the WEATHER subtable.
+
+    Args:
+        vis: Name of MS
+
+    Returns:
+        Mean temperature during observation. Usually the value in Kelvin.
+    """
     with casa_tools.TableReader(os.path.join(vis, 'WEATHER')) as tb:
         valid_temperatures = numpy.ma.masked_array(
             tb.getcol('TEMPERATURE'),
@@ -386,7 +546,20 @@ def get_mean_temperature(vis):
     return valid_temperatures.mean()
 
 
-def get_mean_elevation(context, vis, antenna_id):
+def get_mean_elevation(context: 'Context', vis: str, antenna_id: int) -> float:
+    """Return mean elevation for given antenna in the MS.
+
+    Read elevation value from Datatable corresponding to MS and
+    take its mean.
+
+    Args:
+        context  Pipeline context
+        vis: Name of MS
+        antenna_id: Antenna id
+
+    Returns:
+        Mean elevation in degree
+    """
     dt_name = context.observing_run.ms_datatable_name
     ms = context.observing_run.get_ms(vis)
     basename = os.path.basename(ms.origin_ms)
