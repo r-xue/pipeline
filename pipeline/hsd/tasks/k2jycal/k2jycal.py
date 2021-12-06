@@ -1,4 +1,7 @@
+"""The k2jycal task to perform the calibration of Jy/K conversion."""
 import os
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -10,28 +13,43 @@ from . import jyperkreader
 from . import worker
 from . import jyperkdbaccess
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.callibrary import CalApplication
+
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDK2JyCalInputs(vdp.StandardInputs):
+    """Inputs class for SDK2JyCal task."""
 
     reffile = vdp.VisDependentProperty(default='jyperk.csv')
     dbservice = vdp.VisDependentProperty(default=True)
     endpoint = vdp.VisDependentProperty(default='asdm')
 
     @vdp.VisDependentProperty
-    def infiles(self):
+    def infiles(self) -> str:
+        """Return name of MS. Alias for "vis" attribute."""
         return self.vis
 
     @infiles.convert
-    def infiles(self, value):
+    def infiles(self, value: Union[str, List[str]]) -> Union[str, List[str]]:
+        """Convert value into expected type.
+
+        Currently, no conversion is performed.
+
+        Args:
+            value: Name of MS, or the list of names
+
+        Returns:
+            Converted value. Currently return input value as is.
+        """
         self.vis = value
         return value
 
     @vdp.VisDependentProperty
     def caltable(self):
-        """
-        Get the caltable argument for these inputs.
+        """Get the caltable argument for these inputs.
 
         If set to a table-naming heuristic, this should give a sensible name
         considering the current CASA task arguments.
@@ -43,8 +61,31 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                                              stage=self.context.stage,
                                              **casa_args))
 
-    def __init__(self, context, output_dir=None, infiles=None, caltable=None,
-                 reffile=None, dbservice=None, endpoint=None):
+    def __init__(
+        self,
+        context: 'Context',
+        output_dir: Optional[str] = None,
+        infiles: Optional[Union[str, List[str]]] = None,
+        caltable: Optional[Union[str, List[str]]] = None,
+        reffile: Optional[str] = None,
+        dbservice: Optional[bool] = None,
+        endpoint: Optional[str] = None
+    ) -> None:
+        """Initialize SDK2JyCalInputs instance.
+
+        Args:
+            context: Pipeline context
+            output_dir: Output directory. Defaults to None.
+            infiles: Name of MS or list of names. Defaults to None.
+            caltable: Name of caltable or list of names. Defaults to None.
+                      Name is automatically created from infiles if None is given.
+            reffile: Name of the file that stores Jy/K factors. Defaults to None.
+                     Name is 'jyperk.csv' if None is givne.
+            dbservice: Access to Jy/K DB if True. Defaults to None.
+                       None is interpreted as True.
+            endpoint: Name of the DB endpoint. Defaults to None.
+                      Endpoint is 'asdm' if None is given.
+        """
         super(SDK2JyCalInputs, self).__init__()
 
         # context and vis/infiles must be set first so that properties that require
@@ -61,8 +102,29 @@ class SDK2JyCalInputs(vdp.StandardInputs):
 
 
 class SDK2JyCalResults(basetask.Results):
-    def __init__(self, vis=None, final=[], pool=[], reffile=None, factors={},
-                 all_ok=False, dbstatus=None):
+    """Class to hold processing result of SDK2JyCal task."""
+
+    def __init__(
+        self,
+        vis: Optional[str] = None,
+        final: List['CalApplication'] = [],
+        pool: Any = [],
+        reffile: Optional[str] = None,
+        factors: Dict[str, Dict[int, Dict[str, Dict[str, float]]]] = {},
+        all_ok: bool = False,
+        dbstatus: Optional[bool] = None
+    ) -> None:
+        """Initialize SDK2JyCalResults instance.
+
+        Args:
+            vis: Name of MS. Defaults to None.
+            final: List of CalApplication instances. Defaults to [].
+            pool: Not used
+            reffile: Name of Jy/K factor file. Defaults to None.
+            factors: Dictionary of Jy/K factors. Defaults to {}.
+            all_ok: Boolean flag for availability of factors. Defaults to False.
+            dbstatus: Status of DB access. Defaults to None.
+        """
         super(SDK2JyCalResults, self).__init__()
 
         self.vis = vis
@@ -74,7 +136,18 @@ class SDK2JyCalResults(basetask.Results):
         self.all_ok = all_ok
         self.dbstatus = dbstatus
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge result instance into context.
+
+        Merge of the result instance of Jy/K calibration task includes
+        the following updates to Pipeline context,
+
+          - register CalApplication instances to callibrary
+          - register Jy/K conversion factors to MS domain object
+
+        Args:
+            context: Pipeline context
+        """
         if not self.final:
             LOG.error('No results to merge')
             return
@@ -92,7 +165,8 @@ class SDK2JyCalResults(basetask.Results):
                     for pol, pol_k2jy in ant_k2jy.items():
                         msobj.k2jy_factor[(spwid, ant, pol)] = pol_k2jy
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Return string representation of the instance."""
         # Format the Tsyscal results.
         s = 'SDK2JyCalResults:\n'
         for calapplication in self.final:
@@ -106,15 +180,13 @@ class SDK2JyCalResults(basetask.Results):
 @task_registry.set_casa_commands_comment('The Kelvin to Jy calibration tables are generated.')
 class SDK2JyCal(basetask.StandardTaskTemplate):
     """Generate calibration table of Jy/K factors."""
-    
+
     Inputs = SDK2JyCalInputs
 
-    def prepare(self):
+    def prepare(self) -> SDK2JyCalResults:
         """
         Try accessing the DB if dbstatus=True and set Jy/K factors to jyperk_query.csv.
-        
-        Args:
-            None
+
         Returns:
             SDK2JyCalResults
         """
@@ -172,7 +244,19 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                                 factors=valid_factors, all_ok=all_factors_ok,
                                 dbstatus=dbstatus)
 
-    def analyse(self, result):
+    def analyse(self, result: SDK2JyCalResults) -> SDK2JyCalResults:
+        """Analyse SDK2JyCalResults instance produced by prepare.
+
+        The method checks if caltables in the pool exist to validate the
+        CalApplication, and register valid CalApplication's to final
+        attribute.
+
+        Args:
+            result: SDK2JyCalResults instance
+
+        Returns:
+            Updated SDK2JyCalResults instance
+        """
         # With no best caltable to find, our task is simply to set the one
         # caltable as the best result
 
@@ -188,7 +272,15 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _read_factors(self, reffile):
+    def _read_factors(self, reffile: str) -> List[List[str]]:
+        """Read Jy/K conversion factor from reffile.
+
+        Args:
+            reffile: Name of Jy/K conversion factor file
+
+        Returns:
+            List of conversion factors with meta data
+        """
         inputs = self.inputs
         if not os.path.exists(inputs.reffile):
             return []
@@ -196,7 +288,15 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         factors_list = jyperkreader.read(inputs.context, reffile)
         return factors_list
 
-    def _query_factors(self):
+    def _query_factors(self) -> List[List[str]]:
+        """Query Jy/K conversion factor to DB.
+
+        Raises:
+            RuntimeError: Unsupported endpoint name
+
+        Returns:
+            List of conversion factors with meta data
+        """
         vis = os.path.basename(self.inputs.vis)
 
         # switch implementation class according to endpoint parameter
@@ -222,10 +322,18 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         return factors_list
 
 
-def rearrange_factors_list(factors_list):
-    """
-    Rearrange scaling factor list to dictionary which looks like
-    {'MS': {'spw': {'Ant': {'pol': factor}}}}
+def rearrange_factors_list(factors_list: List[List[str]]) -> Dict[str, Dict[int, Dict[str, Dict[str, float]]]]:
+    """Rearrange scaling factor list to dictionary.
+
+    Format of the returned dictionary looks like,
+
+        {'MS': {'spw': {'Ant': {'pol': factor}}}}
+
+    Args:
+        factors_list: List of conversion factors with meta data
+
+    Returns:
+        Dictionary of conversion factors with meta data
     """
     factors = {}
     for (vis, ant, spw, pol, _factor) in factors_list:
@@ -250,7 +358,15 @@ def rearrange_factors_list(factors_list):
     return factors
 
 
-def export_jyperk(outfile, factors):
+def export_jyperk(outfile: str, factors: List[List[str]]) -> None:
+    """Export conversion factors to file.
+
+    Format of the output file is CSV.
+
+    Args:
+        outfile: Name of the output file
+        factors: List of conversion factors with meta data
+    """
     if not os.path.exists(outfile):
         # create file with header information
         with open(outfile, 'w') as f:
