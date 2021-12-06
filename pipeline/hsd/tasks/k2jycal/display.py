@@ -1,5 +1,8 @@
+"""Plotting class for k2jycal stage."""
 import collections
 import os
+
+from typing import Any, Dict, Generator, List, Sequence, Tuple, Union
 
 import numpy
 import matplotlib.pyplot as plt
@@ -9,15 +12,25 @@ from ..common.display import DPISummary
 
 
 class K2JyHistDisplay(object):
-    """
-    A display class to generate histogram of Jy/K factors
-    """
+    """A display class to generate histogram of Jy/K factors."""
 
-    def __init__(self, stage, spw, valid_factors, bandname=''):
-        """
-        stage: stage number
-        spw: spw ID of valid_factors
-        valid_factors: a dictionary or an array of Jy/K valid_factors to generate histogram
+    def __init__(
+        self,
+        stage: str,
+        spw: int,
+        valid_factors: Dict[int, Dict[str, List[Union[float, str]]]],
+        bandname: str = ''
+    ) -> None:
+        """Initialize K2JyHistDisplay instance.
+
+        Args:
+            stage: Stage directory to which plots are exported
+            spw: Virtual spw ID of valid_factors
+            valid_factors: A dictionary or an array of Jy/K valid_factors to generate histogram
+            bandname: Name of the observing receiver band
+
+        Raises:
+            ValueError: unexpected type of valid_factors
         """
         self.stage_dir = stage
         self.spw = spw
@@ -27,13 +40,28 @@ class K2JyHistDisplay(object):
         else:
             raise ValueError("valid_factors should be dictionary or an iterable")
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Generate histogram plots.
+
+        Returns:
+            List of histogram plots.
+        """
         plt.ioff()
         plt.clf()
 
         return list(self._plot())
 
-    def _create_plot(self, plotfile, x_axis, y_axis):
+    def _create_plot(self, plotfile: str, x_axis: str, y_axis: str) -> logger.Plot:
+        """Create Plot instance from plotfile.
+
+        Args:
+            plotfile: Name of the plot file
+            x_axis: X-axis label
+            y_axis: Y-axis label
+
+        Returns:
+            Plot instance
+        """
         parameters = {}
         parameters['spw'] = self.spw
         parameters['receiver'] = self.band
@@ -43,7 +71,12 @@ class K2JyHistDisplay(object):
                                parameters=parameters)
         return plot_obj
 
-    def _plot(self):
+    def _plot(self) -> Generator[logger.Plot, None, None]:
+        """Create histogram plot.
+
+        Yields:
+            Plot instance
+        """
         if type(self.factors) in [dict, collections.defaultdict]:
             labels = []
             factors = []
@@ -79,16 +112,19 @@ class K2JyHistDisplay(object):
         yield plot
 
 
-def collect_dict_values(in_value):
-    """
-    Returns a list of values in in_value. When
-    in_value = dict(a=1, b=dict(c=2, d=4))
-    the method collects all values in tips of branches and returns,
-    [1, 2, 4]
-    When in_value is a simple number or an array, it returns a list
-    of the number or the array
+def collect_dict_values(in_value: Union[dict, Sequence[Any], Any]) -> Tuple[bool, List[Any]]:
+    """Return a list of values in in_value.
 
-    in_value: a dictionary, number or array to collect values and construct a list
+    When in_value = dict(a=1, b=dict(c=2, d=4)), the method collects
+    all values in tips of branches and returns, [1, 2, 4].
+    When in_value is a simple number or an array, it returns a list
+    of the number or the array.
+
+    Args:
+        in_value: A dictionary, number or array to collect values and construct a list
+
+    Returns:
+        Flat list of values contained in in_value.
     """
     if type(in_value) not in [dict, collections.defaultdict]:
         if numpy.iterable(in_value) == 0:
