@@ -1,7 +1,10 @@
+"""Renderer for k2jycal task."""
 import os
 import collections
 import shutil
 import numpy
+
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.logging as logging
@@ -10,19 +13,40 @@ import pipeline.infrastructure.utils as utils
 from . import display as display
 from ..common import utils as sdutils
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.basetask import ResultsList
+
 LOG = logging.get_logger(__name__)
 
 JyperKTRV = collections.namedtuple('JyperKTRV', 'virtualspw msname realspw antenna pol factor')
 JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
 
 class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='hsd_k2jycal.mako', 
-                 description='Generate Kelvin to Jy calibration table.',
-                 always_rerender=False):
+    """Weblog renderer class for k2jycal task."""
+
+    def __init__(self, uri: str = 'hsd_k2jycal.mako',
+                 description: str = 'Generate Kelvin to Jy calibration table.',
+                 always_rerender: bool = False) -> None:
+        """Initialize T2_4MDetailsSingleDishK2JyCalRenderer instance.
+
+        Args:
+            template: Name of Mako template file. Defaults to 'hsd_k2jycal.mako'.
+            description: Description of the task. This is embedded into the task detail page.
+                         Defaults to 'Generate Kelvin to Jy calibration table.'.
+            always_rerender: Always rerender the page if True. Defaults to False.
+        """
         super(T2_4MDetailsSingleDishK2JyCalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx, context, results):            
+    def update_mako_context(self, ctx: Dict[str, Any], context: 'Context', results: 'ResultsList') -> None:
+        """Update context for weblog rendering.
+
+        Args:
+            ctx: Context for weblog rendering
+            context: Pipeline context
+            results: ResultsList instance. Should hold a list of SDK2JyCalResults instance.
+        """
         reffile = None
         spw_factors = collections.defaultdict(lambda: [])
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
@@ -84,11 +108,26 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                     'dovirtual': dovirtual})
 
     @staticmethod
-    def __get_factor(factor_dict, vis, spwid, ant_name, pol_name):
-        """
+    def __get_factor(
+        factor_dict: Dict[str, Dict[int, Dict[str, Dict[str, float]]]],
+        vis: str, spwid: int, ant_name: str, pol_name: str
+    ) -> Optional[float]:
+        """Return Jy/K conversion factor for given meta data.
+
         Returns a factor corresponding to vis, spwid, ant_name, and pol_name from
         a factor_dict[vis][spwid][ant_name][pol_name] = factor
         If factor_dict lack corresponding factor, the method returns None.
+
+        Args:
+            factor_dict: Jy/K factors with meta data
+            vis: Name of MS
+            spwid: Spectral window id
+            ant_name: Name of antenna
+            pol_name: Polarization type
+
+        Returns:
+            Conversion factor for given meta data. If no corresponding factor
+            exists in factor_dict, None is returned.
         """
         if (vis not in factor_dict or
                 spwid not in factor_dict[vis] or
