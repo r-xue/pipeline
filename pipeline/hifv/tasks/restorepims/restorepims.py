@@ -1,4 +1,6 @@
 import os
+import tarfile
+import glob
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -40,8 +42,9 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         LOG.info("This Restorepims class is running.")
 
+        self.reimaging_resources = 'reimaging_resources.tgz'
         self.flagversion = 'statwt_1'
-        self.caltable = self.inputs.vis+'.hifv_selfcal.s8_1.phase-self-cal.tbl'
+        self.caltable = None
 
         self._check_resources()
         self._do_restoreflags()
@@ -56,8 +59,21 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _check_resources(self):
 
-        if not os.path.isdir(self.caltable):
-            LOG.errorf(f"The required selfcal table ({self.selfcal})  doesn't exist.")
+        with tarfile.open(self.reimaging_resources, 'r') as tar:
+            members = []
+            for member in tar.getmembers():
+                if member.name.startswith(self.inputs.vis + '.flagversions'):
+                    members.append(member)
+                if member.name.startswith(self.inputs.vis) and 'phase-self-cal.tbl' in member.name:
+                    members.append(member)
+            tar.extractall(members=members)
+
+        selfcal_tbs = glob.glob(self.inputs.vis+'*'+'phase-self-cal.tbl')
+        if len(selfcal_tbs) != 1:
+            LOG.error(f"The required selfcal table doesn't exist or more than one selfcal tables are found!")
+        else:
+            self.caltable = selfcal_tbs[0]
+
         if not os.path.isdir(self.inputs.vis+'.flagversions/flags.'+self.flagversion):
             LOG.error(f"The required flag version ({self.flagversion}) doesn't exist.")
 
