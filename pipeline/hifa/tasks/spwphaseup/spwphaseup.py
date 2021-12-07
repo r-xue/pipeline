@@ -1,3 +1,4 @@
+import copy
 import os
 from typing import List, Optional, Tuple
 
@@ -436,6 +437,10 @@ class SpwPhaseupResults(basetask.Results):
             ms.phaseup_spwmap = self.phaseup_spwmap
             ms.combine_spwmap = self.combine_spwmap
             ms.low_combined_phasesnr_spws = self.low_combined_phasesnr_spws
+
+        # PIPE-1208: Add estimated SNR to context
+        context.spwphaseup_snr_info = copy.deepcopy(self.snr_info)
+
 
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
