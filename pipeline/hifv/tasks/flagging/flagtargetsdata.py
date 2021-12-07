@@ -14,6 +14,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FlagtargetsdataInputs(vdp.StandardInputs):
+    """Inputs class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from vdp.StandardInputs.
+
+    """
     # Search order of input vis
     processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -38,6 +43,14 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):
+        """
+        Args:
+            vis(str): String name of the measurement set
+            output_dir(str):  Output directory
+            flagbackup(bool):  Back up flags or not
+            template(bool):  Used template or not
+            flagtemplate(str):  String filename of the flagging template to use
+        """
 
         super(FlagtargetsdataInputs, self).__init__()
 
@@ -55,7 +68,8 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         required by the CASA task flagdata. The returned object is a
         dictionary of flagdata arguments as keyword/value pairs.
 
-        :rtype: dict
+        Return:
+            Dict: dictionary of CASA task inputs
         """
         return {'vis': self.vis,
                 'mode': 'list',
@@ -65,7 +79,17 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
 
 
 class FlagtargetsdataResults(basetask.Results):
+    """Results class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from basetask.Results.
+
+    """
     def __init__(self, summaries, flagcmds):
+        """
+        Args:
+            summaries(dict):  Flagging summaries
+            flagcmds(List):  List of string flagging commands
+        """
         super(FlagtargetsdataResults, self).__init__()
         self.pipeline_casa_task = 'Flagtargetsdata'
         self.summaries = summaries
@@ -105,6 +129,11 @@ class FlagtargetsdataResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_flagtargetsdata')
 @task_registry.set_casa_commands_comment('Flagtargetsdata')
 class Flagtargetsdata(basetask.StandardTaskTemplate):
+    """Class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from basetask.StandardTaskTemplate
+
+    """
     Inputs = FlagtargetsdataInputs
 
     def prepare(self):
