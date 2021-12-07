@@ -247,6 +247,19 @@ def score_kspw(context, result):
     return all_scores
 
 
+def extract_snr_from_spwphaseup(context):
+    """
+    Extracts the estimated SNR from the hifa_spwphaseup step and returns a dictionary of spw to SNR
+    (as requested in PIPE-1208)
+    """
+    try:
+        snr_info_dict = {int(k): v for (k, v) in context.spwphaseup_snr_info}
+    except AttributeError:
+        LOG.warn("Estimated SNR from hifa_spwphaseup could not be retrieved")
+        snr_info_dict = {}
+    return snr_info_dict
+
+
 def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', required_snr=25, edge_fraction=0.03125,
                min_snr=10):
     """
@@ -327,7 +340,14 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         first_tsys_scan = min(tsys_scans, key=operator.attrgetter('id'))
         tsys_spw = phase_spw_to_tsys_spw[phase_spw]
         scan_data = wrapper.filter(spw=tsys_spw.id, scan=first_tsys_scan.id)
-        median_tsys[phase_spw.id] = numpy.ma.median(scan_data['FPARAM'])
+        if numpy.all(scan_data['FPARAM'].mask):  # Assign NaN if everything is masked
+            median_tsys[phase_spw.id] = numpy.NaN
+        else:
+            median_tsys[phase_spw.id] = numpy.ma.median(scan_data['FPARAM'])
+
+    # PIPE-1208: If any scan is fully masked we retrieve the SNR estimated from hifa_spwphaseup
+    if numpy.sum(numpy.isnan(numpy.array(list(median_tsys.values())))):
+        snr_info = extract_snr_from_spwphaseup(context)
 
     # 6) compute the expected channel-averaged SNR
     # TODO Ask Todd if this is an error or a confusingly-named variable
@@ -372,13 +392,24 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         aggregate_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
 
         snr_per_spw = spw_to_flux_density[spw.id] / sensitivity
-        mydict[spw.id]['snr'] = snr_per_spw
+        # PIPE-1208: Use the estimated SNR from hifa_spwphaseup if the data is fully masked
+        if numpy.isnan(median_tsys.get(spw.id)):
+            snr_value = snr_info[spw.id]
+            mydict[spw.id]['snr'] = Decimal(snr_value)
+            mydict[spw.id]['snr_aggregate'] = Decimal(
+                snr_value * sqrt(
+                    min([aggregate_bandwidth, max_effective_bandwidth_per_baseband * num_basebands]) /
+                    min([spw.bandwidth, max_effective_bandwidth_per_baseband]))
+            )
+            LOG.info(f"spw {spw.id} SNR extracted from hifa_spwphaseup ({snr_value})")
+        else:
+            mydict[spw.id]['snr'] = snr_per_spw
+            mydict[spw.id]['snr_aggregate'] = spw_to_flux_density[spw.id] / aggregate_bandwidth_sensitivity
         mydict[spw.id]['meanFreq'] = spw.mean_frequency
         mydict[spw.id]['medianTsys'] = median_tsys[spw.id]
         mydict[spw.id]['Tsys_spw'] = phase_spw_to_tsys_spw[spw].id
         mydict[spw.id]['bandwidth'] = spw.bandwidth
         mydict[spw.id]['bandwidth_effective'] = min([spw.bandwidth, max_effective_bandwidth_per_baseband])
-        mydict[spw.id]['snr_aggregate'] = spw_to_flux_density[spw.id] / aggregate_bandwidth_sensitivity
         mydict[spw.id]['calibrator_flux_density'] = spw_to_flux_density[spw.id]
         mydict[spw.id]['solint_inf_seconds'] = time_on_source[spw].total_seconds()
         mydict['aggregate_bandwidth'] = min([aggregate_bandwidth, max_effective_bandwidth_per_baseband * num_basebands])
@@ -389,10 +420,19 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
             widest_spw_bandwidth_factor = sqrt(eight_ghz / widest_spw.bandwidth)
             factor = relative_tsys * time_factor * array_size_factor * area_factor * widest_spw_bandwidth_factor * polarization_factor
             widest_spw_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
-            mydict[spw.id]['snr_widest_spw'] = spw_to_flux_density[spw.id] / widest_spw_bandwidth_sensitivity
+            if numpy.isnan(median_tsys.get(spw.id)):
+                mydict[spw.id]['snr_widest_spw'] = Decimal(
+                    snr_value * sqrt(
+                        min([widest_spw.bandwidth, max_effective_bandwidth_per_baseband]) /
+                        min([spw.bandwidth, max_effective_bandwidth_per_baseband])
+                    )
+                )
+            else:
+                mydict[spw.id]['snr_widest_spw'] = spw_to_flux_density[spw.id] / widest_spw_bandwidth_sensitivity
             mydict[spw.id]['widest_spw_bandwidth'] = widest_spw.bandwidth
         else:
             mydict[spw.id]['snr_widest_spw'] = 0
+
 
     for spw in all_target_spws:
         calspw = bandwidth_switching[spw]
