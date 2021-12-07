@@ -1495,9 +1495,6 @@ class SDSparseMapPlotter(object):
                                      size=(self.ticksize + 1))
                 axes.axis([xmin, xmax, ymin, ymax])
 
-        if ShowPlot:
-            self.axes.figure.canvas.draw_idle()
-
         if figfile is not None:
             self.axes.figure.savefig(figfile, format='png', dpi=DPIDetail)
         LOG.debug('figfile=\'%s\'', figfile)

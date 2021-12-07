@@ -180,13 +180,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                                                                               self.direction_reference)
 
         # Plotting
-        if ShowPlot:
-            matplotlib.rcParams['interactive'] = True
-        else:
-            matplotlib.rcParams['interactive'] = False
         fig = self.figure
-        if ShowPlot:
-            matplotlib.rcParams['interactive'] = False
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
@@ -236,8 +230,6 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
             axes_tpmap.set_xlim(xlim)
             axes_tpmap.set_ylim(ylim)
 
-            if ShowPlot:
-                fig.canvas.draw_idle()
             FigFileRoot = self.inputs.imagename+'.pol%s'%(pol)
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
             fig.savefig(plotfile, format='png', dpi=DPIDetail)
@@ -316,13 +308,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                                                                               self.direction_reference)
 
         # Plotting
-        if ShowPlot:
-            matplotlib.rcParams['interactive'] = True
-        else:
-            matplotlib.rcParams['interactive'] = False
         fig = self.figure
-        if ShowPlot:
-            matplotlib.rcParams['interactive'] = False
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
@@ -375,8 +361,6 @@ class SDMomentMapDisplay(SDImageDisplay):
             axes_tpmap.set_xlim(xlim)
             axes_tpmap.set_ylim(ylim)
 
-            if ShowPlot:
-                fig.canvas.draw_idle()
             FigFileRoot = self.inputs.imagename+'.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
             fig.savefig(plotfile, format='png', dpi=DPIDetail)
@@ -1123,8 +1107,6 @@ class SDChannelMapDisplay(SDImageDisplay):
                 LOG.debug('PROFILE: integrated spectrum #2: %s sec'%(t3-t2))
                 LOG.debug('PROFILE: channel map: %s sec'%(t4-t3))
 
-                if ShowPlot:
-                    fig.canvas.draw_idle()
                 FigFileRoot = self.inputs.imagename + '.pol%s'%(pol)
                 plotfile = os.path.join(self.stage_dir, FigFileRoot+'_ChannelMap_%s.png'%(ValidCluster))
                 fig.savefig(plotfile, format='png', dpi=DPIDetail)
@@ -1294,8 +1276,6 @@ class SDRmsMapDisplay(SDImageDisplay):
             rms_axes.set_ylim(ylim)
             rms_axes.set_title('Baseline RMS Map', size=TickSize)
 
-            if ShowPlot:
-                fig.canvas.draw_idle()
             FigFileRoot = self.inputs.imagename + '.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
             fig.savefig(plotfile, format='png', dpi=DPIDetail)
@@ -1591,8 +1571,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
                 NSp += 1
                 if NSp >= (NhPanel * NvPanel) or (irow == len(ROWS)-1 and mode.upper() != 'RASTER'):
                     NSp = 0
-                    if ShowPlot:
-                        fig.canvas.draw_idle()
 
                     prefix = self.inputs.imagename+'.pol%s_Result' % pol
                     plotfile = os.path.join(self.stage_dir, prefix+'_%s.png' % Npanel)
@@ -1680,7 +1658,6 @@ class SDSpectralImageDisplay(SDImageDisplay):
         Returns:
             List of Plot instances.
         """
-        matplotlib.rcParams['interactive'] = False
         plot_list = []
         t0 = time.time()
         plot_list.extend(
