@@ -936,17 +936,17 @@ class MetaDataReader(object):
 
     def get_reference_direction(self, source_name: str, ephem_table: str, is_known_eph_obj: bool, mepoch: Dict[str, Union[Dict[str, Any], Any]],
                                 mposition: Dict[str, Union[Dict[str, Any], Any]], outframe: str) -> Dict[str, Union[str, Dict]]:
-        """Get reference direction.
+        """Get reference direction of a ephemeris object by specified a position and epoch timestamp.
 
         Args:
             source_name: source name (ex:'Venus')
             ephem_table: ephemeris table name
             is_known_eph_obj: known ephemeris flag
-            mepoc: dict of time
+            mepoc: dict of timestamp
             mposition: dict of position
             outframe: direction reference (ex:'ICRS')
         Returns:
-            Dict: reference direction
+            Dict: reference direction of ephemeris object
         """
         me = casa_tools.measures
 
