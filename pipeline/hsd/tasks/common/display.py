@@ -616,13 +616,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
             inputs: Inputs instance.
         """
         self.inputs = inputs
-        # self.context = self.inputs.context
-        # self.stage_dir = self.inputs.stage_dir
-        # self.image = None
         self.imagename = self.inputs.imagename
-        # self.spw = self.inputs.spw
-        # self.antenna = self.inputs.antenna
-        # self.vis = self.inputs.vis
 
         # Figure instance for plotting
         self.figure = figure.Figure()
