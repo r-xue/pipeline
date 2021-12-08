@@ -29,14 +29,12 @@ BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio b
 class PlotterPool(object):
     def __init__(self):
         self.pool = {}
-        self.figure_id = display.SparseMapAxesManager.MATPLOTLIB_FIGURE_ID()
 
     def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist,
                        direction_reference=None, brightnessunit='Jy/beam'):
         fig = figure.Figure()
         plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec,
-                                             step=1, brightnessunit=brightnessunit,
-                                             figure_id=self.figure_id)
+                                             step=1, brightnessunit=brightnessunit)
         plotter.direction_reference = direction_reference
         plotter.setup_labels_absolute( ralist, declist )
         return plotter
@@ -279,8 +277,8 @@ class BaselineSubtractionPlotManager(object):
         plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
                                            brightnessunit=bunit)
-        LOG.debug('vis %s ant %s spw %s plotter figure id %s has %s axes',
-                  ms.basename, antid, spwid, plotter.axes.figure_id, len(plotter.axes.figure.axes))
+        LOG.debug('vis %s ant %s spw %s plotter has %s axes',
+                  ms.basename, antid, spwid, len(plotter.axes.figure.axes))
 #         LOG.info('axes list: {}', [x.__hash__()  for x in plotter.axes.figure.axes])
         spw = ms.spectral_windows[spwid]
         nchan = spw.num_channels

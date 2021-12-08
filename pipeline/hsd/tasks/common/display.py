@@ -822,7 +822,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     """
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, brightnessunit: str,
-                 ticksize: int, clearpanel: bool = True, figure_id: int = None) -> None:
+                 ticksize: int, clearpanel: bool = True) -> None:
         """Construct SparseMapAxesManager instance.
 
         Args:
@@ -832,7 +832,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             brightnessunit: Brightness unit.
             ticksize: Size of tick label.
             clearpanel: Clear existing Axes. Defaults to True.
-            figure_id: Figure id. Defaults to None.
         """
         super(SparseMapAxesManager, self).__init__()
         self.figure = fig
@@ -845,11 +844,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self._axes_spmap = None
         self._axes_atm = None
         self._axes_chan = None
-
-        if figure_id is None:
-            self.figure_id = self.MATPLOTLIB_FIGURE_ID()
-        else:
-            self.figure_id = figure_id
 
         _f = form4(self.nv)
         self.gs_top = gridspec.GridSpec(1, 1,
@@ -865,11 +859,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
 #                                            hspace=0, wspace=0,
 #                                            left=0, right=0.95,
 #                                            bottom=0.01, top=1.0 - 1.0/form3(self.nv)-0.07)
-
-    @staticmethod
-    def MATPLOTLIB_FIGURE_ID() -> int:
-        """Return default figure id."""
-        return 8910
 
     @property
     def axes_integsp(self) -> Axes:
@@ -1072,7 +1061,7 @@ class SDSparseMapPlotter(object):
     """Plotter for sparse spectral map."""
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, step: int, brightnessunit: str,
-                 clearpanel: bool = True, figure_id: Optional[int] = None) -> None:
+                 clearpanel: bool = True) -> None:
         """Construct SDSparseMapPlotter instance.
 
         Args:
@@ -1081,7 +1070,6 @@ class SDSparseMapPlotter(object):
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
             clearpanel: Clear existing Axes. Defaults to True.
-            figure_id: Figure id. Defaults to None.
         """
         self.step = step
         if step > 1:
@@ -1090,7 +1078,7 @@ class SDSparseMapPlotter(object):
             ticksize = 10 - int(max(nh, nv)) // 2
         ticksize = max(ticksize, 3)
         fig.set_dpi(DPIDetail)
-        self.axes = SparseMapAxesManager(fig, nh, nv, brightnessunit, ticksize, clearpanel, figure_id)
+        self.axes = SparseMapAxesManager(fig, nh, nv, brightnessunit, ticksize, clearpanel)
         self.lines_averaged = None
         self.lines_map = None
         self.reference_level = None
