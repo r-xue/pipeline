@@ -18,6 +18,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
+from pipeline.domain import DataType
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -122,7 +123,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if hasattr(self.inputs.context, 'imaging_mode'):
             img_mode = self.inputs.context.imaging_mode
         else:
-            LOG.warn("imaging_mode property does not exist in context, alpha images will not be written.")
+            LOG.warning("imaging_mode property does not exist in context, alpha images will not be written.")
             img_mode = None
 
         images_list = []
@@ -195,7 +196,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
             # PIPE-1182: Strip stage number off exported image fits files
             #   Look for "sX_Y.", where X and Y are one or more digits at the start of the image name
-            pattern = '^s\d+_\d*\.'
+            pattern = r'^s\d+_\d*\.'
             mm = re.search(pattern, image)
             if mm:
                 LOG.info(f'Removing "{mm.group()}" from "{image}" before exporting to FITS.')
@@ -273,6 +274,15 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return recipe_name
 
+    def _has_imaging_data(self, context, vis):
+        """
+        Check if the given vis contains any imaging data.
+        """
+
+        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
+        ms_object = context.observing_run.get_ms(name=vis)
+        return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
+
     def _make_lists(self, context, session, vis, imaging=False):
         """
         Create the vis and sessions lists
@@ -283,9 +293,9 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if isinstance(vislist, str):
             vislist = [vislist, ]
         if imaging:
-            vislist = [vis for vis in vislist if context.observing_run.get_ms(name=vis).is_imaging_ms]
+            vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
         else:
-            vislist = [vis for vis in vislist if not context.observing_run.get_ms(name=vis).is_imaging_ms]
+            vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
 
         # Get the session list and the visibility files associated with
         # each session.
@@ -328,7 +338,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if hasattr(self.inputs.context, 'imaging_mode'):
             img_mode = self.inputs.context.imaging_mode
         else:
-            LOG.warn("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
+            LOG.warning("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
             img_mode = None
 
         # SE Cont imaging mode export for VLASS
@@ -347,7 +357,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 self.selfcaltable = selfcal_result.caltable
             else:
                 self.selfcaltable = ''
-                LOG.warn('Unable to locate self-cal table.')
+                LOG.warning('Unable to locate self-cal table.')
 
             # Identify flagversion
             self.flagversion = os.path.basename(self.inputs.vis)+'.flagversions'
@@ -716,6 +726,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             hdulist.close()
 
         else:
-            LOG.warn('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
+            LOG.warning('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
 
         return

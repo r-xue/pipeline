@@ -499,13 +499,13 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             # Check if files exist
             warn_message = '%s does not exist, flux fraction outside mask cannot be computed.'
             if not os.path.exists(image):
-                LOG.warn(warn_message % image)
+                LOG.warning(warn_message % image)
                 return None
             if not os.path.exists(pbimage):
-                LOG.warn(warn_message % pbimage)
+                LOG.warning(warn_message % pbimage)
                 return None
             if not os.path.exists(cleanmask):
-                LOG.warn(warn_message % cleanmask)
+                LOG.warning(warn_message % cleanmask)
                 return None
 
             # threshold for sigma clipping, measure sigma in the image and use 10x the value

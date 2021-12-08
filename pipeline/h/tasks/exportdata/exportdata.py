@@ -50,6 +50,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.filenamer import fitsname
+from pipeline.domain import DataType
 from ..common import manifest
 
 # the logger for this module
@@ -477,6 +478,15 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return recipe_name
 
+    def _has_imaging_data(self, context, vis):
+        """
+        Check if the given vis contains any imaging data.
+        """
+
+        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
+        ms_object = context.observing_run.get_ms(name=vis)
+        return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
+
     def _make_lists(self, context, session, vis, imaging_only_mses=False):
         """
         Create the vis and sessions lists
@@ -487,9 +497,9 @@ class ExportData(basetask.StandardTaskTemplate):
         if isinstance(vislist, str):
             vislist = [vislist]
         if imaging_only_mses:
-            vislist = [vis for vis in vislist if context.observing_run.get_ms(name=vis).is_imaging_ms]
+            vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
         else:
-            vislist = [vis for vis in vislist if not context.observing_run.get_ms(name=vis).is_imaging_ms]
+            vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
 
         # Get the session list and the visibility files associated with
         # each session.

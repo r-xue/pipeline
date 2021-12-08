@@ -239,10 +239,10 @@ class SDInspection(object):
             thisfield = field_id[i]
 
             spw_domain = self.ms.spectral_windows[thisspw]
-            # LOG.debug('spw.name=\'%s\''%(spw_domain.name))
-            # LOG.debug('spw.intents=%s'%(spw_domain.intents))
-            if (re.search('^WVR#', spw_domain.name) is not None or
-                    re.search('#CH_AVG$', spw_domain.name) is not None or
+            #LOG.debug('spw.name=\'%s\''%(spw_domain.name))
+            #LOG.debug('spw.intents=%s'%(spw_domain.intents))
+            if (re.search(r'^WVR#', spw_domain.name) is not None or
+                    re.search(r'#CH_AVG$', spw_domain.name) is not None or
                     'TARGET' not in spw_domain.intents):
                 continue
 
@@ -421,8 +421,13 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
+<<<<<<< HEAD
                             LOG.warn('RasterScanHeuristics failed with the following error. ' +
                                      'Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+=======
+                            LOG.warning(
+                                'RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+>>>>>>> origin
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or raster_heuristic_ok is False:
@@ -488,7 +493,7 @@ class SDInspection(object):
         science_windows = ms.get_spectral_windows(science_windows_only=True)
         tsys_windows = [spw for spw in ms.spectral_windows
                         if 'ATMOSPHERE' in spw.intents and
-                        re.search('(CH_AVG|SQLD|WVR)', spw.name) is None]
+                        re.search(r'(CH_AVG|SQLD|WVR)', spw.name) is None]
         LOG.debug('tsys_windows={spws}'.format(spws=[spw.id for spw in tsys_windows]))
         TOL = 1.0e-3
         for spwa in tsys_windows:
@@ -578,7 +583,7 @@ class SDInspection(object):
 #                                  field_name=None):
 #         if fraction <= 0 or fraction > 1.0:
 #             raise ValueError("overlap fraction should be between 0.0 and 1.0")
-#         LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
+#         LOG.warning("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
 #                  " over long period.")
 #         match = False
 #         for group_key, group_desc in reduction_group.items():
@@ -632,8 +637,8 @@ def match_field_name(name1: str, name2: str) -> bool:
         # is_match = lambda s: re.match(pattern, s) is not None
         if re.match(pattern, suffix) is not None:
             if pattern == old_pattern:
-                LOG.warn("OFF source field identified using old field name heuristics. You may want to review field"
-                         " mapping carefully.")
+                LOG.warning("OFF source field identified using old field name heuristics. You may want to review field"
+                            " mapping carefully.")
             return True
 
     return False

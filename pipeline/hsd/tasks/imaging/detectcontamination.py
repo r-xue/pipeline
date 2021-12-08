@@ -185,7 +185,7 @@ def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
                               'Absorption feature is detected ' \
                               'in the lower S/N area. ' \
                               'Please check calibration result in detail.'
-        LOG.warn(warning_sentence)
+        LOG.warning(warning_sentence)
 
 
 # Function for reading FITS and its header (CASA version)
