@@ -207,21 +207,17 @@ class SpectralImage(object):
     @property
     def data(self) -> np.ndarray:
         """Retrun image data."""
-        if hasattr(self, 'imagename') and self.imagename:
-            with casa_tools.ImageReader(self.imagename) as ia:
-                data = ia.getchunk()
-        else:
-            data = np.zeros([], dtype=float)
+        with casa_tools.ImageReader(self.imagename) as ia:
+            data = ia.getchunk()
+
         return data
 
     @property
     def mask(self) -> np.ndarray:
         """Return boolean image mask."""
-        if hasattr(self, 'imagename') and self.imagename:
-            with casa_tools.ImageReader(self.imagename) as ia:
-                mask = ia.getchunk(getmask=True)
-        else:
-            mask = np.zeros([], dtype=bool)
+        with casa_tools.ImageReader(self.imagename) as ia:
+            mask = ia.getchunk(getmask=True)
+
         return mask
 
     def __init__(self, imagename: str) -> None:
@@ -231,6 +227,12 @@ class SpectralImage(object):
             imagename: Name of the image.
         """
         qa = casa_tools.quanta
+        if not isinstance(imagename):
+            raise ValueError('imagename must be string')
+
+        if not imagename:
+            raise ValueError('imagename must be a name of the image (CASA image or FITS).')
+
         self.imagename = imagename
         # read data to storage
         with casa_tools.ImageReader(imagename) as ia:
