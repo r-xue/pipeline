@@ -926,11 +926,11 @@ class MetaDataReader(object):
         return outref
 
     @staticmethod
-    def _get_azelref() -> os.strerror:
-        """Return error string.
+    def _get_azelref() -> str:
+        """Return AZEL string.
 
         Returns:
-            os.strerror: error string
+            str: fix string 'AZELGEO'
         """
         return 'AZELGEO'
 
