@@ -117,10 +117,12 @@ using the CASA task <b>gencal</b>.</p>
     %if single_result.tecmaps_result:
 
         <h2>TEC Maps</h2>
-	    TEC Caltable written to:
 
 	    %for single_result in result:
-	        <p><b>${os.path.basename(single_result.tecmaps_result.inputs['caltable'])}</b></p>
+	        %if single_result.tecmaps_result.inputs['apply_tec_correction']:
+	            TEC Caltable written to:
+	            <p><b>${os.path.basename(single_result.tecmaps_result.inputs['caltable'])}</b></p>
+	        %endif
         %endfor
         <br>
         TEC Images written to:
@@ -129,7 +131,9 @@ using the CASA task <b>gencal</b>.</p>
 	        <p><b>${single_result.tecmaps_result.tec_rms_image}</b></p>
         %endfor
 
-        <img src="${tec_plotfile}">
+        %if single_result.tecmaps_result.inputs['show_tec_maps']:
+            <img src="${tec_plotfile}">
+        %endif
 
     %endif
 
