@@ -8,7 +8,7 @@ def is_ms(filename):
     if os.path.exists(filename) and os.path.exists(table_info):
         with open(table_info, 'r') as f:
             line = f.readline()
-        return re.match('^Type ?= ?Measurement ?Set *$', line) is not None
+        return re.match(r'^Type ?= ?Measurement ?Set *$', line) is not None
     return False
 
 

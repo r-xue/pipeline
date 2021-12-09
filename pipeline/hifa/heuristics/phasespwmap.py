@@ -256,8 +256,8 @@ def simple_n2wspwmap(allspws, scispws, maxnarrowbw, maxbwfrac, samebb):
 
     # Issue a warning if any spw failed spw mapping
     if len(failedspws) > 0:
-        LOG.warn('Cannot map narrow spws %s to wider ones - defaulting these to standard mapping' %
-                 [spw.id for spw in failedspws])
+        LOG.warning('Cannot map narrow spws %s to wider ones - defaulting these to standard mapping' %
+                    [spw.id for spw in failedspws])
 
     # Find the maximum science spw id
     max_spwid = 0

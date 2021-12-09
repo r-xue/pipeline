@@ -351,7 +351,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])
 
         if imlist_entry['threshold'] and imlist_entry['hm_nsigma']:
-            LOG.warn("Both 'threshold' and 'nsigma' were specified.")
+            LOG.warning("Both 'threshold' and 'nsigma' were specified.")
 
         imlist_entry['pblimit'] = None if inpdict['pblimit'] in (None, -999.0) else inpdict['pblimit']
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']

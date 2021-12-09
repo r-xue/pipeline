@@ -99,9 +99,9 @@ class Hanning(basetask.StandardTaskTemplate):
                     LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
                     os.rename('temphanning.ms', self.inputs.vis)
                 except Exception as ex:
-                    LOG.warn('Problem encountered with hanning smoothing. ' + str(ex))
+                    LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
         else:
-            LOG.warn("Data in this MS are pre-averaged.  CASA task hanningsmooth() was not executed.")
+            LOG.warning("Data in this MS are pre-averaged.  CASA task hanningsmooth() was not executed.")
 
         return HanningResults()
 

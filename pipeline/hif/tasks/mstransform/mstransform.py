@@ -25,7 +25,7 @@ class MstransformInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
-        return vis_root + '_target.ms'
+        return vis_root + '_cont.ms'
 
     @outputvis.convert
     def outputvis(self, value):
@@ -177,7 +177,7 @@ class Mstransform(basetask.StandardTaskTemplate):
 
         # Check for existence of the output vis. 
         if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating target MS %s' % (os.path.basename(result.outputvis)))
+            LOG.debug('Error creating target continuum MS %s' % (os.path.basename(result.outputvis)))
             return result
 
         # Import the new measurement set.
@@ -188,7 +188,6 @@ class Mstransform(basetask.StandardTaskTemplate):
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
-            ms.is_imaging_ms = True
             LOG.debug('Setting data_column and origin_ms.')
             ms.origin_ms = self.inputs.ms.origin_ms
             ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
@@ -201,11 +200,11 @@ class Mstransform(basetask.StandardTaskTemplate):
     def _copy_xml_files(vis, outputvis):
         for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
             vis_source = os.path.join(vis, xml_filename)
-            outputvis_target = os.path.join(outputvis, xml_filename)
+            outputvis_target_continuum = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):
-                LOG.info('Copying %s from original MS to target MS', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target)
-                shutil.copyfile(vis_source, outputvis_target)
+                LOG.info('Copying %s from original MS to target continuum MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_continuum)
+                shutil.copyfile(vis_source, outputvis_target_continuum)
 
 
 class MstransformResults(basetask.Results):
@@ -230,8 +229,6 @@ class MstransformResults(basetask.Results):
 
         # Create targets flagging template file if it does not already exist
         for ms in self.mses:
-            if not ms.is_imaging_ms:
-                continue
             template_flagsfile = os.path.join(
                 self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')

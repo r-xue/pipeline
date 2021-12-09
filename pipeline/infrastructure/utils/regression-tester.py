@@ -130,7 +130,10 @@ class PipelineRegression(object):
                     errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {tolerance}\n\texpected: {oldval}\n\tnew:      {newval}"
                     errors.append(errorstr)
             [LOG.warning(x) for x in errors]
-            assert not errors
+            n_errors = len(errors)
+            if n_errors > 0:
+                pytest.fail("Failed to match {0} result value{1} within tolerance{1} :\n{2}".format(
+                    n_errors, '' if n_errors == 1 else 's', '\n'.join(errors)), pytrace=True)
 
     def __save_new_results_to(self, new_file: str, new_results: List[str]):
         """
@@ -296,6 +299,24 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
 
+def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression():
+    """Run ALMA cal+survey regression on a calibration survey test dataset
+ 
+    Recipe name:                procedure_hifa_calsurvey
+    Dataset:                    uid___A002_Xee1eb6_Xc58d_original.ms
+    Expected results version:   casa-6.3.0-48-pipeline-2021.3.0.5
+    """
+    input_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey/'
+    pr = PipelineRegression(recipe='procedure_hifa_calsurvey.xml',
+                            input_dir = input_directory,
+                            visname='uid___A002_Xee1eb6_Xc58d_original.ms',
+                            expectedoutput=(input_directory +
+                                           'uid___A002_Xee1eb6_Xc58d.casa-6.3.0-482-pipeline-2021.3.0.5.results.txt'),
+                            output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output')
+ 
+    pr.run()
+
+
 def test_13A_537__procedure_hifv__regression():
     """Run VLA calibration regression for standard procedure_hifv.xml recipe.
 
@@ -351,3 +372,4 @@ def test_13A_537__restore__PPR__regression():
     shutil.copytree(input_products, './products')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
+

@@ -10,18 +10,20 @@ import pydoc
 import re
 import shutil
 import sys
-from typing import List
+from typing import Any, Dict, List
 
 import mako
 import numpy
 import pkg_resources
 
 import pipeline as pipeline
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
+from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
 from pipeline.infrastructure import casa_tools
@@ -378,7 +380,7 @@ class T1_1Renderer(RendererBase):
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
-            link = 'sidebar_%s' % re.sub('[^a-zA-Z0-9]', '_', ms.basename)
+            link = 'sidebar_%s' % re.sub(r'[^a-zA-Z0-9]', '_', ms.basename)
             href = os.path.join('t2-1.html?sidebar=%s' % link)
 
             num_antennas = len(ms.antennas)
@@ -865,11 +867,9 @@ class T2_1DetailsRenderer(object):
             target = list(field_strategy.keys())[0]
             reference = field_strategy[target]
             LOG.debug('target field id %s / reference field id %s' % (target, reference))
-            task = pointing.SingleDishPointingChart(context, ms, antenna,
-                                                    target_field_id=target,
-                                                    reference_field_id=reference,
-                                                    target_only=True)
-            pointing_plot = task.plot()
+            task = pointing.SingleDishPointingChart(context, ms)
+            pointing_plot = task.plot(antenna=antenna, target_field_id=target,
+                                      reference_field_id=reference, target_only=True)
         else:
             pointing_plot = None
 
@@ -1156,30 +1156,34 @@ class T2_2_7Renderer(T2_2_XRendererBase):
             super(T2_2_7Renderer, cls).render(context)
 
     @staticmethod
-    def get_display_context(context, ms):
+    def get_display_context(context:Context, ms: MeasurementSet) -> Dict[str, Any]:
+        """Get display context and plots points
+
+        Args:
+            context (Context): pipeline context state object
+            ms (MeasurementSet): an object of Measurement Set
+
+        Returns:
+            Dict[str, Any]: display context
+        """
         target_pointings = []
         whole_pointings = []
         offset_pointings = []
+        task = pointing.SingleDishPointingChart(context, ms)
         if is_singledish_ms(context):
             for antenna in ms.antennas:
                 for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
-                    task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=True)
-                    plotres = task.plot()
+                    plotres = task.plot(antenna=antenna, target_field_id=target,
+                                        reference_field_id=reference, target_only=True)
                     # for missing antenna, spw, field combinations
                     if plotres is None: continue
                     target_pointings.append(plotres)
 
                     # pointing pattern with OFF-SOURCE intents
-                    task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=False)
-                    plotres = task.plot()
+                    plotres = task.plot(antenna=antenna, target_field_id=target,
+                                        reference_field_id=reference, target_only=False)
                     if plotres is not None:
                         whole_pointings.append(plotres)
 
@@ -1188,12 +1192,8 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     source_name = target_field.source.name
                     if target_field.source.is_eph_obj or target_field.source.is_known_eph_obj:
                         LOG.info('generating offset pointing plot for {}'.format(source_name))
-                        task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                                target_field_id=target,
-                                                                reference_field_id=reference, 
-                                                                target_only=True,
-                                                                ofs_coord=True)
-                        plotres = task.plot()
+                        plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference,
+                                            target_only=True, ofs_coord=True)
                         if plotres is not None:
                             LOG.info('Adding offset pointing plot for {} (antenna {})'.format(source_name, antenna.name))
                             offset_pointings.append(plotres)
@@ -1447,7 +1447,7 @@ class T2_4MDetailsDefaultRenderer(object):
 
             obj, _ = pydoc.resolve(taskname, forceload=0)
             page = pydoc.render_doc(obj)
-            return '<pre>%s</pre>' % re.sub('\x08.', '', page)
+            return '<pre>%s</pre>' % re.sub(r'\x08.', '', page)
         except Exception:
             return None
 

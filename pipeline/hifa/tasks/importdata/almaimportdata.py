@@ -85,7 +85,7 @@ class ALMAImportData(importdata.ImportData):
                 fluxservice = 'FIRSTURL'
             except Exception as e:
                 try:
-                    LOG.warn('Unable to execute initial test query with primary flux service.')
+                    LOG.warning('Unable to execute initial test query with primary flux service.')
                     ssl_context = ssl.create_default_context(cafile=certifi.where())
                     baseurl = FLUX_SERVICE_URL_BACKUP
                     url = baseurl + testquery
@@ -100,7 +100,7 @@ class ALMAImportData(importdata.ImportData):
                         msg = 'Backup URL not defined for test query...'
                     else:
                         msg = 'Unable to execute backup test query with flux service.'
-                    LOG.warn(msg+'\nProceeding without using the online flux catalog service.')
+                    LOG.warning(msg+'\nProceeding without using the online flux catalog service.')
                     xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice = 'FAIL'
                     qastatus = None

@@ -161,8 +161,9 @@ class MaskLine(basetask.StandardTaskTemplate):
         t1 = time.time()
 
         # return empty result if grid_table is empty
-        if len(grid_table) == 0: # or len(spectra) == 0:
-            LOG.warn('Line detection/validation will not be done since grid table is empty. Maybe all the data are flagged out in the previous step.')
+        if len(grid_table) == 0:  # or len(spectra) == 0:
+            LOG.warning(
+                'Line detection/validation will not be done since grid table is empty. Maybe all the data are flagged out in the previous step.')
             outcome = {'detected_lines': [],
                        'cluster_info': {},
                        'flag_digits': {},

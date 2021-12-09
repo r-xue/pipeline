@@ -35,7 +35,7 @@ def _cpu_type():
         # get the text after the colon
         token = ''.join(model_names.pop().split(':')[1:])
         # replace any multispaces with one space
-        return re.sub('\s+', ' ', token.strip())
+        return re.sub(r'\s+', ' ', token.strip())
     elif system == 'Darwin':
         return subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string']).strip().decode(sys.stdout.encoding)
     else:

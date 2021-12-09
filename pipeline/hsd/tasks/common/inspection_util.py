@@ -252,8 +252,8 @@ def __find_match_by_coverage(nchan: int, min_frequency: float,
     """
     if fraction <= 0 or fraction > 1.0:
         raise ValueError("overlap fraction should be between 0.0 and 1.0")
-    LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
-             " over long period.")
+    LOG.warning("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
+                " over long period.")
     match = False
     for group_key, group_desc in reduction_group.items():
         group_field_name = group_desc.field

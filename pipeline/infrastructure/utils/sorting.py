@@ -11,7 +11,7 @@ LOG = logging.get_logger(__name__)
 __all__ = ["natural_sort", "numeric_sort", "natural_sort_key", "numeric_sort_key"]
 
 
-def natural_sort_key(x, _nsre=re.compile("([0-9]+)")):
+def natural_sort_key(x, _nsre=re.compile(r"([0-9]+)")):
     """Key to order in natural order with the sort function"""
     return [
         int(text) if text.isdigit() else text.lower() for text in re.split(_nsre, x)

@@ -10,6 +10,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.executeppr import _sanitize_for_ms
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -65,7 +66,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def filetemplate(self):
-        vis_root = os.path.splitext(self.vis)[0].split('_target')[0]
+        vis_root = _sanitize_for_ms(self.vis)
         return vis_root + '.flagtargetstemplate.txt'
 
     @filetemplate.convert
@@ -77,7 +78,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def inpfile(self):
-        vis_root = os.path.splitext(self.vis)[0].split('_target')[0]
+        vis_root = _sanitize_for_ms(self.vis)
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):

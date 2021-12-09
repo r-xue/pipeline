@@ -47,8 +47,8 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
             uniquespwlist = [int(spw) for spw in uniquespw]
             uniquespwlist.sort()
             uniquespwlist = [str(spw) for spw in uniquespwlist]
-            LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                     ''.format(antenna, ','.join(uniquespwlist)))
+            LOG.warning('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                        ''.format(antenna, ','.join(uniquespwlist)))
 
         result.qa.pool.extend(scores)
 
@@ -67,7 +67,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 spwcollect = sorted(set(spwcollect))
                 spwcollect = [str(spw) for spw in spwcollect]
                 self.antspw[antenna_names[antenna]].extend(spwcollect)
-                # LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                # LOG.warning('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
                 #          ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return

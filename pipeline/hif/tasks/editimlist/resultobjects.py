@@ -24,7 +24,7 @@ class EditimlistResult(basetask.Results):
 
         # PIPE-592: store img_mode in context
         if not hasattr(context, 'imaging_mode'):
-            LOG.warn('imaging_mode property does not exist in context, adding it now.')
+            LOG.warning('imaging_mode property does not exist in context, adding it now.')
         context.imaging_mode = self.img_mode
 
     @property

@@ -4,7 +4,6 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.contfilehandler as contfilehandler
@@ -22,7 +21,7 @@ LOG = infrastructure.get_logger(__name__)
 # uvcontfit task written by the pipeline.
 class UVcontFitInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.RAW]
 
     @vdp.VisDependentProperty
     def caltable(self):
@@ -139,11 +138,6 @@ class UVcontFitInputs(vdp.StandardInputs):
         d['append'] = append
 
         return d
-
-
-# tell the infrastructure to give us mstransformed data when possible by
-# registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(UVcontFitInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontfit')
@@ -299,7 +293,7 @@ class UVcontFit(basetask.StandardTaskTemplate):
                         inputs.ms.basename, sname, int(spw_id)))
                     continue
                 elif cranges_spwsel[sname][spw_id] in ['NONE']:
-                    LOG.warn('Continuum region detection failed for MS %s source %s spw %d' % (
+                    LOG.warning('Continuum region detection failed for MS %s source %s spw %d' % (
                         inputs.ms.basename, sname, int(spw_id)))
                     continue
                 else:
@@ -447,7 +441,7 @@ class UVcontFitResults(basetask.Results):
         See :method:`~pipeline.api.Results.merge_with_context`
         """
         if not self.final:
-            LOG.warn('No UV continuum results to merge')
+            LOG.warning('No UV continuum results to merge')
             return
 
         for calapp in self.final:

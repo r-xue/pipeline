@@ -24,7 +24,7 @@ class ContFileHandler(object):
 
     def __init__(self, filename, warn_nonexist=False):
         self.filename = filename
-        self.p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+        self.p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
         self.cont_ranges = self.read(warn_nonexist=warn_nonexist)
 
     def read(self, skip_none=False, warn_nonexist=False):

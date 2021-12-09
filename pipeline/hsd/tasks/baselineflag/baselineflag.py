@@ -327,9 +327,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         plots = []
         for msobj, accumulator in registry.items():
             if absolute_path(cal_name) == absolute_path(bl_name):
-                LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
-                         " MASKLIST will also be cleared up. You may go on flagging but the statistics"
-                         " will contain line emission." % inputs.ms.basename)
+                LOG.warning("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
+                            " MASKLIST will also be cleared up. You may go on flagging but the statistics"
+                            " will contain line emission." % inputs.ms.basename)
 
             antenna_list = accumulator.get_antenna_id_list()
             fieldid_list = accumulator.get_field_id_list()

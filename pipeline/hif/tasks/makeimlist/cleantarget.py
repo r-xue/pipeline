@@ -41,8 +41,6 @@ class CleanTarget(dict):
         self['reffreq'] = None         # string
         self['restfreq'] = None        # string
         self['heuristics'] = None      # object
-        # vis list only for special setups like CHECK source
-        # imaging per EB for ALMA
         self['vis'] = None             # list of strings
         self['is_per_eb'] = None       # boolean
         self['usepointing'] = None     # boolean

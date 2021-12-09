@@ -3,7 +3,6 @@ from .opcal import Opcal
 from .gaincurves import GainCurves
 from .flagging import FlagDeterVLA
 from .exportdata import VLAExportData
-from .flagging import FlagBadDeformatters
 from .flagging import Checkflag
 from .rqcal import Rqcal
 from .swpowcal import Swpowcal

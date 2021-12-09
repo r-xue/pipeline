@@ -42,8 +42,8 @@ def clean_extendable_keys(data, key, num_keys=None):
     # remove extra entries of "filnam0X"
     # it typically requires for single dish pipeline
     for k in list(data.keys()):
-        if re.match('^{}[0-9]+$'.format(key), k):
-            n = int(re.sub('^[a-zA-Z]+', '', k))
+        if re.match(r'^{}[0-9]+$'.format(key), k):
+            n = int(re.sub(r'^[a-zA-Z]+', '', k))
             if n > num_keys:
                 data.pop(k, None)
     return data
