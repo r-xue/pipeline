@@ -947,6 +947,8 @@ class MetaDataReader(object):
             outframe: direction reference (ex:'ICRS')
         Returns:
             Dict: reference direction of ephemeris object
+        Raises:
+            RuntimeError: raise when is_known_eph_obj is False
         """
         me = casa_tools.measures
 
