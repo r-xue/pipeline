@@ -313,7 +313,7 @@ class MetaDataReader(object):
         spws = ms.get_spectral_windows(science_windows_only=True)
         return [x.id for x in spws]
 
-    def detect_target_data_desc(self) -> numpy.array:
+    def detect_target_data_desc(self) -> numpy.ndarray:
         """Return a list of data description IDs associated with science spectral windows.
 
         Returns:
