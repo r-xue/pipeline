@@ -110,8 +110,8 @@ class ObservingRun(object):
         return candidates
 
     def get_measurement_sets_of_type(self, dtypes: List[DataType],
-                                     msonly: bool=True) -> Union[List[MeasurementSet],
-                                                                 Tuple[collections.OrderedDict, DataType]]:
+                                     msonly: bool=True, source: str='', spw: str='') -> Union[List[MeasurementSet],
+                                                                                        Tuple[collections.OrderedDict, DataType]]:
         """
         Return a list of MeasurementSet domain object with matching DataType.
 
@@ -126,14 +126,19 @@ class ObservingRun(object):
                 list. Search stops at the first DataType with which at least
                 one MS is found.
             msonly: If True, return a list of MS domain object only.
+            source: Filter for particular source name selection (comma
+                separated list of names) if not an empty string.
+            spw: Filter for particular spw specification (comma separated
+                list of IDs) if not an empty string.
 
         Returns:
             When msonly is True, a list of MeasurementSet domain objects of
-            a matching DataType is returned.
+            a matching DataType (and optionally sources and spws) is returned.
             Otherwise, a tuple of an ordered dictionary and a matched DataType
-            is returned. The ordered dictionary stores matching MS domain
-            objects as keys and matching data column names as values. The order
-            of elements is that appears in measurement_sets list attribute.
+            (and optionally sources and spws) is returned. The ordered dictionary
+            stores matching MS domain objects as keys and matching data column
+            names as values. The order of elements is that appears in
+            measurement_sets list attribute.
         """
         found = []
         column = []
