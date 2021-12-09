@@ -50,7 +50,7 @@ def mjdsec2str(t: float) -> str:
     return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
 
 
-def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.array:
+def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
     """Get state ID from MeasurementSet.
 
     Args:
