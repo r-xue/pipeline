@@ -227,7 +227,7 @@ class SpectralImage(object):
             imagename: Name of the image.
         """
         qa = casa_tools.quanta
-        if not isinstance(imagename):
+        if not isinstance(imagename, str):
             raise ValueError('imagename must be string')
 
         if not imagename:
