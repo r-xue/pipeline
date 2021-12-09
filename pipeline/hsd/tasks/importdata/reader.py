@@ -453,7 +453,7 @@ class MetaDataReader(object):
         cmd_merged = merge_flagcmd(cmdlist)
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
-    def execute(self, dry_run: bool = True) -> Dict[str, Union[str, Dict]]:
+    def execute(self, dry_run: bool = True) -> Dict[str, Dict[str, Union[str, Dict]]]:
         """Read MeasurementSet and fill DataTable.
 
         Args:
