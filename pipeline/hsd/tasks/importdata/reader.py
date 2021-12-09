@@ -314,7 +314,7 @@ class MetaDataReader(object):
         return [x.id for x in spws]
 
     def detect_target_data_desc(self) -> numpy.array:
-        """Get target data description.
+        """Return a list of data description IDs associated with science spectral windows.
 
         Returns:
             array: data description ids
