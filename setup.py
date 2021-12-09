@@ -2,6 +2,7 @@ import collections
 import distutils.cmd
 import distutils.log
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -381,8 +382,35 @@ def _get_git_version():
         return version
 
 
+class GenerateRecipeCommand(distutils.cmd.Command):
+    """Custom command to run recipe_converter.py."""
+
+    description = 'generate recipe scripts from procedure xml files'
+    user_options = []
+
+    def __init__(self, dist):
+        distutils.cmd.Command.__init__(self, dist)
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        # run recipe_converter.py with subprocess module
+        command_string = 'python3 ./recipe_converter.py -a'
+        command = shlex.split(command_string)
+        build_path = os.path.dirname(os.path.realpath(__file__))
+        recipe_dir = os.path.join(build_path, 'pipeline', 'recipes')
+        ret = subprocess.run(command, cwd=recipe_dir)
+        if ret.returncode != 0:
+            RuntimeWarning('Recipe generation failed. Recipe scripts may not be included.')
+
+
 class PipelineBuildPyCommand(build_py):
     def run(self):
+        self.run_command('generate_recipe')
         build_py.run(self)
         self.run_command('minify_css')
         self.run_command('minify_js')
@@ -410,6 +438,7 @@ setuptools.setup(
     cmdclass={
         'buildmytasks': BuildMyTasksCommand,
         'build_py': PipelineBuildPyCommand,
+        'generate_recipe': GenerateRecipeCommand,
         'minify_js': MinifyJSCommand,
         'minify_css': MinifyCSSCommand,
         'version': VersionCommand,
