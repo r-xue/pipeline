@@ -166,12 +166,12 @@ def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
     return merged
 
 
-def write_flagcmd(flagtemplate: str, cmd_list: List[str], reason: str=''):
+def write_flagcmd(flagtemplate: str, cmd_list: List[Tuple[str]], reason: str=''):
     """Write command list to flagtemplate file.
 
     Args:
         flagtemplate: filename of flagtemplate
-        cmd_list: list of command
+        cmd_list: list of (spw, antenna, timerange) string tuples.
         reason: reason string
     """
     sanitized = reason.replace(' ', '_')
