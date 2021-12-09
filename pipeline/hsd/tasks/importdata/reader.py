@@ -188,7 +188,7 @@ def set_nominal_direction(ant: numpy.array, srctype: numpy.array, az: numpy.arra
 
     Args:
         ant: antenna id
-        srctype: target state ids
+        srctype: source type ids (0=target, 1=other types)
         az: pointing direction:AZ
         el: pointing direction:EL
         ra: pointing direction:RA
