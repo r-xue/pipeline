@@ -202,42 +202,42 @@ def set_nominal_direction(ant: numpy.array, srctype: numpy.array, az: numpy.arra
     isvalid = numpy.logical_not(numpy.isnan(az))
     if numpy.all(isvalid):
         # no NaN's so exit this loop
-        print('no NaN')
+        LOG.debug('no NaN')
         return
 
     for _a, _s in itertools.product(set(ant), set(srctype)):
         # select data
-        print(f'ant {_a} src {_s}')
+        LOG.debug(f'ant {_a} src {_s}')
         sel = numpy.logical_and(ant == _a, srctype == _s)
         if numpy.all(numpy.logical_not(sel)):
             # no data for this selection
-            print('no data')
+            LOG.debug('no data')
             continue
 
         # separate NaN's
         mask = numpy.logical_and(isvalid, sel)
         if numpy.all(mask[sel]):
             # no NaN's for this selection
-            print('no NaN for this selection')
+            LOG.debug('no NaN for this selection')
             continue
 
         nanmask = numpy.logical_and(numpy.logical_not(isvalid), sel)
         _az = numpy.median(az[mask])
-        print('nominal az {}'.format(_az))
+        LOG.debug('nominal az {}'.format(_az))
         _el = numpy.median(el[mask])
-        print('nominal el {}'.format(_el))
+        LOG.debug('nominal el {}'.format(_el))
         _ra = numpy.median(ra[mask])
-        print('nominal ra {}'.format(_ra))
+        LOG.debug('nominal ra {}'.format(_ra))
         _dec = numpy.median(dec[mask])
-        print('nominal dec {}'.format(_dec))
+        LOG.debug('nominal dec {}'.format(_dec))
         _shift_ra = numpy.median(shift_ra[mask])
-        print('nominal shift_ra {}'.format(_shift_ra))
+        LOG.debug('nominal shift_ra {}'.format(_shift_ra))
         _shift_dec = numpy.median(shift_dec[mask])
-        print('nominal shift_dec {}'.format(_shift_dec))
+        LOG.debug('nominal shift_dec {}'.format(_shift_dec))
         _offset_ra = numpy.median(offset_ra[mask])
-        print('nominal offset_ra {}'.format(_offset_ra))
+        LOG.debug('nominal offset_ra {}'.format(_offset_ra))
         _offset_dec = numpy.median(offset_dec[mask])
-        print('nominal offset_dec {}'.format(_offset_dec))
+        LOG.debug('nominal offset_dec {}'.format(_offset_dec))
         az[nanmask] = _az
         el[nanmask] = _el
         ra[nanmask] = _ra
