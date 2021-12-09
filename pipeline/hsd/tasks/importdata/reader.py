@@ -166,7 +166,7 @@ def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
     return merged
 
 
-def write_flagcmd(flagtemplate: str, cmd_list: List[Tuple[str]], reason: str=''):
+def write_flagcmd(flagtemplate: str, cmd_list: List[Tuple[str, str, str]], reason: str=''):
     """Write command list to flagtemplate file.
 
     Args:
