@@ -26,13 +26,13 @@ from ..common import rasterutil
 LOG = infrastructure.get_logger(__name__)
 
 
-def get_value_in_deg(quantity: Dict[str, Any]) -> float:
+def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
     """Convert value in degree.
 
     Args:
         quantity: value for convert
     Returns:
-        float: converted value
+        numpy.ndarray: converted value
     """
     qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
