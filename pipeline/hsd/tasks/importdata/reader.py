@@ -400,10 +400,10 @@ class MetaDataReader(object):
         return self.invalid_pointing_data
 
     def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple, numpy.array]:
-        """Apply flagging heuristics.
+        """Return row IDs of DataTable to flag.
 
         Returns:
-            Dict: contains list of row IDs for datatable
+            Dict: contains list of row IDs of datatable
         """
         # keys for dictionary are (spw_id, antenna_id) tuples
         flagdict = rasterutil.flag_raster_map(self.datatable)
