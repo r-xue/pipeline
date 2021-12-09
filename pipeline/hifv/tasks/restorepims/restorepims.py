@@ -1,6 +1,7 @@
 import os
 import tarfile
 import glob
+import copy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -16,9 +17,7 @@ class RestorepimsResults(basetask.Results):
         self.pipeline_casa_task = 'Restorepims'
 
     def merge_with_context(self, context):
-        """
-        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
-        """
+        """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
         return
 
     def __repr__(self):
@@ -28,13 +27,17 @@ class RestorepimsResults(basetask.Results):
 
 
 class RestorepimsInputs(vdp.StandardInputs):
-    def __init__(self, context, vis=None):
+
+    reimaging_resources = vdp.VisDependentProperty(default='reimaging_resources.tgz')
+
+    def __init__(self, context, vis=None, reimaging_resources=None):
         self.context = context
         self.vis = vis
+        self.reimaging_resources = reimaging_resources
 
 
 @task_registry.set_equivalent_casa_task('hifv_restorepims')
-@task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
+@task_registry.set_casa_commands_comment('Restore calibrated visibility for a per-image measurement set (PIMS) using the reimaging resources from single-epoch imaging products')
 class Restorepims(basetask.StandardTaskTemplate):
     Inputs = RestorepimsInputs
 
@@ -42,14 +45,23 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         LOG.info("This Restorepims class is running.")
 
-        self.reimaging_resources = 'reimaging_resources.tgz'
         self.flagversion = 'statwt_1'
         self.caltable = None
+        self.imagename = self.inputs.context.clean_list_pending[0]['imagename'].replace(
+            'sSTAGENUMBER', 's5_0')+'.I.iter1'
 
         self._check_resources()
+
+        # restore the flag version (just before SE/hifv_statwt) from the SE flag file
         self._do_restoreflags()
+
+        # restore the model column used fro SE/selfcal
         self._do_restoremodel()
+
+        # calculate weighting from DATA_RESIDUAL (empty corrected column at this point)
         self._do_statwt()
+
+        # apply the selfcal table from the SE reimaging resources
         self._do_applycal()
 
         return RestorepimsResults()
@@ -59,35 +71,59 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _check_resources(self):
 
-        with tarfile.open(self.reimaging_resources, 'r') as tar:
+        reimaging_resources_tgz = self.inputs.reimaging_resources
+        is_resources_available = False
+        if os.path.isfile(reimaging_resources_tgz):
+            if tarfile.is_tarfile(reimaging_resources_tgz):
+                is_resources_available = True
+
+        if is_resources_available:
+            LOG.info(f"Found the reimaging resources file ({reimaging_resources_tgz})")
+        else:
+            LOG.error(
+                f"The required reimaging resources file ({reimaging_resources_tgz}) doesn't exist or is not a tar file.")
+
+        with tarfile.open(reimaging_resources_tgz, 'r:gz') as tar:
             members = []
             for member in tar.getmembers():
-                if member.name.startswith(self.inputs.vis + '.flagversions'):
+                if member.name.startswith(self.inputs.vis + '.flagversions/'):
                     members.append(member)
-                if member.name.startswith(self.inputs.vis) and 'phase-self-cal.tbl' in member.name:
+                if member.name.startswith(self.inputs.vis) and '.phase-self-cal.tbl/' in member.name:
                     members.append(member)
-            tar.extractall(members=members)
+                if member.name.startswith(self.imagename):
+                    members.append(member)
+            tar.extractall(path='.', members=members)
 
-        selfcal_tbs = glob.glob(self.inputs.vis+'*'+'phase-self-cal.tbl')
+        is_resources_ready = True
+        selfcal_tbs = glob.glob(self.inputs.vis+'.*.phase-self-cal.tbl')
         if len(selfcal_tbs) != 1:
             LOG.error(f"The required selfcal table doesn't exist or more than one selfcal tables are found!")
+            is_resources_ready = False
         else:
             self.caltable = selfcal_tbs[0]
 
         if not os.path.isdir(self.inputs.vis+'.flagversions/flags.'+self.flagversion):
             LOG.error(f"The required flag version ({self.flagversion}) doesn't exist.")
+            is_resources_ready = False
 
-        return
+        if not (os.path.isdir(self.imagename+'.model.tt0') and os.path.isdir(self.imagename+'.model.tt0')):
+            is_resources_ready = False
 
-    def _do_restoreflags(self):
+        return is_resources_ready
 
-        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='restore', versionname=self.flagversion)
-        self._executor.execute(task)
+    def _do_restoreflags(self, versionname=None):
 
-        return
+        if versionname is None:
+            versionname = self.flagversion
+        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='restore', versionname=versionname)
+
+        return self._executor.execute(task)
 
     def _do_restoremodel(self):
+        """_do_restoremodel [summary]
 
+        [extended_summary]
+        """
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         with casa_tools.TableReader(ms.name) as table:
             if 'MODEL_DATA' not in table.colnames():
@@ -97,33 +133,44 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         imaging_parameters = self._restoremodel_imaging_parameters()
         job = casa_tasks.tclean(**imaging_parameters)
-        tclean_result = self._executor.execute(job)
+
+        return self._executor.execute(job)
 
     def _restoremodel_imaging_parameters(self):
+        """Create the tclean parameter set for filling the model column."""
 
-        par_list = ['field', 'imagename', 'spw', 'uvrange', 'imsize', 'cell', 'phasecenter',
-                    'specmode', 'reffreq', 'nchan', 'stokes', 'uvtaper', 'gridder']
-        imaging_parameters = {}
-        for par in par_list:
-            imaging_parameters[par] = self.inputs.context.clean_list_pending[0][par]
+        imaging_parameters = copy.deepcopy(self.inputs.context.clean_list_pending[0])
+        for par_removed in ['nbin', 'sensitivity', 'heuristics', 'intent']:
+            imaging_parameters.pop(par_removed, None)
 
+        # adopt the SE imaging heuristics from SE:stage5
         imaging_parameters['vis'] = self.inputs.vis
-        imaging_parameters['imagename'] = imaging_parameters['imagename'].replace('STAGENUMBER', '5')+'.iter1'
+        imaging_parameters['imagename'] = self.imagename
+        imaging_parameters['cleanmask'] = ''
+        imaging_parameters['niter'] = 0
+        imaging_parameters['threshold'] = '0.0mJy'
+        imaging_parameters['nsigma'] = 0
+        imaging_parameters['weighting'] = 'briggs'
+        imaging_parameters['robust'] = -2.0
+        imaging_parameters['outframe'] = 'LSRK'
         imaging_parameters['calcres'] = True
         imaging_parameters['calcpsf'] = True
         imaging_parameters['savemodel'] = 'modelcolumn'
         imaging_parameters['parallel'] = False
-        imaging_parameters['cleanmask'] = ''
-        imaging_parameters['niter'] = 0
-        imaging_parameters['threshold'] = '0.0mJy'
-        imaging_parameters['nsigma'] = -1
+        imaging_parameters['pointingoffsetsigdev'] = [300, 30]
+        imaging_parameters['mosweight'] = False
+        imaging_parameters['rotatepastep'] = 5.0
+        imaging_parameters['pbcor'] = False
+        imaging_parameters['pblimit'] = 0.1
+        imaging_parameters['specmode'] = 'mfs'
 
         return imaging_parameters
 
     def _do_statwt(self):
-
-        # VLA (default mode)
-        # Note if default task_args changes, then 'vlass-se' case might need to be updated (PIPE-723)
+        """Rerun statwt following the SE setting.
+        
+        also see hifv_statwt()
+        """
         task_args = {'vis': self.inputs.vis,
                      'fitspw': '',
                      'fitcorr': '',
@@ -142,8 +189,10 @@ class Restorepims(basetask.StandardTaskTemplate):
         return self._executor.execute(job)
 
     def _do_applycal(self):
-        """Run CASA task applycal"""
-
+        """Rerun applycal using the selfcal table from the SE reimaging resources.
+        
+        also see hifv_selfcal()
+        """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = [int(spw.id) for spw in spwsobjlist]

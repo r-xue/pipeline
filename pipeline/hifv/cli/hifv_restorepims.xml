@@ -14,6 +14,12 @@
 	<value></value>
     </param>
 
+    <param name="reimaging_resources" type="string">
+    <shortdescription>reimaging_resources</shortdescription>
+    <description>file path of reimaging_resources.tgz from the SE imaging product</description>
+    <value></value>
+    </param>
+
 
     <param type="string" name="pipelinemode">
     <shortdescription>The pipeline operating mode</shortdescription>

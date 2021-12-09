@@ -5,7 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_restorepims(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hifv_restorepims(vis=None, reimaging_resources=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
