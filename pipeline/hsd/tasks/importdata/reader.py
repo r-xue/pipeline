@@ -454,7 +454,7 @@ class MetaDataReader(object):
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
     def execute(self, dry_run: bool = True) -> Dict[str, Union[str, Dict]]:
-        """Execute reading MeasurementSet and sub tables into datatable.
+        """Read MeasurementSet and fill DataTable.
 
         Args:
             dry_run: flag of dry run
