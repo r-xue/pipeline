@@ -301,10 +301,10 @@ class MetaDataReader(object):
         return self.datatable
 
     def detect_target_spw(self) -> List:
-        """Get target spectral window.
+        """Return a list of science spectral window IDs.
 
         Returns:
-            List: spectral windows
+            List: spectral window IDs
         """
         if not hasattr(self, 'name'):
             return []
