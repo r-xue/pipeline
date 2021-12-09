@@ -924,7 +924,7 @@ class MetaDataReader(object):
 
     @staticmethod
     def _get_azelref() -> str:
-        """Return AZEL string.
+        """Return reference type of AZEL coordinate.
 
         Returns:
             str: fix string 'AZELGEO'
