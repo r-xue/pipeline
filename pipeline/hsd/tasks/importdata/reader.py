@@ -387,7 +387,7 @@ class MetaDataReader(object):
         self._generate_flagcmd(self.flagtemplate, flagdict2, reason='uniform image rms')
 
     def generate_flagdict_for_invalid_pointing_data(self) -> collections.defaultdict:
-        """Return invalid pointing data of this object.
+        """Return row IDs of DataTable with invalid pointing information.
 
         Returns:
             collections.defaultdict: dictionary of invalid pointing data
