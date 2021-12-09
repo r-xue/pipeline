@@ -27,7 +27,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
-    """Convert value in degree.
+    """Convert a casa quantity into a value in the unit of degree.
 
     Args:
         quantity: value for convert
