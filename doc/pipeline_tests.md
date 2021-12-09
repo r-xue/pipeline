@@ -28,7 +28,7 @@ or
 <casadir>/bin/casa --nogui --nologger --agg --nologfile -c "import pytest; pytest.main(['-v', '.', '-n', 'auto'])"
 ```
 
-On a multi-core system, `pytest-xdist` can speed things up significantly, e.g.,
+On a multi-core system, `pytest-xdist` can speed things up significantly, when the parallelization doesn't create a memory/io-bound situation. This is usually true for a light-weight test collection (e.g. unit tests), e.g.,
 
     walltime   0m21.744s # with pytest-xdist
     walltime   2m13.076s # without pytest-xdist
@@ -64,4 +64,28 @@ xvfb-run -d <casadir>/bin/casa --nogui --nologger --agg -c \
 # select all tests with `mg2_20170525142607_180419` in the test function names
 xvfb-run -d <casadir>/bin/casa --nogui --nologger --agg -c \
     "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-k', 'mg2_20170525142607_180419', '<pl_repodir>/pipeline/infrastructure/utils/regression-tester.py'])"
+```
+
+## Custom pytest options
+
+Pipeline has several pytest custom options, which can be found by invoking `--help` inside a repository directory.
+
+```console
+casa_python -m pytest --help
+...
+custom options:
+  --collect-tests       collect tests and export test node ids to a plain text file `collected_tests.txt`
+  --nologfile           do not create CASA log files, equivalent to 'casa --nologfile'
+  --pyclean             clean up .pyc to reproduce certain warnings only issued when the bytecode is compiled.
+...
+```
+
+For example, if you only want to generate a list of test node ids for existing regression tests, try
+```console
+casa_python -m pytest -v --collect-tests pipeline/infrastructure/utils/regression-tester.py
+```
+
+On the other hand, one can use the `--nologfile` option (built in `conftest.py`), to avoid `casa-*log` files spamming your repo working directory.
+```console
+casa_python -m pytest -n 4 -v --pyclean --nologfile .
 ```
