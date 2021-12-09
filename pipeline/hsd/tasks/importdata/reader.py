@@ -408,7 +408,7 @@ class MetaDataReader(object):
         return flagdict
 
     def _generate_flagcmd(self, flagtemplate: str, flag_dict: Dict[Union[Tuple[str, int], int], List[int]], reason: str=''):
-        """Generate and store flag commands in the flag template file.
+        """Generate flag template command.
 
         Args:
             flagtemplate: filename of flagtemplate
@@ -424,7 +424,7 @@ class MetaDataReader(object):
                 spw_id = '*'
                 antenna_id = key
             time_list, sort_index = numpy.unique(
-                [datatable.getcell('TIME', row) for row in rowlist],antenna_id
+                [datatable.getcell('TIME', row) for row in rowlist],
                 return_index=True)
 
             # day -> sec
