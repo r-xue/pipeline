@@ -399,7 +399,7 @@ class MetaDataReader(object):
 
         return self.invalid_pointing_data
 
-    def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple, numpy.array]:
+    def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple[int, int], numpy.ndarray]:
         """Return row IDs of DataTable to flag.
 
         Returns:
