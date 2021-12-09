@@ -411,7 +411,7 @@ class MetaDataReader(object):
         return flagdict
 
     def _generate_flagcmd(self, flagtemplate: str, flag_dict: Dict[Union[Tuple[str, int], int], List[int]], reason: str=''):
-        """Generate flag template command from flag_dict and write to a flag command file.
+        """Generate and store flag commands in the flag template file.
 
         Args:
             flagtemplate: filename of flagtemplate
