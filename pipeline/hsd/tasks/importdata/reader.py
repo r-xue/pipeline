@@ -184,7 +184,7 @@ def write_flagcmd(flagtemplate: str, cmd_list: List[str], reason: str=''):
 
 def set_nominal_direction(ant: numpy.array, srctype: numpy.array, az: numpy.array, el: numpy.array, ra: numpy.array, dec: numpy.array,
                           shift_ra: numpy.array, shift_dec: numpy.array, offset_ra: numpy.array, offset_dec: numpy.array):
-    """Set nominal direction.
+    """Replace NaNs in input arrays with nominal directions.
 
     Args:
         ant: antenna id
