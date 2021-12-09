@@ -300,7 +300,7 @@ class MetaDataReader(object):
         """
         return self.datatable
 
-    def detect_target_spw(self) -> List:
+    def detect_target_spw(self) -> List[int]:
         """Return a list of science spectral window IDs.
 
         Returns:
