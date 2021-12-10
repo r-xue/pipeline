@@ -42,7 +42,7 @@ def mjdsec2str(t: float) -> str:
     """Convert datetime to string.
 
     Args:
-        t: datetime
+        t: MJD second to convert
     Returns:
         str: formated datetime
     """
