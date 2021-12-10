@@ -36,6 +36,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
            'score_combine_spwmapping',                        # ALMA specific
            'score_phaseup_mapping_fraction',                  # ALMA specific
+           'score_phaseup_spw_median_snr',                    # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
            'score_missing_phaseup_snrs',                      # ALMA specific
            'score_missing_bandpass_snrs',                     # ALMA specific
@@ -1638,6 +1639,36 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
     origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
                           metric_score=nunmapped,
                           metric_units='Number of unmapped science spws')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+
+
+@log_qa
+def score_phaseup_spw_median_snr(ms, field, spw, median_snr):
+    """
+    Score the median SNR for a given field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    if median_snr < 10:
+        score = 0.3
+        shortmsg = 'Very low median SNR'
+        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is very low ({median_snr:.1f}).'
+    elif median_snr < 15:
+        score = 0.5
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is low ({median_snr:.1f}).'
+    elif median_snr < 25:
+        score = 0.9
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is low ({median_snr:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is ok ({median_snr:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
