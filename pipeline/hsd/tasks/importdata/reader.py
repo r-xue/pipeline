@@ -55,8 +55,8 @@ def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
 
     Args:
         ms: MeasurementSet
-        spw: spectrum window
-        intent: specify intent for obsmode
+        spw: spectral window
+        intent: Pipeline intent
     Returns:
         array: state IDs
     """
