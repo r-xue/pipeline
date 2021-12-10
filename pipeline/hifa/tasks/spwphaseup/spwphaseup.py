@@ -16,6 +16,7 @@ from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -142,9 +143,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # spw-to-spw phase offset corrections included in pre-apply.
         diag_phase_results = self._do_diagnostic_phasecal(spwmaps)
 
+        # Compute what SNR is achieved for PHASE fields after the SpW phase-up
+        # correction.
+        snr_info = self._compute_median_snr(diag_phase_results)
+
         # Create the results object.
-        result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, spwmaps=spwmaps,
-                                   phasecal_mapping=phasecal_mapping, unregister_existing=inputs.unregister_existing)
+        result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
+                                   snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing)
 
         return result
 
@@ -658,6 +663,46 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return gaincal_results
 
+    def _compute_median_snr(self, gaincal_results: List[GaincalResults]) -> Dict[Tuple[str, str], float]:
+        """
+        This method evaluates the diagnostic phase caltable(s) produced in an
+        earlier step to compute the median SNR for each phase calibrator field
+        and for each SpW.
+
+        Args:
+            gaincal_results: List of gaincal worker task results representing
+            the diagnostic phase caltable(s).
+
+        Returns:
+            Dictionary with phase calibrator field name and SpW as keys, and
+            corresponding median SNR as values.
+        """
+        inputs = self.inputs
+
+        LOG.info(f'Computing median phase SNR information for {inputs.ms.basename}.')
+
+        snr_info = collections.defaultdict(dict)
+        for result in gaincal_results:
+            # Retrieve field and caltable.
+            caltable = result.final[0].gaintable
+            field = result.inputs['field']
+
+            with casa_tools.TableReader(caltable) as table:
+                spws = table.getcol("SPECTRAL_WINDOW_ID")
+                snrs = table.getcol("SNR")
+
+            # For each unique SpW, compute median SNR and store in snr_info,
+            # and log a warning if the median SNR is still below the SNR
+            # threshold.
+            for spw in sorted(set(spws)):
+                snr_info[(field, spw)] = numpy.median(snrs[:, 0, numpy.where(spws == spw)[0]])
+
+                if snr_info[(field, spw)] < inputs.phasesnr:
+                    LOG.warning(f"{result.inputs['vis']}, field {field}, SpW {spw}: median SNR"
+                                f" ({snr_info[(field, spw)]}) is below the low-SNR threshold ({inputs.phasesnr}).")
+
+        return snr_info
+
     @staticmethod
     def _get_intent_field(ms: MeasurementSet, intents: str, exclude_intents: str = None) -> List[Tuple[str, str]]:
         # If provided, convert "intents to exclude" into set of strings.
@@ -742,8 +787,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis: str = None, phaseup_result: GaincalResults = None, spwmaps: Dict = None,
-                 phasecal_mapping: Dict = None, unregister_existing: Optional[bool] = False):
+    def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
+                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -755,6 +800,7 @@ class SpwPhaseupResults(basetask.Results):
         self.vis = vis
         self.phasecal_mapping = phasecal_mapping
         self.phaseup_result = phaseup_result
+        self.snr_info = snr_info
         self.spwmaps = spwmaps
         self.unregister_existing = unregister_existing
 
