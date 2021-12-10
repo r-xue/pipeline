@@ -37,7 +37,7 @@ class SDInspection(object):
         self.table_name = table_name
         self.ms = ms
 
-    def execute(self, dry_run: bool = True) -> Tuple[List[MSReductionGroupDesc], Dict[str, Union[str, Dict]]]:
+    def execute(self, dry_run: bool = True) -> Tuple[Dict[int, MSReductionGroupDesc], Dict[str, Union[str, Dict]]]:
         """Execute inspection process.
 
         This method calls execute method of reader.py.
@@ -45,7 +45,7 @@ class SDInspection(object):
         Args:
             dry_run: dry run flag
         Return:
-            reduction_group: list of MSReductionGroupDesc
+            reduction_group: dict of reduction group IDs (key) and MSReductionGroupDesc (value)
             org_directions: dict of org_direction
         """
         if dry_run:
