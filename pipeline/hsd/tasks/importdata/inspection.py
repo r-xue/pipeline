@@ -2,7 +2,7 @@
 
 import os
 import re
-from typing import Any, Dict, List, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import numpy
 import pipeline.infrastructure as infrastructure
@@ -25,12 +25,12 @@ LOG = infrastructure.get_logger(__name__)
 class SDInspection(object):
     """Inspection class for hsd_importdata."""
 
-    def __init__(self, context: Context, table_name: str, ms: MeasurementSet=None):
+    def __init__(self, context: Context, table_name: str, ms: Optional[MeasurementSet]=None):
         """Initialise SDInspection class.
 
         Args:
             context: pipeline context
-            table_name: table name for inspection
+            table_name: path to DataTable corresponding to ms
             ms: MeasurementSet object for inspection
         """
         self.context = context
