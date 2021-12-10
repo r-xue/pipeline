@@ -6,7 +6,7 @@ context unpacking and / or converting it as necessary.
 """
 
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
@@ -38,10 +38,21 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
 
-    def __init__(self, context: Context=None, vis: str=None, output_dir: str=None, asis: str=None,
-                 process_caldevice: bool=None, session: str=None, overwrite: bool=None, nocopy: bool=None,
-                 bdfflags: bool=None, save_flagonline: bool=None, lazy: bool=None,
-                 with_pointing_correction: bool=None, createmms: str=None, ocorr_mode: str=None):
+    def __init__(self,
+                 context: Context,
+                 vis: Optional[List[str]]=None,
+                 output_dir: Optional[str]=None,
+                 asis: Optional[str]=None,
+                 process_caldevice: Optional[bool]=None,
+                 session: Optional[List[str]]=None,
+                 overwrite: Optional[bool]=None,
+                 nocopy: Optional[bool]=None,
+                 bdfflags: Optional[bool]=None,
+                 save_flagonline: Optional[bool]=None,
+                 lazy: Optional[bool]=None,
+                 with_pointing_correction: Optional[bool]=None,
+                 createmms: Optional[str]=None,
+                 ocorr_mode: Optional[str]=None):
         """Initialise SDImportDataInputs class.
 
         Args:
@@ -80,8 +91,12 @@ class SDImportDataResults(basetask.Results):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None,
-                 datatable_prefix: str=None, setjy_results: List[FluxMeasurement]=None, org_directions: Dict[str, str]=None):
+    def __init__(self,
+                 mses: Optional[List[MeasurementSet]]=None,
+                 reduction_group_list: Optional[List[MSReductionGroupDesc]]=None,
+                 datatable_prefix: Optional[str]=None,
+                 setjy_results: Optional[List[FluxMeasurement]]=None,
+                 org_directions: Optional[Dict[str, str]]=None):
         """Initialise SDImportDataResults class.
 
         Args:
@@ -185,9 +200,22 @@ class HpcSDImportDataInputs(SDImportDataInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
-                 overwrite=None, nocopy=None, bdfflags=None, save_flagonline=None, lazy=None,
-                 with_pointing_correction=None, createmms=None, ocorr_mode=None, parallel=None):
+    def __init__(self,
+                 context: Context,
+                 vis: Optional[List[str]]=None,
+                 output_dir: Optional[str]=None,
+                 asis: Optional[str]=None,
+                 process_caldevice: Optional[bool]=None,
+                 session: Optional[List[str]]=None,
+                 overwrite: Optional[bool]=None,
+                 nocopy: Optional[bool]=None,
+                 bdfflags: Optional[bool]=None,
+                 save_flagonline: Optional[bool]=None,
+                 lazy: Optional[bool]=None,
+                 with_pointing_correction: Optional[bool]=None,
+                 createmms: Optional[str]=None,
+                 ocorr_mode: Optional[str]=None,
+                 parallel: Optional[property]=None):
         """
         Initialise HpcSDImportDataInputs class. Arguments are same with SDImportDataInputs.
 
