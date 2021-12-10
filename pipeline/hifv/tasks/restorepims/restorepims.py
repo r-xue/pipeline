@@ -6,6 +6,8 @@ import copy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.exceptions as exceptions
+
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -37,7 +39,7 @@ class RestorepimsInputs(vdp.StandardInputs):
 
 
 @task_registry.set_equivalent_casa_task('hifv_restorepims')
-@task_registry.set_casa_commands_comment('Restore calibrated visibility for a per-image measurement set (PIMS) using the reimaging resources from single-epoch imaging products')
+@task_registry.set_casa_commands_comment('Restore rfi-flagged and self-calibrated visibility for a per-image measurement set (PIMS) using reimaging resources from the single-epoch imaging products')
 class Restorepims(basetask.StandardTaskTemplate):
     Inputs = RestorepimsInputs
 
@@ -45,23 +47,30 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         LOG.info("This Restorepims class is running.")
 
+        # flag version after hifv_checkflag and before hifv_statwt in the SEIP production workflow.
         self.flagversion = 'statwt_1'
+
         self.caltable = None
         self.imagename = self.inputs.context.clean_list_pending[0]['imagename'].replace(
             'sSTAGENUMBER', 's5_0')+'.I.iter1'
 
-        self._check_resources()
+        is_resources_available = self._check_resources()
 
-        # restore the flag version (just before SE/hifv_statwt) from the SE flag file
-        self._do_restoreflags()
+        if not is_resources_available:
+            raise exceptions.PipelineException(
+                "The resources required for hifv_restorepims() are not available, and Pipeline cannot continue.")
 
-        # restore the model column used fro SE/selfcal
+        # restore the MODEL column to the identical state used in the SE hifv_selfcal() and hifv_statwt() stages.
+        # the flag state at this moment should be identical to the initial state in the SEIP worflow (before SE/hifv_checkflag)
         self._do_restoremodel()
 
-        # calculate weighting from DATA_RESIDUAL (empty corrected column at this point)
+        # restore the flag version (after SE/hifv_checkflag and before SE/hifv_statwt) from the SE flag file.
+        self._do_restoreflags(versionname=self.flagversion)
+
+        # calculate WEIGHT from DATA-MODEL, identical to the one generated in SE:hifv_statwt()
         self._do_statwt()
 
-        # apply the selfcal table from the SE reimaging resources
+        # apply the selfcal table from the SE reimaging resources to get the CORRECTED column
         self._do_applycal()
 
         return RestorepimsResults()
@@ -73,6 +82,7 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         reimaging_resources_tgz = self.inputs.reimaging_resources
         is_resources_available = False
+
         if os.path.isfile(reimaging_resources_tgz):
             if tarfile.is_tarfile(reimaging_resources_tgz):
                 is_resources_available = True
@@ -81,7 +91,8 @@ class Restorepims(basetask.StandardTaskTemplate):
             LOG.info(f"Found the reimaging resources file ({reimaging_resources_tgz})")
         else:
             LOG.error(
-                f"The required reimaging resources file ({reimaging_resources_tgz}) doesn't exist or is not a tar file.")
+                f"The reimaging resources file ({reimaging_resources_tgz}) doesn't exist or is not a tarfile.")
+            return is_resources_available
 
         with tarfile.open(reimaging_resources_tgz, 'r:gz') as tar:
             members = []
@@ -94,22 +105,31 @@ class Restorepims(basetask.StandardTaskTemplate):
                     members.append(member)
             tar.extractall(path='.', members=members)
 
-        is_resources_ready = True
         selfcal_tbs = glob.glob(self.inputs.vis+'.*.phase-self-cal.tbl')
         if len(selfcal_tbs) != 1:
-            LOG.error(f"The required selfcal table doesn't exist or more than one selfcal tables are found!")
-            is_resources_ready = False
+            LOG.error("Cannot find the required selfcal table (*.phase-self-cal.tbl), or more than one selfcal tables are found!")
+            is_resources_available = False
         else:
             self.caltable = selfcal_tbs[0]
+            LOG.info(f"The task will use the selfcal table {self.caltable}")
 
-        if not os.path.isdir(self.inputs.vis+'.flagversions/flags.'+self.flagversion):
-            LOG.error(f"The required flag version ({self.flagversion}) doesn't exist.")
-            is_resources_ready = False
+        flag_prefix = self.inputs.vis+'.flagversions/flags.'
+        flagversion_tbs = glob.glob(flag_prefix+'*')
+        flagversion_names = [tb0.replace(flag_prefix, '', 1) for tb0 in flagversion_tbs]
+        if self.flagversion not in flagversion_names:
+            LOG.error(f"The requested flag version ({self.flagversion}) doesn't exist.")
+            is_resources_available = False
+        else:
+            LOG.info(f"Found the requested flag version '{self.flagversion}'")
 
-        if not (os.path.isdir(self.imagename+'.model.tt0') and os.path.isdir(self.imagename+'.model.tt0')):
-            is_resources_ready = False
+        if not (os.path.isdir(self.imagename+'.model.tt0') and os.path.isdir(self.imagename+'.model.tt1')):
+            LOG.error(
+                f"Can't find the tclean model images {self.imagename}.model.tt0/tt1 for the MODEL column prediction.")
+            is_resources_available = False
+        else:
+            LOG.info(f"Found the requested tclean model images {self.imagename}.model.tt0/tt1")
 
-        return is_resources_ready
+        return is_resources_available
 
     def _do_restoreflags(self, versionname=None):
 
@@ -120,10 +140,7 @@ class Restorepims(basetask.StandardTaskTemplate):
         return self._executor.execute(task)
 
     def _do_restoremodel(self):
-        """_do_restoremodel [summary]
 
-        [extended_summary]
-        """
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         with casa_tools.TableReader(ms.name) as table:
             if 'MODEL_DATA' not in table.colnames():
@@ -169,7 +186,7 @@ class Restorepims(basetask.StandardTaskTemplate):
     def _do_statwt(self):
         """Rerun statwt following the SE setting.
         
-        also see hifv_statwt()
+        also see the SEIP setting in hifv_statwt() 
         """
         task_args = {'vis': self.inputs.vis,
                      'fitspw': '',
@@ -186,12 +203,13 @@ class Restorepims(basetask.StandardTaskTemplate):
         task_args['timebin'] = '1yr'
 
         job = casa_tasks.statwt(**task_args)
+
         return self._executor.execute(job)
 
     def _do_applycal(self):
         """Rerun applycal using the selfcal table from the SE reimaging resources.
         
-        also see hifv_selfcal()
+        also see the SEIP setting in hifv_selfcal()
         """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
