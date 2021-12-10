@@ -262,7 +262,7 @@ class SDInspection(object):
 
     def _group_data(self, datatable: DataTableImpl, position_group_id: int, time_group_id_small: int, time_group_id_large: int,
                     startrow: int=0, nrow: int=-1) -> Dict[str, Union[numpy.array, Dict[int, Any]]]:
-        """Get group data from DataTable.
+        """Inspect DataTable and generate time and position groups.
 
         Args:
             datatable: DataTable
