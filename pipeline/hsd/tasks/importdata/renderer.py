@@ -24,8 +24,11 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
 
         Args:
             uri: uri of mako file
-            description: description of this instance
-            always_rerender: rerendering flag
+            description: a short description of this stage to be appeared in 'Task Summaries' page of weblog
+            always_rerender: whether or not to render weblog every time.
+                             If True, weblog of this stage is rendered again whenever weblog is updated,
+                               e.g., by creating weblog of other stages.
+                             If False, weblog of this stage is generated only once when the stage is initially invoked.
         """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).__init__(uri, description, always_rerender)
 
