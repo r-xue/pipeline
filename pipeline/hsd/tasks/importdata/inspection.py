@@ -199,16 +199,16 @@ class SDInspection(object):
 # #                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)
 #                 for ant_id in valid_antid:
 #                     reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
-# 
+#
 #         return reduction_group
 
-    def __select_data(self, datatable: DataTableImpl, ms_ant_map: Dict[int, MeasurementSet], 
-                      startrow: int=0, nrow: int=-1) -> Tuple[Dict[int, Set[int]], Dict[int, Set[int]], Dict[int, Set[int]]]:
-        """Get specified data from datatable.
+    def __select_data(self, datatable: DataTableImpl, startrow: int=0, nrow: int=-1) -> Tuple[Dict[int, Set[int]],
+                                                                                              Dict[int, Set[int]],
+                                                                                              Dict[int, Set[int]]]:
+        """Inspect DataTable and return row IDs grouped by antenna, spw, and field.
 
         Args:
             datatable: DataTable
-            ms_ant_map: not use
             startrow: start row of DataTable to get data
             nrow: end of range of row
         Returns:
@@ -287,7 +287,7 @@ class SDInspection(object):
 
         if nrow < 0:
             nrow = datatable.nrow - startrow
-        by_antenna, by_spw, by_field = self.__select_data(datatable, ms_ant_map, startrow=startrow, nrow=nrow)
+        by_antenna, by_spw, by_field = self.__select_data(datatable, startrow=startrow, nrow=nrow)
         LOG.trace('by_antenna=%s' % by_antenna)
         LOG.trace('by_spw=%s' % by_spw)
         LOG.trace('len(by_antenna)=%s len(by_spw)=%s' % (len(by_antenna), len(by_spw)))
