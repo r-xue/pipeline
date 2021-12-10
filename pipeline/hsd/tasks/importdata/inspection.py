@@ -421,13 +421,8 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
-<<<<<<< HEAD
                             LOG.warn('RasterScanHeuristics failed with the following error. ' +
                                      'Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
-=======
-                            LOG.warning(
-                                'RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
->>>>>>> origin
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or raster_heuristic_ok is False:
@@ -542,7 +537,7 @@ class SDInspection(object):
 #                 rpattern = '^%s_[0-9]$'%(reference_name)
                 if target_name == reference_name:
                     field_map[target.id] = reference.id
-                elif match_field_name(reference_name, target_name):
+                elif _check_offsource_fieldname_maching(reference_name, target_name):
                     field_map[target.id] = reference.id
         calibration_strategy = {'tsys': do_tsys_transfer,
                                 'tsys_strategy': spwmap,
@@ -601,13 +596,11 @@ class SDInspection(object):
 #         return match
 
 
-def match_field_name(name1: str, name2: str) -> bool:
+def _check_offsource_fieldname_maching(name1: str, name2: str) -> bool:
     """
-    Return True if two (field) names match search patterns.
+    Return True if two fieldnames follow the naming rule of OFF SOURCE.
 
-    i.e.,
-    either (name2 == name1 + pattern) or (name1 == name2 + pattern).
-    Otherwise, returns False.
+    if name1 is 'M100', then name2 should be 'M100_OFF_[ID]' (or 'M100_[ID]' in old pattern)
     Note the method returns False for the exact match, i.e., name1 == name2.
 
     Args:
