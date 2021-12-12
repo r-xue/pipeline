@@ -2,7 +2,8 @@
 import os
 from typing import Dict, List, Optional, Tuple
 
-import matplotlib.pyplot as plt
+import matplotlib  
+import matplotlib.figure as figure 
 from matplotlib.axes._axes import Axes as MplAxes
 
 from pipeline.domain import DataTable, MeasurementSet
@@ -14,12 +15,8 @@ from ..common import utils as sdutils
 
 LOG = infrastructure.get_logger(__name__)
 
-
-## 0:DebugPlot 1:TPlotRADEC 2:TPlotAzEl 3:TPlotCluster 4:TplotFit 5:TPlotMultiSP 6:TPlotSparseSP 7:TPlotChannelMap 8:TPlotFlag 9:TPlotIntermediate
-MATPLOTLIB_FIGURE_ID = [8904, 8905, 8906, 8907, 8908, 8909, 8910, 8911, 8912, 8913]
 DPIDetail = 130
 FIGSIZE_INCHES = (7.0, 2.9)
-
 
 class SDFlagPlotter(object):
     """Class to create Flag Plots for hsd_blflag weblog."""
@@ -401,8 +398,7 @@ class SDFlagPlotter(object):
             (none)
         """
         # initial settings & hold original plot configurations
-        plt.ioff()
-        fig = plt.figure( MATPLOTLIB_FIGURE_ID[8] )
+        fig = figure.Figure()
         fig.set_size_inches( FIGSIZE_INCHES )
 
         # pick the widest limits
@@ -421,15 +417,10 @@ class SDFlagPlotter(object):
             self.__plot_data_to_axes( pollist, ax[pol],
                                       PlotData_dict[pol], data_dict[pol], ScaleOut_dict[pol], LowRange_dict[pol] )
 
-        # draw and save the entire plot to png file
-        plt.ion()
-        plt.draw()
+        # save the entire plot to png file
         if figfiledir is not None and figfilename is not None:
             outfile = figfiledir + figfilename
-            plt.savefig( outfile, format='png', dpi=DPIDetail )
-
-        # close fig
-        plt.close()
+            fig.savefig( outfile, format='png', dpi=DPIDetail )
 
         return
 
