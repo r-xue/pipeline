@@ -60,8 +60,8 @@ class SDImportDataInputs(importdata.ImportDataInputs):
             vis: List of input visibility data
             output_dir: path of output directory
             asis: Extra ASDM tables to convert as is
-            process_caldevice: Import the caldevice table from the ASDM
-            session: List of visibility data sessions
+            process_caldevice: Import the CalDevice table from the ASDM
+            session: List of sessions of input visibility data. Each element in the list indicates the session of a corresponding element in vis.
             overwrite: Overwrite existing files on import
             nocopy: Disable copying of MS to working directory
             bdfflags: Apply BDF flags on import
