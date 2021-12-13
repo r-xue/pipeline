@@ -126,12 +126,12 @@ class SDImportDataResults(basetask.Results):
         context.observing_run.ms_datatable_name = self.datatable_prefix
         context.observing_run.org_directions = self.org_directions
 
-    def __merge_reduction_group(self, observing_run: ObservingRun, reduction_group_list: List[MSReductionGroupDesc]):
+    def __merge_reduction_group(self, observing_run: ObservingRun, reduction_group_list: List[Dict[int, MSReductionGroupDesc]]):
         """Call merge_reduction_group.
 
         Args:
             observing_run: pipeline.domain.observingrun.ObservingRun object
-            reduction_group_list: list of MSReductionGroupDesc
+            reduction_group_list: list of dictionaries that consist of reduction group IDs (key) and MSReductionGroupDesc (value)
         """
         for reduction_group in reduction_group_list:
             merge_reduction_group(observing_run, reduction_group)
