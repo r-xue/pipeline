@@ -69,7 +69,8 @@ class SDImportDataInputs(importdata.ImportDataInputs):
             lazy: use the lazy filler to import data
             with_pointing_correction: Apply pointing correction to DIRECTION
             createmms: Create an MMS
-            ocorr_mode: Correlation data mode
+            ocorr_mode: Selection of baseline correlation to import.
+                        Valid only if input visibility is ASDM. See a document of CASA, casatasks::importasdm, for available options.
         """
         super(SDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                  process_caldevice=process_caldevice, session=session,
