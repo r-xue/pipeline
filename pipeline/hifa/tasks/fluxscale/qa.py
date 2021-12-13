@@ -333,7 +333,10 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
     }
 
     wrapper = CaltableWrapperFactory.from_caltable(tsysTable)
+
+
     # keys: CALIBRATE_PHASE spws, values: corresponding Tsys values
+    get_snr_info = False  # Flag value to get SNR info or not
     median_tsys = {}
     for phase_spw, tsys_scans in phase_spw_to_tsys_scans.items():
         # If there are multiple scans for an spw, then simply use the Tsys of the first scan
@@ -342,11 +345,12 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         scan_data = wrapper.filter(spw=tsys_spw.id, scan=first_tsys_scan.id)
         if numpy.all(scan_data['FPARAM'].mask):  # Assign NaN if everything is masked
             median_tsys[phase_spw.id] = numpy.NaN
+            get_snr_info = True
         else:
             median_tsys[phase_spw.id] = numpy.ma.median(scan_data['FPARAM'])
 
     # PIPE-1208: If any scan is fully masked we retrieve the SNR estimated from hifa_spwphaseup
-    if numpy.sum(numpy.isnan(numpy.array(list(median_tsys.values())))):
+    if get_snr_info:
         snr_info = extract_snr_from_spwphaseup(context)
 
     # 6) compute the expected channel-averaged SNR
