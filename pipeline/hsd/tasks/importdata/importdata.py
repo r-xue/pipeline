@@ -6,14 +6,14 @@ context unpacking and / or converting it as necessary.
 """
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import FluxMeasurement
+from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.observingrun import ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
@@ -95,8 +95,8 @@ class SDImportDataResults(basetask.Results):
                  mses: Optional[List[MeasurementSet]]=None,
                  reduction_group_list: Optional[List[MSReductionGroupDesc]]=None,
                  datatable_prefix: Optional[str]=None,
-                 setjy_results: Optional[List[FluxMeasurement]]=None,
-                 org_directions: Optional[Dict[str, str]]=None):
+                 setjy_results: Optional[List[FluxCalibrationResults]]=None,
+                 org_directions: Optional[Dict[str, Union[str, Dict[str, Union[str, float]]]]]=None):
         """Initialise SDImportDataResults class.
 
         Args:
