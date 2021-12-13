@@ -1,6 +1,9 @@
 """
 Importdata tasks for observation data of Nobeyama.
 
+This task loads the specified visibility data into the pipeline
+context unpacking and / or converting it as necessary.
+
 Created on Dec 4, 2017
 
 @author: kana
