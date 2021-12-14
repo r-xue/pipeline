@@ -1026,9 +1026,6 @@ class T2_2_3Renderer(T2_2_XRendererBase):
             # Create U-V plot.
             if utils.contains_single_dish(context):
                 plot_uv = None
-            # Plotting the U-V coverage fails without a TARGET intent. (See PIPE-1225.)
-#            elif 'TARGET' not in ms.intents:
-#                plot_uv = None
             else:
                 task = summary.UVChart(context, ms, title_prefix="Initial ")
                 plot_uv = task.plot()
@@ -1065,9 +1062,6 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         # Create U-V plot, if necessary.
         if utils.contains_single_dish(context):
             plot_uv = None
-        # Plotting the U-V coverage fails without a TARGET intent. (See PIPE-1225.)
-#        elif 'TARGET' not in ms.intents:
-#            plot_uv = None
         else:
             task = summary.UVChart(context, ms, title_prefix="Initial ")
             plot_uv = task.plot()
