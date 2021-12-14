@@ -1644,27 +1644,31 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
 
 
 @log_qa
-def score_phaseup_spw_median_snr(ms, field, spw, median_snr):
+def score_phaseup_spw_median_snr(ms, field, spw, median_snr, snr_threshold):
     """
     Score the median SNR for a given field and SpW.
     Introduced for hifa_spwphaseup (PIPE-665).
     """
-    if median_snr < 10:
-        score = 0.3
-        shortmsg = 'Very low median SNR'
-        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is very low ({median_snr:.1f}).'
-    elif median_snr < 15:
-        score = 0.5
+    if median_snr <= 0.3 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is low ({median_snr:.1f}).'
-    elif median_snr < 25:
-        score = 0.9
+        longmsg = f'For {ms.basename}, field={field}, SpW={spw}, the median SNR ({median_snr:.1f}) is <= 30% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is low ({median_snr:.1f}).'
+        longmsg = f'For {ms.basename}, field={field}, SpW={spw}, the median SNR ({median_snr:.1f}) is <= 50% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field}, SpW={spw}, the median SNR ({median_snr:.1f}) is <= 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field}: median SNR for SpW {spw} is ok ({median_snr:.1f}).'
+        longmsg = f'For {ms.basename}, field={field}, SpW={spw}, the median SNR ({median_snr:.1f}) is > 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
