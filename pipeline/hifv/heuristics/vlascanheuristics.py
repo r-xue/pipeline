@@ -1059,9 +1059,9 @@ class VLAScanHeuristics(object):
 
             # Here we pass through a set construct to get the unique union.
             self.testgainscans = buildSelectionString(
-                list(filter(None, set(self.bandpass_scan_select_string.split(',')+self.delay_scan_select_string.split(',')))))
+                sorted(filter(None, set(self.bandpass_scan_select_string.split(',')+self.delay_scan_select_string.split(','))), key=int))
             self.checkflagfields = buildSelectionString(
-                list(filter(None, set(self.bandpass_field_select_string.split(',')+self.delay_field_select_string.split(',')))))
+                sorted(filter(None, set(self.bandpass_field_select_string.split(',')+self.delay_field_select_string.split(','))), key=int))
 
         return True
 
