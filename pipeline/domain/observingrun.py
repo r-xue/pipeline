@@ -2,7 +2,7 @@ import collections
 import itertools
 import operator
 import os
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -110,8 +110,9 @@ class ObservingRun(object):
         return candidates
 
     def get_measurement_sets_of_type(self, dtypes: List[DataType],
-                                     msonly: bool=True, source: str='', spw: str='') -> Union[List[MeasurementSet],
-                                                                                        Tuple[collections.OrderedDict, DataType]]:
+                                     msonly: bool=True, source: Optional[str]=None,
+                                     spw: Optional[str]=None) -> Union[List[MeasurementSet],
+                                                               Tuple[collections.OrderedDict, DataType]]:
         """
         Return a list of MeasurementSet domain object with matching DataType.
 
@@ -127,9 +128,9 @@ class ObservingRun(object):
                 one MS is found.
             msonly: If True, return a list of MS domain object only.
             source: Filter for particular source name selection (comma
-                separated list of names) if not an empty string.
-            spw: Filter for particular spw specification (comma separated
-                list of IDs) if not an empty string.
+                separated list of names).
+            spw: Filter for particular real spw specification (comma separated
+                list of real spw IDs).
 
         Returns:
             When msonly is True, a list of MeasurementSet domain objects of
@@ -144,7 +145,7 @@ class ObservingRun(object):
         column = []
         for dtype in dtypes:
             for ms in self.measurement_sets:
-                dcol = ms.get_data_column(dtype)
+                dcol = ms.get_data_column(dtype, source, spw)
                 if dcol is not None:
                     found.append(ms)
                     column.append(dcol)
