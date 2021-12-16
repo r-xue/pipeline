@@ -124,7 +124,7 @@ def collect_dict_values(in_value: Union[dict, Sequence[Any], Any]) -> Tuple[bool
         in_value: A dictionary, number or array to collect values and construct a list
 
     Returns:
-        Flat list of values contained in in_value.
+        Tuple of True or False and the flat list of values contained in in_value.
     """
     if type(in_value) not in [dict, collections.defaultdict]:
         if numpy.iterable(in_value) == 0:
