@@ -265,7 +265,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
     def filter_jyperk(self, vis: str, factors: List[List[str]]) -> List[List[str]]:
         """Perform filtering of Jy/K DB response.
 
-        Returned list only contain the items for science spectral windows
+        Returned list only contains the items for science spectral windows
         in the given MS. Other items are discarded by the method.
 
         Args:
