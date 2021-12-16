@@ -80,7 +80,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
             caltable: Name of caltable or list of names. Defaults to None.
                       Name is automatically created from infiles if None is given.
             reffile: Name of the file that stores Jy/K factors. Defaults to None.
-                     Name is 'jyperk.csv' if None is givne.
+                     Name is 'jyperk.csv' if None is given.
             dbservice: Access to Jy/K DB if True. Defaults to None.
                        None is interpreted as True.
             endpoint: Name of the DB endpoint. Defaults to None.
