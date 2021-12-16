@@ -74,6 +74,7 @@ def read_session_based(context: 'Context', reffile: str) -> List[List[str]]:
     """Read "Session-Based" jyperk factor file.
 
     Args:
+        context: Pipeline context
         reffile: Name of the file to read
 
     Returns:
@@ -333,6 +334,12 @@ def inspect_coverage(minval: 'Number', maxval: 'Number', minref: 'Number', maxre
     range (minref, maxref) is too broad (> 110%) compared with
     (minval, maxval), returned value will be 0 regardless of actual
     fraction.
+
+    Args:
+        minval: minimum value of the range
+        maxval: maximum value of the range
+        minref: minimum value of the reference range
+        maxref: maximum value of the reference range
 
     Returns:
         Fraction of the overlapped region. Ranges from 0 to 1.
