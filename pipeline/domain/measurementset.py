@@ -1186,16 +1186,18 @@ class MeasurementSet(object):
             raise ValueError('Column {} does not exist in {}'.format(column, self.basename))
 
         # Update MS domain object
-        if not overwrite and dtype in self.data_column:
-            raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
-        self.data_column[dtype] = column
-        LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
+        if not overwrite and dtype in self.data_column and self.get_data_column(dtype) != column:
+            raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+        if dtype not in self.data_column:
+            self.data_column[dtype] = column
+            LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
 
         # Update data types per (source,spw) selection
         if source is None:
             source_names = ','.join(utils.dequote(s.name) for s in self.sources)
         else:
             source_names = source
+
         if spw is None:
             spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
         else:
@@ -1205,16 +1207,24 @@ class MeasurementSet(object):
             for spw_id in map(int, spw_ids.split(',')):
                 key = (source_name, spw_id)
                 if key in self.data_types_per_source_and_spw:
-                    self.data_types_per_source_and_spw[key].append(dtype)
+                    if dtype not in self.data_types_per_source_and_spw[key]:
+                        self.data_types_per_source_and_spw[key].append(dtype)
                 else:
                     self.data_types_per_source_and_spw[key] = [dtype]
 
-    def get_data_column(self, dtype: DataType, source: Optional[str]='', spw: Optional[str]='') -> Optional[str]:
+    def get_data_column(self, dtype: DataType, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[str]:
         """
         Return a column name associated with a DataType in MS domain object.
 
         Args:
             dtype: DataType to fetch column name for
+            source: Comma separated list of source names to filter for.
+            spw: Comma separated list of real spw IDs to filter for.
+
+            If source and spw are both unset, the method will just look
+            at the MS data type and column information. If one or both
+            parameters are set, it will require all (source,spw)
+            combinations to have data of the requested data type.
 
         Returns:
             A name of column of a dtype. Returns None if dtype is not defined
@@ -1222,4 +1232,26 @@ class MeasurementSet(object):
         """
         if not (dtype in self.data_column.keys()):
             return None
-        return self.data_column[dtype]
+
+        if source is None and spw is None:
+            return self.data_column[dtype]
+
+        if source is None:
+            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
+        else:
+            source_names = source
+
+        if spw is None:
+            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
+        else:
+            spw_ids = spw
+
+        # Check all (source,spw) combinations
+        data_exists_for_all_source_spw_combinations = True
+        for source_name in source_names.split(','):
+            for spw_id in map(int, spw_ids.split(',')):
+                key = (source_name, spw_id)
+                if dtype not in self.data_types_per_source_and_spw.get(key, []):
+                    data_exists_for_all_source_spw_combinations = False
+        if data_exists_for_all_source_spw_combinations:
+            return self.data_column[dtype]
