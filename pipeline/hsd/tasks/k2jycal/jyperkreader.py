@@ -181,8 +181,7 @@ class JyPerKDataParser(object):
             line: Comma-separated data string
 
         Returns:
-            List of data. If the string is not a comma-separated
-            data string, None is returned.
+            List of data or None
         """
         content = cls.get_content(line)
         if content.find(',') != -1:
