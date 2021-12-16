@@ -305,7 +305,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                     with casa_tools.TableReader(calapp.gaintable) as tb:
                         t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id_reference), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
                         mjd = t.getcol('TIME')
-                        ms_target = ms.get_scans(scan_intent='TARGET', field=field_id_target)
+                        ms_target = ms.get_scans(scan_intent='TARGET', field=field_id_target, spw=spw_id)
                         ms_target0 = ms_target[0]
                         interval_unit = ms_target0.mean_interval(spw_id=spw_id)
                         interval_unit = interval_unit.total_seconds()
