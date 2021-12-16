@@ -9,7 +9,7 @@ import ssl
 import string
 import urllib
 
-from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, NewType, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, NewType, NoReturn, Optional, Union
 
 import numpy
 
@@ -194,17 +194,29 @@ class ALMAJyPerKDatabaseAccessBase(object):
         filtered = self.filter_jyperk(vis, formatted)
         return {'filtered': filtered, 'allsuccess': allsuccess}
 
-    def get_params(self, vis: str):
+    def get_params(self, vis: str) -> NoReturn:
         """Construct query parameter from MS.
 
         This must be implemented in each subclass.
+
+        Args:
+            vis: Name of MS
+
+        Raises:
+            NotImplementedError: always raise an exception
         """
         raise NotImplementedError
 
-    def access(self, queries: Iterable[ResponseStruct]):
+    def access(self, queries: Iterable[ResponseStruct]) -> NoReturn:
         """Access Jy/K DB.
 
         This must be implemented in each subclass.
+
+        Args:
+            queries: Queries to DB
+
+        Raises:
+            NotImplementedError: always raise an exception
         """
         raise NotImplementedError
 
@@ -374,10 +386,16 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
         """
         return {}
 
-    def _extract_factor(self, response: Dict[str, Any]):
+    def _extract_factor(self, response: Dict[str, Any]) -> NoReturn:
         """Extract Jy/K factor from the response.
 
         This must be implemented in each subclass.
+
+        Args:
+            response: Response from DB.
+
+        Raises:
+            NotImplementedError: always raise an exception
         """
         raise NotImplementedError
 
