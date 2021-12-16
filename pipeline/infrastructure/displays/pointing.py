@@ -1,25 +1,24 @@
 """Pointing methods and classes."""
+import gc
 import math
 import os
-from typing import List, Optional, Tuple, Union
 from numbers import Integral
+from typing import List, Optional, Tuple, Union
 
-from matplotlib.axes._axes import Axes
 import matplotlib.figure as figure
-from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
-from matplotlib.ticker import Locator, Formatter
 import numpy as np
-
+import pipeline.infrastructure as infrastructure
+from matplotlib.axes._axes import Axes
+from matplotlib.ticker import (AutoLocator, Formatter, FuncFormatter, Locator,
+                               MultipleLocator)
+from memory_profiler import profile
+from pipeline.domain import Antenna, MeasurementSet
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain import MeasurementSet, Antenna
-import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from pipeline.infrastructure.renderer.logger import Plot
 
-import gc
-from memory_profiler import profile
 LOG = infrastructure.get_logger(__name__)
 
 RArotation = 90
@@ -650,10 +649,10 @@ class PointingAxesManager(MapAxesManagerBase):
         self.is_initialized = False
         self._direction_reference = None
         self._ofs_coord = None
-        self.figure = figure.Figure()
+#        self.figure = figure.Figure()
 
     def init_axes(self,
-#                  fig,
+                  fig,
                   xlocator: Locator, ylocator: Locator,
                   xformatter: Formatter, yformatter: Formatter,
                   xrotation: Integral, yrotation: Integral,
@@ -681,7 +680,7 @@ class PointingAxesManager(MapAxesManagerBase):
                    reset is True or when the method is called
                    for the first time.
         """
-#        self.figure = fig
+        self.figure = fig
         self._axes = self.__axes()
 
         if xlim is not None:
@@ -800,8 +799,9 @@ def draw_pointing(axes_manager: PointingAxesManager=None,
         Mark = 'g-o'
     else:
         Mark = 'bo'
-#    fig = figure.Figure()
-    axes_manager.init_axes(RAlocator, DEClocator,
+    fig = figure.Figure()
+    axes_manager.init_axes(fig,
+                           RAlocator, DEClocator,
                            RAformatter, DECformatter,
                            RArotation, DECrotation,
                            Aspect,
@@ -814,8 +814,6 @@ def draw_pointing(axes_manager: PointingAxesManager=None,
         a.title.set_text('Telescope Pointing on the Sky')
     else:
         a.title.set_text('Telescope Pointing on the Sky\nPointing Pattern = %s' % ObsPattern)
-
-#    gc.set_threshold(8, t1, t2)
 
     if plotpolicy == 'plot':
         # Original
@@ -844,7 +842,6 @@ def draw_pointing(axes_manager: PointingAxesManager=None,
 
     a.cla()
     fig.clf()
-    gc.collect()
 
 
 class SingleDishPointingChart(object):
@@ -892,7 +889,6 @@ class SingleDishPointingChart(object):
         else:
             return None
 
-
     @casa5style_plot
     def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None,
              reference_field_id: Optional[int]=None, target_only: bool=True, ofs_coord: bool=False) -> Optional[Plot]:
@@ -918,7 +914,6 @@ class SingleDishPointingChart(object):
         self.target_only = target_only
         self.ofs_coord = ofs_coord
         self.figfile = self._get_figfile()
-#        self.axes_manager = PointingAxesManager()
 
         if revise_plot is False and os.path.exists(self.figfile):
             return self._get_plot_object()
@@ -940,7 +935,8 @@ class SingleDishPointingChart(object):
             LOG.info('No data with antenna=%d and spw=%s found in %s' % (antenna_id, str(target_spws), ms.basename))
             LOG.info('Skipping pointing plot')
             return None
-        else: LOG.debug('Generate pointing plot using antenna=%d and spw=%d of %s' % (antenna_id, spw_id, ms.basename))
+        else:
+            LOG.debug('Generate pointing plot using antenna=%d and spw=%d of %s' % (antenna_id, spw_id, ms.basename))
         beam_size = casa_tools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
         beam_size_in_deg = casa_tools.quanta.getvalue(beam_size)
         obs_pattern = ms.observing_pattern[antenna_id][spw_id]
@@ -1003,6 +999,11 @@ class SingleDishPointingChart(object):
                       ObsPattern=obs_pattern, plotpolicy='greyed')
 
         ret = self._get_plot_object()
+
+        t0, t1, t2 = gc.get_count()
+        if t0 > 100:
+            gc.collect()
+
         return ret
 
     def _get_figfile(self) -> str:
@@ -1056,10 +1057,8 @@ class SingleDishPointingChart(object):
         else:
             xaxis = 'R.A.'
             yaxis = 'Declination'
-        return Plot(self.figfile,
-                           x_axis=xaxis,
-                           y_axis=yaxis,
-                           parameters={'vis': self.ms.basename,
-                                       'antenna': self.antenna.name,
-                                       'field': field_name,
-                                       'intent': intent})
+        return Plot(self.figfile, x_axis=xaxis, y_axis=yaxis,
+                    parameters={'vis': self.ms.basename,
+                                'antenna': self.antenna.name,
+                                'field': field_name,
+                                'intent': intent})
