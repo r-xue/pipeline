@@ -553,7 +553,7 @@ def get_mean_elevation(context: 'Context', vis: str, antenna_id: int) -> float:
     take its mean.
 
     Args:
-        context  Pipeline context
+        context: Pipeline context
         vis: Name of MS
         antenna_id: Antenna id
 
