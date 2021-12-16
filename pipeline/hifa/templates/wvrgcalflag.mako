@@ -1,6 +1,7 @@
 <%!
 rsc_path = ""
 import os
+import numpy as np
 import pipeline.infrastructure.filenamer as filenamer
 from pipeline.infrastructure.renderer import rendererutils
 %>
@@ -157,7 +158,7 @@ caltables are presented below.</p>
 %endif
 
 % if applications:
-<h4>Flagging results and WVR application</h4>
+<h4>Flagging results, WVR application, and median values</h4>
 <table class="table table-bordered" summary="Flagging Results">
 	<caption>Flagging results and applications for WVR</caption>
     <thead>
@@ -166,6 +167,8 @@ caltables are presented below.</p>
 			<th>WVR Table</th>
             <th>Interpolated Antennas</th>
 			<th>Applied</th>
+			<th>Median RMS</th> <!--- Median value of path length rms -->
+			<th>Median Disc</th> <!-- Median value of WVR discrepancy --> 
         </tr>
     </thead>
 	<tbody>
@@ -175,6 +178,8 @@ caltables are presented below.</p>
 		  	<td>${application.gaintable}
 		  	<td>${application.interpolated}</td>
 		  	<td><span class="glyphicon glyphicon-${'ok' if application.applied else 'remove'}"></span></td>
+			<td>${np.median([wvrinfo.rms for wvrinfo in wvrinfos[application.ms]])}</td>
+			<td>${np.median([wvrinfo.disc for wvrinfo in wvrinfos[application.ms]])}</td>
 		</tr>
 % endfor		
 	</tbody>
