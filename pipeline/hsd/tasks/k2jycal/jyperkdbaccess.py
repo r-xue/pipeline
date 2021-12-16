@@ -553,7 +553,7 @@ def get_mean_temperature(vis: str) -> float:
         vis: Name of MS
 
     Returns:
-        Mean temperature during observation. Usually the value in Kelvin.
+        Mean temperature during observation, usually in Kelvin
     """
     with casa_tools.TableReader(os.path.join(vis, 'WEATHER')) as tb:
         valid_temperatures = numpy.ma.masked_array(
