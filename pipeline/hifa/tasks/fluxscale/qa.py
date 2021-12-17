@@ -247,19 +247,6 @@ def score_kspw(context, result):
     return all_scores
 
 
-def extract_snr_from_spwphaseup(context):
-    """
-    Extracts the estimated SNR from the hifa_spwphaseup step and returns a dictionary of spw to SNR
-    (as requested in PIPE-1208)
-    """
-    try:
-        snr_info_dict = {int(k): v for (k, v) in context.spwphaseup_snr_info}
-    except AttributeError:
-        LOG.warn("Estimated SNR from hifa_spwphaseup could not be retrieved")
-        snr_info_dict = {}
-    return snr_info_dict
-
-
 def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', required_snr=25, edge_fraction=0.03125,
                min_snr=10):
     """
@@ -351,7 +338,10 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
 
     # PIPE-1208: If any scan is fully masked we retrieve the SNR estimated from hifa_spwphaseup
     if get_snr_info:
-        snr_info = extract_snr_from_spwphaseup(context)
+        snr_info = ms.spwphaseup_snr_info
+        if snr_info is None:
+            LOG.error("Estimated SNR from hifa_spwphaseup could not be retrieved")
+
 
     # 6) compute the expected channel-averaged SNR
     # TODO Ask Todd if this is an error or a confusingly-named variable
