@@ -1000,6 +1000,9 @@ class SingleDishPointingChart(object):
 
         ret = self._get_plot_object()
 
+        # execute gc.collect() when the number of uncollected objects reaches 100 or more.
+        # figure.Figure creates a huge number of objects, and if count of plotting points are large,
+        # the python kernel cannot collect objects all at once when process is finished.
         t0, t1, t2 = gc.get_count()
         if t0 > 100:
             gc.collect()
