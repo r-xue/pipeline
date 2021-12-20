@@ -1295,6 +1295,10 @@ class SDSparseMapPlotter(object):
         Returns:
             bool: Whether or not if plot is successful.
         """
+        if figfile is None:
+            LOG.debug('Skip creating sparse profile map')
+            return False
+
         overlay_atm_transmission = self.atm_transmission is not None
         LOG.debug(f'overlay_atm_transmission = {overlay_atm_transmission}')
 
@@ -1479,8 +1483,7 @@ class SDSparseMapPlotter(object):
                                      size=(self.ticksize + 1))
                 axes.axis([xmin, xmax, ymin, ymax])
 
-        if figfile is not None:
-            self.axes.figure.savefig(figfile, dpi=DPIDetail)
+        self.axes.figure.savefig(figfile, dpi=DPIDetail)
         LOG.debug('figfile=\'%s\'', figfile)
 
         self.axes.clear_plot_objects()
