@@ -164,8 +164,6 @@ class SingleImageAxesManager(ImageAxesManager):
 class SDChannelAveragedImageDisplay(SDImageDisplay):
     """Plotter to create a color map for channel averaged spw."""
 
-    MATPLOTLIB_FIGURE_ID = 8911
-
     def plot(self) -> List[logger.Plot]:
         """Create list of color maps for channel averaged spw.
 
@@ -265,8 +263,6 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 class SDMomentMapDisplay(SDImageDisplay):
     """Plotter to create a moment map."""
 
-    MATPLOTLIB_FIGURE_ID = 8911
-    # MAP_MOMENT = 8
     MAP_TITLE = "Max Intensity Map"
 
     def __init__(self, inputs: SDImageDisplayInputs) -> None:
@@ -574,12 +570,7 @@ class ChannelMapAxesManager(ImageAxesManager):
 class SDSparseMapDisplay(SDImageDisplay):
     """Plotter to create a sparse profile map."""
 
-    #MATPLOTLIB_FIGURE_ID = 8910
     MaxPanel = 8
-
-#     @property
-#     def num_valid_spectrum(self):
-#         return self.inputs.num_valid_spectrum
 
     def enable_atm(self) -> None:
         """Enable overlay of ATM transmission curve."""
@@ -753,13 +744,9 @@ class SDSparseMapDisplay(SDImageDisplay):
 class SDChannelMapDisplay(SDImageDisplay):
     """Plotter to create a channel map."""
 
-    #MATPLOTLIB_FIGURE_ID = 8910
     NumChannelMap = 15
     NhPanel = 5
     NvPanel = 3
-    #NumChannelMap = 12
-    #NhPanel = 4
-    #NvPanel = 3
 
     def plot(self) -> List[logger.Plot]:
         """Create list of channel maps.
@@ -1149,8 +1136,6 @@ class SDChannelMapDisplay(SDImageDisplay):
 class SDRmsMapDisplay(SDImageDisplay):
     """Plotter to create a baseline rms map."""
 
-    #MATPLOTLIB_FIGURE_ID = 8910
-
     def plot(self) -> List[logger.Plot]:
         """Create list of baseline rms maps.
 
@@ -1388,7 +1373,6 @@ class SpectralMapAxesManager(MapAxesManagerBase):
 class SDSpectralMapDisplay(SDImageDisplay):
     """Plotter for detailed spectral map."""
 
-    #MATPLOTLIB_FIGURE_ID = 8910
     MaxNhPanel = 5
     MaxNvPanel = 5
 
@@ -1614,8 +1598,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
 class SDSpectralImageDisplay(SDImageDisplay):
     """Plotter for science spectral window."""
-
-    MATPLOTLIB_FIGURE_ID = 8910
 
     def __plot(self, display_cls: SDImageDisplay,
                prologue: Optional[Callable[[SDImageDisplay], None]] = None,
