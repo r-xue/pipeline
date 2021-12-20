@@ -230,7 +230,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
             FigFileRoot = self.inputs.imagename+'.pol%s'%(pol)
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
-            fig.savefig(plotfile, format='png', dpi=DPIDetail)
+            fig.savefig(plotfile, dpi=DPIDetail)
 
             im.remove()
 
@@ -359,7 +359,7 @@ class SDMomentMapDisplay(SDImageDisplay):
 
             FigFileRoot = self.inputs.imagename+'.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
-            fig.savefig(plotfile, format='png', dpi=DPIDetail)
+            fig.savefig(plotfile, dpi=DPIDetail)
 
             im.remove()
 
@@ -1096,7 +1096,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 FigFileRoot = self.inputs.imagename + '.pol%s'%(pol)
                 plotfile = os.path.join(self.stage_dir, FigFileRoot+'_ChannelMap_%s.png'%(ValidCluster))
-                fig.savefig(plotfile, format='png', dpi=DPIDetail)
+                fig.savefig(plotfile, dpi=DPIDetail)
 
                 for _a in itertools.chain([axes_integmap, axes_integsp1, axes_integsp2], axes_chmap):
                     for obj in itertools.chain(_a.lines[:], _a.texts[:], _a.patches[:], _a.images[:]):
@@ -1263,7 +1263,7 @@ class SDRmsMapDisplay(SDImageDisplay):
 
             FigFileRoot = self.inputs.imagename + '.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
-            fig.savefig(plotfile, format='png', dpi=DPIDetail)
+            fig.savefig(plotfile, dpi=DPIDetail)
 
             image.remove()
 
@@ -1560,7 +1560,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                     plotfile = os.path.join(self.stage_dir, prefix+'_%s.png' % Npanel)
                     if not os.path.exists(plotfile):
                         LOG.debug('Regenerate plot: %s' % plotfile)
-                        fig.savefig(plotfile, format='png', dpi=DPIDetail)
+                        fig.savefig(plotfile, dpi=DPIDetail)
                     else:
                         LOG.debug('Use existing plot: %s' % plotfile)
 

@@ -500,7 +500,7 @@ class BaselineSubtractionPlotManager(object):
                 plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
         plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
         plt.plot(binned_freq, binned_data, 'ro')
-        plt.savefig(figfile, format='png', dpi=DPIDetail)
+        plt.savefig(figfile, dpi=DPIDetail)
         return binned_stat
 
 

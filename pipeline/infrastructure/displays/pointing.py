@@ -839,7 +839,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
             )
     plt.axis([xmin, xmax, ymin, ymax])
     if plotfile is not None:
-        plt.savefig(plotfile, format='png', dpi=DPISummary)
+        plt.savefig(plotfile, dpi=DPISummary)
 
     for obj in plot_objects:
         obj.remove()

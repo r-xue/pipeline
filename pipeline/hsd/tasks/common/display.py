@@ -1480,7 +1480,7 @@ class SDSparseMapPlotter(object):
                 axes.axis([xmin, xmax, ymin, ymax])
 
         if figfile is not None:
-            self.axes.figure.savefig(figfile, format='png', dpi=DPIDetail)
+            self.axes.figure.savefig(figfile, dpi=DPIDetail)
         LOG.debug('figfile=\'%s\'', figfile)
 
         self.axes.clear_plot_objects()
