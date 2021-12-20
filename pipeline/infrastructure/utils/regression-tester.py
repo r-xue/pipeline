@@ -205,7 +205,6 @@ class PipelineRegression(object):
         casacalls_log_filename = casacalls_log_hdlr.baseFilename
         casacalls_log_hdlr.baseFilename = os.path.basename(casacalls_log_filename)
 
-        current_casalog = casa_tools.casalog.logfile()
         now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         casa_tools.casalog.setlogfile(f'casa-{now_str}.log')
 
