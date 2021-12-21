@@ -1,20 +1,20 @@
 """Pointing methods and classes."""
 import gc
 import math
-import os
 from numbers import Integral
+import os
 from typing import List, Optional, Tuple, Union
 
-import matplotlib.figure as figure
-import numpy as np
-import pipeline.infrastructure as infrastructure
 from matplotlib.axes._axes import Axes
+import matplotlib.figure as figure
 from matplotlib.ticker import (AutoLocator, Formatter, FuncFormatter, Locator,
                                MultipleLocator)
-from memory_profiler import profile
+import numpy as np
+
 from pipeline.domain import Antenna, MeasurementSet
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
+import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from pipeline.infrastructure.renderer.logger import Plot
@@ -26,7 +26,7 @@ DECrotation = 0
 
 DPISummary = 90
 
-dsyb = '$^\circ$'
+dsyb = r'$^\circ$'
 hsyb = ':'
 msyb = ':'
 
@@ -649,7 +649,6 @@ class PointingAxesManager(MapAxesManagerBase):
         self.is_initialized = False
         self._direction_reference = None
         self._ofs_coord = None
-#        self.figure = figure.Figure()
 
     def init_axes(self,
                   fig,
