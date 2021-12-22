@@ -824,7 +824,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
     def __line_property(self, icluster: int) -> Tuple[float, float]:
         """Compute property of cluster.
 
-        Compute property of cluster, line center frequency [GHz] and
+        Compute property of cluster: line center frequency [GHz] and
         line width in velocity [km/s].
 
         Args:
