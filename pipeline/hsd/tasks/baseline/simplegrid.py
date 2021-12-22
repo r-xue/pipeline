@@ -191,7 +191,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
     def make_grid_table(
         self, datatable_dict: dict, index_list: List[int]
-    ) -> List[Union[int, float, numpy.ndarray]]:
+    ) -> List[List[Union[int, float, numpy.ndarray]]]:
         """Create grid table.
 
         The method configures two-dimensional grid onto the celestial
