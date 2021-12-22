@@ -60,8 +60,17 @@ class SDBaselineInputs(vdp.StandardInputs):
 
     # handle conversion from string to bool
     @switchpoly.convert
-    def switchpoly(self, value: Any) -> bool:
-        """Convert switchpoly value into bool."""
+    def switchpoly(self, value: Union[str, bool]) -> bool:
+        """Convert switchpoly value into bool.
+
+        Args:
+            value: any value provided by the user. It should be
+                   boolean value or its string representation
+                   such as 'True' or 'FALSE'.
+
+        Return:
+            boolean value
+        """
         converted = None
         if isinstance(value, bool):
             converted = value
