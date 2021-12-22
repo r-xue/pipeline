@@ -20,7 +20,7 @@ from . import rules
 from .. import common
 from ..common import utils
 
-from .typing import ClusteringResult, LineWindow
+from .typing import ClusteringResult, DetectedLineList, LineWindow
 
 if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
@@ -1036,7 +1036,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         else:
             return False
 
-    def clustering_kmean(self, Region: List[List[Union[int, float, bool]]], Region2: numpy.ndarray) -> ClusteringResult:
+    def clustering_kmean(self, Region: DetectedLineList, Region2: numpy.ndarray) -> ClusteringResult:
         """Perform k-mean clustering analysis on detected lines.
 
         Perform k-mean clustering analysis on detected lines with various
@@ -1184,7 +1184,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def clustering_hierarchy(
         self,
-        Region: List[List[Union[int, float, bool]]],
+        Region: DetectedLineList,
         Region2: numpy.ndarray,
         nThreshold: float = 3.0,
         nThreshold2: float = 4.5,
@@ -1391,7 +1391,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def clean_cluster(self,
                       Data: numpy.ndarray,
                       Category: List[int],
-                      Region: List[List[Union[int, float, bool]]],
+                      Region: DetectedLineList,
                       Nthreshold: float,
                       NumParam: int
     ) -> Tuple[List[Union[int, float, bool]], numpy.ndarray, numpy.ndarray, List[int]]:
@@ -1492,7 +1492,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ra0: float, dec0: float,
         grid_ra: float, grid_dec: float,
         category: List[int],
-        Region: List[List[Union[int, float, bool]]],
+        Region: DetectedLineList,
         detect_signal: dict
     ) -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]:
         """Classify cluster members by their location on celestial coordinate.
@@ -1783,7 +1783,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self,
         GridCluster: numpy.ndarray,
         GridMember: numpy.ndarray,
-        Region: List[List[Union[int, float, bool]]],
+        Region: DetectedLineList,
         Region2: numpy.ndarray,
         lines: List[List[Union[int, bool]]],
         category: List[int],
