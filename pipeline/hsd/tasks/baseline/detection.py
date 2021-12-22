@@ -853,7 +853,11 @@ class LineWindowParser(object):
 
 
 def test_parser(ms: 'MeasurementSet') -> None:
-    """Test LineWindowParser."""
+    """Test LineWindowParser.
+
+    Args:
+        ms: MeasurementSet domain object
+    """
     target_fields = ms.get_fields(intent='TARGET')
     field_id = target_fields[0].id
     science_spws = ms.get_spectral_windows(science_windows_only=True)
