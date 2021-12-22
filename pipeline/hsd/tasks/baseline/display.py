@@ -92,7 +92,11 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
     @property
     def axes_legend(self) -> 'Axes':
-        """Return Axes for legend."""
+        """Return Axes for legend.
+
+        Returns:
+            Axes instance for legend
+        """
         if self._legend is None:
             # self._legend = plt.axes([0.0, 0.85, 1.0, 0.15])
             self._legend = plt.axes([0.0, self.legend_y, 1.0, 1.0 - self.legend_y])
@@ -258,11 +262,19 @@ class ClusterDisplay(object):
 
     @property
     def context(self) -> 'Context':
-        """Return Pipeline context."""
+        """Return Pipeline context.
+
+        Returns:
+            Pipeline context
+        """
         return self.inputs.context
 
     def __baselined(self) -> Generator[dict, None, None]:
-        """Yield outcome of the baseline subtraction including property of detected lines."""
+        """Yield outcome of the baseline subtraction including property of detected lines.
+
+        Yields:
+            Dictionary containing a result of baseline subtraction
+        """
         for group in self.inputs.result.outcome['baselined']:
             if 'clusters' in group and 'lines' in group:
                 yield group
@@ -376,7 +388,11 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
         self.stage_dir = stage_dir
 
     def plot(self) -> List[logger.Plot]:
-        """Create plots."""
+        """Create plots.
+
+        Returns:
+            List of Plot objects
+        """
         if ShowPlot:
             plt.ion()
         else:
