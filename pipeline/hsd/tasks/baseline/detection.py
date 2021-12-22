@@ -397,7 +397,7 @@ class DetectLine(basetask.StandardTaskTemplate):
                 mask: numpy.ndarray,
                 threshold: float,
                 tweak: bool,
-                edge: List[int]) -> List[int]:
+                edge: List[int]) -> List[List[int]]:
         """Perform spectral line detection on given spectral data with mask.
 
         Args:
@@ -408,8 +408,8 @@ class DetectLine(basetask.StandardTaskTemplate):
             edge: Edge channels to exclude
 
         Returns:
-            A list of start and end indices of spectral lines. The indices of
-            lines are in the order of, e.g., [start1, end1, ..., startN, endN].
+            A list of [start, end] index lists of spectral lines, more explicitly,
+            [[start0, end0], [start1, end1]..., [startN, endN]].
         """
         nchan = len(spectrum)
         (EdgeL, EdgeR) = edge
