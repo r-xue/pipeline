@@ -218,9 +218,9 @@ class BaselineSubtractionPlotManager(object):
         grid_table: List[List[Union[int, float, numpy.ndarray]]],
         grid_list: List[Tuple[int, int]]
     ) -> Generator[numpy.ndarray, None, None]:
-        """Yield list of datatable row ids that matches selection.
+        """Yield list of datatable row ids that match selection.
 
-        Extract list of datatable row ids that matches selection for
+        Extract list of datatable row ids that match the selection for
         MS, spw, polarization, and spatial grid location. Yield row
         ids as numpy array.
 
