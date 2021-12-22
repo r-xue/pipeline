@@ -158,8 +158,11 @@ class ObservingRun(object):
         if msonly:
             return found
         else:
-            ms_dict = collections.OrderedDict( (m, c) for m, c in zip(found, column))
-            return ms_dict, dtype
+            if len(found) > 0:
+                ms_dict = collections.OrderedDict( (m, c) for m, c in zip(found, column))
+                return ms_dict, dtype
+            else:
+                return collections.OrderedDict(), None
 
     def get_fields(self, names=None):
         """

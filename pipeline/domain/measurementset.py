@@ -1196,7 +1196,7 @@ class MeasurementSet(object):
         if source is None:
             source_names = ','.join(utils.dequote(s.name) for s in self.sources)
         else:
-            source_names = source
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
 
         if spw is None:
             spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
@@ -1239,7 +1239,7 @@ class MeasurementSet(object):
         if source is None:
             source_names = ','.join(utils.dequote(s.name) for s in self.sources)
         else:
-            source_names = source
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
 
         if spw is None:
             spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
