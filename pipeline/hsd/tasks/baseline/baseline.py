@@ -291,7 +291,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         Returns:
             SDBaselineResults instance that holds list of output MS names
-            with the mapping between input MS names, necessary data for
+            with the map among input MS names, necessary data for
             weblog rendering, and the metric representing the quality of
             the baseline subtraction.
         """
