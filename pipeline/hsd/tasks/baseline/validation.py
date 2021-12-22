@@ -2568,7 +2568,13 @@ def _to_validated_lines(detect_lines: dict) -> List[List[Union[float, bool]]]:
 
 
 class SVDSolver2D(object):
-    """Least-square solver for two-dimensional polynomials based on SVD."""
+    """Least-square solver based on singular value decomposition (SVD).
+
+    The singular value decomposition (SVD) is a factorization of a
+    matrix, which has many practical mathematical application.
+    This class determines the best coefficients of two-dimensional
+    polynomials in a least-square sense using SVD.
+    """
 
     CONDITION_NUMBER_LIMIT = 1.0e-12
 
