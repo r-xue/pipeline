@@ -2775,7 +2775,7 @@ class SVDSolver2D(object):
         be masked to obtain stable solution.
 
         Args:
-            z: RHS vector
+            z: right hand side vector
             out: Storage for output solution. This is used when memory for the
                  solution is allocated externally. Defaults to None.
             nmask: Number of singular values to be masked. Defaults to 0.
@@ -2819,7 +2819,7 @@ class SVDSolver2D(object):
         to be masked to obtain stable solution.
 
         Args:
-            z: RHS vector
+            z: right hand side vector
             out: Storage for output solution. Defaults to None.
             eps: Threshold factor for masking singular values. Defaults to 1.0e-7.
 
@@ -2864,7 +2864,7 @@ class SVDSolver2D(object):
         to be masked to obtain stable solution.
 
         Args:
-            z: RHS vector
+            z: right hand side vector
             out: Storage for output solution. Defaults to None.
             eps: Threshold factor for masking singular values. Defaults to 1.0e-7.
 
@@ -2915,7 +2915,7 @@ class SVDSolver2D(object):
         If fractional deviation exceeds 1.0, exception will be thrown.
 
         Args:
-            z: RHS vector
+            z: right hand side vector
             threshold: Threshold for score. Should be 0 or positive value.
                        Defaults to 0.05.
 
