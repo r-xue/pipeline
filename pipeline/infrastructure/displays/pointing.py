@@ -43,7 +43,7 @@ def Deg2HMS(x: float, prec: int=0) -> List[str]:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        List of　strings of hour, minute, and second values in a specified
+        List of strings of hour, minute, and second values in a specified
         precision.
 
     """
