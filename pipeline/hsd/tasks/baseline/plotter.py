@@ -361,7 +361,7 @@ class BaselineSubtractionPlotManager(object):
         channelmap_range: Optional[List[Tuple[int, int, bool]]] = None,
         edge: Optional[List[int]] = None,
         showatm: bool = True
-    ) -> List[logger.Plot]:
+    ) -> List[compress.CompressedObj]:
         """Create various types of plots.
 
         For given set of field, antenna, and spw ids, this method generates
@@ -390,6 +390,12 @@ class BaselineSubtractionPlotManager(object):
                               to indicate they are excluded from the fit. Defaults to None.
             edge: Edge channels to exclude. Defaults to None.
             showatm: Whether or not overlay ATM transmission curve. Defaults to True.
+
+        Raises:
+            Exception: Invalid plot type (maybe internal error)
+
+        Returns:
+            List of compressed Plot objects
         """
         if basetask.DISABLE_WEBLOG:
             return []
