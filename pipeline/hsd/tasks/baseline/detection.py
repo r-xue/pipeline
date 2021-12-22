@@ -826,7 +826,7 @@ class LineWindowParser(object):
 
           - time measure from observation start time
           - position measure from antenna array position
-          - direction measur from the field specified by field_id
+          - direction measure from the field specified by field_id
 
         Args:
             field_id: Reference field id for direction measure
