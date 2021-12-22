@@ -37,7 +37,7 @@ BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio b
 class PlotterPool(object):
     """Pool class to hold resources for plotting.
 
-    TODO: this is not useful. should be removed in future.
+    TODO: this class is not useful. Should be removed in future.
           create_plotter must be separated from the class.
     """
 
