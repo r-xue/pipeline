@@ -1386,7 +1386,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             LOG.error("Data should be 2-dimensional. {}-dimensional data was given".format(len(Obs.shape)))
             raise ValueError('Data should be 2-dimensional!')
         del Obs, OrderList
-        return (Data)
+        return Data
 
     def clean_cluster(self,
                       Data: numpy.ndarray,
