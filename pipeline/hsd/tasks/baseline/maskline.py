@@ -72,14 +72,16 @@ class MaskLineInputs(vdp.StandardInputs):
             iteration: Iteration counter for baseline/blflag loop
             group_id: Reduction group id.
             member_list: List of member indices for the reduction group members
-            window: Manual line window. Defaults to None.
+            window: Manual line window. Defaults to None, which means that no user-defined
+                    line window is given.
             windowmode: Line window handling mode. 'replace' exclusively uses manual line window
                         while 'merge' merges manual line window into automatic line detection
-                        and validation result. Defaults to 'replace'.
-            edge: Edge channels to exclude. Defaults to None.
-            broadline: Detect broadline component or not. Defaults to None.
+                        and validation result. Defaults to 'replace' if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means that all channels
+                  are processed.
+            broadline: Detect broadline component or not. Defaults to True if None is given.
             clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
-                                 'hierarchi', or 'both'. Defaults to 'hierarchy'.
+                                 'hierarchy', or 'both'. Defaults to 'hierarchy' if None is given.
         """
         super(MaskLineInputs, self).__init__()
 

@@ -382,13 +382,14 @@ class BaselineSubtractionPlotManager(object):
             deviation_mask: List of channel ranges identified as "deviation mask". Each range
                             is represented as a tuple of start and end channels. Those ranges
                             are shown as red rectangle to indicate they are excluded from the fit.
-                            Defaults to None.
+                            None means no deviation mask is provided.
             channelmap_range: List of channel ranges identified as astronomical lines by
                               line detection and validation process. Channel range is represented
                               as a tuple of line center channel, line width in channel, and
                               validation result (boolean). Those ranges are shown as cyan rectangle
-                              to indicate they are excluded from the fit. Defaults to None.
-            edge: Edge channels to exclude. Defaults to None.
+                              to indicate they are excluded from the fit. None means no line ranges
+                              are provided.
+            edge: Edge channels to exclude. Plot whole channels if None is given.
             showatm: Whether or not overlay ATM transmission curve. Defaults to True.
 
         Raises:
@@ -989,7 +990,7 @@ def get_data(
         num_pol: Number of polarizaionts
         rowlist: List of datatable row ids per sparse map panel with metadata
         rowmap: Row mapping between original (calibrated) MS and the MS
-                specified by infile. Defaults to None.
+                specified by infile. It will be EchoDictionary if None is given.
         integrated_data_storage: Storage for integrated spectrum. If None is given,
                                  new array is created.
         integrated_mask_storage: Storage for integrated mask (not used).
@@ -1260,7 +1261,8 @@ def get_lines2(
         rowlist: List of datatable row ids per sparse map panel with metadata
         polids: List of polarization ids
         rowmap: Row mapping between original (calibrated) MS and the MS
-                before baseline subtraction. Defaults to None.
+                before baseline subtraction. It will be EchoDictionary if
+                None is given.
 
     Returns:
         List of detected line ranges per panel

@@ -107,29 +107,31 @@ class SDBaselineInputs(vdp.StandardInputs):
 
         Args:
             context: Pipeline context
-            infiles: Name of MS(s) to process. Defaults to all regirstered data.
-            antenna: Antenna selection. Defaults to all antennas.
-            spw: Spectral window selection. Defaults to all science spws.
-            pol: Polarization selection. Defaults to all polarizations.
-            field: Field selection. Defaults to all science fields.
-            linewindow: Manual line window. Defaults to None.
+            infiles: Name of MS(s) to process. Defaults to all regirstered data if
+                     None is given.
+            antenna: Antenna selection. Defaults to all antennas if None is given.
+            spw: Spectral window selection. Defaults to all science spws if None is given.
+            pol: Polarization selection. Defaults to all polarizations if None is given.
+            field: Field selection. Defaults to all science fields if None is given.
+            linewindow: Manual line window. Defaults to None, which means that no user-defined
+                        line window is given.
             linewindowmode: Line window handling mode. 'replace' exclusively uses manual line window
                             while 'merge' merges manual line window into automatic line detection
-                            and validation result. Defaults to 'replace'.
-            edge: Edge channels to exclude. Defaults to None.
-            broadline: Detect broadline component or not. Defaults to None.
-            fitorder: Manual fit order. Defaults to run heuristics to determine fit order.
+                            and validation result. Defaults to 'replace' if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means that all channels are processed.
+            broadline: Detect broadline component or not. Defaults to True if None is given.
+            fitorder: Manual fit order. If None is given, run heuristics to determine fit order.
             fitfunc: Fit function to use. Only cubic spline ('spline' or 'cspline') is available
                      so far.
             switchpoly: Whther or not fall back to low order polynomial fit when large mask
-                        exist at the edge of spw. Defaults to True.
+                        exist at the edge of spw. Defaults to True if None is given.
             clusteringalgorithm: Clustering algorithm to use. Choices are 'kmean', 'hierarchy',
                                  or 'both', which merges results from two clustering algorithms.
-                                 Defaults to 'hierarchy'.
-            deviationmask: Apply deviation mask or not. Defaults to True.
+                                 Defaults to 'hierarchy' if None is given.
+            deviationmask: Apply deviation mask or not. Defaults to True if None is given.
             parallel: Turn on/off parallel execution. If 'true', baseline subtraction is performed
                       in parallel if available. The 'automatic' option use parallel execution
-                      only if it is available. Defaults to 'automatic'.
+                      only if it is available. Defaults to 'automatic' if None is given.
         """
         super(SDBaselineInputs, self).__init__()
 
@@ -682,7 +684,7 @@ def test_deviation_mask_heuristic(spw: Optional[int] = None) -> None:
 
     Args:
         spw: spectral window id to process.
-             Defaults to None (spw 17).
+             If None is given, spw is set to 17.
     """
     import glob
     vislist = glob.glob('uid___A002_X*.ms')

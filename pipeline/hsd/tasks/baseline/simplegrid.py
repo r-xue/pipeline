@@ -89,7 +89,7 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
             member_list: List of reduction group member IDs
             window: Manual line window
             windowmode: Line window mode. Either 'replace' or 'merge'
-            nplane: Number of gridding planes. Defaults to None.
+            nplane: Number of gridding planes. Defaults to 3 if None is given.
         """
         super(SDSimpleGriddingInputs, self).__init__()
 
@@ -153,7 +153,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
         Args:
             datatable_dict: Dictionary holding datatable instance per MS.
-            index_list: List of consecutive datatable row numbers. Defaults to None.
+            index_list: List of consecutive datatable row numbers.
 
         Returns:
             SDSimpleGriddingResults instance
@@ -203,7 +203,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
         Args:
             datatable_dict: Dictionary holding datatable instance per MS.
-            index_list: List of consecutive datatable row numbers. Defaults to None.
+            index_list: List of consecutive datatable row numbers.
 
         Returns:
             Grid table. Format of the grid table is as follows.

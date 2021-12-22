@@ -77,12 +77,14 @@ class DetectLineInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context
             group_id: Reduction group id.
-            window: Manual line window. Defaults to None.
+            window: Manual line window. Defaults to None, which means that no user-defined
+                        line window is given.
             windowmode: Line window handling mode. 'replace' exclusively uses manual line window
                         while 'merge' merges manual line window into automatic line detection
-                        and validation result. Defaults to 'replace'.
-            edge: Edge channels to exclude. Defaults to None.
-            broadline: Detect broadline component or not. Defaults to None.
+                        and validation result. Defaults to 'replace' if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means that all channels
+                  are processed.
+            broadline: Detect broadline component or not. Defaults to True if None is given.
         """
         super(DetectLineInputs, self).__init__()
 

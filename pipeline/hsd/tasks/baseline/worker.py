@@ -265,18 +265,26 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
             vis: Name of the MS or list of MSs. Defaults to None,
                  which is to process all MSs registered to the context.
             plan: Set of metadata for baseline subtraction, or List of
-                  the set. Defaults to None.
+                  the them. Defaults to None. The task may fail if None
+                  is given.
             fit_order: Baseline fitting order. Defaults to None, which
                        is to perform heuristics for fitting order.
             switchpoly: Whther or not fall back to low order polynomial
                         fit when large mask exist at the edge of spw.
-                        Defaults to True.
-            edge: Edge channels to exclude. Defaults to None.
-            deviationmask: List of deviation masks. Defaults to None.
-            blparam: Name of the blparam file name. Defaults to None.
-            bloutput: Name of the bloutput name. Defaults to None.
+                        Defaults to True if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means
+                  that all channels are processed.
+            deviationmask: List of deviation masks. Defaults to empty list
+                           if None is given.
+            blparam: Name of the blparam file name. Defaults to
+                     '{name_of_ms}_blparam.txt' if None is given.
+            bloutput: Name of the bloutput name. Defaults to the name
+                      following pipeline product naming convention
+                      (see to_casa_args method) if None is given.
             org_directions_dict: Original source direction for ephemeris
-                                 correction. Defaults to None.
+                                 correction. Defaults to None. This is
+                                 required only when target source is
+                                 ephemeris object.
         """
         super(BaselineSubtractionWorkerInputs, self).__init__()
 
@@ -486,18 +494,26 @@ class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
             vis: Name of the MS or list of MSs. Defaults to None,
                  which is to process all MSs registered to the context.
             plan: Set of metadata for baseline subtraction, or List of
-                  the set. Defaults to None.
+                  the set. Defaults to None. The task may fail if None
+                  is given.
             fit_order: Baseline fitting order. Defaults to None, which
                        is to perform heuristics for fitting order.
             switchpoly: Whther or not fall back to low order polynomial
                         fit when large mask exist at the edge of spw.
-                        Defaults to True.
-            edge: Edge channels to exclude. Defaults to None.
-            deviationmask: List of deviation masks. Defaults to None.
-            blparam: Name of the blparam file name. Defaults to None.
-            bloutput: Name of the bloutput name. Defaults to None.
+                        Defaults to True if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means
+                  that all channels are processed.
+            deviationmask: List of deviation masks. Defaults to empty list
+                           if None is given.
+            blparam: Name of the blparam file name. Defaults to
+                     '{name_of_ms}_blparam.txt' if None is given.
+            bloutput: Name of the bloutput name. Defaults to the name
+                      following pipeline product naming convention
+                      (see to_casa_args method) if None is given.
             org_directions_dict: Original source direction for ephemeris
-                                 correction. Defaults to None.
+                                 correction. Defaults to None. This is
+                                 required only when target source is
+                                 ephemeris object.
             parallel: Turn on/off parallal processing. Defaults to None.
                       If None is given, do parallel processing only when
                       pipeline runs on mpicasa environment.

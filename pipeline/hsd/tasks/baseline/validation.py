@@ -97,22 +97,24 @@ class ValidateLineInputs(vdp.StandardInputs):
             grid_ra: Horizontal (longitudinal) spacing of spatial grids.
                      The value should be the one without declination correction.
             grid_dec: Vertical (latitudinal) spacing of spatial grids.
-            window: Manual line window. Defaults to None.
+            window: Manual line window. Defaults to None, which means that no user-defined
+                    line window is given.
             windowmode: Line window handling mode. 'replace' exclusively uses manual line window
                         while 'merge' merges manual line window into automatic line detection
-                        and validation result. Defaults to 'replace'.
-            edge: Edge channels to exclude. Defaults to None.
+                        and validation result. Defaults to 'replace' if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means that all channels
+                  are processed.
             nsigma: Threshold for iterative N-sigma clipping. No iterative clipping is done if
-                    nsigma is None or negative value. Defaults to None.
+                    nsigma is None or negative value. Defaults to 3 if None is given.
             xorder: Polynomial order for two-dimensional fitting of line properties
                     along horizontal (longitudinal) axis. The order is automatically determined
-                    if None or negative value is given. Defaults to None.
+                    if None or negative value is given.
             yorder: Polynomial order for two-dimensional fitting of line properties
                     along vertical (latitudinal) axis. The order is automatically determined
-                    if None or negative value is given. Defaults to None.
-            broad_component: Process broad component if True. Defaults to False.
+                    if None or negative value is given.
+            broad_component: Process broad component if True. Defaults to False if None is given.
             clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
-                                 'hierarchi', or 'both'. Defaults to 'hierarchy'.
+                                 'hierarchy', or 'both'. Defaults to 'hierarchy' if None is given.
         """
         super(ValidateLineInputs, self).__init__()
 
@@ -187,7 +189,7 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
 
         Args:
             datatable_dict: Dictionary holding datatable instance per MS.
-            index_list: List of consecutive datatable row numbers. Defaults to None.
+            index_list: List of consecutive datatable row numbers.
             grid_table: Not used
             detect_signal: List of detected lines per spatial position. Its format is
                            as follows.
@@ -1834,7 +1836,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             y0: Vertical position of the bottom left corner
             Grid2SpectrumID: Index mapping between serial list of gridded
                              spectra and two-dimensional grid positions
-            index_list: List of consecutive datatable row numbers. Defaults to None.
+            index_list: List of consecutive datatable row numbers.
             PosList: List of pointings (RA and Dec) of ON_SOURCE data
             cluster_flag: array data for plotting clustering analysis results
 
