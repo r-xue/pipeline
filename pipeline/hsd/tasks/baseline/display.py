@@ -61,7 +61,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             clusters_to_plot: List of detected lines
             nh: Number of plots along horizontal direction
             nv: Number of plots along vertical axis
-            aspect_ratio: Aspect ratio
+            aspect_ratio: Aspect ratio of each plot
             xformatter: Formatter for x axis
             yformatter: Formatter for y axis
             xlocator: Locator for x axis
