@@ -945,13 +945,18 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         """Exclude false detection by comparing three signals.
 
         Select only line candidates with good possibility by checking all spectra
-        taken at the same position. This method intends to three set of signals
-        that are supposed to be identified at the same spatial position. The threshold
-        parameter controls the condition of false detection. If identical lines are
-        found in two out of three signals, detection rate is 2/3 or 0.66666....
-        Therefore, threshold 0.6 corresponds to the condition that the signal is
-        true detection if is is found in two out of three signals. Larger threshold
-        such as 0.7 is more strict check, the signal must be found in all three.
+        taken at the same position. If list of detected signals per spectrum, data,
+        is given, this method evaluates detection rate of each signal where identity
+        of signals is checked by CheckLineIdentity method. If the rate exceeds threshold,
+        the signal is marked as "true signal". Default threshold for "true signal" is
+        0.6 (60%).
+
+        Meaning of default value is interpreted as follows. Suppose we have three sets
+        of signals. If identical lines are found in two out of three signals, detection
+        rate is 2/3 or 0.66666.... Therefore, default value corresponds to the condition
+        that the signal is true detection if it is found in two out of three signals.
+        Larger threshold such as 0.7 is more strict check, which effectively requires
+        that the signal must be found in all three.
 
         Args:
             data: List of properties of detected lines to be examined. Format is
