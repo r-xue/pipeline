@@ -87,12 +87,27 @@ class PlotDataStorage(object):
     def __init__(self) -> None:
         """Construct PlotDataStorage instance.
 
-        Initializes storage with zero-length array and data array refers to
-        storage. Storage is one-dimensional array whose length is npol * nchan
-        for integrated data while nh * nv * npol * nchan. On the other hand,
-        data array is multi-dimensional array that share the memory with
-        storage. Shape of the data array is (npol, nchan) for integrated data
-        while (nh, nv, npol, nchan) for profile map data.
+        This class holds three sets of data storage, one dimensional
+        numpy array with a certain length, and the data array that refers
+        whole or part of data storage. They are assigned to map data (float),
+        associated mask (bool), and integrated data (float), respectively.
+
+        Each data array is multi-dimensional array with (npol, nchan) for
+        integrated data while (nh, nv, npol, nchan) for other arrays.
+        Each data storage is one-dimensional array whose length should be
+        larger than the total number of elements for associated data array.
+
+        Intension is to minimize the number of memory allocation/de-allocation.
+        To do that, data storage (memory for array) and data array (actual array
+        accessed by the user) are separated so that allocated memory is reused
+        if possible. Data storage is resized only when size of data storage is
+        smaller than the size of data array which can vary upon request from
+        the user.
+
+        The constructor initializes data storage as zero-length array, which
+        effectively means no memory allocation for the data array, and data
+        array nominally refers to empty data storage. Actual memory allocation
+        will be performed when the user first provides the array shape.
         """
         self.map_data_storage = numpy.zeros((0), dtype=float)
         self.integrated_data_storage = numpy.zeros((0), dtype=float)
