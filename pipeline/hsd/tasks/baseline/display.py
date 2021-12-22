@@ -420,6 +420,9 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
         """Yield plot objects.
 
         This must be implemented in each subclass.
+
+        Raises:
+            NotImplementedError: always raise an exception
         """
         raise NotImplementedError
 
