@@ -117,9 +117,9 @@ class BaselineSubtractionResults(common.SingleDishResults):
         """Construct BaselineSubtractionResults instance.
 
         Args:
-            task: Task class that produced the result. Defaults to None.
-            success: Whether task execution is successful or not. Defaults to None.
-            outcome: Outcome of the task execution. Defaults to None.
+            task: Task class that produced the result.
+            success: Whether task execution is successful or not.
+            outcome: Outcome of the task execution.
         """
         super(BaselineSubtractionResults, self).__init__(task, success, outcome)
 
