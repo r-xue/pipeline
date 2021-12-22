@@ -19,6 +19,8 @@ from . import validation
 from .. import common
 from ..common import utils
 
+from .typing import LineWindow
+
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
@@ -58,7 +60,7 @@ class MaskLineInputs(vdp.StandardInputs):
                  iteration: int,
                  group_id: int,
                  member_list: List[int],
-                 window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 window: Optional[LineWindow] = None,
                  windowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,

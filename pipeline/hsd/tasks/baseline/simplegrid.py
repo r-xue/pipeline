@@ -16,6 +16,8 @@ from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import utils
 
+from .typing import LineWindow
+
 if TYPE_CHECKING:
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
@@ -76,7 +78,7 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
                  context: 'Context',
                  group_id: int,
                  member_list: List[int],
-                 window: Union[str, dict, List[int], List[float], List[str]],
+                 window: LineWindow,
                  windowmode: str,
                  nplane: Optional[int] = None) -> None:
         """Construct SDSimpleGriddingInputs instance.

@@ -20,7 +20,7 @@ from . import rules
 from .. import common
 from ..common import utils
 
-from .typing import ClusteringResult
+from .typing import ClusteringResult, LineWindow
 
 if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
@@ -79,7 +79,7 @@ class ValidateLineInputs(vdp.StandardInputs):
                  iteration: int,
                  grid_ra: float,
                  grid_dec: float,
-                 window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 window: Optional[LineWindow] = None,
                  windowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  nsigma: Optional[float] = None,

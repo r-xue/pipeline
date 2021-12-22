@@ -21,6 +21,8 @@ from .. import common
 from ..common import utils
 from . import rules
 
+from .typing import LineWindow
+
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
     from pipeline.infrastructure.launcher import Context
@@ -66,7 +68,7 @@ class DetectLineInputs(vdp.StandardInputs):
     def __init__(self,
                  context: 'Context',
                  group_id: int,
-                 window: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 window: Optional[LineWindow] = None,
                  windowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None) -> None:
@@ -509,7 +511,7 @@ class LineWindowParser(object):
 
     def __init__(self,
                  ms: 'MeasurementSet',
-                 window: Union[str, dict, List[int], List[float], List[str]]) -> None:
+                 window: LineWindow) -> None:
         """
         Construct LineWindowParser instance.
 

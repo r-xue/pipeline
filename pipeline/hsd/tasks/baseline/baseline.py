@@ -22,6 +22,8 @@ from ..common import compress
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
+from .typing import LineWindow
+
 if TYPE_CHECKING:
     from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
@@ -82,7 +84,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                  spw: Optional[List[str]] = None,
                  pol: Optional[List[str]] = None,
                  field: Optional[List[str]] = None,
-                 linewindow: Optional[Union[str, dict, List[int], List[float], List[str]]] = None,
+                 linewindow: Optional[LineWindow] = None,
                  linewindowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,
