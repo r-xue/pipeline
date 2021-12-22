@@ -4,7 +4,7 @@ import math
 import time
 from math import sqrt
 from numbers import Integral
-from typing import TYPE_CHECKING, Any, List, NewType, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type, Union
 
 import numpy
 import numpy.linalg as LA
@@ -20,11 +20,11 @@ from . import rules
 from .. import common
 from ..common import utils
 
+from .typing import ClusteringResult
+
 if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
     from pipeline.infrastructure.launcher import Context
-
-ClusteringResult = NewType('ClusteringResult', Tuple[int, List[List[Union[int, bool]]], List[int], List[List[Union[int, float, bool]]]])
 
 LOG = infrastructure.get_logger(__name__)
 

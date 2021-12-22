@@ -5,7 +5,7 @@ import os
 import string
 import time
 
-from typing import TYPE_CHECKING, Generator, List, NewType, Tuple, Union
+from typing import TYPE_CHECKING, Generator, List, Tuple, Union
 
 import matplotlib.pyplot as plt
 
@@ -19,14 +19,14 @@ from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import direction_utils as dirutil
 
+from .typing import LineProperty
+
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
     from matplotlib.ticker import Formatter, Locator
 
     from pipeline.infrastructure.launcher import Context
-
-LineProperty = NewType('LineProperty', List[Union[float, bool]])
 
 LOG = infrastructure.get_logger(__name__)
 
