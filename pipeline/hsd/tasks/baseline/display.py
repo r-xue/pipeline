@@ -105,7 +105,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         """Return list of necessary resources to generate cluster validation plots.
 
         Returns:
-            Tuple of line property (line center, line width, validated),
+            List of tuple of line property (line center, line width, validated),
             Axes instance for plot, and x and y locations of plot title.
         """
         if self._axes is None:
