@@ -349,7 +349,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def validate_cluster(
         self,
-        clustering_algorithm: str,
         clustering_result: ClusteringResult,
         index_list: List[int],
         detect_signal: dict,
@@ -364,7 +363,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         set to each spatial data point.
 
         Args:
-            clustering_algorithm: Clustering algorithm name (not used)
             clustering_result: Clustering result
             index_list: List of consecutive datatable row numbers
             detect_signal: List of detected lines per spatial position. Its format is
@@ -733,7 +731,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # validate cluster
         assert clustering_algorithm in ['kmean', 'hierarchy', 'both']
         validated = [
-            self.validate_cluster(k, v,
+            self.validate_cluster(v,
                                   index_list,
                                   detect_signal,
                                   PosList,
