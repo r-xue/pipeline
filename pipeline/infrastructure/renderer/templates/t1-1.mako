@@ -266,9 +266,14 @@ $(document).ready(function() {
                                 <td colspan="${numcol}">${ouslabel} ${ousid} <b>Scheduling Block ID:</b> ${sb_id} ${sb_name_markup}</td>
                             </tr>
                             <tr bgcolor="#E8F0FF">
-                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} </td>
+                            <%
+                                session_group = list(sessiongroup)
+                                acs_version = session_group[0].acs_software_version
+                                software_build_version = session_group[0].software_build_version
+                            %>
+                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} <b>ACS Version:</b> ${acs_version}, <b>Build Version:</b> ${software_build_version} </td>
                             </tr>
-                            % for row in sessiongroup:
+                            % for row in session_group:
                                 <tr>
                                     <td><a href="${row.href}">${row.ms}</a></td>
                                     <td>${utils.commafy(row.receivers, quotes=False)}</td>
