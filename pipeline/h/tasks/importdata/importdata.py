@@ -362,7 +362,7 @@ class ImportData(basetask.StandardTaskTemplate):
             LOG.warning(f"Caught importasdm exception: {ee}")
 
         # Copy across extra files from ASDM to MS.
-        for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
+        for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml', 'Annotation.xml']:
             asdm_source = os.path.join(asdm, xml_filename)
             if os.path.exists(asdm_source):
                 vis_source = os.path.join(vis, xml_filename)

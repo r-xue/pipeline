@@ -88,7 +88,9 @@ class MeasurementSet(object):
         self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
-        self.software_version = None
+        self.acs_software_version = None
+        self.software_build_version = None
+
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with

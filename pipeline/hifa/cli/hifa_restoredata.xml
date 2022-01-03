@@ -140,7 +140,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                      example: asis='Source Receiver'
         </description>
 
-	<value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
+	<value>SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
     </param>
 
     <param name="pipelinemode" type="string">

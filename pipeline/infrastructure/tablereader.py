@@ -347,6 +347,14 @@ class MeasurementSetReader(object):
 
                 ms.science_goals['sbName'] = sbinfo.sbName
 
+            # Add in the online software names 
+
+            annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
+            with casa_tools.TableReader(annotation_table) as table:  
+                ms.acs_software_version = table.getcol('details')[0]
+                ms.software_build_version = table.getcol('details')[1] 
+
+
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
