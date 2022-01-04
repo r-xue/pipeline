@@ -861,33 +861,8 @@ class UVChart(object):
         self.customflagged = customflagged
         self.figfile = self._get_figfile(output_dir=output_dir)
 
-        # Select which source to plot.
-        src_name, spw_id = self._get_source_and_spwid()
-        self.spw_id = spw_id
-
-        # Determine which field to plot.
-        self.field, self.field_name, self.intent = self._get_field_for_source(src_name)
-
-        # Check to see if the selected field has the selected spw_id
-        selected_field = ms.get_fields(field_id=int(self.field))[0] # self.field is field_id as a string.
-        selected_spw = ms.get_spectral_window(spw_id=self.spw_id)
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-        
-        if not selected_spw in selected_field.valid_spws:
-            LOG.debug('Selected spwid: {} is not in the list of valid_ids for the field: {}'.format(self.spw_id, self.field))
-
-            # Find first science spw in the list of valid spws for field
-            possible_spws = selected_field.valid_spws.intersection(set(science_spws))
-            possible_spws_intents = [spw for spw in possible_spws if self.intent in spw.intents]
-
-            # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
-            if(len(possible_spws_intents) < 1 ):
-                LOG.debug("Could not find a spw to plot with the source: {}, field: {}, and intent: {}".format(src_name, self.self.field, self.intent))
-                self.spw_id = None
-                return 
-
-            final_spw = sorted(possible_spws_intents, key=operator.attrgetter('id'))[0]
-            self.spw_id = str(final_spw.id)
+        # Get spw_id, field, field_name, and intent to plot.
+        self.spw_id, self.field, self.field_name, self.intent = self._get_spwid_and_field()
 
         # Determine number of channels in spw.
         self.nchan = self._get_nchan_for_spw(self.spw_id)
@@ -960,7 +935,7 @@ class UVChart(object):
                                        'spw': self.spw_id},
                            command=str(task))
 
-    def _get_source_and_spwid(self):
+    def _get_spwid_and_field(self):
         # Attempt to get representative source and spwid.
         repr_src, repr_spw = self._get_representative_source_and_spwid()
 
@@ -972,18 +947,18 @@ class UVChart(object):
         if not target_sources:
             repr_src = None
 
-        # If both are defined, returned representative src and spw.
+        # If both are defined, return representative src and spw.
         if repr_src and repr_spw:
-            return repr_src, str(repr_spw)
+            field, field_name, intent = self._get_field_for_source(repr_src.name) # Potentially move logic around here, so this function isn't called twice
+            return str(repr_spw), field, field_name, intent 
+        # If only the repr_src is defined, get the field, then find the first valid spw
         elif repr_src and not repr_spw:
-            spw = self._get_first_science_spw()
-            return repr_src, spw
+            field, field_name, intent = self._get_field_for_source(repr_src.name)
+            spw = self._get_first_available_science_spw(field, intent)
+            return spw, field, field_name, intent
 
-        # If no representative source was identified, then return first source
-        # and first science spw.
-        src, spw = self._get_preferred_source_and_science_spw()
-
-        return src, spw
+        # If no representative source was identified, then get the preferred source and science spw
+        return self._get_preferred_science_spw_and_field()
 
     def _get_representative_source_and_spwid(self):
         # Is the representative source in the context or not
@@ -1014,15 +989,25 @@ class UVChart(object):
 
         return repsource_name, repsource_spwid
 
-    def _get_first_science_spw(self):
-        sci_spws = self.ms.get_spectral_windows(science_windows_only=True)
+    def _get_first_available_science_spw(self, field, intent):
         try:
-            spw = str(sci_spws[0].id)
-        except IndexError:
+            science_spws = self.ms.get_spectral_windows(science_windows_only=True)
+            selected_field = self.ms.get_fields(field_id=int(field))[0] # self.field is field_id as a string. just pass in field as in Field? 
+            possible_spws = selected_field.valid_spws.intersection(set(science_spws))
+            possible_spws_intents = [spw for spw in possible_spws if intent in spw.intents]
+
+            # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
+            if(len(possible_spws_intents) < 1 ):
+                LOG.debug("Could not find a spw to plot with the field: {} and intent: {}".format(self.self.field, self.intent))
+                spw = None
+                return spw
+            final_spw = sorted(possible_spws_intents, key=operator.attrgetter('id'))[0]
+            spw = str(final_spw.id)
+        except:
             spw = None
         return spw
 
-    def _get_preferred_source_and_science_spw(self):
+    def _get_preferred_science_spw_and_field(self):
         # take first TARGET sources, otherwise first AMPLITUDE sources, etc.
         for intent in self.preferred_intent_order:
             sources_with_intent = [s for s in self.ms.sources if intent in s.intents]
@@ -1034,9 +1019,10 @@ class UVChart(object):
                         ''.format(self.preferred_intent_order))
             src = list(self.ms.sources).pop()
 
-        spw = self._get_first_science_spw()
+        field, field_name, intent = self._get_field_for_source(src.name)
+        spw = self._get_first_available_science_spw(field, intent)
 
-        return src.name, spw
+        return spw, field, field_name, intent 
 
     def _get_field_for_source(self, src_name):
         sources_with_name = [s for s in self.ms.sources if s.name == src_name]
