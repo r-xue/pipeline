@@ -564,7 +564,7 @@ class MeasurementSet(object):
 
         Returns -- int cycle_number
         """
-        match = re.search(r"CYCLE(\d+)", self.software_build_version)
+        match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
         if match: 
             cycle_number = int(match.group(1))
             return cycle_number
