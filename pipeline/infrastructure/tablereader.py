@@ -347,13 +347,12 @@ class MeasurementSetReader(object):
 
                 ms.science_goals['sbName'] = sbinfo.sbName
 
-            # Add in the online software names 
-
-            annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
-            with casa_tools.TableReader(annotation_table) as table:  
-                ms.acs_software_version = table.getcol('details')[0]
-                ms.software_build_version = table.getcol('details')[1] 
-
+            # Populate the the online ALMA Control Software software names, if applicable:
+            if 'ALMA' in msmd.observatorynames():
+                annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
+                with casa_tools.TableReader(annotation_table) as table:  
+                    ms.acs_software_version = table.getcol('details')[0]
+                    ms.acs_software_build_version = table.getcol('details')[1] 
 
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
@@ -486,14 +485,17 @@ class SpectralWindowTable(object):
                 LOG.info("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
                 receiver, freq_lo = None, None
 
-            #TODO: do i want to leave this table read in this location? 
-            sdm_num_bin = []
-            with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
-                sdm_num_bin = table.getcol('SDM_NUM_BIN')
+            # Read the online spectral averaging information if available
+            sdm_num_bin = None
+            if 'ALMA' in msmd.observatorynames():
+                sdm_num_bin = []
+                with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+                    sdm_num_bin = table.getcol('SDM_NUM_BIN')
+                    sdm_num_bin = sdm_num_bin[i]
 
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
-                                        transitions=transitions, sdm_num_bin=sdm_num_bin[i])
+                                        transitions=transitions, sdm_num_bin=sdm_num_bin)
             spws.append(spw)
 
         return spws

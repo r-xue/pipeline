@@ -7,6 +7,7 @@ import os
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
+import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -89,7 +90,7 @@ class MeasurementSet(object):
         self.origin_ms: str = name
         self.data_column: dict = {}
         self.acs_software_version = None
-        self.software_build_version = None
+        self.acs_software_build_version = None
 
 
         # Polarisation calibration requires the refant list be frozen, after
@@ -556,6 +557,20 @@ class MeasurementSet(object):
         obs_modes = [state.get_obs_mode_for_intent(intent)
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
+
+    def get_alma_cycle_number(self):
+        """"
+        Get the ALMA cycle number from the control softare version that this MeasurementSet was acquired with. 
+
+        Returns -- int cycle_number
+        """
+        match = re.search(r"CYCLE(\d+)", self.software_build_version)
+        if match: 
+            cycle_number = int(match.group(1))
+            return cycle_number
+        else: 
+            return None
+
 
     @property
     def start_time(self):
