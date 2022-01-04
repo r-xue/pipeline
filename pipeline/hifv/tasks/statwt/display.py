@@ -13,6 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 class weightboxChart(object):
 
     def __init__(self, context, result):
+        print("in init")
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -37,7 +38,7 @@ class weightboxChart(object):
         return weights.real
 
     def _create_plot_from_wtable(self, suffix):
-
+        print("Creating plot from wtable")
         tbl = self.result.wtables[suffix]
         figfile = self._get_figfile(suffix)
         fig_title = os.path.basename(tbl)
@@ -84,6 +85,8 @@ class weightboxChart(object):
                 bxpstats[0]['stdev'] = None
                 bxpstats_per_spw.extend(bxpstats)
             bxpstats_per_spw[-1]['spw'] = this_spw
+
+        # HERE: might need to add a bxpstats_per_scan 
 
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
@@ -137,9 +140,12 @@ class weightboxChart(object):
         return wrapper
 
     def plot(self):
-
-        plots = []
+        print("in plot")
+        print(len(self.result.wtables.items())) #Okay, so my test dataset has absolutely no results :/
+        plots = [] 
         for k, t in self.result.wtables.items():
+            print("suffix is: ")
+            print(k)
             plots.append(self._get_plot_wrapper(suffix=k))
 
         return [p for p in plots if p is not None]
