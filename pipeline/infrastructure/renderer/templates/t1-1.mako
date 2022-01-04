@@ -271,7 +271,11 @@ $(document).ready(function() {
                                 acs_version = session_group[0].acs_software_version
                                 software_build_version = session_group[0].software_build_version
                             %>
+                            % if pcontext.project_summary.telescope == 'ALMA':                        
                                 <td colspan="${numcol}"><b>Session:</b> ${sessionkey} <b>ACS Version:</b> ${acs_version}, <b>Build Version:</b> ${software_build_version} </td>
+                            % else: 
+                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} </td>
+                            % endif
                             </tr>
                             % for row in session_group:
                                 <tr>
