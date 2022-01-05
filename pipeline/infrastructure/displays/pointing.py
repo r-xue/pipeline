@@ -750,13 +750,13 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
     axes.plot(xy[:, 0], xy[:, 1], 'r-')
 
 
-def draw_pointing(axes_manager: PointingAxesManager=None,
-                  RA: np.ndarray=None,
-                  DEC: np.ndarray=None,
+def draw_pointing(axes_manager: PointingAxesManager,
+                  RA: np.ndarray,
+                  DEC: np.ndarray,
                   FLAG: Optional[np.ndarray]=None,
                   plotfile: Optional[str]=None,
                   connect: bool=True,
-                  circle: List[Optional[float]]=None,
+                  circle: List[Optional[float]]=[],
                   ObsPattern: Optional[str]=None,
                   plotpolicy: str='ignore'
                   ) -> None:
