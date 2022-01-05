@@ -783,7 +783,6 @@ def draw_pointing(axes_manager: PointingAxesManager=None,
         plotpolicy: Policy to handle FLAG. The plotpolicy can be any one of
                     'plot', 'ignore' or 'greyed'.
     """
-    t0, t1, t2 = gc.get_threshold()
 
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
