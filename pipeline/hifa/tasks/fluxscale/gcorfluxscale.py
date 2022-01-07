@@ -617,12 +617,12 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Get optimal phase solution parameters for current intent and
         # field, based on spw mapping info in MS.
-        combine, interp, solint, spwmap = self._get_phasecal_params(intent, field)
+        combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(intent, field)
 
         # Create phase caltable and merge it into the local context so that the
         # caltable is included in pre-apply for subsequent gaincal.
         LOG.info(f'Compute phase gaincal table for intent={intent}, field={field}.')
-        self._do_gaincal(field=field, intent=intent, gaintype='G', calmode='p', combine=combine,
+        self._do_gaincal(field=field, intent=intent, gaintype=gaintype, calmode='p', combine=combine,
                          solint=solint, antenna=antenna, uvrange='', minsnr=inputs.minsnr, refant=refant,
                          spwmap=spwmap, interp=interp, merge=True)
 
@@ -654,9 +654,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         inputs = self.inputs
         ms = inputs.ms
 
-        # By default, no spw mapping or combining, no interp, and using input
-        # solint.
+        # By default, no spw mapping or combining, no interp, gaintype='G', and
+        # using input solint.
         combine = ''
+        gaintype = 'G'
         interp = None
         solint = inputs.phaseupsolint
         spwmap = []
@@ -669,10 +670,11 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         if spwmapping:
             spwmap = spwmapping.spwmap
 
-            # If the spwmap is for combining spws, then override combine and
-            # interp accordingly, and compute an optimal solint.
+            # If the spwmap is for combining spws, then override combine,
+            # interp, and gaintype accordingly, and compute an optimal solint.
             if spwmapping.combine:
                 combine = 'spw'
+                gaintype = 'T'
                 interp = 'linearPD,linear'
 
                 # Compute optimal solint.
@@ -685,7 +687,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 # in the future, see PIPEREQ-85.
                 interp = 'linear,linear'
 
-        return combine, interp, solint, spwmap
+        return combine, gaintype, interp, solint, spwmap
 
     def _do_fluxscale(self, caltable=None, refspwmap=None):
         inputs = self.inputs
