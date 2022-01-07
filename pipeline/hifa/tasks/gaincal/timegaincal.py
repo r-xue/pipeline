@@ -84,7 +84,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # and phase calibrator. This caltable will be registered as applicable
         # to the target, check source, and phase calibrator when the result for
         # this task is accepted.
-        LOG.info('Computing phase gain table for target, check source, and phase calibrator.')
+        LOG.info('Computing phase gain table(s) for target(s), check source(s), and phase calibrator(s).')
         target_phasecal_calapp = self._do_phasecal_for_target()
         # Add the solutions to final task result, for adopting into context
         # callibrary, but do not merge them into local task context, so they
@@ -99,7 +99,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # particular for computing residual phase offsets). But for the final
         # task result, these phase solutions will only be registered as
         # applicable to the bandpass, flux, and polarization calibrators.
-        LOG.info('Computing phase gain table for bandpass, flux, and polarization calibrator.')
+        LOG.info('Computing phase gain table(s) for bandpass, flux, and polarization calibrator(s).')
         cal_phase_results, max_phase_solint = self._do_phasecal_for_calibrators()
 
         # Merge the phase solutions for the calibrators into the local task
@@ -321,8 +321,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         new_calapps = []
 
         # Define what overrides should be included in the cal application.
-        # Add overrides for interpolation and SpW mapping if provided.
-        calapp_overrides = {}
+        # For the initial phase-ups, calwt is always False. Adjust the
+        # interpolation and SpW mapping if provided.
+        calapp_overrides = {'calwt': False}
         if interp:
             calapp_overrides['interp'] = interp
         if spwmap:
