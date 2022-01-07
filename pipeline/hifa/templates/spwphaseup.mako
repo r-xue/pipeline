@@ -14,6 +14,12 @@ def format_spwmap(spwmap, scispws):
         		spwmap_strings.append(str(spwid))
         
         return ', '.join(spwmap_strings)
+
+def format_field(field_name, field_id):
+    if not field_name:
+        return ''
+    else:
+        return '{} (#{})'.format(field_name, field_id)
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -24,8 +30,11 @@ and the caltable containing per spw phase offsets.</p>
 
 <h2>Results</h2>
 <table class="table table-bordered table-striped" summary="Narrow to wide spw mapping results">
-	<caption>Phase solution spw map per measurement set.</caption>
-        <thead>
+	<caption>Phase solution spw map per measurement set. If a measurement set
+        is listed with no further information, this indicates that there were
+        no valid PHASE or CHECK fields for which to derive a SpW mapping (e.g.
+        because those fields also covered other calibrator intents).</caption>
+    <thead>
 	    <tr>
 	        <th>Measurement Set</th>
             <th>Field</th>
@@ -39,7 +48,7 @@ and the caltable containing per spw phase offsets.</p>
     % for spwmap in spwmaps:
 		<tr>
 			<td>${spwmap.ms}</td>
-            <td>${spwmap.field} (#${spwmap.fieldid})</td>
+            <td>${format_field(spwmap.field, spwmap.fieldid)}</td>
             <td>${spwmap.intent}</td>
             <td>${spwmap.scanids}</td>
             <td>${spwmap.combine}</td>
@@ -51,9 +60,13 @@ and the caltable containing per spw phase offsets.</p>
 
 % if snr_table_rows:
 <table class="table table-bordered table-striped" summary="Estimated phase signal to noise ratios">
-	<caption>Estimated phase calibrator signal to noise ratios per measurement set. For spectral
-        windows where the estimated SNR is below the specified threshold ('phasesnr' parameter),
-        the SNR value is indicated in <strong>bold</strong>.</caption>
+	<caption>Estimated phase calibrator signal to noise ratios per measurement
+        set. For spectral windows where the estimated SNR is below the
+        specified threshold ('phasesnr' parameter), the SNR value is indicated
+        in <strong>bold</strong>. If a measurement set is listed with no
+        further information, this indicates that there were no valid PHASE or
+        CHECK fields for which to derive a SpW mapping (e.g. because those
+        fields also covered other calibrator intents).</caption>
     <thead>
 	    <tr>
 	        <th>Measurement Set</th>

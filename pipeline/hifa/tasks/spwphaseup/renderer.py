@@ -127,6 +127,8 @@ def get_spwmaps(context: Context, results: ResultsList) -> List[SpwMapInfo]:
                 # Append info on spwmap to list.
                 spwmaps.append(SpwMapInfo(ms.basename, intent, field, fieldid, spwmapping.combine, spwmapping.spwmap,
                                           scanids, science_spw_ids))
+        else:
+            spwmaps.append(SpwMapInfo(ms.basename, '', '', '', '', '', '', ''))
 
     return spwmaps
 
@@ -171,6 +173,7 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
     """
     rows = []
     for result in results:
+        ms = context.observing_run.get_ms(result.vis)
         if result.spwmaps:
             # Get phase SNR threshold, and present this in the table if the phase
             # SNR test was run during task.
@@ -181,7 +184,6 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
             else:
                 thr_str = f"N/A <p>(hm_spwmapmode='{spwmapmode}')"
 
-            ms = context.observing_run.get_ms(result.vis)
             for (intent, field), spwmapping in result.spwmaps.items():
                 # Compose field string.
                 fieldid = ms.get_fields(name=[field])[0].id
@@ -199,5 +201,7 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                         snr = f'{row[1]:.1f}'
 
                     rows.append(SnrTR(ms.basename, thr_str, field_str, intent, spwid, snr))
+        else:
+            rows.append(SnrTR(ms.basename, '', '', '', '', ''))
 
     return utils.merge_td_columns(rows)
