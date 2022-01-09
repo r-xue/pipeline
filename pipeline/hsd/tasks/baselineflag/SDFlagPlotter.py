@@ -397,9 +397,12 @@ class SDFlagPlotter(object):
         Returns:
             (none)
         """
+        # do nothing if no plots are going to be saved on file
+        if figfiledir is None or figfilename is None:
+            return
+
         # initial settings & hold original plot configurations
-        fig = figure.Figure()
-        fig.set_size_inches( FIGSIZE_INCHES )
+        fig = figure.Figure( figsize=FIGSIZE_INCHES )
 
         # pick the widest limits
         xlim_values = [ x for x in xlim_dict.values() if x ]
@@ -418,9 +421,8 @@ class SDFlagPlotter(object):
                                       PlotData_dict[pol], data_dict[pol], ScaleOut_dict[pol], LowRange_dict[pol] )
 
         # save the entire plot to png file
-        if figfiledir is not None and figfilename is not None:
-            outfile = figfiledir + figfilename
-            fig.savefig( outfile, format='png', dpi=DPIDetail )
+        outfile = figfiledir + figfilename
+        fig.savefig( outfile, dpi=DPIDetail )
 
         return
 

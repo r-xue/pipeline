@@ -229,7 +229,7 @@ class SDBLFlagSummary(object):
         # Store data for plotting
         for N, ID in enumerate(ids):
             row = datatable.getcell('ROW', ID)
-            dtime = datatable.getcell('TIME', ID)  # renamed from 'time'
+            dtime = datatable.getcell('TIME', ID)
             # Check every flags to create summary flag
             tFLAG = datatable.getcell('FLAG', ID)[polid]
             tPFLAG = datatable.getcell('FLAG_PERMANENT', ID)[polid]
