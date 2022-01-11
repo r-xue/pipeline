@@ -1,3 +1,5 @@
+"""AQUA pipeline report generator for Single Dish."""
+
 from typing import List
 from xml.etree.ElementTree import Element
 import xml.etree.cElementTree as ElementTree
@@ -15,7 +17,7 @@ class AlmaAquaXmlGenerator(aqua.AquaXmlGenerator):
     """
 
     def __init__(self):
-        """Initializer of the class."""
+        """Initialize AlmaAquaXmlGenerator instance."""
         super(AlmaAquaXmlGenerator, self).__init__()
 
     def get_project_structure(self, context: Context) -> Element:

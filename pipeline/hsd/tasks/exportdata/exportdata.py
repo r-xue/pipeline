@@ -1,9 +1,7 @@
 """
-The exportdata for SD module provides base classes for preparing data products
-on disk for upload to the archive.
+The exportdata for SD module provides base classes for preparing data products on disk for upload to the archive.
 
-To test these classes, register some data with the pipeline using ImportData,
-then execute:
+To test these classes, register some data with the pipeline using ImportData, then execute:
 
 import pipeline
 # Create a pipeline context and register some data
@@ -15,6 +13,7 @@ task = pipeline.tasks.singledish.SDExportData (inputs)
 results = task.execute (dry_run = True)
 results = task.execute (dry_run = False)
 """
+
 import collections
 import glob
 import os
@@ -42,6 +41,7 @@ class SDExportDataInputs(exportdata.ExportDataInputs):
 
     Inputs class must be separated per task class even if it's effectively the same.
     """
+
     pass
 
 
@@ -159,7 +159,6 @@ class SDExportData(exportdata.ExportData):
         Returns:
             session dictionary
         """
-
         # Make the standard sessions dictionary and export per session products
         #    Currently these are compressed tar files of per session calibration tables
         # Export tar files of the calibration tables one per session
@@ -214,7 +213,6 @@ class SDExportData(exportdata.ExportData):
         Returns:
             tar file name
         """
-
         # Save the current working directory and move to the pipeline
         # working directory. This is required for tarfile IO
 
@@ -264,7 +262,6 @@ class SDExportData(exportdata.ExportData):
         Returns:
             orderd vis dictionary
         """
-
         # Loop over the measurements sets in the working directory, and
         # create the calibration apply file(s) in the products directory.
         apply_file_list = []
@@ -295,7 +292,6 @@ class SDExportData(exportdata.ExportData):
         Returns:
             the file name calibration applied
         """
-
         applyfile_name = self.NameBuilder.calapply_list(os.path.basename(vis),
                                                         aux_product=True)
         # applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
@@ -486,7 +482,6 @@ class SDExportData(exportdata.ExportData):
         Returns:
             str: path of output CASA script file
         """
-
         # Generate the file list
 
         # Get the output file name
@@ -546,6 +541,7 @@ finally:
     def _export_aqua_report(self, context, oussid, aquareport_name, products_dir):
         """
         Save the AQUA report.
+
         Note the method is mostly a duplicate of the conterpart
              in hifa/tasks/exportdata/almaexportdata
         """

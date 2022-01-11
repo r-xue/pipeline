@@ -71,6 +71,7 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
 
 class NROExportDataInputs(sdexportdata.SDExportDataInputs):
     """Data Input class. Inputs class must be separated per task class even if it's effectively the same."""
+
     pass
 
 
@@ -87,6 +88,7 @@ class NROExportData(sdexportdata.SDExportData):
     - Saves the final web log in a compressed / tarred file
     - Saves the text formatted list of contents of products directory
     """
+
     Inputs = NROExportDataInputs
 
     NameBuilder = NROPipelineNameBuilder
@@ -149,7 +151,7 @@ class NROExportData(sdexportdata.SDExportData):
         return datafile_name if status is True else None
 
     def _update_manifest(self, manifest_file: str, script: str=None, scalefile: str=None):
-        """[summary]
+        """Update a Manifest file.
 
         Args:
             manifest_file : manifest file path

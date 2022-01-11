@@ -39,7 +39,7 @@ def generate_template(filename: str) -> str:
 
 
 def export_template(filename: str, txt: str):
-    """Export template to a file
+    """Export template to a file.
 
     Args:
         filename : file name to export
