@@ -341,8 +341,7 @@ class MetaDataReader(object):
         self.invalid_pointing_data[antenna_id].append(row)
 
     def generate_flagcmd(self):
-        """Generate flag commands based on pointings of observation and save them in the flag template file.
-        """
+        """Generate flag commands based on pointings of observation and save them in the flag template file."""
         # PIPE-646
         # per-antenna row list for the data without pointing data
         # key: antenna id
