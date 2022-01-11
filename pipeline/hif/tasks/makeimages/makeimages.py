@@ -199,7 +199,8 @@ class MakeImages(basetask.StandardTaskTemplate):
         return False
 
     def _get_image_rms_as_sensitivity(self, result, target, heuristics):
-        imname = result.image
+        extension = '.tt0' if result.multiterm else '' # Needed when nterms=2, see PIPE-1361
+        imname = result.image + extension 
         if not os.path.exists(imname):
             return None
         cqa = casa_tools.quanta
