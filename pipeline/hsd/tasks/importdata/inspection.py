@@ -208,9 +208,9 @@ class SDInspection(object):
         """Inspect DataTable and return row IDs grouped by antenna, spw, and field.
 
         Args:
-            datatable: DataTable
-            startrow: start row of DataTable to get data
-            nrow: end of range of row
+            datatable: DataTable to inspect
+            startrow: the row ID in DataTable to start inspection
+            nrow: number of rows to inspect
         Returns:
             Dict of antenna id/spectral window/field id
         """
