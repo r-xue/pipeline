@@ -60,12 +60,15 @@ class SDExportData(exportdata.ExportData):
 
     Inputs = SDExportDataInputs
 
-    def prepare(self) -> None:
+    def prepare(self) -> exportdata.ExportDataResults:
         """
         Prepare and execute an export data job appropriate to the task inputs.
 
         This is almost equivalent to ALMAExportData.prepare().
         Only difference is to use self._make_lists() instead of ExportData._make_lists()
+
+        Returns:
+            ExportDataResults object
         """
         results = super(SDExportData, self).prepare()
 
@@ -143,7 +146,7 @@ class SDExportData(exportdata.ExportData):
         return session_list, session_names, session_vislists, vislist
 
     def _do_aux_session_products(self, context: Context, oussid: str, session_names: List[str], session_vislists: List[str], products_dir: str) -> \
-            collections.OrderedDict[str, str]:
+            collections.OrderedDict:
         """Export the calibration tables to products directory and return session dictionary.
 
         Args:
@@ -250,7 +253,7 @@ class SDExportData(exportdata.ExportData):
 
         return tarfilename
 
-    def _do_aux_ms_products(self, context: Context, vislist: List[str], products_dir: str) -> collections.OrderedDict[str, str]:
+    def _do_aux_ms_products(self, context: Context, vislist: List[str], products_dir: str) -> collections.OrderedDict:
         """Create the calibration apply file(s) from MeasurementSets.
 
         Args:
@@ -290,7 +293,7 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            the Sfile name calibration applied
+            the file name calibration applied
         """
 
         applyfile_name = self.NameBuilder.calapply_list(os.path.basename(vis),
@@ -322,7 +325,7 @@ class SDExportData(exportdata.ExportData):
                 with open(os.path.join(products_dir, applyfile_name), "w") as applyfile:
                     applyfile.write('# Apply file for %s\n' % (os.path.basename(vis)))
                     applyfile.write(applied_calstate)
-        except:
+        except Exception:
             applyfile_name = 'Undefined'
             LOG.info('No calibrations for MS %s' % os.path.basename(vis))
 
@@ -360,7 +363,15 @@ class SDExportData(exportdata.ExportData):
         return absolute_path(jyperk)
 
     @staticmethod
-    def __get_reffile(results) -> None:
+    def __get_reffile(results: List[basetask.ResultsProxy]) -> None:
+        """Find SDK2JyCalResults and yield K2JY reference file.
+
+        Args:
+            results : a list of ResultsProxy (contains Results object of every tasks)
+
+        Yields:
+            K2JY reference file, default: jyperk.csv
+        """
         for proxy in results:
             result = proxy.read()
             if not isinstance(result, basetask.ResultsList):
@@ -461,7 +472,7 @@ class SDExportData(exportdata.ExportData):
 
     def _export_casa_restore_script_template(self, context: Context, script_name: str, products_dir: str, oussid: str,
                                              restore_task_name: str, restore_task_args: Dict[str, str]) -> str:
-        """Template method for export_casa_restore_script.
+        """Generate and export CASA restore script (export_casa_restore_script).
 
         Args:
             context : pipeline context

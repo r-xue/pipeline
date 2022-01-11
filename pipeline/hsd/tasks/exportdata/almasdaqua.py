@@ -1,20 +1,32 @@
+from typing import List
+from xml.etree.ElementTree import Element
 import xml.etree.cElementTree as ElementTree
 
+from pipeline.h.tasks.common.sensitivity import Sensitivity
 import pipeline.h.tasks.exportdata.aqua as aqua
+from pipeline.infrastructure.basetask import Results, ResultsList
+from pipeline.infrastructure.launcher import Context
 
 
 class AlmaAquaXmlGenerator(aqua.AquaXmlGenerator):
-    """
-    Class for creating the AQUA pipeline report
+    """Class for creating the AQUA pipeline report.
+
     Note __init__ and get_project_structure are copies of the counterpart in almaifaqua
     """
+
     def __init__(self):
-        """
-        Constructor
-        """
+        """Initializer of the class."""
         super(AlmaAquaXmlGenerator, self).__init__()
 
-    def get_project_structure(self, context):
+    def get_project_structure(self, context: Context) -> Element:
+        """Get the project structure element.
+
+        Args:
+            context : pipeline context
+
+        Returns:
+            XML Element object for project structure
+        """
         # get base XML from base class
         root = super(AlmaAquaXmlGenerator, self).get_project_structure(context)
 
@@ -25,7 +37,16 @@ class AlmaAquaXmlGenerator(aqua.AquaXmlGenerator):
 
         return root
 
-    def get_imaging_topic(self, context, topic_results):
+    def get_imaging_topic(self, context: Context, topic_results: List[Results]) -> Element:
+        """Get the XML for the imaging topic.
+
+        Args:
+            context : pipeline context
+            topic_results : list of Results for this topic
+
+        Returns:
+            XML for imaging topic
+        """
         # get base XML from base class
         xml_root = super(AlmaAquaXmlGenerator, self).get_imaging_topic(context, topic_results)
 
@@ -38,12 +59,21 @@ class AlmaAquaXmlGenerator(aqua.AquaXmlGenerator):
         return xml_root
 
 
-def _hsd_imaging_sensitivity_exporter(stage_results):
+def _hsd_imaging_sensitivity_exporter(stage_results: ResultsList) -> List[Sensitivity]:
+    """XML exporter expects this function to return a list of dictionaries.
+
+    This function is used only once for now, with no arguments and returns an empty list.
+
+    Args:
+        stage_results: ResultsList of stages
+
+    Returns:
+        list of Sensitivity
+    """
     # XML exporter expects this function to return a list of dictionaries
     sensitivities = []
     for result in stage_results:
-        if result.sensitivity_info is not None \
-        and result.sensitivity_info.representative:
+        if result.sensitivity_info is not None and result.sensitivity_info.representative:
             sensitivities.append(result.sensitivity_info.sensitivity)
     return sensitivities
 

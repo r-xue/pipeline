@@ -1,3 +1,6 @@
+"""Manifest class of NRO pipeline."""
+
+
 import xml.etree.cElementTree as eltree
 
 import pipeline.h.tasks.common.manifest as manifest
