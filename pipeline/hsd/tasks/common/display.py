@@ -939,20 +939,17 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             Axes: Axes for channel axis.
         """
         if self._axes_chan is None:
-            try:
-                self.__adjust_integsp_for_chan()
-                self._axes_chan = self.axes_integsp.twiny()
-                self._axes_chan.set_position(self.axes_integsp.get_position())
-                if self._axes_atm is not None:
-                    self._axes_atm.set_position(self.axes_integsp.get_position())
-                self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
-                self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
-                self._axes_chan.tick_params(axis='x', pad=0)
-                xlabels = self._axes_chan.get_xticklabels()
-                for label in xlabels:
-                    label.set_fontsize(self.ticksize - 1)
-            finally:
-                pass
+            self.__adjust_integsp_for_chan()
+            self._axes_chan = self.axes_integsp.twiny()
+            self._axes_chan.set_position(self.axes_integsp.get_position())
+            if self._axes_atm is not None:
+                self._axes_atm.set_position(self.axes_integsp.get_position())
+            self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
+            self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
+            self._axes_chan.tick_params(axis='x', pad=0)
+            xlabels = self._axes_chan.get_xticklabels()
+            for label in xlabels:
+                label.set_fontsize(self.ticksize - 1)
         return self._axes_chan
 
     def __adjust_integsp_for_chan(self) -> None:
@@ -961,20 +958,17 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         Adjust size of Axes for integrated spectrum to locate channel axis
         at the top of the panel.
         """
-        try:
-            a = self._axes_integsp
-            bbox = a.get_position().get_points()
-            blc = bbox[0]
-            trc = bbox[1]
-            # gives [left, bottom, width, height]
-            left = blc[0]
-            bottom = blc[1]
-            width = trc[0] - blc[0]
-            height = trc[1] - blc[1] - 0.03
-            a.set_position((left, bottom, width, height))
-            a.title.set_position((0.5, 1.2))
-        finally:
-            pass
+        a = self._axes_integsp
+        bbox = a.get_position().get_points()
+        blc = bbox[0]
+        trc = bbox[1]
+        # gives [left, bottom, width, height]
+        left = blc[0]
+        bottom = blc[1]
+        width = trc[0] - blc[0]
+        height = trc[1] - blc[1] - 0.03
+        a.set_position((left, bottom, width, height))
+        a.title.set_position((0.5, 1.2))
 
     def __axes_spmap(self) -> Generator[Axes, None, None]:
         """Create Axes instances for sparse profile map.
