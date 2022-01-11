@@ -554,10 +554,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # caltable.
             append = True
 
-        # Created an updated version of each CalApplication with an override to
-        # set calwt to False. Replace any existing CalApplications in latest
-        # tuning result with complete list of all updated CalApplications, and
-        # return this as the final result.
+        # Phase solution caltables should always be registered to be applied
+        # with calwt=False (PIPE-1154). Create an updated version of each
+        # CalApplication with the override to set calwt to False. Replace any
+        # existing CalApplications in latest tuning result with complete list
+        # of all updated CalApplications, and return this as the final result.
         processed_calapps = [callibrary.copy_calapplication(c, calwt=False) for c in original_calapps]
         tuning_result.pool = processed_calapps
         tuning_result.final = processed_calapps

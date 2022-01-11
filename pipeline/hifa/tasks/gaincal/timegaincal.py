@@ -321,8 +321,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         new_calapps = []
 
         # Define what overrides should be included in the cal application.
-        # For the initial phase-ups, calwt is always False. Adjust the
-        # interpolation and SpW mapping if provided.
+        # Phase solution caltables should always be registered with
+        # calwt=False (PIPE-1154). Adjust the interpolation and SpW mapping if
+        # provided.
         calapp_overrides = {'calwt': False}
         if interp:
             calapp_overrides['interp'] = interp
@@ -503,8 +504,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
         # Modify the cal application for this caltable based on overrides.
-        # For the initial phase-ups, calwt is always False, and intent is set.
-        # Adjust the interpolation and SpW mapping if provided.
+        # Phase solution caltables should always be registered to be applied
+        # with calwt=False (PIPE-1154). Register the caltable to be applied
+        # only to the calibrator intent(s). Adjust the interpolation and SpW
+        # mapping if provided.
         calapp_overrides = {
             'calwt': False,
             'intent': intent,

@@ -368,6 +368,11 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 # the intent from which the calibration was derived
                 calapp_overrides = dict(intent=intent)
 
+                # Phase solution caltables should be registered with
+                # calwt=False (PIPE-1154).
+                if calmode == 'p':
+                    calapp_overrides['calwt'] = False
+
                 # Adjust the field if provided.
                 if field:
                     calapp_overrides['field'] = field
