@@ -69,13 +69,13 @@ class NROImportDataResults(sd_importdata.SDImportDataResults):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses: List[MeasurementSet]=None, reduction_group_list: List[MSReductionGroupDesc]=None,
-                 datatable_prefix: str=None, setjy_results: List[FluxMeasurement]=None):
+    def __init__(self, mses: Optional[List[MeasurementSet]]=None, reduction_group_list: Optional[List[Dict[int, MSReductionGroupDesc]]]=None,
+                 datatable_prefix: Optional[str]=None, setjy_results: Optional[List[FluxMeasurement]]=None):
         """Initialise NROImportDataResults class.
 
         Args:
             mses: list of MeasurementSet domain objects
-            reduction_group_list: list of MSReductionGroupDesc
+            reduction_group_list: list of dictionaries that consist of reduction group IDs (key) and MSReductionGroupDesc (value)
             datatable_prefix: table name prefix of MeasurementSet
             setjy_results: the flux results generated from Source.xml
         """
