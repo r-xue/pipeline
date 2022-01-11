@@ -18,7 +18,7 @@ import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
-from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
+from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs
 from pipeline.hsd.tasks.common.display import sd_polmap as polmap
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
