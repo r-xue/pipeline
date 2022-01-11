@@ -9,7 +9,7 @@ Created on Dec 4, 2017
 @author: kana
 """
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.hsd.tasks.importdata.importdata as sd_importdata
@@ -29,13 +29,13 @@ class NROImportDataInputs(importdata.ImportDataInputs):
     This class extends importdata.ImportDataInputs.
     """
 
-    def __init__(self, context: Context=None, vis: str=None, output_dir: str=None, session: str=None,
-                 overwrite: bool=None, nocopy: bool=None, createmms: str=None):
+    def __init__(self, context: Optional[Context]=None, vis: Optional[str]=None, output_dir: Optional[str]=None, session: Optional[str]=None,
+                 overwrite: Optional[bool]=None, nocopy: Optional[bool]=None, createmms: Optional[str]=None):
         """Initialise NROImportDataInputs class.
 
         Args:
             context: pipeline context
-            vis: List of input visibility data
+            vis: name of input visibility data
             output_dir: path of output directory
             session: List of visibility data sessions
             overwrite: Overwrite existing files on import
