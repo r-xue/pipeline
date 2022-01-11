@@ -1,8 +1,11 @@
+"""Set of plotting classes for hsd_baseline task."""
 import abc
 import math
 import os
 import string
 import time
+
+from typing import TYPE_CHECKING, Generator, List, Tuple, Union
 
 import matplotlib.pyplot as plt
 
@@ -16,6 +19,15 @@ from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import direction_utils as dirutil
 
+from .typing import LineProperty
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
+    from matplotlib.figure import Figure
+    from matplotlib.ticker import Formatter, Locator
+
+    from pipeline.infrastructure.launcher import Context
+
 LOG = infrastructure.get_logger(__name__)
 
 # ShowPlot = True
@@ -26,9 +38,43 @@ DECrotation = pointing.DECrotation
 
 
 class ClusterValidationAxesManager(MapAxesManagerBase):
-    def __init__(self, clusters_to_plot, nh, nv, aspect_ratio,
-                 xformatter, yformatter, xlocator, ylocator,
-                 xrotation, yrotation, ticksize, labelsize, titlesize ):
+    """Creates and manages Axes instances for cluster validation plot.
+
+    Cluster validation plot displays validation result of all detected
+    clusters in one panel.
+    """
+
+    def __init__(self,
+                 clusters_to_plot: List[LineProperty],
+                 nh: int,
+                 nv: int,
+                 aspect_ratio: float,
+                 xformatter: 'Formatter',
+                 yformatter: 'Formatter',
+                 xlocator: 'Locator',
+                 ylocator: 'Locator',
+                 xrotation: float,
+                 yrotation: float,
+                 ticksize: Union[float, str],
+                 labelsize: Union[float, str],
+                 titlesize: Union[float, str]) -> None:
+        """Construct ClusterValidationAxesManager instance.
+
+        Args:
+            clusters_to_plot: List of detected lines
+            nh: Number of plots along horizontal direction
+            nv: Number of plots along vertical axis
+            aspect_ratio: Aspect ratio of each plot
+            xformatter: Formatter for x axis
+            yformatter: Formatter for y axis
+            xlocator: Locator for x axis
+            ylocator: Locator for y axis
+            xrotation: Tick label rotation for x axis
+            yrotation: Tick label rotation for y axis
+            ticksize: Tick label font size
+            labelsize: Axis label font size
+            titlesize: Title font size
+        """
         super(ClusterValidationAxesManager, self).__init__()
         self.clusters_to_plot = clusters_to_plot
         self.nh = nh
@@ -48,7 +94,12 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         self.legend_y = 0.85
 
     @property
-    def axes_legend(self):
+    def axes_legend(self) -> 'Axes':
+        """Return Axes for legend.
+
+        Returns:
+            Axes instance for legend
+        """
         if self._legend is None:
             # self._legend = plt.axes([0.0, 0.85, 1.0, 0.15])
             self._legend = plt.axes([0.0, self.legend_y, 1.0, 1.0 - self.legend_y])
@@ -57,13 +108,24 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         return self._legend
 
     @property
-    def axes_list(self):
+    def axes_list(self) -> List[Tuple[LineProperty, 'Axes', float, float]]:
+        """Return list of necessary resources to generate cluster validation plots.
+
+        Returns:
+            List of tuple of line property (line center, line width, validated),
+            Axes instance for plot, and x and y locations of plot title.
+        """
         if self._axes is None:
             self._axes = list(self.__axes_list())
 
         return self._axes
 
-    def __axes_list(self):
+    def __axes_list(self) -> Generator[Tuple[LineProperty, 'Axes', float, float], None, None]:
+        """Yield resources to generate cluster validation plot.
+
+        Yields:
+            See docstring for axes_list.
+        """
         for icluster in self.clusters_to_plot:
             loc = self.clusters_to_plot.index(icluster)
             ix = loc % self.nh
@@ -93,7 +155,18 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
             yield icluster, axes, tpos_x, tpos_y
 
-    def __calc_axes( self, fig, ix, iy ):
+    def __calc_axes(self, fig: 'Figure', ix: int, iy: int) -> Tuple[float, float, float, float, float, float]:
+        """Calculate parameters for Axes.
+
+        Args:
+            fig: Figure instance
+            ix: horizontal location of the Axes
+            iy: Vertical location of the Axes
+
+        Returns:
+            four float values to form rectangle (left, bottom, width, height) for the Axes,
+            plus x and y locations of the title.
+        """
         # unit conversion constant for points->inch
         ppi = 72
         # padding between panels (unit: points)
@@ -160,22 +233,62 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
 
 class ClusterDisplay(object):
+    """Plotter to create plots that visualize clustering analysis.
+
+    For each detected cluster, this class creates three types of
+    plots described below:
+
+        1. Cluster property plot (ClusterPropertyDisplay):
+            displays property of the cluster in two dimensional
+            space of line center against line width of the
+            detected lines
+
+        2. Cluster score plot (ClusterScoreDisplay):
+            displays score against number of clusters for K-mean
+            clustering analysis (not meaningful for hierarchical
+            clustering analysis)
+
+        3. Cluster validation plot (ClusterValidationDisplay):
+            displays spatial distribution of detected
+            lines associated with the cluster
+    """
+
     Inputs = SingleDishDisplayInputs
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: Inputs) -> None:
+        """Construct ClusterDisplay instance.
+
+        Args:
+            inputs: Inputs instance
+        """
         self.inputs = inputs
 
     @property
-    def context(self):
+    def context(self) -> 'Context':
+        """Return Pipeline context.
+
+        Returns:
+            Pipeline context
+        """
         return self.inputs.context
 
-    def __baselined(self):
+    def __baselined(self) -> Generator[dict, None, None]:
+        """Yield outcome of the baseline subtraction including property of detected lines.
+
+        Yields:
+            Dictionary containing a result of baseline subtraction
+        """
         for group in self.inputs.result.outcome['baselined']:
             if 'clusters' in group and 'lines' in group:
                 yield group
 
     @casa5style_plot
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of plots for clustering analysis result.
+
+        Returns:
+            List of plot objects
+        """
         plot_list = []
 
         stage_dir = os.path.join(self.context.report_dir,
@@ -253,11 +366,22 @@ class ClusterDisplay(object):
 
 
 class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
+    """Base class for plotter class."""
+
     MATPLOTLIB_FIGURE_ID = 8907
 
-    def __init__(self, group_id, iteration, cluster, spw, field, stage_dir):
-        """
-        spw is a virtual spw id
+    def __init__(self,
+                 group_id: int, iteration: int, cluster: dict,
+                 spw: int, field: str, stage_dir: str) -> None:
+        """Construct ClusterDisplayWorker instance.
+
+        Args:
+            group_id: Reduction group id
+            iteration: Iteration counter for baseline/blflag loop
+            cluster: Cluster property
+            spw: Virtual spw id
+            field: Field name
+            stage_dir: Weblog directory
         """
         self.group_id = group_id
         self.iteration = iteration
@@ -266,7 +390,12 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
         self.field = field
         self.stage_dir = stage_dir
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create plots.
+
+        Returns:
+            List of Plot objects
+        """
         if ShowPlot:
             plt.ion()
         else:
@@ -280,7 +409,18 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
 
         return list(self._plot())
 
-    def _create_plot(self, plotfile, type, x_axis, y_axis):
+    def _create_plot(self, plotfile: str, type: str, x_axis: str, y_axis: str) -> logger.Plot:
+        """Create Plot object.
+
+        Args:
+            plotfile: Name of the graphic file (PNG)
+            type: Type of the plot
+            x_axis: Description of X-axis
+            y_axis: Description of Y-axis
+
+        Returns:
+            Plot object
+        """
         parameters = {}
         parameters['intent'] = 'TARGET'
         parameters['spw'] = self.spw # spw id should be virtual one
@@ -295,12 +435,30 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
         return plot_obj
 
     @abc.abstractmethod
-    def _plot(self):
+    def _plot(self) -> Generator[logger.Plot, None, None]:
+        """Yield plot objects.
+
+        This must be implemented in each subclass.
+
+        Raises:
+            NotImplementedError: always raise an exception
+        """
         raise NotImplementedError
 
 
 class ClusterScoreDisplay(ClusterDisplayWorker):
-    def _plot(self):
+    """Plotter to create cluster score plot."""
+
+    def _plot(self) -> Generator[logger.Plot, None, None]:
+        """Yield plot object for cluster score plot.
+
+        Cluster score plot displays score against number of clusters
+        for K-mean clustering analysis. Note that the plot is not
+        meaningful for hierarchical clustering analysis.
+
+        Yields:
+            Plot object for cluster score plot
+        """
         ncluster, score = self.cluster['cluster_score']
         plt.plot(ncluster, score, 'bx', markersize=10)
         [xmin, xmax, ymin, ymax] = plt.axis()
@@ -321,7 +479,18 @@ class ClusterScoreDisplay(ClusterDisplayWorker):
 
 
 class ClusterPropertyDisplay(ClusterDisplayWorker):
-    def _plot(self):
+    """Plotter to create cluster property display."""
+
+    def _plot(self) -> Generator[logger.Plot, None, None]:
+        """Yield plot object for cluster property plot.
+
+        Cluster property plot displays property of the cluster
+        in two dimensional space of line center against line
+        width of the detected lines.
+
+        Yields:
+            Plot object for cluster property plot
+        """
         lines = self.cluster['detected_lines']
         properties = self.cluster['cluster_property']
         scaling = self.cluster['cluster_scale']
@@ -359,6 +528,8 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
 
 
 class ClusterValidationDisplay(ClusterDisplayWorker):
+    """Display class for cluster validation result."""
+
     Description1 = {
         'detection': 'Clustering Analysis at Detection stage',
         'validation': 'Clustering Analysis at Validation stage',
@@ -372,7 +543,34 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         'final': 'Green Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
     }
 
-    def __init__( self, context, group_id, iteration, cluster, flag_digits, vis, spw, field, antenna, lines, stage_dir, org_direction ):
+    def __init__(self,
+                 context: 'Context',
+                 group_id: int,
+                 iteration: int,
+                 cluster: dict,
+                 flag_digits: dict,
+                 vis: str,
+                 spw: int,
+                 field: str,
+                 antenna: int,
+                 lines: List[LineProperty],
+                 stage_dir: str,
+                 org_direction: dirutil.Direction) -> None:
+        """Construct ClusterValidationDisplay instance.
+
+        Args:
+            context: Pipeline context
+            group_id: Reduction group id
+            iteration: Iteration counter for baseline/blflag loop
+            cluster: Cluster property
+            vis: Name of MS
+            spw: Virtual spw id
+            field: Field name
+            antenna: Antenna id (not used)
+            lines: List of detected lines
+            stage_dir: Weblog directory
+            org_direction: direction of the origin
+        """
         super(ClusterValidationDisplay, self).__init__(group_id, iteration, cluster, spw, field, stage_dir)
         self.context = context
         self.antenna = antenna
@@ -381,7 +579,20 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         self.vis = vis
         self.org_direction = org_direction
 
-    def _plot(self):
+    def _plot(self) -> Generator[logger.Plot, None, None]:
+        """Yield plot object for cluster validation plots.
+
+        Cluster validation plot displays spatial distribution of
+        detected lines associated with the cluster. Plots are
+        created for each validation step (detection, validation,
+        smoothin, and final).
+
+        Returns:
+            None (on failure)
+
+        Yields:
+            Plot objects for cluster validation plots
+        """
         plt.clf()
 
         marks = ['gs', 'bs', 'cs', 'ys']
@@ -553,7 +764,16 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                      'R.A.', 'Dec.')
             yield plot
 
-    def __set_size( self, num_panel_h, num_panel_v ):
+    def __set_size(self, num_panel_h: int, num_panel_v: int) -> Tuple[int, int, int]:
+        """Calculate font sizes for tick label, axis label, and title.
+
+        Args:
+            num_panel_h: Number of panels along x-axis
+            num_panel_v: Number of panels along y-axis
+
+        Returns:
+            font sizes for tick label, axis label, and title
+        """
         tick_size = 6 + (1 // num_panel_h) * 2
         if num_panel_v > 3:
             label_size = tick_size - 1
@@ -566,7 +786,18 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             title_size = tick_size + 1
         return tick_size, label_size, title_size
 
-    def __marker_size( self, axes, nx, ny, tile_gap=0.0 ):
+    def __marker_size(self, axes: 'Axes', nx: int, ny: int, tile_gap: float = 0.0) -> float:
+        """Calculate marker size.
+
+        Args:
+            axes: Axes instance
+            nx: Number of panels along x-axis
+            ny: Number of panels along y-axis
+            tile_gap: Gaps between panels. Defaults to 0.0.
+
+        Returns:
+            Marker size
+        """
         axes_bbox = axes.get_position()
         fig_width = axes.get_figure().get_figwidth()
         fig_height = axes.get_figure().get_figheight()
@@ -582,7 +813,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
         return marker_size
 
-    def __stages(self):
+    def __stages(self) -> Generator[Tuple[str, int, float, str, str], None, None]:
+        """Yield base data for validation plot.
+
+        Yields:
+            Tuple of clustering step, numerical data to be plotted,
+            threshold, and description of the step.
+        """
         for key in self.flag_digits.keys():
             if 'cluster_flag' in self.cluster:
                 # Pick up target digit
@@ -603,7 +840,18 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                                     questionable=questionable)
                 yield (key, flag, threshold, desc1, desc2)
 
-    def __line_property(self, icluster):
+    def __line_property(self, icluster: int) -> Tuple[float, float]:
+        """Compute property of cluster.
+
+        Compute property of cluster: line center frequency [GHz] and
+        line width in velocity [km/s].
+
+        Args:
+            icluster: Cluster identifier
+
+        Returns:
+            Line center frequency and line width in velocity
+        """
         reduction_group = self.context.observing_run.ms_reduction_group[self.group_id]
         field = reduction_group[0].field
         source_id = field.source_id
@@ -638,7 +886,17 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
         return center_frequency, width_in_velocity
 
-    def __scale_msg(self, scale_ra, scale_dec, aspect_ratio):
+    def __scale_msg(self, scale_ra: float, scale_dec: float, aspect_ratio: float) -> str:
+        """Construct a string describing size of square in the plot.
+
+        Args:
+            scale_ra: Physical size (angle) of horizontal side of the square
+            scale_dec: Physical size (angle) of vertical side of the square
+            aspect_ratio: Aspect ratio of the plot
+
+        Returns:
+            String describing physical size of square in the plot
+        """
         if scale_ra >= 1.0:
             unit = 'degree'
             scale_factor = 1.0

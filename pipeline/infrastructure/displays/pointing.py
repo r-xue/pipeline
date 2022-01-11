@@ -30,6 +30,7 @@ dsyb = r'$^\circ$'
 hsyb = ':'
 msyb = ':'
 
+
 def Deg2HMS(x: float, prec: int=0) -> List[str]:
     """
     Convert an angle in degree to hour angle.
@@ -853,38 +854,18 @@ class SingleDishPointingChart(object):
     """
     def __init__(self,
                  context: infrastructure.launcher.Context,
-                 ms: MeasurementSet,
-                 antenna: Antenna,
-                 target_field_id: Optional[int]=None,
-                 reference_field_id: Optional[int]=None,
-                 target_only: bool=True,
-                 ofs_coord: bool=False
-                ) -> None:
-        """
-        Initialize SingleDishPointingChart class.
+                 ms: MeasurementSet) -> None:
+        """Initialize SingleDishPointingChart class.
 
         Args:
             context: pipeline context object.
             ms: MeasurementSet domain object.
-            antenna: Antenna domain object.
-            target_field_id: ID for target (ON_SOURCE) field.
-            reference_field_id: ID for reference (OFF_SOURCE) field.
-            target_only: Whether plot ON_SOURCE only (True) or
-                         both ON_SOURCE and OFF_SOURCE.
-            ofs_coord: Use offset coordinate or not.
-                will be in degree (DMS). Otherwise, it will be in hour angle
-                (HMS). Use offset coordinate or not.
-
         """
         self.context = context
         self.ms = ms
-        self.antenna = antenna
-        self.target_field = self.__get_field(target_field_id)
-        self.reference_field = self.__get_field(reference_field_id)
-        self.target_only = target_only
-        self.ofs_coord = ofs_coord
-        self.figfile = self._get_figfile()
-        self.axes_manager = PointingAxesManager()
+        self.datatable = DataTable()
+        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(self.ms.origin_ms))
+        self.datatable.importdata(datatable_name, minimal=False, readonly=True)
 
     def __get_field(self, field_id: Optional[int]):
         """Get field domain object.
@@ -907,28 +888,37 @@ class SingleDishPointingChart(object):
             return None
 
     @casa5style_plot
-    def plot(self, revise_plot: bool=False) -> Optional[Plot]:
-        """
-        Generate a plot object.
+    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None,
+             reference_field_id: Optional[int]=None, target_only: bool=True, ofs_coord: bool=False) -> Optional[Plot]:
+        """Generate a plot object.
 
         If plot file exists and revise_plot is False, Plot object
         based on existing file is returned.
 
         Args:
-            revice_plot: Overwrite existing plot or not.
+            revise_plot (bool): Overwrite existing plot or not. Defaults to False.
+            antenna (Antenna): Antenna domain object. Defaults to None.
+            target_field_id (Optional[int]): ID for target (ON_SOURCE) field. Defaults to None.
+            reference_field_id (Optional[int]): ID for reference (OFF_SOURCE) field. Defaults to None.
+            target_only (bool): Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.
+            ofs_coord (bool): Use offset coordinate or not. Defaults to False.
 
         Returns:
-            Plot: A Plot object.
+            Optional[Plot]: A Plot object.
         """
-        if revise_plot == False and os.path.exists(self.figfile):
+        self.antenna = antenna
+        self.target_field = self.__get_field(target_field_id)
+        self.reference_field = self.__get_field(reference_field_id)
+        self.target_only = target_only
+        self.ofs_coord = ofs_coord
+        self.figfile = self._get_figfile()
+        self.axes_manager = PointingAxesManager()
+
+        if revise_plot is False and os.path.exists(self.figfile):
             return self._get_plot_object()
 
         ms = self.ms
         antenna_id = self.antenna.id
-
-        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
-        datatable = DataTable()
-        datatable.importdata(datatable_name, minimal=False, readonly=True)
 
         target_spws = ms.get_spectral_windows(science_windows_only=True)
         # Search for the first available SPW, antenna combination
@@ -948,12 +938,12 @@ class SingleDishPointingChart(object):
         beam_size = casa_tools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
         beam_size_in_deg = casa_tools.quanta.getvalue(beam_size)
         obs_pattern = ms.observing_pattern[antenna_id][spw_id]
-        antenna_ids = datatable.getcol('ANTENNA')
-        spw_ids = datatable.getcol('IF')
+        antenna_ids = self.datatable.getcol('ANTENNA')
+        spw_ids = self.datatable.getcol('IF')
         if self.target_field is None or self.reference_field is None:
             # plot pointings regardless of field
             if self.target_only == True:
-                srctypes = datatable.getcol('SRCTYPE')
+                srctypes = self.datatable.getcol('SRCTYPE')
                 func = lambda j, k, l: j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids, srctypes)
@@ -962,9 +952,9 @@ class SingleDishPointingChart(object):
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids)
         else:
-            field_ids = datatable.getcol('FIELD_ID')
+            field_ids = self.datatable.getcol('FIELD_ID')
             if self.target_only == True:
-                srctypes = datatable.getcol('SRCTYPE')
+                srctypes = self.datatable.getcol('SRCTYPE')
                 field_id = [self.target_field.id]
                 func = lambda f, j, k, l: f in field_id and j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
@@ -982,25 +972,25 @@ class SingleDishPointingChart(object):
             racol = 'RA'
             deccol = 'DEC'
         LOG.debug('column names: {}, {}'.format(racol, deccol))
-        if racol not in datatable.colnames() or deccol not in datatable.colnames():
+        if racol not in self.datatable.colnames() or deccol not in self.datatable.colnames():
             return None
 
-        RA = datatable.getcol(racol)[dt_rows]
+        RA = self.datatable.getcol(racol)[dt_rows]
         if len(RA) == 0:  # no row found
             LOG.warning('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
                         (antenna_id, spw_id, str(field_id), ms.basename))
             LOG.warning('Skipping pointing plots.')
             return None
-        DEC = datatable.getcol(deccol)[dt_rows]
+        DEC = self.datatable.getcol(deccol)[dt_rows]
         FLAG = np.zeros(len(RA), dtype=int)
         rows = np.where(dt_rows == True)[0]
         assert len(RA) == len(rows)
         for (i, row) in enumerate(rows):
-            pflags = datatable.getcell('FLAG_PERMANENT', row)
+            pflags = self.datatable.getcell('FLAG_PERMANENT', row)
             # use flag for pol 0
             FLAG[i] = pflags[0][OnlineFlagIndex]
 
-        self.axes_manager.direction_reference = datatable.direction_ref
+        self.axes_manager.direction_reference = self.datatable.direction_ref
         self.axes_manager.ofs_coord = self.ofs_coord
 
         plt.clf()
