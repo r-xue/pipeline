@@ -265,12 +265,12 @@ class SDInspection(object):
         """Inspect DataTable and generate time and position groups.
 
         Args:
-            datatable: DataTable
+            datatable: DataTable to inspect
             position_group_id: position group id
             time_group_id_small: time group range id, min
             time_group_id_large: time group range id, max
-            startrow: start row number to read
-            nrow: row count to read
+            startrow: the row ID in DataTable to start inspection
+            nrow: number of rows to inspect
         Returns:
             Dict of grouping
         """
