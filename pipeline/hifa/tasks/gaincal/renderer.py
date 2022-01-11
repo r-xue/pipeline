@@ -251,11 +251,11 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             gaintable = os.path.basename(calapp.gaintable)
             spw = ', '.join(calapp.spw.split(','))
 
-            to_intent = ', '.join(calapp.calto.intent.split(','))
+            to_intent = ', '.join(sorted(calapp.calto.intent.split(',')))
             if to_intent == '':
                 to_intent = 'ALL'
 
-            to_field = ', '.join(calapp.calto.field.split(','))
+            to_field = ', '.join(sorted(calapp.calto.field.split(',')))
 
             calmode = utils.get_origin_input_arg(calapp, 'calmode')
             calmode = calmode_map.get(calmode, calmode)

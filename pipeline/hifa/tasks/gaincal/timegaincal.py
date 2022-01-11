@@ -95,7 +95,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Compute the phase solutions for all calibrators in inputs.intents.
         # These phase cal results include solutions for the PHASE calibrator
         # fields, and will be temporarily accepted into the local context to
-        # have these vailable as pre-apply in subsequent gaincals (in
+        # have these available as pre-apply in subsequent gaincals (in
         # particular for computing residual phase offsets). But for the final
         # task result, these phase solutions will only be registered as
         # applicable to the bandpass, flux, and polarization calibrators.
