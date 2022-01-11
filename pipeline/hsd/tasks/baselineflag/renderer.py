@@ -3,8 +3,6 @@ import os
 import collections
 from typing import Dict, List, Tuple
 
-from mako.runtime import Context as makoContext
-
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.infrastructure import Context
 import pipeline.infrastructure.filenamer as filenamer
@@ -39,12 +37,12 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super(T2_4MDetailsBLFlagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx:makoContext, context:Context, result:SDBLFlagResults):
+    def update_mako_context(self, ctx:dict, context:Context, result:SDBLFlagResults):
         """
         Update mako context.
 
         Args:
-            ctx:     mako context
+            ctx:     dict for mako context
             context: pipeline context
             result:  SDBLFlag results
         Returns:
