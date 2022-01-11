@@ -94,7 +94,7 @@ class SDImportDataResults(basetask.Results):
 
     def __init__(self,
                  mses: Optional[List[MeasurementSet]]=None,
-                 reduction_group_list: Optional[List[MSReductionGroupDesc]]=None,
+                 reduction_group_list: Optional[List[Dict[int, MSReductionGroupDesc]]]=None,
                  datatable_prefix: Optional[str]=None,
                  setjy_results: Optional[List[FluxCalibrationResults]]=None,
                  org_directions: Optional[Dict[str, Union[str, Dict[str, Union[str, float]]]]]=None):
