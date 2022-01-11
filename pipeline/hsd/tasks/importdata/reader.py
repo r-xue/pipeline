@@ -44,7 +44,7 @@ def mjdsec2str(t: float) -> str:
     Args:
         t: MJD second to convert
     Returns:
-        str: formated datetime
+        str: formatted datetime
     """
     qa = casa_tools.quanta
     return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
