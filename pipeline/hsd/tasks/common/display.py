@@ -13,7 +13,6 @@ import matplotlib.figure as figure
 from matplotlib.axes import Axes
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 import matplotlib.gridspec as gridspec
-# import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.infrastructure as infrastructure

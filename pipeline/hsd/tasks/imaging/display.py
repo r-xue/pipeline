@@ -7,7 +7,6 @@ from typing import Callable, Generator, List, Optional, Union
 
 import numpy
 import matplotlib
-# import matplotlib.pyplot as plt
 import matplotlib.axes as axes
 import matplotlib.figure as figure
 import matplotlib.ticker as ticker
@@ -18,18 +17,15 @@ import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
-from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs
+from pipeline.hsd.tasks.common.display import DPIDetail, SDImageDisplay, SDImageDisplayInputs
 from pipeline.hsd.tasks.common.display import sd_polmap as polmap
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
-from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
+from pipeline.hsd.tasks.common.display import NoData
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from pipeline.infrastructure.utils import absolute_path
-
-# NoData = -32767.0
-# NoDataThreshold = NoData + 10000.0
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
@@ -206,7 +202,6 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
             # 2008/9/20 DEC Effect
             im = axes_tpmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            # im = plt.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
             del Total
 
             xlim = axes_tpmap.get_xlim()
@@ -989,7 +984,6 @@ class SDChannelMapDisplay(SDImageDisplay):
                 plotted_objects.append(
                     axes_integmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
                 )
-                # im = plt.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
 
                 xlim = axes_integmap.get_xlim()
                 ylim = axes_integmap.get_ylim()
@@ -1075,11 +1069,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                     return plot_list
 
                 for i in range(NMap):
-                    # im = plt.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='bilinear', aspect='equal',
-                    #                 extent=Extent)
                     if Vmax != Vmin:
-                        # im = plt.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal',
-                        #                 extent=ExtentCM)
                         axes_chmap[i].imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM)
                         x = i % self.NhPanel
                         if x == (self.NhPanel - 1):
