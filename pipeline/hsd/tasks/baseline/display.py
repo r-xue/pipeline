@@ -10,13 +10,16 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.domain.datatable import DataTableImpl as DataTable
-from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
+from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, LightSpeed
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
+
+# ShowPlot = True
+ShowPlot = False
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
@@ -99,41 +102,41 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         # title vertical position
         title_v = 1.7
 
-        # label extent 
+        # label extent
         label_extent = 0.014
 
         # axes size limit (unit: points)
         limit = 240
-           
+
         # figure size (unit: points)
         fx = fig.get_figwidth() * ppi
         fy = fig.get_figheight() * ppi
-        
+
         # margins at figure edge
-        mx1 = fx * 0.01     # left 
+        mx1 = fx * 0.01     # left
         mx2 = fx * 0.04     # right
         my1 = 0.0           # bottom
         my2 = fy * 0.08     # top
-        
+
         # label extents (unit: points)
         lx = fx * label_extent * self.labelsize
         ly = fy * label_extent * self.labelsize
-        
+
         # panel boundary max including ticks and labels
-        max_x = ( fx - mx1 - mx2 - px*(self.nh-1) ) / self.nh 
+        max_x = ( fx - mx1 - mx2 - px*(self.nh-1) ) / self.nh
         max_y = ( fy * self.legend_y - my1-my2 - py*(self.nv-1)) / self.nv
-        
+
         # limit the panel size
         if max_x > limit and max_y - ly*2 > limit:
             max_x = limit
             max_y = limit
-                
+
         # extent and offset of plot area
         extent_x = max_x * self.nh + px * (self.nh - 1)
         extent_y = max_y * self.nv + py * (self.nv - 1)
         offset_x = ( fx - extent_x ) / 2
         offset_y = ( fy*self.legend_y - extent_y ) / 2
-        
+
         # calculate axes parameters
         ax = max_x - lx
         ay = max_y - title_v*self.titlesize - ly
@@ -143,8 +146,8 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             x0 = 0.5 - x1/2.0
         else:
             x0 = (((max_x+px) * ix + lx + mx1 + offset_x) ) / fx
-        y1 = ay / fy 
-        y0 = ((max_y+py) * (self.nv-iy-1) + ly + my1 + offset_y) / fy 
+        y1 = ay / fy
+        y0 = ((max_y+py) * (self.nv-iy-1) + ly + my1 + offset_y) / fy
 
         # relative position of the title
         if self.nh < 4:
@@ -195,7 +198,7 @@ class ClusterDisplay(object):
             #     # it should be empty cluster (no detection) or false clusters (detected but
             #     # judged as an invalid clusters) so skip this cycle
             #     continue
-            # 
+            #
             # # skip the cycle for cluster with no lines validated at final stage
             # flags = cluster['cluster_flag']
             # final_flags = ( flags // flag_digits['final'] ) % 10
@@ -220,7 +223,7 @@ class ClusterDisplay(object):
             iteration = group['iteration']
 
             t0 = time.time()
-            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, 
+            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster,
                                                        flag_digits, vis,
                                                        virtual_spw, source_name, antenna, lines, stage_dir,
                                                        org_direction )
@@ -353,7 +356,7 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
         plot = self._create_plot(plotfile, 'line_property',
                                  'Line Center', 'Line Width')
         yield plot
-        
+
 
 class ClusterValidationDisplay(ClusterDisplayWorker):
     Description1 = {
@@ -490,14 +493,14 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 # Convert Channel to Frequency and Velocity
                 #ichan = self.lines[icluster][0] + 0.5
                 (frequency, width) = self.__line_property(icluster)
-                
+
                 # title_x = xmin + ( xmax-xmin ) * title_pos[icluster][0]
                 ( title_x, title_y ) = title_pos[icluster]
 
                 plot_objects.append(
                     axes_cluster.text( title_x, title_y,
                                        "Cluster {}\n"
-                                       r"$f_\mathrm{{center}}$={:.4f} GHz $\Delta v$={:.1f} km/s".format(icluster, frequency, width), 
+                                       r"$f_\mathrm{{center}}$={:.4f} GHz $\Delta v$={:.1f} km/s".format(icluster, frequency, width),
                                        transform=axes_cluster.transAxes,
                                        linespacing=1,
                                        fontsize=title_size,
@@ -525,14 +528,14 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                         )
 
                 # Legends
-                plot_objects.append( 
-                    axes_legend.text( 0.5, 0.85, description1, 
-                             horizontalalignment='center', 
+                plot_objects.append(
+                    axes_legend.text( 0.5, 0.85, description1,
+                             horizontalalignment='center',
                              verticalalignment='baseline', size=8 )
                 )
-                plot_objects.append( 
-                    axes_legend.text( 0.5, 0.0, description2+scale_msg, 
-                             horizontalalignment='center', 
+                plot_objects.append(
+                    axes_legend.text( 0.5, 0.0, description2+scale_msg,
+                             horizontalalignment='center',
                              verticalalignment='baseline', size=8 )
                 )
             if ShowPlot:
@@ -575,8 +578,8 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         size_h = axes_width  / (nx*(1.0+tile_gap))
         size_v = axes_height / (ny*(1.0+tile_gap))
 
-        marker_size = min( size_h, size_v ) 
-       
+        marker_size = min( size_h, size_v )
+
         return marker_size
 
     def __stages(self):
