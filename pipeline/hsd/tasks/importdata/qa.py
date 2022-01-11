@@ -42,6 +42,6 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
 
 
 class SDImportDataListQAHandler(importdataqa.ImportDataListQAHandler, QAPlugin):
-    """Mid class of inhelitance relationship."""
+    """QA handling class to combine QA scores of a list of SDImportDataResults."""
 
     child_cls = importdata.SDImportDataResults
