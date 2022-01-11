@@ -102,7 +102,7 @@ class SDImportDataResults(basetask.Results):
 
         Args:
             mses: list of MeasurementSet domain objects
-            reduction_group_list: list of MSReductionGroupDesc
+            reduction_group_list: list of dictionaries that consist of reduction group IDs (key) and MSReductionGroupDesc (value)
             datatable_prefix: path to directory that stores DataTable of each MeasurementSet
             setjy_results: the flux results generated from Source.xml
             org_directions: dict of Direction objects of the origin
