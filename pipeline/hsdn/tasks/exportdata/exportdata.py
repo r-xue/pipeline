@@ -60,7 +60,7 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
         Args:
             basename : base name of path
             ousstatus_entity_id : OUS Status ID, not in use.
-            session_name : session name
+            session_name : session name, not in use.
             output_dir : output directory path
 
         Returns:
@@ -97,7 +97,7 @@ class NROExportData(sdexportdata.SDExportData):
         """Prepare and execute an export data job appropriate to the task inputs.
 
         Returns:
-            exportdata.ExportDataResults: [description]
+            object of exportdata.ExportDataResults
         """
         results = super(NROExportData, self).prepare()
 
@@ -136,13 +136,13 @@ class NROExportData(sdexportdata.SDExportData):
         return script_name if status is True else None
 
     def _export_nroscalefile_template(self, products_dir: str) -> str:
-        """Export nroscalefile CSV file.
+        """Export nroscale CSV file.
 
         Args:
             products_dir : product directory path
 
         Returns:
-            file name of nroscalefile
+            file name of nroscalefile, default:'nroscalefile.csv'
         """
         datafile_name = 'nroscalefile.csv'
         datafile_path = os.path.join(products_dir, datafile_name)

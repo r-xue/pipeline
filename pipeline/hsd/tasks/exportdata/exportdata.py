@@ -146,18 +146,18 @@ class SDExportData(exportdata.ExportData):
         return session_list, session_names, session_vislists, vislist
 
     def _do_aux_session_products(self, context: Context, oussid: str, session_names: List[str], session_vislists: List[str], products_dir: str) -> \
-            collections.OrderedDict:
+            collections.OrderedDict[str, List[str]]:
         """Export the calibration tables to products directory and return session dictionary.
 
         Args:
-            context (Context): [description]
-            oussid : [description]
-            session_names (List[str]): [description]
-            session_vislists (List[str]): [description]
-            products_dir : [description]
+            context : pipeline context
+            oussid : OUS status ID
+            session_names : list of session names
+            session_vislists : list of session vis names
+            products_dir : path of products directory
 
         Returns:
-            session dictionary
+            ordered dictionary object contains session name(key) and a list of file name of vis and caltable (value)
         """
         # Make the standard sessions dictionary and export per session products
         #    Currently these are compressed tar files of per session calibration tables
@@ -251,7 +251,7 @@ class SDExportData(exportdata.ExportData):
 
         return tarfilename
 
-    def _do_aux_ms_products(self, context: Context, vislist: List[str], products_dir: str) -> collections.OrderedDict:
+    def _do_aux_ms_products(self, context: Context, vislist: List[str], products_dir: str) -> collections.OrderedDict[str, str]:
         """Create the calibration apply file(s) from MeasurementSets.
 
         Args:
@@ -260,7 +260,7 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            orderd vis dictionary
+            orderd vis dictionary contains vis name(key) and calibration apply file name(value)
         """
         # Loop over the measurements sets in the working directory, and
         # create the calibration apply file(s) in the products directory.
@@ -274,8 +274,7 @@ class SDExportData(exportdata.ExportData):
         #    The values are a tuple containing the flags and applycal files
         visdict = collections.OrderedDict()
         for i in range(len(vislist)):
-            visdict[os.path.basename(vislist[i])] = \
-                os.path.basename(apply_file_list[i])
+            visdict[os.path.basename(vislist[i])] = os.path.basename(apply_file_list[i])
 
         return visdict
 
@@ -290,7 +289,7 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            the file name calibration applied
+            file name calibration applied
         """
         applyfile_name = self.NameBuilder.calapply_list(os.path.basename(vis),
                                                         aux_product=True)
@@ -453,7 +452,7 @@ class SDExportData(exportdata.ExportData):
             session_list : list of session
 
         Returns:
-            str: [description]
+            path of output CASA script file
         """
         tmpvislist = []
         for vis in vislist:
@@ -480,7 +479,7 @@ class SDExportData(exportdata.ExportData):
                                 If an order of the parameter matters, it can be collections.OrderedDict.
 
         Returns:
-            str: path of output CASA script file
+            path of output CASA script file
         """
         # Generate the file list
 
@@ -538,12 +537,20 @@ finally:
 
         return os.path.basename(out_script_file)
 
-    def _export_aqua_report(self, context, oussid, aquareport_name, products_dir):
-        """
-        Save the AQUA report.
+    def _export_aqua_report(self, context: Context, oussid: str, aquareport_name: str, products_dir: str) -> str:
+        """Save the AQUA report.
 
         Note the method is mostly a duplicate of the conterpart
              in hifa/tasks/exportdata/almaexportdata
+
+        Args:
+            context : pipeline context
+            oussid : OUS status ID
+            aquareport_name (str): AQUA report file name
+            products_dir (str): path of product directory
+
+        Returns:
+            AQUA report file path
         """
         aqua_file = os.path.join(context.output_dir, aquareport_name)
 
