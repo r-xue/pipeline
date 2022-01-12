@@ -13,7 +13,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.domain.datatable import DataTableImpl as DataTable
-from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
+from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, LightSpeed
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
@@ -29,6 +29,9 @@ if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
+
+# ShowPlot = True
+ShowPlot = False
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation

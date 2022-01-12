@@ -741,8 +741,7 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
     xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
                       for t in range(50)])
-    plt.gcf().sca(axes)
-    line = plt.plot(xy[:, 0], xy[:, 1], 'r-')
+    line = axes.plot(xy[:, 0], xy[:, 1], 'r-')
     return line[0]
 
 
@@ -841,7 +840,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
             )
     plt.axis([xmin, xmax, ymin, ymax])
     if plotfile is not None:
-        plt.savefig(plotfile, format='png', dpi=DPISummary)
+        plt.savefig(plotfile, dpi=DPISummary)
 
     for obj in plot_objects:
         obj.remove()
