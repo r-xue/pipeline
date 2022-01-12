@@ -412,3 +412,27 @@ def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source
         LOG.warning('Could not reorder field list to place representative source first')
 
     return itemlist
+
+
+def get_casa_session_details():
+    """Get the current CASA session details.
+
+    return a dictionary with the following keys:
+        casa_dir: the root directory of the monolith CASA distribution.
+        omp_num_threads: the number of OpenMP threads in the current parallel region.
+        data_path: CASA data paths in-use.
+        numa_mem: memory properties from the NUMA software perspective
+        numa_cpu: cpu properties from the NUMA software perspective
+            The above CPU/mem properties might be different from the hardware specs obtained from 
+            standard Python functions (e.g. os.cpu_count()) or pipeline.environment.
+            On the difference between the "software" and hardware nodes, see 
+                https://www.kernel.org/doc/html/latest/vm/numa.html
+    """
+    casa_session_details = casa_tools.utils.hostinfo()
+    casa_session_details['casa_dir'] = casa_tools.utils.getrc()
+    casa_session_details['omp_num_threads'] = casa_tools.casalog.ompGetNumThreads()
+    casa_session_details['data_path'] = casa_tools.utils.defaultpath()
+    casa_session_details['numa_cpu'] = casa_session_details.pop('cpus')
+    casa_session_details['numa_mem'] = casa_session_details.pop('memory')
+
+    return casa_session_details
