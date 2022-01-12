@@ -358,7 +358,7 @@ class SDExportData(exportdata.ExportData):
         return absolute_path(jyperk)
 
     @staticmethod
-    def __get_reffile(results: List[basetask.ResultsProxy]) -> None:
+    def __get_reffile(results: List[basetask.ResultsProxy]):
         """Find SDK2JyCalResults and yield K2JY reference file.
 
         Args:
