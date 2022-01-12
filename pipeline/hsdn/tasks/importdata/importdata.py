@@ -29,18 +29,18 @@ class NROImportDataInputs(importdata.ImportDataInputs):
     This class extends importdata.ImportDataInputs.
     """
 
-    def __init__(self, context: Optional[Context]=None, vis: Optional[str]=None, output_dir: Optional[str]=None, session: Optional[str]=None,
+    def __init__(self, context: Context, vis: Optional[List[str]]=None, output_dir: Optional[str]=None, session: Optional[List[str]]=None,
                  overwrite: Optional[bool]=None, nocopy: Optional[bool]=None, createmms: Optional[str]=None):
         """Initialise NROImportDataInputs class.
 
         Args:
             context: pipeline context
-            vis: name of input visibility data
+            vis: list of input visibility data
             output_dir: path of output directory
-            session: List of visibility data sessions
-            overwrite: Overwrite existing files on import
-            nocopy: Disable copying of MS to working directory
-            createmms: Create an MMS
+            session: list of visibility data sessions
+            overwrite: flag of overwrite existing files on import
+            nocopy: flag of disable copying of MS to working directory
+            createmms: operation string to create an MMS
         """
         # no-op parameters for MS
         asis = ''
