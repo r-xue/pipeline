@@ -561,6 +561,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     filtered_spwlist_local = filtered_spwlist
 
+                if filtered_spwlist_local == []:
+                    LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
+                    continue
+
                 # Parse hm_cell to get optional pixperbeam setting
                 cell = inputs.get_spw_hm_cell(filtered_spwlist_local[0])
                 if isinstance(cell, str):
