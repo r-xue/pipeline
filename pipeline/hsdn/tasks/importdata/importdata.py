@@ -124,7 +124,7 @@ class NROImportData(sd_importdata.SDImportData):
         myresults.origin = results.origin
         return myresults
 
-    def analyse(self, result) -> NROImportDataResults:
+    def analyse(self, result: NROImportDataResults) -> NROImportDataResults:
         """Get version information for merge2 and set it to MS of result.
 
         Args:
