@@ -252,6 +252,15 @@ def test_get_task_property(task_name, expected):
             '</ProcessingCommand>',
             {'h_save': {'comment': 'not_tested', 'parameter': {}, 'parameter_types': {'not_tested': None}}}
         ),
+        # valid Command with default parameters and comment
+        (
+            '<ProcessingCommand>' \
+            '<Comment>Save-Pipeline-Context</Comment>'
+            '<Command>h_save</Command>' \
+            '<ParameterSet></ParameterSet>' \
+            '</ProcessingCommand>',
+            {'h_save': {'comment': 'not_tested', 'note': 'Save-Pipeline-Context', 'parameter': {}, 'parameter_types': {'not_tested': None}}}
+        ),
         # valid Command with custom parameters
         (
             '<ProcessingCommand>' \
@@ -306,6 +315,9 @@ def test_parse_command(xml_string, expected):
             for key in expected_prop.keys():
                 assert key in prop
             assert prop['parameter'] == expected_prop['parameter']
+            if 'note' in expected_prop:
+                assert 'note' in prop
+                assert prop['note'] == expected_prop['note']
         else:
             pytest.fail('Should not reach here')
 
