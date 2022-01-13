@@ -524,7 +524,7 @@ def generate_all() -> None:
         xml_file = os.path.basename(r)
         LOG.debug(xml_file)
         recipe_name = re.sub(r'procedure_(.*).xml', r'\1', xml_file)
-        script_name = recipe_name + '.py'
+        script_name = f'procedure_{recipe_name}.py'
         LOG.info(f'Processing {recipe_name}...')
         plotlevel_summary = recipe_name in summary_plotlevel_recipes
         main(recipe_name, script_name, plotlevel_summary)
@@ -559,6 +559,6 @@ if __name__ == '__main__':
         generate_all()
     else:
         if script_name is None:
-            script_name = f'{recipe_name}.py'
+            script_name = f'procedure_{recipe_name}.py'
 
         main(recipe_name, script_name, flag_summary)
