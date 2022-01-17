@@ -840,7 +840,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
         a.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
     a.axis([xmin, xmax, ymin, ymax])
 
-    fig.savefig(plotfile, format='png', dpi=DPISummary)
+    fig.savefig(plotfile, dpi=DPISummary)
 
     a.cla()
     fig.clf()
