@@ -795,7 +795,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
     ymin = min(DEC) - span / 10.0
     (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span, axes_manager.direction_reference, ofs_coord=axes_manager.ofs_coord)
 
-    Aspect = 1.0 / math.cos(DEC[0] / 180.0 * 3.141592653)
+    aspect = 1.0 / math.cos(math.radians(DEC[0]))
     # Plotting routine
     if connect is True:
         Mark = 'g-o'
@@ -806,7 +806,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
                            RAlocator, DEClocator,
                            RAformatter, DECformatter,
                            RArotation, DECrotation,
-                           Aspect,
+                           aspect,
                            xlim=(xmin, xmax),
                            ylim=(ymin, ymax))
     fig = axes_manager.figure
@@ -838,7 +838,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
 
     # plot starting position with beam and end position
     if len(circle) != 0:
-        draw_beam(a, circle[0], Aspect, RA[0], DEC[0], offset=0.0)
+        draw_beam(a, circle[0], aspect, RA[0], DEC[0], offset=0.0)
         Mark = 'ro'
         a.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
     a.axis([xmin, xmax, ymin, ymax])
