@@ -797,7 +797,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
 
     aspect = 1.0 / math.cos(math.radians(DEC[0]))
     # Plotting routine
-    if connect is True:
+    if connect:
         Mark = 'g-o'
     else:
         Mark = 'bo'
@@ -826,7 +826,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
         a.plot(RA[filter], DEC[filter], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
     elif plotpolicy == 'greyed':
         # Change Color
-        if connect is True:
+        if connect:
             a.plot(RA, DEC, 'g-')
         filter = FLAG == 1
         a.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='b', markerfacecolor='b')
