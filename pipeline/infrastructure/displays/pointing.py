@@ -688,7 +688,7 @@ class PointingAxesManager(MapAxesManagerBase):
         if ylim is not None:
             self._axes.set_ylim(ylim)
 
-        if self.is_initialized == False or reset:
+        if not self.is_initialized or reset:
             # 2008/9/20 DEC Effect
             self._axes.set_aspect(aspect)
             self._axes.xaxis.set_major_formatter(xformatter)
