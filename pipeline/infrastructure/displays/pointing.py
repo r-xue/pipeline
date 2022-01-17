@@ -785,6 +785,9 @@ def draw_pointing(axes_manager: PointingAxesManager,
                     'plot', 'ignore' or 'greyed'.
     """
 
+    if not plotfile:
+        return
+
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
     xmin = max(RA) + span / 10.0
@@ -836,8 +839,8 @@ def draw_pointing(axes_manager: PointingAxesManager,
         Mark = 'ro'
         a.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
     a.axis([xmin, xmax, ymin, ymax])
-    if plotfile is not None:
-        fig.savefig(plotfile, format='png', dpi=DPISummary)
+
+    fig.savefig(plotfile, format='png', dpi=DPISummary)
 
     a.cla()
     fig.clf()
