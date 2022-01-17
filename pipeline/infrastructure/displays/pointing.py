@@ -746,8 +746,9 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
     """
     xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                     r * (math.cos(t * 0.13) + offset) + y_base]
-                  for t in range(50)])
-    axes.plot(xy[:, 0], xy[:, 1], 'r-')
+                    for t in range(50)])
+    line = axes.plot(xy[:, 0], xy[:, 1], 'r-')
+    return line[0]
 
 
 def draw_pointing(axes_manager: PointingAxesManager,
@@ -836,7 +837,11 @@ def draw_pointing(axes_manager: PointingAxesManager,
         a.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
     a.axis([xmin, xmax, ymin, ymax])
     if plotfile is not None:
+<<<<<<< .merge_file_q2t9kn
         fig.savefig(plotfile, format='png', dpi=DPISummary)
+=======
+        plt.savefig(plotfile, dpi=DPISummary)
+>>>>>>> .merge_file_7AQRhm
 
     a.cla()
     fig.clf()

@@ -5,6 +5,7 @@ import os
 import shutil
 import subprocess
 import sys
+import textwrap
 
 import setuptools
 from setuptools.command.build_py import build_py
@@ -250,7 +251,26 @@ class BuildMyTasksCommand(distutils.cmd.Command):
 
         self.parallel = max(1, self.parallel)
 
+    def _buildmytasks_exe(self):
+        """Get the CASA/buildmytasks executeable path."""
+        for py_exe in [os.environ['_'], sys.executable]:
+            buildmytasks_exe = os.path.join(os.path.dirname(py_exe), 'buildmytasks')
+            if os.path.exists(buildmytasks_exe):
+                return buildmytasks_exe
+        msg_buildmytasks_not_found = f"""
+            Cannot find the buildmytasks helper program associated with the current Python interpreter.
+            Please check if you are using the Python executable from a monolithic CASA distribution.
+
+            We will attempt to proceed with any 'buildmytasks' executable inherited from your shell environment, 
+            which is not guaranteed to work.
+            """
+        self.announce(textwrap.dedent(msg_buildmytasks_not_found),
+                      level=distutils.log.INFO)
+        buildmytasks_exe = 'buildmytasks'
+        return buildmytasks_exe
+
     def run(self):
+        buildmytasks_exe = self._buildmytasks_exe()
         if self.parallel > 1:
             self.announce(f'Number of parallel processes: {self.parallel}', level=distutils.log.INFO)
         else:
@@ -280,7 +300,7 @@ class BuildMyTasksCommand(distutils.cmd.Command):
                 for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
                     self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
                     p = subprocess.Popen([
-                        'buildmytasks',
+                        buildmytasks_exe,
                         '--module',
                         cli_module,
                         xml_file
