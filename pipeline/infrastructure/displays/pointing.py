@@ -833,6 +833,9 @@ def draw_pointing(axes_manager: PointingAxesManager,
         filter = FLAG == 0
         if np.any(filter == True):
             a.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='grey', markerfacecolor='grey')
+    else:
+        raise ValueError(f"invalid plotpolicy value: {plotpolicy}")
+
     # plot starting position with beam and end position
     if len(circle) != 0:
         draw_beam(a, circle[0], Aspect, RA[0], DEC[0], offset=0.0)
