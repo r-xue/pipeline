@@ -79,7 +79,7 @@ class Statwt(basetask.StandardTaskTemplate):
         fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
         wtables = {}
-        if self.inputs.statwtmode == 'VLASS-SE' or self.inputs.statwtmode == 'VLA':
+        if self.inputs.statwtmode == 'VLASS-SE':
             wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
 
         flag_summaries = []
@@ -90,7 +90,7 @@ class Statwt(basetask.StandardTaskTemplate):
         # flag statistics after task
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
 
-        if self.inputs.statwtmode == 'VLASS-SE' or self.inputs.statwtmode == 'VLA':
+        if self.inputs.statwtmode == 'VLASS-SE':
             wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
 
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
@@ -152,7 +152,7 @@ class Statwt(basetask.StandardTaskTemplate):
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
     def _make_weight_table(self, suffix='', dryrun=False):
-        print("Attempting to make a weight table:")
+
         stage_number = self.inputs.context.task_counter
         names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
         outputvis = '.'.join(list(filter(None, names)))
@@ -165,7 +165,6 @@ class Statwt(basetask.StandardTaskTemplate):
         if isdir:
             shutil.rmtree(outputvis)
 
-        print("Attempting to make a weight table:2")
         task_args = {'vis': self.inputs.vis,
                      'outputvis': outputvis,
                      'spw': '*:0',
@@ -177,7 +176,6 @@ class Statwt(basetask.StandardTaskTemplate):
         with casa_tools.MSMDReader(outputvis) as msmd:
             spws = msmd.spwfordatadesc(-1)
 
-        print("Attempting to make a weight table:3")
         with casa_tools.TableReader(outputvis, nomodify=False) as tb:
             for column in ['WEIGHT_SPECTRUM', 'SIGMA_SPECTRUM']:
                 if column in tb.colnames():
@@ -193,11 +191,9 @@ class Statwt(basetask.StandardTaskTemplate):
                     stb.putcol('FLAG', np.resize(flag_row, (weights_shape[0], 1, weights_shape[1])))
                 stb.close()
 
-        print("Attempting to make a weight table:3")
         gaincal_spws = ','.join([str(s) for s in spws])
         job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
-        print("Attempting to make a weight table:4")
-        print(wtable)
+
         return wtable
