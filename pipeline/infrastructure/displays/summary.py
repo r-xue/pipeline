@@ -947,15 +947,15 @@ class UVChart(object):
         if not target_sources:
             repr_src = None
 
-        # If both are defined, return representative src and spw.
-        if repr_src and repr_spw:
-            field, field_name, intent = self._get_field_for_source(repr_src.name) # Potentially move logic around here, so this function isn't called twice
-            return str(repr_spw), field, field_name, intent 
-        # If only the repr_src is defined, get the field, then find the first valid spw
-        elif repr_src and not repr_spw:
+        if repr_src: 
             field, field_name, intent = self._get_field_for_source(repr_src.name)
-            spw = self._get_first_available_science_spw(field, intent)
-            return spw, field, field_name, intent
+            if repr_spw:
+                # If both are defined, return representative src and spw.
+                return str(repr_spw), field, field_name, intent 
+            else:
+                # If only the repr_src is defined, get the field, then find the first valid spw
+                spw = self._get_first_available_science_spw(field, intent)
+                return spw, field, field_name, intent
 
         # If no representative source was identified, then get the preferred source and science spw
         return self._get_preferred_science_spw_and_field()
@@ -990,21 +990,18 @@ class UVChart(object):
         return repsource_name, repsource_spwid
 
     def _get_first_available_science_spw(self, field, intent):
-        try:
-            science_spws = self.ms.get_spectral_windows(science_windows_only=True)
-            selected_field = self.ms.get_fields(field_id=int(field))[0] # self.field is field_id as a string. just pass in field as in Field? 
-            possible_spws = selected_field.valid_spws.intersection(set(science_spws))
-            possible_spws_intents = [spw for spw in possible_spws if intent in spw.intents]
+        science_spws = self.ms.get_spectral_windows(science_windows_only=True)
+        selected_field = self.ms.get_fields(field_id=int(field))[0] # self.field is field_id as a string.
+        possible_spws = selected_field.valid_spws.intersection(set(science_spws))
+        possible_spws_intents = [spw for spw in possible_spws if intent in spw.intents]
 
-            # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
-            if(len(possible_spws_intents) < 1 ):
-                LOG.debug("Could not find a spw to plot with the field: {} and intent: {}".format(self.self.field, self.intent))
-                spw = None
-                return spw
-            final_spw = sorted(possible_spws_intents, key=operator.attrgetter('id'))[0]
-            spw = str(final_spw.id)
-        except:
+        # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
+        if not possible_spws_intents:
+            LOG.debug("{}: Could not find a spw to plot with the field: {} and intent: {}".format(self.ms.basename, self.field, self.intent))
             spw = None
+            return spw
+        final_spw = sorted(possible_spws_intents, key=operator.attrgetter('id'))[0]
+        spw = str(final_spw.id)
         return spw
 
     def _get_preferred_science_spw_and_field(self):
