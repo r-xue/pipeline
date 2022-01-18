@@ -783,6 +783,8 @@ def draw_pointing(axes_manager: PointingAxesManager,
                     observing pattern.
         plotpolicy: Policy to handle FLAG. The plotpolicy can be any one of
                     'plot', 'ignore' or 'greyed'.
+    Raises:
+        ValueError if invalid plotpolicy is received
     """
 
     if not plotfile:
