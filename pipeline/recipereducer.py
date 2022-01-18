@@ -172,8 +172,8 @@ def _as_task_call(task_class, task_args):
 def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
            context=None, name=None, loglevel='info', plotlevel='default',
            session=None, exitstage=None, startstage=None):
-    if vis is None:
-        vis = []
+    if not isinstance(vis, list):
+        raise TypeError("The input parameter 'vis' must be a list.") 
 
     if infiles is None:
         infiles = []
