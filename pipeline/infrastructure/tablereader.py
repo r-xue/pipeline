@@ -350,9 +350,15 @@ class MeasurementSetReader(object):
             # Populate the the online ALMA Control Software software names, if applicable:
             if 'ALMA' in msmd.observatorynames():
                 annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
-                with casa_tools.TableReader(annotation_table) as table:  
-                    ms.acs_software_version = table.getcol('details')[0]
-                    ms.acs_software_build_version = table.getcol('details')[1] 
+                with casa_tools.TableReader(annotation_table) as table:
+                    acs_software_details = table.getcol('details')[0]
+    
+                    if "WARNING" in acs_software_details: # This value can be "WARNING: No ACS_TAG available" in Annotation.xml
+                        ms.acs_software_version = "Unknown"
+                    else: 
+                        ms.acs_software_version = acs_software_details
+
+                    ms.acs_software_build_version = table.getcol('details')[1]
 
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
