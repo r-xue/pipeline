@@ -1,31 +1,30 @@
-import os
-import tarfile
-import glob
 import copy
+import glob
+import os
+import re
+import tarfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.exceptions as exceptions
-
+import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class RestorepimsResults(basetask.Results):
-    def __init__(self):
-        super(RestorepimsResults, self).__init__()
+    def __init__(self, mask_list=[]):
+        super().__init__()
         self.pipeline_casa_task = 'Restorepims'
+        self.mask_list = mask_list
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
         return
 
     def __repr__(self):
-        #return 'RestorepimsResults:\n\t{0}'.format(
-        #    '\n\t'.join([ms.name for ms in self.mses]))
-        return 'RestorepimsResults:'
+        return f'RestorepimsResults:\n\tmask_list={self.mask_list}'
 
 
 class RestorepimsInputs(vdp.StandardInputs):
@@ -52,7 +51,7 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         self.caltable = None
         self.imagename = self.inputs.context.clean_list_pending[0]['imagename'].replace(
-            'sSTAGENUMBER', 's5_0')+'.I.iter1'
+            'sSTAGENUMBER.', '')
 
         is_resources_available = self._check_resources()
 
@@ -73,7 +72,9 @@ class Restorepims(basetask.StandardTaskTemplate):
         # apply the selfcal table from the SE reimaging resources to get the CORRECTED column
         self._do_applycal()
 
-        return RestorepimsResults()
+        results = RestorepimsResults(mask_list=self.mask_list)
+
+        return results
 
     def analyse(self, results):
         return results
@@ -101,7 +102,11 @@ class Restorepims(basetask.StandardTaskTemplate):
                     members.append(member)
                 if member.name.startswith(self.inputs.vis) and '.phase-self-cal.tbl/' in member.name:
                     members.append(member)
-                if member.name.startswith(self.imagename):
+                if re.search(r'^s\d{1,2}_0\.'+re.escape(self.imagename)+r'\.I\.iter1\.model', member.name) is not None:
+                    members.append(member)
+                if re.search(r'^s\d{1,2}_0\.'+re.escape(self.imagename)+r'\.QLcatmask-tier1\.mask/', member.name) is not None:
+                    members.append(member)
+                if re.search(r'^s\d{1,2}_0\.'+re.escape(self.imagename)+r'\.combined-tier2\.mask/', member.name) is not None:
                     members.append(member)
             tar.extractall(path='.', members=members)
 
@@ -122,12 +127,27 @@ class Restorepims(basetask.StandardTaskTemplate):
         else:
             LOG.info(f"Found the requested flag version '{self.flagversion}'")
 
-        if not (os.path.isdir(self.imagename+'.model.tt0') and os.path.isdir(self.imagename+'.model.tt1')):
+        tier1_mask = glob.glob('s*_0.'+self.imagename+'.QLcatmask-tier1.mask')
+        tier2_mask = glob.glob('s*_0.'+self.imagename+'.combined-tier2.mask')
+        n_tier1 = len(tier1_mask)
+        n_tier2 = len(tier2_mask)
+        if n_tier1 != 1 or n_tier2 != 1:
             LOG.error(
-                f"Can't find the tclean model images {self.imagename}.model.tt0/tt1 for the MODEL column prediction.")
-            is_resources_available = False
+                f"Found {n_tier1} tier1 mask{'s'[:n_tier1^1]} and {n_tier2} tier2 mask{'s'[:n_tier2^1]}, which is unexpected.")
         else:
-            LOG.info(f"Found the requested tclean model images {self.imagename}.model.tt0/tt1")
+            self.mask_list = [tier1_mask[0], tier2_mask[0]]
+            LOG.info(f"Found the requested tclean mask list: {self.mask_list}")
+
+        model_images = glob.glob('s*_0.'+self.imagename+'.I.iter1.model.tt?')
+        if len(model_images) == 0:
+            is_resources_available = False
+            LOG.error(
+                f"Can't find the SE vlass_stage=1 model images s*_0.{self.imagename}.I.iter1.model* for the MODEL column prediction")
+        else:
+            last_idx = model_images[0].rfind('.model')
+            self.imagename = model_images[0][:last_idx]
+            LOG.info(f"Found the requested tclean model image(s): {model_images}")
+            LOG.info(f"Use tclean:imagename={self.imagename} for the MODEL column prediction.")
 
         return is_resources_available
 
@@ -146,7 +166,7 @@ class Restorepims(basetask.StandardTaskTemplate):
             if 'MODEL_DATA' not in table.colnames():
                 LOG.info('Writing model data to {}'.format(ms.basename))
             else:
-                LOG.info('MODEL_DATA column found in {} and will be overritten'.format(ms.basename))
+                LOG.warning('MODEL_DATA column found in {} and will be overwritten.'.format(ms.basename))
 
         imaging_parameters = self._restoremodel_imaging_parameters()
         job = casa_tasks.tclean(**imaging_parameters)
@@ -185,8 +205,8 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _do_statwt(self):
         """Rerun statwt following the SE setting.
-        
-        also see the SEIP setting in hifv_statwt() 
+
+        also see the SEIP setting in hifv_statwt()
         """
         task_args = {'vis': self.inputs.vis,
                      'fitspw': '',
@@ -208,7 +228,7 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _do_applycal(self):
         """Rerun applycal using the selfcal table from the SE reimaging resources.
-        
+
         also see the SEIP setting in hifv_selfcal()
         """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
