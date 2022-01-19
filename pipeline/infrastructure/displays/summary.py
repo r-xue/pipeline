@@ -948,7 +948,7 @@ class UVChart(object):
             repr_src = None
 
         if repr_src: 
-            field, field_name, intent = self._get_field_for_source(repr_src.name)
+            field, field_name, intent = self._get_field_for_source(repr_src)
             if repr_spw:
                 # If both are defined, return representative src and spw.
                 return str(repr_spw), field, field_name, intent 
