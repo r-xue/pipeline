@@ -231,7 +231,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         inpdict = inp.as_dict()
         LOG.debug(inp.as_dict())
 
-        # if a file is given, read whatever parameters are defined in the file
+        # if a file is given, read whatever parameters are defined in the file.
+        # note: inputs from the parameter file take precedence over individual task arguements.
         if inp.parameter_file:
             if os.access(inp.parameter_file, os.R_OK):
                 with open(inp.parameter_file) as parfile:
@@ -286,6 +287,7 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         img_mode = 'VLASS-QL' if not inpdict['imaging_mode'] else inpdict['imaging_mode']
         result.img_mode = img_mode
+        result.editmode = inpdict['editmode'].lower()
 
         # The default spw range for VLASS is 2~17. hif_makeimages() needs a csv list.
         # We set the imlist_entry spw before the heuristics object because the heursitics class
@@ -294,6 +296,8 @@ class Editimlist(basetask.StandardTaskTemplate):
                         'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
             if not inpdict['spw']:
                 imlist_entry['spw'] = ','.join([str(x) for x in range(2, 18)])
+                if img_mode.startswith('VLASS-SE-CUBE'):
+                    imlist_entry['spw'] = [str(x) for x in range(2, 18)]
             else:
                 if 'MHz' in inpdict['spw']:
                     # map the center frequencies (MHz) to spw ids
@@ -332,7 +336,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['phasecenter'] = inpdict['phasecenter']
 
         iph = imageparams_factory.ImageParamsHeuristicsFactory()
-        th = imlist_entry['heuristics'] = iph.getHeuristics(vislist=inp.vis, spw=imlist_entry['spw'],
+        # note: heuristics.imageparams_base expect 'spw' to a selection string or a representational string from a selecton string list.       
+        th = imlist_entry['heuristics'] = iph.getHeuristics(vislist=inp.vis, spw=str(imlist_entry['spw']),
                                                             observing_run=inp.context.observing_run,
                                                             imagename_prefix=inp.context.project_structure.ousstatus_entity_id,
                                                             proj_params=inp.context.project_performance_parameters,
@@ -345,6 +350,15 @@ class Editimlist(basetask.StandardTaskTemplate):
             # If 0 hif_makeimlist results are found, then we are in stage 1
             th.vlass_stage = utils.get_task_result_count(inp.context, 'hif_makeimages') + 1
             # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
+            th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
+
+        # Determine current VLASS-SE-CUBE imaging stage (used in heuristics to make decisions)
+        # Note: hifv_restorepims have replaced the first and second vlass imaging stages in the SE workflow.
+        #       Because We are resusing most SE-CONT heuristics with ImageParamsHeuristicsVlassSeCube constructed
+        #       as a subclass of ImageParamsHeuristicsVlassSeContMosaic, we start from vlass_stage=3 here.
+        if img_mode.startswith('VLASS-SE-CUBE'):
+            # If 0 hif_makeimlist results are found, then we are in stage 1
+            th.vlass_stage = utils.get_task_result_count(inp.context, 'hifv_restorepims')*2 + 1
             th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
 
         imlist_entry['threshold'] = inpdict['threshold']
@@ -470,27 +484,33 @@ class Editimlist(basetask.StandardTaskTemplate):
             imlist_entry['mask'] = th.mask(results_list=inp.context.results,
                                            clean_no_mask=inpdict['clean_no_mask_selfcal_image']) if not inpdict['mask'] \
                 else inpdict['mask']
+        if img_mode.startswith('VLASS-SE-CUBE'):
+            imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
+                                     specmode=imlist_entry['specmode'],
+                                     band=None) if not inpdict['imagename'] else inpdict['imagename']
+            imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
+            # Try to obtain previously computed mask name
+            imlist_entry['mask'] = th.mask(results_list=inp.context.results,
+                                           clean_no_mask=inpdict['clean_no_mask_selfcal_image']) if not inpdict['mask'] \
+                else inpdict['mask']
 
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))
 
         try:
             if imlist_entry['field']:
-                # In the coarse cube case we want one entry per spw per stokes
-                # so we want to loop over spw/stokes and create an imlist_entry for each
-                if 'VLASS-SE-CUBE' == img_mode:
-                    pols = imlist_entry['stokes']
-                    spws = imlist_entry['spw'].split(',')
-                    imagename = imlist_entry['imagename']
-                    for spw in spws:
-                        imlist_entry['spw'] = spw
-                        imlist_entry['imagename'] = imagename + '.spw' + spw
-                        for pol in pols:
-                            imlist_entry['stokes'] = pol
-                            # we make a deepcopy to get a unique object for each target
-                            #  but also to reuse the original CleanTarget object since
-                            #  we are only modifying two of the many fields
-                            result.add_target(copy.deepcopy(imlist_entry))
+                if img_mode == 'VLASS-SE-CUBE':
+                    # For the "coarse cube" mode, we perform the following operations:
+                    # - loop over individual spw groups
+                    # - generate conresponsding clean targetusing a modified copy of the base CleanTarget object template
+                    # - aggregate clean targets list
+                    #   note: the initial 'spw'  is expected to be a list here.
+                    for spw in imlist_entry['spw']:
+                        imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
+                        imlist_entry_per_spwgroup['spw'] = spw
+                        imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
+                            '.spw' + spw.replace('~', '-').replace(',', '_')
+                        result.add_target(imlist_entry_per_spwgroup)
                 else:
                     result.add_target(imlist_entry)
             else:

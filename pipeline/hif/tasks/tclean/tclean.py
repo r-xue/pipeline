@@ -608,7 +608,8 @@ class Tclean(cleanbase.CleanBase):
 
         # VLASS-SE masking
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 as of 01.03.2021
-        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT'):
+        elif inputs.hm_masking == 'manual' and \
+                (self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT') or self.image_heuristics.imaging_mode.startswith('VLASS-SE-CUBE')):
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
                                                           sensitivity=sensitivity, niter=inputs.niter)
@@ -633,7 +634,7 @@ class Tclean(cleanbase.CleanBase):
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
         if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
-                                                  'VLASS-SE-CONT-MOSAIC']:
+                                                  'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         else:
             result = self._do_iterative_imaging(sequence_manager=sequence_manager)
