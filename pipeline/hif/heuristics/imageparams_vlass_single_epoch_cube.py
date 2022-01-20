@@ -54,3 +54,11 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
 
         # In case hif_makeimages result was not found or results_list was not provided
         return mask_list
+
+    def nterms(self, spwspec) -> Union[int, None]:
+        """Tclean nterms parameter heuristics."""
+        return 1
+
+    def stokes(self) -> str:
+        """Tclean stokes parameter heuristics."""
+        return 'IQUV'
