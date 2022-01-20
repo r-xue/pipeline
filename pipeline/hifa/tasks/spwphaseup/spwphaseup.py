@@ -302,6 +302,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # task weblog; these will get populated if an SNR test is run
         # (depending on the spw mapping mode).
         snrs = []
+        combined_snrs = []
         spwids = []
 
         # Compute the spw map according to the rules defined by each
@@ -343,7 +344,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 # Run a test on the combined spws to identify spws whose
                 # combined SNR would not meet the threshold set by
                 # inputs.phasesnr.
-                low_combinedsnr_spws = self._do_combined_snr_test(spwids, snrs, spwmap)
+                low_combinedsnr_spws, combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
             # If some, but not all, spws have good SNR values, then try to use
             # an SNR-based approach for, but fall back to combined spw mapping
@@ -378,7 +379,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     # Run a test on the combined spws to identify spws whose
                     # combined SNR would not meet the threshold set by
                     # inputs.phasesnr.
-                    low_combinedsnr_spws = self._do_combined_snr_test(spwids, snrs, spwmap)
+                    low_combinedsnr_spws, combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
         elif inputs.hm_spwmapmode == 'combine':
             spwmap = combine_spwmap(scispws)
@@ -394,7 +395,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             LOG.info(f'Using standard spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         # Collect SNR info.
-        snr_info = self._get_snr_info(spwids, snrs)
+        snr_info = self._get_snr_info(spwids, snrs, combined_snrs)
 
         return SpwMapping(combine, spwmap, low_combinedsnr_spws, snr_info)
 
@@ -456,7 +457,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return nosnr, spwids, snrs, goodsnrs
 
-    def _do_combined_snr_test(self, spwlist: List, perspwsnr: List, spwmap: List) -> List:
+    def _do_combined_snr_test(self, spwlist: List, perspwsnr: List, spwmap: List) -> Tuple[List, Dict]:
         """
         Calculate combined SNRs from the "per-SpW SNR" and return a list of SpW
         IDs that does not meet phase SNR threshold. Grouping of SpWs is
@@ -473,15 +474,18 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         Returns:
             List of spectral window IDs whose combined phase SNR is below the
-            threshold specified by inputs.phasesnr.
+            threshold specified by inputs.phasesnr, and dictionary containing
+            for a given reference SpW the corresponding mapped SpWs and
+            combined SNR.
         """
         LOG.info("Start combined SpW SNR test")
         LOG.debug('- spwlist to analyze: {}'.format(spwlist))
         LOG.debug('- per SpW SNR: {}'.format(perspwsnr))
         LOG.debug('- spwmap = {}'.format(spwmap))
 
-        # Initialize return list.
+        # Initialize return objects.
         low_snr_spwids = []
+        combined_snrs = {}
 
         # Filter reference SpW IDs of each group.
         unique_mappedspw = {spwmap[spwid] for spwid in spwlist}
@@ -496,14 +500,18 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     snr = perspwsnr[i]
                     if snr is None:
                         LOG.error('SNR not calculated for spw={}. Cannot calculate combined SNR'.format(spwid))
-                        return []
+                        return [], {}
                     snrlist.append(perspwsnr[i])
                     combined_idx.append(i)
 
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
+            combined_spws = [spwlist[j] for j in combined_idx]
             LOG.info('Reference SpW ID = {} (Combined SpWs = {}) : Combined SNR = {}'
-                     ''.format(mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
+                     ''.format(mappedspwid, str(combined_spws), combined_snr))
+            # For current reference SpW, store list of combined SpWs and
+            # the combined SNR.
+            combined_snrs[str(mappedspwid)] = (combined_spws, combined_snr)
 
             # If the combined SNR does not meet the phase SNR threshold, then
             # add these to the list of low combined SNR spws.
@@ -513,7 +521,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Log results from SNR test.
         LOG.info('SpW IDs that has low combined SNR (threshold: {}) = {}'.format(self.inputs.phasesnr, low_snr_spwids))
 
-        return low_snr_spwids
+        return low_snr_spwids, combined_snrs
 
     def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype=None, combine=None, minblperant=None,
                     minsnr=None) -> GaincalResults:
@@ -744,7 +752,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         LOG.info('Temporarily resetting spwmaps for %s', ms.basename)
         ms.spwmaps = {}
 
-    def _get_snr_info(self, spwids: List[int], snrs: List[float]) -> List[Tuple[int, float]]:
+    def _get_snr_info(self, spwids: List[int], snrs: List[float], combined_snrs: Dict) -> List[Tuple[str, float]]:
         """
         Helper method that takes phase SNR info from the SNR test, and returns
         return phase SNR info for all SpWs specified in inputs.spw.
@@ -752,20 +760,29 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         Args:
             spwids: list of SpW IDs for which phase SNRs were determined.
             snrs: list of phase SNRs.
+            combined_snrs: dictionary of reference SpWs with list of
+                corresponding combined SpW and combined phase SNR.
 
         Returns:
-            List of tuples, specifying SpW ID and corresponding phase SNR.
+            List of tuples, specifying string representing SpW(s) and
+            corresponding phase SNR.
         """
         spw_snr = {str(k): v for k, v in zip(spwids, snrs)}
         snr_info = []
+
         # Create entry for each SpW specified by inputs.
         for spwid in self.inputs.spw.split(','):
-            # If no SNR info was available, set to None, otherwise use the
-            # derived value.
-            snr = None
-            if spwid in spw_snr:
-                snr = spw_snr[spwid]
-            snr_info.append((spwid, snr))
+            # If this SpW is the reference SpW for a group of combined SpWs
+            # then add an entry to list the combined SNR.
+            if spwid in combined_snrs:
+                combined_spws = ', '.join(str(s) for s in combined_snrs[spwid][0])
+                combined_snr = combined_snrs[spwid][1]
+                snr_info.append((f'Combined ({combined_spws})', combined_snr))
+
+            # Retrieve SNR info for individual SpW if available.
+            snr = spw_snr.get(spwid, None)
+            snr_info.append((str(spwid), snr))
+
         return snr_info
 
     @staticmethod
