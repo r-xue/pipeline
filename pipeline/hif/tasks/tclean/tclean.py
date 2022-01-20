@@ -1336,7 +1336,7 @@ class Tclean(cleanbase.CleanBase):
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
                 statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
-                stats = image.statistics(mask=statsmask, robust=True)
+                stats = image.statistics(mask=statsmask, robust=True, stretch=True)
 
                 image_median_all = stats.get('median')[0]
                 image_mad = stats.get('medabsdevmed')[0]
@@ -1346,7 +1346,7 @@ class Tclean(cleanbase.CleanBase):
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
                 statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                stats = image.statistics(mask=statsmask, robust=True)
+                stats = image.statistics(mask=statsmask, robust=True, stretch=True)
 
                 image_median_annulus = stats.get('median')[0]
 
@@ -1372,7 +1372,7 @@ class Tclean(cleanbase.CleanBase):
             # Calculate outlier fraction for QA scoring
             with casa_tools.ImageReader(mom8fc_name) as image:
                 statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + image_median_annulus)
-                stats_outliers = image.statistics(mask=statsmask, robust=True)
+                stats_outliers = image.statistics(mask=statsmask, robust=True, stretch=True)
                 npts = stats_outliers.get('npts')
                 if npts.shape != (0,):
                     n_outlier_pixels = int(npts[0])
