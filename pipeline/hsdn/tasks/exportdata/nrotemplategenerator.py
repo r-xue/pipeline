@@ -1,6 +1,7 @@
 """Template files generator for NRO data reduction.
 
-This class is called by exportdata task of NRO, and generates thease files into products folder:
+This class is called by exportdata task of NRO, and generates thease files
+into products folder:
 - scale file: norscalefile.csv
 - reduction template: rebase_and_image.py
 """
@@ -86,7 +87,8 @@ def get_template(name: str) -> str:
     return os.path.join(script_dir, name)
 
 
-def generate_group_entries(ms: MeasurementSet, member_list: List[MSReductionGroupDesc]):
+def generate_group_entries(ms: MeasurementSet,
+                           member_list: List[MSReductionGroupDesc]):
     """Generate group entries from MSReductionGroupDesc(s) to generate CSV.
 
     Args:
@@ -104,7 +106,8 @@ def generate_group_entries(ms: MeasurementSet, member_list: List[MSReductionGrou
     antenna_spw_pairs = set(((m.antenna.id, m.spw.id) for m in filtered_by_ms))
 
     # yield entries
-    for antenna, spw in itertools.product(ms.antennas, ms.get_spectral_windows(science_windows_only=True)):
+    for antenna, spw in itertools.product(
+            ms.antennas, ms.get_spectral_windows(science_windows_only=True)):
         if (antenna.id, spw.id) in antenna_spw_pairs:
             data_desc = ms.get_data_description(spw=spw.id)
             yield '\n'.join(
@@ -165,7 +168,8 @@ def generate_script(context: Context, scriptname: str, configname: str) -> bool:
     Args:
         context : pipeline context
         scriptname : NRO data reduction template script: rebase_and_image.py
-        configname : NRO data refuction configuration script: rebase_and_image_config.py
+        configname : NRO data refuction configuration script:
+                     rebase_and_image_config.py
 
     Returns:
         weather script was generated and configfile exists or not
@@ -178,11 +182,15 @@ def generate_script(context: Context, scriptname: str, configname: str) -> bool:
     nspw = len(spws)
 
     # processing flags
-    processspw = '\n'.join([indent(level=3) + 'True' + indent(level=3) + '# SPW{}'.format(i) for i in spws])
+    processspw = '\n'.join(
+        [indent(level=3) + 'True' + indent(level=3) + '# SPW{}'.format(i)
+         for i in spws])
     processspw = processspw.replace('True ', 'True,', nspw - 1)
 
     # baseline masks
-    blrange = '\n'.join([indent(level=5) + "''" + indent(level=2) + '# baseline_range for spw{}'.format(i) for i in spws])
+    blrange = '\n'.join(
+        [indent(level=5) + "''" + indent(level=2) + '# baseline_range for spw{}'.format(i)
+         for i in spws])
     blrange = blrange.replace("'' ", "'',", nspw - 1)
 
     # rest frequencies
@@ -225,10 +233,12 @@ def generate_script(context: Context, scriptname: str, configname: str) -> bool:
                     coordsys.done()
 
             if 'unit' in rest_freq and 'value' in rest_freq:
-                rest_freqs[index] = '{}{}'.format(rest_freq['value'][0], rest_freq['unit'])
+                rest_freqs[index] = '{}{}'.format(
+                    rest_freq['value'][0], rest_freq['unit'])
 
-    restfreqs = '\n'.join([indent(level=5) + "'{}'".format(f) + indent(level=1) + '# Rest frequency of SPW{}'.format(i)
-                           for f, i in zip(rest_freqs, spws)])
+    restfreqs = '\n'.join(
+        [indent(level=5) + "'{}'".format(f) + indent(level=1) + '# Rest frequency of SPW{}'.format(i)
+            for f, i in zip(rest_freqs, spws)])
     restfreqs = restfreqs.replace("' ", "',", nspw - 1)
 
     vis = myms.basename

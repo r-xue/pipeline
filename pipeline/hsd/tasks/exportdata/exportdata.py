@@ -1,14 +1,19 @@
 """
-The exportdata for SD module provides base classes for preparing data products on disk for upload to the archive.
+The exportdata for SD module.
 
-To test these classes, register some data with the pipeline using ImportData, then execute:
+This module provides base classes for preparing data products on disk
+for upload to the archive.
+
+To test these classes, register some data with the pipeline using ImportData,
+then execute:
 
 import pipeline
 # Create a pipeline context and register some data
 context = pipeline.Pipeline().context
 output_dir = "."
 products_dir = "./products"
-inputs = pipeline.tasks.singledish.SDExportData.Inputs(context,output_dir,products_dir)
+inputs = pipeline.tasks.singledish.SDExportData.Inputs(context, output_dir,
+                                                       products_dir)
 task = pipeline.tasks.singledish.SDExportData (inputs)
 results = task.execute (dry_run = True)
 results = task.execute (dry_run = False)
@@ -39,7 +44,8 @@ LOG = infrastructure.get_logger(__name__)
 class SDExportDataInputs(exportdata.ExportDataInputs):
     """Inputs class for SDExportData.
 
-    Inputs class must be separated per task class even if it's effectively the same.
+    Inputs class must be separated per task class even if
+    it's effectively the same.
     """
 
     pass
@@ -48,12 +54,13 @@ class SDExportDataInputs(exportdata.ExportDataInputs):
 @task_registry.set_equivalent_casa_task('hsd_exportdata')
 @task_registry.set_casa_commands_comment('The output data products are computed.')
 class SDExportData(exportdata.ExportData):
-    """SDExportData is the base class for exporting data to the products subdirectory.
+    """The base class for exporting data to the products subdirectory.
 
     It performs the following operations:
     - Saves the pipeline processing request in an XML file
     - Saves the images in FITS cubes one per target and spectral window
-    - Saves the final flags and bl coefficient per ASDM in a compressed / tarred CASA flag versions file
+    - Saves the final flags and bl coefficient per ASDM
+      in a compressed / tarred CASA flag versions file
     - Saves the final web log in a compressed / tarred file
     - Saves the text formatted list of contents of products directory
     """
@@ -65,7 +72,8 @@ class SDExportData(exportdata.ExportData):
         Prepare and execute an export data job appropriate to the task inputs.
 
         This is almost equivalent to ALMAExportData.prepare().
-        Only difference is to use self._make_lists() instead of ExportData._make_lists()
+        Only difference is to use self._make_lists() instead of
+        ExportData._make_lists()
 
         Returns:
             ExportDataResults object
@@ -75,20 +83,25 @@ class SDExportData(exportdata.ExportData):
         oussid = self.get_oussid(self.inputs.context)
 
         # Make the imaging vislist and the sessions lists.
-        session_list, session_names, session_vislists, vislist = self._make_lists(
-            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=True)
+        session_list, session_names, session_vislists, vislist = \
+            self._make_lists(self.inputs.context, self.inputs.session,
+                             self.inputs.vis, imaging_only_mses=True)
 
         LOG.info('vislist={}'.format(vislist))
 
         if vislist:
             # Export the auxiliary caltables if any
             #    These are currently the uvcontinuum fit tables.
-            auxcaltables = self._do_aux_session_products(self.inputs.context, oussid, session_names, session_vislists,
-                                                         self.inputs.products_dir)
+            auxcaltables = \
+                self._do_aux_session_products(self.inputs.context, oussid,
+                                              session_names, session_vislists,
+                                              self.inputs.products_dir)
 
             # Export the auxiliary cal apply files if any
             #    These are currently the uvcontinuum fit tables.
-            auxcalapplys = self._do_aux_ms_products(self.inputs.context, vislist, self.inputs.products_dir)
+            auxcalapplys = \
+                self._do_aux_ms_products(self.inputs.context, vislist,
+                                         self.inputs.products_dir)
         else:
             auxcaltables = None
             auxcalapplys = None
@@ -104,34 +117,44 @@ class SDExportData(exportdata.ExportData):
             prefix = oussid
         else:
             prefix = oussid + '.' + recipe_name
-        auxfproducts = self._do_auxiliary_products(self.inputs.context, oussid, self.inputs.output_dir,
-                                                   self.inputs.products_dir)
+        auxfproducts = \
+            self._do_auxiliary_products(self.inputs.context, oussid,
+                                        self.inputs.output_dir,
+                                        self.inputs.products_dir)
 
         # Export the AQUA report
         aquareport_name = 'pipeline_aquareport.xml'
-        pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, prefix, aquareport_name,
-                                                        self.inputs.products_dir)
+        pipe_aqua_reportfile = \
+            self._export_aqua_report(self.inputs.context, prefix,
+                                     aquareport_name,
+                                     self.inputs.products_dir)
 
         # Update the manifest
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
-            manifest_file = os.path.join(self.inputs.context.products_dir, results.manifest)
-            self._add_to_manifest(manifest_file, auxfproducts, auxcaltables, auxcalapplys, pipe_aqua_reportfile)
+            manifest_file = os.path.join(self.inputs.context.products_dir,
+                                         results.manifest)
+            self._add_to_manifest(manifest_file, auxfproducts, auxcaltables,
+                                  auxcalapplys, pipe_aqua_reportfile)
 
         return results
 
-    def _make_lists(self, context: Context, session: List[str], vis: Union[List[str], str], imaging_only_mses: bool=False) -> \
-            Tuple[List[str], List[str], List[str], List[str]]:
+    def _make_lists(self, context: Context, session: List[str],
+                    vis: Union[List[str], str], imaging_only_mses: bool=False) \
+            -> Tuple[List[str], List[str], List[str], List[str]]:
         """Create the vis and sessions lists.
 
         Args:
             context : Pipeline context
             session : session id(s)
             vis : vis string(s)
-            imaging_only_mses : a flag of imaging-only measurement sets, not in use.
-                                In single dish pipeline, all mses are non-imaging ones but they need to be returned
-                                even when imaging is False so no filtering is done
+            imaging_only_mses : a flag of imaging-only measurement sets.
+                                In single dish pipeline, all mses are non-
+                                imaging ones but they need to be returned
+                                even when imaging is False so no filtering
+                                is done. NOT IN USE.
         Returns:
-            a tuple of session list, session name list, session vis list, vis list
+            a tuple of session list, session name list, session vis list,
+            vis list
         """
         LOG.info('Single dish specific _make_lists')
         # Force inputs.vis to be a list.
@@ -141,11 +164,15 @@ class SDExportData(exportdata.ExportData):
 
         # Get the session list and the visibility files associated with
         # each session.
-        session_list, session_names, session_vislists = self._get_sessions(context, session, vislist)
+        session_list, session_names, session_vislists = \
+            self._get_sessions(context, session, vislist)
 
         return session_list, session_names, session_vislists, vislist
 
-    def _do_aux_session_products(self, context: Context, oussid: str, session_names: List[str], session_vislists: List[str], products_dir: str) -> \
+    def _do_aux_session_products(self, context: Context, oussid: str,
+                                 session_names: List[str],
+                                 session_vislists: List[str],
+                                 products_dir: str) -> \
             collections.OrderedDict[str, List[str]]:
         """Export the calibration tables to products directory and return session dictionary.
 
@@ -157,7 +184,8 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            ordered dictionary object contains session name(key) and a list of file name of vis and caltable (value)
+            ordered dictionary object contains session name(key) and
+            a list of file name of vis and caltable (value)
         """
         # Make the standard sessions dictionary and export per session products
         #    Currently these are compressed tar files of per session calibration tables
@@ -166,7 +194,8 @@ class SDExportData(exportdata.ExportData):
         caltable_file_list = []
         for i in range(len(session_names)):
             caltable_file = self._export_final_baseline_calfiles(
-                context, oussid, session_names[i], session_vislists[i], products_dir)
+                context, oussid, session_names[i], session_vislists[i],
+                products_dir)
             caltable_file_list.append(caltable_file)
 
         # Create the ordered session dictionary
@@ -174,8 +203,10 @@ class SDExportData(exportdata.ExportData):
         #    The values are a tuple containing the vislist and the caltables
         sessiondict = collections.OrderedDict()
         for i in range(len(session_names)):
-            sessiondict[session_names[i]] = ([os.path.basename(visfile) for visfile in session_vislists[i]],
-                                             os.path.basename(caltable_file_list[i]))
+            sessiondict[session_names[i]] = (
+                [os.path.basename(visfile) for visfile
+                 in session_vislists[i]], os.path.basename(caltable_file_list[i])
+            )
 
         return sessiondict
 
@@ -198,10 +229,13 @@ class SDExportData(exportdata.ExportData):
         else:
             return None
 
-    def _export_final_baseline_calfiles(self, context: Context, oussid: str, session: str, vislist: List[str], products_dir: str) -> str:
+    def _export_final_baseline_calfiles(self, context: Context, oussid: str,
+                                        session: str, vislist: List[str],
+                                        products_dir: str) -> str:
         """Save the final calibration tables in a tarfile one file per session.
 
-        This method is an exact copy of same method in superclass except for handling baseline caltables.
+        This method is an exact copy of same method in superclass
+        except for handling baseline caltables.
 
         Args:
             context : pipeline context
@@ -241,7 +275,8 @@ class SDExportData(exportdata.ExportData):
             if name is not None:
                 bl_caltables.add(name)
 
-            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz')\
+                    as tar:
                 # Tar the session list.
                 # for table in caltables:
                 #     tar.add(table, arcname=os.path.basename(table))
@@ -251,7 +286,9 @@ class SDExportData(exportdata.ExportData):
 
         return tarfilename
 
-    def _do_aux_ms_products(self, context: Context, vislist: List[str], products_dir: str) -> collections.OrderedDict[str, str]:
+    def _do_aux_ms_products(self, context: Context, vislist: List[str],
+                            products_dir: str) -> \
+            collections.OrderedDict[str, str]:
         """Create the calibration apply file(s) from MeasurementSets.
 
         Args:
@@ -260,13 +297,15 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            orderd vis dictionary contains vis name(key) and calibration apply file name(value)
+            orderd vis dictionary contains vis name(key) and
+            calibration apply file name(value)
         """
         # Loop over the measurements sets in the working directory, and
         # create the calibration apply file(s) in the products directory.
         apply_file_list = []
         for visfile in vislist:
-            apply_file = self._export_final_baseline_applylist(context, visfile, products_dir)
+            apply_file = self._export_final_baseline_applylist(context, visfile,
+                                                               products_dir)
             apply_file_list.append(apply_file)
 
         # Create the ordered vis dictionary
@@ -274,14 +313,17 @@ class SDExportData(exportdata.ExportData):
         #    The values are a tuple containing the flags and applycal files
         visdict = collections.OrderedDict()
         for i in range(len(vislist)):
-            visdict[os.path.basename(vislist[i])] = os.path.basename(apply_file_list[i])
+            visdict[os.path.basename(vislist[i])] = \
+                os.path.basename(apply_file_list[i])
 
         return visdict
 
-    def _export_final_baseline_applylist(self, context: Context, vis: str, products_dir: str) -> str:
+    def _export_final_baseline_applylist(self, context: Context, vis: str,
+                                         products_dir: str) -> str:
         """Save the final calibration list to a file.
 
-        For now this is a text file. Eventually it will be the CASA callibrary file.
+        For now this is a text file. Eventually it will be the CASA callibrary
+        file.
 
         Args:
             context : pipeline context
@@ -302,8 +344,11 @@ class SDExportData(exportdata.ExportData):
 
         try:
             # Log the list in human readable form. Better way to do this ?
-            cmd = string.Template("sdbaseline(infile='${infile}', datacolumn='corrected', spw='${spw}', blmode='apply',"
-                                  " bltable='${bltable}', blfunc='poly', outfile='${outfile}', overwrite=True)")
+            cmd = string.Template("sdbaseline(infile='${infile}', "
+                                  "datacolumn='corrected', spw='${spw}', "
+                                  "blmode='apply', bltable='${bltable}', "
+                                  "blfunc='poly', outfile='${outfile}', "
+                                  "overwrite=True)")
 
             # Create the list of baseline caltable for that vis
             name = self.__get_last_baseline_table(vis)
@@ -311,14 +356,15 @@ class SDExportData(exportdata.ExportData):
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             spw = ','.join([str(s.id) for s in science_spws])
             if name is not None:
-                applied_calstate = cmd.safe_substitute(infile=vis,
-                                                       bltable=name,
-                                                       spw=spw,
-                                                       outfile=vis.rstrip('/') + '_bl')
+                applied_calstate = \
+                    cmd.safe_substitute(infile=vis, bltable=name, spw=spw,
+                                        outfile=vis.rstrip('/') + '_bl')
 
                 # Open the file.
-                with open(os.path.join(products_dir, applyfile_name), "w") as applyfile:
-                    applyfile.write('# Apply file for %s\n' % (os.path.basename(vis)))
+                with open(os.path.join(products_dir, applyfile_name), "w") \
+                        as applyfile:
+                    applyfile.write('# Apply file for %s\n'
+                                    % (os.path.basename(vis)))
                     applyfile.write(applied_calstate)
         except Exception:
             applyfile_name = 'Undefined'
@@ -345,7 +391,8 @@ class SDExportData(exportdata.ExportData):
             LOG.debug('No K2Jy factor file found.')
             return None
         if len(reffile_list) > 1:
-            raise RuntimeError("K2Jy conversion file must be only one. %s found." % (len(reffile_list)))
+            raise RuntimeError("K2Jy conversion file must be only one. %s found."
+                               % (len(reffile_list)))
 
         jyperk = reffile_list.pop()
 
@@ -362,7 +409,8 @@ class SDExportData(exportdata.ExportData):
         """Find SDK2JyCalResults and yield K2JY reference file.
 
         Args:
-            results : a list of ResultsProxy (contains Results object of every tasks)
+            results : a list of ResultsProxy
+                      (contains Results object of every tasks)
 
         Yields:
             K2JY reference file, default: jyperk.csv
@@ -377,7 +425,8 @@ class SDExportData(exportdata.ExportData):
                     if reffile is not None and os.path.exists(reffile):
                         yield reffile
 
-    def _do_auxiliary_products(self, context: Context, oussid: str, output_dir: str, products_dir: str) -> str:
+    def _do_auxiliary_products(self, context: Context, oussid: str,
+                               output_dir: str, products_dir: str) -> str:
         """Save flux file and flag files into tarball.
 
         Args:
@@ -398,48 +447,59 @@ class SDExportData(exportdata.ExportData):
             aux_prod_exists = True
 
         # Export the general and target source template flagging files
-        #    The general template flagging files are not required for the restore but are
-        #    informative to the user.
-        #    Whether or not the target template files should be exported to the archive depends
-        #    on the final place of the target flagging step in the work flow and
-        #    how flags will or will not be stored back into the ASDM.
-        flags_file_list = [os.path.join(output_dir, fname) for fname in glob.glob('*.flag*template.txt')]
+        #    The general template flagging files are not required
+        #    for the restore but are informative to the user.
+        #    Whether or not the target template files should be exported to
+        #    the archive depends on the final place of the target flagging
+        #    step in the work flow and how flags will or will not be stored
+        #    back into the ASDM.
+        flags_file_list = [os.path.join(output_dir, fname)
+                           for fname in glob.glob('*.flag*template.txt')]
         if flags_file_list:
             aux_prod_exists = True
 
-        # If no auxiliary product was found, skip creation of tarfile and return early.
+        # If no auxiliary product was found, skip creation of tarfile
+        # and return early.
         if not aux_prod_exists:
             return None
 
         # Create the tarfile.
         # Define the name of the output tarfile.
-        tarfilename = self.NameBuilder.auxiliary_products('auxproducts.tgz', ousstatus_entity_id=oussid)
+        tarfilename = self.NameBuilder.auxiliary_products(
+            'auxproducts.tgz', ousstatus_entity_id=oussid)
         # tarfilename = '{}.auxproducts.tgz'.format(oussid)
         LOG.info('Saving auxiliary data products in %s', tarfilename)
 
         # Open tarfile.
-        with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+        with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') \
+                as tar:
 
             # Save flux file.
             if jyperk and os.path.exists(jyperk):
                 tar.add(jyperk, arcname=os.path.basename(jyperk))
-                LOG.info('Saving auxiliary data product {} in {}'.format(os.path.basename(jyperk), tarfilename))
+                LOG.info('Saving auxiliary data product '
+                         '{} in {}'.format(os.path.basename(jyperk), tarfilename))
             elif isinstance(jyperk, str):
-                LOG.info('Auxiliary data product {} does not exist'.format(os.path.basename(jyperk)))
+                LOG.info('Auxiliary data product '
+                         '{} does not exist'.format(os.path.basename(jyperk)))
 
             # Save flag files.
             for flags_file in flags_file_list:
                 if os.path.exists(flags_file):
                     tar.add(flags_file, arcname=os.path.basename(flags_file))
-                    LOG.info('Saving auxiliary data product {} in {}'.format(os.path.basename(flags_file), tarfilename))
+                    LOG.info('Saving auxiliary data product '
+                             '{} in {}'.format(os.path.basename(flags_file), tarfilename))
                 else:
-                    LOG.info('Auxiliary data product {} does not exist'.format(os.path.basename(flags_file)))
+                    LOG.info('Auxiliary data product '
+                             '{} does not exist'.format(os.path.basename(flags_file)))
 
             tar.close()
 
         return tarfilename
 
-    def _export_casa_restore_script(self, context: Context, script_name: str, products_dir: str, oussid: str, vislist: List[str],
+    def _export_casa_restore_script(self, context: Context, script_name: str,
+                                    products_dir: str, oussid: str,
+                                    vislist: List[str],
                                     session_list: List[str]) -> str:
         """Save the CASA restore script.
 
@@ -461,12 +521,20 @@ class SDExportData(exportdata.ExportData):
                 filename, filext = os.path.splitext(filename)
             tmpvislist.append(filename)
         restore_task_name = 'hsd_restoredata'
-        args = collections.OrderedDict(vis=tmpvislist, session=session_list, ocorr_mode='ao')
-        return self._export_casa_restore_script_template(context, script_name, products_dir, oussid,
-                                                         restore_task_name, args)
+        args = collections.OrderedDict(vis=tmpvislist, session=session_list,
+                                       ocorr_mode='ao')
+        return self._export_casa_restore_script_template(context, script_name,
+                                                         products_dir, oussid,
+                                                         restore_task_name,
+                                                         args)
 
-    def _export_casa_restore_script_template(self, context: Context, script_name: str, products_dir: str, oussid: str,
-                                             restore_task_name: str, restore_task_args: Dict[str, str]) -> str:
+    def _export_casa_restore_script_template(self, context: Context,
+                                             script_name: str,
+                                             products_dir: str,
+                                             oussid: str,
+                                             restore_task_name: str,
+                                             restore_task_args: Dict[str, str])\
+            -> str:
         """Generate and export CASA restore script (export_casa_restore_script).
 
         Args:
@@ -476,7 +544,8 @@ class SDExportData(exportdata.ExportData):
             oussid : OUS Status ID
             restore_task_name : Name of the restoredata task
             restore_task_args : Set of the parameters for the restoredata task.
-                                If an order of the parameter matters, it can be collections.OrderedDict.
+                                If an order of the parameter matters, it can be
+                                collections.OrderedDict.
 
         Returns:
             path of output CASA script file
@@ -512,13 +581,15 @@ class SDExportData(exportdata.ExportData):
         #    tmpvislist.append(filename)
         # task_string = "    hsd_restoredata(vis=%s, session=%s, ocorr_mode='%s')" % (tmpvislist, session_list,
         #                                                                             ocorr_mode)
-        args_string = ', '.join(['{}={!r}'.format(k, v) for k, v in restore_task_args.items()])
+        args_string = ', '.join(['{}={!r}'.format(k, v) for k, v
+                                 in restore_task_args.items()])
         task_string = "    {}({})".format(restore_task_name, args_string)
 
         state_commands = []
-        for o in (context.project_summary, context.project_structure, context.project_performance_parameters):
-            state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
-                               for cls, name, value in project.get_state(o)]
+        for o in (context.project_summary, context.project_structure,
+                  context.project_performance_parameters):
+            state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(
+                cls, name, value) for cls, name, value in project.get_state(o)]
 
         template = '''context = h_init()
 %s
@@ -531,13 +602,15 @@ finally:
         with open(script_file, 'w') as casa_restore_file:
             casa_restore_file.write(template)
 
-        LOG.info('Copying casa restore script %s to %s' % (script_file, out_script_file))
+        LOG.info('Copying casa restore script '
+                 '%s to %s' % (script_file, out_script_file))
         if not self._executor._dry_run:
             shutil.copy(script_file, out_script_file)
 
         return os.path.basename(out_script_file)
 
-    def _export_aqua_report(self, context: Context, oussid: str, aquareport_name: str, products_dir: str) -> str:
+    def _export_aqua_report(self, context: Context, oussid: str,
+                            aquareport_name: str, products_dir: str) -> str:
         """Save the AQUA report.
 
         Note the method is mostly a duplicate of the conterpart
@@ -560,7 +633,8 @@ finally:
             report_xml = report_generator.get_report_xml(context)
             aqua_export_to_disk(report_xml, aqua_file)
         except Exception as e:
-            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
+            LOG.exception('Error generating the pipeline AQUA report',
+                          exc_info=e)
             return 'Undefined'
 
         ps = context.project_structure
