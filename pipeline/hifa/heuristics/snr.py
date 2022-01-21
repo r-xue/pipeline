@@ -391,11 +391,20 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
                     ftsysdict['snr_scan'] = obscan.id
                     break
 
+            # PIPE-1154: if no scan for field name list and intent occurred
+            # after the Tsys scan, then fall back to picking the most recent
+            # scan that occurred before the Tsys scan (assuming obscans are
+            # sorted chronologically).
+            if 'snr_scan' not in ftsysdict:
+                for obscan in obscans:
+                    if obscan.id < atmscan.id:
+                        ftsysdict['snr_scan'] = obscan.id
+
             ftsysdict['tsys_scan'] = atmscan.id
             ftsysdict['tsys_spw'] = bestspwid
             break
 
-        # Update the spw dictinary
+        # Update the spw dictionary
         if ftsysdict:
             LOG.info('    Matched spw %d to a Tsys spw %d' % (spwid, bestspwid))
             tsysdict[spwid] = ftsysdict
