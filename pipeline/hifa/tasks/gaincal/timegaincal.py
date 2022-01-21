@@ -237,8 +237,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
             # Get optimal phase solution parameters for current PHASE field,
             # based on spw mapping info in MS.
-            # No need to capture optimal solint or "low SNR SpWs", as the
-            # solint will be fixed to inputs.targetsolint.
+            # No need to catch the values for optimal solint or "low SNR SpWs",
+            # as the solint will be fixed to inputs.targetsolint.
             combine, gaintype, interp, _, _, spwmap = self._get_phasecal_params(p_intent, field.name)
 
             # PIPE-390: if not combining across spw, then no need to deal with
@@ -416,46 +416,42 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         for field in inputs.ms.get_fields(intent=intent):
             # Get optimal phase solution parameters for current PHASE field,
             # based on spw mapping info in MS.
-            combine, gaintype, interp, lowsnr_spws, solint, spwmap = self._get_phasecal_params(intent, field.name)
+            # PIPE-1154: no need to catch the setting for combine; for these
+            # phase solutions for the PHASE calibrator, force the combination
+            # of SpWs to ensure that the subsequent phase offsets caltable is
+            # always sensitive to residual offsets on the PHASE calibrator and
+            # the corresponding plots would display meaningful information.
+            _, gaintype, interp, lowsnr_spws, solint, spwmap = self._get_phasecal_params(intent, field.name)
+            combine = 'spw'
 
-            # PIPE-390: if not combining across spw, then no need to deal with
-            # SpectralSpec, so create a gaincal solution for all SpWs, using
-            # provided solint, gaintype, spwmap, and interp.
-            if not combine:
-                phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=inputs.spw,
+            # PIPE-390: since a combined SpW solution is expected, we need to
+            # create separate solutions for each SpectralSpec grouping of SpWs.
+
+            # Group the input SpWs by SpectralSpec.
+            spw_groups = self._group_by_spectralspec(inputs.ms, inputs.spw, spwmap)
+            if not spw_groups:
+                raise ValueError('Invalid SpW grouping input.')
+
+            # Loop through each grouping of SpWs.
+            for ref_spw, spw_sel in spw_groups.items():
+                LOG.info(f'Processing spectral spec with SpWs {spw_sel}')
+
+                # PIPE-163: low/high SNR heuristic choice for the other
+                # calibrators, typically PHASE.
+                # Check if the reference SpW appears on the list of low SNR SpWs
+                # registered in the MS for current field and intent.
+                #  * if so, then as per low-SNR heuristics request, keep using the
+                #  provided solint (which is normally based on SpW mapping mode).
+                #  * if not, then override the provided solint to instead use
+                #  inputs.calsolint, just like for the other calibrator intents.
+                if ref_spw not in lowsnr_spws:
+                    solint = inputs.calsolint
+
+                phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=spw_sel,
                                                                      gaintype=gaintype, combine=combine, solint=solint,
                                                                      minsnr=inputs.calminsnr, interp=interp,
                                                                      spwmap=spwmap))
                 solints.append(solint)
-
-            # Otherwise, a combined SpW solution is expected, and we need to
-            # create separate solutions for each SpectralSpec grouping of Spws.
-            else:
-                # Group the input SpWs by SpectralSpec.
-                spw_groups = self._group_by_spectralspec(inputs.ms, inputs.spw, spwmap)
-                if not spw_groups:
-                    raise ValueError('Invalid SpW grouping input.')
-
-                # Loop through each grouping of spws.
-                for ref_spw, spw_sel in spw_groups.items():
-                    LOG.info(f'Processing spectral spec with spws {spw_sel}')
-
-                    # PIPE-163: low/high SNR heuristic choice for the other
-                    # calibrators, typically PHASE.
-                    # Check if the reference SpW appears on the list of low SNR SpWs
-                    # registered in the MS for current field and intent.
-                    #  * if so, then as per low-SNR heuristics request, keep using the
-                    #  provided solint (which is normally based on SpW mapping mode).
-                    #  * if not, then override the provided solint to instead use
-                    #  inputs.calsolint, just like for the other calibrator intents.
-                    if ref_spw not in lowsnr_spws:
-                        solint = inputs.calsolint
-
-                    phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=spw_sel,
-                                                                         gaintype=gaintype, combine=combine,
-                                                                         solint=solint, minsnr=inputs.calminsnr,
-                                                                         interp=interp, spwmap=spwmap))
-                    solints.append(solint)
 
         # PIPE-1154: determine which was the longest solint used for any of the
         # PHASE fields; this will be re-used for the diagnostic amplitude
