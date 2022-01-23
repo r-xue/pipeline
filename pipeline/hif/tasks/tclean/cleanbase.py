@@ -650,8 +650,52 @@ class CleanBase(basetask.StandardTaskTemplate):
         result.set_sensitivity(inputs.sensitivity)
         result.set_imaging_params(iter, tclean_job_parameters)
 
+        # This operation is used as a workaround for CAS-13401 and can be removed after the CAS ticket is resolved.
+        if tclean_job_parameters['stokes'] != 'I':
+            self._copy_restoringbeam_from_psf(tclean_job_parameters['imagename'])
+
         return result
 
+    def _copy_restoringbeam_from_psf(self, imagename):
+        """Copy the per-plane beam set from .psf image to .image/.residual.
+        
+        Note: this is a short-term workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
+              the per-plane restoring beam information into the residual and restored images.
+        """
+        bm_src = '.psf'
+        bm_src_ext_try = ['', '.tt0']
+        bm_dst = ['.image', '.residual', '.image.pbcor']
+        bm_dst_ext = ['', '.tt0', '.tt1', '.tt2']
+
+        is_src_present = False
+        for bm_src_ext in bm_src_ext_try:
+            if os.path.exists(imagename+bm_src+bm_src_ext):
+                is_src_present = True
+                break
+
+        if not is_src_present:
+            LOG.error('The restoring beam information source image is not found.')
+        else:
+            LOG.info(
+                f'Try to copy the restoring beam set from {imagename+bm_src+bm_src_ext} to the corresponding image products')
+        with casa_tools.ImageReader(imagename+bm_src+bm_src_ext) as bm_src_im:
+            src_shape = bm_src_im.shape()
+            LOG.info('The restoring beam information source image ')
+            for bm_dst0 in bm_dst:
+                for bm_ext0 in bm_dst_ext:
+                    if os.path.exists(imagename+bm_dst0+bm_ext0):
+                        with casa_tools.ImageReader(imagename+bm_dst0+bm_ext0) as bm_dst_im:
+                            LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
+                            dst_shape = bm_dst_im.shape()
+                            if (dst_shape == src_shape).all():
+                                for idx_c in range(src_shape[3]):
+                                    for idx_p in range(src_shape[2]):
+                                        LOG.debug(f'working on idx_chan={idx_c}, idx_pol={idx_p}')
+                                        bm = bm_src_im.restoringbeam(channel=idx_c, polarization=idx_p)
+                                        bm_dst_im.setrestoringbeam(beam=bm, channel=idx_c, polarization=idx_p)
+                            else:
+                                LOG.warning(
+                                    'The restoring beam information source and destination images have different shapes. We will not copy the per-plane beam set.')
 
 def rename_image(old_name, new_name, extensions=['']):
     """
