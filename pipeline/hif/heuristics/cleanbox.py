@@ -316,7 +316,21 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_cleanmask_spectrum_pblimit = pblimit_cleanmask
             else:
                 spectrum_mask = None
-            nonpbcor_image_cleanmask_spectrum = image.getprofile(function='flux', mask=spectrum_mask, stretch=True, axis=freq_axis)['values']
+
+            # Because image.getprofile(axis=freq_axis) doesn't work on an image/cube with more than
+            # one polarization plane (e.g. VLASS fullstokes images), we first create a stokes-I only
+            # image with 'spectrum_mask' included, and then run ia.getprofile().
+            # note: the stoke-i extraction can also be done with imagepol.stokesi()
+
+            image_csys = image.coordsys()
+            rgTool = casa_tools.regionmanager
+            region = rgTool.frombcs(csys=image_csys.torecord(), shape=image.shape(), stokes='I', stokescontrol='a')
+            image_csys.done()
+            rgTool.done()
+
+            image_stokesi = image.subimage(region=region, mask=spectrum_mask, dropdeg=False, stretch=True)
+            nonpbcor_image_cleanmask_spectrum = image_stokesi.getprofile(function='flux', axis=freq_axis)['values']
+            image_stokesi.done()
 
     return (residual_cleanmask_rms, residual_non_cleanmask_rms, residual_min, residual_max,
             nonpbcor_image_non_cleanmask_rms_min, nonpbcor_image_non_cleanmask_rms_max,
