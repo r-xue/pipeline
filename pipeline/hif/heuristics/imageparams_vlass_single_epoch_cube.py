@@ -16,6 +16,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
         super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CUBE'
+        self.vlass_stage = 3
 
     def reffreq(self) -> Optional[str]:
         """Tclean reffreq parameter heuristics.

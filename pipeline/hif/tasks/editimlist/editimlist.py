@@ -352,14 +352,14 @@ class Editimlist(basetask.StandardTaskTemplate):
             # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
             th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
 
-        # Determine current VLASS-SE-CUBE imaging stage (used in heuristics to make decisions)
-        # Note: hifv_restorepims have replaced the first and second vlass imaging stages in the SE workflow.
-        #       Because We are resusing most SE-CONT heuristics with ImageParamsHeuristicsVlassSeCube constructed
-        #       as a subclass of ImageParamsHeuristicsVlassSeContMosaic, we start from vlass_stage=3 here.
+        # For VLASS-SE-CUBE, we only run hif_makeimages once and reuse most imaging heuristics
+        # from SE-CONT-MOSAIC/vlass_stage=3. Therefore, ImageParamsHeuristicsVlassSeCube is constructed
+        # as a subclass of ImageParamsHeuristicsVlassSeContMosaic with vlass_stage=3 at its initialization.
+        # vlass_stage=3 stays once the workflow starts to create the imaging target list.
         if img_mode.startswith('VLASS-SE-CUBE'):
-            # If 0 hif_makeimlist results are found, then we are in stage 1
-            th.vlass_stage = utils.get_task_result_count(inp.context, 'hifv_restorepims')*2 + 1
             th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
+            # the below statement is redundant and only serves as a reminder that vlass_stage=3 for all VLASS-SE-CUBE heuristics.
+            th.vlass_stage = 3
 
         imlist_entry['threshold'] = inpdict['threshold']
         imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])
