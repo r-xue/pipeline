@@ -341,7 +341,8 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         snr_info = ms.spwphaseup_snr_info
         if snr_info is None:
             LOG.error("Estimated SNR from hifa_spwphaseup could not be retrieved")
-
+    else:
+        snr_info = None  # This line should not be reached
 
     # 6) compute the expected channel-averaged SNR
     # TODO Ask Todd if this is an error or a confusingly-named variable
@@ -388,14 +389,19 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         snr_per_spw = spw_to_flux_density[spw.id] / sensitivity
         # PIPE-1208: Use the estimated SNR from hifa_spwphaseup if the data is fully masked
         if numpy.isnan(median_tsys.get(spw.id)):
-            snr_value = snr_info[spw.id]
-            mydict[spw.id]['snr'] = Decimal(snr_value)
-            mydict[spw.id]['snr_aggregate'] = Decimal(
-                snr_value * sqrt(
-                    min([aggregate_bandwidth, max_effective_bandwidth_per_baseband * num_basebands]) /
-                    min([spw.bandwidth, max_effective_bandwidth_per_baseband]))
-            )
-            LOG.info(f"spw {spw.id} SNR extracted from hifa_spwphaseup ({snr_value})")
+            if snr_info is not None:
+                snr_value = snr_info[spw.id]
+                mydict[spw.id]['snr'] = Decimal(snr_value)
+                mydict[spw.id]['snr_aggregate'] = Decimal(
+                    snr_value * sqrt(
+                        min([aggregate_bandwidth, max_effective_bandwidth_per_baseband * num_basebands]) /
+                        min([spw.bandwidth, max_effective_bandwidth_per_baseband]))
+                )
+                LOG.info(f"spw {spw.id} SNR extracted from hifa_spwphaseup ({snr_value})")
+            else:
+                mydict[spw.id]['snr'] = Decimal('0.0')
+                mydict[spw.id]['snr_aggregate'] = Decimal('0.0')
+                LOG.error(f"spw {spw.id} SNR could not be extracted from hifa_spwphaseup, SNR set to 0")
         else:
             mydict[spw.id]['snr'] = snr_per_spw
             mydict[spw.id]['snr_aggregate'] = spw_to_flux_density[spw.id] / aggregate_bandwidth_sensitivity
