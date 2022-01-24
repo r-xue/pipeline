@@ -7,8 +7,8 @@ test_* methods for testing.
 
 import os
 import shutil
-import logging
 import datetime
+import platform
 import pytest
 from typing import Tuple, Optional, List
 
@@ -18,6 +18,7 @@ import pipeline.recipereducer
 from pipeline.infrastructure.renderer import regression
 import pipeline.infrastructure.executeppr as almappr
 import pipeline.infrastructure.executevlappr as vlappr
+import pipeline.infrastructure.logging as logging
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -201,12 +202,10 @@ class PipelineRegression(object):
 
     def __reset_logfiles(self):
         """Put CASA/Pipeline logfiles into the test working directory."""
-        casacalls_log_hdlr = logging.getLogger('CASACALLS').handlers[0]
-        casacalls_log_filename = casacalls_log_hdlr.baseFilename
-        casacalls_log_hdlr.baseFilename = os.path.basename(casacalls_log_filename)
-
+        CASACALLS_LOG = logging.get_logger('CASACALLS', stream=None, format='%(message)s', addToCasaLog=False,
+                                           filename='casacalls-{!s}.txt'.format(platform.node().split('.')[0]))
         now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
-        casa_tools.casalog.setlogfile(f'casa-{now_str}.log')
+        casa_tools.casalog.setlogfile(os.path.abspath(f'casa-{now_str}.log'))
 
 # The methods below are test methods called from pytest.
 

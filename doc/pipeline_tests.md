@@ -37,7 +37,7 @@ A summary of various test frameworks and tools is available in [PIPE-806](https:
 
 ## Regression tests
 
-see https://open-confluence.nrao.edu/display/PL/Regression+Testing for details
+See https://open-confluence.nrao.edu/display/PL/Regression+Testing for details
 
 To add the *xdist* flavor to your local regression run, one can try:
 
