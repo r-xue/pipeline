@@ -16,6 +16,7 @@ import pipeline.recipereducer
 from pipeline.infrastructure.renderer import regression
 import pipeline.infrastructure.executeppr as almappr
 import pipeline.infrastructure.executevlappr as vlappr
+from pipeline.infrastructure.utils import get_casa_session_details
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -80,17 +81,19 @@ class PipelineRegression(object):
             ppr: PPR file name
             telescope: string 'alma' or 'vla'
             default_relative_tolerance: default relative tolerance of output value
-            omp_num_threads: specify the number of OpenMP threads used for this specific test, regardless of default 
-                             value of the current CASA session. An explicit setting could mitigate potential small 
+            omp_num_threads: specify the number of OpenMP threads used for this regression test instance, regardless of 
+                             the default value of the current CASA session. An explicit setting could mitigate potential small 
                              numerical difference from threading-sensitive CASA tasks (e.g. setjy/tclean, which relies 
-                             on the FFTW library).  
+                             on the FFTW library).
         """
         # Run the Pipeline using cal+imag ALMA IF recipe
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = casa_tools.utils.resolve(self.testinput)
 
+        # optionally set OpenMP nthreads to a specified value.
         if omp_num_threads is not None:
-            default_nthreads = casa_tools.casalog.ompGetNumThreads()
+            # note: casa_tools.casalog.ompGetNumThreads() and get_casa_session_details()['omp_num_threads'] are equivalent.
+            default_nthreads = get_casa_session_details()['omp_num_threads']
             casa_tools.casalog.ompSetNumThreads(omp_num_threads)
 
         try:
@@ -114,6 +117,7 @@ class PipelineRegression(object):
         finally:
             os.chdir(self.current_path)
 
+        # restore the OpenMP nthreads to the value saved before the Pipeline ppr/reducer call.
         if omp_num_threads is not None:
             casa_tools.casalog.ompSetNumThreads(default_nthreads)
 
