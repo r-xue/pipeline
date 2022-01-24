@@ -144,7 +144,6 @@ class Context(object):
         self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}
         self.synthesized_beams = {'robust': None, 'uvtaper': None}
         self.imaging_mode = None
-        self.spwphaseup_snr_info = []
 
         LOG.trace('Creating report directory: %s', self.report_dir)
         utils.mkdir_p(self.report_dir)
