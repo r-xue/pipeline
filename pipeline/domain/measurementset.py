@@ -4,7 +4,7 @@ import contextlib
 import itertools
 import operator
 import os
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Dict
 
 import numpy as np
 
@@ -83,6 +83,7 @@ class MeasurementSet(object):
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
+        self.spwphaseup_snr_info: Optional[Dict[int, float]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
 

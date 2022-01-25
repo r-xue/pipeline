@@ -380,7 +380,7 @@ def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, n
         # spws, fields, field combinations, etc.) but it's probably not
         # worth the effort as cache entries left unoccupied should take
         # minimal space.
-        # PIPE-1008: 
+        # PIPE-1008:
         # increase maxsize to 40k entries for VLASS calibration
         # A typical VLASS observation can have 15-20k fields
         MSTOOL_SELECTEDINDICES_CACHE[ms_basename] = LoggingLRUCache(ms_basename, maxsize=40000)
@@ -412,7 +412,7 @@ def safe_split(fields: str) -> List[str]:
     Returns:
         A list, taking account of field names within quotes.
     """
-    return pyparsing.commaSeparatedList.parseString(str(fields)).asList()
+    return pyparsing.pyparsing_common.comma_separated_list.parseString(str(fields)).asList()
 
 
 def dequote(s: str) -> str:
@@ -606,7 +606,7 @@ def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
     rangeExpr = number('start') + TILDE + number('end')
     rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
-    boundary = [c for c in pyparsing.printables if c not in (' ', ',')]
+    boundary = ''.join([c for c in pyparsing.printables if c not in (' ', ',')])
     field_id = pyparsing.WordStart(boundary) + (rangeExpr | number) + pyparsing.WordEnd(boundary)
 
     casa_chars = ''.join([c for c in string.printable
@@ -623,7 +623,7 @@ def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
     field_name.setParseAction(get_ids_for_matching)
 
     results = set()
-    for atom in pyparsing.commaSeparatedList.parseString(str(task_arg)):
+    for atom in pyparsing.pyparsing_common.comma_separated_list.parseString(str(task_arg)):
         for parser in [field_name('fields'), field_id('fields')]:
             for match in parser.searchString(atom):
                 results.update(match.asList())
@@ -658,7 +658,7 @@ def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndar
     rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
     # antenna-oriented 'by ID' expressions can be any of the above patterns
-    boundary = [c for c in pyparsing.printables if c not in (' ', ',')]
+    boundary = ''.join([c for c in pyparsing.printables if c not in (' ', ',')])
     numExpr = pyparsing.WordStart(boundary) + (rangeExpr | number) + pyparsing.WordEnd(boundary)
 
     # group the number so it converted to a node, fields in this case
@@ -682,14 +682,11 @@ def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndar
     # the complete expression
     atomExpr = pyparsing.Group(antenna_id_expr('antennas') | antenna_name_expr('antennas'))
 
-    # and we can have multiple items separated by commas
-    finalExpr = pyparsing.delimitedList(atomExpr('atom'), delim=',')('result')
-
-    parse_result = finalExpr.parseString(str(task_arg))
-
     results = set()
-    for atom in parse_result.result:
-        for ant in atom.antennas:
-            results.add(ant)
+    for substr in pyparsing.pyparsing_common.comma_separated_list.parseString(str(task_arg)):
+        atoms = atomExpr.parseString(substr)
+        for atom in atoms:
+            for ant in atom.antennas:
+                results.add(ant)
 
     return sorted(list(results))

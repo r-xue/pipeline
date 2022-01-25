@@ -229,7 +229,7 @@ class SDBLFlagSummary(object):
         # Store data for plotting
         for N, ID in enumerate(ids):
             row = datatable.getcell('ROW', ID)
-            time = datatable.getcell('TIME', ID)
+            dtime = datatable.getcell('TIME', ID)
             # Check every flags to create summary flag
             tFLAG = datatable.getcell('FLAG', ID)[polid]
             tPFLAG = datatable.getcell('FLAG_PERMANENT', ID)[polid]
@@ -246,7 +246,7 @@ class SDBLFlagSummary(object):
             NPpdata['TsysFlag'][N] = tTSYS
             NPpflag['TsysFlag'][N] = tPFLAG[1]
             NPprows['TsysFlag'][N] = row
-            NPptime['TsysFlag'][N] = time
+            NPptime['TsysFlag'][N] = dtime
             if FlagRule_local['TsysFlag']['isActive'] and tPFLAG[1] == 0:
                 FlaggedRowsCategory['TsysFlag'].append(row)
             # Online flag
@@ -254,7 +254,7 @@ class SDBLFlagSummary(object):
                 FlaggedRowsCategory['OnlineFlag'].append(row)
 
             NPprows['BaselineFlag'][N] = row
-            NPptime['BaselineFlag'][N] = time
+            NPptime['BaselineFlag'][N] = dtime
             # RMS flag before baseline fit
             NPpdata['RmsPreFitFlag'][N] = tSTAT[2]
             NPpflag['RmsPreFitFlag'][N] = tFLAG[2]

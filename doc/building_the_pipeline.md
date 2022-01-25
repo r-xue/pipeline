@@ -162,6 +162,7 @@ python3 setup.py buildmytasks -i
 ```
 
 The bindings should be rebuilt whenever you change the interface XML definitions.
+To speed up the build process, one can also add the parallel build option (`-j n`).
 
 **Take care not to commit the code-generated files to SVN!**
 
