@@ -517,9 +517,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # boil it down to just the valid spws for these fields and request
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-        # For first SpectralSpec, create a new caltable.
-        append = False
-
+        # Create a separate phase solution caltable for each SpectralSpec
+        # grouping of SpWs and collect the corresponding CalApplications from
+        # the task results. Each caltable should have a unique filename since
+        # the filename includes the SpW selection.
         original_calapps = []
         for spectral_spec, tuning_spw_ids in utils.get_spectralspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
@@ -544,15 +545,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 'combine': inputs.combine,
                 'refant': inputs.refant,
                 'minblperant': inputs.minblperant,
-                'append': append
             }
             task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context, **task_args)
             phaseup_task = gtypegaincal.GTypeGaincal(task_inputs)
             tuning_result = self._executor.execute(phaseup_task)
             original_calapps.extend(tuning_result.pool)
-            # For subsequent SpectralSpecs, append calibration to existing
-            # caltable.
-            append = True
 
         # Phase solution caltables should always be registered to be applied
         # with calwt=False (PIPE-1154). Create an updated version of each
