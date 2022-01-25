@@ -22,7 +22,7 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
     # Search order of input vis
     processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
-    flagbackup = vdp.VisDependentProperty(default=False)
+    flagbackup = vdp.VisDependentProperty(default=True)
     template = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
@@ -74,6 +74,7 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         return {'vis': self.vis,
                 'mode': 'list',
                 'action': 'apply',
+                'intent': '*TARGET*',
                 'inpfile': self.inpfile,
                 'flagbackup': self.flagbackup}
 

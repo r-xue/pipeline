@@ -60,7 +60,7 @@
         <description>Back up any pre-existing flags.
                      (can be set only in 'interactive mode')
         </description>
-        <value type="bool">False</value>
+        <value type="bool">True</value>
     </param>
 
     <param name="dryrun" subparam="true" type="bool">
