@@ -74,7 +74,6 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         return {'vis': self.vis,
                 'mode': 'list',
                 'action': 'apply',
-                'intent': '*TARGET*',
                 'inpfile': self.inpfile,
                 'flagbackup': self.flagbackup}
 
