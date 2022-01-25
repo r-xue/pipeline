@@ -329,7 +329,8 @@ def test_13A_537__procedure_hifv__regression():
                             input_dir=input_dir,
                             visname='13A-537.sb24066356.eb24324502.56514.05971091435',
                             expectedoutput=(f'{input_dir}/' +
-                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'))
+                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'),
+                            output_dir='13A_537__procedure_hifv__regression')
 
     pr.run(telescope='vla')
 
@@ -347,7 +348,8 @@ def test_13A_537__calibration__PPR__regression():
     pr = PipelineRegression(input_dir=input_dir,
                             visname='13A-537.sb24066356.eb24324502.56514.05971091435',
                             expectedoutput=(f'{input_dir}/' +
-                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'))
+                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'),
+                            output_dir='13A_537__calibration__PPR__regression')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla')
 
@@ -363,7 +365,8 @@ def test_13A_537__restore__PPR__regression():
     pr = PipelineRegression(input_dir=input_dir,
                             visname='13A-537.sb24066356.eb24324502.56514.05971091435',
                             expectedoutput=(f'{input_dir}/' +
-                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'))
+                                            '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'),
+                            output_dir='13A_537__restore__PPR__regression')
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
