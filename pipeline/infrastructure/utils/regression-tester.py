@@ -19,6 +19,7 @@ from pipeline.infrastructure.renderer import regression
 import pipeline.infrastructure.executeppr as almappr
 import pipeline.infrastructure.executevlappr as vlappr
 import pipeline.infrastructure.logging as logging
+from pipeline.infrastructure.utils import shutdown_plotms
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -86,6 +87,10 @@ class PipelineRegression(object):
         # Run the Pipeline using cal+imag ALMA IF recipe
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = casa_tools.utils.resolve(self.testinput)
+
+        # try to shut down the existing plotms process to avoid side-effects caused by the changes of
+        # the test working directory and casa logfile location.
+        shutdown_plotms()
 
         try:
             # run the pipeline for new results
