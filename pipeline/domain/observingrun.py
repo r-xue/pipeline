@@ -198,7 +198,7 @@ class ObservingRun(object):
 
     def virtual2real_spw_id(self, spw_id, target_ms):
         """
-        Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
+        Translate a virtual (science) spw ID to the real one for a given MS.
 
         :param spw_id: the spw id to convert
         :type spw_id: integer
@@ -209,7 +209,7 @@ class ObservingRun(object):
 
     def real2virtual_spw_id(self, spw_id, target_ms):
         """
-        Translate a virtual (science) spw ID to the real one for a given MS.
+        Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
 
         :param spw_id: the spw id to convert
         :type spw_id: integer
