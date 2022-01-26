@@ -719,7 +719,7 @@ class MeasurementSet(object):
 
         corrstring_list = ddindex[0]['corrdesc']
         removal_list = ['RL', 'LR', 'XY', 'YX']
-        corrstring_list = list(set(corrstring_list).difference(set(removal_list)))
+        corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
 
         return corrstring
