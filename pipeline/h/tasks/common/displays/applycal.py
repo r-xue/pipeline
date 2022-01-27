@@ -493,12 +493,17 @@ class PlotmsFieldSpwComposite(FieldSpwComposite):
     leaf_class = PlotmsSpwComposite
 
 
+class PlotmsFieldBasebandComposite(FieldSpwComposite):
+    leaf_class = PlotmsBasebandComposite
+
+
 class PlotmsSpwAntComposite(SpwAntComposite):
     leaf_class = PlotmsAntComposite
 
 
 class PlotmsFieldSpwAntComposite(FieldSpwAntComposite):
     leaf_class = PlotmsSpwAntComposite
+
 
 class SpwFieldSummaryChart(PlotmsFieldSpwComposite):
     """
@@ -519,6 +524,7 @@ class SpwFieldSummaryChart(PlotmsFieldSpwComposite):
         # request plots per spw, overlaying all antennas
         super().__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field,
                                               **kwargs)
+
 
 class SpwSummaryChart(PlotmsSpwComposite):
     """
@@ -561,7 +567,27 @@ class BasebandSummaryChart(PlotmsBasebandComposite):
         # request plots per spw, overlaying all antennas
         # if field is specified in kwargs, it will override the calto.field
         # selection
-        super(BasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
+        super(BasebandSummaryChart, self).__init__(context, output_dir,
+                                                   calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
+
+
+class FieldBasebandSummaryChart(PlotmsFieldBasebandComposite):
+    """
+    Like BasebandSummaryChart, but creates separate plots for each field
+    """
+
+    def __init__(self, context, output_dir, calto, xaxis, yaxis, intent, **kwargs):
+        # (calto, intent) = _get_summary_args(context, result, intent)
+        LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
+
+        if 'field' in kwargs:
+            field = kwargs['field']
+            del kwargs['field']
+            LOG.debug('Override for %s vs %s plot: field=%s' % (yaxis, xaxis, field))
+        else:
+            field = calto.field
+
+        super().__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
 
 
 class AmpVsUVSummaryChart(SpwSummaryChart):
@@ -748,12 +774,32 @@ class AmpVsFrequencyFieldSummaryChart(SpwFieldSummaryChart):
         plot_args.update(kwargs)
 
         super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
-                                                         intent=intent, **plot_args)
+                         intent=intent, **plot_args)
 
 
-class VLAAmpVsFrequencyBasebandSummaryChart(BasebandSummaryChart):
+class AmpVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
     """
-    Create an amplitude vs time plot for each spw, overplotting by antenna.
+    Create an Amp vs Frequency plot for each baseband, overplotting by antenna.
+    """
+
+    def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
+        plot_args = {'ydatacolumn': ydatacolumn,
+                     'avgchannel': '',
+                     'avgtime': '1e8',
+                     'avgscan': True,
+                     'avgantenna': True,
+                     'plotrange': [0, 0, 0, 0],
+                     'correlation': '',
+                     'coloraxis': 'antenna1',
+                     'overwrite': True}
+        plot_args.update(kwargs)
+
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp', intent=intent, **plot_args)
+
+
+class AmpVsFrequencyPerFieldBasebandSummaryChart(FieldBasebandSummaryChart):
+    """
+    Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.
     """
 
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
@@ -770,8 +816,8 @@ class VLAAmpVsFrequencyBasebandSummaryChart(BasebandSummaryChart):
         }
         plot_args.update(kwargs)
 
-        super(VLAAmpVsFrequencyBasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
-                                                                    intent=intent, **plot_args)
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
+                         intent=intent, **plot_args)
 
 
 class PhaseVsFrequencyPerSpwSummaryChart(SpwFieldSummaryChart):
@@ -814,12 +860,13 @@ class PhaseVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
                      'overwrite': True}
         plot_args.update(kwargs)
 
-        super(PhaseVsFrequencyPerBasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='phase', intent=intent, **plot_args)
+        super(PhaseVsFrequencyPerBasebandSummaryChart, self).__init__(
+            context, output_dir, calto, xaxis='freq', yaxis='phase', intent=intent, **plot_args)
 
 
-class AmpVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
+class PhaseVsFrequencyPerFieldBasebandSummaryChart(FieldBasebandSummaryChart):
     """
-    Create an Amp vs Frequency plot for each baseband, overplotting by antenna.
+    Create an Phase vs Frequency plot for each baseband, overplotting by antenna, with separate plots for each field.
     """
 
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
@@ -834,7 +881,7 @@ class AmpVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
                      'overwrite': True}
         plot_args.update(kwargs)
 
-        super(AmpVsFrequencyPerBasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='amp', intent=intent, **plot_args)
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='phase', intent=intent, **plot_args)
 
 
 class SpwAntDetailChart(PlotmsSpwAntComposite):

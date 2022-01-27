@@ -454,7 +454,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                 )
                 if inputs.specmode == 'cont':
                     # Make sure the spw list is sorted numerically
-                    spwlist = [','.join(map(str, sorted(map(int, spwlist))))]
+                    spwlist_local = [','.join(map(str, sorted(map(int, spwlist))))]
+                else:
+                    spwlist_local = spwlist
 
                 # get list of field_ids/intents to be cleaned
                 if (not repr_target_mode) or (repr_target_mode and image_repr_target):
@@ -465,9 +467,9 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # Expand cont spws
                 if inputs.specmode == 'cont':
-                    spwids = spwlist[0].split(',')
+                    spwids = spwlist_local[0].split(',')
                 else:
-                    spwids = spwlist
+                    spwids = spwlist_local
 
                 # Generate list of observed vis/field/spw combinations
                 vislist_field_spw_combinations = {}
@@ -537,30 +539,34 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     all_spw_keys.extend(map(str, observed_spwids_list))
                                     # Also save cont selection
                                     all_spw_keys.append(','.join(map(str, observed_spwids_list)))
-                                    for spw in map(str, observed_spwids_list):
-                                        valid_data[vis][field_intent][str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw, vislist=[vis])[field_intent]
-                                        if not valid_data[vis][field_intent][str(spw)] and vis in observed_vis_list:
-                                            LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
-                                                os.path.basename(vis), field_intent[0], spw))
+                                    for observed_spwid in map(str, observed_spwids_list):
+                                        valid_data[vis][field_intent][str(observed_spwid)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=observed_spwid, vislist=[vis])[field_intent]
+                                        if not valid_data[vis][field_intent][str(observed_spwid)] and vis in observed_vis_list:
+                                            LOG.warning('Data for EB {}, field {}, observed_spwid {} is completely flagged.'.format(
+                                                os.path.basename(vis), field_intent[0], observed_spwid))
                                         # Aggregated value per vislist (replace with lookup pattern later)
-                                        if str(spw) not in valid_data[str(vislist)][field_intent]:
-                                            valid_data[str(vislist)][field_intent][str(spw)] = valid_data[vis][field_intent][str(spw)]
+                                        if str(observed_spwid) not in valid_data[str(vislist)][field_intent]:
+                                            valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[vis][field_intent][str(observed_spwid)]
                                         else:
-                                            valid_data[str(vislist)][field_intent][str(spw)] = valid_data[str(vislist)][field_intent][str(spw)] or valid_data[vis][field_intent][str(spw)]
-                                        if valid_data[vis][field_intent][str(spw)]:
-                                            filtered_spwlist.append(spw)
+                                            valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[str(vislist)][field_intent][str(observed_spwid)] or valid_data[vis][field_intent][str(observed_spwid)]
+                                        if valid_data[vis][field_intent][str(observed_spwid)]:
+                                            filtered_spwlist.append(observed_spwid)
                     filtered_spwlist = sorted(list(set(filtered_spwlist)), key=int)
                 else:
                     continue
 
                 # Collapse cont spws
                 if inputs.specmode == 'cont':
-                    spwlist_local = [','.join(filtered_spwlist)]
+                    filtered_spwlist_local = [','.join(filtered_spwlist)]
                 else:
-                    spwlist_local = filtered_spwlist
+                    filtered_spwlist_local = filtered_spwlist
+
+                if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
+                    LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
+                    continue
 
                 # Parse hm_cell to get optional pixperbeam setting
-                cell = inputs.get_spw_hm_cell(spwlist_local[0])
+                cell = inputs.get_spw_hm_cell(filtered_spwlist_local[0])
                 if isinstance(cell, str):
                     pixperbeam = float(cell.split('ppb')[0])
                     cell = []
@@ -591,7 +597,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         max_freq_spwid = spwid
 
                 if min_freq_spwid == -1 or max_freq_spwid == -1:
-                    LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(spwlist_local)))
+                    LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
                     continue
 
                 min_freq_spwlist = [str(min_freq_spwid)]
@@ -616,7 +622,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 uvrange = {}
                 bl_ratio = {}
                 for field_intent in field_intent_list:
-                    for spwspec in spwlist_local:
+                    for spwspec in filtered_spwlist_local:
                         if inputs.uvrange not in (None, [], ''):
                             uvrange[(field_intent[0], spwspec)] = inputs.uvrange
                         else:
@@ -695,7 +701,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # if imsize not set then use heuristic code to calculate the
                 # centers for each field/spwspec
-                imsize = inputs.get_spw_hm_imsize(spwlist_local[0])
+                imsize = inputs.get_spw_hm_imsize(filtered_spwlist_local[0])
                 if isinstance(imsize, str):
                     sfpblimit = float(imsize.split('pb')[0])
                     imsize = []
@@ -722,7 +728,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 # Image size (FOV) may be determined depending on the fractional bandwidth of the
                                 # selected spectral windows. In continuum spectral mode pass the spw list string
                                 # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
-                                imsize_spwlist = spwlist_local if inputs.specmode == 'cont' else None
+                                imsize_spwlist = filtered_spwlist_local if inputs.specmode == 'cont' else None
                                 himsize = self.heuristics.imsize(
                                     fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
                                     sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
@@ -772,7 +778,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 widths = {}
                 if specmode not in ('mfs', 'cont') and width == 'pilotimage':
                     for field_intent in field_intent_list:
-                        for spwspec in spwlist_local:
+                        for spwspec in filtered_spwlist_local:
                             try:
                                 nchans[(field_intent[0], spwspec)], widths[(field_intent[0], spwspec)] = \
                                   self.heuristics.nchan_and_width(field_intent=field_intent[1], spwspec=spwspec)
@@ -805,7 +811,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 for field_intent in sorted_field_intent_list:
                     mosweight = self.heuristics.mosweight(field_intent[1], field_intent[0])
-                    for spwspec in spwlist_local:
+                    for spwspec in filtered_spwlist_local:
                         # The field/intent and spwspec loops still cover the full parameter
                         # space. Here we filter the actual combinations.
                         valid_field_spwspec_combination = False

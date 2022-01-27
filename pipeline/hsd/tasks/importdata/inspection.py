@@ -1,26 +1,53 @@
+"""Inspection module for importdata."""
+
 import os
 import re
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import numpy
-
 import pipeline.infrastructure as infrastructure
+from pipeline.domain.datatable import DataTableImpl
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.hsd.tasks.common.inspection_util import (inspect_reduction_group,
+                                                       set_beam_size)
 # import pipeline.domain.singledish as singledish
 from pipeline.infrastructure import casa_tools
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.infrastructure.launcher import Context
+
 from ... import heuristics
 from . import reader
-from pipeline.hsd.tasks.common.inspection_util import inspect_reduction_group, set_beam_size
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDInspection(object):
-    def __init__(self, context, table_name, ms=None):
+    """Inspection class for hsd_importdata."""
+
+    def __init__(self, context: Context, table_name: str, ms: Optional[MeasurementSet]=None):
+        """Initialise SDInspection class.
+
+        Args:
+            context: pipeline context
+            table_name: path to DataTable corresponding to ms
+            ms: MeasurementSet object for inspection
+        """
         self.context = context
         self.table_name = table_name
         self.ms = ms
 
-    def execute(self, dry_run=True):
+    def execute(self, dry_run: bool = True) -> Tuple[Dict[int, MSReductionGroupDesc], Dict[str, Union[str, Dict]]]:
+        """Execute inspection process.
+
+        This method calls execute method of reader.py.
+
+        Args:
+            dry_run: dry run flag
+        Return:
+            reduction_group: dict of reduction group IDs (key) and MSReductionGroupDesc (value)
+            org_directions: dict of org_direction
+        """
         if dry_run:
             return None
 
@@ -41,7 +68,7 @@ class SDInspection(object):
         LOG.debug('table_name=%s' % table_name)
 
         dry_run = not os.path.exists(self.ms.name)
-        #worker.set_name(ms.name)
+        # worker.set_name(ms.name)
         org_directions = worker.execute(dry_run=dry_run)
 
         datatable = worker.get_datatable()
@@ -63,7 +90,7 @@ class SDInspection(object):
 
         # merge grouping result with MS-based DataTable
         position_group = grouping_result['POSGRP']
-        LOG.debug('len(position_group) = %s appended_row = %s'%(len(position_group), appended_row))
+        LOG.debug('len(position_group) = %s appended_row = %s' % (len(position_group), appended_row))
         LOG.debug('position_group = %s' % position_group)
         datatable.putcol('POSGRP', position_group[startrow:], startrow=startrow, nrow=appended_row)
 
@@ -93,11 +120,11 @@ class SDInspection(object):
                 LOG.debug('Adding %s' % key)
                 datatable.putkeyword(key, value)
             LOG.debug('after: %s' % (datatable.getkeyword(key)))
-        #datatable.putkeyword('POSGRP_LIST', grouping_result['POSGRP_LIST'])
+        # datatable.putkeyword('POSGRP_LIST', grouping_result['POSGRP_LIST'])
         time_group = grouping_result['TIMEGRP']
         time_group_list = grouping_result['TIMEGRP_LIST']
-        #datatable.putkeyword('TIMEGAP_S', time_gap[0])
-        #datatable.putkeyword('TIMEGAP_L', time_gap[1])
+        # datatable.putkeyword('TIMEGAP_S', time_gap[0])
+        # datatable.putkeyword('TIMEGAP_L', time_gap[1])
         for group_id, member_list in reduction_group.items():
             for member in member_list:
                 ms = member.ms
@@ -172,10 +199,21 @@ class SDInspection(object):
 # #                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)
 #                 for ant_id in valid_antid:
 #                     reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
-# 
+#
 #         return reduction_group
 
-    def __select_data(self, datatable, ms_ant_map, startrow=0, nrow=-1):
+    def __select_data(self, datatable: DataTableImpl, startrow: int=0, nrow: int=-1) -> Tuple[Dict[int, Set[int]],
+                                                                                              Dict[int, Set[int]],
+                                                                                              Dict[int, Set[int]]]:
+        """Inspect DataTable and return row IDs grouped by antenna, spw, and field.
+
+        Args:
+            datatable: DataTable to inspect
+            startrow: the row ID in DataTable to start inspection
+            nrow: number of rows to inspect
+        Returns:
+            Dict of antenna id/spectral window/field id
+        """
         ms_name = self.ms.name
         filename = datatable.getkeyword('FILENAME')
         assert os.path.basename(ms_name) == os.path.basename(filename)
@@ -222,7 +260,20 @@ class SDInspection(object):
 
         return by_antenna, by_spw, by_field
 
-    def _group_data(self, datatable, position_group_id, time_group_id_small, time_group_id_large, startrow=0, nrow=-1):
+    def _group_data(self, datatable: DataTableImpl, position_group_id: int, time_group_id_small: int, time_group_id_large: int,
+                    startrow: int=0, nrow: int=-1) -> Dict[str, Union[numpy.array, Dict[int, Any]]]:
+        """Inspect DataTable and generate time and position groups.
+
+        Args:
+            datatable: DataTable to inspect
+            position_group_id: position group id
+            time_group_id_small: time group range id, min
+            time_group_id_large: time group range id, max
+            startrow: the row ID in DataTable to start inspection
+            nrow: number of rows to inspect
+        Returns:
+            Dict of grouping
+        """
         ms_ant_map = {}
         id_ant_map = {}
         ant_offset = 0
@@ -236,7 +287,7 @@ class SDInspection(object):
 
         if nrow < 0:
             nrow = datatable.nrow - startrow
-        by_antenna, by_spw, by_field = self.__select_data(datatable, ms_ant_map, startrow=startrow, nrow=nrow)
+        by_antenna, by_spw, by_field = self.__select_data(datatable, startrow=startrow, nrow=nrow)
         LOG.trace('by_antenna=%s' % by_antenna)
         LOG.trace('by_spw=%s' % by_spw)
         LOG.trace('len(by_antenna)=%s len(by_spw)=%s' % (len(by_antenna), len(by_spw)))
@@ -282,7 +333,7 @@ class SDInspection(object):
         for ant, vant in by_antenna.items():
             LOG.debug('Start ant %s' % ant)
             pattern_dict = {}
-            #ms = ms_ant_map[ant]
+            # ms = ms_ant_map[ant]
             observatory = ms.antenna_array.name
             _beam_size = ms.beam_sizes[id_ant_map[ant]]
             for i in (0, 1):
@@ -312,7 +363,7 @@ class SDInspection(object):
                     posgrp_list[ant][spw][field_id] = []
                     timegrp_list[ant][spw][field_id] = None
 
-                    #for (pol,vpol) in self.by_pol.items():
+                    # for (pol,vpol) in self.by_pol.items():
                     id_list = numpy.fromiter(vant & vspw & vfield, dtype=numpy.int32)
                     if len(id_list) == 0:
                         continue
@@ -324,19 +375,19 @@ class SDInspection(object):
                     time_sel = numpy.take(elapsed, id_list)
                     beam_sel = numpy.take(beam, id_list)
 
-                    ### new GroupByPosition with translation ###
-                    update_pos = (last_ra is None or \
-                                  len(ra_sel) != len(last_ra) or \
-                                  len(dec_sel) != len(last_dec) or \
-                                  not (all(ra_sel==last_ra) and \
-                                       all(dec_sel==last_dec)))
+                    # new GroupByPosition with translation
+                    update_pos = (last_ra is None or
+                                  len(ra_sel) != len(last_ra) or
+                                  len(dec_sel) != len(last_dec) or
+                                  not (all(ra_sel == last_ra) and
+                                       all(dec_sel == last_dec)))
                     if update_pos:
                         (pos_dict, pos_gap) = pos_heuristic2(ra_sel, dec_sel,
                                                              r_combine, r_allowance)
                         last_ra = ra_sel
                         last_dec = dec_sel
 
-                        ### ObsPatternAnalysis ###
+                        # ObsPatternAnalysis
                         # 2014/02/04 TN
                         # Temporary workaround for TP acceptance data issue
                         # Observing pattern is always 'RASTER' for ALMA
@@ -345,8 +396,8 @@ class SDInspection(object):
                         else:
                             pattern = obs_heuristic2(pos_dict)
 
-                    ### prepare for Self.Datatable ###
-                    #posgrp_list[ant][spw][pol] = []
+                    # prepare for Self.Datatable
+                    # posgrp_list[ant][spw][pol] = []
                     LOG.debug('pos_dict = %s' % pos_dict)
                     LOG.debug('last_ra = %s last_dec = %s' % (last_ra, last_dec))
                     for k, v in pos_dict.items():
@@ -359,7 +410,7 @@ class SDInspection(object):
                             posgrp[_id] = posgrp_id
                         posgrp_list[ant][spw][field_id].append(posgrp_id)
                         posgrp_id += 1
-                    ###
+                    #
 
                     raster_heuristic_ok = False
                     if pattern == 'RASTER':
@@ -370,25 +421,25 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
-                            LOG.warning(
-                                'RasterScanHeuristics failed with the following error. Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+                            LOG.warn('RasterScanHeuristics failed with the following error. ' +
+                                     'Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or raster_heuristic_ok is False:
-                        ### new GroupByTime with translation ###
+                        # new GroupByTime with translation
                         time_diff = time_sel[1:] - time_sel[:-1]
-                        update_time = (last_time is None \
-                                       or len(time_diff) != len(last_time) or \
+                        update_time = (last_time is None or 
+                                       len(time_diff) != len(last_time) or
                                        not all(time_diff == last_time))
                         if update_time:
                             (time_table, time_gap) = time_heuristic2(time_sel, time_diff)
                             last_time = time_diff
 
-                        ### new MergeGapTable with translation ###
+                        # new MergeGapTable with translation
                         if update_pos or update_time:
                             (merge_table, merge_gap) = merge_heuristic2(time_gap, time_table, pos_gap, beam_sel)
 
-                    ### prepare for Self.Datatable ###
+                    # prepare for Self.Datatable
                     keys = ['small', 'large']
                     grp_list = {}
                     for idx, key in enumerate(keys):
@@ -411,23 +462,24 @@ class SDInspection(object):
                     pattern_dict[spw][field_id] = pattern
 
             # register observing pattern to domain object
-            #self[ant].pattern = pattern_dict
+            # self[ant].pattern = pattern_dict
             observing_pattern[ant] = pattern_dict
 
-        grouping_result= {}
+        grouping_result = {}
         grouping_result['POSGRP'] = posgrp
         grouping_result['POSGRP_REP'] = posgrp_rep
         grouping_result['POSGRP_LIST'] = posgrp_list
         grouping_result['TIMEGRP_LIST'] = timegrp_list
         grouping_result['TIMEGRP'] = timegrp
         grouping_result['TIMEGAP'] = timegap
-        #grouping_result['OBSERVING_PATTERN'] = observing_pattern
+        # grouping_result['OBSERVING_PATTERN'] = observing_pattern
 
         ms.observing_pattern = observing_pattern
 
         return grouping_result
 
     def _inspect_calibration_strategy(self):
+        """Inspect calibration strategy and set it to MeasurementSet."""
         ms = self.ms
         tsys_transfer = []
         calibration_type_heuristic = heuristics.CalibrationTypeHeuristics()
@@ -485,7 +537,7 @@ class SDInspection(object):
 #                 rpattern = '^%s_[0-9]$'%(reference_name)
                 if target_name == reference_name:
                     field_map[target.id] = reference.id
-                elif match_field_name(reference_name, target_name):
+                elif _check_offsource_fieldname_maching(reference_name, target_name):
                     field_map[target.id] = reference.id
         calibration_strategy = {'tsys': do_tsys_transfer,
                                 'tsys_strategy': spwmap,
@@ -521,7 +573,7 @@ class SDInspection(object):
 #                 match = group_key
 #                 break
 #         return match
-# 
+#
 #     def __find_match_by_coverage(self, nchan, min_frequency, max_frequency, reduction_group, fraction=0.99,
 #                                  field_name=None):
 #         if fraction <= 0 or fraction > 1.0:
@@ -544,12 +596,18 @@ class SDInspection(object):
 #         return match
 
 
-def match_field_name(name1, name2):
+def _check_offsource_fieldname_maching(name1: str, name2: str) -> bool:
     """
-    Returns True if two (field) names match search patterns, i.e.,
-    either (name2 == name1 + pattern) or (name1 == name2 + pattern).
-    Otherwise, returns False.
+    Return True if two fieldnames follow the naming rule of OFF SOURCE.
+
+    if name1 is 'M100', then name2 should be 'M100_OFF_[ID]' (or 'M100_[ID]' in old pattern)
     Note the method returns False for the exact match, i.e., name1 == name2.
+
+    Args:
+        name1: matching string 1
+        name2: matching string 2
+    Returns:
+        boolean matched them
     """
     trim_name = lambda s: s[1:-1] if s.startswith('"') and s.endswith('"') else s
     name1 = trim_name(name1)
@@ -569,7 +627,7 @@ def match_field_name(name1, name2):
     off_pattern = '^_OFF_[0-9]+$'
     old_pattern = '^_[0-9]+$'  # old and unofficial field name pattern
     for pattern in (off_pattern, old_pattern):
-#         is_match = lambda s: re.match(pattern, s) is not None
+        # is_match = lambda s: re.match(pattern, s) is not None
         if re.match(pattern, suffix) is not None:
             if pattern == old_pattern:
                 LOG.warning("OFF source field identified using old field name heuristics. You may want to review field"

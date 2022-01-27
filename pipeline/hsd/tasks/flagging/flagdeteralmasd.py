@@ -95,31 +95,22 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
             valid_ephem_names = [x for x in ephem_names if x != 'COMET']
             LOG.info('Regenerate pointing plots to update flag information')
             msobj = context.observing_run.get_ms(self.inputs['vis'])
+            task = pointing.SingleDishPointingChart(context, msobj)
             for antenna in msobj.antennas:
                 for target, reference in msobj.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
-                    task = pointing.SingleDishPointingChart(context, msobj, antenna,
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=True)
-                    task.plot(revise_plot=True)
-                    task = pointing.SingleDishPointingChart(context, msobj, antenna,
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=False)
-                    task.plot(revise_plot=True)
+                    task.plot(revise_plot=True, antenna=antenna, target_field_id=target,
+                              reference_field_id=reference, target_only=True)
+                    task.plot(revise_plot=True, antenna=antenna, target_field_id=target,
+                              reference_field_id=reference, target_only=False)
 
                     # if the target is ephemeris, offset pointing pattern should also be plotted
                     target_field = msobj.fields[target]
                     source_name = target_field.source.name
                     offset_pointings = []
                     if source_name.upper() in valid_ephem_names:
-                        task = pointing.SingleDishPointingChart(context, msobj, antenna,
-                                                                target_field_id=target,
-                                                                reference_field_id=reference,
-                                                                target_only=True,
-                                                                ofs_coord=True)
-                        plotres = task.plot(revise_plot=True)
+                        plotres = task.plot(revise_plot=True, antenna=antenna, target_field_id=target,
+                                            reference_field_id=reference, target_only=True, ofs_coord=True)
                         if plotres is not None:
                             offset_pointings.append(plotres)
 
