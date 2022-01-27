@@ -339,7 +339,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for field in plotfields:
                 plots = self.science_plots_for_result(context,
                                                       result,
-                                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                                       [field.id],
                                                       uv_range, correlation=correlation)
                 amp_vs_freq_summary_plots[vis][field.id] = plots
@@ -364,7 +364,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for source_id, brightest_field in brightest_fields.items()[0:len(brightest_fields.items()):Nplots]:
                 plots = self.science_plots_for_result(context,
                                                       result, 
-                                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                                       [brightest_field.id],
                                                       uv_range, correlation=correlation)
                 amp_vs_freq_summary_plots[vis][source_id] = plots
@@ -394,7 +394,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 # detail pages; we don't create plots per spw or antenna
                 self.science_plots_for_result(context,
                                               result,
-                                              applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                              applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                               fields,
                                               uv_range,
                                               ApplycalAmpVsFreqSciencePlotRenderer, correlation=correlation)

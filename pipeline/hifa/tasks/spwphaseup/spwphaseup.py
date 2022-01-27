@@ -436,6 +436,10 @@ class SpwPhaseupResults(basetask.Results):
             ms.phaseup_spwmap = self.phaseup_spwmap
             ms.combine_spwmap = self.combine_spwmap
             ms.low_combined_phasesnr_spws = self.low_combined_phasesnr_spws
+            # PIPE-1208: Add estimated SNR to ms
+            snr_info_dict = {int(k): v for (k, v) in self.snr_info}
+            ms.spwphaseup_snr_info = snr_info_dict
+
 
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
