@@ -683,10 +683,6 @@ class SpwPhaseupResults(basetask.Results):
             # Merge the phase calibrator mapping.
             ms.phasecal_mapping = self.phasecal_mapping
 
-            # PIPE-1208: Add estimated SNR to ms
-            snr_info_dict = {int(k): v for (k, v) in self.snr_info}
-            ms.spwphaseup_snr_info = snr_info_dict
-
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
             return ('SpwPhaseupResults:\n'

@@ -4,7 +4,7 @@ import contextlib
 import itertools
 import operator
 import os
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Dict
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -83,12 +83,11 @@ class MeasurementSet(object):
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
-        self.spwphaseup_snr_info: Optional[Dict[int, float]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
 
         # Dictionary mapping phase calibrator fields to corresponding fields
-        # with TARGET / CHECK intents.
+        # with TARGET / CHECK intents (PIPE-1154).
         self.phasecal_mapping: dict = {}
 
         # Dictionary to map each SpectralSpec to list of corresponding spectral
@@ -97,7 +96,7 @@ class MeasurementSet(object):
 
         # Dictionary with collections of spectral window maps for mapping or
         # combining spws, split by (intent, field). This is used in several
-        # ALMA ('hifa') calibration tasks.
+        # ALMA ('hifa') calibration tasks (PIPE-1154).
         self.spwmaps: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
