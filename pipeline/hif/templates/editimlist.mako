@@ -24,7 +24,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         </tr>
         <tr>
             <td><strong>Image name</strong></td>
-            <td>${os.path.basename(target['imagename'])}</td>
+            %if result[0].img_mode == 'VLASS-SE-CUBE':
+                <td>${os.path.basename(result[0].targets_imagename)}</td>
+            %else:
+                <td>${os.path.basename(target['imagename'])}</td>
+            %endif
         </tr>
         <tr>
             <td><strong>Phase center</strong></td>
@@ -46,15 +50,19 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <td><strong>Number of fields</strong></td>
             <td>${len(target['field'].split(','))}</td>
         </tr>
+        <tr>
+            <td><strong>spw</strong></td>
+            %if result[0].img_mode == 'VLASS-SE-CUBE':
+                <td>${result[0].targets_spw}</td>
+            %else:
+                <td>${target['spw']}</td>
+            %endif
+        </tr>        
         %for key in target.keys():
-            %if key in target.keys() and key not in ('imagename', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna'):
+            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna'):
                 <tr>
                     <td><strong>${key}</strong></td>
-                    %if key == 'stokes' and result[0].img_mode == 'VLASS-SE-CUBE':
-                        <td>IQU</td>
-                    %else:
-                        <td>${target[key]}</td>
-                    %endif
+                    <td>${target[key]}</td>
                 </tr>
             %endif
         %endfor

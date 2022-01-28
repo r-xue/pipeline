@@ -511,6 +511,9 @@ class Editimlist(basetask.StandardTaskTemplate):
                         imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
                             '.spw' + spw.replace('~', '-').replace(',', '_')
                         result.add_target(imlist_entry_per_spwgroup)
+                    # For VLASS-SE-CUBE, we add two additional attributes so the template can render the spwgroup list.
+                    result.targets_imagename = imlist_entry['imagename']
+                    result.targets_spw = imlist_entry['spw']
                 else:
                     result.add_target(imlist_entry)
             else:
