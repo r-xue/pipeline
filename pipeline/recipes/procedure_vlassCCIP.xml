@@ -93,7 +93,7 @@
     </ProcessingCommand>        
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_cutoutimages</Command>
+        <Command xmlns="">hif_makecutoutimages</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>     
