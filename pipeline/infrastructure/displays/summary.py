@@ -2,6 +2,7 @@ import datetime
 import math
 import operator
 import os
+from typing import Tuple
 
 import matplotlib.dates as dates
 import matplotlib.pyplot as plt
@@ -864,27 +865,29 @@ class UVChart(object):
         # Get spw_id, field, field_name, and intent to plot.
         self.spw_id, self.field, self.field_name, self.intent = self._get_spwid_and_field()
 
-        # Determine number of channels in spw.
-        self.nchan = self._get_nchan_for_spw(self.spw_id)
+        if self.spw_id is not None:
+            # Determine number of channels in spw.
+            self.nchan = self._get_nchan_for_spw(self.spw_id)
 
-        # Set title of plot, modified by prefix if provided.
-        self.title = 'UV coverage for {}'.format(self.ms.basename)
-        if title_prefix:
-            self.title = title_prefix + self.title
+            # Set title of plot, modified by prefix if provided.
+            self.title = 'UV coverage for {}'.format(self.ms.basename)
+            if title_prefix:
+                self.title = title_prefix + self.title
 
-        # get max UV via unprojected baseline
-        spw = ms.get_spectral_window(self.spw_id)
-        wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
-        bl_max = float(ms.antenna_array.max_baseline.length.to_units(DistanceUnits.METRE))
-        self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
+            # get max UV via unprojected baseline
+            spw = ms.get_spectral_window(self.spw_id)
+            wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
+            bl_max = float(ms.antenna_array.max_baseline.length.to_units(DistanceUnits.METRE))
+            self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
 
     def plot(self):
         if DISABLE_PLOTMS:
             LOG.debug('Disabling UV coverage plot due to problems with plotms')
             return None
 
-        # Don't plot if no spw was found for the field/source/intent
-        if self.spw_id is None: 
+        # Don't plot if no spw was found for the field/source/intent or if the set of plotting parameters doesn't
+        # exist in the MS. See PIPE-1225.
+        if (not self._is_valid()) or (self.spw_id is None): 
             LOG.debug('Disabling UV coverage plot due to being unable to find a set of parameters to plot.')
             return None
 
@@ -935,7 +938,7 @@ class UVChart(object):
                                        'spw': self.spw_id},
                            command=str(task))
 
-    def _get_spwid_and_field(self):
+    def _get_spwid_and_field(self) -> Tuple[str, str, str, str]:
         # Attempt to get representative source and spwid.
         repr_src, repr_spw = self._get_representative_source_and_spwid()
 
@@ -960,7 +963,7 @@ class UVChart(object):
         # If no representative source was identified, then get the preferred source and science spw
         return self._get_preferred_science_spw_and_field()
 
-    def _get_representative_source_and_spwid(self):
+    def _get_representative_source_and_spwid(self) -> Tuple[str, int]:
         # Is the representative source in the context or not
         if not self.context.project_performance_parameters.representative_source:
             source_name = None
@@ -989,22 +992,24 @@ class UVChart(object):
 
         return repsource_name, repsource_spwid
 
-    def _get_first_available_science_spw(self, field, intent):
+    def _get_first_available_science_spw(self, field: str, intent: str) -> str:
         science_spws = self.ms.get_spectral_windows(science_windows_only=True)
-        selected_field = self.ms.get_fields(field_id=int(field))[0] # self.field is field_id as a string.
+        selected_field = self.ms.get_fields(field_id=int(field))[0]
         possible_spws = selected_field.valid_spws.intersection(set(science_spws))
         possible_spws_intents = [spw for spw in possible_spws if intent in spw.intents]
 
-        # Do not plot if it wasn't possible to find a usable spw for the selected source, field, and intent
+        # Do not set spw_id or plot if it wasn't possible to find a usable spw for the selected source, field, and intent.
         if not possible_spws_intents:
             LOG.debug("{}: Could not find a spw to plot with the field: {} and intent: {}".format(self.ms.basename, self.field, self.intent))
             spw = None
             return spw
+
+        # Get and return first spw by id
         final_spw = sorted(possible_spws_intents, key=operator.attrgetter('id'))[0]
         spw = str(final_spw.id)
         return spw
 
-    def _get_preferred_science_spw_and_field(self):
+    def _get_preferred_science_spw_and_field(self) -> Tuple[str, str, str, str]:
         # take first TARGET sources, otherwise first AMPLITUDE sources, etc.
         for intent in self.preferred_intent_order:
             sources_with_intent = [s for s in self.ms.sources if intent in s.intents]
@@ -1021,7 +1026,7 @@ class UVChart(object):
 
         return spw, field, field_name, intent 
 
-    def _get_field_for_source(self, src_name):
+    def _get_field_for_source(self, src_name: str) -> Tuple[str, str, str]:
         sources_with_name = [s for s in self.ms.sources if s.name == src_name]
         if not sources_with_name:
             LOG.error("Source {} not found in MS.".format(src_name))
@@ -1056,6 +1061,13 @@ class UVChart(object):
         spw = self.ms.get_spectral_window(int(spwid))
         nchan = str(len(spw.channels))
         return nchan
+
+    def _is_valid(self) -> bool:
+        with casa_tools.MSReader(self.ms.name) as msfile:
+            casa_intent = utils.to_CASA_intent(self.ms, self.intent)
+            staql = {'field': self.field, 'spw': self.spw_id, 'scanintent': casa_intent}
+            select_valid = msfile.msselect(staql, onlyparse=False)
+            return select_valid
 
 def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
     """
