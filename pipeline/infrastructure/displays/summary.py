@@ -887,7 +887,7 @@ class UVChart(object):
 
         # Don't plot if no spw was found for the field/source/intent or if the set of plotting parameters doesn't
         # exist in the MS. See PIPE-1225.
-        if (not self._is_valid()) or (self.spw_id is None): 
+        if (self.spw_id is None) or (not self._is_valid()): 
             LOG.debug('Disabling UV coverage plot due to being unable to find a set of parameters to plot.')
             return None
 
