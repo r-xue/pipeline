@@ -350,15 +350,22 @@ class MeasurementSetReader(object):
             # Populate the the online ALMA Control Software software names, if applicable:
             if 'ALMA' in msmd.observatorynames():
                 annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
-                with casa_tools.TableReader(annotation_table) as table:
-                    acs_software_details = table.getcol('details')[0]
-    
-                    if "WARNING" in acs_software_details: # This value can be "WARNING: No ACS_TAG available" in Annotation.xml
-                        ms.acs_software_version = "Unknown"
-                    else: 
-                        ms.acs_software_version = acs_software_details
+                try:
+                    with casa_tools.TableReader(annotation_table) as table:
+                        acs_software_details = table.getcol('details')[0]
 
-                    ms.acs_software_build_version = table.getcol('details')[1]
+                        # This value can be "WARNING: No ACS_TAG available" in Annotation.xml
+                        if "WARNING" in acs_software_details: 
+                            ms.acs_software_version = "Unknown"
+                        else: 
+                            ms.acs_software_version = acs_software_details
+
+                        ms.acs_software_build_version = table.getcol('details')[1]
+                except: 
+                    LOG.info("Unable to read Annotation table infoformation for MS {}".format(_get_ms_basename(ms)))
+                    ms.acs_software_version = "Unknown"
+                    ms.acs_software_build_version = "Unknown"
+                    
 
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
@@ -492,8 +499,9 @@ class SpectralWindowTable(object):
                 receiver, freq_lo = None, None
 
             # Read the online spectral averaging information if available
+            # TODO: consider breaking out into function
             sdm_num_bin = None
-            if 'ALMA' in msmd.observatorynames():
+            if 'ALMA' in msmd.observatorynames(): # TODO: needs VLA
                 sdm_num_bin = []
                 with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
                     sdm_num_bin = table.getcol('SDM_NUM_BIN')

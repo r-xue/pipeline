@@ -436,7 +436,7 @@ class T1_1Renderer(RendererBase):
                                             baseline_max=baseline_max,
                                             baseline_rms=baseline_rms,
                                             merge2_version=getattr(ms, 'merge2_version', 'N/A'))
-            else:
+            else: # TODO: this should really be "just alma"
                 row = T1_1Renderer.TableRow(ousstatus_entity_id=context.project_structure.ousstatus_entity_id,
                                             schedblock_id=ms.schedblock_id,
                                             schedblock_name=sb_name,

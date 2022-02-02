@@ -278,6 +278,15 @@ $(document).ready(function() {
                             % endif
                             </tr>
                             % for row in session_group:
+                                % if row.acs_software_version != acs_version or row.software_build_version != build_version: #TODO: finish this
+                                <% #repeat part of header
+                                # outer if should also include if ALMA
+                                <td colspan="${numcol}"><b>ACS Version:</b> ${row.acs_version}, <b>Build Version:</b> ${row.software_build_version} </td>
+                                # then variables acs_version and software_build version need to be updated in case it like alternates. 
+                                # like last_acs_version = row.acs_version 
+                                # last_software_build = row.software_build_version
+                                # then check these...
+                                %>
                                 <tr>
                                     <td><a href="${row.href}">${row.ms}</a></td>
                                     <td>${utils.commafy(row.receivers, quotes=False)}</td>
