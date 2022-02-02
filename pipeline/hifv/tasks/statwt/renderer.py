@@ -21,6 +21,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plotter = None
 
         for result in results:
+            print("Results: {}".format(result))
 #            if result.inputs['statwtmode'] == 'VLASS-SE': #My first pass on this is to literally run without the if and see what a "standard vla run looks like"
             plotter = statwtdisplay.weightboxChart(context, result)
             plots = plotter.plot()

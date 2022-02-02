@@ -155,8 +155,12 @@ class Statwt(basetask.StandardTaskTemplate):
         print("Attempting to make a weight table:")
         stage_number = self.inputs.context.task_counter
         names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
+        print("names:")
+        print(names)
         outputvis = '.'.join(list(filter(None, names)))
+        print("outputvis: {}".format(outputvis))
         wtable = outputvis+'.tbl'
+        print("output wtable {}".format(wtable))
 
         if dryrun == True:
             return wtable
@@ -165,20 +169,21 @@ class Statwt(basetask.StandardTaskTemplate):
         if isdir:
             shutil.rmtree(outputvis)
 
-        print("Attempting to make a weight table:2")
-        task_args = {'vis': self.inputs.vis,
+        task_args = {'vis': self.inputs.vis, # Start here again! 
                      'outputvis': outputvis,
-                     'spw': '*:0',
+                     'spw': '*:0', # channel 0 for all spwids
                      'datacolumn': 'DATA',
                      'keepflags': False}
         job = casa_tasks.split(**task_args)
         self._executor.execute(job)
+        # I think this is supposed to generate outputvis. Does it fail? What happens here? 
 
         with casa_tools.MSMDReader(outputvis) as msmd:
+            print("Do we even try to get spws?")
             spws = msmd.spwfordatadesc(-1)
 
-        print("Attempting to make a weight table:3")
         with casa_tools.TableReader(outputvis, nomodify=False) as tb:
+            print("What about going in and trying to make a table for plotting?")
             for column in ['WEIGHT_SPECTRUM', 'SIGMA_SPECTRUM']:
                 if column in tb.colnames():
                     tb.removecols(column)
@@ -193,11 +198,10 @@ class Statwt(basetask.StandardTaskTemplate):
                     stb.putcol('FLAG', np.resize(flag_row, (weights_shape[0], 1, weights_shape[1])))
                 stb.close()
 
-        print("Attempting to make a weight table:3")
         gaincal_spws = ','.join([str(s) for s in spws])
         job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
-        print("Attempting to make a weight table:4")
+        # it definitely successfully makes a weight table
         print(wtable)
         return wtable

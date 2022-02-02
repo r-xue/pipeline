@@ -123,6 +123,8 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
         <ParameterSet>
+            <Keyword xmlns="">datacolumn</Keyword>
+            <Value xmlns="">residual_data</Value>
         </ParameterSet>
     </ProcessingCommand>
 
