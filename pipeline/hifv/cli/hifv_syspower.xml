@@ -28,7 +28,7 @@
             <description>If antexclude is specified with usemedian=False, the template values are replaced with 1.0.
              If usemedian = True, the template values are replaced with the median of the good antennas
             </description>
-	    <value>False</value>
+	    <value>True</value>
 	</param>
 
     <param name="pipelinemode" type="string">
