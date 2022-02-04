@@ -44,7 +44,7 @@ To add the *xdist* flavor to your local regression run, one can try:
 
 ```console
 xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \
-    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-n', '4', '<pl_repodir>/pipeline/infrastructure/utils/regression-tester.py'])"
+    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-n', '4', '<pipeline_dir>/pipeline/infrastructure/utils/regression-tester.py'])"
 ```
 
 Here are some additional examples to run selected tests using their [node IDs or custom makers](https://docs.pytest.org/en/latest/example/markers.html):
@@ -52,20 +52,28 @@ Here are some additional examples to run selected tests using their [node IDs or
 ```console
 # select a single test using its node ID
 xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \
-    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '<pl_repodir>/pipeline/infrastructure/utils/regression-tester.py::test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression'])"
+    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '<pipeline_dir>/pipeline/infrastructure/utils/regression-tester.py::test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression'])"
 ```
 
 ```console
 # select a group of tests using the test marker `hifa`
 xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \
-    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-m', 'hifa', '<pl_repodir>/pipeline/infrastructure/utils/regression-tester.py'])"
+    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-m', 'hifa', '<pipeline_dir>/pipeline/infrastructure/utils/regression-tester.py'])"
 ```
 
 ```console
 # select all tests with `mg2_20170525142607_180419` in the test function names
 xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \
-    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-k', 'mg2_20170525142607_180419', '<pl_repodir>/pipeline/infrastructure/utils/regression-tester.py'])"
+    "import pytest; pytest.main(['-vv', '--junitxml=regression-results.xml', '-k', 'mg2_20170525142607_180419', '<pipeline_dir>/pipeline/infrastructure/utils/regression-tester.py'])"
 ```
+
+Alternatively, if you want to figure out the coverage of a single regression test and also prefer to directly call CASA's python interpreter (therefore skip the `casashell` layer and .casa/startup.py):
+
+```console
+PYTHONNOUSERSITE=1 xvfb-run -d ${casa_dir}/bin/python3 -m pytest -v --pyclean --cov=pipeline --cov-report=html \
+    ${pipeline_dir}/pipeline/infrastructure/utils/regression-tester.py::test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression
+```
+The coverage report will be saved as `htmlcov/index.html`. A similar call can be issued to report the test coverage of the entire regression test suite, although such run will take much longer. 
 
 ## Custom pytest options
 
