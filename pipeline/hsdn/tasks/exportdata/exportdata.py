@@ -88,7 +88,7 @@ class NROExportDataInputs(sdexportdata.SDExportDataInputs):
 @task_registry.set_equivalent_casa_task('hsdn_exportdata')
 @task_registry.set_casa_commands_comment('The output data products are computed.')
 class NROExportData(sdexportdata.SDExportData):
-    """The base class for exporting data to the products subdirectory.
+    """A class for exporting Nobeyama data to the products subdirectory.
 
     It performs the following operations:
     - Saves the pipeline processing request in an XML file
