@@ -75,7 +75,13 @@ class plotsummarySummaryChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
+        # Add the "All" band key/value if the dataset is multi-band.
+        if len(band2spw) > 1:
+            band2spw['All'] = [spw for spws_per_band in band2spw.values() for spw in spws_per_band]
+
         for field in plotfields:
+            plots_perband = []
+            spws_perband = []
             for bandname, spwlist in band2spw.items():
                 figfile = self.get_figfile('field'+str(field.id)+'_amp_uvdist_{!s}'.format(bandname))
 
@@ -86,6 +92,12 @@ class plotsummarySummaryChart(object):
                 spwidlist = [int(spw) for spw in spwlist]
                 spwuselist = [str(spwid) for spwid in spwidlist if spwid in source_spwidlist]
 
+                spwuse_str = ','.join(spwuselist)
+                # skip if the same spw combination has been plotted before (likley this specific field was observed in a single band)
+                if spwuse_str in spws_perband:
+                    break
+                spws_perband.extend(spwuse_str)
+
                 if spwuselist:
                     LOG.info(bandname+': ' + ','.join(spwuselist) + '    Field: '+field.name + '   id:'+str(field.id))
 
@@ -94,19 +106,21 @@ class plotsummarySummaryChart(object):
                                                    'type': 'Field '+str(field.id)+', '+field.name,
                                                    'field': str(field.id),
                                                    'bandname': bandname,
-                                                   'spw': ','.join(spwuselist)})
+                                                   'spw': spwuse_str})
 
                     if not os.path.exists(figfile):
-                        LOG.info('Plotting amp vs. uvwave for field id='+str(field.id)+'  Band '+bandname+'.  Creating new plot.')
+                        LOG.info('Plotting amp vs. uvwave for field id='+str(field.id) +
+                                 '  Band '+bandname+'.  Creating new plot.')
 
                         try:
                             job = casa_tasks.plotms(vis=ms_active, xaxis='uvwave', yaxis='amp', ydatacolumn='corrected',
                                                     selectdata=True, field=str(field.id), correlation=corrstring,
-                                                    spw=','.join(spwuselist),
+                                                    spw=spwuse_str,
                                                     averagedata=True, avgchannel=str(max(channels)), avgtime='1e8',
                                                     avgscan=False, transform=False, extendflag=False, iteraxis='',
                                                     coloraxis='spw', plotrange=[],
-                                                    title='Field '+str(field.id)+', '+field.name + '   Band ' + bandname,
+                                                    title='Field '+str(field.id)+', '+field.name +
+                                                    '   Band ' + bandname,
                                                     xlabel='', ylabel='',  showmajorgrid=False, showminorgrid=False,
                                                     plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
@@ -116,8 +130,13 @@ class plotsummarySummaryChart(object):
                             LOG.error('Could not create plot for field {!s}  band {!s}'.format(str(field.id), bandname))
                             LOG.exception(ex)
                             plot = None
+                    if bandname == 'All':
+                        # put the "All" band plot ahead of single-band plots.
+                        plots_perband.insert(0, plot)
+                    else:
+                        plots_perband.append(plot)
 
-                    plots.append(plot)
+            plots.extend(plots_perband)
 
         return [p for p in plots if p is not None]
 

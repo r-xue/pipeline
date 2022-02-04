@@ -44,6 +44,14 @@ def spws_for_baseband(plot):
 		return ''
 	return '<h6 style="margin-top: -11px;">(Spw%s)</h6>' % utils.commafy(spws, quotes=False, multi_prefix='s')
 
+def spws_for_baseband_desc(plot):
+	baseband_desc = plot.parameters['baseband_desc']
+	if plot.parameters['spw'].split(','):
+		baseband_desc.append('Spw: {}'.format(plot.parameters['spw']))
+	if baseband_desc:
+		return '<h6 style="margin-top: -5px;">{}</h6>'.format('<br>'.join(baseband_desc))
+	else:
+		return ''
 
 %>
 
@@ -88,13 +96,18 @@ def total_for_agent(agent, row, mses=flags.keys()):
 def space_comma(s):
 	return ', '.join(s.split(','))
 
+def num_bands(summary_plots):
+	bandname_list = [plot.parameters['bandname'] for plots in summary_plots.values() for plot in plots]
+	bandname_set = set([bandname for bandname in bandname_list if 'All' not in bandname])
+	return len(bandname_set)
+
 %>
 
 
 <%self:plot_group plot_dict="${summary_plots}"
                   url_fn="${lambda ms: 'noop'}"
-                  break_rows_by=''
-                  sort_row_by='baseband,spw'>
+                  break_rows_by="${'field' if num_bands(summary_plots)>1 else ''}"
+                  sort_row_by='baseband'>
 
         <%def name="title()">
             VLA Pipeline Summary Plots
@@ -124,11 +137,11 @@ def space_comma(s):
 % if amp_vs_freq_plots or phase_vs_freq_plots or  amp_vs_time_plots or amp_vs_uv_plots or phase_vs_uv_plots or phase_vs_time_plots:
 
 <%self:plot_group plot_dict="${amp_vs_freq_plots}"
-              url_fn="${lambda x: 'amp_vs_freq_%s.html' % sanitise(x)}"
-              data_field="${True}"
-              data_spw="${True}"
-                  break_rows_by=""
-                  sort_row_by="intent_idx,field,baseband,spw">
+                  url_fn="${lambda x: 'amp_vs_freq_%s.html' % sanitise(x)}"
+                  data_field="${True}"
+                  data_spw="${True}"
+				  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
+                  sort_row_by="intent_idx,field,baseband_centfreq">
 
 	<%def name="title()">
 		Calibrated amplitude vs frequency
@@ -152,7 +165,7 @@ def space_comma(s):
 	</%def>
 
 	<%def name="caption_subtitle(plot)">
-		${spws_for_baseband(plot)}
+		${spws_for_baseband_desc(plot)}
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
@@ -167,8 +180,8 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by=""
-                  sort_row_by="intent_idx,field,baseband,spw">
+                  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
+                  sort_row_by="intent_idx,field,baseband_centfreq">
 
 	<%def name="title()">
 		Calibrated phase vs frequency
@@ -193,7 +206,7 @@ def space_comma(s):
 	</%def>
 
 	<%def name="caption_subtitle(plot)">
-		${spws_for_baseband(plot)}
+		${spws_for_baseband_desc(plot)}
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
@@ -302,8 +315,8 @@ def space_comma(s):
 				  url_fn="${lambda x: 'science_amp_vs_freq_%s.html' % sanitise(x)}"
 				  data_spw="${True}"
 				  data_field="${True}"
-                  break_rows_by=""
-                  sort_row_by="field, baseband, spw">
+                  break_rows_by="${'field' if num_bands(summary_plots)>1 else ''}"
+                  sort_row_by="field,baseband_centfreq">
 
 	<%def name="title()">
 		Science target: calibrated amplitude vs frequency
@@ -336,7 +349,7 @@ def space_comma(s):
 	</%def>
 
 	<%def name="caption_subtitle(plot)">
-		${spws_for_baseband(plot)}
+		${spws_for_baseband_desc(plot)}
 	</%def>
 
 	<%def name="caption_text(plot, source_id)">
@@ -446,8 +459,8 @@ def space_comma(s):
 				  url_fn="${lambda x: 'phase_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by=""
-                  sort_row_by="intent_idx,field,baseband,spw">
+                  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
+                  sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">
 		Calibrated phase vs frequency, intent='POLANGLE, POLLEAKAGE, BANDPASS, PHASE'
@@ -472,7 +485,7 @@ def space_comma(s):
 	</%def>
 
 	<%def name="caption_subtitle(plot)">
-		${spws_for_baseband(plot)}
+		${spws_for_baseband_desc(plot)}
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
@@ -489,8 +502,8 @@ def space_comma(s):
 				  url_fn="${lambda x: 'amp_vs_freq_polarization_%s.html' % sanitise(x)}"
 				  data_field="${True}"
 				  data_spw="${True}"
-                  break_rows_by=""
-                  sort_row_by="intent_idx,field,baseband,spw">
+                  break_rows_by="${'intent_idx' if num_bands(summary_plots)>1 else ''}"
+                  sort_row_by="intent_idx,field,baseband_centfreq,spw">
 
 	<%def name="title()">
 		Calibrated amplitude vs frequency, intent='POLANGLE, POLLEAKAGE, BANDPASS, PHASE'
@@ -515,7 +528,7 @@ def space_comma(s):
 	</%def>
 
 	<%def name="caption_subtitle(plot)">
-		${spws_for_baseband(plot)}
+		${spws_for_baseband_desc(plot)}
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
