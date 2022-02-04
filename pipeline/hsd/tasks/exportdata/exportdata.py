@@ -184,8 +184,8 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            ordered dictionary object contains session name(key) and
-            a list of file name of vis and caltable (value)
+            ordered dictionary object contains session name(key) and a list of file name of vis and
+            the name of auxiliary calibration product associated with the session (value).
         """
         # Make the standard sessions dictionary and export per session products
         #    Currently these are compressed tar files of per session calibration tables
