@@ -174,7 +174,7 @@ class SDExportData(exportdata.ExportData):
                                  session_vislists: List[List[str]],
                                  products_dir: str) -> \
             Dict[str, List[str]]:
-        """Export the calibration tables to products directory and return session dictionary.
+        """Export auxiliary calibration tables to products directory and return session dictionary.
 
         Args:
             context : pipeline context
