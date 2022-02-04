@@ -4,18 +4,26 @@ import os
 import pathlib
 
 import pytest
+
 from casatasks import casalog
 
 
 def pytest_addoption(parser):
     """Add custom pytest command-line options."""
 
+    nologfile_help = r"""
+        Do not create CASA log files, equivalent to 'casa --nologfile'.
+        Please note that if you're using regression-tester.py, casa logfiles 
+        will still be generated within individual test "working/" directories and 
+        appear in test weblogs. In general, this option is only recommended when 
+        manually/frequently running unit tests, to keep your local repo clean.
+        """
     parser.addoption("--collect-tests", action="store_true", default=False,
-                     help="collect tests and export test node ids to a plain text file `collected_tests.txt`")
+                     help="Collect tests and export test node ids to a plain text file `collected_tests.txt`")
     parser.addoption("--nologfile", action="store_true", default=False,
-                     help="do not create CASA log files, equivalent to 'casa --nologfile'")
+                     help=nologfile_help)
     parser.addoption("--pyclean", action="store_true", default=False,
-                     help="clean up .pyc to reproduce certain warnings only issued when the bytecode is compiled.")
+                     help="Clean up .pyc to reproduce certain warnings only issued when the bytecode is compiled.")
 
 
 def pytest_sessionstart(session):
