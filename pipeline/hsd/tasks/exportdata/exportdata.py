@@ -140,7 +140,7 @@ class SDExportData(exportdata.ExportData):
 
     def _make_lists(self, context: Context, session: List[str],
                     vis: Union[List[str], str], imaging_only_mses: bool=False) \
-            -> Tuple[List[str], List[str], List[str], List[str]]:
+            -> Tuple[List[str], List[str], List[List[str]], List[str]]:
         """Create the vis and sessions lists.
 
         Args:
