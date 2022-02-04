@@ -4,6 +4,7 @@ import re
 import shutil
 from copy import deepcopy
 from math import factorial
+import collections
 
 import numpy as np
 
@@ -151,6 +152,17 @@ class Syspower(basetask.StandardTaskTemplate):
 
     def prepare(self):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
+        # Determine if 8-bit or 3-bit
+        # 8-bit continuum applications (GHz)      3-bit continuum applications (GHz)
+        # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2/D2
+
+        banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+        basebandsperband = collections.defaultdict(list)
+        for band in banddict:
+            basebandsperband[band] = []
+            for baseband in banddict[band]:
+                basebandsperband[band].append(baseband)
 
         # flag normalized p_diff outside this range
         clip_sp_template = self.inputs.clip_sp_template
