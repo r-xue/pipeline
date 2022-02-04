@@ -54,7 +54,7 @@ class SDExportDataInputs(exportdata.ExportDataInputs):
 @task_registry.set_equivalent_casa_task('hsd_exportdata')
 @task_registry.set_casa_commands_comment('The output data products are computed.')
 class SDExportData(exportdata.ExportData):
-    """The base class for exporting data to the products subdirectory.
+    """A class for exporting single dish data to the products subdirectory.
 
     It performs the following operations:
     - Saves the pipeline processing request in an XML file
@@ -173,7 +173,7 @@ class SDExportData(exportdata.ExportData):
                                  session_names: List[str],
                                  session_vislists: List[str],
                                  products_dir: str) -> \
-            collections.OrderedDict[str, List[str]]:
+            Dict[str, List[str]]:
         """Export the calibration tables to products directory and return session dictionary.
 
         Args:
@@ -288,7 +288,7 @@ class SDExportData(exportdata.ExportData):
 
     def _do_aux_ms_products(self, context: Context, vislist: List[str],
                             products_dir: str) -> \
-            collections.OrderedDict[str, str]:
+            Dict[str, str]:
         """Create the calibration apply file(s) from MeasurementSets.
 
         Args:
