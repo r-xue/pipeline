@@ -171,7 +171,7 @@ class SDExportData(exportdata.ExportData):
 
     def _do_aux_session_products(self, context: Context, oussid: str,
                                  session_names: List[str],
-                                 session_vislists: List[str],
+                                 session_vislists: List[List[str]],
                                  products_dir: str) -> \
             Dict[str, List[str]]:
         """Export the calibration tables to products directory and return session dictionary.
@@ -180,7 +180,7 @@ class SDExportData(exportdata.ExportData):
             context : pipeline context
             oussid : OUS status ID
             session_names : list of session names
-            session_vislists : list of session vis names
+            session_vislists : list of lists of vis names per session
             products_dir : path of products directory
 
         Returns:
