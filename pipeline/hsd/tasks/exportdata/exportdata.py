@@ -25,7 +25,7 @@ import os
 import shutil
 import string
 import tarfile
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
@@ -210,7 +210,7 @@ class SDExportData(exportdata.ExportData):
 
         return sessiondict
 
-    def __get_last_baseline_table(self, vis: str) -> str:
+    def __get_last_baseline_table(self, vis: str) -> Optional[str]:
         """Sort baseline table names and return the last of them.
 
         Args:
