@@ -19,7 +19,7 @@ from pipeline.infrastructure.renderer import regression
 import pipeline.infrastructure.executeppr as almappr
 import pipeline.infrastructure.executevlappr as vlappr
 import pipeline.infrastructure.logging as logging
-from pipeline.infrastructure.utils import shutdown_plotms
+from pipeline.infrastructure.utils import shutdown_plotms, get_casa_session_details
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -72,7 +72,8 @@ class PipelineRegression(object):
 
         return keystring, value, tolerance
 
-    def run(self, ppr: Optional[str] = None, telescope: str = 'alma', default_relative_tolerance: float = 1e-7):
+    def run(self, ppr: Optional[str] = None, telescope: str = 'alma',
+            default_relative_tolerance: float = 1e-7, omp_num_threads: Optional[int] = None):
         """
         Run test with PPR if supplied or recipereducer if no PPR and compared to expected results.
 
@@ -82,15 +83,26 @@ class PipelineRegression(object):
             ppr: PPR file name
             telescope: string 'alma' or 'vla'
             default_relative_tolerance: default relative tolerance of output value
-        
+            omp_num_threads: specify the number of OpenMP threads used for this regression test instance, regardless of 
+                             the default value of the current CASA session. An explicit setting could mitigate potential small 
+                             numerical difference from threading-sensitive CASA tasks (e.g. setjy/tclean, which relies 
+                             on the FFTW library).            
+
         note: Because a PL execution depends on global CASA states, only one test can run under 
-        a CASA process at the same. Therefore a parallelization based on process-forking might not work 
-        properly (e.g., xdist: --forked).  However, it's okay to group tests under several independent 
+        a CASA process at the same. Therefore a parallelization based on process-forking might not work
+        properly (e.g., xdist: --forked).  However, it's okay to group tests under several independent
         subprocesses (e.g., xdist: -n 4)
+
         """
         # Run the Pipeline using cal+imag ALMA IF recipe
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = casa_tools.utils.resolve(self.testinput)
+
+        # optionally set OpenMP nthreads to a specified value.
+        if omp_num_threads is not None:
+            # casa_tools.casalog.ompGetNumThreads() and get_casa_session_details()['omp_num_threads'] are equivalent.
+            default_nthreads = get_casa_session_details()['omp_num_threads']
+            casa_tools.casalog.ompSetNumThreads(omp_num_threads)
 
         try:
             # run the pipeline for new results
@@ -135,6 +147,10 @@ class PipelineRegression(object):
 
         finally:
             os.chdir(self.current_path)
+
+        # restore the OpenMP nthreads to the value saved before the Pipeline ppr/reducer call.
+        if omp_num_threads is not None:
+            casa_tools.casalog.ompSetNumThreads(default_nthreads)
 
     def __compare_results(self, new_file: str, relative_tolerance: float):
         """
@@ -381,7 +397,7 @@ def test_13A_537__procedure_hifv__regression():
                                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'),
                             output_dir='13A_537__procedure_hifv__regression')
 
-    pr.run(telescope='vla')
+    pr.run(telescope='vla', omp_num_threads=1)
 
 
 def test_13A_537__calibration__PPR__regression():
@@ -400,7 +416,7 @@ def test_13A_537__calibration__PPR__regression():
                                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.results.txt'),
                             output_dir='13A_537__calibration__PPR__regression')
 
-    pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla')
+    pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla', omp_num_threads=1)
 
 
 def test_13A_537__restore__PPR__regression():

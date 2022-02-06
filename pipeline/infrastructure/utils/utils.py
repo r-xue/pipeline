@@ -25,7 +25,7 @@ LOG = logging.get_logger(__name__)
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms']
+           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -434,3 +434,27 @@ def shutdown_plotms():
         plotmstool.__proc.kill()
         plotmstool.__stub = None
         plotmstool.__uri = None
+
+
+def get_casa_session_details():
+    """Get the current CASA session details.
+
+    return a dictionary including the following keys:
+        casa_dir: the root directory of the monolithic CASA distribution.
+        omp_num_threads: the number of OpenMP threads in the current parallel region.
+        data_path: CASA data paths in-use.
+        numa_mem: memory properties from the NUMA software perspective.
+        numa_cpu: cpu properties from the NUMA software perspective.
+            The above CPU/mem properties might be different from the hardware specs obtained from 
+            standard Python functions (e.g. os.cpu_count()) or pipeline.environment.
+            On the difference between the "software" and hardware nodes, see 
+                https://www.kernel.org/doc/html/latest/vm/numa.html
+    """
+    casa_session_details = casa_tools.utils.hostinfo()
+    casa_session_details['casa_dir'] = casa_tools.utils.getrc()
+    casa_session_details['omp_num_threads'] = casa_tools.casalog.ompGetNumThreads()
+    casa_session_details['data_path'] = casa_tools.utils.defaultpath()
+    casa_session_details['numa_cpu'] = casa_session_details.pop('cpus')
+    casa_session_details['numa_mem'] = casa_session_details.pop('memory')
+
+    return casa_session_details
