@@ -323,7 +323,7 @@ class SDExportData(exportdata.ExportData):
 
     def _export_final_baseline_applylist(self, context: Context, vis: str,
                                          products_dir: str) -> str:
-        """Save the final calibration list to a file.
+        """Save commands to apply the final baseline table to a file.
 
         For now this is a text file. Eventually it will be the CASA callibrary
         file.
