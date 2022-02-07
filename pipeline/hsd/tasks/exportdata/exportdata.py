@@ -180,7 +180,7 @@ class SDExportData(exportdata.ExportData):
             context : pipeline context
             oussid : OUS status ID
             session_names : list of session names
-            session_vislists : list of lists of vis names per session
+            session_vislists : list of MeasurementSet names associated with each session
             products_dir : path of products directory
 
         Returns:
