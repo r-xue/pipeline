@@ -334,7 +334,7 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            file name calibration applied
+            the name of calibration apply file
         """
         applyfile_name = self.NameBuilder.calapply_list(os.path.basename(vis),
                                                         aux_product=True)
