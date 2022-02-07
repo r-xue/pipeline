@@ -240,7 +240,7 @@ class SDExportData(exportdata.ExportData):
         Args:
             context : pipeline context
             oussid : OUS status ID
-            session : session ID
+            session : session name
             vislist : list of vis
             products_dir : products directory
 
