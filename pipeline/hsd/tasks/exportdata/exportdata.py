@@ -145,8 +145,8 @@ class SDExportData(exportdata.ExportData):
 
         Args:
             context : Pipeline context
-            session : session id(s)
-            vis : vis string(s)
+            session : session names
+            vis : names of MeasurementSets
             imaging_only_mses : a flag of imaging-only measurement sets.
                                 In single dish pipeline, all mses are non-
                                 imaging ones but they need to be returned
