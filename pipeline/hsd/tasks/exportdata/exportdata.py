@@ -430,7 +430,7 @@ class SDExportData(exportdata.ExportData):
 
     def _do_auxiliary_products(self, context: Context, oussid: str,
                                output_dir: str, products_dir: str) -> str:
-        """Save flux file and flag files into tarball.
+        """Save a K2JY reference file and flag files into tarball.
 
         Args:
             context : pipeline context
