@@ -232,7 +232,7 @@ class SDExportData(exportdata.ExportData):
     def _export_final_baseline_calfiles(self, context: Context, oussid: str,
                                         session: str, vislist: List[str],
                                         products_dir: str) -> str:
-        """Save the final calibration tables in a tarfile one file per session.
+        """Save the final baseline tables in a tarfile one file per session.
 
         This method is an exact copy of same method in superclass
         except for handling baseline caltables.
