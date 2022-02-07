@@ -289,7 +289,10 @@ class SDExportData(exportdata.ExportData):
     def _do_aux_ms_products(self, context: Context, vislist: List[str],
                             products_dir: str) -> \
             Dict[str, str]:
-        """Create the calibration apply file(s) from MeasurementSets.
+        """Export auxiliary MS products.
+
+        This method exports calibration apply files per MeasurementSet which
+        store calibration commands to apply baseline tables.
 
         Args:
             context : pipeline context
