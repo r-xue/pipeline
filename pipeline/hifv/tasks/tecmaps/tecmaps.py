@@ -97,7 +97,11 @@ class TecMaps(basetask.StandardTaskTemplate):
         if self.inputs.show_tec_maps or self.inputs.apply_tec_correction:
 
             callist = []
-            tec_image, tec_rms_image, tec_plotfile = tec_maps.create(vis=inputs.vis, doplot=True, imname='iono')
+            try:
+                tec_image, tec_rms_image, tec_plotfile = tec_maps.create(vis=inputs.vis, doplot=True, imname='iono')
+            except UnboundLocalError as e:
+                LOG.warning("TEC Maps error returned. CASA {!s}".format(e))
+                return None
 
             if self.inputs.apply_tec_correction:
                 gencal_args = inputs.to_casa_args()
@@ -133,7 +137,11 @@ class TecMaps(basetask.StandardTaskTemplate):
     def _do_tecmaps(self):
         # Private class method for reference only
         # tec_image, tec_rms_image = tec_maps.create('vlass3C48.ms')
-        tec_maps.create(vis=self.vis, doplot=True, imname='iono')
+        try:
+            tec_maps.create(vis=self.vis, doplot=True, imname='iono')
+        except UnboundLocalError as e:
+            LOG.warning("TEC Maps error returned. CASA {!s}".format(e))
+            return None
         # gencal_job = casa_tasks.gencal(**gencal_args)
         gencal_job = casa_tasks.gencal(vis=self.vis, caltable='file.tec', caltype='tecim', infile='iono.IGS_TEC.im')
         self._executor.execute(gencal_job)
