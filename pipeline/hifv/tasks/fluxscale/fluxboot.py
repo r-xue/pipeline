@@ -392,6 +392,14 @@ class Fluxboot(basetask.StandardTaskTemplate):
         fluxcalfields = flux_field_select_string
         fluxcalfieldlist = str.split(fluxcalfields, ',')
 
+        if len(fluxcalfieldlist) > 1:
+            fieldmsg = ''
+            for fluxcalfield in fluxcalfieldlist:
+                fieldobj = m.get_fields(field_id=int(fluxcalfield))
+                fieldmsg += "{!s}: {!s}, ".format(str(fieldobj[0].id), fieldobj[0].name)
+            LOG.warning("Fields {!s} have CALIBRATE_FLUX intents. Both will be used for flux calibration, "
+                        "this may not be desired.".format(fieldmsg))
+
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
@@ -408,8 +416,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
                (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents) or \
                (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'PHASE' in fieldobj[0].intents):
 
-                LOG.info("Single INTENT not included for field {!s}: {!s} "
-                         "and intents {!s}".format(field, fieldobj[0].name, fieldobj[0].intents))
+                LOG.warning("Field {!s}: {!s}, "
+                            "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
+                            "it is not used in the "
+                            "fluxscale() transfer keyword.".format(field, fieldobj[0].name, fieldobj[0].intents))
             else:
                 calfieldlist.append(field)
 
