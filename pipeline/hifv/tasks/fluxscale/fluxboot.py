@@ -397,7 +397,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             for fluxcalfield in fluxcalfieldlist:
                 fieldobj = m.get_fields(field_id=int(fluxcalfield))
                 fieldmsg += "{!s}: {!s}, ".format(str(fieldobj[0].id), fieldobj[0].name)
-            LOG.warning("Fields {!s} have CALIBRATE_FLUX intents. Both will be used for flux calibration, "
+            LOG.warning("Fields {!s} have CALIBRATE_FLUX intents. All will be used for flux calibration, "
                         "this may not be desired.".format(fieldmsg))
 
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
