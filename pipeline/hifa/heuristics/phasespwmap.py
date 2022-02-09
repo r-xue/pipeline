@@ -1,20 +1,25 @@
 import decimal
+from typing import List, Tuple
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from pipeline.domain.spectralwindow import SpectralWindow
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
 
-def combine_spwmap(scispws):
+def combine_spwmap(scispws: List[SpectralWindow]) -> List:
     """
     Returns a spectral window map where each science spectral window is mapped
     to the lowest science spectral window ID that matches its Spectral Spec.
 
-    :param scispws: list of spectral window objects for science spectral windows
-    :return: spectral window map
+    Args:
+        scispws: List of spectral window objects for science spectral windows.
+
+    Returns:
+        List of spectral window IDs, representing the spectral window map.
     """
     # Create dictionary of spectral specs and their corresponding science
     # spectral window ids.
@@ -42,18 +47,21 @@ def combine_spwmap(scispws):
         return combinespwmap
 
 
-def snr_n2wspwmap(scispws, snrs, goodsnrs):
+def snr_n2wspwmap(scispws: List[SpectralWindow], snrs: List, goodsnrs: List) -> Tuple[bool, List, List]:
     """
     Compute a spectral window map based on signal-to-noise information.
 
     Args:
-        scispws: List of all science spws in the MS
+        scispws: List of spectral window objects for science spectral windows.
         snrs: List of snr values for scispws
         goodsnrs: Determines whether the SNR is good (True), bad (False), or
             undefined (None). At least one value per receiver band should be good.
 
     Returns:
-        List of spectral window IDs, representing the spectral window map.
+        3 element tuple with:
+          * boolean declaring if a good mapping was found for all SpWs.
+          * list of spectral window IDs, representing the spectral window map.
+          * list of booleans (or None) declaring if matched SpW had good SNR.
     """
     # Find the spw with largest good SNR for each receiver band
     snrdict = {}
@@ -167,12 +175,12 @@ def snr_n2wspwmap(scispws, snrs, goodsnrs):
         return goodmap, phasespwmap, snrmap
 
 
-def simple_n2wspwmap(scispws, maxnarrowbw, maxbwfrac, samebb):
+def simple_n2wspwmap(scispws: List[SpectralWindow], maxnarrowbw: str, maxbwfrac: float, samebb: bool) -> List:
     """
     Compute a simple phase up wide to narrow spectral window map.
 
     Args:
-        scispws: List of all science spws in the MS
+        scispws: List of spectral window objects for science spectral windows.
         maxnarrowbw: Maximum narrow bandwidth, e.g. '300MHz'
         maxbwfrac: Width must be > maxbwfrac * maximum bandwidth for a match
         samebb: If possible match within a baseband

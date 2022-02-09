@@ -347,8 +347,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     LOG.warning('Spws without SNR measurements {}'
                                 ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
-                # Create an SRN-based spw mapping.
-                goodmap, spwmap, snrmap = snr_n2wspwmap(scispws, snrs, goodsnrs)
+                # Create an SNR-based spw mapping.
+                goodmap, spwmap, _ = snr_n2wspwmap(scispws, snrs, goodsnrs)
 
                 # If the SNR-based mapping gave a good match for all spws, then
                 # report the final phase up spw map.
