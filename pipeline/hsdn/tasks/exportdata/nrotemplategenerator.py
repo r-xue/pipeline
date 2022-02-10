@@ -119,7 +119,7 @@ def generate_group_entries(ms: MeasurementSet,
 
 
 def generate_csv_entries(context: Context) -> Generator[str, None, None]:
-    """Generate CSV entries from MSReductionGroupDesc(s) and MeasurementSet of context.
+    """Generate CSV entries of all MS and reduction groups in context.
 
     Args:
         context : pipeline context
