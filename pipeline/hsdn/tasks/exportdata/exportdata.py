@@ -176,7 +176,7 @@ class NROExportData(sdexportdata.SDExportData):
 
     def _update_manifest(self, manifest_file: str, script: str=None,
                          scalefile: str=None):
-        """Update a Manifest file.
+        """Add Nobeyama specific products to manifest file.
 
         Args:
             manifest_file : manifest file path
