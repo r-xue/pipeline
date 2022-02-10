@@ -6,7 +6,7 @@ description on how Exportdata task works.
 """
 import collections
 import os
-from typing import List
+from typing import List, Optional
 from xml.etree.ElementTree import Element
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
@@ -29,8 +29,8 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
     nor session name in Nobeyama datasets."""
 
     @classmethod
-    def _build_from_oussid(self, basename: str, ousstatus_entity_id: str=None,
-                           output_dir: str=None) -> str:
+    def _build_from_oussid(self, basename: str, ousstatus_entity_id: Optional[str]=None,
+                           output_dir: Optional[str]=None) -> str:
         """Build a string for use as path.
 
         Args:
