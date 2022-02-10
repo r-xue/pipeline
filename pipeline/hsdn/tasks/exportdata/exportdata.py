@@ -206,7 +206,7 @@ class NROExportData(sdexportdata.SDExportData):
             script_name : Name of the restore script
             products_dir : Name of the product directory
             oussid : OUS Status ID
-            vislist : a list of vis
+            vislist : a list of MeasurementSet names
             session_list : a list of session id
 
         Returns:
