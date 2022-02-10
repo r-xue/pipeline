@@ -22,7 +22,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
-    """Name(str) building utility methods class for NRO Pipeline."""
+    """Name(str) building utility methods class for NRO Pipeline.
+    
+    Methods in this class overrides those in PipelineProductNameBuiler and
+    constructs names (paths) of products in the absence of valid OUS status ID
+    nor session name in Nobeyama datasets."""
 
     @classmethod
     def _build_from_oussid(self, basename: str, ousstatus_entity_id: str=None,
