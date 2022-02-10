@@ -173,7 +173,7 @@ def generate_script(context: Context, scriptname: str, configname: str) -> bool:
                      rebase_and_image_config.py
 
     Returns:
-        weather script was generated and configfile exists or not
+        whether script was generated and configfile exists or not
     """
     tmp = get_template('template.txt')
     template = generate_template(tmp)
