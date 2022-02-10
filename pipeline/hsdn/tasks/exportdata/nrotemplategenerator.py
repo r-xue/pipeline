@@ -23,7 +23,7 @@ from pipeline.infrastructure.launcher import Context
 LOG = infrastructure.get_logger(__name__)
 
 
-def generate_template(filename: str) -> str:
+def generate_template(filename: str) -> string.Template:
     """Generate template using a specified file.
 
     Args:
