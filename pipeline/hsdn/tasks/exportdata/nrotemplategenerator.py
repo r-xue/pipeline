@@ -10,10 +10,10 @@ import glob
 import itertools
 import string
 import os
-from typing import List
+from typing import Generator, List
 
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 import pipeline.hsd.tasks.common.observatory_policy as observatory_policy
@@ -88,12 +88,13 @@ def get_template(name: str) -> str:
 
 
 def generate_group_entries(ms: MeasurementSet,
-                           member_list: List[MSReductionGroupDesc]):
-    """Generate group entries from MSReductionGroupDesc(s) to generate CSV.
+                           member_list: List[MSReductionGroupMember])\
+        -> Generator[str, None, None]:
+    """Generate group entries from MSReductionGroupMember(s) to generate CSV.
 
     Args:
         ms : a MeasurementSet to filter member_list
-        member_list : a list of MSReductionGroupDesc
+        member_list : a list of MSReductionGroupMember
 
     Yields:
         Entries for CSV
