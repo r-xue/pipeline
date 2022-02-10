@@ -139,6 +139,9 @@ class NROExportData(sdexportdata.SDExportData):
     def _export_reduction_template(self, products_dir: str) -> str:
         """Export reduction template script.
 
+        Exports rebase_and_image.py. It is a Python script to perform baseline
+        subtraction and imaging by CASA tasks.
+
         Args:
             products_dir : product directory path
 
