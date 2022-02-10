@@ -538,7 +538,7 @@ class SDExportData(exportdata.ExportData):
                                              restore_task_name: str,
                                              restore_task_args: Dict[str, str])\
             -> str:
-        """Generate and export CASA restore script (export_casa_restore_script).
+        """Generate and export CASA restore script.
 
         Args:
             context : pipeline context
