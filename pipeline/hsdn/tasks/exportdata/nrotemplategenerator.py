@@ -40,7 +40,7 @@ def generate_template(filename: str) -> string.Template:
 
 
 def export_template(filename: str, txt: str):
-    """Export template to a file.
+    """Save a text string to a file.
 
     Args:
         filename : file name to export
