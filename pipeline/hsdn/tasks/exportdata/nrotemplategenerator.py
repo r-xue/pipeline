@@ -44,7 +44,7 @@ def export_template(filename: str, txt: str):
 
     Args:
         filename : file name to export
-        txt : template text
+        txt : a text string to save
     """
     with open(filename, 'w') as f:
         f.write(txt)
