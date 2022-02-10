@@ -150,7 +150,7 @@ def generate_csv(context: Context, datafile: str) -> bool:
         datafile : CSV datafile generated
 
     Returns:
-        weather CSV file was generated or not
+        whether CSV file was generated or not
     """
     tmp = get_template('scalefile.txt')
     with open(tmp, 'r') as f:
