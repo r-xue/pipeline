@@ -199,7 +199,7 @@ class NROExportData(sdexportdata.SDExportData):
                                     products_dir: str, oussid: str,
                                     vislist: List[str],
                                     session_list: List[str]) -> str:
-        """Generate and export CASA restore script (export_casa_restore_script).
+        """Generate and export CASA restore script.
 
         Args:
             context : pipeline context
