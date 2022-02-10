@@ -180,8 +180,8 @@ class NROExportData(sdexportdata.SDExportData):
 
         Args:
             manifest_file : manifest file path
-            script : a value of attribute 'reduction_script' of OUS SubElement
-            scalefile : value of attribute 'scale_file' of OUS SubElement
+            script : the name of template reduction script
+            scalefile : the name of NRO scale file
         """
         pipemanifest = manifest.NROPipelineManifest('')
         pipemanifest.import_xml(manifest_file)
