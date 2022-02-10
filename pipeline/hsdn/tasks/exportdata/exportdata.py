@@ -14,6 +14,7 @@ import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.project import ProjectStructure
 from . import manifest
 from . import nrotemplategenerator
 
@@ -45,9 +46,9 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
 
     @classmethod
     def _build_from_ps_oussid(self, basename: str,
-                              project_structure: Element=None,
-                              ousstatus_entity_id: str=None,
-                              output_dir: str=None) -> str:
+                              project_structure: Optional[ProjectStructure]=None,
+                              ousstatus_entity_id: Optional[str]=None,
+                              output_dir: Optional[str]=None) -> str:
         """Build a string for use as path.
 
         Args:
