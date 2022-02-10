@@ -81,7 +81,7 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
 
 
 class NROExportDataInputs(sdexportdata.SDExportDataInputs):
-    """Data Input class.
+    """Inputs class for NROExportData.
 
     Inputs class must be separated per task class even if
     it's effectively the same."""
