@@ -25,7 +25,7 @@ import os
 import shutil
 import string
 import tarfile
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Generator, List, Optional, Tuple, Union
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
@@ -408,7 +408,7 @@ class SDExportData(exportdata.ExportData):
         return absolute_path(jyperk)
 
     @staticmethod
-    def __get_reffile(results: List[basetask.ResultsProxy]):
+    def __get_reffile(results: Generator[str, None, None]):
         """Find SDK2JyCalResults and yield K2JY reference file.
 
         Args:
