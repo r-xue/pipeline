@@ -63,9 +63,9 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
 
     @classmethod
     def _build_from_oussid_session(self, basename: str,
-                                   ousstatus_entity_id: str=None,
-                                   session_name: str=None,
-                                   output_dir: str=None):
+                                   ousstatus_entity_id: Optional[str]=None,
+                                   session_name: Optional[str]=None,
+                                   output_dir: Optional[str]=None):
         """Build a string for use as path.
 
         Args:
