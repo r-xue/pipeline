@@ -90,7 +90,7 @@ def get_template(name: str) -> str:
 def generate_group_entries(ms: MeasurementSet,
                            member_list: List[MSReductionGroupMember])\
         -> Generator[str, None, None]:
-    """Generate group entries from MSReductionGroupMember(s) to generate CSV.
+    """Yield a CSV string for NRO scale file corresponding to ms and member_list.
 
     Args:
         ms : a MeasurementSet to filter member_list
