@@ -1413,6 +1413,7 @@ class ACreNorm(object):
         self.rnstats['inputs']['bwthreshspw'] = bwthreshspw
 
 
+
         # the spws to process (FDM only, for now; may also do TDM?)
         if len(spws)==0:
             spws=list(self.msmeta.almaspws(fdm=True)) 
@@ -2444,6 +2445,66 @@ class ACreNorm(object):
                     fig.canvas.draw()
                     yticks = [yt for yt in ax_atm.get_yticks()]
                     ax_atm.set_yticklabels(['' if yt<0 else str(int(yt)) for yt in yticks])
+
+
+                    # Gather stats for pipeline development
+                    if 'atmStats' not in self.rnstats.keys():
+                        self.rnstats['atmStats'] = {}
+                    if target not in self.rnstats['atmStats'].keys():
+                        self.rnstats['atmStats'][target] = {}
+
+                    maxRnIdx = pl.where(Nm[0] == max(Nm[0]))[0][0]
+                    maxRnFreq = freqs[maxRnIdx]
+                    #minAtmIdx = pl.where(pl.where(ATMprof == min(ATMprof))[0][0])
+                    #minAtmFreq = freqs[minAtmIdx]
+                    atm_dips = pl.where(ATMprof < pl.median(ATMprof)-3*pl.std(ATMprof))[0]
+                    if len(atm_dips) == 0:
+                        #print('No atm dips')
+                        self.rnstats['atmStats'][target][spw] = ', '.join([self.msname, str(spw), str(Nm[0][maxRnIdx]), str(maxRnFreq)])
+                        print(', '.join([self.msname, str(spw), str(Nm[0][maxRnIdx]), str(maxRnFreq)]))
+                    else:
+                        atm_dips_ranges = self.channel_ranges(atm_dips)
+                        for atm_dip_range in atm_dips_ranges:
+                            atm_start = atm_dip_range[0]
+                            atm_end = atm_dip_range[1]
+                            atm_min_idx = atm_start + pl.where(ATMprof[atm_start:atm_end] == min(ATMprof[atm_start:atm_end]))[0][0]
+                            atm_dip_freq = freqs[atm_min_idx]
+                            if str(spw) not in self.rnstats['atmStats'][target].keys():
+                                self.rnstats['atmStats'][target][str(spw)] = ', '.join([
+                                                                                        self.msname, 
+                                                                                        str(spw), 
+                                                                                        str(Nm[0][maxRnIdx]), 
+                                                                                        str(maxRnFreq),
+                                                                                        str(atm_dip_freq),
+                                                                                        str(Nm[0][atm_min_idx]),
+                                                                                        '\n'
+                                                                                    ])
+                            else:
+                                self.rnstats['atmStats'][target][str(spw)] += ', '.join([
+                                                                                        self.msname, 
+                                                                                        str(spw), 
+                                                                                        str(Nm[0][maxRnIdx]), 
+                                                                                        str(maxRnFreq),
+                                                                                        str(atm_dip_freq),
+                                                                                        str(Nm[0][atm_min_idx]),
+                                                                                        '\n'
+                                                                                    ])
+
+                            print(', '.join([
+                                                self.msname, 
+                                                str(spw), 
+                                                str(Nm[0][maxRnIdx]), 
+                                                str(maxRnFreq),
+                                                str(atm_dip_freq),
+                                                str(Nm[0][atm_min_idx])
+                                                ]
+                                            )
+                                        )
+
+                                                                                            
+
+
+
                 
                 # If option is selected, save a hardcopy of the plots. Othersie, produce 
                 # interactive plot and wait for user input to go on to the next plot.
