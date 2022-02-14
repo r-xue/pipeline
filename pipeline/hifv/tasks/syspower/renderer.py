@@ -99,6 +99,7 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         bar_plots = {}
         compression_plots = {}
         median_plots = {}
+        all_plots = {}
 
         for result in results:
 
@@ -123,6 +124,9 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 plots = plotter.plot()
                 ms = os.path.basename(result.inputs['vis'])
                 median_plots[ms] = plots
+
+                # Collect all plots
+                all_plots[ms] = [box_plots[ms][0], bar_plots[ms][0], compression_plots[ms][0], median_plots[ms][0]]
 
                 # generate switched power plots and JSON file
                 plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
@@ -157,6 +161,7 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'bar_plots': bar_plots,
                     'compression_plots': compression_plots,
                     'median_plots': median_plots,
+                    'all_plots': all_plots,
                     'syspowerspgain_subpages': swpowspgain_subpages,
                     'pdiffspgain_subpages': pdiffspgain_subpages,
                     'tec_plotfile': ''})

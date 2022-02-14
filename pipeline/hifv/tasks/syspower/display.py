@@ -55,6 +55,7 @@ class syspowerBoxChart(object):
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
+                                                                                'caption': 'Syspower box plot',
                                                                                 'spw': ''})
 
         if not os.path.exists(figfile):
@@ -116,6 +117,7 @@ class syspowerBarChart(object):
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
+                                                                                'caption': 'Syspower bar plot',
                                                                                 'spw': ''})
 
         if not os.path.exists(figfile):
@@ -144,6 +146,7 @@ class compressionSummary(object):
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
 
+        LOG.info("Creating syspower compression summary chart...")
         pdiff = self.result.spowerdict['spower_common']
         pdiff_ma = np.ma.masked_equal(pdiff, 0)
 
@@ -194,6 +197,7 @@ class compressionSummary(object):
 
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                    'type': prefix,
+                                                                                   'caption': 'Compression summary',
                                                                                    'spw': ''})
 
         if not os.path.exists(figfile):
@@ -223,10 +227,11 @@ class medianSummary(object):
         figfile = self.get_figfile(prefix)
 
         # Note that the original script needs the following variables (named differently)
-        # Original pdiff from spower_cmmon
+        # Original pdiff from spower_common
         # New variable determined via np.ma.masked_equal(pdiff, 0)
         # Second variable determined via np.ma.masked_where(<2nd variable>== 0, <2nd variable>)
 
+        LOG.info("Creating syspower compression median pdiff summary chart...")
         pd = self.result.spowerdict['spower_common']
         pdiff = np.ma.masked_equal(pd, 0)
 
@@ -282,8 +287,9 @@ class medianSummary(object):
         figfile = self.get_figfile(prefix)
 
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
-                                                                                   'type': prefix,
-                                                                                   'spw': ''})
+                                                                                  'type': prefix,
+                                                                                  'caption': 'Median pdiff summary',
+                                                                                  'spw': ''})
 
         if not os.path.exists(figfile):
             LOG.trace('syspower medianSummary plot not found. Creating new plot.')

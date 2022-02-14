@@ -68,100 +68,35 @@ $(document).ready(function() {
         This table has been modified.
 
         %for ms in bar_plots.keys():
-            <h4>Syspower Plots:
+            <h4>Per antenna plots:
                 <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, syspowerspgain_subpages[ms])}">Syspower RQ SPgain plots</a> |
                 <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff Template SPgain plots</a>
             </h4>
         %endfor
 
 
-<%self:plot_group plot_dict="${box_plots}"
+<%self:plot_group plot_dict="${all_plots}"
                   url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
-            Syspower box plot
+            Summary plots
         </%def>
 
         <%def name="preamble()">
         </%def>
 
-        <%def name="mouseover(plot)">Box window </%def>
+        <%def name="mouseover(plot)">${plot.parameters['caption']} </%def>
 
         <%def name="fancybox_caption(plot)">
-          Syspower box plot
+          ${plot.parameters['caption']}
         </%def>
 
         <%def name="caption_title(plot)">
-          Syspower box plot
+           ${plot.parameters['caption']}
         </%def>
 </%self:plot_group>
 
 
-<%self:plot_group plot_dict="${bar_plots}"
-                  url_fn="${lambda ms: 'noop'}">
-
-        <%def name="title()">
-            Syspower bar plot
-        </%def>
-
-        <%def name="preamble()">
-        </%def>
-
-        <%def name="mouseover(plot)">Bar window </%def>
-
-        <%def name="fancybox_caption(plot)">
-          Syspower bar plot
-        </%def>
-
-        <%def name="caption_title(plot)">
-          Syspower bar plot
-        </%def>
-</%self:plot_group>
-
-
-<%self:plot_group plot_dict="${compression_plots}"
-                  url_fn="${lambda ms: 'noop'}">
-
-        <%def name="title()">
-            Compression Summary plot
-        </%def>
-
-        <%def name="preamble()">
-        </%def>
-
-        <%def name="mouseover(plot)">Compression window </%def>
-
-        <%def name="fancybox_caption(plot)">
-          Compression Summary plot
-        </%def>
-
-        <%def name="caption_title(plot)">
-          Compression Summary plot
-        </%def>
-</%self:plot_group>
-
-
-
-<%self:plot_group plot_dict="${median_plots}"
-                  url_fn="${lambda ms: 'noop'}">
-
-        <%def name="title()">
-            Median Summary plot
-        </%def>
-
-        <%def name="preamble()">
-        </%def>
-
-        <%def name="mouseover(plot)">Median window </%def>
-
-        <%def name="fancybox_caption(plot)">
-          Median Summary plot
-        </%def>
-
-        <%def name="caption_title(plot)">
-          Median Summary plot
-        </%def>
-</%self:plot_group>
 
 %else:
 
