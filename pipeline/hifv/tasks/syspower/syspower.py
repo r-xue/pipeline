@@ -201,6 +201,12 @@ class Syspower(basetask.StandardTaskTemplate):
                     baseband2spw[baseband] = spwsperbaseband
                     band_baseband_spw[band] = baseband2spw
 
+        if not band_baseband_spw:
+            LOG.info("No bands/basebands in these data will be processed for this task.")
+            return SyspowerResults(gaintable=rq_table, spowerdict={}, dat_common=None,
+                                   clip_sp_template=None, template_table=None,
+                                   band_baseband_spw=band_baseband_spw)
+
         print('----------------------------------')
         print(band_baseband_spw)
         print('----------------------------------')

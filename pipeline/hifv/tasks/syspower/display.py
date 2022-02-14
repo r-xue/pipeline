@@ -356,8 +356,13 @@ class syspowerPerAntennaChart(object):
 
                     LOG.debug("Sys Power Plot, using antenna={!s}".format(antName))
 
+                    spw = '6,14'  # VLASS defaults
+                    spwobjlist = m.get_spectral_windows()
+                    if len(spwobjlist) == 1:
+                        spw = str(spwobjlist[0].id)
+
                     job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
-                                            antenna=antPlot, spw='6,14', timerange='',
+                                            antenna=antPlot, spw=spw, timerange='',
                                             plotrange=plotrange, coloraxis='spw',
                                             title='Sys Power ' + self.tabletype + '.tbl  Antenna: {!s}'.format(antName),
                                             titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)

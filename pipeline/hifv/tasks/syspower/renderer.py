@@ -102,49 +102,51 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for result in results:
 
-            plotter = syspowerdisplay.syspowerBoxChart(context, result)
-            plots = plotter.plot()
-            ms = os.path.basename(result.inputs['vis'])
-            box_plots[ms] = plots
+            if result.template_table:
 
-            plotter = syspowerdisplay.syspowerBarChart(context, result)
-            plots = plotter.plot()
-            ms = os.path.basename(result.inputs['vis'])
-            bar_plots[ms] = plots
+                plotter = syspowerdisplay.syspowerBoxChart(context, result)
+                plots = plotter.plot()
+                ms = os.path.basename(result.inputs['vis'])
+                box_plots[ms] = plots
 
-            plotter = syspowerdisplay.compressionSummary(context, result)
-            plots = plotter.plot()
-            ms = os.path.basename(result.inputs['vis'])
-            compression_plots[ms] = plots
+                plotter = syspowerdisplay.syspowerBarChart(context, result)
+                plots = plotter.plot()
+                ms = os.path.basename(result.inputs['vis'])
+                bar_plots[ms] = plots
 
-            plotter = syspowerdisplay.medianSummary(context, result)
-            plots = plotter.plot()
-            ms = os.path.basename(result.inputs['vis'])
-            median_plots[ms] = plots
+                plotter = syspowerdisplay.compressionSummary(context, result)
+                plots = plotter.plot()
+                ms = os.path.basename(result.inputs['vis'])
+                compression_plots[ms] = plots
 
-            # generate switched power plots and JSON file
-            plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
-                                                              result.gaintable, 'syspower', 'rq')
-            plots = plotter.plot()
-            json_path = plotter.json_filename
+                plotter = syspowerdisplay.medianSummary(context, result)
+                plots = plotter.plot()
+                ms = os.path.basename(result.inputs['vis'])
+                median_plots[ms] = plots
 
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'syspower_plots.mako', 'spgainrq')
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                swpowspgain_subpages[ms] = renderer.filename
+                # generate switched power plots and JSON file
+                plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
+                                                                  result.gaintable, 'syspower', 'rq')
+                plots = plotter.plot()
+                json_path = plotter.json_filename
 
-            # plot template pdiff table
-            plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
-                                                              result.template_table, 'syspower', 'pdiff')
-            plots = plotter.plot()
-            json_path = plotter.json_filename
+                # write the html for each MS to disk
+                renderer = VLASubPlotRenderer(context, result, plots, json_path, 'syspower_plots.mako', 'spgainrq')
+                with renderer.get_file() as fileobj:
+                    fileobj.write(renderer.render())
+                    swpowspgain_subpages[ms] = renderer.filename
 
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'syspower_plots.mako', 'spgainpdiff')
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                pdiffspgain_subpages[ms] = renderer.filename
+                # plot template pdiff table
+                plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
+                                                                  result.template_table, 'syspower', 'pdiff')
+                plots = plotter.plot()
+                json_path = plotter.json_filename
+
+                # write the html for each MS to disk
+                renderer = VLASubPlotRenderer(context, result, plots, json_path, 'syspower_plots.mako', 'spgainpdiff')
+                with renderer.get_file() as fileobj:
+                    fileobj.write(renderer.render())
+                    pdiffspgain_subpages[ms] = renderer.filename
 
         ctx.update({'opacity_plots': opacity_plots,
                     'spw': spw,

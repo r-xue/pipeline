@@ -59,7 +59,7 @@ $(document).ready(function() {
 	            <li>${band}-band</li>
 	            <ul>
 	            %for baseband in single_result.band_baseband_spw[band]:
-	                <li>${baseband}:  ${','.join([str(spw) for spw in single_result.band_baseband_spw[band][baseband]])}</li>
+	                <li>Baseband ${baseband}:  spws: ${','.join([str(spw) for spw in single_result.band_baseband_spw[band][baseband]])}</li>
 	            %endfor
 	            </ul>
 	        %endfor
@@ -73,7 +73,7 @@ $(document).ready(function() {
                 <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff Template SPgain plots</a>
             </h4>
         %endfor
-    %endif
+
 
 <%self:plot_group plot_dict="${box_plots}"
                   url_fn="${lambda ms: 'noop'}">
@@ -162,3 +162,9 @@ $(document).ready(function() {
           Median Summary plot
         </%def>
 </%self:plot_group>
+
+%else:
+
+No bands/basebands in these data will be processed for this task.
+
+%endif
