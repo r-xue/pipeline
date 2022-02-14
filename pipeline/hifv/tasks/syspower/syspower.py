@@ -161,11 +161,11 @@ class Syspower(basetask.StandardTaskTemplate):
         if isinstance(self.inputs.clip_sp_template, str):
             clip_sp_template = ast.literal_eval(self.inputs.clip_sp_template)
 
-        # Assumes priorcals was executed as the 5th stage
+        # Assumes hifv_priorcals was executed as the previous stage
         try:
-            rq_table = self.inputs.context.results[4].read()[0].rq_result[0].final[0].gaintable
+            rq_table = self.inputs.context.results[-1].read()[0].rq_result[0].final[0].gaintable
         except Exception as ex:
-            rq_table = self.inputs.context.results[4].read()[0].rq_result.final[0].gaintable
+            rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
             LOG.debug(ex)
 
         template_table = 'pdiff.tbl'
