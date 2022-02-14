@@ -130,6 +130,173 @@ class syspowerBarChart(object):
         return wrapper
 
 
+class compressionSummary(object):
+    def __init__(self, context, result):
+        self.context = context
+        self.result = result
+        self.ms = context.observing_run.get_ms(result.inputs['vis'])
+        self.caltable = result.gaintable
+
+    def plot(self):
+        plots = [self.get_plot_wrapper('compressionSummary')]
+        return [p for p in plots if p is not None]
+
+    def create_plot(self, prefix):
+        figfile = self.get_figfile(prefix)
+
+        pdiff = self.result.spowerdict['spower_common']
+        pdiff_ma = np.ma.masked_equal(pdiff, 0)
+
+        fig0, axes = plt.subplots(4, 1, sharex='col')
+        this_alpha = 1.0
+        axes[0].plot(np.ma.max(pdiff_ma, axis=0)[0, 0], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha, label='max')
+        axes[0].plot(np.ma.median(pdiff_ma, axis=0)[0, 0], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha,
+                     label='median')
+        axes[0].plot(np.ma.min(pdiff_ma, axis=0)[0, 0], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha, label='min')
+        axes[0].set_ylim(0.5, 1.2)
+        axes[0].set_ylabel('Bband 0R')
+        leg = axes[0].legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.0), frameon=True, numpoints=1,
+                             fancybox=False)
+        title = axes[0].set_title('P_diff template summary')
+        title.set_position([.5, 1.225])
+        axes[1].plot(np.ma.max(pdiff_ma, axis=0)[0, 1], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
+        axes[1].plot(np.ma.median(pdiff_ma, axis=0)[0, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
+        axes[1].plot(np.ma.min(pdiff_ma, axis=0)[0, 1], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
+        axes[1].set_ylim(0.5, 1.2)
+        axes[1].set_ylabel('Bband 0L')
+
+        axes[2].plot(np.ma.max(pdiff_ma, axis=0)[1, 0], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
+        axes[2].plot(np.ma.median(pdiff_ma, axis=0)[1, 0], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
+        axes[2].plot(np.ma.min(pdiff_ma, axis=0)[1, 0], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
+        axes[2].set_ylim(0.5, 1.2)
+        axes[2].set_ylabel('Bband 1R')
+
+        axes[3].plot(np.ma.max(pdiff_ma, axis=0)[1, 1], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
+        axes[3].plot(np.ma.median(pdiff_ma, axis=0)[1, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
+        axes[3].plot(np.ma.min(pdiff_ma, axis=0)[1, 1], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
+        axes[3].set_ylim(0.5, 1.2)
+        axes[3].set_ylabel('Bband 1L')
+        axes[3].set_xlabel('Time (seconds)')
+        fig0.set_size_inches(8, 10)
+
+        plt.savefig(figfile)
+        leg.set_bbox_to_anchor((0.5, 0.85))
+        # mpld3.save_html(fig0, figname.replace('.png', '.html'))
+        plt.close(fig0)
+        plt.close()
+
+    def get_figfile(self, prefix):
+        return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
+                            'syspower' + prefix + '-%s-compressionSummary.png' % self.ms.basename)
+
+    def get_plot_wrapper(self, prefix):
+        figfile = self.get_figfile(prefix)
+
+        wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
+                                                                                   'type': prefix,
+                                                                                   'spw': ''})
+
+        if not os.path.exists(figfile):
+            LOG.trace('syspower compressionSummary plot not found. Creating new plot.')
+            try:
+                self.create_plot(prefix)
+            except Exception as ex:
+                LOG.error('Could not create ' + prefix + ' plot.')
+                LOG.exception(ex)
+                return None
+
+        return wrapper
+
+
+class medianSummary(object):
+    def __init__(self, context, result):
+        self.context = context
+        self.result = result
+        self.ms = context.observing_run.get_ms(result.inputs['vis'])
+        self.caltable = result.gaintable
+
+    def plot(self):
+        plots = [self.get_plot_wrapper('medianSummary')]
+        return [p for p in plots if p is not None]
+
+    def create_plot(self, prefix):
+        figfile = self.get_figfile(prefix)
+
+        # Note that the original script needs the following variables (named differently)
+        # Original pdiff from spower_cmmon
+        # New variable determined via np.ma.masked_equal(pdiff, 0)
+        # Second variable determined via np.ma.masked_where(<2nd variable>== 0, <2nd variable>)
+
+        pd = self.result.spowerdict['spower_common']
+        pdiff = np.ma.masked_equal(pd, 0)
+
+        pdiff_ma = np.ma.masked_where(pdiff == 0, pdiff)
+
+        xrange = np.array(range(pdiff.shape[3]))
+        pdiff_ma.data[pdiff_ma > 1.1] = 1.1
+        pdiff_ma.data[pdiff_ma < 0.8] = 0.7
+        n_blank = 100
+
+        # https://github.com/numpy/numpy/issues/14650
+        try:
+            pdiff_ma.mask[:, :, :, :n_blank] = True
+        except Exception as e:
+            LOG.info("No zero values in pdiff - mask value set to a singular boolean of False. ")
+        ma_medians = np.ma.median(pdiff_ma, axis=0)
+
+        fig0 = plt.figure()
+
+        these_medians = ma_medians[0, 0, :]
+        hits = np.logical_not(these_medians.mask)
+        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband 0R')
+
+        these_medians = ma_medians[0, 1, :]
+        hits = np.logical_not(these_medians.mask)
+        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband 0L')
+
+        these_medians = ma_medians[1, 0, :]
+        hits = np.logical_not(these_medians.mask)
+        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband 1R')
+
+        these_medians = ma_medians[1, 1, :]
+        hits = np.logical_not(these_medians.mask)
+        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband 1L')
+
+        plt.xlim(0, pdiff.shape[3])
+        # leg = plt.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.1))
+        plt.xlabel('Time (seconds)')
+        plt.ylabel('median P_diff')
+        plt.ticklabel_format(useOffset=False)
+        plt.gcf().set_size_inches(8, 7)
+        plt.savefig(figfile)
+        # leg.set_bbox_to_anchor((0.5, 0.99))
+        # mpld3.save_html(fig0, figname.replace('.png', '.html'))
+        plt.close(fig0)
+        plt.close()
+
+    def get_figfile(self, prefix):
+        return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
+                            'syspower' + prefix + '-%s-medianSummary.png' % self.ms.basename)
+
+    def get_plot_wrapper(self, prefix):
+        figfile = self.get_figfile(prefix)
+
+        wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
+                                                                                   'type': prefix,
+                                                                                   'spw': ''})
+
+        if not os.path.exists(figfile):
+            LOG.trace('syspower medianSummary plot not found. Creating new plot.')
+            try:
+                self.create_plot(prefix)
+            except Exception as ex:
+                LOG.error('Could not create ' + prefix + ' plot.')
+                LOG.exception(ex)
+                return None
+
+        return wrapper
+
+
 class syspowerPerAntennaChart(object):
     def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype):
         self.context = context

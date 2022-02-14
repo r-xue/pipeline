@@ -10,8 +10,8 @@ from pipeline.infrastructure.renderer import rendererutils
 </div>
 
 % for ms in syspowerspgain_subpages.keys():
-    <h4>Plots:  <a class="replace" href="${rendererutils.get_relative_url(pcontext._report_dir, dirname, syspowerspgain_subpages[ms])}">SysPower Rq SPgain plots </a> |
-                <a class="replace" href="${rendererutils.get_relative_url(pcontext._report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff SPgain plots</a>
+    <h4>Plots:  <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, syspowerspgain_subpages[ms])}">SysPower Rq SPgain plots </a> |
+                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff SPgain plots</a>
     </h4>
 %endfor
 

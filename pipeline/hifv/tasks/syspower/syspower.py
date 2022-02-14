@@ -94,7 +94,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
 
 class SyspowerResults(basetask.Results):
     def __init__(self, gaintable=None, spowerdict=None, dat_common=None,
-                 clip_sp_template=None, template_table=None):
+                 clip_sp_template=None, template_table=None, band_baseband_spw=None):
 
         if gaintable is None:
             gaintable = ''
@@ -106,6 +106,8 @@ class SyspowerResults(basetask.Results):
             clip_sp_template = []
         if template_table is None:
             template_table = ''
+        if band_baseband_spw is None:
+            band_baseband_spw = collections.defaultdict(dict)
 
         super(SyspowerResults, self).__init__()
 
@@ -115,6 +117,7 @@ class SyspowerResults(basetask.Results):
         self.dat_common = dat_common
         self.clip_sp_template = clip_sp_template
         self.template_table = template_table
+        self.band_baseband_spw = band_baseband_spw
 
     def merge_with_context(self, context):
         """
@@ -153,22 +156,12 @@ class Syspower(basetask.StandardTaskTemplate):
     def prepare(self):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
-        # Determine if 8-bit or 3-bit
-        # 8-bit continuum applications (GHz)      3-bit continuum applications (GHz)
-        # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2/D2
-
-        banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
-        basebandsperband = collections.defaultdict(list)
-        for band in banddict:
-            basebandsperband[band] = []
-            for baseband in banddict[band]:
-                basebandsperband[band].append(baseband)
-
         # flag normalized p_diff outside this range
         clip_sp_template = self.inputs.clip_sp_template
         if isinstance(self.inputs.clip_sp_template, str):
             clip_sp_template = ast.literal_eval(self.inputs.clip_sp_template)
 
+        # Assumes priorcals was executed as the 5th stage
         try:
             rq_table = self.inputs.context.results[4].read()[0].rq_result[0].final[0].gaintable
         except Exception as ex:
@@ -181,14 +174,41 @@ class Syspower(basetask.StandardTaskTemplate):
         field = fields[0]
         flux_field = field.id
         flux_times = field.time
+        LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
         antenna_ids = np.array([a.id for a in m.antennas])
         antenna_names = [a.name for a in m.antennas]
-        spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
-        LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
+        # spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
+
+        # Determine if 8-bit or 3-bit
+        # 8-bit continuum applications (GHz)      3-bit continuum applications (GHz)
+        # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2/D2
+
+        banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+        # basebandsperband = collections.defaultdict(list)
+        spws = []
+        baseband2spw = {}
+        band_baseband_spw = collections.defaultdict(dict)
+        for band in banddict:
+            # basebandsperband[band] = []
+            for baseband in banddict[band]:
+                # basebandsperband[band].append(baseband)
+                if baseband in ('A0C0', 'B0D0') and band in ('L', 'S'):
+                    spwsperbaseband = []
+                    for spwdict in banddict[band][baseband]:
+                        for spw, value in spwdict.items():
+                            spwsperbaseband.append(spw)
+                    spws.extend(spwsperbaseband)  # spws in valid basebands A0C0 and B0D0 and only L-band or S-band
+                    baseband2spw[baseband] = spwsperbaseband
+                    band_baseband_spw[band] = baseband2spw
+
+        print('----------------------------------')
+        print(band_baseband_spw)
+        print('----------------------------------')
 
         # get switched power from MS
         with casa_tools.TableReader(self.inputs.vis + '/SYSPOWER') as tb:
-            stb = tb.query('SPECTRAL_WINDOW_ID > '+str(min(spws)-1))  # VLASS specific?
+            # stb = tb.query('SPECTRAL_WINDOW_ID > '+str(min(spws)-1))  # VLASS specific for offset of two spws?
+            stb = tb.query('SPECTRAL_WINDOW_ID in [{!s}]'.format(','.join([str(spw) for spw in spws])))
             sp_time = stb.getcol('TIME')
             sp_ant = stb.getcol('ANTENNA_ID')
             sp_spw = stb.getcol('SPECTRAL_WINDOW_ID')
@@ -208,7 +228,7 @@ class Syspower(basetask.StandardTaskTemplate):
         dat_sum          = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
         dat_sum_flux     = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
 
-        # Obtain online flagging commands from flagdata result
+        # Obtain online flagging commands from flagdata result. Assumes flagdata was executed in the 3rd stage position
         flagresult = self.inputs.context.results[2]
         result = flagresult.read()
         result = result[0]
@@ -252,11 +272,27 @@ class Syspower(basetask.StandardTaskTemplate):
                     dat_scaled[i, j, pol, hits2] = pdrq[pol, hits] / dat_flux[i, j, pol]
                     dat_filtered[i, j, pol, hits2] = deepcopy(dat_scaled[i, j, pol, hits2])
 
+        # Determine which spws go with which basebands
+        # There could be multiple baseband names per band - count them
+        bband2spw = []
+        bband_common_indices = []
+        bbindex = 0
+        for band in band_baseband_spw:
+            for baseband in band_baseband_spw[band]:
+                bband2spw.append(band_baseband_spw[band][baseband])
+                bband_common_indices.append(list(range(bbindex * len(bband2spw[bbindex]), (bbindex + 1) * len(bband2spw[bbindex]))))
+                bbindex += 1
+
+        print('----------------------------------')
+        print(bband_common_indices)
+        print('----------------------------------')
+
         # common baseband template
         for i, this_ant in enumerate(antenna_ids):
             LOG.info('Creating template for antenna {0}'.format(antenna_names[this_ant]))
-            for bband in [0, 1]:
-                common_indices = list(range(0, 8)) if bband == 0 else list(range(8, 16))
+            for bband in range(bbindex):
+                # common_indices = list(range(0, 8)) if bband == 0 else list(range(8, 16))  # VLASS Specific
+                common_indices = bband_common_indices[bband]
                 for pol in [0, 1]:
                     LOG.info('  processing baseband {0},  polarization {1}'.format(bband, pol))
 
@@ -287,7 +323,8 @@ class Syspower(basetask.StandardTaskTemplate):
 
                     sp_median_data = np.ma.median(sp_data, axis=0)
                     sp_median_mask = deepcopy(sp_median_data.mask)
-                    # scipy.signal.savgol_filter(x, window_length, polyorder, deriv=0, delta=1.0, axis=-1, mode='interp', cval=0.0) # OLD
+                    # scipy.signal.savgol_filter(x, window_length, polyorder, deriv=0, delta=1.0,
+                    #                            axis=-1, mode='interp', cval=0.0) # OLD
                     # savitzky_golay(y, window_size, order, deriv=0, rate=1):  NEW
                     # sp_template = savgol_filter(self.interp_with_medfilt(sp_median_data), 7, 3)
                     sp_template = savitzky_golay(self.interp_with_medfilt(sp_median_data), 7, 3)
@@ -363,14 +400,19 @@ class Syspower(basetask.StandardTaskTemplate):
             rq_flag = tb.getcol('FLAG')
 
             LOG.info('Starting RQ table')
-            spw_offset = 2  # Hardwired for VLASS
+            # spw_offset = 2  # Hardwired for VLASS
             for i, this_ant in enumerate(antenna_ids):
                 LOG.info('  writing RQ table for antenna {0}'.format(this_ant))
 
-                for j, this_spw in enumerate(range(len(spws))):
-                    hits = np.where((rq_ant == i) & (rq_spw == j + spw_offset))[0]
-                    # hits = np.where((rq_ant == i) & (rq_spw == j))[0]
-                    bband = 0 if (j < 8) else 1
+                # for j, this_spw in enumerate(range(len(spws))):
+                for j, this_spw in enumerate(spws):
+                    # hits = np.where((rq_ant == i) & (rq_spw == j + spw_offset))[0]
+                    hits = np.where((rq_ant == i) & (rq_spw == this_spw))[0]
+                    # bband = 0 if (j < 8) else 1
+
+                    for subarray in bband_common_indices:
+                        if j in subarray:
+                            bband = bband_common_indices.index(subarray)
 
                     hits2 = np.where(np.in1d(sorted_time, rq_time[hits]))[0]
 
@@ -383,7 +425,7 @@ class Syspower(basetask.StandardTaskTemplate):
                                 message = '  {2}% of solutions flagged in baseband {0},  polarization {1}'
                                 LOG.info(message.format(bband, pol, 100. * np.sum(rq_flag[2 * pol, 0, hits]) /
                                                                                   rq_flag[2 * pol, 0, hits].size))
-                        except:
+                        except Exception as e:
                             LOG.warning('Error preparing final RQ table')
                             raise  # SystemExit('shape mismatch writing final RQ table')
 
@@ -400,9 +442,13 @@ class Syspower(basetask.StandardTaskTemplate):
 
         with casa_tools.TableReader(template_table, nomodify=False) as tb:
             for i, this_ant in enumerate(antenna_ids):
-                for j, this_spw in enumerate(range(len(spws))):
-                    hits = np.where((rq_ant == i) & (rq_spw == j + spw_offset))[0]
-                    bband = 0 if (j < 8) else 1
+                # for j, this_spw in enumerate(range(len(spws))):
+                for j, this_spw in enumerate(spws):
+                    hits = np.where((rq_ant == i) & (rq_spw == this_spw))[0]
+                    # bband = 0 if (j < 8) else 1
+                    for subarray in bband_common_indices:
+                        if j in subarray:
+                            bband = bband_common_indices.index(subarray)
                     hits2 = np.where(np.in1d(sorted_time, rq_time[hits]))[0]
 
                     for pol in [0, 1]:
@@ -416,7 +462,8 @@ class Syspower(basetask.StandardTaskTemplate):
             tb.putcol('FLAG', rq_flag)
 
         return SyspowerResults(gaintable=rq_table, spowerdict=spowerdict, dat_common=dat_common,
-                               clip_sp_template=clip_sp_template, template_table=template_table)
+                               clip_sp_template=clip_sp_template, template_table=template_table,
+                               band_baseband_spw=band_baseband_spw)
 
     def analyse(self, results):
         return results

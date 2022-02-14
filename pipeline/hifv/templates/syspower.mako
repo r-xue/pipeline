@@ -54,6 +54,16 @@ $(document).ready(function() {
         Switched Power table written to:
         %for single_result in result:
 	        <p><b>${os.path.basename(single_result.gaintable)}</b></p>
+	        <ul>
+	        %for band in single_result.band_baseband_spw:
+	            <li>${band}-band</li>
+	            <ul>
+	            %for baseband in single_result.band_baseband_spw[band]:
+	                <li>${baseband}:  ${','.join([str(spw) for spw in single_result.band_baseband_spw[band][baseband]])}</li>
+	            %endfor
+	            </ul>
+	        %endfor
+	        </ul>
         %endfor
         This table has been modified.
 
@@ -105,5 +115,50 @@ $(document).ready(function() {
 
         <%def name="caption_title(plot)">
           Syspower bar plot
+        </%def>
+</%self:plot_group>
+
+
+<%self:plot_group plot_dict="${compression_plots}"
+                  url_fn="${lambda ms: 'noop'}">
+
+        <%def name="title()">
+            Compression Summary plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Compression window </%def>
+
+        <%def name="fancybox_caption(plot)">
+          Compression Summary plot
+        </%def>
+
+        <%def name="caption_title(plot)">
+          Compression Summary plot
+        </%def>
+</%self:plot_group>
+
+
+
+<%self:plot_group plot_dict="${median_plots}"
+                  url_fn="${lambda ms: 'noop'}">
+
+        <%def name="title()">
+            Median Summary plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Median window </%def>
+
+        <%def name="fancybox_caption(plot)">
+          Median Summary plot
+        </%def>
+
+        <%def name="caption_title(plot)">
+          Median Summary plot
         </%def>
 </%self:plot_group>
