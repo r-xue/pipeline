@@ -56,13 +56,12 @@ class SDExportDataInputs(exportdata.ExportDataInputs):
 class SDExportData(exportdata.ExportData):
     """A class for exporting single dish data to the products subdirectory.
 
-    It performs the following operations:
-    - Saves the pipeline processing request in an XML file
-    - Saves the images in FITS cubes one per target and spectral window
-    - Saves the final flags and bl coefficient per ASDM
-      in a compressed / tarred CASA flag versions file
-    - Saves the final web log in a compressed / tarred file
-    - Saves the text formatted list of contents of products directory
+    It performs the following additional operations after ExportData does:
+
+    - Exports auxiliary tar files of the calibration tables one per session
+    - Exports auxiliary MS products (calibration apply files) in text files
+    - Saves a K2JY reference file and flag files into tarball
+    - Saves the AQUA report file
     """
 
     Inputs = SDExportDataInputs

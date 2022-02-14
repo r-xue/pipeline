@@ -95,13 +95,10 @@ class NROExportDataInputs(sdexportdata.SDExportDataInputs):
 class NROExportData(sdexportdata.SDExportData):
     """A class for exporting Nobeyama data to the products subdirectory.
 
-    It performs the following operations:
-    - Saves the pipeline processing request in an XML file
-    - Saves the images in FITS cubes one per target and spectral window
-    - Saves the final flags and bl coefficient per ASDM
-      in a compressed / tarred CASA flag versions file
-    - Saves the final web log in a compressed / tarred file
-    - Saves the text formatted list of contents of products directory
+    It performs the following additional operations after SDExportData does:
+
+    - Export reduction template in a Python file
+    - Export nroscale CSV file
     """
 
     Inputs = NROExportDataInputs
