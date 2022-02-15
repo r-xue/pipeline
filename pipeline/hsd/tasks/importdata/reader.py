@@ -714,7 +714,7 @@ class MetaDataReader(object):
                 try:
                     pointing_directions = msmd.pointingdirection(row, interpolate=True)
                 except RuntimeError as e:
-                    if str(e).find('SSMIndex::getIndex - access to non-existing row') != -1:
+                    if 'SSMIndex::getIndex - access to non-existing row' in str(e):
                         LOG.info('{}: Missing pointing data for row {} (antenna {} time {})'.format(ms.basename, rows[irow], Tant[irow], Tmjd[irow]))
 
                         # register DataTable row to self.invalid_pointing_data
