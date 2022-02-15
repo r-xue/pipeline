@@ -243,10 +243,16 @@ class medianSummary(object):
         n_blank = 100
 
         # https://github.com/numpy/numpy/issues/14650
+
         try:
             pdiff_ma.mask[:, :, :, :n_blank] = True
         except Exception as e:
-            LOG.info("No zero values in pdiff - mask value set to a singular boolean of False. ")
+            if type(pdiff_ma.mask) == np.bool_:
+                pdiff_ma.mask = np.ma.getmaskarray(pdiff_ma)
+            pdiff_ma.mask[:, :, :, :n_blank] = True
+            LOG.debug("Issue with the array mask {!s}".format(e))
+            LOG.info("No zero values in pdiff - mask value set to a scalar boolean.  Reset to a matrix. ")
+
         ma_medians = np.ma.median(pdiff_ma, axis=0)
 
         fig0 = plt.figure()
@@ -268,13 +274,13 @@ class medianSummary(object):
         plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband 1L')
 
         plt.xlim(0, pdiff.shape[3])
-        # leg = plt.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.1))
+        leg = plt.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.1))
         plt.xlabel('Time (seconds)')
         plt.ylabel('median P_diff')
         plt.ticklabel_format(useOffset=False)
         plt.gcf().set_size_inches(8, 7)
         plt.savefig(figfile)
-        # leg.set_bbox_to_anchor((0.5, 0.99))
+        leg.set_bbox_to_anchor((0.5, 0.99))
         # mpld3.save_html(fig0, figname.replace('.png', '.html'))
         plt.close(fig0)
         plt.close()

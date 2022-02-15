@@ -207,9 +207,9 @@ class Syspower(basetask.StandardTaskTemplate):
                                    clip_sp_template=None, template_table=None,
                                    band_baseband_spw=band_baseband_spw)
 
-        print('----------------------------------')
-        print(band_baseband_spw)
-        print('----------------------------------')
+        LOG.info('----------------------------------')
+        LOG.info(band_baseband_spw)
+        LOG.info('----------------------------------')
 
         # get switched power from MS
         with casa_tools.TableReader(self.inputs.vis + '/SYSPOWER') as tb:
@@ -289,9 +289,9 @@ class Syspower(basetask.StandardTaskTemplate):
                 bband_common_indices.append(list(range(bbindex * len(bband2spw[bbindex]), (bbindex + 1) * len(bband2spw[bbindex]))))
                 bbindex += 1
 
-        print('----------------------------------')
-        print(bband_common_indices)
-        print('----------------------------------')
+        LOG.info('----------------------------------')
+        LOG.info(bband_common_indices)
+        LOG.info('----------------------------------')
 
         # common baseband template
         for i, this_ant in enumerate(antenna_ids):
