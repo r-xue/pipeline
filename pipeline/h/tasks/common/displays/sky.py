@@ -110,7 +110,7 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', ms=None, mom8_fc_peak_snr=None, **imshow_args):
+    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', stokes='I', ms=None, mom8_fc_peak_snr=None, **imshow_args):
         """Method to plot a map."""
 
         plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
@@ -118,18 +118,32 @@ class SkyDisplay(object):
         LOG.info('Plotting %s' % result)
 
         with casa_tools.ImageReader(result) as image:
+
+            cs = image.coordsys()
+            stokes_labels = cs.stokes()
+            stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
+            cs.done()
+
+            if stokes not in stokes_present:
+                stokes_select = stokes_present[0]
+                LOG.warning(f'Stokes {stokes_select} is requested, but only Stokes={stokes_present} is present.')
+                LOG.warning(f'We will try to create a plot with a fallback of Stokes={stokes_select}.')
+            else:
+                stokes_select = stokes
+
             try:
                 if collapseFunction == 'center':
-                    collapsed = image.collapse(function='mean', chans=str(image.summary()['shape'][3]//2), axes=[2, 3])
+                    collapsed = image.collapse(function='mean', chans=str(
+                        image.summary()['shape'][3]//2), stokes=stokes_select, axes=3)
                 else:
                     # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
                     # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
-                    collapsed = image.collapse(function=collapseFunction, axes=[2, 3])
+                    collapsed = image.collapse(function=collapseFunction, stokes=stokes_select, axes=3)
             except:
                 # All channels flagged or some other error. Make collapsed zero image.
                 collapsed_new = image.newimagefromimage(infile=result)
                 collapsed_new.set(pixelmask=True, pixels='0')
-                collapsed = collapsed_new.collapse(function='mean', axes=[2, 3])
+                collapsed = collapsed_new.collapse(function='mean', stokes=stokes_select, axes=3)
                 collapsed_new.done()
 
             name = image.name(strippath=True)
@@ -206,6 +220,8 @@ class SkyDisplay(object):
             yoff = 0.10
             yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
             for i, k in enumerate(coord_refs['string']):
+                # note: the labels present the reference value at individual axes of the collapsed image
+                # https://casa.nrao.edu/docs/casaref/image.collapse.html
                 yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
 
             # if peaksnr is available for the mom8_fc image, include it in the plot
