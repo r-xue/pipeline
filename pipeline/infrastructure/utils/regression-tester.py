@@ -10,6 +10,8 @@ import shutil
 import pytest
 from typing import Tuple, Optional, List
 
+import casatasks.private.tec_maps as tec_maps 
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.recipereducer
@@ -189,6 +191,9 @@ class PipelineRegression(object):
         os.symlink(input_vis, f'rawdata/{os.path.basename(input_vis)}')
         os.chdir('working')
         os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
+        # PIPE-1432: reset casatasks/tec_maps.workDir as it's unaware of a CWD change.
+        if hasattr(tec_maps, 'workDir'):
+            tec_maps.workDir = os.getcwd()+'/'
         if telescope is 'alma':
             almappr.executeppr(f'../{os.path.basename(ppr_path)}', importonly=False)
         elif telescope is 'vla':
@@ -209,6 +214,9 @@ class PipelineRegression(object):
         except FileExistsError:
             LOG.warning(f"Directory working exists.  Continuing")
         os.chdir('working')
+        # PIPE-1432: reset casatasks/tec_maps.workDir as it's unaware of a CWD change.
+        if hasattr(tec_maps, 'workDir'):
+            tec_maps.workDir = os.getcwd()+'/'
         pipeline.recipereducer.reduce(vis=[input_vis], procedure=self.recipe)
 
 # The methods below are test methods called from pytest.
