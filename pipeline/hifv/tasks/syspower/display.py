@@ -370,8 +370,18 @@ class syspowerPerAntennaChart(object):
 
                     spw = '6,14'  # VLASS defaults
                     spwobjlist = m.get_spectral_windows()
-                    if len(spwobjlist) == 1:
-                        spw = str(spwobjlist[0].id)
+                    spwidlist = []
+                    for band in result.band_baseband_spw:
+                        for baseband in result.band_baseband_spw[band]:
+                            for spwid in result.band_baseband_spw[band][baseband]:
+                                spwidlist.append(spwid)
+
+                    if 6 not in spwidlist or 14 not in spwidlist:
+                        if len(spwobjlist) == 1:
+                            spw = str(spwobjlist[0].id)
+                        else:
+                            # Pick two other spws - one from each baseband
+                            spw = str(spwidlist[1]) + ',' + str(spwidlist[-2])
 
                     job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
                                             antenna=antPlot, spw=spw, timerange='',
