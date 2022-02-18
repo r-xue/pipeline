@@ -81,7 +81,7 @@ class SDExportData(exportdata.ExportData):
 
         oussid = self.get_oussid(self.inputs.context)
 
-        # Make the imaging vislist and the sessions lists.
+        # Make the imaging list of names of MeasurementSet and the sessions lists.
         session_list, session_names, session_vislists, vislist = \
             self._make_lists(self.inputs.context, self.inputs.session,
                              self.inputs.vis, imaging_only_mses=True)
@@ -140,20 +140,21 @@ class SDExportData(exportdata.ExportData):
     def _make_lists(self, context: Context, session: List[str],
                     vis: Union[List[str], str], imaging_only_mses: bool=False) \
             -> Tuple[List[str], List[str], List[List[str]], List[str]]:
-        """Create the vis and sessions lists.
+        """Create the list of names of MeasurementSet and ones of session.
 
         Args:
             context : Pipeline context
             session : session names
-            vis : names of MeasurementSets
+            vis : a name of MeasurementSet or list of it
             imaging_only_mses : a flag of imaging-only measurement sets.
                                 In single dish pipeline, all mses are non-
                                 imaging ones but they need to be returned
                                 even when imaging is False so no filtering
                                 is done. NOT IN USE.
         Returns:
-            a tuple of session list, session name list, session vis list,
-            vis list
+            a tuple of session list, session name list,
+            list of MeasurementSet names lists associated with each session,
+            list of MeasurementSet names
         """
         LOG.info('Single dish specific _make_lists')
         # Force inputs.vis to be a list.
@@ -183,8 +184,9 @@ class SDExportData(exportdata.ExportData):
             products_dir : path of products directory
 
         Returns:
-            ordered dictionary object contains session name(key) and a list of file name of vis and
-            the name of auxiliary calibration product associated with the session (value).
+            ordered dictionary object contains session name(key) and a list of file name of
+            MeasurementSet and the name of auxiliary calibration product associated with the
+            session (value).
         """
         # Make the standard sessions dictionary and export per session products
         #    Currently these are compressed tar files of per session calibration tables
@@ -213,7 +215,7 @@ class SDExportData(exportdata.ExportData):
         """Sort baseline table names and return the last of them.
 
         Args:
-            vis : vis name
+            vis : MeasurementSet name
 
         Returns:
             the last baseline table name
@@ -240,7 +242,7 @@ class SDExportData(exportdata.ExportData):
             context : pipeline context
             oussid : OUS status ID
             session : session name
-            vislist : list of vis
+            vislist : list of MeasurementSet names
             products_dir : products directory
 
         Returns:
@@ -295,14 +297,14 @@ class SDExportData(exportdata.ExportData):
 
         Args:
             context : pipeline context
-            vislist : list of vis
+            vislist : list of MeasurementSet names
             products_dir : path of products directory
 
         Returns:
-            orderd vis dictionary contains vis name(key) and
+            an ordered dictionary which contains MeasurementSet name (key) and
             calibration apply file name(value)
         """
-        # Loop over the measurements sets in the working directory, and
+        # Loop over the MeasurementSets in the working directory, and
         # create the calibration apply file(s) in the products directory.
         apply_file_list = []
         for visfile in vislist:
@@ -310,8 +312,8 @@ class SDExportData(exportdata.ExportData):
                                                                products_dir)
             apply_file_list.append(apply_file)
 
-        # Create the ordered vis dictionary
-        #    The keys are the base vis names
+        # Create the ordered MeasurementSet names dictionary
+        #    The keys are the base MeasurementSet names
         #    The values are a tuple containing the flags and applycal files
         visdict = collections.OrderedDict()
         for i in range(len(vislist)):
@@ -329,7 +331,7 @@ class SDExportData(exportdata.ExportData):
 
         Args:
             context : pipeline context
-            vis : vis name
+            vis : MeasurementSet name
             products_dir : path of products directory
 
         Returns:
@@ -510,7 +512,7 @@ class SDExportData(exportdata.ExportData):
             script_name : name of the restore script
             products_dir : name of the product directory
             oussid : OUS Status ID
-            vislist : list of vis
+            vislist : list of MeasurementSet names
             session_list : list of session
 
         Returns:
