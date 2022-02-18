@@ -4,14 +4,14 @@ import contextlib
 import itertools
 import operator
 import os
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Dict
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-if TYPE_CHECKING: # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 from . import measures
@@ -42,12 +42,15 @@ class MeasurementSet(object):
             dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
-        spectralspec_spwmap: SpectralSpec mapping
+        phasecal_mapping: A dictionary mapping phase calibrator fields to
+            corresponding fields with TARGET or CHECK intent.
+        spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
+            spectral window IDs.
         fields: A list of Field objects associated with MS
         states: A list of State objects associated with MS
+        spwmaps: Spectral window mapping to use for combining/mapping, split by
+            (intent, field), used in ALMA interferometry calibration tasks.
         reference_spwmap: Reference spectral window map
-        phaseup_spwmap: Spectral window mapping used in spwphaseup calibration
-        combine_spwmap: Spectral window mapping used to increase S/N ratio
         data_column: A dictionary to store data type (key) and corresponding
             data column (value)
         data_types_per_source_and_spw: A dictionary to store a list of
@@ -59,9 +62,9 @@ class MeasurementSet(object):
             the current MS is generated.
     """
 
-    def __init__(self, name: str, session: Optional[str]=None):
+    def __init__(self, name: str, session: Optional[str] = None):
         """
-        Initialize MeasurmentSet class.
+        Initialize a MeasurementSet object.
 
         Args:
             name: A path to MS
@@ -70,7 +73,7 @@ class MeasurementSet(object):
         self.name: str = name
         self.session: Optional[str] = session
         self.antenna_array: Optional[AntennaArray] = None
-        self.array_name: str = None
+        self.array_name: str = ''
         self.derived_fluxes: Optional[collections.defaultdict] = None
         self.flagcmds: List[str] = []
         self.filesize: measures.FileSize = self._calc_filesize()
@@ -80,16 +83,25 @@ class MeasurementSet(object):
         self.science_goals: dict = {}
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
-        self.spectralspec_spwmap: dict = {}
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
-        self.phaseup_spwmap: Optional[List[int]] = None
-        self.combine_spwmap: Optional[List[int]] = None
-        self.spwphaseup_snr_info: Optional[Dict[int, float]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
         self.data_types_per_source_and_spw: dict = {}
+
+        # Dictionary mapping phase calibrator fields to corresponding fields
+        # with TARGET / CHECK intents (PIPE-1154).
+        self.phasecal_mapping: dict = {}
+
+        # Dictionary to map each SpectralSpec to list of corresponding spectral
+        # window IDs (PIPE-1132).
+        self.spectralspec_spwmap: dict = {}
+
+        # Dictionary with collections of spectral window maps for mapping or
+        # combining spws, split by (intent, field). This is used in several
+        # ALMA ('hifa') calibration tasks (PIPE-1154).
+        self.spwmaps: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with

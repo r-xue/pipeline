@@ -12,6 +12,8 @@ import platform
 import pytest
 from typing import Tuple, Optional, List
 
+import casatasks.private.tec_maps as tec_maps 
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.recipereducer
@@ -119,8 +121,13 @@ class PipelineRegression(object):
                     LOG.warning(f"Directory \'{dd} exists.  Continuing")
             os.chdir('working')
 
-            # shut down the existing plotms process to avoid side-effects from changing CWD
+            # PIPE-1301: shut down the existing plotms process to avoid side-effects from changing CWD.
+            # This is implemented as a workaround for CAS-13626
             shutdown_plotms()
+            
+            # PIPE-1432: reset casatasks/tec_maps.workDir as it's unaware of a CWD change.
+            if hasattr(tec_maps, 'workDir'):
+                tec_maps.workDir = os.getcwd()+'/'            
 
             # switch to per-test casa/PL logfile paths and backup the default(initial) casa logfile name
             _, _, last_casa_logfile = self.__reset_logfiles(prepend=True)
@@ -241,7 +248,7 @@ class PipelineRegression(object):
         note: this private method is expected be called under "working/"
         """
         LOG.warning("Running without Pipeline Processing Request (PPR).  Using recipereducer instead.")
-
+        
         pipeline.recipereducer.reduce(vis=[input_vis], procedure=self.recipe)
 
     def __reset_logfiles(self, casacalls_logfile=None, casa_logfile=None, prepend=False):
