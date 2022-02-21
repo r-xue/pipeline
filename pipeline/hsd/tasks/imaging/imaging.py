@@ -1195,7 +1195,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('- flagged Fraction = {} %'.format(100*frac_flagged))
             # obtain calibration tables applied
             calto = callibrary.CalTo(vis=calmsobj.name, field=str(fieldid))
-            calst = context.callibrary.get_calstate(calto)
+            calst = context.callibrary.applied.trimmed(context, calto)
             # obtain T_sub,on, T_sub,off
             t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
             sky_field = calmsobj.calibration_strategy['field_strategy'][fieldid]
