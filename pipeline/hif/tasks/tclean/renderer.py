@@ -635,7 +635,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # construct the renderers so we know what the back/forward links will be
         # sort the rows so the links will be in the same order as the rows
-        image_rows.sort(key=lambda row: (row.image_file.split('.')[0], row.field, utils.natural_sort_key(row.spw), row.pol))
         temp_urls = (None, None, None)
         qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
                         for row in image_rows]
@@ -679,8 +678,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 LOG.error(e)
             except:
                 final_rows.append(row)
-        # primary sort images by vis, field, secondary sort on spw, then by pol
-        final_rows.sort(key=lambda row: (row.vis, row.field, utils.natural_sort_key(row.spw), row.pol))
 
         chk_fit_rows = []
         for row in final_rows:
