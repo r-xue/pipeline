@@ -386,7 +386,7 @@ class syspowerPerAntennaChart(object):
                     job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
                                             antenna=antPlot, spw=spw, timerange='',
                                             plotrange=plotrange, coloraxis='spw',
-                                            title='Sys Power ' + self.tabletype + '.tbl  Antenna: {!s}'.format(antName),
+                                            title='Sys Power ' + self.tabletype + '.tbl  Antenna: {!s}   spw: {!s}'.format(antName, spw),
                                             titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                     job.execute(dry_run=False)
