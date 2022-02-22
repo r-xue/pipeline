@@ -413,8 +413,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents) or \
-               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'PHASE' in fieldobj[0].intents):
+               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents):
 
                 LOG.warning("Field {!s}: {!s}, "
                             "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
@@ -446,7 +445,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             elif self.inputs.fitorder < -1:
                 raise Exception
 
-            if field not in fluxcalfieldlist:
+            if (field not in fluxcalfieldlist) and spwlist:
                 task_args = {'vis': calMs,
                              'caltable': caltable,
                              'fluxtable': 'fluxgaincalFcal_{!s}.g'.format(field),
