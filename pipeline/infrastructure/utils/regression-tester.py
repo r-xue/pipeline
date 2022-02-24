@@ -259,7 +259,7 @@ class PipelineRegression(object):
         note: this private method is expected be called under "working/"
         """
         LOG.warning("Running without Pipeline Processing Request (PPR).  Using recipereducer instead.")
-        
+
         pipeline.recipereducer.reduce(vis=[input_vis], procedure=self.recipe)
 
     def __reset_logfiles(self, casacalls_logfile=None, casa_logfile=None, prepend=False):
@@ -282,12 +282,12 @@ class PipelineRegression(object):
         casa_tools.casalog.setlogfile(casa_logfile)
 
         # prepend the content of the last CASA logfile in the new logfile.
-        if prepend and os.path.exists(last_casa_logfile):
+        if prepend and os.path.exists(last_casa_logfile) and casa_logfile != last_casa_logfile:
             with open(last_casa_logfile, 'r') as infile:
                 with open(casa_logfile, 'a') as outfile:
                     outfile.write(infile.read())
 
-        return casacalls_logfile, casa_logfile, last_casa_logfile
+        return
 
 
 # The methods below are test methods called from pytest.
