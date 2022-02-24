@@ -713,6 +713,22 @@ def xml_for_sensitivity(d):
     except:
         sensitivity_jy_per_beam  = 'N/A'
 
+    try:
+        pbcor_image_min = qa.quantity(d['pbcor_image_min'])
+        pbcor_image_min_jy_per_beam = value(qa.convert(pbcor_image_min, 'Jy/beam'))
+        if pbcor_image_min_jy_per_beam == '0.0':
+            pbcor_image_min_jy_per_beam = 'N/A'
+    except:
+        pbcor_image_min_jy_per_beam = 'N/A'
+
+    try:
+        pbcor_image_max = qa.quantity(d['pbcor_image_max'])
+        pbcor_image_max_jy_per_beam = value(qa.convert(pbcor_image_max, 'Jy/beam'))
+        if pbcor_image_max_jy_per_beam == '0.0':
+            pbcor_image_max_jy_per_beam = 'N/A'
+    except:
+        pbcor_image_max_jy_per_beam = 'N/A'
+
     xml = ElementTree.Element('Sensitivity',
         Array=d['array'],
         BandwidthHz=bandwidth_hz,
@@ -728,6 +744,8 @@ def xml_for_sensitivity(d):
         UVTaper=str(d.get('uvtaper', '')),
         SensitivityJyPerBeam=sensitivity_jy_per_beam,
         MsSpwId=d['spw'],
+        PbcorImageMinJyPerBeam=pbcor_image_min_jy_per_beam,
+        PbcorImageMaxJyPerBeam=pbcor_image_max_jy_per_beam
       )
 
     return xml
