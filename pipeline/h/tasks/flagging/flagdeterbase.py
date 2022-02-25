@@ -128,6 +128,20 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
         The filename of the ASCII file that has the flagging template (for
         RFI, birdies, telluric lines, etc.).
+
+    .. py:attribute:: lowtrans
+
+        A boolean stating whether to flag low transmission spws.
+
+    .. py:attribute:: mintransrepspw
+
+        A float contains the minimimum transmission (between 0.0 and 1.0)
+        required to flag the representative spw. Defaults to 0.05.
+
+    .. py:attribute:: mintransotherspws
+
+        A float contains the minimimum transmission (between 0.0 and 1.0)
+        required to flag other spws. Defaults to 0.1.
     """
 
     autocorr = vdp.VisDependentProperty(default=True)
@@ -172,6 +186,9 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
     online = vdp.VisDependentProperty(default=True)
     partialpol = vdp.VisDependentProperty(default=False)
+    lowtrans = vdp.VisDependentProperty(default=False)
+    mintransrepspw  = vdp.VisDependentProperty(default=0.05)
+    mintransotherspws  = vdp.VisDependentProperty(default=0.1)
     scan = vdp.VisDependentProperty(default=True)
     scannumber = vdp.VisDependentProperty(default='')
     shadow = vdp.VisDependentProperty(default=True)
@@ -205,7 +222,8 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, partialpol=None):
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, partialpol=None,
+                 lowtrans=None, mintransrepspw=None, mintransotherspws=None):
         super(FlagDeterBaseInputs, self).__init__()
 
         # pipeline inputs
@@ -227,6 +245,9 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
         self.fracspwfps = fracspwfps
         self.online = online
         self.partialpol = partialpol
+        self.lowtrans = lowtrans
+        self.mintransrepspw = mintransrepspw
+        self.mintransotherspws = mintransotherspws
         self.fileonline = fileonline
         self.template = template
         self.filetemplate = filetemplate
@@ -339,8 +360,8 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
 
         ordered_agents = ['before', 'anos', 'intents', 'qa0', 'qa2', 'online',
                           'template', 'partialpol', 'autocorr',
-                          'shadow', 'pointing', 'edgespw', 'clip', 'quack',
-                          'baseband']
+                          'shadow', 'pointing', 'edgespw', 'lowtrans',
+                          'clip', 'quack', 'baseband']
 
         summary_reps = [agent_summaries[agent]
                         for agent in ordered_agents
@@ -475,6 +496,16 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
                 flag_cmds.append("mode='manual' spw='%s' reason='edgespw'" % spw_arg)
                 flag_cmds.append("mode='summary' name='edgespw'")
 
+        # Flag Low Atmospheric Transmission
+        if inputs.lowtrans:
+            to_flag = self._get_lowtrans_cmds(
+                mintransrepspw=inputs.min_transmission_rep_spw,
+                mintransotherspws=inputs.min_transmission_other_spws
+            )
+            if to_flag:
+                flag_cmds.extend(to_flag)
+                flag_cmds.append("mode='summary' name='lowtrans'")
+
         # summarise the state before flagging rather than assuming the initial
         # state is unflagged
         if flag_cmds:
@@ -509,6 +540,13 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         """Return the necessary flag commands for the Partial Polarization step.
         Its functionality may be overridden in classes that inherit from FlagDeterBase.
         PIPE-1028: By default this base task will just return an empty list.
+        """
+        return []
+
+    def _get_lowtrans_cmds(self, mintransrepspw=0.05, mintransotherspws=0.1):
+        """Return the necessary flag commands for the Low Atmospheric Transmission step.
+        Its functionality may be overridden in classes that inherit from FlagDeterBase.
+        PIPE-624: By default this base task will just return an empty list.
         """
         return []
 

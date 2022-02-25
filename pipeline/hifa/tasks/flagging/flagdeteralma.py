@@ -1,4 +1,7 @@
 import numpy as np
+from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.time import Time
+from astropy.utils.iers import conf as iers_conf
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -7,6 +10,14 @@ from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils import utils
 from pipeline.infrastructure import casa_tools
+from pipeline.extern.adopted import getMedianPWV
+from pipeline.h.tasks.common.atmutil import calc_airmass
+
+
+# Avoid downloading the updated IERS tables from the internet because an
+#  approximate value is enough in this case
+iers_conf.auto_max_age = None
+
 
 __all__ = [
     'FlagDeterALMA',
@@ -27,6 +38,9 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     # PIPE-1028: in hifa_flagdata, flag integrations with only partial
     # polarization products.
     partialpol = vdp.VisDependentProperty(default=True)
+    lowtrans = vdp.VisDependentProperty(default=False)
+    mintransrepspw = vdp.VisDependentProperty(default=0.05)
+    mintransotherspws = vdp.VisDependentProperty(default=0.1)
     template = vdp.VisDependentProperty(default=True)
 
     # new property for ACA correlator
@@ -38,13 +52,14 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 partialpol=None, fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None,
-                 qa0=None, qa2=None):
+                 partialpol=None, lowtrans=None, mintransrepspw=None, mintransotherspws=None, fileonline=None,
+                 template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
         super(FlagDeterALMAInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
             tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
             fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template,
-            filetemplate=filetemplate, hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol)
+            filetemplate=filetemplate, hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol,
+            lowtrans=None, mintransrepspw=None, mintransotherspws=None)
 
         # solution parameters
         self.qa0 = qa0
@@ -131,7 +146,20 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         Returns:
             List of flagging commands.
         """
-        return load_partialpols_alma(self.inputs.ms)
+        return load_partialpols_alma(self.inputs.ms, )
+
+    def _get_lowtrans_cmds(self):
+        """
+        ALMA specific step to identify and flag data whith low atmospheric
+        transmissivity.
+        Returns:
+            List of flagging commands.
+        """
+        return lowtrans_alma(
+            self.inputs.ms,
+            mintransrepspw=self.inputs.min_transmission_rep_spw,
+            mintransotherspws=self.inputs.min_transmission_other_spws
+        )
 
     def _get_edgespw_cmds(self):
         # Run default edge channel flagging first.
@@ -454,4 +482,73 @@ def convert_params_to_commands(ms, params, ant_id_map=None):
     return commands
 
 
+def lowtrans_alma(ms, mintransrepspw=0.05, mintransotherspws=0.1):
+    """Create the commands to flag low transmissivity Science scans (PIPE-624).
+    """
+    commands = []
+    ## Get the relevant targets, spws and scans
+    #  We want ot select the science targets (intent == 'TARGET'), get the list of
+    #   science spws, and apply the computation per scan.
+    #  We also need to identify the representative science target as the threshold is
+    #   different in this case.
 
+
+    # The following correspond to the details described in PIPE-624
+    ## Step #1: Get the PWV of the MS
+    pwv, pwvmad = getMedianPWV(vis=ms.name)
+    # If the pwv value is invalid skip the rest of the heuristic
+    if (pwv == 1.0000) or (np.isnan(pwv)) or (pwv < 0):
+        return commands
+    ## Step #2: Compute mean airmass per scan
+    #  To know the mean airmass we need to know the elevation at the start and end of
+    #   the scan. We can reimplement all the machiery included in au or try to use
+    #   astropy to obtain a similar result in a more clear and easy to maintain way.
+    #  Use airmass_for_alma_scan(scan)
+    ## Step #3 Calculate transmissivity from airmass and PWV using the CASA atmosphere tools.
+    #  The fixed set of parameters to start is pressure=563 mb, altitude=5059m,
+    #   temperature=273K, maxAltitude=48km, humidity=20, h0=1.0 km, dP=5.0 mb, dPm=1.1.
+    #  (#4) Compute first with a resolution of 256 channels and, if any has low transmission,
+    #   compute using the full resolution
+    ## Step #4 To compute fraction of channels affected aggregate per spw
+    return commands
+
+
+def airmass_for_alma_scan(scan):
+    """Compute the airmass corresponding to an ALMA observation scan.
+
+    :param scan: Scan object
+    :return: Mean airmass of the scan
+
+    At the moment it returns the mean airmass between the start and the
+    end times of the scan but it can be modified to return any other
+    similar value like the median.
+    """
+    start_elevation = elevation_for_alma_scan(scan, "start")
+    end_elevation = elevation_for_alma_scan(scan, "end")
+    start_airmass = calc_airmass(start_elevation.deg)
+    end_airmass = calc_airmass(end_elevation.deg)
+    return (start_airmass + end_airmass)/2.
+
+
+def elevation_for_alma_scan(scan, edge):
+    """Get the elevation for the beginning or the end of an ALMA scan.
+
+    :param scan: Scan object
+    :param edge: Either "start" or "end"
+    :return: Astropy quantity corresponding to the elevation.
+    """
+    alma_site = EarthLocation.from_geocentric(x=2225015.30883296, y=-5440016.41799762, z=-2481631.27428014, unit='m')
+    scan_field = next(iter(scan.fields))
+    coords = SkyCoord(
+        scan_field.mdirection['m0']['value'],  # RA
+        scan_field.mdirection['m1']['value'],  # DEC
+        frame=scan_field.mdirection['refer'].lower(),
+        unit=(scan_field.mdirection['m0']['unit'], scan_field.mdirection['m1']['unit']))
+    if edge == "start":
+        time = Time(scan.start_time['m0']['value'], format='mjd')
+    elif edge == "end":
+        time = Time(scan.end_time['m0']['value'], format='mjd')
+    else:
+        raise RuntimeError('The parameter edge should be either "start" or "end".')
+    coords_altaz = coords.transform_to(AltAz(obstime=time, location=alma_site))
+    return coords_altaz.alt

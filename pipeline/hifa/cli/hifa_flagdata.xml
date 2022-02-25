@@ -14,6 +14,7 @@ o autocorrelation data flagging
 o shadowed antenna data flagging
 o scan-based flagging by intent or scan number
 o edge channel flagging, as needed
+o low atmospheric transmission flagging
 
 About the spectral window edge channel flagging:
 
@@ -130,6 +131,30 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             polarization products in those integrations.
         </description>
         <value type="bool">True</value>
+    </param>
+
+    <param name="lowtrans" type="bool">
+        <shortdescription>Flag low atmospheric transmission</shortdescription>
+        <description>Fraction of channels to flag at both edges of TDM spectral windows.</description>
+        <value type="bool">True</value>
+    </param>
+
+    <param name="mintransrepspw" subparam="true" type="double">
+        <shortdescription>Atmospheric transmissivity threshold for representative spw</shortdescription>
+        <description>This Atmospheric transmissivity threshold is used to flag a science
+            spw when more that 60% of the channels have a transmissivity below this level
+            for the representative spw. This level is different for the representative spw
+            and for other spws (see mintransotherspws).</description>
+        <value>0.05</value>
+    </param>
+
+    <param name="mintransotherspws" subparam="true" type="double">
+        <shortdescription>Atmospheric transmission threshold for other spws</shortdescription>
+        <description>This Atmospheric transmissivity threshold is used to flag a science
+            spw when more that 60% of the channels have a transmissivity below this level
+            for other spws that are not the representative one. This level is different for
+            the representative spw and for other spws (see mintransrepspw).</description>
+        <value>0.1</value>
     </param>
 
     <param name="fileonline" subparam="true" type="string">
