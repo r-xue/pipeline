@@ -186,10 +186,11 @@ class Syspower(basetask.StandardTaskTemplate):
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         # basebandsperband = collections.defaultdict(list)
         spws = []
-        baseband2spw = {}
+
         band_baseband_spw = collections.defaultdict(dict)
         for band in banddict:
             # basebandsperband[band] = []
+            baseband2spw = {}
             for baseband in banddict[band]:
                 # basebandsperband[band].append(baseband)
                 if baseband in ('A0C0', 'B0D0') and band in ('L', 'S'):
@@ -229,7 +230,7 @@ class Syspower(basetask.StandardTaskTemplate):
         dat_flux         = np.zeros((len(antenna_ids), len(spws), 2))
         dat_scaled       = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
         dat_filtered     = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
-        dat_common       = np.ma.zeros((len(antenna_ids), 2, 2, len(sorted_time)))
+        #dat_common       = np.ma.zeros((len(antenna_ids), 2, 2, len(sorted_time)))
         dat_online_flags = np.zeros((len(antenna_ids), len(sorted_time)), dtype='bool')
         dat_sum          = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
         dat_sum_flux     = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
@@ -292,6 +293,8 @@ class Syspower(basetask.StandardTaskTemplate):
         LOG.info('----------------------------------')
         LOG.info(bband_common_indices)
         LOG.info('----------------------------------')
+
+        dat_common = np.ma.zeros((len(antenna_ids), bbindex, 2, len(sorted_time)))
 
         # common baseband template
         for i, this_ant in enumerate(antenna_ids):
