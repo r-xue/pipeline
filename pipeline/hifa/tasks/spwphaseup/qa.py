@@ -39,7 +39,7 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
         scores.append(qacalc.score_path_exists(ms.name, gaintable, 'caltable'))
 
         # Create QA score for median SNR per field and per SpW.
-        for (field, spw), median_snr in result.snr_info.items():
+        for (intent, field, spw), median_snr in result.snr_info.items():
             scores.append(qacalc.score_phaseup_spw_median_snr(ms, field, spw, median_snr, result.inputs['phasesnr']))
 
         # Add scores to QA pool in result.
