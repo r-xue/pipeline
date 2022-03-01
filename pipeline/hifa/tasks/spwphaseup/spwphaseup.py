@@ -146,7 +146,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Compute what SNR is achieved for PHASE fields after the SpW phase-up
         # correction.
-        snr_info = self._compute_median_snr(diag_phase_results)
+        snr_info = self._compute_median_snr(diag_phase_results, spwmaps)
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
@@ -675,7 +675,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return gaincal_results
 
-    def _compute_median_snr(self, gaincal_results: List[GaincalResults]) -> Dict[Tuple[str, str, str], float]:
+    def _compute_median_snr(self, gaincal_results: List[GaincalResults], spwmaps: Dict[IntentField, SpwMapping])\
+            -> Dict[Tuple[str, str, str], float]:
         """
         This method evaluates the diagnostic phase caltable(s) produced in an
         earlier step to compute the median SNR for each phase calibrator /
@@ -683,7 +684,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         Args:
             gaincal_results: List of gaincal worker task results representing
-            the diagnostic phase caltable(s).
+                the diagnostic phase caltable(s).
+            spwmaps: dictionary with (Intent, Field) combinations as keys and
+                corresponding spectral window mapping as values.
 
         Returns:
             Dictionary with intent, field name, and SpW as keys, and
@@ -700,20 +703,41 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             field = result.inputs['field']
             intent = result.inputs['intent']
 
+            # Get SpW mapping info for current intent and field.
+            spwmapping = spwmaps.get((intent, field), None)
+
+            # Get SpWs and SNR info from caltable.
             with casa_tools.TableReader(caltable) as table:
                 spws = table.getcol("SPECTRAL_WINDOW_ID")
                 snrs = table.getcol("SNR")
 
-            # For each unique SpW, compute median SNR and store in snr_info,
-            # and log a warning if the median SNR is still below the SNR
-            # threshold.
+            # Evaluate each unique SpW separately.
             for spw in sorted(set(spws)):
+                # Compute median SNR and store in snr_info.
                 snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, numpy.where(spws == spw)[0]])
 
+                # If SpW mapping info exists for the current intent and field
+                # and the current SpW is not be mapped to itself, then continue
+                # with the next SpW. Otherwise, check whether to log a warning
+                # for low SNR. Note: if the SpW map is empty, that means by
+                # default that each SpW is mapped to itself, i.e. reason enough
+                # to skip.
+                if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
+                    continue
+
+                # If the median SNR is still below the SNR threshold, log a
+                # warning.
                 if snr_info[(intent, field, spw)] < inputs.phasesnr:
-                    LOG.warning(f"{result.inputs['vis']}, intent {intent}, field {field}, SpW {spw}: median SNR"
-                                f" ({snr_info[(intent, field, spw)]}) is below the low-SNR threshold"
-                                f" ({inputs.phasesnr}).")
+                    msg = f"{result.inputs['vis']}, intent {intent}, field {field}, SpW {spw}: median SNR" \
+                          f" ({snr_info[(intent, field, spw)]:.1f}) is below the low-SNR threshold" \
+                          f" ({inputs.phasesnr})."
+
+                    # If the current SpW has other SpWs mapped to it, then
+                    # mention this explicitly.
+                    if spwmapping.spwmap.count(spw) > 1:
+                        msg += f' This SpW has one or more other SpWs mapped to it.'
+
+                    LOG.warning(msg)
 
         return snr_info
 
