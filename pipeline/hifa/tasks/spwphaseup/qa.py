@@ -40,7 +40,15 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
 
         # Create QA score for median SNR per field and per SpW.
         for (intent, field, spw), median_snr in result.snr_info.items():
-            scores.append(qacalc.score_phaseup_spw_median_snr(ms, field, spw, median_snr, result.inputs['phasesnr']))
+            if intent == 'CHECK':
+                scores.append(qacalc.score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr,
+                                                                            result.inputs['phasesnr']))
+            elif intent == 'PHASE':
+                scores.append(qacalc.score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr,
+                                                                            result.inputs['phasesnr']))
+            else:
+                LOG.warning(f"{ms.basename}: unexpected intent '{intent}' encountered in SNR info result, cannot"
+                            f" assign a QA score.")
 
         # Add scores to QA pool in result.
         result.qa.pool.extend(scores)
