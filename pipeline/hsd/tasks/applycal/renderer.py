@@ -5,6 +5,7 @@ Created on 24 Oct 2014
 """
 import collections
 import os.path
+from shutil import unregister_unpack_format
 from typing import Dict, Tuple
 
 import pipeline.domain.measures as measures
@@ -24,7 +25,7 @@ FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer):
-    def __init__(self, uri='applycal.mako',
+    def __init__(self, uri='hsd_applycal.mako',
                  description='Apply calibrations from context',
                  always_rerender=False):
         super(T2_4MDetailsSDApplycalRenderer, self).__init__(
@@ -124,15 +125,17 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             if len(representative_source) >= 1:
                 representative_source = representative_source.pop()
 
-            brightest_field = super_renderer.get_brightest_field(ms, representative_source)
-            plots = self.science_plots_for_result(context,
-                                                  result,
-                                                  applycal.RealVsFrequencySummaryChart,
-                                                  [brightest_field.id], None,
-                                                  preserve_coloraxis=True )
-            for plot in plots:
-                plot.parameters['source'] = representative_source
-            amp_vs_freq_summary_plots[vis].extend(plots)
+            unrepresentative_sources = [source for source in ms.sources
+                                        if 'TARGET' in source.intents and source != representative_source]
+
+            if len(representative_source.fields) > 0:
+                amp_vs_freq_summary_plots[vis].append([representative_source.fields[0].name,
+                                                       self._plot_source(context, result, ms, representative_source)])
+
+            for source in unrepresentative_sources:
+                if len(source.fields) > 0:
+                    amp_vs_freq_summary_plots[vis].append([source.fields[0].name,
+                                                           self._plot_source(context, result, ms, source)])
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
@@ -164,3 +167,14 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         amp_vs_freq_subpages = dict((vis, amp_vs_freq_subpage) for vis in amp_vs_freq_detail_plots.keys())
 
         return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs
+
+    def _plot_source(self, context, result, ms, source):
+        brightest_field = super_renderer.get_brightest_field(ms, source)
+        plots = self.science_plots_for_result(context,
+                                                  result,
+                                                  applycal.RealVsFrequencySummaryChart,
+                                                  [brightest_field.id], None,
+                                                  preserve_coloraxis=True )
+        for plot in plots:
+            plot.parameters['source'] = source
+        return plots
