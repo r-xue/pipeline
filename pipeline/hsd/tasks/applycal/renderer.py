@@ -148,17 +148,17 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             if len(representative_source) >= 1:
                 representative_source = representative_source.pop()
 
-            unrepresentative_sources = [source for source in ms.sources
-                                        if 'TARGET' in source.intents and source != representative_source]
-
-            if len(representative_source.fields) > 0:
-                amp_vs_freq_summary_plots[vis].append([representative_source.fields[0].name,
-                                                       self._plot_source(context, result, ms, representative_source)])
-
-            for source in unrepresentative_sources:
+            for source in filter(lambda source: 'TARGET' in source.intents, ms.sources):
                 if len(source.fields) > 0:
-                    amp_vs_freq_summary_plots[vis].append([source.fields[0].name,
-                                                           self._plot_source(context, result, ms, source)])
+                    source_name = source.fields[0].name
+                    plots = self._plot_source(context, result, ms, source)
+                    if source == representative_source:
+                        # prepend plots to ensure the first item to be representative source
+                        amp_vs_freq_summary_plots[vis].insert(0, [source_name, plots])
+                        # and do anything else specific to representative source here
+                    else:
+                        # append plots of unrepresentative sources
+                        amp_vs_freq_summary_plots[vis].append([source_name, plots])
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
