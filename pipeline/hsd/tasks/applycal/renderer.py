@@ -6,23 +6,25 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
-import os.path
-from typing import Dict, List, Tuple
-from pipeline.domain.measurementset import MeasurementSet
+import os
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import pipeline.domain.measures as measures
-from pipeline.domain.source import Source
-from pipeline.h.tasks.applycal.applycal import ApplycalResults
 import pipeline.h.tasks.applycal.renderer as super_renderer
 import pipeline.infrastructure
 import pipeline.infrastructure.logging as logging
-from pipeline.infrastructure.renderer.logger import Plot
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
+
+if TYPE_CHECKING:
+    from pipeline.domain.source import Source
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.h.tasks.applycal.applycal import ApplycalResults
+    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
 
@@ -112,7 +114,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         })
 
     def create_single_dish_science_plots(self, context: Context, results: ResultsList) \
-            -> Tuple[Dict[str, List[List[str, List[Plot]]]], Dict[str, str], Dict[str, measures.Distance]]:
+            -> Tuple[Dict[str, List[List[Union[str, List['Plot']]]]], Dict[str, str], Dict[str, measures.Distance]]:
         """
         Create plots for the science targets.
 
@@ -189,8 +191,8 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs
 
-    def _plot_source(self, context: Context, result: ApplycalResults, ms: MeasurementSet, source: Source) \
-            -> List[Plot]:
+    def _plot_source(self, context: Context, result: 'ApplycalResults', ms: 'MeasurementSet', source: 'Source') \
+            -> List['Plot']:
         """Plot science plots for result.
 
         Args:
