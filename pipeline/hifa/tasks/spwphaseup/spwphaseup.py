@@ -305,9 +305,17 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         combined_snrs = []
         spwids = []
 
-        # Compute the spw map according to the rules defined by each
-        # mapping mode.
-        if inputs.hm_spwmapmode == 'auto':
+        # PIPE-1436: if there is only one science SpW, then no SpW re-mapping
+        # can be done. In this case, just run the SNR test.
+        if len(scispws) == 1:
+            LOG.info(f'Only 1 science SpW found for {inputs.ms.basename}, intent={intent}, field={field}, so using'
+                     f' standard SpW map for this data selection.')
+            # Run a task to estimate the gaincal SNR for given intent and field.
+            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field)
+
+        # If there are multiple science SpWs, then continue with computing the
+        # optimal SpW map according to the rules defined by each mapping mode.
+        elif inputs.hm_spwmapmode == 'auto':
 
             # Run a task to estimate the gaincal SNR for given intent and field.
             nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field)
