@@ -221,8 +221,30 @@ def ImageCoordinateUtil(
     else:
         ny += 1
 
+    # PIPE-1416
+    nx, ny = __add_beamsize_if_ALMA(context, nx, ny)
+
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
     return phasecenter, cellx, celly, nx, ny, org_direction
+
+
+def __add_beamsize_if_ALMA(context: Context, nx: int, ny: int) -> Tuple[int, int]:
+    """If it processed ALMA data, then add beamsize to pixel size.
+
+    Args:
+        context: pipeline context
+        nx: pixel size
+        ny: pixel size
+
+    Returns:
+        pixel sizes
+    """
+    imaging_policy = observatory_policy.get_imaging_policy(context)
+    num = 0
+    if imaging_policy == observatory_policy.ALMAImagingPolicy:
+        num = imaging_policy.get_beam_size_pixel()
+        num += num % 2
+    return (nx + num, ny + num)
 
 
 class SDImagingWorkerInputs(vdp.StandardInputs):
