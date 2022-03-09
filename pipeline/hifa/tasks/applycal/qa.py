@@ -143,10 +143,8 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
 
             # pick a summarised score as representative, then set it as representative
             representative = None
-            if qa_scores[pqa.WebLogLocation.BANNER]:
-                representative = min(qa_scores[pqa.WebLogLocation.BANNER], key=operator.attrgetter('score'))
-            if not representative and qa_scores[pqa.WebLogLocation.ACCORDION]:
-                representative = min(qa_scores[pqa.WebLogLocation.ACCORDION], key=operator.attrgetter('score'))
+            if qa_scores[pqa.WebLogLocation.BANNER] + qa_scores[pqa.WebLogLocation.ACCORDION] != []:
+                representative = min(qa_scores[pqa.WebLogLocation.BANNER] + qa_scores[pqa.WebLogLocation.ACCORDION], key=operator.attrgetter('score'))
             if representative:
                 result.qa.representative = representative
 
