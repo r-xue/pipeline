@@ -29,6 +29,8 @@ import matplotlib.pyplot as plt
 import matplotlib.text as mtext
 import numpy as np
 
+from typing import Optional
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 
@@ -65,7 +67,22 @@ def plotfilename(image, reportdir):
 class SkyDisplay(object):
     """Class to plot sky images."""
 
-    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', vmin=None, vmax=None, mom8_fc_peak_snr=None,
+    def plot_per_stokes(self, *args, stokes_list: Optional[list] = None, **kwargs):
+        """Plot sky images from a image file with multiple Stokes planes (one image per Stokes).
+        
+        PIPE-1401: a new keyword argument 'stokes' is added into SkyDisplay.plot(), SkyDisplay._plot_panel(), etc.
+        By design, the default stokes=None will preserve the behavior before PIPE-1401: it won't add
+        additional stokes-related suffix in .png or attach the 'stokes' key in the plot wrapper object.
+        """
+        plots = []
+        if stokes_list is None:
+            stokes_list = self.get_stokes(args[1])
+        for stokes in stokes_list:
+            plots.append(self.plot(*args, stokes=stokes, **kwargs))
+
+        return plots
+
+    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
              dpi=None, **imshow_args):
 
         self.dpi = dpi
@@ -84,7 +101,7 @@ class SkyDisplay(object):
         else:
             ms = None
 
-        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, ms=ms,
+        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, stokes=stokes, ms=ms,
                                                               mom8_fc_peak_snr=mom8_fc_peak_snr, **imshow_args)
 
         # field names may not be unique, which leads to incorrectly merged
@@ -99,6 +116,10 @@ class SkyDisplay(object):
         parameters = {k: miscinfo[k] for k in ['virtspw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
         parameters['ant'] = None
         parameters['band'] = band
+        if isinstance(stokes, str):
+            # PIPE-1401: only save the 'stokes' keyword when it was explicitly requested.
+            parameters['stokes'] = stokes
+
         try:
             parameters['prefix'] = miscinfo['filnam01']
         except:
@@ -110,26 +131,46 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', stokes='I', ms=None, mom8_fc_peak_snr=None, **imshow_args):
-        """Method to plot a map."""
+    @staticmethod
+    def get_stokes(imagename):
+        """Get the labels of all stokes planes present in a CASA image."""
 
-        plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
-
-        LOG.info('Plotting %s' % result)
-
-        with casa_tools.ImageReader(result) as image:
-
+        with casa_tools.ImageReader(imagename) as image:
             cs = image.coordsys()
             stokes_labels = cs.stokes()
             stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
             cs.done()
 
+        return stokes_present
+
+    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', stokes: Optional[str] = None, ms=None, mom8_fc_peak_snr=None, **imshow_args):
+        """Method to plot a map."""
+
+        if isinstance(stokes, str):
+            # PIPE-1410: only attach the Stokes suffix when it's explicily specified.
+            plotfile = plotfilename(image=os.path.basename(result)+f'.{stokes}', reportdir=reportdir)
+        else:
+            plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
+
+        LOG.info('Plotting %s' % result)
+
+        stokes_present = self.get_stokes(result)
+
+        with casa_tools.ImageReader(result) as image:
+
             if stokes not in stokes_present:
                 stokes_select = stokes_present[0]
-                LOG.warning(f'Stokes {stokes_select} is requested, but only Stokes={stokes_present} is present.')
-                LOG.warning(f'We will try to create a plot with a fallback of Stokes={stokes_select}.')
+                # PIPE-1401: plot mask sky images for different stokes plane even when the mask file has a single Stokes plane.
+                # note: the fallback is required for vlass-se-cube because the user input mask is from vlass-se-cont with only Stokes=I.
+                if isinstance(stokes, str):
+                    LOG.warning(f'Stokes {stokes_select} is requested, but only Stokes={stokes_present} is present.')
+                    LOG.warning(f'We will try to create a plot with a fallback of Stokes={stokes_select}.')
+                else:
+                    LOG.info(
+                        f'No Stokes selection is specified, we will use the first present Stokes plane: Stokes={stokes_select}.')
             else:
                 stokes_select = stokes
+                LOG.info(f'Stokes={stokes_select} is selected.')
 
             try:
                 if collapseFunction == 'center':
