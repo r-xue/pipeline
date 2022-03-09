@@ -290,7 +290,7 @@ class CleanTaskFactory(object):
         # PIPE-1401: TBD, turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
         vlass_se_cube_tier0_wanted = True
         is_vlass_se_cube = 'TARGET' in target['intent'] and self.__context.imaging_mode == 'VLASS-SE-CUBE'
-        if vlass_se_cube_tier0_wanted and is_vlass_se_cube:
+        if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_mpi_ready]):
             is_tier0_job = True
             task_args['parallel'] = False
 
