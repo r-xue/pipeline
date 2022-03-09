@@ -158,7 +158,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
     to detect outliers, converting the outlier descriptions to normalised QA
     scores.
     """
-    intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK']
+    intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
 
     all_scores = []
     for intent in intents:
