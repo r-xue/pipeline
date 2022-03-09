@@ -65,13 +65,18 @@ def score_all_scans(ms, intent: str, flag_all: bool = False, memory_gb: int = ME
     :return: outliers that deviate from a reference fit
     """
     outliers = []
-    for scan in sorted(ms.get_scans(scan_intent=intent), key=operator.attrgetter('id')):
+    wrappers = {}
+    scans = sorted(ms.get_scans(scan_intent=intent), key=operator.attrgetter('id'))
+    for scan in scans:
         spws = sorted([spw for spw in scan.spws if spw.type in ('FDM', 'TDM')],
                       key=operator.attrgetter('id'))
         for spw in spws:
             LOG.info('Applycal QA analysis: processing {} scan {} spw {}'.format(ms.basename, scan.id, spw.id))
 
             wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, scan.id, spw.id, memory_gb)
+            if spw.id not in wrappers:
+                wrappers[spw.id] = []
+            wrappers[spw.id].append(wrapper)
 
             fits = get_best_fits_per_ant(wrapper)
 
@@ -84,6 +89,22 @@ def score_all_scans(ms, intent: str, flag_all: bool = False, memory_gb: int = ME
             )
 
             outliers.extend(score_all(fits, outlier_fn, flag_all))
+
+    # Score all scans for a given spw
+    for spw_id in wrappers.keys():
+        # Average wrappers
+        average_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrappers[spw_id])
+        average_fits = get_best_fits_per_ant(average_wrapper)
+        outlier_fn = functools.partial(
+            Outlier,
+            vis={ms.basename, },
+            intent={intent, },
+            spw={spw_id, },
+            scan={-1, }
+        )
+
+        # Score average
+        outliers.extend(score_all(average_fits, outlier_fn, flag_all))
 
     return outliers
 
