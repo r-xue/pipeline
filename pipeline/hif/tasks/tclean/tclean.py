@@ -780,10 +780,23 @@ class Tclean(cleanbase.CleanBase):
 
             # Delete any old files with this naming root
             self.rm_iter_files(rootname, iteration)
-            # Determine stage mask name and replace stage substring place holder with actual stage number.
-            # Special cases when mask is an empty string, None, or when it is set to 'pb'.
-            new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
-                self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
+
+            if self.image_heuristics.imaging_mode == 'VLASS-SE-CUBE':
+                # PIPE-1401: copy input user masks (vlass-se-cont tier1/tier2) for imaging of each spw group.
+                # Because various metadata (e.g., spw list) are written into headers of mask images and later used by the
+                # weblog display/renderer class, we have to differentiate in-use mask files of individual spw groups, even
+                # they are identifcal. Here, we make mask copy per clean_target (i.e. a spw group of VLASS-SE-CUBE.)
+                # under its distinct name.
+                if mask in ['', None, 'pb']:
+                    new_cleanmask = mask
+                else:
+                    new_cleanmask = f'{rootname}.iter{iteration}.cleanmask'
+            else:
+                # Determine stage mask name and replace stage substring place holder with actual stage number.
+                # Special cases when mask is an empty string, None, or when it is set to 'pb'.
+                new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
+                    self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
+
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
 
