@@ -43,6 +43,9 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
         # requantizer gains (NB: requires CASA 4.1!)
         hifv_priorcals(pipelinemode=pipelinemode)
 
+        # Syspower task
+        hifv_syspower(pipelinemode=pipelinemode)
+
         # Initial test calibrations using bandpass and delay calibrators
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases

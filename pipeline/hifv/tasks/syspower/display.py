@@ -11,9 +11,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class syspowerBoxChart(object):
-    def __init__(self, context, result):
+    def __init__(self, context, result, dat_common, band):
         self.context = context
         self.result = result
+        self.dat_common = dat_common
+        self.band = band
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.caltable = result.gaintable
         # results[4].read()[0].rq_result[0].final[0].gaintable
@@ -28,10 +30,10 @@ class syspowerBoxChart(object):
         antenna_names = [a.name for a in self.ms.antennas]
 
         # box plot of Pdiff template
-        dat_common = self.result.dat_common
+        dat_common = self.dat_common # self.result.dat_common
         clip_sp_template = self.result.clip_sp_template
 
-        LOG.info("Creating syspower box chart...")
+        LOG.info("Creating syspower box chart for {!s}-band...".format(self.band))
         plt.clf()
         dshape = dat_common.shape
         ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
@@ -42,13 +44,13 @@ class syspowerBoxChart(object):
         plt.boxplot(ant_dat_filtered, whis=10, sym='.')
         plt.xticks(rotation=45)
         plt.ylim(clip_sp_template[0], clip_sp_template[1])
-        plt.ylabel('Template Pdiff')
+        plt.ylabel('Template Pdiff   {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
         plt.savefig(figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
-                            'syspower' + prefix + '-%s-box.png' % self.ms.basename)
+                            'syspower-{!s}-'.format(self.band) + prefix + '-%s-box.png' % self.ms.basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
@@ -56,7 +58,8 @@ class syspowerBoxChart(object):
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
                                                                                 'caption': 'Syspower box plot',
-                                                                                'spw': ''})
+                                                                                'spw': '',
+                                                                                'band': self.band})
 
         if not os.path.exists(figfile):
             LOG.trace('syspower summary plot not found. Creating new plot.')
@@ -71,9 +74,11 @@ class syspowerBoxChart(object):
 
 
 class syspowerBarChart(object):
-    def __init__(self, context, result):
+    def __init__(self, context, result,  dat_common, band):
         self.context = context
         self.result = result
+        self.dat_common = dat_common
+        self.band = band
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.caltable = result.gaintable
         # results[4].read()[0].rq_result[0].final[0].gaintable
@@ -88,10 +93,10 @@ class syspowerBarChart(object):
         antenna_names = [a.name for a in self.ms.antennas]
 
         # box plot of Pdiff template
-        dat_common = self.result.dat_common
+        dat_common = self.dat_common  # self.result.dat_common
         clip_sp_template = self.result.clip_sp_template
 
-        LOG.info("Creating syspower bar chart...")
+        LOG.info("Creating syspower bar chart for {!s}-band...".format(self.band))
         plt.clf()
         dshape = dat_common.shape
         ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
@@ -103,14 +108,14 @@ class syspowerBarChart(object):
         percent_flagged_by_antenna = [100. * np.sum(ant_dat.mask[i]) / ant_dat.mask[i].size for i in range(dshape[0])]
         plt.bar(list(range(dshape[0])), percent_flagged_by_antenna, color='red')
         plt.xticks(rotation=45)
-        plt.ylabel('Fraction of Flagged Solutions (%)')
+        plt.ylabel('Fraction of Flagged Solutions (%)     {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
 
         plt.savefig(figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
-                            'syspower' + prefix + '-%s-bar.png' % self.ms.basename)
+                            'syspower-{!s}-'.format(self.band) + prefix + '-%s-bar.png' % self.ms.basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
@@ -118,7 +123,8 @@ class syspowerBarChart(object):
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
                                                                                 'caption': 'Syspower bar plot',
-                                                                                'spw': ''})
+                                                                                'spw': '',
+                                                                                'band': self.band})
 
         if not os.path.exists(figfile):
             LOG.trace('syspower summary plot not found. Creating new plot.')
@@ -133,9 +139,11 @@ class syspowerBarChart(object):
 
 
 class compressionSummary(object):
-    def __init__(self, context, result):
+    def __init__(self, context, result, spowerdict, band):
         self.context = context
         self.result = result
+        self.spowerdict = spowerdict
+        self.band = band
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.caltable = result.gaintable
 
@@ -146,8 +154,8 @@ class compressionSummary(object):
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
 
-        LOG.info("Creating syspower compression summary chart...")
-        pdiff = self.result.spowerdict['spower_common']
+        LOG.info("Creating syspower compression summary chart for {!s}-band...".format(self.band))
+        pdiff = self.spowerdict['spower_common']  # self.result.spowerdict['spower_common']
         pdiff_ma = np.ma.masked_equal(pdiff, 0)
 
         fig0, axes = plt.subplots(4, 1, sharex='col')
@@ -160,7 +168,7 @@ class compressionSummary(object):
         axes[0].set_ylabel('Bband 0R')
         leg = axes[0].legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.0), frameon=True, numpoints=1,
                              fancybox=False)
-        title = axes[0].set_title('P_diff template summary')
+        title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
         title.set_position([.5, 1.225])
         axes[1].plot(np.ma.max(pdiff_ma, axis=0)[0, 1], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
         axes[1].plot(np.ma.median(pdiff_ma, axis=0)[0, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
@@ -193,7 +201,7 @@ class compressionSummary(object):
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
-                            'syspower' + prefix + '-%s-compressionSummary.png' % self.ms.basename)
+                            'syspower-{!s}-'.format(self.band) + prefix + '-%s-compressionSummary.png' % self.ms.basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
@@ -201,7 +209,8 @@ class compressionSummary(object):
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                    'type': prefix,
                                                                                    'caption': 'Compression summary',
-                                                                                   'spw': ''})
+                                                                                   'spw': '',
+                                                                                   'band': self.band})
 
         if not os.path.exists(figfile):
             LOG.trace('syspower compressionSummary plot not found. Creating new plot.')
@@ -216,9 +225,11 @@ class compressionSummary(object):
 
 
 class medianSummary(object):
-    def __init__(self, context, result):
+    def __init__(self, context, result, spowerdict, band):
         self.context = context
         self.result = result
+        self.spowerdict = spowerdict
+        self.band = band
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.caltable = result.gaintable
 
@@ -234,8 +245,8 @@ class medianSummary(object):
         # New variable determined via np.ma.masked_equal(pdiff, 0)
         # Second variable determined via np.ma.masked_where(<2nd variable>== 0, <2nd variable>)
 
-        LOG.info("Creating syspower compression median pdiff summary chart...")
-        pd = self.result.spowerdict['spower_common']
+        LOG.info("Creating syspower compression median pdiff summary chart for {!s}-band...".format(self.band))
+        pd = self.spowerdict['spower_common']  # self.result.spowerdict['spower_common']
         pdiff = np.ma.masked_equal(pd, 0)
 
         pdiff_ma = np.ma.masked_where(pdiff == 0, pdiff)
@@ -282,7 +293,7 @@ class medianSummary(object):
         plt.xlim(0, pdiff.shape[3])
         leg = plt.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.1))
         plt.xlabel('Time (seconds)')
-        plt.ylabel('median P_diff')
+        plt.ylabel('median P_diff     {!s}-band'.format(self.band))
         plt.ticklabel_format(useOffset=False)
         plt.gcf().set_size_inches(8, 7)
         plt.savefig(figfile)
@@ -293,7 +304,7 @@ class medianSummary(object):
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
-                            'syspower' + prefix + '-%s-medianSummary.png' % self.ms.basename)
+                            'syspower-{!s}-'.format(self.band) + prefix + '-%s-medianSummary.png' % self.ms.basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
@@ -301,7 +312,8 @@ class medianSummary(object):
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                   'type': prefix,
                                                                                   'caption': 'Median pdiff summary',
-                                                                                  'spw': ''})
+                                                                                  'spw': '',
+                                                                                  'band': self.band})
 
         if not os.path.exists(figfile):
             LOG.trace('syspower medianSummary plot not found. Creating new plot.')
@@ -316,7 +328,7 @@ class medianSummary(object):
 
 
 class syspowerPerAntennaChart(object):
-    def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype):
+    def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype, band, spw):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -324,6 +336,8 @@ class syspowerPerAntennaChart(object):
         self.caltable = caltable
         self.fileprefix = fileprefix
         self.tabletype = tabletype
+        self.band = band
+        self.spw = spw
 
         self.json = {}
         self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
@@ -336,12 +350,13 @@ class syspowerPerAntennaChart(object):
         numAntenna = len(m.antennas)
         plots = []
 
-        LOG.info("Plotting syspower " + self.tabletype + " charts for " + self.yaxis)
+        LOG.info("Plotting syspower " + self.tabletype + " charts for " + self.yaxis +
+                 " and {!s}-band".format(self.band))
         nplots = numAntenna
 
         for ii in range(nplots):
 
-            filename = self.fileprefix + '_' + self.tabletype + '_' + self.yaxis + str(ii) + '.png'
+            filename = self.fileprefix + '_' + self.tabletype + '_' + '{!s}_'.format(self.band) + self.yaxis + str(ii) + '.png'
             antPlot = str(ii)
 
             stage = 'stage%s' % result.stage_number
@@ -374,25 +389,16 @@ class syspowerPerAntennaChart(object):
 
                     LOG.debug("Sys Power Plot, using antenna={!s}".format(antName))
 
-                    spw = '6,14'  # VLASS defaults
-                    spwobjlist = m.get_spectral_windows()
-                    spwidlist = []
-                    for band in result.band_baseband_spw:
-                        for baseband in result.band_baseband_spw[band]:
-                            for spwid in result.band_baseband_spw[band][baseband]:
-                                spwidlist.append(spwid)
-
-                    if 6 not in spwidlist or 14 not in spwidlist:
-                        if len(spwobjlist) == 1:
-                            spw = str(spwobjlist[0].id)
-                        else:
-                            # Pick two other spws - one from each baseband
-                            spw = str(spwidlist[1]) + ',' + str(spwidlist[-2])
+                    tabletype = self.tabletype
+                    if self.tabletype == 'pdiff':
+                        tabletype = 'pdfif_{!s}'.format(self.band)
 
                     job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
-                                            antenna=antPlot, spw=spw, timerange='',
+                                            antenna=antPlot, spw=self.spw, timerange='',
                                             plotrange=plotrange, coloraxis='spw',
-                                            title='Sys Power ' + self.tabletype + '.tbl  Antenna: {!s}   spw: {!s}'.format(antName, spw),
+                                            title='Sys Power ' +
+                                                  tabletype +
+                                                  '.tbl  Antenna: {!s}  {!s}-band  spw: {!s}'.format(antName, self.band, self.spw),
                                             titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                     job.execute(dry_run=False)
@@ -404,10 +410,11 @@ class syspowerPerAntennaChart(object):
 
             try:
                 plot = logger.Plot(figfile, x_axis='Time', y_axis=self.yaxis.title(), field='',
-                                   parameters={'spw': '',
+                                   parameters={'spw': self.spw,
                                                'pol': '',
                                                'ant': antName,
                                                'type': self.tabletype,
+                                               'band': self.band,
                                                'file': os.path.basename(figfile)})
                 plots.append(plot)
             except Exception as ex:

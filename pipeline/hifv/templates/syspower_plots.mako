@@ -9,11 +9,18 @@ from pipeline.infrastructure.renderer import rendererutils
 	<h1>SysPower ${plots[0].parameters['type'].title()} Plots<button class="btn btn-default pull-right" onClick="javascript:window.history.back();">Back</button></h1>
 </div>
 
-% for ms in syspowerspgain_subpages.keys():
-    <h4>Plots:  <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, syspowerspgain_subpages[ms])}">SysPower Rq SPgain plots </a> |
-                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff SPgain plots</a>
-    </h4>
-%endfor
+
+<h4>Per antenna plots:<br>
+<ul>
+        %for band in syspowerspgain_subpages.keys():
+            %for ms in syspowerspgain_subpages[band].keys():
+                   <li> <b>${band}-band</b>:
+                    <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, syspowerspgain_subpages[band][ms])}">Syspower RQ SPgain plots</a> |
+                    <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[band][ms])}">Syspower Pdiff Template SPgain plots</a></li>
+            %endfor
+        %endfor
+</ul>
+</h4>
 
 <br>
 

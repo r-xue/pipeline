@@ -50,10 +50,15 @@ $(document).ready(function() {
 
 %if syspowerspgain_subpages:
 
-        <h2>Sys power plots</h2>
-        Switched Power table written to:
         %for single_result in result:
-	        <p><b>${os.path.basename(single_result.gaintable)}</b></p>
+            %if result.inputs['apply']:
+                <p>Task results written to: <b>${os.path.basename(single_result.gaintable)}</b>.  This table has been modified.</p>
+                <p>An unaltered copy of the original caltable exists in ${os.path.basename(single_result.gaintable)+'.backup'}.</p>
+            %else:
+                <p>Summary and per-antenna plots are shown below,
+                reflecting pdiff and modified rq tables.  However, task results were <b>not</b> written to any caltable in the callibrary.</p>
+            %endif
+
 	        <ul>
 	        %for band in single_result.band_baseband_spw:
 	            <li>${band}-band</li>
@@ -64,42 +69,48 @@ $(document).ready(function() {
 	            </ul>
 	        %endfor
 	        </ul>
-        %endfor
-        This table has been modified.
 
-        %for ms in bar_plots.keys():
-            <h4>Per antenna plots:
-                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, syspowerspgain_subpages[ms])}">Syspower RQ SPgain plots</a> |
-                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[ms])}">Syspower Pdiff Template SPgain plots</a>
-            </h4>
         %endfor
 
+        <h4>Per antenna plots:<br>
+        <ul>
+        %for band in syspowerspgain_subpages.keys():
+            %for ms in syspowerspgain_subpages[band].keys():
+                   <li><b>${band}-band</b>:
+                    <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, syspowerspgain_subpages[band][ms])}">Syspower RQ SPgain plots</a> |
+                    <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, pdiffspgain_subpages[band][ms])}">Syspower Pdiff Template SPgain plots</a></li>
+            %endfor
+        %endfor
+        </ul>
+        </h4>
 
-<%self:plot_group plot_dict="${all_plots}"
-                  url_fn="${lambda ms: 'noop'}">
+    % for band in all_plots:
+        <%self:plot_group plot_dict="${all_plots[band]}"
+                          url_fn="${lambda ms: 'noop'}">
 
-        <%def name="title()">
-            Summary plots
-        </%def>
+                <%def name="title()">
+                    Summary plots ${band}-band
+                </%def>
 
-        <%def name="preamble()">
-        </%def>
+                <%def name="preamble()">
+                </%def>
 
-        <%def name="mouseover(plot)">${plot.parameters['caption']} </%def>
+                <%def name="mouseover(plot)">${plot.parameters['caption']} ${band}-band</%def>
 
-        <%def name="fancybox_caption(plot)">
-          ${plot.parameters['caption']}
-        </%def>
+                <%def name="fancybox_caption(plot)">
+                  ${plot.parameters['caption']}  ${band}-band
+                </%def>
 
-        <%def name="caption_title(plot)">
-           ${plot.parameters['caption']}
-        </%def>
-</%self:plot_group>
+                <%def name="caption_title(plot)">
+                   ${plot.parameters['caption']}  ${band}-band
+                </%def>
+        </%self:plot_group>
 
+    % endfor
 
 
 %else:
 
-No bands/basebands in these data will be processed for this task.
+No bands/basebands in these data will be processed for the hifv_syspower task.
 
 %endif
