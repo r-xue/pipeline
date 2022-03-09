@@ -24,7 +24,7 @@ class CleanSummary(object):
         self.image_stats = image_stats
 
     def plot(self):
-        stage_dir = os.path.join(self.context.report_dir, 
+        stage_dir = os.path.join(self.context.report_dir,
                                  'stage%d' % self.result.stage_number)
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
@@ -32,7 +32,7 @@ class CleanSummary(object):
         LOG.trace('Plotting')
         plot_wrappers = []
 
-        # this class can handle a list of results from hif_cleanlist, or a single 
+        # this class can handle a list of results from hif_cleanlist, or a single
         # result from hif_clean if we make the single result from the latter
         # the member of a list
         if hasattr(self.result, 'results'):
@@ -47,13 +47,19 @@ class CleanSummary(object):
             extension = '.tt0' if r.multiterm else ''
 
             # psf map
-            plot_wrappers.append(sky.SkyDisplay().plot(self.context, r.psf + extension,
-                                                            reportdir=stage_dir, intent=r.intent,
-                                                            collapseFunction='mean'))
+            if self.context.imaging_mode == 'VLASS-SE-CUBE':
+                # PIPE-1401: use the same selecting list constructed from the Stokes plane present in the PSF image.
+                stokes_list = sky.SkyDisplay.get_stokes(r.psf + extension)
+            else:
+                stokes_list = None
+
+            plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, r.psf + extension,
+                                                                  reportdir=stage_dir, intent=r.intent, stokes_list=stokes_list,
+                                                                  collapseFunction='mean'))
 
             # flux map
-            plot_wrappers.append(sky.SkyDisplay().plot(self.context,
-                                                            r.flux + extension, reportdir=stage_dir, intent=r.intent,
+            plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
+                                                            r.flux + extension, reportdir=stage_dir, intent=r.intent, stokes_list=stokes_list,
                                                             collapseFunction='mean'))
 
             for i, iteration in [(k, r.iterations[k]) for k in sorted(r.iterations)]:
@@ -63,9 +69,9 @@ class CleanSummary(object):
 
                     # PB corrected
                     image_path = iteration['image'].replace('.image', '.image%s' % (extension))
-                    plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, image_path, reportdir=stage_dir, intent=r.intent,
-                                                   collapseFunction=collapse_function))
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, image_path, reportdir=stage_dir, intent=r.intent, stokes_list=stokes_list,
+                                                         collapseFunction=collapse_function))
 
                     # Non PB corrected
                     image_path = image_path.replace('.pbcor', '')
@@ -91,26 +97,26 @@ class CleanSummary(object):
                             'vmax': max([image_max, 8*image_rms])
                         }
 
-                    plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, image_path, reportdir=stage_dir, intent=r.intent,
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, image_path, reportdir=stage_dir, intent=r.intent, stokes_list=stokes_list,
                                                    collapseFunction=collapse_function, **extra_args))
 
                 # residual for this iteration
-                plot_wrappers.append(
-                    sky.SkyDisplay().plot(self.context, iteration['residual'] + extension, reportdir=stage_dir,
-                                               intent=r.intent))
+                plot_wrappers.extend(
+                    sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
+                                               intent=r.intent, stokes_list=stokes_list))
 
                 # model for this iteration (currently only last but allow for others in future)
                 if 'model' in iteration and os.path.exists(iteration['model'] + extension):
-                    plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, iteration['model'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent, **{'cmap': copy.copy(matplotlib.cm.seismic)}))
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['model'] + extension, reportdir=stage_dir,
+                                                         intent=r.intent, stokes_list=stokes_list, **{'cmap': copy.copy(matplotlib.cm.seismic)}))
 
                 # MOM0_FC for this iteration (currently only last but allow for others in future).
                 if 'mom0_fc' in iteration and os.path.exists(iteration['mom0_fc'] + extension):
-                    plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, iteration['mom0_fc'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent))
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom0_fc'] + extension, reportdir=stage_dir,
+                                                         intent=r.intent, stokes_list=stokes_list))
 
                 # MOM8_FC for this iteration (currently only last but allow for others in future).
                 if 'mom8_fc' in iteration and os.path.exists(iteration['mom8_fc'] + extension):
@@ -130,17 +136,17 @@ class CleanSummary(object):
                     else:
                         extra_args = {}
 
-                    plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent, **extra_args))
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
+                                                         intent=r.intent, stokes_list=stokes_list, **extra_args))
 
                 # cleanmask - not for iter 0
                 if i > 0:
                     collapse_function = 'max' if (('cube' in iteration.get('cleanmask', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
-                    plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
-                                              intent=r.intent, collapseFunction=collapse_function,
-                                              **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
+                                                         intent=r.intent, stokes_list=stokes_list, collapseFunction=collapse_function,
+                                                         **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
 
                 # cube spectra for this iteration
                 if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
@@ -186,11 +192,11 @@ class TcleanMajorCycleSummaryFigure(object):
 
     See PIPE-991."""
 
-    def __init__(self, context, result, major_cycle_stats):
+    def __init__(self, context, result, major_cycle_stats, figname='major_cycle_stats'):
         self.context = context
         self.majorcycle_stats = major_cycle_stats
         self.reportdir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-        self.filebase = result.targets[0]['imagename'].replace('STAGENUMBER', '%s_0' % result.stage_number)
+        self.figname = figname
         self.figfile = self._get_figfile()
         self.units = ['Jy', 'Jy/pixel']
         self.title = 'Major cycle statistics'
@@ -216,9 +222,7 @@ class TcleanMajorCycleSummaryFigure(object):
         ax0.tick_params(axis='both', which='both', labelsize=8)
         ax1.tick_params(axis='both', which='both', labelsize=8)
 
-        ax0.set_yscale('log')
-        ax1.set_yscale('log')
-
+        use_ylog = True
         x0 = 0
         for iter, item in self.majorcycle_stats.items():
             if item['nminordone_array'] is not None:
@@ -234,21 +238,27 @@ class TcleanMajorCycleSummaryFigure(object):
                 # Vertical line and annotation at major cycle end
                 ax0.axvline(x0, linewidth=1, linestyle='dotted', color='k')
                 ax1.axvline(x0, linewidth=1, linestyle='dotted', color='k')
+                if x[0] == 0 and ax0_y[0] == 0:
+                    use_ylog = False
+
                 ax0.annotate(f'iter{iter}', xy=(x0, ax0.get_ylim()[0]), xycoords='data',
                              xytext=(-10, 6), textcoords='offset points', size=8, rotation=90)
 
+        if use_ylog:
+            ax0.set_yscale('log')
+            ax1.set_yscale('log')
+
         fig.tight_layout()
         fig.savefig(self.figfile)
-        plt.close()
+        plt.close(fig)
 
         return self._get_plot_object()
 
     def _get_figfile(self):
         return os.path.join(self.reportdir,
-                            'major_cycle_stats.png')
+                            self.figname+'.png')
 
     def _get_plot_object(self):
         return logger.Plot(self.figfile,
                            x_axis=self.xlabel,
                            y_axis='/'.join(self.ylabel))
-
