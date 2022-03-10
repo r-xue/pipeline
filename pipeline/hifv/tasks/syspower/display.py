@@ -393,15 +393,24 @@ class syspowerPerAntennaChart(object):
                     if self.tabletype == 'pdiff':
                         tabletype = 'pdfif_{!s}'.format(self.band)
 
-                    job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
-                                            antenna=antPlot, spw=self.spw, timerange='',
-                                            plotrange=plotrange, coloraxis='spw',
-                                            title='Sys Power ' +
-                                                  tabletype +
-                                                  '.tbl  Antenna: {!s}  {!s}-band  spw: {!s}'.format(antName, self.band, self.spw),
-                                            titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                    pindexlist = [0, 1]
+                    cplots = [True, False]
 
-                    job.execute(dry_run=False)
+                    for pindex in pindexlist:
+
+                        spwtouse = self.spw.split(',')[pindex]
+                        job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
+                                                antenna=antPlot, spw=spwtouse, timerange='',
+                                                plotindex=pindex, gridrows=2, gridcols=1, rowindex=pindex, colindex=0,
+                                                plotrange=plotrange, coloraxis='corr', overwrite=True,
+                                                clearplots=cplots[pindex],
+                                                title='Sys Power ' + tabletype +
+                                                      '.tbl  Antenna: {!s}  {!s}-band  spw: {!s}'.format(antName,
+                                                                                                         self.band,
+                                                                                                         spwtouse),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+
+                        job.execute(dry_run=False)
 
                 except Exception as ex:
                     LOG.warning("Unable to plot " + filename)
