@@ -18,6 +18,7 @@ from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.extern.PIPE692 import SSFanalysis
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -147,6 +148,30 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Compute what SNR is achieved for PHASE fields after the SpW phase-up
         # correction.
         snr_info = self._compute_median_snr(diag_phase_results, spwmaps)
+
+        try:
+            LOG.info(" The Pipe 692 class is running for phase RMS.")
+            LOG.info(" New check testing - March 2022 - L Maud ")
+            pipe692 = SSFanalysis(inputs, outlierlimit=100., ftoll=0.3, maxpoorant=11)
+                                    #  pass the inputs from spwphaseup and options (these would be as PL inputs task call)
+
+            pipe692.analysis()        # launches the analysis
+
+            resul = pipe692.score()   # get the results dictionary
+                                    # keys are
+                                    # basescore, basecolor,shortmsg, longmsg
+
+            LOG.info('This is the phase RMS score '+str(resul['basescore']))
+
+            pipe692.plotSSF() # makes the SSF plot that would be included in the Weblog
+
+            ### optional for full PL weblog page plot - this is not needed for actual PL implementation ###
+            pipe692.plotSSF_mockup(resul) # TESTING pass the results now - triggers mock-up figure options - i.e. a weblog page 
+
+            pipe692.close()
+
+        except Exception as e:
+            LOG.error(' Unable to compute Phase RMS Pipe692')
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
