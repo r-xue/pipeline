@@ -126,7 +126,9 @@ def get_best_fits_per_ant(wrapper):
     corrected_data = V_k['corrected_data']
     sigma = V_k['sigma']
 
-    num_antennas, num_pols, num_chans = corrected_data.shape
+    num_antennas, _, num_chans = corrected_data.shape
+    # Filter cross-pol data
+    pol_indices = tuple(np.where((wrapper.corr_axis=='XX') | (wrapper.corr_axis=='YY'))[0])
 
     all_fits = []
 
@@ -140,7 +142,7 @@ def get_best_fits_per_ant(wrapper):
         amp_model_fn = get_linear_function(band_midpoint, frequency_scale)
         ang_model_fn = get_angular_linear_function(band_midpoint, frequency_scale)
 
-        for pol in range(num_pols):
+        for pol in pol_indices:
             visibilities = corrected_data[ant, pol, :]
             ta_sigma = sigma[ant, pol, :]
 
