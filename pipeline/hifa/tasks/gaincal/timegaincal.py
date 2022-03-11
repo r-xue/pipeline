@@ -119,18 +119,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 result.final.append(cp_calapp)
                 result.pool.append(cp_calapp)
 
-        # Following the merger of a first phase solution for all intents,
-        # now compute a second phase solutions caltable. Assuming that
-        # inputs.intent included 'PHASE' (true by default, but can be
-        # overridden by user), then the merger of the previous phase
-        # solutions result into the local task context will mean that an
-        # initial phase correction will be included in pre-apply during this
-        # gaincal, and thus this new caltable will represent the residual phase
-        # offsets.
-        LOG.info('Computing diagnostic residual phase offsets gain table.')
-        phase_offsets_result = self._do_offsets_phasecal()
-        result.phaseoffsetresult = phase_offsets_result
-
         # Produce the diagnostic table for displaying amplitude vs time plots.
         # Use the same SpW-mapping-mode-based solint derived for phase
         # calibrations, which is used earlier for the phase solutions for
@@ -149,6 +137,39 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Accept the amplitude calibration into the final results.
         result.pool.extend(amplitude_calapps)
         result.final.extend(amplitude_calapps)
+
+        # To ensure that a diagnostic phase offsets caltable (to be created in
+        # an upcoming step) will be sensitive to residual phase offsets, it is
+        # necessary to enforce that the phase caltable for PHASE calibrator
+        # fields used in pre-apply was solved with combine='spw'. But the
+        # caltables for PHASE calibrator fields that earlier got solved and
+        # merged into local context (for pre-apply in amplitude solves) may not
+        # always have used combine='spw' (since it used optimal parameters
+        # based on SpW mapping). Hence, first unregister any phase caltable for
+        # PHASE calibrator fields where the SpW mapping recommended combine=''.
+        self._unregister_phasecal_with_no_combine()
+
+        # Next, compute a new phase solutions solve for those PHASE calibrator
+        # fields the recommended combine was '', while this time enforcing
+        # combine='spw'.
+        phasecal_phase_results = self._do_phasecal_for_phase_calibrators_forcing_combine()
+
+        # Merge the new phase solutions for PHASE calibrator fields into the
+        # local task context, so they are marked for inclusion in pre-apply in
+        # subsequent diagnostic phase offsets solve.
+        for res in phasecal_phase_results:
+            res.accept(inputs.context)
+
+        # Now compute a new phase solutions caltable while using previous phase
+        # caltables in pre-apply. Assuming that inputs.intent included 'PHASE'
+        # (true by default, but can be overridden by user), then the merger of
+        # the previous phase solutions result into the local task context will
+        # mean that the initial phase corrections will be included in pre-apply
+        # during this gaincal, and thus this new caltable will represent the
+        # residual phase offsets.
+        LOG.info('Computing diagnostic residual phase offsets gain table.')
+        phase_offsets_result = self._do_offsets_phasecal()
+        result.phaseoffsetresult = phase_offsets_result
 
         return result
 
@@ -424,23 +445,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             # solution for all SpWs, using provided solint, gaintype, and
             # interp.
             if not combine:
-                # PIPE-1154: for the phase solutions for the PHASE calibrator,
-                # force the combination of SpWs, and generate a corresponding
-                # combine spwmap with which this caltable should be registered.
-                # This is done regardless of whether the spwmap originally
-                # derived in hifa_spwphaseup would require combination of SpWs,
-                # and is done to ensure that the subsequent phase offsets
-                # caltable is always sensitive to residual offsets on the PHASE
-                # calibrator and the corresponding plots would display
-                # meaningful information.
-
-                # Create a "combine" spwmap for input SpWs.
-                spws = inputs.ms.get_spectral_windows(inputs.spw)
-                spwmap = combine_spwmap(spws)
-
-                # Run the phase calibration, forcing combination of SpWs.
                 phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=inputs.spw,
-                                                                     gaintype=gaintype, combine='spw', solint=solint,
+                                                                     gaintype=gaintype, combine=combine, solint=solint,
                                                                      minsnr=inputs.calminsnr, interp=interp,
                                                                      spwmap=spwmap))
                 solints.append(solint)
@@ -480,6 +486,55 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         max_solint = max(solints)
 
         return phasecal_results, max_solint
+
+    def _do_phasecal_for_phase_calibrators_forcing_combine(self):
+        """
+        This method will create phase gain caltable(s) for each field that
+        both a.) covers a PHASE calibrator, and b.) for which the SpW mapping
+        registered in the measurement set recommended to use combine='' in the
+        gaincal solve. For these fields, an appropriate "combine" SpW map is
+        generated locally, then a new gaincal solve is performed using this SpW
+        map and enforcing combine='spw'.
+
+        The resulting caltable is used later during this task for computing the
+        residual phase offsets.
+        """
+        inputs = self.inputs
+        intent = "PHASE"
+
+        # Initialize list of phase gaincal results.
+        phasecal_results = []
+
+        # Create separate phase solutions for each PHASE field.
+        for field in inputs.ms.get_fields(intent="PHASE"):
+            # Get optimal phase solution parameters for current PHASE field,
+            # based on spw mapping info in MS.
+            combine, gaintype, interp, lowsnr_spws, solint, spwmap = self._get_phasecal_params(intent, field.name)
+
+            # Skip any field where the recommended combine was already 'spw'.
+            if combine == 'spw':
+                continue
+
+            # For PHASE calibrator fields where the SpW mapping recommended to
+            # use combine='', continue with creating a new caltable while
+            # forcing the combination of SpWs, and generate a corresponding
+            # combine spwmap with which this caltable should be registered.
+            # This is done to ensure that the subsequent phase offsets
+            # caltable is always sensitive to residual offsets on the PHASE
+            # calibrator and the corresponding plots would display
+            # meaningful information.
+
+            # Create a "combine" spwmap for input SpWs.
+            spws = inputs.ms.get_spectral_windows(inputs.spw)
+            spwmap = combine_spwmap(spws)
+
+            # Run the phase calibration, forcing combination of SpWs.
+            phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=inputs.spw,
+                                                                 gaintype=gaintype, combine='spw', solint=solint,
+                                                                 minsnr=inputs.calminsnr, interp=interp,
+                                                                 spwmap=spwmap))
+
+        return phasecal_results
 
     # Used to calibrate "selfcaled" targets
     def _do_calibrator_phasecal(self, field: str = None, intent: str = None, spw: str = None, gaintype: str = 'G',
@@ -714,6 +769,41 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 interp = 'linear,linear'
 
         return combine, gaintype, interp, lowsnr_spws, solint, spwmap
+
+    def _unregister_phasecal_with_no_combine(self):
+        """
+        This method will unregister from the callibrary in the local context
+        (stored in inputs) any CalApplication that is registered for a PHASE
+        calibrator field for which the SpW mapping recommends to solve with
+        combine=''.
+        """
+        inputs = self.inputs
+
+        # Identify the MS to process.
+        vis: str = inputs.ms.basename
+
+        # Identify which PHASE calibrator fields to process.
+        fields = set()
+        for (intent, field), spwmapping in inputs.ms.spwmaps.items():
+            if intent == "PHASE" and not spwmapping.combine:
+                fields.add(field)
+
+        # If there were no PHASE calibrator fields with combine='', then there
+        # are no CalApplications to unregister.
+        if not fields:
+            return
+
+        # Define predicate function that matches the kind of caltable that
+        # needs to be removed from the CalLibrary.
+        def phase_no_combine_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+            calto_vis = {os.path.basename(v) for v in calto.vis}
+            do_delete = 'hifa_timegaincal' in calfrom.gaintable and vis in calto_vis and "PHASE" in calto.intent \
+                        and bool(calto.field.intersection(fields))
+            if do_delete:
+                LOG.debug(f'Unregistering phase caltable {calfrom.gaintable} from task-specific context.')
+            return do_delete
+
+        inputs.context.callibrary.unregister_calibrations(phase_no_combine_matcher)
 
 
 def do_gtype_gaincal(context, executor, task_args):
