@@ -113,6 +113,24 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_max': uv_max,
         })
 
+        # members for parent template applycal.mako
+        ctx.update({
+            'amp_vs_freq_plots': [],
+            'phase_vs_freq_plots': [],
+            'amp_vs_time_plots': [],
+            'amp_vs_uv_plots': [],
+            'phase_vs_time_plots': [],
+            'corrected_to_antenna1_plots': [],
+            'corrected_to_model_vs_uvdist_plots': [],
+            'science_amp_vs_uv_plots': [],
+            'uv_plots': [],
+            'amp_vs_freq_subpages': [],
+            'phase_vs_freq_subpages': [],
+            'amp_vs_time_subpages': [],
+            'amp_vs_uv_subpages': [],
+            'phase_vs_time_subpages': [],
+        })
+
     def create_single_dish_science_plots(self, context: Context, results: ResultsList) \
             -> Tuple[Dict[str, List[List[Union[str, List['Plot']]]]], Dict[str, str], Dict[str, measures.Distance]]:
         """
@@ -133,6 +151,10 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         amp_vs_freq_detail_plots = {}
 
+        # set to determine that this dict is for hsd_applycal.
+        # it should be removed in template before rendering
+        amp_vs_freq_summary_plots['__hsd_applycal__'] = []
+
         for result in results:
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
@@ -140,25 +162,11 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
             amp_vs_freq_summary_plots[vis] = []
 
-            # Plot for 1 science field (either 1 science target or for a mosaic 1
-            # pointing). The science field that should be chosen is the one with
-            # the brightest average amplitude over all spws
-            representative_source_name, _ = ms.get_representative_source_spw()
-            representative_source = {s for s in ms.sources if s.name == representative_source_name}
-            if len(representative_source) >= 1:
-                representative_source = representative_source.pop()
-
             for source in filter(lambda source: 'TARGET' in source.intents, ms.sources):
                 if len(source.fields) > 0:
                     source_name = source.fields[0].name
                     plots = self._plot_source(context, result, ms, source)
-                    if source == representative_source:
-                        # prepend plots to ensure the first item to be representative source
-                        amp_vs_freq_summary_plots[vis].insert(0, [source_name, plots])
-                        # and do anything else specific to representative source here
-                    else:
-                        # append plots of unrepresentative sources
-                        amp_vs_freq_summary_plots[vis].append([source_name, plots])
+                    amp_vs_freq_summary_plots[vis].append([source_name, plots])
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
