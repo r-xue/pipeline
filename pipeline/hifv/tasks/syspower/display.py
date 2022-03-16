@@ -396,6 +396,10 @@ class syspowerPerAntennaChart(object):
                     pindexlist = [0, 1]
                     cplots = [True, False]
 
+                    numspws = len(self.spw.split(','))
+                    if numspws == 1:
+                        pindexlist = [0]
+
                     for pindex in pindexlist:
 
                         spwtouse = self.spw.split(',')[pindex]

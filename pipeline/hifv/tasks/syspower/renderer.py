@@ -151,9 +151,11 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         else:
                             # Pick two other spws - one from each baseband
                             bb = list(result.band_baseband_spw[band].keys())
-                            spw = str(result.band_baseband_spw[band][bb[0]][-2]) + \
+                            i1 = int(len(result.band_baseband_spw[band][bb[0]]) / 2)
+                            i2 = int(len(result.band_baseband_spw[band][bb[1]]) / 2)
+                            spw = str(result.band_baseband_spw[band][bb[0]][i1]) + \
                                   ',' + \
-                                  str(result.band_baseband_spw[band][bb[1]][-2])
+                                  str(result.band_baseband_spw[band][bb[1]][i2])
 
                     plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
                                                                       result.plotrq, 'syspower', 'rq',
