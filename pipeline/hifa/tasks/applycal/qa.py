@@ -173,8 +173,21 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
         if export_outliers:
             debug_path = 'PIPE356_outliers.txt'
             with open(debug_path, 'a') as debug_file:
-                for o in outliers:
-                    if o.scan != {-1}:
+                for i,o in enumerate(outliers):
+                    # Omit all-scan outliers and doubles
+                    # from sources with multiple intents
+                    duplicate_entry = False
+                    for j in range(i-1):
+                        if o.vis == outliers[j].vis and \
+                           o.scan == outliers[j].scan and \
+                           o.spw == outliers[j].spw and \
+                           o.ant == outliers[j].ant and \
+                           o.pol == outliers[j].pol and \
+                           o.reason == outliers[j].reason and \
+                           o.num_sigma == outliers[j].num_sigma:
+                            duplicate_entry = True
+                            break
+                    if o.scan != {-1} and not duplicate_entry:
                         msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
                                f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
                         debug_file.write('{}\n'.format(msg))
