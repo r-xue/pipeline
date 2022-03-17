@@ -134,28 +134,17 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     all_plots[band] = all_plots_band
 
                 # generate switched power plots and JSON file
-                spw = '6,14'  # VLASS defaults
-                spwobjlist = m.get_spectral_windows()
-                spwidlist = []
-
                 allbands = list(result.band_baseband_spw.keys())
+                spw = ''
 
                 for band in result.band_baseband_spw:
+                    selectspw = []
                     for baseband in result.band_baseband_spw[band]:
-                        for spwid in result.band_baseband_spw[band][baseband]:
-                            spwidlist.append(spwid)
 
-                    if 6 not in spwidlist or 14 not in spwidlist:
-                        if len(spwobjlist) == 1:
-                            spw = str(spwobjlist[0].id)
-                        else:
-                            # Pick two other spws - one from each baseband
-                            bb = list(result.band_baseband_spw[band].keys())
-                            i1 = int(len(result.band_baseband_spw[band][bb[0]]) / 2)
-                            i2 = int(len(result.band_baseband_spw[band][bb[1]]) / 2)
-                            spw = str(result.band_baseband_spw[band][bb[0]][i1]) + \
-                                  ',' + \
-                                  str(result.band_baseband_spw[band][bb[1]][i2])
+                        # Pick one from each baseband if available
+                        ispw = int(len(result.band_baseband_spw[band][baseband]) / 2)
+                        selectspw.append(str(result.band_baseband_spw[band][baseband][ispw]))
+                        spw = ','.join(selectspw)
 
                     plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
                                                                       result.plotrq, 'syspower', 'rq',
