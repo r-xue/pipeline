@@ -174,9 +174,10 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
             debug_path = 'PIPE356_outliers.txt'
             with open(debug_path, 'a') as debug_file:
                 for o in outliers:
-                    msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
-                           f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
-                    debug_file.write('{}\n'.format(msg))
+                    if o.scan != {-1}:
+                        msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
+                               f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
+                        debug_file.write('{}\n'.format(msg))
 
         # convert outliers to QA scores
         scores_for_intent = outliers_to_qa_scores(ms, outliers, outlier_score)
