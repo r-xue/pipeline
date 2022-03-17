@@ -29,7 +29,7 @@ LinearFitParameters = collections.namedtuple(
 # Outlier describes an outlier data selection with why it's an outlier, and by how much
 Outlier = collections.namedtuple(
     'Outlier',
-    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'reason']
+    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'phase_offset_gt90deg', 'reason']
 )
 # ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value
 ValueAndUncertainty = collections.namedtuple(
@@ -312,7 +312,22 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     outlier_fn = functools.partial(outlier_fn, reason={reason, })
 
     accessor = operator.attrgetter(attr)
-    return score_fits(all_fits, ref_value_fn, accessor, outlier_fn, sigma_threshold)
+    outliers = score_fits(all_fits, ref_value_fn, accessor, outlier_fn, sigma_threshold)
+
+    # Check for >90deg phase offsets which should have extra QA messages
+    if y_axis == 'phase':
+        for i in range(len(outliers)):
+            if outliers[i].phase_offset_gt90deg:
+                outliers[i] = Outlier(vis=outliers[i].vis,
+                                      intent=outliers[i].intent,
+                                      scan=outliers[i].scan,
+                                      spw=outliers[i].spw,
+                                      ant=outliers[i].ant,
+                                      pol=outliers[i].pol,
+                                      num_sigma=outliers[i].num_sigma,
+                                      phase_offset_gt90deg=outliers[i].phase_offset_gt90deg,
+                                      reason={f'gt90deg_offset_{y_axis}_vs_freq.{fit_parameter}', })
+    return outliers
 
 
 def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_threshold):
@@ -350,7 +365,7 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
             num_sigma = np.abs((value - reference_val) / this_sigma)
 
             if num_sigma > sigma_threshold:
-                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma)
+                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma, phase_offset_gt90deg=abs(fit.phase.intercept.value) > 0.5 * np.pi)
                 outliers.append(outlier)
 
     return outliers
