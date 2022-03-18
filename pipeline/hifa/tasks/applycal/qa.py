@@ -171,7 +171,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
 
         # if requested, export outlier descriptions to a file
         if export_outliers:
-            debug_path = 'PIPE356_outliers.txt'
+            debug_path = 'applycalQA_outliers.txt'
             with open(debug_path, 'a') as debug_file:
                 for i,o in enumerate(outliers):
                     # Filter doubles from sources with multiple intents
