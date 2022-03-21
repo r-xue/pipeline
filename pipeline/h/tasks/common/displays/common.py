@@ -141,33 +141,40 @@ class PlotmsCalLeaf(object):
     Class to execute plotms and return a plot wrapper. It passes the spw and
     ant arguments through to plotms without further manipulation, creating
     exactly one plot. 
+
+    If more than one calapp is provided, the caltables from each calapp are overplotted.
     """
 
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
-
-        self._calapp = calapp
-        self._caltable = calapp.gaintable
-        self._vis = calapp.vis
-
         self._xaxis = xaxis
         self._yaxis = yaxis
-
         self._spw = spw
-        self._intent = calapp.intent
+        self._plotrange = plotrange
+        self._coloraxis = coloraxis
 
-        # use antenna name rather than ID if possible
+        # Make calapp a list if it isn't already. The rest of the code assumes this is a list
+        if not isinstance(calapp, list): 
+            calapp = [calapp]
+
+        self._calapp = calapp
+        self._caltable = [cal.gaintable for cal in calapp]
+
+        self._vis = self._calapp[0].vis
+        self._intent = ",".join([cal.intent for cal in self._calapp])
+
+        # Use antenna name rather than ID if possible
+        self._ant_ids = ant 
         if ant != '':
             ms = self._context.observing_run.get_ms(self._vis)
             domain_antennas = ms.get_antenna(ant)
             idents = [a.name if a.name else a.id for a in domain_antennas]
             ant = ','.join(idents)
         self._ant = ant
+        print("ANT: {}".format(ant))
 
         self._figfile = self._get_figfile()
-        self._plotrange = plotrange
-        self._coloraxis = coloraxis
 
         self._title = "{}".format(os.path.basename(self._vis).split('.')[0])
         if spw:
@@ -175,13 +182,33 @@ class PlotmsCalLeaf(object):
         if ant:
             self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
+        self.task_args = {'xaxis': self._xaxis,
+                     'yaxis': self._yaxis,
+                     'showgui': False,
+                     'spw': str(self._spw),
+                     'antenna': self._ant,
+                     'plotrange': self._plotrange,
+                     'coloraxis': self._coloraxis,
+                     'title': self._title}
+
     def plot(self):
         plots = [self._get_plot_wrapper()]
         return [p for p in plots if p is not None]
 
     def _get_figfile(self):
+        caltable_name = os.path.basename(self._calapp[0].gaintable)
+
+        # Leaving the below code here, but commented-out for now in case we run into a case where the above results in a non-unique filename
+        # while testing. 
+        # if len(self._calapp) > 1:
+        #     caltable_name = ""
+        #     for cal in self._calapp: 
+        #         caltable_name = caltable_name + "_" + os.path.basename(cal.gaintable)
+        # else:
+        #     caltable_name = os.path.basename(self._calapp[0].gaintable)
+
         fileparts = {
-            'caltable': os.path.basename(self._calapp.gaintable),
+            'caltable': caltable_name,
             'x': self._xaxis,
             'y': self._yaxis,
             'spw': '' if self._spw == '' else 'spw%0.2d-' % int(self._spw),
@@ -189,7 +216,7 @@ class PlotmsCalLeaf(object):
             'intent': '' if self._intent == '' else '%s-' % self._intent.replace(',', '_')
         }
         png = '{caltable}-{spw}{ant}{intent}{y}_vs_{x}.png'.format(**fileparts)
-
+        
         # Maximum filename size for Lustre filesystems is 255 bytes. These
         # plots can exceed this limit due to including the names of all
         # antennas. Truncate over-long filename while keeping it unique by
@@ -203,19 +230,19 @@ class PlotmsCalLeaf(object):
         return os.path.join(self._context.report_dir, 'stage%s' % self._result.stage_number, png)
 
     def _get_plot_wrapper(self):
-        task = self._create_task()
-
+        tasks = self._create_task() 
         if not os.path.exists(self._figfile):
             LOG.trace('Creating new plot: %s' % self._figfile)
             try:
-                task.execute(dry_run=False)
-            except Exception as ex:
+                for task in tasks:
+                    task.execute(dry_run=False)
+            except Exception as ex: 
                 LOG.error('Could not create plot %s' % self._figfile)
                 LOG.exception(ex)
                 return None
 
         parameters = {'vis': os.path.basename(self._vis),
-                      'caltable': self._caltable}
+                      'caltable': ",".join(self._caltable)}
 
         for attr in ['spw', 'ant', 'intent']:
             val = getattr(self, '_%s' % attr)
@@ -226,23 +253,79 @@ class PlotmsCalLeaf(object):
                               x_axis=self._xaxis,
                               y_axis=self._yaxis,
                               parameters=parameters,
-                              command=str(task))
-
+                              command=''.join(map(str, tasks)))
         return wrapper
 
+    def _is_plot_valid(self, caltable):
+        # concerned about the slowdown for one-caltable plots if omit this conditional
+        # is it worth using gaincalwrapper? 
+        if (len(caltable) > 1): 
+            with casa_tools.TableReader(caltable) as tb: # expand to full path
+                antenna1 = tb.getcol('ANTENNA1')
+                caltable_spw = tb.getcol('SPECTRAL_WINDOW_ID')
+            # are all the spws intended to plot present in the caltable
+            if str(self._spw) != '':
+                if ',' in str(self._spw): 
+                    for spw in str(self._spw).split(','): 
+                        if spw not in caltable_spw: 
+                            return False
+                else: 
+                    if self._spw not in caltable_spw:
+                        return False 
+            # are all the antennas intended to plot present in the caltable? 
+            if self._ant_ids != '' and isinstance(self._ant_ids, str):
+                if ',' in self._ant_ids:
+                    for ant in self._ant_ids.split(','): 
+                        if ant not in antenna1: 
+                            return False
+                else: 
+                    if self._ant_ids not in antenna1: 
+                        return False
+            return True
+        else:
+            return True
+
     def _create_task(self):
-        task_args = {'vis': self._caltable,
-                     'xaxis': self._xaxis,
-                     'yaxis': self._yaxis,
-                     'showgui': False,
-                     'clearplots': True,
-                     'spw': str(self._spw),
-                     'antenna': self._ant,
-                     'plotfile': self._figfile,
-                     'plotrange': self._plotrange,
-                     'coloraxis': self._coloraxis,
-                     'title': self._title}
-        return casa_tasks.plotms(**task_args)
+        symbol_array = ['diamond', 'circle', 'square', 'pixel'] #, ’nosymbol’, 'autoscaling]
+#        color_axis = [self._coloraxis, 'spw', 'time', 'intent']
+        symbol_size = [20, 16, 12, 10]
+        task_list = []
+
+        for n, caltable in enumerate(self._caltable): 
+            # check if antenna(s)-to-plot and spw(s)-to-plot are present in the caltable 
+            # if not, skipp plotting the caltable...
+
+            # is it worth using gaincalwrapper? 
+            if(self._is_plot_valid(caltable)):
+                print("Creating overplot #{} with caltable: {}".format(n, caltable))
+                task_args = {key: val for key, val in self.task_args.items()} 
+                task_args['vis'] = caltable
+                task_args['plotindex'] = n
+                if n==0: 
+                    task_args['clearplots'] = True
+                else:
+                    task_args['clearplots'] = False
+
+                # Alter plot symbols, colors, and sizes for debugging
+    #            task_args['coloraxis'] = color_axis[n % len(color_axis)]
+                #TODO: If these need to be changed to use a specific shape for a specific intent this can 
+                # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
+                # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
+                task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
+                task_args['symbolsize'] = symbol_size[n % len(symbol_size)]
+                task_args['customsymbol'] = True
+
+                # The plotfile must be specified for only the last plotms command
+                # needs to move outside the loop if we're going to change the number of plots...
+                if n == (len(self._caltable) - 1): 
+                    task_args['plotfile'] = self._figfile 
+
+                print("Overplot ended up with task_args of:", task_args)
+                task_list.append(casa_tasks.plotms(**task_args))
+            else: 
+                print("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
+
+        return task_list
 
 
 class PlotbandpassLeaf(object):
@@ -420,14 +503,22 @@ class SpwComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, ant='', pol='',
                  **kwargs):
-        with casa_tools.TableReader(calapp.gaintable) as tb:
-            table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+
+        table_spws = set()
+        if isinstance(calapp, list): 
+            for cal in calapp:
+                with casa_tools.TableReader(cal.gaintable) as tb:
+                    table_spws = table_spws.union(set(tb.getcol('SPECTRAL_WINDOW_ID')))
+        else: 
+            with casa_tools.TableReader(calapp.gaintable) as tb:
+                table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
         caltable_spws = [int(spw) for spw in table_spws]
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, pol=pol, **kwargs)
                     for spw in caltable_spws]
-        super(SpwComposite, self).__init__(children)
+
+        super().__init__(children)
 
 
 class SpwAntComposite(LeafComposite):
@@ -438,8 +529,12 @@ class SpwAntComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+        # TODO: temporary change: select first entry from calapp for now, if it is a list
+        if not isinstance(calapp, list): 
+            calapp = [calapp]
+
         # Identify spws in caltable.
-        with casa_tools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp[0].gaintable) as tb: # TODO: real solution needed
             table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
         caltable_spws = [int(spw) for spw in table_spws]
 
@@ -452,9 +547,10 @@ class SpwAntComposite(LeafComposite):
         update_yscale = ysamescale and not kwargs.get("plotrange", "")
 
         children = []
+        print("SpwAntComposite caltables:", calapp)
         for spw in caltable_spws:
             if update_yscale:
-                caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp.gaintable, gaincalamp=True)
+                caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp[0].gaintable, gaincalamp=True) #TODO: real solution needed
                 filtered = caltable_wrapper.filter(spw=[spw])
                 ymin = numpy.ma.min(numpy.abs(filtered.data))
                 ymax = numpy.ma.max(numpy.abs(filtered.data))
@@ -467,7 +563,7 @@ class SpwAntComposite(LeafComposite):
             children.append(
                 self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
 
-        super(SpwAntComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class AntComposite(LeafComposite):
@@ -479,14 +575,17 @@ class AntComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
                  **kwargs):
-        with casa_tools.TableReader(calapp.gaintable) as tb:
+        # TODO: real solution needed
+        if not isinstance(calapp, list): 
+            calapp = [calapp]
+        with casa_tools.TableReader(calapp[0].gaintable) as tb: 
             table_ants = set(tb.getcol('ANTENNA1'))
-
+        print("AntComposite with:", calapp)
         caltable_antennas = [int(ant) for ant in table_ants]
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     ant=ant, spw=spw, pol=pol, **kwargs)
                     for ant in caltable_antennas]
-        super(AntComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class AntSpwComposite(LeafComposite):
@@ -525,7 +624,7 @@ class SpwPolComposite(LeafComposite):
 
 class AntSpwPolComposite(LeafComposite):
     """
-    Create a PlotLeaf for each antenna, spw and polarization in the caltable.
+    Create a PlotLeaf for each antenna, spw, and polarization in the caltable.
     """
     leaf_class = None
 
@@ -550,7 +649,6 @@ class PlotmsCalSpwComposite(SpwComposite):
 
 class PlotmsCalAntSpwComposite(AntSpwComposite):
     leaf_class = PlotmsCalSpwComposite
-
 
 class PlotmsCalSpwAntComposite(SpwAntComposite):
     leaf_class = PlotmsCalAntComposite
@@ -578,7 +676,6 @@ class PlotbandpassSpwPolComposite(SpwPolComposite):
 
 class PlotbandpassAntSpwPolComposite(AntSpwPolComposite):
     leaf_class = PlotbandpassSpwPolComposite
-
 
 class CaltableWrapperFactory(object):
     @staticmethod
@@ -656,7 +753,6 @@ class CaltableWrapperFactory(object):
             return CaltableWrapper(path, data, time_matplotlib, antenna1, spw,
                                    scan)
 
-
 class CaltableWrapper(object):
     @staticmethod
     def from_caltable(filename):
@@ -710,7 +806,6 @@ class CaltableWrapper(object):
 
         # create new object for the filtered data
         return CaltableWrapper(self.filename, data, time, antenna, spw, scan)
-
 
 class PhaseVsBaselineData(object):
     def __init__(self, data, ms, corr_id, refant_id):
@@ -887,7 +982,6 @@ class PhaseVsBaselineData(object):
         abs_offset = numpy.ma.abs(self.offsets_from_median)
         return numpy.ma.median(abs_offset)
 
-
 class XYData(object):
     def __init__(self, delegate, x_axis, y_axis):
         self.__delegate = delegate
@@ -925,7 +1019,6 @@ class XYData(object):
     @property
     def y(self):
         return getattr(self.__delegate, self.__y_axis)
-
 
 class DataRatio(object):
     def __init__(self, before, after):
@@ -997,57 +1090,7 @@ class DataRatio(object):
             return None
         return before / after
 
-
 class NullScoreFinder(object):
     def get_score(self, *args, **kwargs):
         return None
 
-
-class PlotBase(object):
-    def get_symbol_and_colour(self, pol, state='BEFORE'):
-        """
-        Get the plot symbol and colour for this polarization and bandtype.
-        """
-        d = {'BEFORE': {'L': ('-', 'orange', 0.6),
-                        'R': ('--', 'sandybrown', 0.6),
-                        'X': ('-', 'lightslategray', 0.6),
-                        'Y': ('--', 'lightslategray', 0.6),
-                        'XX': ('-', 'lightslategray', 0.6),
-                        'YY': ('--', 'lightslategray', 0.6)},
-             'AFTER': {'L': ('-', 'green', 0.6),
-                       'R': ('-', 'red', 0.6),
-                       'X': ('-', 'green', 0.6),
-                       'Y': ('-', 'red', 0.6),
-                       'XX': ('-', 'green', 0.6),
-                       'YY': ('-', 'red', 0.6)}}
-
-        return d.get(state, {}).get(pol, ('x', 'grey'))
-
-    def _load_caltables(self, before, after=None):
-        if self._caltables_loaded:
-            return
-
-        # Get phases before and after
-        data_before = CaltableWrapper.from_caltable(before)
-        if after:
-            data_after = CaltableWrapper.from_caltable(after)
-        else:
-            data_after = data_before
-
-        # some sanity checks, as unequal caltables have bit me before
-        assert utils.are_equal(data_before.time, data_after.time), 'Time columns are not equal'
-        assert utils.are_equal(data_before.antenna, data_after.antenna), 'Antenna columns are not equal'
-        assert utils.are_equal(data_before.spw, data_after.spw), 'Spw columns are not equal'
-        assert utils.are_equal(data_before.scan, data_after.scan), 'Scan columns are not equal'
-
-        self._data_before = data_before
-        self._data_after = data_after
-        self._caltables_loaded = True
-
-    def _get_qa_intents(self):
-        return set(self.result.inputs['qa_intent'].split(','))
-
-    def _get_qa_scans(self):
-        qa_intents = self._get_qa_intents()
-        return [scan for scan in self.ms.scans
-                if not qa_intents.isdisjoint(scan.intents)]
