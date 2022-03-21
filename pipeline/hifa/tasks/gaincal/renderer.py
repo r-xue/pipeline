@@ -134,7 +134,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
             # with solint=int
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'BANDPASS')
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'BANDPASS,PHASE', combine=True)
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase offset vs time plots
@@ -162,7 +162,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     amp_vs_time_subpages[vis] = renderer.path
 
                 # phase vs time for solint=int
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'BANDPASS')
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'BANDPASS,PHASE', combine=True)
                 diagnostic_phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context, result,
                                                                     diagnostic_phase_vs_time_details[vis])
