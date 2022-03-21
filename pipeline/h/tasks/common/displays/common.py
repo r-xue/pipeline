@@ -286,9 +286,9 @@ class PlotmsCalLeaf(object):
             return True
 
     def _create_task(self):
-        symbol_array = ['diamond', 'circle', 'square', 'pixel'] #, ’nosymbol’, 'autoscaling]
+        symbol_array = ['autoscaling', 'diamond', 'square'] #note: autoscaling can be 'pixel' or 'circle' depending on number of points. 
 #        color_axis = [self._coloraxis, 'spw', 'time', 'intent']
-        symbol_size = [20, 16, 12, 10]
+        symbol_size = [2, 20, 16, 12, 10] # debug only -- needs to be removed
         task_list = []
 
         for n, caltable in enumerate(self._caltable): 
@@ -307,7 +307,6 @@ class PlotmsCalLeaf(object):
                     task_args['clearplots'] = False
 
                 # Alter plot symbols, colors, and sizes for debugging
-    #            task_args['coloraxis'] = color_axis[n % len(color_axis)]
                 #TODO: If these need to be changed to use a specific shape for a specific intent this can 
                 # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
                 # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
@@ -315,15 +314,21 @@ class PlotmsCalLeaf(object):
                 task_args['symbolsize'] = symbol_size[n % len(symbol_size)]
                 task_args['customsymbol'] = True
 
+                # Leaving this code commented out here in case the if-statement on line 299 is removed after further development
                 # The plotfile must be specified for only the last plotms command
-                # needs to move outside the loop if we're going to change the number of plots...
-                if n == (len(self._caltable) - 1): 
-                    task_args['plotfile'] = self._figfile 
+#                if n == (len(self._caltable) - 1):
+#                    task_args['plotfile'] = self._figfile 
 
                 print("Overplot ended up with task_args of:", task_args)
                 task_list.append(casa_tasks.plotms(**task_args))
             else: 
                 print("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
+
+            # The plotfile must be specified for only the last plotms command
+            # The last task is missing this, so remove it and then re-create with the plotfile specified
+        task_list.pop()
+        task_args['plotfile'] = self._figfile 
+        task_list.append(casa_tasks.plotms(**task_args))
 
         return task_list
 
@@ -650,6 +655,7 @@ class PlotmsCalSpwComposite(SpwComposite):
 class PlotmsCalAntSpwComposite(AntSpwComposite):
     leaf_class = PlotmsCalSpwComposite
 
+
 class PlotmsCalSpwAntComposite(SpwAntComposite):
     leaf_class = PlotmsCalAntComposite
 
@@ -676,6 +682,7 @@ class PlotbandpassSpwPolComposite(SpwPolComposite):
 
 class PlotbandpassAntSpwPolComposite(AntSpwPolComposite):
     leaf_class = PlotbandpassSpwPolComposite
+
 
 class CaltableWrapperFactory(object):
     @staticmethod
@@ -753,6 +760,7 @@ class CaltableWrapperFactory(object):
             return CaltableWrapper(path, data, time_matplotlib, antenna1, spw,
                                    scan)
 
+
 class CaltableWrapper(object):
     @staticmethod
     def from_caltable(filename):
@@ -806,6 +814,7 @@ class CaltableWrapper(object):
 
         # create new object for the filtered data
         return CaltableWrapper(self.filename, data, time, antenna, spw, scan)
+
 
 class PhaseVsBaselineData(object):
     def __init__(self, data, ms, corr_id, refant_id):
@@ -982,6 +991,7 @@ class PhaseVsBaselineData(object):
         abs_offset = numpy.ma.abs(self.offsets_from_median)
         return numpy.ma.median(abs_offset)
 
+
 class XYData(object):
     def __init__(self, delegate, x_axis, y_axis):
         self.__delegate = delegate
@@ -1019,6 +1029,7 @@ class XYData(object):
     @property
     def y(self):
         return getattr(self.__delegate, self.__y_axis)
+
 
 class DataRatio(object):
     def __init__(self, before, after):
@@ -1089,6 +1100,7 @@ class DataRatio(object):
         if after == 0:
             return None
         return before / after
+
 
 class NullScoreFinder(object):
     def get_score(self, *args, **kwargs):
