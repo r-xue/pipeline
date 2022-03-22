@@ -634,7 +634,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plots_dict = make_plot_dict(plots)
 
         # construct the renderers so we know what the back/forward links will be
-        # sort the rows so the links will be in the same order as the rows
         temp_urls = (None, None, None)
         qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
                         for row in image_rows]
