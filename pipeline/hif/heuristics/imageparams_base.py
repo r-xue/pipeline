@@ -2203,3 +2203,7 @@ class ImageParamsHeuristics(object):
     def perchanweightdensity(self, specmode: str) -> bool:
         """Determine the perchanweightdensity parameter."""
         return False
+
+    def psfcutoff(self) -> None:
+        """Tclean psfcutoff parameter heuristics."""
+        return None

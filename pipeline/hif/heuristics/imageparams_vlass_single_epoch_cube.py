@@ -63,3 +63,11 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
     def stokes(self) -> str:
         """Tclean stokes parameter heuristics."""
         return 'IQUV'
+
+    def psfcutoff(self) -> float:
+        """Tclean psfcutoff parameter heuristics.
+        
+        PIPE-1466: use psfcutoff=0.5 to properly fit the PSF for all spws in the VLASS Coarse Cube pipeline,
+        rather than the default value of 0.35 from CASA/tclean ver6.4.1.
+        """
+        return 0.5

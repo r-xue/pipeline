@@ -536,6 +536,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
         tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
         tclean_job_parameters['pointingoffsetsigdev'] = inputs.heuristics.pointingoffsetsigdev()
+        tclean_job_parameters['psfcutoff'] = inputs.heuristics.psfcutoff()
 
         # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
