@@ -160,7 +160,9 @@ class PlotmsCalLeaf(object):
 
         self._calapp = calapp
         self._caltable = [cal.gaintable for cal in calapp]
+        self._caltable.sort() # sort this list so that the parameter string and plot symbols will be in the same order.
 
+        # Assumes that there is one vis for all calapps
         self._vis = self._calapp[0].vis
         self._intent = ",".join([cal.intent for cal in self._calapp])
 
@@ -508,20 +510,31 @@ class SpwComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, ant='', pol='',
                  **kwargs):
-
-        table_spws = set()
+        # NOTE: could change this back to just do a union of all the spws, and pass through a full list of calapps 
+        # for each one and rely on PlotmsCalLeaf to only do the plot when appropriate
         if isinstance(calapp, list): 
+            table_spws = set()
+            dict_calapp_spws = collections.defaultdict(set)
             for cal in calapp:
                 with casa_tools.TableReader(cal.gaintable) as tb:
-                    table_spws = table_spws.union(set(tb.getcol('SPECTRAL_WINDOW_ID')))
+                    spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+                    table_spws = table_spws.union(spws)
+                    for spw in spws:
+                        dict_calapp_spws[int(spw)].add(cal)
         else: 
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
         caltable_spws = [int(spw) for spw in table_spws]
-        children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
-                                    spw=spw, ant=ant, pol=pol, **kwargs)
-                    for spw in caltable_spws]
+        
+        if isinstance(calapp, list):
+            children = [self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis,
+                        spw=spw, ant=ant, pol=pol, **kwargs)
+                        for spw in caltable_spws]    
+        else:
+            children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
+                                spw=spw, ant=ant, pol=pol, **kwargs)
+                                for spw in caltable_spws]
 
         super().__init__(children)
 
@@ -580,16 +593,44 @@ class AntComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
                  **kwargs):
-        # TODO: real solution needed
-        if not isinstance(calapp, list): 
-            calapp = [calapp]
-        with casa_tools.TableReader(calapp[0].gaintable) as tb: 
-            table_ants = set(tb.getcol('ANTENNA1'))
+        #NOTE: Could go back to just take the union of all antennas, pass all the calapps forward, 
+        # and check before plotting to make sure the antenna is present. This is still an option
+        # Passing around calapps that have this info stored somehow is also an option
+        #
+        # with casa_tools.TableReader(calapp[0].gaintable) as tb: 
+        #     table_ants = set(tb.getcol('ANTENNA1'))
+        # caltable_antennas = [int(ant) for ant in table_ants]
+        # children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
+        #                             ant=ant, spw=spw, pol=pol, **kwargs)
+        #             for ant in caltable_antennas]
+
         print("AntComposite with:", calapp)
+
+        if isinstance(calapp, list): 
+            table_ants = set()
+            dict_calapp_ants = collections.defaultdict(set)
+            for cal in calapp:
+                with casa_tools.TableReader(cal.gaintable) as tb:
+                    antennas = set(tb.getcol('ANTENNA1')) # use a set to remove duplicates
+                    table_ants = table_ants.union(antennas)
+                    for ant in antennas: 
+                        print("INT ANT: {}".format(ant))
+                        dict_calapp_ants[int(ant)].add(cal)
+        else: 
+            with casa_tools.TableReader(calapp.gaintable) as tb:
+                table_ants = set(tb.getcol('ANTENNA1'))
+
         caltable_antennas = [int(ant) for ant in table_ants]
-        children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
+        if not isinstance(calapp, list):
+            children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
+                        ant=ant, spw=spw, pol=pol, **kwargs)
+                        for ant in caltable_antennas]
+        else:
+            # In the following call list(dict_calapp_ants[ant]) is list of calapps with antenna=ant present 
+            children = [self.leaf_class(context, result, list(dict_calapp_ants[ant]), xaxis, yaxis,
                                     ant=ant, spw=spw, pol=pol, **kwargs)
-                    for ant in caltable_antennas]
+                                    for ant in caltable_antennas]
+
         super().__init__(children)
 
 
