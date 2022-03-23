@@ -1099,7 +1099,7 @@ class Tclean(cleanbase.CleanBase):
         # intensity for the line-free channels.
         if inputs.specmode == 'cube':
             # Moment maps of line-free channels
-            self._calc_mom0_8_fc(result)
+            self._calc_mom0_8_10_fc(result)
             # Moment maps of all channels
             self._calc_mom0_8(result)
 
@@ -1232,7 +1232,7 @@ class Tclean(cleanbase.CleanBase):
         '''
         Computes moment image, writes it to disk and updates moment image metadata.
 
-        This method is used in _calc_mom0_8() and _calc_mom0_8_fc().
+        This method is used in _calc_mom0_8() and _calc_mom0_8_10_fc().
         '''
         context = self.inputs.context
 
@@ -1242,6 +1242,8 @@ class Tclean(cleanbase.CleanBase):
             mom_type += "mom0"
         elif ".mom8" in outfile:
             mom_type += "mom8"
+        elif ".mom10" in outfile:
+            mom_type += "mom10"
         if "_fc" in outfile:
             mom_type += "_fc"
 
@@ -1259,14 +1261,16 @@ class Tclean(cleanbase.CleanBase):
                                  intent=self.inputs.intent, specmode=self.inputs.orig_specmode,
                                  context=context)
 
-    # Calculate a "mom0_fc" and "mom8_fc" image: this is a moment 0 and 8
-    # integration over the line-free channels of the non-primary-beam
-    # corrected image-cube, after continuum subtraction; where the "line-free"
-    # channels are taken from those identified as continuum channels.
+    # Calculate a "mom0_fc", "mom8_fc" and "mom10_fc: images: this is a moment
+    # 0 (integrated value of the spectrum), 8 (maximum value of the spectrum)
+    # and 10 (minimum value of the spectrum) integration over the line-free
+    # channels of the non-primary-beam corrected image-cube, after continuum
+    # subtraction; where the "line-free" channels are taken from those identified
+    # as continuum channels.
     # This is a diagnostic plot representing the residual emission
     # in the line-free (aka continuum) channels. If the continuum subtraction
     # worked well, then this image should just contain noise.
-    def _calc_mom0_8_fc(self, result):
+    def _calc_mom0_8_10_fc(self, result):
 
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
@@ -1280,6 +1284,9 @@ class Tclean(cleanbase.CleanBase):
 
         # Set output filename for MOM8_FC image.
         mom8fc_name = '%s.mom8_fc' % imagename
+
+        # Set output filename for MOM10_FC image.
+        mom10fc_name = '%s.mom10_fc' % imagename
 
         # Convert frequency ranges to channel ranges.
         cont_chan_ranges = utils.freq_selection_to_channels(imagename, self.cont_freq_ranges)
@@ -1305,10 +1312,14 @@ class Tclean(cleanbase.CleanBase):
             self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8fc_name, chans=cont_chan_ranges_str,
                                     iter=maxiter)
 
+            # Calculate MOM10_FC image
+            self._calc_moment_image(imagename=imagename, moments=[10], outfile=mom10fc_name, chans=cont_chan_ranges_str,
+                                    iter=maxiter)
+
             # Calculate the MOM8_FC peak SNR for the QA
 
             # Create flattened PB over continuum channels
-            flattened_pb_name = result.flux + extension + '.flattened_mom_0_8_fc'
+            flattened_pb_name = result.flux + extension + '.flattened_mom_0_8_10_fc'
             with casa_tools.ImageReader(result.flux + extension) as image:
                 flattened_pb = image.collapse(function='mean', axes=[2, 3], chans=cont_chan_ranges_str, outfile=flattened_pb_name)
                 flattened_pb.done()
@@ -1317,9 +1328,9 @@ class Tclean(cleanbase.CleanBase):
             cleanmask = result.iterations[maxiter].get('cleanmask', '')
             if os.path.exists(cleanmask):
                 if '.mask' in cleanmask:
-                    flattened_mask_name = cleanmask.replace('.mask', '.mask.flattened_mom_0_8_fc')
+                    flattened_mask_name = cleanmask.replace('.mask', '.mask.flattened_mom_0_8_10_fc')
                 elif '.cleanmask' in cleanmask:
-                    flattened_mask_name = cleanmask.replace('.cleanmask', '.cleanmask.flattened_mom_0_8_fc')
+                    flattened_mask_name = cleanmask.replace('.cleanmask', '.cleanmask.flattened_mom_0_8_10_fc')
                 else:
                     raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
