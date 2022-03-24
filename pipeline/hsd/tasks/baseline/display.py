@@ -44,6 +44,9 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
     clusters in one panel.
     """
 
+    # upper limit of the number of clusters to be displayed
+    NUM_CLUSTER_MAX = 36
+
     def __init__(self,
                  clusters_to_plot: List[LineProperty],
                  nh: int,
@@ -77,6 +80,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         """
         super(ClusterValidationAxesManager, self).__init__()
         self.clusters_to_plot = clusters_to_plot
+        assert len(self.clusters_to_plot) <= self.NUM_CLUSTER_MAX
         self.nh = nh
         self.nv = nv
         self.aspect_ratio = aspect_ratio
@@ -608,6 +612,12 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             ## (final_flags[icluster]==0).all() is no longer necessary since validation.py is revised.
             # if not( self.lines[icluster][2] == False or (final_flags[icluster]==0).all() ):
             if self.lines[icluster][2] == True:
+
+                # limit number of clusters to be displayed
+                if len(clusters_to_plot) > ClusterValidationAxesManager.NUM_CLUSTER_MAX:
+                    LOG.info('Too many clusters to display. Cluster validaiton plots show only part of clusters.')
+                    break
+
                 clusters_to_plot.append(icluster)
 
         num_cluster = len(clusters_to_plot)
