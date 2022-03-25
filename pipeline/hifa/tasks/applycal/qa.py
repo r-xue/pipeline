@@ -194,7 +194,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
                             duplicate_entry = True
                             break
                     if not duplicate_entry:
-                        if o.scan == -1:
+                        if o.scan == {-1, }:
                             msg = (f'{o.vis} {o.intent} scan=all spw={o.spw} ant={o.ant} '
                                    f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
                         else:
@@ -237,7 +237,7 @@ class QAMessage:
         vis = utils.commafy(sorted(outlier.vis), quotes=False)
         intent_msg = f' {utils.commafy(sorted(outlier.intent), quotes=False)} calibrator' if outlier.intent else ''
         spw_msg = f' spw {utils.find_ranges(outlier.spw)}' if outlier.spw else ''
-        if outlier.scan == -1:
+        if outlier.scan == {-1, }:
             scan_msg = ' scan all'
         else:
             scan_msg = f' scan {utils.find_ranges(outlier.scan)}' if outlier.scan else ''
