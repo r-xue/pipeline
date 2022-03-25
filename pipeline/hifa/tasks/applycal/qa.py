@@ -24,18 +24,18 @@ LOG = logging.get_logger(__name__)
 
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
 REASONS_TO_TEXT = {
-    'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers', ''),
-    'amp_vs_freq.intercept': ('Amp vs frequency', 'zero point outliers', ''),
-    'amp_vs_freq.slope': ('Amp vs frequency', 'slope outliers', ''),
-    'amp_vs_freq': ('Amp vs frequency', 'outliers', ''),
-    'phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', ''),
-    'phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', ''),
-    'phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', ''),
-    'phase_vs_freq': ('Phase vs frequency', 'outliers', ''),
-    'gt90deg_offset_phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq': ('Phase vs frequency', 'outliers', '; phase offset > 90deg detected'),
+    'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers', '', ''),
+    'amp_vs_freq.intercept': ('Amp vs frequency', 'zero point outliers', '', ''),
+    'amp_vs_freq.slope': ('Amp vs frequency', 'slope outliers', '', ''),
+    'amp_vs_freq': ('Amp vs frequency', 'outliers', '', ''),
+    'phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', '', ''),
+    'phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', '', ''),
+    'phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', '', ''),
+    'phase_vs_freq': ('Phase vs frequency', 'outliers', '', ''),
+    'gt90deg_offset_phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
+    'gt90deg_offset_phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
+    'gt90deg_offset_phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
+    'gt90deg_offset_phase_vs_freq': ('Phase vs frequency', 'outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
 }
 
 # PIPE356Switches is a struct used to hold various options for outlier
@@ -145,12 +145,10 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
             for score_list in qa_scores.values():
                 result.qa.pool.extend(score_list)
 
-            # pick a summarised score as representative, then set it as representative
-            representative = None
-            if qa_scores[pqa.WebLogLocation.BANNER] + qa_scores[pqa.WebLogLocation.ACCORDION] != []:
-                representative = min(qa_scores[pqa.WebLogLocation.BANNER] + qa_scores[pqa.WebLogLocation.ACCORDION], key=operator.attrgetter('score'))
-            if representative:
-                result.qa.representative = representative
+        # pick the minimum score of all (flagging and outliers) as
+        # representative, i.e. task score
+        result.qa.representative = min(result.qa.pool, key=operator.attrgetter('score'))
+
 
 
 def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: float, flag_all: bool):
@@ -165,13 +163,22 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
     intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
 
     all_scores = []
+
+    # if requested, write outlier file header
+    if export_outliers:
+        debug_path = 'applycalQA_outliers.txt'
+        with open(debug_path, 'a') as debug_file:
+            debug_file.write(f'AMPLITUDE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'AMPLITUDE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD}\n')
+            debug_file.write(f'PHASE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'PHASE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD}\n')
+
     for intent in intents:
         # delegate to dedicated module for outlier detection
         outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, flag_all=flag_all)
 
         # if requested, export outlier descriptions to a file
         if export_outliers:
-            debug_path = 'applycalQA_outliers.txt'
             with open(debug_path, 'a') as debug_file:
                 for i,o in enumerate(outliers):
                     # Filter doubles from sources with multiple intents
@@ -187,8 +194,12 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
                             duplicate_entry = True
                             break
                     if not duplicate_entry:
-                        msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
-                               f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
+                        if o.scan == -1:
+                            msg = (f'{o.vis} {o.intent} scan=all spw={o.spw} ant={o.ant} '
+                                   f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
+                        else:
+                            msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
+                                   f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
                         debug_file.write('{}\n'.format(msg))
 
         # convert outliers to QA scores
@@ -211,7 +222,7 @@ class QAMessage:
     """
 
     def __init__(self, ms, outlier, reason):
-        metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[reason]
+        metric_axes, outlier_description, _, extra_description2 = REASONS_TO_TEXT[reason]
 
         # convert pol=0,1 to pol=XX,YY
         # corr axis should be the same for all windows so just pick the first
@@ -226,7 +237,10 @@ class QAMessage:
         vis = utils.commafy(sorted(outlier.vis), quotes=False)
         intent_msg = f' {utils.commafy(sorted(outlier.intent), quotes=False)} calibrator' if outlier.intent else ''
         spw_msg = f' spw {utils.find_ranges(outlier.spw)}' if outlier.spw else ''
-        scan_msg = f' scan {utils.find_ranges(outlier.scan)}' if outlier.scan else ''
+        if outlier.scan == -1:
+            scan_msg = ' scan all'
+        else:
+            scan_msg = f' scan {utils.find_ranges(outlier.scan)}' if outlier.scan else ''
 
         # convert ant=1,3,5 to ant=DV03,CM05,CM08 etc.
         ant_names = sorted([ant.name
@@ -240,7 +254,7 @@ class QAMessage:
         corr_msg = f' {corr_msg}' if corr_msg else ''
 
         short_msg = f'{metric_axes} {outlier_description}'
-        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{extra_description}'
+        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{extra_description2}'
 
         self.short_message = short_msg
         self.full_message = full_msg
@@ -375,11 +389,11 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
 
         # add a 1.0 accordion score for metrics that generated no outlier
         if not msgs:
-            metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[hierarchy_root]
+            metric_axes, outlier_description, extra_description1, _ = REASONS_TO_TEXT[hierarchy_root]
             # Correct capitalisation as we'll prefix the metric with 'No '
             metric_axes = metric_axes.lower()
-            short_msg = 'No {} outliers'.format(metric_axes)
-            long_msg = 'No {} {} detected for {}'.format(metric_axes, outlier_description, ms.basename)
+            short_msg = 'No {} outliers {}'.format(metric_axes, extra_description1)
+            long_msg = 'No {} {}{} detected for {}'.format(metric_axes, outlier_description, extra_description1, ms.basename)
             score = pqa.QAScore(1.0,
                                 longmsg=long_msg,
                                 shortmsg=short_msg,
