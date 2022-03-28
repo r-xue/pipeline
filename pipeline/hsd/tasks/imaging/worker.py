@@ -221,29 +221,11 @@ def ImageCoordinateUtil(
         ny += 1
 
     # PIPE-1416
-    nx, ny = _add_beamsize_if_ALMA(context, nx, ny)
+    margin = imaging_policy.get_imaging_margin()
+    nx, ny = (nx + margin, ny + margin)
 
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
     return phasecenter, cellx, celly, nx, ny, org_direction
-
-
-def _add_beamsize_if_ALMA(context: Context, nx: int, ny: int) -> Tuple[int, int]:
-    """If it processed ALMA data, then add beamsize to pixel size.
-
-    Args:
-        context: pipeline context
-        nx: pixel size
-        ny: pixel size
-
-    Returns:
-        pixel sizes
-    """
-    imaging_policy = observatory_policy.get_imaging_policy(context)
-    num = 0
-    if imaging_policy == observatory_policy.ALMAImagingPolicy:
-        num = imaging_policy.get_beam_size_pixel()
-        num += num % 2
-    return (nx + num, ny + num)
 
 
 class SDImagingWorkerInputs(vdp.StandardInputs):
@@ -448,7 +430,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
         LOG.debug('Members to be processed:')
         for (m, a, s, f) in zip(infiles, antid_list, spwid_list, fieldid_list):
-            LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a, s, f))
+            LOG.debug('\tMS %s: Antenna %s Spw %s Field %s' % (os.path.basename(m), a, s, f))
 
         # Check for ephemeris source
         # known_ephemeris_list = ['MERCURY', 'VENUS', 'MARS', 'JUPITER', 'SATURN', 'URANUS', 'NEPTUNE', 'PLUTO', 'SUN',
@@ -587,7 +569,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         fieldsel_list = fieldsel_list[0] if len(set(fieldsel_list)) == 1 else fieldsel_list
         antsel_list = antsel_list[0] if len(set(antsel_list)) == 1 else antsel_list
         # set-up image dependent parameters
-        for p in cleanup_params: image_args[p] = None
+        for p in cleanup_params:
+            image_args[p] = None
         image_args['outfile'] = imagename
         image_args['infiles'] = infile_list
         image_args['spw'] = spwsel_list

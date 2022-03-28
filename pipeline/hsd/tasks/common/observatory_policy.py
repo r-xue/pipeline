@@ -62,6 +62,19 @@ class ObservatoryImagingPolicy(abc.ABC):
         """
         raise NotImplementedError('should be implemented in subclass')
 
+    @staticmethod
+    @abc.abstractmethod
+    def get_imaging_margin() -> float:
+        """Get pixels of margin number of imaging.
+
+        Raises:
+            NotImplementedError
+
+        Returns:
+            (Supposed to be) number of pixels.
+        """
+        raise NotImplementedError('should be implemented in subclass')
+
 
 class ALMAImagingPolicy(ObservatoryImagingPolicy):
     """Implementation of imaging policy for ALMA."""
@@ -114,6 +127,17 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
         """
         return 6
 
+    @staticmethod
+    def get_imaging_margin() -> float:
+        """Get pixels of margin number of imaging.
+
+        Returns:
+            number of pixels of imaging margin (adjusted to even number)
+        """
+        margin = ALMAImagingPolicy.get_beam_size_pixel()
+        margin += margin % 2
+        return margin
+
 
 class NROImagingPolicy(ObservatoryImagingPolicy):
     """Implementation of imaging policy for NRO 45m telescope."""
@@ -155,6 +179,15 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
             Convolution support.
         """
         return 3
+
+    @staticmethod
+    def get_imaging_margin() -> float:
+        """Get pixels of margin number of imaging.
+
+        Returns:
+            number of pixels of imaging margin
+        """
+        return 0
 
 
 def get_imaging_policy(context: Context) -> Type[ObservatoryImagingPolicy]:
