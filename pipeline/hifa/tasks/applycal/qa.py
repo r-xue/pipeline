@@ -195,7 +195,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
                             break
                     if not duplicate_entry:
                         if o.scan == {-1, }:
-                            msg = (f'{o.vis} {o.intent} scan=all spw={o.spw} ant={o.ant} '
+                            msg = (f'{o.vis} {o.intent} scan={{all}} spw={o.spw} ant={o.ant} '
                                    f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
                         else:
                             msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
@@ -237,8 +237,11 @@ class QAMessage:
         vis = utils.commafy(sorted(outlier.vis), quotes=False)
         intent_msg = f' {utils.commafy(sorted(outlier.intent), quotes=False)} calibrator' if outlier.intent else ''
         spw_msg = f' spw {utils.find_ranges(outlier.spw)}' if outlier.spw else ''
-        if outlier.scan == {-1, }:
-            scan_msg = ' scan all'
+        if -1 in outlier.scan:
+            # outlier.scan can be a set or a tuple
+            tmp_scan = set(copy.deepcopy(outlier.scan))
+            tmp_scan.remove(-1)
+            scan_msg = f' scan {",".join(list(filter(None, ["all", utils.find_ranges(tmp_scan)])))}'
         else:
             scan_msg = f' scan {utils.find_ranges(outlier.scan)}' if outlier.scan else ''
 
