@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy
 import traceback
 
+from typing import TYPE_CHECKING, Any, List
+
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
@@ -17,31 +19,65 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Tuple
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.callibrary import CalApplication
 
+if TYPE_CHECKING:
+    from pipeline.domain import Field, MeasurementSet
+    from pipeline.hsd.tasks.skycal.skycal import SDSkyCalResults
+    from pipeline.infrastructure.callibrary import CalApplication
+    from pipeline.infrastructure.launcher import Context
+
 LOG = logging.get_logger(__name__)
 
 
+def get_field_from_ms(ms: 'MeasurementSet', field: str) -> List['Field']:
+    """Return list of fields that matches field selection.
+
+    Matching with field id takes priority over
+    the matching with field name.
+
+    Args:
+        ms: MeasurementSet domain object
+        field: Field selection string
+
+    Returns:
+        List of field domain objects
+    """
+    field_list = []
+    if field.isdigit():
+        # regard field as FIELD_ID
+        field_list = ms.get_fields(field_id=int(field))
+
+    if len(field_list) == 0:
+        # regard field as FIELD_NAME
+        field_list = ms.get_fields(name=field)
+
+    return field_list
+
+
 class SingleDishSkyCalDisplayBase(object):
-    """Base class of display for skycal."""
-    
-    def init_with_field(self, context: 'Context', result: skycal.SDSkyCalResults, field: str) -> None:
-        """Initialize the class.
-        
+    """Base display class for skycal stage."""
+    def init_with_field(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
+        """Initialize attributes using field information.
+
         Args:
-            context: Pipeline context.
-            result: SDSkyCalResults instance.
-            field: Name of field.
+            context: Pipeline context
+            result: SDSkyCalResults instance
+            field: Field string. Either field id or field name.
+                   Matching with field id takes priority over
+                   the matching with field name.
+
+        Raises:
+            RuntimeError: Invalid field selection
         """
         vis = self._vis
         ms = context.observing_run.get_ms(vis)
-        num_fields = len(ms.fields)
-        if field.isdigit() and int(field) < num_fields:
-            self.field_id = int(field)
-            self.field_name = ms.get_fields(self.field_id)[0].clean_name
-        else:
-            self.field_name = field
-            fields = ms.get_fields(name=field)
-            assert len(fields) == 1
-            self.field_id = fields[0].id
+        fields = get_field_from_ms(ms, field)
+        if len(fields) == 0:
+            # failed to find field domain object with field
+            raise RuntimeError(f'No match found for field "{field}".')
+
+        self.field_id = fields[0].id
+        self.field_name = fields[0].clean_name
+
         LOG.debug('field: ID %s Name \'%s\''%(self.field_id, self.field_name))
         old_prefix = self._figroot.replace('.png', '')
         self._figroot = self._figroot.replace('.png', '-%s.png' % (self.field_name))
@@ -197,32 +233,39 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
 
 class SingleDishPlotmsLeaf(object):
-    """Class to execute plotms and return a plot wrapper."""
-    
+    """
+    Class to execute plotms and return a plot wrapper. Task arguments for plotms
+    is customized for single dish usecase.
+    """
     def __init__(
-            self, 
-            context: 'Context', 
-            result: skycal.SDSkyCalResults, 
-            calapp: CalApplication, 
-            xaxis: int, 
-            yaxis: int, 
-            spw: str='', 
-            ant: str='', 
-            coloraxis: str='', 
-            **kwargs: Dict
-            ) -> None:
-        """Initialize the class.
-        
+        self,
+        context: 'Context',
+        result: 'SDSkyCalResults',
+        calapp: 'CalApplication',
+        xaxis: str,
+        yaxis: str,
+        spw: str = '',
+        ant: str = '',
+        coloraxis: str = '',
+        **kwargs: Any
+    ) -> None:
+        """Construct SingleDishPlotmsLeaf instance.
+
+        The constructor has an API that accepts additional parameters
+        to customize plotms but currently those parameters are ignored.
+
         Args:
-            context: Pipeline context.
-            result: SDSkyCalResults instance.
-            calapp: CalApplication instance.
-            xaxis: Size of X-axis.
-            yaxis: Size of Y-axis.
-            spw: ID of spw.
-            ant: ID of antenna.
-            coloraxis: Name of axis with color: 'ant1', 'corr' and so on.
-            **kwargs: Dictionary type argument.
+            context: Pipeline context
+            result: SDSkyCalResults instance
+            calapp: CalApplication instance
+            xaxis: X-axis type of the plot
+            yaxis: Y-axis type of the plot
+            spw: Spectral window selection. Defaults to '' (all spw).
+            ant: Antenna selection. Defaults to '' (all antenna).
+            coloraxis: Color axis type. Defaults to ''.
+
+        Raises:
+            RuntimeError: Invalid field selection in calapp
         """
         LOG.debug('__init__(caltable={caltable}, spw={spw}, ant={ant})'.format(caltable=calapp.gaintable, spw=spw,
                                                                                ant=ant))
@@ -237,15 +280,13 @@ class SingleDishPlotmsLeaf(object):
 
         ms = context.observing_run.get_ms(self.vis)
 
-        num_fields = len(ms.fields)
-        if self.field.isdigit() and int(self.field) < num_fields:
-            self.field_id = int(self.field)
-            self.field_name = ms.get_fields(self.field_id)[0].clean_name
-        else:
-            self.field_name = self.field
-            fields = ms.get_fields(name=self.field)
-            assert len(fields) == 1
-            self.field_id = fields[0].id
+        fields = get_field_from_ms(ms, self.field)
+        if len(fields) == 0:
+            # failed to find field domain object with field
+            raise RuntimeError(f'No match found for field "{self.field}".')
+
+        self.field_id = fields[0].id
+        self.field_name = fields[0].clean_name
 
         LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
 
@@ -437,33 +478,29 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
         antenna_ids = [ant.id for ant in antennas]
         field_strategy = ms.calibration_strategy['field_strategy']
 
-        for spw in spw_ids:
-            spw_id = spw
+        for spw_id in spw_ids:
             LOG.debug('spw_id={0}'.format(spw_id))
             for antenna_id in antenna_ids:
                 LOG.debug('antenna_id={0}'.format(antenna_id))
-                n = 0
                 for field_id_target, field_id_reference in field_strategy.items():
                     LOG.debug('field_id_target = {0}, field_id_reference = {1}'.format(field_id_target, field_id_reference))
                     field = fields[field_id_target]
                     # make plots for the interval ratio (off-source/on-source) vs time;
                     with casa_tools.TableReader(calapp.gaintable) as tb:
                         t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id_reference), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
-                        mjd = t.getcol('TIME')
-                        ms_target = ms.get_scans(scan_intent='TARGET', field=field_id_target)
-                        ms_target0 = ms_target[0]
-                        interval_unit = ms_target0.mean_interval(spw_id=spw_id)
-                        interval_unit = interval_unit.total_seconds()
-                        interval = t.getcol('INTERVAL') / interval_unit
-                        t.close()
-                        if len(mjd) == 0:
+                        mjd_secs = t.getcol('TIME')
+                        if len(mjd_secs) == 0:
+                            t.close()
                             pass
                         else:
-                            mjd_list = mjd.tolist()
-                            mjd_list = [v/86400.0 for v in mjd_list]
-                            mjd_list = sd_display.mjd_to_plotval(mjd_list)
-                            start_time = numpy.min([numpy.min(x) for x in mjd_list if len(mjd_list) > 0])
-                            end_time = numpy.max([numpy.max(x) for x in mjd_list if len(mjd_list) > 0])
+                            target_scans = ms.get_scans(scan_intent='TARGET', field=field_id_target, spw=spw_id)
+                            target_scans0 = target_scans[0]
+                            interval_unit = target_scans0.mean_interval(spw_id=spw_id).total_seconds()
+                            interval = t.getcol('INTERVAL') / interval_unit
+                            t.close()
+                            date_list = sd_display.mjd_to_plotval( (mjd_secs/86400.0) )
+                            start_time = numpy.min(date_list)
+                            end_time = numpy.max(date_list)
                             fig = plt.figure()
                             ax = fig.add_subplot(1,1,1)
                             ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
@@ -474,7 +511,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
                             plt.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
                             plt.xlabel("UTC", fontsize=10)
-                            ax.plot(mjd_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
+                            ax.plot(date_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
                             min_interval = numpy.min(interval)
                             max_interval = numpy.max(interval)
                             ax.set_ylim([min_interval-3.0, max_interval+3.0])
@@ -501,7 +538,6 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                                     field=field_name,
                                     parameters=parameters)
                                 plots.append(plot)
-                    n += 1
         return plots
 
 
