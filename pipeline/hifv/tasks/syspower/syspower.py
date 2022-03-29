@@ -292,6 +292,7 @@ class Syspower(basetask.StandardTaskTemplate):
             pdrq = p_diff / (rq ** 2)
 
             # read tables into arrays
+            spw_problems = []
             for i, this_ant in enumerate(antenna_ids):
                 LOG.info('reading antenna {0}'.format(this_ant))
                 for j, this_spw in enumerate(spws):
@@ -299,6 +300,19 @@ class Syspower(basetask.StandardTaskTemplate):
                     times = sp_time[hits]
                     hits2 = np.where(np.in1d(sorted_time, times))[0]
                     flux_hits = np.where((times >= np.min(flux_times)) & (times <= np.max(flux_times)))[0]
+                    if len(hits) != len(hits2):
+                        spw_problems.append(this_spw)
+                        hitsnew = np.intersect1d(hits, hits2)
+                        hits = hitsnew
+                        hits2 = hitsnew
+
+                        try:
+                            flux_hits = np.where((times[hits2] >= np.min(flux_times)) & (times[hits2] <= np.max(flux_times)))[0]
+                        except Exception as e:
+                            # Remove the n+1 index
+                            hits2 = hits2[:-1]
+                            hits = hits2
+                            flux_hits = np.where((times[hits2] >= np.min(flux_times)) & (times[hits2] <= np.max(flux_times)))[0]
 
                     for pol in [0, 1]:
                         LOG.debug(str(i) + ' ' + str(j) + ' ' + str(pol) + ' ' + str(hits2))
@@ -307,6 +321,11 @@ class Syspower(basetask.StandardTaskTemplate):
                         dat_rq[i, j, pol, hits2] = rq[pol, hits]
                         dat_scaled[i, j, pol, hits2] = pdrq[pol, hits] / dat_flux[i, j, pol]
                         dat_filtered[i, j, pol, hits2] = deepcopy(dat_scaled[i, j, pol, hits2])
+
+            if spw_problems:
+                spw_problems = list(set(spw_problems))
+                LOG.warning("Caution - missing data - timing issue with the sw-pow table.  " +
+                            "Review the data for spws='{!s}'".format(','.join([str(spw) for spw in spw_problems])))
 
             # Determine which spws go with which basebands
             # There could be multiple baseband names per band - count them
