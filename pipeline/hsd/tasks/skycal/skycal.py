@@ -291,7 +291,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                                   outcome=calapps)
         return results
 
-    def analyse(self, result: SDSKyCalResults) -> SDSkyCalResults:
+    def analyse(self, result: SDSkyCalResults) -> SDSkyCalResults:
         """Analyse SDSkyCalResults instance produced by prepare.
 
         Args:
