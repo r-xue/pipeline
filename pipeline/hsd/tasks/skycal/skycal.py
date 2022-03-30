@@ -421,7 +421,7 @@ class HpcSDSkyCal(sessionutils.ParallelTemplate):
         return basetask.FailedTaskResults(self.__class__, exception, tb)
 
 
-def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -> Dict[str][str][str]:
+def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -> Dict:
     """Compute elevation difference.
 
     Args:
