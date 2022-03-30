@@ -207,11 +207,11 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
         self.init_with_field(context, result, field)
 
-    def plot(self) -> SingleDishSkyCalAmpVsFreqDetailChart:
+    def plot(self) -> List:
         """Create Amplitude vs. Frequency detail plot.
         
         Return: 
-            SingleDishSkyCalAmpVsFreqDetailChart
+            List of plot
         """
         wrappers = super(SingleDishSkyCalAmpVsFreqDetailChart, self).plot()
 
