@@ -194,7 +194,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleDishSkyCalDisplayBase):
     """Class for plotting Amp vs. Frequency Detail."""
 
-    def __init__(self, context: 'Context', result: skycal.SDSkycalResults, field: str) -> None:
+    def __init__(self, context: 'Context', result: skycal.SDSkyCalResults, field: str) -> None:
         """Initialize the class.
         
         Args: 
