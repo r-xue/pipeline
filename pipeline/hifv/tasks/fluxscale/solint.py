@@ -451,18 +451,28 @@ class Solint(basetask.StandardTaskTemplate):
                                 (set(new_spws) == set(old_spws)) and (new_field == old_field)):
                             # if contiguous scans, just increase the time on the previous one
                             LOG.info("End time, old begin time {} {}".format(end_time, old_begin_time))
-                            durations[-1] = 86400*(end_time - old_begin_time)
+                            add_duration = 86400 * (end_time - old_begin_time)
+                            if add_duration < 1000.0:
+                                durations[-1] = add_duration
                         else:
                             LOG.info("End time, begin time {} {}".format(end_time, begin_time))
                             durations.append(86400*(end_time - begin_time))
                             old_begin_time = begin_time
-                            LOG.info("append durations, old, begin:".format(durations, old_begin_time, begin_time))
+                            LOG.info("append durations, old, begin {} {} {}:".format(durations, old_begin_time, begin_time))
                         LOG.info("Scan "+str(ii)+" has "+str(durations[-1])+"s on source")
                         old_spws = new_spws
                         old_field = new_field
 
                     except KeyError:
                         LOG.warning("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
+
+        # Remove extreme outliers
+        durations = np.array(durations)
+        d = np.abs(durations - np.median(durations))
+        mdev = np.median(d)
+        s = d / (mdev if mdev else 1.)
+        # durations =  durations[s <20.0].tolist()
+        durations = durations[s < 20.0]
 
         longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'
