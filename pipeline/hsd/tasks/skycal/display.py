@@ -15,7 +15,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from . import skycal
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union, Tuple
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.callibrary import CalApplication
 
@@ -98,7 +98,7 @@ class SingleDishSkyCalDisplayBase(object):
             if 'field' not in plot.parameters:
                 plot.parameters['field'] = self.field_name
 
-    def _update_figfile(self) -> Raise:
+    def _update_figfile(self) -> NoReturn:
         """Update figfile.
         
         Raise:
