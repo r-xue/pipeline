@@ -10,6 +10,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -136,11 +137,16 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         subimagenames = []
         subimage_size = None
         for imagename in imagenames:
-            if not os.path.exists(imagename + '.subim'):
-                subimagename = imagename + '.subim'
-                LOG.info("SubImagename: " + subimagename)
-                _, subimage_size = self._do_subim(imagename)
+            subimagename = imagename + '.subim'
+            if not os.path.exists(subimagename):
+                LOG.info(f"Make a cutout image under the image name: {subimagename}")
+                _, _ = self._do_subim(imagename)
                 subimagenames.append(subimagename)
+            else:
+                LOG.info(
+                    f"A cutout image named {subimagename} already exists, and we will reuse this image for weblog.")
+                subimagenames.append(subimagename)
+            subimage_size = self._get_image_size(subimagename)
 
         return MakecutoutimagesResults(subimagelist=imlist, subimagenames=subimagenames, image_size=subimage_size)
 
@@ -260,3 +266,22 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                          'arcsec_y': py * ycellsize}
 
         return self._executor.execute(task), subimage_size
+
+    def _get_image_size(self, imagename):
+
+        with casa_tools.ImageReader(imagename) as image:
+            image_summary = image.summary(list=False)
+
+        image_shape = image_summary['shape']
+        image_incr = image_summary['incr']
+
+        xcellsize = 3600.0 * (180.0 / math.pi) * math.fabs(image_incr[0])
+        ycellsize = 3600.0 * (180.0 / math.pi) * math.fabs(image_incr[1])
+        px = image_shape[0]
+        py = image_shape[1]
+        image_size = {'pixels_x': px,
+                      'pixels_y': py,
+                      'arcsec_x': px * xcellsize,
+                      'arcsec_y': py * ycellsize}
+
+        return image_size
