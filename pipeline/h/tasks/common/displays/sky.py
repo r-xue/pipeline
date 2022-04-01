@@ -329,6 +329,10 @@ class SkyDisplay(object):
                          if image_info.get(key) is not None]
                 band = None
 
+            if band is None:
+                # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
+                band = cs.referencevalue(format='n')['numeric'][3]
+
             # PIPE-997: plot a 41pix-wide PSF inset if the image is larger than 41*3
             if 'type' in image_info:
                 if image_info['type'] == 'psf':
