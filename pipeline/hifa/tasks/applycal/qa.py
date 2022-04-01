@@ -24,18 +24,18 @@ LOG = logging.get_logger(__name__)
 
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
 REASONS_TO_TEXT = {
-    'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers', '', ''),
-    'amp_vs_freq.intercept': ('Amp vs frequency', 'zero point outliers', '', ''),
-    'amp_vs_freq.slope': ('Amp vs frequency', 'slope outliers', '', ''),
-    'amp_vs_freq': ('Amp vs frequency', 'outliers', '', ''),
-    'phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', '', ''),
-    'phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', '', ''),
-    'phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', '', ''),
-    'phase_vs_freq': ('Phase vs frequency', 'outliers', '', ''),
-    'gt90deg_offset_phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq': ('Phase vs frequency', 'outliers', ' / > 90deg offset', '; phase offset > 90deg detected'),
+    'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers', ''),
+    'amp_vs_freq.intercept': ('Amp vs frequency', 'zero point outliers', ''),
+    'amp_vs_freq.slope': ('Amp vs frequency', 'slope outliers', ''),
+    'amp_vs_freq': ('Amp vs frequency', 'outliers', ''),
+    'phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', ''),
+    'phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', ''),
+    'phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', ''),
+    'phase_vs_freq': ('Phase vs frequency', 'outliers', ''),
+    'gt90deg_offset_phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', '; phase offset > 90deg detected'),
+    'gt90deg_offset_phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', '; phase offset > 90deg detected'),
+    'gt90deg_offset_phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', '; phase offset > 90deg detected'),
+    'gt90deg_offset_phase_vs_freq': ('Phase vs frequency', 'outliers', '; phase offset > 90deg detected'),
 }
 
 # PIPE356Switches is a struct used to hold various options for outlier
@@ -222,7 +222,7 @@ class QAMessage:
     """
 
     def __init__(self, ms, outlier, reason):
-        metric_axes, outlier_description, _, extra_description2 = REASONS_TO_TEXT[reason]
+        metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[reason]
 
         # convert pol=0,1 to pol=XX,YY
         # corr axis should be the same for all windows so just pick the first
@@ -257,7 +257,7 @@ class QAMessage:
         corr_msg = f' {corr_msg}' if corr_msg else ''
 
         short_msg = f'{metric_axes} {outlier_description}'
-        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{extra_description2}'
+        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{extra_description}'
 
         self.short_message = short_msg
         self.full_message = full_msg
@@ -382,31 +382,37 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     # messages down. I have changed the example in the description accordingly.
 
     accordion_scores = []
-    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq', 'gt90deg_offset_phase_vs_freq']:
+    # Collect scores. The phase scores (normal and > 90 deg offset) should
+    # get just one single 1.0 score in case of no outliers.
+    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq', 'gt90deg_offset_phase_vs_freq']]:
         # erase just the polarisation dimension for accordion messages,
         # leaving the messages specific enough to identify the plot that
         # caused the problem
         discard = ['pol']
-        msgs = combine_scores(all_scores, hierarchy_root, discard, ms, pqa.WebLogLocation.ACCORDION)
-        accordion_scores.extend(msgs)
+        num_scores = 0
+        for hierarchy_root in hierarchy_roots:
+            msgs = combine_scores(all_scores, hierarchy_root, discard, ms, pqa.WebLogLocation.ACCORDION)
+            num_scores += len(msgs)
+            accordion_scores.extend(msgs)
 
-        # add a 1.0 accordion score for metrics that generated no outlier
-        if not msgs:
-            metric_axes, outlier_description, extra_description1, _ = REASONS_TO_TEXT[hierarchy_root]
+        # add a single 1.0 accordion score for metrics that generated no outlier
+        if num_scores == 0:
+            metric_axes, outlier_description, _ = REASONS_TO_TEXT[hierarchy_roots[0]]
             # Correct capitalisation as we'll prefix the metric with 'No '
             metric_axes = metric_axes.lower()
-            short_msg = 'No {} outliers {}'.format(metric_axes, extra_description1)
-            long_msg = 'No {} {}{} detected for {}'.format(metric_axes, outlier_description, extra_description1, ms.basename)
+            short_msg = 'No {} outliers'.format(metric_axes)
+            long_msg = 'No {} {} detected for {}'.format(metric_axes, outlier_description, ms.basename)
             score = pqa.QAScore(1.0,
                                 longmsg=long_msg,
                                 shortmsg=short_msg,
-                                hierarchy=hierarchy_root,
+                                hierarchy=hierarchy_roots[0],
                                 weblog_location=pqa.WebLogLocation.ACCORDION,
                                 applies_to=pqa.TargetDataSelection(vis={ms.basename}))
-            score.origin = pqa.QAOrigin(metric_name=hierarchy_root,
+            score.origin = pqa.QAOrigin(metric_name=hierarchy_roots[0],
                                         metric_score=0,
                                         metric_units='number of outliers')
             accordion_scores.append(score)
+
     final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     banner_scores = []
