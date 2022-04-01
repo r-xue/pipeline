@@ -1342,23 +1342,41 @@ class Tclean(cleanbase.CleanBase):
 
             outlier_threshold = 5.0
 
-            # Calculate statistics
+            # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
                 statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
-                stats = image.statistics(mask=statsmask, robust=True)
+                mom8_stats = image.statistics(mask=statsmask, robust=True)
 
-                image_median_all = stats.get('median')[0]
-                image_mad = stats.get('medabsdevmed')[0]
-                image_min = stats.get('min')[0]
-                image_max = stats.get('max')[0]
-                n_pixels = int(stats.get('npts')[0])
+                mom8_image_median_all = mom8_stats.get('median')[0]
+                mom8_image_mad = mom8_stats.get('medabsdevmed')[0]
+                mom8_image_min = mom8_stats.get('min')[0]
+                mom8_image_max = mom8_stats.get('max')[0]
+                mom8_n_pixels = int(mom8_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
                 statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                stats = image.statistics(mask=statsmask, robust=True)
+                mom8_stats2 = image.statistics(mask=statsmask, robust=True)
 
-                image_median_annulus = stats.get('median')[0]
+                mom8_image_median_annulus = mom8_stats2.get('median')[0]
+
+            # Calculate MOM10 FC statistics
+            with casa_tools.ImageReader(mom10fc_name) as image:
+                # Get the min, max, median, MAD and number of pixels of the MOM10 FC image from the area excluding the cleaned area edges
+                statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom10_stats = image.statistics(mask=statsmask, robust=True)
+
+                mom10_image_median_all = mom10_stats.get('median')[0]
+                mom10_image_mad = mom10_stats.get('medabsdevmed')[0]
+                mom10_image_min = mom10_stats.get('min')[0]
+                mom10_image_max = mom10_stats.get('max')[0]
+                mom10_n_pixels = int(mom10_stats.get('npts')[0])
+
+                # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
+                statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom10_stats2 = image.statistics(mask=statsmask, robust=True)
+
+                mom10_image_median_annulus = mom10_stats2.get('median')[0]
 
             # Get sigma and channel scaled MAD from the cube
             if flattened_mask_name is not None:
@@ -1370,41 +1388,54 @@ class Tclean(cleanbase.CleanBase):
                 LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
 
             with casa_tools.ImageReader(imagename) as image:
-                stats_masked = image.statistics(mask=statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                cube_stats_masked = image.statistics(mask=statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
-            cube_sigma = np.median(stats_masked.get('sigma')[cont_chan_indices])
-            cube_chanScaledMAD = np.median(stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
+            cube_sigma = np.median(cube_stats_masked.get('sigma')[cont_chan_indices])
+            cube_chanScaledMAD = np.median(cube_stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
 
-            peak_snr = (image_max - image_median_annulus) / cube_chanScaledMAD
+            peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_chanScaledMAD
 
-            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), image_max, image_median_annulus, peak_snr, cube_chanScaledMAD))
+            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, peak_snr, cube_chanScaledMAD))
 
             # Calculate outlier fraction for QA scoring
             with casa_tools.ImageReader(mom8fc_name) as image:
-                statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + image_median_annulus)
-                stats_outliers = image.statistics(mask=statsmask, robust=True)
-                npts = stats_outliers.get('npts')
-                if npts.shape != (0,):
-                    n_outlier_pixels = int(npts[0])
+                statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + mom8_image_median_annulus)
+                mom8_stats_outliers = image.statistics(mask=statsmask, robust=True)
+                mom8_npts = mom8_stats_outliers.get('npts')
+                if mom8_npts.shape != (0,):
+                    mom8_n_outlier_pixels = int(npts[0])
                 else:
-                    n_outlier_pixels = 0
+                    mom8_n_outlier_pixels = 0
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8fc_name)
-            result.set_mom8_fc_image_min(maxiter, image_min)
-            result.set_mom8_fc_image_max(maxiter, image_max)
-            result.set_mom8_fc_image_median_all(maxiter, image_median_all)
-            result.set_mom8_fc_image_median_annulus(maxiter, image_median_annulus)
-            result.set_mom8_fc_image_mad(maxiter, image_mad)
+            result.set_mom8_fc_image_min(maxiter, mom8_image_min)
+            result.set_mom8_fc_image_max(maxiter, mom8_image_max)
+            result.set_mom8_fc_image_median_all(maxiter, mom8_image_median_all)
+            result.set_mom8_fc_image_median_annulus(maxiter, mom8_image_median_annulus)
+            result.set_mom8_fc_image_mad(maxiter, mom8_image_mad)
             result.set_mom8_fc_cube_sigma(maxiter, cube_sigma)
             result.set_mom8_fc_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
             result.set_mom8_fc_peak_snr(maxiter, peak_snr)
             result.set_mom8_fc_outlier_threshold(maxiter, outlier_threshold)
-            result.set_mom8_fc_n_pixels(maxiter, n_pixels)
-            result.set_mom8_fc_n_outlier_pixels(maxiter, n_outlier_pixels)
+            result.set_mom8_fc_n_pixels(maxiter, mom8_n_pixels)
+            result.set_mom8_fc_n_outlier_pixels(maxiter, mom8_n_outlier_pixels)
+
+            result.set_mom10_fc(maxiter, mom10fc_name)
+            result.set_mom10_fc_image_min(maxiter, mom10_image_min)
+            result.set_mom10_fc_image_max(maxiter, mom10_image_max)
+            result.set_mom10_fc_image_median_all(maxiter, mom10_image_median_all)
+            result.set_mom10_fc_image_median_annulus(maxiter, mom10_image_median_annulus)
+            result.set_mom10_fc_image_mad(maxiter, mom10_image_mad)
+            #result.set_mom10_fc_cube_sigma(maxiter, cube_sigma)
+            #result.set_mom10_fc_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
+            #result.set_mom10_fc_peak_snr(maxiter, peak_snr)
+            result.set_mom10_fc_outlier_threshold(maxiter, outlier_threshold)
+            result.set_mom10_fc_n_pixels(maxiter, mom10_n_pixels)
+            #result.set_mom10_fc_n_outlier_pixels(maxiter, mom10_n_outlier_pixels)
 
         else:
-            LOG.warning('Cannot create MOM0_FC / MOM8_FC images for intent "%s", '
+            LOG.warning('Cannot create MOM0_FC / MOM8_FC / MOM10_FC images for intent "%s", '
                         'field %s, spw %s, no continuum ranges found.' %
                         (self.inputs.intent, self.inputs.field, self.inputs.spw))
 
