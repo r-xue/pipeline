@@ -834,7 +834,7 @@ def triadwise(iterable):
 class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """A vlass-cube-specific renderer class to handle full-stokes imaging produdcts."""
 
-    def __init__(self, uri='vlass_cube_tclean.mako',
+    def __init__(self, uri='vlasscube_tclean.mako',
                  description='Produce a cleaned image',
                  always_rerender=False):
         super().__init__(uri=uri,
@@ -898,7 +898,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
                     # While the image tool is open, read and cache the image
                     # stats for use in the plot generation classes.
-                    stats = image.statistics(robust=False)
+                    stats = image.statstics(robust=False)
                     image.close()
 
                 # cache image statistics while we have them in scope.
