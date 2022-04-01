@@ -43,7 +43,7 @@ weblog.add_renderer(MakeImages,
                     key='VLASS',
                     key_fn=_get_imaging_mode)
 
-# if this is VLASS-cube imaging, use a dedicated render and its own default template (vlass_cube_tclean.mako)
+# if this is VLASS-cube imaging, use a dedicated render and its own default template (vlasscube_tclean.mako)
 weblog.add_renderer(MakeImages,
                     clean_renderer.T2_4MDetailsTcleanVlassCubeRenderer(description='Calculate clean products'),
                     group_by=weblog.UNGROUPED,
