@@ -75,3 +75,61 @@ class T2_4MDetailsMakecutoutimagesRenderer(basetemplates.T2_4MDetailsDefaultRend
                     'dirname'   : weblog_dir,
                     'plotter'   : plotter,
                     'image_size': image_size})
+
+
+class T2_4MDetailsMakecutoutimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
+    def __init__(self, uri='vlasscube_makecutoutimages.mako',
+                 description='Produce cutout images',
+                 always_rerender=False):
+        super().__init__(uri=uri,
+                         description=description, always_rerender=always_rerender)
+
+    def update_mako_context(self, ctx, context, results):
+        weblog_dir = os.path.join(context.report_dir,
+                                  'stage%s' % results.stage_number)
+
+        # There is only ever one MakermsimagesResults in the ResultsList as it
+        # operates over multiple measurement sets, so we can set the result to
+        # the first item in the list
+
+        # Get results info
+        info_dict = {}
+
+        subplots = {}
+
+        for r in results:
+            subimagenames = r.subimagenames
+
+            for subimagename in subimagenames:
+                image_path = subimagename
+                LOG.info('Getting properties of %s for the weblog.' % (image_path))
+
+                with casa_tools.ImageReader(image_path) as image:
+                    info = image.miscinfo()
+                    spw = info.get('virtspw', None)
+                    field = ''
+
+                    coordsys = image.coordsys()
+                    coord_names = numpy.array(coordsys.names())
+                    coord_refs = coordsys.referencevalue(format='s')
+                    coordsys.done()
+                    pol = coord_refs['string'][coord_names == 'Stokes'][0]
+                    info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
+
+            image_size = r.image_size
+            # Make the plots of the rms images
+            plotter = display.VlassCubeCutoutimagesSummary(context, r)
+            plots = plotter.plot()
+            # PIPE-631: Weblog thumbnails are sorted according 'isalpha' parameter.
+            for p in plots:
+                if ".alpha" in p.basename:
+                    p.parameters['isalpha'] = 1
+                else:
+                    p.parameters['isalpha'] = 0
+            subplots['Cutout Image Summary Plots'] = plots
+
+        ctx.update({'subplots': subplots,
+                    'info_dict': info_dict,
+                    'dirname': weblog_dir,
+                    'plotter': plotter,
+                    'image_size': image_size})
