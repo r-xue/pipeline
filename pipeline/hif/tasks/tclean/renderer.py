@@ -898,7 +898,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
                     # While the image tool is open, read and cache the image
                     # stats for use in the plot generation classes.
-                    stats = image.statstics(robust=False)
+                    stats = image.statistics(robust=False)
                     image.close()
 
                 # cache image statistics while we have them in scope.
