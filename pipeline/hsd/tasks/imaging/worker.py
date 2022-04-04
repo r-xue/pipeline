@@ -22,9 +22,8 @@ from . import resultobjects
 
 LOG = infrastructure.get_logger(__name__)
 
-Quantity = NewType('Quantity', Dict)
-Angle = NewType('Angle', Dict)
-Direction = NewType('Direction', Dict)
+Angle = NewType('Angle', Dict[str, Union[str, float]])
+Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 
 def ImageCoordinateUtil(
@@ -266,8 +265,8 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     def __init__(self, context: Context, infiles: List[str], outfile: str, mode: str,
                  antids: List[int], spwids: List[int], fieldids: List[int], restfreq: str,
                  stokes: str, edge: Optional[List[int]]=None, phasecenter: Optional[str]=None,
-                 cellx: Optional[Dict[str, Union[str, float]]]=None,
-                 celly: Optional[Dict[str, Union[str, float]]]=None,
+                 cellx: Optional[Angle]=None,
+                 celly: Optional[Angle]=None,
                  nx: Optional[int]=None, ny: Optional[int]=None,
                  org_direction: Optional[Direction]=None):
         """Initialise an instance of SDImagingWorkerInputs.
@@ -282,12 +281,13 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
             fieldids: list of field IDs
             restfreq: Rest frequency
             stokes: Stokes Planes
-            edge: Image edge
+            edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels
+                  in the beginning and at the end of a spectral window, respectively, are excluded.
             phasecenter: Image center
             cellx: size(unit and value) per pixel of image axis x
             celly: size(unit and value) per pixel of image axis y
-            nx: image size x
-            ny: image size y
+            nx: the number of pixels x
+            ny: the number of pixels y
             org_direction:  a measure of direction of origin for ephemeris obeject
         """
         # NOTE: spwids and pols are list of numeric id list while scans
@@ -403,8 +403,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _do_imaging(self, infiles: List[str], antid_list: List[int], spwid_list: List[int],
                     fieldid_list: List[int], imagename: str, imagemode: str, edge: List[int],
-                    phasecenter: str, cellx: Dict[str, Union[str, float]],
-                    celly: Dict[str, Union[str, float]], nx: int, ny: int) -> bool:
+                    phasecenter: str, cellx: Angle, celly: Angle, nx: int, ny: int) -> bool:
         """Process imaging.
 
         Args:
@@ -414,12 +413,13 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             fieldid_list: list of field IDs
             imagename: output image file name
             imagemode: imaging mode controls imaging parameters
-            edge: Image edge
+            edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels
+                  in the beginning and at the end of a spectral window, respectively, are excluded.
             phasecenter: Image center
             cellx: size(unit and value) per pixel of image axis x
             celly: size(unit and value) per pixel of image axis y
-            nx: image size x
-            ny: image size y
+            nx: the number of pixels x
+            ny: the number of pixels y
 
         Returns:
             whether it processed correct result of imaging or not
