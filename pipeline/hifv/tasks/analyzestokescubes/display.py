@@ -89,16 +89,12 @@ class VlassCubeRmsSummary(object):
 
             for band, sefd_per_band in sefd.items():
                 sefd_x = sefd_per_band[:, 0]/1e3
-                sefd_y = sefd_per_band[:, 1]*sefd_x
+                sefd_y = sefd_per_band[:, 1]
                 if np.mean(x) > np.min(sefd_x) and np.mean(x) < np.max(sefd_x):
                     LOG.info(f'Selecting Band {band} for the SEFD-based rms prediction.')
                     sefd_spw = np.interp(x, sefd_x, sefd_y)
                     scale = np.median(y[:, 1]/sefd_spw)
                     ax.plot(sefd_x, sefd_y*scale, color='gray', label='Expected')
-            # ax.set_xlabel('Freq. [MHz]')
-            # ax.set_ylabel('SEFD [Jy]')
-            # ax.set_xscale('log')
-            # ax.set_yscale('log')
             # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
             yrange = ax.get_ylim()
 

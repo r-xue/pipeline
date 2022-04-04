@@ -1,4 +1,5 @@
 import glob
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -49,6 +50,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
         for imageitem in imlist:
             img_name = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.tt0.subim'))[0]
             rms_name = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.tt0.rms.subim'))[0]
+            img_nonpbcor_name = glob.glob(imageitem['imagename'].replace('.subim', '.tt0.subim'))[0]
             LOG.info(f'Getting properties from {img_name} and {rms_name}')
             with casa_tools.ImagepolReader(img_name) as imagepol:
                 img_stokesi = imagepol.stokesi()
@@ -71,8 +73,46 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
             with casa_tools.ImageReader(rms_name) as image:
                 rms_stats = image.statistics(robust=True, axes=[0, 1, 3])
                 stats['rms'].append(rms_stats['median'])
+            # with casa_tools.ImageReader(img_nonpbcor_name) as image:
+            #     im_stats=self._get_stats(image,items=['madrms'])
+
+            #     stats['rms'].append(im_stats['madrms'])
 
         return AnalyzestokescubesResults(stats=stats)
 
     def analyse(self, results):
         return results
+
+    def _get_stats(self, image, items=['min', 'max']):
+        """Extract the desired stats properties per Stokes from an ia.statistics() return."""
+
+        imstats = image.statistics(robust=True, axes=[0, 1, 3])
+        stats = collections.OrderedDict()
+
+        for item in items:
+            if item.lower() == 'madrms':
+                stats['madrms'] = imstats['medabsdevmed']*1.4826  # see CAS-9631
+            elif item.lower() == 'max/madrms':
+                stats['max/madrms'] = imstats['max']/imstats['medabsdevmed']*1.4826  # see CAS-9631
+            elif item.lower() == 'maxabs':
+                stats['maxabs'] = np.maximum(np.abs(imstats['max']), np.abs(imstats['min']))
+            elif 'pct<' in item:
+                threshold = float(item.replace('pct<', ''))
+                imstats_threshold = image.statistics(robust=True, axes=[0, 1, 3], includepix=[0, threshold])
+                if len(imstats_threshold['npts']) == 0:
+                    # if no pixel is selected from the restricted pixel value range, the return of ia.statitics() would be empty.
+                    imstats_threshold['npts'] = np.zeros(4)
+                stats[item] = imstats_threshold['npts']
+            elif item.lower() == 'pct_masked':
+                im_shape = (imstats['trc']-imstats['blc'])+1
+                stats[item] = 1.-imstats['npts']/im_shape[0]/im_shape[1]
+            elif item.lower() == 'peak':  # Here 'peak' means the pixel value with largest deviation from zero.
+                stats[item] = np.where(np.abs(imstats['max']) > np.abs(imstats['min']), imstats['max'], imstats['min'])
+            elif item.lower() == 'peak/madrms':
+                peak = np.where(np.abs(imstats['max']) > np.abs(imstats['min']), imstats['max'], imstats['min'])
+                madrms = imstats['medabsdevmed']*1.4826  # see CAS-9631
+                stats['peak/madrms'] = peak/madrms
+            else:
+                stats[item] = imstats[item.lower()]
+
+        return stats
