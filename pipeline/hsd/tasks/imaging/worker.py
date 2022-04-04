@@ -288,7 +288,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
             celly: size(unit and value) per pixel of image axis y
             nx: the number of pixels x
             ny: the number of pixels y
-            org_direction:  a measure of direction of origin for ephemeris obeject
+            org_direction:  a measure of direction of origin for ephemeris object
         """
         # NOTE: spwids and pols are list of numeric id list while scans
         #       is string (mssel) list
