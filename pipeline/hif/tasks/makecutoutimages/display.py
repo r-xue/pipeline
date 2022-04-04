@@ -209,7 +209,7 @@ class VlassCubeCutoutimagesSummary(object):
                     plot_hist.parameters['virtspw'] = plot_wrappers[-1].parameters['virtspw']
                     plot_hist.parameters['band'] = plot_wrappers[-1].parameters['band']
                     plot_hist.parameters['type'] = plot_wrappers[-1].parameters['type']
-                    plot_hist.parameters['stokes'] = plot_wrappers[-1].parameters['stokes']
+                    plot_hist.parameters['stokes'] = 'IQUV'
                     plot_wrappers.append(plot_hist)
                     if '.tt1.' not in subimagename:
                         item_stats = self._get_stats(image, items=['max', 'min', 'median'])
@@ -237,7 +237,7 @@ class VlassCubeCutoutimagesSummary(object):
         try:
             fig, ax = plt.subplots()
             for idx, stokes in enumerate(self.result.stats_stokes):
-                ax.plot(x, y[:, idx], label=stokes)
+                ax.plot(x, y[:, idx], marker="o", label=f'$\it{stokes}$')
 
             ax.legend()
             ax.set_xlabel('Spw Selected')
