@@ -4954,15 +4954,15 @@ a.thumbnail.active {
   color: #48b9e5;
 }
 .alert-attention {
-  background-color: #00f6fc;
-  border-color: #00f2f7;
-  color: #00caeb;
+  background-color: #99f6fc;
+  border-color: #99f2f7;
+  color: #99caeb;
 }
 .alert-attention hr {
-  border-top-color: #00edf4;
+  border-top-color: #99edf4;
 }
 .alert-attention .alert-link {
-  color: #00b9e5;
+  color: #99b9e5;
 }
 .alert-warning {
   background-color: #fff5e5;

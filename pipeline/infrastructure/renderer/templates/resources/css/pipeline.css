@@ -1343,10 +1343,10 @@ a.text-info:hover {
   color: #245269;
 }
 .text-attention {
-  color: #00708f;
+  color: #99708f;
 }
 a.text-attention:hover {
-  color: #005269;
+  color: #995269;
 }
 .text-warning {
   color: #8a6d3b;
@@ -1380,10 +1380,10 @@ a.bg-info:hover {
   background-color: #afd9ee;
 }
 .bg-attention {
-  background-color: #00edf7;
+  background-color: #99edf7;
 }
 a.bg-attention:hover {
-  background-color: #00d9ee;
+  background-color: #99d9ee;
 }
 .bg-warning {
   background-color: #fcf8e3;
@@ -4967,15 +4967,15 @@ a.thumbnail.active {
   color: #245269;
 }
 .alert-attention {
-  background-color: #00edf7;
-  border-color: #00e8f1;
-  color: #00708f;
+  background-color: #99edf7;
+  border-color: #99e8f1;
+  color: #99708f;
 }
 .alert-attention hr {
-  border-top-color: #00e1ec;
+  border-top-color: #99e1ec;
 }
 .alert-attention .alert-link {
-  color: #005269;
+  color: #995269;
 }
 .alert-warning {
   background-color: #fcf8e3;
