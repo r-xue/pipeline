@@ -220,7 +220,7 @@ def ImageCoordinateUtil(
         ny += 1
 
     # PIPE-1416
-    margin = imaging_policy.get_imaging_margin()
+    margin = imaging_policy.get_image_margin()
     nx, ny = (nx + margin, ny + margin)
 
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
@@ -275,7 +275,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
             context: pipeline context
             infiles: list of input file names
             outfile: output file name
-            mode: imaging mode controls imaging parameters
+            mode: imaging mode
             antids: list of antenna IDs
             spwids: list of spectrum windows IDs
             fieldids: list of field IDs
@@ -386,7 +386,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             field_list: list of field IDs
 
         Raises:
-            RuntimeError: ImageCoordinateUtil raises
+            RuntimeError: an exception which is raised from ImageCoordinateUtil
 
         Returns:
             Image coordinate
@@ -412,7 +412,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             spwid_list: list of SPW IDs
             fieldid_list: list of field IDs
             imagename: output image file name
-            imagemode: imaging mode controls imaging parameters
+            imagemode: imaging mode
             edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels
                   in the beginning and at the end of a spectral window, respectively, are excluded.
             phasecenter: Image center
@@ -422,7 +422,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             ny: the number of pixels y
 
         Returns:
-            whether it processed correct result of imaging or not
+            Whether an image file with valid pixels has been generated.
         """
         context = self.inputs.context
         reference_data = context.observing_run.get_ms(infiles[0])

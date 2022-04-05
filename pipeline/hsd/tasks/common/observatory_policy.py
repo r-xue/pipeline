@@ -38,7 +38,7 @@ class ObservatoryImagingPolicy(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_beam_size_pixel() -> float:
+    def get_beam_size_pixel() -> int:
         """Get beam size as number of pixels.
 
         Raises:
@@ -64,8 +64,8 @@ class ObservatoryImagingPolicy(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_imaging_margin() -> float:
-        """Get pixels of margin number of imaging.
+    def get_image_margin() -> int:
+        """Get image margin in pixel numbers.
 
         Raises:
             NotImplementedError
@@ -110,7 +110,7 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
         return theory_beam_arcsec
 
     @staticmethod
-    def get_beam_size_pixel() -> float:
+    def get_beam_size_pixel() -> int:
         """Get beam size as number of pixels.
 
         Returns:
@@ -128,8 +128,8 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
         return 6
 
     @staticmethod
-    def get_imaging_margin() -> float:
-        """Get pixels of margin number of imaging.
+    def get_image_margin() -> int:
+        """Get image margin in pixel numbers.
 
         Returns:
             number of pixels of imaging margin (adjusted to even number)
@@ -163,7 +163,7 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
         return beam_size
 
     @staticmethod
-    def get_beam_size_pixel() -> float:
+    def get_beam_size_pixel() -> int:
         """Get beam size as number of pixels.
 
         Returns:
@@ -181,8 +181,8 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
         return 3
 
     @staticmethod
-    def get_imaging_margin() -> float:
-        """Get pixels of margin number of imaging.
+    def get_image_margin() -> int:
+        """Get image margin in pixel numbers.
 
         Returns:
             number of pixels of imaging margin

@@ -23,7 +23,7 @@ def test_call_abstract_methods():
         convsupport = policy_cls.get_convsupport()
 
     with pytest.raises(NotImplementedError):
-        margin = policy_cls.get_imaging_margin()
+        margin = policy_cls.get_image_margin()
 
 
 def test_alma_imaging_policy():
@@ -40,7 +40,7 @@ def test_alma_imaging_policy():
     convsupport = policy_cls.get_convsupport()
     assert convsupport == 6
 
-    margin = policy_cls.get_imaging_margin()
+    margin = policy_cls.get_image_margin()
     assert margin == 10
 
 
@@ -58,5 +58,5 @@ def test_nro_imaging_policy():
     convsupport = policy_cls.get_convsupport()
     assert convsupport == 3
 
-    margin = policy_cls.get_imaging_margin()
+    margin = policy_cls.get_image_margin()
     assert margin == 0
