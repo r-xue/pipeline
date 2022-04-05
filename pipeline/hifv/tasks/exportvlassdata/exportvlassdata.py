@@ -188,7 +188,9 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
             # Create list for tar file
             self.masks = [QLmask, secondmask, finalmask]
-
+        
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
+            images_list = self._split_vlass_cube_stokes(images_list)
 
         fits_list = []
         for image in images_list:
@@ -729,3 +731,22 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             LOG.warning('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
 
         return
+
+    def _split_vlass_cube_stokes(self, image_list):
+        """Split the full-stokes image into the IQU and V images."""
+
+        new_image_list = []
+
+        for imagename in image_list:
+            if '.IQUV.' in imagename:
+                for stokes_select in ['IQU', 'V']:
+                    outfile = imagename.replace('.IQUV.', '.'+stokes_select+'.')
+                    job = casa_tasks.imsubimage(imagename, outfile=outfile,
+                                                stokes=stokes_select, overwrite=True, dropdeg=False)
+                    self._executor.execute(job)
+                    LOG.info(f'Wrote {outfile}')
+                    new_image_list.append(outfile)
+            else:
+                new_image_list.append(imagename)
+
+        return new_image_list
