@@ -64,10 +64,23 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
 
         # clustering plots are generated only when plotlevel is 'all'
         if infrastructure.generate_detail_plots(results):
-            for r in results:
-                inputs = display.ClusterDisplay.Inputs(context, result=r)
-                task = display.ClusterDisplay(inputs)
-                plots.append(task.plot())
+            # to capture warning message
+            handler = logging.CapturingHandler(level=logging.WARNING)
+            logging.add_handler(handler)
+
+            try:
+                for r in results:
+                    inputs = display.ClusterDisplay.Inputs(context, result=r)
+                    task = display.ClusterDisplay(inputs)
+                    plots.append(task.plot())
+            finally:
+                logging.remove_handler(handler)
+                # add the log records to the result
+                if not hasattr(results, 'logrecords'):
+                    results.logrecords = handler.buffer
+                else:
+                    results.logrecords.extend(handler.buffer)
+
             plot_detail = collections.OrderedDict()  # key is field name, subkeys are 'title', 'html', 'cover_plots'
             plot_cover = collections.OrderedDict()  # key is field name, subkeys are 'title', 'cover_plots'
 
