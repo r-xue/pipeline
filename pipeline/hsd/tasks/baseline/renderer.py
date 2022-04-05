@@ -59,6 +59,10 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         plots = []
         plot_detail = None
         plot_cover = None
+
+        sorted_fields = utils.sort_fields(context)
+
+        # clustering plots are generated only when plotlevel is 'all'
         if infrastructure.generate_detail_plots(results):
             for r in results:
                 inputs = display.ClusterDisplay.Inputs(context, result=r)
@@ -67,42 +71,41 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             plot_detail = collections.OrderedDict()  # key is field name, subkeys are 'title', 'html', 'cover_plots'
             plot_cover = collections.OrderedDict()  # key is field name, subkeys are 'title', 'cover_plots'
 
+            plot_group = self._group_by_axes(plots)
+            # Render stage details pages
+            details_title = ["R.A. vs Dec."]
+            name_list = ['R.A. vs Dec.', 'Line Center vs Line Width', 'Number of Clusters vs Score']
+            for name in name_list:
+                if name not in plot_group:
+                    # no plots available. probably no lines are detected.
+                    continue
+
+                _plots = plot_group[name]
+                perfield_plots = self._plots_per_field(_plots)
+                renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
+                for fieldobj in sorted_fields:
+                    group_desc = {'title': name,
+                                  'html': os.path.basename(renderer.path)}
+                    field = self.get_field_key(perfield_plots, fieldobj)
+                    if field is None:
+                        LOG.info('No "{}" plots for field "{}"'.format(name, fieldobj.name))
+                        plot_detail[fieldobj.name] = []
+                        plot_cover[fieldobj.name] = []
+                        continue
+                    pfplots = perfield_plots[field]
+                    if name in details_title:
+                        with renderer.get_file() as fileobj:
+                            fileobj.write(renderer.render())
+                        _plots = plot_detail.setdefault(field, [])
+                        group_desc['cover_plots'] = self._get_a_plot_per_spw(pfplots)
+                    else:
+                        _plots = plot_cover.setdefault(field, [])
+                        group_desc['cover_plots'] = pfplots
+                    _plots.append(group_desc)
+
         sparsemap_plots = []
         for r in results:
             sparsemap_plots.extend(r.outcome['plots'])
-
-        plot_group = self._group_by_axes(plots)
-        # Render stage details pages
-        details_title = ["R.A. vs Dec."]
-        name_list = ['R.A. vs Dec.', 'Line Center vs Line Width', 'Number of Clusters vs Score']
-        sorted_fields = utils.sort_fields(context)
-        for name in name_list:
-            if name not in plot_group:
-                # no plots available. probably no lines are detected.
-                continue
-
-            _plots = plot_group[name]
-            perfield_plots = self._plots_per_field(_plots)
-            renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
-            for fieldobj in sorted_fields:
-                group_desc = {'title': name,
-                              'html': os.path.basename(renderer.path)}
-                field = self.get_field_key(perfield_plots, fieldobj)
-                if field is None:
-                    LOG.info('No "{}" plots for field "{}"'.format(name, fieldobj.name))
-                    plot_detail[fieldobj.name] = []
-                    plot_cover[fieldobj.name] = []
-                    continue
-                pfplots = perfield_plots[field]
-                if name in details_title:
-                    with renderer.get_file() as fileobj:
-                        fileobj.write(renderer.render())
-                    _plots = plot_detail.setdefault(field, [])
-                    group_desc['cover_plots'] = self._get_a_plot_per_spw(pfplots)
-                else:
-                    _plots = plot_cover.setdefault(field, [])
-                    group_desc['cover_plots'] = pfplots
-                _plots.append(group_desc)
 
         # whether or not virtual spw id is effective
         dovirtual = utils.require_virtual_spw_id_handling(context.observing_run)
