@@ -1343,10 +1343,10 @@ a.text-info:hover {
   color: #245269;
 }
 .text-attention {
-  color: #99708f;
+  color: #22708f;
 }
 a.text-attention:hover {
-  color: #995269;
+  color: #225269;
 }
 .text-warning {
   color: #8a6d3b;
@@ -4969,13 +4969,13 @@ a.thumbnail.active {
 .alert-attention {
   background-color: #99edf7;
   border-color: #99e8f1;
-  color: #99708f;
+  color: #22708f;
 }
 .alert-attention hr {
   border-top-color: #99e1ec;
 }
 .alert-attention .alert-link {
-  color: #995269;
+  color: #445269;
 }
 .alert-warning {
   background-color: #fcf8e3;

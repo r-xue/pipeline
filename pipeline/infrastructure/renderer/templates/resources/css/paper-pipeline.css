@@ -4956,13 +4956,13 @@ a.thumbnail.active {
 .alert-attention {
   background-color: #99f6fc;
   border-color: #99f2f7;
-  color: #99caeb;
+  color: #22caeb;
 }
 .alert-attention hr {
   border-top-color: #99edf4;
 }
 .alert-attention .alert-link {
-  color: #99b9e5;
+  color: #44b9e5;
 }
 .alert-warning {
   background-color: #fff5e5;
