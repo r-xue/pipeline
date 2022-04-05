@@ -615,7 +615,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
                 # limit number of clusters to be displayed
                 if len(clusters_to_plot) >= ClusterValidationAxesManager.NUM_CLUSTER_MAX:
-                    LOG.info('Too many clusters to display. Cluster validaiton plots show only part of clusters.')
+                    npanel = ClusterValidationAxesManager.NUM_CLUSTER_MAX
+                    nclusters = len(final_flags)
+                    LOG.info(
+                        'Too many clusters to display. '
+                        f'Only {npanel} out of {nclusters} clusters are shown '
+                        'in the cluster validation plot.'
+                    )
                     break
 
                 clusters_to_plot.append(icluster)
