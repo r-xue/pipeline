@@ -64,7 +64,8 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         """Construct ClusterValidationAxesManager instance.
 
         Args:
-            clusters_to_plot: List of detected lines
+            clusters_to_plot: List of detected lines.
+                              Its length must not exceed NUM_CLUSTER_MAX.
             nh: Number of plots along horizontal direction
             nv: Number of plots along vertical axis
             aspect_ratio: Aspect ratio of each plot
@@ -77,10 +78,14 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             ticksize: Tick label font size
             labelsize: Axis label font size
             titlesize: Title font size
+
+        Raises:
+            RuntimeError: len(clusters_to_plot) > self.NUM_CLUSTER_MAX
         """
         super(ClusterValidationAxesManager, self).__init__()
         self.clusters_to_plot = clusters_to_plot
-        assert len(self.clusters_to_plot) <= self.NUM_CLUSTER_MAX
+        if len(self.clusters_to_plot) > self.NUM_CLUSTER_MAX:
+            raise RuntimeError(f'Length of cluster must not exceed {self.NUM_CLUSTER_MAX}.')
         self.nh = nh
         self.nv = nv
         self.aspect_ratio = aspect_ratio
