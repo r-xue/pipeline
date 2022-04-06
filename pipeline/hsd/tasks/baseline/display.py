@@ -610,30 +610,21 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             return None
 
         # list up iclusters of clusters to plot
-        clusters_to_plot = []
         flags = self.cluster['cluster_flag']
-        final_flags = ( flags // self.flag_digits['final'] ) % 10
-        for icluster in range(len(final_flags)):
-            ## (final_flags[icluster]==0).all() is no longer necessary since validation.py is revised.
-            # if not( self.lines[icluster][2] == False or (final_flags[icluster]==0).all() ):
-            if self.lines[icluster][2] == True:
-
-                # limit number of clusters to be displayed
-                if len(clusters_to_plot) >= ClusterValidationAxesManager.NUM_CLUSTER_MAX:
-                    npanel = ClusterValidationAxesManager.NUM_CLUSTER_MAX
-                    n_valid_clusters = len([
-                        i for i in range(len(final_flags))
-                        if self.lines[i][2] == True
-                    ])
-                    LOG.warning(
-                        f'Field {self.field} vspw {self.spw}: '
-                        'Too many clusters to display. '
-                        f'Only {npanel} out of {n_valid_clusters} clusters are shown '
-                        'in the cluster validation plot.'
-                    )
-                    break
-
-                clusters_to_plot.append(icluster)
+        final_flags = (flags // self.flag_digits['final']) % 10
+        valid_clusters = [i for i in range(len(final_flags)) if self.lines[i][2]]
+        n_valid_clusters = len(valid_clusters)
+        if n_valid_clusters > ClusterValidationAxesManager.NUM_CLUSTER_MAX:
+            npanel = ClusterValidationAxesManager.NUM_CLUSTER_MAX
+            LOG.warning(
+                f'Field {self.field} vspw {self.spw}: '
+                'Too many clusters to display. '
+                f'Only {npanel} out of {n_valid_clusters} clusters are shown '
+                'in the cluster validation plot.'
+            )
+            clusters_to_plot = valid_clusters[:npanel]
+        else:
+            clusters_to_plot = valid_clusters
 
         num_cluster = len(clusters_to_plot)
         # num_cluster = len(self.cluster['cluster_property'])
