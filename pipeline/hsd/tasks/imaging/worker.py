@@ -4,6 +4,7 @@ import math
 import os
 import shutil
 from typing import Dict, List, NewType, Optional, Tuple, Union
+from xmlrpc.client import Boolean
 
 import numpy
 
@@ -32,7 +33,7 @@ def ImageCoordinateUtil(
     ant_list: List[Optional[int]],
     spw_list: List[int],
     fieldid_list: List[int]
-) -> Tuple[str, Angle, Angle, int, int, Direction]:
+) -> Union[Tuple[str, Angle, Angle, int, int, Direction], Boolean]:
     """
     Calculate spatial coordinate of image.
 
@@ -45,10 +46,15 @@ def ImageCoordinateUtil(
         ant_list: List of antenna ids. List elements could be None.
         spw_list: List of spw ids.
         fieldid_list: List of field ids.
+
+    Raises:
+        RuntimeError: Raises if found unexpected unit of RA/DEC in DataTable.
+
     Returns:
         Six tuple containing phasecenter, horizontal and vertical cell sizes,
         horizontal and vertical number of pixels, and direction of the origin
         (for moving targets).
+        If there are no valid data to get coodinate of image, then it returns False.
     """
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
