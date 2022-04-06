@@ -190,15 +190,12 @@ class Syspower(basetask.StandardTaskTemplate):
         allowed_rcvr_bands = ('L', 'S', 'C')
 
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
-        # basebandsperband = collections.defaultdict(list)
         allprocessedspws = []
 
         band_baseband_spw = collections.defaultdict(dict)
         for band in banddict:
-            # basebandsperband[band] = []
             baseband2spw = {}
             for baseband in banddict[band]:
-                # basebandsperband[band].append(baseband)
                 if baseband in allowedbasebands and band in allowed_rcvr_bands:
                     spwsperbaseband = []
                     for spwdict in banddict[band][baseband]:
@@ -240,7 +237,7 @@ class Syspower(basetask.StandardTaskTemplate):
 
             template_table_band = 'pdiff_{!s}.tbl'.format(band)
 
-            # get switched power from MS
+            # get syspower from MS
             with casa_tools.TableReader(self.inputs.vis + '/SYSPOWER') as tb:
                 # stb = tb.query('SPECTRAL_WINDOW_ID > '+str(min(spws)-1))  # VLASS specific for offset of two spws?
                 stb = tb.query('SPECTRAL_WINDOW_ID in [{!s}]'.format(','.join([str(spw) for spw in spws])))
@@ -290,6 +287,7 @@ class Syspower(basetask.StandardTaskTemplate):
 
             # remove requantizer changes from p_diff
             pdrq = p_diff / (rq ** 2)
+            pdrq = np.ma.masked_invalid(pdrq)
 
             # read tables into arrays
             spw_problems = []
@@ -297,35 +295,26 @@ class Syspower(basetask.StandardTaskTemplate):
                 LOG.info('reading antenna {0}'.format(this_ant))
                 for j, this_spw in enumerate(spws):
                     hits = np.where((sp_ant == this_ant) & (sp_spw == this_spw))[0]
-                    times = sp_time[hits]
+                    times, ind = np.unique(sp_time[hits], return_index=True)
                     hits2 = np.where(np.in1d(sorted_time, times))[0]
                     flux_hits = np.where((times >= np.min(flux_times)) & (times <= np.max(flux_times)))[0]
                     if len(hits) != len(hits2):
                         spw_problems.append(this_spw)
-                        hitsnew = np.intersect1d(hits, hits2)
-                        hits = hitsnew
-                        hits2 = hitsnew
-
-                        try:
-                            flux_hits = np.where((times[hits2] >= np.min(flux_times)) & (times[hits2] <= np.max(flux_times)))[0]
-                        except Exception as e:
-                            # Remove the n+1 index
-                            hits2 = hits2[:-1]
-                            hits = hits2
-                            flux_hits = np.where((times[hits2] >= np.min(flux_times)) & (times[hits2] <= np.max(flux_times)))[0]
+                        if len(ind) == len(hits2):
+                            hits = hits[ind]
 
                     for pol in [0, 1]:
                         LOG.debug(str(i) + ' ' + str(j) + ' ' + str(pol) + ' ' + str(hits2))
                         dat_raw[i, j, pol, hits2] = p_diff[pol, hits]
-                        dat_flux[i, j, pol] = np.median(pdrq[pol, hits][flux_hits])
+                        dat_flux[i, j, pol] = np.ma.median(pdrq[pol, hits][flux_hits])
                         dat_rq[i, j, pol, hits2] = rq[pol, hits]
                         dat_scaled[i, j, pol, hits2] = pdrq[pol, hits] / dat_flux[i, j, pol]
                         dat_filtered[i, j, pol, hits2] = deepcopy(dat_scaled[i, j, pol, hits2])
 
             if spw_problems:
                 spw_problems = list(set(spw_problems))
-                LOG.warning("Caution - missing data - timing issue with the sw-pow table.  " +
-                            "Review the data for spws='{!s}'".format(','.join([str(spw) for spw in spw_problems])))
+                LOG.warning("Caution - missing or duplicated data - timing issue with the syspower table.  " +
+                            "Review the data for spw='{!s}'".format(','.join([str(spw) for spw in spw_problems])))
 
             # Determine which spws go with which basebands
             # There could be multiple baseband names per band - count them
@@ -334,9 +323,10 @@ class Syspower(basetask.StandardTaskTemplate):
             bbindex = 0
             # for band in band_baseband_spw:
             for baseband in band_baseband_spw[band]:
-                bband2spw.append(band_baseband_spw[band][baseband])
-                bband_common_indices.append(list(range(bbindex * len(bband2spw[bbindex]), (bbindex + 1) * len(bband2spw[bbindex]))))
-                bbindex += 1
+                if band_baseband_spw[band][baseband]:
+                    bband2spw.append(band_baseband_spw[band][baseband])
+                    bband_common_indices.append(list(range(bbindex * len(bband2spw[bbindex]), (bbindex + 1) * len(bband2spw[bbindex]))))
+                    bbindex += 1
 
             LOG.debug('----------------------------------')
             LOG.debug(bband_common_indices)

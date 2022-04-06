@@ -57,7 +57,7 @@ class syspowerBoxChart(object):
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
-                                                                                'caption': 'Syspower box plot',
+                                                                                'caption': 'Template pdiff',
                                                                                 'spw': '',
                                                                                 'band': self.band})
 
@@ -122,7 +122,7 @@ class syspowerBarChart(object):
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
-                                                                                'caption': 'Syspower bar plot',
+                                                                                'caption': 'Fraction of flagged solutions',
                                                                                 'spw': '',
                                                                                 'band': self.band})
 

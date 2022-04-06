@@ -142,9 +142,10 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     for baseband in result.band_baseband_spw[band]:
 
                         # Pick one from each baseband if available
-                        ispw = int(len(result.band_baseband_spw[band][baseband]) / 2)
-                        selectspw.append(str(result.band_baseband_spw[band][baseband][ispw]))
-                        spw = ','.join(selectspw)
+                        if result.band_baseband_spw[band][baseband]:
+                            ispw = int(len(result.band_baseband_spw[band][baseband]) / 2)
+                            selectspw.append(str(result.band_baseband_spw[band][baseband][ispw]))
+                            spw = ','.join(selectspw)
 
                     plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
                                                                       result.plotrq, 'syspower', 'rq',
