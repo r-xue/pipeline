@@ -50,10 +50,10 @@ def ImageCoordinateUtil(
         RuntimeError: Raises if found unexpected unit of RA/DEC in DataTable.
 
     Returns:
-        Six tuple containing phasecenter, horizontal and vertical cell sizes,
-        horizontal and vertical number of pixels, and direction of the origin
-        (for moving targets).
-        If there are no valid data to get coodinate of image, then it returns False.
+        - Six tuple containing phasecenter, horizontal and vertical cell sizes,
+          horizontal and vertical number of pixels, and direction of the origin
+          (for moving targets).
+        - False if no valid data exists.
     """
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
