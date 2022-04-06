@@ -1,11 +1,12 @@
 
 import os
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import cm
 import numpy as np
 import pipeline.infrastructure as infrastructure
-from pipeline.h.tasks.common.displays import sky as sky
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.hifv.heuristics.rfi import RflagDevHeuristic
 
 LOG = infrastructure.get_logger(__name__)
@@ -27,16 +28,26 @@ class VlassCubeStokesSummary(object):
 
         x = np.array(self.result.stats['peak_u'])*1e3
         y = np.array(self.result.stats['peak_q'])*1e3
-
+        label = self.result.stats['spw']
         LOG.debug('Creating the MADrms vs. spw plot.')
         try:
             fig, ax = plt.subplots()
+            cmap = cm.get_cmap('rainbow')
+            for idx in range(len(x)):
+                color_idx = idx/len(x)
+                ax.scatter(x[idx], y[idx], color=cmap(color_idx),
+                           label=label[idx], edgecolors='gray', alpha=1.0, s=100.)
 
-            ax.scatter(x, y)
+            # for idx, x0 in enumerate(x):
+            #     label = self.result.stats['spw'][idx]
+            #     plt.annotate(label, (x[idx], y[idx]))
 
-            ax.legend()
+            ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
             ax.set_xlabel('$U_{{peak}}$ [mJy/beam]')
             ax.set_ylabel('$Q_{{peak}}$ [mJy/beam]')
+            peak_loc = self.result.stats['peak_radec'][0]+' ' + \
+                self.result.stats['peak_radec'][1]+' '+self.result.stats['peak_radec'][3]
+            ax.set_title(f"Stokes-I Peak at \n {peak_loc}")
             fig.tight_layout()
             fig.savefig(figfile)
 
