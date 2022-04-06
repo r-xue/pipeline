@@ -4,7 +4,6 @@ import math
 import os
 import shutil
 from typing import Dict, List, NewType, Optional, Tuple, Union
-from xmlrpc.client import Boolean
 
 import numpy
 
@@ -33,7 +32,7 @@ def ImageCoordinateUtil(
     ant_list: List[Optional[int]],
     spw_list: List[int],
     fieldid_list: List[int]
-) -> Union[Tuple[str, Angle, Angle, int, int, Direction], Boolean]:
+) -> Union[Tuple[str, Angle, Angle, int, int, Direction], bool]:
     """
     Calculate spatial coordinate of image.
 
