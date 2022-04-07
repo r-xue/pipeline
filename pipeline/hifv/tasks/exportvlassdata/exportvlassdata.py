@@ -5,6 +5,8 @@ import os
 import shutil
 import tarfile
 import re
+import glob
+
 import astropy.io.fits as apfits
 
 import pipeline as pipeline
@@ -23,9 +25,6 @@ from pipeline.domain import DataType
 LOG = infrastructure.get_logger(__name__)
 
 StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript parameterlist')
-
-import re
-import glob
 
 def atoi(text):
     return int(text) if text.isdigit() else text
@@ -190,6 +189,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             self.masks = [QLmask, secondmask, finalmask]
         
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
+            common_beam = self._get_common_beam(images_list)
             images_list = self._split_vlass_cube_stokes(images_list)
 
         fits_list = []
@@ -224,6 +224,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                                                obs_lat=observatory['m1'])
                 # Update FITS header
                 self._fix_vlass_fits_header(self.inputs.context, fitsfile, img_mode)
+
+            if img_mode == 'VLASS-SE-CUBE':
+                # only smooth and regrid the sci image for now.
+                if '.rms.' not in fitsfile:
+                    self._smooth_and_regrid(fitsfile, image, common_beam)
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
@@ -733,7 +738,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         return
 
     def _split_vlass_cube_stokes(self, image_list):
-        """Split the full-stokes image into the IQU and V images."""
+        """Split full-Stokes images into the IQU and V images and return a new image list."""
 
         new_image_list = []
 
@@ -750,3 +755,68 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 new_image_list.append(imagename)
 
         return new_image_list
+
+    def _get_common_beam(self, image_list):
+        """Get the smallest possible target common beams from the supplied "cube" image list."""
+
+        freq_list = []
+        beam_list = []
+        for imagename in image_list:
+            with casa_tools.ImageReader(imagename) as image:
+                freq_list.append(image.coordsys().referencevalue(
+                    format='q', type='spectral')['quantity']['*1']['value'])
+                beam_list.append(image.restoringbeam(channel=0, polarization=0))
+                LOG.info(f'{imagename} has a Stokes-I restoring beam size of {beam_list[-1]}')
+                beam_q = image.restoringbeam(channel=0, polarization=1)
+                beam_u = image.restoringbeam(channel=0, polarization=2)
+                beam_v = image.restoringbeam(channel=0, polarization=2)
+                LOG.info(f'{imagename} has a Stokes-Q restoring beam size of {beam_q}')
+                LOG.info(f'{imagename} has a Stokes-U restoring beam size of {beam_u}')
+                LOG.info(f'{imagename} has a Stokes-V restoring beam size of {beam_v}')
+
+        idx = freq_list.index(min(freq_list))
+        beam_target = beam_list[idx]
+        LOG.info(f'Using {beam_target} as the target beam for the common-resolution image set.')
+
+        return beam_target
+
+    def _smooth_and_regrid(self, fitsfile, imagename, target_beam):
+        """Smooth and regrid the position-corrected FITS image to the common resolution and WCS frame."""
+
+        with casa_tools.ImageReader(fitsfile) as image:
+            beam = image.restoringbeam(channel=0, polarization=0)
+
+        if self._is_beam_close(beam, target_beam):
+            smoothed_image = fitsfile
+            LOG.info(f'{fitsfile} already reaches the target beam, skip image smoothing.')
+        else:
+            smoothed_image = imagename+'.smo'
+            LOG.info(f'{fitsfile} has a restoring beam of {beam}, and will be smoothed to the target beam of {target_beam}')
+            job = casa_tasks.imsmooth(fitsfile, targetres=True, beam=target_beam,
+                                      outfile=smoothed_image, overwrite=True)
+            self._executor.execute(job)
+
+        # For imregrid, input can be either a FITS or CASA image. However, the template and output can only be CASA images.
+        job = casa_tasks.imregrid(imagename=smoothed_image, template=imagename,
+                                  output=imagename+'.srg', overwrite=True, axes=[0, 1])
+        self._executor.execute(job)
+
+        job = casa_tasks.exportfits(imagename=imagename+'.srg', fitsimage=fitsfile.replace('.fits', '.srg.fits'))
+        self._executor.execute(job)
+
+    def _is_beam_close(self, beam1, beam2):
+
+        bmaj1 = beam1['major']['value']
+        bmaj2 = beam2['major']['value']
+
+        bmin1 = beam1['minor']['value']
+        bmin2 = beam2['minor']['value']
+
+        bpa1 = beam1['positionangle']['value']
+        bpa2 = beam2['positionangle']['value']
+
+        is_close = False
+        if abs(bmaj1-bmaj2) < 1e-3 and abs(bmin1-bmin2) < 1e-3 and abs(bpa1-bpa2) < 1e-3:
+            is_close = True
+
+        return is_close
