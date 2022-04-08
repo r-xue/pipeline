@@ -756,7 +756,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return new_image_list
 
-    def _get_common_beam(self, image_list):
+    def _get_common_beam2(self, image_list):
         """Get the smallest possible target common beams from the supplied "cube" image list."""
 
         freq_list = []
@@ -776,6 +776,32 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         idx = freq_list.index(min(freq_list))
         beam_target = beam_list[idx]
+        LOG.info(f'Using {beam_target} as the target beam for the common-resolution image set.')
+
+        return beam_target
+
+    def _get_common_beam(self, image_list):
+        """Get the common beam from the supplied "cube" image list."""
+
+        with casa_tools.ImageReader(image_list[0]) as image:
+            cs = image.coordsys()
+            shape = image.shape()
+
+        myia = casa_tools.image
+        myia.fromshape(shape=[128, 128, shape[2], len(image_list)], csys=cs.torecord())
+
+        for idx, imagename in enumerate(image_list):
+            with casa_tools.ImageReader(imagename) as image:
+                bm = image.restoringbeam(channel=0, polarization=0)
+                LOG.info(f'{imagename} has a Stokes-I restoring beam size of {bm}')
+            myia.setrestoringbeam(beam=bm, channel=idx)
+
+        beam_target = myia.commonbeam()
+        # ia.commonbeam() returns the bpa value under the key 'pa' rather than 'positionangle', as it is
+        # from ia.restoringbeam().
+        beam_target['positionangle'] = beam_target.pop('pa')
+        myia.close()
+
         LOG.info(f'Using {beam_target} as the target beam for the common-resolution image set.')
 
         return beam_target
