@@ -189,7 +189,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             self.masks = [QLmask, secondmask, finalmask]
         
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
-            common_beam = self._get_common_beam(images_list)
             images_list = self._split_vlass_cube_stokes(images_list)
 
         fits_list = []
@@ -225,7 +224,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 # Update FITS header
                 self._fix_vlass_fits_header(self.inputs.context, fitsfile, img_mode)
 
-            if img_mode == 'VLASS-SE-CUBE':
+        # PIPE-1434: produce a VLASS-SE-CUBE image set with a common resolution / WCS frame.
+        # Please note that we intentionally use FITS images for the common beam calculation due to CAS-13799.
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
+            common_beam = self._get_common_beam(fits_list)
+            for idx, fitsfile in enumerate(fits_list):
+                image = images_list[idx]
                 # only smooth and regrid the sci image for now.
                 if '.rms.' not in fitsfile:
                     self._smooth_and_regrid(fitsfile, image, common_beam)
@@ -783,12 +787,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
     def _get_common_beam(self, image_list):
         """Get the common beam from the supplied "cube" image list."""
 
-        with casa_tools.ImageReader(image_list[0]) as image:
-            cs = image.coordsys()
-            shape = image.shape()
-
         myia = casa_tools.image
-        myia.fromshape(shape=[128, 128, shape[2], len(image_list)], csys=cs.torecord())
+        mycs = casa_tools.casatools.coordsys()
+        cs = mycs.newcoordsys(direction=True, spectral=True)
+        myia.fromshape(shape=[128, 128, len(image_list)], csys=cs.torecord())
+        cs.done()
 
         for idx, imagename in enumerate(image_list):
             with casa_tools.ImageReader(imagename) as image:
