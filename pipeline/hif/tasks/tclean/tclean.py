@@ -1345,8 +1345,8 @@ class Tclean(cleanbase.CleanBase):
             # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
-                statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
-                mom8_stats = image.statistics(mask=statsmask, robust=True)
+                mom8_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom8_stats = image.statistics(mask=mom8_statsmask, robust=True)
 
                 mom8_image_median_all = mom8_stats.get('median')[0]
                 mom8_image_mad = mom8_stats.get('medabsdevmed')[0]
@@ -1355,16 +1355,16 @@ class Tclean(cleanbase.CleanBase):
                 mom8_n_pixels = int(mom8_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                mom8_stats2 = image.statistics(mask=statsmask, robust=True)
+                mom8_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom8_stats2 = image.statistics(mask=mom8_statsmask2, robust=True)
 
                 mom8_image_median_annulus = mom8_stats2.get('median')[0]
 
             # Calculate MOM10 FC statistics
             with casa_tools.ImageReader(mom10fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM10 FC image from the area excluding the cleaned area edges
-                statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
-                mom10_stats = image.statistics(mask=statsmask, robust=True)
+                mom10_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom10_stats = image.statistics(mask=mom10_statsmask, robust=True)
 
                 mom10_image_median_all = mom10_stats.get('median')[0]
                 mom10_image_mad = mom10_stats.get('medabsdevmed')[0]
@@ -1373,22 +1373,22 @@ class Tclean(cleanbase.CleanBase):
                 mom10_n_pixels = int(mom10_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                mom10_stats2 = image.statistics(mask=statsmask, robust=True)
+                mom10_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom10_stats2 = image.statistics(mask=mom10_statsmask2, robust=True)
 
                 mom10_image_median_annulus = mom10_stats2.get('median')[0]
 
             # Get sigma and channel scaled MAD from the cube
             if flattened_mask_name is not None:
                 # Mask cleanmask and 1.05 * pblimit_image < pb < pblimit_cleanmask
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
             else:
                 # Mask 1.05 * pblimit_image < pb < pblimit_cleanmask
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
 
             with casa_tools.ImageReader(imagename) as image:
-                cube_stats_masked = image.statistics(mask=statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                cube_stats_masked = image.statistics(mask=cube_statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
             cube_sigma = np.median(cube_stats_masked.get('sigma')[cont_chan_indices])
             cube_chanScaledMAD = np.median(cube_stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
@@ -1399,13 +1399,36 @@ class Tclean(cleanbase.CleanBase):
 
             # Calculate outlier fraction for QA scoring
             with casa_tools.ImageReader(mom8fc_name) as image:
-                statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + mom8_image_median_annulus)
-                mom8_stats_outliers = image.statistics(mask=statsmask, robust=True)
-                mom8_npts = mom8_stats_outliers.get('npts')
-                if mom8_npts.shape != (0,):
-                    mom8_n_outlier_pixels = int(npts[0])
+                mom8_outlier_statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + mom8_image_median_annulus)
+                mom8_stats_outlier = image.statistics(mask=mom8_outlier_statsmask, robust=True)
+                mom8_outlier_npts = mom8_stats_outlier.get('npts')
+                if mom8_outlier_npts.shape != (0,):
+                    mom8_n_outlier_pixels = int(mom8_outlier_npts[0])
                 else:
                     mom8_n_outlier_pixels = 0
+
+            # Calculate the mom8/mom10 histogram assymetry
+            histogram_threshold = mom8_image_median_all + 2.0 * mom8_image_mad / 0.6745
+            with casa_tools.ImageReader(mom8fc_name) as image:
+                mom8_histogram_statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, histogram_threshold)
+                mom8_stats_histogram = image.statistics(mask=mom8_histogram_statsmask, robust=True)
+                mom8_histogram_npts = mom8_stats_histogram.get('npts')
+                if mom8_histogram_npts.shape != (0,):
+                    mom8_n_histogram_pixels = int(mom8_histogram_npts[0])
+                else:
+                    mom8_n_histogram_pixels = 0
+            with casa_tools.ImageReader(mom10fc_name) as image:
+                mom10_histogram_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom10fc_name, -histogram_threshold)
+                mom10_stats_histogram = image.statistics(mask=mom10_histogram_statsmask, robust=True)
+                mom10_histogram_npts = mom10_stats_histogram.get('npts')
+                if mom10_histogram_npts.shape != (0,):
+                    mom10_n_histogram_pixels = int(mom10_histogram_npts[0])
+                else:
+                    mom10_n_histogram_pixels = 0
+            if min(mom8_n_histogram_pixels, mom10_n_histogram_pixels) > 0:
+                histogram_asymmetry = (mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
+            else:
+                histogram_asymmetry = 0.0
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8fc_name)
