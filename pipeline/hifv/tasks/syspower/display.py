@@ -165,7 +165,7 @@ class compressionSummary(object):
                      label='median')
         axes[0].plot(np.ma.min(pdiff_ma, axis=0)[0, 0], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha, label='min')
         axes[0].set_ylim(0.5, 1.2)
-        axes[0].set_ylabel('Bband A0C0 R')
+        axes[0].set_ylabel('Baseband A0C0 RR')
         leg = axes[0].legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.0), frameon=True, numpoints=1,
                              fancybox=False)
         title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
@@ -174,20 +174,20 @@ class compressionSummary(object):
         axes[1].plot(np.ma.median(pdiff_ma, axis=0)[0, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
         axes[1].plot(np.ma.min(pdiff_ma, axis=0)[0, 1], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
         axes[1].set_ylim(0.5, 1.2)
-        axes[1].set_ylabel('Bband A0C0 L')
+        axes[1].set_ylabel('Baseband A0C0 LL')
 
         try:
             axes[2].plot(np.ma.max(pdiff_ma, axis=0)[1, 0], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
             axes[2].plot(np.ma.median(pdiff_ma, axis=0)[1, 0], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
             axes[2].plot(np.ma.min(pdiff_ma, axis=0)[1, 0], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
             axes[2].set_ylim(0.5, 1.2)
-            axes[2].set_ylabel('Bband B0D0 R')
+            axes[2].set_ylabel('Baseband B0D0 RR')
 
             axes[3].plot(np.ma.max(pdiff_ma, axis=0)[1, 1], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
             axes[3].plot(np.ma.median(pdiff_ma, axis=0)[1, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
             axes[3].plot(np.ma.min(pdiff_ma, axis=0)[1, 1], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
             axes[3].set_ylim(0.5, 1.2)
-            axes[3].set_ylabel('Bband B0D0 L')
+            axes[3].set_ylabel('Baseband B0D0 LL')
             axes[3].set_xlabel('Time (seconds)')
         except IndexError as ex:
             LOG.debug("Only one baseband to plot.")
@@ -273,20 +273,20 @@ class medianSummary(object):
 
         these_medians = ma_medians[0, 0, :]
         hits = np.logical_not(these_medians.mask)
-        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband A0C0 R')
+        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband A0C0 RR')
 
         these_medians = ma_medians[0, 1, :]
         hits = np.logical_not(these_medians.mask)
-        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband A0C0 L')
+        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband A0C0 LL')
 
         try:
             these_medians = ma_medians[1, 0, :]
             hits = np.logical_not(these_medians.mask)
-            plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband B0D0 R')
+            plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband B0D0 RR')
 
             these_medians = ma_medians[1, 1, :]
             hits = np.logical_not(these_medians.mask)
-            plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Bband B0D0 L')
+            plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband B0D0 LL')
         except IndexError as ex:
             LOG.debug("Only one baseband to plot.")
 
