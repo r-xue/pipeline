@@ -45,7 +45,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
 
         imlist = self.inputs.context.subimlist.get_imlist()
 
-        stats = {'spw': [], 'peak_q': [], 'peak_u': [], 'rms': [],
+        stats = {'spw': [], 'peak_q': [], 'peak_u': [], 'peak_i': [], 'rms': [],
                  'reffreq': [], 'beamarea': [], 'peak_xy': None, 'peak_radec': None}
 
         maxposx, maxposy, maxradec = self._get_peakxy(imlist)
@@ -60,8 +60,8 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
                 img_stokesi = imagepol.stokesi()
                 img_stokesq = imagepol.stokesq()
                 img_stokesu = imagepol.stokesu()
-                stokesi_stats = img_stokesi.statistics(robust=False)
                 rg = casa_tools.regionmanager.box(blc=[maxposx-1, maxposy-1], trc=[maxposx+1, maxposy+1])
+                stokesi_stats = img_stokesi.statistics(robust=False, region=rg)
                 stokesq_stats = img_stokesq.statistics(robust=False, region=rg)
                 stokesu_stats = img_stokesu.statistics(robust=False, region=rg)
                 stats['spw'].append(imageitem['spwlist'])
@@ -69,6 +69,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
                 stats['reffreq'].append(cs.referencevalue(format='n')['numeric'][3])
                 bm = img_stokesi.restoringbeam(polarization=0)
                 stats['beamarea'].append(bm['major']['value']*bm['minor']['value'])
+                stats['peak_i'].append(stokesi_stats['mean'])
                 stats['peak_q'].append(stokesq_stats['mean'])
                 stats['peak_u'].append(stokesu_stats['mean'])
             with casa_tools.ImageReader(rms_name) as image:
