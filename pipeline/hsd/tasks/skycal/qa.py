@@ -6,6 +6,9 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 import pipeline.h.tasks.exportdata.aqua as aqua
 from . import skycal
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 

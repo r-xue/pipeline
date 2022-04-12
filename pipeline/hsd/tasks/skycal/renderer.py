@@ -2,8 +2,10 @@
 import collections
 import os
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
-
+from typing import TYPE_CHECKING, Any, Dict, List
+if TYPE_CHECKING:
+    from pipeline.domain.field import Field
+    from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
@@ -80,7 +82,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             # calibration table summary
             ms_applications = self.get_skycal_applications(context, result, ms)
             applications.extend(ms_applications)
-
+            
             # iterate over CalApplication instances
             final_original = result.final
 
@@ -215,7 +217,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     'elev_diff_subpages': elev_diff_subpages,
                     'reference_coords': reference_coords})
 
-    def get_skycal_applications(self, context: 'Context', result: skycal_task.SDSkyCalResults, ms: 'MeasurementSet') -> List:
+    def get_skycal_applications(self, context: 'Context', result: skycal_task.SDSkyCalResults, ms: 'MeasurementSet') -> List[Dict]:
         """Get skycal applications.
                
         Args:
@@ -224,7 +226,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             ms: MeasurementSet domain object.
             
         Returns:
-            List of applications.
+            A list containing dictionary. The keywords of dictionary are the following:
+            'ms', 'gaintable', 'spw', 'intent', 'field', 'antenna', 'caltype'.
         """
         applications = []
 
@@ -252,13 +255,13 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         return applications
 
-    def _get_reference_coord(self, context: 'Context', ms: 'MeasurementSet', field: str) -> str:
+    def _get_reference_coord(self, context: 'Context', ms: 'MeasurementSet', field: 'Field') -> str:
         """Get celestial coordinates and the reference.
         
         Args:
             context: Pipeline context.
             ms: MeasurementSet domain object.
-            field: Field name.
+            field: field domain object.
             
         Returns:
             Reference, RA and Declination.

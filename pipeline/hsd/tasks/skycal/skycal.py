@@ -16,9 +16,9 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from ..common import SingleDishResults
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.callibrary import CalApplication
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -82,9 +82,9 @@ class SDSkyCalInputs(vdp.StandardInputs):
             output_dir: Name of output directory.
             infiles: Name of MS or list of names.
             outfile: Name of MS.
-            field: Name of field.
-            spw: Name of spw.
-            scan: Name of scan.
+            field: Field selection.
+            spw: Spectral window (spw) selection.
+            scan: Scan selection.
         """
         super(SDSkyCalInputs, self).__init__()
 
@@ -106,10 +106,10 @@ class SDSkyCalInputs(vdp.StandardInputs):
         self.scan = scan
 
     def to_casa_args(self) -> Dict:
-        """Convert Inputs instance to the list of keyword arguments for sdskycal.
+        """Convert Inputs instance to the list of keyword arguments for sdcal.
 
         Returns:
-            Keyword arguments for sdskycal.
+            Keyword arguments for sdcal.
         """
         args = super(SDSkyCalInputs, self).to_casa_args()
 
