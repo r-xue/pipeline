@@ -8,7 +8,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.hifv.heuristics.rfi import RflagDevHeuristic
-
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
 LOG = infrastructure.get_logger(__name__)
@@ -27,50 +26,64 @@ class VlassCubeStokesSummary(object):
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
 
-        figfile = os.path.join(stage_dir, 'image_q_vs_u.png')
+        plot_wrappers = []
+        roi_list = ['peak_stokesi', 'peak_linpolint']
 
-        x = np.array(self.result.stats['peak_q'])/np.array(self.result.stats['peak_i'])
-        y = np.array(self.result.stats['peak_u'])/np.array(self.result.stats['peak_i'])
-        label = self.result.stats['spw']
-        LOG.debug('Creating the MADrms vs. spw plot.')
-        try:
-            fig, ax = plt.subplots(figsize=(10, 8))
-            cmap = cm.get_cmap('rainbow_r')
-            for idx in range(len(x)):
-                color_idx = idx/len(x)
-                ax.scatter(x[idx], y[idx], color=cmap(color_idx),
-                           label=label[idx], edgecolors='black', alpha=0.7, s=300.)
-                text = ax.annotate(label[idx], (x[idx], y[idx]), ha='center', va='center', fontsize=9.)
-                text.set_alpha(.7)
+        for roi_name in roi_list:
 
-            ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12, labelspacing=0.75)
-            ax.set_xlabel('Frac. Stokes $Q$')
-            ax.set_ylabel('Frac. Stokes $U$')
-            peak_loc = self.result.stats['peak_radec'][0]+' ' + \
-                self.result.stats['peak_radec'][1]+' '+self.result.stats['peak_radec'][3]
-            ax.set_title(f"Stokes $I$ Peak at \n {peak_loc}")
-            ax.set_aspect('equal')
-            ax.axhline(0, linestyle='-', color='lightgray')
-            ax.axvline(0, linestyle='-', color='lightgray')
+            label = self.result.stats['spw']
 
-            amp_max = np.max(np.abs(np.array([ax.get_xlim(), ax.get_ylim()])))
-            amp_scale = 1.2
-            ax.set_xlim(-amp_max*amp_scale, amp_max*amp_scale)
-            ax.set_ylim(-amp_max*amp_scale, amp_max*amp_scale)
+            roi_stats = self.result.stats[roi_name]
+            figfile = os.path.join(stage_dir, f'stokes_summary_u_vs_q_{roi_name}.png')
 
-            fig.tight_layout()
-            fig.savefig(figfile)
+            x = np.array(roi_stats['stokesq'])/np.array(roi_stats['stokesi'])
+            y = np.array(roi_stats['stokesu'])/np.array(roi_stats['stokesi'])
 
-            plt.close(fig)
-            plot = logger.Plot(figfile,
-                               x_axis='U_peak',
-                               y_axis='Q_peak',
-                               parameters={})
-            return plot
-        except Exception as ex:
-            LOG.warning("Could not create plot {}".format(figfile))
-            LOG.warning(ex)
-            return None
+            LOG.debug(f'Creating the ROI={roi_name} Stokes U vs. Q plot.')
+
+            try:
+                fig, ax = plt.subplots(figsize=(10, 8))
+                cmap = cm.get_cmap('rainbow_r')
+                for idx in range(len(x)):
+                    color_idx = idx/len(x)
+                    ax.scatter(x[idx], y[idx], color=cmap(color_idx),
+                               label=label[idx], edgecolors='black', alpha=0.7, s=300.)
+                    text = ax.annotate(label[idx], (x[idx], y[idx]), ha='center', va='center', fontsize=9.)
+                    text.set_alpha(.7)
+
+                ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12, labelspacing=0.75)
+                ax.set_xlabel('Frac. Stokes $Q$')
+                ax.set_ylabel('Frac. Stokes $U$')
+                peak_loc = roi_stats['world']
+                ax.set_title(f"Intensity Peak at \n {peak_loc}")
+                ax.set_aspect('equal')
+                ax.axhline(0, linestyle='-', color='lightgray')
+                ax.axvline(0, linestyle='-', color='lightgray')
+
+                amp_max = np.max(np.abs(np.array([ax.get_xlim(), ax.get_ylim()])))
+                amp_scale = 1.2
+                ax.set_xlim(-amp_max*amp_scale, amp_max*amp_scale)
+                ax.set_ylim(-amp_max*amp_scale, amp_max*amp_scale)
+
+                fig.savefig(figfile)
+
+                plt.close(fig)
+
+                if roi_name == 'peak_stokesi':
+                    desc = 'Peak of the Stokes-I map'
+                if roi_name == 'peak_linpolint':
+                    desc = 'Peak of the linearly polarized intensity map'
+                plot = logger.Plot(figfile,
+                                   x_axis='Frac. Stokes-Q',
+                                   y_axis='Frac. Stokes-U',
+                                   parameters={'desc': desc})
+                plot_wrappers.append(plot)
+
+            except Exception as ex:
+                LOG.warning("Could not create plot {}".format(figfile))
+                LOG.warning(ex)
+
+        return plot_wrappers
 
 
 class VlassCubeRmsSummary(object):
@@ -95,7 +108,7 @@ class VlassCubeRmsSummary(object):
 
         LOG.debug('Creating the RMS_median vs. Frequency plot.')
         try:
-            fig, ax = plt.subplots(figsize=(8,6))
+            fig, ax = plt.subplots(figsize=(8, 6))
 
             for idx, stokes in enumerate(['I', 'Q', 'U', 'V']):
                 ax.plot(x, y[:, idx], marker="o", label=f'$\it{stokes}$')

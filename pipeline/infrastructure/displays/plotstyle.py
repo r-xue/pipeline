@@ -30,13 +30,16 @@ def casa5style_plot(func):
 
 
 def matplotlibrc_formal(method):
+    """A custom matplotlib plotting style."""
     @functools.wraps(method)
     def handle_matplotlibrc(self, *args, **kwargs):
         custom_rc = {'xtick.direction': 'in',
                      'ytick.direction': 'in',
                      'font.size': 11,
                      'font.family': 'serif',
-                     'image.origin': 'lower'}
+                     'image.origin': 'lower',
+                     'savefig.bbox': 'tight',
+                     'figure.autolayout': True}
 
         with mpl.rc_context(rc=custom_rc):
             result = method(self, *args, **kwargs)

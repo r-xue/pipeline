@@ -5,9 +5,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Analyzestokescubes</%block>
+<%block name="title">Analysis of Stokes Cubes</%block>
 
-<p>Analyzestokescubes</p>
+<p>This tasks performs analyses of Stokes cubes</p>
 
 
 <%self:plot_group plot_dict="${stokesplots}"
@@ -22,11 +22,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <%def name="mouseover(plot)">${plot.basename}</%def>
 
         <%def name="fancybox_caption(plot)">
-            ${plot.x_axis} vs. ${plot.y_axis}
+            ${plot.parameters['desc']}: ${plot.y_axis} vs. ${plot.x_axis}
         </%def>
 
         <%def name="caption_title(plot)">
-            ${plot.x_axis} vs. ${plot.y_axis}
+            ${plot.parameters['desc']}
         </%def>
 </%self:plot_group>
 
@@ -43,11 +43,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <%def name="mouseover(plot)">${plot.basename}</%def>
 
         <%def name="fancybox_caption(plot)">
-          ${plot.x_axis} vs. ${plot.y_axis}
+          ${plot.y_axis} vs. ${plot.x_axis}
         </%def>
 
         <%def name="caption_title(plot)">
-           ${plot.x_axis} vs. ${plot.y_axis}
+           ${plot.y_axis} vs. ${plot.x_axis}
         </%def>
 
 </%self:plot_group>
