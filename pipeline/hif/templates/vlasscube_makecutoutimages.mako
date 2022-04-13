@@ -154,12 +154,6 @@ $(document).ready(function() {
 
 <p>Make cutouts of requested imaging products.</p>
 
-<%
-stats= plotter.result.stats
-stats_summary= plotter.result.stats_summary
-madrmsplots={}
-madrmsplots['MADrms vs. Spw from Non-Pbcor Image']=[plotter.result.madrmsplots]
-%>
 
 <h4>Cutout Image Statistical Properties</h4>
 
@@ -170,11 +164,14 @@ madrmsplots['MADrms vs. Spw from Non-Pbcor Image']=[plotter.result.madrmsplots]
       Peak: the pixel value with the largest deviation from zero, which can be either the maximum or minimum value of each image. This is similar to the definition of "Peak" residual used in CASA/tclean.
   </li>
   <li>
-      The gray-out cell highlights the spw with the largest deviation of an image property, among all spw selection groups.
-  </li>  
-  <li>
       MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
   </li>  
+  <li>
+      Pix<800&mu;Jy (percentage): the percentage of pixes (within the unmasked region) with value less than 800&mu;Jy in the Rms image.
+  </li>
+  <li>
+      The gray-out cell highlights the spw with the largest deviation of an image property, among all spw selection groups.
+  </li>        
 </caption>
 
 <thead>
@@ -207,7 +204,7 @@ madrmsplots['MADrms vs. Spw from Non-Pbcor Image']=[plotter.result.madrmsplots]
     <th colspan="1">Peak/MADrms</th>
     <th colspan="1">Max</th>
     <th colspan="1">Median</th>
-    <th colspan="1">Pix<612&mu;Jy</th>
+    <th colspan="1">Pix<800&mu;Jy</th>
     % if name_pol=='I':
       <th colspan="1">Masked</th>
       <th colspan="1">Max</th>
@@ -247,7 +244,7 @@ madrmsplots['MADrms vs. Spw from Non-Pbcor Image']=[plotter.result.madrmsplots]
                   ('residual','max/madrms',1),
                   ('rms','max',1e3),
                   ('rms','median',1e3),
-                  ('rms','pct<6.12e-6',1e2),
+                  ('rms','pct<800e-6',1e2),
                   ('rms','pct_masked',1e2),
                   ('pb','max',1.),
                   ('pb','min',1.),
@@ -291,10 +288,10 @@ madrmsplots['MADrms vs. Spw from Non-Pbcor Image']=[plotter.result.madrmsplots]
 <div style="clear:both;"></div>
 
 
-<%self:plot_group plot_dict="${madrmsplots}" 
+<%self:plot_group plot_dict="${rms_plots}" 
                   url_fn="${lambda ms:  'noop'}"
-                  break_rows_by="band"
-                  sort_row_by="isalpha">
+                  break_rows_by="band,order_idx"
+                  sort_row_by="band,order_idx">
 
         <%def name="title()">
         </%def>
@@ -310,10 +307,10 @@ madrmsplots['MADrms vs. Spw from Non-Pbcor Image']=[plotter.result.madrmsplots]
         </%def>
 </%self:plot_group>
 
-<%self:plot_group plot_dict="${subplots}" 
+<%self:plot_group plot_dict="${img_plots}" 
                   url_fn="${lambda ms:  'noop'}"
-                  break_rows_by="band"
-                  sort_row_by="isalpha">
+                  break_rows_by="band,order_idx"
+                  sort_row_by="band,order_idx">
 
         <%def name="title()">
         </%def>

@@ -4,11 +4,14 @@ import os
 import matplotlib.pyplot as plt
 
 import numpy as np
+from matplotlib.pyplot import cm
+
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
 from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
 
 LOG = infrastructure.get_logger(__name__)
@@ -130,6 +133,9 @@ class VlassCubeCutoutimagesSummary(object):
         # a nested dictionary container for all stats: stats[spw]['rms'] etc.
         stats = collections.OrderedDict()
 
+        stats_stokes_list = []
+        stats_reffreq_list = []
+
         for subimagename in self.result.subimagenames:
 
             with casa_tools.ImageReader(subimagename) as image:
@@ -141,21 +147,31 @@ class VlassCubeCutoutimagesSummary(object):
 
                 if '.psf.' in subimagename:
                     plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                                          reportdir=stage_dir, intent='', stokes_list=None,
+                                                                          reportdir=stage_dir, intent='', stokes_list=['I'],
                                                                           collapseFunction='mean',
                                                                           vmin=-0.1, vmax=0.3))
 
                 elif '.image.' in subimagename and '.pbcor' not in subimagename:
                     # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
                     if '.tt1.' not in subimagename:
-                        item_stats = self._get_stats(image, items=['peak', 'madrms', 'max/madrms'])
+                        # for non-pbcor image, we use a PB-based mask as the image/residual from tclean()  could be unmasked with
+                        # artifically low-amp pixels at edges.
+                        pbname = subimagename.replace('.image.', '.pb.')
+                        item_stats = self._get_stats(
+                            image, items=['peak', 'madrms', 'max/madrms'], mask=f'mask("{pbname}")')
                         stats[virtspw]['image'] = item_stats
                         stats_stokes_list = sky.SkyDisplay.get_stokes(subimagename)
+                        cs = image.coordsys()
+                        stats_reffreq_list.append(cs.referencevalue(format='n')['numeric'][3])
 
                 elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
                     # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
                     if '.tt1.' not in subimagename:
-                        item_stats = self._get_stats(image, items=['peak', 'madrms', 'max/madrms'])
+                        # for non-pbcor image, we use a PB-based mask as the image/residual from tclean()  could be unmasked with
+                        # artifically low-amp pixels at edges.
+                        pbname = subimagename.replace('.residual.', '.pb.')
+                        item_stats = self._get_stats(
+                            image, items=['peak', 'madrms', 'max/madrms'], mask=f'mask("{pbname}")')
                         stats[virtspw]['residual'] = item_stats
 
                 elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
@@ -185,7 +201,7 @@ class VlassCubeCutoutimagesSummary(object):
                     plot_wrappers.extend(plots)
 
                     if '.tt1.' not in subimagename:
-                        item_stats = self._get_stats(image, items=['max', 'median', 'pct<6.12e-6', 'pct_masked'])
+                        item_stats = self._get_stats(image, items=['max', 'median', 'pct<800e-6', 'pct_masked'])
                         stats[virtspw]['rms'] = item_stats
 
                 elif '.residual.pbcor.' in subimagename and not subimagename.endswith('.rms'):
@@ -198,7 +214,7 @@ class VlassCubeCutoutimagesSummary(object):
 
                 elif '.pb.' in subimagename:
                     plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                             reportdir=stage_dir, intent='', stokes_list=None,
+                                                             reportdir=stage_dir, intent='', stokes_list=['I'],
                                                              collapseFunction='mean', vmin=0.2, vmax=1.)
                     for plot in plots:
                         plot.parameters['type'] = 'pb'
@@ -209,7 +225,7 @@ class VlassCubeCutoutimagesSummary(object):
                     plot_hist.parameters['virtspw'] = plot_wrappers[-1].parameters['virtspw']
                     plot_hist.parameters['band'] = plot_wrappers[-1].parameters['band']
                     plot_hist.parameters['type'] = plot_wrappers[-1].parameters['type']
-                    plot_hist.parameters['stokes'] = 'IQUV'
+                    plot_hist.parameters['stokes'] = 'I'
                     plot_wrappers.append(plot_hist)
                     if '.tt1.' not in subimagename:
                         item_stats = self._get_stats(image, items=['max', 'min', 'median'])
@@ -221,39 +237,24 @@ class VlassCubeCutoutimagesSummary(object):
 
         self.result.stats = stats
         self.result.stats_stokes = stats_stokes_list
+        self.result.stats_reffreq = stats_reffreq_list
         self._get_stats_summary()
-        self.result.madrmsplots = self._plot_madrms_vs_spw(reportdir=stage_dir)
 
-        return [p for p in plot_wrappers if p is not None]
+        plot_wrappers = [p for p in plot_wrappers if p is not None]
+        for p in plot_wrappers:
+            p.parameters['order_idx'] = 10
+            if p.parameters['type'] == 'image.pbcor':
+                p.parameters['order_idx'] = 1
+            if p.parameters['type'] == 'residual.pbcor':
+                p.parameters['order_idx'] = 2
+            if p.parameters['type'] == 'image.pbcor.rms':
+                p.parameters['order_idx'] = 3
+            if p.parameters['type'] == 'pb':
+                p.parameters['order_idx'] = 4
+            if p.parameters['type'] == 'psf':
+                p.parameters['order_idx'] = 4
 
-    def _plot_madrms_vs_spw(self, reportdir='./'):
-
-        figfile = os.path.join(reportdir, 'image_madrms_vs_spw.png')
-
-        x = np.array(self.result.stats_summary['image']['madrms']['spw'])
-        y = np.array(self.result.stats_summary['image']['madrms']['value'])*1e3
-
-        LOG.debug('Creating the MADrms vs. spw plot.')
-        try:
-            fig, ax = plt.subplots()
-            for idx, stokes in enumerate(self.result.stats_stokes):
-                ax.plot(x, y[:, idx], marker="o", label=f'$\it{stokes}$')
-
-            ax.legend()
-            ax.set_xlabel('Spw Selected')
-            ax.set_ylabel('MADrms [mJy/beam]')
-            fig.tight_layout()
-            fig.savefig(figfile)
-            plt.close(fig)
-            plot = logger.Plot(figfile,
-                               x_axis='Spw',
-                               y_axis='MadRms',
-                               parameters={})
-            return plot
-        except Exception as ex:
-            LOG.warning("Could not create plot {}".format(figfile))
-            LOG.warning(ex)
-            return None
+        return plot_wrappers
 
     def _get_stats_summary(self):
 
@@ -280,10 +281,10 @@ class VlassCubeCutoutimagesSummary(object):
 
         return
 
-    def _get_stats(self, image, items=['min', 'max']):
+    def _get_stats(self, image, items=['min', 'max'], mask=None):
         """Extract the desired stats properties per Stokes from an ia.statistics() return."""
 
-        imstats = image.statistics(robust=True, axes=[0, 1, 3])
+        imstats = image.statistics(robust=True, axes=[0, 1, 3], mask=mask)
         stats = collections.OrderedDict()
 
         for item in items:
@@ -295,11 +296,11 @@ class VlassCubeCutoutimagesSummary(object):
                 stats['maxabs'] = np.maximum(np.abs(imstats['max']), np.abs(imstats['min']))
             elif 'pct<' in item:
                 threshold = float(item.replace('pct<', ''))
-                imstats_threshold = image.statistics(robust=True, axes=[0, 1, 3], includepix=[0, threshold])
+                imstats_threshold = image.statistics(robust=True, axes=[0, 1, 3], includepix=[0, threshold], mask=mask)
                 if len(imstats_threshold['npts']) == 0:
                     # if no pixel is selected from the restricted pixel value range, the return of ia.statitics() would be empty.
                     imstats_threshold['npts'] = np.zeros(4)
-                stats[item] = imstats_threshold['npts']
+                stats[item] = imstats_threshold['npts']/imstats['npts']
             elif item.lower() == 'pct_masked':
                 im_shape = (imstats['trc']-imstats['blc'])+1
                 stats[item] = 1.-imstats['npts']/im_shape[0]/im_shape[1]
@@ -313,3 +314,91 @@ class VlassCubeCutoutimagesSummary(object):
                 stats[item] = imstats[item.lower()]
 
         return stats
+
+
+class VlassCubeCutoutRmsSummary(object):
+    def __init__(self, context, result):
+        self.context = context
+        self.result = result
+
+    @matplotlibrc_formal
+    def plot(self):
+
+        stage_dir = os.path.join(self.context.report_dir,
+                                 'stage%d' % self.result.stage_number)
+        if not os.path.exists(stage_dir):
+            os.mkdir(stage_dir)
+
+        plots = []
+
+        figfile = os.path.join(stage_dir, 'image_madrms_vs_freq.png')
+        plot = self._plot_rms(figfile=figfile, imtype='image', item='madrms')
+        plots.append(plot)
+
+        figfile = os.path.join(stage_dir, 'image_rms_vs_spw.png')
+        plot = self._plot_rms(figfile=figfile, imtype='rms', item='median')
+        plots.append(plot)
+
+        return [p for p in plots if p is not None]
+
+    def _plot_rms(self, figfile, imtype='rms', item='median'):
+
+        x = np.array(self.result.stats_reffreq)/1e9
+        y = np.array(self.result.stats_summary[imtype][item]['value'])*1e3
+        spw_labels = np.array(self.result.stats_summary[imtype][item]['spw'])
+
+        LOG.debug(f'Creating the {imtype}_{item} vs. Frequency plot.')
+
+        try:
+
+            fig, ax = plt.subplots(figsize=(8, 6))
+            cmap = cm.get_cmap('rainbow_r')
+            for idx, stokes in enumerate(self.result.stats_stokes):
+                color_idx = idx/len(self.result.stats_stokes)
+                ax.plot(x, y[:, idx], color=cmap(color_idx), label=f'$\it{stokes}$')
+                ax.scatter(x, y[:, idx], color=cmap(color_idx), alpha=0.75, s=300, edgecolors='black')
+                if stokes == 'I':
+                    for idx_spw in range(len(x)):
+                        text = ax.annotate(spw_labels[idx_spw], (x[idx_spw], y[idx_spw, idx]),
+                                           ha='center', va='center', fontsize=9.)
+                        text.set_alpha(.7)
+
+            ax.set_xlabel('Frequency [GHz]')
+            ax.set_ylabel(r'RMS$_{\rm median}$ [mJy/beam]')
+            xlim = ax.get_xlim()
+            ylim = ax.get_ylim()
+            ax.set_xlim(1.9, 4.1)
+            ax.set_ylim(ylim)
+
+            # 'RflagDevHeuristic' is only imported on-demand; if it's imported during module initialization,
+            # a circular import will introduce problem (hif->hifv->hif)
+            from pipeline.hifv.heuristics.rfi import RflagDevHeuristic
+            sefd = RflagDevHeuristic._get_vla_sefd()
+
+            for band, sefd_per_band in sefd.items():
+                sefd_x = sefd_per_band[:, 0]/1e3
+                sefd_y = sefd_per_band[:, 1]
+                if np.mean(x) > np.min(sefd_x) and np.mean(x) < np.max(sefd_x):
+                    LOG.info(f'Selecting Band {band} for the SEFD-based rms prediction.')
+                    sefd_spw = np.interp(x, sefd_x, sefd_y)
+                    scale = np.median(np.divide(y[:, 1:], sefd_spw[:, np.newaxis]))
+                    ax.plot(sefd_x, sefd_y*scale, color='gray', label=r'SEFD$_{\rm norm}$', linestyle='-')
+
+            # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+            ax.legend(fontsize=12, labelspacing=0.5)
+
+            fig.tight_layout()
+            fig.savefig(figfile)
+            plt.close(fig)
+
+            plot = logger.Plot(figfile,
+                               x_axis='Frequency',
+                               y_axis=imtype+'_'+item,
+                               parameters={})
+
+        except Exception as ex:
+           LOG.warning("Could not create plot {}".format(figfile))
+           LOG.warning(ex)
+           plot = None
+
+        return plot

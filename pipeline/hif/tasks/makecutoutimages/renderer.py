@@ -94,8 +94,8 @@ class T2_4MDetailsMakecutoutimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDe
 
         # Get results info
         info_dict = {}
-
-        subplots = {}
+        img_plots = {}
+        rms_plots = {}
 
         for r in results:
             subimagenames = r.subimagenames
@@ -117,19 +117,30 @@ class T2_4MDetailsMakecutoutimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDe
                     info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
 
             image_size = r.image_size
-            # Make the plots of the rms images
+
+            # Make the plots of the cutout images
             plotter = display.VlassCubeCutoutimagesSummary(context, r)
-            plots = plotter.plot()
+            img_plots['Cutout Image Summary Plots'] = plotter.plot()
+
+            # Make the RMS summary plots
+            plotter = display.VlassCubeCutoutRmsSummary(context, r)
+            rms_plots['Cutout Rms Summary Plots (MADrms vs. Spw from Non-Pbcor Image)'] = plotter.plot()
+
+            # Export Stats summary
+            stats_summary = r.stats_summary
+            stats = r.stats
+
             # PIPE-631: Weblog thumbnails are sorted according 'isalpha' parameter.
-            for p in plots:
+            for p in img_plots['Cutout Image Summary Plots']:
                 if ".alpha" in p.basename:
                     p.parameters['isalpha'] = 1
                 else:
                     p.parameters['isalpha'] = 0
-            subplots['Cutout Image Summary Plots'] = plots
 
-        ctx.update({'subplots': subplots,
+        ctx.update({'img_plots': img_plots,
+                    'rms_plots': rms_plots,
                     'info_dict': info_dict,
                     'dirname': weblog_dir,
-                    'plotter': plotter,
+                    'stats': stats,
+                    'stats_summary': stats_summary,
                     'image_size': image_size})
