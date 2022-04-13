@@ -487,7 +487,7 @@ class T1_1Renderer(RendererBase):
             'observers': observers,
             'ms_summary_rows': ms_summary_rows,
             'environment': environment_rows,
-            'execution_mode': execution_mode,
+            'execution_mode': execution_mode
         }
 
     @staticmethod

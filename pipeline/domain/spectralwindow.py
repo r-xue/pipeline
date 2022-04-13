@@ -296,10 +296,6 @@ class SpectralWindow(object):
         if transitions is None:
             transitions = ['Unknown']
 
-        #FIXME: Why and/or just take this out? 
-        if sdm_num_bin is None:
-            sdm_num_bin = 1
-
         self.id = spw_id
         self.bandwidth = measures.Frequency(bandwidth, measures.FrequencyUnits.HERTZ)
 
