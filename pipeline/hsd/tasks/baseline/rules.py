@@ -1,3 +1,4 @@
+"""Configuration for line finding and validation."""
 # Rule for Line Detection
 LineFinderRule = {'MaxFWHM': 900,
                   'MinFWHM': 5,

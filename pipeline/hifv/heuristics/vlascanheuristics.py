@@ -975,7 +975,7 @@ class VLAScanHeuristics(object):
                     buildSelectionString(msmd.fieldsforintent("CALIBRATE_FLUX*"))
 
             if (self.flux_field_select_string == ''):
-                LOG.warn("No flux density calibration fields found")
+                LOG.warning("No flux density calibration fields found")
 
             # Bandpass Cal Intent
             self.bandpass_scan_select_string = \
@@ -984,10 +984,10 @@ class VLAScanHeuristics(object):
             if len(bpfieldlist) > 1:
                 self.bandpass_field_select_string = \
                     buildSelectionString([bpfieldlist[0]])
-                LOG.warn("More than one field is defined as the bandpass calibrator.")
-                LOG.warn("  Models are required for all BP calibrators if multiple fields ")
-                LOG.warn("  are to be used, not yet implemented; the pipeline will use ")
-                LOG.warn("  only the first field.")
+                LOG.warning("More than one field is defined as the bandpass calibrator.")
+                LOG.warning("  Models are required for all BP calibrators if multiple fields ")
+                LOG.warning("  are to be used, not yet implemented; the pipeline will use ")
+                LOG.warning("  only the first field.")
             else:
                 self.bandpass_field_select_string = \
                     buildSelectionString(bpfieldlist)
@@ -1005,8 +1005,8 @@ class VLAScanHeuristics(object):
             if len(delayfieldlist) > 1:
                 self.delay_field_select_string = \
                     buildSelectionString([delayfieldlist[0]])
-                LOG.warn("More than one field is defined as the delay calibrator.")
-                LOG.warn("  The pipeline will use only the first field.")
+                LOG.warning("More than one field is defined as the delay calibrator.")
+                LOG.warning("  The pipeline will use only the first field.")
             else:
                 self.delay_field_select_string = \
                     buildSelectionString(delayfieldlist)
@@ -1030,7 +1030,7 @@ class VLAScanHeuristics(object):
                 buildSelectionString(msmd.fieldsforintent("CALIBRATE_PHASE*"))
             if (self.phase_scan_select_string == '' or
                 self.phase_field_select_string == ''):
-                LOG.warn("No gain calibration scans found")
+                LOG.warning("No gain calibration scans found")
 
             # Find all calibrator scans and fields
             self.calibrator_scan_select_string = \
@@ -1059,9 +1059,9 @@ class VLAScanHeuristics(object):
 
             # Here we pass through a set construct to get the unique union.
             self.testgainscans = buildSelectionString(
-                list(filter(None, set(self.bandpass_scan_select_string.split(',')+self.delay_scan_select_string.split(',')))))
+                sorted(filter(None, set(self.bandpass_scan_select_string.split(',')+self.delay_scan_select_string.split(','))), key=int))
             self.checkflagfields = buildSelectionString(
-                list(filter(None, set(self.bandpass_field_select_string.split(',')+self.delay_field_select_string.split(',')))))
+                sorted(filter(None, set(self.bandpass_field_select_string.split(',')+self.delay_field_select_string.split(','))), key=int))
 
         return True
 

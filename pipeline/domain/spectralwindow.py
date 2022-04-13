@@ -194,8 +194,6 @@ class SpectralWindow(object):
         baseband: The baseband
         channels: Frequency information of each channel in spectral window,
             i.e.,, frequencies, channel width, effective band width.
-        data_column: a dictionary of data type (key) and data column name
-            (value) combination
         freq_lo: A list of LO frequencies
         intents: the observing intents that have been observed using this
             spectral window
@@ -211,21 +209,21 @@ class SpectralWindow(object):
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
-                 'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'data_column', 'sdm_num_bin')
+                 'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin')
 
     def __getstate__(self):
         """Define what to pickle as a class intance."""
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
                 self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
-                self.spectralspec, self.transitions, self.data_column, self.sdm_num_bin)
+                self.spectralspec, self.transitions, self.sdm_num_bin)
 
     def __setstate__(self, state):
         """Define how to unpickle a class instance."""
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
          self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
-         self.data_column, self.sdm_num_bin) = state
+         self.sdm_num_bin) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -332,8 +330,6 @@ class SpectralWindow(object):
 
         self.transitions = transitions
         self.sdm_num_bin = sdm_num_bin 
-
-        self.data_column = {}
 
     @property
     def centre_frequency(self):

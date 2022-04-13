@@ -21,7 +21,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class MakeImagesInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
@@ -199,9 +199,14 @@ class MakeImages(basetask.StandardTaskTemplate):
         return False
 
     def _get_image_rms_as_sensitivity(self, result, target, heuristics):
-        imname = result.image
+        extension = 'tt0.' if result.multiterm else '' # Needed when nterms=2, see PIPE-1361
+        # the tt0 needs to be inserted before the ending ".pbcor" in the image name
+        index = result.image.find('pbcor')
+        imname = result.image[:index] + extension + result.image[index:] 
+
         if not os.path.exists(imname):
             return None
+
         cqa = casa_tools.quanta
         cell = target['cell'][0:2] if len(target['cell']) >= 2 else (target['cell'][0], target['cell'][0])
         # Image beam
@@ -232,7 +237,9 @@ class MakeImages(basetask.StandardTaskTemplate):
                            cell=cell,
                            robust=target['robust'],
                            uvtaper=target['uvtaper'],
-                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'))
+                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
+                           pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
+                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'))
 
 
 class CleanTaskFactory(object):

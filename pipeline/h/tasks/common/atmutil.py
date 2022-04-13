@@ -20,7 +20,7 @@ from pipeline.infrastructure import casa_tools
 
 class AtmType(object):
     """Atmosphere type enum class."""
-    
+
     tropical = 1
     midLatitudeSummer = 2
     midLatitudeWinter = 3
@@ -74,7 +74,7 @@ def calc_airmass(elevation: float=45.0) -> float:
     Returns:
         The relative airmass to the one at zenith.
     """
-    return 1.0 / math.cos((90.0 - elevation) * math.pi / 180.) 
+    return 1.0 / math.cos((90.0 - elevation) * math.pi / 180.)
 
 
 def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
@@ -84,12 +84,12 @@ def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
 
     Calculate total atmospheric transmission from the zenith opacities and
     relative airmass.
-    
+
     Args:
         arimass: The relative airmass to the zenith one.
         dry_opacity: The integrated zenith dry opacity.
         wet_opacity: The integrated zenith wet opacity.
-    
+
     Returns:
         The atmospheric transmission.
     """
@@ -99,11 +99,11 @@ def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
 def get_dry_opacity(at: casatools.atmosphere) -> np.ndarray:
     """
     Obtain the integrated zenith opacity of dry species.
-    
+
     Args:
         at: Atmosphere tool instance initialized by a spectral window and site
             parameter settings.
-    
+
     Returns:
         An array of the zenith integrated opacity of dry species for each
         channel of the first spectral window.
@@ -116,11 +116,11 @@ def get_dry_opacity(at: casatools.atmosphere) -> np.ndarray:
 def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
     """
     Obtain the integrated zenith opacity of wet species.
-    
+
     Args:
         at: Atmosphere tool instance initialized by a spectral window and site
             parameter settings.
-    
+
     Returns:
         An array of the zenith integrated opacity of wet species for each
         channel of the first spectral window.
@@ -133,18 +133,18 @@ def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
 def test(pwv: float=1.0, elevation: float=45.0) -> np.ndarray:
     """
     Calculate atmospheric transmission and generate a plot.
-    
+
     Calculate atmospheric transmission of a given PWV and elevation angle.
     The default parameter values of init_at function are used to initialize
     atmospheric and spectral window settings. A plot of atmospheric
     transmission, wet and dry zenith opacities of each channel of the spectral
     window is also generated.
-    
+
     Args:
         pwv: The zenith water vapor column for forward radiative transfer
             calculation (unit: mm).
         elevation: The angle of elevation (unit: degree).
-    
+
     Returns:
         An array of atmospheric transmission of each channel of the spectral window.
     """
@@ -169,10 +169,10 @@ def plot(frequency: np.ndarray, dry_opacity: np.ndarray,
          wet_opacity: np.ndarray, transmission: np.ndarray):
     """
     Generate a plot of atmospheric transmission, wet and dry opacities.
-    
+
     Generate a twin axes plot of atmospheric transmission, wet and dry
     opacities by matplotlib.
-    
+
     Args:
         frequency: An array of frequency values.
         dry_opacity: The integrated dry opacity at each frequency.
@@ -199,11 +199,11 @@ def plot(frequency: np.ndarray, dry_opacity: np.ndarray,
 def get_spw_spec(vis: str, spw_id: int) -> Tuple[float, int, float]:
     """
     Calculate spectral setting of a spectral window.
-    
+
     Calculate the center frequency, number of channels, and channel resolution
     of a spectral windown in a MeasurementSet. The values can be passed to
     init_at function to initialize spectral window setting in atmosphere tool.
-    
+
     Args:
         vis: Path to MeasurementSet.
         spw_id: A spectral window ID to select.
@@ -233,23 +233,23 @@ def get_spw_spec(vis: str, spw_id: int) -> Tuple[float, int, float]:
 def get_median_elevation(vis: str, antenna_id: int) -> float:
     """
     Calculate the median elevation of pointing directions of an antenna.
-    
+
     Calculate the median elevation of pointing directions of an antenna in a
     MeasurementSet. The pointing directions are obtained from the DIRECTION
     column in POINTING subtable. Only supports DIRECTION column in AZELGEO
     coordinate frame and the unit in radian.
-    
+
     Args:
         vis: Path to MeasurementSet.
         antenna_id: The antenna ID to select.
-    
+
     Returns:
         The median of elevation of selected antenna (unit: degree).
         Rerun 45.0 if DIRECTION is not in AZELGEO.
-    
+
     Raises:
         RuntimeError: An error when DIRECTION column has unsupported coodinate
-            unit. 
+            unit.
     """
     with casa_tools.TableReader(os.path.join(vis, 'POINTING')) as mytb:
         tsel = mytb.query('ANTENNA_ID == {}'.format(antenna_id))
@@ -266,14 +266,14 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
         finally:
             tsel.close()
 
-    return elevation        
+    return elevation
 
 
 def get_transmission(vis: str, antenna_id: int=0, spw_id: int=0,
                      doplot: bool=False) -> Tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission of an antenna and spectral window.
-    
+
     Caldulate the atmospheric transmission of a given spectral window for an
     elevation angle corresponding to pointings of a given antenna in a
     MeasurementSet.
@@ -296,7 +296,7 @@ def get_transmission(vis: str, antenna_id: int=0, spw_id: int=0,
     center_freq, nchan, resolution = get_spw_spec(vis, spw_id)
     elevation = get_median_elevation(vis, antenna_id)
 
-    # set pwv to 1.0 
+    # set pwv to 1.0
     #pwv = 1.0
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
@@ -315,5 +315,7 @@ def get_transmission(vis: str, antenna_id: int=0, spw_id: int=0,
 
     if doplot:
         plot(frequency, dry_opacity, wet_opacity, transmission)
+
+    myat.done()
 
     return frequency, transmission

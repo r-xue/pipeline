@@ -242,7 +242,7 @@ class RefAntHeuristics(object, metaclass=vdp.PipelineInputsMeta):
 
         # Remove ignored antennas
         if self.refantignore:
-            LOG.warn('Antennas to be ignored: {0}'.format(self.refantignore))
+            LOG.warning('Antennas to be ignored: {0}'.format(self.refantignore))
             names = [n for n in names if n not in self.refantignore.split(',')]
 
         # Return the antenna names

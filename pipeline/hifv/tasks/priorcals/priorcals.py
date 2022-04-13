@@ -91,7 +91,7 @@ def correct_ant_posns(vis_name, print_offsets=False):
     [obs_year, obs_month, obs_day, obs_time_string] = date_time[0].split('/')
     if int(obs_year) < 2010:
         if print_offsets:
-            LOG.warn('Does not work for VLA observations')
+            LOG.warning('Does not work for VLA observations')
         return [1, '', []]
     [obs_hour, obs_minute, obs_second] = obs_time_string.split(':')
     obs_time = 10000*int(obs_year) + 100*int(obs_month) + int(obs_day) + \
@@ -115,7 +115,7 @@ def correct_ant_posns(vis_name, print_offsets=False):
         response = urllib.request.urlopen(URL_BASE + '2010')
     except urllib.error.URLError as err:
         if print_offsets:
-            LOG.warn('No internet connection to antenna position correction URL {}'.format(err.reason))
+            LOG.warning('No internet connection to antenna position correction URL {}'.format(err.reason))
         return [2, '', []]
     response.close()
     for year in range(2010, current_year+1):
@@ -213,13 +213,30 @@ def correct_ant_posns(vis_name, print_offsets=False):
 
 
 class PriorcalsInputs(vdp.StandardInputs):
-    swpow_spw = vdp.VisDependentProperty(default='')
-    tecmaps = vdp.VisDependentProperty(default=False)
+    """Inputs class for the hifv_priorcals pipeline task.  Used on VLA measurement sets.
 
-    def __init__(self, context, vis=None, tecmaps=None, swpow_spw=None):
+    The class inherits from vdp.StandardInputs.
+
+    """
+    swpow_spw = vdp.VisDependentProperty(default='')
+    show_tec_maps = vdp.VisDependentProperty(default=True)
+    apply_tec_correction = vdp.VisDependentProperty(default=False)
+
+    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None):
+        """
+        Args:
+            context (:obj:): Pipeline context
+            vis(str):  Measurement set
+            show_tec_maps(bool):  Display the plot output from the CASA tec_maps recipe function
+            apply_tec_correction:  CASA tec_maps recipe function is executed - this bool determines if gencal is
+                                   executed and the resulting table applied
+            swpow_spw(str):  spws for switched power
+
+        """
         self.context = context
         self.vis = vis
-        self.tecmaps = tecmaps
+        self.show_tec_maps = show_tec_maps
+        self.apply_tec_correction = apply_tec_correction
         self.swpow_spw = swpow_spw
 
     def to_casa_args(self):
@@ -228,6 +245,11 @@ class PriorcalsInputs(vdp.StandardInputs):
 
 @task_registry.set_equivalent_casa_task('hifv_priorcals')
 class Priorcals(basetask.StandardTaskTemplate):
+    """Class for the Priorcals pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from basetask.StandardTaskTemplate
+
+    """
     Inputs = PriorcalsInputs
 
     def prepare(self):
@@ -240,8 +262,9 @@ class Priorcals(basetask.StandardTaskTemplate):
         sw_result = self._do_swpowcal()
         antpos_result, antcorrect = self._do_antpos()
         tecmaps_result = None
-        if self.inputs.tecmaps:
-            tecmaps_result = self._do_tecmaps()
+        if self.inputs.show_tec_maps or self.inputs.apply_tec_correction:
+            tecmaps_result = self._do_tecmaps(show_tec_maps=self.inputs.show_tec_maps,
+                                              apply_tec_correction=self.inputs.apply_tec_correction)
 
         #try:
         #    antpos_result.merge_withcontext(self.inputs.context)
@@ -313,14 +336,15 @@ class Priorcals(basetask.StandardTaskTemplate):
 
         fracantcorrect = float(len(antcorrect)) / float(len(m.antennas))
         if fracantcorrect > 0.5:
-            LOG.warn("{:5.2f} percent of antennas needed position corrections.".format(100.0 * fracantcorrect))
+            LOG.warning("{:5.2f} percent of antennas needed position corrections.".format(100.0 * fracantcorrect))
 
         return result, antcorrect
 
-    def _do_tecmaps(self):
+    def _do_tecmaps(self, show_tec_maps=True, apply_tec_correction=False):
         """Run tec_maps function"""
 
-        inputs = TecMaps.Inputs(self.inputs.context, vis=self.inputs.vis, output_dir='')
+        inputs = TecMaps.Inputs(self.inputs.context, vis=self.inputs.vis, output_dir='', show_tec_maps=show_tec_maps,
+                                apply_tec_correction=apply_tec_correction)
         task = TecMaps(inputs)
         return self._executor.execute(task)
 
@@ -328,7 +352,7 @@ class Priorcals(basetask.StandardTaskTemplate):
 
         # Insert value if required for testing
 
-        '''
+        """
         #print "ADDED TEST TROP VALUE"
         trdelscale = 1.23
         tb = casa_tools.table()
@@ -336,7 +360,7 @@ class Priorcals(basetask.StandardTaskTemplate):
         tb.putkeyword('VLATrDelCorr', trdelscale)
         tb.close()
         #print "END OF ADDING TEST TROP VALUE"
-        '''
+        """
 
         # Detect EVLA 16B Trop Del Corr
         # (Silent if required keyword absent, or has value=0.0)
@@ -351,4 +375,4 @@ class Priorcals(basetask.StandardTaskTemplate):
                                       "A correction for the online tropospheric delay model error WILL BE APPLIED!  " \
                                       "Tropospheric delay error correction coefficient="+str(-trdelscale/1000.0)+ " (ps/m) "
                     LOG.debug("EVLA 16B Online Trop Del Corr is ON, scale=" + str(trdelscale))
-                    LOG.warn(warning_message)
+                    LOG.warning(warning_message)

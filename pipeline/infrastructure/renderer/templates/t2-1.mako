@@ -20,7 +20,7 @@ $(document).ready(function() {
 		<ul class="nav nav-sidebar">
 			% for ms in session.mses:
 			<li>
-				<a id="sidebar_${re.sub('[^a-zA-Z0-9]', '_', ms.basename)}"
+				<a id="sidebar_${re.sub(r'[^a-zA-Z0-9]', '_', ms.basename)}"
 				   href="session${session.name}/${ms.basename}/t2-1_details.html">
 					${ms.basename}
 				</a>

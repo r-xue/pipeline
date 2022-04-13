@@ -1,18 +1,38 @@
+"""QA score handlers for k2jycal task."""
 import collections
+
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from . import k2jycal
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.basetask import ResultsList
+
 LOG = logging.get_logger(__name__)
 
 
 class SDK2JyCalQAHandler(pqa.QAPlugin):
+    """Class to handle QA score for k2jycal result."""
+
     result_cls = k2jycal.SDK2JyCalResults
     child_cls = None
 
-    def handle(self, context, result):
+    def handle(self, context: 'Context', result: k2jycal.SDK2JyCalResults) -> None:
+        """Evaluate QA score for k2jycal result.
+
+        Score is 0.0 if
+
+            - there is missing Jy/K factor, or,
+            - accessed Jy/K DB and failed.
+
+        Args:
+            context: Pipeline context (not used)
+            result: SDK2JyCalResults instance
+        """
         is_missing_factor = (not result.all_ok)
 
         shortmsg = "Missing Jy/K factors for some data" if is_missing_factor else "Jy/K factors are found for all data"
@@ -37,10 +57,18 @@ class SDK2JyCalQAHandler(pqa.QAPlugin):
 
 
 class SDK2JyCalListQAHandler(pqa.QAPlugin):
+    """Class to handle QA score for a list of k2jycal results."""
+
     result_cls = collections.Iterable
     child_cls = k2jycal.SDK2JyCalResults
 
-    def handle(self, context, result):
+    def handle(self, context: 'Context', result: 'ResultsList') -> None:
+        """Evaluate QA score for a list of k2jycal results.
+
+        Args:
+            context: Pipeline context (not used)
+            result: List of SDK2JyCalResults instances
+        """
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])

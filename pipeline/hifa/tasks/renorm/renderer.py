@@ -82,7 +82,7 @@ def make_renorm_table(context, results, weblog_dir):
     merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
 
     for row, _ in enumerate(merged_rows):
-        mm = re.search('<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
+        mm = re.search(r'<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
         if mm:  # do we have a pattern match?
             scale_factor = scale_factors[row]
             if scale_factor > threshold:

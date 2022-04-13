@@ -816,13 +816,13 @@ class FrequencyRange(object):
 
 
 class Latitude(EquatorialArc):
-    patt = re.compile('\s*' +
-                      '(?P<degs>[-+]?\d+)' +
-                      '\s*:?\s*' +
-                      '(?P<mins>\d+)' +
-                      '\s*:?\s*' +
-                      '(?P<secs>\d+\.?\d*)' +
-                      '\s*')
+    patt = re.compile(r'\s*' +
+                      r'(?P<degs>[-+]?\d+)' +
+                      r'\s*:?\s*' +
+                      r'(?P<mins>\d+)' +
+                      r'\s*:?\s*' +
+                      r'(?P<secs>\d+\.?\d*)' +
+                      r'\s*')
 
     def __init__(self, value=0, units=ArcUnits.DEGREE):
         """Creates a new latitude with the given magnitude and units.
@@ -954,13 +954,13 @@ class Latitude(EquatorialArc):
 
 
 class Longitude(EquatorialArc):
-    patt = re.compile('\s*' +
-                      '(?P<hours>\d+)' +
-                      '\s*:?\s*' +
-                      '(?P<mins>\d+)' +
-                      '\s*:?\s*' +
-                      '(?P<secs>\d+\.?\d*)' +
-                      '\s*')
+    patt = re.compile(r'\s*' +
+                      r'(?P<hours>\d+)' +
+                      r'\s*:?\s*' +
+                      r'(?P<mins>\d+)' +
+                      r'\s*:?\s*' +
+                      r'(?P<secs>\d+\.?\d*)' +
+                      r'\s*')
 
     def __init__(self, value=0, units=ArcUnits.DEGREE):
         """Creates a new longitude with the given magnitude and units.

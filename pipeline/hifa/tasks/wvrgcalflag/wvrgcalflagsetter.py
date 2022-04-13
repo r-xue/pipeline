@@ -73,7 +73,7 @@ class WvrgcalFlagSetter(basetask.StandardTaskTemplate):
             axisnames = np.array(f.axisnames)
             index = np.arange(len(axisnames))
             antindex = [i for i in index
-                        if re.match('antenna$', axisnames[i], re.I)]
+                        if re.match(r'antenna$', axisnames[i], re.I)]
             antindex = antindex[0]
 
             # update the set of wvrflag antennas that have attracted flagging

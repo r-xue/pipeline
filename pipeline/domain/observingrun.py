@@ -2,7 +2,7 @@ import collections
 import itertools
 import operator
 import os
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -78,7 +78,7 @@ class ObservingRun(object):
                         return ms
             raise KeyError('No measurement set found with intent {0}'.format(intent))
 
-    def get_measurement_sets(self, names=None, intents=None, fields=None, imaging_preferred=False):
+    def get_measurement_sets(self, names=None, intents=None, fields=None):
         """
         Returns measurement sets matching the given arguments.
         """
@@ -107,19 +107,12 @@ class ObservingRun(object):
             candidates = [ms for ms in candidates
                           if fields_to_match.isdisjoint({field.name for field in ms.fields})]
 
-        # When requested, and if any imaging MeasurementSets have been
-        # registered with the context, filter out the non-imaging objects
-        if imaging_preferred:
-            imaging_flags = [getattr(ms, 'is_imaging_ms', False) for ms in candidates]
-            if any(imaging_flags):
-                candidates = [ms for ms, is_imaging_ms in zip(candidates, imaging_flags)
-                              if is_imaging_ms]
-
         return candidates
 
     def get_measurement_sets_of_type(self, dtypes: List[DataType],
-                                     msonly: bool=True) -> Union[List[MeasurementSet],
-                                                                 Tuple[collections.OrderedDict, DataType]]:
+                                     msonly: bool=True, source: Optional[str]=None,
+                                     spw: Optional[str]=None) -> Union[List[MeasurementSet],
+                                                               Tuple[collections.OrderedDict, DataType]]:
         """
         Return a list of MeasurementSet domain object with matching DataType.
 
@@ -134,20 +127,25 @@ class ObservingRun(object):
                 list. Search stops at the first DataType with which at least
                 one MS is found.
             msonly: If True, return a list of MS domain object only.
+            source: Filter for particular source name selection (comma
+                separated list of names).
+            spw: Filter for particular real spw specification (comma separated
+                list of real spw IDs).
 
         Returns:
             When msonly is True, a list of MeasurementSet domain objects of
-            a matching DataType is returned.
+            a matching DataType (and optionally sources and spws) is returned.
             Otherwise, a tuple of an ordered dictionary and a matched DataType
-            is returned. The ordered dictionary stores matching MS domain
-            objects as keys and matching data column names as values. The order
-            of elements is that appears in measurement_sets list attribute.
+            (and optionally sources and spws) is returned. The ordered dictionary
+            stores matching MS domain objects as keys and matching data column
+            names as values. The order of elements is that appears in
+            measurement_sets list attribute.
         """
         found = []
         column = []
         for dtype in dtypes:
             for ms in self.measurement_sets:
-                dcol = ms.get_data_column(dtype)
+                dcol = ms.get_data_column(dtype, source, spw)
                 if dcol is not None:
                     found.append(ms)
                     column.append(dcol)
@@ -160,8 +158,11 @@ class ObservingRun(object):
         if msonly:
             return found
         else:
-            ms_dict = collections.OrderedDict( (m, c) for m, c in zip(found, column))
-            return ms_dict, dtype
+            if len(found) > 0:
+                ms_dict = collections.OrderedDict( (m, c) for m, c in zip(found, column))
+                return ms_dict, dtype
+            else:
+                return collections.OrderedDict(), None
 
     def get_fields(self, names=None):
         """
@@ -182,19 +183,23 @@ class ObservingRun(object):
     @staticmethod
     def get_real_spw_id_by_name(spw_name, target_ms):
         """
+        Translate a (science) spw name to the real spw ID for a given MS.
+
         :param spw_name: the spw name to convert
         :type spw_name: string
         :param target_ms: the MS to map spw_name to
         :type target_ms: domain.MeasurementSet
         """
         spw_id = None
-        for spw in target_ms.spectral_windows:
+        for spw in target_ms.get_spectral_windows(science_windows_only=True):
             if spw.name == spw_name:
                 spw_id = spw.id
         return spw_id
 
     def get_virtual_spw_id_by_name(self, spw_name):
         """
+        Translate a (science) spw name to the virtual spw ID for this pipeline run.
+
         :param spw_name: the spw name to convert
         :type spw_name: string
         """
@@ -202,6 +207,8 @@ class ObservingRun(object):
 
     def virtual2real_spw_id(self, spw_id, target_ms):
         """
+        Translate a virtual (science) spw ID to the real one for a given MS.
+
         :param spw_id: the spw id to convert
         :type spw_id: integer
         :param target_ms: the MS to map spw_id to
@@ -211,6 +218,8 @@ class ObservingRun(object):
 
     def real2virtual_spw_id(self, spw_id, target_ms):
         """
+        Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
+
         :param spw_id: the spw id to convert
         :type spw_id: integer
         :param target_ms: the MS to map spw_id to
@@ -220,6 +229,8 @@ class ObservingRun(object):
 
     def get_real_spwsel(self, spwsel, vis):
         """
+        Translate a virtual (science) spw selection to the real one for a given MS.
+
         :param spwsel: the list of spw selections to convert
         :type spwsel: list of strings
         :param vis: the list of MS names to map spwsel to

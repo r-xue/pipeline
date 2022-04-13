@@ -304,12 +304,12 @@ class MeasurementSetReader(object):
                 sbinfo = SBSummaryTable.get_sbsummary_info(ms, msmd.observatorynames())
 
                 if sbinfo.repSource is None:
-                    LOG.warn('Unable to identify representative target for %s. Will try to fall back to existing'
-                             ' science target sources in the imaging tasks.' % ms.basename)
+                    LOG.warning('Unable to identify representative target for %s. Will try to fall back to existing'
+                                ' science target sources in the imaging tasks.' % ms.basename)
                 else:
                     if sbinfo.repSource == 'none':
-                        LOG.warn('Representative target for %s is set to "none". Will try to fall back to existing'
-                                 ' science target sources or calibrators in the imaging tasks.' % ms.basename)
+                        LOG.warning('Representative target for %s is set to "none". Will try to fall back to existing'
+                                    ' science target sources or calibrators in the imaging tasks.' % ms.basename)
                     LOG.info('Populating ms.representative_target ...')
                     ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
                     ms.representative_window = sbinfo.repWindow
@@ -322,7 +322,7 @@ class MeasurementSetReader(object):
                     if len([a for a in ms.get_antenna() if a.diameter == 12.0]) > \
                             len([a for a in ms.get_antenna() if a.diameter == 7.0]) \
                             and 'Standard Single Dish' not in observing_mode:
-                        LOG.warn('Undefined angular resolution limits for %s' % ms.basename)
+                        LOG.warning('Undefined angular resolution limits for %s' % ms.basename)
                     ms.science_goals = {'minAcceptableAngResolution': '0.0arcsec',
                                         'maxAcceptableAngResolution': '0.0arcsec'}
                 else:
@@ -791,7 +791,7 @@ class SBSummaryTable(object):
             return sbsummary_info[0]
         except:
             if 'ALMA' in obsnames:
-                LOG.warn('Error reading science goals for %s' % ms.basename)
+                LOG.warning('Error reading science goals for %s' % ms.basename)
             return SBSummaryInfo(repSource=None, repFrequency=None, repBandwidth=None, repWindow=None,
                                  minAngResolution=None, maxAngResolution=None, maxAllowedBeamAxialRatio=None,
                                  sensitivity=None, dynamicRange=None, sbName=None)
@@ -810,7 +810,7 @@ class SBSummaryTable(object):
                         if mode not in observing_modes:
                             observing_modes.append(mode)
         except:
-            LOG.warn('Error reading observing modes for %s' % ms.basename)
+            LOG.warning('Error reading observing modes for %s' % ms.basename)
 
         return observing_modes
 
@@ -838,7 +838,7 @@ class SBSummaryTable(object):
                 scienceGoals = table.getcol('scienceGoal')
                 numScienceGoals = table.getcol('numScienceGoal')
             except:
-                # LOG.warn('Error reading science goals for %s' % (ms.basename))
+                # LOG.warning('Error reading science goals for %s' % (ms.basename))
                 raise 
 
             repSources = []

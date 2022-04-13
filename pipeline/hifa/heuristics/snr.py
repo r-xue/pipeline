@@ -305,18 +305,21 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
     # Get atmospheric scans associated with the field name list
     atmscans = get_scans_for_field_intent(ms, fieldnamelist, 'ATMOSPHERE')
 
-    # No atmospheric scans found
-    #    If phase calibrator examine the TARGET atmospheric scans
-    if not atmscans and intent == 'PHASE':
+    # If no atmospheric scans were found, and the intent specifies a phase
+    # calibrator or check source, then try to find atmospheric scans associated
+    # with the science target fields.
+    if not atmscans and intent in ['CHECK', 'PHASE']:
+        fieldlist = [f.name for f in ms.get_fields(intent='TARGET')]
+        if fieldlist:
+            atmscans = get_scans_for_field_intent(ms, fieldlist, 'ATMOSPHERE')
 
-        # Get science target names
-        scifields = ms.get_fields(intent='TARGET')
-        if len(scifields) <= 0:
-            return tsysdict
-        scifieldlist = [scifield.name for scifield in scifields]
-
-        # Find atmospheric scans associated with the science target
-        atmscans = get_scans_for_field_intent(ms, scifieldlist, 'ATMOSPHERE')
+    # If still no atmospheric scans were found, and the intent specifies a
+    # check source, then try to find atmospheric scans associated with the
+    # phase calibrator fields.
+    if not atmscans and intent == 'CHECK':
+        fieldlist = [f.name for f in ms.get_fields(intent='PHASE')]
+        if fieldlist:
+            atmscans = get_scans_for_field_intent(ms, fieldlist, 'ATMOSPHERE')
 
     # Still no atmospheric scans found
     #    Return
@@ -388,16 +391,25 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
                     ftsysdict['snr_scan'] = obscan.id
                     break
 
+            # PIPE-1154: if no scan for field name list and intent occurred
+            # after the Tsys scan, then fall back to picking the most recent
+            # scan that occurred before the Tsys scan (assuming obscans are
+            # sorted chronologically).
+            if 'snr_scan' not in ftsysdict:
+                for obscan in obscans:
+                    if obscan.id < atmscan.id:
+                        ftsysdict['snr_scan'] = obscan.id
+
             ftsysdict['tsys_scan'] = atmscan.id
             ftsysdict['tsys_spw'] = bestspwid
             break
 
-        # Update the spw dictinary
+        # Update the spw dictionary
         if ftsysdict:
             LOG.info('    Matched spw %d to a Tsys spw %d' % (spwid, bestspwid))
             tsysdict[spwid] = ftsysdict
         else:
-            LOG.warn('    Cannot match spw %d to a Tsys spw in MS %s' % (spwid, ms.basename))
+            LOG.warning('    Cannot match spw %d to a Tsys spw in MS %s' % (spwid, ms.basename))
 
     return tsysdict
 
@@ -470,7 +482,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
     for scan in unique_scans:
         reqscan = ms.get_scans(scan_id=scan)
         if not reqscan:
-            LOG.warn('Cannot find observation scan %d in MS %s' % (scan, ms.basename))
+            LOG.warning('Cannot find observation scan %d in MS %s' % (scan, ms.basename))
             return medtempsdict
         start_time = reqscan[0].start_time
         end_time = reqscan[0].end_time
@@ -484,7 +496,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         # Get the antenna ids
         tsys_antennas = table.getcol('ANTENNA_ID')
         if len(tsys_antennas) < 1:
-            LOG.warn('The SYSCAL table is blank in MS %s' % ms.basename)
+            LOG.warning('The SYSCAL table is blank in MS %s' % ms.basename)
             return medtempsdict
 
         # Get columns and tools needed to understand the tsys times
@@ -533,8 +545,8 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
                     nmatch = nmatch + 1
 
         if nmatch <= 0:
-            LOG.warn('No SYSCAL table row matches for scans %s tsys spws %s in MS %s' %
-                     (unique_scans, tsys_spwlist, ms.basename))
+            LOG.warning('No SYSCAL table row matches for scans %s tsys spws %s in MS %s' %
+                        (unique_scans, tsys_spwlist, ms.basename))
             return medtempsdict
         else:
             LOG.info('    SYSCAL table row matches for scans %s Tsys spws %s %d / %d' %
@@ -551,8 +563,8 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
 
         # If no Tsys data skip to the next window
         if spw not in tsys_uniqueSpws:
-            LOG.warn('Tsys spw %d is not in the SYSCAL table for MS %s' %
-                     (spw, ms.basename))
+            LOG.warning('Tsys spw %d is not in the SYSCAL table for MS %s' %
+                        (spw, ms.basename))
             continue
             # return medtempsdict
 
@@ -578,7 +590,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             medtempsdict[spw] = np.median(medians)
             LOG.info("    Median Tsys %s value for Tsys spw %2d = %.1f K" % (temptype, spw, medtempsdict[spw]))
         else:
-            LOG.warn('    No Tsys data for spw %d scan %d in MS %s' % (spw, scan, ms.basename))
+            LOG.warning('    No Tsys data for spw %d scan %d in MS %s' % (spw, scan, ms.basename))
 
     # Return median temperature per spw and scan.
     return medtempsdict
@@ -950,7 +962,7 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
         # Compute the various generic SNR factors
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warn('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
@@ -1070,7 +1082,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         #    the bandpass frequency solint
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warn('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
@@ -1078,8 +1090,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         # PIPE-408: do not continue if there are no unflagged baselines for current spw; this will cause this spw
         # to be absent from the solution interval dictionary that is returned.
         if nbaselines < 0:
-            LOG.warn("Cannot compute optimal bandpass frequency solution interval for spw {} in MS {}; no (unflagged)"
-                     " baselines were found".format(spwid, ms.basename))
+            LOG.warning("Cannot compute optimal bandpass frequency solution interval for spw {} in MS {}; no (unflagged)"
+                        " baselines were found".format(spwid, ms.basename))
             continue
 
         arraySizeFactor = np.sqrt(16 * 15 / 2.0) / np.sqrt(nbaselines)
@@ -1164,8 +1176,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqPhaseupSnr))
         solint_dict[spwid]['nphaseup_solutions'] = solInts
         if tooFewIntervals:
-            LOG.warn('%s Spw %d would have less than %d time intervals in its solution in MS %s' %
-                     (asterisks, spwid, minBpNintervals, ms.basename))
+            LOG.warning('%s Spw %d would have less than %d time intervals in its solution in MS %s' %
+                        (asterisks, spwid, minBpNintervals, ms.basename))
 
         # Bandpass solution
         #    Determine frequenty interval in MHz
@@ -1206,8 +1218,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqBpSnr))
         solint_dict[spwid]['nbandpass_solutions'] = solChannels
         if tooFewChannels:
-            LOG.warn('%s Spw %d would have less than %d channels in its solution in MS %s' %
-                     (asterisks, spwid, minBpNchan, ms.basename))
+            LOG.warning('%s Spw %d would have less than %d channels in its solution in MS %s' %
+                        (asterisks, spwid, minBpNchan, ms.basename))
 
     return solint_dict
 

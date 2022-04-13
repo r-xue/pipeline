@@ -237,8 +237,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             try:
                                 self._executor.execute(job)
                             except Exception as e:
-                                LOG.warn("SetJy issue with field id=" + str(job.kw['field']) + " and spw="
-                                         + str(job.kw['spw']))
+                                LOG.warning("SetJy issue with field id=" + str(job.kw['field']) + " and spw="
+                                            + str(job.kw['spw']))
 
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
@@ -344,7 +344,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.info("Gain table " + caltable + " is ready for flagging.")
         else:
             caltable = self.inputs.caltable
-            LOG.warn("Caltable " + caltable + "has been flagged and will be used in the flux density bootstrapping.")
+            LOG.warning("Caltable " + caltable + "has been flagged and will be used in the flux density bootstrapping.")
 
         # ---------------------------------------------------------------------
         # Fluxboot stage
@@ -392,20 +392,33 @@ class Fluxboot(basetask.StandardTaskTemplate):
         fluxcalfields = flux_field_select_string
         fluxcalfieldlist = str.split(fluxcalfields, ',')
 
+        if len(fluxcalfieldlist) > 1:
+            fieldmsg = ''
+            for fluxcalfield in fluxcalfieldlist:
+                fieldobj = m.get_fields(field_id=int(fluxcalfield))
+                fieldmsg += "{!s}: {!s}, ".format(str(fieldobj[0].id), fieldobj[0].name)
+            LOG.warning("Fields {!s} have CALIBRATE_FLUX intents. All will be used for flux calibration, "
+                        "this may not be desired.".format(fieldmsg))
+
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
         for field in calfieldliststrings:
             fieldobj = m.get_fields(field_id=int(field))
-            if (len(fieldobj[0].intents) == 1 and 'POINTING' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 1 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 1 and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 2 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents):
+            nfldobj = len(fieldobj[0].intents)
+            if (nfldobj == 1 and 'POINTING' in fieldobj[0].intents) or \
+               (nfldobj == 1 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents) or \
+               (nfldobj == 1 and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+               (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents) or \
+               (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+               (nfldobj == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+               (nfldobj == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents):
 
-                LOG.debug("Single INTENT not included")
+                LOG.warning("Field {!s}: {!s}, "
+                            "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
+                            "it is not used in the "
+                            "fluxscale() transfer keyword.".format(field, fieldobj[0].name, fieldobj[0].intents))
             else:
                 calfieldlist.append(field)
 
@@ -432,7 +445,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             elif self.inputs.fitorder < -1:
                 raise Exception
 
-            if field not in fluxcalfieldlist:
+            if (field not in fluxcalfieldlist) and spwlist:
                 task_args = {'vis': calMs,
                              'caltable': caltable,
                              'fluxtable': 'fluxgaincalFcal_{!s}.g'.format(field),
@@ -510,7 +523,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 fitorder = 1
         else:
             fitorder = 1
-            LOG.warn('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
+            LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
 
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
@@ -935,7 +948,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             jobs_vis.append(casa_tasks.setjy(**task_args))
 
             if abs(self.spix) > 5.0:
-                LOG.warn("abs(spix) > 5.0 - Fail")
+                LOG.warning("abs(spix) > 5.0 - Fail")
 
             # merge identical jobs into one job with a multi-spw argument
             LOG.info("Merging setjy jobs for {!s}".format(calMs))

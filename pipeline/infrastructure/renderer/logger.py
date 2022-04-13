@@ -250,7 +250,7 @@ class PlotGroup(object):
 class Selector(object):
     # CSS classes have a restricted character sets, so we use a regex to 
     # remove them
-    _regex = re.compile('\W')
+    _regex = re.compile(r'\W')
 
     def __init__(self, parameter, value):
         self.value = string.capwords(value)
@@ -296,7 +296,7 @@ class Plot(object):
         """
         The CSS class to be used for this plot.
         """
-        regex = re.compile('\W')
+        regex = re.compile(r'\W')
         css_classes = [Parameters.getCssId(parameter) + ''.join(regex.split(str(val)))
                        for parameter, val in self.parameters.items()]
         return ' '.join(css_classes)
@@ -377,12 +377,12 @@ class Plot(object):
             else:
                 LOG.warning('Error creating thumbnail for %s' % 
                             os.path.basename(self.abspath))
-                return self.basename   
+                return self.abspath   
         except OSError as e:
             # command not available. Return the full-sized image filename
             LOG.warning('Error creating thumbnail for %s: %s' % 
                         (os.path.basename(self.abspath), e))
-            return self.basename
+            return self.abspath
 
     def __repr__(self):
         return '<Plot(\'%s\')>' % self.abspath 

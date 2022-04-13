@@ -12,7 +12,7 @@ import re
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-if TYPE_CHECKING: # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 from . import measures
@@ -43,26 +43,31 @@ class MeasurementSet(object):
             dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
-        spectralspec_spwmap: SpectralSpec mapping
+        phasecal_mapping: A dictionary mapping phase calibrator fields to
+            corresponding fields with TARGET or CHECK intent.
+        spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
+            spectral window IDs.
         fields: A list of Field objects associated with MS
         states: A list of State objects associated with MS
+        spwmaps: Spectral window mapping to use for combining/mapping, split by
+            (intent, field), used in ALMA interferometry calibration tasks.
         reference_spwmap: Reference spectral window map
-        phaseup_spwmap: Spectral window mapping used in spwphaseup calibration
-        combine_spwmap: Spectral window mapping used to increase S/N ratio
         data_column: A dictionary to store data type (key) and corresponding
             data column (value)
+        data_types_per_source_and_spw: A dictionary to store a list of
+            available data types (values) in this MS per (source,spw) tuples
+            (keys)
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
-        is_imaging_ms: If True, the MS is for imaging (interferometry only)
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
         acs_software_version: ALMA Common Software version used to create this MS
         acs_software_build_version: ALMA Common Software build version used to create this MS
     """
 
-    def __init__(self, name: str, session: Optional[str]=None):
+    def __init__(self, name: str, session: Optional[str] = None):
         """
-        Initialize MeasurmentSet class.
+        Initialize a MeasurementSet object.
 
         Args:
             name: A path to MS
@@ -71,7 +76,7 @@ class MeasurementSet(object):
         self.name: str = name
         self.session: Optional[str] = session
         self.antenna_array: Optional[AntennaArray] = None
-        self.array_name: str = None
+        self.array_name: str = ''
         self.derived_fluxes: Optional[collections.defaultdict] = None
         self.flagcmds: List[str] = []
         self.filesize: measures.FileSize = self._calc_filesize()
@@ -81,18 +86,28 @@ class MeasurementSet(object):
         self.science_goals: dict = {}
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
-        self.spectralspec_spwmap: dict = {}
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
-        self.phaseup_spwmap: Optional[List[int]] = None
-        self.combine_spwmap: Optional[List[int]] = None
-        self.is_imaging_ms: bool = False
         self.origin_ms: str = name
         self.data_column: dict = {}
         self.acs_software_version = None
         self.acs_software_build_version = None
 
+        self.data_types_per_source_and_spw: dict = {}
+
+        # Dictionary mapping phase calibrator fields to corresponding fields
+        # with TARGET / CHECK intents (PIPE-1154).
+        self.phasecal_mapping: dict = {}
+
+        # Dictionary to map each SpectralSpec to list of corresponding spectral
+        # window IDs (PIPE-1132).
+        self.spectralspec_spwmap: dict = {}
+
+        # Dictionary with collections of spectral window maps for mapping or
+        # combining spws, split by (intent, field). This is used in several
+        # ALMA ('hifa') calibration tasks (PIPE-1154).
+        self.spwmaps: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
@@ -589,10 +604,12 @@ class MeasurementSet(object):
     def get_vla_max_integration_time(self):
         """Get the integration time used by the original VLA scripts
 
-           Returns -- The max integration time used
-        """
+        Args:
+            None
 
-        vis = self.name
+        Returns:
+            int_time: int value of the max integration time used
+        """
 
         # with casa_tools.TableReader(vis + '/FIELD') as table:
         #     numFields = table.nrows()
@@ -616,16 +633,10 @@ class MeasurementSet(object):
         #
         # the jj'th scan of the ii'th field is in field_scans[ii][jj]
 
-        # Identify intents
+        # Figure out integration time used
 
-        with casa_tools.TableReader(vis + '/STATE') as table:
-            intents = table.getcol('OBS_MODE')
-
-        """Figure out integration time used"""
-
-        with casa_tools.MSReader(vis) as ms:
+        with casa_tools.MSReader(self.name) as ms:
             scan_summary = ms.getscansummary()
-            # ms_summary = ms.summary()
         # startdate=float(ms_summary['BeginTime'])
 
         integ_scan_list = []
@@ -647,9 +658,16 @@ class MeasurementSet(object):
         return int_time
 
     def get_vla_datadesc(self):
-        """Generate VLA data description index"""
+        """Generate VLA data description index
+            Use the original VLA buildscans function to return a dd index
 
-        vis = self.name
+        Args:
+            None
+
+        Returns:
+            ddindex: indexed list of dictionaries with VLA metadata
+
+        """
 
         cordesclist = ['Undefined', 'I', 'Q', 'U', 'V',
                        'RR', 'RL', 'LR', 'LL',
@@ -663,21 +681,19 @@ class MeasurementSet(object):
                        'PFlinear', 'Pangle']
 
         # From Steve Myers buildscans function
-        with casa_tools.TableReader(vis + '/DATA_DESCRIPTION') as table:
-            # tb.open(msfile+"/DATA_DESCRIPTION")
+        with casa_tools.TableReader(self.name + '/DATA_DESCRIPTION') as table:
             ddspwarr = table.getcol("SPECTRAL_WINDOW_ID")
             ddpolarr = table.getcol("POLARIZATION_ID")
-            # tb.close()
+
         ddspwlist = ddspwarr.tolist()
         ddpollist = ddpolarr.tolist()
         ndd = len(ddspwlist)
 
-        with casa_tools.TableReader(vis + '/SPECTRAL_WINDOW') as table:
-            # tb.open(msfile+"/SPECTRAL_WINDOW")
+        with casa_tools.TableReader(self.name + '/SPECTRAL_WINDOW') as table:
             nchanarr = table.getcol("NUM_CHAN")
             spwnamearr = table.getcol("NAME")
             reffreqarr = table.getcol("REF_FREQUENCY")
-            # tb.close()
+
         nspw = len(nchanarr)
         spwlookup = {}
         for isp in range(nspw):
@@ -686,8 +702,7 @@ class MeasurementSet(object):
             spwlookup[isp]['name'] = str(spwnamearr[isp])
             spwlookup[isp]['reffreq'] = reffreqarr[isp]
 
-        with casa_tools.TableReader(vis + '/POLARIZATION') as table:
-            # tb.open(msfile+"/POLARIZATION")
+        with casa_tools.TableReader(self.name + '/POLARIZATION') as table:
             ncorarr = table.getcol("NUM_CORR")
             npols = len(ncorarr)
             polindex = {}
@@ -724,24 +739,38 @@ class MeasurementSet(object):
         return ddindex
 
     def get_vla_corrstring(self):
-        """Get correlation string for VLA"""
+        """Get correlation string for VLA
+
+        Args:
+            None
+
+        Returns:
+            corrstring: string value of correlation
 
         """
-        Prep string listing of correlations from dictionary created by method buildscans
-        For now, only use the parallel hands.  Cross hands will be implemented later.
-        """
+
+        # Prep string listing of correlations from dictionary created by method buildscans
+        # For now, only use the parallel hands.  Cross hands will be implemented later.
 
         ddindex = self.get_vla_datadesc()
 
         corrstring_list = ddindex[0]['corrdesc']
         removal_list = ['RL', 'LR', 'XY', 'YX']
-        corrstring_list = list(set(corrstring_list).difference(set(removal_list)))
+        corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
 
         return corrstring
 
     def get_alma_corrstring(self):
-        """Get correlation string for ALMA for the science windows"""
+        """Get correlation string for ALMA for the science windows
+
+        Args:
+            None
+
+        Returns:
+            corrstring: string value of correlation
+
+        """
 
         sci_spwlist = self.get_spectral_windows(science_windows_only=True)
         sci_spwids = [spw.id for spw in sci_spwlist]
@@ -758,6 +787,15 @@ class MeasurementSet(object):
         return corrstring
 
     def get_vla_spw2band(self):
+        """Find field spws for VLA
+
+        Args:
+            None
+
+        Returns:
+            spw2band: dictionary with each string key spw index giving a single letter string value of the band
+
+        """
 
         ddindex = self.get_vla_datadesc()
 
@@ -766,7 +804,6 @@ class MeasurementSet(object):
         for spw in ddindex:
 
             strelems = list(ddindex[spw]['spwname'])
-            # print strelems
             bandname = strelems[5]
             if bandname in '4PLSCXUKAQ':
                 spw2band[spw] = strelems[5]
@@ -779,65 +816,37 @@ class MeasurementSet(object):
         return spw2band
 
     def vla_minbaselineforcal(self):
+        """Min baseline for cal
 
-        #return max(4, int(len(self.antennas) / 2.0))
+        Args:
+            None
+
+        Returns:
+            Constant value
+
+        """
+
+        # Old determination before it was changed to a constant value of 4
+        # return max(4, int(len(self.antennas) / 2.0))
         return 4
 
-    def vla_spws_for_field(self, field):
-        """VLA spws for field"""
-
-        vis = self.name
-
-        # get observed DDIDs for specified field from MAIN
-        with casa_tools.TableReader(vis) as table:
-            st = table.query('FIELD_ID=='+str(field))
-            ddids = np.unique(st.getcol('DATA_DESC_ID'))
-            st.close()
-
-        # get SPW_IDs corresponding to those DDIDs
-        with casa_tools.TableReader(vis+'/DATA_DESCRIPTION') as table:
-            spws = table.getcol('SPECTRAL_WINDOW_ID')[ddids]
-
-        # return as a list
-        return list(spws)
-
-    def get_vla_field_ids(self):
-        """Find field ids for VLA"""
-
-        vis = self.name
-
-        with casa_tools.TableReader(vis+'/FIELD') as table:
-            numFields = table.nrows()
-            field_ids = list(range(numFields))
-
-        return field_ids
-
-    def get_vla_field_names(self):
-        """Find field names for VLA"""
-
-        vis = self.name
-
-        with casa_tools.TableReader(vis+'/FIELD') as table:
-            field_names = table.getcol('NAME')
-
-        return field_names
-
     def get_vla_field_spws(self, spwlist=[]):
-        """Find field spws for VLA"""
+        """Find field spws for VLA
 
-        vis = self.name
+        Args:
+            spwlist (List, optional): list of string spws   ['1', '2', '3']
 
-        # with casa_tools.TableReader(vis+'/FIELD') as table:
-        #     numFields = table.nrows()
+        Returns:
+            field_spws: List of dictionaries
+
+        """
 
         # Map field IDs to spws
         field_spws = []
-        # for ii in range(numFields):
-        #     field_spws.append(self.vla_spws_for_field(ii))
 
         spwlistint = [int(spw) for spw in spwlist]
 
-        with casa_tools.MSMDReader(vis) as msmd:
+        with casa_tools.MSMDReader(self.name) as msmd:
             spwsforfieldsall = msmd.spwsforfields()
 
             if spwlist != []:
@@ -856,7 +865,15 @@ class MeasurementSet(object):
         return field_spws
 
     def get_vla_numchan(self):
-        """Get number of channels for VLA"""
+        """Get number of channels for VLA
+
+        Args:
+            None
+
+        Returns:
+            channels:  NUM_CHAN column from spectral window table
+
+        """
 
         vis = self.name
 
@@ -866,90 +883,44 @@ class MeasurementSet(object):
         return channels
 
     def get_vla_tst_bpass_spw(self, spwlist=[]):
-        """Get VLA test bandpass spws"""
+        """Get VLA test bandpass or delay spws
+            This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325
 
-        vis = self.name
+        Args:
+            spwlist (List, optional): list of string spws   ['1', '2', '3']
+
+
+        Returns:
+            tst_bpass_spws: CASA argument format of spws:channels    '0:10~80, 1:15~60, 2:30~70'
+        """
+
         tst_delay_spw = ''
 
-        with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
-            channels = table.getcol('NUM_CHAN')
-
-        numSpws = len(channels)
+        channels = self.get_vla_numchan()
 
         ispwlist = [int(spw) for spw in spwlist]
-        #for ispw in range(numSpws):
         for ispw in ispwlist:
             endch1 = int(channels[ispw]/3.0)
             endch2 = int(2.0*channels[ispw]/3.0)+1
-            #if ispw < max(range(numSpws)):
             if ispw < max(ispwlist):
                 tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)+','
-                # all_spw=all_spw+str(ispw)+','
             else:
                 tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)
-                # all_spw=all_spw+str(ispw)
 
         tst_bpass_spw = tst_delay_spw
 
         return tst_bpass_spw
 
-    def get_vla_tst_delay_spw(self, spwlist=[]):
-        """Get VLA test bandpass spws"""
-
-        vis = self.name
-        tst_delay_spw = ''
-
-        with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
-            channels = table.getcol('NUM_CHAN')
-
-        numSpws = len(channels)
-
-        ispwlist = [int(spw) for spw in spwlist]
-        # for ispw in range(numSpws):
-        for ispw in ispwlist:
-            endch1 = int(channels[ispw]/3.0)
-            endch2 = int(2.0*channels[ispw]/3.0)+1
-            #if ispw < max(range(numSpws)):
-            if ispw < max(ispwlist):
-                tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)+','
-                # all_spw=all_spw+str(ispw)+','
-            else:
-                tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)
-                # all_spw=all_spw+str(ispw)
-
-        return tst_delay_spw
-
-    def get_vla_quackingscans(self):
-        """Find VLA scans for quacking.  Quack! :)"""
-
-        vis = self.name
-        with casa_tools.MSReader(vis) as ms:
-            scan_summary = ms.getscansummary()
-
-        integ_scan_list = []
-        for scan in scan_summary:
-            integ_scan_list.append(int(scan))
-        sorted_scan_list = sorted(integ_scan_list)
-
-        scan_list = [1]
-        old_scan = scan_summary[str(sorted_scan_list[0])]['0']
-
-        old_field = old_scan['FieldId']
-        old_spws = old_scan['SpwIds']
-        for ii in range(1, len(sorted_scan_list)):
-            new_scan = scan_summary[str(sorted_scan_list[ii])]['0']
-            new_field = new_scan['FieldId']
-            new_spws = new_scan['SpwIds']
-            if ((new_field != old_field) or (set(new_spws) != set(old_spws))):
-                scan_list.append(sorted_scan_list[ii])
-                old_field = new_field
-                old_spws = new_spws
-        quack_scan_string = ','.join(["%s" % ii for ii in scan_list])
-
-        return quack_scan_string
-
     def get_vla_critfrac(self):
-        """Identify bands/basebands/spws"""
+        """Identify bands/basebands/spws
+
+        Args:
+            None
+
+        Returns:
+            critical fraction
+
+        """
 
         vis = self.name
 
@@ -1035,7 +1006,7 @@ class MeasurementSet(object):
                 baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
             except Exception as ex:
                 if warning:
-                    LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                    LOG.warning("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
                 else:
                     pass
 
@@ -1052,10 +1023,11 @@ class MeasurementSet(object):
         """Get the median integration time used to get data for the given
         intent.
 
-        Keyword arguments:
-        intent  -- The intent of the data of interest.
+        Args:
+            intent (str, optional): The intent of the data of interest.
 
-        Returns -- The median integration time used.
+        Returns:
+            The median integration time used.
         """
         LOG.debug('inefficiency - MSFlagger reading file to get integration '
                   'time')
@@ -1215,22 +1187,23 @@ class MeasurementSet(object):
         self._session = value
 
     def set_data_column(self, dtype: DataType, column: str,
-                        spw: Optional[str]=None, field: Optional[str]=None,
+                        source: Optional[str]=None,
+                        spw: Optional[str]=None,
                         overwrite: bool=False):
         """
         Set data type and column.
 
-        Set data type and column to MS domain object or to selected spectral
-        window and field. If both spw and field are None, data column
-        information of MS domain object is set. If both spw and field are not
-        None, data column information of both spectral windows and fields
-        selected by the string selection syntaxes are set.
+        Set data type and column to MS domain object and record the available
+        data types per (source,spw) tuple. If source or spw are unset, they
+        will be expanded to all available values.
 
         Args:
             dtype: data type to set
             column: name of column in MS associated with the data type
-            spw: spectral window selection string
-            field: field selection string
+            source: source name selection string (comma separated names). If
+                unset, all sources will be used.
+            spw: real spectral window selection string (string of comma
+                separated IDs). If unset, all real spw IDs will be used.
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
@@ -1244,32 +1217,48 @@ class MeasurementSet(object):
         with casa_tools.TableReader(self.name) as table:
             cols = table.colnames()
         if column not in cols:
-            raise ValueError('Column {} does not exists in {}'.format(column, self.basename))
-        if spw is None and field is None: # Update MS domain object
-            if not overwrite and dtype in self.data_column:
-                raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+            raise ValueError('Column {} does not exist in {}'.format(column, self.basename))
+
+        # Update MS domain object
+        if not overwrite and dtype in self.data_column and self.get_data_column(dtype) != column:
+            raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+        if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
-            return
-        # Update Spw
-        if spw is not None:
-            for s in self.get_spectral_windows(task_arg=spw, science_windows_only=False):
-                if not overwrite and dtype in s.data_column.keys():
-                    raise ValueError('Data type {} is already associated with {} in spw {}'.format(dtype, s.data_column[dtype], s.id))
-                s.data_column[dtype] = column
-        # Update field
-        if field is not None:
-            for f in self.get_fields(field):
-                if not overwrite and dtype in f.data_column.keys():
-                    raise ValueError('Data type {} is already associated with {} in field {}'.format(dtype, f.data_column[dtype], f.id))
-                f.data_column[dtype] = column
 
-    def get_data_column(self, dtype: DataType) -> Optional[str]:
+        # Update data types per (source,spw) selection
+        if source is None:
+            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
+        else:
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+
+        if spw is None:
+            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
+        else:
+            spw_ids = spw
+
+        for source_name in source_names.split(','):
+            for spw_id in map(int, spw_ids.split(',')):
+                key = (source_name, spw_id)
+                if key in self.data_types_per_source_and_spw:
+                    if dtype not in self.data_types_per_source_and_spw[key]:
+                        self.data_types_per_source_and_spw[key].append(dtype)
+                else:
+                    self.data_types_per_source_and_spw[key] = [dtype]
+
+    def get_data_column(self, dtype: DataType, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[str]:
         """
-        Retun a column name associated with a DataType in MS domain object.
+        Return a column name associated with a DataType in MS domain object.
 
         Args:
             dtype: DataType to fetch column name for
+            source: Comma separated list of source names to filter for.
+            spw: Comma separated list of real spw IDs to filter for.
+
+            If source and spw are both unset, the method will just look
+            at the MS data type and column information. If one or both
+            parameters are set, it will require all (source,spw)
+            combinations to have data of the requested data type.
 
         Returns:
             A name of column of a dtype. Returns None if dtype is not defined
@@ -1277,5 +1266,26 @@ class MeasurementSet(object):
         """
         if not (dtype in self.data_column.keys()):
             return None
-        return self.data_column[dtype]
-        
+
+        if source is None and spw is None:
+            return self.data_column[dtype]
+
+        if source is None:
+            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
+        else:
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+
+        if spw is None:
+            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
+        else:
+            spw_ids = spw
+
+        # Check all (source,spw) combinations
+        data_exists_for_all_source_spw_combinations = True
+        for source_name in source_names.split(','):
+            for spw_id in map(int, spw_ids.split(',')):
+                key = (source_name, spw_id)
+                if dtype not in self.data_types_per_source_and_spw.get(key, []):
+                    data_exists_for_all_source_spw_combinations = False
+        if data_exists_for_all_source_spw_combinations:
+            return self.data_column[dtype]

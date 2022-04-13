@@ -1,19 +1,19 @@
 """Pointing methods and classes."""
-
+import gc
 import math
+from numbers import Integral
 import os
 from typing import List, Optional, Tuple, Union
-from numbers import Integral
 
 from matplotlib.axes._axes import Axes
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
-from matplotlib.ticker import Locator, Formatter
+import matplotlib.figure as figure
+from matplotlib.ticker import (AutoLocator, Formatter, FuncFormatter, Locator,
+                               MultipleLocator)
 import numpy as np
 
+from pipeline.domain import Antenna, MeasurementSet
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain import MeasurementSet, Antenna
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
@@ -26,9 +26,10 @@ DECrotation = 0
 
 DPISummary = 90
 
-dsyb = '$^\circ$'
+dsyb = r'$^\circ$'
 hsyb = ':'
 msyb = ':'
+
 
 def Deg2HMS(x: float, prec: int=0) -> List[str]:
     """
@@ -42,7 +43,7 @@ def Deg2HMS(x: float, prec: int=0) -> List[str]:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        List of　strings of hour, minute, and second values in a specified
+        List of strings of hour, minute, and second values in a specified
         precision.
 
     """
@@ -650,6 +651,7 @@ class PointingAxesManager(MapAxesManagerBase):
         self._ofs_coord = None
 
     def init_axes(self,
+                  fig,
                   xlocator: Locator, ylocator: Locator,
                   xformatter: Formatter, yformatter: Formatter,
                   xrotation: Integral, yrotation: Integral,
@@ -661,6 +663,7 @@ class PointingAxesManager(MapAxesManagerBase):
         Initialize matplotlib.axes.Axes instance.
 
         Args:
+            fig: Figure object of matplotlib
             xlocator: Locator instance for x-axis
             ylocator: Locator instance for y-axis
             xformatter: Formatter instance for x-axis
@@ -676,8 +679,8 @@ class PointingAxesManager(MapAxesManagerBase):
                    reset is True or when the method is called
                    for the first time.
         """
-        if self._axes is None:
-            self._axes = self.__axes()
+        self.figure = fig
+        self._axes = self.__axes()
 
         if xlim is not None:
             self._axes.set_xlim(xlim)
@@ -685,7 +688,7 @@ class PointingAxesManager(MapAxesManagerBase):
         if ylim is not None:
             self._axes.set_ylim(ylim)
 
-        if self.is_initialized == False or reset:
+        if not self.is_initialized or reset:
             # 2008/9/20 DEC Effect
             self._axes.set_aspect(aspect)
             self._axes.xaxis.set_major_formatter(xformatter)
@@ -693,9 +696,13 @@ class PointingAxesManager(MapAxesManagerBase):
             self._axes.xaxis.set_major_locator(xlocator)
             self._axes.yaxis.set_major_locator(ylocator)
             xlabels = self._axes.get_xticklabels()
-            plt.setp(xlabels, 'rotation', xrotation, fontsize=8)
+            for label in xlabels:
+                label.set_rotation(xrotation)
+                label.set_fontsize(8)
             ylabels = self._axes.get_yticklabels()
-            plt.setp(ylabels, 'rotation', yrotation, fontsize=8)
+            for label in ylabels:
+                label.set_rotation(yrotation)
+                label.set_fontsize(8)
 
     @property
     def axes(self) -> Axes:
@@ -714,12 +721,12 @@ class PointingAxesManager(MapAxesManagerBase):
         Returns:
             Axes: Axes instance created by the method
         """
-        a = plt.axes([0.15, 0.2, 0.7, 0.7])
+        axes = self.figure.add_axes([0.15, 0.2, 0.7, 0.7])
         xlabel, ylabel = self.get_axes_labels()
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.title('')
-        return a
+        axes.set_xlabel(xlabel)
+        axes.set_ylabel(ylabel)
+        axes.set_title('')
+        return axes
 
 
 def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
@@ -738,23 +745,22 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
         Line2D: matplotlib.lines.Line2D instance
     """
     xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
-                       r * (math.cos(t * 0.13) + offset) + y_base]
-                      for t in range(50)])
-    plt.gcf().sca(axes)
-    line = plt.plot(xy[:, 0], xy[:, 1], 'r-')
+                    r * (math.cos(t * 0.13) + offset) + y_base]
+                    for t in range(50)])
+    line = axes.plot(xy[:, 0], xy[:, 1], 'r-')
     return line[0]
 
 
 def draw_pointing(axes_manager: PointingAxesManager,
-                    RA: np.ndarray,
-                    DEC: np.ndarray,
-                    FLAG: Optional[np.ndarray]=None,
-                    plotfile: Optional[str]=None,
-                    connect: bool=True,
-                    circle: List[Optional[float]]=[],
-                    ObsPattern: Optional[str]=None,
-                    plotpolicy: str='ignore'
-                ) -> None:
+                  RA: np.ndarray,
+                  DEC: np.ndarray,
+                  FLAG: Optional[np.ndarray]=None,
+                  plotfile: Optional[str]=None,
+                  connect: bool=True,
+                  circle: List[Optional[float]]=[],
+                  ObsPattern: Optional[str]=None,
+                  plotpolicy: str='ignore'
+                  ) -> None:
     """
     Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.
 
@@ -777,7 +783,13 @@ def draw_pointing(axes_manager: PointingAxesManager,
                     observing pattern.
         plotpolicy: Policy to handle FLAG. The plotpolicy can be any one of
                     'plot', 'ignore' or 'greyed'.
+    Raises:
+        ValueError if invalid plotpolicy is received
     """
+
+    if not plotfile:
+        return
+
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
     xmin = max(RA) + span / 10.0
@@ -785,65 +797,58 @@ def draw_pointing(axes_manager: PointingAxesManager,
     ymin = min(DEC) - span / 10.0
     (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span, axes_manager.direction_reference, ofs_coord=axes_manager.ofs_coord)
 
-    Aspect = 1.0 / math.cos(DEC[0] / 180.0 * 3.141592653)
-
+    aspect = 1.0 / math.cos(math.radians(DEC[0]))
     # Plotting routine
-    if connect is True:
+    if connect:
         Mark = 'g-o'
     else:
         Mark = 'bo'
-    axes_manager.init_axes(RAlocator, DEClocator,
+    fig = figure.Figure()
+    axes_manager.init_axes(fig,
+                           RAlocator, DEClocator,
                            RAformatter, DECformatter,
                            RArotation, DECrotation,
-                           Aspect,
+                           aspect,
                            xlim=(xmin, xmax),
                            ylim=(ymin, ymax))
+    fig = axes_manager.figure
     a = axes_manager.axes
+
     if ObsPattern is None:
         a.title.set_text('Telescope Pointing on the Sky')
     else:
         a.title.set_text('Telescope Pointing on the Sky\nPointing Pattern = %s' % ObsPattern)
-    plot_objects = []
 
     if plotpolicy == 'plot':
         # Original
-        plot_objects.extend(
-            plt.plot(RA, DEC, Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
-            )
+        a.plot(RA, DEC, Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
     elif plotpolicy == 'ignore':
         # Ignore Flagged Data
         filter = FLAG == 1
-        plot_objects.extend(
-            plt.plot(RA[filter], DEC[filter], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
-            )
+        a.plot(RA[filter], DEC[filter], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
     elif plotpolicy == 'greyed':
         # Change Color
-        if connect is True:
-            plot_objects.extend(plt.plot(RA, DEC, 'g-'))
+        if connect:
+            a.plot(RA, DEC, 'g-')
         filter = FLAG == 1
-        plot_objects.extend(
-            plt.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='b', markerfacecolor='b')
-            )
+        a.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='b', markerfacecolor='b')
         filter = FLAG == 0
         if np.any(filter == True):
-            plot_objects.extend(
-                plt.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='grey', markerfacecolor='grey')
-                )
+            a.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='grey', markerfacecolor='grey')
+    else:
+        raise ValueError(f"invalid plotpolicy value: {plotpolicy}")
+
     # plot starting position with beam and end position
     if len(circle) != 0:
-        plot_objects.append(
-                draw_beam(a, circle[0], Aspect, RA[0], DEC[0], offset=0.0)
-            )
+        draw_beam(a, circle[0], aspect, RA[0], DEC[0], offset=0.0)
         Mark = 'ro'
-        plot_objects.extend(
-            plt.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
-            )
-    plt.axis([xmin, xmax, ymin, ymax])
-    if plotfile is not None:
-        plt.savefig(plotfile, format='png', dpi=DPISummary)
+        a.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
+    a.axis([xmin, xmax, ymin, ymax])
 
-    for obj in plot_objects:
-        obj.remove()
+    fig.savefig(plotfile, dpi=DPISummary)
+
+    a.cla()
+    fig.clf()
 
 
 class SingleDishPointingChart(object):
@@ -854,38 +859,22 @@ class SingleDishPointingChart(object):
     """
     def __init__(self,
                  context: infrastructure.launcher.Context,
-                 ms: MeasurementSet,
-                 antenna: Antenna,
-                 target_field_id: Optional[int]=None,
-                 reference_field_id: Optional[int]=None,
-                 target_only: bool=True,
-                 ofs_coord: bool=False
-                ) -> None:
-        """
-        Initialize SingleDishPointingChart class.
+                 ms: MeasurementSet) -> None:
+        """Initialize SingleDishPointingChart class.
 
         Args:
             context: pipeline context object.
             ms: MeasurementSet domain object.
-            antenna: Antenna domain object.
-            target_field_id: ID for target (ON_SOURCE) field.
-            reference_field_id: ID for reference (OFF_SOURCE) field.
-            target_only: Whether plot ON_SOURCE only (True) or
-                         both ON_SOURCE and OFF_SOURCE.
-            ofs_coord: Use offset coordinate or not.
-                will be in degree (DMS). Otherwise, it will be in hour angle
-                (HMS). Use offset coordinate or not.
-
         """
         self.context = context
         self.ms = ms
-        self.antenna = antenna
-        self.target_field = self.__get_field(target_field_id)
-        self.reference_field = self.__get_field(reference_field_id)
-        self.target_only = target_only
-        self.ofs_coord = ofs_coord
-        self.figfile = self._get_figfile()
+        self.datatable = DataTable()
+        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(self.ms.origin_ms))
+        self.datatable.importdata(datatable_name, minimal=False, readonly=True)
         self.axes_manager = PointingAxesManager()
+
+    def __del__(self):
+        del self.datatable
 
     def __get_field(self, field_id: Optional[int]):
         """Get field domain object.
@@ -908,28 +897,36 @@ class SingleDishPointingChart(object):
             return None
 
     @casa5style_plot
-    def plot(self, revise_plot: bool=False) -> Optional[Plot]:
-        """
-        Generate a plot object.
+    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None,
+             reference_field_id: Optional[int]=None, target_only: bool=True, ofs_coord: bool=False) -> Optional[Plot]:
+        """Generate a plot object.
 
         If plot file exists and revise_plot is False, Plot object
         based on existing file is returned.
 
         Args:
-            revice_plot: Overwrite existing plot or not.
+            revise_plot (bool): Overwrite existing plot or not. Defaults to False.
+            antenna (Antenna): Antenna domain object. Defaults to None.
+            target_field_id (Optional[int]): ID for target (ON_SOURCE) field. Defaults to None.
+            reference_field_id (Optional[int]): ID for reference (OFF_SOURCE) field. Defaults to None.
+            target_only (bool): Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.
+            ofs_coord (bool): Use offset coordinate or not. Defaults to False.
 
         Returns:
-            Plot: A Plot object.
+            Optional[Plot]: A Plot object.
         """
-        if revise_plot == False and os.path.exists(self.figfile):
+        self.antenna = antenna
+        self.target_field = self.__get_field(target_field_id)
+        self.reference_field = self.__get_field(reference_field_id)
+        self.target_only = target_only
+        self.ofs_coord = ofs_coord
+        self.figfile = self._get_figfile()
+
+        if revise_plot is False and os.path.exists(self.figfile):
             return self._get_plot_object()
 
         ms = self.ms
         antenna_id = self.antenna.id
-
-        datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, os.path.basename(ms.origin_ms))
-        datatable = DataTable()
-        datatable.importdata(datatable_name, minimal=False, readonly=True)
 
         target_spws = ms.get_spectral_windows(science_windows_only=True)
         # Search for the first available SPW, antenna combination
@@ -945,16 +942,17 @@ class SingleDishPointingChart(object):
             LOG.info('No data with antenna=%d and spw=%s found in %s' % (antenna_id, str(target_spws), ms.basename))
             LOG.info('Skipping pointing plot')
             return None
-        else: LOG.debug('Generate pointing plot using antenna=%d and spw=%d of %s' % (antenna_id, spw_id, ms.basename))
+        else:
+            LOG.debug('Generate pointing plot using antenna=%d and spw=%d of %s' % (antenna_id, spw_id, ms.basename))
         beam_size = casa_tools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
         beam_size_in_deg = casa_tools.quanta.getvalue(beam_size)
         obs_pattern = ms.observing_pattern[antenna_id][spw_id]
-        antenna_ids = datatable.getcol('ANTENNA')
-        spw_ids = datatable.getcol('IF')
+        antenna_ids = self.datatable.getcol('ANTENNA')
+        spw_ids = self.datatable.getcol('IF')
         if self.target_field is None or self.reference_field is None:
             # plot pointings regardless of field
             if self.target_only == True:
-                srctypes = datatable.getcol('SRCTYPE')
+                srctypes = self.datatable.getcol('SRCTYPE')
                 func = lambda j, k, l: j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids, srctypes)
@@ -963,9 +961,9 @@ class SingleDishPointingChart(object):
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids)
         else:
-            field_ids = datatable.getcol('FIELD_ID')
+            field_ids = self.datatable.getcol('FIELD_ID')
             if self.target_only == True:
-                srctypes = datatable.getcol('SRCTYPE')
+                srctypes = self.datatable.getcol('SRCTYPE')
                 field_id = [self.target_field.id]
                 func = lambda f, j, k, l: f in field_id and j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
@@ -983,33 +981,39 @@ class SingleDishPointingChart(object):
             racol = 'RA'
             deccol = 'DEC'
         LOG.debug('column names: {}, {}'.format(racol, deccol))
-        if racol not in datatable.colnames() or deccol not in datatable.colnames():
+        if racol not in self.datatable.colnames() or deccol not in self.datatable.colnames():
             return None
 
-        RA = datatable.getcol(racol)[dt_rows]
+        RA = self.datatable.getcol(racol)[dt_rows]
         if len(RA) == 0:  # no row found
-            LOG.warn('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
+            LOG.warning('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
                      (antenna_id, spw_id, str(field_id), ms.basename))
-            LOG.warn('Skipping pointing plots.')
+            LOG.warning('Skipping pointing plots.')
             return None
-        DEC = datatable.getcol(deccol)[dt_rows]
+        DEC = self.datatable.getcol(deccol)[dt_rows]
         FLAG = np.zeros(len(RA), dtype=int)
         rows = np.where(dt_rows == True)[0]
         assert len(RA) == len(rows)
         for (i, row) in enumerate(rows):
-            pflags = datatable.getcell('FLAG_PERMANENT', row)
+            pflags = self.datatable.getcell('FLAG_PERMANENT', row)
             # use flag for pol 0
             FLAG[i] = pflags[0][OnlineFlagIndex]
 
-        self.axes_manager.direction_reference = datatable.direction_ref
+        self.axes_manager.direction_reference = self.datatable.direction_ref
         self.axes_manager.ofs_coord = self.ofs_coord
 
-        plt.clf()
         draw_pointing(self.axes_manager, RA, DEC, FLAG, self.figfile, circle=[0.5*beam_size_in_deg],
                       ObsPattern=obs_pattern, plotpolicy='greyed')
-        plt.close()
 
-        return self._get_plot_object()
+        ret = self._get_plot_object()
+
+        # execute gc.collect() when the number of uncollected objects reaches 256 (decided ad hoc) or more.
+        # figure.Figure creates a huge number of objects, and if plot() is called a significant number of times to plot points,
+        # the python kernel cannot collect objects all at once by default GC setting.
+        if gc.get_count()[0] > 255:
+            gc.collect()
+
+        return ret
 
     def _get_figfile(self) -> str:
         """
@@ -1062,10 +1066,8 @@ class SingleDishPointingChart(object):
         else:
             xaxis = 'R.A.'
             yaxis = 'Declination'
-        return Plot(self.figfile,
-                           x_axis=xaxis,
-                           y_axis=yaxis,
-                           parameters={'vis': self.ms.basename,
-                                       'antenna': self.antenna.name,
-                                       'field': field_name,
-                                       'intent': intent})
+        return Plot(self.figfile, x_axis=xaxis, y_axis=yaxis,
+                    parameters={'vis': self.ms.basename,
+                                'antenna': self.antenna.name,
+                                'field': field_name,
+                                'intent': intent})

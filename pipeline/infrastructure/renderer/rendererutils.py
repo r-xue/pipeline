@@ -219,7 +219,7 @@ def sort_row_by(row, axes):
         return g
 
     # create a parameter getter for each axis
-    accessors = [f(axis) for axis in axes.split(',')]
+    accessors = [f(axis.strip()) for axis in axes.split(',')]
 
     # sort plots in row, using a generated tuple (p1, p2, p3, ...) for
     # secondary sort

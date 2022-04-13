@@ -7,6 +7,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class PriorcalsResults(basetask.Results):
+    """Results class for the hifv_priorcals pipeline task.  Used on VLA measurement sets.
+
+    The class inherits from basetask.Results.
+
+    """
     def __init__(self, final=None, pool=None, preceding=None, gc_result=None, oc_result=None,
                  rq_result=None,  antpos_result=None, antcorrect=None, tecmaps_result=None, sw_result=None):
 
@@ -32,7 +37,6 @@ class PriorcalsResults(basetask.Results):
         self.antpos_result = antpos_result
         self.antcorrect = antcorrect
         self.tecmaps_result = tecmaps_result
-        # print self.antcorrect
 
     def merge_with_context(self, context):
         if self.gc_result:
@@ -40,42 +44,45 @@ class PriorcalsResults(basetask.Results):
                 self.gc_result.merge_with_context(context)
                 LOG.info("Priorcals:  Merged gain curves cal")
             except Exception as ex:
-                LOG.warn("No gain curves table written.")
+                LOG.warning("No gain curves table written.")
 
         if self.oc_result:
             try:
                 self.oc_result.merge_with_context(context)
                 LOG.info("Priorcals:  Merged Opac cal")
             except Exception as ex:
-                LOG.warn("No opacities table written.")
+                LOG.warning("No opacities table written.")
 
         if self.rq_result:
             try:
                 self.rq_result.merge_with_context(context)
-                LOG.info("Priorcals:  Requantizer gains")
+                LOG.info("Priorcals:  Merged Requantizer gains")
             except Exception as ex:
-                LOG.warn("No rq gains table written.")
+                LOG.warning("No rq gains table written.")
 
         if self.antpos_result:
             try:
                 self.antpos_result.merge_with_context(context)
-                LOG.info("Priorcals: Antenna positions corrections.")
+                LOG.info("Priorcals:   Merged Antenna positions corrections.")
             except Exception as ex:
-                LOG.warn('No antenna position corrections.')
+                LOG.warning('No antenna position corrections.')
 
         if self.tecmaps_result:
-            try:
-                self.tecmaps_result.merge_with_context(context)
-                LOG.info("Priorcals: TEC Maps.")
-            except Exception as ex:
-                LOG.warn('No TEC Maps table written.')
+            if self.tecmaps_result.final and self.tecmaps_result.pool:
+                try:
+                    self.tecmaps_result.merge_with_context(context)
+                    LOG.info("Priorcals:  Merged TEC Maps.")
+                except Exception as ex:
+                    LOG.warning('No TEC Maps table written.')
+            else:
+                LOG.info('Priorcals:  TEC maps not applied.')
 
         if self.sw_result:
             try:
                 # self.sw_result.merge_with_context(context)
-                LOG.info("Priorcals: Switched Power caltable written to disk but not merged with context callibrary")
+                LOG.info("Priorcals:  Switched Power caltable written to disk but not merged with context callibrary")
             except Exception as ex:
-                LOG.warn('No Switched Power table written.')
+                LOG.warning('No Switched Power table written.')
 
         return        
         # if not self.final:

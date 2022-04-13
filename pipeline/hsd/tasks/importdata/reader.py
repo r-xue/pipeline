@@ -1,39 +1,65 @@
+"""This module is implemented classes for importdata to read MeasurementSet."""
+
 import collections
 import glob
 import itertools
 import os
 import shutil
 import string
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy
-from typing import List, Tuple
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
+from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.hsd.tasks.common import mjd_to_datestring, TableSelector
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.tasks.common import TableSelector, mjd_to_datestring
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
 
-from ..common import rasterutil
 from ..common import direction_utils as dirutil
+from ..common import rasterutil
 
 LOG = infrastructure.get_logger(__name__)
 
 
-def get_value_in_deg(quantity):
+def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
+    """Convert a casa quantity into a value in the unit of degree.
+
+    Args:
+        quantity: value for convert
+    Returns:
+        numpy.ndarray: converted value
+    """
     qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
 
 
-def mjdsec2str(t):
+def mjdsec2str(t: float) -> str:
+    """Convert datetime to string.
+
+    Args:
+        t: MJD second to convert
+    Returns:
+        str: formatted datetime
+    """
     qa = casa_tools.quanta
     return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
 
 
-def get_state_id(ms, spw, intent):
+def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
+    """Get state ID from MeasurementSet.
+
+    Args:
+        ms: MeasurementSet
+        spw: spectral window
+        intent: Pipeline intent
+    Returns:
+        array: state IDs
+    """
     states = (s for s in ms.states if intent in s.intents)
     obs_modes = set()
     for s in states:
@@ -50,7 +76,14 @@ def get_state_id(ms, spw, intent):
     return numpy.fromiter(state_ids, dtype=numpy.int32)
 
 
-def merge_timerange(timerange_list):
+def merge_timerange(timerange_list: List[List]) -> List[List]:
+    """Merge time ranges.
+
+    Args:
+        timerange_list: list of timerange
+    Returns:
+        List: merged time ranges
+    """
     timegap_list = numpy.asarray([l1[0] - l0[1] for l0, l1 in zip(timerange_list, timerange_list[1:])])
     LOG.info(f'timegap_list is {timegap_list}')
 
@@ -63,7 +96,12 @@ def merge_timerange(timerange_list):
     return timerange_merged
 
 
-def initialize_template(flagtemplate):
+def initialize_template(flagtemplate: str):
+    """Initialise flag template.
+
+    Args:
+        flagtemplate: path of flag template
+    """
     # remove existing template file
     if os.path.exists(flagtemplate):
         os.remove(flagtemplate)
@@ -74,15 +112,14 @@ def initialize_template(flagtemplate):
 
 
 def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
-    """
-    Primitive merge of flag command. Merge flag commands that have exactly
-    same timerange but different antennas/spws.
+    """Primitive merge of flag command.
+
+    Merge flag commands that have exactly same timerange but different antennas/spws.
 
     Args:
         commands: List of (spw, antenna, timerange) string tuples.
-
     Returns:
-        Merged list of (spw, antenna, timerange) string tuples.
+        List: Merged list of (spw, antenna, timerange) string tuples.
     """
     LOG.debug('INPUT: %s', commands)
     # merge command using utils.dict_merge
@@ -129,7 +166,14 @@ def merge_flagcmd(commands: List[Tuple[str]]) -> List[Tuple[str]]:
     return merged
 
 
-def write_flagcmd(flagtemplate, cmd_list, reason=''):
+def write_flagcmd(flagtemplate: str, cmd_list: List[Tuple[str, str, str]], reason: str=''):
+    """Write command list to flagtemplate file.
+
+    Args:
+        flagtemplate: filename of flagtemplate
+        cmd_list: list of (spw, antenna, timerange) string tuples.
+        reason: reason string
+    """
     sanitized = reason.replace(' ', '_')
     template = string.Template(f"mode='manual' spw='$spw' antenna='$antenna&&&' timerange='$timerange' reason='SDPL:{sanitized}'\n")
 
@@ -138,48 +182,62 @@ def write_flagcmd(flagtemplate, cmd_list, reason=''):
             f.write(template.safe_substitute(spw=spw, antenna=antenna, timerange=timerange))
 
 
-def set_nominal_direction(ant, srctype, az, el, ra, dec,
-                          shift_ra, shift_dec, offset_ra, offset_dec):
+def set_nominal_direction(ant: numpy.ndarray, srctype: numpy.ndarray, az: numpy.ndarray, el: numpy.ndarray, ra: numpy.ndarray, dec: numpy.ndarray,
+                          shift_ra: numpy.ndarray, shift_dec: numpy.ndarray, offset_ra: numpy.ndarray, offset_dec: numpy.ndarray):
+    """Replace NaNs in input arrays with nominal directions.
+
+    Args:
+        ant: antenna id
+        srctype: source type ids (0=target, 1=other types)
+        az: pointing direction:AZ
+        el: pointing direction:EL
+        ra: pointing direction:RA
+        dec: pointing direction:DEC
+        shift_ra: pointing direction:Shift RA
+        shift_dec: pointing direction:Shift DEC
+        offset_ra: pointing direction:Offset RA
+        offset_dec: pointing direction:Offset DEC
+    """
     # check if there are NaN's
     isvalid = numpy.logical_not(numpy.isnan(az))
     if numpy.all(isvalid):
         # no NaN's so exit this loop
-        print('no NaN')
+        LOG.debug('no NaN')
         return
 
     for _a, _s in itertools.product(set(ant), set(srctype)):
         # select data
-        print(f'ant {_a} src {_s}')
+        LOG.debug(f'ant {_a} src {_s}')
         sel = numpy.logical_and(ant == _a, srctype == _s)
         if numpy.all(numpy.logical_not(sel)):
             # no data for this selection
-            print('no data')
+            LOG.debug('no data')
             continue
 
         # separate NaN's
         mask = numpy.logical_and(isvalid, sel)
         if numpy.all(mask[sel]):
             # no NaN's for this selection
-            print('no NaN for this selection')
+            LOG.debug('no NaN for this selection')
             continue
 
         nanmask = numpy.logical_and(numpy.logical_not(isvalid), sel)
         _az = numpy.median(az[mask])
-        print('nominal az {}'.format(_az))
+        LOG.debug('nominal az {}'.format(_az))
         _el = numpy.median(el[mask])
-        print('nominal el {}'.format(_el))
+        LOG.debug('nominal el {}'.format(_el))
         _ra = numpy.median(ra[mask])
-        print('nominal ra {}'.format(_ra))
+        LOG.debug('nominal ra {}'.format(_ra))
         _dec = numpy.median(dec[mask])
-        print('nominal dec {}'.format(_dec))
+        LOG.debug('nominal dec {}'.format(_dec))
         _shift_ra = numpy.median(shift_ra[mask])
-        print('nominal shift_ra {}'.format(_shift_ra))
+        LOG.debug('nominal shift_ra {}'.format(_shift_ra))
         _shift_dec = numpy.median(shift_dec[mask])
-        print('nominal shift_dec {}'.format(_shift_dec))
+        LOG.debug('nominal shift_dec {}'.format(_shift_dec))
         _offset_ra = numpy.median(offset_ra[mask])
-        print('nominal offset_ra {}'.format(_offset_ra))
+        LOG.debug('nominal offset_ra {}'.format(_offset_ra))
         _offset_dec = numpy.median(offset_dec[mask])
-        print('nominal offset_dec {}'.format(_offset_dec))
+        LOG.debug('nominal offset_dec {}'.format(_offset_dec))
         az[nanmask] = _az
         el[nanmask] = _el
         ra[nanmask] = _ra
@@ -191,11 +249,15 @@ def set_nominal_direction(ant, srctype, az, el, ra, dec,
 
 
 class MetaDataReader(object):
-    def __init__(self, context, ms, table_name):
-        """
-        context -- pipeline context
-        mses -- list of measurementset domain objects
-        table_name -- name of DataTable
+    """MetaData reading class."""
+
+    def __init__(self, context: Context, ms: MeasurementSet, table_name: str):
+        """Initialize this class.
+
+        Args:
+            context: pipeline context
+            mses: list of measurementset domain objects
+            table_name: name of DataTable
         """
         self.context = context
         self.ms = ms
@@ -222,13 +284,28 @@ class MetaDataReader(object):
         initialize_template(self.flagtemplate)
 
     @property
-    def name(self):
+    def name(self) -> str:
+        """Property:name.
+
+        Returns:
+            str: ms.name
+        """
         return self.ms.name
 
-    def get_datatable(self):
+    def get_datatable(self) -> DataTable:
+        """Return datatable.
+
+        Returns:
+            DataTable: self.datatable
+        """
         return self.datatable
 
-    def detect_target_spw(self):
+    def detect_target_spw(self) -> List[int]:
+        """Return a list of science spectral window IDs.
+
+        Returns:
+            List: spectral window IDs
+        """
         if not hasattr(self, 'name'):
             return []
 
@@ -236,7 +313,12 @@ class MetaDataReader(object):
         spws = ms.get_spectral_windows(science_windows_only=True)
         return [x.id for x in spws]
 
-    def detect_target_data_desc(self):
+    def detect_target_data_desc(self) -> numpy.ndarray:
+        """Return a list of data description IDs associated with science spectral windows.
+
+        Returns:
+            array: data description ids
+        """
         science_windows = self.detect_target_spw()
         ms = self.ms
 
@@ -249,10 +331,17 @@ class MetaDataReader(object):
         dds = numpy.fromiter(_g(), dtype=numpy.int32)
         return dds
 
-    def register_invalid_pointing_data(self, antenna_id, row):
+    def register_invalid_pointing_data(self, antenna_id: int, row: int):
+        """Register invalid pointing data.
+
+        Args:
+            antenna_id: antenna id
+            row: DataTable row
+        """
         self.invalid_pointing_data[antenna_id].append(row)
 
     def generate_flagcmd(self):
+        """Generate flag commands based on pointings of observation and save them in the flag template file."""
         # PIPE-646
         # per-antenna row list for the data without pointing data
         # key: antenna id
@@ -293,23 +382,39 @@ class MetaDataReader(object):
         self._generate_flagcmd(self.flagtemplate, flagdict1, reason='missing pointing data')
         self._generate_flagcmd(self.flagtemplate, flagdict2, reason='uniform image rms')
 
-    def generate_flagdict_for_invalid_pointing_data(self):
+    def generate_flagdict_for_invalid_pointing_data(self) -> collections.defaultdict:
+        """Return row IDs of DataTable with invalid pointing information.
+
+        Returns:
+            collections.defaultdict: dictionary of invalid pointing data
+        """
         if len(self.invalid_pointing_data) > 0:
-            LOG.warn('{}: There are rows without corresponding POINTING data'.format(self.ms.basename))
-            LOG.warn('Affected antennas are: {}'.format(' '.join(
-                [self.ms.antennas[k].name for k in self.invalid_pointing_data])))
+            LOG.warning('There are rows without corresponding POINTING data. Affected rows are identified and will be flagged in hsd_flagdata stage.')
+            LOG.warning('Affected antennas are: {} in {}'.format(
+                ' '.join([self.ms.antennas[k].name for k in self.invalid_pointing_data]),
+                self.ms.basename))
 
         return self.invalid_pointing_data
 
-    def generate_flagdict_for_uniform_rms(self):
-        # apply flagging heuristics
-        # returns dictionary containing list of row IDs for datatable
+    def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple[int, int], numpy.ndarray]:
+        """Return row IDs of DataTable to flag.
+
+        Returns:
+            Dict: contains list of row IDs of datatable
+        """
         # keys for dictionary are (spw_id, antenna_id) tuples
         flagdict = rasterutil.flag_raster_map(self.datatable)
 
         return flagdict
 
-    def _generate_flagcmd(self, flagtemplate, flag_dict, reason=''):
+    def _generate_flagcmd(self, flagtemplate: str, flag_dict: Dict[Union[Tuple[str, int], int], List[int]], reason: str=''):
+        """Generate and store flag commands in the flag template file.
+
+        Args:
+            flagtemplate: filename of flagtemplate
+            flag_dict: dictionary of flags
+            reason: reason string
+        """
         datatable = self.datatable
         cmdlist = []
         for key, rowlist in flag_dict.items():
@@ -345,7 +450,14 @@ class MetaDataReader(object):
         cmd_merged = merge_flagcmd(cmdlist)
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
-    def execute(self, dry_run=True):
+    def execute(self, dry_run: bool = True) -> Dict[str, Dict[str, Union[str, Dict]]]:
+        """Read MeasurementSet and fill DataTable.
+
+        Args:
+            dry_run: flag of dry run
+        Returns:
+            Dict: dictionary of ephemeris sources
+        """
         if dry_run:
             return
 
@@ -355,7 +467,7 @@ class MetaDataReader(object):
         nchan_map = dict([(spwid, self.ms.get_spectral_window(spwid).num_channels) for spwid in spwids])
         ddids = self.detect_target_data_desc()
 
-        #Rad2Deg = 180. / 3.141592653
+        # Rad2Deg = 180. / 3.141592653
 
         # FILENAME keyword stores name of the MS
         LOG.info('name=%s' % name)
@@ -369,7 +481,7 @@ class MetaDataReader(object):
         # register direction reference to datatable
         self.datatable.direction_ref = outref
         azelref = self._get_azelref()
-        #LOG.info('outref="{0}" azelref="{1}"'.format(outref, azelref))
+        # LOG.info('outref="{0}" azelref="{1}"'.format(outref, azelref))
 
         ms = self.ms
         assert ms is not None
@@ -377,7 +489,7 @@ class MetaDataReader(object):
         target = 'TARGET'
         reference = 'REFERENCE'
         assert target in ms.intents
-        #assert reference in ms.intents
+        # assert reference in ms.intents
         target_states = get_state_id(ms, spwsel, target)
         reference_states = get_state_id(ms, spwsel, reference)
 #         target_states = (s for s in ms.states if target in s.intents)
@@ -399,29 +511,29 @@ class MetaDataReader(object):
         target_state_ids = numpy.concatenate([target_states])
 
         # get antenna position list
-        mpositions = [ a.position for a in ms.antennas ]
+        mpositions = [a.position for a in ms.antennas]
 
         # get names of ephemeris sources (excludes 'COMET')
         me = casa_tools.measures
-        direction_codes = me.listcodes( me.direction() )
+        direction_codes = me.listcodes(me.direction())
         ephemeris_list = direction_codes['extra']
-        known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
+        known_ephemeris_list = numpy.delete(ephemeris_list, numpy.where(ephemeris_list == 'COMET'))
         # set org_directions
-        ephemsrc_list = []  # list of ephemsrc names (unique appearance)
-        ephemsrc_names = {} # ephemsrc name for each field_id
-        ephem_tables = {}   # epheris table name for each field_id if applicasble
+        ephemsrc_list = []   # list of ephemsrc names (unique appearance)
+        ephemsrc_names = {}  # ephemsrc name for each field_id
+        ephem_tables = {}    # epheris table name for each field_id if applicasble
         # ephem_tables to be "" for known_ephemeris_list and non-ephemeris sources
 
         with casa_tools.TableReader(os.path.join(name, 'FIELD')) as tb:
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
-                fields = ms.get_fields( field_id = field_id )
+                fields = ms.get_fields(field_id=field_id)
                 if len(fields) == 0:
                     continue
 
-                source_name = (fields[0].source.name) # removed upper() 2019.5.14
+                source_name = (fields[0].source.name)  # removed upper() 2019.5.14
                 if 'EPHEMERIS_ID' in tb.colnames():
-                    ephemeris_ids = tb.getcol( 'EPHEMERIS_ID' )
+                    ephemeris_ids = tb.getcol('EPHEMERIS_ID')
                 else:
                     ephemeris_ids = []
 
@@ -433,15 +545,15 @@ class MetaDataReader(object):
 
                 # ephemeris source with ephemeris table
                 if fields[0].source.is_eph_obj:
-                    ephemsrc_names.update( { field_id:source_name } )
+                    ephemsrc_names.update({field_id: source_name})
                     if source_name.upper not in ephemsrc_list:
                         # found a new ephemeris source
-                        ephemsrc_list.append( source_name )
+                        ephemsrc_list.append(source_name)
 
                     # pick ephemeris table name
-                    ephem_table_files = glob.glob( ms.name+'/FIELD/EPHEM'+str(ephemeris_ids[field_id])+'_*.tab' )
+                    ephem_table_files = glob.glob(ms.name + '/FIELD/EPHEM' + str(ephemeris_ids[field_id]) + '_*.tab')
                     if len(ephem_table_files) > 1:
-                        raise RuntimeError( "multiple ephemeris tables found for field_id={}".format(field_id) )
+                        raise RuntimeError("multiple ephemeris tables found for field_id={}".format(field_id))
 
                     if len(ephem_table_files) == 1:
                         ephem_table_file = ephem_table_files[0]
@@ -449,37 +561,40 @@ class MetaDataReader(object):
                         with casa_tools.TableReader(ephem_table_file) as tb2:
                             keywords = tb2.getkeywords()
                             if keywords['NAME'] != source_name:
-                                raise RuntimeError( "source name in ephemeris table {0} was {1}, inconsistent with {2}".format( ephem_table_file, keywords['NAME'], source_name ) )
-                        ephem_tables.update( {field_id:ephem_table_file} )
-                        LOG.info( "FIELD_ID={} ({}) with ephemeris table {}".format( field_id, source_name, ephem_table_file ) )
+                                raise RuntimeError(
+                                    "source name in ephemeris table {0} was {1}, inconsistent with {2}".format(ephem_table_file,
+                                                                                                               keywords['NAME'],
+                                                                                                               source_name))
+                        ephem_tables.update({field_id: ephem_table_file})
+                        LOG.info("FIELD_ID={} ({}) with ephemeris table {}".format(field_id, source_name, ephem_table_file))
 
                 # known ephemeris source without ephemeirs table (not applicable for ALMA)
                 elif fields[0].source.is_known_eph_obj:
-                    ephemsrc_names.update( { field_id:source_name  } )
-                    ephem_tables.update( {field_id:'' } )
-                    LOG.info( "FIELD_ID={} ({}) as KNOWN EPHEMERIS SOURCE".format( field_id, source_name ) )
+                    ephemsrc_names.update({field_id: source_name})
+                    ephem_tables.update({field_id: ''})
+                    LOG.info("FIELD_ID={} ({}) as KNOWN EPHEMERIS SOURCE".format(field_id, source_name))
 
                 # non-ephemeris source
                 else:
-                    ephemsrc_names.update( { field_id:'' } )
-                    ephem_tables.update( {field_id:'' } )
-                    LOG.info( "FIELD_ID={} ({}) as NORMAL SOURCE".format( field_id, source_name) )
+                    ephemsrc_names.update({field_id: ''})
+                    ephem_tables.update({field_id: ''})
+                    LOG.info("FIELD_ID={} ({}) as NORMAL SOURCE".format(field_id, source_name))
 
-
-        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s'%(list(ddids), list(target_state_ids))) as tb:
+        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (list(ddids),
+                                                                                                                     list(target_state_ids))) as tb:
             # find the first onsrc for each ephemeris source and pack org_directions
             org_directions = {}
             nrow = tb.nrows()
             for irow in range(nrow):
-                field_id = tb.getcell( 'FIELD_ID', irow )
+                field_id = tb.getcell('FIELD_ID', irow)
                 if field_id not in ephemsrc_names:
-                    raise RuntimeError( "ephemsrc_name for field_id={0} does not exist".format(field_id) )
+                    raise RuntimeError("ephemsrc_name for field_id={0} does not exist".format(field_id))
                 if ephemsrc_names[field_id] != "":
                     source_name = ephemsrc_names[field_id]
                     if source_name not in org_directions:
-                        mjd_in_sec = tb.getcell( 'TIME', irow )
-                        antenna_id = tb.getcell( 'ANTENNA1', irow )
-                        time_meas = tb.getcolkeyword( 'TIME', 'MEASINFO' )
+                        mjd_in_sec = tb.getcell('TIME', irow)
+                        antenna_id = tb.getcell('ANTENNA1', irow)
+                        time_meas = tb.getcolkeyword('TIME', 'MEASINFO')
                         time_frame = time_meas['Ref']
                         me = casa_tools.measures
                         qa = casa_tools.quanta
@@ -488,15 +603,15 @@ class MetaDataReader(object):
                         assert len(antennas) == 1
                         antenna_domain = antennas[0]
                         mposition = antenna_domain.position
-                        fields = ms.get_fields( field_id = field_id )
+                        fields = ms.get_fields(field_id=field_id)
                         is_known_eph_obj = fields[0].source.is_known_eph_obj
-                        org_direction = self.get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
-                        org_directions.update( {source_name:org_direction} );
+                        org_direction = self.get_reference_direction(source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref)
+                        org_directions.update({source_name: org_direction})
 
         with casa_tools.TableReader(os.path.join(name, 'FIELD')) as tb:
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
-                fields = ms.get_fields( field_id = field_id )
+                fields = ms.get_fields(field_id=field_id)
                 if len(fields) == 0:
                     org_direction = None
                     continue
@@ -504,11 +619,13 @@ class MetaDataReader(object):
                 source_name = fields[0].source.name
                 if source_name in org_directions:
                     fields[0].source.org_direction = org_directions[source_name]
-                    LOG.info( "registering org_direction[{}] (field_id={} of {}) as {}".format( source_name, field_id, name, org_directions[source_name] ))
+                    LOG.info("registering org_direction[{}] (field_id={} of {}) as {}".format(source_name, field_id, name,
+                             org_directions[source_name]))
                 else:
                     org_direction = None
 
-        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s'%(list(ddids), list(state_ids))) as tb:
+        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (list(ddids),
+                                                                                                                     list(state_ids))) as tb:
             nrow = tb.nrows()
             rows = tb.rownumbers()
             Texpt = tb.getcol('INTERVAL')
@@ -534,8 +651,8 @@ class MetaDataReader(object):
 
         ID = len(self.datatable)
         LOG.info('ID=%s' % ID)
-        #ROWs = []
-        #IDs = []
+        # ROWs = []
+        # IDs = []
 
         self.datatable.addrows(nrow)
         # column based storing
@@ -544,8 +661,8 @@ class MetaDataReader(object):
         self.datatable.putcol('IF', Tif, startrow=ID)
         self.datatable.putcol('NPOL', Tpol, startrow=ID)
         self.datatable.putcol('BEAM', Tbeam, startrow=ID)
-        self.datatable.putcol('TIME', Tmjd/86400.0, startrow=ID)
-        self.datatable.putcol('ELAPSED', Tmjd-Tmjd[0], startrow=ID)
+        self.datatable.putcol('TIME', Tmjd / 86400.0, startrow=ID)
+        self.datatable.putcol('ELAPSED', Tmjd - Tmjd[0], startrow=ID)
         self.datatable.putcol('EXPOSURE', Texpt, startrow=ID)
         self.datatable.putcol('FIELD_ID', field_ids, startrow=ID)
         Tra = numpy.zeros(nrow, dtype=numpy.float64)
@@ -597,9 +714,8 @@ class MetaDataReader(object):
                 try:
                     pointing_directions = msmd.pointingdirection(row, interpolate=True)
                 except RuntimeError as e:
-                    LOG.warn(e)
-                    if str(e).find('SSMIndex::getIndex - access to non-existing row') != -1:
-                        LOG.warn('{}: Missing pointing data for row {} (antenna {} time {})'.format(ms.basename, rows[irow], Tant[irow], Tmjd[irow]))
+                    if 'SSMIndex::getIndex - access to non-existing row' in str(e):
+                        LOG.info('{}: Missing pointing data for row {} (antenna {} time {})'.format(ms.basename, rows[irow], Tant[irow], Tmjd[irow]))
 
                         # register DataTable row to self.invalid_pointing_data
                         dt_row = ID + irow
@@ -617,6 +733,7 @@ class MetaDataReader(object):
                         Tflagrow[irow] = True
                         continue
                     else:
+                        LOG.warning(e)
                         raise e
 
                 pointing_direction = pointing_directions['antenna1']['pointingdirection']  # antenna2 should be the same
@@ -666,7 +783,7 @@ class MetaDataReader(object):
                 # Calculate shift_ra/dec and pack them into Tshift_ra/dec
                 field_id = field_ids[irow]
                 if field_id not in ephemsrc_names:
-                    raise RuntimeError("ephemsrc_name for field_id={0} does not exist".format(field_id) )
+                    raise RuntimeError("ephemsrc_name for field_id={0} does not exist".format(field_id))
                 if ephemsrc_names[field_id] == "":
                     Tshift_ra[irow] = Tra[irow]
                     Tshift_dec[irow] = Tdec[irow]
@@ -675,21 +792,21 @@ class MetaDataReader(object):
                 else:
                     source_name = ephemsrc_names[field_id]
                     if source_name not in org_directions:
-                        raise RuntimeError( "Ephemeris source {0} does not exist in org_directions".format(source_name) )
+                        raise RuntimeError("Ephemeris source {0} does not exist in org_directions".format(source_name))
                     org_direction = org_directions[source_name]
-                    fields = ms.get_fields( field_id = field_id )
+                    fields = ms.get_fields(field_id=field_id)
                     is_known_eph_obj = fields[0].source.is_known_eph_obj
-                    ref_direction = self.get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
-                    direction2 = me.measure( pointing_direction, outref )
+                    ref_direction = self.get_reference_direction(source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref)
+                    direction2 = me.measure(pointing_direction, outref)
 
-                    shift_direction = dirutil.direction_shift( direction2, ref_direction, org_direction )
-                    shift_ra, shift_dec = dirutil.direction_convert( shift_direction, mepoch, mposition, outframe=outref )
-                    Tshift_ra[irow]  = get_value_in_deg(shift_ra)
+                    shift_direction = dirutil.direction_shift(direction2, ref_direction, org_direction)
+                    shift_ra, shift_dec = dirutil.direction_convert(shift_direction, mepoch, mposition, outframe=outref)
+                    Tshift_ra[irow] = get_value_in_deg(shift_ra)
                     Tshift_dec[irow] = get_value_in_deg(shift_dec)
 
-                    ofs_direction = dirutil.direction_offset( direction2, ref_direction )
-                    ofs_ra, ofs_dec = dirutil.direction_convert( ofs_direction, mepoch, mposition, outframe=outref )
-                    Tofs_ra[irow]  = get_value_in_deg(ofs_ra)
+                    ofs_direction = dirutil.direction_offset(direction2, ref_direction)
+                    ofs_ra, ofs_dec = dirutil.direction_convert(ofs_direction, mepoch, mposition, outframe=outref)
+                    Tofs_ra[irow] = get_value_in_deg(ofs_ra)
                     Tofs_dec[irow] = get_value_in_deg(ofs_dec)
 
                 last_mjd = mjd_in_sec
@@ -712,7 +829,7 @@ class MetaDataReader(object):
 
         # save org_directions if exists
         if 'org_direction' in locals():
-            self.datatable.putkeyword( 'ORG_DIRECTION', org_direction )
+            self.datatable.putkeyword('ORG_DIRECTION', org_direction)
 
         self.datatable.putcol('RA', Tra, startrow=ID)
         self.datatable.putcol('DEC', Tdec, startrow=ID)
@@ -747,7 +864,7 @@ class MetaDataReader(object):
             # NOTE: data is valid if Tflagrow is 0
             #       data is valid if pflags[3] is 1
             pflags_template[:, OnlineFlagIndex] = 1 if Tflagrow[x] == 0 else 0
-            sDate = mjd_to_datestring(Tmjd[x]/86400.0, unit='day')
+            sDate = mjd_to_datestring(Tmjd[x] / 86400.0, unit='day')
             self.datatable.putcell('DATE', ID, sDate)
             self.datatable.putcell('MASKLIST', ID, masklist)
 
@@ -766,7 +883,12 @@ class MetaDataReader(object):
 
         return org_directions
 
-    def _get_outref(self):
+    def _get_outref(self) -> str:
+        """Get direction reference for target.
+
+        Returns:
+            str: direction reference
+        """
         outref = None
 
         if self.ms.representative_target[0] is not None:
@@ -801,26 +923,46 @@ class MetaDataReader(object):
         return outref
 
     @staticmethod
-    def _get_azelref():
+    def _get_azelref() -> str:
+        """Return reference type of AZEL coordinate.
+
+        Returns:
+            str: fix string 'AZELGEO'
+        """
         return 'AZELGEO'
 
-    def get_reference_direction( self, source_name, ephem_table, is_known_eph_obj, mepoch, mposition, outframe):
+    def get_reference_direction(self, source_name: str, ephem_table: str, is_known_eph_obj: bool, mepoch: Dict[str, Union[Dict[str, Any], Any]],
+                                mposition: Dict[str, Union[Dict[str, Any], Any]], outframe: str) -> Dict[str, Union[str, Dict]]:
+        """Get reference direction of a ephemeris object by specified a position and epoch timestamp.
+
+        Args:
+            source_name: source name (ex:'Venus')
+            ephem_table: ephemeris table name
+            is_known_eph_obj: known ephemeris flag
+            mepoc: dict of timestamp
+            mposition: dict of position
+            outframe: direction reference (ex:'ICRS')
+        Returns:
+            Dict: reference direction of ephemeris object
+        Raises:
+            RuntimeError: raise when is_known_eph_obj is False
+        """
         me = casa_tools.measures
 
         if ephem_table != "":
-            me.framecomet( ephem_table )
+            me.framecomet(ephem_table)
             me.doframe(mepoch)
             me.doframe(mposition)
-            obj_azel = me.measure( me.direction('COMET'), 'AZELGEO' )
-            ref = me.measure( obj_azel, outframe )
+            obj_azel = me.measure(me.direction('COMET'), 'AZELGEO')
+            ref = me.measure(obj_azel, outframe)
         else:
             # if source_name.upper() in known_ephemeris_list:
             if is_known_eph_obj:
                 me.doframe(mepoch)
                 me.doframe(mposition)
-                obj_azel = me.measure( me.direction(source_name.upper()), 'AZELGEO' )
-                ref = me.measure( obj_azel, outframe )
+                obj_azel = me.measure(me.direction(source_name.upper()), 'AZELGEO')
+                ref = me.measure(obj_azel, outframe)
             else:
-                raise RuntimeError( "{0} is not registered in known_ephemeris_list".format(source_name) )
+                raise RuntimeError("{0} is not registered in known_ephemeris_list".format(source_name))
 
         return ref

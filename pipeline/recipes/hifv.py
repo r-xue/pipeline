@@ -44,14 +44,9 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
         hifv_priorcals(pipelinemode=pipelinemode)
 
         # Initial test calibrations using bandpass and delay calibrators
-        hifv_testBPdcals(pipelinemode=pipelinemode)
-
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases
-        # hifv_flagbaddef(pipelinemode=pipelinemode)
-
-        # Flag spws that have no calibration at this point
-        # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='testdelay.k', bpcaltable='testBPcal.b')
+        hifv_testBPdcals(pipelinemode=pipelinemode)
 
         # Flag possible RFI on BP calibrator using rflag
         hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='bpd-vla')
@@ -65,9 +60,6 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
 
         # Re-run semi-final delay and bandpass calibrations
         # hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
-
-        # Flag spws that have no calibration at this point
-        # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='delay.k', bpcaltable='BPcal.b')
 
         # Determine solint for scan-average equivalent
         hifv_solint(pipelinemode=pipelinemode)
@@ -84,9 +76,6 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
 
         # Apply all the calibrations and check the calibrated data
         hifv_applycals(pipelinemode=pipelinemode)
-
-        # Flag spws that have no calibration at this point
-        # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='finaldelay.k', bpcaltable='finalBPcal.b')
 
         # Now run all calibrated data, including the target, through rflag/tfcropflag/extendflag
         hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='target-vla')

@@ -287,15 +287,15 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 job_flag = np.array(job_result['Flag'])
                 job_wvrflag = set(job_name[job_flag])
             else:
-                LOG.warn('CASA wvrgcal job terminated unexpectedly with '
-                         'exit code %s; no flags generated.' % (job_result['rval']))
+                LOG.warning('CASA wvrgcal job terminated unexpectedly with '
+                            'exit code %s; no flags generated.' % (job_result['rval']))
                 job_wvrflag = set([])
 
             input_wvrflag = set(wvrflag)
             generated_wvrflag = job_wvrflag.difference(input_wvrflag)
             if generated_wvrflag:
-                LOG.warn('%s wvrgcal has flagged antennas: %s' % (
-                  os.path.basename(inputs.vis), list(generated_wvrflag)))
+                LOG.warning('%s wvrgcal has flagged antennas: %s' % (
+                    os.path.basename(inputs.vis), list(generated_wvrflag)))
 
             wvrflag_set = set(result.wvrflag)
             wvrflag_set.update(job_wvrflag)
