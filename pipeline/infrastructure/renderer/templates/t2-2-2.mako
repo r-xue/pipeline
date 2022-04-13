@@ -34,7 +34,12 @@ import pipeline.domain.measures as measures
 			            <th scope="col" colspan="3">Frequency ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Bandwidth ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Transitions</th>
-			            <th scope="col" colspan="3">Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
+						<%
+						channels_colspan = '3'
+						if show_online_spec_avg_col.science:
+							channels_colspan = '4'
+						%>
+			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
@@ -51,7 +56,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
-						% if ms.antenna_array.name == 'ALMA':
+						% if show_online_spec_avg_col.science:
 							<th>Online Spec. Avg.</th>
 					    % endif
 			        	<th>Frequency Width</th>
@@ -77,15 +82,21 @@ import pipeline.domain.measures as measures
 					  <td>${str(spw.bandwidth)}</td>
 					  <td>${', '.join(spw.transitions)}</td>
 					  <td>${spw.num_channels}</td>
-
-					  % if ms.antenna_array.name == 'ALMA': 
-					  		% if ms.get_alma_cycle_number() == 2: 
-							  <td> '?' </td> <!-- sdm_num_bin is not set correctly for CYCLE 2 datasets, See PIPE: 584-->
+					% if show_online_spec_avg_col.science: 
+						% if ms.antenna_array.name == 'ALMA':
+							% if ms.get_alma_cycle_number() == 2 or spw.sdm_num_bin is None: 
+							<td> '?' </td> <!-- sdm_num_bin is not set correctly for CYCLE 2 datasets, See PIPE: 584-->
 							% else:
-							  <td>${spw.sdm_num_bin}</td>
+							<td>${spw.sdm_num_bin}</td>
 							% endif
-					  % endif
-
+						% elif 'VLA' in ms.antenna_array.name:
+							% if spw.sdm_num_bin is None: 
+							<td> '?' </td>
+							% else:
+							<td>${spw.sdm_num_bin}</td>
+							% endif
+						% endif
+					%endif
 					  <td>${spw.channels[0].getWidth()}</td>
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
@@ -131,7 +142,12 @@ import pipeline.domain.measures as measures
 			            <th scope="col" colspan="3">Frequency ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Bandwidth ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Transitions</th>
-			            <th scope="col" colspan="3">Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
+						<%
+						channels_colspan = '3'
+						if show_online_spec_avg_col.all:
+							channels_colspan = '4'
+						%>
+			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
@@ -149,7 +165,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
-						% if ms.antenna_array.name == 'ALMA':
+						% if show_online_spec_avg_col.all:
 							<th>Online Spec. Avg.</th>
 					    % endif
 			        	<th>Frequency Width</th>
@@ -173,13 +189,23 @@ import pipeline.domain.measures as measures
 						<td>${str(spw.bandwidth)}</td>
 					        <td>${','.join(spw.transitions)}</td>
 						<td>${spw.num_channels}</td>
-						% if ms.antenna_array.name == 'ALMA': 
-					  		% if ms.get_alma_cycle_number() == 2: 
-							  <td> '?' </td> <!-- sdm_num_bin is not set correctly for CYCLE 2 datasets, See PIPE: 584-->
-							% else:
-							  <td>${spw.sdm_num_bin}</td>
+						
+						% if show_online_spec_avg_col.all: 
+							% if ms.antenna_array.name == 'ALMA':
+								% if ms.get_alma_cycle_number() == 2 or spw.sdm_num_bin is None: 
+								<td> '?' </td> <!-- sdm_num_bin is not set correctly for CYCLE 2 datasets, See PIPE: 584-->
+								% else:
+								<td>${spw.sdm_num_bin}</td>
+								% endif
+							% elif 'VLA' in ms.antenna_array.name:
+								% if spw.sdm_num_bin is None: 
+								<td> '?' </td>
+								% else:
+								<td>${spw.sdm_num_bin}</td>
+								% endif
 							% endif
-					  	% endif
+						%endif
+
 						<td>${spw.channels[0].getWidth()}</td>
 						<td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 						<%

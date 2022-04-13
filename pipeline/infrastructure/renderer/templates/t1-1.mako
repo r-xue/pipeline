@@ -266,10 +266,11 @@ $(document).ready(function() {
                                 <td colspan="${numcol}">${ouslabel} ${ousid} <b>Scheduling Block ID:</b> ${sb_id} ${sb_name_markup}</td>
                             </tr>
                             <tr bgcolor="#E8F0FF">
-                            <%
-                                session_group = list(sessiongroup)
-                                acs_version = session_group[0].acs_software_version
-                                software_build_version = session_group[0].software_build_version
+                            <% 
+                                 session_group = list(sessiongroup)
+                                 if pcontext.project_summary.telescope == 'ALMA':
+                                    acs_version = session_group[0].acs_software_version
+                                    software_build_version = session_group[0].acs_software_build_version
                             %>
                             % if pcontext.project_summary.telescope == 'ALMA':                        
                                 <td colspan="${numcol}"><b>Session:</b> ${sessionkey} <b>ACS Version:</b> ${acs_version}, <b>Build Version:</b> ${software_build_version} </td>
@@ -278,15 +279,16 @@ $(document).ready(function() {
                             % endif
                             </tr>
                             % for row in session_group:
-                                % if row.acs_software_version != acs_version or row.software_build_version != build_version: #TODO: finish this
-                                <% #repeat part of header
-                                # outer if should also include if ALMA
-                                <td colspan="${numcol}"><b>ACS Version:</b> ${row.acs_version}, <b>Build Version:</b> ${row.software_build_version} </td>
-                                # then variables acs_version and software_build version need to be updated in case it like alternates. 
-                                # like last_acs_version = row.acs_version 
-                                # last_software_build = row.software_build_version
-                                # then check these...
-                                %>
+                                % if pcontext.project_summary.telescope == 'ALMA':
+                                <!-- If either the ACS software version or build version is different from the previous value, display the new software and build versions -->
+                                    % if row.acs_software_version != acs_version or row.acs_software_build_version != software_build_version:
+                                        <td colspan="${numcol}"><b>ACS Version:</b> ${row.acs_software_version}, <b>Build Version:</b> ${row.acs_software_build_version} </td>
+                                        <% 
+                                        acs_version = row.acs_software_version
+                                        build_version = row.acs_software_build_version
+                                        %>
+                                    % endif
+                                % endif
                                 <tr>
                                     <td><a href="${row.href}">${row.ms}</a></td>
                                     <td>${utils.commafy(row.receivers, quotes=False)}</td>

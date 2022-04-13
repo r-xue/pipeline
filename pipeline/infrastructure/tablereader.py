@@ -346,27 +346,11 @@ class MeasurementSetReader(object):
                     ms.science_goals['dynamicRange'] = sbinfo.dynamicRange
 
                 ms.science_goals['sbName'] = sbinfo.sbName
-
-            # Populate the the online ALMA Control Software software names, if applicable:
-            if 'ALMA' in msmd.observatorynames():
-                annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
-                try:
-                    with casa_tools.TableReader(annotation_table) as table:
-                        acs_software_details = table.getcol('details')[0]
-
-                        # This value can be "WARNING: No ACS_TAG available" in Annotation.xml
-                        if "WARNING" in acs_software_details: 
-                            ms.acs_software_version = "Unknown"
-                        else: 
-                            ms.acs_software_version = acs_software_details
-
-                        ms.acs_software_build_version = table.getcol('details')[1]
-                except: 
-                    LOG.info("Unable to read Annotation table infoformation for MS {}".format(_get_ms_basename(ms)))
-                    ms.acs_software_version = "Unknown"
-                    ms.acs_software_build_version = "Unknown"
+            
+                # Populate the the online ALMA Control Software software names (we are still in the "if ALMA" block here)
+                LOG.info('Populating ms.acs_software_version and ms.acs_software_build_version...')
+                ms.acs_software_version, ms.acs_software_build_version  = MeasurementSetReader.get_acs_software_version(ms, msmd)
                     
-
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
@@ -425,6 +409,28 @@ class MeasurementSetReader(object):
             return list(data.values())[0]
 
 
+    @staticmethod
+    def get_acs_software_version(ms, msmd):
+        annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
+        try:
+            with casa_tools.TableReader(annotation_table) as table:
+                acs_software_details = table.getcol('details')[0]
+
+                # This value can be "WARNING: No ACS_TAG available" in Annotation.xml
+                if "WARNING" in acs_software_details: 
+                    acs_software_version = "Unknown"
+                else: 
+                    acs_software_version = acs_software_details
+
+                acs_software_build_version = table.getcol('details')[1]
+        except: 
+            LOG.info("Unable to read Annotation table infoformation for MS {}".format(_get_ms_basename(ms)))
+            acs_software_version = "Unknown"
+            acs_software_build_version = "Unknown"
+        
+        return (acs_software_version, acs_software_build_version)
+
+
 class SpectralWindowTable(object):
     @staticmethod
     def get_spectral_windows(msmd, ms):
@@ -451,6 +457,9 @@ class SpectralWindowTable(object):
 
         # Read in information on receiver for current MS.
         receiver_info = SpectralWindowTable.get_receiver_info(ms)
+
+        # Read in information about the SDM_NUM_BIN column for the current ms
+        sdm_num_bins = SpectralWindowTable.get_sdm_num_bin_info(ms, msmd)
 
         spws = []
         for i, spw_name in enumerate(spw_names):
@@ -498,14 +507,11 @@ class SpectralWindowTable(object):
                 LOG.info("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
                 receiver, freq_lo = None, None
 
-            # Read the online spectral averaging information if available
-            # TODO: consider breaking out into function
-            sdm_num_bin = None
-            if 'ALMA' in msmd.observatorynames(): # TODO: needs VLA
-                sdm_num_bin = []
-                with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
-                    sdm_num_bin = table.getcol('SDM_NUM_BIN')
-                    sdm_num_bin = sdm_num_bin[i]
+            # Handle case where earlier get_sdm_num_bin_info call returned None by setting this spw's sdm_num_bin value to None.
+            if sdm_num_bins is None: 
+                sdm_num_bin = None
+            else: 
+                sdm_num_bin = sdm_num_bins[i]
 
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
@@ -513,6 +519,27 @@ class SpectralWindowTable(object):
             spws.append(spw)
 
         return spws
+
+
+    def get_sdm_num_bin_info(ms, msmd):
+        """
+        Extract information about the online spectral averaging from the SPECTRAL_WINDOW
+        table's SDM_NUM_BIN column.
+        
+        :param ms: measurement set to inspect
+        :param msmd: msmetadata (casa_tools.MSMDReader) for the measurement set.
+        :return: list of values for sdm_num_bin
+        """
+        # Read and return the online spectral averaging information if available
+        if 'ALMA' in msmd.observatorynames() or 'EVLA' in msmd.observatorynames():
+            try:
+                with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+                    sdm_num_bin = table.getcol('SDM_NUM_BIN')
+            except: 
+                LOG.info("SDM_NUM_BIN not set for MS {}".format(_get_ms_basename(ms)))
+                sdm_num_bin = None
+        return sdm_num_bin
+
 
     @staticmethod
     def get_receiver_info(ms):

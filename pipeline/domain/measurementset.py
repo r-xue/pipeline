@@ -56,7 +56,8 @@ class MeasurementSet(object):
         is_imaging_ms: If True, the MS is for imaging (interferometry only)
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
-        software_version: placeholder name for version of ALMA software to be read in and added to the weblog
+        acs_software_version: ALMA Common Software version used to create this MS
+        acs_software_build_version: ALMA Common Software build version used to create this MS
     """
 
     def __init__(self, name: str, session: Optional[str]=None):
@@ -558,11 +559,12 @@ class MeasurementSet(object):
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
 
+
     def get_alma_cycle_number(self):
         """"
         Get the ALMA cycle number from the control softare version that this MeasurementSet was acquired with. 
 
-        Returns -- int cycle_number
+        Returns -- int cycle_number or None if not found
         """
         match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
         if match: 
@@ -1276,7 +1278,4 @@ class MeasurementSet(object):
         if not (dtype in self.data_column.keys()):
             return None
         return self.data_column[dtype]
-
-    def get_software_version() -> Optional[str]:
-        #TODO: Try to get table info, else, return None
-        return None
+        

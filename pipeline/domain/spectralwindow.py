@@ -206,7 +206,7 @@ class SpectralWindow(object):
         sideband: Side band
         transitions: Spectral transitions recorded associated with spectral window
         type: Spectral window type, e.g., 'TDM'
-        sdm_num_bin: Number of bins
+        sdm_num_bin: Number of bins for online spectral averaging
     """
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
@@ -257,7 +257,8 @@ class SpectralWindow(object):
             self.sideband,
             self.baseband,
             self.band,
-            self.transitions #TODO: could add sdm_num_bin here
+            self.transitions,
+            self.sdm_num_bin
         )
 
     def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float,
@@ -290,10 +291,12 @@ class SpectralWindow(object):
             spectralspec: SpectralSpec name
             transition: Spectral transitions recorded associated with spectral
                 window
+            sdm_num_bin: Number of bins for online spectral averaging
         """
         if transitions is None:
             transitions = ['Unknown']
 
+        #FIXME: Why and/or just take this out? 
         if sdm_num_bin is None:
             sdm_num_bin = 1
 
