@@ -7,6 +7,7 @@ import tarfile
 import re
 import glob
 
+import xml.etree.cElementTree as eltree
 import astropy.io.fits as apfits
 
 import pipeline as pipeline
@@ -39,6 +40,7 @@ def natural_keys(text):
     """
     return [ atoi(c) for c in re.split(r'(\d+)', text) ]
 
+
 class ExportvlassdataResults(basetask.Results):
     def __init__(self, final=[], pool=[], preceding=[]):
         super(ExportvlassdataResults, self).__init__()
@@ -61,6 +63,21 @@ class ExportvlassdataInputs(exportdata.ExportDataInputs):
                                                     calimages=calimages, targetimages=targetimages,
                                                     products_dir=products_dir)
         self.gainmap = gainmap
+
+
+class VlassPipelineManifest(manifest.PipelineManifest):
+    """VLASS-specific PipelineManifest class."""
+
+    @staticmethod
+    def add_reimaging_resources(ous, reimaging_resources):
+        """Add the reimaging_resources tarball to the OUS element."""
+        eltree.SubElement(ous, "reimaging_resources", name=reimaging_resources)
+
+    @staticmethod
+    def add_parameter_list(ous, parameter_list):
+        """Add a list of hif_editimlist parameter files to the OUS element."""
+        for parameter_filename in parameter_list:
+            eltree.SubElement(ous, "parameter_list", name=parameter_filename)
 
 
 @task_registry.set_equivalent_casa_task('hifv_exportvlassdata')
@@ -114,7 +131,10 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         result.pipescript = os.path.basename(stdfproducts.casa_pipescript)
         result.commandslog = os.path.basename(stdfproducts.casa_commands_file)
         if stdfproducts.parameterlist:
-            result.parameterlist = os.path.basename(stdfproducts.parameterlist)
+            result.parameterlist = [os.path.basename(parameterlist) for parameterlist in stdfproducts.parameterlist]
+            self.parameterlist = result.parameterlist
+        else:
+            result.parameterlist = []
 
         imlist = self.inputs.context.subimlist.get_imlist()
 
@@ -234,16 +254,16 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 if '.rms.' not in fitsfile:
                     self._smooth_and_regrid(fitsfile, image, common_beam)
 
+        # SE Cont imaging mode export for VLASS
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
+            self.reimaging_resources = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
+
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, {}, {}, [], fits_list)
         casa_pipe_manifest = self._export_pipe_manifest('pipeline_manifest.xml', inputs.products_dir, pipemanifest)
-        result.manifest = os.path.basename(casa_pipe_manifest)
 
-        # SE Cont imaging mode export for VLASS
-        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
-            # Export tar file
-            reimaging_resources_tarfile = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
+        result.manifest = os.path.basename(casa_pipe_manifest)
 
         # Return the results object, which will be used for the weblog
         return result
@@ -338,13 +358,15 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Export the processing script independently of the web log
         casa_pipescript = self._export_casa_script(context, context.logs['pipeline_script'], products_dir, oussid)
 
-        # Export the parameter list independently of the weblog for both QL and SE Imaging recipes
-        edit_result = context.results[1].read()
-        if edit_result.inputs['parameter_file']:
-            parameterlist_filename = edit_result.inputs['parameter_file']
-            parameterlist = self._export_parameterlist(context, parameterlist_filename, products_dir, oussid)
-        else:
-            parameterlist = None
+        # Export the parameter list independently of the weblog for the QL, SE-CONT, SE-CUBE Imaging recipes
+        parameterlist_set = set()
+        for result in context.results:
+            result_meta = result.read()
+            if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith('hif_editimlist'):
+                parameter_filename = result_meta.inputs['parameter_file']
+                if parameter_filename and parameter_filename not in parameterlist_set:
+                    parameterlist_set.add(parameter_filename)
+                    _ = self._export_parameterlist(context, parameter_filename, products_dir, oussid)
 
         if hasattr(self.inputs.context, 'imaging_mode'):
             img_mode = self.inputs.context.imaging_mode
@@ -377,7 +399,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                weblog_file,
                                casa_commands_file,
                                casa_pipescript,
-                               parameterlist)
+                               parameterlist_set)
 
     def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, visdict, calimages, targetimages):
         """
@@ -416,6 +438,14 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Add the target images
         pipemanifest.add_images(ouss, targetimages, 'target')
 
+        # Add reimaging resources
+        if hasattr(self, 'reimaging_resources'):
+            pipemanifest.add_reimaging_resources(ouss, self.reimaging_resources)
+
+        # Add parameter list file(s)
+        if hasattr(self, 'parameterlist'):
+            pipemanifest.add_parameter_list(ouss, self.parameterlist)
+
         return pipemanifest
 
     def _init_pipemanifest(self, oussid):
@@ -423,7 +453,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         Initialize the pipeline manifest
         """
 
-        pipemanifest = manifest.PipelineManifest(oussid)
+        pipemanifest = VlassPipelineManifest(oussid)
         return pipemanifest
 
     def _export_pprfile(self, context, output_dir, products_dir, oussid, pprfile):
@@ -594,9 +624,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         return tarfilename
 
     def _export_parameterlist(self, context, parameterlist_name, products_dir, oussid):
-        """
-        Save the parameter list
-        """
+        """Export one parameter list file."""
 
         out_parameterlist_file = os.path.join(products_dir, os.path.basename(parameterlist_name))
 
