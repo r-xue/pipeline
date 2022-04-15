@@ -110,7 +110,8 @@ class SingleDishSkyCalDisplayBase(object):
 class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     """Class for plotting Amplitude vs. Frequency summary chart.
     
-    i.e., plotting for every Spectral Window.
+    The summary charts are displayed in the main page of hsd_skycal in the weblog.
+    The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
     
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
@@ -197,7 +198,9 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleDishSkyCalDisplayBase):
     """Class for plotting Amplitude vs. Frequency detail chart.
     
-    i.e., plotting for every Measurement Set, Antenna, Field and Spectral Window.
+    The detail charts are displayed in the sub page (sky_level_vs_frequency.html) of hsd_skycal 
+    in the weblog.
+    The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
 
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
@@ -406,7 +409,11 @@ class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
 
 
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
-    """Class for plotting Amplitude vs. Time summary chart."""
+    """Class for plotting Amplitude vs. Time summary chart.
+    
+    The summary charts are displayed in the main page of hsd_skycal in the weblog.
+    The chart is plotted for each Measurement Set, Field and Spectral Window.
+    """
     
     def __init__(self, context: 'Context', result: skycal.SDSkyCalResults, calapp: 'CalApplication') -> None:
         """Initialize the class.
@@ -424,7 +431,9 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     """Class for plotting Amplitude vs. Time detail chart.
 
-    i.e., plotting for every Measurement Set, Antenna, Field and Spectral Window.
+    The detail charts are displayed in the sub page (sky_level_vs_time.html) of hsd_skycal 
+    in the weblog.
+    The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
     
     def __init__(self, context: 'Context', result: skycal.SDSkyCalResults, calapp: 'CalApplication') -> None:
