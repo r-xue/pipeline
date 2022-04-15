@@ -81,7 +81,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
             elongated: Value of elongation.
             output_dir: Name of output directory.
             infiles: Name of MS or list of names.
-            outfile: Name of MS.
+            outfile: Name of the output file.
             field: Field selection.
             spw: Spectral window (spw) selection.
             scan: Scan selection.
@@ -147,6 +147,9 @@ class SDSkyCalResults(SingleDishResults):
 
     def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
+        
+        The CalApplication instance updated by the skycal task is added to 
+        the pipeline context.
 
         Args:
             context: Pipeline context.
@@ -180,7 +183,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         """Prepare arguments for CASA job and execute it.
 
         Returns:
-            Result of executing SDSkyCalResults.
+           CalApplication object.
         """
         args = self.inputs.to_casa_args()
         LOG.trace('args: {}'.format(args))
