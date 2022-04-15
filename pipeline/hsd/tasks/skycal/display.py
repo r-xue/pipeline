@@ -18,6 +18,7 @@ from . import skycal
 from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Union, Tuple
 
 if TYPE_CHECKING:
+    from matplotlib.axes import Axes
     from pipeline.domain import Field, MeasurementSet
     from pipeline.hsd.tasks.skycal.skycal import SDSkyCalResults
     from pipeline.infrastructure.callibrary import CalApplication
@@ -601,13 +602,13 @@ def plot_elevation_difference(
     end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.values() for y in z.values()
                           for x in y.values() if len(x.timeon) > 0])
 
-    def init_figure(figure_id: str) -> Tuple:
+    def init_figure(figure_id: str) -> Tuple['Axes', 'Axes']:
         """Initialize the figure.
         
         Args:
             figure_id: ID of figure.
         Return:
-            Tuple (a0, a1)
+            Tuple (a0, a1); both a0 and a1 are Axes instance of plot.
         """
         plt.figure(figure_id)
         plt.clf()
