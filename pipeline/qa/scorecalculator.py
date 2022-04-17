@@ -2365,19 +2365,11 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
     LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
     # See PIPE-1073 for details of QA metrics.
     for s in stat:
-        min_score = interpolate.interp1d([-1.25, -0.5], [0.175, 0.25],
-                                         kind='linear', bounds_error=False,
-                                         fill_value=(0.0, 0.25))(s.bin_min_ratio)
-        max_score = interpolate.interp1d([0.5, 1.25], [0.25, 0.175],
-                                         kind='linear', bounds_error=False,
-                                         fill_value=(0.25, 0.0))(s.bin_max_ratio)
-        diff_score = interpolate.interp1d([0.75, 2.0], [0.5, 0.0],
+        diff_score = interpolate.interp1d([1.8, 3.6], [1.0, 0.33],
                                           kind='linear', bounds_error=False,
-                                          fill_value=(0.5, 0.0)) (s.bin_diff_ratio)
-        total_score = min_score + max_score + diff_score
-        scores.append(total_score)
-        LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
-        LOG.trace(f'total score = {total_score} (min: {min_score}, max: {max_score}, diff: {diff_score})')
+                                          fill_value=(1.0, 0.33)) (s.bin_diff_ratio)
+        scores.append(diff_score)
+        LOG.trace(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
     final_score = np.nanmin(scores)
     quality = 'Good'
     if final_score <= 0.66:
