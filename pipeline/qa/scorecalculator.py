@@ -2367,9 +2367,9 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
     # The highest and lowest scores in the metric
     (diff_max_score, diff_min_score) = (1.0, 0.33)
     # The upper (lower) limit of sigma of the highest (lowest) score
-    (diff_max_score_limit, diff_min_score_limit) = (1.8, 3.6)
-    diff_metric_func = interpolate.interp1d((diff_max_score_limit,
-                                             diff_min_score_limit),
+    (diff_max_score_sigma_limit, diff_min_score_sigma_limit) = (1.8, 3.6)
+    diff_metric_func = interpolate.interp1d((diff_max_score_sigma_limit,
+                                             diff_min_score_sigma_limit),
                                             (diff_max_score, diff_min_score),
                                           kind='linear', bounds_error=False,
                                           fill_value=(diff_max_score,
