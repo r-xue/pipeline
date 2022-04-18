@@ -2363,11 +2363,19 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
     """
     scores = []
     LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
-    # See PIPE-1073 for details of QA metrics.
-    for s in stat:
-        diff_score = interpolate.interp1d([1.8, 3.6], [1.0, 0.33],
+    # See PIPEREQ-168 for details of QA metrics.
+    # The highest and lowest scores in the metric
+    (diff_max_score, diff_min_score) = (1.0, 0.33)
+    # The upper (lower) limit of sigma of the highest (lowest) score
+    (diff_max_score_limit, diff_min_score_limit) = (1.8, 3.6)
+    diff_metric_func = interpolate.interp1d((diff_max_score_limit,
+                                             diff_min_score_limit),
+                                            (diff_max_score, diff_min_score),
                                           kind='linear', bounds_error=False,
-                                          fill_value=(1.0, 0.33)) (s.bin_diff_ratio)
+                                          fill_value=(diff_max_score,
+                                                      diff_min_score))
+    for s in stat:
+        diff_score =  diff_metric_func(s.bin_diff_ratio)
         scores.append(diff_score)
         LOG.trace(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
     final_score = np.nanmin(scores)
