@@ -1,6 +1,7 @@
 import collections
 import os
 import numpy as np
+from scipy.stats import median_absolute_deviation
 
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.common.displays import sky as sky
@@ -72,6 +73,9 @@ class VlassCubeRmsimagesSummary(object):
         stats_summary = {}
         for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
             stats_summary[item] = {'range': np.percentile([stats[item] for stats in self.result.stats], (0, 100))}
+            value_arr = np.array([stats[item] for stats in self.result.stats])
+            stats_summary[item]['spwwise_madrms'] = median_absolute_deviation(value_arr, axis=0)*1.4826
+            stats_summary[item]['spwwise_mean'] = np.mean(value_arr, axis=0)
         self.result.stats_summary = stats_summary
 
         return [p for p in plot_wrappers if p is not None]

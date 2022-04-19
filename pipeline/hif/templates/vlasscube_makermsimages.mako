@@ -28,6 +28,18 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
     rgb_hex=colors.to_hex(rgb)
     return rgb_hex
 
+def dev2color(x):
+    color_list=['gainsboro','lightgreen','yellow','red']
+    if x<=4 and x>3:
+      rgb_hex='#D3D3D3'
+    if x<=5 and x>4:
+      rgb_hex=colors.cnames[color_list[1]]
+    if x<=6 and x>5:
+      rgb_hex=colors.cnames[color_list[2]]
+    if x>6:
+      rgb_hex=colors.cnames[color_list[3]]
+    return rgb_hex            
+
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
 
@@ -141,12 +153,21 @@ cell_line="1px solid #DDDDDD"
                 % for item, cmap in [('Max','Reds'),('Min','Oranges'),('Mean','Greens'),('Median','Blues'),('Sigma','Purples'),('MADrms','Greys')]:
                     <%
                     cell_style=[]
+                    dev_in_madrms=abs(stats_summary[item.lower()]['spwwise_mean'][idx_pol]-stats_per_spw[item.lower()][idx_pol])
+                    madrms=stats_summary[item.lower()]['spwwise_madrms'][idx_pol]
+                    if dev_in_madrms>madrms*3.0:
+                        #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
+                        bgcolor=dev2color(dev_in_madrms/madrms)
+                        cell_style.append(f'background-color: {bgcolor}')  
+                    
                     if item=='MADrms':
                         cell_style.append('border-right: '+border_line)
                     if idx==len(stats)-1:
                         cell_style.append('border-bottom: '+border_line)          
                     cell_style='style="{}"'.format(('; ').join(cell_style))                    
+                    
                     %>                    
+                    
                     <td ${cell_style}>${fmt_rms(stats_per_spw[item.lower()][idx_pol])}</td>
                 % endfor
             % endfor
