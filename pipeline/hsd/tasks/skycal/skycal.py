@@ -183,7 +183,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         """Prepare arguments for CASA job and execute it.
 
         Returns:
-           CalApplication object.
+           SDSkyCalResult object.
         """
         args = self.inputs.to_casa_args()
         LOG.trace('args: {}'.format(args))
@@ -367,9 +367,9 @@ class HpcSDSkyCalInputs(SDSkyCalInputs):
             output_dir: Output directory.
             infiles: Name of MS or list of names.
             outfile: Name of the output file.
-            field: Name of field.
-            spw: Name of spw.
-            scan: Name of scan.
+            field: Field selection.
+            spw: Spectral window (spw) selection.
+            scan: Scan selection.
             parallel: Parallel execution or not.
         """
         super(HpcSDSkyCalInputs, self).__init__(context,

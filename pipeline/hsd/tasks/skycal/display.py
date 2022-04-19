@@ -100,7 +100,7 @@ class SingleDishSkyCalDisplayBase(object):
                 plot.parameters['field'] = self.field_name
 
     def _update_figfile(self) -> NoReturn:
-        """Update figfile.
+        """Update the name of figure file.
         
         Raise:
              NotImplementedError
@@ -210,7 +210,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         Args: 
             context: Pipeline context.
             result: Pipeline task execution result.
-            field: Name of field.
+            field: Field string. Either field id or field name.
         """
         super(SingleDishSkyCalAmpVsFreqDetailChart, self).__init__(
             context, result, xaxis='freq', yaxis='amp', showatm=True, overlay='time')
@@ -374,7 +374,7 @@ class SingleDishPlotmsLeaf(object):
         
         Args:
             figfile: Name of figure file.
-            task: Name of task.
+            task: JobRequest object.
                 
         Return:
             logger.Plot
@@ -416,7 +416,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
     
-    def __init__(self, context: 'Context', result: skycal.SDSkyCalResults, calapp: 'CalApplication') -> None:
+    def __init__(self, context: 'Context', result: SDSkyCalResults, calapp: 'CalApplication') -> None:
         """Initialize the class.
         
         Args:
@@ -437,7 +437,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
     
-    def __init__(self, context: 'Context', result: skycal.SDSkyCalResults, calapp: 'CalApplication') -> None:
+    def __init__(self, context: 'Context', result: SDSkyCalResults, calapp: 'CalApplication') -> None:
         """Initialize the class.
         
         Args:

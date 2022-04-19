@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Any, Dict, List
 if TYPE_CHECKING:
     from pipeline.domain.field import Field
     from pipeline.infrastructure.launcher import Context
+    from pipeline.domain import MeasurementSet
+    from pipeline.infrastructure.basetask import ResultsList
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
@@ -13,9 +15,6 @@ from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.infrastructure import casa_tools
 from . import skycal as skycal_task
 from . import display as skycal_display
-from pipeline.domain import MeasurementSet
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.basetask import ResultsList
 
 LOG = logging.get_logger(__name__)
 
@@ -218,16 +217,15 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     'reference_coords': reference_coords})
 
     def get_skycal_applications(self, context: 'Context', result: skycal_task.SDSkyCalResults, ms: 'MeasurementSet') -> List[Dict]:
-        """Get skycal applications.
-               
+        """Get application information from SDSkyCalResults instance and set them into a list.
+        
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
             ms: MeasurementSet domain object.
             
         Returns:
-            A list containing dictionary. The keywords of dictionary are the following:
-            'ms', 'gaintable', 'spw', 'intent', 'field', 'antenna', 'caltype'.
+            A list "application" containing dictionary; they are used to a table in skycal.mako file.
         """
         applications = []
 
