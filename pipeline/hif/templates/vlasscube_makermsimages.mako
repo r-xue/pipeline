@@ -26,8 +26,10 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
     cmap=cm.get_cmap(name=cmap_name)
     rgb=cmap(x_norm)
     rgb_hex=colors.to_hex(rgb)
-    print(x,norm(x),rgb)
     return rgb_hex
+
+border_line="2px solid #AAAAAA"
+cell_line="1px solid #DDDDDD"
 
 %>
 
@@ -36,71 +38,30 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
 
 <style type="text/css">
 
-.table-custom table {
-  table-layout: fixed;
-  width: 100px;
-  border: 3px solid;
-  border-collapse: collapse;
-}
 
-.table-custom tbody {
-    display: block;
-    overflow-x: auto;
+.table {
+    border-collapse: collapse;
+    vertical-align: middle;
+    text-align: center;      
 }
-
-.table-custom th {
-  table-layout: fixed;
-  width: 100px;
-  height: 12px;
-  border-top: 2px solid #dddddd;
-  border-left: 2px solid #dddddd;
-  border-right: 2px solid #dddddd;
-  border-bottom: 2px solid #dddddd;
-  vertical-align: middle;
-  text-align: center;  
-  font-size: 12px;
-}
-
-.table-custom td {
-  table-layout: fixed;
-  width: 100px;
-  height: 12px;
-  /*
-  border-top: 1px solid #dddddd;
-  border-left: 1px solid #dddddd;
-  border-right: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;  
-  */
-  vertical-align: middle;
-  text-align: center;  
-  font-size: 12px;
-}
-
-.table-custom td.last{
-  table-layout: fixed;
-  width: 100px;
-  height: 12px;
-  /*
-  border-top: 1px solid #dddddd;
-  border-left: 1px solid #dddddd;
-  border-right: 1px solid #dddddd;
-  */
-  border-bottom: 2px solid #dddddd;  
-  vertical-align: middle;
-  text-align: center;  
-  font-size: 12px;
-}
-
 
 .table td {
-  text-align: center;
-  vertical-align: middle;
-  font-size: 12px;
+    border-collapse: collapse;
+    vertical-align: middle;
+    text-align: center;
 }
+
 .table th {
-  text-align: center;
-  vertical-align: middle;
-  font-size: 12px;
+    border-collapse: collapse;
+    vertical-align: middle;
+    text-align: center;
+    
+    border-bottom: ${border_line} !important;
+    border-right: ${border_line} !important;
+    border-top: ${border_line} !important;
+    border-left: ${border_line}  !important;
+    background-color: #F9F9F9;
+    
 }
 
 </style>
@@ -122,7 +83,6 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
     #spw_colname=[plot[0].parameters['virtspw'] for plot in plots]
     stats=plotter.result.stats
     stats_summary=plotter.result.stats_summary
-    print(plots[0].parameters)
     %>
 
     <h4>Rms Image Statistical Properties</h4>
@@ -132,7 +92,7 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
     <div style="width: 1200px; height: 250px; overflow: auto;">
     <table class="table table-header-rotated">
     -->
-    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-striped table-bordered">
+    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered">
     <caption>
         <li>
             Units in mJy/beam.
@@ -169,14 +129,25 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
 
         % for idx, stats_per_spw in enumerate(stats):
             <tr>
-            <th><b>${stats_per_spw['virtspw']}</b></th>
+            <%
+            cell_style=[f'border-left: {border_line}',f'border-right: {border_line}']
+            if idx==len(stats)-1:
+                cell_style.append('border-bottom: '+border_line)          
+            cell_style='style="{}"'.format(('; ').join(cell_style))                    
+            %> 
+
+            <td ${cell_style}><b>${stats_per_spw['virtspw']}</b></td>
             % for idx_pol,name_pol in enumerate(['I','Q','U','V']):
                 % for item, cmap in [('Max','Reds'),('Min','Oranges'),('Mean','Greens'),('Median','Blues'),('Sigma','Purples'),('MADrms','Greys')]:
-                    <td bgcolor="${val2color(stats_per_spw[item.lower()][idx_pol],cmap_name=cmap,
-                                    vmin=stats_summary[item.lower()]['range'][0],
-                                    vmax=stats_summary[item.lower()]['range'][1])}">
-                        ${fmt_rms(stats_per_spw[item.lower()][idx_pol])}
-                    </td>
+                    <%
+                    cell_style=[]
+                    if item=='MADrms':
+                        cell_style.append('border-right: '+border_line)
+                    if idx==len(stats)-1:
+                        cell_style.append('border-bottom: '+border_line)          
+                    cell_style='style="{}"'.format(('; ').join(cell_style))                    
+                    %>                    
+                    <td ${cell_style}>${fmt_rms(stats_per_spw[item.lower()][idx_pol])}</td>
                 % endfor
             % endfor
             </tr>
