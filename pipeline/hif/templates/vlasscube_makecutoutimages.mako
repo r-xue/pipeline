@@ -47,7 +47,17 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
     rgb_hex=colors.to_hex(rgb)
     return rgb_hex
 
-                                                                  
+def dev2color(x):
+    color_list=['gainsboro','lightgreen','yellow','red']
+    if x<=4 and x>3:
+      rgb_hex=colors.cnames[color_list[0]]
+    if x<=5 and x>4:
+      rgb_hex=colors.cnames[color_list[1]]
+    if x<=6 and x>5:
+      rgb_hex=colors.cnames[color_list[2]]
+    if x>6:
+      rgb_hex=colors.cnames[color_list[3]]
+    return rgb_hex                                                                        
 
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
@@ -70,6 +80,7 @@ cell_line="1px solid #DDDDDD"
     border-bottom: ${cell_line};
     border-right: ${cell_line};  
     font-size: 12px;
+    background-clip: padding-box;
 }
 
 .table th {
@@ -161,7 +172,7 @@ $(document).ready(function() {
     <th rowspan="2" style="vertical-align : middle;text-align:center;">Spw</th>
     <th colspan="1">Peak</th>
     <th colspan="1">MADrms</th>
-    <th colspan="1" style="border-right: ${border_line}"><sup>Peak</sup>&frasl;<sub>MADrms</sub></th>
+    <th colspan="1" style="border-right: ${border_line}"><sup>Peak</sup>/<sub>MADrms</sub></th>
     <th colspan="1">Peak</th>
     <th colspan="1">MADrms</th>
     <th colspan="1" style="border-right: ${border_line}"><sup>Peak</sup>/<sub>MADrms</sub></th>
@@ -241,15 +252,18 @@ $(document).ready(function() {
         % endif
 
         <%
+        cell_style=[]
         if 'pct' in i:
           suffix='&#37'
         else:
           suffix=''
-        %>
-        <%
-        cell_style=[]
-        if spw==stats_summary[t][i]['spw_outlier'][idx_pol]:
-          cell_style.append('bgcolor: #D3D3D3')
+        if not (t=='pb' or t=='beam'):
+          dev_in_madrms=abs(stats_spw[t][i][idx_pol]-stats_summary[t][i]['spwwise_mean'][idx_pol])
+          madrms=stats_summary[t][i]['spwwise_madrms'][idx_pol]
+          if dev_in_madrms>madrms*3.0:
+            #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
+            bgcolor=dev2color(dev_in_madrms/madrms)
+            cell_style.append(f'background-color: {bgcolor}')         
         if idx_item in (2,5,9,12) or (name_pol!='I' and idx_item in ((2,5,8))):
           cell_style.append('border-right: '+border_line)
         if idx_spw==len(stats)-1:

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 from matplotlib.pyplot import cm
+from scipy.stats import median_absolute_deviation
 
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.common.displays import sky as sky
@@ -116,6 +117,7 @@ class CutoutimagesSummary(object):
 
 
 class VlassCubeCutoutimagesSummary(object):
+    """A class for the VLASS-CUBE makecutout image summary plots."""
     def __init__(self, context, result):
         self.context = context
         self.result = result
@@ -260,6 +262,7 @@ class VlassCubeCutoutimagesSummary(object):
         return plot_wrappers
 
     def _get_stats_summary(self):
+        """Reorganize the raw stats (spw,imtype) into a layout (imtype,property) more convenient for tabulation."""
 
         stats_summary = collections.OrderedDict()
         for spw, stats_spw in self.result.stats.items():
@@ -274,8 +277,10 @@ class VlassCubeCutoutimagesSummary(object):
 
         for imtype, stats_summary_imtype in stats_summary.items():
             for item, item_details in stats_summary_imtype.items():
-                value_arr = np.array(item_details['value'])
-                spw_arr = np.array(item_details['spw'])
+                value_arr = np.array(item_details['value'])         # shape=(n_spw, n_pol)
+                spw_arr = np.array(item_details['spw'])             # shape=(n_spw,)
+                stats_summary[imtype][item]['spwwise_madrms']=median_absolute_deviation(value_arr,axis=0)*1.4826    # shape=(n_spw,)
+                stats_summary[imtype][item]['spwwise_mean']=np.mean(value_arr,axis=0)                               # shape=(n_spw,)
                 stats_summary[imtype][item]['range'] = np.percentile(value_arr, (0, 100))
                 idx_maxdev = np.argmax(value_arr-np.median(value_arr, axis=0), axis=0)
                 stats_summary[imtype][item]['spw_outlier'] = spw_arr[idx_maxdev]
@@ -285,7 +290,7 @@ class VlassCubeCutoutimagesSummary(object):
         return
 
     def _get_stats(self, image, items=['min', 'max'], mask=None):
-        """Extract the desired stats properties per Stokes from an ia.statistics() return."""
+        """Extract the desired stats properties (per Stokes) from an ia.statistics() return."""
 
         imstats = image.statistics(robust=True, axes=[0, 1, 3], mask=mask)
         stats = collections.OrderedDict()
@@ -320,6 +325,7 @@ class VlassCubeCutoutimagesSummary(object):
 
 
 class VlassCubeCutoutRmsSummary(object):
+    """A class for the VLASS-CUBE makecutout rms-vs-frequency summary plots."""
     def __init__(self, context, result):
         self.context = context
         self.result = result
