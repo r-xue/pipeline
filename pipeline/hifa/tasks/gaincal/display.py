@@ -9,7 +9,7 @@ class GaincalSummaryChart(object):
     """
     Base class for executing plotms per spw
     """
-    def __init__(self, context, result, calapps, intent, xaxis, yaxis, plotrange=None, coloraxis='', combine=False):
+    def __init__(self, context, result, calapps, intent, xaxis, yaxis, plotrange=None, coloraxis='', combine=False): #, solint=None):
         if plotrange is None:
             plotrange = []
         if yaxis == 'amp':
@@ -25,6 +25,11 @@ class GaincalSummaryChart(object):
                     if (any([input_intent in c.intent for input_intent in intent.split(",")]) or c.intent == '') and
                     calmode == utils.get_origin_input_arg(c, 'calmode')]
 
+    #    if solint is not None: 
+    #        for cal in selected: 
+    #            [c for c in calapps if solint == utils.get_origin_input_arg(c, 'solint')]
+
+
         # print calapp info for debug purposes
         for c in calapps:
             if c in selected:
@@ -38,7 +43,7 @@ class GaincalSummaryChart(object):
 
         if(combine):
             # Take ant from calapp, assuming it is the same for all calapps in the list
-            #TODO: Can I assume this?
+            #TODO: Can I assume this? Probably not. Need better logic here... 
             ant = selected[0].antenna 
             # request plots per spw, overlaying all antennas
             plot_cls = common.PlotmsCalSpwComposite(context, result, selected,

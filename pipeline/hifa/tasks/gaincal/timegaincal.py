@@ -80,6 +80,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Create a results object.
         result = common.GaincalResults()
+        result.phasecal_for_phase = []
 
         # Compute the phase solutions for the science target, check source,
         # and phase calibrator. This caltable will be registered as applicable
@@ -118,6 +119,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             if cp_calapp.intent != 'PHASE':
                 result.final.append(cp_calapp)
                 result.pool.append(cp_calapp)
+            result.phasecal_for_phase.append(cp_calapp)
 
         # Following the merger of a first phase solution for all intents,
         # now compute a second phase solutions caltable. Assuming that
