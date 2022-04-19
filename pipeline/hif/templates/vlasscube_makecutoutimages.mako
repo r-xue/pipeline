@@ -32,7 +32,6 @@ def colorcode(x, color='Greys',vmin=None,vmax=None):
     cmap=cm.get_cmap(name=cmap_name)
     rgb=cmap(x_norm)
     rgb_hex=colors.to_hex(rgb)
-    print(x,norm(x),rgb)
     return rgb_hex
 
 def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
@@ -46,81 +45,42 @@ def val2color(x, cmap_name='Greys',vmin=None,vmax=None):
     cmap=cm.get_cmap(name=cmap_name)
     rgb=cmap(x_norm)
     rgb_hex=colors.to_hex(rgb)
-    print(x,norm(x),rgb)
     return rgb_hex
 
+                                                                  
 
-    #print(matplotlib.colors.cnames["lightgray"]                                                                         
-
+border_line="2px solid #AAAAAA"
+cell_line="1px solid #DDDDDD"
 
 %>
 
 
 <style type="text/css">
 
-.table-custom table {
-  table-layout: fixed;
-  width: 100px;
-  border: 3px solid;
+.table {
+    border-collapse: collapse;
+    vertical-align: middle;
+    text-align: center;      
 }
 
-.table-custom tbody {
-    display: block;
-    overflow-x: auto;
+.table td {
+    border-collapse: collapse;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: ${cell_line};
+    border-right: ${cell_line};  
 }
 
-.table-custom tr {
-  margin:0;  
-  padding: 0;
+.table th {
+    border-collapse: collapse;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: ${border_line} !important;
+    border-right: ${border_line} !important;
+    border-top: ${border_line} !important;
+    border-left: ${border_line}  !important;
+    background-color: #F9F9F9;   
 }
-
-.table-custom th {
-  table-layout: fixed;
-  width: 100px;
-  height: 12px;
-  border-top: 2px solid #dddddd;
-  border-left: 2px solid #dddddd;
-  border-right: 2px solid #dddddd;
-  border-bottom: 2px solid #dddddd;
-  vertical-align: middle;
-  text-align: center;  
-  font-size: 12px;
-  padding:0; 
-  margin:0;    
-  line-height: 12px;
-}
-
-.table-custom td {
-  table-layout: fixed;
-  width: 100px;
-  height: 12px;
-  border-top: 1px solid #dddddd;
-  border-left: 1px solid #dddddd;
-  border-right: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;
-  vertical-align: middle;
-  text-align: center;  
-  font-size: 12px;
-  padding:0; 
-  margin:0;  
-  line-height: 12px;
-}
-
-.table-custom td.last{
-  table-layout: fixed;
-  width: 100px;
-  height: 12px;
-  /*
-  border-top: 1px solid #dddddd;
-  border-left: 1px solid #dddddd;
-  border-right: 1px solid #dddddd;
-  */
-  border-bottom: 2px solid #dddddd;  
-  vertical-align: middle;
-  text-align: center;  
-  font-size: 12px;
-}
-
 
 </style>
 
@@ -157,7 +117,7 @@ $(document).ready(function() {
 
 <h4>Cutout Image Statistical Properties</h4>
 
-<table style="float: left; margin:0 12px; width: auto; text-align:center" class="table table-striped table-custom">
+<table class="table">
 
 <caption>
   <li>
@@ -195,45 +155,57 @@ $(document).ready(function() {
   </tr>
 
   <tr>
-    <th rowspan="2">Spw</th>
+    <th rowspan="2" style="vertical-align : middle;text-align:center;">Spw</th>
     <th colspan="1">Peak</th>
     <th colspan="1">MADrms</th>
-    <th colspan="1">Peak/MADrms</th>
+    <th colspan="1" style="border-right: ${border_line}">Peak/MADrms</th>
     <th colspan="1">Peak</th>
     <th colspan="1">MADrms</th>
-    <th colspan="1">Peak/MADrms</th>
+    <th colspan="1" style="border-right: ${border_line}">Peak/MADrms</th>
     <th colspan="1">Max</th>
     <th colspan="1">Median</th>
-    <th colspan="1">Pix<800&mu;Jy</th>
     % if name_pol=='I':
-      <th colspan="1">Masked</th>
+       <th colspan="1">Pix<800&mu;Jy</th>
+      <th colspan="1"  style="border-right: ${border_line}">Masked</th>
       <th colspan="1">Max</th>
       <th colspan="1">Min</th>
-      <th colspan="1">Median</th>
+      <th colspan="1"  style="border-right: ${border_line}">Median</th>
+    % else:
+      <th colspan="1"  style="border-right: ${border_line}">Pix<800&mu;Jy</th>
     % endif
+
   </tr>
 
   <tr>
-    <td colspan="1" class='last'>mJy/beam</td>
-    <td colspan="1" class='last'>mJy/beam</td>
-    <td colspan="1" class='last'>N/A</td>
-    <td colspan="1" class='last'>mJy/beam</td>
-    <td colspan="1" class='last'>mJy/beam</td>
-    <td colspan="1" class='last'>N/A</td>
-    <td colspan="1" class='last'>mJy/beam</td>
-    <td colspan="1" class='last'>mJy/beam</td>
-    <td colspan="1" class='last'>Percentage</td>
+    <th colspan="1" >mJy/beam</th>
+    <th colspan="1" >mJy/beam</th>
+    <th colspan="1"   style="border-right: ${border_line}" >N/A</th>
+    <th colspan="1" >mJy/beam</th>
+    <th colspan="1" >mJy/beam</th>
+    <th colspan="1"   style="border-right: ${border_line}">N/A</th>
+    <th colspan="1" >mJy/beam</th>
+    <th colspan="1" >mJy/beam</th>
     % if name_pol=='I':
-      <td colspan="1" class='last'>Percentage</td>
-      <td colspan="1" class='last'>N/A</td>
-      <td colspan="1" class='last'>N/A</td>
-      <td colspan="1" class='last'>N/A</td>
+      <th colspan="1" >Percentage</th>
+      <th colspan="1"   style="border-right: ${border_line}">Percentage</th>
+      <th colspan="1" >N/A</th>
+      <th colspan="1" >N/A</th>
+      <th colspan="1"   style="border-right: ${border_line}">N/A</th>
+    % else:
+      <th colspan="1"  style="border-right: ${border_line}">Percentage</th>
     % endif
   </tr>  
 
-  % for spw,stats_spw in stats.items():
+  % for idx_spw, (spw,stats_spw) in enumerate(stats.items()):
     <tr>
-      <th>${str(spw)}</th>
+
+      <%
+      cell_style=[f'border-left: {border_line}',f'border-right: {border_line}']
+      if idx_spw==len(stats)-1:
+          cell_style.append('border-bottom: '+border_line)          
+      cell_style='style="{}"'.format(('; ').join(cell_style))                    
+      %> 
+      <td ${cell_style}><b>${str(spw)}</b></td>
       
       <%
       type_item_scale=[('image','peak',1e3),
@@ -251,7 +223,7 @@ $(document).ready(function() {
                   ('pb','median',1.)]
       %>
 
-      % for t,i,s in type_item_scale:
+      % for idx_item,(t,i,s) in enumerate(type_item_scale):
         % if name_pol!='I' and (t,i) in [('rms','pct_masked'),('pb','max'),('pb','min'),('pb','median')]:
           <% continue %> 
         % endif
@@ -262,22 +234,25 @@ $(document).ready(function() {
         else:
           suffix=''
         %>
-
-        % if spw==stats_summary[t][i]['spw_outlier'][idx_pol]:
-            <td bgcolor="#D3D3D3">${fmt_val(stats_spw[t][i][idx_pol],scale=s)}${suffix}</td>
-        % else:
-            <td>${fmt_val(stats_spw[t][i][idx_pol],scale=s)}${suffix}</td>
-        % endif
         <%
-        # bgcolor=val2color(stats_spw[t][i][idx_pol],cmap_name='Reds',vmin=stats_range[t][i][0],vmax=stats_range[t][i][1])
-        # <td bgcolor="${bgcolor}">${fmt_val(stats_spw[t][i][idx_pol],scale=s)}</td>
-        # <td>${fmt_val(stats_spw[t][i][idx_pol],scale=s)}</td>
+        cell_style=[]
+        if spw==stats_summary[t][i]['spw_outlier'][idx_pol]:
+          cell_style.append('bgcolor: #D3D3D3')
+        if idx_item in (2,5,9,12) or (name_pol!='I' and idx_item in ((2,5,8))):
+          cell_style.append('border-right: '+border_line)
+        if idx_spw==len(stats)-1:
+          cell_style.append('border-bottom: '+border_line)          
+        cell_style='style="{}"'.format(('; ').join(cell_style))
         %>
+      
+
+        <td ${cell_style}>${fmt_val(stats_spw[t][i][idx_pol],scale=s)}${suffix}</td>
       % endfor
 
     </tr>
 
   % endfor
+  <tr><td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td></tr>
 
 % endfor
 
