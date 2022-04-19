@@ -163,6 +163,9 @@ class VlassCubeCutoutimagesSummary(object):
                         stats_stokes_list = sky.SkyDisplay.get_stokes(subimagename)
                         cs = image.coordsys()
                         stats_reffreq_list.append(cs.referencevalue(format='n')['numeric'][3])
+                        beam = image.restoringbeam(channel=0, polarization=0)
+                        stats[virtspw]['beam'] = {'bmaj': beam['major']['value'],
+                                                  'bmin': beam['minor']['value'], 'bpa': beam['positionangle']['value']}
 
                 elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
                     # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1

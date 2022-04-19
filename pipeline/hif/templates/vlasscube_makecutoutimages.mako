@@ -69,6 +69,7 @@ cell_line="1px solid #DDDDDD"
     text-align: center;
     border-bottom: ${cell_line};
     border-right: ${cell_line};  
+    font-size: 12px;
 }
 
 .table th {
@@ -80,6 +81,7 @@ cell_line="1px solid #DDDDDD"
     border-top: ${border_line} !important;
     border-left: ${border_line}  !important;
     background-color: #F9F9F9;   
+    font-size: 12px;
 }
 
 </style>
@@ -127,7 +129,7 @@ $(document).ready(function() {
       MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
   </li>  
   <li>
-      Pix<800&mu;Jy (percentage): the percentage of pixes (within the unmasked region) with value less than 800&mu;Jy in the Rms image.
+      Px<sub><800&mu;Jy</sub> (pct.): the pct. of pixes (within the unmasked region) with value less than 800&mu;Jy in the Rms image.
   </li>
   <li>
       The gray-out cell highlights the spw with the largest deviation of an image property, among all spw selection groups.
@@ -148,6 +150,7 @@ $(document).ready(function() {
     
     % if name_pol=='I':
       <th colspan="4">Rms Image</th>
+      <th colspan="3">Beam</th>
       <th colspan="3">PB</th>
     % else:
       <th colspan="3">Rms Image</th>
@@ -158,41 +161,47 @@ $(document).ready(function() {
     <th rowspan="2" style="vertical-align : middle;text-align:center;">Spw</th>
     <th colspan="1">Peak</th>
     <th colspan="1">MADrms</th>
-    <th colspan="1" style="border-right: ${border_line}">Peak/MADrms</th>
+    <th colspan="1" style="border-right: ${border_line}"><sup>Peak</sup>&frasl;<sub>MADrms</sub></th>
     <th colspan="1">Peak</th>
     <th colspan="1">MADrms</th>
-    <th colspan="1" style="border-right: ${border_line}">Peak/MADrms</th>
+    <th colspan="1" style="border-right: ${border_line}"><sup>Peak</sup>/<sub>MADrms</sub></th>
     <th colspan="1">Max</th>
     <th colspan="1">Median</th>
     % if name_pol=='I':
-       <th colspan="1">Pix<800&mu;Jy</th>
+       <th colspan="1">Px<sub><800&mu;Jy</th>
       <th colspan="1"  style="border-right: ${border_line}">Masked</th>
+      <th colspan="1">Major</th>
+      <th colspan="1">Minor</th>
+      <th colspan="1"  style="border-right: ${border_line}">P.A.</th>      
       <th colspan="1">Max</th>
       <th colspan="1">Min</th>
       <th colspan="1"  style="border-right: ${border_line}">Median</th>
     % else:
-      <th colspan="1"  style="border-right: ${border_line}">Pix<800&mu;Jy</th>
+      <th colspan="1"  style="border-right: ${border_line}">Px<sub><800&mu;Jy</sub></th>
     % endif
 
   </tr>
 
   <tr>
-    <th colspan="1" >mJy/beam</th>
-    <th colspan="1" >mJy/beam</th>
+    <th colspan="1" >mJy/bm</th>
+    <th colspan="1" >mJy/bm</th>
     <th colspan="1"   style="border-right: ${border_line}" >N/A</th>
-    <th colspan="1" >mJy/beam</th>
-    <th colspan="1" >mJy/beam</th>
+    <th colspan="1" >mJy/bm</th>
+    <th colspan="1" >mJy/bm</th>
     <th colspan="1"   style="border-right: ${border_line}">N/A</th>
-    <th colspan="1" >mJy/beam</th>
-    <th colspan="1" >mJy/beam</th>
+    <th colspan="1" >mJy/bm</th>
+    <th colspan="1" >mJy/bm</th>
     % if name_pol=='I':
-      <th colspan="1" >Percentage</th>
-      <th colspan="1"   style="border-right: ${border_line}">Percentage</th>
+      <th colspan="1" >Pct.</th>
+      <th colspan="1"   style="border-right: ${border_line}">Pct.</th>
+      <th colspan="1" >arcsec</th>
+      <th colspan="1" >arcsec</th>
+      <th colspan="1"   style="border-right: ${border_line}">deg.</th>
       <th colspan="1" >N/A</th>
       <th colspan="1" >N/A</th>
-      <th colspan="1"   style="border-right: ${border_line}">N/A</th>
+      <th colspan="1"   style="border-right: ${border_line}">N/A</th>      
     % else:
-      <th colspan="1"  style="border-right: ${border_line}">Percentage</th>
+      <th colspan="1"  style="border-right: ${border_line}">Pct.</th>
     % endif
   </tr>  
 
@@ -218,13 +227,16 @@ $(document).ready(function() {
                   ('rms','median',1e3),
                   ('rms','pct<800e-6',1e2),
                   ('rms','pct_masked',1e2),
+                  ('beam','bmaj',1),
+                  ('beam','bmin',1),
+                  ('beam','bpa',1),                                    
                   ('pb','max',1.),
                   ('pb','min',1.),
                   ('pb','median',1.)]
       %>
 
       % for idx_item,(t,i,s) in enumerate(type_item_scale):
-        % if name_pol!='I' and (t,i) in [('rms','pct_masked'),('pb','max'),('pb','min'),('pb','median')]:
+        % if name_pol!='I' and (t,i) in [('rms','pct_masked'),('pb','max'),('pb','min'),('pb','median'),('beam','bmaj'),('beam','bmin'),('beam','bpa')]:
           <% continue %> 
         % endif
 
@@ -245,8 +257,11 @@ $(document).ready(function() {
         cell_style='style="{}"'.format(('; ').join(cell_style))
         %>
       
-
-        <td ${cell_style}>${fmt_val(stats_spw[t][i][idx_pol],scale=s)}${suffix}</td>
+        % if t!='beam':
+          <td ${cell_style}>${fmt_val(stats_spw[t][i][idx_pol],scale=s)}${suffix}</td>
+        % else:
+          <td ${cell_style}>${fmt_val(stats_spw[t][i],scale=s)}${suffix}</td>
+        % endif
       % endfor
 
     </tr>
