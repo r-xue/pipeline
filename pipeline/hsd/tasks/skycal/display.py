@@ -416,7 +416,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
     
-    def __init__(self, context: 'Context', result: SDSkyCalResults, calapp: 'CalApplication') -> None:
+    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication') -> None:
         """Initialize the class.
         
         Args:
@@ -437,7 +437,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
     
-    def __init__(self, context: 'Context', result: SDSkyCalResults, calapp: 'CalApplication') -> None:
+    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication') -> None:
         """Initialize the class.
         
         Args:
@@ -456,7 +456,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
     If figtype='summary', the first spw is used, while all spw are used if figtype='detail'.
     """
     
-    def __init__(self, context: 'Context', result: skycal.SDSkyCalResults, calapp: 'CalApplication', figtype: str='') -> None:
+    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication', figtype: str='') -> None:
         """Initialize the class.
         
         Args:
@@ -564,7 +564,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
 @casa5style_plot
 def plot_elevation_difference(
         context: 'Context', 
-        result: skycal.SDSkyCalResults, 
+        result: 'SDSkyCalResults', 
         eldiff: Dict, 
         threshold: float=3.0
         ) -> List[logger.Plot]:
