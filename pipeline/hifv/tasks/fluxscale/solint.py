@@ -3,6 +3,7 @@ import os
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
 
 import numpy as np
+from scipy import stats
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -468,11 +469,13 @@ class Solint(basetask.StandardTaskTemplate):
 
         # Remove extreme outliers
         durations = np.array(durations)
-        d = np.abs(durations - np.median(durations))
-        mdev = np.median(d)
-        s = d / (mdev if mdev else 1.)
-        # durations =  durations[s <20.0].tolist()
-        durations = durations[s < 20.0]
+        # d = np.abs(durations - np.median(durations))
+        # mdev = np.median(d)
+        # s = d / (mdev if mdev else 1.)
+        # ### durations =  durations[s <20.0].tolist()
+        # durations = durations[s < 20.0]
+
+        durations = durations[(np.abs(stats.zscore(durations)) < 3)]
 
         longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'
