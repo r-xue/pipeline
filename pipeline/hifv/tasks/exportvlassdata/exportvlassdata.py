@@ -7,6 +7,8 @@ import tarfile
 import re
 import glob
 
+import numpy as np
+
 import xml.etree.cElementTree as eltree
 import astropy.io.fits as apfits
 
@@ -22,6 +24,8 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.domain import DataType
+
+from pipeline.infrastructure.utils.imaging import predict_kernel
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -720,7 +724,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         """
         Update VLASS FITS product header according to PIPE-641.
         Should be called in the following imaging modes:
-            'VLASS-QL', 'VLASS-SE-CONT-MOSAIC', and 'VLASS-SE-CONT-AWP-P001'
+            'VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-P001', and 'VLASS-SE-CUBE'.
 
         The following keywords are changed: DATE-OBS, DATE-END, RADESYS, OBJECT.
         """
@@ -824,7 +828,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         for idx, imagename in enumerate(image_list):
             with casa_tools.ImageReader(imagename) as image:
                 bm = image.restoringbeam(channel=0, polarization=0)
-                LOG.info(f'{imagename} has a Stokes-I restoring beam size of {bm}')
+                LOG.info(f'{imagename} has a restoring beam size of {bm}')
             myia.setrestoringbeam(beam=bm, channel=idx)
 
         beam_target = myia.commonbeam()
@@ -838,42 +842,56 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         return beam_target
 
     def _smooth_and_regrid(self, fitsfile, imagename, target_beam):
-        """Smooth and regrid the position-corrected FITS image to the common resolution and WCS frame."""
+        """Smooth and regrid the position-corrected FITS image to the common resolution and WCS frame.
+        
+        imagename: the original CASA image without position correction
+        fitsfile:  the corresponding FITS image with positon correction
+
+        The common resolution/frame FITS image set could still have slightly different BEAM/CRVAL info, which is 
+        intentionally preserved currently. 
+        """
+        cme = casa_tools.measures
+        cqa = casa_tools.quanta
 
         with casa_tools.ImageReader(fitsfile) as image:
-            beam = image.restoringbeam(channel=0, polarization=0)
 
-        if self._is_beam_close(beam, target_beam):
+            beam = image.restoringbeam(channel=0, polarization=0)
+            fits_csys = image.coordsys()
+            cdelt = np.degrees(np.abs(fits_csys.increment()['numeric'][0:2]))*3600.0
+            pixdiag_arcsec = ((cdelt[0])**2+(cdelt[1])**2)**0.5  # pixel diagonal length in arcsec
+            LOG.debug(f'pixel diagonal length: {pixdiag_arcsec} arcsec')
+
+        _, kn_code = predict_kernel(beam, target_beam, pstol=pixdiag_arcsec*0.2)
+        if kn_code:
             smoothed_image = fitsfile
             LOG.info(f'{fitsfile} already reaches the target beam, skip image smoothing.')
         else:
             smoothed_image = imagename+'.smo'
-            LOG.info(f'{fitsfile} has a restoring beam of {beam}, and will be smoothed to the target beam of {target_beam}')
+            LOG.info(f'{fitsfile} has a restoring beam of {beam} and will be smoothed to the target beam.')
             job = casa_tasks.imsmooth(fitsfile, targetres=True, beam=target_beam,
                                       outfile=smoothed_image, overwrite=True)
             self._executor.execute(job)
 
+        with casa_tools.ImageReader(imagename) as image:
+            casa_csys = image.coordsys()
+            refdir = casa_csys.referencevalue(format='m')['measure']['direction']
+            imgdir = fits_csys.referencevalue(format='m')['measure']['direction']
+            sep_arcsec = cqa.convert(cme.separation(refdir, imgdir), 'arcsec')['value']
+            LOG.debug(f'crval seperation: {sep_arcsec} arcsec')
+
         # For imregrid, input can be either a FITS or CASA image. However, the template and output can only be CASA images.
-        job = casa_tasks.imregrid(imagename=smoothed_image, template=imagename,
-                                  output=imagename+'.srg', overwrite=True, axes=[0, 1])
-        self._executor.execute(job)
+        if sep_arcsec > 0.1*pixdiag_arcsec:
+            commom_image = imagename+'.com'
+            job = casa_tasks.imregrid(imagename=smoothed_image, template=imagename,
+                                      output=commom_image, overwrite=True, axes=[0, 1])
+            self._executor.execute(job)
+        else:
+            commom_image = smoothed_image
 
-        job = casa_tasks.exportfits(imagename=imagename+'.srg', fitsimage=fitsfile.replace('.fits', '.srg.fits'))
-        self._executor.execute(job)
+        if commom_image != fitsfile:
 
-    def _is_beam_close(self, beam1, beam2):
-
-        bmaj1 = beam1['major']['value']
-        bmaj2 = beam2['major']['value']
-
-        bmin1 = beam1['minor']['value']
-        bmin2 = beam2['minor']['value']
-
-        bpa1 = beam1['positionangle']['value']
-        bpa2 = beam2['positionangle']['value']
-
-        is_close = False
-        if abs(bmaj1-bmaj2) < 1e-3 and abs(bmin1-bmin2) < 1e-3 and abs(bpa1-bpa2) < 1e-3:
-            is_close = True
-
-        return is_close
+            job = casa_tasks.exportfits(imagename=commom_image, fitsimage=fitsfile.replace('.fits', '.com.fits'))
+            self._executor.execute(job)
+        else:
+            # In an unlikely situation, no regrdding or smooth was done, we just need to make a copy of the original FITS
+            shutil.copy(fits, fitsfile.replace('.fits', '.com.fits'))
