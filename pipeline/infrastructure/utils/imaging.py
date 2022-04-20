@@ -16,7 +16,8 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits',
-           'velocity_to_frequency', 'frequency_to_velocity']
+           'velocity_to_frequency', 'frequency_to_velocity',
+           'predict_kernel']
 
 
 def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
@@ -438,3 +439,71 @@ def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str
     val = light_speed * ((restfreq - freq) / restfreq)
     velocity = cqa.tos(cqa.quantity(val, 'km/s'))
     return velocity
+
+
+def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
+    """Predict the required convolution kernel to each a target restoring beam.
+    
+    pstol: the tolerance in arcsec for orginal vs. target bmaj/bmin identical or kernel "point source" like. 
+    patol: the tolerance in degree for orginal vs. target bpa identical 
+
+    return_code:
+        0:  sucess, the target beam can be reached with a valid convolution kernel
+        1:  fail, "point source" like
+        2:  fail, unable to reach the target resolution, and the reqyested beam is probally too large. 
+
+    Note:
+        Although ia.deconvolvefrombeam() can also predict convolution kernel sizes, its return can be misleading
+        in some circumstances (see CAS-13804). Therefore, we use ia.beamforconvolvedsize() here even we have to catch the CASA runtime error messages.
+    """
+    cqa = casa_tools.quanta
+    cia = casa_tools.image
+    clog = casa_tools.casalog
+
+    # default return code and kernel: fail (code=2) and a dummy kernel
+    rt_kernel = {'major': {'unit': 'arcsec', 'value': 0.0},
+                 'minor': {'unit': 'arcsec', 'value': 0.0},
+                 'pa': {'unit': 'deg', 'value': 0.0}}
+    rt_code = 2
+
+    # ia.restoringbeam() return bpa under the key 'positionangle' while ia.commombeam() return bpa under 'pa'
+    # we search the exact key here so both versions will work.
+    t_bpa_key = 'positionangle' if 'positionangle' in target_beam else 'pa'
+    bpa_key = 'positionangle' if 'positionangle' in beam else 'pa'
+
+    t_bmaj = cqa.convert(target_beam['major'], 'arcsec')['value']
+    t_bmin = cqa.convert(target_beam['minor'], 'arcsec')['value']
+    t_bpa = cqa.convert(target_beam[t_bpa_key], 'deg')['value']
+    bmaj = cqa.convert(beam['major'], 'arcsec')['value']
+    bmin = cqa.convert(beam['minor'], 'arcsec')['value']
+    bpa = cqa.convert(beam[bpa_key], 'deg')['value']
+
+    if abs(t_bmaj-bmaj) < pstol and abs(t_bmin-bmin) < pstol and abs(t_bpa-bpa) < patol:
+        LOG.debug(
+            'The target beam is identical or close to the original beam under the specified tolerance: ' +
+            f'pstol = {pstol} arcsec and patol = {patol} deg.')
+        rt_code = 1
+    else:
+        target_bm = [cqa.tos(target_beam['major']), cqa.tos(target_beam['minor']), cqa.tos(target_beam[t_bpa_key])]
+        origin_bm = [cqa.tos(beam['major']), cqa.tos(beam['minor']), cqa.tos(beam[bpa_key])]
+
+        # filter out the potential runtime error message when ia.beamforconvolvedsize() fails
+        clog.filterMsg('Unable to reach target resolution of major')
+
+        try:
+            rt_kernel = cia.beamforconvolvedsize(source=origin_bm, convolved=target_bm)
+            if cqa.convert(rt_kernel['major'], 'arcsec')['value'] < pstol:
+                LOG.debug('The kernel from ia.deconvolvefrombeam() is considered as a point-source under the specified tolerance: ' +
+                          f'pstol = {pstol} arcsec and patol = {patol} deg.')
+                rt_code = 1
+            else:
+                LOG.debug(f"The convolution kernel prediced by ia.deconvolvefrombeam is {rt_kernel}")
+                rt_code = 0
+        except RuntimeError as e:
+            LOG.debug(f"Unable to reach target resolution and the specified target beam is probably too large.")
+            rt_code = 2
+
+        # clean up the filtered messages
+        clog.clearFilterMsgList()
+
+    return rt_kernel, rt_code
