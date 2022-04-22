@@ -86,12 +86,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # to the target, check source, and phase calibrator when the result for
         # this task is accepted.
         LOG.info('Computing phase gain table(s) for target(s), check source(s), and phase calibrator(s).')
-        target_phasecal_calapp = self._do_phasecal_for_target()
+        target_phasecal_calapps = self._do_phasecal_for_target()
         # Add the solutions to final task result, for adopting into context
         # callibrary, but do not merge them into local task context, so they
         # are not used in pre-apply of subsequent gaincal calls.
-        result.pool.extend(target_phasecal_calapp)
-        result.final.extend(target_phasecal_calapp)
+        result.pool.extend(target_phasecal_calapps)
+        result.final.extend(target_phasecal_calapps)
 
         # Compute the phase solutions for all calibrators in inputs.intents.
         # These phase cal results include solutions for the PHASE calibrator
@@ -145,11 +145,15 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # always have used combine='spw' (since it used optimal parameters
         # based on SpW mapping). Hence, first unregister any phase caltable for
         # PHASE calibrator fields where the SpW mapping recommended combine=''.
+        LOG.info("Prior to computing diagnostic residual phase offsets, unregistering any phase gain table(s) for"
+                 " phase calibrator(s) that were derived with combine='', earlier in this stage.")
         self._unregister_phasecal_with_no_combine()
 
         # Next, compute a new phase solutions solve for those PHASE calibrator
         # fields where the recommended combine was '', while this time
         # enforcing combine='spw'.
+        LOG.info("Prior to computing diagnostic residual phase offsets, where necessary (caltable was unregistered)"
+                 " re-computing phase gain table(s) for phase calibrator(s) while enforcing combine='spw'.")
         phasecal_phase_results = self._do_phasecal_for_phase_calibrators_forcing_combine()
 
         # Merge the new phase solutions for PHASE calibrator fields into the
