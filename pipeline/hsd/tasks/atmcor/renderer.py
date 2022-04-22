@@ -1,15 +1,117 @@
 """Renderer for hsd_atmcor stage."""
+import collections
+import glob
 import itertools
 import os
+import re
+from typing import TYPE_CHECKING, List
 
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
-from .display import PlotmsRealVsFreqPlotter
-from pipeline.infrastructure.launcher import Context
+import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.basetask import ResultsList
+from pipeline.infrastructure.launcher import Context
+
+from .display import PlotmsRealVsFreqPlotter
+
+if TYPE_CHECKING:
+    from .atmcor import SDATMCorrectionResults
 
 LOG = logging.get_logger(__name__)
+
+
+ATMHeuristicsTR = collections.namedtuple('ATMHeuristicsTR', 'msname apply plot atmtype h0 dtem_dh')
+
+
+def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_page: str) -> ATMHeuristicsTR:
+    vis = os.path.basename(results.inputs['vis'])
+    if results.atm_heuristics == 'Y':
+        plot = ' '.join([
+            f'<a href="{detail_page}"',
+            'class="replace"',
+            f'data-vis="{vis}">View</a>',
+        ])
+    else:
+        plot = 'N/A'
+    row = ATMHeuristicsTR(msname=vis,
+                          apply=results.atm_heuristics,
+                          plot=plot,
+                          atmtype=results.best_atmtype,
+                          h0=results.inputs['h0'],
+                          dtem_dh=results.inputs['dtem_dh'])
+    return row
+
+
+def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults') -> List[logger.Plot]:
+    if results.atm_heuristics != 'Y' or results.best_model_index == -1:
+        # no useful heuristics plots exist, return empty list
+        return []
+
+    basename = os.path.basename(results.inputs['vis'])
+    p = fr'{basename}\.field([0-9]+)\.spw([0-9]+)\.model\.([0-9]+)\.png$'
+    LOG.info(p)
+    heuristics_plots = []
+    best_model_index = results.best_model_index
+    model_list = results.model_list
+    for png_file in glob.iglob(os.path.join(stage_dir, '*.png')):
+        match = re.search(p, png_file)
+        if match:
+            field_id = match.group(1)
+            spw_id = match.group(2)
+            model_id = int(match.group(3))
+            LOG.info(f'Match: field {field_id} spw {spw_id} model {model_id}')
+            status = 'Applied' if model_id == best_model_index else 'Discarded'
+            atmtype, _, lapse_rate, scale_height = model_list[model_id]
+            model = f'atmtype={atmtype:d}, h0={scale_height:.1f}km, dTem_dh={lapse_rate:.1f}K/km'
+            heuristics_plots.append(
+                logger.Plot(
+                    png_file,
+                    x_axis='Frequency',
+                    y_axis='Amplitude',
+                    field=field_id,
+                    parameters={
+                        'vis': basename,
+                        'spw': spw_id,
+                        'ant': 'all',
+                        'pol': 'XXYY',
+                        'model': model,
+                        'status': status,
+                    }
+                )
+            )
+    LOG.info(f'{heuristics_plots}')
+    return heuristics_plots
+
+
+class SDATMCorrHeuristicsDetailPlotRenderer(basetemplates.JsonPlotRenderer):
+    """Renderer class for ATM heuristics detail plots."""
+
+    def __init__(self, context: Context, result: 'SDATMCorrectionResults', plots: List[logger.Plot]) -> None:
+        """
+        Construct SDATMCorrHeuristicsDetailPlotRenderer instance.
+
+        Args:
+            context: pipeline Context
+            result: SDATMCorrectionResults instance
+            plots: list of plot objects
+        """
+        uri = 'hsd_atmcor_heuristics_detail_plots.mako'
+        title = 'ATM Heuristics Plots'
+        outfile = filenamer.sanitize(f'{title.lower()}.html')
+        super().__init__(uri, context, result, plots, title, outfile)
+
+    def update_json_dict(self, d: dict, plot: logger.Plot) -> None:
+        """
+        Update json dict to add new filters.
+
+        Args:
+            d: Json dict for plot
+            plot: plot object
+        """
+        d['status'] = plot.parameters['status']
+        d['model'] = plot.parameters['model']
 
 
 class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -49,6 +151,7 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         summary_plots = {}
         detail_plots = []
+        heuristics_plots = []
         for r in result:
             LOG.info('Rendering result for "%s"', r.inputs['vis'])
             if not hasattr(r, 'atmcor_ms_name'):
@@ -88,17 +191,41 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
                     detail_plots.append(p)
             summary_plots[os.path.basename(vis)] = summaries
 
+            # PIPE-1443 ATM heuristics plots
+            heuristics_plots.extend(identify_heuristics_plots(stage_dir, r))
+
         detail_page_title = 'ATM corrected amplitude vs frequency'
-        renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_field_spw_ant_detail_plots.mako',
-                                                  pipeline_context,
-                                                  result,
-                                                  detail_plots,
-                                                  detail_page_title,
-                                                  filenamer.sanitize('%s.html' % (detail_page_title.lower())))
-        with renderer.get_file() as fileobj:
-            fileobj.write(renderer.render())
+        detail_renderer = basetemplates.JsonPlotRenderer(
+            'generic_x_vs_y_field_spw_ant_detail_plots.mako',
+            pipeline_context,
+            result,
+            detail_plots,
+            detail_page_title,
+            filenamer.sanitize(f'{detail_page_title.lower()}.html')
+        )
+
+        with detail_renderer.get_file() as fileobj:
+            fileobj.write(detail_renderer.render())
+
+        heuristics_renderer = SDATMCorrHeuristicsDetailPlotRenderer(
+            pipeline_context,
+            result,
+            heuristics_plots,
+        )
+
+        with heuristics_renderer.get_file() as fileobj:
+            fileobj.write(heuristics_renderer.render())
+
+        # PIPE-1443 ATM heuristics table
+        heuristics_path = os.path.relpath(heuristics_renderer.path, pipeline_context.report_dir)
+        LOG.info(heuristics_path)
+        heuristics_summary = [
+            construct_heuristics_table_row(r, heuristics_path) for r in result
+        ]
+        heuristics_table = utils.merge_td_columns(heuristics_summary, num_to_merge=0)
 
         mako_context.update({
             'summary_plots': summary_plots,
-            'detail_page': renderer.path,
+            'detail_page': detail_renderer.path,
+            'heuristics_table': heuristics_table,
         })

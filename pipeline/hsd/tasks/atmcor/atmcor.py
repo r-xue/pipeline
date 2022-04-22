@@ -1,6 +1,8 @@
 """Offline ATM correction stage."""
 import os
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
+
+import numpy as np
 
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -11,6 +13,7 @@ import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
+from pipeline.extern import SDcalatmcorr
 from pipeline.h.heuristics import fieldnames
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from pipeline.infrastructure import task_registry
@@ -26,24 +29,49 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
     # Search order of input vis
     processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
-    atmtype = vdp.VisDependentProperty(default=1)
+    atmtype = vdp.VisDependentProperty(default='auto')
     dtem_dh = vdp.VisDependentProperty(default=-5.6)
     h0 = vdp.VisDependentProperty(default=2.0)
+    maxalt = vdp.VisDependentProperty(default=120)
     intent = vdp.VisDependentProperty(default='TARGET')
 
     @atmtype.convert
-    def atmtype(self, value: Union[int, str]) -> int:
-        """Convert atmtype into int.
+    def atmtype(self, value: Union[int, str]) -> str:
+        """Convert atmtype into str.
 
         Args:
             value: atmtype value
 
         Returns:
-            atmtype in integer
+            atmtype as string type
         """
-        if isinstance(value, str):
-            value = int(value)
+        if not isinstance(value, str):
+            value = str(value)
         return value
+
+    def __to_float_value(self, value: Union[float, str, dict], default_unit: str) -> float:
+        qa = casa_tools.quanta
+        qvalue = qa.quantity(value)
+        if qvalue['unit'] == '':
+            ret = qvalue['value']
+        elif qa.compare(qvalue, qa.quantity(0, default_unit)):
+            ret = qa.convert(qvalue, default_unit)['value']
+        else:
+            LOG.warning(f'incompatible unit: input {value} requires unit {default_unit}')
+            ret = 0.
+        return ret
+
+    @h0.convert
+    def h0(self, value: Union[float, str, dict]) -> float:
+        return self.__to_float_value(value, 'km')
+
+    @dtem_dh.convert
+    def dtem_dh(self, value: Union[float, str, dict]) -> float:
+        return self.__to_float_value(value, 'K/km')
+
+    @maxalt.convert
+    def maxalt(self, value: Union[float, str, dict]) -> float:
+        return self.__to_float_value(value, 'km')
 
     @vdp.VisDependentProperty
     def infiles(self) -> str:
@@ -149,6 +177,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
                  atmtype: Optional[Union[int, str, List[int], List[str]]] =None,
                  dtem_dh: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
                  h0: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
+                 maxalt: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
                  infiles: Optional[Union[str, List[str]]] =None,
                  antenna: Optional[Union[str, List[str]]] =None,
                  field: Optional[Union[str, List[str]]] =None,
@@ -158,9 +187,10 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         Args:
             context: pipeline context
-            atmtype: enumeration for atmospheric transmission model
+            atmtype: enumeration for atmospheric transmission model, or 'auto'
             dtem_dh: temperature gradient [K/km]
             h0: scale height for water [km]. Defaults to None.
+            maxalt: maximum altitude of the model [km]. Defaults to None.
             infiles: MS selection. Defaults to None.
             antenna: antenna selection. Defaults to None.
             field: field selection. Defaults to None.
@@ -173,6 +203,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         self.atmtype = atmtype
         self.dtem_dh = dtem_dh
         self.h0 = h0
+        self.maxalt = maxalt
         self.infiles = infiles
         self.antenna = antenna
         self.field = field
@@ -254,6 +285,13 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         # datacolumn
         args['datacolumn'] = self._identify_datacolumn(infile)
 
+        # atmtype
+        if args['atmtype'].isdigit():
+            args['atmtype'] = int(args['atmtype'])
+
+        # maxalt is not available
+        args.pop('maxalt')
+
         # outfile
         if 'outfile' not in args:
             basename = os.path.basename(infile.rstrip('/'))
@@ -299,8 +337,12 @@ class SDATMCorrectionResults(common.SingleDishResults):
             outcome: outcome of the task execution. name of the output MS. Defaults to None.
         """
         super().__init__(task, success, outcome)
-        # outcome is the name of output file from sdatmcor
-        self.atmcor_ms_name = outcome
+        self.task_args = outcome['task_args']
+        self.atmcor_ms_name = self.task_args['outfile']
+        self.best_atmtype = self.task_args['atmtype']
+        self.atm_heuristics = outcome['atm_heuristics']
+        self.best_model_index = outcome['best_model_index']
+        self.model_list = outcome['model_list']
         self.out_mses = []
 
     def merge_with_context(self, context: Context):
@@ -365,7 +407,16 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         Returns:
             results instance for hsd_atmcor stage
         """
-        args = self.inputs.to_casa_args()
+        # args for sdatmcor
+        if self.inputs.atmtype.lower() == 'auto':
+            # select best ATM model
+            atm_heuristics, args, best_model_index, model_list = self._perform_atm_heuristics()
+        else:
+            atm_heuristics = 'N'
+            args = self.inputs.to_casa_args()
+            best_model_index = -1
+            model_list = []
+
         LOG.info('Processing parameter for sdatmcor: %s', args)
         job = casa_tasks.sdatmcor(**args)
         task_exec_status = self._executor.execute(job)
@@ -387,7 +438,12 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         results = SDATMCorrectionResults(
             task=self.__class__,
             success=is_successful,
-            outcome=args['outfile']
+            outcome={
+                'task_args': args,
+                'atm_heuristics': atm_heuristics,
+                'best_model_index': best_model_index,
+                'model_list': model_list,
+            }
         )
 
         return results
@@ -410,6 +466,76 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         result.out_mses.append(new_ms)
         return result
 
+    def _perform_atm_heuristics(self) -> Tuple[str, dict, int, List[Tuple[int, float, float, float]]]:
+        """Perform ATM model heuristics.
+
+        Perform ATM model heuristics, SDcalatmcorr.
+        Return argument list including best ATM model as dictionary.
+
+        Returns:
+            Four tuple, status of ATM model heuristics, argument list for sdatmcor,
+            index of best ATM model, and list of examined ATM models.
+        """
+        # create weblog directry
+        stage_number = self.inputs.context.task_counter
+        stage_dir = os.path.join(
+            self.inputs.context.report_dir,
+            f'stage{stage_number}'
+        )
+        if not os.path.exists(stage_dir):
+            os.makedirs(stage_dir)
+
+        # perform atmtype heuristics if atmtype is 'auto'
+        # run Harold's script here
+        LOG.info('Performing atmtype heuristics')
+        atm_heuristics = 'Default'
+        default_model = [1, self.inputs.maxalt, self.inputs.dtem_dh, self.inputs.h0]
+        best_model = default_model
+        args = self.inputs.to_casa_args()
+        ms_name = args['infile']
+        model_list = []
+        best_model_index = -1
+        LOG.info(f'default_model: {default_model}')
+        try:
+            heuristics_result = SDcalatmcorr.selectModelParams(
+                mslist=[ms_name],
+                context=self.inputs.context,
+                decisionmetric='intabsdiff',
+                atmtype=[1, 2, 3, 4],
+                maxalt=self.inputs.maxalt,
+                lapserate=self.inputs.dtem_dh,
+                scaleht=self.inputs.h0,
+                plotsfolder=stage_dir,
+                defatmtype=default_model[0],
+                defmaxalt=default_model[1],
+                deflapserate=default_model[2],
+                defscaleht=default_model[3]
+            )
+            best_model = heuristics_result[0][ms_name]
+            model_list = heuristics_result[1][ms_name]
+            best_model_index = [i for i in range(len(model_list)) if np.all(model_list[i] == best_model)][0]
+
+            status = heuristics_result[3][ms_name]
+            if status == 'bestfitmodel':
+                atm_heuristics = 'Y'
+                LOG.info(f'Best ATM model is atmtype {best_model[0]}.')
+            else:
+                LOG.info(f'ATM heuristics failed. Using default model {best_model[0]}.')
+
+        except Exception as e:
+            LOG.info(f'ATM heuristics failed. Falling back to default model {default_model[0]}. Original error:')
+            LOG.info(str(e))
+
+        # construct argument list for sdatmcor
+        atmtype_org = self.inputs.atmtype
+        try:
+            self.inputs.atmtype = best_model[0]
+            args = self.inputs.to_casa_args()
+        finally:
+            self.inputs.atmtype = atmtype_org
+
+        return atm_heuristics, args, best_model_index, model_list
+
 
 ### Tier-0 parallelization
 class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
@@ -423,6 +549,7 @@ class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
                  atmtype: Optional[Union[int, str, List[int], List[str]]] =None,
                  dtem_dh: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
                  h0: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
+                 maxalt: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
                  infiles: Optional[Union[str, List[str]]] =None,
                  antenna: Optional[Union[str, List[str]]] =None,
                  field: Optional[Union[str, List[str]]] =None,
@@ -436,6 +563,7 @@ class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
             atmtype: enumeration for atmospheric transmission model
             dtem_dh: temperature gradient [K/km]
             h0: scale height for water [km]. Defaults to None.
+            maxalt: maximum altitude of the model [km]. Defaults to None.
             infiles: MS selection. Defaults to None.
             antenna: antenna selection. Defaults to None.
             field: field selection. Defaults to None.
@@ -443,7 +571,8 @@ class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
             pol: polarization selection. Defaults to None.
             parallel: enable Tier-0 parallelization or not. Defaults to None.
         """
-        super().__init__(context, atmtype, infiles, antenna, field, spw, atmtype)
+        super().__init__(context, atmtype=atmtype, dtem_dh=dtem_dh, h0=h0, maxalt=maxalt,
+                         infiles=infiles, antenna=antenna, field=field, spw=spw)
         self.parallel = parallel
 
 

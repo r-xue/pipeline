@@ -11,16 +11,18 @@
         <shortdescription>Type of atmospheric transmission model (1,2,3,4,5)</shortdescription>
         <description>
         Type of atmospheric transmission model represented as an integer.
-        Available options are,
+        Available options are as follows. Integer values can be given as
+        either integer or string, i.e. both 1 and '1' are acceptable.
 
-          1: tropical (default)
-          2: mid latitude summer
-          3: mid latitude winter
-          4: subarctic summer
-          5: subarctic winter
+          'auto': perform heuristics to choose best model (default)
+               1: tropical
+               2: mid latitude summer
+               3: mid latitude winter
+               4: subarctic summer
+               5: subarctic winter
         </description>
-        <any type="variant" limittypes="int intArray"/>
-        <value type="int">1</value>
+        <any type="variant" limittypes="string int intArray"/>
+        <value type="string">auto</value>
     </param>
 
     <param name="dtem_dh" type="any">

@@ -55,7 +55,9 @@ measurement set with the parameters listed in the following table.</p>
     <thead>
         <tr>
             <th>Measurement set</th>
-            <th scope="col" colspan="3">Model parameters</th>
+            <th rowspan="2">Heuristics Applied</th>
+            <th rowspan="2">Attempted Models</th>
+            <th scope="col" colspan="3">Applied Model parameters</th>
         </tr>
         <tr>
             <th>Name</th>
@@ -64,12 +66,11 @@ measurement set with the parameters listed in the following table.</p>
             <th>dTem_dh</th>
     </thead>
     <tbody>
-        %for r in result:
+        %for tr in heuristics_table:
             <tr>
-                <td>${r.inputs['vis']}</td>
-                <td>${r.inputs['atmtype']}</td>
-                <td>${r.inputs['h0']}</td>
-                <td>${r.inputs['dtem_dh']}</td>
+                %for td in tr:
+    				${td}
+    			% endfor
             </tr>
         %endfor
     </tbody>
