@@ -61,7 +61,10 @@ StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_fil
 
 
 # product name utility 
-class PipelineProductNameBuiler(object):
+class PipelineProductNameBuilder(object):
+
+    aqua_report_name = 'pipeline_aquareport.xml'
+
     @classmethod
     def __build(self, *args, **kwargs):
         if 'separator' in kwargs:
@@ -147,9 +150,9 @@ class PipelineProductNameBuiler(object):
                                                output_dir=None)
 
     @classmethod
-    def aqua_report(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid(basename, 
-                                          project_structure=project_structure, 
+    def aqua_report(self, project_structure=None, ousstatus_entity_id=None, output_dir=None):
+        return self._build_from_ps_oussid(PipelineProductNameBuilder.aqua_report_name,
+                                          project_structure=project_structure,
                                           ousstatus_entity_id=ousstatus_entity_id,
                                           output_dir=output_dir)
 
@@ -332,7 +335,7 @@ class ExportData(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
     # name builder
-    NameBuilder = PipelineProductNameBuiler
+    NameBuilder = PipelineProductNameBuilder
 
     def prepare(self):
         """
