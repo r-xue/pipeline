@@ -890,8 +890,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         if commom_image != fitsfile:
 
-            job = casa_tasks.exportfits(imagename=commom_image, fitsimage=fitsfile.replace('.fits', '.com.fits'))
+            job = casa_tasks.exportfits(imagename=commom_image, fitsimage=os.path.splitext(fitsfile)[0]+'.com.fits')
             self._executor.execute(job)
         else:
             # In an unlikely situation, no regrdding or smooth was done, we just need to make a copy of the original FITS
-            shutil.copy(fits, fitsfile.replace('.fits', '.com.fits'))
+            shutil.copy(fitsfile, os.path.splitext(fitsfile)[0]+'.com.fits')
