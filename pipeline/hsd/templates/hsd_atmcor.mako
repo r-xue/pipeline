@@ -31,8 +31,20 @@ def get_spw_desc(spw):
     return spw_exp
 %>
 
-<p>This task applies the correction for atmospheric effects to
-science targets in the calibrated measurement sets.</p>
+<style>
+.atm-table-column-name {
+    font-weight: bold;
+}
+
+.atm-application-status {
+    font-style: italic;
+}
+</style>
+
+<p>This task evaluates and applies the best model correction for atmospheric effects to science targets
+in the calibrated measurement sets.
+Four atmtypes are evaluated, for details see
+<a href="https://iopscience.iop.org/article/10.1088/1538-3873/abe0ab">T. Sawada et al., PASP 133:034504, 2021</a>.</p>
 
 <h2>Contents</h2>
 <ul>
@@ -46,8 +58,15 @@ science targets in the calibrated measurement sets.</p>
 
 <h2 id="applied_corrections" class="jumptarget">Applied Corrections</h2>
 
-<p>The correction for atmospheric effects applies a model in each
-measurement set with the parameters listed in the following table.</p>
+<p>The correction for atmospheric effects applies a model in each measurement set with the parameters
+listed in the following table. The SPW chosen to evaluate the best model is based on the atmospheric
+transmission model. The channels selected to perform the evaluation is marked in the plots
+<span class="atm-table-column-name">'Attempted Models'</span>.
+Note that only the <span class="atm-application-status">'Applied'</span> plots in
+<span class="atm-table-column-name">'Attempted models'</span> is the actual correction, the
+<span class="atm-application-status">'Discarded'</span>
+plots in <span class="atm-table-column-name">'Attempted Models'</span> are for providing information
+only and none of them are applied.</p>
 
 <table class="table table-bordered table-striped table-condensed"
        summary="Applied Corrections">
