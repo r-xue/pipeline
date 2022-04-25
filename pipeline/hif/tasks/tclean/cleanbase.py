@@ -556,9 +556,22 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_iterdone = tclean_result['iterdone']
             tclean_niter = tclean_result['niter']
             tclean_nmajordone = tclean_result['nmajordone']
+
+            # Note: The return structure of tclean_result['summaryminor'] will change after CAS-6692 and
+            # the code block below is subjected to change after CASA ver >= 6.4.4.
+            # Before CAS-6692, for the tclean_result['summaryminor'] 2D array with 6 rows,
+            #   0 : iteration number
+            #   1 : peak residual
+            #   2 : model flux
+            #   3 : cyclethreshold
+            #   4 : deconvolver id (for multi-field)
+            #   5 : subimage id (channel id, stokes id..)
+            # see https://open-jira.nrao.edu/browse/CAS-6692?focusedCommentId=60810&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-60810
+
             tclean_nminordone = tclean_result['summaryminor'][0, :]
             tclean_peakresidual = tclean_result['summaryminor'][1, :]
             tclean_totalflux = tclean_result['summaryminor'][2, :]
+            tclean_planeid = tclean_result['summaryminor'][5, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
 
@@ -579,6 +592,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_nminordone_array(iter, tclean_nminordone)
             result.set_peakresidual_array(iter, tclean_peakresidual)
             result.set_totalflux_array(iter, tclean_totalflux)
+            result.set_planeid_array(iter, tclean_planeid)            
 
             if tclean_stopcode in [5, 6]:
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %

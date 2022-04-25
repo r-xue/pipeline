@@ -4,6 +4,7 @@ import os
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -203,6 +204,7 @@ class TcleanMajorCycleSummaryFigure(object):
         self.xlabel = 'Minor iterations done'
         self.ylabel = ['Flux density cleaned [%s]' % self.units[0], 'Peak residual [%s]' % self.units[1]]
         self.unitfactor = [1.0, 1.0]
+        self.pol_labels = list(result.targets[0]['stokes'])
 
     def plot(self):
         if os.path.exists(self.figfile):
@@ -211,7 +213,7 @@ class TcleanMajorCycleSummaryFigure(object):
 
         LOG.info('Creating major cycle statistics plot.')
 
-        fig, (ax0, ax1) = plt.subplots(2, 1, )
+        fig, (ax0, ax1) = plt.subplots(2, 1, sharex=True)
         fig.set_dpi(150.0)
 
         ax0.set_title(self.title, fontsize=10)
@@ -230,11 +232,28 @@ class TcleanMajorCycleSummaryFigure(object):
                 x = item['nminordone_array'] + x0
                 ax0_y = item['totalflux_array'] * self.unitfactor[0]
                 ax1_y = item['peakresidual_array'] * self.unitfactor[1]
+
                 # increment last iteration
                 x0 = x[-1]
+
                 # scatter plot
-                ax0.plot(x, ax0_y, 'b+')
-                ax1.plot(x, ax1_y, 'b+')
+                pol_colors = ['gray', 'blue', 'green', 'red']
+                pol_markers = ['+', '<', '>', 'o']
+                pol_alphas = [1, 0.3, 0.3, 0.3]
+                pol_id_arr = item['planeid_array']
+                for pol_id in np.unique(pol_id_arr):
+
+                    pol_idx = np.where(pol_id_arr == pol_id)
+                    ax0_y_pol = ax0_y[pol_idx]
+                    ax1_y_pol = ax1_y[pol_idx]
+                    x_pol = x[pol_idx]
+
+                    pid = int(pol_id)
+                    ax0.scatter(x_pol, ax0_y_pol, label=self.pol_labels[pid], edgecolors='black',
+                                alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
+                    ax1.scatter(x_pol, ax1_y_pol, label=self.pol_labels[pid], edgecolors='black',
+                                alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
+
                 # Vertical line and annotation at major cycle end
                 ax0.axvline(x0, linewidth=1, linestyle='dotted', color='k')
                 ax1.axvline(x0, linewidth=1, linestyle='dotted', color='k')
@@ -247,6 +266,10 @@ class TcleanMajorCycleSummaryFigure(object):
         if use_ylog:
             ax0.set_yscale('log')
             ax1.set_yscale('log')
+
+        handles, labels = ax0.get_legend_handles_labels()
+        idx_list = [labels.index(x) for x in sorted(set(labels))]
+        ax1.legend([handles[idx] for idx in idx_list], ['$'+labels[idx]+'$' for idx in idx_list], loc='center right')
 
         fig.tight_layout()
         fig.savefig(self.figfile)

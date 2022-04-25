@@ -559,6 +559,18 @@ class TcleanResult(basetask.Results):
         self.iterations[iteration]['peakresidual_array'] = peakresidual_array
 
     @property
+    # Cleaned Plane id as a function of minor iteration number
+    def planeid_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('planeid_array', None)
+        else:
+            return None
+
+    def set_planeid_array(self, iteration, planeid_array):
+        self.iterations[iteration]['planeid_array'] = planeid_array
+
+    @property
     # Total cleaned flux as a function of minor iteration number
     def totalflux_array(self):
         iters = sorted(self.iterations.keys())

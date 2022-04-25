@@ -1105,12 +1105,10 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     for iteration, iterdata in r.iterations.items():
                         iter_dict = {'cleanmask': iterdata['cleanmask'] if 'cleanmask' in iterdata.keys() else '',
                                      'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata.keys() else 0,
-                                     'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array'
-                                     in iterdata.keys() else None,
-                                     'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array'
-                                     in iterdata.keys() else None,
-                                     'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array'
-                                     in iterdata.keys() else None}
+                                     'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array' in iterdata.keys() else None,
+                                     'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array' in iterdata.keys() else None,
+                                     'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array' in iterdata.keys() else None,
+                                     'planeid_array': iterdata['planeid_array'] if 'planeid_array' in iterdata.keys() else None}
                         row_nmajordone_per_iter[iteration] = iter_dict
                     row_nmajordone_total = numpy.sum([item['nmajordone']
                                                      for key, item in row_nmajordone_per_iter.items()])
