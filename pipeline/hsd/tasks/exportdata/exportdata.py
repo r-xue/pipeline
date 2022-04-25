@@ -642,4 +642,9 @@ finally:
 
         LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
         shutil.copy(aqua_file, out_aqua_file)
+
+        # put aqua report into html directory, so it can be linked to the weblog
+        LOG.info('Copying AQUA report %s to %s', aqua_file, context.report_dir)
+        shutil.copy(aqua_file, context.report_dir)
+
         return os.path.basename(out_aqua_file)

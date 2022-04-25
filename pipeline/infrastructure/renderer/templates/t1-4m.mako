@@ -5,7 +5,7 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
-import pipeline.h.tasks.exportdata.PipelineProductNameBuiler.aqua_report_name as aqua_report_name
+from pipeline.h.tasks.exportdata.exportdata import PipelineProductNameBuilder
 %>
 <%inherit file="base.mako"/>
 
@@ -92,9 +92,7 @@ $(document).ready(function() {
 		${li_anchor_to_file(pcontext.logs['pipeline_script'], 'pipeline equivalent script')}
 		${li_anchor_to_file(pcontext.logs['pipeline_restore_script'], 'pipeline restore script')}
 		${li_anchor_to_file(pcontext.project_structure.ppr_file, 'pipeline processing request', False)}
-		%if os.path.exists(aqua_report_name)
-		  ${li_anchor_to_file(aqua_report_name, 'AQUA report', False)}
-		%endif
+		${li_anchor_to_file(PipelineProductNameBuilder.aqua_report_name, 'AQUA report', False)}
 		</ul>	
 	</div>
 </div>
