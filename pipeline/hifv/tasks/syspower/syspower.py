@@ -184,10 +184,10 @@ class Syspower(basetask.StandardTaskTemplate):
 
         # Determine if 8-bit or 3-bit
         # 8-bit continuum applications (GHz)      3-bit continuum applications (GHz)
-        # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2/D2
+        # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2D2
 
-        allowedbasebands = ('A0C0', 'B0D0')
-        allowed_rcvr_bands = ('L', 'S', 'C')
+        allowedbasebands = ('A0C0', 'B0D0', 'A1C1', 'A2C2', 'B1D1', 'B2D2')
+        allowed_rcvr_bands = ('L', 'S', 'C', 'X', 'U')
 
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         allprocessedspws = []

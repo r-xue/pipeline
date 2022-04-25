@@ -95,14 +95,14 @@ $(document).ready(function() {
                 <%def name="preamble()">
                 </%def>
 
-                <%def name="mouseover(plot)">${plot.parameters['caption']} ${band}-band</%def>
+                <%def name="mouseover(plot)">${plot.parameters['largecaption']} ${band}-band</%def>
 
                 <%def name="fancybox_caption(plot)">
-                  ${plot.parameters['caption']}  ${band}-band
+                  ${plot.parameters['smallcaption']}  ${band}-band
                 </%def>
 
                 <%def name="caption_title(plot)">
-                   ${plot.parameters['caption']}  ${band}-band
+                   ${plot.parameters['largecaption']}  ${band}-band
                 </%def>
         </%self:plot_group>
 

@@ -1,4 +1,5 @@
 import os
+import datetime
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,6 +7,7 @@ import matplotlib.pyplot as plt
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
+import pipeline.infrastructure.casa_tools as casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -57,7 +59,8 @@ class syspowerBoxChart(object):
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
-                                                                                'caption': 'Template pdiff',
+                                                                                'largecaption': 'Template pdiff',
+                                                                                'smallcaption': 'Template pdiff',
                                                                                 'spw': '',
                                                                                 'band': self.band})
 
@@ -122,7 +125,8 @@ class syspowerBarChart(object):
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': prefix,
-                                                                                'caption': 'Fraction of flagged solutions',
+                                                                                'largecaption': 'Fraction of flagged solutions',
+                                                                                'smallcaption': 'Fraction of flagged solutions',
                                                                                 'spw': '',
                                                                                 'band': self.band})
 
@@ -153,44 +157,84 @@ class compressionSummary(object):
 
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
-
         LOG.info("Creating syspower compression summary chart for {!s}-band...".format(self.band))
+
+        spws = []
+        basebands = []
+        for baseband in self.result.band_baseband_spw[self.band]:
+            spws.extend(self.result.band_baseband_spw[self.band][baseband])
+            basebands.append(baseband)
+
+        with casa_tools.TableReader(self.result.inputs['vis'] + '/SYSPOWER') as tb:
+            stb = tb.query('SPECTRAL_WINDOW_ID in [{!s}]'.format(','.join([str(spw) for spw in spws])))
+            sp_time = stb.getcol('TIME')
+
+        sorted_time, idx = np.unique(sp_time, return_index=True)
+
+        me = casa_tools.measures
+        qa = casa_tools.quanta
+
+        utc_time = []
+        for time in sorted_time:
+            q1 = qa.quantity(time, 's')
+            time1 = qa.time(q1, form='fits')
+            datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+            utc_time.append(datetime_object)
+
+        # Get scans
+        m = self.context.observing_run.get_ms(self.result.inputs['vis'])
+        scans = m.get_scans(spw=spws)
+
+        scantimes = []
+
+        for scan in scans:
+            epoch = scan.start_time
+            t = qa.splitdate(epoch['m0'])
+            dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+            # datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
+            scantimes.append({'scanid': scan.id, 'time': dd})
+
         pdiff = self.spowerdict['spower_common']  # self.result.spowerdict['spower_common']
         pdiff_ma = np.ma.masked_equal(pdiff, 0)
 
-        fig0, axes = plt.subplots(4, 1, sharex='col')
+        numsubplots = 4   # Default
+        ncorr = 2
+        if len(basebands) > 2:
+            numsubplots = ncorr * len(basebands)
+        fig0, axes = plt.subplots(numsubplots, 1, sharex='col')
         this_alpha = 1.0
-        axes[0].plot(np.ma.max(pdiff_ma, axis=0)[0, 0], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha, label='max')
-        axes[0].plot(np.ma.median(pdiff_ma, axis=0)[0, 0], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha,
-                     label='median')
-        axes[0].plot(np.ma.min(pdiff_ma, axis=0)[0, 0], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha, label='min')
-        axes[0].set_ylim(0.5, 1.2)
-        axes[0].set_ylabel('Baseband A0C0 RR')
-        leg = axes[0].legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.0), frameon=True, numpoints=1,
+
+        pc = 0  # Running plot count
+        for iplot, baseband in enumerate(basebands):
+            for jplot, corr in enumerate(['RR', 'LL']):
+                axes[pc].plot_date(utc_time, np.ma.max(pdiff_ma, axis=0)[iplot, jplot], 'o', mfc='blue', mew=0,
+                                   ms=3, alpha=this_alpha, label='max')
+                axes[pc].plot_date(utc_time, np.ma.median(pdiff_ma, axis=0)[iplot, jplot], 'o', mfc='green', mew=0,
+                                   ms=3, alpha=this_alpha, label='median')
+                axes[pc].plot_date(utc_time, np.ma.min(pdiff_ma, axis=0)[iplot, jplot], 'o', mfc='brown', mew=0,
+                                   ms=3, alpha=this_alpha, label='min')
+                axes[pc].set_ylim(0.5, 1.2)
+                axes[pc].set_ylabel('{!s} {!s}'.format(baseband, corr))
+                pc += 1
+
+        # Assumes at least one baseband in the SDM
+        for scantime in scantimes:
+            axes[0].plot_date([scantime['time']], [1.2], 'k|', markersize=20.0)
+            if (scantime['scanid'] % 2) == 0:
+                offset = 1.225
+            else:
+                offset = 1.285
+            plottime = scantime['time'] - datetime.timedelta(0, 20)
+            axes[0].text(plottime, offset, str(scantime['scanid']), fontsize='xx-small')
+        # leg = axes[0].legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.0), frameon=True, numpoints=1,
+        #                      fancybox=False)
+        leg = axes[0].legend(loc='center right', ncol=1, bbox_to_anchor=(1.0, 1.52), frameon=True, numpoints=1,
                              fancybox=False)
         title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
         title.set_position([.5, 1.225])
-        axes[1].plot(np.ma.max(pdiff_ma, axis=0)[0, 1], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
-        axes[1].plot(np.ma.median(pdiff_ma, axis=0)[0, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
-        axes[1].plot(np.ma.min(pdiff_ma, axis=0)[0, 1], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
-        axes[1].set_ylim(0.5, 1.2)
-        axes[1].set_ylabel('Baseband A0C0 LL')
 
-        try:
-            axes[2].plot(np.ma.max(pdiff_ma, axis=0)[1, 0], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
-            axes[2].plot(np.ma.median(pdiff_ma, axis=0)[1, 0], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
-            axes[2].plot(np.ma.min(pdiff_ma, axis=0)[1, 0], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
-            axes[2].set_ylim(0.5, 1.2)
-            axes[2].set_ylabel('Baseband B0D0 RR')
+        axes[numsubplots-1].set_xlabel('UTC Day Time [Day HH:MM]')
 
-            axes[3].plot(np.ma.max(pdiff_ma, axis=0)[1, 1], 'o', mfc='blue', mew=0, ms=3, alpha=this_alpha)
-            axes[3].plot(np.ma.median(pdiff_ma, axis=0)[1, 1], 'o', mfc='green', mew=0, ms=3, alpha=this_alpha)
-            axes[3].plot(np.ma.min(pdiff_ma, axis=0)[1, 1], 'o', mfc='brown', mew=0, ms=3, alpha=this_alpha)
-            axes[3].set_ylim(0.5, 1.2)
-            axes[3].set_ylabel('Baseband B0D0 LL')
-            axes[3].set_xlabel('Time (seconds)')
-        except IndexError as ex:
-            LOG.debug("Only one baseband to plot.")
         fig0.set_size_inches(8, 10)
 
         plt.savefig(figfile)
@@ -208,7 +252,8 @@ class compressionSummary(object):
 
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                    'type': prefix,
-                                                                                   'caption': 'Compression summary',
+                                                                                   'largecaption': 'Compression summary',
+                                                                                   'smallcaption': 'Compression summary (scan numbers indicated on the top axis)',
                                                                                    'spw': '',
                                                                                    'band': self.band})
 
@@ -246,6 +291,42 @@ class medianSummary(object):
         # Second variable determined via np.ma.masked_where(<2nd variable>== 0, <2nd variable>)
 
         LOG.info("Creating syspower compression median pdiff summary chart for {!s}-band...".format(self.band))
+
+        spws = []
+        basebands = []
+        for baseband in self.result.band_baseband_spw[self.band]:
+            spws.extend(self.result.band_baseband_spw[self.band][baseband])
+            basebands.append(baseband)
+
+        with casa_tools.TableReader(self.result.inputs['vis'] + '/SYSPOWER') as tb:
+            stb = tb.query('SPECTRAL_WINDOW_ID in [{!s}]'.format(','.join([str(spw) for spw in spws])))
+            sp_time = stb.getcol('TIME')
+
+        sorted_time, idx = np.unique(sp_time, return_index=True)
+
+        me = casa_tools.measures
+        qa = casa_tools.quanta
+
+        utc_time = []
+        for time in sorted_time:
+            q1 = qa.quantity(time, 's')
+            time1 = qa.time(q1, form='fits')
+            datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+            utc_time.append(datetime_object)
+
+        # Get scans
+        m = self.context.observing_run.get_ms(self.result.inputs['vis'])
+        scans = m.get_scans(spw=spws)
+
+        scantimes = []
+
+        for scan in scans:
+            epoch = scan.start_time
+            t = qa.splitdate(epoch['m0'])
+            dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+            # datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
+            scantimes.append({'scanid': scan.id, 'time': dd})
+
         pd = self.spowerdict['spower_common']  # self.result.spowerdict['spower_common']
         pdiff = np.ma.masked_equal(pd, 0)
 
@@ -271,30 +352,30 @@ class medianSummary(object):
 
         fig0 = plt.figure()
 
-        these_medians = ma_medians[0, 0, :]
-        hits = np.logical_not(these_medians.mask)
-        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband A0C0 RR')
+        for iplot, baseband in enumerate(basebands):
+            for jplot, corr in enumerate(['RR', 'LL']):
+                these_medians = ma_medians[iplot, jplot, :]
+                hits = np.logical_not(these_medians.mask)
+                plt.plot_date(np.array(utc_time)[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0,
+                              label='{!s} {!s}'.format(baseband, corr))
 
-        these_medians = ma_medians[0, 1, :]
-        hits = np.logical_not(these_medians.mask)
-        plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband A0C0 LL')
+        # Scale
+        plt.ylim(0.98 * np.min(ma_medians), 1.01 * np.max(ma_medians))
 
-        try:
-            these_medians = ma_medians[1, 0, :]
-            hits = np.logical_not(these_medians.mask)
-            plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband B0D0 RR')
+        for scantime in scantimes:
+            plt.plot_date([scantime['time']], [1.01 * np.max(ma_medians)], 'k|', markersize=20.0)
+            if (scantime['scanid'] % 2) == 0:
+                offset = 1.0105
+            else:
+                offset = 1.0120
+            plottime = scantime['time'] - datetime.timedelta(0, 20)
+            plt.text(plottime, offset * np.max(ma_medians), str(scantime['scanid']), fontsize='xx-small')
 
-            these_medians = ma_medians[1, 1, :]
-            hits = np.logical_not(these_medians.mask)
-            plt.plot(xrange[hits], these_medians[hits], 'o', mew=0, ms=5, alpha=1.0, label='Baseband B0D0 LL')
-        except IndexError as ex:
-            LOG.debug("Only one baseband to plot.")
-
-        plt.xlim(0, pdiff.shape[3])
-        leg = plt.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.1))
-        plt.xlabel('Time (seconds)')
+        # plt.xlim(0, pdiff.shape[3])
+        leg = plt.legend(loc='upper center', ncol=6, bbox_to_anchor=(0.5, 1.15), fontsize='x-small')
+        plt.xlabel('UTC Day Time [Day HH:MM]')
         plt.ylabel('median P_diff     {!s}-band'.format(self.band))
-        plt.ticklabel_format(useOffset=False)
+        # p lt.ticklabel_format(useOffset=False)
         plt.gcf().set_size_inches(8, 7)
         plt.savefig(figfile)
         leg.set_bbox_to_anchor((0.5, 0.99))
@@ -311,7 +392,8 @@ class medianSummary(object):
 
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                   'type': prefix,
-                                                                                  'caption': 'Median pdiff summary',
+                                                                                  'largecaption': 'Median pdiff summary',
+                                                                                  'smallcaption': 'Median pdiff summary (scan numbers indicated on the top axis)',
                                                                                   'spw': '',
                                                                                   'band': self.band})
 
