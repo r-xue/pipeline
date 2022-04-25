@@ -2362,22 +2362,20 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
         Pipeline QA score of baseline quality.
     """
     scores = []
-    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
+    LOG.info(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
     # See PIPEREQ-168 for details of QA metrics.
-    # The highest and lowest scores in the metric
-    (diff_max_score, diff_min_score) = (1.0, 0.33)
-    # The upper (lower) limit of sigma of the highest (lowest) score
-    (diff_max_score_sigma_limit, diff_min_score_sigma_limit) = (1.8, 3.6)
-    diff_metric_func = interpolate.interp1d((diff_max_score_sigma_limit,
-                                             diff_min_score_sigma_limit),
-                                            (diff_max_score, diff_min_score),
-                                          kind='linear', bounds_error=False,
-                                          fill_value=(diff_max_score,
-                                                      diff_min_score))
+    # The values of bin_diff_ratio at the edges of ramp
+    ramp_range = (1.8, 3.6)
+    # The scores at the corresponding edges of ramp. These values are also
+    # adopted in extrapolation beyond ramp_range.
+    score_range = (1.0, 0.33)
+    metric_func = interpolate.interp1d(ramp_range, score_range,
+                                       kind='linear', bounds_error=False,
+                                       fill_value=score_range)
     for s in stat:
-        diff_score =  diff_metric_func(s.bin_diff_ratio)
+        diff_score =  metric_func(s.bin_diff_ratio)
         scores.append(diff_score)
-        LOG.trace(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
+        LOG.info(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
     final_score = np.nanmin(scores)
     quality = 'Good'
     if final_score <= 0.66:
