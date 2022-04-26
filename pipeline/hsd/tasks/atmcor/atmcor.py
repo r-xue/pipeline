@@ -36,20 +36,38 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
     intent = vdp.VisDependentProperty(default='TARGET')
 
     @atmtype.convert
-    def atmtype(self, value: Union[int, str]) -> str:
+    def atmtype(self, value: Union[int, str, List[Union[int, str]]]) -> Union[str, List[str]]:
         """Convert atmtype into str.
 
         Args:
             value: atmtype value
 
         Returns:
-            atmtype as string type
+            atmtype as string type or a list of strings
         """
         if not isinstance(value, str):
-            value = str(value)
+            # check if value is compatible with list
+            try:
+                list_value = list(value)
+                value = [
+                    v if isinstance(v, str) else str(v) for v in list_value
+                ]
+            except Exception:
+                # non-list value
+                value = str(value)
         return value
 
-    def __to_float_value(self, value: Union[float, str, dict], default_unit: str) -> float:
+    def __to_float_value(self, value: Union[float, str, dict, List[Union[float, str, dict]]], default_unit: str) -> Union[float, List[float]]:
+        # check if value is compatible with list
+        if not isinstance(value, str):
+            try:
+                list_value = list(value)
+                ret = [self.__to_float_value(v, default_unit) for v in list_value]
+                return ret
+            except Exception:
+                pass
+
+        # non-list value
         qa = casa_tools.quanta
         qvalue = qa.quantity(value)
         if qvalue['unit'] == '':
@@ -62,15 +80,15 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         return ret
 
     @h0.convert
-    def h0(self, value: Union[float, str, dict]) -> float:
+    def h0(self, value: Union[float, str, dict, List[Union[float, str, dict]]]) -> Union[float, List[float]]:
         return self.__to_float_value(value, 'km')
 
     @dtem_dh.convert
-    def dtem_dh(self, value: Union[float, str, dict]) -> float:
+    def dtem_dh(self, value: Union[float, str, dict, List[Union[float, str, dict]]]) -> Union[float, List[float]]:
         return self.__to_float_value(value, 'K/km')
 
     @maxalt.convert
-    def maxalt(self, value: Union[float, str, dict]) -> float:
+    def maxalt(self, value: Union[float, str, dict, List[Union[float, str, dict]]]) -> Union[float, List[float]]:
         return self.__to_float_value(value, 'km')
 
     @vdp.VisDependentProperty
@@ -286,7 +304,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         args['datacolumn'] = self._identify_datacolumn(infile)
 
         # atmtype
-        if args['atmtype'].isdigit():
+        if isinstance(args['atmtype'], str) and args['atmtype'].isdigit():
             args['atmtype'] = int(args['atmtype'])
 
         # maxalt is not available
@@ -320,6 +338,12 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         args['intent'] = 'OBSERVE_TARGET#ON_SOURCE,OBSERVE_TARGET#OFF_SOURCE'
 
         return args
+
+    def require_atm_heuristics(self) -> bool:
+        check_atmtype = isinstance(self.atmtype, list) or self.atmtype.lower() == 'auto'
+        check_dtem_dh = isinstance(self.dtem_dh, list)
+        check_h0 = isinstance(self.h0, list)
+        return check_atmtype or check_dtem_dh or check_h0
 
 
 class SDATMCorrectionResults(common.SingleDishResults):
@@ -408,7 +432,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             results instance for hsd_atmcor stage
         """
         # args for sdatmcor
-        if self.inputs.atmtype.lower() == 'auto':
+        if self.inputs.require_atm_heuristics():
             # select best ATM model
             atm_heuristics, args, best_model_index, model_list = self._perform_atm_heuristics()
         else:
@@ -489,19 +513,27 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         # run Harold's script here
         LOG.info('Performing atmtype heuristics')
         atm_heuristics = 'Default'
-        default_model = [1, self.inputs.maxalt, self.inputs.dtem_dh, self.inputs.h0]
+        default_model = [1, 120, -5.6, 2.0]
         best_model = default_model
         args = self.inputs.to_casa_args()
         ms_name = args['infile']
-        model_list = []
+        model_list = [default_model]
         best_model_index = -1
         LOG.info(f'default_model: {default_model}')
+
+        # handle list inputs
+        if isinstance(args['atmtype'], list):
+            atmtype_list = [int(x) for x in args['atmtype']]
+        else:
+            # should be 'auto'
+            atmtype_list = [1, 2, 3, 4]
+
         try:
             heuristics_result = SDcalatmcorr.selectModelParams(
                 mslist=[ms_name],
                 context=self.inputs.context,
                 decisionmetric='intabsdiff',
-                atmtype=[1, 2, 3, 4],
+                atmtype=atmtype_list,
                 maxalt=self.inputs.maxalt,
                 lapserate=self.inputs.dtem_dh,
                 scaleht=self.inputs.h0,
@@ -518,21 +550,25 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             status = heuristics_result[3][ms_name]
             if status == 'bestfitmodel':
                 atm_heuristics = 'Y'
-                LOG.info(f'Best ATM model is atmtype {best_model[0]}.')
+                LOG.info(f'Best ATM model is atmtype {best_model[0]}, dtem_dh {best_model[2]}K/km, h0 {best_model[3]}km.')
             else:
-                LOG.info(f'ATM heuristics failed. Using default model {best_model[0]}.')
+                LOG.info(f'ATM heuristics failed. Using default model {default_model[0]}, dtem_dh {default_model[2]}K/km, h0 {default_model[3]}km.')
 
         except Exception as e:
-            LOG.info(f'ATM heuristics failed. Falling back to default model {default_model[0]}. Original error:')
+            LOG.info(f'ATM heuristics failed. Falling back to default model {default_model[0]}, dtem_dh {default_model[2]}K/km, h0 {default_model[3]}km.')
+            LOG.info('Original error:')
             LOG.info(str(e))
 
         # construct argument list for sdatmcor
-        atmtype_org = self.inputs.atmtype
+        inputs_org = utils.pickle_copy(self.inputs)
         try:
             self.inputs.atmtype = best_model[0]
+            self.inputs.maxalt = best_model[1]
+            self.inputs.dtem_dh = best_model[2]
+            self.inputs.h0 = best_model[3]
             args = self.inputs.to_casa_args()
         finally:
-            self.inputs.atmtype = atmtype_org
+            self.inputs = inputs_org
 
         return atm_heuristics, args, best_model_index, model_list
 

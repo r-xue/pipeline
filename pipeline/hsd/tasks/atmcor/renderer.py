@@ -33,14 +33,26 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
             'class="replace"',
             f'data-vis="{vis}">View</a>',
         ])
-    else:
+        atm_model = results.model_list[results.best_model_index]
+    elif results.atm_heuristics == 'N':
+        # no heuristics, fixed parameter
         plot = 'N/A'
+        atm_model = (results.inputs['atmtype'], results.inputs['maxalt'], results.inputs['dtem_dh'], results.inputs['h0'])
+    else:
+        # ATM heuristics failed: results.atm_heuristics should be 'Default'
+        plot = 'N/A'
+        if len(atm_model) == 1:
+            atm_model = results.model_list[0]
+        else:
+            # something went wrong
+            raise RuntimeError('model_list should store default model.')
+
     row = ATMHeuristicsTR(msname=vis,
                           apply=results.atm_heuristics,
                           plot=plot,
-                          atmtype=results.best_atmtype,
-                          h0=results.inputs['h0'],
-                          dtem_dh=results.inputs['dtem_dh'])
+                          atmtype=atm_model[0],
+                          h0=atm_model[3],
+                          dtem_dh=atm_model[2])
     return row
 
 
