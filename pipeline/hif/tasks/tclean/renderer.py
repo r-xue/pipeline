@@ -284,7 +284,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                  'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array'
                                                                                in iterdata.keys() else None,
                                  'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array'
-                                                                                   in iterdata.keys() else None}
+                                                                                   in iterdata.keys() else None,
+                                 'planeid_array': iterdata['planeid_array'] if 'planeid_array' in iterdata.keys() else None}
                     row_nmajordone_per_iter[iteration] = iter_dict
                 row_nmajordone_total = numpy.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
                 # Major cycle stats figure

@@ -269,7 +269,11 @@ class TcleanMajorCycleSummaryFigure(object):
 
         handles, labels = ax0.get_legend_handles_labels()
         idx_list = [labels.index(x) for x in sorted(set(labels))]
-        ax1.legend([handles[idx] for idx in idx_list], ['$'+labels[idx]+'$' for idx in idx_list], loc='center right')
+
+        # PIPE-1401: only add the legend when num_Stokes > 1.
+        if len(idx_list) > 1:
+            ax1.legend([handles[idx] for idx in idx_list], [
+                       '$'+labels[idx]+'$' for idx in idx_list], loc='center right')
 
         fig.tight_layout()
         fig.savefig(self.figfile)
