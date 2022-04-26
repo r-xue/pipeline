@@ -475,10 +475,12 @@ class syspowerPerAntennaChart(object):
                     if self.tabletype == 'pdiff':
                         tabletype = 'pdfif_{!s}'.format(self.band)
 
-                    pindexlist = [0, 1]
-                    cplots = [True, False]
-
                     numspws = len(self.spw.split(','))
+                    pindexlist = list(range(numspws))
+                    cplots = [False for i in pindexlist]
+                    cplots[0] = True
+
+                    # Extra check for single spw, single baseband SDMs
                     if numspws == 1:
                         pindexlist = [0]
 
@@ -487,8 +489,8 @@ class syspowerPerAntennaChart(object):
                         spwtouse = self.spw.split(',')[pindex]
                         job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
                                                 antenna=antPlot, spw=spwtouse, timerange='',
-                                                plotindex=pindex, gridrows=2, gridcols=1, rowindex=pindex, colindex=0,
-                                                plotrange=plotrange, coloraxis='corr', overwrite=True,
+                                                plotindex=pindex, gridrows=numspws, gridcols=1, rowindex=pindex,
+                                                colindex=0, plotrange=plotrange, coloraxis='corr', overwrite=True,
                                                 clearplots=cplots[pindex],
                                                 title='Sys Power ' + tabletype +
                                                       '.tbl  Antenna: {!s}  {!s}-band  spw: {!s}'.format(antName,
