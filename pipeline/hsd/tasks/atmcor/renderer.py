@@ -216,7 +216,7 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
 
             plotter = PlotmsRealVsFreqPlotter(
                 ms=ms, atmvis=atmvis,
-                atmtype=r.inputs['atmtype'], output_dir=stage_dir
+                atmtype=r.task_args['atmtype'], output_dir=stage_dir
             )
             summaries = {}
             for field_id, spw_id in itertools.product(field_ids, selected_spws):
