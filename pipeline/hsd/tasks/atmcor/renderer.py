@@ -91,37 +91,43 @@ def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults')
         return []
 
     basename = os.path.basename(results.inputs['vis'])
-    p = fr'{basename}\.field([0-9]+)\.spw([0-9]+)\.model\.([0-9]+)\.png$'
-    LOG.info('Collecting ATM heuristics plots')
-    LOG.debug(f'figure name pattern: "{p}"')
     heuristics_plots = []
     best_model_index = results.best_model_index
     model_list = results.model_list
-    for png_file in glob.iglob(os.path.join(stage_dir, '*.png')):
-        match = re.search(p, png_file)
-        if match:
-            field_id = match.group(1)
-            spw_id = match.group(2)
-            model_id = int(match.group(3))
-            LOG.info(f'Match: field {field_id} spw {spw_id} model {model_id}')
-            status = 'Applied' if model_id == best_model_index else 'Discarded'
-            model = str(model_list[model_id])
-            heuristics_plots.append(
-                logger.Plot(
-                    png_file,
-                    x_axis='Frequency',
-                    y_axis='Amplitude',
-                    field=field_id,
-                    parameters={
-                        'vis': basename,
-                        'spw': spw_id,
-                        'ant': 'all',
-                        'pol': 'XXYY',
-                        'model': model,
-                        'status': status,
-                    }
-                )
+    p = fr'{basename}\.field([0-9]+)\.spw([0-9]+)\.model\.([0-9]+)\.png$'
+    LOG.info('Collecting ATM heuristics plots')
+    LOG.debug(f'figure name pattern: "{p}"')
+    pattern = re.compile(p)
+    # examine png file names using regex pattern search
+    matching_results = map(
+        lambda x: pattern.search(x),
+        glob.iglob(os.path.join(stage_dir, '*.png'))
+    )
+    # process only matched png file names
+    for m in filter(lambda x: x is not None, matching_results):
+        png_file = m.string
+        field_id = m.group(1)
+        spw_id = m.group(2)
+        model_id = int(m.group(3))
+        LOG.info(f'Match: field {field_id} spw {spw_id} model {model_id}')
+        status = 'Applied' if model_id == best_model_index else 'Discarded'
+        model = str(model_list[model_id])
+        heuristics_plots.append(
+            logger.Plot(
+                png_file,
+                x_axis='Frequency',
+                y_axis='Amplitude',
+                field=field_id,
+                parameters={
+                    'vis': basename,
+                    'spw': spw_id,
+                    'ant': 'all',
+                    'pol': 'XXYY',
+                    'model': model,
+                    'status': status,
+                }
             )
+        )
     LOG.debug(f'{heuristics_plots}')
     return heuristics_plots
 
