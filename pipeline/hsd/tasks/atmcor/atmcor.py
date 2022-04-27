@@ -693,7 +693,7 @@ class HpcSDATMCorrectionInputs(SDATMCorrectionInputs):
             parallel: enable Tier-0 parallelization or not. Defaults to None.
         """
         super().__init__(context, atmtype=atmtype, dtem_dh=dtem_dh, h0=h0, maxalt=maxalt,
-                         infiles=infiles, antenna=antenna, field=field, spw=spw)
+                         infiles=infiles, antenna=antenna, field=field, spw=spw, pol=pol)
         self.parallel = parallel
 
 
