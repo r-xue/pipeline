@@ -30,6 +30,19 @@ ATMHeuristicsTR = collections.namedtuple(
 
 
 def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_page: str) -> ATMHeuristicsTR:
+    """Construct table row for ATM heuristics summary table.
+
+    Args:
+        results: SDAtmCorrectionResults instance
+        detail_page: relative path to ATM heuristics detail page
+
+    Raises:
+        RuntimeError: results doesn't have default model parameters
+                      when ATM heuristics failed
+
+    Returns:
+        table row as ATMHeuristicsTR instance
+    """
     vis = os.path.basename(results.inputs['vis'])
     if results.atm_heuristics == 'Y':
         plot = ' '.join([
@@ -68,6 +81,15 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
 
 
 def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults') -> List[logger.Plot]:
+    """Identify ATM heuristics plots created by SDcalatmcor module.
+
+    Args:
+        stage_dir: Weblog directory for hsd_atmcor stage
+        results: SDATMCorrectionResults instance
+
+    Returns:
+        List of plots. Each plot element is Plot instance.
+    """
     if results.atm_heuristics != 'Y' or results.best_model_index == -1:
         # no useful heuristics plots exist, return empty list
         return []

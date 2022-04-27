@@ -42,10 +42,10 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
     @atmtype.convert
     def atmtype(self, value: Union[int, str, List[Union[int, str]]]) -> Union[str, List[str]]:
-        """Convert atmtype into str.
+        """Convert atmtype into str or a list of str.
 
         Args:
-            value: atmtype value
+            value: atmtype value(s)
 
         Returns:
             atmtype as string type or a list of strings
@@ -63,6 +63,25 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         return value
 
     def __to_float_value(self, value: Union[float, str, dict, List[Union[float, str, dict]]], default_unit: str) -> Union[float, List[float]]:
+        """Convert input value into float value or list of float values.
+
+        This method converts any value into float value. If input is a list,
+        then return value is a list of float values obtained by converting
+        each element of the input list. Return value(s) are interpreted
+        as a quantity with default_unit.
+
+        Args:
+            value: Input value. The value can be a numerical value or
+                   a quantity in the form of a dictionary (casa quantity)
+                   or a string. A list of these values is also acceptable.
+            default_unit: Unit string for conversion
+
+        Returns:
+            Float value or list of float values in the unit specified by
+            default_unit. If the unit for input quantity is incompatible
+            with default_unit, the method will emit a warning message and
+            return value will be set to 0.
+        """
         # check if value is compatible with list
         if not isinstance(value, str):
             try:
@@ -86,14 +105,50 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
     @h0.convert
     def h0(self, value: Union[float, str, dict, List[Union[float, str, dict]]]) -> Union[float, List[float]]:
+        """Convert any h0 value into float or a list of float.
+
+        Input value(s) can be numerical value or a quantity in the
+        form of a dictionary (casa quantity) or a string.
+        A list of these values is also acceptable.
+
+        Args:
+            value: h0 value(s)
+
+        Returns:
+            h0 value(s) in the unit of km
+        """
         return self.__to_float_value(value, 'km')
 
     @dtem_dh.convert
     def dtem_dh(self, value: Union[float, str, dict, List[Union[float, str, dict]]]) -> Union[float, List[float]]:
+        """Convert any dtem_dh value into float or a list of float.
+
+        Input value(s) can be numerical value or a quantity in the
+        form of a dictionary (casa quantity) or a string.
+        A list of these values is also acceptable.
+
+        Args:
+            value: dtem_dh value(s)
+
+        Returns:
+            dtem_dh value(s) in the unit of K/km
+        """
         return self.__to_float_value(value, 'K/km')
 
     @maxalt.convert
     def maxalt(self, value: Union[float, str, dict, List[Union[float, str, dict]]]) -> Union[float, List[float]]:
+        """Convert any maxalt value into float or a list of float.
+
+        Input value(s) can be numerical value or a quantity in the
+        form of a dictionary (casa quantity) or a string.
+        A list of these values is also acceptable.
+
+        Args:
+            value: maxalt value(s)
+
+        Returns:
+            maxalt value(s) in the unit of km
+        """
         return self.__to_float_value(value, 'km')
 
     @vdp.VisDependentProperty
@@ -295,6 +350,11 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
     def to_casa_args(self) -> dict:
         """Return task arguments for sdatmcor.
 
+        Note that it might return invalid argument list when
+        the user intends to run heuristics for ATM parameter.
+        Please check if require_atm_heuristics method returns
+        True to make sure the return value is valid.
+
         Returns:
             task arguments for sdatmcor
         """
@@ -345,6 +405,18 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         return args
 
     def require_atm_heuristics(self) -> bool:
+        """Check if ATM heuristics is required.
+
+        ATM heuristics is required if any of the following
+        conditions are met.
+
+            - atmtype is either 'auto' or list of type IDs
+            - dtem_dh is a list of float values
+            - h0 is a list of float values
+
+        Returns:
+            True if ATM heuristics is required. Otherwise, False.
+        """
         check_atmtype = isinstance(self.atmtype, list) or self.atmtype.lower() == 'auto'
         check_dtem_dh = isinstance(self.dtem_dh, list)
         check_h0 = isinstance(self.h0, list)
@@ -360,10 +432,20 @@ class SDATMCorrectionResults(common.SingleDishResults):
                  outcome: Optional[str] =None):
         """Initialize results instance for hsd_atmcor.
 
+        The outcome must be a dict that contains:
+
+            - 'task_args': actual argument list of the sdatmcor
+                           (The "inputs" dictionary associated with
+                           the results object holds "nominal"
+                           argument list)
+            - 'atm_heuristics': status string of the ATM heuristics
+            - 'model_list': list of attempted ATM models
+            - 'best_model_index': index for the best ATM model
+
         Args:
             task: task class. Defaults to None.
             success: task execution was successful or not. Defaults to None.
-            outcome: outcome of the task execution. name of the output MS. Defaults to None.
+            outcome: outcome of the task execution. Defaults to None.
         """
         super().__init__(task, success, outcome)
         self.task_args = outcome['task_args']
@@ -499,11 +581,10 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         """Perform ATM model heuristics.
 
         Perform ATM model heuristics, SDcalatmcorr.
-        Return argument list including best ATM model as dictionary.
 
         Returns:
             Four tuple, status of ATM model heuristics, argument list for sdatmcor,
-            index of best ATM model, and list of examined ATM models.
+            index of best ATM model, and list of attempted ATM models.
         """
         # create weblog directry
         stage_number = self.inputs.context.task_counter
