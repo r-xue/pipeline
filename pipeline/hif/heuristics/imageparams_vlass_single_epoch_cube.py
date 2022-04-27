@@ -1,11 +1,9 @@
-import re
 from typing import Union, Tuple, Optional
 
-import numpy
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
-from pipeline.infrastructure import casa_tools
-from .imageparams_base import ImageParamsHeuristics
+import pipeline.domain.measures as measures
 from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeContMosaic
 
 LOG = infrastructure.get_logger(__name__)
@@ -21,9 +19,29 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
     def reffreq(self) -> Optional[str]:
         """Tclean reffreq parameter heuristics.
         
-        Default to None for CoarseCube/tclean (automatically calculated as the middle of the selected frequency range)
+        tclean(reffreq=None) will automatically calculate the referenece frequency using the mean frequency of the selected spws.
+        For VLASS-SE-CONT, this is hardcoded to '3.0GHz'.
+        For VLASS-SE-CUBE, PIPE-1401 requests this to be explicitly set as the central freq derived from individual SPW groups. 
+        None is returned here as a fallback and hif_editimlist() will set actual values.
         """
         return None
+
+    def meanfreq_spwgroup(self, spw_selection):
+        """Calculate the mean frequency of a spw group (specified by a selection string, e.g. '2,3,4')."""
+
+        vis = self.vislist[0]
+        ms = self.observing_run.get_ms(vis)
+        spwid_list = [int(spw) for spw in spw_selection.split(',')]
+
+        spwfreq_list = []
+        for spwid in spwid_list:
+            real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+            spw = ms.get_spectral_window(real_spwid)
+            spwfreq_list.append(float(spw.mean_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)))
+        meanfreq_value = np.mean(spwfreq_list)
+
+        return str(meanfreq_value)+'GHz'
+
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
              results_list: Union[list, None] = None, clean_no_mask=None) -> Union[str, list]:

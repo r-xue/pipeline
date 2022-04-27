@@ -78,6 +78,9 @@ class ImageParamsHeuristics(object):
         spwlist[0] = spwlist[0].strip("'")
         spwlist[-1] = spwlist[-1].strip("'")
 
+        # a list of spw selection string, e.g. ['2,3','4','5']
+        self.spwlist = spwlist
+
         # find all the spwids present in the list
         p = re.compile(r"[ ,]+(\d+)")
         self.spwids = set()

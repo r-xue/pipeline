@@ -336,7 +336,9 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['phasecenter'] = inpdict['phasecenter']
 
         iph = imageparams_factory.ImageParamsHeuristicsFactory()
-        # note: heuristics.imageparams_base expect 'spw' to a selection string or a representational string from a selecton string list.       
+        
+        # note: heuristics.imageparams_base expects 'spw' to be a selection string.
+        # For VLASS-SE-CUBE, 'spw' is the representational string of spw group list, e.g. spw="['1,2','3,4,5']"
         th = imlist_entry['heuristics'] = iph.getHeuristics(vislist=inp.vis, spw=str(imlist_entry['spw']),
                                                             observing_run=inp.context.observing_run,
                                                             imagename_prefix=inp.context.project_structure.ousstatus_entity_id,
@@ -510,6 +512,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                         imlist_entry_per_spwgroup['spw'] = spw
                         imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
                             '.spw' + spw.replace('~', '-').replace(',', '_')
+                        imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
                         result.add_target(imlist_entry_per_spwgroup)
                     # For VLASS-SE-CUBE, we add two additional attributes so the template can render the spwgroup list.
                     result.targets_imagename = imlist_entry['imagename']
