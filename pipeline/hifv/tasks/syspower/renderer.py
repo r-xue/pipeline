@@ -199,7 +199,7 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                             maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
                         bbandminfreq = min(minfreqs)
                         bbandmaxfreq = max(maxfreqs)
-                        baseband_display[baseband] = str(bbandminfreq) + ' to ' + str(bbandmaxfreq) + ':   ' + ','.join(spws)
+                        baseband_display[baseband] = str(bbandminfreq) + ' to ' + str(bbandmaxfreq) + '    spw:' + ','.join(spws)
                     band_display[band] = baseband_display
 
         ctx.update({'dirname': weblog_dir,
