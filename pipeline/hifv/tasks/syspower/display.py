@@ -410,7 +410,7 @@ class medianSummary(object):
 
 
 class syspowerPerAntennaChart(object):
-    def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype, band, spw):
+    def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype, band, spw, selectbasebands):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -420,6 +420,7 @@ class syspowerPerAntennaChart(object):
         self.tabletype = tabletype
         self.band = band
         self.spw = spw
+        self.selectbasebands = selectbasebands
 
         self.json = {}
         self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
@@ -487,15 +488,21 @@ class syspowerPerAntennaChart(object):
                     for pindex in pindexlist:
 
                         spwtouse = self.spw.split(',')[pindex]
+                        baseband = self.selectbasebands[pindex]
+                        spwobj = m.get_spectral_windows(task_arg=spwtouse)[0]
+                        mean_freq = spwobj.mean_frequency
+
                         job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
                                                 antenna=antPlot, spw=spwtouse, timerange='',
                                                 plotindex=pindex, gridrows=numspws, gridcols=1, rowindex=pindex,
                                                 colindex=0, plotrange=plotrange, coloraxis='corr', overwrite=True,
                                                 clearplots=cplots[pindex],
                                                 title='Sys Power ' + tabletype +
-                                                      '.tbl  Antenna: {!s}  {!s}-band  spw: {!s}'.format(antName,
+                                                      '.tbl  Antenna: {!s}  {!s}-band  {!s}  spw: {!s}   {!s}'.format(antName,
                                                                                                          self.band,
-                                                                                                         spwtouse),
+                                                                                                         baseband,
+                                                                                                         spwtouse,
+                                                                                                         mean_freq),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                         job.execute(dry_run=False)

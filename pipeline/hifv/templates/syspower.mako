@@ -60,11 +60,11 @@ $(document).ready(function() {
             %endif
 
 	        <ul>
-	        %for band in single_result.band_baseband_spw:
+	        %for band in band_display:
 	            <li>${band}-band</li>
 	            <ul>
-	            %for baseband in single_result.band_baseband_spw[band]:
-	                <li>Baseband ${baseband}:  spws: ${','.join([str(spw) for spw in single_result.band_baseband_spw[band][baseband]])}</li>
+	            %for baseband in band_display[band]:
+	                <li>Baseband ${baseband}: ${band_display[band][baseband]}</li>
 	            %endfor
 	            </ul>
 	        %endfor

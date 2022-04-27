@@ -108,6 +108,7 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # compression_plots = {}
         # median_plots = {}
         all_plots = {}
+        band_display = {}
 
         for result in results:
 
@@ -139,17 +140,19 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                 for band in result.band_baseband_spw:
                     selectspw = []
+                    selectbasebands = []
                     for baseband in result.band_baseband_spw[band]:
 
                         # Pick one from each baseband if available
                         if result.band_baseband_spw[band][baseband]:
                             ispw = int(len(result.band_baseband_spw[band][baseband]) / 2)
                             selectspw.append(str(result.band_baseband_spw[band][baseband][ispw]))
+                            selectbasebands.append(baseband)
                             spw = ','.join(selectspw)
 
                     plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
                                                                       result.plotrq, 'syspower', 'rq',
-                                                                      band, spw)
+                                                                      band, spw, selectbasebands)
                     plots = plotter.plot()
                     json_path = plotter.json_filename
 
@@ -166,7 +169,7 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     # plot template pdiff table
                     plotter = syspowerdisplay.syspowerPerAntennaChart(context, result, 'spgain',
                                                                       result.template_table[band], 'syspower', 'pdiff',
-                                                                      band, spw)
+                                                                      band, spw, selectbasebands)
                     plots = plotter.plot()
                     json_path = plotter.json_filename
 
@@ -180,10 +183,29 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         pdiffspgain_subpages_band[ms] = renderer.filename
                         pdiffspgain_subpages[band] = pdiffspgain_subpages_band
 
+                banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+                if len(banddict) == 0:
+                    LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+
+                for band in result.band_baseband_spw:
+                    baseband_display = {}
+                    for baseband in result.band_baseband_spw[band]:
+                        spws = []
+                        minfreqs = []
+                        maxfreqs = []
+                        for spwitem in banddict[band][baseband]:
+                            spws.append(str([*spwitem][0]))
+                            minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
+                            maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
+                        bbandminfreq = min(minfreqs)
+                        bbandmaxfreq = max(maxfreqs)
+                        baseband_display[baseband] = str(bbandminfreq) + ' to ' + str(bbandmaxfreq) + ':   ' + ','.join(spws)
+                    band_display[band] = baseband_display
+
         ctx.update({'dirname': weblog_dir,
                     'all_plots': all_plots,
                     'syspowerspgain_subpages': swpowspgain_subpages,
                     'pdiffspgain_subpages': pdiffspgain_subpages,
-                    'tec_plotfile': ''})
+                    'band_display': band_display})
 
         return ctx
