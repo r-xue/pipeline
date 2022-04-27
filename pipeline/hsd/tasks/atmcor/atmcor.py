@@ -526,7 +526,9 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             atm_heuristics = 'N'
             args = self.inputs.to_casa_args()
             best_model_index = -1
-            model_list = []
+            model_list = [
+                ATMModelParam(args['atmtype'], self.inputs.maxalt, args['dtem_dh'], args['h0'])
+            ]
 
         LOG.info('Processing parameter for sdatmcor: %s', args)
         job = casa_tasks.sdatmcor(**args)
@@ -599,7 +601,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         # run Harold's script here
         LOG.info('Performing atmtype heuristics')
         atm_heuristics = 'Default'
-        default_model = ATMModelParam(*(1, 120, -5.6, 2.0))
+        default_model = ATMModelParam(atmtype=1, maxalt=120, dtem_dh=-5.6, h0=2.0)
         # best_model will fall back to default_model if heuristics is failed
         best_model = default_model
         args = self.inputs.to_casa_args()
@@ -636,7 +638,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             if status == 'bestfitmodel':
                 atm_heuristics = 'Y'
                 model_list = [ATMModelParam(*x) for x in heuristics_result[1][ms_name]]
-                best_model_index = [i for i in range(len(model_list)) if model_list[i] == best_model][0]
+                best_model_index = model_list.index(best_model)
                 LOG.info(f'Best ATM model is {best_model}.')
             else:
                 LOG.info(f'ATM heuristics failed. Using default model {default_model}.')

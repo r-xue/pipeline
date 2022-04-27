@@ -14,7 +14,6 @@ import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.launcher import Context
 
-from .atmcor import ATMModelParam
 from .display import PlotmsRealVsFreqPlotter
 
 if TYPE_CHECKING:
@@ -37,8 +36,7 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
         detail_page: relative path to ATM heuristics detail page
 
     Raises:
-        RuntimeError: results doesn't have default model parameters
-                      when ATM heuristics failed
+        RuntimeError: results doesn't hold model parameters
 
     Returns:
         table row as ATMHeuristicsTR instance
@@ -51,19 +49,17 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
             f'data-vis="{vis}">View</a>',
         ])
         atm_model = results.model_list[results.best_model_index]
-    elif results.atm_heuristics == 'N':
-        # no heuristics, fixed parameter
-        plot = 'N/A'
-        atm_model = ATMModelParam(
-            results.inputs['atmtype'],
-            results.inputs['maxalt'],
-            results.inputs['dtem_dh'],
-            results.inputs['h0']
-        )
     else:
-        # ATM heuristics failed:
-        # results.atm_heuristics should be 'Default' and
-        # results.model_list should store a set of default parameters
+        # results.atm_heuristics should be either 'N' or 'Default'
+        #
+        # If it is 'N', ATM heuristics was skipped, and
+        # results.model_list should store a parameters taken from
+        # results.task_args.
+        #
+        # If it is 'Default', ATM heuristics was attempted but failed, and
+        # results.model_list should store a set of default parameters.
+        #
+        # In either case, length of results.model_list should be 1.
         plot = 'N/A'
         if len(results.model_list) == 1:
             atm_model = results.model_list[0]
