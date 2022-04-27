@@ -14,6 +14,7 @@ import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.launcher import Context
 
+from .atmcor import ATMModelParam
 from .display import PlotmsRealVsFreqPlotter
 
 if TYPE_CHECKING:
@@ -22,7 +23,10 @@ if TYPE_CHECKING:
 LOG = logging.get_logger(__name__)
 
 
-ATMHeuristicsTR = collections.namedtuple('ATMHeuristicsTR', 'msname apply plot atmtype h0 dtem_dh')
+ATMHeuristicsTR = collections.namedtuple(
+    'ATMHeuristicsTR',
+    'msname apply plot atmtype h0 dtem_dh'
+)
 
 
 def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_page: str) -> ATMHeuristicsTR:
@@ -37,11 +41,18 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
     elif results.atm_heuristics == 'N':
         # no heuristics, fixed parameter
         plot = 'N/A'
-        atm_model = (results.inputs['atmtype'], results.inputs['maxalt'], results.inputs['dtem_dh'], results.inputs['h0'])
+        atm_model = ATMModelParam(
+            results.inputs['atmtype'],
+            results.inputs['maxalt'],
+            results.inputs['dtem_dh'],
+            results.inputs['h0']
+        )
     else:
-        # ATM heuristics failed: results.atm_heuristics should be 'Default'
+        # ATM heuristics failed:
+        # results.atm_heuristics should be 'Default' and
+        # results.model_list should store a set of default parameters
         plot = 'N/A'
-        if len(atm_model) == 1:
+        if len(results.model_list) == 1:
             atm_model = results.model_list[0]
         else:
             # something went wrong
@@ -50,9 +61,9 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
     row = ATMHeuristicsTR(msname=vis,
                           apply=results.atm_heuristics,
                           plot=plot,
-                          atmtype=atm_model[0],
-                          h0=atm_model[3],
-                          dtem_dh=atm_model[2])
+                          atmtype=atm_model.atmtype,
+                          h0=atm_model.h0,
+                          dtem_dh=atm_model.dtem_dh)
     return row
 
 
@@ -63,7 +74,8 @@ def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults')
 
     basename = os.path.basename(results.inputs['vis'])
     p = fr'{basename}\.field([0-9]+)\.spw([0-9]+)\.model\.([0-9]+)\.png$'
-    LOG.info(p)
+    LOG.info('Collecting ATM heuristics plots')
+    LOG.debug(f'figure name pattern: "{p}"')
     heuristics_plots = []
     best_model_index = results.best_model_index
     model_list = results.model_list
@@ -75,8 +87,7 @@ def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults')
             model_id = int(match.group(3))
             LOG.info(f'Match: field {field_id} spw {spw_id} model {model_id}')
             status = 'Applied' if model_id == best_model_index else 'Discarded'
-            atmtype, _, lapse_rate, scale_height = model_list[model_id]
-            model = f'atmtype={atmtype:d}, h0={scale_height:.1f}km, dTem_dh={lapse_rate:.1f}K/km'
+            model = str(model_list[model_id])
             heuristics_plots.append(
                 logger.Plot(
                     png_file,
@@ -93,7 +104,7 @@ def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults')
                     }
                 )
             )
-    LOG.info(f'{heuristics_plots}')
+    LOG.debug(f'{heuristics_plots}')
     return heuristics_plots
 
 

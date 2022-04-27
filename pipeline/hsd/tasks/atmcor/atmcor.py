@@ -1,4 +1,5 @@
 """Offline ATM correction stage."""
+import collections
 import os
 from typing import List, Optional, Tuple, Union
 
@@ -22,6 +23,10 @@ from pipeline.infrastructure.utils import relative_path
 from .. import common
 
 LOG = logging.get_logger(__name__)
+
+
+ATMModelParam = collections.namedtuple('ATMModelParam', 'atmtype maxalt dtem_dh h0')
+ATMModelParam.__str__ = lambda self: f'atmtype {self.atmtype}, dtem_dh {self.dtem_dh}K/km, h0 {self.h0}km.'
 
 
 class SDATMCorrectionInputs(vdp.StandardInputs):
@@ -513,7 +518,8 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         # run Harold's script here
         LOG.info('Performing atmtype heuristics')
         atm_heuristics = 'Default'
-        default_model = [1, 120, -5.6, 2.0]
+        default_model = ATMModelParam(*(1, 120, -5.6, 2.0))
+        # best_model will fall back to default_model if heuristics is failed
         best_model = default_model
         args = self.inputs.to_casa_args()
         ms_name = args['infile']
@@ -538,37 +544,35 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
                 lapserate=self.inputs.dtem_dh,
                 scaleht=self.inputs.h0,
                 plotsfolder=stage_dir,
-                defatmtype=default_model[0],
-                defmaxalt=default_model[1],
-                deflapserate=default_model[2],
-                defscaleht=default_model[3]
+                defatmtype=default_model.atmtype,
+                defmaxalt=default_model.maxalt,
+                deflapserate=default_model.dtem_dh,
+                defscaleht=default_model.h0
             )
-            best_model = heuristics_result[0][ms_name]
-            model_list = heuristics_result[1][ms_name]
-            best_model_index = [i for i in range(len(model_list)) if np.all(model_list[i] == best_model)][0]
+            best_model = ATMModelParam(*heuristics_result[0][ms_name])
 
             status = heuristics_result[3][ms_name]
             if status == 'bestfitmodel':
                 atm_heuristics = 'Y'
-                LOG.info(f'Best ATM model is atmtype {best_model[0]}, dtem_dh {best_model[2]}K/km, h0 {best_model[3]}km.')
+                model_list = [ATMModelParam(*x) for x in heuristics_result[1][ms_name]]
+                best_model_index = [i for i in range(len(model_list)) if model_list[i] == best_model][0]
+                LOG.info(f'Best ATM model is {best_model}.')
             else:
-                LOG.info(f'ATM heuristics failed. Using default model {default_model[0]}, dtem_dh {default_model[2]}K/km, h0 {default_model[3]}km.')
+                LOG.info(f'ATM heuristics failed. Using default model {default_model}.')
+                model_list = [best_model]
 
         except Exception as e:
-            LOG.info(f'ATM heuristics failed. Falling back to default model {default_model[0]}, dtem_dh {default_model[2]}K/km, h0 {default_model[3]}km.')
+            LOG.info(f'ATM heuristics failed. Falling back to default model {default_model}.')
             LOG.info('Original error:')
             LOG.info(str(e))
 
         # construct argument list for sdatmcor
-        inputs_org = utils.pickle_copy(self.inputs)
-        try:
-            self.inputs.atmtype = best_model[0]
-            self.inputs.maxalt = best_model[1]
-            self.inputs.dtem_dh = best_model[2]
-            self.inputs.h0 = best_model[3]
-            args = self.inputs.to_casa_args()
-        finally:
-            self.inputs = inputs_org
+        inputs_local = utils.pickle_copy(self.inputs)
+        inputs_local.atmtype = best_model.atmtype
+        inputs_local.maxalt = best_model.maxalt
+        inputs_local.dtem_dh = best_model.dtem_dh
+        inputs_local.h0 = best_model.h0
+        args = inputs_local.to_casa_args()
 
         return atm_heuristics, args, best_model_index, model_list
 
