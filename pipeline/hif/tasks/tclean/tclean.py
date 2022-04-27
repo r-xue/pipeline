@@ -231,6 +231,24 @@ class Tclean(cleanbase.CleanBase):
             job = casa_tasks.copytree(image_name, newname)
             self._executor.execute(job)
 
+    def move_products(self, old_pname, new_pname, ignore=None, copy_list=[]):
+        """Move products of one iteration to another.
+        Certain image types can be excluded from the move operation (copy instead) via "copy_list".
+        """
+
+        imlist = glob.glob('%s.*' % (old_pname))
+        imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
+        for image_name in imlist:
+            newname = image_name.replace(old_pname, new_pname)
+            if any([copy_pattern in image_name for copy_pattern in copy_list]):
+                LOG.info('Copying {} to {}'.format(image_name, newname))
+                job = casa_tasks.copytree(image_name, newname)
+                self._executor.execute(job)
+            else:
+                LOG.info('Moving {} to {}'.format(image_name, newname))
+                job = casa_tasks.move(image_name, newname)
+                self._executor.execute(job)
+
     def prepare(self):
         inputs = self.inputs
         context = self.inputs.context
@@ -806,8 +824,15 @@ class Tclean(cleanbase.CleanBase):
             # Use previous iterations's products as starting point
             old_pname = '%s.iter%s' % (rootname, iteration - 1)
             new_pname = '%s.iter%s' % (rootname, iteration)
-            self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
-                               ignore='mask' if do_not_copy_mask else None)
+            if self.image_heuristics.imaging_mode == 'VLASS-SE-CUBE':
+                # PIPE-1401: We move (instead of copy) most imaging products from one iteration to the next,
+                # to reduce the disk I/O operations and storage use.
+                self.move_products(os.path.basename(old_pname), os.path.basename(new_pname),
+                                   ignore='mask' if do_not_copy_mask else None,
+                                   copy_list=['.residual', '.image', 'mask'])
+            else:
+                self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
+                                   ignore='mask' if do_not_copy_mask else None)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)

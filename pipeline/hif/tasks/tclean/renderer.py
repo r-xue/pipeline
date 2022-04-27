@@ -1115,7 +1115,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                                                      for key, item in row_nmajordone_per_iter.items()])
                     # Major cycle stats figure
                     plotter = display.TcleanMajorCycleSummaryFigure(
-                        context, makeimages_result, row_nmajordone_per_iter, figname=r.psf.replace('iter0.psf', ''))
+                        context, makeimages_result, row_nmajordone_per_iter, figname=r.psf.replace('.psf', ''))
                     majorcycle_stat_plot = plotter.plot()
                     tab_dict = {0: {'cols': ['iteration', 'cleanmask', 'nmajordone'],
                                     'nrow': len(row_nmajordone_per_iter.keys()),
