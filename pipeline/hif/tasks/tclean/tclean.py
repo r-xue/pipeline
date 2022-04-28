@@ -1409,24 +1409,18 @@ class Tclean(cleanbase.CleanBase):
 
             # Calculate the mom8/mom10 histogram assymetry
             histogram_threshold = mom8_image_median_all + 2.0 * mom8_image_mad / 0.6745
+            with casa_tools.ImageReader(flattened_pb_name) as image:
+                flattened_pb_image = image.getchunk()[:,:,0,0]
             with casa_tools.ImageReader(mom8fc_name) as image:
-                mom8_histogram_statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, histogram_threshold)
-                mom8_stats_histogram = image.statistics(mask=mom8_histogram_statsmask, robust=True)
-                mom8_histogram_npts = mom8_stats_histogram.get('npts')
-                if mom8_histogram_npts.shape != (0,):
-                    mom8_n_histogram_pixels = int(mom8_histogram_npts[0])
-                else:
-                    mom8_n_histogram_pixels = 0
+                mom8fc_image = image.getchunk()[:,:,0,0]
+                mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+                mom8_n_histogram_pixels = np.ma.sum(np.ma.where(mom8fc_masked_image > histogram_threshold, 1, 0))
             with casa_tools.ImageReader(mom10fc_name) as image:
-                mom10_histogram_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom10fc_name, -histogram_threshold)
-                mom10_stats_histogram = image.statistics(mask=mom10_histogram_statsmask, robust=True)
-                mom10_histogram_npts = mom10_stats_histogram.get('npts')
-                if mom10_histogram_npts.shape != (0,):
-                    mom10_n_histogram_pixels = int(mom10_histogram_npts[0])
-                else:
-                    mom10_n_histogram_pixels = 0
+                mom10fc_image = image.getchunk()[:,:,0,0]
+                mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+                mom10_n_histogram_pixels = np.ma.sum(np.ma.where(mom10fc_masked_image > histogram_threshold, 1, 0))
             if min(mom8_n_histogram_pixels, mom10_n_histogram_pixels) > 0:
-                histogram_asymmetry = (mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
+                histogram_asymmetry = abs(mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
             else:
                 histogram_asymmetry = 0.0
 
