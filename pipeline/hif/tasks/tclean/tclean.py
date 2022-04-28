@@ -1429,7 +1429,6 @@ class Tclean(cleanbase.CleanBase):
                 histogram_asymmetry = abs(mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
             else:
                 histogram_asymmetry = 0.0
-            print(f'DEBUG_DM: {histogram_asymmetry} {NumPixelsInBeam}')
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8fc_name)
