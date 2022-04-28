@@ -507,16 +507,19 @@ class Editimlist(basetask.StandardTaskTemplate):
                     # - generate conresponsding clean targetusing a modified copy of the base CleanTarget object template
                     # - aggregate clean targets list
                     #   note: the initial 'spw'  is expected to be a list here.
+                    targets_reffreq = []
                     for spw in imlist_entry['spw']:
                         imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
                         imlist_entry_per_spwgroup['spw'] = spw
                         imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
                             '.spw' + spw.replace('~', '-').replace(',', '_')
                         imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
+                        targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
                         result.add_target(imlist_entry_per_spwgroup)
-                    # For VLASS-SE-CUBE, we add two additional attributes so the template can render the spwgroup list.
+                    # For VLASS-SE-CUBE, we add additional attributes so the template can render the parameter list instead.
                     result.targets_imagename = imlist_entry['imagename']
                     result.targets_spw = imlist_entry['spw']
+                    result.targets_reffreq = targets_reffreq
                 else:
                     result.add_target(imlist_entry)
             else:

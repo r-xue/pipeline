@@ -15,9 +15,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     <p>There are no clean targets.</p>
 %else:
     <%
+      # targets only contain 1 element execept vlass-se-cube
       target = result[0].targets[0]
     %>
-    <table class="table">
+    <table class="table table-bordered table-striped table-condensed">
         <tr>
             <td><strong>Imaging heuristics mode</strong></td>
             <td>${result[0].img_mode}</td>
@@ -43,23 +44,43 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <td>${target['imsize']}</td>
         </tr>
         <tr>
+            %if result[0].img_mode == 'VLASS-SE-CUBE':
+                <td><strong>spw (per plane)</strong></td>
+                <td>${'<br>'.join(result[0].targets_spw)}</td>
+            %else:
+                <td><strong>spw</strong></td>
+                <td>${target['spw']}</td>
+            %endif
+        </tr>
+        <tr>
+            %if result[0].img_mode == 'VLASS-SE-CUBE':
+                <td><strong>reffreq (per plane)</strong></td>
+                <td>${'<br>'.join(result[0].targets_reffreq)}</td>
+            %else:
+                <td><strong>reffreq</strong></td>
+                <td>${target['reffreq']}</td>
+            %endif
+        </tr>
+        <%
+        if isinstance(target['mask'], list):
+            mask='<br>'.join(target['mask'])
+        else:
+            mask=result[0].mask
+        %>
+        <tr>
+            <td><strong>mask (per iter)</strong></td>
+            <td>${mask}</td>
+        </tr>            
+        <tr>
             <td><strong>Search buffer radius (arcsec)</strong></td>
             <td>${result[0].buffer_size_arcsec}</td>
         </tr>
         <tr>
             <td><strong>Number of fields</strong></td>
             <td>${len(target['field'].split(','))}</td>
-        </tr>
-        <tr>
-            <td><strong>spw</strong></td>
-            %if result[0].img_mode == 'VLASS-SE-CUBE':
-                <td>${result[0].targets_spw}</td>
-            %else:
-                <td>${target['spw']}</td>
-            %endif
-        </tr>        
+        </tr>           
         %for key in target.keys():
-            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna'):
+            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask'):
                 <tr>
                     <td><strong>${key}</strong></td>
                     <td>${target[key]}</td>
