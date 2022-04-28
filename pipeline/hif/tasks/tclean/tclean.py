@@ -1415,6 +1415,12 @@ class Tclean(cleanbase.CleanBase):
                 mom8fc_image = image.getchunk()[:,:,0,0]
                 mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
                 mom8_n_histogram_pixels = np.ma.sum(np.ma.where(mom8fc_masked_image > histogram_threshold, 1, 0))
+                image_summary = image.summary()
+                major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(image_summary['restoringbeam']['major'], 'rad')) / 2
+                minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(image_summary['restoringbeam']['minor'], 'rad')) / 2
+                cellx = abs(image_summary['incr'][0])
+                celly = abs(image_summary['incr'][1])
+                NumPixelsInBeam = float(major_radius * minor_radius * np.pi / cellx / celly)
             with casa_tools.ImageReader(mom10fc_name) as image:
                 mom10fc_image = image.getchunk()[:,:,0,0]
                 mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
@@ -1423,6 +1429,7 @@ class Tclean(cleanbase.CleanBase):
                 histogram_asymmetry = abs(mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
             else:
                 histogram_asymmetry = 0.0
+            print(f'DEBUG_DM: {histogram_asymmetry} {NumPixelsInBeam}')
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8fc_name)
