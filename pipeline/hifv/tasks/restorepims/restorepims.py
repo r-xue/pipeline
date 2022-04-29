@@ -57,8 +57,12 @@ class Restorepims(basetask.StandardTaskTemplate):
         is_resources_available = self._check_resources()
 
         if not is_resources_available:
-            raise exceptions.PipelineException(
-                "The resources required for hifv_restorepims() are not available, and Pipeline cannot continue.")
+            exception_msg = []
+            for k, v in self.restore_resources.items():
+                exception_msg.append(f"{k:20}: {v}")
+            exception_msg.insert(
+                0, 'The resources required for hifv_restorepims() are not available, and Pipeline cannot continue.')
+            raise exceptions.PipelineException(f"\n{'-'*120}\n"+'\n'.join(exception_msg)+f"\n{'-'*120}\n")
 
         # restore the MODEL column to the identical state used in the SE hifv_selfcal() and hifv_statwt() stages.
         # the flag state at this moment should be identical to the initial state in the SEIP worflow (before SE/hifv_checkflag)
@@ -99,6 +103,9 @@ class Restorepims(basetask.StandardTaskTemplate):
             return is_resources_available
 
         # untar any files required for the restorepims operation
+        # * self.imagename at this point is from SEIP_parameter.list of the SEIP products.
+        # * inputs.vis should be identical to the SEIP input with the same flag state.
+        # therefore, we verify their names against the file list inside reimaging_resources.tgz
         with tarfile.open(reimaging_resources_tgz, 'r:gz') as tar:
             members = []
             for member in tar.getmembers():
@@ -117,7 +124,8 @@ class Restorepims(basetask.StandardTaskTemplate):
         # check selfcal table from vlass-se-cont
         selfcal_tbs = glob.glob(self.inputs.vis+'.*.phase-self-cal.tbl')
         if len(selfcal_tbs) != 1:
-            LOG.error("Cannot find the required selfcal table (*.phase-self-cal.tbl), or more than one selfcal tables are found!")
+            LOG.error(
+                f"Cannot find the required selfcal table ({self.inputs.vis}*.phase-self-cal.tbl), or more than one selfcal tables are found!")
             is_resources_available = False
             self.restore_resources['selfcal_table'] = (self.inputs.vis+'.*.phase-self-cal.tbl', False)
         else:
@@ -129,13 +137,14 @@ class Restorepims(basetask.StandardTaskTemplate):
         flag_prefix = self.inputs.vis+'.flagversions/flags.'
         flagversion_tbs = glob.glob(flag_prefix+'*')
         flagversion_names = [tb0.replace(flag_prefix, '', 1) for tb0 in flagversion_tbs]
+        flagtable_expected = f"{self.inputs.vis}.flagversions/{self.flagversion}"
         if self.flagversion not in flagversion_names:
-            LOG.error(f"The requested flag version ({self.flagversion}) doesn't exist.")
+            LOG.error(f"The requested flag table ({flagtable_expected}) doesn't exist.")
             is_resources_available = False
-            self.restore_resources['flag_table'] = (f"{self.inputs.vis}.flagversions/{self.flagversion}", False)
+            self.restore_resources['flag_table'] = (f"{flagtable_expected}", False)
         else:
-            LOG.info(f"Found the requested flag version '{self.flagversion}' from {self.inputs.vis}.flagversions")
-            self.restore_resources['flag_table'] = (f"{self.inputs.vis}.flagversions/{self.flagversion}", True)
+            LOG.info(f"Found the requested flag table {flagtable_expected}")
+            self.restore_resources['flag_table'] = (f"{flagtable_expected}", True)
 
         tier1_mask = glob.glob('s*_0.'+self.imagename+'.QLcatmask-tier1.mask')
         tier2_mask = glob.glob('s*_0.'+self.imagename+'.combined-tier2.mask')
@@ -161,8 +170,8 @@ class Restorepims(basetask.StandardTaskTemplate):
         else:
             last_idx = model_images[0].rfind('.model')
             self.imagename = model_images[0][:last_idx]
-            LOG.info(f"Found the requested tclean model image(s): {model_images}")
-            LOG.info(f"Use tclean:imagename={self.imagename} for the MODEL column prediction.")
+            LOG.info(f"Found the requested selfcal model image(s): {model_images}")
+            LOG.info(f"Use tclean(imagename='{self.imagename}',...) for the MODEL column prediction.")
             self.restore_resources['model_image'] = (f'{self.imagename}'+'.tt0', True)
 
         return is_resources_available
