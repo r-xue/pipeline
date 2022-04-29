@@ -166,13 +166,13 @@ class Restorepims(basetask.StandardTaskTemplate):
             is_resources_available = False
             LOG.error(
                 f"Can't find the SE vlass_stage=1 model images s*_0.{self.imagename}.I.iter1.model* for the MODEL column prediction")
-            self.restore_resources['model_image'] = ('s*_0.'+self.imagename+'.I.iter1.model.tt?', False)
+            self.restore_resources['model_image'] = ('s*_0.'+self.imagename+'.I.iter1.model.tt*', False)
         else:
             last_idx = model_images[0].rfind('.model')
             self.imagename = model_images[0][:last_idx]
             LOG.info(f"Found the requested selfcal model image(s): {model_images}")
             LOG.info(f"Use tclean(imagename='{self.imagename}',...) for the MODEL column prediction.")
-            self.restore_resources['model_image'] = (f'{self.imagename}'+'.tt0', True)
+            self.restore_resources['model_image'] = (f'{self.imagename}'+'.model.tt*', True)
 
         return is_resources_available
 
