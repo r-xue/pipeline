@@ -57,6 +57,9 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
                 value = [
                     v if isinstance(v, str) else str(v) for v in list_value
                 ]
+
+                if len(value) == 1:
+                    value = value[0]
             except Exception:
                 # non-list value
                 value = str(value)
@@ -87,6 +90,10 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
             try:
                 list_value = list(value)
                 ret = [self.__to_float_value(v, default_unit) for v in list_value]
+
+                if len(ret) == 1:
+                    ret = ret[0]
+
                 return ret
             except Exception:
                 pass
