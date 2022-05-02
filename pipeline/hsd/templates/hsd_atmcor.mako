@@ -32,19 +32,17 @@ def get_spw_desc(spw):
 %>
 
 <style>
-.atm-table-column-name {
+.atm-colname {
     font-weight: bold;
 }
 
-.atm-application-status {
+.atm-status {
     font-style: italic;
 }
 </style>
 
 <p>This task evaluates and applies the best model correction for atmospheric effects to science targets
-in the calibrated measurement sets.
-Four atmtypes are evaluated, for details see
-<a href="https://iopscience.iop.org/article/10.1088/1538-3873/abe0ab">T. Sawada et al., PASP 133:034504, 2021</a>.</p>
+in the calibrated measurement sets.</p>
 
 <h2>Contents</h2>
 <ul>
@@ -58,15 +56,23 @@ Four atmtypes are evaluated, for details see
 
 <h2 id="applied_corrections" class="jumptarget">Applied Corrections</h2>
 
+<p>The automatic procedure, <em>by default</em>, evaluates and selects the best model to be applied to correct
+for atmospheric effects, namely, atmType=1 (tropical), 2 (mid latitude summer), 3 (mid latitude winter),
+and 4 (subarctic summer), with fixed temperature gradient (dTem_dh) of -5.6 K/km and fixed scale height
+for water (h0) of 2 km. In case that user-defined parameters are provided, the heuristics will be turned off.</p>
+
 <p>The correction for atmospheric effects applies a model in each measurement set with the parameters
-listed in the following table. The SPW chosen to evaluate the best model is based on the atmospheric
-transmission model. The channels selected to perform the evaluation is marked in the plots
-<span class="atm-table-column-name">'Attempted Models'</span>.
-Note that only the <span class="atm-application-status">'Applied'</span> plots in
-<span class="atm-table-column-name">'Attempted models'</span> is the actual correction, the
-<span class="atm-application-status">'Discarded'</span>
-plots in <span class="atm-table-column-name">'Attempted Models'</span> are for providing information
-only and none of them are applied.</p>
+listed in the following table. The SPW chosen to evaluate the best model is based on the atmospheric transmission.
+The channels selected to perform the evaluation is marked in the plots
+<span class="atm-colname">'Attempted Models'</span>.
+Note that only the <span class="atm-status">'Applied'</span> plots in
+<span class="atm-colname">'Attempted models'</span> is the actual correction,
+the <span class="atm-status">'Discarded'</span> plots in
+<span class="atm-colname">'Attempted Models'</span> are for providing information only and none of them are applied.
+In the <span class="atm-colname">'Heuristics Applied'</span> column,
+'Y' is displayed when the best model was selected by the heuristics;
+'N' is displayed when the parameters were user-defined;
+'Fallback' when the heuristics fails to identify the best model and the fallback option atmtype=1 is used.</p>
 
 <table class="table table-bordered table-striped table-condensed"
        summary="Applied Corrections">
