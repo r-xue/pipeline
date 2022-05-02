@@ -187,7 +187,7 @@ class Syspower(basetask.StandardTaskTemplate):
         # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2D2
 
         allowedbasebands = ('A0C0', 'B0D0', 'A1C1', 'A2C2', 'B1D1', 'B2D2')
-        allowed_rcvr_bands = ('L', 'S', 'C', 'X', 'U')
+        allowed_rcvr_bands = ('L', 'S', 'C', 'X', 'KU')
 
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         allprocessedspws = []
@@ -201,7 +201,7 @@ class Syspower(basetask.StandardTaskTemplate):
                     for spwdict in banddict[band][baseband]:
                         for spw, value in spwdict.items():
                             spwsperbaseband.append(spw)
-                    allprocessedspws.extend(spwsperbaseband)  # spws in basebands A0C0/B0D0 and only L,S,C-band
+                    allprocessedspws.extend(spwsperbaseband)
                     baseband2spw[baseband] = spwsperbaseband
                     band_baseband_spw[band] = baseband2spw
 
