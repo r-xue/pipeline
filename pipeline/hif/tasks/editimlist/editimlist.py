@@ -476,17 +476,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
         # actual stage number string.
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032,
-        # VLASS-SE-CONT-MOSAIC as of 23.03.2021
-        if img_mode.startswith('VLASS-SE-CONT'):
-            imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
-                                     specmode=imlist_entry['specmode'],
-                                     band=None) if not inpdict['imagename'] else inpdict['imagename']
-            imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
-            # Try to obtain previously computed mask name
-            imlist_entry['mask'] = th.mask(results_list=inp.context.results,
-                                           clean_no_mask=inpdict['clean_no_mask_selfcal_image']) if not inpdict['mask'] \
-                else inpdict['mask']
-        if img_mode.startswith('VLASS-SE-CUBE'):
+        # VLASS-SE-CONT-MOSAIC, and VLASS-SE-CUBE as of 05/03/2022
+        if img_mode.startswith('VLASS-SE-CONT') or img_mode.startswith('VLASS-SE-CUBE'):
             imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
                                      specmode=imlist_entry['specmode'],
                                      band=None) if not inpdict['imagename'] else inpdict['imagename']
@@ -507,19 +498,36 @@ class Editimlist(basetask.StandardTaskTemplate):
                     # - generate conresponsding clean targetusing a modified copy of the base CleanTarget object template
                     # - aggregate clean targets list
                     #   note: the initial 'spw'  is expected to be a list here.
-                    targets_reffreq = []
+
+                    # For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.
+                    result.targets_reffreq = []
+                    result.targets_spw = []
+                    result.targets_imagename = []
+
                     for spw in imlist_entry['spw']:
                         imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
                         imlist_entry_per_spwgroup['spw'] = spw
                         imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
                             '.spw' + spw.replace('~', '-').replace(',', '_')
                         imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
-                        targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
-                        result.add_target(imlist_entry_per_spwgroup)
-                    # For VLASS-SE-CUBE, we add additional attributes so the template can render the parameter list instead.
-                    result.targets_imagename = imlist_entry['imagename']
-                    result.targets_spw = imlist_entry['spw']
-                    result.targets_reffreq = targets_reffreq
+                        flagpct = th.flagpct_spwgroup(results_list=inp.context.results, spw_selection=spw)
+
+                        flagpct_threshold = 1.0
+                        if flagpct is None or flagpct < flagpct_threshold:
+                            if flagpct is None:
+                                LOG.info(
+                                    f'Can not find previous flagging summary for spw={spw!r}, but we will still add it as an imaging target.')
+                            else:
+                                LOG.info(
+                                    f'VLASS Data for spw={spw!r} is {flagpct*100:.2f}% flagged, and we will skip it as an imaging target.')
+                            result.targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
+                            result.targets_spw.append(imlist_entry_per_spwgroup['spw'])
+                            result.targets_imagename.append(os.path.basename(imlist_entry_per_spwgroup['imagename']))
+                            result.add_target(imlist_entry_per_spwgroup)
+                        else:
+                            LOG.warning(
+                                f'VLASS Data for spw={spw!r} is {flagpct*100:.2f}% flagged, and we will skip it as an imaging target.')
+
                 else:
                     result.add_target(imlist_entry)
             else:

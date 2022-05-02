@@ -42,6 +42,34 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
 
         return str(meanfreq_value)+'GHz'
 
+    def flagpct_spwgroup(self, results_list: Union[list, None] = None, spw_selection=None):
+        """Get the flag percentage of a spw group (specified by a selection string, e.g. '2,3,4').
+        
+        Note: this is a quick check using existing results from hifv_flagtargetsdata().
+        More comprehensive (and expensive) check could be done using ImageParamsHeuristics.has_data() (also see PIPE-557)
+        """
+
+        flagpct = None
+
+        # Catch exception as the success of result parsing is not guaranteed.
+        try:
+            if results_list and type(results_list) is list:
+                for result in results_list:
+                    result_meta = result.read()
+                    if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
+                            'hifv_flagtargetsdata'):
+                        flagtargets_summary = [r.summaries for r in result_meta][0][-1]
+
+            n_flagged = n_total = 0
+            for spwid in [spw.strip() for spw in spw_selection.split(',')]:
+                n_flagged += flagtargets_summary['spw'][str(spwid)]['flagged']
+                n_total += flagtargets_summary['spw'][str(spwid)]['total']
+            flagpct = n_flagged/n_total
+        except Exception as e:
+            pass
+
+        return flagpct
+
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
              results_list: Union[list, None] = None, clean_no_mask=None) -> Union[str, list]:

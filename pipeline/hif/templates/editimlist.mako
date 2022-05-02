@@ -29,10 +29,11 @@ targets=result[0].targets
             <td>${r.img_mode}</td>
         </tr>
         <tr>
-            <td><strong>Image name</strong></td>
             %if r.img_mode == 'VLASS-SE-CUBE':
-                <td>${os.path.basename(r.targets_imagename)}</td>
+                <td><strong>Image name (per plane)</strong></td>
+                <td>${'<br>'.join(r.targets_imagename)}</td>                
             %else:
+                <td><strong>Image name</strong></td>
                 <td>${os.path.basename(target['imagename'])}</td>
             %endif
         </tr>
