@@ -57,11 +57,25 @@ def dev2color(x):
       rgb_hex=colors.cnames[color_list[2]]
     if x>6:
       rgb_hex=colors.cnames[color_list[3]]
-    return rgb_hex                                                                        
+    return rgb_hex            
+
+def dev2shade(x):
+    color_list=['gainsboro','lightgreen','yellow','red']
+    cmap=cm.get_cmap(name='Reds')
+    absx=abs(x)
+    if absx<4 and absx>=3:
+      rgb_hex=colors.to_hex(cmap(0.2))
+    if absx<5 and absx>=4:
+      rgb_hex=colors.to_hex(cmap(0.3))
+    if absx<6 and absx>=5:
+      rgb_hex=colors.to_hex(cmap(0.4))
+    if absx>=6:
+      rgb_hex=colors.to_hex(cmap(0.5))
+    return rgb_hex   
 
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
-
+bgcolor_list=[dev2shade(3),dev2shade(4),dev2shade(5),dev2shade(6)]
 %>
 
 
@@ -123,6 +137,13 @@ $(document).ready(function() {
         o.data("callback", createSpwSetter(spw));
     });
 });
+
+$(function () {
+    $("body").tooltip({
+        selector: '[data-toggle="tooltip"]',
+        container: 'body'
+    });
+})
 </script>
 
 <p>Make cutouts of requested imaging products.</p>
@@ -130,7 +151,8 @@ $(document).ready(function() {
 
 <h4>Cutout Image Statistical Properties</h4>
 
-<table class="table table-hover table-condensed table-responsive">
+<div class="table-responsive">
+<table class="table table-hover table-condensed">
 
 <caption>
   <li>
@@ -143,7 +165,12 @@ $(document).ready(function() {
       Px<sub><800&mu;Jy</sub> (pct.): the pct. of pixes (within the unmasked region) with value less than 800&mu;Jy in the Rms image.
   </li>
   <li>
-      The gray-out cell highlights the spw with the largest deviation of an image property, among all spw selection groups.
+      The cell background highlights spws with a stastical property signficantly deviated from its mean over all spw groups: 
+      <p style="background-color:${bgcolor_list[0]}; display:inline;">3*madrms&le;dev&lt;4*madrms</p>; 
+      <p style="background-color:${bgcolor_list[1]}; display:inline;">4*madrms&le;dev&lt;5*madrms</p>;   
+      <p style="background-color:${bgcolor_list[2]}; display:inline;">5*madrms&le;dev&lt;6*madrms</p>; 
+      <p style="background-color:${bgcolor_list[3]}; display:inline;">6*madrms&le;dev</p>.
+      The deviation, in units of madrms, is also show in the tooltip box.
   </li>        
 </caption>
 
@@ -253,22 +280,25 @@ $(document).ready(function() {
 
         <%
         cell_style=[]
+        cell_title=''
         if 'pct' in i:
           suffix='&#37'
         else:
           suffix=''
         if not (t=='pb' or t=='beam'):
-          dev_in_madrms=abs(stats_spw[t][i][idx_pol]-stats_summary[t][i]['spwwise_mean'][idx_pol])
+          dev_in_madrms=stats_spw[t][i][idx_pol]-stats_summary[t][i]['spwwise_mean'][idx_pol]
           madrms=stats_summary[t][i]['spwwise_madrms'][idx_pol]
-          if dev_in_madrms>madrms*3.0:
+          if abs(dev_in_madrms)>madrms*3.0:
             #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
-            bgcolor=dev2color(dev_in_madrms/madrms)
-            cell_style.append(f'background-color: {bgcolor}')         
+            bgcolor=dev2shade(dev_in_madrms/madrms)
+            cell_style.append(f'background-color: {bgcolor}')
+          cell_title='{:.2f}'.format(dev_in_madrms/madrms)         
         if idx_item in (2,5,9,12,15) or (name_pol!='I' and idx_item in ((2,5,8))):
           cell_style.append('border-right: '+border_line)
         if idx_spw==len(stats)-1:
           cell_style.append('border-bottom: '+border_line)          
         cell_style='style="{}"'.format(('; ').join(cell_style))
+        cell_style+=' title="{}" data-toggle="tooltip"'.format(cell_title)
         %>
       
         % if t!='beam':
@@ -288,6 +318,7 @@ $(document).ready(function() {
 </tbody>
 
 </table>
+</div>
 
 <div style="clear:both;"></div>
 
