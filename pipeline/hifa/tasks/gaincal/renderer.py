@@ -8,6 +8,7 @@ import copy
 import os
 
 import pipeline.infrastructure
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -134,10 +135,20 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
             # with solint=int
-            calapps_list = result.final
-            calapps_list.extend(result.phasecal_for_phase)
-            print("CALAPPS LIST:", calapps_list)
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, calapps_list, 'BANDPASS,PHASE', combine=True)
+            # calapps_list = result.final
+            # print("CALAPPS RESULT.final, ", calapps_list)
+            # print("CALAPPS phasecal:", result.phasecal_for_phase)
+            # calapps_list.extend(result.phasecal_for_phase)
+            # print("CALAPPS LIST:", calapps_list)
+
+            # temp check to try overplotting the CHECK source: 
+            tmp_list = result.phasecal_for_phase_plot #TODO: update what this is called...
+            tmp_list.extend(ms.phase_calapps_for_check_sources) # TODO: update what this is called in the measurement set and is it a list? Yes. 
+
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, tmp_list, 'BANDPASS,PHASE,CHECK', combine=True) # 
+
+            #plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, tmp_list, 'BANDPASS,PHASE,CHECK', combine=True) # should go back to result.phasecal_for_phase
+#            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, calapps_list, 'BANDPASS,PHASE', combine=True)
 #            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, result.phasecal_for_phase, 'BANDPASS', combine=True)
             
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
@@ -167,7 +178,9 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     amp_vs_time_subpages[vis] = renderer.path
 
                 # phase vs time for solint=int
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'BANDPASS,PHASE', combine=True)
+
+                #plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'BANDPASS,PHASE,CHECK', combine=True)
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, tmp_list, 'BANDPASS,PHASE,CHECK', combine=True)
                 diagnostic_phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context, result,
                                                                     diagnostic_phase_vs_time_details[vis])

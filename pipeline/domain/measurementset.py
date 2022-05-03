@@ -60,6 +60,7 @@ class MeasurementSet(object):
             prevent modification
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
+        #TODO: placeholder_for_clapps
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -118,6 +119,10 @@ class MeasurementSet(object):
         # to put the lock on a custom refant list class, but some tasks check
         # the type of reference_antenna directly which prevents that approach.
         self.reference_antenna_locked: bool = False
+
+        #TODO: Add good explanation for why this is here
+        # Added for ALMA IF to support PIPE-1377. 
+        self.phase_calapps_for_check_sources = []
 
     def _calc_filesize(self):
         """
