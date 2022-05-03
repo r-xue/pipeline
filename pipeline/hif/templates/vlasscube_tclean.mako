@@ -128,7 +128,7 @@ except:
 
 
 
-    <table class="table table-striped">
+    <table class="table table-striped table-hover table-condensed table-responsive">
         
      
         <thead>
@@ -193,14 +193,14 @@ except:
         
             %for j in range(field_block_indices[i], field_block_indices[i+1], 4):
                 <tr style="border-top:1px solid gray">
-                    <th>Stokes</th>
+                    <th style="width:20%">Stokes</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                    <th>${'%s' % (image_info[k].pol)}</th>
+                    <th style="width:20%">${'<i>%s<i>' % (image_info[k].pol)}</th>
                     %endfor
                 </tr>            
                 <tr>
                     
-                    <td style='vertical-align:middle'>
+                    <td style="vertical-align:middle">
                     
                     % if row.majorcycle_stat_plot is not None:                    
                     <%
@@ -216,10 +216,10 @@ except:
                             Field: something
                             </div>
                             <div class="pull-right"><a href="${fullsize_relpath}">Full Size</a></div>'>
-                    <img src="${thumbnail_relpath}"
+                    <img class="lazyload img-responsive" 
+                        data-src="${thumbnail_relpath}"
                         title="Major cycle statistics"
-                        alt="Major cycle statistics"
-                        class="img-thumbnail img-responsive center">
+                        alt="Major cycle statistics">
                     </a>
                     <div class="caption">
                         <p>
@@ -235,7 +235,7 @@ except:
                     </td>
 
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                    <td style="width:250px;">
+                    <td style="vertical-align:middle">
                     %if image_info[k].plot is not None:
                         <%
                         fullsize_relpath = os.path.relpath(image_info[k].plot.abspath, pcontext.report_dir)
@@ -248,11 +248,10 @@ except:
                             title='<div class="pull-left">Iteration: ${image_info[k].plot.parameters['iter']}<br>
                                     Spw: ${image_info[k].plot.parameters["virtspw"]}<br>
                                     Field: ${html.escape(image_info[k].field, True)}</div><div class="pull-right"><a href="${fullsize_relpath}">Full Size</a></div>'>
-                            <img class="lazyload"
+                            <img class="lazyload img-responsive"
                                 data-src="${thumbnail_relpath}"
                                 title="Iteration ${image_info[k].plot.parameters['iter']}: image"
-                                alt="Iteration ${image_info[k].plot.parameters['iter']}: image"
-                                class="img-thumbnail img-responsive">
+                                alt="Iteration ${image_info[k].plot.parameters['iter']}: image">
                         </a>
                         <div class="caption">
                             <p>
@@ -288,20 +287,20 @@ except:
                 <tr>
                     <th>clean residual peak / scaled MAD</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;">${image_info[k].residual_ratio}</td>
+                        <td>${image_info[k].residual_ratio}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>${image_info[k].non_pbcor_label}</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;">${image_info[k].non_pbcor}</td>
+                        <td>${image_info[k].non_pbcor}</td>
                     %endfor
                 </tr>
                 %if image_info[k].nsigma_label is not None:
                     <tr>
                         <th>${image_info[k].nsigma_label}</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:250px;">${image_info[k].nsigma}</td>
+                            <td>${image_info[k].nsigma}</td>
                         %endfor
                     </tr>
                 %endif
@@ -309,7 +308,7 @@ except:
                     <tr>
                         <th>${image_info[k].initial_nsigma_mad_label}</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:250px;">${image_info[k].initial_nsigma_mad}</td>
+                            <td>${image_info[k].initial_nsigma_mad}</td>
                         %endfor
                     </tr>
                 %endif
@@ -317,7 +316,7 @@ except:
                     <tr>
                         <th>${image_info[k].final_nsigma_mad_label}</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:250px;">${image_info[k].final_nsigma_mad}</td>
+                            <td>${image_info[k].final_nsigma_mad}</td>
                         %endfor
                     </tr>
                 %endif
@@ -326,7 +325,7 @@ except:
                 <tr>
                     <th>flux in positive model image components</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;">${image_info[k].model_pos_flux}</td>
+                        <td>${image_info[k].model_pos_flux}</td>
                     %endfor
                 </tr>
                 %endif
@@ -335,7 +334,7 @@ except:
                 <tr>
                     <th>flux in negative model image components</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;">${image_info[k].model_neg_flux}</td>
+                        <td>${image_info[k].model_neg_flux}</td>
                     %endfor
                 </tr>
                 %endif
@@ -344,7 +343,7 @@ except:
                 <tr>
                     <th>flux in model image (inner square deg.)</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;">${image_info[k].model_flux_inner_deg}</td>
+                        <td>${image_info[k].model_flux_inner_deg}</td>
                     %endfor
                 </tr>
                 %endif
@@ -354,7 +353,7 @@ except:
                 <tr>
                     <th>flatnoise image max / min</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                    <td style="width:250px;">${image_info[k].pbcor}</td>
+                    <td>${image_info[k].pbcor}</td>
                     %endfor
                 </tr>
                 %endif  
@@ -363,7 +362,7 @@ except:
                     <tr>
                         <th>${image_info[k].vis_amp_ratio_label}</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:250px;">${'{:.4}'.format(image_info[k].vis_amp_ratio)}</td>
+                            <td>${'{:.4}'.format(image_info[k].vis_amp_ratio)}</td>
                         %endfor
                     </tr>
                 %endif                

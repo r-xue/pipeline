@@ -231,23 +231,35 @@ class Tclean(cleanbase.CleanBase):
             job = casa_tasks.copytree(image_name, newname)
             self._executor.execute(job)
 
-    def move_products(self, old_pname, new_pname, ignore=None, copy_list=[]):
-        """Move products of one iteration to another.
-        Certain image types can be excluded from the move operation (copy instead) via "copy_list".
+    def move_products(self, old_pname, new_pname, ignore_list=[], remove_list=[], copy_list=[]):
+        """Move imaging products of one iteration to another.
+        
+        Certain image types can be excluded from the default "move" operation using the following keywords (in the precedence order):
+            ignore_list:    do nothing (no 'remove', 'copy', or 'move'), if any string from the list is in the image name.
+            remove_list:    remove without 'move' or 'copy', if any string from the list in the image name.
+            copy_list:      copy instead move, if any string from the list is in the image name.
         """
-
         imlist = glob.glob('%s.*' % (old_pname))
-        imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
         for image_name in imlist:
             newname = image_name.replace(old_pname, new_pname)
+
+            if any([ignore_pattern in image_name for ignore_pattern in ignore_list]):
+                continue
+            if any([remove_pattern in image_name for remove_pattern in remove_list]):
+                LOG.info('Remove {}'.format(image_name))
+                job = casa_tasks.rmtree(image_name)
+                self._executor.execute(job)
+                continue
             if any([copy_pattern in image_name for copy_pattern in copy_list]):
                 LOG.info('Copying {} to {}'.format(image_name, newname))
                 job = casa_tasks.copytree(image_name, newname)
                 self._executor.execute(job)
-            else:
-                LOG.info('Moving {} to {}'.format(image_name, newname))
-                job = casa_tasks.move(image_name, newname)
-                self._executor.execute(job)
+                continue
+            LOG.info('Moving {} to {}'.format(image_name, newname))
+            job = casa_tasks.move(image_name, newname)
+            self._executor.execute(job)
+
+        return
 
     def prepare(self):
         inputs = self.inputs
@@ -808,6 +820,10 @@ class Tclean(cleanbase.CleanBase):
                 if mask in ['', None, 'pb']:
                     new_cleanmask = mask
                 else:
+                    # note: this "new_cleanmask" name must be different from imagename+'.mask'.
+                    #   1) tclean() doesn't support specifying usemask='user' and mask=imagename+'.mask' (pre-exists) at the same time.
+                    #   2) the vlass-se-cont mask is Stokes-I only and needs to be "regridded" (i.e. broadcasted) in the Pol. axis.
+                    #      Therefore a "restart" by copying the user mask under imagename+'.mask' is also not supported in tclean() as of ver 6.4.1.
                     new_cleanmask = f'{rootname}.iter{iteration}.cleanmask'
             else:
                 # Determine stage mask name and replace stage substring place holder with actual stage number.
@@ -828,8 +844,9 @@ class Tclean(cleanbase.CleanBase):
                 # PIPE-1401: We move (instead of copy) most imaging products from one iteration to the next,
                 # to reduce the disk I/O operations and storage use.
                 self.move_products(os.path.basename(old_pname), os.path.basename(new_pname),
-                                   ignore='mask' if do_not_copy_mask else None,
-                                   copy_list=['.residual', '.image', 'mask'])
+                                   ignore_list=['.cleanmask'] if do_not_copy_mask else [],
+                                   copy_list=['.residual', '.image'],
+                                   remove_list=['.mask'] if do_not_copy_mask else [])
             else:
                 self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
                                    ignore='mask' if do_not_copy_mask else None)
