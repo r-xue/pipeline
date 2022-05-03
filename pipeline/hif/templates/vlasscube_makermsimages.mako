@@ -40,9 +40,23 @@ def dev2color(x):
       rgb_hex=colors.cnames[color_list[3]]
     return rgb_hex            
 
+def dev2shade(x):
+    color_list=['gainsboro','lightgreen','yellow','red']
+    cmap=cm.get_cmap(name='Reds')
+    absx=abs(x)
+    if absx<4 and absx>=3:
+      rgb_hex=colors.to_hex(cmap(0.2))
+    if absx<5 and absx>=4:
+      rgb_hex=colors.to_hex(cmap(0.3))
+    if absx<6 and absx>=5:
+      rgb_hex=colors.to_hex(cmap(0.4))
+    if absx>=6:
+      rgb_hex=colors.to_hex(cmap(0.5))
+    return rgb_hex   
+
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
-
+bgcolor_list=[dev2shade(3),dev2shade(4),dev2shade(5),dev2shade(6)]
 %>
 
 
@@ -78,6 +92,33 @@ cell_line="1px solid #DDDDDD"
 
 </style>
 
+<script>
+$(document).ready(function() {
+    // return a function that sets the SPW text field to the given spw
+    var createSpwSetter = function(spw) {
+        return function() {
+            // trigger a change event, otherwise the filters are not changed
+            $("#select-spw").val([spw]).trigger("change");
+        };
+    };
+
+    // create a callback function for each overview plot that will select the
+    // appropriate spw once the page has loaded
+    $(".thumbnail a").each(function (i, v) {
+        var o = $(v);
+        var spw = o.data("spw");
+        o.data("callback", createSpwSetter(spw));
+    });
+});
+
+$(function () {
+    $("body").tooltip({
+        selector: '[data-toggle="tooltip"]',
+        container: 'body'
+    });
+})
+</script>
+
 <%block name="title">Make RMS Uncertainty Images</%block>
 
 <p>RMS Images are meant to represent the root-mean-square deviation from the mean (rmsd)
@@ -104,17 +145,24 @@ cell_line="1px solid #DDDDDD"
     <div style="width: 1200px; height: 250px; overflow: auto;">
     <table class="table table-header-rotated">
     -->
-    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-hover table-condensed table-responsive">
+
+    <div class="table-responsive">
+    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-hover table-condensed">
     <caption>
         <li>
             Units in mJy/beam.
         </li>
         <li>
-            The background of individual cells is color-coded by each image property after normalized by their respective ranges in all spw groups and Stokes planes.
-        </li>
-        <li>
             MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
         </li>
+        <li>
+            The cell background highlights spws with a stastical property signficantly deviated from its mean over all spw groups: 
+            <p style="background-color:${bgcolor_list[0]}; display:inline;">3*madrms&le;dev&lt;4*madrms</p>; 
+            <p style="background-color:${bgcolor_list[1]}; display:inline;">4*madrms&le;dev&lt;5*madrms</p>;   
+            <p style="background-color:${bgcolor_list[2]}; display:inline;">5*madrms&le;dev&lt;6*madrms</p>; 
+            <p style="background-color:${bgcolor_list[3]}; display:inline;">6*madrms&le;dev</p>.
+            The deviation, in units of madrms, is also show in the tooltip box.
+        </li>        
     </caption>    
     
     <thead>
@@ -145,7 +193,8 @@ cell_line="1px solid #DDDDDD"
             cell_style=[f'border-left: {border_line}',f'border-right: {border_line}']
             if idx==len(stats)-1:
                 cell_style.append('border-bottom: '+border_line)          
-            cell_style='style="{}"'.format(('; ').join(cell_style))                    
+            cell_style='style="{}"'.format(('; ').join(cell_style))
+            cell_title=''                    
             %> 
 
             <td ${cell_style}><b>${stats_per_spw['virtspw']}</b></td>
@@ -153,19 +202,19 @@ cell_line="1px solid #DDDDDD"
                 % for item, cmap in [('Max','Reds'),('Min','Oranges'),('Mean','Greens'),('Median','Blues'),('Sigma','Purples'),('MADrms','Greys')]:
                     <%
                     cell_style=[]
-                    dev_in_madrms=abs(stats_summary[item.lower()]['spwwise_mean'][idx_pol]-stats_per_spw[item.lower()][idx_pol])
+                    dev_in_madrms=stats_per_spw[item.lower()][idx_pol]-stats_summary[item.lower()]['spwwise_mean'][idx_pol]
                     madrms=stats_summary[item.lower()]['spwwise_madrms'][idx_pol]
-                    if dev_in_madrms>madrms*3.0:
+                    if abs(dev_in_madrms)>madrms*3.0:
                         #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
-                        bgcolor=dev2color(dev_in_madrms/madrms)
+                        bgcolor=dev2shade(dev_in_madrms/madrms)
                         cell_style.append(f'background-color: {bgcolor}')  
-                    
+                    cell_title='{:.2f}'.format(dev_in_madrms/madrms)  
                     if item=='MADrms':
                         cell_style.append('border-right: '+border_line)
                     if idx==len(stats)-1:
                         cell_style.append('border-bottom: '+border_line)          
                     cell_style='style="{}"'.format(('; ').join(cell_style))                    
-                    
+                    cell_style+=' title="{}" data-toggle="tooltip"'.format(cell_title)
                     %>                    
                     
                     <td ${cell_style}>${fmt_rms(stats_per_spw[item.lower()][idx_pol])}</td>
@@ -176,6 +225,7 @@ cell_line="1px solid #DDDDDD"
 
     </tbody>
     </table>
+    </div>
 
 % endfor
 
