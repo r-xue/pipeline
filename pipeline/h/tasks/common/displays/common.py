@@ -290,7 +290,7 @@ class PlotmsCalLeaf(object):
     def _create_task(self):
         symbol_array = ['autoscaling', 'diamond', 'square'] #note: autoscaling can be 'pixel' or 'circle' depending on number of points. 
 #        color_axis = [self._coloraxis, 'spw', 'time', 'intent']
-        symbol_size = [2, 20, 16, 12, 10] # debug only -- needs to be removed
+#        symbol_size = [2, 20, 16, 12, 10] # debug only -- needs to be removed
         task_list = []
 
         for n, caltable in enumerate(self._caltable): 
@@ -313,7 +313,7 @@ class PlotmsCalLeaf(object):
                 # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
                 # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
                 task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
-                task_args['symbolsize'] = symbol_size[n % len(symbol_size)]
+#                task_args['symbolsize'] = symbol_size[n % len(symbol_size)]
                 task_args['customsymbol'] = True
 
                 # Leaving this code commented out here in case the if-statement on line 299 is removed after further development
