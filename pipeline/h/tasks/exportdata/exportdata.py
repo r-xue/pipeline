@@ -162,6 +162,13 @@ class PipelineProductNameBuilder(object):
                                        ousstatus_entity_id=ousstatus_entity_id,
                                        output_dir=output_dir)
 
+    @classmethod
+    def aqua_report(self, aqua_report_name, project_structure=None, ousstatus_entity_id=None, output_dir=None):
+        return self._build_from_ps_oussid(aqua_report_name,
+                                          project_structure=project_structure,
+                                          ousstatus_entity_id=ousstatus_entity_id,
+                                          output_dir=output_dir)
+
 
 class ExportDataInputs(vdp.StandardInputs):
     """

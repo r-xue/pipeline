@@ -623,7 +623,7 @@ finally:
         Returns:
             AQUA report file path
         """
-        aqua_file = os.path.join(context.output_dir, self.NameBuilder.aqua_report_name)
+        aqua_file = os.path.join(context.output_dir, context.logs['aqua_report'])
 
         report_generator = almasdaqua.AlmaAquaXmlGenerator()
         LOG.info('Generating pipeline AQUA report')
@@ -636,7 +636,8 @@ finally:
             return 'Undefined'
 
         ps = context.project_structure
-        out_aqua_file = self.NameBuilder.aqua_report(project_structure=ps,
+        out_aqua_file = self.NameBuilder.aqua_report(context.logs['aqua_report'],
+                                                     project_structure=ps,
                                                      ousstatus_entity_id=oussid,
                                                      output_dir=products_dir)
 
