@@ -104,7 +104,7 @@ cell_line="1px solid #DDDDDD"
     <div style="width: 1200px; height: 250px; overflow: auto;">
     <table class="table table-header-rotated">
     -->
-    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered">
+    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-hover table-condensed table-responsive">
     <caption>
         <li>
             Units in mJy/beam.
