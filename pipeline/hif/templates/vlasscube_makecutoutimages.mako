@@ -130,7 +130,7 @@ $(document).ready(function() {
 
 <h4>Cutout Image Statistical Properties</h4>
 
-<table class="table">
+<table class="table table-hover table-condensed table-responsive">
 
 <caption>
   <li>
@@ -264,7 +264,7 @@ $(document).ready(function() {
             #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
             bgcolor=dev2color(dev_in_madrms/madrms)
             cell_style.append(f'background-color: {bgcolor}')         
-        if idx_item in (2,5,9,12) or (name_pol!='I' and idx_item in ((2,5,8))):
+        if idx_item in (2,5,9,12,15) or (name_pol!='I' and idx_item in ((2,5,8))):
           cell_style.append('border-right: '+border_line)
         if idx_spw==len(stats)-1:
           cell_style.append('border-bottom: '+border_line)          
