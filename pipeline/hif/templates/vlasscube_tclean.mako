@@ -127,8 +127,8 @@ except:
 
 
 
-
-    <table class="table table-striped table-hover table-condensed table-responsive">
+    <div class="table-responsive">
+    <table class="table table-striped table-hover table-condensed">
         
      
         <thead>
@@ -371,5 +371,6 @@ except:
          %endfor
         </tbody>
     </table>
+    </div>
        
 %endif

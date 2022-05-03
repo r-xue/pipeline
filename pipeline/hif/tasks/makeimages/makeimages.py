@@ -289,7 +289,8 @@ class CleanTaskFactory(object):
         is_tier0_job = is_mpi_ready and is_cal_image
         parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
 
-        # PIPE-1401: TBD, turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
+        # PIPE-1401: turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
+        # Also see the disscussions in PIPE-1357
         vlass_se_cube_tier0_wanted = True
         is_vlass_se_cube = 'TARGET' in target['intent'] and self.__context.imaging_mode == 'VLASS-SE-CUBE'
         if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_mpi_ready]):
