@@ -23,7 +23,8 @@ targets=result[0].targets
     # targets only contain 1 element execept vlass-se-cube
     target = targets[0]
     %>
-    <table class="table table-bordered table-striped table-condensed">
+    <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover table-condensed">
         <tr>
             <td><strong>Imaging heuristics mode</strong></td>
             <td>${r.img_mode}</td>
@@ -94,4 +95,5 @@ targets=result[0].targets
             %endif
         %endfor
     </table>
+    </div>
 %endif
