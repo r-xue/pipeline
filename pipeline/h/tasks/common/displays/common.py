@@ -582,7 +582,7 @@ class SpwAntComposite(LeafComposite):
                     ymin = numpy.ma.min(filtered_data)
                     ymax = numpy.ma.max(filtered_data)
                 else:
-                    caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp[0].gaintable, gaincalamp=True)
+                    caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp.gaintable, gaincalamp=True)
                     filtered = caltable_wrapper.filter(spw=[spw])
                     ymin = numpy.ma.min(numpy.abs(filtered.data))
                     ymax = numpy.ma.max(numpy.abs(filtered.data))
