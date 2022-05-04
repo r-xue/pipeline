@@ -275,10 +275,10 @@ class PlotmsCalLeaf(object):
 
             # If there are multiple caltables to overplot, clearplots must be False for all
             # but the first plot.
-            if n!= 0: 
+            if n != 0: 
                 task_args['clearplots'] = False
 
-            # Alter plot symbols by cycling through the list of available symbols for each plot.
+            # Alter plot symbols by cycling through the list of available symbols for each subsequent over-plot.
             task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
             task_args['customsymbol'] = True
 
@@ -505,9 +505,9 @@ class SpwAntComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
-        # Identify spws in caltable
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
         if isinstance(calapp, list): 
+            # Identify spws in caltable
             table_spws = set()
             dict_calapp_spws = collections.defaultdict(set)
             for cal in calapp:
@@ -516,51 +516,74 @@ class SpwAntComposite(LeafComposite):
                     table_spws = table_spws.union(spws)
                     for spw in spws:
                         dict_calapp_spws[int(spw)].add(cal)
-        else: 
-            with casa_tools.TableReader(calapp.gaintable) as tb:
-                table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+            caltable_spws = [int(spw) for spw in table_spws]
 
-        caltable_spws = [int(spw) for spw in table_spws]
+            # PIPE-66: if requested, and no explicit (non-empty) plotrange was
+            # set, then use the same y-scale for plots of the same spw.
+            # TODO: in the future, this could potentially be refactored to use
+            # the yselfscale parameter in PlotMS together with "iteraxis", so as
+            # to let PlotMS take care of setting the same y-range for a set of
+            # plots. Would also need infrastructure.utils.framework.plotms_iterate.
+            update_yscale = ysamescale and not kwargs.get("plotrange", "")
 
-        # PIPE-66: if requested, and no explicit (non-empty) plotrange was
-        # set, then use the same y-scale for plots of the same spw.
-        # TODO: in the future, this could potentially be refactored to use
-        # the yselfscale parameter in PlotMS together with "iteraxis", so as
-        # to let PlotMS take care of setting the same y-range for a set of
-        # plots. Would also need infrastructure.utils.framework.plotms_iterate.
-        update_yscale = ysamescale and not kwargs.get("plotrange", "")
-
-        children = []
-        for spw in caltable_spws:
-            if update_yscale:
+            children = []
+            for spw in caltable_spws:
+                if update_yscale:
                 # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw. 
-                if isinstance(calapp, list):
-                    filtered_data = numpy.empty((0,0))
+#                   filtered_data = numpy.empty((0,0))
+                    ymins = []
+                    ymaxes = []
                     for cal in dict_calapp_spws[spw]:
                         caltable_wrapper = CaltableWrapperFactory.from_caltable(cal.gaintable, gaincalamp=True) 
                         filtered = caltable_wrapper.filter(spw=[spw])
-                        numpy.append(filtered_data, numpy.abs(filtered.data))
-                    ymin = numpy.ma.min(filtered_data)
-                    ymax = numpy.ma.max(filtered_data)
-                else:
+#                        numpy.append(filtered_data, numpy.abs(filtered.data))
+                        # Save the ymin and ymax values rather than the full filtered.data as that could get large
+                        ymins.append(numpy.ma.min(numpy.abs(filtered.data)))
+                        ymaxes.append(numpy.ma.min(numpy.abs(filtered.data)))
+
+                    ymin = numpy.ma.min(ymins) #filtered_data)
+                    ymax = numpy.ma.max(ymaxes) #filtered_data)
+
+                    yrange = ymax - ymin
+                    ymin = ymin - 0.05 * yrange
+                    ymax = ymax + 0.05 * yrange
+
+                    kwargs.update({"plotrange": [0, 0, ymin, ymax]})
+
+            # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw
+            children.append(
+                self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+        else: 
+            # Identify spws in caltable
+            with casa_tools.TableReader(calapp.gaintable) as tb:
+                table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+
+            caltable_spws = [int(spw) for spw in table_spws]
+
+            # PIPE-66: if requested, and no explicit (non-empty) plotrange was
+            # set, then use the same y-scale for plots of the same spw.
+            # TODO: in the future, this could potentially be refactored to use
+            # the yselfscale parameter in PlotMS together with "iteraxis", so as
+            # to let PlotMS take care of setting the same y-range for a set of
+            # plots. Would also need infrastructure.utils.framework.plotms_iterate.
+            update_yscale = ysamescale and not kwargs.get("plotrange", "")
+
+            children = []
+            for spw in caltable_spws:
+                if update_yscale:
                     caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp.gaintable, gaincalamp=True)
                     filtered = caltable_wrapper.filter(spw=[spw])
                     ymin = numpy.ma.min(numpy.abs(filtered.data))
                     ymax = numpy.ma.max(numpy.abs(filtered.data))
 
-                yrange = ymax - ymin
-                ymin = ymin - 0.05 * yrange
-                ymax = ymax + 0.05 * yrange
+                    yrange = ymax - ymin
+                    ymin = ymin - 0.05 * yrange
+                    ymax = ymax + 0.05 * yrange
 
-                kwargs.update({"plotrange": [0, 0, ymin, ymax]})
+                    kwargs.update({"plotrange": [0, 0, ymin, ymax]})
 
-            if isinstance(calapp, list):
-                # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw present 
-                children.append(
-                    self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
-            else:
-                children.append(
-                    self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+            children.append(
+                self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
 
         super().__init__(children)
 
