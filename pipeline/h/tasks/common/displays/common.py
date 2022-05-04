@@ -186,6 +186,8 @@ class PlotmsCalLeaf(object):
         if ant:
             self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
+        # These task arguments are the same whether one caltable is plotted 
+        # on its own, or multiple caltables are overplotted. 
         self.task_args = {'xaxis': self._xaxis,
                      'yaxis': self._yaxis,
                      'showgui': False,
@@ -193,7 +195,8 @@ class PlotmsCalLeaf(object):
                      'antenna': self._ant,
                      'plotrange': self._plotrange,
                      'coloraxis': self._coloraxis,
-                     'title': self._title}
+                     'title': self._title, 
+                     'clearplots': True}
 
     def plot(self):
         plots = [self._get_plot_wrapper()]
@@ -259,75 +262,31 @@ class PlotmsCalLeaf(object):
                               command=''.join(map(str, tasks)))
         return wrapper
 
-    # I don't believe the following function is needed anymore, since SpwComposite, SpwAntComposite, and AntComposite *should* only send
-    # calapps to plot which have the appropriate spws and ants.
-    #
-    # def _is_plot_valid(self, caltable):
-    #     # Concerned about the slowdown for one-caltable plots if omit this conditional
-    #     if (len(caltable) > 1): 
-    #         with casa_tools.TableReader(caltable) as tb: # expand to full path
-    #             antenna1 = tb.getcol('ANTENNA1')
-    #             caltable_spw = tb.getcol('SPECTRAL_WINDOW_ID')
-    #         # are all the spws intended to plot present in the caltable
-    #         if str(self._spw) != '':
-    #             if ',' in str(self._spw): 
-    #                 for spw in str(self._spw).split(','): 
-    #                     if spw not in caltable_spw: 
-    #                         return False
-    #             else: 
-    #                 if self._spw not in caltable_spw:
-    #                     return False 
-    #         # are all the antennas intended to plot present in the caltable? 
-    #         if self._ant_ids != '' and isinstance(self._ant_ids, str):
-    #             if ',' in self._ant_ids:
-    #                 for ant in self._ant_ids.split(','): 
-    #                     if ant not in antenna1: 
-    #                         return False
-    #             else: 
-    #                 if self._ant_ids not in antenna1: 
-    #                     return False
-    #         return True
-    #     else:
-    #         return True
-
     def _create_tasks(self):
         symbol_array = ['autoscaling', 'diamond', 'square'] # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points. 
         task_list = []
 
         for n, caltable in enumerate(self._caltable): 
-            # Check if antenna(s)-to-plot and spw(s)-to-plot are present in the caltable. If not, skip plotting.
-#            if(self._is_plot_valid(caltable)):
             task_args = {key: val for key, val in self.task_args.items()} 
+
+            # plotms uses the 'vis' input parameter to specify caltables to plot
             task_args['vis'] = caltable
             task_args['plotindex'] = n
-            if n==0: 
-                task_args['clearplots'] = True
-            else:
+
+            # If there are multiple caltables to overplot, clearplots must be False for all
+            # but the first plot.
+            if n!= 0: 
                 task_args['clearplots'] = False
 
             # Alter plot symbols by cycling through the list of available symbols for each plot.
-            # 
-            # If these need to be changed to use a specific shape for a specific intent this can 
-            # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
-            # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
             task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
             task_args['customsymbol'] = True
 
-            # The following code should be commented-out if the is_plot_valid check is re-added
             # The plotfile must be specified for only the last plotms command
             if n == (len(self._caltable) - 1):
                 task_args['plotfile'] = self._figfile 
 
             task_list.append(casa_tasks.plotms(**task_args))
-#            else: 
-#                LOG.info("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
-
-        # The plotfile must be specified for only the last plotms command
-        # The last task is missing this, so remove it and then re-create with the plotfile specified
-        # This should be used if the _is_plot_valid check is re-added
-        # task_list.pop()
-        # task_args['plotfile'] = self._figfile 
-        # task_list.append(casa_tasks.plotms(**task_args))
 
         return task_list
 
@@ -507,8 +466,9 @@ class SpwComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, ant='', pol='',
                  **kwargs):
-        # NOTE: could change this back to just do a union of all the spws, and pass through a full list of calapps 
-        # for each one and rely on PlotmsCalLeaf to only do the plot when appropriate
+
+        # Identify spws in caltable
+        # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
         if isinstance(calapp, list): 
             table_spws = set()
             dict_calapp_spws = collections.defaultdict(set)
@@ -525,6 +485,7 @@ class SpwComposite(LeafComposite):
         caltable_spws = [int(spw) for spw in table_spws]
         
         if isinstance(calapp, list):
+            # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw present 
             children = [self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis,
                         spw=spw, ant=ant, pol=pol, **kwargs)
                         for spw in caltable_spws]    
@@ -594,6 +555,7 @@ class SpwAntComposite(LeafComposite):
                 kwargs.update({"plotrange": [0, 0, ymin, ymax]})
 
             if isinstance(calapp, list):
+                # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw present 
                 children.append(
                     self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
             else:
@@ -612,18 +574,8 @@ class AntComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
                  **kwargs):
-        #NOTE: Could go back to just take the union of all antennas, pass all the calapps forward, 
-        # and check before plotting to make sure the antenna is present.
-        # Passing around calapps that have this info stored somehow is also an option for the future.
-        # 
-        # "Just union the antennas" approach:
-        # with casa_tools.TableReader(calapp[0].gaintable) as tb: 
-        #     table_ants = set(tb.getcol('ANTENNA1'))
-        # caltable_antennas = [int(ant) for ant in table_ants]
-        # children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
-        #                             ant=ant, spw=spw, pol=pol, **kwargs)
-        #             for ant in caltable_antennas]
-
+        # Identify ants in caltable
+        # If a list of calapps is input, create a dictionary to keep track of which caltables have which ants.
         if isinstance(calapp, list): 
             table_ants = set()
             dict_calapp_ants = collections.defaultdict(set)
