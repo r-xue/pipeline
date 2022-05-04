@@ -3,6 +3,7 @@ import os
 import re
 
 import numpy as np
+from scipy.ndimage import label
 import shutil
 
 import pipeline.domain.measures as measures
@@ -1409,18 +1410,44 @@ class Tclean(cleanbase.CleanBase):
 
             # Calculate the mom8/mom10 histogram asymmetry
             histogram_threshold = mom8_image_median_all + 2.0 * mom8_image_mad / 0.6745
+
             with casa_tools.ImageReader(flattened_pb_name) as image:
                 flattened_pb_image = image.getchunk()[:,:,0,0]
+
             with casa_tools.ImageReader(mom8fc_name) as image:
                 mom8fc_image = image.getchunk()[:,:,0,0]
                 mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
                 mom8_n_histogram_pixels = np.ma.sum(np.ma.where(mom8fc_masked_image > histogram_threshold, 1, 0))
+
+                # Get number of pixels per beam
                 image_summary = image.summary()
                 major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(image_summary['restoringbeam']['major'], 'rad')) / 2
                 minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(image_summary['restoringbeam']['minor'], 'rad')) / 2
                 cellx = abs(image_summary['incr'][0])
                 celly = abs(image_summary['incr'][1])
                 NumPixelsInBeam = float(major_radius * minor_radius * np.pi / cellx / celly)
+                # Get threshold for maximum segment calculation
+                cut1 = mom8_image_median_all + 3.0 * cube_chanScaledMAD
+                cut2 = mom8_image_median_all + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_all)
+                cut3 = mom8_image_median_all + 2.0 * cube_chanScaledMAD
+                segments_threshold = max(min(cut1, cut2), cut3)
+
+                # Get largest segment
+                segments_image = np.ma.where(mom8fc_masked_image > segments_threshold, 1, 0)
+                label_image, num_labels = label(segments_image)
+                if num_labels > 0:
+                    NumPixelsInLargestSegment = np.max([np.ma.sum(np.ma.where(label_image == i, 1, 0)) for i in range(1, num_labels + 1)])
+                    # Prune small areas
+                    if NumPixelsInLargestSegment < 0.1 * NumPixelsInBeam:
+                        FracMaxSegment = 0.0
+                        MaxSegBeams = 0.0
+                    else:
+                        FracMaxSegment = NumPixelsInLargestSegment / mom8_n_pixels
+                        MaxSegBeams = NumPixelsInLargestSegment / NumPixelsInBeam
+                else:
+                    FracMaxSegment = 0.0
+                    MaxSegBeams = 0.0
+
             with casa_tools.ImageReader(mom10fc_name) as image:
                 mom10fc_image = image.getchunk()[:,:,0,0]
                 mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
