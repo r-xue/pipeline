@@ -119,9 +119,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             if cp_calapp.intent != 'PHASE':
                 result.final.append(cp_calapp)
                 result.pool.append(cp_calapp)
-#            else:
-#                result.phasecal_for_phase.append(cp_calapp)
-            result.phasecal_for_phase_plot.append(cp_calapp) # = cal_phase_results # this is a list, combine by coming
+
+            # Add all results to this list to be plotted in the phase vs. time diagnostic plots in the renderer (See: PIPE-1377)
+            result.phasecal_for_phase_plot.append(cp_calapp) 
 
         # Compute the amplitude calibration.
         LOG.info('Computing the final amplitude gain table.')

@@ -130,7 +130,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 diagnostic_amp_vs_time_summaries[vis].extend(plot_wrappers)
 
             # generate phase vs time plots
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'TARGET')
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'TARGET', combine=True)
             phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
@@ -162,7 +162,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
                 # phase vs time plots
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'TARGET')
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'TARGET', combine=True)
                 phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimePlotRenderer(context, result, phase_vs_time_details[vis])
                 with renderer.get_file() as fileobj:
