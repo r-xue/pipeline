@@ -75,19 +75,19 @@ bgcolor_list=[dev2shade(3),dev2shade(4),dev2shade(5),dev2shade(6)]
     border-collapse: collapse;
     vertical-align: middle;
     text-align: center;
+    font-size: 12px;
 }
 
 .table th {
     border-collapse: collapse;
     vertical-align: middle;
     text-align: center;
-    
+    font-size: 12px;
     border-bottom: ${border_line} !important;
     border-right: ${border_line} !important;
     border-top: ${border_line} !important;
     border-left: ${border_line}  !important;
     background-color: #F9F9F9;
-    
 }
 
 </style>
@@ -156,13 +156,9 @@ $(function () {
             MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
         </li>
         <li>
-            The cell background highlights spws with a stastical property signficantly deviated from its mean over all spw groups: 
-            <p style="background-color:${bgcolor_list[0]}; display:inline;">3*madrms&le;dev&lt;4*madrms</p>; 
-            <p style="background-color:${bgcolor_list[1]}; display:inline;">4*madrms&le;dev&lt;5*madrms</p>;   
-            <p style="background-color:${bgcolor_list[2]}; display:inline;">5*madrms&le;dev&lt;6*madrms</p>; 
-            <p style="background-color:${bgcolor_list[3]}; display:inline;">6*madrms&le;dev</p>.
-            The deviation, in units of madrms, is also show in the tooltip box.
-        </li>        
+            The cell background highlights spws with a stastical property signficantly deviated from its mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>.
+            The deviation, in units of &#963 (defined from the scaled MAD over all spw groups), is also show in the tooltip box.
+        </li>            
     </caption>    
     
     <thead>
