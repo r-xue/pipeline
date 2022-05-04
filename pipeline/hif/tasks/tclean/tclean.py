@@ -1407,7 +1407,7 @@ class Tclean(cleanbase.CleanBase):
                 else:
                     mom8_n_outlier_pixels = 0
 
-            # Calculate the mom8/mom10 histogram assymetry
+            # Calculate the mom8/mom10 histogram asymmetry
             histogram_threshold = mom8_image_median_all + 2.0 * mom8_image_mad / 0.6745
             with casa_tools.ImageReader(flattened_pb_name) as image:
                 flattened_pb_image = image.getchunk()[:,:,0,0]
