@@ -1,11 +1,13 @@
 """
+T2_4MDetailsSDApplycalRenderer class.
+
 Created on 24 Oct 2014
 
 @author: sjw
 """
 import collections
-import os.path
-from typing import Dict, Tuple
+import os
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as super_renderer
@@ -18,19 +20,41 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
 
+if TYPE_CHECKING:
+    from pipeline.domain.source import Source
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.h.tasks.applycal.applycal import ApplycalResults
+    from pipeline.infrastructure.renderer.logger import Plot
+
 LOG = logging.get_logger(__name__)
 
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer):
-    def __init__(self, uri='applycal.mako',
-                 description='Apply calibrations from context',
-                 always_rerender=False):
+    """SDApplyCal Renderer class for t2_4m."""
+
+    def __init__(self, uri: str='hsd_applycal.mako',
+                 description: str='Apply calibrations from context',
+                 always_rerender: bool=False):
+        """Initialise the class.
+
+        Args:
+            uri: template file name. default:'hsd_applycal.mako'
+            description : description of the class, default:'Apply calibrations from context'
+            always_rerender : rerendering execution flag, default: False
+        """
         super(T2_4MDetailsSDApplycalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx, context, result):
+    def update_mako_context(self, ctx: Dict, context: Context, result: ResultsList):
+        """Update mako context dict to render.
+
+        Args:
+            ctx: mako context dict
+            context: pipeline context
+            result: list of ApplycalResults
+        """
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % result.stage_number)
 
@@ -89,12 +113,30 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_max': uv_max,
         })
 
-    def create_single_dish_science_plots(self, context: Context, results: ResultsList) -> Tuple[Dict, Dict, Dict]:
-        """
-        Create plots for the science targets, returning three dictionaries
-        vis:[Plots], vis:[subpage paths], and vis:[max UV distances].
+        # members for parent template applycal.mako
+        ctx.update({
+            'amp_vs_freq_plots': [],
+            'phase_vs_freq_plots': [],
+            'amp_vs_time_plots': [],
+            'amp_vs_uv_plots': [],
+            'phase_vs_time_plots': [],
+            'corrected_to_antenna1_plots': [],
+            'corrected_to_model_vs_uvdist_plots': [],
+            'science_amp_vs_uv_plots': [],
+            'uv_plots': [],
+            'amp_vs_freq_subpages': [],
+            'phase_vs_freq_subpages': [],
+            'amp_vs_time_subpages': [],
+            'amp_vs_uv_subpages': [],
+            'phase_vs_time_subpages': [],
+        })
 
-         MODIFIED for single dish
+    def create_single_dish_science_plots(self, context: Context, results: ResultsList) \
+            -> Tuple[Dict[str, List[List[Union[str, List['Plot']]]]], Dict[str, str], Dict[str, measures.Distance]]:
+        """
+        Create plots for the science targets.
+
+        MODIFIED for single dish
 
         Args:
             context: pipeline context
@@ -109,6 +151,10 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         amp_vs_freq_detail_plots = {}
 
+        # set to determine that this dict is for hsd_applycal.
+        # it should be removed in template before rendering
+        amp_vs_freq_summary_plots['__hsd_applycal__'] = []
+
         for result in results:
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
@@ -116,23 +162,11 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
             amp_vs_freq_summary_plots[vis] = []
 
-            # Plot for 1 science field (either 1 science target or for a mosaic 1
-            # pointing). The science field that should be chosen is the one with
-            # the brightest average amplitude over all spws
-            representative_source_name, _ = ms.get_representative_source_spw()
-            representative_source = {s for s in ms.sources if s.name == representative_source_name}
-            if len(representative_source) >= 1:
-                representative_source = representative_source.pop()
-
-            brightest_field = super_renderer.get_brightest_field(ms, representative_source)
-            plots = self.science_plots_for_result(context,
-                                                  result,
-                                                  applycal.RealVsFrequencySummaryChart,
-                                                  [brightest_field.id], None,
-                                                  preserve_coloraxis=True )
-            for plot in plots:
-                plot.parameters['source'] = representative_source
-            amp_vs_freq_summary_plots[vis].extend(plots)
+            for source in filter(lambda source: 'TARGET' in source.intents, ms.sources):
+                if len(source.fields) > 0:
+                    source_name = source.fields[0].name
+                    plots = self._plot_source(context, result, ms, source)
+                    amp_vs_freq_summary_plots[vis].append([source_name, plots])
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
@@ -148,7 +182,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                                                       result,
                                                       applycal.RealVsFrequencyDetailChart,
                                                       fields, None,
-                                                      preserve_coloraxis=True )
+                                                      preserve_coloraxis=True)
                 amp_vs_freq_detail_plots[vis] = plots
 
         # create detail pages
@@ -164,3 +198,26 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         amp_vs_freq_subpages = dict((vis, amp_vs_freq_subpage) for vis in amp_vs_freq_detail_plots.keys())
 
         return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs
+
+    def _plot_source(self, context: Context, result: 'ApplycalResults', ms: 'MeasurementSet', source: 'Source') \
+            -> List['Plot']:
+        """Plot science plots for result.
+
+        Args:
+            context : pipeline context
+            result : applycal result object
+            ms : Measurement Set
+            source : target source
+
+        Returns:
+            List of Plot object
+        """
+        brightest_field = super_renderer.get_brightest_field(ms, source)
+        plots = self.science_plots_for_result(context,
+                                              result,
+                                              applycal.RealVsFrequencySummaryChart,
+                                              [brightest_field.id], None,
+                                              preserve_coloraxis=True)
+        for plot in plots:
+            plot.parameters['source'] = source
+        return plots
