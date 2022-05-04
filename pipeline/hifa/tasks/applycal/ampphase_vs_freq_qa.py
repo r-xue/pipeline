@@ -92,19 +92,23 @@ def score_all_scans(ms, intent: str, flag_all: bool = False, memory_gb: int = ME
 
     # Score all scans for a given spw
     for spw_id in wrappers.keys():
-        # Average wrappers
-        average_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrappers[spw_id])
-        average_fits = get_best_fits_per_ant(average_wrapper)
-        outlier_fn = functools.partial(
-            Outlier,
-            vis={ms.basename, },
-            intent={intent, },
-            spw={spw_id, },
-            scan={-1, }
-        )
+        if len(wrappers[spw_id]) > 1:
+            LOG.info('Applycal QA analysis: processing {} scan average spw {}'.format(ms.basename, spw_id))
+            # Average wrappers
+            average_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrappers[spw_id])
+            average_fits = get_best_fits_per_ant(average_wrapper)
+            outlier_fn = functools.partial(
+                Outlier,
+                vis={ms.basename, },
+                intent={intent, },
+                spw={spw_id, },
+                scan={-1, }
+            )
 
-        # Score average
-        outliers.extend(score_all(average_fits, outlier_fn, flag_all))
+            # Score average
+            outliers.extend(score_all(average_fits, outlier_fn, flag_all))
+        else:
+            LOG.info('Applycal QA analysis: skipping {} scan average spw {} due to single scan'.format(ms.basename, spw_id))
 
     return outliers
 
@@ -363,7 +367,6 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
             value = accessor(fit).value
             this_sigma = np.sqrt(reference_sigma ** 2 + unc ** 2)
             num_sigma = np.abs((value - reference_val) / this_sigma)
-
             if num_sigma > sigma_threshold:
                 outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma, phase_offset_gt90deg=abs(fit.phase.intercept.value) > 0.5 * np.pi)
                 outliers.append(outlier)
