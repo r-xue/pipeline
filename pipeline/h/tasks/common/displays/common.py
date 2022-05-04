@@ -142,7 +142,8 @@ class PlotmsCalLeaf(object):
     ant arguments through to plotms without further manipulation, creating
     exactly one plot. 
 
-    If more than one calapp is provided, the caltables from each calapp are overplotted.
+    If a list of calapps is provided as input, the caltables from each calapp 
+    will be overplotted on the same plot.
     """
 
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
@@ -154,15 +155,17 @@ class PlotmsCalLeaf(object):
         self._plotrange = plotrange
         self._coloraxis = coloraxis
 
-        # Make calapp a list if it isn't already. The rest of the code assumes this is a list
+        # Make calapp a list if it isn't already, as the rest of the code assumes this is a list
         if not isinstance(calapp, list): 
             calapp = [calapp]
 
         self._calapp = calapp
         self._caltable = [cal.gaintable for cal in calapp]
-        self._caltable.sort() # sort this list so that the parameter string and plot symbols will be in the same order.
 
-        # Assumes that there is one vis for all calapps
+        # Sort this caltable list so that the parameter string and plot symbols will be in a consistent order
+        self._caltable.sort()
+
+        # Assume that there is one vis for all calapps (may need to be modififed in the future)
         self._vis = self._calapp[0].vis
         self._intent = ",".join([cal.intent for cal in self._calapp])
 
@@ -174,7 +177,6 @@ class PlotmsCalLeaf(object):
             idents = [a.name if a.name else a.id for a in domain_antennas]
             ant = ','.join(idents)
         self._ant = ant
-        print("ANT: {}".format(ant))
 
         self._figfile = self._get_figfile()
 
@@ -200,8 +202,7 @@ class PlotmsCalLeaf(object):
     def _get_figfile(self):
         caltable_name = os.path.basename(self._calapp[0].gaintable)
 
-        # Leaving the below code here, but commented-out for now in case we run into a case where the above results in a non-unique filename
-        # while testing. 
+        # The below code can be used if it turns out that the above results in a non-unique filename.
         # if len(self._calapp) > 1:
         #     caltable_name = ""
         #     for cal in self._calapp: 
@@ -288,16 +289,12 @@ class PlotmsCalLeaf(object):
             return True
 
     def _create_tasks(self):
-        symbol_array = ['autoscaling', 'diamond', 'square'] #note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points. 
+        symbol_array = ['autoscaling', 'diamond', 'square'] # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points. 
         task_list = []
 
         for n, caltable in enumerate(self._caltable): 
-            # check if antenna(s)-to-plot and spw(s)-to-plot are present in the caltable 
-            # if not, skipp plotting the caltable...
-
-            # is it worth using gaincalwrapper? 
+            # Check if antenna(s)-to-plot and spw(s)-to-plot are present in the caltable. If not, skip plotting.
             if(self._is_plot_valid(caltable)):
-                print("Creating overplot #{} with caltable: {}".format(n, caltable))
                 task_args = {key: val for key, val in self.task_args.items()} 
                 task_args['vis'] = caltable
                 task_args['plotindex'] = n
@@ -306,25 +303,26 @@ class PlotmsCalLeaf(object):
                 else:
                     task_args['clearplots'] = False
 
-                # Alter plot symbols, colors, and sizes for debugging
-                #TODO: If these need to be changed to use a specific shape for a specific intent this can 
+                # Alter plot symbols by cycling through the list of available symbols for each plot.
+                # 
+                # If these need to be changed to use a specific shape for a specific intent this can 
                 # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
                 # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
                 task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
                 task_args['customsymbol'] = True
 
-                # Leaving this code commented out here in case the if-statement on line 299 is removed after further development
+                # The following code can be used if the above is_plot_valid check is removed after further development
                 # The plotfile must be specified for only the last plotms command
 #                if n == (len(self._caltable) - 1):
 #                    task_args['plotfile'] = self._figfile 
 
-                print("Overplot ended up with task_args of:", task_args)
                 task_list.append(casa_tasks.plotms(**task_args))
             else: 
-                print("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
+                LOG.info("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
 
-            # The plotfile must be specified for only the last plotms command
-            # The last task is missing this, so remove it and then re-create with the plotfile specified
+        # The plotfile must be specified for only the last plotms command
+        # The last task is missing this, so remove it and then re-create with the plotfile specified
+        # This can be removed and replaced with the commented-out block above if the _is_plot_valid check is removed
         task_list.pop()
         task_args['plotfile'] = self._figfile 
         task_list.append(casa_tasks.plotms(**task_args))
@@ -544,13 +542,21 @@ class SpwAntComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
-        # TODO: temporary change: select first entry from calapp for now, if it is a list
-        if not isinstance(calapp, list): 
-            calapp = [calapp]
+        # Identify spws in caltable
+        # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
+        if isinstance(calapp, list): 
+            table_spws = set()
+            dict_calapp_spws = collections.defaultdict(set)
+            for cal in calapp:
+                with casa_tools.TableReader(cal.gaintable) as tb:
+                    spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+                    table_spws = table_spws.union(spws)
+                    for spw in spws:
+                        dict_calapp_spws[int(spw)].add(cal)
+        else: 
+            with casa_tools.TableReader(calapp.gaintable) as tb:
+                table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
-        # Identify spws in caltable.
-        with casa_tools.TableReader(calapp[0].gaintable) as tb: # TODO: real solution needed
-            table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
         caltable_spws = [int(spw) for spw in table_spws]
 
         # PIPE-66: if requested, and no explicit (non-empty) plotrange was
@@ -562,21 +568,35 @@ class SpwAntComposite(LeafComposite):
         update_yscale = ysamescale and not kwargs.get("plotrange", "")
 
         children = []
-        print("SpwAntComposite caltables:", calapp)
         for spw in caltable_spws:
             if update_yscale:
-                caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp[0].gaintable, gaincalamp=True) #TODO: real solution needed
-                filtered = caltable_wrapper.filter(spw=[spw])
-                ymin = numpy.ma.min(numpy.abs(filtered.data))
-                ymax = numpy.ma.max(numpy.abs(filtered.data))
+                # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw. 
+                if isinstance(calapp, list):
+                    filtered_data = numpy.empty((0,0))
+                    for cal in dict_calapp_spws[spw]:
+                        caltable_wrapper = CaltableWrapperFactory.from_caltable(cal.gaintable, gaincalamp=True) 
+                        filtered = caltable_wrapper.filter(spw=[spw])
+                        numpy.append(filtered_data, numpy.abs(filtered.data))
+                    ymin = numpy.ma.min(filtered_data)
+                    ymax = numpy.ma.max(filtered_data)
+                else:
+                    caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp[0].gaintable, gaincalamp=True)
+                    filtered = caltable_wrapper.filter(spw=[spw])
+                    ymin = numpy.ma.min(numpy.abs(filtered.data))
+                    ymax = numpy.ma.max(numpy.abs(filtered.data))
+
                 yrange = ymax - ymin
                 ymin = ymin - 0.05 * yrange
                 ymax = ymax + 0.05 * yrange
 
                 kwargs.update({"plotrange": [0, 0, ymin, ymax]})
 
-            children.append(
-                self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+            if isinstance(calapp, list):
+                children.append(
+                    self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+            else:
+                children.append(
+                    self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
 
         super().__init__(children)
 
@@ -591,9 +611,10 @@ class AntComposite(LeafComposite):
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
                  **kwargs):
         #NOTE: Could go back to just take the union of all antennas, pass all the calapps forward, 
-        # and check before plotting to make sure the antenna is present. This is still an option
-        # Passing around calapps that have this info stored somehow is also an option
-        #
+        # and check before plotting to make sure the antenna is present.
+        # Passing around calapps that have this info stored somehow is also an option for the future.
+        # 
+        # "Just union the antennas" approach:
         # with casa_tools.TableReader(calapp[0].gaintable) as tb: 
         #     table_ants = set(tb.getcol('ANTENNA1'))
         # caltable_antennas = [int(ant) for ant in table_ants]
@@ -601,17 +622,14 @@ class AntComposite(LeafComposite):
         #                             ant=ant, spw=spw, pol=pol, **kwargs)
         #             for ant in caltable_antennas]
 
-        print("AntComposite with:", calapp)
-
         if isinstance(calapp, list): 
             table_ants = set()
             dict_calapp_ants = collections.defaultdict(set)
             for cal in calapp:
                 with casa_tools.TableReader(cal.gaintable) as tb:
-                    antennas = set(tb.getcol('ANTENNA1')) # use a set to remove duplicates
+                    antennas = set(tb.getcol('ANTENNA1')) # Use a set to remove duplicates
                     table_ants = table_ants.union(antennas)
                     for ant in antennas: 
-                        print("INT ANT: {}".format(ant))
                         dict_calapp_ants[int(ant)].add(cal)
         else: 
             with casa_tools.TableReader(calapp.gaintable) as tb:
