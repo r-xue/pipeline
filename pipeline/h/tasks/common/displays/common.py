@@ -259,34 +259,36 @@ class PlotmsCalLeaf(object):
                               command=''.join(map(str, tasks)))
         return wrapper
 
-    def _is_plot_valid(self, caltable):
-        # concerned about the slowdown for one-caltable plots if omit this conditional
-        # is it worth using gaincalwrapper? 
-        if (len(caltable) > 1): 
-            with casa_tools.TableReader(caltable) as tb: # expand to full path
-                antenna1 = tb.getcol('ANTENNA1')
-                caltable_spw = tb.getcol('SPECTRAL_WINDOW_ID')
-            # are all the spws intended to plot present in the caltable
-            if str(self._spw) != '':
-                if ',' in str(self._spw): 
-                    for spw in str(self._spw).split(','): 
-                        if spw not in caltable_spw: 
-                            return False
-                else: 
-                    if self._spw not in caltable_spw:
-                        return False 
-            # are all the antennas intended to plot present in the caltable? 
-            if self._ant_ids != '' and isinstance(self._ant_ids, str):
-                if ',' in self._ant_ids:
-                    for ant in self._ant_ids.split(','): 
-                        if ant not in antenna1: 
-                            return False
-                else: 
-                    if self._ant_ids not in antenna1: 
-                        return False
-            return True
-        else:
-            return True
+    # I don't believe the following function is needed anymore, since SpwComposite, SpwAntComposite, and AntComposite *should* only send
+    # calapps to plot which have the appropriate spws and ants.
+    #
+    # def _is_plot_valid(self, caltable):
+    #     # Concerned about the slowdown for one-caltable plots if omit this conditional
+    #     if (len(caltable) > 1): 
+    #         with casa_tools.TableReader(caltable) as tb: # expand to full path
+    #             antenna1 = tb.getcol('ANTENNA1')
+    #             caltable_spw = tb.getcol('SPECTRAL_WINDOW_ID')
+    #         # are all the spws intended to plot present in the caltable
+    #         if str(self._spw) != '':
+    #             if ',' in str(self._spw): 
+    #                 for spw in str(self._spw).split(','): 
+    #                     if spw not in caltable_spw: 
+    #                         return False
+    #             else: 
+    #                 if self._spw not in caltable_spw:
+    #                     return False 
+    #         # are all the antennas intended to plot present in the caltable? 
+    #         if self._ant_ids != '' and isinstance(self._ant_ids, str):
+    #             if ',' in self._ant_ids:
+    #                 for ant in self._ant_ids.split(','): 
+    #                     if ant not in antenna1: 
+    #                         return False
+    #             else: 
+    #                 if self._ant_ids not in antenna1: 
+    #                     return False
+    #         return True
+    #     else:
+    #         return True
 
     def _create_tasks(self):
         symbol_array = ['autoscaling', 'diamond', 'square'] # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points. 
@@ -294,38 +296,38 @@ class PlotmsCalLeaf(object):
 
         for n, caltable in enumerate(self._caltable): 
             # Check if antenna(s)-to-plot and spw(s)-to-plot are present in the caltable. If not, skip plotting.
-            if(self._is_plot_valid(caltable)):
-                task_args = {key: val for key, val in self.task_args.items()} 
-                task_args['vis'] = caltable
-                task_args['plotindex'] = n
-                if n==0: 
-                    task_args['clearplots'] = True
-                else:
-                    task_args['clearplots'] = False
+#            if(self._is_plot_valid(caltable)):
+            task_args = {key: val for key, val in self.task_args.items()} 
+            task_args['vis'] = caltable
+            task_args['plotindex'] = n
+            if n==0: 
+                task_args['clearplots'] = True
+            else:
+                task_args['clearplots'] = False
 
-                # Alter plot symbols by cycling through the list of available symbols for each plot.
-                # 
-                # If these need to be changed to use a specific shape for a specific intent this can 
-                # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
-                # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
-                task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
-                task_args['customsymbol'] = True
+            # Alter plot symbols by cycling through the list of available symbols for each plot.
+            # 
+            # If these need to be changed to use a specific shape for a specific intent this can 
+            # but updated to can loop over the calapps and grab the table and intent and use that to pick the shape
+            # selecting shapes one-by-one from the symbol_array could be used as a fallback for unmatched intents
+            task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
+            task_args['customsymbol'] = True
 
-                # The following code can be used if the above is_plot_valid check is removed after further development
-                # The plotfile must be specified for only the last plotms command
-#                if n == (len(self._caltable) - 1):
-#                    task_args['plotfile'] = self._figfile 
+            # The following code should be commented-out if the is_plot_valid check is re-added
+            # The plotfile must be specified for only the last plotms command
+            if n == (len(self._caltable) - 1):
+                task_args['plotfile'] = self._figfile 
 
-                task_list.append(casa_tasks.plotms(**task_args))
-            else: 
-                LOG.info("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
+            task_list.append(casa_tasks.plotms(**task_args))
+#            else: 
+#                LOG.info("Skipping plot #{} due to invalid spw: {} and/or antenna {}".format(n, self._spw, self._ant))
 
         # The plotfile must be specified for only the last plotms command
         # The last task is missing this, so remove it and then re-create with the plotfile specified
-        # This can be removed and replaced with the commented-out block above if the _is_plot_valid check is removed
-        task_list.pop()
-        task_args['plotfile'] = self._figfile 
-        task_list.append(casa_tasks.plotms(**task_args))
+        # This should be used if the _is_plot_valid check is re-added
+        # task_list.pop()
+        # task_args['plotfile'] = self._figfile 
+        # task_list.append(casa_tasks.plotms(**task_args))
 
         return task_list
 
