@@ -9,6 +9,7 @@ import matplotlib.dates
 import numpy
 
 import cachetools
+from typing import Union, List
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -146,7 +147,8 @@ class PlotmsCalLeaf(object):
     will be overplotted on the same plot.
     """
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
+    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication], 
+                xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
         self._xaxis = xaxis
@@ -186,7 +188,7 @@ class PlotmsCalLeaf(object):
         if ant:
             self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
-        # These task arguments are the same whether one caltable is plotted 
+        # These task_args are the same whether one caltable is plotted 
         # on its own, or multiple caltables are overplotted. 
         self.task_args = {'xaxis': self._xaxis,
                      'yaxis': self._yaxis,
@@ -266,27 +268,26 @@ class PlotmsCalLeaf(object):
         symbol_array = ['autoscaling', 'diamond', 'square'] # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points. 
         task_list = []
 
+        # Create a plotms task for each caltable. See PIPE-1377 and PIPE-1409. 
         for n, caltable in enumerate(self._caltable): 
-            task_args = {key: val for key, val in self.task_args.items()} 
-
             # plotms uses the 'vis' input parameter to specify caltables to plot
-            task_args['vis'] = caltable
-            task_args['plotindex'] = n
+            self.task_args['vis'] = caltable
+            self.task_args['plotindex'] = n
 
             # If there are multiple caltables to overplot, clearplots must be False for all
             # but the first plot.
             if n != 0: 
-                task_args['clearplots'] = False
+                self.task_args['clearplots'] = False
 
             # Alter plot symbols by cycling through the list of available symbols for each subsequent over-plot.
-            task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
-            task_args['customsymbol'] = True
+            self.task_args['symbolshape'] = symbol_array[n % len(symbol_array)]
+            self.task_args['customsymbol'] = True
 
             # The plotfile must be specified for only the last plotms command
             if n == (len(self._caltable) - 1):
-                task_args['plotfile'] = self._figfile 
+                self.task_args['plotfile'] = self._figfile 
 
-            task_list.append(casa_tasks.plotms(**task_args))
+            task_list.append(casa_tasks.plotms(**self.task_args))
 
         return task_list
 
@@ -464,8 +465,8 @@ class SpwComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, ant='', pol='',
-                 **kwargs):
+    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication], 
+                xaxis, yaxis, ant='', pol='', **kwargs):
 
         # Identify spws in caltable
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
@@ -504,8 +505,11 @@ class SpwAntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication], 
+                xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+        
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
+        # Support for lists of calapps was added for PIPE-1409 and PIPE-1377.
         if isinstance(calapp, list): 
             # Identify spws in caltable
             table_spws = set()
@@ -530,19 +534,17 @@ class SpwAntComposite(LeafComposite):
             for spw in caltable_spws:
                 if update_yscale:
                 # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw. 
-#                   filtered_data = numpy.empty((0,0))
                     ymins = []
                     ymaxes = []
                     for cal in dict_calapp_spws[spw]:
                         caltable_wrapper = CaltableWrapperFactory.from_caltable(cal.gaintable, gaincalamp=True) 
                         filtered = caltable_wrapper.filter(spw=[spw])
-#                        numpy.append(filtered_data, numpy.abs(filtered.data))
                         # Save the ymin and ymax values rather than the full filtered.data as that could get large
                         ymins.append(numpy.ma.min(numpy.abs(filtered.data)))
-                        ymaxes.append(numpy.ma.min(numpy.abs(filtered.data)))
+                        ymaxes.append(numpy.ma.max(numpy.abs(filtered.data)))
 
-                    ymin = numpy.ma.min(ymins) #filtered_data)
-                    ymax = numpy.ma.max(ymaxes) #filtered_data)
+                    ymin = numpy.ma.min(ymins)
+                    ymax = numpy.ma.max(ymaxes)
 
                     yrange = ymax - ymin
                     ymin = ymin - 0.05 * yrange
@@ -595,8 +597,8 @@ class AntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
-                 **kwargs):
+    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication],
+                xaxis, yaxis, spw='', pol='', **kwargs):
         # Identify ants in caltable
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which ants.
         if isinstance(calapp, list): 
