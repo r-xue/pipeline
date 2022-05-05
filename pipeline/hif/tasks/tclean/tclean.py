@@ -1408,54 +1408,59 @@ class Tclean(cleanbase.CleanBase):
                 else:
                     mom8_n_outlier_pixels = 0
 
-            # Calculate the mom8/mom10 histogram asymmetry
+            # New score based on mom8/mom10 histogram asymmetry and largest mom8 segment needs
+            # more metrics (PIPE-1232)
             histogram_threshold = mom8_image_median_all + 2.0 * mom8_image_mad / 0.6745
 
+            # Get the PB image as numpy array
             with casa_tools.ImageReader(flattened_pb_name) as image:
                 flattened_pb_image = image.getchunk()[:,:,0,0]
 
+            # Get the MOM8 FC image as numpy array
             with casa_tools.ImageReader(mom8fc_name) as image:
                 mom8fc_image = image.getchunk()[:,:,0,0]
-                mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
-                mom8_n_histogram_pixels = np.ma.sum(np.ma.where(mom8fc_masked_image > histogram_threshold, 1, 0))
+                mom8fc_image_summary = image.summary()
 
-                # Get number of pixels per beam
-                image_summary = image.summary()
-                major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(image_summary['restoringbeam']['major'], 'rad')) / 2
-                minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(image_summary['restoringbeam']['minor'], 'rad')) / 2
-                cellx = abs(image_summary['incr'][0])
-                celly = abs(image_summary['incr'][1])
-                NumPixelsInBeam = float(major_radius * minor_radius * np.pi / cellx / celly)
-                # Get threshold for maximum segment calculation
-                cut1 = mom8_image_median_all + 3.0 * cube_chanScaledMAD
-                cut2 = mom8_image_median_all + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_all)
-                cut3 = mom8_image_median_all + 2.0 * cube_chanScaledMAD
-                segments_threshold = max(min(cut1, cut2), cut3)
+            mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+            mom8_n_histogram_pixels = np.ma.sum(np.ma.where(mom8fc_masked_image > histogram_threshold, 1, 0))
 
-                # Get largest segment
-                segments_image = np.ma.where(mom8fc_masked_image > segments_threshold, 1, 0)
-                label_image, num_labels = label(segments_image)
-                if num_labels > 0:
-                    NumPixelsInLargestSegment = np.max([np.ma.sum(np.ma.where(label_image == i, 1, 0)) for i in range(1, num_labels + 1)])
-                    # Prune small areas
-                    if NumPixelsInLargestSegment < 0.1 * NumPixelsInBeam:
-                        FracMaxSegment = 0.0
-                        MaxSegBeams = 0.0
-                    else:
-                        FracMaxSegment = NumPixelsInLargestSegment / mom8_n_pixels
-                        MaxSegBeams = NumPixelsInLargestSegment / NumPixelsInBeam
-                else:
-                    FracMaxSegment = 0.0
-                    MaxSegBeams = 0.0
+            # Get number of pixels per beam
+            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
+            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad')) / 2
+            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad')))
+            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
+            num_pixels_in_beam = float(major_radius * minor_radius * np.pi / cellx / celly)
+            # Get threshold for maximum segment calculation
+            cut1 = mom8_image_median_all + 3.0 * cube_chanScaledMAD
+            cut2 = mom8_image_median_all + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_all)
+            cut3 = mom8_image_median_all + 2.0 * cube_chanScaledMAD
+            segments_threshold = max(min(cut1, cut2), cut3)
 
+            # Get largest segment
+            mom8_segments_image = np.ma.where(mom8fc_masked_image > segments_threshold, 1, 0)
+            mom8_frac_max_segment = 0.0
+            mom8_max_segment_beams = 0.0
+            # Label segments
+            mom8_label_image, num_labels = label(mom8_segments_image)
+            if num_labels > 0:
+                # Calculate largest segment size
+                mom8_num_pixels_in_largest_segment = np.max([np.ma.sum(np.ma.where(mom8_label_image == i, 1, 0)) for i in range(1, num_labels + 1)])
+                # Prune small segments
+                if mom8_num_pixels_in_largest_segment >= 0.1 * num_pixels_in_beam:
+                    mom8_frac_max_segment = mom8_num_pixels_in_largest_segment / mom8_n_pixels
+                    mom8_max_segment_beams = mom8_num_pixels_in_largest_segment / num_pixels_in_beam
+
+            # Get the MOM10 FC image as numpy array
             with casa_tools.ImageReader(mom10fc_name) as image:
                 mom10fc_image = image.getchunk()[:,:,0,0]
-                mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
-                mom10_n_histogram_pixels = np.ma.sum(np.ma.where(mom10fc_masked_image > histogram_threshold, 1, 0))
+
+            # Get histogram asymmetry
+            mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+            mom10_n_histogram_pixels = np.ma.sum(np.ma.where(mom10fc_masked_image > histogram_threshold, 1, 0))
             if min(mom8_n_histogram_pixels, mom10_n_histogram_pixels) > 0:
-                histogram_asymmetry = abs(mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
+                mom_8_10_histogram_asymmetry = abs(mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
             else:
-                histogram_asymmetry = 0.0
+                mom_8_10_histogram_asymmetry = 0.0
 
             # Update the result.
             result.set_cube_sigma(maxiter, cube_sigma)
@@ -1471,6 +1476,8 @@ class Tclean(cleanbase.CleanBase):
             result.set_mom8_fc_outlier_threshold(maxiter, mom8_outlier_threshold)
             result.set_mom8_fc_n_pixels(maxiter, mom8_n_pixels)
             result.set_mom8_fc_n_outlier_pixels(maxiter, mom8_n_outlier_pixels)
+            result.set_mom8_fc_frac_max_segment(maxiter, mom8_frac_max_segment)
+            result.set_mom8_fc_max_segment_beams(maxiter, mom8_max_segment_beams)
 
             result.set_mom10_fc(maxiter, mom10fc_name)
             result.set_mom10_fc_image_min(maxiter, mom10_image_min)
@@ -1479,6 +1486,8 @@ class Tclean(cleanbase.CleanBase):
             result.set_mom10_fc_image_median_annulus(maxiter, mom10_image_median_annulus)
             result.set_mom10_fc_image_mad(maxiter, mom10_image_mad)
             result.set_mom10_fc_n_pixels(maxiter, mom10_n_pixels)
+
+            result.set_mom8_10_fc_histogram_asymmetry(maxiter, mom_8_10_histogram_asymmetry)
 
         else:
             LOG.warning('Cannot create MOM0_FC / MOM8_FC / MOM10_FC images for intent "%s", '

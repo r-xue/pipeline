@@ -325,6 +325,26 @@ class TcleanResult(basetask.Results):
         '''
         self.iterations[iter]['mom8_fc_n_outlier_pixels'] = n_outlier_pixels
 
+    def mom8_fc_frac_max_segment(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_frac_max_segment')
+
+    def set_mom8_fc_frac_max_segment(self, iter, frac_max_segment):
+        '''
+        Sets fraction of maximum moment 8 image segment compared to overall size.
+        '''
+        self.iterations[iter]['mom8_fc_frac_max_segment'] = frac_max_segment
+
+    def mom8_fc_max_segment_beams(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_max_segment_beams')
+
+    def set_mom8_fc_max_segment_beams(self, iter, max_segment_beams):
+        '''
+        Sets size of maximum moment 8 image segment in beams.
+        '''
+        self.iterations[iter]['mom8_fc_max_segment_beams'] = max_segment_beams
+
     @property
     def mom10_fc(self):
         iters = sorted(self.iterations.keys())
@@ -408,6 +428,17 @@ class TcleanResult(basetask.Results):
         image for iter iteration step.
         '''
         self.iterations[iter]['mom10_fc_n_pixels'] = n_pixels
+
+    @property
+    def mom8_10_fc_histogram_asymmetry(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_10_fc_histogram_asymmetry')
+
+    def set_mom8_10_fc_histogram_asymmetry(self, iter, histogram_asymmetry):
+        '''
+        Sets histogram asymmetry value.
+        '''
+        self.iterations[iter]['mom8_10_fc_histogram_asymmetry'] = histogram_asymmetry
 
     @property
     def mom0(self):
