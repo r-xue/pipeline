@@ -1341,7 +1341,7 @@ class Tclean(cleanbase.CleanBase):
             else:
                 flattened_mask_name = None
 
-            outlier_threshold = 5.0
+            mom8_outlier_threshold = 5.0
 
             # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
@@ -1394,13 +1394,13 @@ class Tclean(cleanbase.CleanBase):
             cube_sigma = np.median(cube_stats_masked.get('sigma')[cont_chan_indices])
             cube_chanScaledMAD = np.median(cube_stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
 
-            peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_chanScaledMAD
+            mom8_fc_peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_chanScaledMAD
 
-            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, peak_snr, cube_chanScaledMAD))
+            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, mom8_fc_peak_snr, cube_chanScaledMAD))
 
             # Calculate outlier fraction for QA scoring
             with casa_tools.ImageReader(mom8fc_name) as image:
-                mom8_outlier_statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + mom8_image_median_annulus)
+                mom8_outlier_statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, mom8_outlier_threshold * cube_chanScaledMAD + mom8_image_median_annulus)
                 mom8_stats_outlier = image.statistics(mask=mom8_outlier_statsmask, robust=True)
                 mom8_outlier_npts = mom8_stats_outlier.get('npts')
                 if mom8_outlier_npts.shape != (0,):
@@ -1458,16 +1458,17 @@ class Tclean(cleanbase.CleanBase):
                 histogram_asymmetry = 0.0
 
             # Update the result.
+            result.set_cube_sigma(maxiter, cube_sigma)
+            result.set_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
+
             result.set_mom8_fc(maxiter, mom8fc_name)
             result.set_mom8_fc_image_min(maxiter, mom8_image_min)
             result.set_mom8_fc_image_max(maxiter, mom8_image_max)
             result.set_mom8_fc_image_median_all(maxiter, mom8_image_median_all)
             result.set_mom8_fc_image_median_annulus(maxiter, mom8_image_median_annulus)
             result.set_mom8_fc_image_mad(maxiter, mom8_image_mad)
-            result.set_mom8_fc_cube_sigma(maxiter, cube_sigma)
-            result.set_mom8_fc_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
-            result.set_mom8_fc_peak_snr(maxiter, peak_snr)
-            result.set_mom8_fc_outlier_threshold(maxiter, outlier_threshold)
+            result.set_mom8_fc_peak_snr(maxiter, mom8_fc_peak_snr)
+            result.set_mom8_fc_outlier_threshold(maxiter, mom8_outlier_threshold)
             result.set_mom8_fc_n_pixels(maxiter, mom8_n_pixels)
             result.set_mom8_fc_n_outlier_pixels(maxiter, mom8_n_outlier_pixels)
 
@@ -1477,12 +1478,7 @@ class Tclean(cleanbase.CleanBase):
             result.set_mom10_fc_image_median_all(maxiter, mom10_image_median_all)
             result.set_mom10_fc_image_median_annulus(maxiter, mom10_image_median_annulus)
             result.set_mom10_fc_image_mad(maxiter, mom10_image_mad)
-            #result.set_mom10_fc_cube_sigma(maxiter, cube_sigma)
-            #result.set_mom10_fc_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
-            #result.set_mom10_fc_peak_snr(maxiter, peak_snr)
-            result.set_mom10_fc_outlier_threshold(maxiter, outlier_threshold)
             result.set_mom10_fc_n_pixels(maxiter, mom10_n_pixels)
-            #result.set_mom10_fc_n_outlier_pixels(maxiter, mom10_n_outlier_pixels)
 
         else:
             LOG.warning('Cannot create MOM0_FC / MOM8_FC / MOM10_FC images for intent "%s", '
