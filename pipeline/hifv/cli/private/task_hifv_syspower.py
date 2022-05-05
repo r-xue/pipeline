@@ -5,7 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, usemedian=None,
+def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, usemedian=None, apply=None,
                   pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
