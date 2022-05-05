@@ -444,17 +444,17 @@ def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str
 def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
     """Predict the required convolution kernel to each a target restoring beam.
     
-    pstol: the tolerance in arcsec for orginal vs. target bmaj/bmin identical or kernel "point source" like. 
-    patol: the tolerance in degree for orginal vs. target bpa identical 
+    pstol: the tolerance in arcsec for original vs. target bmaj/bmin identical or kernel "point source" like. 
+    patol: the tolerance in degree for original vs. target bpa identical 
 
     return_code:
         0:  sucess, the target beam can be reached with a valid convolution kernel
         1:  fail, "point source" like
-        2:  fail, unable to reach the target resolution, and the reqyested beam is probally too large. 
+        2:  fail, unable to reach the target beam shape, and the original beam is probably already too large in a certain direction.
 
     Note:
         Although ia.deconvolvefrombeam() can also predict convolution kernel sizes, its return can be misleading
-        in some circumstances (see CAS-13804). Therefore, we use ia.beamforconvolvedsize() here even we have to catch the CASA runtime error messages.
+        in some circumstances (see CAS-13804). Therefore, we use ia.beamforconvolvedsize() here even though we have to catch the CASA runtime error messages.
     """
     cqa = casa_tools.quanta
     cia = casa_tools.image
@@ -479,7 +479,7 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
     bpa = cqa.convert(beam[bpa_key], 'deg')['value']
 
     if abs(t_bmaj-bmaj) < pstol and abs(t_bmin-bmin) < pstol and abs(t_bpa-bpa) < patol:
-        LOG.debug(
+        LOG.info(
             'The target beam is identical or close to the original beam under the specified tolerance: ' +
             f'pstol = {pstol} arcsec and patol = {patol} deg.')
         rt_code = 1
@@ -493,14 +493,15 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
         try:
             rt_kernel = cia.beamforconvolvedsize(source=origin_bm, convolved=target_bm)
             if cqa.convert(rt_kernel['major'], 'arcsec')['value'] < pstol:
-                LOG.debug('The kernel from ia.deconvolvefrombeam() is considered as a point-source under the specified tolerance: ' +
-                          f'pstol = {pstol} arcsec and patol = {patol} deg.')
+                LOG.info('The kernel from ia.deconvolvefrombeam() is considered as a point-source under the tolerance ' +
+                         f'pstol = {pstol} arcsec.')
                 rt_code = 1
             else:
-                LOG.debug(f"The convolution kernel prediced by ia.deconvolvefrombeam is {rt_kernel}")
+                LOG.info(f'The convolution kernel prediced by ia.deconvolvefrombeam is {rt_kernel} and larger than the tolerence ' +
+                         f'pstol = {pstol} arcsec')
                 rt_code = 0
         except RuntimeError as e:
-            LOG.debug(f"Unable to reach target resolution and the specified target beam is probably too large.")
+            LOG.info("Unable to reach the target beam shape because the original beam is probably already too large.")
             rt_code = 2
 
         # clean up the filtered messages

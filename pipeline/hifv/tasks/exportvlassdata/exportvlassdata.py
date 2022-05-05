@@ -853,34 +853,37 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         cme = casa_tools.measures
         cqa = casa_tools.quanta
 
+        # get pixel diagonal length as the basis of beam-similarity/regridding tolerence.
         with casa_tools.ImageReader(fitsfile) as image:
-
             beam = image.restoringbeam(channel=0, polarization=0)
             fits_csys = image.coordsys()
             cdelt = np.degrees(np.abs(fits_csys.increment()['numeric'][0:2]))*3600.0
             pixdiag_arcsec = ((cdelt[0])**2+(cdelt[1])**2)**0.5  # pixel diagonal length in arcsec
             LOG.debug(f'pixel diagonal length: {pixdiag_arcsec} arcsec')
 
+        # smooth to the common resolution
         _, kn_code = predict_kernel(beam, target_beam, pstol=pixdiag_arcsec*0.2)
         if kn_code:
-            smoothed_image = fitsfile
             LOG.info(f'{fitsfile} already reaches the target beam, skip image smoothing.')
+            smoothed_image = fitsfile
         else:
+            LOG.info(f'{fitsfile} has a restoring beam of {beam} and will be smoothed to the target beam of {target_beam}')
             smoothed_image = imagename+'.smo'
-            LOG.info(f'{fitsfile} has a restoring beam of {beam} and will be smoothed to the target beam.')
             job = casa_tasks.imsmooth(fitsfile, targetres=True, beam=target_beam,
                                       outfile=smoothed_image, overwrite=True)
             self._executor.execute(job)
 
+        # regrid to the common frame
+        # note: for CASA/imregrid, input can be either a FITS or CASA image. However, the template and output are CASA images.
+        sptol = 0.1*pixdiag_arcsec
         with casa_tools.ImageReader(imagename) as image:
             casa_csys = image.coordsys()
             refdir = casa_csys.referencevalue(format='m')['measure']['direction']
             imgdir = fits_csys.referencevalue(format='m')['measure']['direction']
             sep_arcsec = cqa.convert(cme.separation(refdir, imgdir), 'arcsec')['value']
-            LOG.debug(f'crval seperation: {sep_arcsec} arcsec')
-
-        # For imregrid, input can be either a FITS or CASA image. However, the template and output can only be CASA images.
-        if sep_arcsec > 0.1*pixdiag_arcsec:
+            LOG.info(
+                f'crval separation: {sep_arcsec} arcsec, with a regridding-request tolerence specified at {sptol} arcsec.')
+        if sep_arcsec > sptol:
             commom_image = imagename+'.com'
             job = casa_tasks.imregrid(imagename=smoothed_image, template=imagename,
                                       output=commom_image, overwrite=True, axes=[0, 1])
@@ -889,9 +892,17 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             commom_image = smoothed_image
 
         if commom_image != fitsfile:
-
             job = casa_tasks.exportfits(imagename=commom_image, fitsimage=os.path.splitext(fitsfile)[0]+'.com.fits')
             self._executor.execute(job)
         else:
             # In an unlikely situation, no regrdding or smooth was done, we just need to make a copy of the original FITS
-            shutil.copy(fitsfile, os.path.splitext(fitsfile)[0]+'.com.fits')
+            job = casa_tasks.copyfile(fitsfile, os.path.splitext(fitsfile)[0]+'.com.fits')
+            self._executor.execute(job)
+
+        # clean up the intermediate CASA images to free up the disk space.
+        if smoothed_image != fitsfile and os.path.exists(smoothed_image):
+            job = casa_tasks.rmtree(smoothed_image)
+            self._executor.execute(job)
+        if commom_image != fitsfile and os.path.exists(commom_image):
+            job = casa_tasks.rmtree(commom_image)
+            self._executor.execute(job)
