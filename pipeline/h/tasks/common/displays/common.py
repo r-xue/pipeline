@@ -541,7 +541,7 @@ class SpwAntComposite(LeafComposite):
                         filtered = caltable_wrapper.filter(spw=[spw])
                         # Save the ymin and ymax values rather than the full filtered.data as that could get large
                         ymins.append(numpy.ma.min(numpy.abs(filtered.data)))
-                        ymaxes.append(numpy.ma.min(numpy.abs(filtered.data)))
+                        ymaxes.append(numpy.ma.max(numpy.abs(filtered.data)))
 
                     ymin = numpy.ma.min(ymins)
                     ymax = numpy.ma.max(ymaxes)
