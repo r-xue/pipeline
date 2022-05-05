@@ -56,7 +56,19 @@ For the "cube" mode of hif_editimlist, i.e. imaging_mode='VLASS-SE-CUBE' in the 
 
 ### hifv_analyzestokescubes
 
-### hifv_exportvlassdata
+### hifv_exportvlassdata (PIPE-1434)
+
+`hifv_exportvlassdata` has been updated to include the following new features for the Coarse Cube data.
+
+ * The full-Stokes cube (IQUV) per spectral window is split into the IQU and V images before being exported into FITS files in `products/`.
+ * The position corrections applied to the FITS image header is now frequency-dependent: each plane will get a slightly different position correction (see notes in PIPE-1434 or Eq.9 of [VLASS memo 14](https://library.nrao.edu/public/memos/vla/vlass/VLASS_014.pdf).
+ * Besides the full resolution Stokes cubes, hifv_exportvlassdata() provides another set of FITS "pbcor" images which were smoothed to the smallest common beam in the dataset and were regridded to have the same WCS (with the suffix `.com`). However, these images are not included in the manifest and will not be archived.
+   * the common beam is the smallest possible beam to which all the beams in the image set can be convolved to, determined by `ia.commombeam()` via a pipeline utils wrapper function (`pipeline.infrastructure.utils.imaging.predict_kernel`).
+   * the "smooth" operation will only proceed if the prediction convolution kernel has an FWHM major larger than 0.2 times the diagonal length of a pixel.
+   * The regridded images has a reference pixel centered at the nomimal phasecenter.
+   * the "regrid" operation will only proceed if the position correction introduces a `crval` shift larger than 0.1 times the diagonal length of a pixel.
+   * Depending on whether an image meets the smooth/regrid operation threshold as stated above, one image from the common beam/WCS sets might still show a slightly different deviation in CRVAL and BMAJ/BMIN (less than 0.1 and 0.2 of the pixel diagonal length).
+ * The `SEIP_parameter.list` (for stage 2) and `CCIP_parameter.list` (for stage 6) files are exported to the `products/` directory and included in `pipeline_manifest.xml`.
 
 
 ## Workflow Summary
