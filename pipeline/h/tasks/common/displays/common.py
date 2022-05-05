@@ -9,6 +9,7 @@ import matplotlib.dates
 import numpy
 
 import cachetools
+from typing import Union, List
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -146,7 +147,8 @@ class PlotmsCalLeaf(object):
     will be overplotted on the same plot.
     """
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
+    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication], 
+                xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
         self._xaxis = xaxis
@@ -186,7 +188,7 @@ class PlotmsCalLeaf(object):
         if ant:
             self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
-        # These task arguments are the same whether one caltable is plotted 
+        # These task_args are the same whether one caltable is plotted 
         # on its own, or multiple caltables are overplotted. 
         self.task_args = {'xaxis': self._xaxis,
                      'yaxis': self._yaxis,
@@ -266,6 +268,7 @@ class PlotmsCalLeaf(object):
         symbol_array = ['autoscaling', 'diamond', 'square'] # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points. 
         task_list = []
 
+        # Create a plotms task for each caltable. See PIPE-1377 and PIPE-1409. 
         for n, caltable in enumerate(self._caltable): 
             task_args = {key: val for key, val in self.task_args.items()} 
 
@@ -464,8 +467,8 @@ class SpwComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, ant='', pol='',
-                 **kwargs):
+    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication], 
+                xaxis, yaxis, ant='', pol='', **kwargs):
 
         # Identify spws in caltable
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
@@ -504,8 +507,11 @@ class SpwAntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication], 
+                xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+        
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
+        # Support for lists of calapps was added for PIPE-1409 and PIPE-1377.
         if isinstance(calapp, list): 
             # Identify spws in caltable
             table_spws = set()
@@ -530,19 +536,17 @@ class SpwAntComposite(LeafComposite):
             for spw in caltable_spws:
                 if update_yscale:
                 # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw. 
-#                   filtered_data = numpy.empty((0,0))
                     ymins = []
                     ymaxes = []
                     for cal in dict_calapp_spws[spw]:
                         caltable_wrapper = CaltableWrapperFactory.from_caltable(cal.gaintable, gaincalamp=True) 
                         filtered = caltable_wrapper.filter(spw=[spw])
-#                        numpy.append(filtered_data, numpy.abs(filtered.data))
                         # Save the ymin and ymax values rather than the full filtered.data as that could get large
                         ymins.append(numpy.ma.min(numpy.abs(filtered.data)))
                         ymaxes.append(numpy.ma.min(numpy.abs(filtered.data)))
 
-                    ymin = numpy.ma.min(ymins) #filtered_data)
-                    ymax = numpy.ma.max(ymaxes) #filtered_data)
+                    ymin = numpy.ma.min(ymins)
+                    ymax = numpy.ma.max(ymaxes)
 
                     yrange = ymax - ymin
                     ymin = ymin - 0.05 * yrange
@@ -595,8 +599,8 @@ class AntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
-                 **kwargs):
+    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication],
+                xaxis, yaxis, spw='', pol='', **kwargs):
         # Identify ants in caltable
         # If a list of calapps is input, create a dictionary to keep track of which caltables have which ants.
         if isinstance(calapp, list): 
