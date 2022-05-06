@@ -4,9 +4,49 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+from pipeline.h.tasks.exportdata import aqua
+from . import flagdeteralma
 from . import flagtargetsalma
 
 LOG = logging.get_logger(__name__)
+
+_lowtrans_qa_metric_name = 'LowTransmissionFlags'
+
+
+class FlagDeterALMAQAHandler(pqa.QAPlugin):
+    result_cls = flagdeteralma.FlagDeterALMAResults
+    child_cls = None
+    generating_task = flagdeteralma.FlagDeterALMA
+
+    def handle(self, context, result):
+        vis = result.inputs['vis']
+        ms = context.observing_run.get_ms(vis)
+
+        # Create QA score for flagging done by 'lowtrans' agent.
+        score = qacalc.score_lowtrans_flagcmds(ms, result)
+
+        # Modify origin with locally defined metric name to ensure
+        new_origin = pqa.QAOrigin(metric_name=_lowtrans_qa_metric_name,
+                                  metric_score=score.origin.metric_score,
+                                  metric_units=score.origin.metric_units)
+        score.origin = new_origin
+
+        # Add score to the existing pool of QA scores. The latter may already
+        # have been populated by other QA handlers that work on instances of
+        # self.result_cls or its parent class(es).
+        result.qa.pool.append(score)
+
+
+class FlagDeterALMAListQAHandler(pqa.QAPlugin):
+    result_cls = collections.Iterable
+    child_cls = flagdeteralma.FlagDeterALMAResults
+    generating_task = flagdeteralma.FlagDeterALMA
+
+    def handle(self, context, result):
+        # collate the QAScores from each child result, pulling them into our
+        # own QAscore list
+        collated = utils.flatten([r.qa.pool for r in result])
+        result.qa.pool[:] = collated
 
 
 class FlagTargetsALMAQAHandler(pqa.QAPlugin):
@@ -37,3 +77,7 @@ class FlagTargetsALMAListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
+
+
+aqua_exporter = aqua.xml_generator_for_metric(_lowtrans_qa_metric_name, '{:0.3f}')
+aqua.register_aqua_metric(aqua_exporter)

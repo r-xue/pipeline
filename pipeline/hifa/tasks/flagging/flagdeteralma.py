@@ -23,10 +23,15 @@ iers_conf.auto_max_age = None
 
 __all__ = [
     'FlagDeterALMA',
-    'FlagDeterALMAInputs'
+    'FlagDeterALMAInputs',
+    'FlagDeterALMAResults',
 ]
 
 LOG = infrastructure.get_logger(__name__)
+
+
+class FlagDeterALMAResults(flagdeterbase.FlagDeterBaseResults):
+    pass
 
 
 class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
@@ -104,7 +109,13 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
     # which a SpW is flagged for low transmission.
     _max_frac_low_trans = 0.6
 
-    def get_fracspw(self, spw):    
+    def prepare(self):
+        # Wrap results from parent in hifa_flagdata specific result to enable
+        # separate QA scoring.
+        results = super().prepare()
+        return FlagDeterALMAResults(results.summaries, results.flagcmds())
+
+    def get_fracspw(self, spw):
         # From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA
         # correlator's frequency profile synthesis (fps) algorithm produced TDM
         # spws that had 64 channels in full-polarisation, 124 channels in dual
