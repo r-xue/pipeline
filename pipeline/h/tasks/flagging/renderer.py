@@ -60,7 +60,8 @@ class T2_4MDetailsFlagDeterBaseRenderer(basetemplates.T2_4MDetailsDefaultRendere
             flagcmd_files[ms.basename] = flagcmds_path
 
         # return all agents so we get ticks and crosses against each one
-        agents = ['before', 'intents', 'qa0', 'qa2', 'online', 'template', 'partialpol', 'autocorr', 'shadow', 'edgespw']
+        agents = ['before', 'intents', 'qa0', 'qa2', 'online', 'template', 'partialpol', 'autocorr', 'shadow',
+                  'edgespw', 'lowtrans']
 
         flagplots = {os.path.basename(r.inputs['vis']): self.flagplot(r, pipeline_context)
                      for r in result}
