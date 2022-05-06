@@ -56,7 +56,7 @@ in the calibrated measurement sets.</p>
 
 <h2 id="applied_corrections" class="jumptarget">Applied Corrections</h2>
 
-<p>The automatic procedure, <em>by default</em>, evaluates and selects the best model to be applied to correct
+<p>The automatic procedure, by default, evaluates and selects the best model to be applied to correct
 for atmospheric effects, namely, atmType=1 (tropical), 2 (mid latitude summer), 3 (mid latitude winter),
 and 4 (subarctic summer), with fixed temperature gradient (dTem_dh) of -5.6 K/km and fixed scale height
 for water (h0) of 2 km. In case that user-defined parameters are provided, the heuristics will be turned off.</p>
