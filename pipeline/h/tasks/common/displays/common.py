@@ -164,9 +164,6 @@ class PlotmsCalLeaf(object):
         self._calapp = calapp
         self._caltable = [cal.gaintable for cal in calapp]
 
-        # Sort this caltable list so that the parameter string and plot symbols will be in a consistent order
-        self._caltable.sort()
-
         # Assume that there is one vis for all calapps (may need to be modififed in the future)
         self._vis = self._calapp[0].vis
         self._intent = ",".join([cal.intent for cal in self._calapp])
@@ -206,14 +203,6 @@ class PlotmsCalLeaf(object):
 
     def _get_figfile(self):
         caltable_name = os.path.basename(self._calapp[0].gaintable)
-
-        # The below code can be used if it turns out that the above results in a non-unique filename.
-        # if len(self._calapp) > 1:
-        #     caltable_name = ""
-        #     for cal in self._calapp: 
-        #         caltable_name = caltable_name + "_" + os.path.basename(cal.gaintable)
-        # else:
-        #     caltable_name = os.path.basename(self._calapp[0].gaintable)
 
         fileparts = {
             'caltable': caltable_name,
@@ -261,7 +250,7 @@ class PlotmsCalLeaf(object):
                               x_axis=self._xaxis,
                               y_axis=self._yaxis,
                               parameters=parameters,
-                              command=''.join(map(str, tasks)))
+                              command='\n'.join(map(str, tasks)))
         return wrapper
 
     def _create_tasks(self):
@@ -493,17 +482,17 @@ class SpwComposite(LeafComposite):
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
-        caltable_spws = [int(spw) for spw in table_spws]
+#        caltable_spws = [int(spw) for spw in table_spws]
         
         if isinstance(calapp, list):
             # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw present 
             children = [self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis,
-                        spw=spw, ant=ant, pol=pol, **kwargs)
-                        for spw in caltable_spws]    
+                        spw=int(spw), ant=ant, pol=pol, **kwargs)
+                        for spw in table_spws]    
         else:
             children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
-                                spw=spw, ant=ant, pol=pol, **kwargs)
-                                for spw in caltable_spws]
+                                spw=int(spw), ant=ant, pol=pol, **kwargs)
+                                for spw in table_spws]
 
         super().__init__(children)
 
@@ -522,7 +511,7 @@ class SpwAntComposite(LeafComposite):
             # Create a dictionary to keep track of which caltables have which spws.
             dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
             table_spws = dict_calapp_spws.keys()
-            caltable_spws = [int(spw) for spw in table_spws]
+#            caltable_spws = [int(spw) for spw in table_spws]
 
             # PIPE-66: if requested, and no explicit (non-empty) plotrange was
             # set, then use the same y-scale for plots of the same spw.
@@ -533,14 +522,14 @@ class SpwAntComposite(LeafComposite):
             update_yscale = ysamescale and not kwargs.get("plotrange", "")
 
             children = []
-            for spw in caltable_spws:
+            for spw in table_spws:
                 if update_yscale:
                 # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw. 
                     ymins = []
                     ymaxes = []
                     for cal in dict_calapp_spws[spw]:
                         caltable_wrapper = CaltableWrapperFactory.from_caltable(cal.gaintable, gaincalamp=True) 
-                        filtered = caltable_wrapper.filter(spw=[spw])
+                        filtered = caltable_wrapper.filter(spw=[int(spw)])
                         # Save the ymin and ymax values rather than the full filtered.data as that could get large
                         ymins.append(numpy.ma.min(numpy.abs(filtered.data)))
                         ymaxes.append(numpy.ma.max(numpy.abs(filtered.data)))
@@ -556,7 +545,7 @@ class SpwAntComposite(LeafComposite):
 
                 # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw
                 children.append(
-                    self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+                    self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=int(spw), pol=pol, **kwargs))
         else: 
             # Identify spws in caltable
             with casa_tools.TableReader(calapp.gaintable) as tb:
@@ -610,16 +599,16 @@ class AntComposite(LeafComposite):
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_ants = set(tb.getcol('ANTENNA1'))
 
-        caltable_antennas = [int(ant) for ant in table_ants]
+#        caltable_antennas = [int(ant) for ant in table_ants]
         if not isinstance(calapp, list):
             children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
-                        ant=ant, spw=spw, pol=pol, **kwargs)
-                        for ant in caltable_antennas]
+                        ant=int(ant), spw=spw, pol=pol, **kwargs)
+                        for ant in table_ants]
         else:
             # In the following call list(dict_calapp_ants[ant]) is list of calapps with antenna=ant present 
             children = [self.leaf_class(context, result, list(dict_calapp_ants[ant]), xaxis, yaxis,
-                                    ant=ant, spw=spw, pol=pol, **kwargs)
-                                    for ant in caltable_antennas]
+                                    ant=int(ant), spw=spw, pol=pol, **kwargs)
+                                    for ant in table_ants]
 
         super().__init__(children)
 
