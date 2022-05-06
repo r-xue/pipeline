@@ -430,7 +430,7 @@ class LeafComposite(object):
         for cal in calapps:
           with casa_tools.TableReader(cal.gaintable) as tb:
               for elt in set(tb.getcol(column_name)):
-                   dict_calapp[int(elt)].add(cal)
+                   dict_calapp[elt].add(cal)
         return dict_calapp
 
 
@@ -590,21 +590,19 @@ class AntComposite(LeafComposite):
             # Create a dictionary to keep track of which caltables have which ants.
             dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
             table_ants = sorted(dict_calapp_ants.keys())
+
+            # In the following call list(dict_calapp_ants[ant]) is list of calapps with antenna=ant present 
+            children = [self.leaf_class(context, result, list(dict_calapp_ants[ant]), xaxis, yaxis,
+                        ant=int(ant), spw=spw, pol=pol, **kwargs)
+                        for ant in table_ants]
         else: 
             # Identify ants in caltable
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_ants = sorted(set(tb.getcol('ANTENNA1')))
 
-        if not isinstance(calapp, list):
             children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                         ant=int(ant), spw=spw, pol=pol, **kwargs)
                         for ant in table_ants]
-        else:
-            # In the following call list(dict_calapp_ants[ant]) is list of calapps with antenna=ant present 
-            children = [self.leaf_class(context, result, list(dict_calapp_ants[ant]), xaxis, yaxis,
-                                    ant=int(ant), spw=spw, pol=pol, **kwargs)
-                                    for ant in table_ants]
-
         super().__init__(children)
 
 
