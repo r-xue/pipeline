@@ -135,26 +135,26 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <param name="lowtrans" type="bool">
         <shortdescription>Flag low atmospheric transmission</shortdescription>
-        <description>Fraction of channels to flag at both edges of TDM spectral windows.</description>
+        <description>Flag spectral windows for which a significant fraction of the
+        channels have atmospheric transmission below the threshold (mintransrepspw,
+        mintransnonrepspws).</description>
         <value type="bool">True</value>
     </param>
 
-    <param name="mintransrepspw" subparam="true" type="double">
-        <shortdescription>Atmospheric transmissivity threshold for representative spw</shortdescription>
-        <description>This Atmospheric transmissivity threshold is used to flag a science
-            spw when more that 60% of the channels have a transmissivity below this level
-            for the representative spw. This level is different for the representative spw
-            and for other spws (see mintransotherspws).</description>
-        <value>0.05</value>
+    <param name="mintransnonrepspws" subparam="true" type="double">
+        <shortdescription>Atmospheric transmission threshold for non-representative spectral windows</shortdescription>
+        <description>This atmospheric transmissivity threshold is used to flag
+            a non-representative science spectral window when more than 60% of
+            its channels have a transmissivity below this level.</description>
+        <value>0.1</value>
     </param>
 
-    <param name="mintransotherspws" subparam="true" type="double">
-        <shortdescription>Atmospheric transmission threshold for other spws</shortdescription>
-        <description>This Atmospheric transmissivity threshold is used to flag a science
-            spw when more that 60% of the channels have a transmissivity below this level
-            for other spws that are not the representative one. This level is different for
-            the representative spw and for other spws (see mintransrepspw).</description>
-        <value>0.1</value>
+    <param name="mintransrepspw" subparam="true" type="double">
+        <shortdescription>Atmospheric transmissivity threshold for representative spectral window</shortdescription>
+        <description>This atmospheric transmissivity threshold is used to flag the
+            representative science spectral window when more than 60% of its channels
+            have a transmissivity below this level.</description>
+        <value>0.05</value>
     </param>
 
     <param name="fileonline" subparam="true" type="string">

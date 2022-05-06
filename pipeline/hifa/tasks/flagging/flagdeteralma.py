@@ -1,23 +1,25 @@
+from typing import List
+
 import numpy as np
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 from astropy.time import Time
 from astropy.utils.iers import conf as iers_conf
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils import utils
 from pipeline.infrastructure import casa_tools
 from pipeline.extern.adopted import getMedianPWV
-from pipeline.h.tasks.common.atmutil import calc_airmass
-
 
 # Avoid downloading the updated IERS tables from the internet because an
 #  approximate value is enough in this case
 iers_conf.auto_max_age = None
-
 
 __all__ = [
     'FlagDeterALMA',
@@ -38,9 +40,10 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     # PIPE-1028: in hifa_flagdata, flag integrations with only partial
     # polarization products.
     partialpol = vdp.VisDependentProperty(default=True)
-    lowtrans = vdp.VisDependentProperty(default=False)
+    # PIPE-624: parameters for flagging low transmission.
+    lowtrans = vdp.VisDependentProperty(default=True)
+    mintransnonrepspws = vdp.VisDependentProperty(default=0.1)
     mintransrepspw = vdp.VisDependentProperty(default=0.05)
-    mintransotherspws = vdp.VisDependentProperty(default=0.1)
     template = vdp.VisDependentProperty(default=True)
 
     # new property for ACA correlator
@@ -52,14 +55,14 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 partialpol=None, lowtrans=None, mintransrepspw=None, mintransotherspws=None, fileonline=None,
-                 template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
+                 partialpol=None, lowtrans=None, mintransnonrepspws=None, mintransrepspw=None,
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
         super(FlagDeterALMAInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
             tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
             fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template,
             filetemplate=filetemplate, hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol,
-            lowtrans=None, mintransrepspw=None, mintransotherspws=None)
+            lowtrans=lowtrans, mintransnonrepspws=mintransnonrepspws, mintransrepspw=mintransrepspw)
 
         # solution parameters
         self.qa0 = qa0
@@ -96,6 +99,10 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         500: measures.Frequency(40.0, measures.FrequencyUnits.MEGAHERTZ),
         1000: measures.Frequency(62.5, measures.FrequencyUnits.MEGAHERTZ),
     }
+
+    # PIPE-624: Threshold for fraction of data with low transmission above
+    # which a SpW is flagged for low transmission.
+    _max_frac_low_trans = 0.6
 
     def get_fracspw(self, spw):    
         # From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA
@@ -143,23 +150,23 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         """
         ALMA specific step to identify and flag data where only part of the
         polarization products are flagged.
-        Returns:
-            List of flagging commands.
-        """
-        return load_partialpols_alma(self.inputs.ms, )
 
-    def _get_lowtrans_cmds(self):
-        """
-        ALMA specific step to identify and flag data whith low atmospheric
-        transmissivity.
         Returns:
             List of flagging commands.
         """
-        return lowtrans_alma(
-            self.inputs.ms,
-            mintransrepspw=self.inputs.min_transmission_rep_spw,
-            mintransotherspws=self.inputs.min_transmission_other_spws
-        )
+        return load_partialpols_alma(self.inputs.ms)
+
+    def _get_lowtrans_cmds(self) -> List:
+        """
+        ALMA specific step to identify and flag data with low atmospheric
+        transmission.
+
+        Returns:
+            List of flagging commands.
+        """
+        return lowtrans_alma(self.inputs.ms, mintransrepspw=self.inputs.mintransrepspw,
+                             mintransnonrepspws=self.inputs.mintransnonrepspws,
+                             max_frac_low_trans=self._max_frac_low_trans)
 
     def _get_edgespw_cmds(self):
         # Run default edge channel flagging first.
@@ -482,60 +489,111 @@ def convert_params_to_commands(ms, params, ant_id_map=None):
     return commands
 
 
-def lowtrans_alma(ms, mintransrepspw=0.05, mintransotherspws=0.1):
-    """Create the commands to flag low transmissivity Science scans (PIPE-624).
+def lowtrans_alma(ms: MeasurementSet, mintransrepspw: float, mintransnonrepspws: float,
+                  max_frac_low_trans: float) -> List[str]:
     """
+    Create flagging commands to flag science spectral windows with low
+    atmospheric transmission (PIPE-624).
+
+    Args:
+        ms: Measurement Set to evaluate.
+        mintransrepspw: Atmospheric transmissivity threshold used to flag
+            the representative science spectral window when fraction of data
+            with low transmissivity exceeds "frac_low_trans".
+        mintransnonrepspws: Atmospheric transmissivity threshold used to flag
+            the non-representative science spectral window(s) when fraction of
+            data with low transmissivity exceeds "frac_low_trans".
+        max_frac_low_trans: Threshold fraction of data with low transmission
+            at-or-above which a SpW is flagged for low transmission.
+
+    Returns:
+        List of flagging commands.
+    """
+    # Initialize flagging commands.
     commands = []
-    ## Get the relevant targets, spws and scans
-    #  We want ot select the science targets (intent == 'TARGET'), get the list of
-    #   science spws, and apply the computation per scan.
-    #  We also need to identify the representative science target as the threshold is
-    #   different in this case.
 
-
-    # The following correspond to the details described in PIPE-624
-    ## Step #1: Get the PWV of the MS
-    pwv, pwvmad = getMedianPWV(vis=ms.name)
-    # If the pwv value is invalid skip the rest of the heuristic
-    if (pwv == 1.0000) or (np.isnan(pwv)) or (pwv < 0):
+    # Compute the PWV for current MS. If this PWV value is invalid, then skip
+    # the rest of the heuristic.
+    pwv, _ = getMedianPWV(vis=ms.name)
+    if pwv == 1.0 or np.isnan(pwv) or pwv < 0:
+        LOG.debug(f'Invalid value for PWV ({pwv}) encountered during evaluation of low atmospheric transmission'
+                  f' flagging, no flagging commands generated.')
         return commands
-    ## Step #2: Compute mean airmass per scan
-    #  To know the mean airmass we need to know the elevation at the start and end of
-    #   the scan. We can reimplement all the machiery included in au or try to use
-    #   astropy to obtain a similar result in a more clear and easy to maintain way.
-    #  Use airmass_for_alma_scan(scan)
-    ## Step #3 Calculate transmissivity from airmass and PWV using the CASA atmosphere tools.
-    #  The fixed set of parameters to start is pressure=563 mb, altitude=5059m,
-    #   temperature=273K, maxAltitude=48km, humidity=20, h0=1.0 km, dP=5.0 mb, dPm=1.1.
-    #  (#4) Compute first with a resolution of 256 channels and, if any has low transmission,
-    #   compute using the full resolution
-    ## Step #4 To compute fraction of channels affected aggregate per spw
+
+    # Get list of science scans and science SpWs, and representative SpW.
+    scans = ms.get_scans(scan_intent="TARGET")
+    scispws = ms.get_spectral_windows()
+    _, repr_spwid = ms.get_representative_source_spw()
+
+    # Compute the mean airmass for each science scan.
+    airmass_for_scan = {scan.id: get_airmass_for_alma_scan(scan) for scan in scans}
+
+    # Initializes atmospheric profile for a defined set of atmospheric
+    # parameters from PIPE-624, that are common for all scans and SpWs.
+    myat = casa_tools.atmosphere
+    atmutil.init_atm(myat, altitude=5059.0, humidity=20.0, temperature=273.0, pressure=563.0, max_altitude=48.0,
+                     delta_p=5.0, delta_pm=1.1, h0=1.0, atmtype=atmutil.AtmType.tropical)
+
+    # Evaluate low transmission for each SpW:
+    for spw in scispws:
+        # Set transmission threshold based on whether current SpW is the
+        # representative SpW.
+        thresh_transm = mintransrepspw if spw.id == repr_spwid else mintransnonrepspws
+
+        # Initialize spectral window setting in atmosphere tool for current SpW,
+        # and update atmospheric profile to set PWV (needs to happen after SpW is
+        # initialized).
+        atmutil.init_spw(myat, fcenter=float(spw.mean_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)),
+                         nchan=spw.num_channels,
+                         resolution=float(spw.bandwidth.to_units(measures.FrequencyUnits.GIGAHERTZ) / spw.num_channels))
+        myqa = casa_tools.quanta
+        myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
+
+        # Get wet and dry opacity from atmospheric profile, for channels of
+        # current SpW.
+        dry_opacity = atmutil.get_dry_opacity(myat)
+        wet_opacity = atmutil.get_wet_opacity(myat)
+
+        # Get transmission spectrum for opacity profiles for current SpW and
+        # airmass of each scan.
+        transm = np.asarray([atmutil.calc_transmission(airmass_for_scan[scan.id], dry_opacity, wet_opacity)
+                             for scan in scans])
+
+        # For collection of transmission spectra for current SpW, assess the
+        # fraction of data points (channels, scans) that fall below the
+        # threshold.
+        n_low_trans = len(np.where(transm < thresh_transm)[0])
+        frac_below_thresh = n_low_trans / transm.size
+
+        # If the fraction of data points below transmission threshold is equal
+        # to or higher than the given (fraction) threshold, then generate a
+        # flagging command to flag the current SpW entirely.
+        if frac_below_thresh >= max_frac_low_trans:
+            LOG.info(f"{ms.basename}, SpW {spw.id}: fraction of data with low transmission = {n_low_trans} /"
+                     f" {transm.size} = {frac_below_thresh:.2f}; this is equal/above the max fraction of"
+                     f" {max_frac_low_trans} therefore this SpW will become flagged.")
+
+            # Add new flagging command for current SpW.
+            command = f"mode='manual' spw='{spw.id}' reason='low_transmission'"
+            commands.append(command)
+        else:
+            LOG.info(
+                f"{ms.basename}, SpW {spw.id}: fraction of data with low transmission = {n_low_trans} / {transm.size} ="
+                f" {frac_below_thresh:.2f}; this is below the max fraction of {max_frac_low_trans}, therefore"
+                f" therefore this SpW will not be flagged.")
+
     return commands
 
 
-def airmass_for_alma_scan(scan):
-    """Compute the airmass corresponding to an ALMA observation scan.
-
-    :param scan: Scan object
-    :return: Mean airmass of the scan
-
-    At the moment it returns the mean airmass between the start and the
-    end times of the scan but it can be modified to return any other
-    similar value like the median.
-    """
-    start_elevation = elevation_for_alma_scan(scan, "start")
-    end_elevation = elevation_for_alma_scan(scan, "end")
-    start_airmass = calc_airmass(start_elevation.deg)
-    end_airmass = calc_airmass(end_elevation.deg)
-    return (start_airmass + end_airmass)/2.
-
-
-def elevation_for_alma_scan(scan, edge):
+def get_elevation_for_alma_scan(scan, edge):
     """Get the elevation for the beginning or the end of an ALMA scan.
 
-    :param scan: Scan object
-    :param edge: Either "start" or "end"
-    :return: Astropy quantity corresponding to the elevation.
+    Args:
+        scan: Scan object.
+        edge: Selects which edge of the scan, either "start" or "end".
+
+    Returns:
+        Astropy quantity corresponding to the elevation.
     """
     alma_site = EarthLocation.from_geocentric(x=2225015.30883296, y=-5440016.41799762, z=-2481631.27428014, unit='m')
     scan_field = next(iter(scan.fields))
@@ -552,3 +610,19 @@ def elevation_for_alma_scan(scan, edge):
         raise RuntimeError('The parameter edge should be either "start" or "end".')
     coords_altaz = coords.transform_to(AltAz(obstime=time, location=alma_site))
     return coords_altaz.alt
+
+
+def get_airmass_for_alma_scan(scan):
+    """Compute the airmass corresponding to an ALMA observation scan.
+
+    Args:
+        scan: Scan object.
+
+    Returns:
+        Mean airmass of the scan.
+    """
+    start_elevation = get_elevation_for_alma_scan(scan, "start")
+    end_elevation = get_elevation_for_alma_scan(scan, "end")
+    start_airmass = atmutil.calc_airmass(start_elevation.deg)
+    end_airmass = atmutil.calc_airmass(end_elevation.deg)
+    return (start_airmass + end_airmass)/2.
