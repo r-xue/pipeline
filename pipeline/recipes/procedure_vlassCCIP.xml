@@ -65,6 +65,10 @@
                 <Keyword xmlns="">parameter_file</Keyword>
                 <Value xmlns="">CCIP_parameter.list</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">editmode</Keyword>
+                <Value xmlns="">replace</Value>
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
 
