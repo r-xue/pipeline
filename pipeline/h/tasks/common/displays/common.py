@@ -9,7 +9,7 @@ import matplotlib.dates
 import numpy
 
 import cachetools
-from typing import Union, List
+from typing import Union, List, Dict
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -428,6 +428,22 @@ class LeafComposite(object):
             plots.extend(child.plot())
         return [p for p in plots if p is not None]
 
+    def _create_calapp_contents_dict(self, calapps : List[callibrary.CalApplication], column_name: str) -> Dict[int, List[callibrary.CalApplication]]:
+        """
+        Creates and returns a dictionary mapping some element (e.g. spw, ant) specified by the input 
+        column_name to lists of the input calapps that have that element present in their caltables.
+
+        e.g if the column_name is 'ANTENNA1', this funtion will return a dict where the keys are 
+        all antenna numbers present in any of the input calapps' caltables. For each antenna number key, 
+        the value is a list of all the input calapps with caltables with that antenna. 
+        """        
+        dict_calapp = collections.defaultdict(set)
+        for cal in calapps:
+          with casa_tools.TableReader(cal.gaintable) as tb:
+              for elt in set(tb.getcol(column_name)):
+                   dict_calapp[int(elt)].add(cal)
+        return dict_calapp
+
 
 class PolComposite(LeafComposite):
     """
@@ -460,7 +476,7 @@ class PolComposite(LeafComposite):
 
 class SpwComposite(LeafComposite):
     """
-    Create a PlotLeaf for each spw in the caltable.
+    Create a PlotLeaf for each spw in the caltable or caltables.
     """
     # reference to the PlotLeaf class to call
     leaf_class = None
@@ -468,18 +484,12 @@ class SpwComposite(LeafComposite):
     def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication], 
                 xaxis, yaxis, ant='', pol='', **kwargs):
 
-        # Identify spws in caltable
-        # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
-        if isinstance(calapp, list): 
-            table_spws = set()
-            dict_calapp_spws = collections.defaultdict(set)
-            for cal in calapp:
-                with casa_tools.TableReader(cal.gaintable) as tb:
-                    spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
-                    table_spws = table_spws.union(spws)
-                    for spw in spws:
-                        dict_calapp_spws[int(spw)].add(cal)
+        if isinstance(calapp, list):
+            # Create a dictionary to keep track of which caltables have which spws.
+            dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
+            table_spws = dict_calapp_spws.keys()
         else: 
+            # Identify spws in caltable
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
@@ -500,26 +510,18 @@ class SpwComposite(LeafComposite):
 
 class SpwAntComposite(LeafComposite):
     """
-    Create a PlotLeaf for each spw and antenna in the caltable.
+    Create a PlotLeaf for each spw and antenna in the caltable or caltables.
     """
     # reference to the PlotLeaf class to call
     leaf_class = None
 
     def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication], 
                 xaxis, yaxis, pol='', ysamescale=False, **kwargs):
-        
-        # If a list of calapps is input, create a dictionary to keep track of which caltables have which spws.
         # Support for lists of calapps was added for PIPE-1409 and PIPE-1377.
         if isinstance(calapp, list): 
-            # Identify spws in caltable
-            table_spws = set()
-            dict_calapp_spws = collections.defaultdict(set)
-            for cal in calapp:
-                with casa_tools.TableReader(cal.gaintable) as tb:
-                    spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
-                    table_spws = table_spws.union(spws)
-                    for spw in spws:
-                        dict_calapp_spws[int(spw)].add(cal)
+            # Create a dictionary to keep track of which caltables have which spws.
+            dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
+            table_spws = dict_calapp_spws.keys()
             caltable_spws = [int(spw) for spw in table_spws]
 
             # PIPE-66: if requested, and no explicit (non-empty) plotrange was
@@ -552,9 +554,9 @@ class SpwAntComposite(LeafComposite):
 
                     kwargs.update({"plotrange": [0, 0, ymin, ymax]})
 
-            # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw
-            children.append(
-                self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+                # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw
+                children.append(
+                    self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis, spw=spw, pol=pol, **kwargs))
         else: 
             # Identify spws in caltable
             with casa_tools.TableReader(calapp.gaintable) as tb:
@@ -584,33 +586,27 @@ class SpwAntComposite(LeafComposite):
 
                     kwargs.update({"plotrange": [0, 0, ymin, ymax]})
 
-            children.append(
-                self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+                children.append(
+                    self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
 
         super().__init__(children)
 
 
 class AntComposite(LeafComposite):
     """
-    Create a PlotLeaf for each antenna in the caltable.
+    Create a PlotLeaf for each antenna in the caltable or caltables.
     """
     # reference to the PlotLeaf class to call
     leaf_class = None
 
     def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication],
                 xaxis, yaxis, spw='', pol='', **kwargs):
-        # Identify ants in caltable
-        # If a list of calapps is input, create a dictionary to keep track of which caltables have which ants.
         if isinstance(calapp, list): 
-            table_ants = set()
-            dict_calapp_ants = collections.defaultdict(set)
-            for cal in calapp:
-                with casa_tools.TableReader(cal.gaintable) as tb:
-                    antennas = set(tb.getcol('ANTENNA1')) # Use a set to remove duplicates
-                    table_ants = table_ants.union(antennas)
-                    for ant in antennas: 
-                        dict_calapp_ants[int(ant)].add(cal)
+            # Create a dictionary to keep track of which caltables have which ants.
+            dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
+            table_ants = dict_calapp_ants.keys()
         else: 
+            # Identify ants in caltable
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_ants = set(tb.getcol('ANTENNA1'))
 
