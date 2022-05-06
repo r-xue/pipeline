@@ -482,8 +482,6 @@ class SpwComposite(LeafComposite):
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
-#        caltable_spws = [int(spw) for spw in table_spws]
-        
         if isinstance(calapp, list):
             # In the following call, list(dict_calapp_spw[spw]) is list of calapps with that spw present 
             children = [self.leaf_class(context, result, list(dict_calapp_spws[spw]), xaxis, yaxis,
@@ -511,7 +509,6 @@ class SpwAntComposite(LeafComposite):
             # Create a dictionary to keep track of which caltables have which spws.
             dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
             table_spws = dict_calapp_spws.keys()
-#            caltable_spws = [int(spw) for spw in table_spws]
 
             # PIPE-66: if requested, and no explicit (non-empty) plotrange was
             # set, then use the same y-scale for plots of the same spw.
@@ -599,7 +596,6 @@ class AntComposite(LeafComposite):
             with casa_tools.TableReader(calapp.gaintable) as tb:
                 table_ants = set(tb.getcol('ANTENNA1'))
 
-#        caltable_antennas = [int(ant) for ant in table_ants]
         if not isinstance(calapp, list):
             children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                         ant=int(ant), spw=spw, pol=pol, **kwargs)
