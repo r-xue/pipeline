@@ -45,6 +45,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_syspower</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifv_testBPdcals</Command>
         <ParameterSet>
         </ParameterSet>
