@@ -180,7 +180,7 @@ $(function () {
   <tr>
     <th>Stokes: <i>${name_pol}</i></th>
     <th colspan="3">Non-Pbcor Restored</th>
-    <th colspan="3">Non-Pbcor Reidual</th>
+    <th colspan="3">Non-Pbcor Residual</th>
     
     % if name_pol=='I':
       <th colspan="4">Rms Image</th>
