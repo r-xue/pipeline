@@ -214,7 +214,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
     def analyse(self, result):
 
         # compute elevation difference between ON and OFF and 
-        # warn if it exceeds elevation limit
+        # warn if it exceeds elevation threshold
         threshold = self.ElevationDifferenceThreshold
         context = self.inputs.context
         resultdict = compute_elevation_difference(context, result)
@@ -224,20 +224,16 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                 eld = list(eldant.values())
                 eldiff0 = eld[0].eldiff0
                 eldiff1 = eld[0].eldiff1
-                if len(eldiff0) > 0:
-                    eldmax0 = numpy.max(numpy.abs(eldiff0))
+                eldiff = eldiff0 + eldiff1
+                if len(eldiff) > 0:
+                    eldmax = numpy.max(numpy.abs(eldiff))
                 else:
-                    eldmax0 = -1.0
-                if len(eldiff1) > 0:
-                    eldmax1 = numpy.max(numpy.abs(eldiff1))
-                else:
-                    eldmax1 = -1.0
-                eldmax = max(eldmax0, eldmax1)
+                    eldmax = -1.0
                 if eldmax >= threshold:
                     field_name = ms.fields[field_id].name
                     antenna_name = ms.antennas[antenna_id].name
                     LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} was {}deg'
-                                ' exceeding the threshold {}deg'
+                                ' exceeding the threshold of {}deg'
                                 ''.format(ms.basename, field_name, antenna_name, eldmax, threshold))
 
         return result
