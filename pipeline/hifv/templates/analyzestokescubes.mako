@@ -7,7 +7,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">Analysis of Stokes Cubes</%block>
 
-<p>This tasks performs analyses of Stokes cubes</p>
+<p>This task performs analyses of Stokes cubes</p>
 
 
 <%self:plot_group plot_dict="${stokesplots}"

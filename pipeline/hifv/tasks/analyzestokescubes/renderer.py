@@ -1,5 +1,5 @@
-
 import os
+import copy
 
 from . import display as analyzestokescube
 import pipeline.infrastructure.logging as logging
@@ -19,14 +19,30 @@ class T2_4MDetailsAnalyzestokesCubeRenderer(basetemplates.T2_4MDetailsDefaultRen
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
 
-        # Get results info
-        for r in results:
+        # Get results info (only one)
+        r = results[0]
 
-            # Make the plots for Stokes and RMS stats
-            stokesplots = {}
-            stokesplots['Stokes Summary Plots'] = analyzestokescube.VlassCubeStokesSummary(context, r).plot()
-            rmsplots = {}
-            rmsplots['Rms Summary Plot'] = [analyzestokescube.VlassCubeRmsSummary(context, r).plot()]
+        # Make the Stokes Q vs. U plot
+        stokesplots = {'Stokes Summary Plots': analyzestokescube.VlassCubeStokesSummary(context, r).plot()}
+
+        # Make the rms vs. freq plot by reusing the result from hif_makecutoutimages
+        try:
+
+            from pipeline.hif.tasks.makecutoutimages.display import VlassCubeCutoutRmsSummary
+            results_list = context.results
+
+            if results_list and type(results_list) is list:
+                for result in results_list:
+                    result_meta = result
+                    if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
+                            'hif_makecutoutimages'):
+                        r_makecutoutimages_copy = copy.deepcopy(result_meta[0])
+            r_makecutoutimages_copy.stage_number = r.stage_number
+            plotter = VlassCubeCutoutRmsSummary(context, r_makecutoutimages_copy)
+            rmsplots = {'Rms Summary Plot': plotter.plot(improp_list=[('rms', 'Median')])}
+
+        except Exception as e:
+            rmsplots = {'Rms Summary Plot': []}
 
         ctx.update({'rmsplots': rmsplots,
                     'stokesplots': stokesplots,
