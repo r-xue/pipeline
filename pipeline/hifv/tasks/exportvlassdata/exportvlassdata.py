@@ -25,7 +25,7 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.domain import DataType
 
-from pipeline.infrastructure.utils.imaging import predict_kernel
+from pipeline.infrastructure.utils import predict_kernel
 
 LOG = infrastructure.get_logger(__name__)
 
