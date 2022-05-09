@@ -221,24 +221,24 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         ms = self.inputs.ms
         for field_id, eldfield in resultdict.items():
             for antenna_id, eldant in eldfield.items():
-                for eld in eldant.values():
-                    eldiff0 = eld.eldiff0
-                    eldiff1 = eld.eldiff1
-                    if len(eldiff0) > 0:
-                        eldmax0 = numpy.max(numpy.abs(eldiff0))
-                    else:
-                        eldmax0 = -1.0
-                    if len(eldiff1) > 0:
-                        eldmax1 = numpy.max(numpy.abs(eldiff1))
-                    else:
-                        eldmax1 = -1.0
-                    eldmax = max(eldmax0, eldmax1)
-                    if eldmax >= threshold:
-                        field_name = ms.fields[field_id].name
-                        antenna_name = ms.antennas[antenna_id].name
-                        LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} was {}deg'
-                                    ' exceeding the threshold {}deg'
-                                    ''.format(ms.basename, field_name, antenna_name, eldmax, threshold))
+                eld = list(eldant.values())
+                eldiff0 = eld[0].eldiff0
+                eldiff1 = eld[0].eldiff1
+                if len(eldiff0) > 0:
+                    eldmax0 = numpy.max(numpy.abs(eldiff0))
+                else:
+                    eldmax0 = -1.0
+                if len(eldiff1) > 0:
+                    eldmax1 = numpy.max(numpy.abs(eldiff1))
+                else:
+                    eldmax1 = -1.0
+                eldmax = max(eldmax0, eldmax1)
+                if eldmax >= threshold:
+                    field_name = ms.fields[field_id].name
+                    antenna_name = ms.antennas[antenna_id].name
+                    LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} was {}deg'
+                                ' exceeding the threshold {}deg'
+                                ''.format(ms.basename, field_name, antenna_name, eldmax, threshold))
 
         return result
 
