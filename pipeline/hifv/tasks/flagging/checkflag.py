@@ -172,10 +172,18 @@ class Checkflag(basetask.StandardTaskTemplate):
             for field in fielddict:
                 self.do_rfi_flag(fieldselect=field, scanselect=scanselect,
                                  intentselect=intentselect, spwselect=fielddict[field])
+                # PIPE-1342: do a second pass of rflag in the 'target-vla' mode (equivalent to running hifv_targetvla)
+                if self.inputs.checkflagmode == 'target-vla':
+                    self.do_vla_targetflag(ieldselect=field, scanselect=scanselect,
+                                           intentselect=intentselect, spwselect=fielddict[field])
         else:
             # all other situations
             self.do_rfi_flag(fieldselect=fieldselect, scanselect=scanselect,
                              intentselect=intentselect, spwselect=self.sci_spws)
+            # PIPE-1342: do a second pass of rflag in the 'target-vla' mode (equivalent to running hifv_targetvla)
+            if self.inputs.checkflagmode == 'target-vla':
+                self.do_vla_targetflag(fieldselect='', scanselect=scanselect,
+                                       intentselect=intentselect, spwselect='')
 
         # PIPE-502/757/995: get after-flagging statistics, NOT for bpd-vlass and allcals-vlass
         if self.inputs.checkflagmode not in ('bpd-vlass', 'allcals-vlass'):
@@ -350,9 +358,35 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return
 
+    def do_vla_targetflag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
+        """"Perform targetflag (second 'rflag' pass, intended to replace hifv_targetflag, see PIPE-1342)."""
+
+        task_args = {'vis': self.inputs.vis,
+                     'mode': 'rflag',
+                     'field': fieldselect,
+                     'correlation': 'ABS_'+self.corrstring,
+                     'scan': scanselect,
+                     'intent': intentselect,
+                     'spw': spwselect,
+                     'ntime': 'scan',
+                     'combinescans': False,
+                     'datacolumn': 'corrected',
+                     'winsize': 3,
+                     'timedevscale': 4.0,
+                     'freqdevscale': 4.0,
+                     'action': 'apply',
+                     'display': '',
+                     'extendflags': False,
+                     'flagbackup': True,
+                     'savepars': True}
+
+        job = casa_tasks.flagdata(**task_args)
+
+        return self._executor.execute(job)
+
     def do_rfi_flag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
         """Do RFI flagging using multiple passes of rflag/tfcrop/extend."""
-        
+
         rflag_standard, tfcrop_standard, growflag_standard = self._select_rfi_standard()
         flagbackup = False
         calcftdev = True
