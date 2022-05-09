@@ -30,7 +30,7 @@ It will also extract/verify mask files needed for the VLASS-SE-CUBE imaging sequ
 If any required resource is missing, Pipeline will throw an exception and exit from the workflow.
 In that case, the weblog of `hifv_restorepims` will still render and the exception message from the weblog can help identify the missing file(s).
 
-### hif_editimlist
+### hif_editimlist (PIPE-1401)
 
 `hif_editimlist` will be executed twice in the VLASS Coarse Cube workflow.
 At Stage 2, it will use `SEIP_parameter.list` from VLASS-SE-CONT to re-create the single-epoch continuum imaging heuristics/context for `hif_restorepims`.
@@ -48,13 +48,27 @@ For the "cube" mode of hif_editimlist, i.e. imaging_mode='VLASS-SE-CUBE' in the 
  * The weblog is improved to show imagename/mask/spw/frereq of each imaging target in separate rows.
  
 
-### hif_makeimages
+### hif_makeimages (PIPE-1401)
+
+`hif_makeimage` runs under the "vlass-cube" mode (imaging_mode='VLASS-SE-CUBE') in the Coarse Cube worflow.
+
+For a Pipeline parallel run, imaging of individual targets (i.e. different spws or spw groups) will be executed using the Pipeline tier-0 parallel scheme, which is built upon [the CASA parallel framework](https://casadocs.readthedocs.io/en/stable/notebooks/parallel-processing.html#Advanced:-Interface-Framework).
+The imaging operations of targets will be put into a FIFO queue constructed from the available MPIserver (`num_server=num_proc-1`) and commanded by the MPIclient. `hif_makeimage will wait for the completion of all imaging operations and then move forward to render weblog.
+
+Besides the tier-0 parallelization, the imaging heuristics of `VLASS-SE-CUBE` is similar to that of `VLASS-SE-CONT` at its last imaging stage (vlass_stage=3), except for the following major differences:
+* CASA/tclean is run in the nterms=1 mode, and a Stokes IQUV cube is generated in a single tclean call.
+* tclean input mask (iter1/iter2 from QL/combined mask of SE), are copied as *.iter1/2.cleanmask for each target.
+* Only *.cleanmask/.image/.residual are preserved for iter1/iter2 to reduce storage I/O and disk space usage.
+* If imaging fails on one target, the weblog will still present the succeed targets and show the failed target(s) in the top error message banner.
+* The weblog uses the VLASS-cube-specific template, which has a grid layout with four Stokes planes in columns and different imaging targets in rows.
+* The tclean summary plot shows the peak residual model flux of each Stokes planes.
+* A workaround for CAS-13401 is implemented: the beam information is missing in residual/restored image from CASA/tclean when Stokes='IQUV'.
 
 ### hif_makermsimages
 
 ### hif_makecutoutimages
 
-### hifv_analyzestokescubes
+### hifv_analyzestokescubes (PIPE-1356)
 
 ### hifv_exportvlassdata (PIPE-1434)
 
