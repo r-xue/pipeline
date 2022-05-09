@@ -91,13 +91,14 @@ class TcleanQAHandler(pqa.QAPlugin):
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
                 try:
                     mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
-                                    result.mom8_fc_peak_snr, result.cube_chanScaledMAD,
-                                    result.mom8_fc_outlier_threshold, result.mom8_fc_n_pixels,
-                                    result.mom8_fc_n_outlier_pixels, result.is_eph_obj)
+                                                                  result.mom8_fc_peak_snr,
+                                                                  result.mom8_10_fc_histogram_asymmetry,
+                                                                  result.mom8_fc_max_segment_beams,
+                                                                  result.mom8_fc_frac_max_segment)
                     result.qa.pool.append(mom8_fc_score)
                 except Exception as e:
                     LOG.warning('Exception scoring MOM8 FC image result: %s. Setting score to -0.1.' % (e))
-                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring MOM8 FC image result: %s' % (e), shortmsg='Exception scoring MOM8 FC image result'), weblog_location=pqa.WebLogLocation.UNSET)
+                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring MOM8 FC image result: %s' % (e), shortmsg='Exception scoring MOM8 FC image result', weblog_location=pqa.WebLogLocation.UNSET))
 
             # Check source score
             #    Be careful about the source name vs field name issue

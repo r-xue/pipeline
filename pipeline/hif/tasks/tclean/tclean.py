@@ -1341,8 +1341,6 @@ class Tclean(cleanbase.CleanBase):
             else:
                 flattened_mask_name = None
 
-            mom8_outlier_threshold = 5.0
-
             # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
@@ -1397,16 +1395,6 @@ class Tclean(cleanbase.CleanBase):
             mom8_fc_peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_chanScaledMAD
 
             LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, mom8_fc_peak_snr, cube_chanScaledMAD))
-
-            # Calculate outlier fraction for QA scoring
-            with casa_tools.ImageReader(mom8fc_name) as image:
-                mom8_outlier_statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, mom8_outlier_threshold * cube_chanScaledMAD + mom8_image_median_annulus)
-                mom8_stats_outlier = image.statistics(mask=mom8_outlier_statsmask, robust=True)
-                mom8_outlier_npts = mom8_stats_outlier.get('npts')
-                if mom8_outlier_npts.shape != (0,):
-                    mom8_n_outlier_pixels = int(mom8_outlier_npts[0])
-                else:
-                    mom8_n_outlier_pixels = 0
 
             # New score based on mom8/mom10 histogram asymmetry and largest mom8 segment needs
             # more metrics (PIPE-1232)
@@ -1473,9 +1461,7 @@ class Tclean(cleanbase.CleanBase):
             result.set_mom8_fc_image_median_annulus(maxiter, mom8_image_median_annulus)
             result.set_mom8_fc_image_mad(maxiter, mom8_image_mad)
             result.set_mom8_fc_peak_snr(maxiter, mom8_fc_peak_snr)
-            result.set_mom8_fc_outlier_threshold(maxiter, mom8_outlier_threshold)
             result.set_mom8_fc_n_pixels(maxiter, mom8_n_pixels)
-            result.set_mom8_fc_n_outlier_pixels(maxiter, mom8_n_outlier_pixels)
             result.set_mom8_fc_frac_max_segment(maxiter, mom8_frac_max_segment)
             result.set_mom8_fc_max_segment_beams(maxiter, mom8_max_segment_beams)
 

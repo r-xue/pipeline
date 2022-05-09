@@ -290,18 +290,6 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc_peak_snr'] = mom8_fc_peak_snr
 
     @property
-    def mom8_fc_outlier_threshold(self):
-        iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('mom8_fc_outlier_threshold')
-
-    def set_mom8_fc_outlier_threshold(self, iter, outlier_threshold):
-        '''
-        Sets outlier threshold of moment 8 image computed from line-free channels of non-primary beam corrected cube
-        image for iter iteration step.
-        '''
-        self.iterations[iter]['mom8_fc_outlier_threshold'] = outlier_threshold
-
-    @property
     def mom8_fc_n_pixels(self):
         iters = sorted(self.iterations.keys())
         return self.iterations[iters[-1]].get('mom8_fc_n_pixels')
@@ -314,17 +302,6 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc_n_pixels'] = n_pixels
 
     @property
-    def mom8_fc_n_outlier_pixels(self):
-        iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('mom8_fc_n_outlier_pixels')
-
-    def set_mom8_fc_n_outlier_pixels(self, iter, n_outlier_pixels):
-        '''
-        Sets number of unmasked outlier pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube
-        image for iter iteration step.
-        '''
-        self.iterations[iter]['mom8_fc_n_outlier_pixels'] = n_outlier_pixels
-
     def mom8_fc_frac_max_segment(self):
         iters = sorted(self.iterations.keys())
         return self.iterations[iters[-1]].get('mom8_fc_frac_max_segment')
@@ -335,6 +312,7 @@ class TcleanResult(basetask.Results):
         '''
         self.iterations[iter]['mom8_fc_frac_max_segment'] = frac_max_segment
 
+    @property
     def mom8_fc_max_segment_beams(self):
         iters = sorted(self.iterations.keys())
         return self.iterations[iters[-1]].get('mom8_fc_max_segment_beams')
