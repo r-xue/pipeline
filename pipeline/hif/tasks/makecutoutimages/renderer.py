@@ -124,10 +124,10 @@ class T2_4MDetailsMakecutoutimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDe
 
             # Make the RMS summary plots
             plotter = display.VlassCubeCutoutRmsSummary(context, r)
-            rms_plots['Cutout Rms Summary Plots (MADrms vs. Spw from Non-Pbcor Image)'] = plotter.plot()
+            rms_plots['Cutout Rms Summary Plots'] = plotter.plot()
 
             # Export Stats summary
-            stats_summary = r.stats_summary
+            stats_summary = display.get_stats_summary(r.stats)
             stats = r.stats
 
             # PIPE-631: Weblog thumbnails are sorted according 'isalpha' parameter.

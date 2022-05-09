@@ -2,6 +2,7 @@ import ast
 import glob
 import math
 import os
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -11,14 +12,17 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import imstat_items
+from pipeline.infrastructure.utils import get_stokes
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class MakecutoutimagesResults(basetask.Results):
     def __init__(self, final=None, pool=None, preceding=None,
-                 subimagelist=None, subimagenames=None, image_size=None):
-        super(MakecutoutimagesResults, self).__init__()
+                 subimagelist=None, subimagenames=None, image_size=None,
+                 stats=None):
+        super().__init__()
 
         if final is None:
             final = []
@@ -38,6 +42,7 @@ class MakecutoutimagesResults(basetask.Results):
         self.subimagelist = subimagelist[:]
         self.subimagenames = subimagenames[:]
         self.image_size = image_size
+        self.stats = stats
 
     def merge_with_context(self, context):
         """
@@ -90,10 +95,12 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         imlist = self.inputs.context.sciimlist.get_imlist()
         imagenames = []
 
-        is_vlass_se_cont = False
+        is_vlass_se_cont = is_vlass_se_cube = False
         try:
             if self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
                 is_vlass_se_cont = True
+            if self.inputs.context.imaging_mode.startswith('VLASS-SE-CUBE'):
+                is_vlass_se_cube = True                
         except Exception:
             pass
 
@@ -148,16 +155,16 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 subimagenames.append(subimagename)
             subimage_size = self._get_image_size(subimagename)
 
-        return MakecutoutimagesResults(subimagelist=imlist, subimagenames=subimagenames, image_size=subimage_size)
+        if is_vlass_se_cube:
+            stats = self._do_stats(subimagenames)
+        else:
+            stats = None
+
+        return MakecutoutimagesResults(subimagelist=imlist, subimagenames=subimagenames, image_size=subimage_size,
+                                       stats=stats)
 
     def analyse(self, results):
         return results
-
-    def _do_imstat(self, imagename):
-
-        task = casa_tasks.imstat(imagename=imagename)
-
-        return self._executor.execute(task)
 
     def _do_imhead(self, imagename):
 
@@ -168,9 +175,6 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
     def _do_subim(self, imagename):
 
         inputs = self.inputs
-
-        # Get image parameters
-        # imstat_dict = self._do_imstat(imagename)
 
         # Get image header
         imhead_dict = self._do_imhead(imagename)
@@ -285,3 +289,61 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                       'arcsec_y': py * ycellsize}
 
         return image_size
+
+    def _do_stats(self, subimagenames):
+        """Extract essential stats from images.
+        
+        The return stats is a nested dictionary container: stats[spw_key][im_type][stats_type]
+        """
+        stats = collections.OrderedDict()
+
+        for subimagename in subimagenames:
+
+            with casa_tools.ImageReader(subimagename) as image:
+
+                image_miscinfo = image.miscinfo()
+                virtspw = image_miscinfo['virtspw']
+                if virtspw not in stats:
+                    stats[virtspw] = collections.OrderedDict()
+
+                if '.psf.' in subimagename:
+                    pass
+                elif '.image.' in subimagename and '.pbcor' not in subimagename:
+                    # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
+                    if '.tt1.' not in subimagename:
+                        # PIPE-1401: Because the non-pbcor image from tclean() could miss mask table, with artifically
+                        # low-amp pixels at the edge below pblimit (CAS-13818), we use a PB-based mask when run imstats().
+                        pbname = subimagename.replace('.image.', '.pb.')
+                        item_stats = imstat_items(
+                            image, items=['peak', 'madrms', 'max/madrms'], mask=f'mask("{pbname}")')
+                        stats[virtspw]['image'] = item_stats
+                        # additional non-stats image properties are extracted here.
+                        beam = image.restoringbeam(channel=0, polarization=0)
+                        stats[virtspw]['beam'] = {'bmaj': beam['major']['value'],
+                                                  'bmin': beam['minor']['value'], 'bpa': beam['positionangle']['value']}
+                        stats[virtspw]['stokes'] = get_stokes(subimagename)
+                        cs = image.coordsys()
+                        stats[virtspw]['reffreq'] = cs.referencevalue(format='n')['numeric'][3]
+
+                elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
+                    # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
+                    if '.tt1.' not in subimagename:
+                        pbname = subimagename.replace('.residual.', '.pb.')
+                        item_stats = imstat_items(
+                            image, items=['peak', 'madrms', 'max/madrms'], mask=f'mask("{pbname}")')
+                        stats[virtspw]['residual'] = item_stats
+                elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
+                    pass
+                elif '.rms.' in subimagename:
+                    if '.tt1.' not in subimagename:
+                        item_stats = imstat_items(image, items=['max', 'median', 'pct<800e-6', 'pct_masked'])
+                        stats[virtspw]['rms'] = item_stats
+                elif '.residual.pbcor.' in subimagename and not subimagename.endswith('.rms'):
+                    pass
+                elif '.pb.' in subimagename:
+                    if '.tt1.' not in subimagename:
+                        stats[virtspw]['pb'] = imstat_items(image, items=['max', 'min', 'median'])
+                else:
+                    pass
+
+        return stats

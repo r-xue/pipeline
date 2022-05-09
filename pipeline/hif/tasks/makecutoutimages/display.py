@@ -14,7 +14,6 @@ from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
-
 LOG = infrastructure.get_logger(__name__)
 
 # class used to transfer image statistics through to plotting routines
@@ -118,10 +117,10 @@ class CutoutimagesSummary(object):
 
 class VlassCubeCutoutimagesSummary(object):
     """A class for the VLASS-CUBE makecutout image summary plots."""
+
     def __init__(self, context, result):
         self.context = context
         self.result = result
-        self.result.stats = None
 
     def plot(self):
         stage_dir = os.path.join(self.context.report_dir,
@@ -132,118 +131,72 @@ class VlassCubeCutoutimagesSummary(object):
         LOG.info("Making PNG cutout images for weblog")
         plot_wrappers = []
 
-        # a nested dictionary container for all stats: stats[spw]['rms'] etc.
-        stats = collections.OrderedDict()
-
-        stats_stokes_list = []
-        stats_reffreq_list = []
-
         for subimagename in self.result.subimagenames:
 
-            with casa_tools.ImageReader(subimagename) as image:
+            if '.psf.' in subimagename:
+                plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
+                                                                      reportdir=stage_dir, intent='', stokes_list=['I'],
+                                                                      collapseFunction='mean',
+                                                                      vmin=-0.1, vmax=0.3))
 
-                image_miscinfo = image.miscinfo()
-                virtspw = image_miscinfo['virtspw']
-                if virtspw not in stats:
-                    stats[virtspw] = collections.OrderedDict()
+            elif '.image.' in subimagename and '.pbcor' not in subimagename:
+                # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
+                pass
 
-                if '.psf.' in subimagename:
-                    plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                                          reportdir=stage_dir, intent='', stokes_list=['I'],
-                                                                          collapseFunction='mean',
-                                                                          vmin=-0.1, vmax=0.3))
+            elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
+                # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
+                pass
 
-                elif '.image.' in subimagename and '.pbcor' not in subimagename:
-                    # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
-                    if '.tt1.' not in subimagename:
-                        # for non-pbcor image, we use a PB-based mask as the image/residual from tclean()  could be unmasked with
-                        # artifically low-amp pixels at edges.
-                        pbname = subimagename.replace('.image.', '.pb.')
-                        item_stats = self._get_stats(
-                            image, items=['peak', 'madrms', 'max/madrms'], mask=f'mask("{pbname}")')
-                        stats[virtspw]['image'] = item_stats
-                        stats_stokes_list = sky.SkyDisplay.get_stokes(subimagename)
-                        cs = image.coordsys()
-                        stats_reffreq_list.append(cs.referencevalue(format='n')['numeric'][3])
-                        beam = image.restoringbeam(channel=0, polarization=0)
-                        stats[virtspw]['beam'] = {'bmaj': beam['major']['value'],
-                                                  'bmin': beam['minor']['value'], 'bpa': beam['positionangle']['value']}
+            elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
+                # CAS-10345/PIPE-1189: use (-5*RMSmedian, 20*RMSmedian) as the colormap scaling range
+                # We expect 'subimagename' here to be: X.image.pbcor.ttX.subim or X.image.pbcor.subim
+                rms_subimagename = os.path.splitext(subimagename)[0]+'.rms.subim'
+                with casa_tools.ImageReader(rms_subimagename) as image:
+                    rms_median = image.statistics(robust=True).get('median')[0]
+                plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
+                                                         reportdir=stage_dir, intent='', stokes_list=None,
+                                                         collapseFunction='mean',
+                                                         vmin=-5 * rms_median,
+                                                         vmax=20 * rms_median)
+                for plot in plots:
+                    plot.parameters['type'] = 'image.pbcor'
+                plot_wrappers.extend(plots)
 
-                elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
-                    # PIPE-491/1163: report non-pbcor stats and don't display images; don't save stats from .tt1
-                    if '.tt1.' not in subimagename:
-                        # for non-pbcor image, we use a PB-based mask as the image/residual from tclean()  could be unmasked with
-                        # artifically low-amp pixels at edges.
-                        pbname = subimagename.replace('.residual.', '.pb.')
-                        item_stats = self._get_stats(
-                            image, items=['peak', 'madrms', 'max/madrms'], mask=f'mask("{pbname}")')
-                        stats[virtspw]['residual'] = item_stats
+            elif '.rms.' in subimagename:
+                plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
+                                                         reportdir=stage_dir, intent='', stokes_list=None,
+                                                         collapseFunction='mean')
+                for plot in plots:
+                    plot.parameters['type'] = 'image.pbcor.rms'
+                plot_wrappers.extend(plots)
 
-                elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
-                    # CAS-10345/PIPE-1189: use (-5*RMSmedian, 20*RMSmedian) as the colormap scaling range
-                    # We expect 'subimagename' here to be: X.image.pbcor.ttX.subim or X.image.pbcor.subim
-                    rms_subimagename = os.path.splitext(subimagename)[0]+'.rms.subim'
-                    with casa_tools.ImageReader(rms_subimagename) as image:
-                        rms_median = image.statistics(robust=True).get('median')[0]
-                    plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                             reportdir=stage_dir, intent='', stokes_list=None,
-                                                             collapseFunction='mean',
-                                                             vmin=-5 * rms_median,
-                                                             vmax=20 * rms_median)
-                    for plot in plots:
-                        plot.parameters['type'] = 'image.pbcor'
-                    plot_wrappers.extend(plots)
-                    if '.tt1.' not in subimagename:
-                        with casa_tools.ImageReader(subimagename) as image:
-                            self.result.pbcor_stats = image.statistics(robust=True)
+            elif '.residual.pbcor.' in subimagename and not subimagename.endswith('.rms'):
+                plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
+                                                         reportdir=stage_dir, intent='', stokes_list=None,
+                                                         collapseFunction='mean')
+                for plot in plots:
+                    plot.parameters['type'] = 'residual.pbcor'
+                plot_wrappers.extend(plots)
 
-                elif '.rms.' in subimagename:
-                    plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                             reportdir=stage_dir, intent='', stokes_list=None,
-                                                             collapseFunction='mean')
-                    for plot in plots:
-                        plot.parameters['type'] = 'image.pbcor.rms'
-                    plot_wrappers.extend(plots)
-
-                    if '.tt1.' not in subimagename:
-                        item_stats = self._get_stats(image, items=['max', 'median', 'pct<800e-6', 'pct_masked'])
-                        stats[virtspw]['rms'] = item_stats
-
-                elif '.residual.pbcor.' in subimagename and not subimagename.endswith('.rms'):
-                    plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                             reportdir=stage_dir, intent='', stokes_list=None,
-                                                             collapseFunction='mean')
-                    for plot in plots:
-                        plot.parameters['type'] = 'residual.pbcor'
-                    plot_wrappers.extend(plots)
-
-                elif '.pb.' in subimagename:
-                    plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                             reportdir=stage_dir, intent='', stokes_list=['I'],
-                                                             collapseFunction='mean', vmin=0.2, vmax=1.)
-                    for plot in plots:
-                        plot.parameters['type'] = 'pb'
-                    plot_wrappers.extend(plots)
-                    plot_hist = ImageHistDisplay(self.context, subimagename,
-                                                 x_axis='Primary Beam Response', y_axis='Num. of Pixel',
-                                                 reportdir=stage_dir).plot()
-                    plot_hist.parameters['virtspw'] = plot_wrappers[-1].parameters['virtspw']
-                    plot_hist.parameters['band'] = plot_wrappers[-1].parameters['band']
-                    plot_hist.parameters['type'] = plot_wrappers[-1].parameters['type']
-                    plot_hist.parameters['stokes'] = 'I'
-                    plot_wrappers.append(plot_hist)
-                    if '.tt1.' not in subimagename:
-                        item_stats = self._get_stats(image, items=['max', 'min', 'median'])
-                        stats[virtspw]['pb'] = item_stats
-                else:
-                    plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
-                                                                          reportdir=stage_dir, intent='', stokes_list=None,
-                                                                          collapseFunction='mean'))
-
-        self.result.stats = stats
-        self.result.stats_stokes = stats_stokes_list
-        self.result.stats_reffreq = stats_reffreq_list
-        self._get_stats_summary()
+            elif '.pb.' in subimagename:
+                plots = sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
+                                                         reportdir=stage_dir, intent='', stokes_list=['I'],
+                                                         collapseFunction='mean', vmin=0.2, vmax=1.)
+                for plot in plots:
+                    plot.parameters['type'] = 'pb'
+                plot_wrappers.extend(plots)
+                plot_hist = ImageHistDisplay(self.context, subimagename,
+                                             x_axis='Primary Beam Response', y_axis='Num. of Pixel',
+                                             reportdir=stage_dir).plot()
+                plot_hist.parameters['virtspw'] = plot_wrappers[-1].parameters['virtspw']
+                plot_hist.parameters['band'] = plot_wrappers[-1].parameters['band']
+                plot_hist.parameters['type'] = plot_wrappers[-1].parameters['type']
+                plot_hist.parameters['stokes'] = 'I'
+                plot_wrappers.append(plot_hist)
+            else:
+                plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, subimagename,
+                                                                      reportdir=stage_dir, intent='', stokes_list=None,
+                                                                      collapseFunction='mean'))
 
         plot_wrappers = [p for p in plot_wrappers if p is not None]
         for p in plot_wrappers:
@@ -261,77 +214,48 @@ class VlassCubeCutoutimagesSummary(object):
 
         return plot_wrappers
 
-    def _get_stats_summary(self):
-        """Reorganize the raw stats (spw,imtype) into a layout (imtype,property) more convenient for tabulation."""
 
-        stats_summary = collections.OrderedDict()
-        for spw, stats_spw in self.result.stats.items():
-            for imtype, stats_spw_imtype in stats_spw.items():
-                for item, value in stats_spw_imtype.items():
-                    if imtype not in stats_summary:
-                        stats_summary[imtype] = collections.OrderedDict()
-                    if item not in stats_summary[imtype]:
-                        stats_summary[imtype][item] = {'spw': [], 'value': []}
-                    stats_summary[imtype][item]['spw'].append(spw)
-                    stats_summary[imtype][item]['value'].append(value)
+def get_stats_summary(stats):
+    """Reorganize the raw stats (spw,imtype) into a layout (imtype,property) more convenient for tabulation."""
 
-        for imtype, stats_summary_imtype in stats_summary.items():
-            for item, item_details in stats_summary_imtype.items():
-                value_arr = np.array(item_details['value'])         # shape=(n_spw, n_pol)
-                spw_arr = np.array(item_details['spw'])             # shape=(n_spw,)
-                stats_summary[imtype][item]['spwwise_madrms']=median_absolute_deviation(value_arr,axis=0)*1.4826    # shape=(n_spw,)
-                stats_summary[imtype][item]['spwwise_mean']=np.mean(value_arr,axis=0)                               # shape=(n_spw,)
-                stats_summary[imtype][item]['range'] = np.percentile(value_arr, (0, 100))
-                idx_maxdev = np.argmax(value_arr-np.median(value_arr, axis=0), axis=0)
-                stats_summary[imtype][item]['spw_outlier'] = spw_arr[idx_maxdev]
+    stats_summary = collections.OrderedDict()
+    for spw, stats_spw in stats.items():
+        for imtype, stats_spw_imtype in stats_spw.items():
+            if imtype in ['stokes', 'reffreq']:
+                # deal with two special keys
+                continue
+            for item, value in stats_spw_imtype.items():
+                if imtype not in stats_summary:
+                    stats_summary[imtype] = collections.OrderedDict()
+                if item not in stats_summary[imtype]:
+                    stats_summary[imtype][item] = {'spw': [], 'value': []}
+                stats_summary[imtype][item]['spw'].append(spw)
+                stats_summary[imtype][item]['value'].append(value)
 
-        self.result.stats_summary = stats_summary
+    for imtype, stats_summary_imtype in stats_summary.items():
+        for item, item_details in stats_summary_imtype.items():
+            value_arr = np.abs(np.array(item_details['value']))         # shape=(n_spw, n_pol)
+            spw_arr = np.array(item_details['spw'])                     # shape=(n_spw,)
+            stats_summary[imtype][item]['spwwise_madrms'] = median_absolute_deviation(
+                value_arr, axis=0)*1.4826                               # shape=(n_spw,)
+            stats_summary[imtype][item]['spwwise_mean'] = np.mean(
+                value_arr, axis=0)                                      # shape=(n_spw,)
+            stats_summary[imtype][item]['range'] = np.percentile(value_arr, (0, 100))
+            idx_maxdev = np.argmax(value_arr-np.median(value_arr, axis=0), axis=0)
+            stats_summary[imtype][item]['spw_outlier'] = spw_arr[idx_maxdev]
 
-        return
-
-    def _get_stats(self, image, items=['min', 'max'], mask=None):
-        """Extract the desired stats properties (per Stokes) from an ia.statistics() return."""
-
-        imstats = image.statistics(robust=True, axes=[0, 1, 3], mask=mask)
-        stats = collections.OrderedDict()
-
-        for item in items:
-            if item.lower() == 'madrms':
-                stats['madrms'] = imstats['medabsdevmed']*1.4826  # see CAS-9631
-            elif item.lower() == 'max/madrms':
-                stats['max/madrms'] = imstats['max']/imstats['medabsdevmed']*1.4826  # see CAS-9631
-            elif item.lower() == 'maxabs':
-                stats['maxabs'] = np.maximum(np.abs(imstats['max']), np.abs(imstats['min']))
-            elif 'pct<' in item:
-                threshold = float(item.replace('pct<', ''))
-                imstats_threshold = image.statistics(robust=True, axes=[0, 1, 3], includepix=[0, threshold], mask=mask)
-                if len(imstats_threshold['npts']) == 0:
-                    # if no pixel is selected from the restricted pixel value range, the return of ia.statitics() would be empty.
-                    imstats_threshold['npts'] = np.zeros(4)
-                stats[item] = imstats_threshold['npts']/imstats['npts']
-            elif item.lower() == 'pct_masked':
-                im_shape = (imstats['trc']-imstats['blc'])+1
-                stats[item] = 1.-imstats['npts']/im_shape[0]/im_shape[1]
-            elif item.lower() == 'peak':  # Here 'peak' means the pixel value with largest deviation from zero.
-                stats[item] = np.where(np.abs(imstats['max']) > np.abs(imstats['min']), imstats['max'], imstats['min'])
-            elif item.lower() == 'peak/madrms':
-                peak = np.where(np.abs(imstats['max']) > np.abs(imstats['min']), imstats['max'], imstats['min'])
-                madrms = imstats['medabsdevmed']*1.4826  # see CAS-9631
-                stats['peak/madrms'] = peak/madrms
-            else:
-                stats[item] = imstats[item.lower()]
-
-        return stats
+    return stats_summary
 
 
 class VlassCubeCutoutRmsSummary(object):
     """A class for the VLASS-CUBE makecutout rms-vs-frequency summary plots."""
+
     def __init__(self, context, result):
         self.context = context
         self.result = result
 
     @matplotlibrc_formal
-    def plot(self):
+    def plot(self, improp_list=[('image', 'MADrms'), ('rms', 'Median')]):
 
         stage_dir = os.path.join(self.context.report_dir,
                                  'stage%d' % self.result.stage_number)
@@ -339,41 +263,47 @@ class VlassCubeCutoutRmsSummary(object):
             os.mkdir(stage_dir)
 
         plots = []
-
-        figfile = os.path.join(stage_dir, 'image_madrms_vs_freq.png')
-        plot = self._plot_rms(figfile=figfile, imtype='image', item='madrms')
-        plots.append(plot)
-
-        figfile = os.path.join(stage_dir, 'image_rms_vs_spw.png')
-        plot = self._plot_rms(figfile=figfile, imtype='rms', item='median')
-        plots.append(plot)
+        for improp in improp_list:
+            figfile = os.path.join(stage_dir, f'{improp[0]}_{improp[1]}_vs_freq.png')
+            plot = self._plot_rms(figfile=figfile, imtype=improp[0], item=improp[1])
+            plots.append(plot)
 
         return [p for p in plots if p is not None]
 
     def _plot_rms(self, figfile, imtype='rms', item='median'):
 
-        x = np.array(self.result.stats_reffreq)/1e9
-        y = np.array(self.result.stats_summary[imtype][item]['value'])*1e3
-        spw_labels = np.array(self.result.stats_summary[imtype][item]['spw'])
-
         LOG.debug(f'Creating the {imtype}_{item} vs. Frequency plot.')
 
         try:
 
+            stats = self.result.stats
+            x = []
+            y = []
+            spw_labels = []
+            for spw in stats:
+                if imtype.lower() in stats[spw]:
+                    x.append(stats[spw]['reffreq'])
+                    y.append(stats[spw][imtype.lower()][item.lower()])
+                    spw_labels.append(spw)
+                    stokes_list = stats[spw]['stokes']
+            x = np.array(x)/1e9  # GHz
+            y = np.array(y)*1e3  # mJy
+            spw_labels = np.array(spw_labels)
+
             fig, ax = plt.subplots(figsize=(8, 6))
             cmap = cm.get_cmap('rainbow_r')
-            for idx, stokes in enumerate(self.result.stats_stokes):
-                color_idx = idx/len(self.result.stats_stokes)
-                ax.plot(x, y[:, idx], color=cmap(color_idx), label=f'$\it{stokes}$')
-                ax.scatter(x, y[:, idx], color=cmap(color_idx), alpha=0.75, s=300, edgecolors='black')
+            for idx, stokes in enumerate(stokes_list):
+                color_idx = idx/len(stokes_list)
+                ax.plot(x, y[:, idx], color=cmap(color_idx), label=f'$\it{stokes}$', marker='o')
+                #ax.scatter(x, y[:, idx], color=cmap(color_idx), alpha=0.75, s=300, edgecolors='black')
                 if stokes == 'I':
                     for idx_spw in range(len(x)):
                         text = ax.annotate(spw_labels[idx_spw], (x[idx_spw], y[idx_spw, idx]),
-                                           ha='center', va='center', fontsize=9.)
+                                           ha='center', va='top', fontsize=9.)
                         text.set_alpha(.7)
 
             ax.set_xlabel('Frequency [GHz]')
-            ax.set_ylabel(r'RMS$_{\rm median}$ [mJy/beam]')
+            ax.set_ylabel(f'{imtype}'+r'$_{\rm '+f'{item}'+'}$ [mJy/beam]')
             xlim = ax.get_xlim()
             ylim = ax.get_ylim()
             ax.set_xlim(1.9, 4.1)
@@ -402,7 +332,7 @@ class VlassCubeCutoutRmsSummary(object):
 
             plot = logger.Plot(figfile,
                                x_axis='Frequency',
-                               y_axis=imtype+'_'+item,
+                               y_axis=item+'<sub>.'+imtype+'</sub>',
                                parameters={})
 
         except Exception as ex:

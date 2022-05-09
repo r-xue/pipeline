@@ -75,7 +75,7 @@ def dev2shade(x):
 
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
-bgcolor_list=[dev2shade(3),dev2shade(4),dev2shade(5),dev2shade(6)]
+bgcolor_list=[dev2shade(3.),dev2shade(4.),dev2shade(5.),dev2shade(6.)]
 %>
 
 
@@ -152,21 +152,20 @@ $(function () {
 <h4>Cutout Image Statistical Properties</h4>
 
 <div class="table-responsive">
-<table style="float: left; margin:100px 10px; width: auto; text-align:center" class="table table-hover table-condensed">
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-hover table-condensed">
 
 <caption>
   <li>
-      Peak: the pixel value with the largest deviation from zero, which can be either the maximum or minimum value of each image. This is similar to the definition of "Peak" residual used in CASA/tclean.
+      Peak: the pixel value with the largest deviation from zero. This value is either the image maximum or minimum, depending on their absolute amplitude. The peak of a residual image is used by CASA/tclean as a basis for identifying model components, triggering major cycles, and setting a clean stopping threshold.
   </li>
   <li>
       MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
   </li>  
   <li>
-      Px<sub><800&mu;Jy</sub> (pct.): the pct. of pixes (within the unmasked region) with value less than 800&mu;Jy in the Rms image.
+      Px<sub><800&mu;Jy</sub>: the percentage of pixels (within the unmasked region) with a value less than 800&mu;Jy in the Rms image.
   </li>
   <li>
-      The cell background highlights spws with a stastical property signficantly deviated from its mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>.
-      The deviation, in units of &#963 (defined from the scaled MAD over all spw groups), is also show in the tooltip box.
+      The color background highlights spectral windows with a statistical property signficantly deviated from the mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is also viewable in a tooltip box. For the 'Peak' column in which the value can be either positive or negative, the statistical evluation is done using its absolute amplitude.
   </li>        
 </caption>
 
@@ -282,7 +281,7 @@ $(function () {
         else:
           suffix=''
         if not (t=='pb' or t=='beam'):
-          dev_in_madrms=stats_spw[t][i][idx_pol]-stats_summary[t][i]['spwwise_mean'][idx_pol]
+          dev_in_madrms=abs(stats_spw[t][i][idx_pol])-stats_summary[t][i]['spwwise_mean'][idx_pol]
           madrms=stats_summary[t][i]['spwwise_madrms'][idx_pol]
           if abs(dev_in_madrms)>madrms*3.0:
             #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
@@ -332,9 +331,11 @@ $(function () {
         <%def name="mouseover(plot)">${plot.basename}</%def>
 
         <%def name="fancybox_caption(plot)">
+           ${plot.y_axis} vs. ${plot.x_axis}
         </%def>
 
         <%def name="caption_title(plot)">
+           ${plot.y_axis} vs. ${plot.x_axis}
         </%def>
 </%self:plot_group>
 
