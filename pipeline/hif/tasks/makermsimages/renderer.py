@@ -107,9 +107,7 @@ class T2_4MDetailsMakermsimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDefau
 
             # Make the plots of the rms images
             plotter = rmsimages.VlassCubeRmsimagesSummary(context, r)
-            plots = plotter.plot()
-            rmsplots = {}
-            rmsplots['Rms Image Summary Plots'] = plots
+            rmsplots = {'Rms Image Summary Plots': plotter.plot()}
 
         ctx.update({'rmsplots': rmsplots,
                     'info_dict': info_dict,

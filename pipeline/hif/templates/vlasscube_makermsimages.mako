@@ -56,7 +56,7 @@ def dev2shade(x):
 
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
-bgcolor_list=[dev2shade(3),dev2shade(4),dev2shade(5),dev2shade(6)]
+bgcolor_list=[dev2shade(3.),dev2shade(4.),dev2shade(5.),dev2shade(6.)]
 %>
 
 
@@ -140,11 +140,6 @@ $(function () {
 
     <h4>Rms Image Statistical Properties</h4>
 
-    <!--
-    <div style="width: 1200px; height: 250px; overflow: auto;">
-    <div style="width: 1200px; height: 250px; overflow: auto;">
-    <table class="table table-header-rotated">
-    -->
 
     <div class="table-responsive">
     <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-hover table-condensed">
@@ -156,8 +151,7 @@ $(function () {
             MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
         </li>
         <li>
-            The cell background highlights spws with a stastical property signficantly deviated from its mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>.
-            The deviation, in units of &#963 (defined from the scaled MAD over all spw groups), is also show in the tooltip box.
+            The color background highlights spectral windows with a statistical property signficantly deviated from the mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is also viewable in a tooltip box.
         </li>            
     </caption>    
     
