@@ -24,6 +24,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
+           'imstat_items', 'get_stokes',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details']
 
@@ -270,6 +271,57 @@ def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
     for spw in sorted(spws, key=lambda s: s.id):
         spwmap[spw.spectralspec].append(spw.id)
     return spwmap
+
+
+def imstat_items(image, items=['min', 'max'], mask=None):
+    """Extract desired stats properties (per Stokes) using ia.statistics().
+
+    Beside the standard output, some additional stats property keys are supported.
+    Note: 'image' is expected to an instance of CASA ia tool.
+    """
+
+    imstats = image.statistics(robust=True, axes=[0, 1, 3], mask=mask)
+    stats = collections.OrderedDict()
+
+    for item in items:
+        if item.lower() == 'madrms':
+            stats['madrms'] = imstats['medabsdevmed']*1.4826  # see CAS-9631
+        elif item.lower() == 'max/madrms':
+            stats['max/madrms'] = imstats['max']/imstats['medabsdevmed']*1.4826  # see CAS-9631
+        elif item.lower() == 'maxabs':
+            stats['maxabs'] = np.maximum(np.abs(imstats['max']), np.abs(imstats['min']))
+        elif 'pct<' in item:
+            threshold = float(item.replace('pct<', ''))
+            imstats_threshold = image.statistics(robust=True, axes=[0, 1, 3], includepix=[0, threshold], mask=mask)
+            if len(imstats_threshold['npts']) == 0:
+                # if no pixel is selected from the restricted pixel value range, the return of ia.statitics() would be empty.
+                imstats_threshold['npts'] = np.zeros(4)
+            stats[item] = imstats_threshold['npts']/imstats['npts']
+        elif item.lower() == 'pct_masked':
+            im_shape = (imstats['trc']-imstats['blc'])+1
+            stats[item] = 1.-imstats['npts']/im_shape[0]/im_shape[1]
+        elif item.lower() == 'peak':  # Here 'peak' means the pixel value with largest deviation from zero.
+            stats[item] = np.where(np.abs(imstats['max']) > np.abs(imstats['min']), imstats['max'], imstats['min'])
+        elif item.lower() == 'peak/madrms':
+            peak = np.where(np.abs(imstats['max']) > np.abs(imstats['min']), imstats['max'], imstats['min'])
+            madrms = imstats['medabsdevmed']*1.4826  # see CAS-9631
+            stats['peak/madrms'] = peak/madrms
+        else:
+            stats[item] = imstats[item.lower()]
+
+    return stats
+
+
+def get_stokes(imagename):
+    """Get the labels of all stokes planes present in a CASA image."""
+
+    with casa_tools.ImageReader(imagename) as image:
+        cs = image.coordsys()
+        stokes_labels = cs.stokes()
+        stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
+        cs.done()
+
+    return stokes_present
 
 
 def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:

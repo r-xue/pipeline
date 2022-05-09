@@ -11,6 +11,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.infrastructure import casa_tools
 from .plot_spectra import plot_spectra
+from pipeline.infrastructure.utils import get_stokes
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -50,7 +51,7 @@ class CleanSummary(object):
             # psf map
             if self.context.imaging_mode == 'VLASS-SE-CUBE':
                 # PIPE-1401: use the same selecting list constructed from the Stokes plane present in the PSF image.
-                stokes_list = sky.SkyDisplay.get_stokes(r.psf + extension)
+                stokes_list = get_stokes(r.psf + extension)
             else:
                 stokes_list = None
 

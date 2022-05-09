@@ -37,6 +37,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from matplotlib.offsetbox import AnnotationBbox, HPacker, TextArea
 from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import get_stokes
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -76,7 +77,7 @@ class SkyDisplay(object):
         """
         plots = []
         if stokes_list is None:
-            stokes_list = self.get_stokes(args[1])
+            stokes_list = get_stokes(args[1])
         for stokes in stokes_list:
             plots.append(self.plot(*args, stokes=stokes, **kwargs))
 
@@ -131,18 +132,6 @@ class SkyDisplay(object):
 
         return plot
 
-    @staticmethod
-    def get_stokes(imagename):
-        """Get the labels of all stokes planes present in a CASA image."""
-
-        with casa_tools.ImageReader(imagename) as image:
-            cs = image.coordsys()
-            stokes_labels = cs.stokes()
-            stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
-            cs.done()
-
-        return stokes_present
-
     def _plot_panel(self, context, reportdir, result, collapseFunction='mean', stokes: Optional[str] = None, ms=None, mom8_fc_peak_snr=None, **imshow_args):
         """Method to plot a map."""
 
@@ -154,7 +143,7 @@ class SkyDisplay(object):
 
         LOG.info('Plotting %s' % result)
 
-        stokes_present = self.get_stokes(result)
+        stokes_present = get_stokes(result)
 
         with casa_tools.ImageReader(result) as image:
 
@@ -211,7 +200,30 @@ class SkyDisplay(object):
             # don't replot if a file of the required name already exists
             if os.path.exists(plotfile):
                 LOG.info('plotfile already exists: %s', plotfile)
-                return plotfile, coord_names, miscinfo.get('field'), None
+
+                # We make sure that 'band' is still defined as if the figure is plotted.
+                # The code below is directly borrowed from the block inside the actual plotting sequence.
+
+                # VLA only, not VLASS (in which ms==None)
+                if ms:
+                    band = ms.get_vla_spw2band()
+                    band_spws = {}
+                    for k, v in band.items():
+                        band_spws.setdefault(v, []).append(k)
+                    for k, v in band_spws.items():
+                        for spw in miscinfo['virtspw'].split(','):
+                            if int(spw) in v:
+                                miscinfo['band'] = k
+                                del miscinfo['virtspw']
+                                break
+                        if 'virtspw' not in miscinfo:
+                            break
+                band = miscinfo.get('band', None)
+                # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
+                if band is None:
+                    band = cs.referencevalue(format='n')['numeric'][3]
+
+                return plotfile, coord_names, miscinfo.get('field'), band
 
             # otherwise do the plot
             data = collapsed.getchunk()
@@ -329,8 +341,8 @@ class SkyDisplay(object):
                          if image_info.get(key) is not None]
                 band = None
 
+            # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
             if band is None:
-                # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
                 band = cs.referencevalue(format='n')['numeric'][3]
 
             # PIPE-997: plot a 41pix-wide PSF inset if the image is larger than 41*3
