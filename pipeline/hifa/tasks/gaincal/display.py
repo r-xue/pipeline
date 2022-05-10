@@ -28,8 +28,6 @@ class GaincalSummaryChart(object):
                     if (any([input_intent in c.intent for input_intent in intent.split(",")]) or c.intent == '') and
                     calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-        plotters = []
-
         #ant = selected[0].antenna 
         # request plots per spw, overlaying all antennas
         #
@@ -37,17 +35,13 @@ class GaincalSummaryChart(object):
         # ability to support lists of calapps in the plotting infrastructure added in PIPE-1409 and
         # PIPE-1377. 
         ant=''
-        plot_cls = common.PlotmsCalSpwComposite(context, result, selected,
+        self.plotters = common.PlotmsCalSpwComposite(context, result, selected,
                                                 xaxis=xaxis, yaxis=yaxis, ant=ant,
                                                 plotrange=plotrange, coloraxis=coloraxis)
-        plotters.append(plot_cls)
 
-        self.plotters = plotters
-        
     def plot(self):
         plot_wrappers = []
-        for plot_cls in self.plotters:
-            plot_wrappers.extend(plot_cls.plot())
+        plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
 
 
@@ -71,25 +65,19 @@ class GaincalDetailChart(object):
                     if (any([input_intent in c.intent for input_intent in intent.split(",")]) or c.intent == '') and
                     calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-        plotters = []
-
         # Request plots per spw for the list of selected calapps, setting the same y-range for each spw.
         #
         # The PIPE-390 case of needing to handle plotting multiple caltables is now handled by the 
         # ability to support lists of calapps in the plotting infrastructure added in PIPE-1409 and
         # PIPE-1377. 
-        plot_cls = common.PlotmsCalSpwAntComposite(context, result, selected,
+        self.plotters = common.PlotmsCalSpwAntComposite(context, result, selected,
                                                     xaxis=xaxis, yaxis=yaxis, 
                                                     plotrange=plotrange, coloraxis=coloraxis,
                                                     ysamescale=True)
-        plotters.append(plot_cls)
-
-        self.plotters = plotters
 
     def plot(self):
         plot_wrappers = []
-        for plot_cls in self.plotters:
-            plot_wrappers.extend(plot_cls.plot())
+        plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
 
 

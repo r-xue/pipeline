@@ -56,8 +56,6 @@ class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
             fluxscale_measurements = collections.defaultdict(list)
         self.fluxscale_measurements = fluxscale_measurements
 
-        # Could use the above pattern here! 
-        # TODO: 
         self.calapps_for_check_sources = [] 
 
     def merge_with_context(self, context):
@@ -65,8 +63,10 @@ class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
         # measurements for later use in imaging (PIPE-644, PIPE-660).
         ms = context.observing_run.get_ms(self.vis)
         ms.derived_fluxes = self.measurements
-        #TODO: Add comment here to explain why we're adding this information to the MS
-        ms.phase_calapps_for_check_sources = self.calapps_for_check_sources # update naming to make it clear what this actually is at the MS level..... Add to domain/MeasurementSet object. 
+
+        # Store these calapps in the context so that they can be plotted in hifa_timegaincal's
+        # diagnostic phase vs. time plots. See PIPE-1377 for more information.
+        ms.phase_calapps_for_check_sources = self.calapps_for_check_sources
 
 
 class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
