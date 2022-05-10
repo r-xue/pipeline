@@ -358,32 +358,6 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return
 
-    def do_vla_targetflag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
-        """"Perform targetflag (second 'rflag' pass, intended to replace hifv_targetflag, see PIPE-1342)."""
-
-        task_args = {'vis': self.inputs.vis,
-                     'mode': 'rflag',
-                     'field': fieldselect,
-                     'correlation': 'ABS_'+self.corrstring,
-                     'scan': scanselect,
-                     'intent': intentselect,
-                     'spw': spwselect,
-                     'ntime': 'scan',
-                     'combinescans': False,
-                     'datacolumn': 'corrected',
-                     'winsize': 3,
-                     'timedevscale': 4.0,
-                     'freqdevscale': 4.0,
-                     'action': 'apply',
-                     'display': '',
-                     'extendflags': False,
-                     'flagbackup': True,
-                     'savepars': True}
-
-        job = casa_tasks.flagdata(**task_args)
-
-        return self._executor.execute(job)
-
     def do_rfi_flag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
         """Do RFI flagging using multiple passes of rflag/tfcrop/extend."""
 
@@ -475,6 +449,36 @@ class Checkflag(basetask.StandardTaskTemplate):
                 field=fieldselect, scan=scanselect, intent=intentselect, spw=spwselect, flagbackup=flagbackup, **growflag_standard)
 
         return
+
+    def do_vla_targetflag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
+        """"Perform a simple second 'rflag' pass.
+        
+        This method is equivalent to hifv_targetflag(intents='*TARGET*'), which is phasing out.
+        See PIPE-1342.
+        """
+
+        task_args = {'vis': self.inputs.vis,
+                     'mode': 'rflag',
+                     'field': fieldselect,
+                     'correlation': 'ABS_'+self.corrstring,
+                     'scan': scanselect,
+                     'intent': intentselect,
+                     'spw': spwselect,
+                     'ntime': 'scan',
+                     'combinescans': False,
+                     'datacolumn': 'corrected',
+                     'winsize': 3,
+                     'timedevscale': 4.0,
+                     'freqdevscale': 4.0,
+                     'action': 'apply',
+                     'display': '',
+                     'extendflags': False,
+                     'flagbackup': False,
+                     'savepars': True}
+
+        job = casa_tasks.flagdata(**task_args)
+
+        return self._executor.execute(job)
 
     def _select_data(self):
         """Select data according to the specified checkflagmode.
