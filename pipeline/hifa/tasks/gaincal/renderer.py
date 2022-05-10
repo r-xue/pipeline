@@ -28,6 +28,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, ctx, context, results):
         applications = []
         spw_mapping = {}
+        spw_mapping_without_check = {}
 
         amp_vs_time_summaries = collections.defaultdict(list)
         phase_vs_time_summaries = {}
@@ -55,6 +56,9 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # Get the SpW mapping info for current MS.
             spw_mapping[vis] = self.get_spw_mappings(ms)
+
+            # Get the Spw mapping info for the current MS, omitting any CHECK sources.
+            spw_mapping_without_check[vis] = self.get_spw_mappings(ms, 'CHECK')
 
             # Get gain cal applications for current MS.
             ms_applications = self.get_gaincal_applications(context, result, ms)
@@ -218,6 +222,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         ctx.update({
             'applications': applications,
             'spw_mapping': spw_mapping,
+            'spw_mapping_without_check': spw_mapping_without_check,
             'amp_vs_time_plots': amp_vs_time_summaries,
             'phase_vs_time_plots': phase_vs_time_summaries,
             'diagnostic_amp_vs_time_plots': diagnostic_amp_vs_time_summaries,
@@ -276,19 +281,30 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return applications
 
     @staticmethod
-    def get_spw_mappings(ms):
+    def get_spw_mappings(ms, omit_intent: str='') -> str:
         combined = []
         mapped = []
+        default_mapped = []
         for ifld, spwmap in ms.spwmaps.items():
+            if omit_intent:
+                 # Skip intent in omit_intent
+                 if ifld.intent == omit_intent:
+                     continue
+
             if spwmap.combine:
                 combined.append(f"{ifld.field} ({ifld.intent})")
             else:
-                mapped.append(f"{ifld.field} ({ifld.intent})")
+                if spwmap.spwmap:
+                    mapped.append(f"{ifld.field} ({ifld.intent})")
+                else:
+                    # If the spwmap is an empty list, use the phrase "default mapped"
+                    default_mapped.append(f"{ifld.field} ({ifld.intent})")
 
         # Construct string summarizing SpW mapping for MS.
         combined_str = f"Spectral windows combined for {', '.join(combined)}." if combined else ""
         mapped_str = f"Spectral windows mapped for {', '.join(mapped)}." if mapped else ""
-        summary_str = ' '.join([combined_str, mapped_str]).strip()
+        default_mapped_str = f"Spectral windows default mapped for {', '.join(default_mapped)}." if default_mapped else ""
+        summary_str = ' '.join([combined_str, default_mapped_str, mapped_str]).strip()
 
         return summary_str
 

@@ -22,7 +22,7 @@ class GaincalSummaryChart(object):
         else:
             raise ValueError('Unmapped calmode for y-axis: ' % yaxis)    
 
-        # identify the phase-only or amp-only solution for the target
+        # Identify the phase-only or amp-only solution for the target and filter by intent.
         selected = [c for c in calapps
                     # Check to see if any of the intents passed in are in the list of intents in the calapp
                     if (any([input_intent in c.intent for input_intent in intent.split(",")]) or c.intent == '') and
@@ -58,7 +58,7 @@ class GaincalDetailChart(object):
         else:
             raise ValueError('Unmapped calmode for y-axis: ' % yaxis)    
 
-        # identify the phase-only or amp-only solution for the target
+        # Identify the phase-only or amp-only solution for the target and filter by intent.
         selected = [c for c in calapps
                     # Check to see if any of the intents passed in are in the list of intents in the calapp
                     if (any([input_intent in c.intent for input_intent in intent.split(",")]) or c.intent == '') and

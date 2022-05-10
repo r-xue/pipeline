@@ -577,6 +577,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         intent_field_to_assess = self._get_intent_field(inputs.ms, intents=pc_intents,
                                                         exclude_intents=exclude_intents)
 
+        # List of calapps for check sources solutions to be saved to the context so they can be
+        # used in hifa_timegaincal's diagnostic phase vs. time plots. See PIPE-1377.
         calapps_for_check_sources = []                                                        
         for intent, field in intent_field_to_assess:
             result = self._do_phasecal_for_intent_field(intent, field, allantenna, filtered_refant)
