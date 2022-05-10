@@ -139,13 +139,20 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
             # with solint=int
+            #
             # Retrieve the phase solutions from hifa_timegaincal that were saved off specifically to make this plot
             # (See: PIPE-1377 for more information)             
             diagnostic_phase_calapps = result.phasecal_for_phase_plot
             # Add the CHECK sources from hifa_gfluxscale to this plot (see: PIPE-1377)
-            diagnostic_phase_calapps.extend(ms.phase_calapps_for_check_sources)
+            if(ms.phase_calapps_for_check_sources):
+                diagnostic_phase_calapps.extend(ms.phase_calapps_for_check_sources)
+            else: 
+                LOG.warn('Could not find check source solutions from hifa_gfluxscale, omitting from diagnostic phase vs. time plot for {}.'.format(ms.name))
+
             diagnostic_phase_calapps.sort(key=lambda cal: cal.gaintable)
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, diagnostic_phase_calapps, 'BANDPASS,PHASE,CHECK') 
+
+            # There's no need to pass specific intents for this, because the list is already limited to the appropriate plots.
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, diagnostic_phase_calapps, '') 
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase offset vs time plots
@@ -173,7 +180,8 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     amp_vs_time_subpages[vis] = renderer.path
 
                 # phase vs time for solint=int
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, diagnostic_phase_calapps, 'BANDPASS,PHASE,CHECK')
+                # There's no need to pass specific intents, because the list is already limited to the appropriate plots.
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, diagnostic_phase_calapps, '')
                 diagnostic_phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context, result,
                                                                     diagnostic_phase_vs_time_details[vis])
