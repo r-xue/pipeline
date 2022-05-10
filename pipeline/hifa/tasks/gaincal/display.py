@@ -28,7 +28,6 @@ class GaincalSummaryChart(object):
                     if (any([input_intent in c.intent for input_intent in intent.split(",")]) or c.intent == '') and
                     calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-        #ant = selected[0].antenna 
         # request plots per spw, overlaying all antennas
         #
         # The PIPE-390 case of needing to handle plotting multiple caltables is now handled by the 

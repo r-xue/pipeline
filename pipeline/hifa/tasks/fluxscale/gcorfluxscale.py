@@ -580,10 +580,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         calapps_for_check_sources = []                                                        
         for intent, field in intent_field_to_assess:
             result = self._do_phasecal_for_intent_field(intent, field, allantenna, filtered_refant)
-            # TODO: initialize calapps_for_check and anything else needed to make this actually work
             if intent == 'CHECK':
-                # add calapp to context (initialize list at start of task) calapps_for_check
-                calapps_for_check_sources.extend(result.final) # what is result.final here? list or not? 
+                calapps_for_check_sources.extend(result.final)
 
 
         # PIPE-1154: for the remaining calibrator intents, compute phase
