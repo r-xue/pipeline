@@ -14,7 +14,6 @@ from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-from . import skycal
 from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Union, Tuple
 
 if TYPE_CHECKING:

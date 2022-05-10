@@ -62,7 +62,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
             fraction: Optional[float] = None, 
             noff: Optional[int] = None, 
             width: Optional[float] = None, 
-            elongated: Optional[float] = None, 
+            elongated: Optional[bool] = None, 
             output_dir: Optional[str] = None,
             infiles: Optional[str] = None, 
             outfile: Optional[str] = None, 
@@ -75,10 +75,12 @@ class SDSkyCalInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
             calmode: Calibration mode.
-            fraction: Value of fraction.
-            noff: Number of noff.
-            width: Value of width.
-            elongated: Value of elongation.
+            fraction: Value of fraction of OFF scan data against total data number.
+            noff: Number of OFF scan data.
+            width: Value of pixel width, e.g., a median spatial separation between 
+            neighboring two data in time.
+            elongated: Whether observed area is elongated in one direction (True) 
+            or not (False).
             output_dir: Name of output directory.
             infiles: Name of MS or list of names.
             outfile: Name of the output file.
@@ -183,7 +185,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         """Prepare arguments for CASA job and execute it.
 
         Returns:
-           SDSkyCalResult object.
+           SDSkyCalResults object.
         """
         args = self.inputs.to_casa_args()
         LOG.trace('args: {}'.format(args))
