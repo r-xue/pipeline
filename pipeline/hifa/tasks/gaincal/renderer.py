@@ -120,7 +120,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     diagnostic_amp_vs_time_summaries[vis].extend(plot_wrappers)
             else:
                 # Generate the amp-vs-time plots.
-                plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, result.final, 'TARGET')
+                plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET')
                 plot_wrappers = plotter.plot()
                 amp_vs_time_summaries[vis].extend(plot_wrappers)
 
@@ -130,27 +130,18 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 diagnostic_amp_vs_time_summaries[vis].extend(plot_wrappers)
 
             # generate phase vs time plots
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'TARGET', combine=True)
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET')
             phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
             # with solint=int
-            # calapps_list = result.final
-            # print("CALAPPS RESULT.final, ", calapps_list)
-            # print("CALAPPS phasecal:", result.phasecal_for_phase)
-            # calapps_list.extend(result.phasecal_for_phase)
-            # print("CALAPPS LIST:", calapps_list)
-
-            # temp check to try overplotting the CHECK source: 
-            tmp_list = result.phasecal_for_phase_plot #TODO: update what this is called...
-            tmp_list.extend(ms.phase_calapps_for_check_sources) # TODO: update what this is called in the measurement set and is it a list? Yes. 
-
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, tmp_list, 'BANDPASS,PHASE,CHECK', combine=True) # 
-
-            #plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, tmp_list, 'BANDPASS,PHASE,CHECK', combine=True) # should go back to result.phasecal_for_phase
-#            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, calapps_list, 'BANDPASS,PHASE', combine=True)
-#            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, result.phasecal_for_phase, 'BANDPASS', combine=True)
-            
+            # Retrieve the phase solutions from hifa_timegaincal that were saved off specifically to make this plot
+            # (See: PIPE-1377 for more information)             
+            diagnostic_phase_calapps = result.phasecal_for_phase_plot
+            # Add the CHECK sources from hifa_gfluxscale to this plot (see: PIPE-1377)
+            diagnostic_phase_calapps.extend(ms.phase_calapps_for_check_sources)
+            diagnostic_phase_calapps.sort(key=lambda cal: cal.gaintable)
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, diagnostic_phase_calapps, 'BANDPASS,PHASE,CHECK') 
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase offset vs time plots
@@ -162,7 +153,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
                 # phase vs time plots
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'TARGET', combine=True)
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'TARGET')
                 phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimePlotRenderer(context, result, phase_vs_time_details[vis])
                 with renderer.get_file() as fileobj:
@@ -178,9 +169,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     amp_vs_time_subpages[vis] = renderer.path
 
                 # phase vs time for solint=int
-
-                #plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'BANDPASS,PHASE,CHECK', combine=True)
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, tmp_list, 'BANDPASS,PHASE,CHECK', combine=True)
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, diagnostic_phase_calapps, 'BANDPASS,PHASE,CHECK')
                 diagnostic_phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context, result,
                                                                     diagnostic_phase_vs_time_details[vis])
