@@ -27,21 +27,17 @@ class VlassCubeStokesSummary(object):
             os.mkdir(stage_dir)
 
         plot_wrappers = []
-        roi_list = ['peak_stokesi', 'peak_linpolint']
+        stats = self.result.stats
 
-        for roi_name in roi_list:
-
-            label = self.result.stats['spw']
-
-            roi_stats = self.result.stats[roi_name]
+        for roi_name, roi_stats in stats.items():
             figfile = os.path.join(stage_dir, f'stokes_summary_u_vs_q_{roi_name}.png')
-
-            x = np.array(roi_stats['stokesq'])/np.array(roi_stats['stokesi'])
-            y = np.array(roi_stats['stokesu'])/np.array(roi_stats['stokesi'])
 
             LOG.debug(f'Creating the ROI={roi_name} Stokes U vs. Q plot.')
 
             try:
+                x = np.array(roi_stats['stokesq'])/np.array(roi_stats['stokesi'])
+                y = np.array(roi_stats['stokesu'])/np.array(roi_stats['stokesi'])
+                label = roi_stats['spw']
                 fig, ax = plt.subplots(figsize=(10, 8))
                 cmap = cm.get_cmap('rainbow_r')
                 for idx in range(len(x)):
@@ -55,7 +51,14 @@ class VlassCubeStokesSummary(object):
                 ax.set_xlabel('Frac. Stokes $Q$')
                 ax.set_ylabel('Frac. Stokes $U$')
                 peak_loc = roi_stats['world']
-                ax.set_title(f"Intensity Peak at \n {peak_loc}")
+
+                desc = None
+                if roi_name == 'peak_stokesi':
+                    desc = 'Peak of the Stokes-I map'
+                if roi_name == 'peak_linpolint':
+                    desc = 'Peak of the linearly polarized intensity map'
+
+                ax.set_title(f"{desc}\n {peak_loc}")
                 ax.set_aspect('equal')
                 ax.axhline(0, linestyle='-', color='lightgray')
                 ax.axvline(0, linestyle='-', color='lightgray')
@@ -69,10 +72,7 @@ class VlassCubeStokesSummary(object):
 
                 plt.close(fig)
 
-                if roi_name == 'peak_stokesi':
-                    desc = 'Peak of the Stokes-I map'
-                if roi_name == 'peak_linpolint':
-                    desc = 'Peak of the linearly polarized intensity map'
+
                 plot = logger.Plot(figfile,
                                    x_axis='Frac. Stokes-Q',
                                    y_axis='Frac. Stokes-U',

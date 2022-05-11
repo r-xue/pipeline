@@ -1,4 +1,5 @@
 import glob
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -46,14 +47,16 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
         imlist = self.inputs.context.subimlist.get_imlist()
 
         # initialize the stats container
-        stats = {'spw': [], 'rms': [], 'reffreq': [], 'beamarea': []}
-        roi_stats = {'stokesi': [], 'stokesq': [], 'stokesu': [], 'stokesv': [], 'xy': None, 'world': None}
+        stats = collections.OrderedDict()
+        roi_stats_default = {'stokesi': [], 'stokesq': [], 'stokesu': [], 'stokesv': [],
+                             'spw': [], 'rms': [], 'reffreq': [], 'beamarea': [],
+                             'xy': None, 'world': None}
         roi_list = ['peak_stokesi', 'peak_linpolint']
 
         # add the roi location
         img_stats = self._get_imstat(imlist)
         for idx, roi_name in enumerate(roi_list):
-            stats[roi_name] = copy.deepcopy(roi_stats)
+            stats.setdefault(roi_name, copy.deepcopy(roi_stats_default))
             stats[roi_name]['xy'] = (img_stats[idx]['maxpos'][0], img_stats[idx]['maxpos'][1])
             stats[roi_name]['world'] = img_stats[idx]['maxposf']
 
@@ -63,34 +66,41 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
             img_name = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.tt0.subim'))[0]
             rms_name = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.tt0.rms.subim'))[0]
             LOG.info(f'Getting properties from {img_name} and {rms_name}')
-            stats['spw'].append(imageitem['spwlist'])
 
             with casa_tools.ImagepolReader(img_name) as imagepol:
+                with casa_tools.ImageReader(rms_name) as image:
 
-                img_stokesi = imagepol.stokesi()
-                img_stokesq = imagepol.stokesq()
-                img_stokesu = imagepol.stokesu()
-                img_linpolint = imagepol.linpolint()
+                    rms_stats = image.statistics(robust=True, axes=[0, 1])['median']
 
-                cs = img_stokesi.coordsys()
-                stats['reffreq'].append(cs.referencevalue(format='n')['numeric'][3])
-                bm = img_stokesi.restoringbeam(polarization=0)
-                stats['beamarea'].append(bm['major']['value']*bm['minor']['value'])
+                    img_stokesi = imagepol.stokesi()
+                    img_stokesq = imagepol.stokesq()
+                    img_stokesu = imagepol.stokesu()
+                    cs = img_stokesi.coordsys()
+                    bm = img_stokesi.restoringbeam(polarization=0)
+                    beamarea = bm['major']['value']*bm['minor']['value']
 
-                for idx, roi_name in enumerate(roi_list):
-                    blc = [stats[roi_name]['xy'][0]-1, stats[roi_name]['xy'][1]-1]
-                    trc = [stats[roi_name]['xy'][0]+1, stats[roi_name]['xy'][1]+1]
-                    rg = casa_tools.regionmanager.box(blc=blc, trc=trc)
-                    stokesi_stats = img_stokesi.statistics(robust=False, region=rg)
-                    stokesq_stats = img_stokesq.statistics(robust=False, region=rg)
-                    stokesu_stats = img_stokesu.statistics(robust=False, region=rg)
-                    stats[roi_name]['stokesi'].append(stokesi_stats['mean'][0])
-                    stats[roi_name]['stokesq'].append(stokesq_stats['mean'][0])
-                    stats[roi_name]['stokesu'].append(stokesu_stats['mean'][0])
+                    for idx, roi_name in enumerate(roi_list):
 
-            with casa_tools.ImageReader(rms_name) as image:
-                rms_stats = image.statistics(robust=True, axes=[0, 1, 3])
-                stats['rms'].append(rms_stats['median'])
+                        try:
+                            npix_halfwidth = 1
+                            blc = [stats[roi_name]['xy'][0]-npix_halfwidth, stats[roi_name]['xy'][1]-npix_halfwidth]
+                            trc = [stats[roi_name]['xy'][0]+npix_halfwidth, stats[roi_name]['xy'][1]+npix_halfwidth]
+                            rg = casa_tools.regionmanager.box(blc=blc, trc=trc)
+                            stokesi_mean = img_stokesi.statistics(robust=False, region=rg)['mean'][0]
+                            stokesq_mean = img_stokesq.statistics(robust=False, region=rg)['mean'][0]
+                            stokesu_mean = img_stokesu.statistics(robust=False, region=rg)['mean'][0]
+
+                            stats[roi_name]['spw'].append(imageitem['spwlist'])
+                            stats[roi_name]['stokesi'].append(stokesi_mean)
+                            stats[roi_name]['stokesq'].append(stokesq_mean)
+                            stats[roi_name]['stokesu'].append(stokesu_mean)
+                            stats[roi_name]['rms'].append(rms_stats)
+                            stats[roi_name]['beamarea'].append(beamarea)
+                            stats[roi_name]['reffreq'].append(cs.referencevalue(format='n')['numeric'][3])
+
+                        except Exception as e:
+                            LOG.warning(
+                                'Failed to derive the Stokes brightness at the region-of-interest (ROI): {} / spw = {!r}.'.format(roi_name, imageitem['spwlist']))
 
         return AnalyzestokescubesResults(stats=stats)
 
@@ -99,6 +109,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
 
     def _get_imstat(self, imlist):
         """Identify the image with lowest ref. frequency and measure its 'maxpos'.
+        
         See the requirement in PIPE-1356.
         """
 
@@ -114,27 +125,50 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
         idx_freqlow = frequency_list.index(min(frequency_list))
         idx_freqhigh = frequency_list.index(max(frequency_list))
 
+        LOG.info(
+            f'{imagename_list[idx_freqlow]} has the lowest reference frequency at {frequency_list[idx_freqlow]} Hz.')
+        LOG.info(
+            f'{imagename_list[idx_freqhigh]} has the highest reference frequency at {frequency_list[idx_freqhigh]} Hz.')
+
+        # option 1: use pb>0.4 to restrict the search region.
+
         pbname_freqhigh = imagename_list[idx_freqhigh].replace('.image.pbcor.tt0.subim', '.pb.tt0.subim')
         pbname_freqhigh_flatten = pbname_freqhigh+'.flattened'
-        LOG.info(f'Generating a flattend PB image at the highest frequency: {pbname_freqhigh_flatten}')
+        LOG.info(f'Generating a flattend PB subimage at the highest frequency: {pbname_freqhigh_flatten}')
         with casa_tools.ImageReader(pbname_freqhigh) as image:
             collapsed_image = image.collapse(
                 function='max', axes=[2, 3], outfile=pbname_freqhigh_flatten, overwrite=True)
             collapsed_image.close()
+            subim_cs = image.coordsys()
+            subim_shape = image.shape()
 
-        mask_lel = f'mask("{pbname_freqhigh_flatten}")'
+            pblimit = 0.4  # only search peak inside above this pb level.
+            mask_lel = f'"{pbname_freqhigh_flatten}">{pblimit}'
+
+        # option 2: use .mask from tclean to restrict the search region.
+        # Note that .mask is generated from tclean(pbmask=0.4,mask='pb',...) for vlass-se-cube iter3.
+        # Therefore, it's equivalent to option 1.
+
+        tclean_mask = imagename_list[idx_freqhigh].replace('.image.pbcor.tt0.subim', '.mask')
+        tclean_mask_flatten = tclean_mask+'.subim'
+        LOG.info(f'Generating a flattend tclean mask subimage at the highest frequency: {tclean_mask_flatten}')
+        with casa_tools.ImageReader(tclean_mask) as image:
+            rgTool = casa_tools.regionmanager
+            region = rgTool.frombcs(csys=subim_cs.torecord(), shape=subim_shape,
+                                    stokes='I', stokescontrol='a')
+            image.subimage(outfile=tclean_mask_flatten, region=region, overwrite=True)
+            mask_lel = f'"{tclean_mask_flatten}">0.0'
+
+        # do the peak search in the pbcor subimage at the lowest frequency
+
         imagename_freqlow = imagename_list[idx_freqlow]
         with casa_tools.ImagepolReader(imagename_freqlow) as imagepol:
             img_stokesi = imagepol.stokesi()
             stokesi_stats = img_stokesi.statistics(robust=False, mask=mask_lel, stretch=True)
-            #stokesi_stats['maxradec_str'] = img_stokesi.coordsys().toworld([maxposx, maxposy], format='s')['string']
+            LOG.info('Found the Stokes-I peak intensity at {maxpos} / {maxposf}'.format(**stokesi_stats))
+            # stokesi_stats['maxradec_str'] = img_stokesi.coordsys().toworld([maxposx, maxposy], format='s')['string']
             img_linpolint = imagepol.linpolint()
             linpolint_stats = img_linpolint.statistics(robust=False, mask=mask_lel, stretch=True)
-            #polint_stats['maxradec_str'] = img_stokesi.coordsys().toworld([maxposx, maxposy], format='s')['string']
-
-        LOG.info(f'{imagename_freqlow} has the lowest reference frequency at {frequency_list[idx_freqlow]} Hz.')
-        LOG.info('Its Stokes-I peak intensity is located at {maxpos} / {maxposf}'.format(**stokesi_stats))
-        LOG.info(
-            'Its the linearly polarized intensity peak is located at {maxpos} / {maxposf}'.format(**linpolint_stats))
+            LOG.info('Found the linearly polarized intensity peak at {maxpos} / {maxposf}'.format(**linpolint_stats))
 
         return (stokesi_stats, linpolint_stats)
