@@ -280,7 +280,7 @@ $(function () {
           suffix='&#37'
         else:
           suffix=''
-        if not (t=='pb' or t=='beam'):
+        if not (t=='pb' or t=='beam' or i=='pct_masked'):
           dev_in_madrms=abs(stats_spw[t][i][idx_pol])-stats_summary[t][i]['spwwise_mean'][idx_pol]
           madrms=stats_summary[t][i]['spwwise_madrms'][idx_pol]
           if abs(dev_in_madrms)>madrms*3.0:
