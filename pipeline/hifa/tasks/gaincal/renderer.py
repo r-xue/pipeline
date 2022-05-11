@@ -54,11 +54,11 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
 
-            # Get the SpW mapping info for current MS.
+            # Get a string summarizing the SpW mapping info for current MS.
             spw_mapping[vis] = self.get_spw_mappings(ms)
 
-            # Get the Spw mapping info for the current MS, omitting any CHECK sources.
-            spw_mapping_without_check[vis] = self.get_spw_mappings(ms, 'CHECK')
+            # Get a string summarizing the Spw mapping info for the current MS, omitting any CHECK sources.
+            spw_mapping_without_check[vis] = self.get_spw_mappings(ms, omit_intent='CHECK')
 
             # Get gain cal applications for current MS.
             ms_applications = self.get_gaincal_applications(context, result, ms)
@@ -96,7 +96,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     ants = ','.join([str(antenna.id) for antenna in ms.antennas if antenna.diameter == antdiam])
 
                     # Generate the amp-vs-time plots.
-                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET', ants=ants)
+                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET', ant=ants)
                     plot_wrappers = plotter.plot()
                     # Add diameter info to plot wrappers and store wrappers.
                     for wrapper in plot_wrappers:
@@ -106,7 +106,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     # Generate diagnostic amp vs time plots for bandpass solution.
                     # Create copy of CalApplication for subset of antennas with
                     # current antenna diameter.
-                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.calampresult.final, key=lambda cal: cal.gaintable), '', ants=ants)
+                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.calampresult.final, key=lambda cal: cal.gaintable), '', ant=ants)
                     plot_wrappers = plotter.plot()
                     # Add diameter info to plot wrappers and store wrappers.
                     for wrapper in plot_wrappers:
@@ -134,10 +134,10 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # (See: PIPE-1377 for more information)             
             diagnostic_phase_calapps = result.phasecal_for_phase_plot
             # Add the CHECK sources from hifa_gfluxscale to this plot (see: PIPE-1377)
-            if(ms.phase_calapps_for_check_sources):
+            if ms.phase_calapps_for_check_sources:
                 diagnostic_phase_calapps.extend(ms.phase_calapps_for_check_sources)
             else: 
-                LOG.warn('Could not find check source solutions from hifa_gfluxscale, omitting from diagnostic phase vs. time plot for {}.'.format(ms.name))
+                LOG.info('Could not find check source solutions from hifa_gfluxscale, omitting from diagnostic phase vs. time plot for {}.'.format(ms.name))
 
             diagnostic_phase_calapps.sort(key=lambda cal: cal.gaintable)
 
@@ -284,10 +284,9 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         mapped = []
         default_mapped = []
         for ifld, spwmap in ms.spwmaps.items():
-            if omit_intent:
-                 # Skip intent in omit_intent
-                 if ifld.intent == omit_intent:
-                     continue
+            # Skip intent in omit_intent
+            if omit_intent and (ifld.intent == omit_intent):
+                continue
 
             if spwmap.combine:
                 combined.append(f"{ifld.field} ({ifld.intent})")

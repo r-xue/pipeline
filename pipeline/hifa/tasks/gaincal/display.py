@@ -12,7 +12,7 @@ class GaincalSummaryChart(object):
     """
     Base class for executing plotms per spw
     """
-    def __init__(self, context, result, calapps, intent, xaxis, yaxis, plotrange=None, coloraxis='', ants : str=''):
+    def __init__(self, context, result, calapps, intent, xaxis, yaxis, plotrange=None, coloraxis='', ant : str=''):
         if plotrange is None:
             plotrange = []
         if yaxis == 'amp':
@@ -34,7 +34,7 @@ class GaincalSummaryChart(object):
         # ability to support lists of calapps in the plotting infrastructure added in PIPE-1409 and
         # PIPE-1377.
         self.plotters = common.PlotmsCalSpwComposite(context, result, selected,
-                                                xaxis=xaxis, yaxis=yaxis, ant=ants,
+                                                xaxis=xaxis, yaxis=yaxis, ant=ant,
                                                 plotrange=plotrange, coloraxis=coloraxis)
 
     def plot(self):
@@ -81,11 +81,12 @@ class GaincalDetailChart(object):
 
 class GaincalAmpVsTimeSummaryChart(GaincalSummaryChart):
     """
-    Create an amplitude vs time plot for each spw, overplotting by antenna.
+    Create an amplitude vs time plot for each spw, overplotting by antenna as selected by ant,
+    and setting the colors of the points by antenna. 
     """
-    def __init__(self, context, result, calapps, intent, ants : str=''):
+    def __init__(self, context, result, calapps, intent, ant : str=''):
         super(GaincalAmpVsTimeSummaryChart, self).__init__(
-            context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='antenna1', ants=ants)
+            context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='antenna1', ant=ant)
 
 
 class GaincalAmpVsTimeDetailChart(GaincalDetailChart):
@@ -93,14 +94,14 @@ class GaincalAmpVsTimeDetailChart(GaincalDetailChart):
     Create a phase vs time plot for each spw/antenna combination.
     """
     def __init__(self, context, result, calapps, intent):
-        # request plots per spw, overlaying all antennas
         super(GaincalAmpVsTimeDetailChart, self).__init__(
             context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='corr')
 
 
 class GaincalPhaseVsTimeSummaryChart(GaincalSummaryChart):
     """
-    Create a phase vs time plot for each spw, overplotting by antenna.
+    Create a phase vs time plot for each spw, overplotting by antenna, and
+    setting the colors of the points by antenna.
     """
     def __init__(self, context, result, calapps, intent):
         # request plots per spw, overlaying all antennas
@@ -114,7 +115,6 @@ class GaincalPhaseVsTimeDetailChart(GaincalDetailChart):
     Create a phase vs time plot for each spw/antenna combination.
     """
     def __init__(self, context, result, calapps, intent):
-        # request plots per spw, overlaying all antennas
         super(GaincalPhaseVsTimeDetailChart, self).__init__(
             context, result, calapps, intent, xaxis='time', yaxis='phase', plotrange=[0, 0, -180, 180],
             coloraxis='corr')
