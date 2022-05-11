@@ -70,6 +70,16 @@ Besides the tier-0 parallelization, the imaging heuristics of `VLASS-SE-CUBE` is
 
 ### hifv_analyzestokescubes (PIPE-1356)
 
+This task performs analysis on cutout images of the full Stokes imaging products and generates two groups of plots:
+
+- Fractional Stokes U vs. Q at different frequencies
+  - This analysis is done at two locations: the peak of the Stokes I map, and the peak of the linearly polarized intensity map.
+  - I, Q, and U are measured from a 3x3 pixel box average centered at the peak pixel.
+  - The peak search is restricted in the region defined by the final iteration tclean mask (pbmask=0.4 from the current heuristics)
+- Median of .rms image from individual Stokes planes, as a function of frequency.
+  - A scaled/normalized VLA SEFD is overlaid for comparisons.
+
+
 ### hifv_exportvlassdata (PIPE-1434)
 
 `hifv_exportvlassdata` has been updated to include the following new features for the Coarse Cube data.
