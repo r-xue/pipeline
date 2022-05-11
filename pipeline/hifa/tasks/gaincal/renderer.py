@@ -96,13 +96,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     ants = ','.join([str(antenna.id) for antenna in ms.antennas if antenna.diameter == antdiam])
 
                     # Generate the amp-vs-time plots.
-                    # Create copy of CalApplication for subset of antennas with
-                    # current antenna diameter.
-                    calapps = copy.deepcopy(result.final)
-                    for calapp in calapps:
-                        calapp.calto.antenna = ants
-                    # Create plots
-                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, calapps, 'TARGET')
+                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET', ants=ants)
                     plot_wrappers = plotter.plot()
                     # Add diameter info to plot wrappers and store wrappers.
                     for wrapper in plot_wrappers:
@@ -112,11 +106,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     # Generate diagnostic amp vs time plots for bandpass solution.
                     # Create copy of CalApplication for subset of antennas with
                     # current antenna diameter.
-                    calapps = copy.deepcopy(result.calampresult.final)
-                    for calapp in calapps:
-                        calapp.calto.antenna = ants
-                    # Create plots
-                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, calapps, '')
+                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.calampresult.final, key=lambda cal: cal.gaintable), '', ants=ants)
                     plot_wrappers = plotter.plot()
                     # Add diameter info to plot wrappers and store wrappers.
                     for wrapper in plot_wrappers:
