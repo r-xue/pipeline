@@ -74,7 +74,7 @@ class UVcontSub(applycal.Applycal):
 
     def analyse(self, result):
 
-        if result.mitigation_error == False:
+        if not result.mitigation_error:
             # Check for existence of the output vis. 
             if not os.path.exists(result.outputvis):
                 LOG.debug('Error creating target line MS %s' % (os.path.basename(result.outputvis)))
