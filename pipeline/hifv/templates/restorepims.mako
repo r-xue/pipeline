@@ -6,16 +6,23 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%
-def boolean_cell(is_true):
-    if is_true:
-        return '<td><span class="glyphicon glyphicon-ok"></span></td>'
+
+def format_cell(value):
+    if isinstance(value, bool):
+        if value:
+            return '<span class="glyphicon glyphicon-ok"></span>'
+        else:
+            return '<span class="glyphicon glyphicon-remove"></span>'    
+    elif isinstance(value, list):
+            return '<br>'.join(map(str,value))
     else:
-        return '<td><span class="glyphicon glyphicon-remove"></span></td>'
+        return str(value)
+
 %>
 
 <%block name="title">Restore PIMS</%block>
 
-<p>Restore rfi-flagged and self-calibrated visibility for a per-image measurement set (PIMS), using reimaging resources from the single-epoch continuum imaging products</p>
+<p>Restore RFI-flagged and self-calibrated visibility for a per-image measurement set (PIMS), using reimaging resources from the single-epoch continuum imaging products.</p>
 
 
 
@@ -23,20 +30,21 @@ def boolean_cell(is_true):
 
     <%
     rr =r.restore_resources
-    item_list=[('Reimaging Resource Tarball','reimaging_resources'),
+    item_list=[('Reimaging Resources Tarball','reimaging_resources'),
+               ('Flags Directory','flag_dir'),
+               ('Flag Restore Version','flag_version'),
                ('Selfcal Table','selfcal_table'),
-               ('Flag Restore Version','flag_table'),
                ('Tier 1 Mask','tier1_mask'),
                ('Combined Final Mask','tier2_mask'),
-               ('Selfcal Model Image','model_image')]
+               ('Selfcal Model Image(s)','model_images')]
     %>
     <table class="table table-bordered table-striped table-condensed">
         <tbody>
             % for name, key in item_list:
             <tr>
-                <th>${name}</th>
-                <td>${rr[key][0]}</td>
-                ${boolean_cell(rr[key][1])}
+                <th style="vertical-align:middle">${name}</th>
+                <td style="vertical-align:middle">${format_cell(rr[key][0])}</td>
+                <td style="vertical-align:middle">${format_cell(rr[key][1])}</td>
             </tr>
             % endfor                    
         </tbody>

@@ -3,6 +3,7 @@ import glob
 import os
 import re
 import tarfile
+from fnmatch import fnmatch
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -39,7 +40,7 @@ class RestorepimsInputs(vdp.StandardInputs):
 
 
 @task_registry.set_equivalent_casa_task('hifv_restorepims')
-@task_registry.set_casa_commands_comment('Restore rfi-flagged and self-calibrated visibility for a per-image measurement set (PIMS) using reimaging resources from the single-epoch continuum imaging products')
+@task_registry.set_casa_commands_comment('Restore RFI-flagged and self-calibrated visibility for a per-image measurement set (PIMS) using reimaging resources from the single-epoch continuum imaging products.')
 class Restorepims(basetask.StandardTaskTemplate):
     Inputs = RestorepimsInputs
 
@@ -49,19 +50,17 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         # flag version after hifv_checkflag and before hifv_statwt in the SEIP production workflow.
         self.flagversion = 'statwt_1'
-        self.caltable = None
         self.imagename = self.inputs.context.clean_list_pending[0]['imagename'].replace(
             'sSTAGENUMBER.', '')
         self.restore_resources = {}
 
         is_resources_available = self._check_resources()
-
         if not is_resources_available:
             exception_msg = []
             for k, v in self.restore_resources.items():
                 exception_msg.append(f"{k:20}: {v}")
             exception_msg.insert(
-                0, 'The resources required for hifv_restorepims() are not available, and Pipeline cannot continue.')
+                0, 'Some resources required for hifv_restorepims()/hif_makeimages() are not available, and Pipeline cannot continue.')
             raise exceptions.PipelineException(f"\n{'-'*120}\n"+'\n'.join(exception_msg)+f"\n{'-'*120}\n")
 
         # restore the MODEL column to the identical state used in the SE hifv_selfcal() and hifv_statwt() stages.
@@ -77,7 +76,8 @@ class Restorepims(basetask.StandardTaskTemplate):
         # apply the selfcal table from the SE reimaging resources to get the CORRECTED column
         self._do_applycal()
 
-        results = RestorepimsResults(mask_list=self.mask_list, restore_resources=self.restore_resources)
+        mask_list = [self.restore_resources['tier1_mask'][0][0], self.restore_resources['tier2_mask'][0][0]]
+        results = RestorepimsResults(mask_list=mask_list, restore_resources=self.restore_resources)
 
         return results
 
@@ -86,93 +86,59 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _check_resources(self):
 
-        reimaging_resources_tgz = self.inputs.reimaging_resources
         is_resources_available = False
 
-        # check the reimaging resources tarball
-        if os.path.isfile(reimaging_resources_tgz):
-            if tarfile.is_tarfile(reimaging_resources_tgz):
-                is_resources_available = True
+        # Create the resource request list
+        # - self.imagename at this point is from SEIP_parameter.list of the SEIP products.
+        # - inputs.vis should be identical to the SEIP input with the same flag state.
+        # Therefore, we verify these names against the file list inside reimaging_resources.tgz
+
+        reimaging_resources_tgz = self.inputs.reimaging_resources
+        flagd_pat_key_desc = (self.inputs.vis+'.flagversions*', 'flag_dir', 'flag directory')
+        flagv_pat_key_desc = (self.inputs.vis+f'.flagversions/flags.{self.flagversion}', 'flag_version', 'flag version')
+        sctab_pat_key_desc = (self.inputs.vis+'.*.phase-self-cal.tbl*', 'selfcal_table', 'selfcal table')
+        model_pat_key_desc = ('s*_0.'+self.imagename+'.I.iter1.model*', 'model_images', 'model image(s)')
+        tier1_pat_key_desc = ('s*_0.'+self.imagename+'.QLcatmask-tier1.mask*', 'tier1_mask', 'tier1 mask')
+        tier2_pat_key_desc = ('s*_0.'+self.imagename+'.combined-tier2.mask*', 'tier2_mask', 'tier2 mask')
+        pkd_list = [flagd_pat_key_desc, flagv_pat_key_desc, sctab_pat_key_desc,
+                    model_pat_key_desc, tier1_pat_key_desc, tier2_pat_key_desc]
+
+        # check the reimaging resources tarball before trying unpacking.
+
+        if os.path.isfile(reimaging_resources_tgz) and tarfile.is_tarfile(reimaging_resources_tgz):
+            is_resources_available = True
+        self.restore_resources['reimaging_resources'] = (reimaging_resources_tgz, is_resources_available)
         if is_resources_available:
-            LOG.info(f"Found the reimaging resources file ({reimaging_resources_tgz})")
-            self.restore_resources['reimaging_resources'] = (reimaging_resources_tgz, True)
+            LOG.info(f"Found the reimaging resources tarball: {reimaging_resources_tgz}")
         else:
             LOG.error(
-                f"The reimaging resources file ({reimaging_resources_tgz}) doesn't exist or is not a tarfile.")
-            self.restore_resources['reimaging_resources'] = (reimaging_resources_tgz, False)
+                f"The reimaging resources tarball {reimaging_resources_tgz} doesn't exist or is not a tarfile.")
             return is_resources_available
 
-        # untar any files required for the restorepims operation
-        # * self.imagename at this point is from SEIP_parameter.list of the SEIP products.
-        # * inputs.vis should be identical to the SEIP input with the same flag state.
-        # therefore, we verify their names against the file list inside reimaging_resources.tgz
+        # untar any files required for the restorepims operation:
+
         with tarfile.open(reimaging_resources_tgz, 'r:gz') as tar:
             members = []
             for member in tar.getmembers():
-                if member.name.startswith(self.inputs.vis + '.flagversions/'):
-                    members.append(member)
-                if member.name.startswith(self.inputs.vis) and '.phase-self-cal.tbl/' in member.name:
-                    members.append(member)
-                if re.search(r'^s\d{1,2}_0\.'+re.escape(self.imagename)+r'\.I\.iter1\.model', member.name) is not None:
-                    members.append(member)
-                if re.search(r'^s\d{1,2}_0\.'+re.escape(self.imagename)+r'\.QLcatmask-tier1\.mask/', member.name) is not None:
-                    members.append(member)
-                if re.search(r'^s\d{1,2}_0\.'+re.escape(self.imagename)+r'\.combined-tier2\.mask/', member.name) is not None:
+                is_resource = any([fnmatch(member.name, pkd[0]) for pkd in pkd_list])
+                if is_resource:
                     members.append(member)
             tar.extractall(path='.', members=members)
 
-        # check selfcal table from vlass-se-cont
-        selfcal_tbs = glob.glob(self.inputs.vis+'.*.phase-self-cal.tbl')
-        if len(selfcal_tbs) != 1:
-            LOG.error(
-                f"Cannot find the required selfcal table ({self.inputs.vis}*.phase-self-cal.tbl), or more than one selfcal tables are found!")
-            is_resources_available = False
-            self.restore_resources['selfcal_table'] = (self.inputs.vis+'.*.phase-self-cal.tbl', False)
-        else:
-            self.caltable = selfcal_tbs[0]
-            self.restore_resources['selfcal_table'] = (self.caltable, True)
-            LOG.info(f"The task will use the selfcal table {self.caltable}")
+        # check against the resource requirement list
 
-        # check the backup flag version from vlass-se-cont
-        flag_prefix = self.inputs.vis+'.flagversions/flags.'
-        flagversion_tbs = glob.glob(flag_prefix+'*')
-        flagversion_names = [tb0.replace(flag_prefix, '', 1) for tb0 in flagversion_tbs]
-        flagtable_expected = f"{self.inputs.vis}.flagversions/{self.flagversion}"
-        if self.flagversion not in flagversion_names:
-            LOG.error(f"The requested flag table ({flagtable_expected}) doesn't exist.")
-            is_resources_available = False
-            self.restore_resources['flag_table'] = (f"{flagtable_expected}", False)
-        else:
-            LOG.info(f"Found the requested flag table {flagtable_expected}")
-            self.restore_resources['flag_table'] = (f"{flagtable_expected}", True)
-
-        tier1_mask = glob.glob('s*_0.'+self.imagename+'.QLcatmask-tier1.mask')
-        tier2_mask = glob.glob('s*_0.'+self.imagename+'.combined-tier2.mask')
-        n_tier1 = len(tier1_mask)
-        n_tier2 = len(tier2_mask)
-        if n_tier1 != 1 or n_tier2 != 1:
-            LOG.error(
-                f"Found {n_tier1} tier1 mask{'s'[:n_tier1^1]} and {n_tier2} tier2 mask{'s'[:n_tier2^1]}, which is unexpected.")
-            self.restore_resources['tier1_mask'] = ('s*_0.'+self.imagename+'.QLcatmask-tier1.mask', False)
-            self.restore_resources['tier2_mask'] = ('s*_0.'+self.imagename+'.combined-tier2.mask', False)
-        else:
-            self.mask_list = [tier1_mask[0], tier2_mask[0]]
-            LOG.info(f"Found the requested tclean mask list: {self.mask_list}")
-            self.restore_resources['tier1_mask'] = (self.mask_list[0], True)
-            self.restore_resources['tier2_mask'] = (self.mask_list[1], True)
-
-        model_images = glob.glob('s*_0.'+self.imagename+'.I.iter1.model.tt?')
-        if len(model_images) == 0:
-            is_resources_available = False
-            LOG.error(
-                f"Can't find the SE vlass_stage=1 model images s*_0.{self.imagename}.I.iter1.model* for the MODEL column prediction")
-            self.restore_resources['model_image'] = ('s*_0.'+self.imagename+'.I.iter1.model.tt*', False)
-        else:
-            last_idx = model_images[0].rfind('.model')
-            self.imagename = model_images[0][:last_idx]
-            LOG.info(f"Found the requested selfcal model image(s): {model_images}")
-            LOG.info(f"Use tclean(imagename='{self.imagename}',...) for the MODEL column prediction.")
-            self.restore_resources['model_image'] = (f'{self.imagename}'+'.model.tt*', True)
+        for pkd in pkd_list:
+            paths = glob.glob(pkd[0])
+            n_paths = len(paths)
+            if n_paths == 0:
+                is_resources_available = False
+                LOG.error(
+                    f"Cannot find the request {pkd[2]} using the name pattern: {pkd[0]}")
+                is_resources_available = False
+                self.restore_resources[pkd[1]] = (pkd[0], False)
+            else:
+                self.restore_resources[pkd[1]] = (paths, True)
+                LOG.info(f"Found the request {pkd[2]}: {', '.join(paths)}")
 
         return is_resources_available
 
@@ -205,9 +171,13 @@ class Restorepims(basetask.StandardTaskTemplate):
         for par_removed in ['nbin', 'sensitivity', 'heuristics', 'intent']:
             imaging_parameters.pop(par_removed, None)
 
+        model_image = self.restore_resources['model_images'][0][0]
+        last_idx = model_image.rfind('.model')
+        imagename = model_image[:last_idx]
+
         # adopt the SE imaging heuristics from SE:stage5
         imaging_parameters['vis'] = self.inputs.vis
-        imaging_parameters['imagename'] = self.imagename
+        imaging_parameters['imagename'] = imagename
         imaging_parameters['cleanmask'] = ''
         imaging_parameters['niter'] = 0
         imaging_parameters['threshold'] = '0.0mJy'
@@ -254,17 +224,19 @@ class Restorepims(basetask.StandardTaskTemplate):
     def _do_applycal(self):
         """Rerun applycal using the selfcal table from the SE reimaging resources.
 
-        also see the SEIP setting in hifv_selfcal()
+        Also see the SEIP setting in hifv_selfcal()
         """
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = [int(spw.id) for spw in spwsobjlist]
         numspws = len(m.get_spectral_windows(science_windows_only=False))
         lowestscispwid = min(spws)  # PIPE-101, PIPE-1042: spwmap parameter in applycal must be a list of integers
+        gaintable = self.restore_resources['selfcal_table'][0][0]
 
         # VLASS mode
         applycal_task_args = {'vis': self.inputs.vis,
-                              'gaintable': self.caltable,
+                              'gaintable': gaintable,
                               'interp': ['nearestPD'],
                               'spwmap': [numspws * [lowestscispwid]],
                               'parang': False,
