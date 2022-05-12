@@ -37,28 +37,32 @@ class VlassCubeStokesSummary(object):
             try:
                 x = np.array(roi_stats['stokesq'])/np.array(roi_stats['stokesi'])
                 y = np.array(roi_stats['stokesu'])/np.array(roi_stats['stokesi'])
-                label = roi_stats['spw']
-                fig, ax = plt.subplots(figsize=(10, 8))
+                label_spw = roi_stats['spw']
+                label_full = [roi_stats['spw'][idx]+' : ' +
+                              f'{reffreq/1e9:.3f} GHz' for idx, reffreq in enumerate(roi_stats['reffreq'])]
+                fig, ax = plt.subplots(figsize=(10, 7))
                 cmap = cm.get_cmap('rainbow_r')
                 for idx in range(len(x)):
                     color_idx = idx/len(x)
                     ax.scatter(x[idx], y[idx], color=cmap(color_idx),
-                               label=label[idx], edgecolors='black', alpha=0.7, s=300.)
-                    text = ax.annotate(label[idx], (x[idx], y[idx]), ha='center', va='center', fontsize=9.)
+                               label=label_full[idx], edgecolors='black', alpha=0.7, s=300.)
+                    text = ax.annotate(label_spw[idx], (x[idx], y[idx]), ha='center', va='center', fontsize=9.)
                     text.set_alpha(.7)
 
                 ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12, labelspacing=0.75)
                 ax.set_xlabel('Frac. Stokes $Q$')
                 ax.set_ylabel('Frac. Stokes $U$')
                 peak_loc = roi_stats['world']
+                peak_loc_xy = 'Pix Loc.: '+str(roi_stats['xy'])
 
                 desc = None
                 if roi_name == 'peak_stokesi':
-                    desc = 'Peak of the Stokes-I map'
+                    desc = 'Peak of the Stokes-I map at {:.3f} GHz'.format(min(roi_stats['reffreq'])/1e9)
                 if roi_name == 'peak_linpolint':
-                    desc = 'Peak of the linearly polarized intensity map'
+                    desc = 'Peak of the linearly polarized intensity map at {:.3f} GHz'.format(
+                        min(roi_stats['reffreq'])/1e9)
 
-                ax.set_title(f"{desc}\n {peak_loc}")
+                ax.set_title(f"{peak_loc}\n{peak_loc_xy}")
                 ax.set_aspect('equal')
                 ax.axhline(0, linestyle='-', color='lightgray')
                 ax.axvline(0, linestyle='-', color='lightgray')
@@ -71,7 +75,6 @@ class VlassCubeStokesSummary(object):
                 fig.savefig(figfile)
 
                 plt.close(fig)
-
 
                 plot = logger.Plot(figfile,
                                    x_axis='Frac. Stokes-Q',

@@ -124,15 +124,35 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
 
         idx_freqlow = frequency_list.index(min(frequency_list))
         idx_freqhigh = frequency_list.index(max(frequency_list))
+        imagename_freqlow = imagename_list[idx_freqlow]
+        imagename_freqhigh = imagename_list[idx_freqhigh]
+        LOG.info(
+            f'{imagename_freqlow} has the lowest reference frequency at {frequency_list[idx_freqlow]} Hz.')
+        LOG.info(
+            f'{imagename_freqhigh} has the highest reference frequency at {frequency_list[idx_freqhigh]} Hz.')
 
-        LOG.info(
-            f'{imagename_list[idx_freqlow]} has the lowest reference frequency at {frequency_list[idx_freqlow]} Hz.')
-        LOG.info(
-            f'{imagename_list[idx_freqhigh]} has the highest reference frequency at {frequency_list[idx_freqhigh]} Hz.')
+        mask_lel = self._get_mask(imagename_freqhigh)
+
+        # do the peak search in the pbcor subimage at the lowest frequency
+
+        with casa_tools.ImagepolReader(imagename_freqlow) as imagepol:
+            img_stokesi = imagepol.stokesi()
+            stokesi_stats = img_stokesi.statistics(robust=False, mask=mask_lel, stretch=True)
+            LOG.info('Found the Stokes-I intensity peak at {maxpos} / {maxposf}'.format(**stokesi_stats))
+            # stokesi_stats['maxradec_str'] = img_stokesi.coordsys().toworld([maxposx, maxposy], format='s')['string']
+            img_linpolint = imagepol.linpolint()
+            linpolint_stats = img_linpolint.statistics(robust=False, mask=mask_lel, stretch=True)
+            LOG.info('Found the LinearPol intensity peak at {maxpos} / {maxposf}'.format(**linpolint_stats))
+
+        return (stokesi_stats, linpolint_stats)
+
+    def _get_mask(self, imagename_pbcor_subim):
+        """Generate a mask LEL based on the specified pbcor subimage name."""
 
         # option 1: use pb>0.4 to restrict the search region.
+        # this is to be overridden by option 2
 
-        pbname_freqhigh = imagename_list[idx_freqhigh].replace('.image.pbcor.tt0.subim', '.pb.tt0.subim')
+        pbname_freqhigh = imagename_pbcor_subim.replace('.image.pbcor.tt0.subim', '.pb.tt0.subim')
         pbname_freqhigh_flatten = pbname_freqhigh+'.flattened'
         LOG.info(f'Generating a flattend PB subimage at the highest frequency: {pbname_freqhigh_flatten}')
         with casa_tools.ImageReader(pbname_freqhigh) as image:
@@ -141,34 +161,32 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
             collapsed_image.close()
             subim_cs = image.coordsys()
             subim_shape = image.shape()
-
             pblimit = 0.4  # only search peak inside above this pb level.
             mask_lel = f'"{pbname_freqhigh_flatten}">{pblimit}'
 
-        # option 2: use .mask from tclean to restrict the search region.
-        # Note that .mask is generated from tclean(pbmask=0.4,mask='pb',...) for vlass-se-cube iter3.
-        # Therefore, it's equivalent to option 1.
+        # option 2: use .masks from tclean() to restrict the search region.
+        # for vlass-se-cube or vlass-se-cont:
+        #   iter2.mask/iter2.cleanmask is generated from vlassmasking (tier2-combined)
+        #   iter3.mask is from tclean(pbmask=0.4,mask='pb',...): using it alone is equivalent to option 1.
+        # In below, we use the name pattern to retreive the original tclean mask and catch exceptions in case
+        # the operation fails. Alternatively, we could retreive original tclean masks by revisiting
+        # context.sciimlist.get_imlist(), which is a more generic solution.
 
-        tclean_mask = imagename_list[idx_freqhigh].replace('.image.pbcor.tt0.subim', '.mask')
-        tclean_mask_flatten = tclean_mask+'.subim'
-        LOG.info(f'Generating a flattend tclean mask subimage at the highest frequency: {tclean_mask_flatten}')
-        with casa_tools.ImageReader(tclean_mask) as image:
-            rgTool = casa_tools.regionmanager
-            region = rgTool.frombcs(csys=subim_cs.torecord(), shape=subim_shape,
-                                    stokes='I', stokescontrol='a')
-            image.subimage(outfile=tclean_mask_flatten, region=region, overwrite=True)
-            mask_lel = f'"{tclean_mask_flatten}">0.0'
+        mask_list = ['.iter2.cleanmask', '.iter3.mask']
+        mask_lel = []
+        for mask_pat in mask_list:
+            tclean_mask = imagename_pbcor_subim.replace('.iter3.image.pbcor.tt0.subim', mask_pat)
+            tclean_mask_flatten = tclean_mask+'.subim'
+            try:
+                LOG.info(f'Generating a flattend tclean mask subimage at the highest frequency: {tclean_mask_flatten}')
+                with casa_tools.ImageReader(tclean_mask) as image:
+                    rgTool = casa_tools.regionmanager
+                    region = rgTool.frombcs(csys=subim_cs.torecord(), shape=subim_shape,
+                                            stokes='I', stokescontrol='a')
+                    image.subimage(outfile=tclean_mask_flatten, region=region, overwrite=True)
+                    mask_lel.append(f'"{tclean_mask_flatten}">0.5')
+            except Exception as e:
+                LOG.warning(f'Failed to obtain the flatten tclean mask subimage: {tclean_mask_flatten}')
+        mask_lel = '&&'.join(mask_lel)
 
-        # do the peak search in the pbcor subimage at the lowest frequency
-
-        imagename_freqlow = imagename_list[idx_freqlow]
-        with casa_tools.ImagepolReader(imagename_freqlow) as imagepol:
-            img_stokesi = imagepol.stokesi()
-            stokesi_stats = img_stokesi.statistics(robust=False, mask=mask_lel, stretch=True)
-            LOG.info('Found the Stokes-I peak intensity at {maxpos} / {maxposf}'.format(**stokesi_stats))
-            # stokesi_stats['maxradec_str'] = img_stokesi.coordsys().toworld([maxposx, maxposy], format='s')['string']
-            img_linpolint = imagepol.linpolint()
-            linpolint_stats = img_linpolint.statistics(robust=False, mask=mask_lel, stretch=True)
-            LOG.info('Found the linearly polarized intensity peak at {maxpos} / {maxposf}'.format(**linpolint_stats))
-
-        return (stokesi_stats, linpolint_stats)
+        return mask_lel
