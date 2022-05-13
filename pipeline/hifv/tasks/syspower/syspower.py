@@ -318,14 +318,17 @@ class Syspower(basetask.StandardTaskTemplate):
 
             # Determine which spws go with which basebands
             # There could be multiple baseband names per band - count them
-            bband2spw = []
             bband_common_indices = []
             bbindex = 0
             # for band in band_baseband_spw:
             for baseband in band_baseband_spw[band]:
                 if band_baseband_spw[band][baseband]:
-                    bband2spw.append(band_baseband_spw[band][baseband])
-                    bband_common_indices.append(list(range(bbindex * len(bband2spw[bbindex]), (bbindex + 1) * len(bband2spw[bbindex]))))
+                    numspws = len(band_baseband_spw[band][baseband])
+                    if bbindex == 0:
+                        bband_common_indices.append(list(range(0, numspws)))
+                    else:
+                        startindex = bband_common_indices[bbindex - 1][-1] + 1
+                        bband_common_indices.append(list(range(startindex, startindex + numspws)))
                     bbindex += 1
 
             LOG.debug('----------------------------------')
