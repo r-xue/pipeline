@@ -191,30 +191,8 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </table>
 % endif
 
-${next.body()}
-
 <div class="clearfix"></div>
 <div class="panel-group" id="details-accordion" role="tablist" aria-multiselectable="true">
-
-    <%doc>
-    Help disabled until the task descriptions from John's presentation are added
-
-    %if taskhelp:
-
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#details-accordion" href="#collapseOne">
-                    Task Help
-                </a>
-            </div>
-            <div id="collapseOne" class="accordion-body collapse">
-                <div class="accordion-inner">
-                    ${taskhelp}
-                </div>
-            </div>
-        </div>
-    %endif
-    </%doc>
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree">
@@ -271,6 +249,33 @@ ${next.body()}
             </div>
         </div>
     </div>
+
+</div>
+
+${next.body()}
+
+<div class="clearfix"></div>
+<div class="panel-group" id="details-accordion" role="tablist" aria-multiselectable="true">
+
+    <%doc>
+    Help disabled until the task descriptions from John's presentation are added
+
+    %if taskhelp:
+
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#details-accordion" href="#collapseOne">
+                    Task Help
+                </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    ${taskhelp}
+                </div>
+            </div>
+        </div>
+    %endif
+    </%doc>
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingFour">
