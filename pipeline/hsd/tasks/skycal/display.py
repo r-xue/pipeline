@@ -244,7 +244,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 class SingleDishPlotmsLeaf(object):
     """Class to execute plotms and return a plot wrapper.
     
-    Task arguments for plotms is customized for single dish usecase.
+    Task arguments for plotms are customized for single dish usecase.
     """
     
     def __init__(
@@ -391,19 +391,19 @@ class SingleDishPlotmsLeaf(object):
 
 
 class SingleDishPlotmsAntComposite(common.AntComposite):
-    """Class of plotms for antenna composite."""
+    """Class to create a PlotLeaf for each antenna."""
     
     leaf_class = SingleDishPlotmsLeaf
 
 
 class SingleDishPlotmsSpwComposite(common.SpwComposite):
-    """Class of plotms for spw composite."""
+    """Class to create a PlotLeaf for each spw."""
     
     leaf_class = SingleDishPlotmsLeaf
 
 
 class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
-    """Class of plotms for antenna and spw composite."""
+    """Class to create a PlotLeaf for each antenna and spw."""
     
     leaf_class = SingleDishPlotmsSpwComposite
 
