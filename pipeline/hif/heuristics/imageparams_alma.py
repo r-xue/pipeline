@@ -357,6 +357,10 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return False
 
+    def tclean_stopcode_ignore(self, iteraton, hm_masking):
+        """tclean stop code(s) to be ignored for warning messages (PIPE-1319)."""
+        return [1, 5, 6]
+
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max,
                        residual_robust_rms, field, intent, spw, specmode):
         """Determine if another tclean iteration is necessary."""
