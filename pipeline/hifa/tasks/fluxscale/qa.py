@@ -343,13 +343,13 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         spwmap = ms.spwmaps.get((intent, field.name), None)
         if spwmap:
             # If a direct match exists, then use the corresponding SNR info.
-            snr_info = {int(k): v for k, v in spwmap.snr_info}
+            snr_info = spwmap.snr_info
         else:
             # Otherwise, retrieve SNR info from the first SpW mapping that
             # matches the current intent.
             for (spwmap_intent, _), spwmap in ms.spwmaps.items():
                 if spwmap_intent == intent:
-                    snr_info = {int(k): v for k, v in spwmap.snr_info}
+                    snr_info = spwmap.snr_info
                     break
         # Report if the retrieval of SNR info from hifa_spwphaseup failed.
         if snr_info is None:
@@ -400,8 +400,8 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         snr_per_spw = spw_to_flux_density[spw.id] / sensitivity
         # PIPE-1208: Use the estimated SNR from hifa_spwphaseup if the data is fully masked
         if numpy.isnan(median_tsys.get(spw.id)):
-            if snr_info is not None:
-                snr_value = snr_info[spw.id]
+            if snr_info is not None and str(spw.id) in snr_info:
+                snr_value = snr_info[str(spw.id)]
                 mydict[spw.id]['snr'] = Decimal(snr_value)
                 mydict[spw.id]['snr_aggregate'] = Decimal(
                     snr_value * sqrt(
@@ -410,11 +410,13 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
                 )
                 LOG.info(f"{ms.basename}: for SpW {spw.id} SNR extracted from hifa_spwphaseup ({snr_value:.1f}).")
             else:
+                snr_value = 0.0
                 mydict[spw.id]['snr'] = Decimal('0.0')
                 mydict[spw.id]['snr_aggregate'] = Decimal('0.0')
                 LOG.error(f"{ms.basename}: for SpW {spw.id} SNR could not be extracted from hifa_spwphaseup, SNR set to"
                           f" 0.")
         else:
+            snr_value = snr_per_spw
             mydict[spw.id]['snr'] = snr_per_spw
             mydict[spw.id]['snr_aggregate'] = spw_to_flux_density[spw.id] / aggregate_bandwidth_sensitivity
         mydict[spw.id]['meanFreq'] = spw.mean_frequency
@@ -444,7 +446,6 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
             mydict[spw.id]['widest_spw_bandwidth'] = widest_spw.bandwidth
         else:
             mydict[spw.id]['snr_widest_spw'] = 0
-
 
     for spw in all_target_spws:
         calspw = bandwidth_switching[spw]
