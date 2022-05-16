@@ -280,7 +280,7 @@ $(document).ready(function() {
                             </tr>
                             % for row in session_group:
                                 % if pcontext.project_summary.telescope == 'ALMA':
-                                <!-- If either the ACS software version or build version is different from the previous value, display the new software and build versions -->
+                                <!-- If either the ACS software version or build version is different from the previous value, display the new software and build versions. -->
                                     % if row.acs_software_version != acs_version or row.acs_software_build_version != software_build_version:
                                         <td colspan="${numcol}"><b>ACS Version:</b> ${row.acs_software_version}, <b>Build Version:</b> ${row.acs_software_build_version} </td>
                                         <% 

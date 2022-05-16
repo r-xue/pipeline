@@ -11,6 +11,7 @@ from functools import reduce
 
 import cachetools
 import numpy
+from typing import Tuple
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
@@ -347,7 +348,7 @@ class MeasurementSetReader(object):
 
                 ms.science_goals['sbName'] = sbinfo.sbName
             
-                # Populate the the online ALMA Control Software software names (we are still in the "if ALMA" block here)
+                # Populate the the online ALMA Control Software software names 
                 LOG.info('Populating ms.acs_software_version and ms.acs_software_build_version...')
                 ms.acs_software_version, ms.acs_software_build_version  = MeasurementSetReader.get_acs_software_version(ms, msmd)
                     
@@ -410,7 +411,17 @@ class MeasurementSetReader(object):
 
 
     @staticmethod
-    def get_acs_software_version(ms, msmd):
+    def get_acs_software_version(ms, msmd) -> Tuple[str, str]:
+        """
+        Retrieve the ALMA Common Software version and build version from the ASDM_ANNOTATION table. 
+
+        Returns: 
+            A tuple containing a string with the ACS software version, then a string with 
+            the ACS software build version.
+        """
+        acs_software_version = "Unknown"
+        acs_software_build_version = "Unknown"
+
         annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
         try:
             with casa_tools.TableReader(annotation_table) as table:
@@ -425,9 +436,7 @@ class MeasurementSetReader(object):
                 acs_software_build_version = table.getcol('details')[1]
         except: 
             LOG.info("Unable to read Annotation table infoformation for MS {}".format(_get_ms_basename(ms)))
-            acs_software_version = "Unknown"
-            acs_software_build_version = "Unknown"
-        
+
         return (acs_software_version, acs_software_build_version)
 
 
@@ -507,7 +516,7 @@ class SpectralWindowTable(object):
                 LOG.info("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
                 receiver, freq_lo = None, None
 
-            # Handle case where earlier get_sdm_num_bin_info call returned None by setting this spw's sdm_num_bin value to None.
+            # If the earlier get_sdm_num_bin_info call returned None, need to set sdm_num_bin value to None for each spw
             if sdm_num_bins is None: 
                 sdm_num_bin = None
             else: 

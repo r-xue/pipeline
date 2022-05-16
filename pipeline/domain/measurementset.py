@@ -61,8 +61,8 @@ class MeasurementSet(object):
             prevent modification
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
-        acs_software_version: ALMA Common Software version used to create this MS
-        acs_software_build_version: ALMA Common Software build version used to create this MS
+        acs_software_version: ALMA Common Software version used to create this MS. (None if not ALMA.)
+        acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -91,7 +91,13 @@ class MeasurementSet(object):
         self.reference_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
+
+        # The ALMA Common Software version used to create this MS, if ALMA. Otherwise, None
+        # (PIPE-132)
         self.acs_software_version = None
+
+        # The ALMA Common Software build version used to create this MS, if ALMA. Otherwise, None.
+        # (PIPE-132)
         self.acs_software_build_version = None
 
         self.data_types_per_source_and_spw: dict = {}
@@ -575,11 +581,12 @@ class MeasurementSet(object):
         return set(itertools.chain(*obs_modes))
 
 
-    def get_alma_cycle_number(self):
+    def get_alma_cycle_number(self) -> Optional[int]:
         """"
-        Get the ALMA cycle number from the control softare version that this MeasurementSet was acquired with. 
+        Get the ALMA cycle number from the ALMA control softare version that this MeasurementSet was acquired with. 
 
-        Returns -- int cycle_number or None if not found
+        Returns: 
+            int cycle_number or None if not found
         """
         match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
         if match: 

@@ -35,8 +35,9 @@ import pipeline.domain.measures as measures
 			            <th scope="col" rowspan="2">Bandwidth ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Transitions</th>
 						<%
+						# Check to see whether to display the "Online Spec. Avg." column or not to determine the colspan
 						channels_colspan = '3'
-						if show_online_spec_avg_col.science:
+						if show_online_spec_avg_col.science_windows:
 							channels_colspan = '4'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
@@ -56,7 +57,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
-						% if show_online_spec_avg_col.science:
+						% if show_online_spec_avg_col.science_windows:
 							<th>Online Spec. Avg.</th>
 					    % endif
 			        	<th>Frequency Width</th>
@@ -82,10 +83,10 @@ import pipeline.domain.measures as measures
 					  <td>${str(spw.bandwidth)}</td>
 					  <td>${', '.join(spw.transitions)}</td>
 					  <td>${spw.num_channels}</td>
-					% if show_online_spec_avg_col.science: 
+					% if show_online_spec_avg_col.science_windows: 
 						% if pcontext.project_summary.telescope == 'ALMA':
 							% if (ms.get_alma_cycle_number() == 2 and spw.sdm_num_bin == 1) or spw.sdm_num_bin is None:
-								<td> ? </td> <!-- A value of sdm_num_bin of 1 for CYCLE 2 datasets may indicate that a default value of 1 was used so use '?' to indicate that the value is unclear, See PIPE: 584-->
+								<td> ? </td> <!-- A value of sdm_num_bin of 1 for CYCLE 2 datasets may indicate that a default value of 1 was used so use '?' to indicate that the value is unclear. See PIPE: 584-->
 							% else:
 							<td>${spw.sdm_num_bin}</td>
 							% endif
@@ -143,8 +144,9 @@ import pipeline.domain.measures as measures
 			            <th scope="col" rowspan="2">Bandwidth ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Transitions</th>
 						<%
+						# Check to see whether to display the "Online Spec. Avg." column or not to determine the colspan
 						channels_colspan = '3'
-						if show_online_spec_avg_col.all:
+						if show_online_spec_avg_col.all_windows:
 							channels_colspan = '4'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
@@ -165,7 +167,7 @@ import pipeline.domain.measures as measures
 			        	<th>Centre</th>
 			        	<th>End</th>
 			        	<th>Number</th>
-						% if show_online_spec_avg_col.all:
+						% if show_online_spec_avg_col.all_windows:
 							<th>Online Spec. Avg.</th>
 					    % endif
 			        	<th>Frequency Width</th>
@@ -190,7 +192,7 @@ import pipeline.domain.measures as measures
 					        <td>${','.join(spw.transitions)}</td>
 						<td>${spw.num_channels}</td>
 						
-						% if show_online_spec_avg_col.all: 
+						% if show_online_spec_avg_col.all_windows: 
 							% if pcontext.project_summary.telescope == 'ALMA':
 								% if (ms.get_alma_cycle_number() == 2 and spw.sdm_num_bin == 1) or spw.sdm_num_bin is None: 
 								<td> ? </td> <!-- A value of sdm_num_bin of 1 for CYCLE 2 datasets may indicate that a default value of 1 was used so use '?' to indicate that the value is unclear, See PIPE: 584-->
