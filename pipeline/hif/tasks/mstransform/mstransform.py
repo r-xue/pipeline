@@ -198,7 +198,7 @@ class Mstransform(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _copy_xml_files(vis, outputvis):
-        for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml', 'Annotation.xml']:
+        for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
             vis_source = os.path.join(vis, xml_filename)
             outputvis_target_continuum = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):

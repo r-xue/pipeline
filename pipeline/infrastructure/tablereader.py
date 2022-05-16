@@ -416,7 +416,7 @@ class MeasurementSetReader(object):
             with casa_tools.TableReader(annotation_table) as table:
                 acs_software_details = table.getcol('details')[0]
 
-                # This value can be "WARNING: No ACS_TAG available" in Annotation.xml
+                # This value can be "WARNING: No ACS_TAG available" in the ASDM_ANNOTATION table.
                 if "WARNING" in acs_software_details: 
                     acs_software_version = "Unknown"
                 else: 
@@ -531,6 +531,7 @@ class SpectralWindowTable(object):
         :return: list of values for sdm_num_bin
         """
         # Read and return the online spectral averaging information if available
+        sdm_num_bin = None
         if 'ALMA' in msmd.observatorynames() or 'EVLA' in msmd.observatorynames():
             try:
                 with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:

@@ -83,15 +83,15 @@ import pipeline.domain.measures as measures
 					  <td>${', '.join(spw.transitions)}</td>
 					  <td>${spw.num_channels}</td>
 					% if show_online_spec_avg_col.science: 
-						% if ms.antenna_array.name == 'ALMA':
-							% if ms.get_alma_cycle_number() == 2 or spw.sdm_num_bin is None: 
-							<td> '?' </td> <!-- sdm_num_bin is not set correctly for CYCLE 2 datasets, See PIPE: 584-->
+						% if pcontext.project_summary.telescope == 'ALMA':
+							% if (ms.get_alma_cycle_number() == 2 and spw.sdm_num_bin == 1) or spw.sdm_num_bin is None:
+								<td> ? </td> <!-- A value of sdm_num_bin of 1 for CYCLE 2 datasets may indicate that a default value of 1 was used so use '?' to indicate that the value is unclear, See PIPE: 584-->
 							% else:
 							<td>${spw.sdm_num_bin}</td>
 							% endif
 						% elif 'VLA' in ms.antenna_array.name:
 							% if spw.sdm_num_bin is None: 
-							<td> '?' </td>
+							<td> ? </td>
 							% else:
 							<td>${spw.sdm_num_bin}</td>
 							% endif
@@ -191,15 +191,15 @@ import pipeline.domain.measures as measures
 						<td>${spw.num_channels}</td>
 						
 						% if show_online_spec_avg_col.all: 
-							% if ms.antenna_array.name == 'ALMA':
-								% if ms.get_alma_cycle_number() == 2 or spw.sdm_num_bin is None: 
-								<td> '?' </td> <!-- sdm_num_bin is not set correctly for CYCLE 2 datasets, See PIPE: 584-->
+							% if pcontext.project_summary.telescope == 'ALMA':
+								% if (ms.get_alma_cycle_number() == 2 and spw.sdm_num_bin == 1) or spw.sdm_num_bin is None: 
+								<td> ? </td> <!-- A value of sdm_num_bin of 1 for CYCLE 2 datasets may indicate that a default value of 1 was used so use '?' to indicate that the value is unclear, See PIPE: 584-->
 								% else:
 								<td>${spw.sdm_num_bin}</td>
 								% endif
 							% elif 'VLA' in ms.antenna_array.name:
 								% if spw.sdm_num_bin is None: 
-								<td> '?' </td>
+								<td> ? </td>
 								% else:
 								<td>${spw.sdm_num_bin}</td>
 								% endif

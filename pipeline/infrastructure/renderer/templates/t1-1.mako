@@ -285,7 +285,7 @@ $(document).ready(function() {
                                         <td colspan="${numcol}"><b>ACS Version:</b> ${row.acs_software_version}, <b>Build Version:</b> ${row.acs_software_build_version} </td>
                                         <% 
                                         acs_version = row.acs_software_version
-                                        build_version = row.acs_software_build_version
+                                        software_build_version = row.acs_software_build_version
                                         %>
                                     % endif
                                 % endif
