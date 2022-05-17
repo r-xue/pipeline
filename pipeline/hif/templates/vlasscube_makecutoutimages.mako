@@ -60,7 +60,6 @@ def dev2color(x):
     return rgb_hex            
 
 def dev2shade(x):
-    color_list=['gainsboro','lightgreen','yellow','red']
     cmap=cm.get_cmap(name='Reds')
     absx=abs(x)
     if absx<4 and absx>=3:
@@ -71,11 +70,24 @@ def dev2shade(x):
       rgb_hex=colors.to_hex(cmap(0.4))
     if absx>=6:
       rgb_hex=colors.to_hex(cmap(0.5))
-    return rgb_hex   
+    return rgb_hex  
+
+def pct2shade(x):
+    cmap=cm.get_cmap(name='Reds')
+    if x>=0.5 and x<0.8:
+      rgb_hex=colors.to_hex(cmap(0.2))
+    if x>=0.2 and x<0.5:
+      rgb_hex=colors.to_hex(cmap(0.3))
+    if x>0.0 and x<0.2:
+      rgb_hex=colors.to_hex(cmap(0.4))
+    if x<=0.0:
+      rgb_hex=colors.to_hex(cmap(0.5))
+    return rgb_hex        
 
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
 bgcolor_list=[dev2shade(3.),dev2shade(4.),dev2shade(5.),dev2shade(6.)]
+bgcolor_pct_list=[pct2shade(0.7),pct2shade(0.3),pct2shade(.1),pct2shade(.0)]
 %>
 
 
@@ -156,16 +168,17 @@ $(function () {
 
 <caption>
   <li>
-      Peak: the pixel value with the largest deviation from zero. This value is either the image maximum or minimum, depending on their absolute amplitude. The peak of a residual image is used by CASA/tclean as a basis for identifying model components, triggering major cycles, and setting a clean stopping threshold.
+      Peak: the pixel value with the furthest deviation from zero. This value is either maximum or minimum of the image. The peak of a residual image is used by CASA/tclean as a basis for identifying model components, triggering major cycles, and setting clean stopping thresholds.
   </li>
   <li>
-      MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
+      MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' from CASA/imstat), multiplied by 1.4826, which is the scaling factor between rms and MAD for a normal distribution.
   </li>  
   <li>
-      Px<sub><800&mu;Jy</sub>: the percentage of pixels (within the unmasked region) with a value less than 800&mu;Jy in the Rms image.
+      Px<sub><800&mu;Jy</sub>: the percentage of pixels below 800&mu;Jy in the unmasked region of Rms image. The color background is determined by the percentage level: <p style="background-color:${bgcolor_pct_list[0]}; display:inline;">50&#37&le;pct&lt;80&#37</p>; <p style="background-color:${bgcolor_pct_list[1]}; display:inline;">20&#37&le;pct&lt;50&#37</p>; <p style="background-color:${bgcolor_pct_list[2]}; display:inline;">0&#37&le;pct&lt;20&#37</p>; <p style="background-color:${bgcolor_pct_list[3]}; display:inline;">pct=0&#37</p>.
   </li>
+  
   <li>
-      The color background highlights spectral windows with a statistical property signficantly deviated from the mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is also viewable in a tooltip box. For the 'Peak' column in which the value can be either positive or negative, the statistical evluation is done using its absolute amplitude.
+      For the columns presented in all Stokes planes (except Px<sub><800&mu;Jy</sub>), the color background highlights spectral windows with a statistical property signficantly deviated from its median over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is viewable in a tooltip box. For the 'Peak' column in which the value can be either positive or negative, the median and deviation are calculated using the peak amplitude. For the 'MADRms' or 'Median' columns, only the outliers above the median are highlighted.
   </li>        
 </caption>
 
@@ -281,13 +294,26 @@ $(function () {
         else:
           suffix=''
         if not (t=='pb' or t=='beam' or i=='pct_masked'):
-          dev_in_madrms=abs(stats_spw[t][i][idx_pol])-stats_summary[t][i]['spwwise_mean'][idx_pol]
+          dev_in_madrms=abs(stats_spw[t][i][idx_pol])-stats_summary[t][i]['spwwise_median'][idx_pol]
           madrms=stats_summary[t][i]['spwwise_madrms'][idx_pol]
-          if abs(dev_in_madrms)>madrms*3.0:
-            #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
-            bgcolor=dev2shade(dev_in_madrms/madrms)
-            cell_style.append(f'background-color: {bgcolor}')
-          cell_title='{:.2f}'.format(dev_in_madrms/madrms)         
+          
+          if i=='pct<800e-6':
+            pct_800=stats_spw[t][i][idx_pol]
+            if pct_800<0.8:
+              bgcolor=pct2shade(pct_800)
+              cell_style.append(f'background-color: {bgcolor}')
+          elif (i=='median' or i =='madrms'):
+            if dev_in_madrms>madrms*3.0:
+              bgcolor=dev2shade(dev_in_madrms/madrms)
+              cell_style.append(f'background-color: {bgcolor}')  
+            cell_title='{:.2f}'.format(dev_in_madrms/madrms)           
+          else:
+            if abs(dev_in_madrms)>madrms*3.0:
+              bgcolor=dev2shade(dev_in_madrms/madrms)
+              cell_style.append(f'background-color: {bgcolor}')  
+            cell_title='{:.2f}'.format(dev_in_madrms/madrms)     
+                          
+
         if idx_item in (2,5,9,12,15) or (name_pol!='I' and idx_item in ((2,5,8))):
           cell_style.append('border-right: '+border_line)
         if idx_spw==len(stats)-1:

@@ -236,10 +236,10 @@ def get_stats_summary(stats):
         for item, item_details in stats_summary_imtype.items():
             value_arr = np.abs(np.array(item_details['value']))         # shape=(n_spw, n_pol)
             spw_arr = np.array(item_details['spw'])                     # shape=(n_spw,)
-            stats_summary[imtype][item]['spwwise_madrms'] = median_absolute_deviation(
-                value_arr, axis=0)*1.4826                               # shape=(n_spw,)
-            stats_summary[imtype][item]['spwwise_mean'] = np.mean(
-                value_arr, axis=0)                                      # shape=(n_spw,)
+            # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated on scipy ver>1.5.0.
+            # It should be replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
+            stats_summary[imtype][item]['spwwise_madrms'] = median_absolute_deviation(value_arr, axis=0, scale=1.4826)
+            stats_summary[imtype][item]['spwwise_median'] = np.median(value_arr, axis=0)
             stats_summary[imtype][item]['range'] = np.percentile(value_arr, (0, 100))
             idx_maxdev = np.argmax(value_arr-np.median(value_arr, axis=0), axis=0)
             stats_summary[imtype][item]['spw_outlier'] = spw_arr[idx_maxdev]
