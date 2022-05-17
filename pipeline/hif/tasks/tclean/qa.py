@@ -21,7 +21,8 @@ class TcleanQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # calculate QA score comparing RMS against clean threshold
 
-        imageScorer = scorers.erfScorer(1.0, 5.0, 0.33)
+        # Add offset of 0.34 to avoid any red scores
+        imageScorer = scorers.erfScorer(1.0, 5.0, 0.34)
 
         # Basic imaging score
         observatory = context.observing_run.measurement_sets[0].antenna_array.name
