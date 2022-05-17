@@ -14,8 +14,8 @@ agent_description = {
 	'template'  : 'Flagging Template',
 	'autocorr'  : 'Autocorrelations',
 	'shadow'    : 'Shadowed Antennas',
-	'edgespw'   : 'Edge Channels'
-
+	'edgespw'   : 'Edge Channels',
+	'lowtrans'  : 'Low Transmission',
 }
 
 total_keys = {

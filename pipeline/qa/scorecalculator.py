@@ -9,6 +9,7 @@ import functools
 import math
 import operator
 import os
+import re
 from typing import List
 
 import numpy as np
@@ -60,6 +61,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_missing_intents',
            'score_ephemeris_coordinates',
            'score_online_shadow_template_agents',
+           'score_lowtrans_flagcmds',                         # ALMA IF specific
            'score_applycal_agents',
            'score_vla_agents',
            'score_total_data_flagged',
@@ -820,6 +822,7 @@ def score_ephemeris_coordinates(mses):
         applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
+
 @log_qa
 def score_online_shadow_template_agents(ms, summaries):
     """
@@ -836,6 +839,51 @@ def score_online_shadow_template_agents(ms, summaries):
     score.origin = new_origin
 
     return score
+
+
+@log_qa
+def score_lowtrans_flagcmds(ms, result):
+    """
+    Get a score for data flagged by the low transmission agent.
+
+    Heuristic from PIPE-624: search for SpW(s) flagged for low transmission,
+    and set score to:
+    * 1 if no SpWs are flagged.
+    * red warning threshold if the representative SpW is flagged, or otherwise,
+    * blue suboptimal threshold if any non-representative SpW is flagged.
+    """
+    # Search in flag commands for SpW(s) flagged for low transmission.
+    spws = []
+    flagcmds = [f for f in result.flagcmds() if "low_transmission" in f]
+    for flagcmd in flagcmds:
+        match = re.search(r"spw='(\d*)'", flagcmd)
+        if match:
+            spws.append(int(match.group(1)))
+
+    # If successful in finding SpWs that were flagged for low transmission,
+    # then create a score that depends on whether the representative SpW was
+    # among those flagged.
+    if spws:
+        # Get representative SpW for MS.
+        _, rspw = ms.get_representative_source_spw()
+        if rspw in spws:
+            score = rutils.SCORE_THRESHOLD_ERROR
+            longmsg = f"Representative SpW {rspw} flagged for low transmission"
+            shortmsg = f"Representative SpW flagged for low transmission"
+        else:
+            score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+            longmsg = f"Non-representative SpW(s) {', '.join(str(s) for s in spws)} flagged for low transmission"
+            shortmsg = f"Non-representative SpW(s) flagged for low transmission"
+    else:
+        score = 1.0
+        longmsg = "No SpW(s) flagged for low transmission"
+        shortmsg = "No SpW(s) flagged for low transmission"
+
+    origin = pqa.QAOrigin(metric_name='score_lowtrans',
+                          metric_score=score,
+                          metric_units='SpW(s) flagged by low transmission agent.')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
