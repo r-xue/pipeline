@@ -75,7 +75,7 @@ This task performs analysis on cutout images of the full Stokes imaging products
 - Fractional Stokes U vs. Q at different frequencies
   - This analysis is done at two locations: the peak of the Stokes I map, and the peak of the linearly polarized intensity map.
   - I, Q, and U are measured from a 3x3 pixel box average centered at the peak pixel.
-  - The peak search is restricted in the region defined by the final iteration tclean mask (pbmask=0.4 from the current heuristics)
+  - The peak search is restricted in the region defined by a joint mask from the tclean iter2 (from the SE tier2-combined) mask and iter3 mask (pbmask=0.4 from the current heuristics).
 - Median of .rms image from individual Stokes planes, as a function of frequency.
   - A scaled/normalized VLA SEFD is overlaid for comparisons.
 
