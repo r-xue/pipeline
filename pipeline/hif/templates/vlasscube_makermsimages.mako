@@ -151,7 +151,7 @@ $(function () {
             MADrms: the median absolute deviation from the median (i.e., 'medabsdevmed' defined in the CASA/imstat output), multiplied by 1.4826.
         </li>
         <li>
-            The color background highlights spectral windows with a statistical property signficantly deviated from the mean over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is also viewable in a tooltip box.
+            The color background highlights spectral windows with a statistical property signficantly deviated from its median over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is also viewable in a tooltip box.
         </li>            
     </caption>    
     
@@ -192,7 +192,7 @@ $(function () {
                 % for item, cmap in [('Max','Reds'),('Min','Oranges'),('Mean','Greens'),('Median','Blues'),('Sigma','Purples'),('MADrms','Greys')]:
                     <%
                     cell_style=[]
-                    dev_in_madrms=stats_per_spw[item.lower()][idx_pol]-stats_summary[item.lower()]['spwwise_mean'][idx_pol]
+                    dev_in_madrms=stats_per_spw[item.lower()][idx_pol]-stats_summary[item.lower()]['spwwise_median'][idx_pol]
                     madrms=stats_summary[item.lower()]['spwwise_madrms'][idx_pol]
                     if abs(dev_in_madrms)>madrms*3.0:
                         #bgcolor=val2color(dev_in_madrms/madrms,cmap_name='Greys',vmin=3,vmax=10)
