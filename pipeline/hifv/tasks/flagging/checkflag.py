@@ -174,7 +174,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  intentselect=intentselect, spwselect=fielddict[field])
                 # PIPE-1342: do a second pass of rflag in the 'target-vla' mode (equivalent to running hifv_targetvla)
                 if self.inputs.checkflagmode == 'target-vla':
-                    self.do_vla_targetflag(ieldselect=field, scanselect=scanselect,
+                    self.do_vla_targetflag(fieldselect=field, scanselect=scanselect,
                                            intentselect=intentselect, spwselect=fielddict[field])
         else:
             # all other situations
