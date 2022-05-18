@@ -601,8 +601,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             self.inputs.context.report_dir,
             f'stage{stage_number}'
         )
-        if not os.path.exists(stage_dir):
-            os.makedirs(stage_dir)
+        os.makedirs(stage_dir, exist_ok=True)
 
         # perform atmtype heuristics if atmtype is 'auto'
         # run Harold's script here
