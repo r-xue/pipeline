@@ -436,7 +436,7 @@ class SDATMCorrectionResults(common.SingleDishResults):
     def __init__(self,
                  task: Optional[basetask.StandardTaskTemplate] =None,
                  success: Optional[bool] =None,
-                 outcome: Optional[str] =None):
+                 outcome: Optional[dict] =None):
         """Initialize results instance for hsd_atmcor.
 
         The outcome must be a dict that contains:
