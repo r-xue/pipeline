@@ -121,6 +121,10 @@ bgcolor_pct_list=[pct2shade(0.7),pct2shade(0.3),pct2shade(.1),pct2shade(.0)]
     background-color: #F9F9F9;
 }
 
+.table caption {
+    color: black;
+}
+
 </style>
 
 <%block name="title">Make Cutout Images</%block>
@@ -178,7 +182,7 @@ $(function () {
   </li>
   
   <li>
-      For the columns presented in all Stokes planes (except Px<sub><800&mu;Jy</sub>), the color background highlights spectral windows with a statistical property signficantly deviated from its median over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is viewable in a tooltip box. For the 'Peak' column in which the value can be either positive or negative, the median and deviation are calculated using the peak amplitude. For the 'MADRms' or 'Median' columns, only the outliers above the median are highlighted.
+      For the columns present for all Stokes planes (except Px<sub><800&mu;Jy</sub>), the color background highlights spectral windows with a statistical property signficantly deviated from its median over all spw groups: <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>. The deviation, in units of &#963 (defined as 1.4826*MAD), is viewable in a tooltip box. For the 'Peak' column in which the value can be either positive or negative, the median and deviation are calculated using the peak amplitude. For the 'MADRms' or 'Median' columns, only the outliers above the median are highlighted.
   </li>        
 </caption>
 
