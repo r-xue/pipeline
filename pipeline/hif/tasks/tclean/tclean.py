@@ -1417,7 +1417,7 @@ class Tclean(cleanbase.CleanBase):
             minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad')) / 2
             cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad')))
             celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
-            num_pixels_in_beam = float(major_radius * minor_radius * np.pi / cellx / celly)
+            num_pixels_in_beam = float(major_radius * minor_radius * np.pi / np.log(2) / cellx / celly)
             # Get threshold for maximum segment calculation
             cut1 = mom8_image_median_all + 3.0 * cube_chanScaledMAD
             cut2 = mom8_image_median_all + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_all)
