@@ -50,19 +50,17 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
         Returns:
             atmtype as string type or a list of strings
         """
-        if not isinstance(value, str):
-            # check if value is compatible with list
-            try:
-                list_value = list(value)
-                value = [
-                    v if isinstance(v, str) else str(v) for v in list_value
-                ]
+        # check if value is compatible with list
+        if (not isinstance(value, (str, dict))) and isinstance(value, collections.abc.Iterable):
+            list_value = list(value)
+            value = [
+                v if isinstance(v, str) else str(v) for v in list_value
+            ]
 
-                if len(value) == 1:
-                    value = value[0]
-            except Exception:
-                # non-list value
-                value = str(value)
+            if len(value) == 1:
+                value = value[0]
+        else:
+            value = str(value)
         return value
 
     def __to_float_value(self, value: Union[float, str, dict, List[Union[float, str, dict]]], default_unit: str) -> Union[float, List[float]]:
@@ -86,21 +84,22 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
             return value will be set to 0.
         """
         # check if value is compatible with list
-        if not isinstance(value, str):
-            try:
-                list_value = list(value)
-                ret = [self.__to_float_value(v, default_unit) for v in list_value]
+        if (not isinstance(value, (str, dict))) and isinstance(value, collections.abc.Iterable):
+            list_value = list(value)
+            ret = [self.__to_float_value(v, default_unit) for v in list_value]
 
-                if len(ret) == 1:
-                    ret = ret[0]
+            if len(ret) == 1:
+                ret = ret[0]
 
-                return ret
-            except Exception:
-                pass
+            return ret
 
         # non-list value
         qa = casa_tools.quanta
-        qvalue = qa.quantity(value)
+        if isinstance(value, dict):
+            qvalue = value
+        else:
+            qvalue = qa.quantity(value)
+
         if qvalue['unit'] == '':
             ret = qvalue['value']
         elif qa.compare(qvalue, qa.quantity(0, default_unit)):
