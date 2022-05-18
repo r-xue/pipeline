@@ -90,6 +90,10 @@ bgcolor_list=[dev2shade(3.),dev2shade(4.),dev2shade(5.),dev2shade(6.)]
     background-color: #F9F9F9;
 }
 
+.table caption {
+    color: black;
+}
+
 </style>
 
 <script>
