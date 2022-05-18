@@ -269,14 +269,16 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Copy applycal QA outliers file across to weblog directory
         outliers_filename = 'applycalQA_outliers.txt'
-        outliers_path = os.path.join(weblog_dir, outliers_filename)
-        outliers_weblink = os.path.join('stage%s' % result.stage_number, outliers_filename)
-        outliers_path_link = '<a href="{!s}" class="replace-pre" data-title="{!s}">View</a>' \
-                             ' or <a href="{!s}" download="{!s}">download</a> {!s} file.'.format(outliers_weblink, outliers_filename,
-                                                                                                 outliers_weblink, outliers_weblink, outliers_filename)
         if os.path.exists(outliers_filename):
+            outliers_path = os.path.join(weblog_dir, outliers_filename)
+            outliers_weblink = os.path.join('stage%s' % result.stage_number, outliers_filename)
+            outliers_path_link = '<a href="{!s}" class="replace-pre" data-title="{!s}">View</a>' \
+                                 ' or <a href="{!s}" download="{!s}">download</a> {!s} file.'.format(outliers_weblink, outliers_filename,
+                                                                                                 outliers_weblink, outliers_weblink, outliers_filename)
             LOG.trace('Copying %s to %s' % (outliers_filename, weblog_dir))
             shutil.copy(outliers_filename, weblog_dir)
+        else:
+            outliers_path_link = ''
 
         ctx.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
