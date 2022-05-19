@@ -88,7 +88,7 @@ class VlassPipelineManifest(manifest.PipelineManifest):
 class Exportvlassdata(basetask.StandardTaskTemplate):
     Inputs = ExportvlassdataInputs
 
-    NameBuilder = exportdata.PipelineProductNameBuiler
+    NameBuilder = exportdata.PipelineProductNameBuilder
 
     def prepare(self):
 
@@ -211,8 +211,9 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
             # Create list for tar file
             self.masks = [QLmask, secondmask, finalmask]
-        
+
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
+            # PIPE-1434: split VLASS-SE-CUBE full-Stokes images into IQU and V.
             images_list = self._split_vlass_cube_stokes(images_list)
 
         fits_list = []
@@ -248,16 +249,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 # Update FITS header
                 self._fix_vlass_fits_header(self.inputs.context, fitsfile, img_mode)
 
-        # PIPE-1434: produce a VLASS-SE-CUBE image set with a common resolution / WCS frame.
-        # Please note that we intentionally use FITS images for the common beam calculation due to CAS-13799.
-        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
-            common_beam = self._get_common_beam(fits_list)
-            for idx, fitsfile in enumerate(fits_list):
-                image = images_list[idx]
-                # only smooth and regrid the sci image for now.
-                if '.rms.' not in fitsfile:
-                    self._smooth_and_regrid(fitsfile, image, common_beam)
-
         # SE Cont imaging mode export for VLASS
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
             self.reimaging_resources = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
@@ -266,11 +257,94 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #    TBD Remove support for auxiliary data products to the individual pipelines
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, {}, {}, [], fits_list)
         casa_pipe_manifest = self._export_pipe_manifest('pipeline_manifest.xml', inputs.products_dir, pipemanifest)
-
         result.manifest = os.path.basename(casa_pipe_manifest)
+
+        # PIPE-1434: produce a set of VLASS-SE-CUBE sci. images in the common resolution/WCS.
+        # Note that we use full-Stokes cubes for the commom beam calculation and image smoothing input.
+        # Using V images might give slightly different results due to CAS-13799 and CAS-13827.
+        if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
+            # image_refimage_list: each element is a pair of image names (a, b)
+            #   a: the IQUV CASA image without position correction or header fixes
+            #   b: the IQU FITS image inside products/, with position corrections and header fixes applied.
+            # We exlclude .rms. images here and start from the original IQUV CASA images.
+            image_refimage_list = [(images_list[idx].replace('.IQU.iter', '.IQUV.iter'), fits_list[idx])
+                                   for idx, image in enumerate(images_list) if '.IQU.iter' in image and '.rms.' not in image]
+            common_beam = self._get_common_beam([image_refimage[0] for image_refimage in image_refimage_list])
+            for imagename, refimagename in image_refimage_list:
+                LOG.info('')
+                LOG.info(f'start to smooth and regrid {imagename}, and split it into IQU and V.')
+                self._smooth_and_regrid(imagename, refimagename, common_beam)
 
         # Return the results object, which will be used for the weblog
         return result
+
+    def _smooth_and_regrid(self, imagename, ref_imagename, target_beam):
+        """Perform the operation to get a sci image in the commom beam/WCS."""
+
+        cme = casa_tools.measures
+        cqa = casa_tools.quanta
+
+        with casa_tools.ImageReader(ref_imagename) as image:
+
+            crval_corrected = image.coordsys().referencevalue(type='direction', format='n')
+            dr_corrected = image.coordsys().referencevalue(type='direction', format='m')
+
+            cdelt = np.degrees(np.abs(image.coordsys().increment()['numeric'][0:2]))*3600.0
+            pixdiag_arcsec = ((cdelt[0])**2+(cdelt[1])**2)**0.5  # pixel diagonal length in arcsec
+            LOG.debug(f'pixel diagonal length: {pixdiag_arcsec} arcsec')
+
+        with casa_tools.ImageReader(imagename) as image:
+
+            # We checked the kernel size and position correction offeset again the below tolerenaces but
+            # the results won't affect the smooth/regrid executation.
+            pstol = pixdiag_arcsec*0.2  # the tolerance for considering the convolution kernel as a point-source
+            sptol = pixdiag_arcsec*0.1  # the tolerance to consider regridding less meaningful
+
+            beam = image.restoringbeam(channel=0, polarization=0)
+            _, kn_code = predict_kernel(beam, target_beam, pstol=pstol)
+            if kn_code:
+                LOG.info(f'{imagename} already reaches the target beam, but it will still be passed on to ia.convolve2d().')
+            else:
+                LOG.info(f'{imagename} has a restoring beam of {beam} and will be smoothed to the target beam of {target_beam}.')
+
+            image_smo = image.convolve2d(beam=target_beam, targetres=True, scale=-1, major='', minor='', pa='')
+
+            cs_smo = image_smo.coordsys()
+            cs_smo.setreferencevalue(crval_corrected, type='direction')
+            image_smo.setcoordsys(cs_smo.torecord())  # now image_smo has the corrected crval
+
+            cs_nominal = image.coordsys()
+            crval_nominal = cs_nominal.referencevalue(type='direction', format='n')
+            dr_nominal = cs_nominal.referencevalue(type='direction', format='m')
+
+            LOG.info(f"crval1,2 [rad] = {crval_corrected['numeric']}from {ref_imagename}")
+            LOG.info(f"crval1,2 [rad] = {crval_nominal['numeric']} from {imagename}")
+            sep_arcsec = cqa.convert(cme.separation(
+                dr_corrected['measure']['direction'], dr_nominal['measure']['direction']), 'arcsec')['value']
+            LOG.info(
+                f'crval separation: {sep_arcsec} arcsec, with a regridding tolerence warning at {sptol} arcsec = 0.1 * pixdiag_size')
+
+            image_rgd = image_smo.regrid(csys=cs_nominal.torecord(), overwrite=True, axes=[0, 1])
+
+            rgTool = casa_tools.regionmanager
+            for stokes in ['IQU', 'V']:
+                region = rgTool.frombcs(csys=image_rgd.coordsys().torecord(), shape=image_rgd.shape(),
+                                        stokes=stokes, stokescontrol='a')
+                fits_name = ref_imagename.replace('.IQU.iter', f'.{stokes}.iter').replace(
+                    '.fits', '.com.fits')
+                # avoid per-plane beam in IQU CASA images
+                if stokes == 'IQU':
+                    beam = image_rgd.restoringbeam()
+                    if 'beams' in beam:
+                        beam0 = beam['beams']['*0']['*0']
+                        image_rgd.setrestoringbeam(remove=True)
+                        image_rgd.setrestoringbeam(beam=beam0)
+                image_rgd.tofits(fits_name, region=region, overwrite=True)
+                self._fix_vlass_fits_header(self.inputs.context, fits_name, self.inputs.context.imaging_mode)
+                LOG.info(f'write the commom beam/frame FITS image: {fits_name}')
+
+            image_smo.done()
+            image_rgd.done()
 
     def analyse(self, results):
         return results
@@ -792,30 +866,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return new_image_list
 
-    def _get_common_beam2(self, image_list):
-        """Get the smallest possible target common beams from the supplied "cube" image list."""
-
-        freq_list = []
-        beam_list = []
-        for imagename in image_list:
-            with casa_tools.ImageReader(imagename) as image:
-                freq_list.append(image.coordsys().referencevalue(
-                    format='q', type='spectral')['quantity']['*1']['value'])
-                beam_list.append(image.restoringbeam(channel=0, polarization=0))
-                LOG.info(f'{imagename} has a Stokes-I restoring beam size of {beam_list[-1]}')
-                beam_q = image.restoringbeam(channel=0, polarization=1)
-                beam_u = image.restoringbeam(channel=0, polarization=2)
-                beam_v = image.restoringbeam(channel=0, polarization=2)
-                LOG.info(f'{imagename} has a Stokes-Q restoring beam size of {beam_q}')
-                LOG.info(f'{imagename} has a Stokes-U restoring beam size of {beam_u}')
-                LOG.info(f'{imagename} has a Stokes-V restoring beam size of {beam_v}')
-
-        idx = freq_list.index(min(freq_list))
-        beam_target = beam_list[idx]
-        LOG.info(f'Using {beam_target} as the target beam for the common-resolution image set.')
-
-        return beam_target
-
     def _get_common_beam(self, image_list):
         """Get the common beam from the supplied "cube" image list."""
 
@@ -828,7 +878,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         for idx, imagename in enumerate(image_list):
             with casa_tools.ImageReader(imagename) as image:
                 bm = image.restoringbeam(channel=0, polarization=0)
-                LOG.info(f'{imagename} has a restoring beam size of {bm}')
+            LOG.info(f'set the restoring beam of {imagename} in chan={idx} of the multibeam image template.')
             myia.setrestoringbeam(beam=bm, channel=idx)
 
         beam_target = myia.commonbeam()
@@ -837,72 +887,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         beam_target['positionangle'] = beam_target.pop('pa')
         myia.close()
 
-        LOG.info(f'Using {beam_target} as the target beam for the common-resolution image set.')
+        LOG.info(f'use {beam_target} as the target beam for the common-beam image set.')
 
         return beam_target
-
-    def _smooth_and_regrid(self, fitsfile, imagename, target_beam):
-        """Smooth and regrid the position-corrected FITS image to the common resolution and WCS frame.
-        
-        imagename: the original CASA image without position correction
-        fitsfile:  the corresponding FITS image with positon correction
-
-        The common resolution/frame FITS image set could still have slightly different BEAM/CRVAL info, which is 
-        intentionally preserved currently. 
-        """
-        cme = casa_tools.measures
-        cqa = casa_tools.quanta
-
-        # get pixel diagonal length as the basis of beam-similarity/regridding tolerence.
-        with casa_tools.ImageReader(fitsfile) as image:
-            beam = image.restoringbeam(channel=0, polarization=0)
-            fits_csys = image.coordsys()
-            cdelt = np.degrees(np.abs(fits_csys.increment()['numeric'][0:2]))*3600.0
-            pixdiag_arcsec = ((cdelt[0])**2+(cdelt[1])**2)**0.5  # pixel diagonal length in arcsec
-            LOG.debug(f'pixel diagonal length: {pixdiag_arcsec} arcsec')
-
-        # smooth to the common resolution
-        _, kn_code = predict_kernel(beam, target_beam, pstol=pixdiag_arcsec*0.2)
-        if kn_code:
-            LOG.info(f'{fitsfile} already reaches the target beam, skip image smoothing.')
-            smoothed_image = fitsfile
-        else:
-            LOG.info(f'{fitsfile} has a restoring beam of {beam} and will be smoothed to the target beam of {target_beam}')
-            smoothed_image = imagename+'.smo'
-            job = casa_tasks.imsmooth(fitsfile, targetres=True, beam=target_beam,
-                                      outfile=smoothed_image, overwrite=True)
-            self._executor.execute(job)
-
-        # regrid to the common frame
-        # note: for CASA/imregrid, input can be either a FITS or CASA image. However, the template and output are CASA images.
-        sptol = 0.1*pixdiag_arcsec
-        with casa_tools.ImageReader(imagename) as image:
-            casa_csys = image.coordsys()
-            refdir = casa_csys.referencevalue(format='m')['measure']['direction']
-            imgdir = fits_csys.referencevalue(format='m')['measure']['direction']
-            sep_arcsec = cqa.convert(cme.separation(refdir, imgdir), 'arcsec')['value']
-            LOG.info(
-                f'crval separation: {sep_arcsec} arcsec, with a regridding-request tolerence specified at {sptol} arcsec.')
-        if sep_arcsec > sptol:
-            commom_image = imagename+'.com'
-            job = casa_tasks.imregrid(imagename=smoothed_image, template=imagename,
-                                      output=commom_image, overwrite=True, axes=[0, 1])
-            self._executor.execute(job)
-        else:
-            commom_image = smoothed_image
-
-        if commom_image != fitsfile:
-            job = casa_tasks.exportfits(imagename=commom_image, fitsimage=os.path.splitext(fitsfile)[0]+'.com.fits')
-            self._executor.execute(job)
-        else:
-            # In an unlikely situation, no regrdding or smooth was done, we just need to make a copy of the original FITS
-            job = casa_tasks.copyfile(fitsfile, os.path.splitext(fitsfile)[0]+'.com.fits')
-            self._executor.execute(job)
-
-        # clean up the intermediate CASA images to free up the disk space.
-        if smoothed_image != fitsfile and os.path.exists(smoothed_image):
-            job = casa_tasks.rmtree(smoothed_image)
-            self._executor.execute(job)
-        if commom_image != fitsfile and os.path.exists(commom_image):
-            job = casa_tasks.rmtree(commom_image)
-            self._executor.execute(job)
