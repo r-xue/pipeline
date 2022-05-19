@@ -2,6 +2,7 @@
 
 Currently only test Inputs class.
 """
+import contextlib
 import os
 import tempfile
 
@@ -11,6 +12,14 @@ import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.launcher as launcher
 
 from . import atmcor
+
+
+@contextlib.contextmanager
+def temporary_context(name):
+    """Generate temporary pipeline context."""
+    with tempfile.TemporaryDirectory() as tempdirname:
+        ctx = launcher.Context(name=os.path.join(tempdirname, name))
+        yield ctx
 
 
 @pytest.mark.parametrize(
@@ -23,8 +32,7 @@ from . import atmcor
 )
 def test_inputs_atmcor(value, expected):
     """Test atmcor parameter."""
-    with tempfile.TemporaryDirectory() as tempdirname:
-        ctx = launcher.Context(name=os.path.join(tempdirname, 'pipeline-test-atmcor'))
+    with temporary_context('pipeline-test-atmcor') as ctx:
         # print(f'context name: {ctx.name}')
         print(f'atmtype: testing "{value}" (type {type(value)})...')
         inputs = atmcor.SDATMCorrectionInputs(ctx, atmtype=value)
@@ -44,8 +52,7 @@ def test_inputs_atmcor(value, expected):
 )
 def test_inputs_h0(value, expected):
     """Test h0 parameter."""
-    with tempfile.TemporaryDirectory() as tempdirname:
-        ctx = launcher.Context(name=os.path.join(tempdirname, 'pipeline-test-atmcor'))
+    with temporary_context('pipeline-test-h0') as ctx:
         print(f'h0: testing "{value}" (type {type(value)})...')
         inputs = atmcor.SDATMCorrectionInputs(ctx, h0=value)
         output = inputs.h0
