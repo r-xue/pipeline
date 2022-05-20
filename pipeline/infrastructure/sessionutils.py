@@ -4,6 +4,8 @@ import itertools
 import os
 import tempfile
 
+import pipeline.infrastructure as infrastructure
+
 from pipeline.infrastructure import basetask
 from pipeline.infrastructure import exceptions
 from . import mpihelpers
@@ -20,6 +22,8 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
+
+LOG = infrastructure.get_logger(__name__)
 
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
@@ -68,9 +72,11 @@ def group_into_sessions(context, all_results):
     """
     session_map = {ms.basename: ms.session
                    for ms in context.observing_run.measurement_sets}
+    LOG.info(f'session_map is {session_map}')
 
     ms_start_times = {ms.basename: utils.get_epoch_as_datetime(ms.start_time)
                       for ms in context.observing_run.measurement_sets}
+    LOG.info(f'ms_start_times is {ms_start_times}')
 
     def get_session(r):
         basename = os.path.basename(r[0])
@@ -369,6 +375,22 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         final_result = basetask.ResultsList()
 
         context = self.inputs.context
+
+        # return results object as is when no measurementsets are
+        # registered to the context
+        if not context.observing_run.measurement_sets:
+            for vis, task_args, vis_result in assessed:
+                if isinstance(vis_result, Exception):
+                    fake_result = self.get_result_for_exception(vis, vis_result)
+                    fake_result.inputs = task_args
+                    final_result.append(fake_result)
+                else:
+                    if isinstance(vis_result, collections.Iterable):
+                        final_result.extend(vis_result)
+                    else:
+                        final_result.append(vis_result)
+            return final_result
+
         session_groups = group_into_sessions(context, assessed)
         for session_id, session_results in session_groups.items():
             for vis, task_args, vis_result in session_results:

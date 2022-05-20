@@ -146,9 +146,7 @@ class SDImportDataResults(basetask.Results):
         return 'SDImportDataResults:\n\t{0}'.format('\n\t'.join([ms.name for ms in self.mses]))
 
 
-@task_registry.set_equivalent_casa_task('hsd_importdata')
-@task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
-class SDImportData(importdata.ImportData):
+class SerialSDImportData(importdata.ImportData):
     """Data import execution task of SingleDish.
 
     This class extends importdata.ImportData class, and methods execute main logics depends on it.
@@ -165,7 +163,7 @@ class SDImportData(importdata.ImportData):
             SDImportDataResults : result object
         """
         # get results object by running super.prepare()
-        results = super(SDImportData, self).prepare()
+        results = super(SerialSDImportData, self).prepare()
 
         # per MS inspection
         table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),
@@ -245,11 +243,13 @@ class HpcSDImportDataInputs(SDImportDataInputs):
         self.parallel = parallel
 
 
+@task_registry.set_equivalent_casa_task('hsd_importdata')
+@task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class HpcSDImportData(sessionutils.ParallelTemplate):
     """SDImportData class for parallelization."""
 
     Inputs = HpcSDImportDataInputs
-    Task = SDImportData
+    Task = SerialSDImportData
 
     def __init__(self, inputs: HpcSDImportDataInputs):
         """Initialize HpcSDImportData class.

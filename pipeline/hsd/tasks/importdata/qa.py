@@ -24,7 +24,7 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
 
     result_cls = importdata.SDImportDataResults
     child_cls = None
-    generating_task = importdata.SDImportData
+    generating_task = importdata.SerialSDImportData
 
     def _check_intents(self, mses: List[MeasurementSet]) -> QAScore:
         """
@@ -39,6 +39,11 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
             QAScore object
         """
         return qacalc.score_missing_intents(mses, array_type='ALMA_TP')
+
+
+class HpcSDImportDataQAHandler(SDImportDataQAHandler):
+    """QA handler for HpcImportData task."""
+    generating_task = importdata.HpcSDImportData
 
 
 class SDImportDataListQAHandler(importdataqa.ImportDataListQAHandler, QAPlugin):
