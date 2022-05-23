@@ -39,7 +39,7 @@ from ..common import utils as sdutils
 LOG = infrastructure.get_logger(__name__)
 
 SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
-# RasterInfo: center_ra, center_dec = R.A. and Declination of map center 
+# RasterInfo: center_ra, center_dec = R.A. and Declination of map center
 #             width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
 RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width height scan_angle row_separation row_duration')
@@ -1022,8 +1022,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         rep_angle = numpy.nanmedian([cqa.getvalue(r.scan_angle) for r in raster_infos if r is not None])
         center_ra = numpy.nanmedian(__extract_values('center_ra', center_unit))
         center_dec = numpy.nanmedian(__extract_values('center_dec', center_unit))
-        width = rep_width - beam_size*2.
-        height = rep_height - beam_size*2.
+        width = rep_width - beam_size
+        height = rep_height - beam_size
         if width <=0 or height <=0: # No valid region selected.
             return None
         if org_direction is not None:
@@ -1195,7 +1195,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('- flagged Fraction = {} %'.format(100*frac_flagged))
             # obtain calibration tables applied
             calto = callibrary.CalTo(vis=calmsobj.name, field=str(fieldid))
-            calst = context.callibrary.get_calstate(calto)
+            calst = context.callibrary.applied.trimmed(context, calto)
             # obtain T_sub,on, T_sub,off
             t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
             sky_field = calmsobj.calibration_strategy['field_strategy'][fieldid]
@@ -1241,8 +1241,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # obtain Jy/k factor
                 try:
                     k2jytab = ''
-                    caltabs = context.callibrary.applied.get_caltable('amp')
-                    found = caltabs.intersection(calst.get_caltable('amp'))
+                    caltabs = context.callibrary.applied.get_caltable(('amp', 'gaincal'))
+                    found = caltabs.intersection(calst.get_caltable(('amp','gaincal')))
                     if len(found) == 0:
                         LOG.warning('Could not find a Jy/K caltable applied. '+error_msg)
                         return failed_rms
@@ -1440,7 +1440,7 @@ def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
         try:
             chan_sel = rg.frombcs(csys=cs.torecord(), shape=ia.shape(), chans=chans)
         finally:
-            cs.done()            
+            cs.done()
             rg.done()
         subim = ia.subimage(region=chan_sel)
         try:

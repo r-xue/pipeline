@@ -9,10 +9,9 @@ import math
 import os
 from typing import Union, Tuple
 
-import numpy as np
-
 import casatools
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casa_tools
@@ -28,10 +27,10 @@ class AtmType(object):
     subarcticWinter = 5
 
 
-def init_at(at: casatools.atmosphere, humidity: float=20.0,
-            temperature: float=270.0, pressure: float=560.0,
-            atmtype: AtmType=AtmType.midLatitudeWinter, altitude: float=5000.0,
-            fcenter: float=100.0, nchan: float=4096, resolution: float=0.001):
+def init_at(at: casatools.atmosphere, humidity: float = 20.0,
+            temperature: float = 270.0, pressure: float = 560.0,
+            atmtype: AtmType = AtmType.midLatitudeWinter, altitude: float = 5000.0,
+            fcenter: float = 100.0, nchan: float = 4096, resolution: float = 0.001):
     """
     Initialize atmospheric profile and spectral window setting.
 
@@ -64,7 +63,56 @@ def init_at(at: casatools.atmosphere, humidity: float=20.0,
                           fRes=myqa.quantity(resolution, 'GHz'))
 
 
-def calc_airmass(elevation: float=45.0) -> float:
+def init_atm(at: casatools.atmosphere, altitude: float = 5000.0, temperature: float = 270.0, pressure: float = 560.0,
+             max_altitude: float = 48.0, humidity: float = 20.0, delta_p: float = 10.0, delta_pm: float = 1.2,
+             h0: float = 2.0, atmtype: int = AtmType.midLatitudeWinter):
+    """
+    Initialize atmospheric profile in CASA for a given location described by
+    input atmosphere parameters.
+
+    Args:
+        at: CASA atmosphere tool instance to initialize.
+        altitude: Altitude of the location (unit: m).
+        temperature: Temperature at the ground (unit: K).
+        pressure: Pressure at the ground (unit: mbar).
+        max_altitude: Top height of atmospheric profile (unit: km).
+        humidity: Relative humidity at the ground (unit: %).
+        delta_p: Initial step of pressure (unit: mbar).
+        delta_pm: Multiplicative factor of pressure steps.
+        h0: Scale height of water vapor (unit: km).
+        atmtype: AtmType enum that defines a type of atmospheric profile.
+    """
+    myqa = casa_tools.quanta
+    at.initAtmProfile(altitude=myqa.quantity(altitude, 'm'),
+                      temperature=myqa.quantity(temperature, 'K'),
+                      pressure=myqa.quantity(pressure, 'mbar'),
+                      maxAltitude=myqa.quantity(max_altitude, 'km'),
+                      humidity=humidity,
+                      dP=myqa.quantity(delta_p, 'mbar'),
+                      dPm=delta_pm,
+                      h0=myqa.quantity(h0, 'km'),
+                      atmType=atmtype)
+
+
+def init_spw(at: casatools.atmosphere, fcenter: float = 100.0, nchan: float = 4096, resolution: float = 0.001):
+    """
+    Initialize spectral window setting in CASA atmosphere tool using spectral window frequencies.
+
+    Args:
+        at: CASA atmosphere tool instance to initialize.
+        fcenter: Center frequency of spectral window (unit: GHz).
+        nchan: Number of channels in spectral window.
+        resolution: Resolution of spectral window (unit: GHz).
+    """
+    myqa = casa_tools.quanta
+    fwidth = nchan * resolution
+    at.initSpectralWindow(nbands=1,
+                          fCenter=myqa.quantity(fcenter, 'GHz'),
+                          fWidth=myqa.quantity(fwidth, 'GHz'),
+                          fRes=myqa.quantity(resolution, 'GHz'))
+
+
+def calc_airmass(elevation: float = 45.0) -> float:
     """
     Calculate the relative airmass of a given elevation angle.
 
@@ -86,7 +134,7 @@ def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
     relative airmass.
 
     Args:
-        arimass: The relative airmass to the zenith one.
+        airmass: The relative airmass to the zenith one.
         dry_opacity: The integrated zenith dry opacity.
         wet_opacity: The integrated zenith wet opacity.
 
@@ -130,7 +178,7 @@ def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
     return wet_opacity
 
 
-def test(pwv: float=1.0, elevation: float=45.0) -> np.ndarray:
+def test(pwv: float = 1.0, elevation: float = 45.0) -> np.ndarray:
     """
     Calculate atmospheric transmission and generate a plot.
 
@@ -201,7 +249,7 @@ def get_spw_spec(vis: str, spw_id: int) -> Tuple[float, int, float]:
     Calculate spectral setting of a spectral window.
 
     Calculate the center frequency, number of channels, and channel resolution
-    of a spectral windown in a MeasurementSet. The values can be passed to
+    of a spectral window in a MeasurementSet. The values can be passed to
     init_at function to initialize spectral window setting in atmosphere tool.
 
     Args:
@@ -269,16 +317,16 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
     return elevation
 
 
-def get_transmission(vis: str, antenna_id: int=0, spw_id: int=0,
-                     doplot: bool=False) -> Tuple[np.ndarray, np.ndarray]:
+def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
+                     doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission of an antenna and spectral window.
 
-    Caldulate the atmospheric transmission of a given spectral window for an
+    Calculate the atmospheric transmission of a given spectral window for an
     elevation angle corresponding to pointings of a given antenna in a
     MeasurementSet.
     The median of elevations in all pointings of the selected antenna is used
-    in calulation. The atmospheric profile is constructed by default site
+    in calculation. The atmospheric profile is constructed by default site
     parameters of the function, init_at. The median of zenith water vapor
     column (pwv) is used to calculate the transmission.
 
