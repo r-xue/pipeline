@@ -1,7 +1,6 @@
 import copy
 import glob
 import os
-import re
 import tarfile
 from fnmatch import fnmatch
 
@@ -50,11 +49,14 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         # flag version after hifv_checkflag and before hifv_statwt in the SEIP production workflow.
         self.flagversion = 'statwt_1'
+        self.flagversion_backup = 'hifv_restorepims_initial'
         self.imagename = self.inputs.context.clean_list_pending[0]['imagename'].replace(
             'sSTAGENUMBER.', '')
         self.restore_resources = {}
 
+        # extract all essential resources
         is_resources_available = self._check_resources()
+
         if not is_resources_available:
             exception_msg = []
             for k, v in self.restore_resources.items():
@@ -62,6 +64,9 @@ class Restorepims(basetask.StandardTaskTemplate):
             exception_msg.insert(
                 0, 'Some resources required for hifv_restorepims()/hif_makeimages() are not available, and Pipeline cannot continue.')
             raise exceptions.PipelineException(f"\n{'-'*120}\n"+'\n'.join(exception_msg)+f"\n{'-'*120}\n")
+
+        # backup the intial flag state when needed
+        self._backup_flags()
 
         # restore the MODEL column to the identical state used in the SE hifv_selfcal() and hifv_statwt() stages.
         # the flag state at this moment should be identical to the initial state in the SEIP worflow (before SE/hifv_checkflag)
@@ -83,6 +88,21 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
+
+    def _backup_flags(self):
+        """Backup the initial FLAS state in PIMS, in case the task gets re-run."""
+
+        flagversion_backup_path = self.inputs.vis+'.flagversions/flags.'+self.flagversion_backup
+        if not os.path.exists(flagversion_backup_path):
+            # back up the initial flags, in case one wants to rerun hifv_restorepims().
+            job = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save',
+                                         versionname=self.flagversion_backup,
+                                         comment='flagversion before running hifv_restorepims() first time',
+                                         merge='replace')
+            self._executor.execute(job)
+        else:
+            LOG.warning(
+                f'Found the FLAGs backup from hifv_restorepims() under the name: {self.flagversion_backup}, and will skip new backup')
 
     def _check_resources(self):
 
@@ -118,11 +138,21 @@ class Restorepims(basetask.StandardTaskTemplate):
         # untar any files required for the restorepims operation:
 
         with tarfile.open(reimaging_resources_tgz, 'r:gz') as tar:
+
             members = []
             for member in tar.getmembers():
                 is_resource = any([fnmatch(member.name, pkd[0]) for pkd in pkd_list])
                 if is_resource:
                     members.append(member)
+            # if the request flagversion already exists, do not override the flagversions directory to preserve
+            # any recent flagversions, e.g. the hifv_restorepims backup.
+            if os.path.exists(flagv_pat_key_desc[0]):
+                LOG.warning(
+                    f'{flagv_pat_key_desc[0]} exists and the .flagversions directory will be re-used and not extracted.')
+                members = [member for member in members if not fnmatch(member.name, flagd_pat_key_desc[0])]
+            for member in members:
+                LOG.info(f'extracting: {member.name}')
+
             tar.extractall(path='.', members=members)
 
         # check against the resource requirement list
@@ -135,9 +165,9 @@ class Restorepims(basetask.StandardTaskTemplate):
                 LOG.error(
                     f"Cannot find the request {pkd[2]} using the name pattern: {pkd[0]}")
                 is_resources_available = False
-                self.restore_resources[pkd[1]] = (pkd[0], False)
+                self.restore_resources[pkd[1]] = (pkd[0], False)    # (file_pattern, False)
             else:
-                self.restore_resources[pkd[1]] = (paths, True)
+                self.restore_resources[pkd[1]] = (paths, True)      # (file_list, True)
                 LOG.info(f"Found the request {pkd[2]}: {', '.join(paths)}")
 
         return is_resources_available
@@ -146,26 +176,83 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         if versionname is None:
             versionname = self.flagversion
-        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='restore', versionname=versionname)
 
+        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='restore', versionname=versionname)
         return self._executor.execute(task)
+
+    def _reinitialize_pims(self):
+        """Re-intialize the WEIGHTs/FLAGs of a PIMS.
+        
+        Note: this method is only called when hifv_restorepims() gets rerun.
+        """
+
+        LOG.warning(f'Because the FLAGs/WEIGHTs are likely already modified, to recover the PIMS initial state, we attempt to:')
+        LOG.warning(f' 1. restore FLAGs from earlier backup from hifv_restorepims().')
+        LOG.warning(f' 2. re-initialize WEIGHTs/SIGMAs.')
+
+        flagversion_backup_path = self.inputs.vis+'.flagversions/flags.'+self.flagversion_backup
+        if os.path.exists(flagversion_backup_path):
+            task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='restore', versionname=self.flagversion_backup)
+            self._executor.execute(task)
+        else:
+            LOG.warning('Cannot find earlier FLAGS backup by hifv_restorepims, but will continue.')
+
+        LOG.info(f'Re-initializing the weights in {self.inputs.vis}.')
+        task = casa_tasks.initweights(vis=self.inputs.vis, wtmode='nyq')
+        self._executor.execute(task)
 
     def _do_restoremodel(self):
 
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         with casa_tools.TableReader(ms.name) as table:
-            if 'MODEL_DATA' not in table.colnames():
-                LOG.info('Writing model data to {}'.format(ms.basename))
-            else:
-                LOG.warning('MODEL_DATA column found in {} and will be overwritten.'.format(ms.basename))
+            is_modelcolumn_present = 'MODEL_DATA' in table.colnames()
+        with casa_tools.TableReader(ms.name+'/SOURCE') as table:
+            is_virtualmodel_present = 'SOURCE_MODEL' in table.colnames()
+
+        # remove any (unlikely) virtual/otf model in the MS/SOURCE subtable to prevent it overriding the effect of the modelcolumn.
+        # see: https://casadocs.readthedocs.io/en/latest/api/tt/casatasks.imaging.tclean.html?highlight=savemodel#savemodel
+        if is_virtualmodel_present:
+            job = casa_tasks.delmod(vis=self.inputs.vis, otf=True, scr=False)
+            self._executor.execute(job)
+
+        # re-initialze FLAGs/WEIGHTs if needed to ensure identical predicting (vs. SE-CONT) from model image created with normtype='flatnoise'.
+        if is_modelcolumn_present:
+            LOG.warning(f'MODEL_DATA column found in {ms.basename} and will be overwritten.')
+            self._reinitialize_pims()
+        else:
+            LOG.info('Writing model data to {}'.format(ms.basename))
 
         imaging_parameters = self._restoremodel_imaging_parameters()
+
+        mp_nthreads = casa_tools.casalog.ompGetNumThreads()
+        mpi_parallel = imaging_parameters['parallel']
+        LOG.info(f'Predicting the MODEL column with the following tclean() parallelization settings:')
+        LOG.info(f'    openmp_nthreads : {mp_nthreads}')
+        LOG.info(f'    mpi_parallel    : {mpi_parallel}')
+
         job = casa_tasks.tclean(**imaging_parameters)
 
         return self._executor.execute(job)
 
     def _restoremodel_imaging_parameters(self):
-        """Create the tclean parameter set for filling the model column."""
+        """Create the tclean parameter set for filling the model column.
+        
+        Note:
+            1.  to restore the model to the same state as in the SE workflow (i.e., performing the identical same model image->vis transform), 
+                one has to ensure :
+                - calpsf=True when .psf/.weight/.sumwt/. is missing, as in the case of reimaging_resources.tgz.
+                    - calcpsf=False ony work properly if .psf/.weight/.sumwt are presents (as de-degridding needs WEIGHTs or proper initialization).
+                - flags: must be identical to the initial flags after hif_transformimagedata() when calcpsf=True (as it affects the initialization of imager/de-gridder)
+                - WTs: must be identical to the initial weights after hif_transformimagedata()                
+                - Using the same imaging scheme (e.g. weighting, gridder, uvtaper, layout, cfcache, etc.) because it affects the initialization of imager/de-gridder.
+                    - .model is not a sky model in absolute flux scale
+                    - PB, mosaic-pattern, weighting, gridder choice, etc. determines the transformation of 'flatnoise' models from the image to the visibility domain jointly.
+            2.  OpenMP threading must be identical, otherwise, small numerical difference would occur.
+                For a byte-to-byte match (assuming the same CASA version), a hifv_restorepims() called from mpicasa will need the reimaging_resources.tgz
+                from a VLASS-SE-CONT parallel run.
+
+        """
 
         imaging_parameters = copy.deepcopy(self.inputs.context.clean_list_pending[0])
         for par_removed in ['nbin', 'sensitivity', 'heuristics', 'intent']:
@@ -177,6 +264,8 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         # adopt the SE imaging heuristics from SE:stage5
         imaging_parameters['vis'] = self.inputs.vis
+        # explictly set to default which might be changed later if we decide not re-using the SE-CONT naming.
+        imaging_parameters['startmodel'] = ''
         imaging_parameters['imagename'] = imagename
         imaging_parameters['cleanmask'] = ''
         imaging_parameters['niter'] = 0
@@ -185,8 +274,6 @@ class Restorepims(basetask.StandardTaskTemplate):
         imaging_parameters['weighting'] = 'briggs'
         imaging_parameters['robust'] = -2.0
         imaging_parameters['outframe'] = 'LSRK'
-        imaging_parameters['calcres'] = True
-        imaging_parameters['calcpsf'] = True
         imaging_parameters['savemodel'] = 'modelcolumn'
         imaging_parameters['parallel'] = False
         imaging_parameters['pointingoffsetsigdev'] = [300, 30]
@@ -195,6 +282,16 @@ class Restorepims(basetask.StandardTaskTemplate):
         imaging_parameters['pbcor'] = False
         imaging_parameters['pblimit'] = 0.1
         imaging_parameters['specmode'] = 'mfs'
+
+        imaging_parameters['calcres'] = False
+        imaging_parameters['calcpsf'] = True      # required, see the comments in this method.
+
+        # remove non-model pre-xisting images as they will be re-computed.
+        images_present = glob.glob(imagename+'.*')
+        for image_present in images_present:
+            if not fnmatch(image_present, imagename+'.model*'):
+                job = casa_tasks.rmtree(image_present)
+                self._executor.execute(job)
 
         return imaging_parameters
 
@@ -216,6 +313,9 @@ class Restorepims(basetask.StandardTaskTemplate):
         task_args['minsamp'] = ''
         task_args['chanbin'] = 1
         task_args['timebin'] = '1yr'
+
+        # the flag state has already been restored from SE/statwt_1 at this point, no need to backup again
+        task_args['flagbackup'] = False
 
         job = casa_tasks.statwt(**task_args)
 
