@@ -8,7 +8,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.exceptions as exceptions
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, casa_tools, task_regisimport pipeline.hif.tasks.makeimages.makeimages as makeimages
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+import pipeline.hif.tasks.makeimages.makeimages as makeimages
 
 LOG = infrastructure.get_logger(__name__)
 
