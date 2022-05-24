@@ -230,10 +230,11 @@ class compressionSummary(object):
         #                      fancybox=False)
         leg = axes[0].legend(loc='center right', ncol=1, bbox_to_anchor=(1.0, 1.52), frameon=True, numpoints=1,
                              fancybox=False)
-        title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
+        # title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
+        title = axes[0].set_title('  ')
         title.set_position([.5, 1.225])
 
-        axes[numsubplots-1].set_xlabel('UTC Day Time [Day HH:MM]')
+        axes[numsubplots-1].set_xlabel('UTC Day Time [Day HH:MM]      {!s}-band'.format(self.band))
 
         fig0.set_size_inches(8, 10)
 
@@ -252,7 +253,7 @@ class compressionSummary(object):
 
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                    'type': prefix,
-                                                                                   'largecaption': 'Compression summary',
+                                                                                   'largecaption': 'Compression pdiff template summary',
                                                                                    'smallcaption': 'Compression summary (scan numbers indicated on the top axis)',
                                                                                    'spw': '',
                                                                                    'band': self.band})
