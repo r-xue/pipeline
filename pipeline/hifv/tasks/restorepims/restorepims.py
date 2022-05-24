@@ -8,7 +8,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.exceptions as exceptions
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_regisimport pipeline.hif.tasks.makeimages.makeimages as makeimages
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -42,6 +42,7 @@ class RestorepimsInputs(vdp.StandardInputs):
 @task_registry.set_casa_commands_comment('Restore RFI-flagged and self-calibrated visibility for a per-image measurement set (PIMS) using reimaging resources from the single-epoch continuum imaging products.')
 class Restorepims(basetask.StandardTaskTemplate):
     Inputs = RestorepimsInputs
+    is_multi_vis_task = False
 
     def prepare(self):
 
@@ -165,9 +166,9 @@ class Restorepims(basetask.StandardTaskTemplate):
                 LOG.error(
                     f"Cannot find the request {pkd[2]} using the name pattern: {pkd[0]}")
                 is_resources_available = False
-                self.restore_resources[pkd[1]] = (pkd[0], False)    # (file_pattern, False)
+                self.restore_resources[pkd[1]] = (pkd[0], False)        # (file_pattern, False)
             else:
-                self.restore_resources[pkd[1]] = (paths, True)      # (file_list, True)
+                self.restore_resources[pkd[1]] = (sorted(paths), True)  # (file_list, True)
                 LOG.info(f"Found the request {pkd[2]}: {', '.join(paths)}")
 
         return is_resources_available
@@ -223,77 +224,33 @@ class Restorepims(basetask.StandardTaskTemplate):
         else:
             LOG.info('Writing model data to {}'.format(ms.basename))
 
-        imaging_parameters = self._restoremodel_imaging_parameters()
-
         mp_nthreads = casa_tools.casalog.ompGetNumThreads()
-        mpi_parallel = imaging_parameters['parallel']
-        LOG.info(f'Predicting the MODEL column with the following tclean() parallelization settings:')
-        LOG.info(f'    openmp_nthreads : {mp_nthreads}')
-        LOG.info(f'    mpi_parallel    : {mpi_parallel}')
-
-        job = casa_tasks.tclean(**imaging_parameters)
-
-        return self._executor.execute(job)
-
-    def _restoremodel_imaging_parameters(self):
-        """Create the tclean parameter set for filling the model column.
-        
-        Note:
-            1.  to restore the model to the same state as in the SE workflow (i.e., performing the identical same model image->vis transform), 
-                one has to ensure :
-                - calpsf=True when .psf/.weight/.sumwt/. is missing, as in the case of reimaging_resources.tgz.
-                    - calcpsf=False ony work properly if .psf/.weight/.sumwt are presents (as de-degridding needs WEIGHTs or proper initialization).
-                - flags: must be identical to the initial flags after hif_transformimagedata() when calcpsf=True (as it affects the initialization of imager/de-gridder)
-                - WTs: must be identical to the initial weights after hif_transformimagedata()                
-                - Using the same imaging scheme (e.g. weighting, gridder, uvtaper, layout, cfcache, etc.) because it affects the initialization of imager/de-gridder.
-                    - .model is not a sky model in absolute flux scale
-                    - PB, mosaic-pattern, weighting, gridder choice, etc. determines the transformation of 'flatnoise' models from the image to the visibility domain jointly.
-            2.  OpenMP threading must be identical, otherwise, small numerical difference would occur.
-                For a byte-to-byte match (assuming the same CASA version), a hifv_restorepims() called from mpicasa will need the reimaging_resources.tgz
-                from a VLASS-SE-CONT parallel run.
-
-        """
-
-        imaging_parameters = copy.deepcopy(self.inputs.context.clean_list_pending[0])
-        for par_removed in ['nbin', 'sensitivity', 'heuristics', 'intent']:
-            imaging_parameters.pop(par_removed, None)
+        LOG.info(f'Predicting the MODEL column with openmp_nthreads : {mp_nthreads}')
 
         model_image = self.restore_resources['model_images'][0][0]
         last_idx = model_image.rfind('.model')
-        imagename = model_image[:last_idx]
+        restore_imagename = model_image[:last_idx]
+        restore_startmodel = self.restore_resources['model_images'][0]
 
-        # adopt the SE imaging heuristics from SE:stage5
-        imaging_parameters['vis'] = self.inputs.vis
-        # explictly set to default which might be changed later if we decide not re-using the SE-CONT naming.
-        imaging_parameters['startmodel'] = ''
-        imaging_parameters['imagename'] = imagename
-        imaging_parameters['cleanmask'] = ''
-        imaging_parameters['niter'] = 0
-        imaging_parameters['threshold'] = '0.0mJy'
-        imaging_parameters['nsigma'] = 0
-        imaging_parameters['weighting'] = 'briggs'
-        imaging_parameters['robust'] = -2.0
-        imaging_parameters['outframe'] = 'LSRK'
-        imaging_parameters['savemodel'] = 'modelcolumn'
-        imaging_parameters['parallel'] = False
-        imaging_parameters['pointingoffsetsigdev'] = [300, 30]
-        imaging_parameters['mosweight'] = False
-        imaging_parameters['rotatepastep'] = 5.0
-        imaging_parameters['pbcor'] = False
-        imaging_parameters['pblimit'] = 0.1
-        imaging_parameters['specmode'] = 'mfs'
+        inputs = self.inputs
+        for target in inputs.context.clean_list_pending:    # just one target for VLASS-SE-CONT*
+            target['niter'] = 0   # not essential but ensure this indicated this is for a selfcal restoration.
+            target['mask'] = []   # empty the mask list to stop tclean beyond iter=0 (just for the model restoration)
+            target['heuristics'].restore_imagename = restore_imagename      # this has been sorted: xx.tt0, xx.tt1.
+            # the tclean imagename used in the production selfcal-imaging flow
+            target['heuristics'].restore_startmodel = restore_startmodel
+            # note: both restore_imagename/_startmodel here can be used to recover the modelcolumn via tclean()
+            # we add both but later use 'restore_imagname' due to the csys mismatch issue (CAS-13338) during the parallel=True->False switch in
+            # stage5 when the vlass-se-cont workflow is done in mpicasa.
+            #   tclean/startmodel will always regrid when csys mismatch
+            #   tclean/imagename will just reset to use the cys on the disk, leaving the model untouch.
+            #   the later is what we prefer to reproduce the sequence in the mpicasa+awp situation
 
-        imaging_parameters['calcres'] = False
-        imaging_parameters['calcpsf'] = True      # required, see the comments in this method.
+        makeimages_inputs = makeimages.MakeImages.Inputs(inputs.context, vis=inputs.vis, hm_masking='manual')
+        makeimages_task = makeimages.MakeImages(makeimages_inputs)
+        self._executor.execute(makeimages_task, True)
 
-        # remove non-model pre-xisting images as they will be re-computed.
-        images_present = glob.glob(imagename+'.*')
-        for image_present in images_present:
-            if not fnmatch(image_present, imagename+'.model*'):
-                job = casa_tasks.rmtree(image_present)
-                self._executor.execute(job)
-
-        return imaging_parameters
+        return
 
     def _do_statwt(self):
         """Rerun statwt following the SE setting.
