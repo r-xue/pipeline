@@ -443,7 +443,7 @@ class Solint(basetask.StandardTaskTemplate):
 
             for kk in range(len(phase_scan_list)):
                 ii = phase_scan_list[kk]
-                if ii in phase_scanids_perband and phase_scan_list[kk-1] in phase_scanids_perband:
+                if ii in phase_scanids_perband:
                     try:
                         # Collect beginning and ending times
                         # Take max of end times and min of beginning times
@@ -489,7 +489,7 @@ class Solint(basetask.StandardTaskTemplate):
             durations = orig_durations
 
         nsearch = 5
-        integration_time = 3
+        integration_time = m.get_vla_max_integration_time()
         search_results = np.zeros(nsearch)
         longest_scan = np.round(np.max(orig_durations))
         zscore_solint = np.max(durations)
