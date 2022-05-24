@@ -750,52 +750,87 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('Initialise tclean iter 0')
         iteration = 0
 
+        if hasattr(self.image_heuristics, 'restore_startmodel') and isinstance(self.image_heuristics.restore_startmodel, (str, list)):
+            restore_startmodel = self.image_heuristics.restore_startmodel
+            restore_imagename = self.image_heuristics.restore_imagename
+            calcres_iter0 = False
+            LOG.info(f'set calcres=False for the tclean initilization call because we are going to restore the model column.')
+            LOG.info(f'Will use startmodel: {restore_startmodel}, for the final modelcolumn prediction.')
+        else:
+            restore_imagename = restore_startmodel = calcres_iter0 = None
+
         # Restore main CFCache reference / initialise tclean
         inputs.cfcache = cfcache
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
-                                sensitivity=sequence_manager.sensitivity, result=None)
+                                sensitivity=sequence_manager.sensitivity, result=None, calcres=calcres_iter0)
 
         if inputs.gridder == 'awproject':
+            # only run for AWPproject, see VLASS memo 15 Sec2.2.
             LOG.info('Replacing PSF with wbawp=False PSF')
             # Remove *psf.tmp.* files with clear_origin=True argument
             self._replace_psf(result_psf.psf.replace('iter%s' % iteration, 'tmp'), result.psf, clear_origin=False)
             del result_psf  # Not needed in further steps
 
-        # Determine masking limits depending on PB
-        extension = '.tt0' if result.multiterm else ''
-        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux + extension)
+        if restore_imagename is not None:
+            # only run this block for the selfcal modelcolumn restoration
+            # for now we make a copy of models under the tclean-predict imagename
+            # the use of startmodel introduces a side effect from CAS-13338 when the original model was made with mpicasa, which causes the model images to be regridded.
+            # One will see a model image regridding warning as below:
+            #
+            #           WARN    SIImageStore::Open existing Images (file src/code/synthesis/ImagerObjects/SIImageStore.cc, line 568)     
+            #           Mismatch in Csys latpoles between existing image on disk ([350.792, 50.4044, 180, 50.4044]) 
+            #           The DirectionCoordinates have differing latpoles -- Resetting to match image on disk
+            #
+            # if copying models under imagename.model.**, you should see a resetting warning instead            
+            # regridding is not desired in the VLASS-SE-CUBE case.
+            # we assume that restore_imagename and new_pname are different.
+            
+            rootname, _ = os.path.splitext(result.psf)
+            rootname, _ = os.path.splitext(rootname)
+            LOG.info('Copying model images for the modelcolumn prediction tclean call.')
+            new_pname = f'{rootname}.iter{iteration}'
+            self.copy_products(restore_imagename, os.path.basename(new_pname))
+            restore_startmodel = None
 
-        # Keep pblimits for mom8_fc QA statistics and score (PIPE-704)
-        result.set_pblimit_image(self.pblimit_image)
-        result.set_pblimit_cleanmask(self.pblimit_cleanmask)
+        if calcres_iter0 is not False:
+            # tclean results assemenet only happen when calcres=True or implicit default (None) for iter0
+            
+            # Determine masking limits depending on PB
+            extension = '.tt0' if result.multiterm else ''
+            self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux + extension)
 
-        # Give the result to the sequence_manager for analysis
-        (residual_cleanmask_rms,  # printed
-         residual_non_cleanmask_rms,  # printed
-         residual_min,  # printed
-         residual_max,  # USED
-         nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
-         nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
-         nonpbcor_image_non_cleanmask_rms,  # printed added to result, later used in Weblog under name 'image_rms'
-         pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
-         pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
-         # USED
-         residual_robust_rms,
-         nonpbcor_image_robust_rms_and_spectra) = \
-            sequence_manager.iteration_result(model=result.model,
-                                              restored=result.image, residual=result.residual,
-                                              flux=result.flux, cleanmask=None,
-                                              pblimit_image=self.pblimit_image,
-                                              pblimit_cleanmask=self.pblimit_cleanmask,
-                                              cont_freq_ranges=self.cont_freq_ranges)
+            # Keep pblimits for mom8_fc QA statistics and score (PIPE-704)
+            result.set_pblimit_image(self.pblimit_image)
+            result.set_pblimit_cleanmask(self.pblimit_cleanmask)
 
-        LOG.info('Dirty image stats')
-        LOG.info('    Residual rms: %s', residual_non_cleanmask_rms)
-        LOG.info('    Residual max: %s', residual_max)
-        LOG.info('    Residual min: %s', residual_min)
-        LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
+            # Give the result to the sequence_manager for analysis
+            (residual_cleanmask_rms,  # printed
+             residual_non_cleanmask_rms,  # printed
+             residual_min,  # printed
+             residual_max,  # USED
+             nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
+             nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
+             nonpbcor_image_non_cleanmask_rms,  # printed added to result, later used in Weblog under name 'image_rms'
+             pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
+             pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
+             # USED
+             residual_robust_rms,
+             nonpbcor_image_robust_rms_and_spectra) = \
+                sequence_manager.iteration_result(model=result.model,
+                                                  restored=result.image, residual=result.residual,
+                                                  flux=result.flux, cleanmask=None,
+                                                  pblimit_image=self.pblimit_image,
+                                                  pblimit_cleanmask=self.pblimit_cleanmask,
+                                                  cont_freq_ranges=self.cont_freq_ranges)
 
-        LOG.info('Continue cleaning')
+            LOG.info('Dirty image stats')
+            LOG.info('    Residual rms: %s', residual_non_cleanmask_rms)
+            LOG.info('    Residual max: %s', residual_max)
+            LOG.info('    Residual min: %s', residual_min)
+            LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
+
+            LOG.info('Continue cleaning')
+
         # Continue iterating (calcpsf and calcres are set automatically false)
         iteration = 1
 
@@ -925,8 +960,8 @@ class Tclean(cleanbase.CleanBase):
             LOG.info("Saving predicted model visibilities to MeasurementSet after last iteration (iter %s)" %
                      (iteration-1))
             _ = self._do_clean(iternum=iteration-1, cleanmask='', niter=0, threshold='0.0mJy',
-                               sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
-                               result=None, calcpsf=False, calcres=False, parallel=False)
+                               sensitivity=sequence_manager.sensitivity, savemodel=savemodel, startmodel=restore_startmodel,
+                               result=None, calcpsf=False, calcres=False, parallel=False)                               
 
         return result
 
@@ -1164,7 +1199,7 @@ class Tclean(cleanbase.CleanBase):
 
         return result
 
-    def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None,
+    def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None, startmodel=None,
                   calcres=None, calcpsf=None, wbawp=None, parallel=None):
         """
         Do basic cleaning.
@@ -1224,6 +1259,7 @@ class Tclean(cleanbase.CleanBase):
                                                   iter=iternum,
                                                   mask=cleanmask,
                                                   savemodel=savemodel,
+                                                  startmodel=startmodel,
                                                   hm_masking=inputs.hm_masking,
                                                   hm_sidelobethreshold=inputs.hm_sidelobethreshold,
                                                   hm_noisethreshold=inputs.hm_noisethreshold,

@@ -1,4 +1,5 @@
 import os
+import traceback
 
 import numpy as np
 
@@ -65,6 +66,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     restoringbeam = vdp.VisDependentProperty(default='common')
     robust = vdp.VisDependentProperty(default=-999.0)
     savemodel = vdp.VisDependentProperty(default='none')
+    startmodel = vdp.VisDependentProperty(default='')
     scales = vdp.VisDependentProperty(default=None)
     sensitivity = vdp.VisDependentProperty(default=None)
     spwsel_all_cont = vdp.VisDependentProperty(default=None)
@@ -123,7 +125,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
-                 robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
+                 robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
@@ -144,6 +146,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.spwsel_all_cont = spwsel_all_cont
         self.uvrange = uvrange
         self.savemodel = savemodel
+        self.startmodel = startmodel
         self.orig_specmode = orig_specmode
         self.specmode = specmode
         self.gridder = gridder
@@ -203,7 +206,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.rotatepastep = rotatepastep
         self.heuristics = heuristics
         self.calcpsf = calcpsf
-        self.calcres = calcres
+        self.calcres = calcres        
 
 
 class CleanBase(basetask.StandardTaskTemplate):
@@ -249,7 +252,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         except Exception as e:
             LOG.error('%s/%s/spw%s clean error: %s' % (inputs.field, inputs.intent, inputs.spw, str(e)))
             result.error = '%s/%s/spw%s clean error: %s' % (inputs.field, inputs.intent, inputs.spw, str(e))
-
+            LOG.info(traceback.format_exc())
         return result
 
     def analyse(self, result):
@@ -329,6 +332,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'restoringbeam': inputs.restoringbeam,
             'uvrange':       inputs.uvrange,
             'savemodel':     inputs.savemodel,
+            'startmodel':    inputs.startmodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
             'parallel':     parallel,
