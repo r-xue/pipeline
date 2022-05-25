@@ -1410,7 +1410,6 @@ class Tclean(cleanbase.CleanBase):
                 mom8fc_image_summary = image.summary()
 
             mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
-            mom8_n_histogram_pixels = np.ma.sum(np.ma.where(mom8fc_masked_image > histogram_threshold, 1, 0))
 
             # Get number of pixels per beam
             major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
@@ -1442,13 +1441,38 @@ class Tclean(cleanbase.CleanBase):
             with casa_tools.ImageReader(mom10fc_name) as image:
                 mom10fc_image = image.getchunk()[:,:,0,0]
 
-            # Get histogram asymmetry
             mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
-            mom10_n_histogram_pixels = np.ma.sum(np.ma.where(mom10fc_masked_image > histogram_threshold, 1, 0))
-            if min(mom8_n_histogram_pixels, mom10_n_histogram_pixels) > 0:
-                mom_8_10_histogram_asymmetry = abs(mom8_n_histogram_pixels-mom10_n_histogram_pixels)/min(mom8_n_histogram_pixels, mom10_n_histogram_pixels)
-            else:
-                mom_8_10_histogram_asymmetry = 0.0
+
+            # Get histogram asymmetry
+
+            # Global minimum/maximum of both images
+            mom8_10fc_min = np.ma.min(np.ma.append(mom8fc_masked_image, mom10fc_masked_image))
+            mom8_10fc_max = np.ma.max(np.ma.append(mom8fc_masked_image, mom10fc_masked_image))
+
+            # Calculate histograms
+            # np.histogram does not know masked arrays; need to convert to normal array using inverted mask as index
+            mom8fc_histogram, bins = np.histogram(mom8fc_masked_image[np.invert(mom8fc_masked_image.mask)], range=[mom8_10fc_min, mom8_10fc_max], bins='auto')
+            mom8fc_flux_bins = 0.5*(bins[:-1]+bins[1:])
+
+            # np.histogram does not know masked arrays; need to convert to normal array using inverted mask as index
+            mom10fc_histogram, bins = np.histogram(mom10fc_masked_image[np.invert(mom10fc_masked_image.mask)], range=[mom8_10fc_min, mom8_10fc_max], bins='auto')
+            mom10fc_flux_bins = 0.5*(bins[:-1]+bins[1:])
+
+            # Interpolating numpix of moment10 at the position of moment8 flux
+            mom8fc_histogram_interp = np.interp(mom10fc_flux_bins, mom8fc_flux_bins, mom8fc_histogram, left=0.0, right=0.0)
+
+            # Interpolating numpix of moment8 at the position of moment10 flux
+            mom10fc_histogram_interp = np.interp(mom8fc_flux_bins, mom10fc_flux_bins, mom10fc_histogram, left=0.0, right=0.0)
+
+            # Compute the deviation between mom8 and mom10 pixel histogram for every flux bin
+            deviation1 = mom8fc_histogram_interp[mom10fc_flux_bins > histogram_threshold] - mom10fc_histogram[mom10fc_flux_bins > histogram_threshold]
+            deviation2 = mom10fc_histogram_interp[mom8fc_flux_bins > histogram_threshold] - mom8fc_histogram[mom8fc_flux_bins > histogram_threshold]
+
+            # Compute the area of the histogram (whatever miminum)
+            smallerarea = np.min(np.append(np.sum(mom10fc_histogram[mom10fc_flux_bins > histogram_threshold]), np.sum(mom8fc_histogram[mom8fc_flux_bins > histogram_threshold])))
+
+            # histasymm is now comparing the summation of the absolute deviation vs histogram area
+            mom_8_10_histogram_asymmetry = 0.5 * (np.sum(np.abs(deviation1)) + np.sum(np.abs(deviation2))) / smallerarea
 
             # Update the result.
             result.set_cube_sigma(maxiter, cube_sigma)
