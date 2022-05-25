@@ -59,7 +59,25 @@ class TimegaincalQAPool(pqa.QAScorePool):
         try:
             tbTool = casa_tools.table
 
+            # Define thresholds (in degrees) a factors for QA tests
+            NoiseThresh = 15.0
+
+            QA1_Thresh1 = 5.0
+            QA1_Thresh2 = 30.0
+            QA1_Factor = 6.0
+
+            QA2_Thresh1 = 15.0
+            QA2_Thresh2 = 30.0
+            QA2_Factor1 = 2.0
+            QA2_Factor2 = 4.0
+
+            QA3_Thresh1 = 15.0
+            QA3_Thresh2 = 30.0
+            QA3_Factor = 6.0
+
             phase_scan_ids = [s.id for s in ms.get_scans(scan_intent='PHASE')]
+
+            subscores = {}
             for gaintable in self.phase_offsets_qa_results_dict:
                 tbTool.open(gaintable)
                 # Get phase offsets in degrees, obeying any flags.
@@ -68,18 +86,58 @@ class TimegaincalQAPool(pqa.QAScorePool):
                 spw_ids = tbTool.getcol('SPECTRAL_WINDOW_ID')
                 ant_ids = tbTool.getcol('ANTENNA1')
                 tbTool.done()
+                subscores[gaintable] = {}
+                noisy_spw_ids = []
                 for spw_id in sorted(list(set(spw_ids))):
-                    for ant_id in sorted(list(set(ant_ids))):
-                        for pol_id in range(phase_offsets.shape[0]):
-                            score = 1.0
-                            longmsg = f'Phase offset QA for EB: {ms.basename} Spw: {spw_id} Antenna: {ant_id} Pol: {pol_id}'
-                            shortmsg = 'Phase offset QA'
-                            origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
-                                  metric_score=1,
-                                  metric_units='Timegaincal QA metrics calculated')
-                            data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
-                            phase_offset_score = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
-                            self.pool.append(phase_offset_score)
+                    subscores[gaintable][spw_id] = {}
+                    Stot = self._Stot(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, spw_id)
+                    if Stot > NoiseThresh:
+                        # Noise to high for further evaluation
+                        noisy_spw_ids.append(spw_id)
+                        for ant_id in sorted(list(set(ant_ids))):
+                            subscores[gaintable][spw_id][ant_id] = {}
+                            for pol_id in range(phase_offsets.shape[0]):
+                                subscores[gaintable][spw_id][ant_id][pol_id] = {}
+                                for scorekey in ['QA1', 'QA2', 'QA3']:
+                                    score = 0.82
+                                    longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id}'
+                                    shortmsg = 'Phase offsets too noisy'
+                                    origin = pqa.QAOrigin(metric_name='Stot(EB, spw)',
+                                                          metric_score=Stot,
+                                                          metric_units='degrees')
+                                    data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                    weblog_location = pqa.WebLogLocation.HIDDEN
+                                    subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
+                    else:
+                        for ant_id in sorted(list(set(ant_ids))):
+                            subscores[gaintable][spw_id][ant_id] = {}
+                            for pol_id in range(phase_offsets.shape[0]):
+                                subscores[gaintable][spw_id][ant_id][pol_id] = {}
+                                M = self._M(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
+                                S = self._S(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
+                                MaxOff = self._MaxOff(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
+                                score = 1.0
+                                longmsg = f'Phase offset QA for EB: {ms.basename} Spw: {spw_id} Antenna: {ant_id} Pol: {pol_id}'
+                                shortmsg = 'Phase offset QA'
+                                origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
+                                      metric_score=1,
+                                      metric_units='Timegaincal QA metrics calculated')
+                                data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                phase_offset_score = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
+                                subscores[gaintable][spw_id][ant_id][pol_id]['QA1'] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
+                                subscores[gaintable][spw_id][ant_id][pol_id]['QA2'] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
+                                subscores[gaintable][spw_id][ant_id][pol_id]['QA3'] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
+                    if noisy_spw_ids != []:
+                        # Add aggregated score for noisy spws
+                        score = 0.82
+                        longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id}'
+                        shortmsg = 'Phase offsets too noisy'
+                        origin = pqa.QAOrigin(metric_name='Stot(EB, spw)',
+                                              metric_score=-1,
+                                              metric_units='degrees')
+                        data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw=set(noisy_spw_ids), intent={'PHASE'})
+                        weblog_location = pqa.WebLogLocation.ACCORDION
+                        self.pool.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
         except Exception as e:
             LOG.error('Phase offsets score calculation failed: %s' % (e))
 
@@ -124,8 +182,14 @@ class TimegaincalQAPool(pqa.QAScorePool):
         Compute mean phase offset for given spw, ant, pol selection.
         Uses index arrays to parse the table structure.
 
-        :param phase_offsets: numpy masked array with phase offset from calibration table
-        :param phase_offsets: numpy masked array with phase offset from calibration table
+        :param phase_offsets:  numpy masked array with phase offset from calibration table
+        :param scan_numbers:   numpy array with scan numbers from calibration table
+        :param phase_scan_ids: numpy array with phase calibrator scan numbers
+        :param spw_ids:        numpy array with spw ids from calibration table
+        :param ant_ids:        numpy array with antenna ids from calibration table
+        :param spw_id:         selected spw id
+        :param ant_id:         selected antenna id
+        :param pol_id:         selected polarization id
         """
 
         return np.ma.mean(phase_offsets[pol_id, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids==ant_id))])
@@ -135,6 +199,15 @@ class TimegaincalQAPool(pqa.QAScorePool):
         """
         Compute phase offset standard deviation for given spw, ant, pol selection.
         Uses index arrays to parse the table structure.
+
+        :param phase_offsets:  numpy masked array with phase offset from calibration table
+        :param scan_numbers:   numpy array with scan numbers from calibration table
+        :param phase_scan_ids: numpy array with phase calibrator scan numbers
+        :param spw_ids:        numpy array with spw ids from calibration table
+        :param ant_ids:        numpy array with antenna ids from calibration table
+        :param spw_id:         selected spw id
+        :param ant_id:         selected antenna id
+        :param pol_id:         selected polarization id
         """
 
         return np.ma.std(phase_offsets[pol_id, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids==ant_id))], ddof=1)
@@ -144,6 +217,15 @@ class TimegaincalQAPool(pqa.QAScorePool):
         """
         Compute maximum phase offset for given spw, ant, pol selection.
         Uses index arrays to parse the table structure.
+
+        :param phase_offsets:  numpy masked array with phase offset from calibration table
+        :param scan_numbers:   numpy array with scan numbers from calibration table
+        :param phase_scan_ids: numpy array with phase calibrator scan numbers
+        :param spw_ids:        numpy array with spw ids from calibration table
+        :param ant_ids:        numpy array with antenna ids from calibration table
+        :param spw_id:         selected spw id
+        :param ant_id:         selected antenna id
+        :param pol_id:         selected polarization id
         """
 
         return np.ma.max(phase_offsets[pol_id, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids==ant_id))])
@@ -153,6 +235,12 @@ class TimegaincalQAPool(pqa.QAScorePool):
         """
         Compute maximum phase offset for given spw selection.
         Uses index arrays to parse the table structure.
+
+        :param phase_offsets:  numpy masked array with phase offset from calibration table
+        :param scan_numbers:   numpy array with scan numbers from calibration table
+        :param phase_scan_ids: numpy array with phase calibrator scan numbers
+        :param spw_ids:        numpy array with spw ids from calibration table
+        :param spw_id:         selected spw id
         """
 
         data_selection = phase_offsets[:, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id))]
