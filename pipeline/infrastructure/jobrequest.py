@@ -192,6 +192,12 @@ class JobRequest(object):
         code = fn.__code__
         argcount = code.co_argcount
         argnames = code.co_varnames[:argcount]
+
+        if is_casa_task and argnames[0] == 'self':
+            # PIPE-1514: remove 'self' if it's the first arg name obtained from the 'co_varnames' attribute of
+            # Python code object, which is the case for CASA (ver6) tasks.
+            argnames = argnames[1:]
+
         fn_defaults = fn.__defaults__ or list()
         argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
 
