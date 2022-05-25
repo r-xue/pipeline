@@ -55,7 +55,7 @@ class VlassMaskThresholdSequence(BaseCleanSequence):
                 shape_usermask = image.shape()
             if shape_template[0] != shape_usermask[0] or shape_template[1] != shape_usermask[1]:
                 LOG.warning(
-                    f'The user-specific mask and the expected imaging products have different shapes ({shape_usermask[0:2]} vs. {shape_template[0:2]}). will regrid the user-supplied mask.')
+                    f'The user-specified mask and the expected imaging products have different shapes ({shape_usermask[0:2]} vs. {shape_template[0:2]}). will regrid the user-supplied mask.')
                 do_regrid_mask = True
         except:
             LOG.warning(
