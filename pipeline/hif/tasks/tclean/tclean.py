@@ -793,7 +793,7 @@ class Tclean(cleanbase.CleanBase):
             restore_startmodel = None
 
         if calcres_iter0 is not False:
-            # tclean results assemenet only happen when calcres=True or implicit default (None) for iter0
+            # tclean results assessment only happen when calcres=True or implicit default (None) for iter0
             
             # Determine masking limits depending on PB
             extension = '.tt0' if result.multiterm else ''
