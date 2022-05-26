@@ -225,28 +225,29 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         for ss in spectralspecs:
             spw_ss = ms.get_spectral_windows(science_windows_only=True, spectralspecs = [ss])
             list_spwids = [x.id for x in spw_ss]
-            spectralspecs_spwids[ss] = list_spwids
-
-        for list_spwids in spectralspecs_spwids.values():
             if len(list_spwids) == 0:
                 continue
             else:
-                spwid0 = list_spwids[0]                
-                for field_id, eldfield in resultdict.items():
-                    for antenna_id, eldant in eldfield.items():
-                        eldiff0 = eldant[spwid0].eldiff0
-                        eldiff1 = eldant[spwid0].eldiff1                                
-                        if len(eldiff0) > 0 and len(eldiff1) > 0:
-                            eldiff = numpy.append(eldiff0, eldiff1)                                    
-                            eldmax = numpy.max(numpy.abs(eldiff))                                    
-                        else:
-                            eldmax = -1.0                        
-                        if eldmax >= threshold:
-                            field_name = ms.fields[field_id].name
-                            antenna_name = ms.antennas[antenna_id].name
-                            LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
-                                        ' exceeding the threshold of {}deg'
-                                        ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
+                spectralspecs_spwids[ss] = list_spwids
+
+        for list_spwids in spectralspecs_spwids.values():
+            spwid0 = list_spwids[0]
+            for field_id, eldfield in resultdict.items():
+                for antenna_id, eldant in eldfield.items():
+                    assert spwid0 in eldant.keys()
+                    eldiff0 = eldant[spwid0].eldiff0
+                    eldiff1 = eldant[spwid0].eldiff1
+                    eldiff = numpy.append(eldiff0, eldiff1)
+                    if len(eldiff) > 0:
+                        eldmax = numpy.max(numpy.abs(eldiff))
+                    else:
+                        eldmax = -1.0
+                    if eldmax >= threshold:
+                        field_name = ms.fields[field_id].name
+                        antenna_name = ms.antennas[antenna_id].name
+                        LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
+                                    ' exceeding the threshold of {}deg'
+                                    ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
 
         return result
 
