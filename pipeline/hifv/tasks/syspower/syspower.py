@@ -173,11 +173,26 @@ class Syspower(basetask.StandardTaskTemplate):
             rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
             LOG.debug(ex)
 
-        fields = m.get_fields(intent='AMPLITUDE')
-        field = fields[0]
-        flux_field = field.id
-        flux_times = field.time
-        LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
+        band_baseband_spw = collections.defaultdict(dict)
+
+        try:
+            fields = m.get_fields(intent='AMPLITUDE')
+            field = fields[0]
+            flux_field = field.id
+            flux_times = field.time
+            LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
+        except IndexError:
+            fields = m.get_fields(intent='BANDPASS')
+            field = fields[0]
+            flux_field = field.id
+            flux_times = field.time
+            LOG.error("Unable to identify field with intent='AMPLITUDE'.  Using BANDPASS calibrator field id={!s}".format(str(flux_field)))
+        else:
+            LOG.error("No AMPLITUDE or BANDPASS intents found.  Exiting task.")
+            return SyspowerResults(gaintable=rq_table, spowerdict={}, dat_common=None,
+                                   clip_sp_template=None, template_table=None,
+                                   band_baseband_spw=band_baseband_spw)
+
         antenna_ids = np.array([a.id for a in m.antennas])
         antenna_names = [a.name for a in m.antennas]
         # spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
@@ -192,7 +207,6 @@ class Syspower(basetask.StandardTaskTemplate):
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         allprocessedspws = []
 
-        band_baseband_spw = collections.defaultdict(dict)
         for band in banddict:
             baseband2spw = {}
             for baseband in banddict[band]:
