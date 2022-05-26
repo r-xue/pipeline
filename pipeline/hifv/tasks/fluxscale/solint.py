@@ -3,6 +3,7 @@ import os
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
 
 import numpy as np
+from scipy import stats
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -14,6 +15,14 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
+
+
+def solint_rounded_to_integer_integrations(solint,integration_time):
+    # code to return a solint that is an even number of integrations
+    for i in range(1,10):
+        test_n_integrations = (int(solint) + i) / integration_time
+        if (test_n_integrations - int(test_n_integrations)) == 0.0:
+            return test_n_integrations*integration_time
 
 
 class SolintInputs(vdp.StandardInputs):
@@ -448,15 +457,18 @@ class Solint(basetask.StandardTaskTemplate):
                         new_field = scan_summary[str(ii)]['0']['FieldId']
 
                         if ((kk > 0) and (phase_scan_list[kk-1] == ii-1) and
-                                (set(new_spws) == set(old_spws)) and (new_field == old_field)):
+                                (set(new_spws) == set(old_spws)) and (new_field == old_field) and
+                                (phase_scan_list[kk-1] in phase_scanids_perband)):
                             # if contiguous scans, just increase the time on the previous one
-                            LOG.info("End time, old begin time {} {}".format(end_time, old_begin_time))
-                            durations[-1] = 86400*(end_time - old_begin_time)
+                            add_duration = 86400 * (end_time - old_begin_time)
+                            if add_duration < 1000.0:
+                                durations[-1] = add_duration
+                                LOG.info("End time, old begin time {} {}".format(end_time, old_begin_time))
                         else:
                             LOG.info("End time, begin time {} {}".format(end_time, begin_time))
                             durations.append(86400*(end_time - begin_time))
                             old_begin_time = begin_time
-                            LOG.info("append durations, old, begin:".format(durations, old_begin_time, begin_time))
+                            LOG.info("Append durations, old, begin {} {} {}:".format(durations, old_begin_time, begin_time))
                         LOG.info("Scan "+str(ii)+" has "+str(durations[-1])+"s on source")
                         old_spws = new_spws
                         old_field = new_field
@@ -464,7 +476,30 @@ class Solint(basetask.StandardTaskTemplate):
                     except KeyError:
                         LOG.warning("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
-        longsolint = (np.max(durations)) * 1.01
+        orig_durations = np.array(durations)
+
+        try:
+            durations = orig_durations[(np.abs(stats.zscore(orig_durations)) < 3)]
+        except ValueError:
+            LOG.info("No statistical outliers in list of determined durations.")
+            durations = orig_durations
+
+        if not durations.tolist():
+            LOG.info("No statistical outliers in list of determined durations.")
+            durations = orig_durations
+
+        nsearch = 5
+        integration_time = m.get_vla_max_integration_time()
+        search_results = np.zeros(nsearch)
+        longest_scan = np.round(np.max(orig_durations))
+        zscore_solint = np.max(durations)
+        solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
+        for i in range(nsearch):
+            # print('testing solint', solint_integer_integrations + i * integration_time)
+            search_results[i] = longest_scan / (solint_integer_integrations + i * integration_time) - int(longest_scan / (solint_integer_integrations + i * integration_time))
+        longsolint = solint_integer_integrations + np.argmax(search_results) * integration_time
+
+        # longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
