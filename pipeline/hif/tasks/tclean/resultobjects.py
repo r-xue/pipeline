@@ -97,7 +97,7 @@ class TcleanResult(basetask.Results):
 
         # Calculated sensitivities for later stages
         if self.per_spw_cont_sensitivities_all_chan is not None:
-            if 'recalc' in result.per_spw_cont_sensitivities_all_chan:
+            if 'recalc' in self.per_spw_cont_sensitivities_all_chan:
                 context.per_spw_cont_sensitivities_all_chan = copy.deepcopy(self.per_spw_cont_sensitivities_all_chan)
                 del context.per_spw_cont_sensitivities_all_chan['recalc']
             else:

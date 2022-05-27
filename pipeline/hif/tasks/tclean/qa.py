@@ -24,7 +24,6 @@ class TcleanQAHandler(pqa.QAPlugin):
         imageScorer = scorers.erfScorer(1.0, 5.0)
 
         # Basic imaging score
-        observatory = context.observing_run.measurement_sets[0].antenna_array.name
         # For the time being the VLA calibrator imaging is generating an error
         # due to the dynamic range limitation. Bypass the real score here.
         if 'VLASS' in result.imaging_mode:

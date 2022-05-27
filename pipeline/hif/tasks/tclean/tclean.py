@@ -445,15 +445,6 @@ class Tclean(cleanbase.CleanBase):
                 LOG.info('Applying binning factor %d' % inputs.nbin)
                 channel_width *= inputs.nbin
 
-            # Get spw sideband
-            ref_ms = context.observing_run.get_ms(inputs.vis[0])
-            real_spw = context.observing_run.virtual2real_spw_id(inputs.spw, ref_ms)
-            real_spw_obj = ref_ms.get_spectral_window(real_spw)
-            if real_spw_obj.sideband == '-1':
-                sideband = 'LSB'
-            else:
-                sideband = 'USB'
-
             if self.image_heuristics.is_eph_obj(inputs.field):
                 # Determine extra channels to skip for ephemeris objects to
                 # account for fast moving objects.
