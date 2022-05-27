@@ -117,16 +117,6 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_targetflag</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">intents</Keyword>
-                <Value xmlns="">*TARGET*</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>    
-
-    <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
         <ParameterSet>
         </ParameterSet>
