@@ -109,6 +109,9 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
                     else:
+                        # Number of solutions
+                        N = len(phase_scan_ids)
+
                         for ant_id in sorted(list(set(ant_ids))):
                             subscores[gaintable][spw_id][ant_id] = {}
                             for pol_id in range(phase_offsets.shape[0]):
@@ -116,17 +119,17 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 M = self._M(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
                                 S = self._S(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
                                 MaxOff = self._MaxOff(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
-                                score = 1.0
-                                longmsg = f'Phase offset QA for EB: {ms.basename} Spw: {spw_id} Antenna: {ant_id} Pol: {pol_id}'
-                                shortmsg = 'Phase offset QA'
-                                origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
-                                      metric_score=1,
-                                      metric_units='Timegaincal QA metrics calculated')
-                                data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
-                                phase_offset_score = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
-                                subscores[gaintable][spw_id][ant_id][pol_id]['QA1'] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
-                                subscores[gaintable][spw_id][ant_id][pol_id]['QA2'] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
-                                subscores[gaintable][spw_id][ant_id][pol_id]['QA3'] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection)
+                                for scorekey in ['QA1', 'QA2', 'QA3']:
+                                    score = 1.0
+                                    longmsg = f'Phase offset QA for EB: {ms.basename} Spw: {spw_id} Antenna: {ant_id} Pol: {pol_id}'
+                                    shortmsg = 'Phase offset QA'
+                                    origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
+                                                          metric_score=1,
+                                                          metric_units='Timegaincal QA metrics calculated')
+                                    data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                    weblog_location = pqa.WebLogLocation.HIDDEN
+                                    subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
+
                     if noisy_spw_ids != []:
                         # Add aggregated score for noisy spws
                         score = 0.82
@@ -138,6 +141,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                         data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw=set(noisy_spw_ids), intent={'PHASE'})
                         weblog_location = pqa.WebLogLocation.ACCORDION
                         self.pool.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
+            print(f'DEBUG_DM: subscores: {subscores}')
         except Exception as e:
             LOG.error('Phase offsets score calculation failed: %s' % (e))
 
