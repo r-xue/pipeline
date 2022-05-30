@@ -45,15 +45,16 @@ class TimegaincalQAPool(pqa.QAScorePool):
             pass
         except Exception as e:
             LOG.error('X-Y / X2-X1 score calculation failed: %s' % (e))
-        else:
-            # We need to
-            long_msg = 'QA metric calculation successful for {}'.format(ms.basename)
-            short_msg = 'QA measured'
-            origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
-                                  metric_score=1,
-                                  metric_units='Timegaincal QA metrics calculated')
-            ms_qa_score = pqa.QAScore(score=1.0, longmsg=long_msg, shortmsg=short_msg, vis=ms.basename, origin=origin)
-            self.pool.append(ms_qa_score)
+        # No dummy score anymore since we have the new phase offsets scores (PIPE-1461)
+        #else:
+        #    # We need to
+        #    long_msg = 'QA metric calculation successful for {}'.format(ms.basename)
+        #    short_msg = 'QA measured'
+        #    origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
+        #                          metric_score=1,
+        #                          metric_units='Timegaincal QA metrics calculated')
+        #    ms_qa_score = pqa.QAScore(score=1.0, longmsg=long_msg, shortmsg=short_msg, vis=ms.basename, origin=origin)
+        #    self.pool.append(ms_qa_score)
 
         # Phase offsets scores
         try:
@@ -108,6 +109,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
+                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
                     else:
                         for ant_id in sorted(list(set(ant_ids))):
                             subscores[gaintable][spw_id][ant_id] = {}
@@ -126,6 +128,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                         data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                         weblog_location = pqa.WebLogLocation.HIDDEN
                                         subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
+                                        self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
                                 else:
                                     M = self._M(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
                                     S = self._S(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
@@ -148,6 +151,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA1_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     QA1_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA1'] = pqa.QAScore(score=QA1_score, longmsg=QA1_longmsg, shortmsg=QA1_shortmsg, vis=ms.basename, origin=QA1_origin, applies_to=QA1_data_selection, weblog_location=QA1_weblog_location)
+                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA1'])
 
                                     # Standard deviation test
                                     QA2_score = 1.0
@@ -166,6 +170,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA2_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     QA2_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA2'] = pqa.QAScore(score=QA2_score, longmsg=QA2_longmsg, shortmsg=QA2_shortmsg, vis=ms.basename, origin=QA2_origin, applies_to=QA2_data_selection, weblog_location=QA2_weblog_location)
+                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA2'])
 
                                     # Maximum test
                                     QA3_score = 1.0
@@ -184,6 +189,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA3_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     QA3_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA3'] = pqa.QAScore(score=QA3_score, longmsg=QA3_longmsg, shortmsg=QA3_shortmsg, vis=ms.basename, origin=QA3_origin, applies_to=QA3_data_selection, weblog_location=QA3_weblog_location)
+                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA3'])
 
                     if noisy_spw_ids != []:
                         # Add aggregated score for noisy spws
@@ -237,7 +243,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
     def _N(self, phase_offsets: np.ndarray, scan_numbers: np.ndarray, phase_scan_ids: np.ndarray, spw_ids: np.ndarray, ant_ids: np.ndarray, spw_id: int, ant_id: int, pol_id: int) -> float:
 
         """
-        Compute number of phase solutions for given spw, ant, pol selection.
+        Compute number of unflagged phase solutions for given spw, ant, pol selection.
         Uses index arrays to parse the table structure.
 
         :param phase_offsets:  numpy masked array with phase offset from calibration table
