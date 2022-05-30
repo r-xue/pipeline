@@ -234,7 +234,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             spwid0 = list_spwids[0]
             for field_id, eldfield in resultdict.items():
                 for antenna_id, eldant in eldfield.items():
-                    assert spwid0 in eldant.keys()
+                    assert spwid0 in eldant
                     eldiff0 = eldant[spwid0].eldiff0
                     eldiff1 = eldant[spwid0].eldiff1
                     eldiff = numpy.append(eldiff0, eldiff1)
