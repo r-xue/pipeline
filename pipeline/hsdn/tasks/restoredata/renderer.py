@@ -27,7 +27,7 @@ FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRenderer):
-    def __init__(self, uri='hsdn_restoredata.mako', 
+    def __init__(self, uri='hsdn_restoredata.mako',
                  description='Restoredata with scale adjustment between beams for NRO FOREST data.',
                  always_rerender=False):
         super(T2_4MDetailsNRORestoreDataRenderer, self).__init__(
@@ -205,7 +205,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                                   'stage%s' % applycal_results.stage_number)
         LOG.debug('weblog_dir = {0}'.format(weblog_dir));
 
-        intents_to_summarise = ['TARGET'] 
+        intents_to_summarise = ['TARGET']
         flag_totals = {}
         for r in applycal_results:
             LOG.debug('r in applycal_results = {0}'.format(r));
@@ -214,7 +214,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                 flag_totals = utils.dict_merge(flag_totals,
                                                flagutils.flags_for_result(
                                                    r, context, intents_to_summarise=intents_to_summarise
-                                               )) 
+                                               ))
         calapps = {}
         for r in applycal_results:
             calapps = utils.dict_merge(calapps,
@@ -247,12 +247,21 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
 
         # CAS-5970: add science target plots to the applycal page
         (science_amp_vs_freq_summary_plots, science_amp_vs_freq_subpages, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
+
+        # delete extra entry specific to hsd_applycal
+        science_amp_vs_freq_summary_plots.pop('__hsd_applycal__', None)
+        for vis, plots_per_source in science_amp_vs_freq_summary_plots.items():
+            # NRO data is always single field so just omit field name
+            assert len(plots_per_source) == 1
+            plots = plots_per_source[0][1]
+            science_amp_vs_freq_summary_plots[vis] = plots
+
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
             'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
-        LOG.debug('ctx = {0}'.format(ctx));
+        LOG.debug('ctx = {0}'.format(ctx))
 
     @staticmethod
     def __get_factor(factor_dict, vis, spwid, ant_name, pol_name):
