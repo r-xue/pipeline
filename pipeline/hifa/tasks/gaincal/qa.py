@@ -14,12 +14,12 @@ LOG = logging.get_logger(__name__)
 
 
 class TimegaincalQAPool(pqa.QAScorePool):
-    score_types = {
+    xy_x2x1_score_types = {
         'PHASE_SCORE_XY': ('XY_TOTAL', 'X-Y phase deviation'),
         'PHASE_SCORE_X2X1': ('X2X1_TOTAL', 'X2-X1 phase deviation')
     }
 
-    short_msg = {
+    xy_x2x1_short_msg = {
         'PHASE_SCORE_XY': 'X-Y deviation',
         'PHASE_SCORE_X2X1': 'X2-X1 deviation'
     }
@@ -31,32 +31,26 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
     def update_scores(self, ms):
 
-        # X-Y / X2-X1 scores
-        try:
-            #
-            # PIPE-365: Revise hifa_timegaincal QA scores for Cy7
-            #
-            # Remy: Remove consideration of X-Y, X2-X1 phase vs. time metrics
-            # from QA scoring (keep evaluation for now - I will open a CASR to
-            # revise these evaluations)
-            #
-            # phase_field_ids = [field.id for field in ms.get_fields(intent='PHASE')]
-            # self.pool.extend([self._get_xy_x2x1_qascore(ms, phase_field_ids, t) for t in self.score_types])
-            pass
-        except Exception as e:
-            LOG.error('X-Y / X2-X1 score calculation failed: %s' % (e))
-        # No dummy score anymore since we have the new phase offsets scores (PIPE-1461)
-        #else:
-        #    # We need to
-        #    long_msg = 'QA metric calculation successful for {}'.format(ms.basename)
-        #    short_msg = 'QA measured'
-        #    origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
-        #                          metric_score=1,
-        #                          metric_units='Timegaincal QA metrics calculated')
-        #    ms_qa_score = pqa.QAScore(score=1.0, longmsg=long_msg, shortmsg=short_msg, vis=ms.basename, origin=origin)
-        #    self.pool.append(ms_qa_score)
-
         # Phase offsets scores
+        self.pool.extend(self._get_phase_offset_scores(ms))
+
+        # X-Y / X2-X1 scores
+        #
+        # PIPE-365: Revise hifa_timegaincal QA scores for Cy7
+        #
+        # Remy: Remove consideration of X-Y, X2-X1 phase vs. time metrics
+        # from QA scoring (keep evaluation for now - I will open a CASR to
+        # revise these evaluations)
+        #
+        # phase_field_ids = [field.id for field in ms.get_fields(intent='PHASE')]
+        # self.pool.extend([self._get_xy_x2x1_qascore(ms, phase_field_ids, t) for t in self.xy_x2x1_score_types])
+
+    def _get_phase_offset_scores(self, ms):
+
+        """
+        Calculate phase offsets scores.
+        """
+
         try:
             tbTool = casa_tools.table
 
@@ -78,6 +72,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
             phase_scan_ids = [s.id for s in ms.get_scans(scan_intent='PHASE')]
 
+            phase_offsets_scores = []
             subscores = {}
             for gaintable in self.phase_offsets_qa_results_dict:
                 tbTool.open(gaintable)
@@ -109,7 +104,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
-                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
+                                    phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
                     else:
                         for ant_id in sorted(list(set(ant_ids))):
                             subscores[gaintable][spw_id][ant_id] = {}
@@ -128,7 +123,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                         data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                         weblog_location = pqa.WebLogLocation.HIDDEN
                                         subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
-                                        self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
+                                        phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
                                 else:
                                     M = self._M(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
                                     S = self._S(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, spw_id, ant_id, pol_id)
@@ -151,7 +146,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA1_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     QA1_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA1'] = pqa.QAScore(score=QA1_score, longmsg=QA1_longmsg, shortmsg=QA1_shortmsg, vis=ms.basename, origin=QA1_origin, applies_to=QA1_data_selection, weblog_location=QA1_weblog_location)
-                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA1'])
+                                    phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA1'])
 
                                     # Standard deviation test
                                     QA2_score = 1.0
@@ -170,7 +165,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA2_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     QA2_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA2'] = pqa.QAScore(score=QA2_score, longmsg=QA2_longmsg, shortmsg=QA2_shortmsg, vis=ms.basename, origin=QA2_origin, applies_to=QA2_data_selection, weblog_location=QA2_weblog_location)
-                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA2'])
+                                    phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA2'])
 
                                     # Maximum test
                                     QA3_score = 1.0
@@ -189,7 +184,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA3_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
                                     QA3_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA3'] = pqa.QAScore(score=QA3_score, longmsg=QA3_longmsg, shortmsg=QA3_shortmsg, vis=ms.basename, origin=QA3_origin, applies_to=QA3_data_selection, weblog_location=QA3_weblog_location)
-                                    self.pool.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA3'])
+                                    phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA3'])
 
                     if noisy_spw_ids != []:
                         # Add aggregated score for noisy spws
@@ -201,22 +196,32 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                               metric_units='degrees')
                         data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw=set(noisy_spw_ids), intent={'PHASE'})
                         weblog_location = pqa.WebLogLocation.ACCORDION
-                        self.pool.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
+                        phase_offsets_scores.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
+
+            return phase_offsets_scores
+
         except Exception as e:
             LOG.error('Phase offsets score calculation failed: %s' % (e))
+            return [pqa.QAScore(-0.1, longmsg='Phase offsets score calculation failed', shortmsg='Phase offsets score calculation failed', vis=ms.basename)]
+
 
     def _get_xy_x2x1_qascore(self, ms, phase_field_ids, score_type):
-        (total_score, table_name, field_name, ant_name, spw_name) = self._get_xy_x2x1_total(phase_field_ids,
-                                                                                            self.score_types[score_type][0])
-        longmsg = 'Total score for %s is %0.2f (%s field %s %s spw %s)' % (
-            self.score_types[score_type][1], total_score, ms.basename, field_name, ant_name, spw_name)
-        shortmsg = self.short_msg[score_type]
+        try:
+            (total_score, table_name, field_name, ant_name, spw_name) = self._get_xy_x2x1_total(phase_field_ids,
+                                                                                            self.xy_x2x1_score_types[score_type][0])
+            longmsg = 'Total score for %s is %0.2f (%s field %s %s spw %s)' % (
+                self.xy_x2x1_score_types[score_type][1], total_score, ms.basename, field_name, ant_name, spw_name)
+            shortmsg = self.xy_x2x1_short_msg[score_type]
 
-        origin = pqa.QAOrigin(metric_name='TimegaincalQAPool',
-                              metric_score=total_score,
-                              metric_units='Total gpcal QA score')
+            origin = pqa.QAOrigin(metric_name='TimegaincalQAPool',
+                                  metric_score=total_score,
+                                  metric_units='Total gpcal QA score')
 
-        return pqa.QAScore(total_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+            return pqa.QAScore(total_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+
+        except Exception as e:
+            LOG.error('X-Y / X2-X1 score calculation failed: %s' % (e))
+            return pqa.QAScore(-0.1, longmsg='X-Y / X2-X1 score calculation failed', shortmsg='X-Y / X2-X1 score calculation failed', vis=ms.basename)
 
     def _get_xy_x2x1_total(self, phase_field_ids, score_key):
         # attrs to hold score and QA identifiers
