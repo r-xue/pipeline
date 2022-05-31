@@ -188,6 +188,7 @@ class WeightMS(basetask.StandardTaskTemplate):
 #         for row in in_rows:
 #             weight[row] = 1.0
 
+        # PIPE-1523
         net_flags = datatable.getcol('FLAG_SUMMARY').take(index_list, axis=1)
 
         # set weight (key: input MS row ID, value: weight)
@@ -201,7 +202,8 @@ class WeightMS(basetask.StandardTaskTemplate):
                 weight[row] = numpy.ones(cell_stat.shape[0])
                 for ipol in range(weight[row].shape[0]):
                     stat = cell_stat[ipol, 1]  # baselined RMS
-                    if flags[ipol] == 1: # unflagged spectra
+                    if flags[ipol] == 1:
+                        # treat unflagged data
                         if stat > 0.0:
                             weight[row][ipol] /= (stat * stat)
                         elif stat < 0.0 and cell_stat[ipol, 2] > 0.0:
@@ -211,7 +213,8 @@ class WeightMS(basetask.StandardTaskTemplate):
                             weight_tintsys = True
                         else:
                             weight[row][ipol] = 0.0
-                    else: # flagged spectra
+                    else:
+                        # treat flagged data
                         pass
 
         if weight_tintsys:
