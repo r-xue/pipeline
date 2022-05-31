@@ -29,6 +29,10 @@ ATMModelParam = collections.namedtuple('ATMModelParam', 'atmtype maxalt dtem_dh 
 ATMModelParam.__str__ = lambda self: f'atmtype {self.atmtype}, dtem_dh {self.dtem_dh}K/km, h0 {self.h0}km.'
 
 
+# default atmtype list that is used when atmtype is 'auto'
+DEFAULT_ATMTYPE_LIST = [1, 2, 3, 4]
+
+
 class SDATMCorrectionInputs(vdp.StandardInputs):
     """Inputs class for SDATMCorrection task."""
     # Search order of input vis
@@ -620,7 +624,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             atmtype_list = [int(x) for x in args['atmtype']]
         else:
             # should be 'auto'
-            atmtype_list = [1, 2, 3, 4]
+            atmtype_list = DEFAULT_ATMTYPE_LIST
 
         try:
             heuristics_result = SDcalatmcorr.selectModelParams(
