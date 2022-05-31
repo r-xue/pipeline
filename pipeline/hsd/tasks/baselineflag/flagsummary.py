@@ -145,6 +145,9 @@ class SDBLFlagSummary(object):
                     FlagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
                 # pack flag values
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
+                # create summary data and pack statistics 
+                nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
+                stat_dict = self.pack_statistics( dt_idx, nflags )
 
                 # create plots
                 ### instance to be made outside pol loop if overplotting pols
@@ -160,15 +163,21 @@ class SDBLFlagSummary(object):
                                         'ant' : ant_name,
                                         'spw' : spwid,
                                         'pol' : pol,
-                                        'field' : field_name } )
-
+                                        'field' : field_name,
+                                        'outlier_Tsys'         : stat_dict['TsysFlag'],
+                                        'rms_prefit'           : stat_dict['RmsPreFitFlag'],
+                                        'rms_postfit'          : stat_dict['RmsPostFitFlag'] ,
+                                        'runmean_prefit'       : stat_dict['RunMeanPreFitFlag'] ,
+                                        'runmean_postfit'      : stat_dict['RunMeanPostFitFlag'] ,
+                                        'expected_rms_prefit'  : stat_dict['RmsExpectedPreFitFlag'] ,
+                                        'expected_rms_postfit' : stat_dict['RmsExpectedPostFitFlag'] 
+                                    } )
+                                    
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
 
                 # show flags on LOG
                 self.show_flags( dt_idx, is_baselined, FlaggedRows, FlaggedRowsCategory )
-                # create summary data
-                nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
 
                 t1 = time.time()
 
@@ -180,6 +189,30 @@ class SDBLFlagSummary(object):
         LOG.info('PROFILE execute: elapsed time is %s sec'%(end_time-start_time))
 
         return flagSummary, plot_list
+
+
+    def pack_statistics( self, ids, flag_nums ) -> Dict:
+        """
+        Calculate flag fractions
+
+        Args:
+            ids:       row numbers
+            flag_nums: Dictionary of number of flagged rows
+        Returns:
+            dictionary of flag fractions
+        """
+        nrow = len(ids)
+        stat = {}
+
+        stat['TsysFlag']               = 100.0 * flag_nums['TsysFlag'] / nrow
+        stat['RmsPreFitFlag']          = 100.0 * flag_nums['RmsPreFitFlag'] / nrow
+        stat['RmsPostFitFlag']         = 100.0 * flag_nums['RmsPostFitFlag'] / nrow
+        stat['RunMeanPreFitFlag']      = 100.0 * flag_nums['RunMeanPreFitFlag'] / nrow
+        stat['RunMeanPostFitFlag']     = 100.0 * flag_nums['RunMeanPostFitFlag'] / nrow
+        stat['RmsExpectedPreFitFlag']  = 100.0 * flag_nums['RmsExpectedPreFitFlag'] / nrow
+        stat['RmsExpectedPostFitFlag'] = 100.0 * flag_nums['RmsExpectedPostFitFlag'] / nrow
+    
+        return stat
 
 
     def pack_flags( self, datatable:DataTable, polid:int, ids, FlagRule_local:Dict ) -> Tuple[ List[int], Dict, List[int], Dict ]:
@@ -222,8 +255,6 @@ class SDBLFlagSummary(object):
             ('RunMeanPostFitFlag', []),    ('RunMeanPreFitFlag', []),
             ('RmsExpectedPostFitFlag',[]), ('RmsExpectedPreFitFlag', [])
         ))
-
-        NROW = len( ids )
 
         # Plot statistics
         # Store data for plotting

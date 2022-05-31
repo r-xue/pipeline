@@ -71,7 +71,14 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                         'spw' : plot['spw'],
                                         'ant' : plot['ant'],
                                         'field' : plot['field'],
-                                        'pol' : plot['pol']
+                                        'pol' : plot['pol'],
+                                        'outlier_Tsys'         : plot['outlier_Tsys'],
+                                        'rms_prefit'           : plot['rms_prefit'],
+                                        'rms_postfit'          : plot['rms_postfit'],
+                                        'runmean_prefit'       : plot['runmean_prefit'],
+                                        'runmean_postfit'      : plot['runmean_postfit'],
+                                        'expected_rms_prefit'  : plot['expected_rms_prefit'],
+                                        'expected_rms_postfit' : plot['expected_rms_postfit']
                                     } )
             wrappers.append( wrapper )
 
@@ -121,7 +128,14 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
         Returns:
             (none)
         """
-        d['type'] = plot.parameters['type']
+        d['type']                 = plot.parameters['type']
+        d['outlier_Tsys']         = plot.parameters['outlier_Tsys'],
+        d['rms_prefit']           = plot.parameters['rms_prefit'],
+        d['rms_postfit']          = plot.parameters['rms_postfit'],
+        d['runmean_prefit']       = plot.parameters['runmean_prefit'],
+        d['runmean_postfit']      = plot.parameters['runmean_postfit'],
+        d['expected_rms_prefit']  = plot.parameters['expected_rms_prefit'],
+        d['expected_rms_postfit'] = plot.parameters['expected_rms_postfit']
 
 
 def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:

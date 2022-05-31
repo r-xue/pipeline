@@ -1,6 +1,27 @@
 <%!
+import collections
 rsc_path = ""
 SELECTORS = ['vis', 'type', 'spw', 'ant', 'field', 'pol']
+HISTOGRAM_LABELS = collections.OrderedDict([
+    ( 'outlier_Tsys',         'Outlier Tsys' ),
+    ( 'rms_prefit',           'Baseline RMS pre-fit'   ),
+    ( 'rms_postfit',          'Baseline RMS post-fit'  ),
+    ( 'runmean_prefit',       'Running mean pre-fit'   ),
+    ( 'runmean_postfit',      'Running mean post-fit'  ),
+    ( 'expected_rms_prefit',  'Expected RMS pre-fit'   ),
+    ( 'expected_rms_postfit', 'Expected RMS post-fit'  )
+])
+
+# set all X-axis labels to Kelvin
+HISTOGRAM_AXES = collections.OrderedDict([
+    ( 'outlier_Tsys',         'PLOTS.xAxisLabels["Flagged fraction"]' ),
+    ( 'rms_prefit',           'PLOTS.xAxisLabels["Flagged fraction"]' ),
+    ( 'rms_postfit',          'PLOTS.xAxisLabels["Flagged fraction"]' ),
+    ( 'runmean_prefit',       'PLOTS.xAxisLabels["Flagged fraction"]' ),
+    ( 'runmean_postfit',      'PLOTS.xAxisLabels["Flagged fraction"]' ),
+    ( 'expected_rms_prefit',  'PLOTS.xAxisLabels["Flagged fraction"]' ),
+    ( 'expected_rms_postfit', 'PLOTS.xAxisLabels["Flagged fraction"]' )
+])
 %>
 <%inherit file="detail_plots_basetemplate.mako"/>
 
