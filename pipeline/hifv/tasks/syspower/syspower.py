@@ -175,23 +175,25 @@ class Syspower(basetask.StandardTaskTemplate):
 
         band_baseband_spw = collections.defaultdict(dict)
 
-        try:
-            fields = m.get_fields(intent='AMPLITUDE')
-            field = fields[0]
-            flux_field = field.id
-            flux_times = field.time
-            LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
-        except IndexError:
+        # Look for flux cal
+        fields = m.get_fields(intent='AMPLITUDE')
+
+        # No amp cal - look for bandpass
+        if not fields:
             fields = m.get_fields(intent='BANDPASS')
-            field = fields[0]
-            flux_field = field.id
-            flux_times = field.time
-            LOG.error("Unable to identify field with intent='AMPLITUDE'.  Using BANDPASS calibrator field id={!s}".format(str(flux_field)))
-        else:
+            LOG.error("Unable to identify field with intent='AMPLITUDE'.  Trying BANDPASS calibrator.")
+
+        # Exit if no amp or bp
+        if not fields:
             LOG.error("No AMPLITUDE or BANDPASS intents found.  Exiting task.")
             return SyspowerResults(gaintable=rq_table, spowerdict={}, dat_common=None,
                                    clip_sp_template=None, template_table=None,
                                    band_baseband_spw=band_baseband_spw)
+
+        field = fields[0]
+        flux_field = field.id
+        flux_times = field.time
+        LOG.info("Using field: {0}  (ID: {1})".format(field.name, flux_field))
 
         antenna_ids = np.array([a.id for a in m.antennas])
         antenna_names = [a.name for a in m.antennas]
