@@ -65,7 +65,7 @@ class FindCont(basetask.StandardTaskTemplate):
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-            result = FindContResult({}, [], 0, 0, [])
+            result = FindContResult({}, [], '', 0, 0, [])
             result.mitigation_error = True
             return result
 
@@ -89,7 +89,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if ms_objects_and_columns == collections.OrderedDict():
                 LOG.error('No data found for continuum finding.')
-                result = FindContResult({}, [], 0, 0, [])
+                result = FindContResult({}, [], '', 0, 0, [])
                 return result
 
             LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
@@ -360,7 +360,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
-                    (cont_range, png, single_range_channel_fraction, warning_strings) = \
+                    (cont_range, png, single_range_channel_fraction, warning_strings, joint_mask_name) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
@@ -398,7 +398,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                 num_total += 1
 
-        result = FindContResult(result_cont_ranges, cont_ranges, num_found, num_total, single_range_channel_fractions)
+        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_name, num_found, num_total, single_range_channel_fractions)
 
         return result
 

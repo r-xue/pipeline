@@ -18,6 +18,7 @@ Code changes for Pipeline2022 from PIPE-1221: (as of Apr 28, 2022)
 4) add optional img parameter to plotPickleFile (for manual use case)
 5) add optional window parameter and automatic smooth when nbin>=4 (PIPE-848)
 6) add optional intersectRanges parameter to plotPickleFile (for manual use case)
+7) fix for PIPE-1518
 
 Code changes for Pipeline2021 from PIPE-824: (as of July 20, 2021)
 0) fix for PRTSPR-50321
@@ -213,7 +214,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle9.py,v 5.14 2022/05/07 20:27:51 thunter Exp $" 
+    myversion = "$Id: findContinuumCycle9.py,v 5.16 2022/05/24 14:47:47 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -384,7 +385,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
       if it thinks the whole spectrum is continuum (True) or not (False)
       Cycle 7 pipeline usage should set returnAllContinuumBoolean = True
     If returnWarnings = True, then it also returns a list of warning strings,
-       which may be empty [], for tooLittleBandwidth and/or tooLittleSpread
+       which may be empty [], for tooLittleBandwidth and/or tooLittleSpread (PL2020+)
+       and the name of the joint mask image (PL2022+)
     If returnSnrs = True, then it also returns two more lists: mom0snrs and mom8snrs,
           and the max baseline (floating point meters) inferred from the psf image
     if returnSigmaFindContinuum = True (new in PL2020), then it also returns 8 more things:
@@ -2563,48 +2565,48 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         if returnAllContinuumBoolean:
             if returnSigmaFindContinuum:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, mom0snrs, mom8snrs, maxBaseline, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, jointMask, mom0snrs, mom8snrs, maxBaseline, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
                 else:
                     return(selection, png, aggregateBandwidth, allContinuum, mom0snrs, mom8snrs, maxBaseline, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
             else:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, mom0snrs, mom8snrs, maxBaseline)
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, jointMask, mom0snrs, mom8snrs, maxBaseline)  
                 else:
                     return(selection, png, aggregateBandwidth, allContinuum, mom0snrs, mom8snrs, maxBaseline)
         else:
             if returnSigmaFindContinuum:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, warningStrings, mom0snrs, mom8snrs, maxBaseline, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
+                    return(selection, png, aggregateBandwidth, warningStrings, jointMask, mom0snrs, mom8snrs, maxBaseline, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)   
                 else:
                     return(selection, png, aggregateBandwidth, mom0snrs, mom8snrs, maxBaseline, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
             else:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, warningStrings, mom0snrs, mom8snrs, maxBaseline)
+                    return(selection, png, aggregateBandwidth, warningStrings, jointMask, mom0snrs, mom8snrs, maxBaseline)
                 else:
                     return(selection, png, aggregateBandwidth, mom0snrs, mom8snrs, maxBaseline)
     else:
         if returnAllContinuumBoolean:
             if returnSigmaFindContinuum:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, jointMask, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)    
                 else:
                     return(selection, png, aggregateBandwidth, allContinuum, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
             else:
                 if returnWarnings:
                     # Pipeline 2020+ use case
-                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings)
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, jointMask) #  added mask name here for PL2022+
                 else:
                     # Pipeline Cycle 7 use case
                     return(selection, png, aggregateBandwidth, allContinuum)
         else:
             if returnSigmaFindContinuum:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, warningStrings, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
+                    return(selection, png, aggregateBandwidth, warningStrings, jointMask, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)    
                 else:
                     return(selection, png, aggregateBandwidth, sigmaFindContinuumAtEndOfOriginalIteration, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode, momDiffSNR)
             else:
                 if returnWarnings:
-                    return(selection, png, aggregateBandwidth, returnWarningStrings)
+                    return(selection, png, aggregateBandwidth, returnWarningStrings, jointMask)
                 else:
                     # Pipeline Cycle 6 (and prior) use case
                     return(selection, png, aggregateBandwidth)
@@ -2858,7 +2860,7 @@ def updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, avgspectrum
     loc = upperXlabel.find('contBW')
     aggregateBandwidth = computeBandwidth(selection, channelWidth, 0)
     if loc > 0:
-        upperXlabel = upperXlabel[:loc] + 'contBW: %.3f MHz' % (aggregateBandwidth * 1000)
+        upperXlabel = upperXlabel[:loc] + 'contBW: %.2f MHz' % (aggregateBandwidth * 1000)
         if nbin >= NBIN_THRESHOLD: # PIPE-848
             upperXlabel += ', PoM=%.1f, nbin=%d' % (initialPeakOverMad, nbin)
         casalogPost("Setting new upper x-axis label: %s"  % (upperXlabel))
@@ -2938,6 +2940,7 @@ def replaceLineFullRangesWithNoise(intensity, selection, median, scaledMAD):
     random.seed(2001)  # A Space Odyssey (guarantees that .onlyExtraMask will get same result everytime)
     for myrange in ranges:
         c0,c1 = [int(i) for i in myrange.split('~')]
+        print("len(intensity)=%d, c0,c1 = %d,%d" % (len(intensity), c0,c1))
         peakSNR = (np.max(intensity[c0:c1+1]) - median) / scaledMAD
         if peakSNR > 15:
             # Note because the continuum is still in this spectrum, it can have a slope which
@@ -4736,7 +4739,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                 casalogPost('%s Not adjusting sigmaFindContinuum, but setting blue pruning because there are 3 groups and TDM' % (projectCode))
             else:
                 # madRatio could be 'None' so force it to be a string
-                casalogPost("%s Not adjusting sigmaFindContinuum because groups=%d < %d or peakOverMad=%f<%.0f or madRatio=%s>=%f" % (projectCode, groups,minGroupsForSFCAdjustment,peakOverMad,minPeakOverMadForSFCAdjustment,str(madRatio),maxMadRatioForSFCAdjustment), debug=True)
+                casalogPost("%s Not adjusting sigmaFindContinuum because groups=%d < %d or peakOverMad_OfMeanSpectrum=%f<%.0f or madRatio_ofBaselineChannels=%s>=%f" % (projectCode, groups,minGroupsForSFCAdjustment,peakOverMad,minPeakOverMadForSFCAdjustment,str(madRatio),maxMadRatioForSFCAdjustment), debug=True)
                 
         if (newMaxTrim > 0 or 
             (allContinuumSelected(selection,nchan) and numberPixelsInMom8Mask > 0) or # line added 06 Jan 2019
@@ -4929,11 +4932,14 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                     if selection == '':
                         selection = secondSelectionAdded
                     else:
-                        if mylist[0] > allBaselineChannelsXY[0][-1]:
+                        lastChannelOfOnlyRegion = int(selection.split('~')[-1])
+                        if mylist[0] > lastChannelOfOnlyRegion: # allBaselineChannelsXY[0][-1]:
                             # add to end of string (to maintain increasing order)
+                            print("Adding to end of string")
                             selection += separator + secondSelectionAdded
                         else:
                             # add to beginning of string (to maintain increasing order)
+                            print("Adding %s to beginning of string because %d <= %d" % (secondSelectionAdded, mylist[0],lastChannelOfOnlyRegion))
                             selection = secondSelectionAdded + separator + selection
                     casalogPost('  %s ****** Added a second selection in the other half of the spectrum: %s' % (projectCode,secondSelectionAdded))
                 else:
@@ -5241,7 +5247,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     ax2.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter(useOffset=False))
     aggregateBandwidth = computeBandwidth(selection, channelWidth, 1)
     if (channelWidth > 0):
-        channelWidthString = ', chanwidth: %.2f kHz, BW: %g MHz, contBW: %.3f MHz' % (channelWidth*1e-3, spwBandwidth*1e-6, aggregateBandwidth*1000)
+        channelWidthString = ', chanwidth: %.2f kHz, BW: %g MHz, contBW: %.2f MHz' % (channelWidth*1e-3, spwBandwidth*1e-6, aggregateBandwidth*1000)
         if nbin >= NBIN_THRESHOLD:
             channelWidthString += ', PoM=%.1f, nbin=%d' % (initialPeakOverMad, nbin)
     else:
@@ -5853,7 +5859,8 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
     negativeThresholdFactor: scale the nominal negative threshold by this factor (to adjust 
         sensitivity to absorption features: smaller values=more sensitive)
     dropBaselineChannels: percentage of extreme values to drop in baseline mode 'min'
-    madRatioUpperLimit, madRatioLowerLimit: if ratio of MADs is between these values, then
+    madRatioUpperLimit, madRatioLowerLimit: if ratio of MADs (MAD of all baseline channels / 
+        MAD of baseline channels with extreme channels dropped) is between these values, then
         apply dropBaselineChannels when defining the MAD of the baseline range
     fitResult: coefficients from linear or quadratic fit, only relevant when meanSpectrumMethod is
              not 'mom0mom8jointMask'
@@ -5979,7 +5986,12 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
 
         # Introduced the lowHighBaselineThreshold factor on Aug 31, 2016 for CAS-8938
         whichBaseline = np.argmin([mad0, lowHighBaselineThreshold*mad1, lowHighBaselineThreshold*madMiddleChannels])
-        if (whichBaseline == 0):
+        leftmostHighChannel = np.min(idx[-nBaselineChannels:])
+        rightmostHighChannel = np.max(idx[-nBaselineChannels:])
+        noBluePointInterruptsHighestChannels = len(np.intersect1d(range(leftmostHighChannel,rightmostHighChannel), idx[:nBaselineChannels])) == 0
+        if (whichBaseline == 0) or noBluePointInterruptsHighestChannels:
+            if noBluePointInterruptsHighestChannels and whichBaseline != 0:
+                casalogPost('No blue point interrupts the sequence of highest channels, so this signifies an emission line, and we will useBaseline=low instead of high.')
             useBaseline = 'low'
         elif (whichBaseline == 1):
             useBaseline = 'high'
@@ -8297,6 +8309,15 @@ def parseFrequencyArgument(bandwidth):
     else:
         bandwidth = float(bandwidth)
     return(bandwidth)
+
+def intersectChannelSelections(selection1, selection2, separator=';'):
+    """
+    Take the intersection of two ranges.
+    e.g. '3~8;10~11', '5~9'  ->  '5~8'
+    """
+    list1 = channelSelectionRangesToIndexArray(selection1, separator)
+    list2 = channelSelectionRangesToIndexArray(selection2, separator)
+    return convertChannelListIntoSelection(np.intersect1d(list1,list2))
 
 def channelSelectionRangesToIndexArray(selection, separator=';'):
     """

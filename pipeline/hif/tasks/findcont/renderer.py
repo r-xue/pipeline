@@ -145,19 +145,16 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def _get_jointmaskplot(self, context, result, field, spw):
 
-        joint2 = glob.glob('*s{}*{}*spw{}*joint.mask2'.format(result.stage_number, field, spw))
-        joint = glob.glob('*s{}*{}*spw{}*joint.mask'.format(result.stage_number, field, spw))
-        
-        if joint2:
-            src = joint2[0]
+        joint_mask_name = result.joint_mask_name
+
+        if 'mask2' in joint_mask_name:
             masktype = 'jointmask2'
-        elif joint:
-            src = joint[0]
+        elif 'mask' in joint_mask_name:
             masktype = 'jointmask'
         else:
             return 'No plot available'
 
-        with casa_tools.ImageReader(src) as image:
+        with casa_tools.ImageReader(joint_mask_name) as image:
             info = image.miscinfo()
             info['type'] = masktype
             info['virtspw'] = spw
@@ -167,7 +164,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # create a plot object so we can access (thus generate) the thumbnail
         reportdir = context.report_dir+'/stage{}/'.format(result.stage_number)
 
-        plot_obj = displays.sky.SkyDisplay().plot(context, src, reportdir=reportdir, intent='', collapseFunction='mean',
+        plot_obj = displays.sky.SkyDisplay().plot(context, joint_mask_name, reportdir=reportdir, intent='', collapseFunction='mean',
                                                   **{'cmap': copy.copy(matplotlib.cm.YlOrRd)})
 
         fullsize_relpath = os.path.relpath(plot_obj.abspath, context.report_dir)

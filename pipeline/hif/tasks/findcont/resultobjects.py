@@ -9,10 +9,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContResult(basetask.Results):
-    def __init__(self, result_cont_ranges, cont_ranges, num_found, num_total, single_range_channel_fractions):
+    def __init__(self, result_cont_ranges, cont_ranges, joint_mask_name, num_found, num_total, single_range_channel_fractions):
         super(FindContResult, self).__init__()
         self.result_cont_ranges = result_cont_ranges
         self.cont_ranges = cont_ranges
+        self.joint_mask_name = joint_mask_name
         self.num_found = num_found
         self.num_total = num_total
         self.mitigation_error = False
