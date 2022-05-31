@@ -188,6 +188,8 @@ class WeightMS(basetask.StandardTaskTemplate):
 #         for row in in_rows:
 #             weight[row] = 1.0
 
+        net_flags = datatable.getcol('FLAG_SUMMARY').take(index_list, axis=1)
+
         # set weight (key: input MS row ID, value: weight)
         # TODO: proper handling of pols
         if weight_rms:
@@ -195,18 +197,22 @@ class WeightMS(basetask.StandardTaskTemplate):
             for index in range(len(in_rows)):
                 row = in_rows[index]
                 cell_stat = stats[:, :, index]
+                flags = net_flags[:, index]
                 weight[row] = numpy.ones(cell_stat.shape[0])
                 for ipol in range(weight[row].shape[0]):
                     stat = cell_stat[ipol, 1]  # baselined RMS
-                    if stat > 0.0:
-                        weight[row][ipol] /= (stat * stat)
-                    elif stat < 0.0 and cell_stat[ipol, 2] > 0.0:
-                        stat = cell_stat[ipol, 2]  # RMS before baseline
-                        weight[row][ipol] /= (stat * stat)
-                    elif try_fallback:
-                        weight_tintsys = True
-                    else:
-                        weight[row][ipol] = 0.0
+                    if flags[ipol] == 1: # unflagged spectra
+                        if stat > 0.0:
+                            weight[row][ipol] /= (stat * stat)
+                        elif stat < 0.0 and cell_stat[ipol, 2] > 0.0:
+                            stat = cell_stat[ipol, 2]  # RMS before baseline
+                            weight[row][ipol] /= (stat * stat)
+                        elif try_fallback:
+                            weight_tintsys = True
+                        else:
+                            weight[row][ipol] = 0.0
+                    else: # flagged spectra
+                        pass
 
         if weight_tintsys:
             exposures = datatable.getcol('EXPOSURE').take(index_list)
