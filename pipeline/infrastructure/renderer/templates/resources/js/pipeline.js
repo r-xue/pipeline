@@ -1457,6 +1457,9 @@ var PLOTS = function() {
         },
         "K": function(xAxisLabel) {
             xAxisLabel.text("K");
+        },
+        "Flagged fraction": function(xAxisLabel) {
+            xAxisLabel.text("Flagged %");
         }
     };
 

@@ -226,7 +226,11 @@ $(document).ready(function () {
 
     <div class="row">
         % for histogram_id, label in self.attr.HISTOGRAM_LABELS.items():
-        <div class="col-md-${int(12/len(self.attr.HISTOGRAM_LABELS))}">
+        % if len(self.attr.HISTOGRAM_LABELS) > 4:
+            <div class="col-md-3">
+        % else:
+            <div class="col-md-${int(12/len(self.attr.HISTOGRAM_LABELS))}">
+        % endif
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h5 class="panel-title">${label}</h5>
