@@ -6,6 +6,7 @@ import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 import pipeline.qa.gpcal as gpcal
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks.gaincal import common
 
 import numpy as np
@@ -72,6 +73,9 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
             phase_scan_ids = [s.id for s in ms.get_scans(scan_intent='PHASE')]
 
+            # Create antenna ID to name translation dictionary, reject empty antenna name strings.
+            antenna_id_to_name = {ant.id: ant.name for ant in ms.antennas if ant.name.strip()}
+
             phase_offsets_scores = []
             subscores = {}
             for gaintable in self.phase_offsets_qa_results_dict:
@@ -86,6 +90,8 @@ class TimegaincalQAPool(pqa.QAScorePool):
                 noisy_spw_ids = []
                 for spw_id in sorted(list(set(spw_ids))):
                     subscores[gaintable][spw_id] = {}
+                    # Get names of polarisations, and create polarisation index 
+                    corr_type = commonhelpermethods.get_corr_axis(ms, spw_id)
                     Stot = self._Stot(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, spw_id)
                     if Stot > NoiseThresh:
                         # Noise too high for further evaluation
@@ -96,12 +102,12 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 subscores[gaintable][spw_id][ant_id][pol_id] = {}
                                 for scorekey in ['QA1', 'QA2', 'QA3']:
                                     score = 0.82
-                                    longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id}'
+                                    longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]}'
                                     shortmsg = 'Phase offsets too noisy'
                                     origin = pqa.QAOrigin(metric_name='Stot(EB, spw)',
                                                           metric_score=Stot,
                                                           metric_units='degrees')
-                                    data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                    data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={corr_type[pol_id]})
                                     weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
                                     phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
@@ -115,12 +121,12 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 if N < 4:
                                     # Poor statistics
                                     for scorekey, score in [('QA1', 1.0), ('QA2', 0.85), ('QA3', 1.0)]:
-                                        longmsg = f'Phase offsets with poor statistics for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id}'
+                                        longmsg = f'Phase offsets with poor statistics for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]}'
                                         shortmsg = 'Poor phase offsets statistics'
                                         origin = pqa.QAOrigin(metric_name='Number of solutions',
                                                               metric_score=N,
                                                               metric_units='N/A')
-                                        data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                        data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={corr_type[pol_id]})
                                         weblog_location = pqa.WebLogLocation.HIDDEN
                                         subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
                                         phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
@@ -131,57 +137,57 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
                                     # Mean test
                                     QA1_score = 1.0
-                                    QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} within range'
+                                    QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} within range'
                                     if np.abs(M) > max(QA1_Thresh1, QA1_Factor * Stot / np.sqrt(N)):
                                         QA1_score = 0.8
-                                        QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} exceeding first threshold'
+                                        QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding first threshold'
                                         QA1_shortmsg = 'Phase offsets mean too large'
                                     if np.abs(M) > max(QA1_Thresh2, QA1_Factor * Stot / np.sqrt(N)):
                                         QA1_score = 0.5
-                                        QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} exceeding second threshold'
+                                        QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding second threshold'
                                         QA1_shortmsg = 'Phase offsets mean too large'
                                     QA1_origin = pqa.QAOrigin(metric_name='phase offsets mean',
                                                               metric_score=M,
                                                               metric_units='degrees')
-                                    QA1_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                    QA1_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={corr_type[pol_id]})
                                     QA1_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA1'] = pqa.QAScore(score=QA1_score, longmsg=QA1_longmsg, shortmsg=QA1_shortmsg, vis=ms.basename, origin=QA1_origin, applies_to=QA1_data_selection, weblog_location=QA1_weblog_location)
                                     phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA1'])
 
                                     # Standard deviation test
                                     QA2_score = 1.0
-                                    QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} within range'
+                                    QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} within range'
                                     if S > max(QA2_Thresh1, QA2_Factor1 * S):
                                         QA2_score = 0.8
-                                        QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} exceeding first threshold'
+                                        QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding first threshold'
                                         QA2_shortmsg = 'Phase offsets standard deviation too large'
                                     if S > max(QA2_Thresh2, QA2_Factor2 * S):
                                         QA2_score = 0.5
-                                        QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} exceeding second threshold'
+                                        QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding second threshold'
                                         QA2_shortmsg = 'Phase offsets standard deviation too large'
                                     QA2_origin = pqa.QAOrigin(metric_name='phase offsets standard deviation',
                                                               metric_score=S,
                                                               metric_units='degrees')
-                                    QA2_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                    QA2_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={corr_type[pol_id]})
                                     QA2_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA2'] = pqa.QAScore(score=QA2_score, longmsg=QA2_longmsg, shortmsg=QA2_shortmsg, vis=ms.basename, origin=QA2_origin, applies_to=QA2_data_selection, weblog_location=QA2_weblog_location)
                                     phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA2'])
 
                                     # Maximum test
                                     QA3_score = 1.0
-                                    QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} within range'
+                                    QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} within range'
                                     if np.abs(MaxOff) > max(QA3_Thresh1, QA3_Factor * S):
                                         QA3_score = 0.8
-                                        QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} exceeding first threshold'
+                                        QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding first threshold'
                                         QA3_shortmsg = 'Phase offsets maximum too large'
                                     if np.abs(MaxOff) > max(QA3_Thresh2, QA3_Factor * S):
                                         QA3_score = 0.5
-                                        QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id} exceeding second threshold'
+                                        QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding second threshold'
                                         QA3_shortmsg = 'Phase offsets maximum too large'
                                     QA3_origin = pqa.QAOrigin(metric_name='phase offsets maximum',
                                                               metric_score=MaxOff,
                                                               metric_units='degrees')
-                                    QA3_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={str(pol_id)})
+                                    QA3_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={corr_type[pol_id]})
                                     QA3_weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id]['QA3'] = pqa.QAScore(score=QA3_score, longmsg=QA3_longmsg, shortmsg=QA3_shortmsg, vis=ms.basename, origin=QA3_origin, applies_to=QA3_data_selection, weblog_location=QA3_weblog_location)
                                     phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA3'])
@@ -189,7 +195,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     if noisy_spw_ids != []:
                         # Add aggregated score for noisy spws
                         score = 0.82
-                        longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} Antenna {ant_id} Polarization {pol_id}'
+                        longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {",".join(map(str, sorted(list(set(noisy_spw_ids)))))}'
                         shortmsg = 'Phase offsets too noisy'
                         origin = pqa.QAOrigin(metric_name='Stot(EB, spw)',
                                               metric_score=-1,
