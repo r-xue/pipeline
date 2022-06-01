@@ -1,13 +1,10 @@
 import os
-
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
-import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-from pipeline.h.tasks.common.displays import sky as sky
-from pipeline.hifv.heuristics.rfi import RflagDevHeuristic
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
 LOG = infrastructure.get_logger(__name__)
