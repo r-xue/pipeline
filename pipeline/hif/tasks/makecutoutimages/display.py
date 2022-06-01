@@ -8,7 +8,7 @@ from matplotlib.pyplot import cm
 from scipy.stats import median_absolute_deviation
 
 import pipeline.infrastructure as infrastructure
-from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.h.tasks.common.displays import sky
 from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
 from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure.renderer.logger as logger
@@ -255,8 +255,10 @@ class VlassCubeCutoutRmsSummary(object):
         self.result = result
 
     @matplotlibrc_formal
-    def plot(self, improp_list=[('image', 'MADrms'), ('rms', 'Median')]):
+    def plot(self, improp_list=None):
 
+        if improp_list is None:
+            improp_list = [('image', 'MADrms'), ('rms', 'Median')]
         stage_dir = os.path.join(self.context.report_dir,
                                  'stage%d' % self.result.stage_number)
         if not os.path.exists(stage_dir):
@@ -312,12 +314,12 @@ class VlassCubeCutoutRmsSummary(object):
             # 'RflagDevHeuristic' is only imported on-demand; if it's imported during module initialization,
             # a circular import will introduce problem (hif->hifv->hif)
             from pipeline.hifv.heuristics.rfi import RflagDevHeuristic
-            sefd = RflagDevHeuristic._get_vla_sefd()
+            sefd = RflagDevHeuristic.get_vla_sefd()
 
             for band, sefd_per_band in sefd.items():
                 sefd_x = sefd_per_band[:, 0]/1e3
                 sefd_y = sefd_per_band[:, 1]
-                if np.mean(x) > np.min(sefd_x) and np.mean(x) < np.max(sefd_x):
+                if np.min(sefd_x) < np.mean(x) < np.max(sefd_x):
                     LOG.info(f'Selecting Band {band} for the SEFD-based rms prediction.')
                     sefd_spw = np.interp(x, sefd_x, sefd_y)
                     scale = np.median(np.divide(y[:, 1:], sefd_spw[:, np.newaxis]))
