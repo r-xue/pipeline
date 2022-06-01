@@ -136,7 +136,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         result.commandslog = os.path.basename(stdfproducts.casa_commands_file)
         if stdfproducts.parameterlist:
             result.parameterlist = [os.path.basename(parameterlist) for parameterlist in stdfproducts.parameterlist]
-            self.parameterlist = result.parameterlist
         else:
             result.parameterlist = []
 
@@ -247,15 +246,18 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=observatory['m0'],
                                                                obs_lat=observatory['m1'])
                 # Update FITS header
-                self._fix_vlass_fits_header(self.inputs.context, fitsfile, img_mode)
+                self._fix_vlass_fits_header(self.inputs.context, fitsfile)
 
         # SE Cont imaging mode export for VLASS
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
-            self.reimaging_resources = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
+            reimaging_resources = self._export_reimaging_resources(inputs.context, inputs.products_dir, oussid)
+        else:
+            reimaging_resources = None
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
-        pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, {}, {}, [], fits_list)
+        pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, {}, {}, [], fits_list,
+                                                reimaging_resources, result.parameterlist)
         casa_pipe_manifest = self._export_pipe_manifest('pipeline_manifest.xml', inputs.products_dir, pipemanifest)
         result.manifest = os.path.basename(casa_pipe_manifest)
 
@@ -340,7 +342,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                         image_rgd.setrestoringbeam(remove=True)
                         image_rgd.setrestoringbeam(beam=beam0)
                 image_rgd.tofits(fits_name, region=region, overwrite=True)
-                self._fix_vlass_fits_header(self.inputs.context, fits_name, self.inputs.context.imaging_mode)
+                self._fix_vlass_fits_header(self.inputs.context, fits_name)
                 LOG.info(f'write the commom beam/frame FITS image: {fits_name}')
 
             image_smo.done()
@@ -479,10 +481,9 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                casa_pipescript,
                                parameterlist_set)
 
-    def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, visdict, calimages, targetimages):
-        """
-        Generate the manifest file
-        """
+    def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, visdict, calimages, targetimages,
+                            reimaging_resources, parameterlist):
+        """Generate the manifest file."""
 
         # Initialize the manifest document and the top level ous status.
         pipemanifest = self._init_pipemanifest(oussid)
@@ -517,12 +518,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         pipemanifest.add_images(ouss, targetimages, 'target')
 
         # Add reimaging resources
-        if hasattr(self, 'reimaging_resources'):
-            pipemanifest.add_reimaging_resources(ouss, self.reimaging_resources)
+        if reimaging_resources is not None:
+            pipemanifest.add_reimaging_resources(ouss, reimaging_resources)
 
         # Add parameter list file(s)
-        if hasattr(self, 'parameterlist'):
-            pipemanifest.add_parameter_list(ouss, self.parameterlist)
+        pipemanifest.add_parameter_list(ouss, parameterlist)
 
         return pipemanifest
 
@@ -794,7 +794,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return out_manifest_file
 
-    def _fix_vlass_fits_header(self, context, fitsname, img_mode):
+    def _fix_vlass_fits_header(self, context, fitsname):
         """
         Update VLASS FITS product header according to PIPE-641.
         Should be called in the following imaging modes:
@@ -830,7 +830,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             #    prefixes) and directly extract the 'OBJECT' name (first FIELD name of the image) from it.
 
             filename_components = os.path.basename(fitsname).split('.')
-            object_name = ''
             object_name = filename_components[4]
             if object_name != '' and header['object'].upper() != object_name.upper():
                 header['object'] = object_name
