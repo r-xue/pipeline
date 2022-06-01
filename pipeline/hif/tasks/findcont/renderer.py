@@ -145,7 +145,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def _get_jointmaskplot(self, context, result, field, spw):
 
-        joint_mask_name = result.joint_mask_name
+        joint_mask_name = result.joint_mask_names[(field, spw)]
 
         if 'mask2' in joint_mask_name:
             masktype = 'jointmask2'
