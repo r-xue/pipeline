@@ -212,15 +212,20 @@ class VDPTaskFactory(object):
     def __get_task_args(self, vis):
         inputs = self.__inputs
 
-        original_vis = inputs.vis
+        if isinstance(inputs, vdp.InputsContainer):
+            attr_name = inputs._scope_attr
+        else:
+            attr_name = 'vis'
+
+        original_vis = getattr(inputs, attr_name)
         try:
-            inputs.vis = vis
+            setattr(inputs, attr_name, vis)
             task_args = inputs.as_dict()
             # support for single-dish tasks
             if 'infiles' in task_args:
                 task_args['infiles'] = task_args['vis']
         finally:
-            inputs.vis = original_vis
+            setattr(inputs, attr_name, original_vis)
 
         return task_args
 
