@@ -4,8 +4,6 @@ import itertools
 import os
 import tempfile
 
-import pipeline.infrastructure as infrastructure
-
 from pipeline.infrastructure import basetask
 from pipeline.infrastructure import exceptions
 from . import mpihelpers
@@ -22,8 +20,6 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
-
-LOG = infrastructure.get_logger(__name__)
 
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
@@ -72,11 +68,9 @@ def group_into_sessions(context, all_results):
     """
     session_map = {ms.basename: ms.session
                    for ms in context.observing_run.measurement_sets}
-    LOG.info(f'session_map is {session_map}')
 
     ms_start_times = {ms.basename: utils.get_epoch_as_datetime(ms.start_time)
                       for ms in context.observing_run.measurement_sets}
-    LOG.info(f'ms_start_times is {ms_start_times}')
 
     def get_session(r):
         basename = os.path.basename(r[0])
