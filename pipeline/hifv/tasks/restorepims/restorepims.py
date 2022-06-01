@@ -1,4 +1,3 @@
-import copy
 import glob
 import os
 import tarfile
@@ -9,17 +8,17 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.exceptions as exceptions
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
-import pipeline.hif.tasks.makeimages.makeimages as makeimages
+from pipeline.hif.tasks.makeimages import MakeImages
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class RestorepimsResults(basetask.Results):
-    def __init__(self, mask_list=[], restore_resources=None):
+    def __init__(self, restore_resources, mask_list=[]):
         super().__init__()
         self.pipeline_casa_task = 'Restorepims'
-        self.mask_list = mask_list
         self.restore_resources = restore_resources
+        self.mask_list = mask_list
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
@@ -45,23 +44,24 @@ class Restorepims(basetask.StandardTaskTemplate):
     Inputs = RestorepimsInputs
     is_multi_vis_task = False
 
+    def __init__(self, inputs):
+        super().__init__(inputs)
+        self.imagename = inputs.context.clean_list_pending[0]['imagename'].replace('sSTAGENUMBER.', '')
+        # flag version to be used for backup from hifv_restorepims()
+        self.flagversion_backup = 'hifv_restorepims_initial'
+        # flag version after hifv_checkflag and before hifv_statwt in **the SEIP production workflow**.
+        self.flagversion = 'statwt_1'
+
     def prepare(self):
 
         LOG.info("This Restorepims class is running.")
 
-        # flag version after hifv_checkflag and before hifv_statwt in the SEIP production workflow.
-        self.flagversion = 'statwt_1'
-        self.flagversion_backup = 'hifv_restorepims_initial'
-        self.imagename = self.inputs.context.clean_list_pending[0]['imagename'].replace(
-            'sSTAGENUMBER.', '')
-        self.restore_resources = {}
-
         # extract all essential resources
-        is_resources_available = self._check_resources()
+        restore_resources, is_resources_available = self._check_resources()
 
         if not is_resources_available:
             exception_msg = []
-            for k, v in self.restore_resources.items():
+            for k, v in restore_resources.items():
                 exception_msg.append(f"{k:20}: {v}")
             exception_msg.insert(
                 0, 'Some resources required for hifv_restorepims()/hif_makeimages() are not available, and Pipeline cannot continue.')
@@ -72,7 +72,7 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         # restore the MODEL column to the identical state used in the SE hifv_selfcal() and hifv_statwt() stages.
         # the flag state at this moment should be identical to the initial state in the SEIP worflow (before SE/hifv_checkflag)
-        self._do_restoremodel()
+        self._do_restoremodel(restore_resources['model_images'][0])
 
         # restore the flag version (after SE/hifv_checkflag and before SE/hifv_statwt) from the SE flag file.
         self._do_restoreflags(versionname=self.flagversion)
@@ -81,10 +81,10 @@ class Restorepims(basetask.StandardTaskTemplate):
         self._do_statwt()
 
         # apply the selfcal table from the SE reimaging resources to get the CORRECTED column
-        self._do_applycal()
+        self._do_applycal(restore_resources['selfcal_table'][0][0])
 
-        mask_list = [self.restore_resources['tier1_mask'][0][0], self.restore_resources['tier2_mask'][0][0]]
-        results = RestorepimsResults(mask_list=mask_list, restore_resources=self.restore_resources)
+        mask_list = [restore_resources['tier1_mask'][0][0], restore_resources['tier2_mask'][0][0]]
+        results = RestorepimsResults(restore_resources, mask_list=mask_list)
 
         return results
 
@@ -108,13 +108,12 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _check_resources(self):
 
-        is_resources_available = False
-
         # Create the resource request list
         # - self.imagename at this point is from SEIP_parameter.list of the SEIP products.
         # - inputs.vis should be identical to the SEIP input with the same flag state.
         # Therefore, we verify these names against the file list inside reimaging_resources.tgz
 
+        restore_resources = {}
         reimaging_resources_tgz = self.inputs.reimaging_resources
         flagd_pat_key_desc = (self.inputs.vis+'.flagversions*', 'flag_dir', 'flag directory')
         flagv_pat_key_desc = (self.inputs.vis+f'.flagversions/flags.{self.flagversion}', 'flag_version', 'flag version')
@@ -127,15 +126,15 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         # check the reimaging resources tarball before trying unpacking.
 
-        if os.path.isfile(reimaging_resources_tgz) and tarfile.is_tarfile(reimaging_resources_tgz):
-            is_resources_available = True
-        self.restore_resources['reimaging_resources'] = (reimaging_resources_tgz, is_resources_available)
+        is_resources_available = os.path.isfile(reimaging_resources_tgz) and tarfile.is_tarfile(reimaging_resources_tgz)
+        restore_resources['reimaging_resources'] = (reimaging_resources_tgz, is_resources_available)
+
         if is_resources_available:
             LOG.info(f"Found the reimaging resources tarball: {reimaging_resources_tgz}")
         else:
             LOG.error(
                 f"The reimaging resources tarball {reimaging_resources_tgz} doesn't exist or is not a tarfile.")
-            return is_resources_available
+            return restore_resources, is_resources_available
 
         # untar any files required for the restorepims operation:
 
@@ -160,19 +159,16 @@ class Restorepims(basetask.StandardTaskTemplate):
         # check against the resource requirement list
 
         for pkd in pkd_list:
-            paths = glob.glob(pkd[0])
-            n_paths = len(paths)
-            if n_paths == 0:
-                is_resources_available = False
-                LOG.error(
-                    f"Cannot find the request {pkd[2]} using the name pattern: {pkd[0]}")
-                is_resources_available = False
-                self.restore_resources[pkd[1]] = (pkd[0], False)        # (file_pattern, False)
-            else:
-                self.restore_resources[pkd[1]] = (sorted(paths), True)  # (file_list, True)
+            paths = sorted(glob.glob(pkd[0]))
+            if paths:
+                restore_resources[pkd[1]] = (paths, True)  # (file_list, True)
                 LOG.info(f"Found the request {pkd[2]}: {', '.join(paths)}")
+            else:
+                restore_resources[pkd[1]] = (pkd[0], False)        # (file_pattern, False)
+                is_resources_available = False
+                LOG.error(f"Cannot find the request {pkd[2]} using the name pattern: {pkd[0]}")
 
-        return is_resources_available
+        return restore_resources, is_resources_available
 
     def _do_restoreflags(self, versionname=None):
 
@@ -184,7 +180,7 @@ class Restorepims(basetask.StandardTaskTemplate):
 
     def _reinitialize_pims(self):
         """Re-intialize the WEIGHTs/FLAGs of a PIMS.
-        
+
         Note: this method is only called when hifv_restorepims() gets rerun.
         """
 
@@ -203,7 +199,7 @@ class Restorepims(basetask.StandardTaskTemplate):
         task = casa_tasks.initweights(vis=self.inputs.vis, wtmode='nyq')
         self._executor.execute(task)
 
-    def _do_restoremodel(self):
+    def _do_restoremodel(self, model_images):
 
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
@@ -228,10 +224,10 @@ class Restorepims(basetask.StandardTaskTemplate):
         mp_nthreads = casa_tools.casalog.ompGetNumThreads()
         LOG.info(f'Predicting the MODEL column with openmp_nthreads : {mp_nthreads}')
 
-        model_image = self.restore_resources['model_images'][0][0]
+        model_image = model_images[0]
         last_idx = model_image.rfind('.model')
         restore_imagename = model_image[:last_idx]
-        restore_startmodel = self.restore_resources['model_images'][0]
+        restore_startmodel = model_images
 
         inputs = self.inputs
         for target in inputs.context.clean_list_pending:    # just one target for VLASS-SE-CONT*
@@ -247,8 +243,8 @@ class Restorepims(basetask.StandardTaskTemplate):
             #   tclean/imagename will just reset to use the cys on the disk, leaving the model untouch.
             #   the later is what we prefer to reproduce the sequence in the mpicasa+awp situation
 
-        makeimages_inputs = makeimages.MakeImages.Inputs(inputs.context, vis=inputs.vis, hm_masking='manual')
-        makeimages_task = makeimages.MakeImages(makeimages_inputs)
+        makeimages_inputs = MakeImages.Inputs(inputs.context, vis=inputs.vis, hm_masking='manual')
+        makeimages_task = MakeImages(makeimages_inputs)
         self._executor.execute(makeimages_task, True)
 
         return
@@ -279,7 +275,7 @@ class Restorepims(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _do_applycal(self):
+    def _do_applycal(self, gaintable):
         """Rerun applycal using the selfcal table from the SE reimaging resources.
 
         Also see the SEIP setting in hifv_selfcal()
@@ -290,8 +286,6 @@ class Restorepims(basetask.StandardTaskTemplate):
         spws = [int(spw.id) for spw in spwsobjlist]
         numspws = len(m.get_spectral_windows(science_windows_only=False))
         lowestscispwid = min(spws)  # PIPE-101, PIPE-1042: spwmap parameter in applycal must be a list of integers
-        gaintable = self.restore_resources['selfcal_table'][0][0]
-
         # VLASS mode
         applycal_task_args = {'vis': self.inputs.vis,
                               'gaintable': gaintable,
