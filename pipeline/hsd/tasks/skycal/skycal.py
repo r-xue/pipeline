@@ -240,14 +240,12 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                     eldiff = numpy.append(eldiff0, eldiff1)
                     if len(eldiff) > 0:
                         eldmax = numpy.max(numpy.abs(eldiff))
-                    else:
-                        eldmax = -1.0
-                    if eldmax >= threshold:
-                        field_name = ms.fields[field_id].name
-                        antenna_name = ms.antennas[antenna_id].name
-                        LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
-                                    ' exceeding the threshold of {}deg'
-                                    ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
+                        if eldmax >= threshold:
+                            field_name = ms.fields[field_id].name
+                            antenna_name = ms.antennas[antenna_id].name
+                            LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
+                                        ' exceeding the threshold of {}deg'
+                                        ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
 
         return result
 
