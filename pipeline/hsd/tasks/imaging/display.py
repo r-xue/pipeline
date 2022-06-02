@@ -620,7 +620,8 @@ class SDSparseMapDisplay(SDImageDisplay):
                 ms = self.inputs.context.observing_run.measurement_sets[ms_id]
                 vis = ms.name
                 antenna_id = 0 # nominal
-                spw_id = self.inputs.spw
+                vspw_id = self.inputs.spw
+                spw_id = self.inputs.context.observing_run.virtual2real_spw_id(vspw_id, ms)
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=vis, antenna_id=antenna_id,
                                                             spw_id=spw_id, doplot=False)
                 frame = self.frequency_frame
