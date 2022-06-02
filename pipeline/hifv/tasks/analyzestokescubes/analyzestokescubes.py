@@ -75,6 +75,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
                     img_stokesi = imagepol.stokesi()
                     img_stokesq = imagepol.stokesq()
                     img_stokesu = imagepol.stokesu()
+                    img_stokesv = imagepol.stokesv()
                     cs = img_stokesi.coordsys()
                     bm = img_stokesi.restoringbeam(polarization=0)
                     beamarea = bm['major']['value']*bm['minor']['value']
@@ -89,11 +90,14 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
                             stokesi_mean = img_stokesi.statistics(robust=False, region=rg)['mean'][0]
                             stokesq_mean = img_stokesq.statistics(robust=False, region=rg)['mean'][0]
                             stokesu_mean = img_stokesu.statistics(robust=False, region=rg)['mean'][0]
+                            stokesv_mean = img_stokesv.statistics(robust=False, region=rg)['mean'][0]
 
                             stats[roi_name]['spw'].append(imageitem['spwlist'])
                             stats[roi_name]['stokesi'].append(stokesi_mean)
                             stats[roi_name]['stokesq'].append(stokesq_mean)
                             stats[roi_name]['stokesu'].append(stokesu_mean)
+                            stats[roi_name]['stokesv'].append(stokesv_mean)
+
                             stats[roi_name]['rms'].append(rms_stats)
                             stats[roi_name]['beamarea'].append(beamarea)
                             stats[roi_name]['reffreq'].append(cs.referencevalue(format='n')['numeric'][3])

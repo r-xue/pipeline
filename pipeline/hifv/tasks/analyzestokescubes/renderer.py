@@ -25,6 +25,9 @@ class T2_4MDetailsAnalyzestokesCubeRenderer(basetemplates.T2_4MDetailsDefaultRen
         # Make the Stokes Q vs. U plot
         stokesplots = {'Stokes Summary Plots': analyzestokescube.VlassCubeStokesSummary(context, r).plot()}
 
+        # Make the Sokes I vs. Freq plot
+        fluxplots = {'Flux vs. Freq Plots': analyzestokescube.VlassCubeFluxSummary(context, r).plot()}
+
         # Make the rms vs. freq plot by reusing the result from hif_makecutoutimages
         try:
 
@@ -46,4 +49,6 @@ class T2_4MDetailsAnalyzestokesCubeRenderer(basetemplates.T2_4MDetailsDefaultRen
 
         ctx.update({'rmsplots': rmsplots,
                     'stokesplots': stokesplots,
+                    'fluxplots': fluxplots,
+                    'stats': r.stats,
                     'dirname': weblog_dir})
