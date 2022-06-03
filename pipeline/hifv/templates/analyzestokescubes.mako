@@ -16,11 +16,34 @@ def fmt_cell(rms,scale=1.e3):
     else:
         return np.format_float_positional(rms*scale, precision=3, fractional=False)
 
-def fmt_model(p):
-    label='I<sub>3GHz</sub>='+'{:.3f}'.format(p['model_amplitude'])+'mJy/bm'
+def fmt_model(amplitude,alpha):
+    label='<i>I</i><sub>3GHz</sub>='+'{:.3f}'.format(amplitude*1e3)+'mJy/bm'
     label+=', '
-    label+='alpha='+'{:.3f}'.format(p['model_alpha'])
+    label+='alpha='+'{:.3f}'.format(alpha)
     return label
+
+def fmt_spw(roi_stats,idx):
+    reffreq=roi_stats['reffreq'][idx]
+    spwstr=roi_stats['spw'][idx]
+    label=spwstr+' / ' +f'{reffreq/1e9:.3f}'
+    return label
+
+def diff2shade(pct):
+    cmap=cm.get_cmap(name='Reds')
+    apct=abs(pct)
+    if 5<=apct<10:
+      rgb_hex=colors.to_hex(cmap(0.2))
+    if 10<=apct<20:
+      rgb_hex=colors.to_hex(cmap(0.3))
+    if 20<=apct<30:
+      rgb_hex=colors.to_hex(cmap(0.4))
+    if apct>=30:
+      rgb_hex=colors.to_hex(cmap(0.5))
+    return rgb_hex   
+
+border_line="2px solid #AAAAAA"
+cell_line="1px solid #DDDDDD"
+bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)]
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -46,6 +69,10 @@ def fmt_model(p):
     vertical-align: middle;
     text-align: center;
     font-size: 12px;
+    border-bottom: ${border_line} !important;
+    border-right: ${border_line} !important;
+    border-top: ${border_line} !important;
+    border-left: ${border_line}  !important;
     background-color: #F9F9F9;
 }
 
@@ -81,7 +108,26 @@ def fmt_model(p):
 </%self:plot_group>
 
 
+<%self:plot_group plot_dict="${rmsplots}"
+                                  url_fn="${lambda ms:  'noop'}">
 
+        <%def name="title()">
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">${plot.basename}</%def>
+
+        <%def name="fancybox_caption(plot)">
+          ${plot.y_axis} vs. ${plot.x_axis}
+        </%def>
+
+        <%def name="caption_title(plot)">
+           ${plot.y_axis} vs. ${plot.x_axis}
+        </%def>
+
+</%self:plot_group>
 
 <%self:plot_group plot_dict="${fluxplots}"
                                   url_fn="${lambda ms:  'noop'}">
@@ -108,10 +154,20 @@ def fmt_model(p):
 
 <div class="table-responsive">
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-hover table-condensed">
-<caption>     
+<caption>
     <li>
-        Units in mJy/beam.
-    </li>      
+        <i>I</i>, <i>Q</i>, <i>U</i>, <i>V</i> : flux density at peak positions, averaged over a 3x3 pixel box.
+    </li>     
+    <li>
+        <i>I</i><sub>model</sub> : flux density from the best-fit power-law model.
+    </li>   
+    <li>
+        <i>I</i><sub>res</sub> : <i>I</i>-<i>I</i><sub>model</sub>
+    </li>          
+    <li>
+        <i>I</i><sub>res,pct</sub>: percentage difference between the data and model: (<i>I</i>-<i>I</i><sub>model</sub>)/<i>I</i>.
+        The color background is determined by the absolute percentage difference level: <p style="background-color:${bgcolor_pct_list[0]}; display:inline;">5&#37&le;pct&lt;10&#37</p>; <p style="background-color:${bgcolor_pct_list[1]}; display:inline;">10&#37&le;pct&lt;20&#37</p>; <p style="background-color:${bgcolor_pct_list[2]}; display:inline;">20&#37&le;pct&lt;30&#37</p>; <p style="background-color:${bgcolor_pct_list[3]}; display:inline;">30&#37&le;pct</p>.
+    </li>    
 </caption>    
 
 <thead>
@@ -121,39 +177,77 @@ def fmt_model(p):
 
     <tr>
         <th colspan="1"><b>Region</b></td>
-        <th colspan="4"><b>Stokes I Peak</b></td>
-        <th colspan="4"><b>LinPol Peak</b></td>
+        <th colspan="7"><b>Stokes I Peak</b></td>
+        <th colspan="7"><b>LinPol Peak</b></td>
     </tr>
     <tr>
-        <th colspan="1"><b>Spw</b></td>
-        <th colspan="1"><b><i>I</i></b></td>
-        <th colspan="1"><b><i>Q</i></b></td>
-        <th colspan="1"><b><i>U</i></b></td>
-        <th colspan="1"><b><i>V</i></b></td>
-        <th colspan="1"><b><i>I</i></b></td>
-        <th colspan="1"><b><i>Q</i></b></td>
-        <th colspan="1"><b><i>U</i></b></td>
-        <th colspan="1"><b><i>V</i></b></td>            
-    </tr>        
+        <th rowspan="2" style="vertical-align : middle;text-align:center;"><b>Spw / Freq (GHz)</b></td>
+        % for idx in [0,1]:
+            <th colspan="1"><b><i>I</i></b></th>
+            <th colspan="1"><b><i>I</i><sub>model</sub></b></td>
+            <th colspan="1"><b><i>I</i><sub>res</sub></b></td>
+            <th colspan="1"><b><i>I</i><sub>res,pct</sub></b></td>
+            <th colspan="1"><b><i>Q</i></b></td>
+            <th colspan="1"><b><i>U</i></b></td>
+            <th colspan="1"><b><i>V</i></b></td>
+        % endfor     
+    </tr>   
+    <tr>
+        % for idx in [0,1]:
+            <th colspan="1">mJy/bm</th>
+            <th colspan="1">mJy/bm</td>
+            <th colspan="1">mJy/bm</td>
+            <th colspan="1">pct.</td>
+            <th colspan="1">mJy/bm</td>
+            <th colspan="1">mJy/bm</td>
+            <th colspan="1">mJy/bm</td>
+        % endfor     
+    </tr>          
 
     % for idx in range(len(stats['peak_stokesi']['stokesi'])):
     <tr>
-          <th colspan="1"><b>${stats['peak_stokesi']['spw'][idx]}</b></td>
-          <td colspan="1">${fmt_cell(stats['peak_stokesi']['stokesi'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_stokesi']['stokesq'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_stokesi']['stokesu'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_stokesi']['stokesv'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_linpolint']['stokesi'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_linpolint']['stokesq'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_linpolint']['stokesu'][idx])}</td>
-          <td colspan="1">${fmt_cell(stats['peak_linpolint']['stokesv'][idx])}</td>
+        <%
+        cell_style=[f'border-left: {border_line}',f'border-right: {border_line}']
+        if idx==len(stats['peak_stokesi']['stokesi'])-1:
+            cell_style.append('border-bottom: '+border_line)          
+        cell_style='style="{}"'.format(('; ').join(cell_style))                   
+        %> 
+
+        <td ${cell_style}><b>${fmt_spw(stats['peak_stokesi'],idx)}</b></td>
+
+        % for roi_name in ['peak_stokesi','peak_linpolint']:
+
+            <%
+            cell_style=[]
+            if idx==len(stats['peak_stokesi']['stokesi'])-1:
+                cell_style.append('border-bottom: '+border_line) 
+                        
+            cell_style_default='style="{}"'.format(('; ').join(cell_style))
+            cell_style_withborder='style="{}"'.format(('; ').join(cell_style+['border-right: '+border_line]))
+                
+
+            diff_pct=(stats[roi_name]['stokesi'][idx]-stats[roi_name]['model_flux'][idx])/stats[roi_name]['stokesi'][idx]*100.
+            if abs(diff_pct)>=5:
+                bgcolor=diff2shade(diff_pct)
+                cell_style.append(f'background-color: {bgcolor}')      
+            cell_style_pct='style="{}"'.format(('; ').join(cell_style))              
+            %>          
+            
+            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx])}</td>
+            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['model_flux'][idx])}</td>
+            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx]-stats['peak_stokesi']['model_flux'][idx])}</td>
+            <td colspan="1" ${cell_style_pct}>${fmt_cell(diff_pct,scale=1.)}&#37</td>
+            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesq'][idx])}</td>
+            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesu'][idx])}</td>
+            <td colspan="1" ${cell_style_withborder}>${fmt_cell(stats[roi_name]['stokesv'][idx])}</td>
+        % endfor
     </tr>
     %endfor 
 
     <tr>
-      <th colspan="1">Model</th>
-      <td colspan="4">${fmt_model(fluxplots['Flux vs. Freq Plots'][0].parameters)}</td>
-      <td colspan="4">${fmt_model(fluxplots['Flux vs. Freq Plots'][1].parameters)}</td>
+      <td colspan="1" style="border-left: ${border_line}; border-right: ${border_line}; border-bottom: ${border_line}""><b>Model</b></td>
+      <td colspan="7" style="border-right: ${border_line}; border-bottom: ${border_line}">${fmt_model(stats['peak_stokesi']['model_amplitude'],stats['peak_stokesi']['model_alpha'])}</td>
+      <td colspan="7" style="border-right: ${border_line}; border-bottom: ${border_line}">${fmt_model(stats['peak_linpolint']['model_amplitude'],stats['peak_linpolint']['model_alpha'])}</td>
     </tr>
                 
 </tbody>
@@ -161,24 +255,5 @@ def fmt_model(p):
 </div>
 
 
-<%self:plot_group plot_dict="${rmsplots}"
-                                  url_fn="${lambda ms:  'noop'}">
 
-        <%def name="title()">
-        </%def>
-
-        <%def name="preamble()">
-        </%def>
-
-        <%def name="mouseover(plot)">${plot.basename}</%def>
-
-        <%def name="fancybox_caption(plot)">
-          ${plot.y_axis} vs. ${plot.x_axis}
-        </%def>
-
-        <%def name="caption_title(plot)">
-           ${plot.y_axis} vs. ${plot.x_axis}
-        </%def>
-
-</%self:plot_group>
 

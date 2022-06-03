@@ -159,6 +159,7 @@ class VlassCubeFluxSummary(object):
                 ax.plot(x_m, spec_model_fitted(x_m), label=label, color='red')
                 LOG.info(f'PowerLaw1D Fitting Result for ROI={roi_name}: {label_text}')
 
+                model_flux = spec_model_fitted(x)/1e3  # in Jy/beam
                 ax.legend()
 
                 fig.savefig(figfile)
@@ -167,7 +168,12 @@ class VlassCubeFluxSummary(object):
                 plot = logger.Plot(figfile,
                                    x_axis='Freq',
                                    y_axis='Flux',
-                                   parameters={'desc': desc, 'model_amplitude': amplitude, 'model_alpha': alpha, 'model_label': label})
+                                   parameters={'desc': desc,
+                                               'roi_name': roi_name,
+                                               'model_amplitude': amplitude/1e3,  # Jy/bm
+                                               'model_alpha': alpha,
+                                               'model_label': label,
+                                               'model_flux': model_flux})         # Jy/bm
                 plot_wrappers.append(plot)
 
             except Exception as ex:
