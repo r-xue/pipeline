@@ -792,9 +792,9 @@ class Tclean(cleanbase.CleanBase):
             self.copy_products(restore_imagename, os.path.basename(new_pname))
             restore_startmodel = None
 
-        if calcres_iter0 is not False:
+        if calcres_iter0 is None or calcres_iter0:
             # tclean results assessment only happen when calcres=True or implicit default (None) for iter0
-            
+
             # Determine masking limits depending on PB
             extension = '.tt0' if result.multiterm else ''
             self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux + extension)

@@ -141,13 +141,13 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            LOG.info('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
 
         try:
             tb.open(msfile + '/FIELD')
         except:
-            LOG.info('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
@@ -245,13 +245,13 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            LOG.info('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
         #
         try:
             tb.open(msfile+'/FIELD')
         except:
-            LOG.info('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
@@ -349,13 +349,13 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            LOG.info('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
         #
         try:
             tb.open(msfile+'/FIELD')
         except:
-            LOG.info('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
