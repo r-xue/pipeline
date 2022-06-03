@@ -231,7 +231,7 @@ class Tclean(cleanbase.CleanBase):
             job = casa_tasks.copytree(image_name, newname)
             self._executor.execute(job)
 
-    def move_products(self, old_pname, new_pname, ignore_list=[], remove_list=[], copy_list=[]):
+    def move_products(self, old_pname, new_pname, ignore_list=None, remove_list=None, copy_list=None):
         """Move imaging products of one iteration to another.
         
         Certain image types can be excluded from the default "move" operation using the following keywords (in the precedence order):
@@ -242,19 +242,21 @@ class Tclean(cleanbase.CleanBase):
         imlist = glob.glob('%s.*' % (old_pname))
         for image_name in imlist:
             newname = image_name.replace(old_pname, new_pname)
-
-            if any([ignore_pattern in image_name for ignore_pattern in ignore_list]):
-                continue
-            if any([remove_pattern in image_name for remove_pattern in remove_list]):
-                LOG.info('Remove {}'.format(image_name))
-                job = casa_tasks.rmtree(image_name)
-                self._executor.execute(job)
-                continue
-            if any([copy_pattern in image_name for copy_pattern in copy_list]):
-                LOG.info('Copying {} to {}'.format(image_name, newname))
-                job = casa_tasks.copytree(image_name, newname)
-                self._executor.execute(job)
-                continue
+            if isinstance(ignore_list, (list, tuple)):
+                if any([ignore_pattern in image_name for ignore_pattern in ignore_list]):
+                    continue
+            if isinstance(remove_list, (list, tuple)):
+                if any([remove_pattern in image_name for remove_pattern in remove_list]):
+                    LOG.info('Remove {}'.format(image_name))
+                    job = casa_tasks.rmtree(image_name)
+                    self._executor.execute(job)
+                    continue
+            if isinstance(copy_list, (list, tuple)):
+                if any([copy_pattern in image_name for copy_pattern in copy_list]):
+                    LOG.info('Copying {} to {}'.format(image_name, newname))
+                    job = casa_tasks.copytree(image_name, newname)
+                    self._executor.execute(job)
+                    continue
             LOG.info('Moving {} to {}'.format(image_name, newname))
             job = casa_tasks.move(image_name, newname)
             self._executor.execute(job)
