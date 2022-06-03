@@ -876,19 +876,20 @@ class SingleDishPointingChart(object):
     def __del__(self):
         del self.datatable
 
-    def __get_field(self, field_id: Optional[int]):
+    def __get_field(self, field_id: Optional[int], intent: Optional[str] = None):
         """Get field domain object.
 
         If field_id is not given, None is returned.
 
         Args:
             field_id: Field ID
+            intent: Field intent
 
         Returns:
             Field: Field domain object or None.
         """
         if field_id is not None:
-            fields = self.ms.get_fields(field_id)
+            fields = self.ms.get_fields(field_id, intent=intent)
             assert len(fields) < 2
             if len(fields) == 1:
                 field = fields[0]
@@ -920,11 +921,11 @@ class SingleDishPointingChart(object):
         """
         self.antenna = antenna
         self.target_only = target_only
-        self.target_field = self.__get_field(target_field_id)
+        self.target_field = self.__get_field(target_field_id, intent='TARGET')
         if self.target_only:
             self.reference_field = None
         else:
-            self.reference_field = self.__get_field(reference_field_id)
+            self.reference_field = self.__get_field(reference_field_id, intent='REFERENCE')
         self.ofs_coord = ofs_coord
 
         if self.reference_field is None and not self.target_only:
