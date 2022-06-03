@@ -278,10 +278,10 @@ class Syspower(basetask.StandardTaskTemplate):
 
             # Obtain online flagging commands from flagdata result. **Assumes** flagdata
             #   was executed in the 3rd stage position
-            flagresult = self.inputs.context.results[2]
-            result = flagresult.read()
-            result = result[0]
-            onlineflagslist = result._flagcmds
+            # flagresult = self.inputs.context.results[2]
+            # result = flagresult.read()
+            # result = result[0]
+            # onlineflagslist = result._flagcmds
 
             # get online flags from .flagonline.txt
             flag_file_name = self.inputs.vis.replace('.ms', '.flagonline.txt')
