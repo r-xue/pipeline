@@ -926,10 +926,12 @@ class SingleDishPointingChart(object):
             self.reference_field = None
         else:
             self.reference_field = self.__get_field(reference_field_id, intent='REFERENCE')
-        self.ofs_coord = ofs_coord
 
-        if self.reference_field is None and not self.target_only:
-            return None
+            # do not produce target+reference plot if no reference field exists
+            if self.reference_field is None:
+                return None
+
+        self.ofs_coord = ofs_coord
 
         self.figfile = self._get_figfile()
 
