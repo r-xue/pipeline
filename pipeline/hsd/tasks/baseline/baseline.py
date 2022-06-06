@@ -373,7 +373,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             LOG.debug('spw=\'%s\'', args['spw'])
             LOG.debug('vis_list=%s', vis_list)
             member_list = numpy.fromiter(
-                utils.get_valid_ms_members2(group_desc, ms_list, args['antenna'], args['field'], args['spw']),
+                utils.get_valid_ms_members(group_desc, vis_list, args['antenna'], args['field'], args['spw']),
                 dtype=numpy.int32)
             # skip this group if valid member list is empty
             LOG.debug('member_list=%s', member_list)

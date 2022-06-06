@@ -540,7 +540,7 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
         index_dict[vis] = numpy.asarray(index_dict[vis])
     return index_dict
 
-# TODO (ksugimoto): refactor get_valid_ms_members and get_valid_ms_members2
+# TODO (ksugimoto): refactor get_valid_ms_members
 def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                          ant_selection: str, field_selection: str,
                          spw_selection: Union[str, dict]) -> Generator[int, None, None]:
@@ -609,47 +609,6 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
             if ((len(spwsel) == 0 or spw_id in spwsel) and
                     (len(fieldsel) == 0 or field_id in fieldsel) and
                     (len(antsel) == 0 or ant_id in antsel)):
-                yield member_id
-
-
-def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
-                          ant_selection: str, field_selection: str,
-                          spw_selection: str) -> Generator[int, None, None]:
-    """
-    Yield IDs of reduction groups that matches selection criteria.
-
-    Args:
-        group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are
-            pipeline.domain.singledish.MSReductionGroupDesc instances.
-        ms_filter: A list of Measurementset domain objects.
-        ant_selection: Antenna selection syntax.
-        field_selection: Field selection syntax.
-        spw_selection: SpW selection syntax.
-
-    Yields:
-        IDs of reduction group.
-    """
-    for member_id in range(len(group_desc)):
-        member = group_desc[member_id]
-        spw_id = member.spw_id
-        field_id = member.field_id
-        ant_id = member.antenna_id
-        msobj = member.ms
-        if msobj in ms_filter:
-            try:
-                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                   field=field_selection, baseline=ant_selection)
-            except RuntimeError as e:
-                LOG.trace('RuntimeError: {0}'.format(str(e)))
-                LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, field_selection))
-                continue
-            spwsel = mssel['spw']
-            fieldsel = mssel['field']
-            antsel = mssel['antenna1']
-            if ((spwsel.size == 0 or spw_id in spwsel) and
-                    (fieldsel.size == 0 or field_id in fieldsel) and
-                    (antsel.size == 0 or ant_id in antsel)):
                 yield member_id
 
 
