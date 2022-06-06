@@ -85,7 +85,6 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             plot_cover = collections.OrderedDict()  # key is field name, subkeys are 'title', 'cover_plots'
 
             plot_group = self._group_by_axes(plots)
-            LOG.info('plot_group = "{}"'.format(plot_group))
             # Render stage details pages
             details_title = ["R.A. vs Dec."]
             name_list = ['R.A. vs Dec.', 'Line Center vs Line Width']            
