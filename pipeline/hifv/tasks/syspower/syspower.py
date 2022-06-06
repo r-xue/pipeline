@@ -276,13 +276,6 @@ class Syspower(basetask.StandardTaskTemplate):
             dat_sum          = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
             dat_sum_flux     = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
 
-            # Obtain online flagging commands from flagdata result. **Assumes** flagdata
-            #   was executed in the 3rd stage position
-            # flagresult = self.inputs.context.results[2]
-            # result = flagresult.read()
-            # result = result[0]
-            # onlineflagslist = result._flagcmds
-
             # get online flags from .flagonline.txt
             flag_file_name = self.inputs.vis.replace('.ms', '.flagonline.txt')
             if os.path.isfile(flag_file_name):
