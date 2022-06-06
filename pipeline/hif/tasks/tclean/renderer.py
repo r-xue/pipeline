@@ -819,7 +819,7 @@ def make_plot_dict(plots):
                                     and p.parameters['virtspw'] == spw
                                     and p.parameters['iter'] == iteration
                                     and p.parameters['type'] == t]
-                        if matching != []:
+                        if matching:
                             plots_dict[prefix][field][spw][iteration][t] = matching[0]
 
     return plots_dict
@@ -921,9 +921,6 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     field = '%s (%s)' % (info['field'], r.intent)
                     fieldname = info['field']
                     intent = r.intent
-
-                coord_names = numpy.array(coordsys.names())
-                coord_refs = coordsys.referencevalue(format='s')
 
                 coordsys.done()
 
@@ -1074,7 +1071,6 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                             blcx = 0
                         if blcy < 0:
                             blcy = 0
-                        blc = [blcx, blcy]
 
                         trcx = xpixel + boxhalfxwidth
                         trcy = ypixel + boxhalfywidth
@@ -1082,10 +1078,6 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                             trcx = image.getchunk().shape[0]
                         if trcy > image.getchunk().shape[1]:
                             trcy = image.getchunk().shape[1]
-                        trc = [trcx, trcy]
-
-                        myrg = casa_tools.regionmanager
-                        r1 = myrg.box(blc=blc, trc=trc)
 
                         image_csys = image.coordsys()
                         rgTool = casa_tools.regionmanager
@@ -1575,7 +1567,7 @@ def make_plot_dict_stokes(plots):
                                     and p.parameters['stokes'] == spw
                                     and p.parameters['iter'] == iteration
                                     and p.parameters['type'] == t]
-                        if matching != []:
+                        if matching:
                             plots_dict[prefix][field][spw][iteration][t] = matching[0]
 
     return plots_dict
