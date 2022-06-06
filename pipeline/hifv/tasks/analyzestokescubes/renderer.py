@@ -1,5 +1,6 @@
 import os
 import copy
+import numpy as np
 
 from . import display as analyzestokescube
 import pipeline.infrastructure.logging as logging
@@ -31,7 +32,13 @@ class T2_4MDetailsAnalyzestokesCubeRenderer(basetemplates.T2_4MDetailsDefaultRen
         stats = r.stats
         for idx, (roi_name, roi_stats) in enumerate(stats.items()):
             for key in ['model_flux', 'model_amplitude', 'model_alpha']:
-                roi_stats[key] = fluxplots['Flux vs. Freq Plots'][idx].parameters[key]
+                try:
+                    roi_stats[key] = fluxplots['Flux vs. Freq Plots'][idx].parameters[key]
+                except Exception as e:
+                    if key in ('model_alpha', 'model_amplitude'):
+                        roi_stats[key] = np.nan
+                    else:
+                        roi_stats[key] = np.nan*np.array(roi_stats['stokesi'])
 
         # Make the rms vs. freq plot by reusing the result from hif_makecutoutimages
         try:

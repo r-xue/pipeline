@@ -236,10 +236,11 @@ bgcolor_snr_list=[snr2shade(8.),snr2shade(6.),snr2shade(4.),snr2shade(2.)]
         if idx==len(stats['peak_stokesi']['stokesi'])-1:
             cell_style.append('border-bottom: '+border_line)          
         cell_style='style="{}"'.format(('; ').join(cell_style))                   
+        rms_median_stokesi=stats['peak_stokesi']['rms'][idx][0]
         %> 
 
         <td ${cell_style}><b>${fmt_spw(stats['peak_stokesi'],idx)}</b></td>
-        <td ${cell_style}>${fmt_cell(stats['peak_stokesi']['rms'][idx][0])}</td>
+        <td ${cell_style}>${fmt_cell(rms_median_stokesi)}</td>
 
         % for roi_name in ['peak_stokesi','peak_linpolint']:
 
@@ -259,7 +260,7 @@ bgcolor_snr_list=[snr2shade(8.),snr2shade(6.),snr2shade(4.),snr2shade(2.)]
             else:
                 cell_style_pct='style="{}"'.format(('; ').join(cell_style))                  
             
-            snr=stats[roi_name]['stokesi'][idx]/stats[roi_name]['stokesi_rms'][idx]
+            snr=stats[roi_name]['stokesi'][idx]/rms_median_stokesi
             if snr<10:
                 bgcolor='background-color: '+snr2shade(snr)
                 cell_style_rms='style="{}"'.format(('; ').join(cell_style+[bgcolor]))
