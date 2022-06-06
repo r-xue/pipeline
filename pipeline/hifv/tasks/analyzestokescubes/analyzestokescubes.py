@@ -48,7 +48,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
 
         # initialize the stats container
         stats = collections.OrderedDict()
-        roi_stats_default = {'stokesi': [], 'stokesq': [], 'stokesu': [], 'stokesv': [],
+        roi_stats_default = {'stokesi': [], 'stokesq': [], 'stokesu': [], 'stokesv': [], 'stokesi_rms': [],
                              'spw': [], 'rms': [], 'reffreq': [], 'beamarea': [],
                              'xy': None, 'world': None}
         roi_list = ['peak_stokesi', 'peak_linpolint']
@@ -91,12 +91,14 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
                             stokesq_mean = img_stokesq.statistics(robust=False, region=rg)['mean'][0]
                             stokesu_mean = img_stokesu.statistics(robust=False, region=rg)['mean'][0]
                             stokesv_mean = img_stokesv.statistics(robust=False, region=rg)['mean'][0]
+                            stokesi_rms = image.statistics(robust=False, region=rg, axes=[0, 1])['mean'][0]
 
                             stats[roi_name]['spw'].append(imageitem['spwlist'])
                             stats[roi_name]['stokesi'].append(stokesi_mean)
                             stats[roi_name]['stokesq'].append(stokesq_mean)
                             stats[roi_name]['stokesu'].append(stokesu_mean)
                             stats[roi_name]['stokesv'].append(stokesv_mean)
+                            stats[roi_name]['stokesi_rms'].append(stokesi_rms)
 
                             stats[roi_name]['rms'].append(rms_stats)
                             stats[roi_name]['beamarea'].append(beamarea)

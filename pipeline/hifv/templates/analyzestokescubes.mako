@@ -41,9 +41,22 @@ def diff2shade(pct):
       rgb_hex=colors.to_hex(cmap(0.5))
     return rgb_hex   
 
+def snr2shade(snr):
+    cmap=cm.get_cmap(name='Reds')
+    if 7.5<=snr<10:
+      rgb_hex=colors.to_hex(cmap(0.2))
+    if 5.0<=snr<7.5:
+      rgb_hex=colors.to_hex(cmap(0.3))
+    if 3.0<=snr<5.0:
+      rgb_hex=colors.to_hex(cmap(0.4))
+    if snr<3.0:
+      rgb_hex=colors.to_hex(cmap(0.5))
+    return rgb_hex       
+
 border_line="2px solid #AAAAAA"
 cell_line="1px solid #DDDDDD"
 bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)]
+bgcolor_snr_list=[snr2shade(8.),snr2shade(6.),snr2shade(4.),snr2shade(2.)]
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -156,10 +169,18 @@ bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-hover table-condensed">
 <caption>
     <li>
-        <i>I</i>, <i>Q</i>, <i>U</i>, <i>V</i> : flux density at peak positions, averaged over a 3x3 pixel box.
+        <i>I</i>, <i>Q</i>, <i>U</i>, <i>V</i> : Brightness at peak positions, averaged over a 3x3 pixel box.
     </li>     
     <li>
-        <i>I</i><sub>model</sub> : flux density from the best-fit power-law model.
+        <i>I</i><sub>SNR</sub>: Peak signal-to-noise ratio (SNR) at Stokes I.
+        The color background is determined by SNR: 
+        <p style="background-color:${bgcolor_snr_list[0]}; display:inline;">7.5&le;snr&lt;10</p>; 
+        <p style="background-color:${bgcolor_snr_list[1]}; display:inline;">5&le;snr&lt;7.5</p>; 
+        <p style="background-color:${bgcolor_snr_list[2]}; display:inline;">3&le;snr&lt;5</p>; 
+        <p style="background-color:${bgcolor_snr_list[3]}; display:inline;">snr&lt;3.0</p>.
+    </li>       
+    <li>
+        <i>I</i><sub>model</sub> : Brightness from the best-fit power-law model.
     </li>   
     <li>
         <i>I</i><sub>res</sub> : <i>I</i>-<i>I</i><sub>model</sub>
@@ -176,14 +197,16 @@ bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)
 <tbody>
 
     <tr>
-        <th colspan="1"><b>Region</b></td>
-        <th colspan="7"><b>Stokes I Peak</b></td>
-        <th colspan="7"><b>LinPol Peak</b></td>
+        <th colspan="2"><b>Region</b></td>
+        <th colspan="8"><b>Stokes I Peak</b></td>
+        <th colspan="8"><b>LinPol Peak</b></td>
     </tr>
     <tr>
         <th rowspan="2" style="vertical-align : middle;text-align:center;"><b>Spw / Freq (GHz)</b></td>
+        <th rowspan="1" style="vertical-align : middle;text-align:center;"><b>RMS<sub>median<sub></b></td>
         % for idx in [0,1]:
             <th colspan="1"><b><i>I</i></b></th>
+            <th colspan="1"><b><i>I</i><sub>SNR</sub></b></th>
             <th colspan="1"><b><i>I</i><sub>model</sub></b></td>
             <th colspan="1"><b><i>I</i><sub>res</sub></b></td>
             <th colspan="1"><b><i>I</i><sub>res,pct</sub></b></td>
@@ -193,8 +216,10 @@ bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)
         % endfor     
     </tr>   
     <tr>
+        <th colspan="1">mJy/bm</th>
         % for idx in [0,1]:
             <th colspan="1">mJy/bm</th>
+            <th colspan="1">N/A</td>
             <th colspan="1">mJy/bm</td>
             <th colspan="1">mJy/bm</td>
             <th colspan="1">pct.</td>
@@ -214,6 +239,7 @@ bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)
         %> 
 
         <td ${cell_style}><b>${fmt_spw(stats['peak_stokesi'],idx)}</b></td>
+        <td ${cell_style}>${fmt_cell(stats['peak_stokesi']['rms'][idx][0])}</td>
 
         % for roi_name in ['peak_stokesi','peak_linpolint']:
 
@@ -228,12 +254,22 @@ bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)
 
             diff_pct=(stats[roi_name]['stokesi'][idx]-stats[roi_name]['model_flux'][idx])/stats[roi_name]['stokesi'][idx]*100.
             if abs(diff_pct)>=5:
-                bgcolor=diff2shade(diff_pct)
-                cell_style.append(f'background-color: {bgcolor}')      
-            cell_style_pct='style="{}"'.format(('; ').join(cell_style))              
+                bgcolor='background-color: '+diff2shade(diff_pct)
+                cell_style_pct='style="{}"'.format(('; ').join(cell_style+[bgcolor]))
+            else:
+                cell_style_pct='style="{}"'.format(('; ').join(cell_style))                  
+            
+            snr=stats[roi_name]['stokesi'][idx]/stats[roi_name]['stokesi_rms'][idx]
+            if snr<10:
+                bgcolor='background-color: '+snr2shade(snr)
+                cell_style_rms='style="{}"'.format(('; ').join(cell_style+[bgcolor]))
+            else:
+                cell_style_rms='style="{}"'.format(('; ').join(cell_style))            
+
             %>          
             
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx])}</td>
+            <td colspan="1" ${cell_style_rms}>${fmt_cell(snr,scale=1.)}</td>
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['model_flux'][idx])}</td>
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx]-stats['peak_stokesi']['model_flux'][idx])}</td>
             <td colspan="1" ${cell_style_pct}>${fmt_cell(diff_pct,scale=1.)}&#37</td>
@@ -245,9 +281,9 @@ bgcolor_pct_list=[diff2shade(7.),diff2shade(15.),diff2shade(25.),diff2shade(35.)
     %endfor 
 
     <tr>
-      <td colspan="1" style="border-left: ${border_line}; border-right: ${border_line}; border-bottom: ${border_line}""><b>Model</b></td>
-      <td colspan="7" style="border-right: ${border_line}; border-bottom: ${border_line}">${fmt_model(stats['peak_stokesi']['model_amplitude'],stats['peak_stokesi']['model_alpha'])}</td>
-      <td colspan="7" style="border-right: ${border_line}; border-bottom: ${border_line}">${fmt_model(stats['peak_linpolint']['model_amplitude'],stats['peak_linpolint']['model_alpha'])}</td>
+      <td colspan="2" style="border-left: ${border_line}; border-right: ${border_line}; border-bottom: ${border_line}""><b>Model</b></td>
+      <td colspan="8" style="border-right: ${border_line}; border-bottom: ${border_line}">${fmt_model(stats['peak_stokesi']['model_amplitude'],stats['peak_stokesi']['model_alpha'])}</td>
+      <td colspan="8" style="border-right: ${border_line}; border-bottom: ${border_line}">${fmt_model(stats['peak_linpolint']['model_amplitude'],stats['peak_linpolint']['model_alpha'])}</td>
     </tr>
                 
 </tbody>

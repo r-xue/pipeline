@@ -114,6 +114,7 @@ class VlassCubeFluxSummary(object):
 
                 y = np.array(roi_stats['stokesi'])*1e3
                 x = np.array(roi_stats['reffreq'])/1e9
+                y_rms = np.array(roi_stats['stokesi_rms'])*1e3
 
                 fig, ax = plt.subplots(figsize=(10, 7))
                 ax.scatter(x, y, label='Observed', color='black')
@@ -146,6 +147,11 @@ class VlassCubeFluxSummary(object):
                 if roi_name == 'peak_linpolint':
                     desc = 'Peak of the linearly polarized intensity map at {:.3f} GHz'.format(
                         min(roi_stats['reffreq'])/1e9)
+
+                yrange = ax.get_ylim()
+                ax.set_ylim(yrange)
+                snr_lim = 2.0
+                ax.fill_between(x, yrange[0], y_rms*snr_lim, facecolor='lightgray', alpha=0.5, label=r'Below $2\sigma$')
 
                 ax.set_title(f"{peak_loc}\n{peak_loc_xy}")
 
