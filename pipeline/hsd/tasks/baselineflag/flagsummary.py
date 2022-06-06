@@ -148,7 +148,7 @@ class SDBLFlagSummary(object):
                 # create summary data and pack statistics 
                 nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
                 nrow = len( dt_idx )
-                stat_dict = self.pack_statistics( nrow, nflags )
+                stat_dict = dict( (k, 100.0 * v / nrow) for k, v in nflags.items() )
 
                 # create plots
                 ### instance to be made outside pol loop if overplotting pols
@@ -190,29 +190,6 @@ class SDBLFlagSummary(object):
         LOG.info('PROFILE execute: elapsed time is %s sec'%(end_time-start_time))
 
         return flagSummary, plot_list
-
-
-    def pack_statistics( self, nrow:int, flag_nums:Dict ) -> Dict:
-        """
-        Calculate flag fractions
-
-        Args:
-            ids:       number of rows
-            flag_nums: Dictionary of number of flagged rows
-        Returns:
-            dictionary of flag fractions
-        """
-        stat = {}
-
-        stat['TsysFlag']               = 100.0 * flag_nums['TsysFlag'] / nrow
-        stat['RmsPreFitFlag']          = 100.0 * flag_nums['RmsPreFitFlag'] / nrow
-        stat['RmsPostFitFlag']         = 100.0 * flag_nums['RmsPostFitFlag'] / nrow
-        stat['RunMeanPreFitFlag']      = 100.0 * flag_nums['RunMeanPreFitFlag'] / nrow
-        stat['RunMeanPostFitFlag']     = 100.0 * flag_nums['RunMeanPostFitFlag'] / nrow
-        stat['RmsExpectedPreFitFlag']  = 100.0 * flag_nums['RmsExpectedPreFitFlag'] / nrow
-        stat['RmsExpectedPostFitFlag'] = 100.0 * flag_nums['RmsExpectedPostFitFlag'] / nrow
-    
-        return stat
 
 
     def pack_flags( self, datatable:DataTable, polid:int, ids, FlagRule_local:Dict ) -> Tuple[ List[int], Dict, List[int], Dict ]:

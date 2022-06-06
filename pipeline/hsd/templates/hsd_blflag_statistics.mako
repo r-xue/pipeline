@@ -14,13 +14,7 @@ HISTOGRAM_LABELS = collections.OrderedDict([
 
 # set all X-axis labels to Kelvin
 HISTOGRAM_AXES = collections.OrderedDict([
-    ( 'outlier_Tsys',         'PLOTS.xAxisLabels["Flagged fraction"]' ),
-    ( 'rms_prefit',           'PLOTS.xAxisLabels["Flagged fraction"]' ),
-    ( 'rms_postfit',          'PLOTS.xAxisLabels["Flagged fraction"]' ),
-    ( 'runmean_prefit',       'PLOTS.xAxisLabels["Flagged fraction"]' ),
-    ( 'runmean_postfit',      'PLOTS.xAxisLabels["Flagged fraction"]' ),
-    ( 'expected_rms_prefit',  'PLOTS.xAxisLabels["Flagged fraction"]' ),
-    ( 'expected_rms_postfit', 'PLOTS.xAxisLabels["Flagged fraction"]' )
+    ( key, 'PLOTS.xAxisLabels["Flagged fraction"]' ) for key in HISTOGRAM_LABELS
 ])
 %>
 <%inherit file="detail_plots_basetemplate.mako"/>
