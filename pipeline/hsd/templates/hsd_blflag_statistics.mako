@@ -12,7 +12,7 @@ HISTOGRAM_LABELS = collections.OrderedDict([
     ( 'expected_rms_postfit', 'Expected RMS post-fit'  )
 ])
 
-# set all X-axis labels to Kelvin
+# set all X-axis labels to 'Flagged %' (see pipeline.js for defs)
 HISTOGRAM_AXES = collections.OrderedDict([
     ( key, 'PLOTS.xAxisLabels["Flagged fraction"]' ) for key in HISTOGRAM_LABELS
 ])
