@@ -543,7 +543,7 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
 # TODO (ksugimoto): refactor get_valid_ms_members and get_valid_ms_members2
 def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                          ant_selection: str, field_selection: str,
-                         spw_selection: str) -> Generator[int, None, None]:
+                         spw_selection: Union[str, dict]) -> Generator[int, None, None]:
     """
     Yield IDs of reduction groups that matches selection criteria.
 
@@ -554,7 +554,9 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
         msname_filter: Names of MeasurementSets to select.
         ant_selection: Antenna selection syntax.
         field_selection: Field selection syntax.
-        spw_selection: SpW selection syntax.
+        spw_selection: SpW selection syntax. It can be string or dictionary
+                       containing per-MS spw selection string. Keys for the
+                       dictionary should be absolute path to the MS.
 
     Yields:
         IDs of reduction group.
@@ -586,7 +588,16 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                         if not _field_selection.startswith('"'):
                             _field_selection = '"{}"'.format(field_selection)
                 LOG.debug('field_selection = "{}"'.format(_field_selection))
-                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+
+                if isinstance(spw_selection, str):
+                    _spw_selection = spw_selection
+                elif isinstance(spw_selection, dict):
+                    _spw_selection = spw_selection.get(msobj.name, '')
+                else:
+                    _spw_selection = ''
+                LOG.debug(f'spw_selection = {_spw_selection}')
+
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=_spw_selection,
                                                    field=_field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))

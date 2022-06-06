@@ -80,17 +80,6 @@ class SDImagingInputs(vdp.StandardInputs):
 
         return ','.join(fields)
 
-    @spw.postprocess
-    def spw(self, unprocessed):
-        if unprocessed is not None and unprocessed != '':
-            return unprocessed
-
-        # filters science spws by default (assumes the same spw setting for all MSes)
-        vis = self.vis if isinstance(self.vis, str) else self.vis[0]
-        msobj = self.context.observing_run.get_ms(vis)
-        science_spws = msobj.get_spectral_windows(unprocessed, with_channels=True)
-        return ','.join([str(spw.id) for spw in science_spws])
-
     @property
     def antenna(self):
         return ''
@@ -190,6 +179,24 @@ class SDImaging(basetask.StandardTaskTemplate):
         # finally replace task attribute with the top-level one
         result.task = cls
 
+    def spw_for_vis(self, spw_in):
+        observing_run = self.inputs.context.observing_run
+        if isinstance(spw_in, collections.abc.Sequence) and not isinstance(spw_in, str):
+            spw_out = {}
+            for ms in observing_run.measurement_sets:
+                origin_ms = ms.origin_ms
+                idx = observing_run.measurement_sets.index(observing_run.get_ms(origin_ms))
+                spw_out[ms.name] = spw_in[idx]
+        elif isinstance(spw_in, str) and len(spw_in) == 0:
+            # select all science spws
+            spw_out = {}
+            for ms in observing_run.measurement_sets:
+                science_spws = ms.get_spectral_windows(science_windows_only=True)
+                spw_out[ms.name] = ','.join(map(lambda spw: str(spw.id), science_spws))
+        else:
+            spw_out = dict((ms.name, spw_in) for ms in observing_run.measurement_sets)
+        return spw_out
+
     def prepare(self):
         inputs = self.inputs
         context = inputs.context
@@ -200,6 +207,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         ms_list = inputs.ms
         ms_names = [msobj.name for msobj in ms_list]
         in_spw = inputs.spw
+        args_spw = self.spw_for_vis(in_spw)
         # in_field is comma-separated list of target field names that are
         # extracted from all input MSs
         in_field = inputs.field
@@ -259,7 +267,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info('Skip reduction group {:d}'.format(group_id))
                 continue
 
-            member_list = list(common.get_valid_ms_members(group_desc, ms_names, inputs.antenna, field_sel, in_spw))
+            member_list = list(common.get_valid_ms_members(group_desc, ms_names, inputs.antenna, field_sel, args_spw))
             LOG.trace('group {}: member_list={}'.format(group_id, member_list))
 
             # skip this group if valid member list is empty
@@ -377,8 +385,13 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # pick restfreq from restfreq_list
                 if isinstance(restfreq_list, list):
+                    # assuming input spw id is "real" spw id
                     v_spwid = context.observing_run.real2virtual_spw_id(spwids[0], msobjs[0])
-                    v_idx = in_spw.split(',').index(str(v_spwid))
+                    v_spwid_list = [
+                        context.observing_run.real2virtual_spw_id(int(i), msobjs[0])
+                        for i in args_spw[msobjs[0].name].split(',')
+                    ]
+                    v_idx = v_spwid_list.index(v_spwid)
                     if len(restfreq_list) > v_idx:
                         restfreq = restfreq_list[v_idx]
                         if restfreq is None:
