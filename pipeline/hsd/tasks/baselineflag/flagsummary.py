@@ -147,7 +147,8 @@ class SDBLFlagSummary(object):
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
                 # create summary data and pack statistics 
                 nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
-                stat_dict = self.pack_statistics( dt_idx, nflags )
+                nrow = len( dt_idx )
+                stat_dict = self.pack_statistics( nrow, nflags )
 
                 # create plots
                 ### instance to be made outside pol loop if overplotting pols
@@ -177,12 +178,12 @@ class SDBLFlagSummary(object):
                 del FlagRule_local, NPp_dict
 
                 # show flags on LOG
-                self.show_flags( dt_idx, is_baselined, FlaggedRows, FlaggedRowsCategory )
+                self.show_flags( nrow, is_baselined, FlaggedRows, FlaggedRowsCategory )
 
                 t1 = time.time()
 
                 LOG.info('Plot flags End: Elapsed time = %.1f sec' % (t1 - t0) )
-                flagSummary.append( { 'nrow': len(dt_idx), 'nflags': nflags } )
+                flagSummary.append( { 'nrow': nrow, 'nflags': nflags } )
                 flagplotter = None
 
         end_time = time.time()
@@ -191,17 +192,16 @@ class SDBLFlagSummary(object):
         return flagSummary, plot_list
 
 
-    def pack_statistics( self, ids, flag_nums ) -> Dict:
+    def pack_statistics( self, nrow:int, flag_nums:Dict ) -> Dict:
         """
         Calculate flag fractions
 
         Args:
-            ids:       row numbers
+            ids:       number of rows
             flag_nums: Dictionary of number of flagged rows
         Returns:
             dictionary of flag fractions
         """
-        nrow = len(ids)
         stat = {}
 
         stat['TsysFlag']               = 100.0 * flag_nums['TsysFlag'] / nrow
@@ -328,63 +328,61 @@ class SDBLFlagSummary(object):
         return FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict
 
 
-    def show_flags( self, ids:List[int], is_baselined:bool, FlaggedRows:List[int], FlaggedRowsCategory:Dict ):
+    def show_flags( self, nrow:int, is_baselined:bool, FlaggedRows:List[int], FlaggedRowsCategory:Dict ):
         """
         Output flag statistics to LOG.
 
         Args:
-            ids                 : row numbers
+            nrows               : number of rows
             is_baselined        : True if baselined, Fause if not
             FlaggedRows         : flagged rows
             FlaggedRowsCategory : flagged rows by category
         Returns:
             (none)
         """
-        NROW = len( ids )
-
         # Tsys
-        LOG.info('Number of rows flagged by Tsys = %d /%d' % (len(FlaggedRowsCategory['TsysFlag']), NROW))
+        LOG.info('Number of rows flagged by Tsys = %d /%d' % (len(FlaggedRowsCategory['TsysFlag']), nrow))
         if len(FlaggedRowsCategory['TsysFlag']) > 0:
             LOG.debug('Flagged rows by Tsys =%s ' % FlaggedRowsCategory['TsysFlag'])
         # on-line flag
-        LOG.info('Number of rows flagged by on-line flag = %d /%d' % (len(FlaggedRowsCategory['OnlineFlag']), NROW))
+        LOG.info('Number of rows flagged by on-line flag = %d /%d' % (len(FlaggedRowsCategory['OnlineFlag']), nrow))
         if len(FlaggedRowsCategory['OnlineFlag']) > 0:
             LOG.debug('Flagged rows by Online-flag =%s ' % FlaggedRowsCategory['OnlineFlag'])
         # Pre-fit RMS
         LOG.info('Number of rows flagged by the baseline fluctuation (pre-fit) = %d /%d' %
-                 (len(FlaggedRowsCategory['RmsPreFitFlag']), NROW))
+                 (len(FlaggedRowsCategory['RmsPreFitFlag']), nrow))
         if len(FlaggedRowsCategory['RmsPreFitFlag']) > 0:
             LOG.debug('Flagged rows by the baseline fluctuation (pre-fit) =%s ' % FlaggedRowsCategory['RmsPreFitFlag'])
         # Post-fit RMS
         if is_baselined:
             LOG.info('Number of rows flagged by the baseline fluctuation (post-fit) = %d /%d' %
-                     (len(FlaggedRowsCategory['RmsPostFitFlag']), NROW))
+                     (len(FlaggedRowsCategory['RmsPostFitFlag']), nrow))
         if len(FlaggedRowsCategory['RmsPostFitFlag']) > 0:
             LOG.debug('Flagged rows by the baseline fluctuation (post-fit) =%s ' % FlaggedRowsCategory['RmsPostFitFlag'])
         # Pre-fit running mean
         LOG.info('Number of rows flagged by the difference from running mean (pre-fit) = %d /%d' %
-                 (len(FlaggedRowsCategory['RunMeanPreFitFlag']), NROW))
+                 (len(FlaggedRowsCategory['RunMeanPreFitFlag']), nrow))
         if len(FlaggedRowsCategory['RunMeanPreFitFlag']) > 0:
             LOG.debug('Flagged rows by the difference from running mean (pre-fit) =%s ' % FlaggedRowsCategory['RunMeanPreFitFlag'])
         # Post-fit running mean
         if is_baselined:
             LOG.info('Number of rows flagged by the difference from running mean (post-fit) = %d /%d' %
-                     (len(FlaggedRowsCategory['RunMeanPostFitFlag']), NROW))
+                     (len(FlaggedRowsCategory['RunMeanPostFitFlag']), nrow))
         if len(FlaggedRowsCategory['RunMeanPostFitFlag']) > 0:
             LOG.debug('Flagged rows by the difference from running mean (post-fit) =%s ' % FlaggedRowsCategory['RunMeanPostFitFlag'])
         # Pre-fit expected RMS
-        LOG.info('Number of rows flagged by the expected RMS (pre-fit) = %d /%d' % (len(FlaggedRowsCategory['RmsExpectedPreFitFlag']), NROW))
+        LOG.info('Number of rows flagged by the expected RMS (pre-fit) = %d /%d' % (len(FlaggedRowsCategory['RmsExpectedPreFitFlag']), nrow))
         if len(FlaggedRowsCategory['RmsExpectedPreFitFlag']) > 0:
             LOG.debug('Flagged rows by the expected RMS (pre-fit) =%s ' % FlaggedRowsCategory['RmsExpectedPreFitFlag'])
         # Post-fit expected RMS
         if is_baselined:
             LOG.info('Number of rows flagged by the expected RMS (post-fit) = %d /%d' %
-                     (len(FlaggedRowsCategory['RmsExpectedPostFitFlag']), NROW))
+                     (len(FlaggedRowsCategory['RmsExpectedPostFitFlag']), nrow))
         if len(FlaggedRowsCategory['RmsExpectedPostFitFlag']) > 0:
             LOG.debug('Flagged rows by the expected RMS (post-fit) =%s ' % FlaggedRowsCategory['RmsExpectedPostFitFlag'])
 
         # All categories
-        LOG.info('Number of rows flagged by all active categories = %d /%d' % (len(FlaggedRows), NROW))
+        LOG.info('Number of rows flagged by all active categories = %d /%d' % (len(FlaggedRows), nrow))
         if len(FlaggedRows) > 0:
             LOG.debug('Final Flagged rows by all active categories =%s ' % FlaggedRows)
 
