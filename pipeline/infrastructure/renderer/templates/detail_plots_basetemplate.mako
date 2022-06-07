@@ -59,7 +59,7 @@ SELECT2_PLACEHOLDER = {'vis': 'Show all measurement sets',
                        'tsys_spw' : 'Show all Tsys windows',
                        'intent' : 'Show all observing intents',
                        'type' : 'Show all types',
-                       'status': 'Show all statuses',
+                       'status': 'Show all status',
                        'model': 'Show all models'}
 
 def get_options(selector, plots):
