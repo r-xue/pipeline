@@ -76,7 +76,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                                                  process_caldevice=process_caldevice, session=session,
                                                  overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                  save_flagonline=save_flagonline, createmms=createmms,
-                                                 ocorr_mode=ocorr_mode, asimaging=False)
+                                                 ocorr_mode=ocorr_mode, datacolumns={})
         self.with_pointing_correction = with_pointing_correction
 
 

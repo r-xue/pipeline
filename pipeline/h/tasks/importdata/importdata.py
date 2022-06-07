@@ -2,7 +2,7 @@ import contextlib
 import os
 import shutil
 import tarfile
-from typing import Optional
+from typing import List, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -40,17 +40,17 @@ class ImportDataInputs(vdp.StandardInputs):
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, save_flagonline=None, bdfflags=None, lazy=None, createmms=None,
-                 ocorr_mode=None, asimaging=None):
+                 ocorr_mode=None, datacolumns=None):
         super().__init__()
 
         self.context = context
         self.vis = vis
         self.output_dir = output_dir
 
-        self.asimaging = asimaging
         self.asis = asis
         self.bdfflags = bdfflags
         self.createmms = createmms
+        self.datacolumns = datacolumns
         self.lazy = lazy
         self.nocopy = nocopy
         self.ocorr_mode = ocorr_mode
@@ -219,23 +219,79 @@ class ImportData(basetask.StandardTaskTemplate):
         rel_to_import = [os.path.relpath(f, abs_output_dir) for f in to_import]
 
         observing_run = ms_reader.get_observing_run(rel_to_import)
-        data_type = DataType.RAW
         for ms in observing_run.measurement_sets:
-            LOG.debug('Setting session to %s for %s', inputs.session, ms.basename)
-            if inputs.asimaging:
-                LOG.info('Importing %s as an imaging measurement set', ms.basename)
-                data_type = DataType.REGCAL_CONTLINE_SCIENCE
-
-            # Set data_type
-            col = get_datacolumn_name(ms.name)
-            if col is not None:
-                ms.set_data_column(data_type, col)
-            else:
-                LOG.error('No data column found in {}'.format(ms.basename))
-
-            ms.session = inputs.session
+            LOG.debug(f'Setting session to {inputs.session} for {ms.basename}')
 
             ms_origin = 'ASDM' if ms.name in converted_asdm_abspaths else 'MS'
+
+            datacolumn_name = get_datacolumn_name(ms.name)
+            if datacolumn_name is None:
+                msg = 'No data column found in {}'.format(ms.basename)
+                LOG.error(msg)
+                raise IOError(msg)
+
+            correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
+            if correcteddatacolumn_name is None:
+                data_types = {'DATA': DataType.RAW}
+            else:
+                # Default to *_cont.ms kind of MS if the corrected data column is present
+                data_types = {'DATA': DataType.RAW, 'CORRECTED_DATA': DataType.REGCAL_CONTLINE_ALL}
+
+            if inputs.datacolumns != {}:
+                if len(inputs.datacolumns) == 1:
+                    if ms_origin == 'ASDM' and inputs.datacolumns['data'].upper() != 'RAW':
+                        msg = 'Data type for ASDMs can only be "RAW"'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+                    data_types['DATA'] = eval(f'DataType.{inputs.datacolumns["data"].upper()}')
+                elif len(inputs.datacolumns) == 2:
+                    if ms_origin == 'ASDM':
+                        msg = 'ASDMs only have a single raw data column'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+                    if correcteddatacolumn_name is None:
+                        msg = 'Only one data column detected'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+
+                    datacolumn_strtype = inputs.datacolumns['data'].upper()
+                    if datacolumn_strtype == 'NONE':
+                        del data_types['DATA']
+                    else:
+                        try:
+                            datacolumn_type = eval(f'DataType.{datacolumn_strtype}')
+                        except:
+                            msg = f'No such data type {datacolumn_strtype}'
+                            LOG.error(msg)
+                            raise ValueError(msg)
+                        data_types['DATA'] = datacolumn_type
+
+                    correcteddatacolumn_strtype = inputs.datacolumns['corrected'].upper()
+                    if correcteddatacolumn_strtype == 'NONE':
+                        del data_types['CORRECTED_DATA']
+                    else:
+                        try:
+                            correcteddatacolumn_type = eval(f'DataType.{correcteddatacolumn_strtype}')
+                        except:
+                            msg = f'No such data type {correcteddatacolumn_strtype}'
+                            LOG.error(msg)
+                            raise ValueError(msg)
+                        data_types['CORRECTED_DATA'] = correcteddatacolumn_type
+                else:
+                    msg = 'Maximum number of configurable data types is 2 (DATA and CORRECTED_DATA columns)'
+                    LOG.error(msg)
+                    raise ValueError(msg)
+
+            # Set data_type for DATA and CORRECTED_DATA columns if specified
+            if 'DATA' in data_types:
+                LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"]}')
+                ms.set_data_column(data_types['DATA'], datacolumn_name)
+
+            if 'CORRECTED_DATA' in data_types:
+                ms.set_data_column(data_types['CORRECTED_DATA'], correcteddatacolumn_name)
+                LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED_DATA"]}')
+
+            ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
 
         # Log IERS tables information (PIPE-734)
@@ -389,7 +445,30 @@ def get_datacolumn_name(msname: str) -> Optional[str]:
         Search for 'DATA' and 'FLOAT_DATA' columns in MS and returns the first
         matching column in MS. Returns None if no match is found.
     """
-    search_cols = ['DATA', 'FLOAT_DATA']
+    return search_columns(msname, ['DATA', 'FLOAT_DATA'])
+
+def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
+    """
+    Return name of corrected data column in MeasurementSet (MS).
+
+    Args:
+        msname: A path of MS
+
+    Returns:
+        Search for 'CORRECTED_DATA' column in MS and return the name.
+        Returns None if no match is found.
+    """
+    return search_columns(msname, ['CORRECTED_DATA'])
+
+def search_columns(msname: str, search_cols: List[str]) -> Optional[str]:
+    """
+    Args:
+        search_cols: List of column names to search for
+
+    Returns:
+        Search for columns in MS and return the first matching name.
+        Returns None if no match is found.
+    """
     with casa_tools.TableReader(msname) as tb:
         tb_cols = tb.colnames()
         for col in search_cols:
