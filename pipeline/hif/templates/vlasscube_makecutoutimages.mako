@@ -371,7 +371,8 @@ $(function () {
 
 <%self:plot_group plot_dict="${img_plots}" 
                   url_fn="${lambda ms:  'noop'}"
-                  break_rows_by="band,order_idx"
+                  break_rows_by="band",
+                  separate_rows_by="thick-line",
                   sort_row_by="band,order_idx">
 
         <%def name="title()">
