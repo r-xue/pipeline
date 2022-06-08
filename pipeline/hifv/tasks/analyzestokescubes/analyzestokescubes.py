@@ -155,32 +155,16 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
     def _get_mask(self, imagename_pbcor_subim):
         """Generate a mask LEL based on the specified pbcor subimage name."""
 
-        # option 1: use pb>0.4 to restrict the search region.
-        # this is to be overridden by option 2
-
-        # pbname_freqhigh = imagename_pbcor_subim.replace('.image.pbcor.tt0.subim', '.pb.tt0.subim')
-        # pbname_freqhigh_flatten = pbname_freqhigh+'.flattened'
-        # LOG.info(f'Generating a flattend PB subimage at the highest frequency: {pbname_freqhigh_flatten}')
-        # with casa_tools.ImageReader(pbname_freqhigh) as image:
-        #     collapsed_image = image.collapse(
-        #         function='max', axes=[2, 3], outfile=pbname_freqhigh_flatten, overwrite=True)
-        #     collapsed_image.close()
-        #     subim_cs = image.coordsys()
-        #     subim_shape = image.shape()
-        #     pblimit = 0.4  # only search peak inside above this pb level.
-        #     mask_lel = f'"{pbname_freqhigh_flatten}">{pblimit}'
-
-        # option 2: use .masks from tclean() to restrict the search region.
-        # for vlass-se-cube or vlass-se-cont:
-        #   iter2.mask/iter2.cleanmask is generated from vlassmasking (tier2-combined)
-        #   iter3.mask is from tclean(pbmask=0.4,mask='pb',...): using it alone is equivalent to option 1.
-        # In below, we use the name pattern to retreive the original tclean mask and catch exceptions in case
-        # the operation fails. Alternatively, we could retreive original tclean masks by revisiting
-        # context.sciimlist.get_imlist(), which is a more generic solution.
-
         with casa_tools.ImageReader(imagename_pbcor_subim) as image:
             subim_cs = image.coordsys()
             subim_shape = image.shape()
+
+        # Here we borrow .mask images from tclean() to restrict the search region.
+        # for vlass-se-cube or vlass-se-cont:
+        #   iter2.mask/iter2.cleanmask is generated from vlassmasking (tier2-combined)
+        #   iter3.mask is from tclean(pbmask=0.4,mask='pb',...)
+        # As below, we use the name pattern to retreive the .mask images in their original dimension
+        # and make their subimages on-demand for the LEL expression.
 
         mask_lel = []
         for mask_pat in ['.iter2.cleanmask', '.iter3.mask']:
