@@ -87,19 +87,19 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             plot_group = self._group_by_axes(plots)
             # Render stage details pages
             details_title = ["R.A. vs Dec."]
-            name_list = ['R.A. vs Dec.', 'Line Center vs Line Width']            
+            name_list = ['R.A. vs Dec.', 'Line Center vs Line Width']
             for name in name_list:
                 if name not in plot_group:
                     # no plots available. probably no lines are detected.
                     continue
 
-                _plots = plot_group[name]                
-                perfield_plots = self._plots_per_field(_plots)                
+                _plots = plot_group[name]
+                perfield_plots = self._plots_per_field(_plots)
                 renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
                 for fieldobj in sorted_fields:
                     group_desc = {'title': name,
                                   'html': os.path.basename(renderer.path)}
-                    field = self.get_field_key(perfield_plots, fieldobj)                    
+                    field = self.get_field_key(perfield_plots, fieldobj)
                     if field is None:
                         LOG.info('No "{}" plots for field "{}"'.format(name, fieldobj.name))
                         plot_detail[fieldobj.name] = []

@@ -244,17 +244,17 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 class ClusterDisplay(object):
     """Plotter to create plots that visualize clustering analysis.
 
-    For each detected cluster, this class creates three types of
+    For each detected cluster, this class creates two types of
     plots described below:
 
-        1. Cluster property plot (ClusterPropertyDisplay):
+        1. Cluster validation plot (ClusterValidationDisplay):
+            displays spatial distribution of detected
+            lines associated with the cluster
+
+        2. Cluster property plot (ClusterPropertyDisplay):
             displays property of the cluster in two dimensional
             space of line center against line width of the
             detected lines
-
-        2. Cluster validation plot (ClusterValidationDisplay):
-            displays spatial distribution of detected
-            lines associated with the cluster
     """
 
     Inputs = SingleDishDisplayInputs
