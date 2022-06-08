@@ -2,6 +2,7 @@ import contextlib
 import os
 import shutil
 import tarfile
+import collections
 from typing import List, Optional
 
 import pipeline.infrastructure as infrastructure
@@ -219,6 +220,9 @@ class ImportData(basetask.StandardTaskTemplate):
         rel_to_import = [os.path.relpath(f, abs_output_dir) for f in to_import]
 
         observing_run = ms_reader.get_observing_run(rel_to_import)
+        available_data_types = [str(v).replace('DataType.', '') for v in DataType]
+        short_data_types = list(set([v.replace('_ALL', '').replace('_SCIENCE', '') for v in available_data_types if v.endswith('_ALL') or v.endswith('_SCIENCE')]))
+        data_type_entry = collections.namedtuple('DataTypeEntry', ('str_data_type enum_data_type'))
         for ms in observing_run.measurement_sets:
             LOG.debug(f'Setting session to {inputs.session} for {ms.basename}')
 
@@ -231,20 +235,51 @@ class ImportData(basetask.StandardTaskTemplate):
                 raise IOError(msg)
 
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
-            if correcteddatacolumn_name is None:
-                data_types = {'DATA': DataType.RAW}
-            else:
-                # Default to *_cont.ms kind of MS if the corrected data column is present
-                data_types = {'DATA': DataType.RAW, 'CORRECTED_DATA': DataType.REGCAL_CONTLINE_ALL}
 
-            if inputs.datacolumns != {}:
-                if len(inputs.datacolumns) == 1:
-                    if ms_origin == 'ASDM' and inputs.datacolumns['data'].upper() != 'RAW':
+            if inputs.datacolumns in (None, {}):
+                data_types = {'DATA': data_type_entry('RAW', DataType.RAW)}
+                if correcteddatacolumn_name is not None:
+                    # Default to *_cont.ms kind of MS if the corrected data column is present
+                    data_types['CORRECTED'] = data_type_entry('REGCAL_CONTLINE_ALL', DataType.REGCAL_CONTLINE_ALL)
+            else:
+                data_types = {}
+
+                # Check inputs and parse any short data types
+                if 'DATA' not in [k.upper() for k in inputs.datacolumns.keys()]:
+                    msg = 'Must specify at least the data type for the DATA column'
+                    LOG.error(msg)
+                    raise ValueError(msg)
+
+                for k, v in inputs.datacolumns.items():
+                    if k.upper() not in ('DATA', 'CORRECTED'):
+                        msg = f'Column name {k.upper()} is unknown. Only DATA and CORRECTED are supported.'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+
+                    if v.upper() == 'NONE':
+                        del data_types[k.upper()]
+                    elif v.upper() in short_data_types:
+                        if ms.intents == {'TARGET'}:
+                            data_types[k.upper()] = data_type_entry(f'{v.upper()}_SCIENCE', eval(f'DataType.{v.upper()}_SCIENCE'))
+                        else:
+                            data_types[k.upper()] = data_type_entry(f'{v.upper()}_ALL', eval(f'DataType.{v.upper()}_ALL'))
+                    elif v.upper() in available_data_types:
+                        data_types[k.upper()] = data_type_entry(f'{v.upper()}', eval(f'DataType.{v.upper()}'))
+                    else:
+                        msg = f'No such data type {v.upper()}'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+
+                if len(data_types) == 0:
+                    msg = 'Must specify data type for at least one column'
+                    LOG.error(msg)
+                    raise ValueError(msg)
+                if len(data_types) == 1:
+                    if ms_origin == 'ASDM' and 'DATA' in data_types and data_types['DATA'].str_data_type != 'RAW':
                         msg = 'Data type for ASDMs can only be "RAW"'
                         LOG.error(msg)
                         raise ValueError(msg)
-                    data_types['DATA'] = eval(f'DataType.{inputs.datacolumns["data"].upper()}')
-                elif len(inputs.datacolumns) == 2:
+                elif len(data_types) == 2:
                     if ms_origin == 'ASDM':
                         msg = 'ASDMs only have a single raw data column'
                         LOG.error(msg)
@@ -253,43 +288,19 @@ class ImportData(basetask.StandardTaskTemplate):
                         msg = 'Only one data column detected'
                         LOG.error(msg)
                         raise ValueError(msg)
-
-                    datacolumn_strtype = inputs.datacolumns['data'].upper()
-                    if datacolumn_strtype == 'NONE':
-                        del data_types['DATA']
-                    else:
-                        try:
-                            datacolumn_type = eval(f'DataType.{datacolumn_strtype}')
-                        except:
-                            msg = f'No such data type {datacolumn_strtype}'
-                            LOG.error(msg)
-                            raise ValueError(msg)
-                        data_types['DATA'] = datacolumn_type
-
-                    correcteddatacolumn_strtype = inputs.datacolumns['corrected'].upper()
-                    if correcteddatacolumn_strtype == 'NONE':
-                        del data_types['CORRECTED_DATA']
-                    else:
-                        try:
-                            correcteddatacolumn_type = eval(f'DataType.{correcteddatacolumn_strtype}')
-                        except:
-                            msg = f'No such data type {correcteddatacolumn_strtype}'
-                            LOG.error(msg)
-                            raise ValueError(msg)
-                        data_types['CORRECTED_DATA'] = correcteddatacolumn_type
                 else:
-                    msg = 'Maximum number of configurable data types is 2 (DATA and CORRECTED_DATA columns)'
+                    msg = 'Maximum number of configurable data types is 2 (DATA and CORRECTED columns)'
                     LOG.error(msg)
                     raise ValueError(msg)
 
             # Set data_type for DATA and CORRECTED_DATA columns if specified
             if 'DATA' in data_types:
-                LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"]}')
-                ms.set_data_column(data_types['DATA'], datacolumn_name)
+                LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].str_data_type}')
+                ms.set_data_column(data_types['DATA'].enum_data_type, datacolumn_name)
 
-            if 'CORRECTED_DATA' in data_types:
-                ms.set_data_column(data_types['CORRECTED_DATA'], correcteddatacolumn_name)
-                LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED_DATA"]}')
+            if 'CORRECTED' in data_types:
+                ms.set_data_column(data_types['CORRECTED'].enum_data_type, correcteddatacolumn_name)
+                LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].str_data_type}')
 
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
