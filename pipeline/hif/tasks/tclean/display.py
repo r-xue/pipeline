@@ -203,7 +203,8 @@ class TcleanMajorCycleSummaryFigure(object):
         self.units = ['Jy', 'Jy/pixel']
         self.title = 'Major cycle statistics'
         self.xlabel = 'Minor iterations done'
-        self.ylabel = ['Flux density cleaned [%s]' % self.units[0], 'Peak residual [%s]' % self.units[1]]
+        self.ylabel = ['Flux density cleaned (abs) [%s]' % self.units[0],
+                       'Peak residual (abs) [%s]' % self.units[1]]
         self.unitfactor = [1.0, 1.0]
         self.pol_labels = list(result.targets[0]['stokes'])
 
@@ -244,22 +245,19 @@ class TcleanMajorCycleSummaryFigure(object):
                 pol_id_arr = item['planeid_array']
                 for pol_id in np.unique(pol_id_arr):
 
-                    pol_idx = np.where(pol_id_arr == pol_id)
-                    ax0_y_pol = ax0_y[pol_idx]
-                    ax1_y_pol = ax1_y[pol_idx]
-                    x_pol = x[pol_idx]
-
                     pid = int(pol_id)
-                    ax0.scatter(x_pol, ax0_y_pol, label=self.pol_labels[pid], edgecolors='black',
-                                alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
-                    ax1.scatter(x_pol, ax1_y_pol, label=self.pol_labels[pid], edgecolors='black',
-                                alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
+                    ax0_pol_idx = np.where((pol_id_arr == pol_id) & (ax0_y != 0))
+                    if ax0_pol_idx[0].size > 0:
+                        ax0.scatter(x[ax0_pol_idx], np.abs(ax0_y[ax0_pol_idx]), label=self.pol_labels[pid], edgecolors='black',
+                                    alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
+                    ax1_pol_idx = np.where((pol_id_arr == pol_id) & (ax1_y != 0))
+                    if ax1_pol_idx[0].size > 0:
+                        ax1.scatter(x[ax1_pol_idx], np.abs(ax1_y[ax1_pol_idx]), label=self.pol_labels[pid], edgecolors='black',
+                                    alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
 
                 # Vertical line and annotation at major cycle end
                 ax0.axvline(x0, linewidth=1, linestyle='dotted', color='k')
                 ax1.axvline(x0, linewidth=1, linestyle='dotted', color='k')
-                if x[0] == 0 and ax0_y[0] == 0:
-                    use_ylog = False
 
                 ax0.annotate(f'iter{iter}', xy=(x0, ax0.get_ylim()[0]), xycoords='data',
                              xytext=(-10, 6), textcoords='offset points', size=8, rotation=90)
