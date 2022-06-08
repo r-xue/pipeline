@@ -110,9 +110,6 @@
                      skipped. In that case the task determines this
                      automatically by inspecting the existing intents
                      in the dataset.
-
-                     Setting a data type of NONE ignores any existing
-                     data in the given column.
         </description>
         <value>{}</value>
     </param>

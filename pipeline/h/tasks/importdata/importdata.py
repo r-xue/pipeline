@@ -239,7 +239,7 @@ class ImportData(basetask.StandardTaskTemplate):
             if inputs.datacolumns in (None, {}):
                 data_types = {'DATA': data_type_entry('RAW', DataType.RAW)}
                 if correcteddatacolumn_name is not None:
-                    # Default to *_cont.ms kind of MS if the corrected data column is present
+                    # Default to standard calibrated IF MS if the corrected data column is present
                     data_types['CORRECTED'] = data_type_entry('REGCAL_CONTLINE_ALL', DataType.REGCAL_CONTLINE_ALL)
             else:
                 data_types = {}
@@ -256,9 +256,7 @@ class ImportData(basetask.StandardTaskTemplate):
                         LOG.error(msg)
                         raise ValueError(msg)
 
-                    if v.upper() == 'NONE':
-                        del data_types[k.upper()]
-                    elif v.upper() in short_data_types:
+                    if v.upper() in short_data_types:
                         if ms.intents == {'TARGET'}:
                             data_types[k.upper()] = data_type_entry(f'{v.upper()}_SCIENCE', eval(f'DataType.{v.upper()}_SCIENCE'))
                         else:
