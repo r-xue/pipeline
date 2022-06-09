@@ -147,9 +147,9 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         joint_mask_name = result.joint_mask_names[(field, spw)]
 
-        if 'mask2' in joint_mask_name:
+        if joint_mask_name.endswith('.joint.mask2'):
             masktype = 'jointmask2'
-        elif 'mask' in joint_mask_name:
+        elif joint_mask_name.endswith('.joint.mask'):
             masktype = 'jointmask'
         else:
             return 'No plot available'
