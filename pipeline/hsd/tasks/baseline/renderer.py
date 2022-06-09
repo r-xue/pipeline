@@ -104,8 +104,8 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                         LOG.info('No "{}" plots for field "{}"'.format(name, fieldobj.name))
                         plot_detail[fieldobj.name] = []
                         plot_cover[fieldobj.name] = []
-                        continue                    
-                    pfplots = perfield_plots[field]                    
+                        continue
+                    pfplots = perfield_plots[field]
                     if name in details_title:
                         with renderer.get_file() as fileobj:
                             fileobj.write(renderer.render())
