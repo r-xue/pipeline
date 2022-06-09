@@ -682,7 +682,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             -> Dict[Tuple[str, str, str], float]:
         """
         This method evaluates the diagnostic phase caltable(s) produced in an
-        earlier step to compute the median SNR for each phase calibrator /
+        earlier step to compute the median achieved SNR for each phase calibrator /
         check source field, and for each SpW.
 
         Args:
@@ -693,11 +693,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         Returns:
             Dictionary with intent, field name, and SpW as keys, and
-            corresponding median SNR as values.
+            corresponding median achieved SNR as values.
         """
         inputs = self.inputs
 
-        LOG.info(f'Computing median phase SNR information for {inputs.ms.basename}.')
+        LOG.info(f'Computing median achieved phase SNR information for {inputs.ms.basename}.')
 
         snr_info = collections.defaultdict(dict)
         for result in gaincal_results:
@@ -716,7 +716,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             # Evaluate each unique SpW separately.
             for spw in sorted(set(spws)):
-                # Compute median SNR and store in snr_info.
+                # Compute median achieved SNR and store in snr_info.
                 snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, numpy.where(spws == spw)[0]])
 
                 # If SpW mapping info exists for the current intent and field

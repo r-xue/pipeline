@@ -7,6 +7,7 @@ import os
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
+import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -60,6 +61,10 @@ class MeasurementSet(object):
             prevent modification
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
+        acs_software_version: ALMA Common Software version used to create this MS. (None if not ALMA.)
+        acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
+        phase_calapps_for_check_sources : The phase calapps for the check sources 
+            from hifa_gfluxscale
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -88,6 +93,15 @@ class MeasurementSet(object):
         self.reference_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
+
+        # The ALMA Common Software version used to create this MS, if ALMA. Otherwise, None
+        # (PIPE-132)
+        self.acs_software_version = None
+
+        # The ALMA Common Software build version used to create this MS, if ALMA. Otherwise, None.
+        # (PIPE-132)
+        self.acs_software_build_version = None
+
         self.data_types_per_source_and_spw: dict = {}
 
         # Dictionary mapping phase calibrator fields to corresponding fields
@@ -118,6 +132,12 @@ class MeasurementSet(object):
         # to put the lock on a custom refant list class, but some tasks check
         # the type of reference_antenna directly which prevents that approach.
         self.reference_antenna_locked: bool = False
+
+        # This contains the phase calapps for the check sources from hifa_gfluxscale.
+        # Added for ALMA IF to support PIPE-1377
+        # These calapps are saved off from hifa_gfluxscale and saved here 
+        # so they can be added to the Diagnostic Phase Vs Time plots for hifa_timegaincal
+        self.phase_calapps_for_check_sources = []
 
     def _calc_filesize(self):
         """
@@ -567,6 +587,22 @@ class MeasurementSet(object):
         obs_modes = [state.get_obs_mode_for_intent(intent)
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
+
+
+    def get_alma_cycle_number(self) -> Optional[int]:
+        """"
+        Get the ALMA cycle number from the ALMA control softare version that this MeasurementSet was acquired with. 
+
+        Returns: 
+            int cycle_number or None if not found
+        """
+        match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
+        if match: 
+            cycle_number = int(match.group(1))
+            return cycle_number
+        else: 
+            return None
+
 
     @property
     def start_time(self):

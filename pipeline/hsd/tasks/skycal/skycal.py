@@ -1,3 +1,4 @@
+"""The skycal task module to calibrate sky background."""
 import collections
 import copy
 import os
@@ -15,11 +16,15 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from ..common import SingleDishResults
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 
-
 class SDSkyCalInputs(vdp.StandardInputs):
+    """Inputs class for SDSkyCal task."""
+    
     calmode = vdp.VisDependentProperty(default='auto')
     elongated = vdp.VisDependentProperty(default=False)
     field = vdp.VisDependentProperty(default='')
@@ -31,16 +36,58 @@ class SDSkyCalInputs(vdp.StandardInputs):
     width = vdp.VisDependentProperty(default=0.5)
 
     @vdp.VisDependentProperty
-    def infiles(self):
+    def infiles(self) -> str:
+        """Return name of MS. Alias for "vis" attribute."""
         return self.vis
 
     @infiles.convert
-    def infiles(self, value):
+    def infiles(self, value: Union[str, List[str]]) -> Union[str, List[str]]:
+        """Convert value into expected type.
+
+        Currently, no conversion is performed.
+
+        Args:
+            value: Name of MS, or the list of names.
+
+        Returns:
+            Converted value. Currently return input value as is.
+        """
         self.vis = value
         return value
 
-    def __init__(self, context, calmode=None, fraction=None, noff=None, width=None, elongated=None, output_dir=None,
-                 infiles=None, outfile=None, field=None, spw=None, scan=None):
+    def __init__(
+            self, 
+            context: 'Context', 
+            calmode: Optional[str] = None, 
+            fraction: Optional[float] = None, 
+            noff: Optional[int] = None, 
+            width: Optional[float] = None, 
+            elongated: Optional[bool] = None, 
+            output_dir: Optional[str] = None,
+            infiles: Optional[str] = None, 
+            outfile: Optional[str] = None, 
+            field: Optional[str] = None, 
+            spw: Optional[str] = None, 
+            scan: Optional[str] = None
+            ):
+        """Initialize SDK2JyCalInputs instance.
+
+        Args:
+            context: Pipeline context.
+            calmode: Calibration mode.
+            fraction: Value of fraction of OFF scan data against total data number.
+            noff: Number of OFF scan data.
+            width: Value of pixel width, e.g., a median spatial separation between 
+            neighboring two data in time.
+            elongated: Whether observed area is elongated in one direction (True) 
+            or not (False).
+            output_dir: Name of output directory.
+            infiles: Name of MS or list of names.
+            outfile: Name of the output file.
+            field: Field selection.
+            spw: Spectral window (spw) selection.
+            scan: Scan selection.
+        """
         super(SDSkyCalInputs, self).__init__()
 
         # context and vis must be set first so that properties that require
@@ -60,7 +107,12 @@ class SDSkyCalInputs(vdp.StandardInputs):
         self.spw = spw
         self.scan = scan
 
-    def to_casa_args(self):
+    def to_casa_args(self) -> Dict:
+        """Convert Inputs instance to the list of keyword arguments for sdcal.
+
+        Returns:
+            Keyword arguments for sdcal.
+        """
         args = super(SDSkyCalInputs, self).to_casa_args()
 
         # overwrite is always True
@@ -76,13 +128,34 @@ class SDSkyCalInputs(vdp.StandardInputs):
 
 
 class SDSkyCalResults(SingleDishResults):
-    """
-    """
-    def __init__(self, task=None, success=None, outcome=None):
+    """Class to hold processing result of SDSkyCal task."""
+    
+    def __init__(
+            self, 
+            task: Optional[str] = None, 
+            success: Optional[bool] = None, 
+            outcome: Optional[str] = None
+            ) -> None:
+        """Initialize SDSkyCalResults instance.
+
+        Args:
+            task: Name of task.
+            success: A boolean to indicate if the task execution was successful
+            (True) or not (False).
+            outcome: Outcome of the task.
+        """      
         super(SDSkyCalResults, self).__init__(task, success, outcome)
         self.final = self.outcome
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge result instance into context.
+        
+        The CalApplication instance updated by the skycal task is added to 
+        the pipeline context.
+
+        Args:
+            context: Pipeline context.
+        """
         super(SDSkyCalResults, self).merge_with_context(context)
 
         if self.outcome is None:
@@ -91,17 +164,29 @@ class SDSkyCalResults(SingleDishResults):
         for calapp in self.outcome:
             context.callibrary.add(calapp.calto, calapp.calfrom)
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string representing the outcome.
+
+        Returns:
+            string of outcome.
+        """
         return str(self.outcome)
 
 
 #@task_registry.set_equivalent_casa_task('hsd_skycal')
 #@task_registry.set_casa_commands_comment('Generates sky calibration table according to calibration strategy.')
 class SerialSDSkyCal(basetask.StandardTaskTemplate):
+    """Generate sky calibration table."""
+    
     Inputs = SDSkyCalInputs
     ElevationDifferenceThreshold = 3.0  # deg
 
-    def prepare(self):
+    def prepare(self) -> SDSkyCalResults:
+        """Prepare arguments for CASA job and execute it.
+
+        Returns:
+           SDSkyCalResults object.
+        """
         args = self.inputs.to_casa_args()
         LOG.trace('args: {}'.format(args))
 
@@ -211,44 +296,91 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                                   outcome=calapps)
         return results
 
-    def analyse(self, result):
+    def analyse(self, result: SDSkyCalResults) -> SDSkyCalResults:
+        """Analyse SDSkyCalResults instance produced by prepare.
 
+        Args:
+            result: SDSkyCalResults instance.
+
+        Returns:
+            Updated SDSkyCalResults instance.
+        """
         # compute elevation difference between ON and OFF and 
-        # warn if it exceeds elevation limit
+        # warn if it exceeds elevation threshold
         threshold = self.ElevationDifferenceThreshold
         context = self.inputs.context
         resultdict = compute_elevation_difference(context, result)
         ms = self.inputs.ms
-        for field_id, eldfield in resultdict.items():
-            for antenna_id, eldant in eldfield.items():
-                for spw_id, eld in eldant.items():
-                    eldiff0 = eld.eldiff0
-                    eldiff1 = eld.eldiff1
-                    if len(eldiff0) > 0:
-                        eldmax0 = numpy.max(numpy.abs(eldiff0))
-                    else:
-                        eldmax0 = -1.0
-                    if len(eldiff1) > 0:
-                        eldmax1 = numpy.max(numpy.abs(eldiff1))
-                    else:
-                        eldmax1 = -1.0
-                    eldmax = max(eldmax0, eldmax1)
-                    if eldmax >= threshold:
-                        field_name = ms.fields[field_id].name
-                        antenna_name = ms.antennas[antenna_id].name
-                        LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
-                                    ' exceeding the threshold {}deg'
-                                    ''.format(ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))
+
+        spectralspecs = ms.get_spectral_specs()
+        spectralspecs_spwids = {}
+        for ss in spectralspecs:
+            spw_ss = ms.get_spectral_windows(science_windows_only=True, spectralspecs = [ss])
+            list_spwids = [x.id for x in spw_ss]
+            if len(list_spwids) == 0:
+                continue
+            else:
+                spectralspecs_spwids[ss] = list_spwids
+
+        for list_spwids in spectralspecs_spwids.values():
+            spwid0 = list_spwids[0]
+            for field_id, eldfield in resultdict.items():
+                for antenna_id, eldant in eldfield.items():
+                    assert spwid0 in eldant
+                    eldiff0 = eldant[spwid0].eldiff0
+                    eldiff1 = eldant[spwid0].eldiff1
+                    eldiff = numpy.append(eldiff0, eldiff1)
+                    if len(eldiff) > 0:
+                        eldmax = numpy.max(numpy.abs(eldiff))
+                        if eldmax >= threshold:
+                            field_name = ms.fields[field_id].name
+                            antenna_name = ms.antennas[antenna_id].name
+                            LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
+                                        ' exceeding the threshold of {}deg'
+                                        ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
 
         return result
 
 
 class HpcSDSkyCalInputs(SDSkyCalInputs):
+    """Input class for Parallel processing of SDSkyCal."""
+
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, calmode=None, fraction=None, noff=None, width=None, elongated=None, output_dir=None,
-                 infiles=None, outfile=None, field=None, spw=None, scan=None, parallel=None):
+    def __init__(
+        self, 
+        context: 'Context', 
+        calmode: Optional[str] = None, 
+        fraction: Optional[float] = None, 
+        noff: Optional[int] = None, 
+        width: Optional[float] = None, 
+        elongated: Optional[float] = None, 
+        output_dir: Optional[str] = None, 
+        infiles: Optional[Union[str, List[str]]] = None, 
+        outfile: Optional[str] = None, 
+        field: Optional[str] = None, 
+        spw: Optional[str] = None, 
+        scan: Optional[str] = None, 
+        parallel: Optional[bool] =None
+        ) -> None:
+        """Initialize HpcSDSkyCalInputs instance.
+
+        Args:
+            context: Pipeline context.
+            calmode: Calibration mode.
+            fraction: Value of fraction.
+            noff: Number of noff.
+            width: Value of width.
+            elongated: Value of elongation.
+            output_dir: Output directory.
+            infiles: Name of MS or list of names.
+            outfile: Name of the output file.
+            field: Field selection.
+            spw: Spectral window (spw) selection.
+            scan: Scan selection.
+            parallel: Parallel execution or not.
+        """
         super(HpcSDSkyCalInputs, self).__init__(context,
                                                 calmode=calmode,
                                                 fraction=fraction,
@@ -268,14 +400,30 @@ class HpcSDSkyCalInputs(SDSkyCalInputs):
 @task_registry.set_equivalent_casa_task('hsd_skycal')
 @task_registry.set_casa_commands_comment('Generates sky calibration table according to calibration strategy.')
 class HpcSDSkyCal(sessionutils.ParallelTemplate):
+    """Class to generate sky calibration table."""
+    
     Inputs = HpcSDSkyCalInputs
     Task = SerialSDSkyCal
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: HpcSDSkyCalInputs) -> None:
+        """Initialize the class.
+        
+        Args:
+            inputs: Instance of HpcSDSkyCalInputs.
+        """
         super(HpcSDSkyCal, self).__init__(inputs)
 
     @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
+    def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
+        """Get result for exception.
+        
+        Args:
+            vis: Name of Measurement Set.
+            exception: Exception.
+        
+        Return:
+            basetask.FailedTaskResults.
+        """
         LOG.error('Error operating sky calibration for {!s}'.format(os.path.basename(vis)))
         LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
         import traceback
@@ -285,15 +433,17 @@ class HpcSDSkyCal(sessionutils.ParallelTemplate):
         return basetask.FailedTaskResults(self.__class__, exception, tb)
 
 
-def compute_elevation_difference(context, results):
-    """
-    Compute elevation difference 
+def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -> Dict:
+    """Compute elevation difference.
 
+    Args:
+        context: Pipeline context.
+        results: SDSkyCalResults instance.
+        
     Returns:
         dictionary[field_id][antenna_id][spw_id]
-
-        Value of the dictionary should be ElevationDifference and the value should 
-        contain the result from one MS (given that SDSkyCal is per-MS task)
+            Value of the dictionary should be ElevationDifference and the value should 
+            contain the result from one MS (given that SDSkyCal is per-MS task).
     """
     ElevationDifference = collections.namedtuple('ElevationDifference', 
                                                  ['timeon', 'elon', 'timecal', 'elcal', 
