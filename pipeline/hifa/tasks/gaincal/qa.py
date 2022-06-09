@@ -220,10 +220,10 @@ class TimegaincalQAPool(pqa.QAScorePool):
                             # in the hidden_phase_offsets_scores list.
                             EB_spw_QA_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA'])
                             if QA_score <= 0.8:
-                                LOG.info(f'Poor phase offsets score for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} '
-                                         f'QA score = {QA_score:.1f}, mean phase offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA1"]:.1f} deg, '
-                                         f'standard deviation = {subscores[gaintable][spw_id][ant_id][pol_id]["QA2"]:.1f} deg, '
-                                         f'max offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA3"]:.1f} deg')
+                                LOG.info(f'Poor phase offsets score for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]}: '
+                                         f'QA score = {QA_score:.1f}, mean phase offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA1"].origin.metric_score:.1f} deg, '
+                                         f'standard deviation = {subscores[gaintable][spw_id][ant_id][pol_id]["QA2"].origin.metric_score:.1f} deg, '
+                                         f'max offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA3"].origin.metric_score:.1f} deg')
                     # Minimum of per aggregated ant/pol scores as per EB/spw score
                     EB_spw_min_index = np.argmin([qas.score for qas in EB_spw_QA_scores])
                     EB_spw_QA_score = EB_spw_QA_scores[EB_spw_min_index].score
@@ -283,7 +283,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
         except Exception as e:
             LOG.error('Phase offsets score calculation failed: %s' % (e))
-            return [pqa.QAScore(-0.1, longmsg='Phase offsets score calculation failed', shortmsg='Phase offsets score calculation failed', vis=ms.basename)]
+            return [], [pqa.QAScore(-0.1, longmsg='Phase offsets score calculation failed', shortmsg='Phase offsets score calculation failed', vis=ms.basename)]
 
 
     def _get_xy_x2x1_qascore(self, ms, phase_field_ids, score_type):
