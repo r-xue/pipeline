@@ -2918,7 +2918,7 @@ def score_sdimage_masked_pixels(context, result):
     metric_score_max = 1.0
     metric_score_min = 0.0
 
-    # convert score and threhold for logging purpose
+    # convert score and threshold for logging purpose
     frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
     imbasename = os.path.basename(imagename.rstrip('/'))
 
@@ -3212,7 +3212,7 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
     mom8_fc_outlier_threshold2 = 3.5
     mom8_fc_histogram_asymmetry_threshold1 = 0.20
     mom8_fc_histogram_asymmetry_threshold2 = 0.05
-    mom8_fc_max_segment_beams_threhold = 1.0
+    mom8_fc_max_segment_beams_threshold = 1.0
     mom8_fc_score_min = 0.33
     mom8_fc_score_max = 1.00
     mom8_fc_metric_scale = 270.0
@@ -3224,7 +3224,7 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
         spw = info.get('virtspw')
 
     if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
-       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threhold):
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
         mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
         mom8_fc_final_score = max(mom8_fc_score, 0.67)

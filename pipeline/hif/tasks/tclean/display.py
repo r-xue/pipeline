@@ -117,10 +117,10 @@ class CleanSummary(object):
                     # PIPE-197: For MOM8_FC image displayed in the weblog set the color range
                     # from (median-MAD) to 10 * sigma, where sigma is from the annulus minus cleanmask
                     # masked mom8_fc image and median, MAD are from the unmasked mom8_fc image
-                    if iteration['cube_sigma'] is not None:
+                    if iteration['cube_sigma_fc_chans'] is not None:
                         extra_args = {
                             'vmin': iteration['mom8_fc_image_median_all'] - iteration['mom8_fc_image_mad'],
-                            'vmax': 10 * iteration['cube_sigma'],
+                            'vmax': 10 * iteration['cube_sigma_fc_chans'],
                             'mom8_fc_peak_snr': iteration['mom8_fc_peak_snr']
                         }
                         # in case min >= max, set min=image_min and max=image_max

@@ -1380,12 +1380,12 @@ class Tclean(cleanbase.CleanBase):
             with casa_tools.ImageReader(imagename) as image:
                 cube_stats_masked = image.statistics(mask=cube_statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
-            cube_sigma = np.median(cube_stats_masked.get('sigma')[cont_chan_indices])
-            cube_chanScaledMAD = np.median(cube_stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
+            cube_sigma_fc_chans = np.median(cube_stats_masked.get('sigma')[cont_chan_indices])
+            cube_scaledMAD_fc_chans = np.median(cube_stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
 
-            mom8_fc_peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_chanScaledMAD
+            mom8_fc_peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_scaledMAD_fc_chans
 
-            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, mom8_fc_peak_snr, cube_chanScaledMAD))
+            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, mom8_fc_peak_snr, cube_scaledMAD_fc_chans))
 
             # New score based on mom8/mom10 histogram asymmetry and largest mom8 segment needs
             # more metrics (PIPE-1232)
@@ -1409,9 +1409,9 @@ class Tclean(cleanbase.CleanBase):
             celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
             num_pixels_in_beam = float(major_radius * minor_radius * np.pi / np.log(2) / cellx / celly)
             # Get threshold for maximum segment calculation
-            cut1 = mom8_image_median_all + 3.0 * cube_chanScaledMAD
-            cut2 = mom8_image_median_all + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_all)
-            cut3 = mom8_image_median_all + 2.0 * cube_chanScaledMAD
+            cut1 = mom8_image_median_annulus + 3.0 * cube_scaledMAD_fc_chans
+            cut2 = mom8_image_median_annulus + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_annulus)
+            cut3 = mom8_image_median_annulus + 2.0 * cube_scaledMAD_fc_chans
             segments_threshold = max(min(cut1, cut2), cut3)
 
             # Get largest segment
@@ -1466,8 +1466,8 @@ class Tclean(cleanbase.CleanBase):
             mom_8_10_histogram_asymmetry = 0.5 * (np.sum(np.abs(deviation1)) + np.sum(np.abs(deviation2))) / smallerarea
 
             # Update the result.
-            result.set_cube_sigma(maxiter, cube_sigma)
-            result.set_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
+            result.set_cube_sigma_fc_chans(maxiter, cube_sigma_fc_chans)
+            result.set_cube_scaledMAD_fc_chans(maxiter, cube_scaledMAD_fc_chans)
 
             result.set_mom8_fc(maxiter, mom8fc_name)
             result.set_mom8_fc_image_min(maxiter, mom8_image_min)

@@ -170,28 +170,28 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['model'] = image
 
     @property
-    def cube_sigma(self):
+    def cube_sigma_fc_chans(self):
         iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('cube_sigma')
+        return self.iterations[iters[-1]].get('cube_sigma_fc_chans')
 
-    def set_cube_sigma(self, iter, cube_sigma):
+    def set_cube_sigma_fc_chans(self, iter, cube_sigma_fc_chans):
         '''
         Sets sigma of cube computed from line-free channels of non-primary beam corrected cube
         image for iter iteration step.
         '''
-        self.iterations[iter]['cube_sigma'] = cube_sigma
+        self.iterations[iter]['cube_sigma_fc_chans'] = cube_sigma_fc_chans
 
     @property
-    def cube_chanScaledMAD(self):
+    def cube_scaledMAD_fc_chans(self):
         iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('cube_chanScaledMAD')
+        return self.iterations[iters[-1]].get('cube_scaledMAD_fc_chans')
 
-    def set_cube_chanScaledMAD(self, iter, cube_chanScaledMAD):
+    def set_cube_scaledMAD_fc_chans(self, iter, cube_scaledMAD_fc_chans):
         '''
         Sets channel scaled MAD of cube computed from line-free channels of non-primary beam corrected cube
         image for iter iteration step.
         '''
-        self.iterations[iter]['cube_chanScaledMAD'] = cube_chanScaledMAD
+        self.iterations[iter]['cube_scaledMAD_fc_chans'] = cube_scaledMAD_fc_chans
 
     @property
     def mom0_fc(self):
