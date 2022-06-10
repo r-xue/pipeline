@@ -448,6 +448,9 @@ class Tclean(cleanbase.CleanBase):
             if self.image_heuristics.is_eph_obj(inputs.field):
                 # Determine extra channels to skip for ephemeris objects to
                 # account for fast moving objects.
+                ref_ms = context.observing_run.get_ms(inputs.vis[0])
+                real_spw = context.observing_run.virtual2real_spw_id(inputs.spw, ref_ms)
+                real_spw_obj = ref_ms.get_spectral_window(real_spw)
                 centre_frequency_TOPO = float(real_spw_obj.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
