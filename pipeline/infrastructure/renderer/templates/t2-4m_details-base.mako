@@ -305,7 +305,7 @@ if len(optimal_scores) > 0:
         <div class="panel-heading" role="tab" id="headingThree">
             <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                All Notifications
+                All Notifications (${len(notification_trs)})
                 </a>
             </h4>
         </div>
