@@ -174,24 +174,6 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </div>
 
 <%
-    notification_trs = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
-%>
-% if notification_trs:
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Task notifications</th>
-        </tr>
-    </thead>
-    <tbody>
-    % for tr in notification_trs:
-        ${tr}
-    % endfor
-    </tbody>
-</table>
-% endif
-
-<%
 accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
 score_counts = []
 lowest_score = None
@@ -226,29 +208,28 @@ if len(optimal_scores) > 0:
         lowest_score_render_class = 'success alert-success'
 %>
 
-<div class="clearfix"></div>
+% if result.qa.pool:
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th colspan="2"><h4>Lowest QA Score</h4></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="${lowest_score_render_class}">
+            <td>${'%0.2f' % lowest_score.score}</td>
+            <td>${lowest_score.longmsg}</td>
+        </tr>
+    </tbody>
+</table>
+% endif
+
 <div class="panel-group" id="qa-details-accordion" role="tablist" aria-multiselectable="true">
 
-    % if result.qa.pool:
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th colspan="2"><h4>Lowest QA Score</h4></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="${lowest_score_render_class}">
-                <td>${'%0.2f' % lowest_score.score}</td>
-                <td>${lowest_score.longmsg}</td>
-            </tr>
-        </tbody>
-    </table>
-    % endif
-
     <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingThree">
+        <div class="panel-heading" role="tab" id="headingTwo">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 All QA Scores
                 % if len(score_counts) > 0:
                     (${', '.join(score_counts)})
@@ -256,7 +237,7 @@ if len(optimal_scores) > 0:
                 </a>
             </h4>
         </div>
-        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
             <div class="panel-body">
                 % if result.qa.pool:
                 <table class="table table-bordered" summary="Pipeline QA summary">
@@ -302,6 +283,50 @@ if len(optimal_scores) > 0:
     </div>
 
 </div>
+
+<%
+    notification_trs = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
+%>
+% if notification_trs:
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th colspan="2"><h4>Worst Notification</h4></th>
+        </tr>
+    </thead>
+    <tbody>
+    ${notification_trs[0]}
+    </tbody>
+</table>
+
+<div class="panel-group" id="notification-details-accordion" role="tablist" aria-multiselectable="true">
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                All Notifications
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <table class="table table-bordered" summary="Task notifications">
+                    <caption>Notifications for this task.</caption>
+                    <thead>
+                    </thead>
+                    <tbody>
+                    % for tr in notification_trs:
+                        ${tr}
+                    % endfor
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+% endif
 
 ${next.body()}
 
