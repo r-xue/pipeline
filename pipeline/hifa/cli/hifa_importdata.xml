@@ -55,7 +55,7 @@
             <param name="asis" subparam="true" type="string">
                 <shortdescription>Extra ASDM tables to convert as is</shortdescription>
                 <description>Extra ASDM tables to convert as is</description>
-                <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
+                <value>SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
             </param>
 
             <param name="process_caldevice" subparam="true" type="bool">
@@ -166,7 +166,7 @@
                     </equals>
                     <equals type="string" value="interactive">
                         <default param="asis">
-                            <value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
+                            <value type="string">SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
                         </default>
                         <default param="ocorr_mode">
                             <value type="string">ca</value>
@@ -192,7 +192,7 @@
                     </equals>
                     <equals type="string" value="getinputs">
                         <default param="asis">
-                            <value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value>
+                            <value type="string">SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR</value>
                         </default>
                         <default param="process_caldevice">
                             <value type="bool">False</value>

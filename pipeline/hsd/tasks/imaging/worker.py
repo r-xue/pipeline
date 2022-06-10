@@ -1,31 +1,29 @@
-import os
+"""Worker classes of SDImaging."""
+
 import math
+import os
 import shutil
-from typing import Dict, List, NewType, Optional, Tuple
+from typing import Dict, List, NewType, Optional, Tuple, Union
 
 import numpy
-
-import casatasks.private.sdbeamutil as sdbeamutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.launcher import Context
-from . import resultobjects
+
 from .. import common
 from ..common import direction_utils as dirutil
-from ..common import observatory_policy
-from ..common import utils
+from ..common import observatory_policy, utils
+from . import resultobjects
 
 LOG = infrastructure.get_logger(__name__)
 
-Quantity = NewType('Quantity', Dict)
-Angle = NewType('Angle', Dict)
-Direction = NewType('Direction', Dict)
+Angle = NewType('Angle', Dict[str, Union[str, float]])
+Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 
 def ImageCoordinateUtil(
@@ -34,7 +32,7 @@ def ImageCoordinateUtil(
     ant_list: List[Optional[int]],
     spw_list: List[int],
     fieldid_list: List[int]
-) -> Tuple[str, Angle, Angle, int, int, Direction]:
+) -> Union[Tuple[str, Angle, Angle, int, int, Direction], bool]:
     """
     Calculate spatial coordinate of image.
 
@@ -47,10 +45,15 @@ def ImageCoordinateUtil(
         ant_list: List of antenna ids. List elements could be None.
         spw_list: List of spw ids.
         fieldid_list: List of field ids.
+
+    Raises:
+        RuntimeError: Raises if found unexpected unit of RA/DEC in DataTable.
+
     Returns:
-        Six tuple containing phasecenter, horizontal and vertical cell sizes,
-        horizontal and vertical number of pixels, and direction of the origin
-        (for moving targets).
+        - Six tuple containing phasecenter, horizontal and vertical cell sizes,
+          horizontal and vertical number of pixels, and direction of the origin
+          (for moving targets).
+        - False if no valid data exists.
     """
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
@@ -98,7 +101,7 @@ def ImageCoordinateUtil(
         msobj = context.observing_run.get_ms(vis)
         # get first org_direction if source if ephemeris source
         # if is_eph_obj and org_direction==None:
-        if ( is_eph_obj or is_known_eph_obj ) and org_direction==None:
+        if (is_eph_obj or is_known_eph_obj) and org_direction == None:
             # get org_direction
             org_direction = msobj.get_fields(field_id)[0].source.org_direction
 
@@ -106,9 +109,9 @@ def ImageCoordinateUtil(
         datatable = DataTable(name=datatable_name, readonly=True)
 
         if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
-            (datatable.getcolkeyword('DEC', 'UNIT') != 'deg') or \
-            (datatable.getcolkeyword('OFS_RA', 'UNIT') != 'deg') or \
-            (datatable.getcolkeyword('OFS_DEC', 'UNIT') != 'deg'):
+           (datatable.getcolkeyword('DEC', 'UNIT') != 'deg') or \
+           (datatable.getcolkeyword('OFS_RA', 'UNIT') != 'deg') or \
+           (datatable.getcolkeyword('OFS_DEC', 'UNIT') != 'deg'):
             raise RuntimeError("Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'")
 
         if ant_id is None:
@@ -163,8 +166,8 @@ def ImageCoordinateUtil(
     if is_eph_obj or is_known_eph_obj:
         ra = []
         dec = []
-        for ra1, dec1 in zip( ra0, dec0 ):
-            ra2, dec2 = dirutil.direction_recover( ra1, dec1, org_direction )
+        for ra1, dec1 in zip(ra0, dec0):
+            ra2, dec2 = dirutil.direction_recover(ra1, dec1, org_direction)
             ra.append(ra2)
             dec.append(dec2)
     else:
@@ -221,18 +224,23 @@ def ImageCoordinateUtil(
     else:
         ny += 1
 
+    # PIPE-1416
+    margin = imaging_policy.get_image_margin()
+    nx, ny = (nx + margin, ny + margin)
+
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
     return phasecenter, cellx, celly, nx, ny, org_direction
 
 
 class SDImagingWorkerInputs(vdp.StandardInputs):
-    """
-    Inputs for imaging worker
+    """Inputs class for imaging worker.
+
     NOTE: infile should be a complete list of MSes
     """
+
     # Search order of input vis
     processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
-                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     outfile = vdp.VisDependentProperty(default='')
@@ -251,19 +259,49 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
-    def vis(self):
+    def vis(self) -> str:
+        """Return the name of input file.
+
+        Returns:
+            the name of input file
+        """
         return self.infiles
 
-    def __init__(self, context, infiles, outfile, mode, antids, spwids, fieldids, restfreq, stokes, edge=None, phasecenter=None,
-                 cellx=None, celly=None, nx=None, ny=None,
-                 org_direction=None):
+    def __init__(self, context: Context, infiles: List[str], outfile: str, mode: str,
+                 antids: List[int], spwids: List[int], fieldids: List[int], restfreq: str,
+                 stokes: str, edge: Optional[List[int]]=None, phasecenter: Optional[str]=None,
+                 cellx: Optional[Angle]=None,
+                 celly: Optional[Angle]=None,
+                 nx: Optional[int]=None, ny: Optional[int]=None,
+                 org_direction: Optional[Direction]=None):
+        """Initialise an instance of SDImagingWorkerInputs.
+
+        Args:
+            context: pipeline context
+            infiles: list of input file names
+            outfile: output file name
+            mode: imaging mode
+            antids: list of antenna IDs
+            spwids: list of spectrum windows IDs
+            fieldids: list of field IDs
+            restfreq: Rest frequency
+            stokes: Stokes Planes
+            edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels
+                  in the beginning and at the end of a spectral window, respectively, are excluded.
+            phasecenter: Image center
+            cellx: size(unit and value) per pixel of image axis x
+            celly: size(unit and value) per pixel of image axis y
+            nx: the number of pixels x
+            ny: the number of pixels y
+            org_direction:  a measure of direction of origin for ephemeris object
+        """
         # NOTE: spwids and pols are list of numeric id list while scans
         #       is string (mssel) list
         super(SDImagingWorkerInputs, self).__init__()
 
         self.context = context
-        self.infiles = infiles # input MS names
-        self.outfile = outfile # output image name
+        self.infiles = infiles  # input MS names
+        self.outfile = outfile  # output image name
         self.mode = mode
         self.antids = antids
         self.spwids = spwids
@@ -280,11 +318,18 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
 
 
 class SDImagingWorker(basetask.StandardTaskTemplate):
+    """Worker class of imaging task."""
+
     Inputs = SDImagingWorkerInputs
 
     is_multi_vis_task = True
 
     def prepare(self):
+        """Execute imaging process of sdimaging task.
+
+        Returns:
+            SDImagingResultItem instance
+        """
         inputs = self.inputs
         context = self.inputs.context
         infiles = inputs.infiles
@@ -299,11 +344,11 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         rep_ms = mses[0]
         ant_name = rep_ms.antennas[antid_list[0]].name
         source_name = rep_ms.fields[fieldid_list[0]].clean_name
-        phasecenter, cellx, celly, nx, ny, org_direction = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
-                                                                                            fieldid_list)
+        phasecenter, cellx, celly, nx, ny, org_direction = \
+            self._get_map_coord(inputs, context, infiles, antid_list, spwid_list, fieldid_list)
 
-        status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode, edge, phasecenter,
-                                  cellx, celly, nx, ny)
+        status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
+                                  edge, phasecenter, cellx, celly, nx, ny)
 
         if status is True:
             # missing attributes in result instance will be filled in by the
@@ -328,29 +373,69 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
         return result
 
-    def analyse(self, result):
+    def analyse(self, result: basetask.Results) -> basetask.Results:
+        """Inherited method. NOT USE."""
         return result
 
-    def _get_map_coord(self, inputs, context, infiles, ant_list, spw_list, field_list):
+    def _get_map_coord(self, inputs: SDImagingWorkerInputs, context: Context, infiles: List[str],
+                       ant_list: List[int], spw_list: List[int], field_list: List[int]) \
+            -> Tuple[str, Angle, Angle, int, int, Direction]:
+        """Gather or generate the input image parameters.
+
+        Args:
+            inputs: SDImagingWorkerInputs object
+            context: pipeline context
+            infiles: list of input file names
+            ant_list: list of anntena IDs
+            spw_list: list of SPW IDs
+            field_list: list of field IDs
+
+        Raises:
+            RuntimeError: an exception which is raised from ImageCoordinateUtil
+
+        Returns:
+            Image coordinate
+        """
         params = (inputs.phasecenter, inputs.cellx, inputs.celly, inputs.nx, inputs.ny, inputs.org_direction)
-        coord_set = (params.count(None) == 0) or ( (params.count(None) == 1) and inputs.org_direction is None )
+        coord_set = (params.count(None) == 0) or ((params.count(None) == 1) and inputs.org_direction is None)
         if coord_set:
             return params
         else:
             params = ImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
             if not params:
-                raise RuntimeError( "No valid data" )
+                raise RuntimeError("No valid data")
             return params
 
-    def _do_imaging(self, infiles, antid_list, spwid_list, fieldid_list, imagename, imagemode, edge, phasecenter, cellx,
-                    celly, nx, ny):
+    def _do_imaging(self, infiles: List[str], antid_list: List[int], spwid_list: List[int],
+                    fieldid_list: List[int], imagename: str, imagemode: str, edge: List[int],
+                    phasecenter: str, cellx: Angle, celly: Angle, nx: int, ny: int) -> bool:
+        """Process imaging.
+
+        Args:
+            infiles: list of input file names
+            antid_list: list of anntena IDs
+            spwid_list: list of SPW IDs
+            fieldid_list: list of field IDs
+            imagename: output image file name
+            imagemode: imaging mode
+            edge: numbers of edge channels to be excluded in imaging. When edge=[10, 20], 10 and 20 channels
+                  in the beginning and at the end of a spectral window, respectively, are excluded.
+            phasecenter: Image center
+            cellx: size(unit and value) per pixel of image axis x
+            celly: size(unit and value) per pixel of image axis y
+            nx: the number of pixels x
+            ny: the number of pixels y
+
+        Returns:
+            Whether an image file with valid pixels has been generated.
+        """
         context = self.inputs.context
         reference_data = context.observing_run.get_ms(infiles[0])
         ref_spwid = spwid_list[0]
 
         LOG.debug('Members to be processed:')
         for (m, a, s, f) in zip(infiles, antid_list, spwid_list, fieldid_list):
-            LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a, s, f))
+            LOG.debug('\tMS %s: Antenna %s Spw %s Field %s' % (os.path.basename(m), a, s, f))
 
         # Check for ephemeris source
         # known_ephemeris_list = ['MERCURY', 'VENUS', 'MARS', 'JUPITER', 'SATURN', 'URANUS', 'NEPTUNE', 'PLUTO', 'SUN',
@@ -445,7 +530,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # phasecenter=TRACKFIELD only for sources with ephemeris table
         if is_eph_obj:
             phasecenter = 'TRACKFIELD'
-            LOG.info( "phasecenter is overrided with \'TRACKFIELD\'" )
+            LOG.info("phasecenter is overrided with \'TRACKFIELD\'")
 
         qa = casa_tools.quanta
         image_args = {'mode': mode,
@@ -478,8 +563,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         fieldsel_list = []
         antsel_list = []
         for (msname, ant, spw, field) in zip(infiles, antid_list, spwid_list, fieldid_list):
-            LOG.debug('Registering data to image: vis=\'%s\', ant=%s, spw=%s, field=%s%s'%(msname, ant, spw, field,
-                                                                                           (' (ephemeris source)' if ephemsrcname!='' else '')))
+            LOG.debug('Registering data to image: vis=\'%s\', ant=%s, spw=%s, field=%s%s'
+                      % (msname, ant, spw, field, (' (ephemeris source)' if ephemsrcname != '' else '')))
             infile_list.append(msname)
             spwsel_list.append(str(spw))
             fieldsel_list.append(str(field))
@@ -489,7 +574,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         fieldsel_list = fieldsel_list[0] if len(set(fieldsel_list)) == 1 else fieldsel_list
         antsel_list = antsel_list[0] if len(set(antsel_list)) == 1 else antsel_list
         # set-up image dependent parameters
-        for p in cleanup_params: image_args[p] = None
+        for p in cleanup_params:
+            image_args[p] = None
         image_args['outfile'] = imagename
         image_args['infiles'] = infile_list
         image_args['spw'] = spwsel_list
@@ -504,7 +590,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             self._executor.execute(image_job)
             # tsdimaging changes the image filename, workaround to revert it
             imagename_tmp = imagename + '.image'
-            os.rename( imagename_tmp, imagename )
+            os.rename(imagename_tmp, imagename)
         else:
             image_job = casa_tasks.sdimaging(**image_args)
             self._executor.execute(image_job)
