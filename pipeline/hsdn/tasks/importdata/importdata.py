@@ -54,7 +54,7 @@ class NROImportDataInputs(importdata.ImportDataInputs):
                                                   process_caldevice=process_caldevice, session=session,
                                                   overwrite=overwrite, nocopy=nocopy, save_flagonline=save_flagonline,
                                                   bdfflags=bdfflags, lazy=lazy, createmms=createmms,
-                                                  ocorr_mode=ocorr_mode)
+                                                  ocorr_mode=ocorr_mode, datacolumns={})
 
 
 class NROImportDataResults(sd_importdata.SDImportDataResults):
