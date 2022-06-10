@@ -201,13 +201,13 @@ class WeightMS(basetask.StandardTaskTemplate):
                 flags = net_flags[:, index]
                 weight[row] = numpy.ones(cell_stat.shape[0])
                 for ipol in range(weight[row].shape[0]):
-                    stat = cell_stat[ipol, 1]  # baselined RMS
+                    stat = cell_stat[ipol, 1]  # get post-fitting RMS
                     if flags[ipol] == 1:
                         # treat unflagged data
                         if stat > 0.0:
                             weight[row][ipol] /= (stat * stat)
                         elif stat < 0.0 and cell_stat[ipol, 2] > 0.0:
-                            stat = cell_stat[ipol, 2]  # RMS before baseline
+                            stat = cell_stat[ipol, 2]  # get pre-fitting RMS
                             weight[row][ipol] /= (stat * stat)
                         elif try_fallback:
                             weight_tintsys = True
