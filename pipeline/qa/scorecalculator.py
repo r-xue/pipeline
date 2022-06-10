@@ -3237,7 +3237,7 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
         shortmsg = 'MOM8 FC image indicates residual line emission'
         weblog_location = pqa.WebLogLocation.UNSET
     else:
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} and a flux histogram asymmetry which are below the QA thresholds.'.format(field, spw, mom8_fc_peak_snr)
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} and no significant flux histogram asymmetry.'.format(field, spw, mom8_fc_peak_snr)
         shortmsg = 'MOM8 FC peak SNR and flux histogram'
         weblog_location = pqa.WebLogLocation.ACCORDION
 
