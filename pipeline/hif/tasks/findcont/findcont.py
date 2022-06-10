@@ -65,7 +65,7 @@ class FindCont(basetask.StandardTaskTemplate):
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-            result = FindContResult({}, [], 0, 0, [])
+            result = FindContResult({}, [], '', 0, 0, [])
             result.mitigation_error = True
             return result
 
@@ -89,7 +89,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if ms_objects_and_columns == collections.OrderedDict():
                 LOG.error('No data found for continuum finding.')
-                result = FindContResult({}, [], 0, 0, [])
+                result = FindContResult({}, [], '', 0, 0, [])
                 return result
 
             LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
@@ -119,6 +119,9 @@ class FindCont(basetask.StandardTaskTemplate):
         cont_ranges = contfile_handler.read()
 
         result_cont_ranges = {}
+
+        joint_mask_names = {}
+
         num_found = 0
         num_total = 0
         single_range_channel_fractions = []
@@ -360,7 +363,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
-                    (cont_range, png, single_range_channel_fraction, warning_strings) = \
+                    (cont_range, png, single_range_channel_fraction, warning_strings, joint_mask_name) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
@@ -368,6 +371,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            is_eph_obj=image_heuristics.is_eph_obj(target['field']),
                                                            ref_ms_name=ref_ms.name,
                                                            nbin=reprBW_nbin)
+                    joint_mask_names[(target['field'], spwid)] = joint_mask_name
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '
@@ -398,7 +402,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                 num_total += 1
 
-        result = FindContResult(result_cont_ranges, cont_ranges, num_found, num_total, single_range_channel_fractions)
+        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions)
 
         return result
 

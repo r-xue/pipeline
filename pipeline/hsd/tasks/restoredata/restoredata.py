@@ -25,7 +25,7 @@ LOG = infrastructure.get_logger(__name__)
 class SDRestoreDataInputs(restoredata.RestoreDataInputs):
     """SDRestoreDataInputs manages the inputs for the SDRestoreData task."""
 
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR')
+    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
