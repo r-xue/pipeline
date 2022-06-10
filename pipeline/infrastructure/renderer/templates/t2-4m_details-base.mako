@@ -191,25 +191,64 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </table>
 % endif
 
+<%
+accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
+score_counts = []
+lowest_score = None
+lowest_score_render_class = None
+
+error_scores = rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
+if len(error_scores) > 0:
+    score_counts.append('%d red' % (len(error_scores)))
+    if lowest_score is None:
+        lowest_score = min(error_scores, key=lambda s: s.score)
+        lowest_score_render_class = 'danger alert-danger'
+
+warning_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
+if len(warning_scores) > 0:
+    score_counts.append('%d yellow' % (len(warning_scores)))
+    if lowest_score is None:
+        lowest_score = min(warning_scores, key=lambda s: s.score)
+        lowest_score_render_class = 'warning alert-warning'
+
+suboptimal_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL)
+if len(suboptimal_scores) > 0:
+    score_counts.append('%d blue' % (len(suboptimal_scores)))
+    if lowest_score is None:
+        lowest_score = min(suboptimal_scores, key=lambda s: s.score)
+        lowest_score_render_class = 'info alert-info'
+
+optimal_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0)
+if len(optimal_scores) > 0:
+    score_counts.append('%d green' % (len(optimal_scores)))
+    if lowest_score is None:
+        lowest_score = min(optimal_scores, key=lambda s: s.score)
+        lowest_score_render_class = 'success alert-success'
+%>
+
 <div class="clearfix"></div>
-<div class="panel-group" id="details-accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group" id="qa-details-accordion" role="tablist" aria-multiselectable="true">
+
+    % if result.qa.pool:
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="2"><h4>Lowest QA Score</h4></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="${lowest_score_render_class}">
+                <td>${'%0.2f' % lowest_score.score}</td>
+                <td>${lowest_score.longmsg}</td>
+            </tr>
+        </tbody>
+    </table>
+    % endif
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree">
             <h4 class="panel-title">
-                <%
-                accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
-                score_counts = []
-                if len(rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)) > 0:
-                    score_counts.append('%d red' % (len(rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR))))
-                if len(rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)) > 0:
-                    score_counts.append('%d yellow' % (len(rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING))))
-                if len(rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL)) > 0:
-                    score_counts.append('%d blue' % (len(rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL))))
-                if len(rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0)) > 0:
-                    score_counts.append('%d green' % (len(rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0))))
-                %>
-                <a data-toggle="collapse" data-parent="#details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                 All QA Scores
                 % if len(score_counts) > 0:
                     (${', '.join(score_counts)})
@@ -229,28 +268,25 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
                         </tr>
                     </thead>
                     <tbody>
-                    <%
-                    accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
-                    %>
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR):
+                    % for qascore in error_scores:
                     <tr class="danger alert-danger">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
                     </tr>
                     % endfor
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING):
+                    % for qascore in warning_scores:
                     <tr class="warning alert-warning">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
                     </tr>
                     % endfor
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL):
+                    % for qascore in suboptimal_scores:
                     <tr class="info alert-info">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
                     </tr>
                     % endfor
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0):
+                    % for qascore in optimal_scores:
                     <tr class="success alert-success">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
