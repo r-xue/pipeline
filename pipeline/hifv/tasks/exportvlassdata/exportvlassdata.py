@@ -6,6 +6,7 @@ import shutil
 import tarfile
 import re
 import glob
+import traceback
 
 import numpy as np
 
@@ -273,9 +274,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                    for idx, image in enumerate(images_list) if '.IQU.iter' in image and '.rms.' not in image]
             common_beam = self._get_common_beam([image_refimage[0] for image_refimage in image_refimage_list])
             for imagename, refimagename in image_refimage_list:
-                LOG.info('')
-                LOG.info(f'start to smooth and regrid {imagename}, and split it into IQU and V.')
-                self._smooth_and_regrid(imagename, refimagename, common_beam)
+                try:
+                    LOG.info('')
+                    LOG.info(f'start to smooth and regrid {imagename}, and split it into IQU and V.')
+                    self._smooth_and_regrid(imagename, refimagename, common_beam)
+                except Exception as e:
+                    LOG.warning(f'Exception while getting the common beam image(s) for {imagename}: {e}')
+                    LOG.info(traceback.format_exc())
 
         # Return the results object, which will be used for the weblog
         return result
@@ -885,6 +890,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # from ia.restoringbeam().
         beam_target['positionangle'] = beam_target.pop('pa')
         myia.close()
+
+        # PIPE-1434: increase the target beam from ia.commonbeam() by a small margin to avoid potential 
+        # failures of ia.convolve2d() when the convolution kernel is too small on the minor axis near the 
+        # numerical precision limit.
+        beam_target['major']['value'] *= 1.00001
+        beam_target['minor']['value'] *= 1.00001
 
         LOG.info(f'use {beam_target} as the target beam for the common-beam image set.')
 
