@@ -38,7 +38,7 @@ class ObservatoryImagingPolicy(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_beam_size_pixel() -> float:
+    def get_beam_size_pixel() -> int:
         """Get beam size as number of pixels.
 
         Raises:
@@ -59,6 +59,19 @@ class ObservatoryImagingPolicy(abc.ABC):
 
         Returns:
             (Supposed to be) Convolution support.
+        """
+        raise NotImplementedError('should be implemented in subclass')
+
+    @staticmethod
+    @abc.abstractmethod
+    def get_image_margin() -> int:
+        """Get image margin in pixel numbers.
+
+        Raises:
+            NotImplementedError
+
+        Returns:
+            (Supposed to be) number of pixels.
         """
         raise NotImplementedError('should be implemented in subclass')
 
@@ -97,7 +110,7 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
         return theory_beam_arcsec
 
     @staticmethod
-    def get_beam_size_pixel() -> float:
+    def get_beam_size_pixel() -> int:
         """Get beam size as number of pixels.
 
         Returns:
@@ -113,6 +126,17 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
             Convolution support.
         """
         return 6
+
+    @staticmethod
+    def get_image_margin() -> int:
+        """Get image margin in pixel numbers.
+
+        Returns:
+            number of pixels of imaging margin (adjusted to even number)
+        """
+        margin = ALMAImagingPolicy.get_beam_size_pixel()
+        margin += margin % 2
+        return margin
 
 
 class NROImagingPolicy(ObservatoryImagingPolicy):
@@ -139,7 +163,7 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
         return beam_size
 
     @staticmethod
-    def get_beam_size_pixel() -> float:
+    def get_beam_size_pixel() -> int:
         """Get beam size as number of pixels.
 
         Returns:
@@ -155,6 +179,15 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
             Convolution support.
         """
         return 3
+
+    @staticmethod
+    def get_image_margin() -> int:
+        """Get image margin in pixel numbers.
+
+        Returns:
+            number of pixels of imaging margin
+        """
+        return 0
 
 
 def get_imaging_policy(context: Context) -> Type[ObservatoryImagingPolicy]:
