@@ -687,7 +687,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             -> Dict[Tuple[str, str, str], float]:
         """
         This method evaluates the diagnostic phase caltable(s) produced in an
-        earlier step to compute the median SNR for each phase calibrator /
+        earlier step to compute the median achieved SNR for each phase calibrator /
         check source field, and for each SpW.
 
         Args:
@@ -698,11 +698,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         Returns:
             Dictionary with intent, field name, and SpW as keys, and
-            corresponding median SNR as values.
+            corresponding median achieved SNR as values.
         """
         inputs = self.inputs
 
-        LOG.info(f'Computing median phase SNR information for {inputs.ms.basename}.')
+        LOG.info(f'Computing median achieved phase SNR information for {inputs.ms.basename}.')
 
         snr_info = collections.defaultdict(dict)
         for result in gaincal_results:
@@ -721,7 +721,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             # Evaluate each unique SpW separately.
             for spw in sorted(set(spws)):
-                # Compute median SNR and store in snr_info.
+                # Compute median achieved SNR and store in snr_info.
                 snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, numpy.where(spws == spw)[0]])
 
                 # If SpW mapping info exists for the current intent and field
@@ -733,10 +733,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
                     continue
 
-                # If the median SNR is still below the SNR threshold, log a
+                # If the median achieved SNR is still below the SNR threshold, log a
                 # warning.
                 if snr_info[(intent, field, spw)] < inputs.phasesnr:
-                    msg = f"{result.inputs['vis']}, intent {intent}, field {field}, SpW {spw}: median SNR" \
+                    msg = f"{result.inputs['vis']}, intent {intent}, field {field}, SpW {spw}: median achieved SNR" \
                           f" ({snr_info[(intent, field, spw)]:.1f}) is below the low-SNR threshold" \
                           f" ({inputs.phasesnr})."
 
