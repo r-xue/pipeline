@@ -3216,7 +3216,10 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
     mom8_fc_score_min = 0.33
     mom8_fc_score_max = 1.00
     mom8_fc_metric_scale = 270.0
-    mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+    if mom8_fc_frac_max_segment != 0.0:
+        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+    else:
+        mom8_fc_score = mom8_fc_score_max
 
     with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
@@ -3230,12 +3233,12 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
         mom8_fc_final_score = max(mom8_fc_score, 0.67)
 
     if 0.33 <= mom8_fc_final_score < 0.66:
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} and a flux histogram asymmetry which indicate that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
         shortmsg = 'MOM8 FC image indicates residual line emission'
         weblog_location = pqa.WebLogLocation.UNSET
     else:
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} and spatial distribution which is below the QA threshold.'.format(field, spw, mom8_fc_peak_snr)
-        shortmsg = 'MOM8 FC peak SNR above QA threshold'
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} and a flux histogram asymmetry which are below the QA thresholds.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC peak SNR and flux histogram'
         weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
