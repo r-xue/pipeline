@@ -175,55 +175,73 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 
 <%
 accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
-score_counts = []
-lowest_score = None
-lowest_score_render_class = None
+num_scores = 0
+score_color_counts = []
+representative_score = result.qa.representative
+if representative_score is not None:
+    if -0.1 <= representative_score.score <= rendererutils.SCORE_THRESHOLD_ERROR:
+        representative_score_render_class = 'danger alert-danger'
+    elif rendererutils.SCORE_THRESHOLD_ERROR < representative_score.score <= rendererutils.SCORE_THRESHOLD_WARNING:
+        representative_score_render_class = 'warning alert-warning'
+    elif rendererutils.SCORE_THRESHOLD_WARNING < representative_score.score <= rendererutils.SCORE_THRESHOLD_SUBOPTIMAL:
+        representative_score_render_class = 'info alert-info'
+    elif rendererutils.SCORE_THRESHOLD_SUBOPTIMAL < representative_score.score <= 1.0:
+        representative_score_render_class = 'success alert-success'
+    else:
+        representative_score_render_class = None
+else:
+    representative_score_render_class = None
 
 error_scores = rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
 if len(error_scores) > 0:
-    score_counts.append('%d red' % (len(error_scores)))
-    if lowest_score is None:
-        lowest_score = min(error_scores, key=lambda s: s.score)
-        lowest_score_render_class = 'danger alert-danger'
+    num_scores += len(error_scores)
+    score_color_counts.append('%d red' % (len(error_scores)))
+    if representative_score is None:
+        representative_score = min(error_scores, key=lambda s: s.score)
+        representative_score_render_class = 'danger alert-danger'
 
 warning_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
 if len(warning_scores) > 0:
-    score_counts.append('%d yellow' % (len(warning_scores)))
-    if lowest_score is None:
-        lowest_score = min(warning_scores, key=lambda s: s.score)
-        lowest_score_render_class = 'warning alert-warning'
+    num_scores += len(warning_scores)
+    score_color_counts.append('%d yellow' % (len(warning_scores)))
+    if representative_score is None:
+        representative_score = min(warning_scores, key=lambda s: s.score)
+        representative_score_render_class = 'warning alert-warning'
 
 suboptimal_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL)
 if len(suboptimal_scores) > 0:
-    score_counts.append('%d blue' % (len(suboptimal_scores)))
-    if lowest_score is None:
-        lowest_score = min(suboptimal_scores, key=lambda s: s.score)
-        lowest_score_render_class = 'info alert-info'
+    num_scores += len(suboptimal_scores)
+    score_color_counts.append('%d blue' % (len(suboptimal_scores)))
+    if representative_score is None:
+        representative_score = min(suboptimal_scores, key=lambda s: s.score)
+        representative_score_render_class = 'info alert-info'
 
 optimal_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0)
 if len(optimal_scores) > 0:
-    score_counts.append('%d green' % (len(optimal_scores)))
-    if lowest_score is None:
-        lowest_score = min(optimal_scores, key=lambda s: s.score)
-        lowest_score_render_class = 'success alert-success'
+    num_scores += len(optimal_scores)
+    score_color_counts.append('%d green' % (len(optimal_scores)))
+    if representative_score is None:
+        representative_score = min(optimal_scores, key=lambda s: s.score)
+        representative_score_render_class = 'success alert-success'
 %>
 
 % if result.qa.pool:
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th colspan="2"><h4>Lowest QA Score</h4></th>
+            <th colspan="2" padding="0" margin="0"><h4>Lowest QA Score</h4></th>
         </tr>
     </thead>
     <tbody>
-        <tr class="${lowest_score_render_class}">
-            <td>${'%0.2f' % lowest_score.score}</td>
-            <td>${lowest_score.longmsg}</td>
+        <tr class="${representative_score_render_class}">
+            <td>${'%0.2f' % representative_score.score}</td>
+            <td>${representative_score.longmsg}</td>
         </tr>
     </tbody>
 </table>
 % endif
 
+% if num_scores > 1:
 <div class="panel-group" id="qa-details-accordion" role="tablist" aria-multiselectable="true">
 
     <div class="panel panel-default">
@@ -231,8 +249,8 @@ if len(optimal_scores) > 0:
             <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 All QA Scores
-                % if len(score_counts) > 0:
-                    (${', '.join(score_counts)})
+                % if len(score_color_counts) > 0:
+                    (${', '.join(score_color_counts)})
                 % endif
                 </a>
             </h4>
@@ -283,6 +301,7 @@ if len(optimal_scores) > 0:
     </div>
 
 </div>
+% endif
 
 <%
     notification_trs = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
@@ -291,7 +310,7 @@ if len(optimal_scores) > 0:
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th colspan="2"><h4>Worst Notification</h4></th>
+            <th colspan="2"><h4>Most Severe Notification</h4></th>
         </tr>
     </thead>
     <tbody>
@@ -299,6 +318,7 @@ if len(optimal_scores) > 0:
     </tbody>
 </table>
 
+% if len(notification_trs) > 1:
 <div class="panel-group" id="notification-details-accordion" role="tablist" aria-multiselectable="true">
 
     <div class="panel panel-default">
@@ -326,6 +346,7 @@ if len(optimal_scores) > 0:
     </div>
 
 </div>
+% endif
 % endif
 
 ${next.body()}
