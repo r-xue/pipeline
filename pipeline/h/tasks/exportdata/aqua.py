@@ -201,7 +201,7 @@ class AquaXmlGenerator(object):
         ordered_results = sorted(all_results, key=operator.attrgetter('stage_number'))
         for stage_result in ordered_results:
             # Create the generic stage element
-            stage_name, stage_score = _get_pipeline_stage_and_score(stage_result)
+            stage_name, stage_score, subscores = _get_pipeline_stage_and_scores(stage_result)
             stage_element = ElementTree.Element('Stage',
                                                 Number=str(stage_result.stage_number),
                                                 Name=stage_name,
@@ -210,7 +210,7 @@ class AquaXmlGenerator(object):
             all_scores = stage_result.qa.pool
 
             # calculate which items have specific renderers and which require
-            # procesing by the generic renderer
+            # processing by the generic renderer
             needs_specific = [qa_score for qa_score in all_scores
                               if any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
             needs_generic = [qa_score for qa_score in all_scores
@@ -225,6 +225,19 @@ class AquaXmlGenerator(object):
 
             stage_element.extend(specific_elements)
             # stage_element.extend(generic_elements)
+
+            # add subscore elements
+            for subscore in subscores:
+                EBs = ','.join(subscore.applies_to.vis)
+                if EBs == '':
+                    EBs = 'N/A'
+                Spw = ','.join(sorted(subscore.applies_to.spw))
+                if Spw == '':
+                    Spw = 'N/A'
+                Intent = ','.join(sorted(subscore.applies_to.intent))
+                if Intent == '':
+                    Intent = 'N/A'
+                stage_element.extend([ElementTree.Element('SubScore', Score=str(subscore.score), Reason=subscore.longmsg, EBs=EBs, Spw=Spw, Intent=Intent)])
 
             xml_root.append(stage_element)
 
@@ -335,8 +348,8 @@ class AquaXmlGenerator(object):
 
     def _xml_for_topic(self, topic_name, context, topic_results):
         # the overall topic score is defined as the minimum score of all
-        # representative scores for each task in  that topic, which themselves
-        # are the minimum of the scores for that task
+        # representative scores for each task in that topic, which themselves
+        # are (often) the minimum of the scores for that task
         try:
             min_score = min([r.qa.representative for r in topic_results if r.qa.representative.score is not None], key=operator.attrgetter('score'))
             score = str(min_score.score)
@@ -573,14 +586,15 @@ def _create_value_formatter(format_spec):
     return f
 
 
-def _get_pipeline_stage_and_score(result):
+def _get_pipeline_stage_and_scores(result):
     """
     Get the CASA equivalent task name which is stored by the infrastructure
     as  <task_name> (<arg1> = <value1>, ...)
     """
     stage_name = result.pipeline_casa_task.split('(')[0]
-    score = result.qa.representative.score
-    return stage_name, score
+    stage_score = result.qa.representative.score
+    subscores = result.qa.pool
+    return stage_name, stage_score, subscores
 
 
 def sensitivity_xml_for_stages(context, results, name=''):
@@ -598,7 +612,7 @@ def sensitivity_xml_for_stages(context, results, name=''):
     ordered_results = sorted(results, key=operator.attrgetter('stage_number'))
     for stage_result in ordered_results:
         # Create the generic stage element
-        stage_name, stage_score = _get_pipeline_stage_and_score(stage_result)
+        stage_name, stage_score, _ = _get_pipeline_stage_and_scores(stage_result)
 
         for task_name, exporter in TASK_NAME_TO_SENSITIVITY_EXPORTER.items():
             if stage_name == task_name:
@@ -619,7 +633,7 @@ def xml_for_sensitivity_stage(context, stage_results, exporter, name):
     :return: XML for all sensitivities reported by the result stage
     :rtype: xml.etree.cElementTree.Element
     """
-    stage_name, stage_score = _get_pipeline_stage_and_score(stage_results)
+    stage_name, stage_score, _ = _get_pipeline_stage_and_scores(stage_results)
 
     tagname = name if name != '' else 'SensitivityEstimates'
 
