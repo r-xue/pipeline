@@ -305,32 +305,45 @@ def get_notification_trs(result, alerts_info, alerts_success):
     banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
 
     notifications = []
+    most_severe_render_class = None
 
     if banner_scores:
         for qa_score in scores_in_range(banner_scores, -0.1, SCORE_THRESHOLD_ERROR):
             n = format_notification('danger alert-danger', 'QA', qa_score.longmsg, 'glyphicon glyphicon-remove-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'danger alert-danger'
         for qa_score in scores_in_range(banner_scores, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING):
             n = format_notification('warning alert-warning', 'QA', qa_score.longmsg, 'glyphicon glyphicon-exclamation-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'warning alert-warning'
 
     for logrecord in utils.get_logrecords(result, logging.ERROR):
         n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'danger alert-danger'
     for logrecord in utils.get_logrecords(result, logging.WARNING):
         n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'warning alert-warning'
 
     if alerts_info:
         for msg in alerts_info:
             n = format_notification('info alert-info', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'info alert-info'
     if alerts_success:
         for msg in alerts_success:
             n = format_notification('success alert-success', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'success alert-success'
 
-    return notifications
+    return notifications, most_severe_render_class
 
 
 def format_notification(tr_class, alert, msg, icon_class=None):

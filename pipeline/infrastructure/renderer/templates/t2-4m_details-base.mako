@@ -178,7 +178,7 @@ accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLoc
 num_scores = 0
 score_color_counts = []
 representative_score = result.qa.representative
-if representative_score is not None:
+if representative_score is not None and representative_score.score is not None:
     if -0.1 <= representative_score.score <= rendererutils.SCORE_THRESHOLD_ERROR:
         representative_score_render_class = 'danger alert-danger'
     elif rendererutils.SCORE_THRESHOLD_ERROR < representative_score.score <= rendererutils.SCORE_THRESHOLD_WARNING:
@@ -225,40 +225,39 @@ if len(optimal_scores) > 0:
         representative_score_render_class = 'success alert-success'
 %>
 
-% if result.qa.pool:
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th colspan="2" padding="0" margin="0"><h4>Lowest QA Score</h4></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="${representative_score_render_class}">
-            <td>${'%0.2f' % representative_score.score}</td>
-            <td>${representative_score.longmsg}</td>
-        </tr>
-    </tbody>
-</table>
-% endif
-
-% if num_scores > 1:
 <div class="panel-group" id="qa-details-accordion" role="tablist" aria-multiselectable="true">
 
-    <div class="panel panel-default">
+    <div class="${representative_score_render_class}">
         <div class="panel-heading" role="tab" id="headingTwo">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                All QA Scores
-                % if len(score_color_counts) > 0:
-                    (${', '.join(score_color_counts)})
+                % if num_scores > 1:
+                    % if representative_score.score is not None:
+                        <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        QA Scores: &nbsp; ${'%0.2f' % representative_score.score} &nbsp; ${representative_score.longmsg} &nbsp; All (${', '.join(score_color_counts)})
+                        </a>
+                    % else:
+                        <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        QA Scores: &nbsp; N/A &nbsp; All (${', '.join(score_color_counts)})
+                        </a>
+                    % endif
+                % else:
+                    % if representative_score.score is not None:
+                        <tr class="${representative_score_render_class}">
+                        QA Score: &nbsp; ${'%0.2f' % representative_score.score} &nbsp; ${representative_score.longmsg}
+                        </tr>
+                    % else:
+                        <tr class="${representative_score_render_class}">
+                        QA Score: &nbsp; N/A
+                        </tr>
+                    % endif
                 % endif
-                </a>
             </h4>
         </div>
+        % if num_scores > 1:
         <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
             <div class="panel-body">
                 % if result.qa.pool:
-                <table class="table table-bordered" summary="Pipeline QA summary">
+                <table class="table table-bordered table-condensed" summary="Pipeline QA summary">
                     <caption>Pipeline QA summary for this task.</caption>
                     <thead>
                         <tr>
@@ -298,40 +297,35 @@ if len(optimal_scores) > 0:
                 % endif
             </div>
         </div>
+        % endif
     </div>
 
 </div>
-% endif
 
 <%
-    notification_trs = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
+    notification_trs, most_severe_render_class = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
 %>
 % if notification_trs:
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th colspan="2"><h4>Most Severe Notification</h4></th>
-        </tr>
-    </thead>
-    <tbody>
-    ${notification_trs[0]}
-    </tbody>
-</table>
-
-% if len(notification_trs) > 1:
 <div class="panel-group" id="notification-details-accordion" role="tablist" aria-multiselectable="true">
 
-    <div class="panel panel-default">
+    <div class="${most_severe_render_class}">
         <div class="panel-heading" role="tab" id="headingThree">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                All Notifications (${len(notification_trs)})
-                </a>
+                % if len(notification_trs) > 1:
+                    <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Notifications: &nbsp; ${notification_trs[0]} &nbsp; All (${len(notification_trs)})
+                    </a>
+                % else:
+                    <tr class="${most_severe_render_class}">
+                    Notification: &nbsp; ${notification_trs[0]}
+                    </tr>
+                % endif
             </h4>
         </div>
+        % if len(notification_trs) > 1:
         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
             <div class="panel-body">
-                <table class="table table-bordered" summary="Task notifications">
+                <table class="table table-bordered table-condensed" summary="Task notifications">
                     <caption>Notifications for this task.</caption>
                     <thead>
                     </thead>
@@ -343,10 +337,10 @@ if len(optimal_scores) > 0:
                 </table>
             </div>
         </div>
+        % endif
     </div>
 
 </div>
-% endif
 % endif
 
 ${next.body()}
