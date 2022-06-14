@@ -31,9 +31,40 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         (table_rows,
          mako_context['alerts_info']) = make_renorm_table(pipeline_context, result, weblog_dir)
 
+        # Just put the plots into the right place inline here -- eventually move out to their own function
+        import pipeline.infrastructure.renderer.logger as logger
+        import glob, re
+        
+        # Make a list of the plots to be plotted 
+        summary_plots = collections.defaultdict(list)
+
+        for res in result:
+            vis = os.path.basename(res.inputs['vis'])
+            vis_html = '<p id="'+vis+'" class="jumptarget">'+vis+'</p>' #FIXME: better string formatting
+            for source, source_stats in res.stats.items():
+                for spw, spw_stats in source_stats.items():
+                    specplot = spw_stats.get('spec_plot')
+                    specplot_path = f"RN_plots/{specplot}"
+                    if os.path.exists(specplot_path):
+                        LOG.trace(f"Copying {specplot_path} to {weblog_dir}")
+                        shutil.copy(specplot_path, weblog_dir)
+                        specplot_path = specplot_path.replace('RN_plots', f'pipeline-procedure_hifa_cal_renorm/html/stage{res.stage_number}') #FIXME: add call to get other path components
+#                        spw_html = '<p id="'+specplot+'">'+ spw +'</p>'
+                        plot = logger.Plot(specplot_path,
+                                x_axis='Freq', # Placeholder value
+                                y_axis='Flux', # Placeholder value
+                                parameters={'vis': vis,
+                                            'field': source,
+                                            'spw': spw,
+                                            'specplot' : specplot})
+                        summary_plots[vis_html].append(plot)
+                    else:
+                        print("no dice") # TODO: update to be real error message with path. Probably DEBUG.
+
         mako_context.update({
             'table_rows': table_rows,
-            'weblog_dir': weblog_dir
+            'weblog_dir': weblog_dir,
+            'summary_plots': summary_plots
         })
 
 TR = collections.namedtuple('TR', 'vis source spw max pdf')
@@ -75,7 +106,10 @@ def make_renorm_table(context, results, weblog_dir):
                     pdf_path_link = ""
 
                 specplot = spw_stats.get('spec_plot')
-                tr = TR(vis, source, spw, maxrn_field, pdf_path_link)
+
+                vis_html = '<a href="#' + vis + '">' + vis + '</a>' #FIXME: better string formatting
+                spw_html = '<a href="#' + specplot + '">' + spw + '</a>' #FIXME: better string formatting
+                tr = TR(vis_html, source, spw_html, maxrn_field, pdf_path_link)
                 rows.append(tr)
 
     merged_rows = utils.merge_td_columns(rows, num_to_merge=2)
