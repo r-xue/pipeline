@@ -540,6 +540,7 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
         index_dict[vis] = numpy.asarray(index_dict[vis])
     return index_dict
 
+
 # TODO (ksugimoto): refactor get_valid_ms_members
 def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                          ant_selection: str, field_selection: str,
