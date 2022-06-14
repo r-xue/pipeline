@@ -40,7 +40,7 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for res in result:
             vis = os.path.basename(res.inputs['vis'])
-            vis_html = '<p id="'+vis+'" class="jumptarget">'+vis+'</p>' #FIXME: better string formatting
+            vis_html = f'<p id="{vis}" class="jumptarget">{vis}</p>'
             for source, source_stats in res.stats.items():
                 for spw, spw_stats in source_stats.items():
                     specplot = spw_stats.get('spec_plot')
@@ -48,18 +48,17 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     if os.path.exists(specplot_path):
                         LOG.trace(f"Copying {specplot_path} to {weblog_dir}")
                         shutil.copy(specplot_path, weblog_dir)
-                        specplot_path = specplot_path.replace('RN_plots', f'pipeline-procedure_hifa_cal_renorm/html/stage{res.stage_number}') #FIXME: add call to get other path components
-#                        spw_html = '<p id="'+specplot+'">'+ spw +'</p>'
+                        specplot_path = specplot_path.replace('RN_plots', f'{weblog_dir}')
                         plot = logger.Plot(specplot_path,
-                                x_axis='Freq', # Placeholder value
-                                y_axis='Flux', # Placeholder value
+                                x_axis='Flux',
+                                y_axis='Renorm Scaling',
                                 parameters={'vis': vis,
                                             'field': source,
                                             'spw': spw,
                                             'specplot' : specplot})
                         summary_plots[vis_html].append(plot)
                     else:
-                        print("no dice") # TODO: update to be real error message with path. Probably DEBUG.
+                       LOG.debug(f"Failed to copy {specplot_path} to {weblog_dir}")
 
         mako_context.update({
             'table_rows': table_rows,
@@ -107,26 +106,27 @@ def make_renorm_table(context, results, weblog_dir):
 
                 specplot = spw_stats.get('spec_plot')
 
-                vis_html = '<a href="#' + vis + '">' + vis + '</a>' #FIXME: better string formatting
-                spw_html = '<a href="#' + specplot + '">' + spw + '</a>' #FIXME: better string formatting
+                vis_html = f'<a href="#{vis}">{vis}</a>'
+                spw_html = f'<a href="#{specplot}">{spw}</a>'
                 tr = TR(vis_html, source, spw_html, maxrn_field, pdf_path_link)
                 rows.append(tr)
 
     merged_rows = utils.merge_td_columns(rows, num_to_merge=2)
     merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
-
+    apply_results = result.inputs['apply']
     for row, _ in enumerate(merged_rows):
         mm = re.search(r'<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
         if mm:  # do we have a pattern match?
             scale_factor = scale_factors[row]
-            if scale_factor > threshold:
-
+            if scale_factor > threshold: 
                 for col in (-3, -2, -1):
                     cell = ET.fromstring(merged_rows[row][col])
                     innermost_child = getchild(cell)
-                    innermost_child.set('class','danger alert-danger')
+                    if apply_results:
+                        innermost_child.set('class','info alert-info') 
+                    else:
+                        innermost_child.set('class','danger alert-danger') 
                     merged_rows[row][col] = ET.tostring(innermost_child)
-
 
     return merged_rows, alert
 

@@ -61,7 +61,10 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for plots_in_row in rendererutils.group_plots(ms_plots, break_rows_by):
+        % for group_name, plots_in_row in rendererutils.group_plots(ms_plots, break_rows_by):
+        % if show_row_break_value: 
+            <h5>${group_name}</h5>
+        % endif
         <div class="row">
             % if plots_in_row is not None:
 
