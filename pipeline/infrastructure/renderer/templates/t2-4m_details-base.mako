@@ -234,12 +234,12 @@ if len(optimal_scores) > 0:
                     % if representative_score.score is not None:
                         QA Score: &nbsp; ${'%0.2f' % representative_score.score} &nbsp; ${representative_score.longmsg} &nbsp;
                         <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        <i><b>All QA Scores (${', '.join(score_color_counts)})</b></i>
+                        <u><i><b>All QA Scores (${', '.join(score_color_counts)})</b></i></u>
                         </a>
                     % else:
                         QA Score: &nbsp; N/A &nbsp;
                         <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        All QA Scores (${', '.join(score_color_counts)})
+                        <u><i><b>All QA Scores (${', '.join(score_color_counts)})</b></i></u>
                         </a>
                     % endif
                 % else:
@@ -316,7 +316,7 @@ if len(optimal_scores) > 0:
                 % if len(notification_trs) > 1:
                     Most Severe Notification: &nbsp; ${notification_trs[0]} &nbsp;
                     <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    <i><b>All Notifications (${len(notification_trs)})</b></i>
+                    <u><i><b>All Notifications (${len(notification_trs)})</b></i></u>
                     </a>
                 % else:
                     <tr class="${most_severe_render_class}">
