@@ -1191,7 +1191,7 @@ class ACreNorm(object):
 
 
     # LM added / edited lots
-    def renormalize(self,spws=[],targscans=[],nfit=5,bwthresh=120e6,bwthreshspw={},bwdiv='odd',docorr=False, excludespws=[],excludeants=[],excludechan={},fthresh=0.01,datacolumn='CORRECTED_DATA',fixOutliers=True,mededge=0.01,excflagged=True, diagSpectra=True, antHeuristicsSpectra=True, verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85, checkFalsePositives=True, docorrThresh=None):
+    def renormalize(self,spws=[],targscans=[],nfit=5,bwthresh=120e6,bwthreshspw={},bwdiv='odd',docorr=False, excludespws=[],excludeants=[],excludechan={},fthresh=0.01,datacolumn='CORRECTED_DATA',fixOutliers=True,mededge=0.01,excflagged=True, diagSpectra=True, antHeuristicsSpectra=True, verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85, checkFalsePositives=True, atmAutoExclude=False, docorrThresh=None):
         """
         spws=[]  - to manually set only certain SPW to be analysed and/or corrected
         targscans=[]  - to manually set only certain scans to be analysed and/or corrected
@@ -1280,6 +1280,11 @@ class ACreNorm(object):
                         the bandpass (or phase) and target(s) position. If transmission is always high the
                         difference where ATM features occur are negligable and already fit-out
                         within the renormalization code 
+        checkFalsePositives = True - this will automatically find ATM lines in the spectrum and check those 
+                        regions to see if there is a renorm signal above the threshold. If there is, it is
+                        assumed to be a "false positive" signal caused by the ATM feature. 
+        atmAutoExclude = False - If this is set to True, then the regions of the spectrum found during 
+                        the checkFalsePositives algorithm will be excluded from the spectrum automatically.
         docorrThresh = None - the threshold above which the scaling for a given field in a given spw
                             must exceed along with docorr=True for the reNorm correction to be applied
                             if this param is set to a string None, then automatically use the 
@@ -1473,13 +1478,10 @@ class ACreNorm(object):
                     print('Will exclude antennas = '+str((',').join(list(self.AntName[[excludeants]]))))
                     self.logReNorm.write('Will exclude antennas = '+str((',').join(list(self.AntName[[excludeants]])))+'\n') # LM added
 
-
-        # LM added - excflagged 
         if excflagged:
             print('For each spw, scan, field will exclude fully flagged antennas')
             self.logReNorm.write('For each spw, scan, field will exclude fully flagged antennas\n') # LM added
 
-        # LM added - diagspectra
         if diagSpectra:
             print('Will plot diagnostic spectra per spw, scan, field')
             self.logReNorm.write('Will plot diagnostic spectra per spw, scan, field\n') # LM added
@@ -1491,7 +1493,16 @@ class ACreNorm(object):
             self.atmWarning={}
             self.atmExcludeCmd={}
 
-        # LM added - excludechan (dictionary)
+        if atmAutoExclude:
+            if excludechan:
+                print('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExlude option.')
+                self.logReNorm.write('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExlude option.\n')
+                atmAutoExclude = False
+            else:
+                print('Regions of the spectrum where atmospheric lines are found will be exluded.')
+                self.logReNorm.write('Regions of the spectrum where atmospheric lines are found will be exluded.\n')
+                checkFalsePositives = True
+
         if excludechan:
             # checkformats sucessively for fail modes
             if type(excludechan) is not dict:
@@ -1802,6 +1813,12 @@ class ACreNorm(object):
                                                 atm_mask[max(0,floor(cen-1.3*gam)):min(N.shape[1],ceil(cen+1.3*gam))] = True
                                             self.atmMask[str(fldname)][str(ispw)][str(iscan)] = atm_mask
 
+                                            if atmAutoExclude and atm_mask.any():
+                                                excludechan = self.suggestAtmExclude(target, str(ispw), return_dict=True)
+                                            else:
+                                                excludechan = {}
+
+                                skipAtmCorr=True
                                 if correctATM:
                                     # check if we want to do the fix, it the ATM line is not strong
                                     # its pointless calculation to work out the are differences
@@ -1900,6 +1917,14 @@ class ACreNorm(object):
                                     if 'N_atm' not in locals():
                                         N_atm = N.copy()
 
+                                    # Now, what if N_atm exists due to an earlier spw but none of the above settings
+                                    # have updated it yet?
+                                    #
+                                    # If we are skipping explicit ATM correction but N_atm already exists, it needs 
+                                    # to be updated.
+                                    if not self.corrATM and skipAtmCorr:
+                                        N_atm = N.copy()
+
                                     # Now if this spw is in the list of spws that include exclusion, find the ranges
                                     # and apply the exclusion (set data in channel ranges = 1.0)
                                     if str(ispw) in excludechan.keys():
@@ -1968,21 +1993,40 @@ class ACreNorm(object):
                                     if checkFalsePositives:
                                         # Check and make sure there actually is an ATM line, otherwise ignore.
                                         if atm_mask.any():
-                                            Nmax_atm = np.nanmean(
-                                                    np.where(
-                                                        N[:,atm_mask,:].max(axis=1) != 1,
-                                                        N[:,atm_mask,:].max(axis=1),
-                                                        np.nan
-                                                        ),
-                                                    axis=1
-                                                    )
+                                            # If we automatically exluded ATM lines then everything is set to 1.0
+                                            # in the range, therefore we need to check the N_atm array rather than
+                                            # the N array.
+                                            if atmAutoExclude:
+                                                Nmax_atm = np.nanmean(
+                                                        np.where(
+                                                            N_atm[:,atm_mask,:].max(axis=1) != 1,
+                                                            N_atm[:,atm_mask,:].max(axis=1),
+                                                            np.nan
+                                                            ),
+                                                        axis=1
+                                                        )
+                                            else:
+                                                Nmax_atm = np.nanmean(
+                                                        np.where(
+                                                            N[:,atm_mask,:].max(axis=1) != 1,
+                                                            N[:,atm_mask,:].max(axis=1),
+                                                            np.nan
+                                                            ),
+                                                        axis=1
+                                                        )
                                             if (Nmax_atm > hardLim).any():
-                                                if verbose:
-                                                    print('   WARNING! There may be significant artifical signal from an' \
-                                                            ' atmospheric feature that will trigger renorm application!!!')
-                                                self.logReNorm.write('   WARNING! There may be significant artifical' \
-                                                        ' signal from an atmospheric feature that will trigger renorm' \
-                                                        ' application!!!\n')
+                                                if atmAutoExclude:
+                                                    if verbose:
+                                                        print('   Significant atmospheric signal was removed by atmAutoExclude!')
+                                                    self.logReNorm.write('   Significant atmospheric signal was removed by atmAutoExclude!\n')
+
+                                                else:
+                                                    if verbose:
+                                                        print('   WARNING! There may be significant artifical signal from an' \
+                                                                ' atmospheric feature that will trigger renorm application!!!')
+                                                    self.logReNorm.write('   WARNING! There may be significant artifical' \
+                                                            ' signal from an atmospheric feature that will trigger renorm' \
+                                                            ' application!!!\n')
                                                 self.atmWarning[str(fldname)][str(ispw)] = True
                                             elif self.atmWarning[str(fldname)][str(ispw)]:
                                                 pass
@@ -2176,11 +2220,18 @@ class ACreNorm(object):
                         if self.atmWarning[str(fldname)][str(ispw)]:
                             exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
                             self.atmExcludeCmd[str(fldname)][str(ispw)] = exclude_cmd
-                            print('ATM features may be falsely triggering renorm!')
-                            self.logReNorm.write('ATM features may be falsely triggering renorm!\n')
-    
-                            print('Suggested channel exclusion: '+exclude_cmd)
-                            self.logReNorm.write('Suggested channel ranges for exclusion: ' + exclude_cmd+'\n')
+                            if atmAutoExclude:
+                                print('Renorm features above the threshold have been mitigated by atmAutoExlude.')
+                                self.logReNorm.write('Renorm features above the threshold have been mitigated by atmAutoExlude.\n')
+
+                                print('Equivalent manual call: '+exclude_cmd)
+                                self.logReNorm.write('Equivalent manual call: '+exclude_cmd+'\n')
+                            else:
+                                print('ATM features may be falsely triggering renorm!')
+                                self.logReNorm.write('ATM features may be falsely triggering renorm!\n')
+        
+                                print('Suggested channel exclusion: '+exclude_cmd)
+                                self.logReNorm.write('Suggested channel ranges for exclusion: ' + exclude_cmd+'\n')
                 
         # AL added - PIPE 1168 (3)
         # Loops through the scalingValue dict and populates the pipeline needed dictionary
@@ -2887,7 +2938,7 @@ class ACreNorm(object):
                     # can easily reference it.
                     self.rnpipestats[target][str(spw)]['spec_plot'] = fname
                     if createpdf:
-                        self.convertPlotsToPDF(target, int(spw), include_summary=includeSummary)
+                        self.convertPlotsToPDF(target, int(spw), include_summary=includeSummary, verbose=True)
                 else:
                     plt.show()
                     # Python 2 vs. 3, raw_input() changed to input()
@@ -4007,7 +4058,7 @@ class ACreNorm(object):
 
     # No return acts on the rescaling spectrum directly 
 
-    def suggestAtmExclude(self, target, spw, return_command=False):
+    def suggestAtmExclude(self, target, spw, return_command=False, return_dict=False):
         """
         Purpose:
             Given that renormalization() has been run with the checkFalsePositives=True
@@ -4019,12 +4070,21 @@ class ACreNorm(object):
         Inputs:
             target : string
                 The target source evaluated in renormalization()
+
             spw : string
                 The spectral window you wish to evaluate a mask for assuming that it
                 was also run in the renormalization() call. 
+
             return_command : boolean : OPTIONAL
                 If set to True, then a string is returned with the correct syntax to
                 put into the excludechan option of a self.renormalization() call.
+                Default: False
+
+            return_dict : boolean : OPTIONAL
+                If set to True, then a dictionary is returned with the correct syntax
+                to fill the excludechan parameter of the self.renormalize() method.
+                Default: False
+                NOTE: This takes priority over return_command if both are set to True.
 
         Outputs:
             A list of list pairs suggesting ranges for input into the excludechan 
@@ -4063,7 +4123,17 @@ class ACreNorm(object):
         ranges = subsets(atm_channels)
 
         # Return either the ranges themselves or a flagging command compiling the ranges.
-        if return_command:
+        if return_dict:
+            if len(ranges) == 0:
+                return {str(spw):''}
+            elif len(ranges) > 1:
+                full_range = ''
+                for rng in ranges:
+                    full_range+=str(rng[0])+'~'+str(rng[1])+';'
+                return {str(spw): full_range[:-1]}
+            else:
+                return {str(spw): str(ranges[0][0])+'~'+str(ranges[0][1])}
+        elif return_command:
             if len(ranges) == 0:
                 return 'No flagging suggested.'
             elif len(ranges) > 1:
@@ -4647,7 +4717,7 @@ class ACreNorm(object):
         return(myindex)
 
     # AL added - PIPE 1168 (2)
-    def convertPlotsToPDF(self, target, spw, include_summary=True, include_heuristics=False):
+    def convertPlotsToPDF(self, target, spw, include_summary=True, include_heuristics=False, verbose=True):
         """
         Super hacky way to create PDFs of created plots so that we can display them in the weblog.
         Simply calls the bash commands "montage" (to create super plots of pngs), "convert" (to
@@ -4725,6 +4795,25 @@ class ACreNorm(object):
 
         # Now convert all the PNGs into PDFs
         for mfile in montaged_pngs:
+            if verbose:
+                from subprocess import Popen
+                from subprocess import PIPE
+                proc = Popen(['which','convert'], stdout=PIPE, stderr=PIPE)
+                which_out, err = proc.communicate()
+                proc = Popen(['convert','-version'], stdout=PIPE, stderr=PIPE)
+                version_out, err = proc.communicate()
+                print('')
+                print('Using ImageMagicks "convert" for png --> pdf conversion located here:')
+                print(which_out.decode('utf-8'))
+                print('')
+                print(version_out.decode('utf-8'))
+                print('')
+                self.logReNorm.write('\n')
+                self.logReNorm.write('Using ImageMagicks "convert" for png --> pdf conversion located here:\n')
+                self.logReNorm.write(which_out.decode('utf-8'))
+                self.logReNorm.write('\n')
+                self.logReNorm.write(version_out.decode('utf-8'))
+                self.logReNorm.write('\n')
             os.system('convert '+mfile+' '+mfile.split('.png')[0]+'.pdf')
         pdflist = ' '.join([fname.split('.png')[0]+'.pdf' for fname in montaged_pngs])
 
