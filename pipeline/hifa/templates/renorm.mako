@@ -87,5 +87,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     	<%def name="caption_title(plot)">
 	    	Spectral Window ${plot.parameters['spw']}<br>
 	    </%def>
+	
+        <%def name="caption_text(plot, _)">
+		    ${plot.parameters['caption']}<br>
+	    </%def>
 
 </%self:plot_group>

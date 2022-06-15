@@ -41,10 +41,16 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for res in result:
             vis = os.path.basename(res.inputs['vis'])
             vis_html = f'<p id="{vis}" class="jumptarget">{vis}</p>'
+            threshold = res.threshold
             for source, source_stats in res.stats.items():
                 for spw, spw_stats in source_stats.items():
                     specplot = spw_stats.get('spec_plot')
                     specplot_path = f"RN_plots/{specplot}"
+                    scale_factor = spw_stats.get('max_rn') 
+                    if scale_factor > threshold: 
+                        caption = "Scaling spectrum was above the threshold."
+                    else: 
+                        caption = ""
                     if os.path.exists(specplot_path):
                         LOG.trace(f"Copying {specplot_path} to {weblog_dir}")
                         shutil.copy(specplot_path, weblog_dir)
@@ -55,7 +61,8 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                 parameters={'vis': vis,
                                             'field': source,
                                             'spw': spw,
-                                            'specplot' : specplot})
+                                            'specplot' : specplot,
+                                            'caption' : caption})
                         summary_plots[vis_html].append(plot)
                     else:
                        LOG.debug(f"Failed to copy {specplot_path} to {weblog_dir}")
@@ -69,6 +76,7 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 TR = collections.namedtuple('TR', 'vis source spw max pdf')
 
 def make_renorm_table(context, results, weblog_dir):
+    tables = collections.defaultdict(list)
 
     # Will hold all the input and output MS(s)
     rows = []
@@ -79,6 +87,7 @@ def make_renorm_table(context, results, weblog_dir):
     for result in results:
         threshold = result.threshold
         vis = os.path.basename(result.inputs['vis'])
+
         if result.alltdm:
             alert = ['No FDM spectral windows are present, '
                      'so the amplitude scale does not need to be '
@@ -86,7 +95,6 @@ def make_renorm_table(context, results, weblog_dir):
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
 
-                # print(source, spw, source_stats)
                 maxrn = spw_stats.get('max_rn')
                 scale_factors.append(maxrn)
                 if maxrn:
@@ -110,6 +118,7 @@ def make_renorm_table(context, results, weblog_dir):
                 spw_html = f'<a href="#{specplot}">{spw}</a>'
                 tr = TR(vis_html, source, spw_html, maxrn_field, pdf_path_link)
                 rows.append(tr)
+    
 
     merged_rows = utils.merge_td_columns(rows, num_to_merge=2)
     merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
