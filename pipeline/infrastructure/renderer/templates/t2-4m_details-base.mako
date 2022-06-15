@@ -20,7 +20,8 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </head>
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
-                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='')">
+                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='',
+                       separate_rows_by='')">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -61,7 +62,14 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for plots_in_row in rendererutils.group_plots(ms_plots, break_rows_by):
+        % for idx_row, plots_in_row in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
+
+        % if idx_row!=0:
+            % if separate_rows_by=='thick-line':
+                <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+            % endif
+        % endif
+
         <div class="row">
             % if plots_in_row is not None:
             % for plot in rendererutils.sort_row_by(plots_in_row, sort_row_by):
