@@ -290,7 +290,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         bl_name = match.name if match is not None else cal_name
         in_ant = inputs.antenna
         in_spw = inputs.spw
-        LOG.info(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}"')
+        LOG.trace(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}"')
         in_field = inputs.field
         in_pol = '' if inputs.pol in ['', '*'] else inputs.pol.split(',')
         clip_niteration = inputs.iteration
