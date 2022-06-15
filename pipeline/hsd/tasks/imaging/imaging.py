@@ -179,22 +179,35 @@ class SDImaging(basetask.StandardTaskTemplate):
         # finally replace task attribute with the top-level one
         result.task = cls
 
-    def spw_for_vis(self, spw_in):
+    def spw_for_vis(self, spw_in: str) -> dict:
+        """Convert virtual spw selection into real spw selection.
+
+        Real spw selection can be different among MS so that the
+        method returns dictionary contains selections per MS.
+
+        Args:
+            spw_in: virtual spw selection string
+
+        Returns:
+            real spw selection per MS
+        """
+        spw_out = {}
         observing_run = self.inputs.context.observing_run
-        if isinstance(spw_in, collections.abc.Sequence) and not isinstance(spw_in, str):
-            spw_out = {}
-            for ms in observing_run.measurement_sets:
-                origin_ms = ms.origin_ms
-                idx = observing_run.measurement_sets.index(observing_run.get_ms(origin_ms))
-                spw_out[ms.name] = spw_in[idx]
-        elif isinstance(spw_in, str) and len(spw_in) == 0:
-            # select all science spws
-            spw_out = {}
-            for ms in observing_run.measurement_sets:
-                science_spws = ms.get_spectral_windows(science_windows_only=True)
-                spw_out[ms.name] = ','.join(map(lambda spw: str(spw.id), science_spws))
-        else:
+        if not isinstance(spw_in, str):
+            raise TypeError('spw_in must be string.')
+        elif len(spw_in) == 0:
             spw_out = dict((ms.name, spw_in) for ms in observing_run.measurement_sets)
+        else:
+            # only supports comma-separated spw id list
+            vspw_list = [int(v) for v in spw_in.split(',')]
+            for ms in observing_run.measurement_sets:
+                origin_ms = observing_run.get_ms(ms.origin_ms)
+                spw_list = [
+                    observing_run.virtual2real_spw_id(vspw, origin_ms)
+                    for vspw in vspw_list
+                ]
+                spw_out[ms.name] = ','.join(map(str, spw_list))
+
         return spw_out
 
     def prepare(self):

@@ -38,6 +38,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
     processing_data_type = [DataType.ATMCORR,
                             DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
 
+    spw = vdp.VisDependentProperty(default='')
     intent = vdp.VisDependentProperty(default='TARGET')
     iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
     flag_tsys = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
@@ -102,10 +103,54 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
         return ','.join(fields)
 
-    @vdp.VisDependentProperty
-    def spw(self):
-        science_spws = self.ms.get_spectral_windows(with_channels=True)
-        return ','.join([str(spw.id) for spw in science_spws])
+    @spw.convert
+    def spw(self, value: str):
+        """Convert input spw value.
+
+        Empty string is converted to science spw list.
+        Any input selection is regarded as virtual spw selection
+        so that it is converted to real spw selection.
+
+        Args:
+            value: (virtual) spw selection string
+
+        Returns:
+            real spw selection
+        """
+        LOG.trace(f'spw.convert: value="{value}" ms="{self.ms.basename}"')
+        converted = ''
+        observing_run = self.context.observing_run
+        if not isinstance(value, str):
+            raise TypeError('spw value must be string.')
+        elif len(value) == 0:
+            LOG.trace('spw.convert: value is empty string')
+            science_spws = self.ms.get_spectral_windows(science_windows_only=True)
+            converted = ','.join([str(spw.id) for spw in science_spws])
+        else:
+            LOG.trace('spw.convert: value is non-empty list')
+            # only supports comma-separated spw id list
+            vspw_list = [int(v) for v in value.split(',')]
+            spw_list = [
+                observing_run.virtual2real_spw_id(vspw, self.ms)
+                for vspw in vspw_list
+            ]
+            if all(spw_list):
+                # conversion to real spw was successful
+                LOG.trace('Conversion from virtual to real spw was successful')
+                converted = ','.join(map(str, spw_list))
+            else:
+                # conversion to real spw was failed probably because pipeline framework
+                # happened to set real spw although user input is virtual spw
+                LOG.trace('Conversion from virtual to real spw was failed. '
+                          'Assuming input value to be real spw selection.')
+                selected_spws = self.ms.get_spectral_windows(value, science_windows_only=True)
+                converted = ','.join([str(spw.id) for spw in selected_spws])
+
+        # converted spw selection should not include "None"
+        assert converted.find('None') == -1
+
+        LOG.trace(f'spw.convert: converted="{converted}"')
+        return converted
 
     @vdp.VisDependentProperty
     def pol(self):
@@ -245,6 +290,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         bl_name = match.name if match is not None else cal_name
         in_ant = inputs.antenna
         in_spw = inputs.spw
+        LOG.info(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}"')
         in_field = inputs.field
         in_pol = '' if inputs.pol in ['', '*'] else inputs.pol.split(',')
         clip_niteration = inputs.iteration
