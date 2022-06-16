@@ -111,7 +111,7 @@ class Renorm(basetask.StandardTaskTemplate):
             if not alltdm:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                                spws=inp.spw, excludechan=inp.excludechan)
-                rn.plotSpectra(include_summary=False)
+                rn.plotSpectra(includeSummary=False)
 
                 # if we tried to renormalize and it was done, store info in the results
                 #   so that it can be passed to the manifest and used during restore
