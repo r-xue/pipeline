@@ -285,7 +285,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                        echo_to_screen=echo_to_screen)
                 break
 
-            if pipeline_task_name.endswith('SDImportData') and importonly:
+            if pipeline_task_name in ('SerialSDImportData', 'HpcSDImportData') and importonly:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
                                        echo_to_screen=echo_to_screen)
                 break
