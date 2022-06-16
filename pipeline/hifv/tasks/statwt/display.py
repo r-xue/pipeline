@@ -13,20 +13,21 @@ LOG = infrastructure.get_logger(__name__)
 class weightboxChart(object):
 
     def __init__(self, context, result):
-        print("in init")
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.result.weight_stats = {}
 
     @staticmethod
-    def _get_weight_from_wtable(tbl, this_ant='', this_spw=''):
+    def _get_weight_from_wtable(tbl, this_ant='', this_spw=''):#, this_scan=''):
         if (this_ant != '') and (this_spw != ''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && ANTENNA1=={1} && ntrue(FLAG)==0'.format(this_spw, this_ant)
         elif (this_ant != ''):
             query_str = 'ANTENNA1=={0} && ntrue(FLAG)==0'.format(this_ant)
         elif (this_spw != ''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && ntrue(FLAG)==0'.format(this_spw)
+#        elif (this_scan !=''): # add other options including scan later
+#            query_str = 'SCAN_NUMBER=={0} && ntrue(FLAG)==0'.format(this_scan)
         else:
             query_str = ''
 
@@ -38,7 +39,7 @@ class weightboxChart(object):
         return weights.real
 
     def _create_plot_from_wtable(self, suffix):
-        print("Creating plot from wtable")
+
         tbl = self.result.wtables[suffix]
         figfile = self._get_figfile(suffix)
         fig_title = os.path.basename(tbl)
@@ -47,6 +48,8 @@ class weightboxChart(object):
 
         with casa_tools.TableReader(tbl) as tb:
             spws = np.sort(np.unique(tb.getcol('SPECTRAL_WINDOW_ID')))
+            # Also get list of scans now
+            #scans = np.sort(np.unique(tb.getcol('SCAN_NUMBER')))
 
         with casa_tools.TableReader(tbl+'/ANTENNA') as tb:
             ant_names = tb.getcol('NAME')
@@ -85,8 +88,23 @@ class weightboxChart(object):
                 bxpstats[0]['stdev'] = None
                 bxpstats_per_spw.extend(bxpstats)
             bxpstats_per_spw[-1]['spw'] = this_spw
-
-        # HERE: might need to add a bxpstats_per_scan 
+        
+        # Add per-scan option
+        # bxpstats_per_scan = list()
+        # for this_scan in scans: 
+        #     dat = self._get_weight_from_wtable(tbl, this_scan=this_scan)
+        #     if dat.size > 0:
+        #         dat = dat[dat > 0]
+        #         bxpstats = cbook.boxplot_stats(dat, whis=whis)
+        #         bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
+        #         bxpstats[0]['stdev'] = dat.std()
+        #         bxpstats_per_scan.extend(bxpstats)
+        #     else:
+        #         bxpstats = cbook.boxplot_stats([0], whis=whis)
+        #         bxpstats[0]['quartiles'] = None
+        #         bxpstats[0]['stdev'] = None
+        #         bxpstats_per_scan.extend(bxpstats)
+        #     bxpstats_per_scan[-1]['scan'] = this_scan
 
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
@@ -103,12 +121,19 @@ class weightboxChart(object):
         ax2.set_ylabel('$Wt_{i}$')
         ax2.get_yaxis().get_major_formatter().set_useOffset(False)
 
+        # ax2.bxp(bxpstats_per_scan, flierprops=flierprops)
+        # ax2.axes.set_xticklabels(scans)
+        # ax2.set_xlabel('Scan Number')
+        # ax2.set_ylabel('$Wt_{i}$')
+        # ax2.get_yaxis().get_major_formatter().set_useOffset(False)
+
         fig.tight_layout()
         fig.savefig(figfile)
         plt.close(fig)
 
         self.result.weight_stats[suffix] = {'per_spw': bxpstats_per_spw,
-                                            'per_ant': bxpstats_per_ant}
+                                            'per_ant': bxpstats_per_ant}#,
+#                                            'per_scan': bxpstats_per_scan}
 
         return
 
@@ -124,7 +149,7 @@ class weightboxChart(object):
         figfile = self._get_figfile(suffix)
         wrapper = logger.Plot(figfile, x_axis='antenna or spectral window', y_axis='antenna-based weight',
                               parameters={'vis': self.ms.basename,
-                                          'x_axis': 'ant/spw',
+                                          'x_axis': 'ant/spw/scan',
                                           'y_axis': 'weight',
                                           'type': suffix})
 
@@ -140,12 +165,8 @@ class weightboxChart(object):
         return wrapper
 
     def plot(self):
-        print("in plot")
-        print(len(self.result.wtables.items())) #Okay, so my test dataset has absolutely no results :/
-        plots = [] 
+        plots = []
         for k, t in self.result.wtables.items():
-            print("suffix is: ")
-            print(k)
             plots.append(self._get_plot_wrapper(suffix=k))
 
         return [p for p in plots if p is not None]

@@ -9,6 +9,7 @@ import functools
 import math
 import operator
 import os
+import re
 from typing import List
 
 import numpy as np
@@ -34,7 +35,10 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
+           'score_combine_spwmapping',                        # ALMA specific
            'score_phaseup_mapping_fraction',                  # ALMA specific
+           'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
+           'score_phaseup_spw_median_snr_for_check',          # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
            'score_missing_phaseup_snrs',                      # ALMA specific
            'score_missing_bandpass_snrs',                     # ALMA specific
@@ -57,6 +61,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_missing_intents',
            'score_ephemeris_coordinates',
            'score_online_shadow_template_agents',
+           'score_lowtrans_flagcmds',                         # ALMA IF specific
            'score_applycal_agents',
            'score_vla_agents',
            'score_total_data_flagged',
@@ -817,6 +822,7 @@ def score_ephemeris_coordinates(mses):
         applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
+
 @log_qa
 def score_online_shadow_template_agents(ms, summaries):
     """
@@ -833,6 +839,51 @@ def score_online_shadow_template_agents(ms, summaries):
     score.origin = new_origin
 
     return score
+
+
+@log_qa
+def score_lowtrans_flagcmds(ms, result):
+    """
+    Get a score for data flagged by the low transmission agent.
+
+    Heuristic from PIPE-624: search for SpW(s) flagged for low transmission,
+    and set score to:
+    * 1 if no SpWs are flagged.
+    * red warning threshold if the representative SpW is flagged, or otherwise,
+    * blue suboptimal threshold if any non-representative SpW is flagged.
+    """
+    # Search in flag commands for SpW(s) flagged for low transmission.
+    spws = []
+    flagcmds = [f for f in result.flagcmds() if "low_transmission" in f]
+    for flagcmd in flagcmds:
+        match = re.search(r"spw='(\d*)'", flagcmd)
+        if match:
+            spws.append(int(match.group(1)))
+
+    # If successful in finding SpWs that were flagged for low transmission,
+    # then create a score that depends on whether the representative SpW was
+    # among those flagged.
+    if spws:
+        # Get representative SpW for MS.
+        _, rspw = ms.get_representative_source_spw()
+        if rspw in spws:
+            score = rutils.SCORE_THRESHOLD_ERROR
+            longmsg = f"Representative SpW {rspw} flagged for low transmission"
+            shortmsg = f"Representative SpW flagged for low transmission"
+        else:
+            score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+            longmsg = f"Non-representative SpW(s) {', '.join(str(s) for s in spws)} flagged for low transmission"
+            shortmsg = f"Non-representative SpW(s) flagged for low transmission"
+    else:
+        score = 1.0
+        longmsg = "No SpW(s) flagged for low transmission"
+        shortmsg = "No SpW(s) flagged for low transmission"
+
+    origin = pqa.QAOrigin(metric_name='score_lowtrans',
+                          metric_score=score,
+                          metric_units='SpW(s) flagged by low transmission agent.')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1566,21 +1617,43 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
 
 
 @log_qa
-def score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap):
+def score_combine_spwmapping(ms, intent, field, spwmapping):
+    """
+    Evaluate whether or not a spw mapping is using combine.
+    If not, then set score to 1. If so, then set score to the sub-optimal
+    threshold (for blue info message).
+    """
+    if spwmapping.combine:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'Using combined spw mapping'
+    else:
+        score = 1.0
+        longmsg = f'No combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'No combined spw mapping'
+
+    origin = pqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
+                          metric_score=spwmapping.combine,
+                          metric_units='Using combined spw mapping')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+
+
+@log_qa
+def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
     """
     Compute the fraction of science spws that have not been
     mapped to other probably wider windows.
     """
-
-    if not phaseup_spwmap:
+    if not spwmapping.spwmap:
         nunmapped = len([spw for spw in ms.get_spectral_windows(science_windows_only=True)])
         score = 1.0
-        longmsg = 'No spw mapping for %s ' % ms.basename
+        longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'No spw mapping'
-    elif fullcombine is True:
+    elif spwmapping.combine:
         nunmapped = 0
         score = rutils.SCORE_THRESHOLD_WARNING
-        longmsg = 'Combined spw mapping for %s ' % ms.basename
+        longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Combined spw mapping'
     else:
         # Expected science windows
@@ -1591,25 +1664,25 @@ def score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap):
         nunmapped = 0
         samesideband = True
         for spwid, scispw in zip(scispwids, scispws):
-            if spwid == phaseup_spwmap[spwid]:
+            if spwid == spwmapping.spwmap[spwid]:
                 nunmapped += 1
             else:
-                if scispw.sideband != ms.get_spectral_window(phaseup_spwmap[spwid]).sideband:
+                if scispw.sideband != ms.get_spectral_window(spwmapping.spwmap[spwid]).sideband:
                     samesideband = False
 
         if nunmapped >= nexpected:
             score = 1.0
-            longmsg = 'No spw mapping for %s ' % ms.basename
+            longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
             shortmsg = 'No spw mapping'
         else:
             # Replace the previous score with a warning
             if samesideband is True:
                 score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
-                longmsg = 'Spw mapping within sidebands for %s' % ms.basename
+                longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping within sidebands'
             else:
                 score = rutils.SCORE_THRESHOLD_WARNING
-                longmsg = 'Spw mapping across sidebands required for %s' % ms.basename
+                longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping across sidebands'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
@@ -1618,6 +1691,73 @@ def score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
+
+@log_qa
+def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
+    """
+    Score the median achieved SNR for a given phase calibrator field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    if median_snr <= 0.3 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_ERROR
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_WARNING
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+
+
+@log_qa
+def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
+    """
+    Score the median achieved SNR for a given check source field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    if median_snr <= 0.3 * snr_threshold:
+        score = 0.7
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = 0.8
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = 0.9
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 @log_qa
 def score_missing_phaseup_snrs(ms, spwids, phsolints):

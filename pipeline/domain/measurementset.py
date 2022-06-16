@@ -7,11 +7,12 @@ import os
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
+import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-if TYPE_CHECKING: # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 from . import measures
@@ -42,23 +43,33 @@ class MeasurementSet(object):
             dynamic range and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
-        spectralspec_spwmap: SpectralSpec mapping
+        phasecal_mapping: A dictionary mapping phase calibrator fields to
+            corresponding fields with TARGET or CHECK intent.
+        spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
+            spectral window IDs.
         fields: A list of Field objects associated with MS
         states: A list of State objects associated with MS
+        spwmaps: Spectral window mapping to use for combining/mapping, split by
+            (intent, field), used in ALMA interferometry calibration tasks.
         reference_spwmap: Reference spectral window map
-        phaseup_spwmap: Spectral window mapping used in spwphaseup calibration
-        combine_spwmap: Spectral window mapping used to increase S/N ratio
         data_column: A dictionary to store data type (key) and corresponding
             data column (value)
+        data_types_per_source_and_spw: A dictionary to store a list of
+            available data types (values) in this MS per (source,spw) tuples
+            (keys)
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
         origin_ms: A path to the first generation MeasurementSet from which
             the current MS is generated.
+        acs_software_version: ALMA Common Software version used to create this MS. (None if not ALMA.)
+        acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
+        phase_calapps_for_check_sources : The phase calapps for the check sources 
+            from hifa_gfluxscale
     """
 
-    def __init__(self, name: str, session: Optional[str]=None):
+    def __init__(self, name: str, session: Optional[str] = None):
         """
-        Initialize MeasurmentSet class.
+        Initialize a MeasurementSet object.
 
         Args:
             name: A path to MS
@@ -67,7 +78,7 @@ class MeasurementSet(object):
         self.name: str = name
         self.session: Optional[str] = session
         self.antenna_array: Optional[AntennaArray] = None
-        self.array_name: str = None
+        self.array_name: str = ''
         self.derived_fluxes: Optional[collections.defaultdict] = None
         self.flagcmds: List[str] = []
         self.filesize: measures.FileSize = self._calc_filesize()
@@ -77,14 +88,34 @@ class MeasurementSet(object):
         self.science_goals: dict = {}
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
-        self.spectralspec_spwmap: dict = {}
         self.fields: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
-        self.phaseup_spwmap: Optional[List[int]] = None
-        self.combine_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
+
+        # The ALMA Common Software version used to create this MS, if ALMA. Otherwise, None
+        # (PIPE-132)
+        self.acs_software_version = None
+
+        # The ALMA Common Software build version used to create this MS, if ALMA. Otherwise, None.
+        # (PIPE-132)
+        self.acs_software_build_version = None
+
+        self.data_types_per_source_and_spw: dict = {}
+
+        # Dictionary mapping phase calibrator fields to corresponding fields
+        # with TARGET / CHECK intents (PIPE-1154).
+        self.phasecal_mapping: dict = {}
+
+        # Dictionary to map each SpectralSpec to list of corresponding spectral
+        # window IDs (PIPE-1132).
+        self.spectralspec_spwmap: dict = {}
+
+        # Dictionary with collections of spectral window maps for mapping or
+        # combining spws, split by (intent, field). This is used in several
+        # ALMA ('hifa') calibration tasks (PIPE-1154).
+        self.spwmaps: dict = {}
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
@@ -101,6 +132,12 @@ class MeasurementSet(object):
         # to put the lock on a custom refant list class, but some tasks check
         # the type of reference_antenna directly which prevents that approach.
         self.reference_antenna_locked: bool = False
+
+        # This contains the phase calapps for the check sources from hifa_gfluxscale.
+        # Added for ALMA IF to support PIPE-1377
+        # These calapps are saved off from hifa_gfluxscale and saved here 
+        # so they can be added to the Diagnostic Phase Vs Time plots for hifa_timegaincal
+        self.phase_calapps_for_check_sources = []
 
     def _calc_filesize(self):
         """
@@ -551,6 +588,22 @@ class MeasurementSet(object):
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
 
+
+    def get_alma_cycle_number(self) -> Optional[int]:
+        """"
+        Get the ALMA cycle number from the ALMA control softare version that this MeasurementSet was acquired with. 
+
+        Returns: 
+            int cycle_number or None if not found
+        """
+        match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
+        if match: 
+            cycle_number = int(match.group(1))
+            return cycle_number
+        else: 
+            return None
+
+
     @property
     def start_time(self):
         earliest, _ = min([(scan, utils.get_epoch_as_datetime(scan.start_time)) for scan in self.scans],
@@ -718,7 +771,7 @@ class MeasurementSet(object):
 
         corrstring_list = ddindex[0]['corrdesc']
         removal_list = ['RL', 'LR', 'XY', 'YX']
-        corrstring_list = list(set(corrstring_list).difference(set(removal_list)))
+        corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
 
         return corrstring
@@ -1149,22 +1202,23 @@ class MeasurementSet(object):
         self._session = value
 
     def set_data_column(self, dtype: DataType, column: str,
-                        spw: Optional[str]=None, field: Optional[str]=None,
+                        source: Optional[str]=None,
+                        spw: Optional[str]=None,
                         overwrite: bool=False):
         """
         Set data type and column.
 
-        Set data type and column to MS domain object or to selected spectral
-        window and field. If both spw and field are None, data column
-        information of MS domain object is set. If both spw and field are not
-        None, data column information of both spectral windows and fields
-        selected by the string selection syntaxes are set.
+        Set data type and column to MS domain object and record the available
+        data types per (source,spw) tuple. If source or spw are unset, they
+        will be expanded to all available values.
 
         Args:
             dtype: data type to set
             column: name of column in MS associated with the data type
-            spw: spectral window selection string
-            field: field selection string
+            source: source name selection string (comma separated names). If
+                unset, all sources will be used.
+            spw: real spectral window selection string (string of comma
+                separated IDs). If unset, all real spw IDs will be used.
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
@@ -1178,32 +1232,48 @@ class MeasurementSet(object):
         with casa_tools.TableReader(self.name) as table:
             cols = table.colnames()
         if column not in cols:
-            raise ValueError('Column {} does not exists in {}'.format(column, self.basename))
-        if spw is None and field is None: # Update MS domain object
-            if not overwrite and dtype in self.data_column:
-                raise ValueError('Data type {} is already associated with {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+            raise ValueError('Column {} does not exist in {}'.format(column, self.basename))
+
+        # Update MS domain object
+        if not overwrite and dtype in self.data_column and self.get_data_column(dtype) != column:
+            raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+        if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
-            return
-        # Update Spw
-        if spw is not None:
-            for s in self.get_spectral_windows(task_arg=spw, science_windows_only=False):
-                if not overwrite and dtype in s.data_column.keys():
-                    raise ValueError('Data type {} is already associated with {} in spw {}'.format(dtype, s.data_column[dtype], s.id))
-                s.data_column[dtype] = column
-        # Update field
-        if field is not None:
-            for f in self.get_fields(field):
-                if not overwrite and dtype in f.data_column.keys():
-                    raise ValueError('Data type {} is already associated with {} in field {}'.format(dtype, f.data_column[dtype], f.id))
-                f.data_column[dtype] = column
 
-    def get_data_column(self, dtype: DataType) -> Optional[str]:
+        # Update data types per (source,spw) selection
+        if source is None:
+            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
+        else:
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+
+        if spw is None:
+            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
+        else:
+            spw_ids = spw
+
+        for source_name in source_names.split(','):
+            for spw_id in map(int, spw_ids.split(',')):
+                key = (source_name, spw_id)
+                if key in self.data_types_per_source_and_spw:
+                    if dtype not in self.data_types_per_source_and_spw[key]:
+                        self.data_types_per_source_and_spw[key].append(dtype)
+                else:
+                    self.data_types_per_source_and_spw[key] = [dtype]
+
+    def get_data_column(self, dtype: DataType, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[str]:
         """
         Return a column name associated with a DataType in MS domain object.
 
         Args:
             dtype: DataType to fetch column name for
+            source: Comma separated list of source names to filter for.
+            spw: Comma separated list of real spw IDs to filter for.
+
+            If source and spw are both unset, the method will just look
+            at the MS data type and column information. If one or both
+            parameters are set, it will require all (source,spw)
+            combinations to have data of the requested data type.
 
         Returns:
             A name of column of a dtype. Returns None if dtype is not defined
@@ -1211,4 +1281,26 @@ class MeasurementSet(object):
         """
         if not (dtype in self.data_column.keys()):
             return None
-        return self.data_column[dtype]
+
+        if source is None and spw is None:
+            return self.data_column[dtype]
+
+        if source is None:
+            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
+        else:
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+
+        if spw is None:
+            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
+        else:
+            spw_ids = spw
+
+        # Check all (source,spw) combinations
+        data_exists_for_all_source_spw_combinations = True
+        for source_name in source_names.split(','):
+            for spw_id in map(int, spw_ids.split(',')):
+                key = (source_name, spw_id)
+                if dtype not in self.data_types_per_source_and_spw.get(key, []):
+                    data_exists_for_all_source_spw_combinations = False
+        if data_exists_for_all_source_spw_combinations:
+            return self.data_column[dtype]

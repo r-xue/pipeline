@@ -56,7 +56,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <description>ASDM tables to convert as is
         Parameter is not available when pipelinemode='automatic'.
         example: 'Receiver', ''</description>
-        <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow</value>
+        <value>SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR SpectralWindow</value>
     </param>
 
     <param name="process_caldevice" subparam="true" type="bool">
@@ -135,7 +135,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <equals type="string" value="automatic">
         </equals>
         <equals type="string" value="interactive">
-        <default param="asis"><value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value></default>
+        <default param="asis"><value type="string">SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR</value></default>
         <default param="process_caldevice"><value type="bool">False</value></default>
         <default param="overwrite"><value type="bool">False</value></default>
         <default param="nocopy"><value type="bool">False</value></default>
@@ -144,7 +144,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
         <equals type="string" value="getinputs">
-        <default param="asis"><value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value></default>
+        <default param="asis"><value type="string">SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR</value></default>
         <default param="process_caldevice"><value type="bool">False</value></default>
         <default param="overwrite"><value type="bool">False</value></default>
         <default param="nocopy"><value type="bool">False</value></default>

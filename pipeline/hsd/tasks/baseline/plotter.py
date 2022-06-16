@@ -1,8 +1,10 @@
+"""Plotter for baseline subtraction result."""
 import collections
 import itertools
 import os
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, Generator, Iterable, List, Optional, Tuple, Union
 
+import matplotlib.figure as figure
 import matplotlib.pyplot as plt
 import numpy
 from numpy.ma.core import MaskedArray
@@ -19,6 +21,14 @@ from ..common import display
 from ..common.display import DPIDetail, ch_to_freq, sd_polmap
 from ..common import direction_utils as dirutil
 
+if TYPE_CHECKING:
+    from numbers import Integral
+
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.domain.datatable import DataTableImpl as DataTable
+    from pipeline.domain.measurementset import MeasurementSet
+
+
 LOG = infrastructure.get_logger(__name__)
 
 # A named tuple to store statistics of baseline quality
@@ -26,26 +36,79 @@ BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio b
 
 
 class PlotterPool(object):
-    def __init__(self):
-        self.pool = {}
-        self.figure_id = display.SparseMapAxesManager.MATPLOTLIB_FIGURE_ID()
+    """Pool class to hold resources for plotting.
 
-    def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist,
-                       direction_reference=None, brightnessunit='Jy/beam'):
-        plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec,
-                                             step=1, brightnessunit=brightnessunit,
-                                             figure_id=self.figure_id)
+    TODO: this class is not useful. Should be removed in future.
+          create_plotter must be separated from the class.
+    """
+
+    def __init__(self) -> None:
+        """Construct PlotterPool instance."""
+        self.pool = {}
+
+    def create_plotter(self,
+                       num_ra: int,
+                       num_dec: int,
+                       num_plane: int,
+                       ralist: List[float],
+                       declist: List[float],
+                       direction_reference: Optional[str] = None,
+                       brightnessunit: str = 'Jy/beam') -> display.SDSparseMapPlotter:
+        """Create plotter instance.
+
+        Args:
+            num_ra: Number of panels along horizontal axis
+            num_dec: Number of panels along vertical axis
+            num_plane: Not used
+            ralist: List of RA values for labeling
+            declist: List of Dec values for labeling
+            direction_reference: Directon reference string. Defaults to None.
+            brightnessunit: Brightness unit string. Defaults to 'Jy/beam'.
+
+        Returns:
+            Plotter instance
+        """
+        fig = figure.Figure()
+        plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec,
+                                             step=1, brightnessunit=brightnessunit)
         plotter.direction_reference = direction_reference
         plotter.setup_labels_absolute( ralist, declist )
         return plotter
 
-    def done(self):
+    def done(self) -> None:
+        """Close plotters registered to the pool."""
         for plotter in self.pool.values():
             plotter.done()
 
 
 class PlotDataStorage(object):
-    def __init__(self):
+    """Storage class to hold array data for plotting."""
+
+    def __init__(self) -> None:
+        """Construct PlotDataStorage instance.
+
+        This class holds three sets of data storage, one dimensional
+        numpy array with a certain length, and the data array that refers
+        whole or part of data storage. They are assigned to map data (float),
+        associated mask (bool), and integrated data (float), respectively.
+
+        Each data array is multi-dimensional array with (npol, nchan) for
+        integrated data while (nh, nv, npol, nchan) for other arrays.
+        Each data storage is one-dimensional array whose length should be
+        larger than the total number of elements for associated data array.
+
+        Intension is to minimize the number of memory allocation/de-allocation.
+        To do that, data storage (memory for array) and data array (actual array
+        accessed by the user) are separated so that allocated memory is reused
+        if possible. Data storage is resized only when size of data storage is
+        smaller than the size of data array which can vary upon request from
+        the user.
+
+        The constructor initializes data storage as zero-length array, which
+        effectively means no memory allocation for the data array, and data
+        array nominally refers to empty data storage. Actual memory allocation
+        will be performed when the user first provides the array shape.
+        """
         self.map_data_storage = numpy.zeros((0), dtype=float)
         self.integrated_data_storage = numpy.zeros((0), dtype=float)
         self.map_mask_storage = numpy.zeros((0), dtype=bool)
@@ -55,7 +118,19 @@ class PlotDataStorage(object):
         self.map_mask = self.map_mask_storage
         self.integrated_mask = self.integrated_mask_storage
 
-    def resize_storage(self, num_ra, num_dec, num_pol, num_chan):
+    def resize_storage(self, num_ra: int, num_dec: int, num_pol: int, num_chan: int) -> None:
+        """Resize storage.
+
+        Resize storage array if necessary, i.e., only when current size is less than
+        requested size calculated from input args. Data array refers storage but is
+        reshaped to match the number of panels of sparse profile map.
+
+        Args:
+            num_ra: Number of panels along horizontal axis
+            num_dec: Number of panels along vertical axis
+            num_pol: Number of polarizations
+            num_chan: Number of spectral channels
+        """
         num_integrated = num_pol * num_chan
         num_map = num_ra * num_dec * num_integrated
         if len(self.map_data_storage) < num_map:
@@ -72,22 +147,94 @@ class PlotDataStorage(object):
 
 
 class BaselineSubtractionPlotManager(object):
+    """Manages any operation necessary to produce baseline subtraction plot."""
+
     @staticmethod
-    def _generate_plot_meta_table(spw_id, polarization_ids, grid_table):
+    def _generate_plot_meta_table(
+        spw_id: int,
+        polarization_ids: List[int],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]]
+    ) -> Generator[List[Union[int, float]], None, None]:
+        """Extract necessary data from grid_table.
+
+        Rows of grid_table are filtered by spw and polarization ids,
+        and only spatial location of the grid are extracted.
+
+        Args:
+            spw_id: spw id for filtering
+            polarization_ids: polarization ids for filtering
+            grid_table: grid_table generated by simplegrid module
+
+        Yields:
+            List of spatial position information (pixel and world)
+        """
         for row in grid_table:
             if row[0] == spw_id and row[1] in polarization_ids:
                 new_row_entry = row[2:6]
                 yield new_row_entry
 
     @staticmethod
-    def generate_plot_meta_table(spw_id, polarization_ids, grid_table):
+    def generate_plot_meta_table(
+        spw_id: int,
+        polarization_ids: List[int],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]]
+    ) -> List[List[Union[int, float]]]:
+        """Return metadata table for plotting.
+
+        Metadata table for given spw and polarization ids contains
+        spatial position information in both pixel and world coordinates.
+
+        Args:
+            spw_id: spw id for filtering
+            polarization_ids: polarization ids for filtering
+            grid_table: grid_table generated by simplegrid module
+
+        Returns:
+            Metadata table (plot_table). The table is intended to be used jointly
+            with the return value of generate_plot_rowlist.
+            plot_table layout: [RA_ID, DEC_ID, RA_DIR, DEC_DIR]
+
+                [[0, 0, RA0, DEC0], <- plane 0
+                 [0, 0, RA0, DEC0], <- plane 1
+                 [0, 0, RA0, DEC0], <- plane 2
+                 [1, 0, RA1, DEC0], <- plane 0
+                  ...
+                 [M, 0, RAM, DEC0], <- plane 2
+                 [0, 1, RA0, DEC1], <- plane 0
+                 ...
+                 [M, N, RAM, DECN]] <- plane 2
+        """
         new_table = list(BaselineSubtractionPlotManager._generate_plot_meta_table(spw_id,
                                                                                   polarization_ids,
                                                                                   grid_table))
         return new_table
 
     @staticmethod
-    def _generate_plot_rowlist(origin_ms_id, antenna_id, spw_id, polarization_ids, grid_table, grid_list):
+    def _generate_plot_rowlist(
+        origin_ms_id: int,
+        antenna_id: int,
+        spw_id: int,
+        polarization_ids: List[int],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
+        grid_list: List[Tuple[int, int]]
+    ) -> Generator[numpy.ndarray, None, None]:
+        """Yield list of datatable row ids that match selection.
+
+        Extract list of datatable row ids that match the selection for
+        MS, spw, polarization, and spatial grid location. Yield row
+        ids as numpy array.
+
+        Args:
+            origin_ms_id: MS id for selection
+            antenna_id: Antenna id for selection
+            spw_id: Spw id for selection
+            polarization_ids: List of polarization ids
+            grid_table: grid_table generated by simplegrid module
+            grid_list: Spatial grid indices (ix, iy) for selection
+
+        Yields:
+            List of datatable row ids that matches selection
+        """
         for row in grid_table:
             if row[0] == spw_id and row[1] in polarization_ids and (row[2], row[3]) in grid_list:
                 new_row_entry = numpy.fromiter((r[3] for r in row[6] if r[-1] == origin_ms_id and r[-2] == antenna_id),
@@ -95,7 +242,34 @@ class BaselineSubtractionPlotManager(object):
                 yield new_row_entry
 
     @staticmethod
-    def generate_plot_rowlist(origin_ms_id, antenna_id, spw_id, polarization_ids, grid_table, plot_table, each_plane):
+    def generate_plot_rowlist(
+        origin_ms_id: int,
+        antenna_id: int,
+        spw_id: int,
+        polarization_ids: List[int],
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
+        plot_table: List[List[Union[int, float]]],
+        each_plane: List[int]
+    ) -> List[int]:
+        """Generate list of datatable row ids for plotting.
+
+        Extract list of datatable row ids that matches selection for
+        MS, spw, polarization, and spatial grid location. Return
+        one-dimensional list of row ids to process.
+
+        Args:
+            origin_ms_id: MS id for selection
+            antenna_id: Antenna id for selection
+            spw_id: Spw id for selection
+            polarization_ids: List of polarization ids for selection
+            grid_table: grid_table generated by simplegrid module
+            plot_table: Metadata table generated by generate_plot_meta_table
+            each_plane: List of indices for grid_table/plot_table
+
+        Returns:
+            List of datatable row ids for plotting. Return value is intended
+            to be used jointly with the table returned by generate_plot_meta_table.
+        """
         xlist = [ plot_table[idx][0] for idx in each_plane ]
         ylist = [ plot_table[idx][1] for idx in each_plane ]
         grid_list = list(zip( xlist, ylist ))
@@ -107,7 +281,13 @@ class BaselineSubtractionPlotManager(object):
                                                                                grid_list))
         return list(itertools.chain.from_iterable(new_table))
 
-    def __init__(self, context, datatable):
+    def __init__(self, context: 'Context', datatable: 'DataTable') -> None:
+        """Construct BaselineSubtractionPlotManager instance.
+
+        Args:
+            context: Pipeline context
+            datatable: DataTable instance
+        """
         self.context = context
         self.datatable = datatable
         stage_number = self.context.task_counter
@@ -126,7 +306,16 @@ class BaselineSubtractionPlotManager(object):
             self.prefit_storage = PlotDataStorage()
             self.postfit_storage = PlotDataStorage()
 
-    def initialize(self, ms, blvis):
+    def initialize(self, ms: 'MeasurementSet', blvis: str) -> bool:
+        """Initialize plot manager with given MS.
+
+        Args:
+            ms: Domain object for the MS before baseline subtraction
+            blvis: Name of the MS after baseline subtraction
+
+        Returns:
+            Initialization status
+        """
         if basetask.DISABLE_WEBLOG:
             return True
 
@@ -140,20 +329,74 @@ class BaselineSubtractionPlotManager(object):
 
         return True
 
-    def finalize(self):
+    def finalize(self) -> None:
+        """Finalize plot manager.
+
+        Release resources allocated for plotting.
+        """
         if self.pool is not None:
             self.pool.done()
 
-    def resize_storage(self, num_ra, num_dec, num_pol, num_chan):
+    def resize_storage(self, num_ra: int, num_dec: int, num_pol: int, num_chan: int) -> None:
+        """Resize storage as necessary.
+
+        Args:
+            num_ra: Number of panels along horizontal axis
+            num_dec: Number of panels along vertical axis
+            num_pol: Number of polarizations
+            num_chan: Number of spectral channels
+        """
         self.prefit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
     @casa5style_plot
-    def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction,
-                              grid_table=None, deviation_mask=None, channelmap_range=None,
-                              edge=None, showatm=True):
-        """
-        NB: spw_id is the real spw id.
+    def plot_spectra_with_fit(
+        self,
+        field_id: int,
+        antenna_id: int,
+        spw_id: int,
+        org_direction: dirutil.Direction,
+        grid_table: Optional[List[List[Union[int, float, numpy.ndarray]]]] = None,
+        deviation_mask: Optional[List[Tuple[int, int]]] = None,
+        channelmap_range: Optional[List[Tuple[int, int, bool]]] = None,
+        edge: Optional[List[int]] = None,
+        showatm: bool = True
+    ) -> List[compress.CompressedObj]:
+        """Create various types of plots.
+
+        For given set of field, antenna, and spw ids, this method generates
+        plots of the following types:
+
+            - sparse profile map for raw spectra before baseline subtraction
+            - sparse profile map for spatially averaged spectra before baseline subtraction
+            - sparse profile map for raw spectra after baseline subtraction
+            - sparse profile map for spatially averaged spectra after baseline subtraction
+            - visual illustration of baseline flatness after baseline subtraction
+
+        Args:
+            field_id: Field id to process
+            antenna_id: Antnena id to process
+            spw_id: Spw id to process. Should be the real spw id.
+            org_direction: direction of the origin
+            grid_table: grid_table generated by simplegrid module
+            deviation_mask: List of channel ranges identified as "deviation mask". Each range
+                            is represented as a tuple of start and end channels. Those ranges
+                            are shown as red rectangle to indicate they are excluded from the fit.
+                            None means no deviation mask is provided.
+            channelmap_range: List of channel ranges identified as astronomical lines by
+                              line detection and validation process. Channel range is represented
+                              as a tuple of line center channel, line width in channel, and
+                              validation result (boolean). Those ranges are shown as cyan rectangle
+                              to indicate they are excluded from the fit. None means no line ranges
+                              are provided.
+            edge: Edge channels to exclude. Plot whole channels if None is given.
+            showatm: Whether or not overlay ATM transmission curve. Defaults to True.
+
+        Raises:
+            Exception: Invalid plot type (maybe internal error)
+
+        Returns:
+            List of compressed Plot objects
         """
         if basetask.DISABLE_WEBLOG:
             return []
@@ -234,14 +477,44 @@ class BaselineSubtractionPlotManager(object):
                     del plot
         return ret
 
-    def plot_profile_map_with_fit(self, prefit_figfile_prefix, postfit_figfile_prefix, grid_table,
-                                  deviation_mask, line_range,
-                                  org_direction, atm_transmission, atm_frequency, edge):
-        """
-        plot_table format:
-        [[0, 0, RA0, DEC0, [IDX00, IDX01, ...]],
-         [0, 1, RA0, DEC1, [IDX10, IDX11, ...]],
-         ...]
+    def plot_profile_map_with_fit(
+        self,
+        prefit_figfile_prefix: str,
+        postfit_figfile_prefix: str,
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
+        deviation_mask: Optional[List[Tuple[int, int]]],
+        line_range: Optional[List[Tuple[int, int]]],
+        org_direction: dirutil.Direction,
+        atm_transmission: Optional[numpy.ndarray],
+        atm_frequency: Optional[numpy.ndarray],
+        edge: Optional[List[int]]
+    ) -> dict:
+        """Create various type of plots.
+
+        This method produces the following plots.
+
+            - sparse profile map for raw spectra before baseline subtraction
+            - sparse profile map for spatially averaged spectra before baseline subtraction
+            - sparse profile map for raw spectra after baseline subtraction
+            - sparse profile map for spatially averaged spectra after baseline subtraction
+            - visual illustration of baseline flatness after baseline subtraction
+
+        Args:
+            prefit_figfile_prefix: Prefix string for the filename (before baseline subtraction)
+            postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
+            grid_table: grid_table generated by simplegrid module
+            deviation_mask: List of channel ranges identified as the "deviation mask"
+            line_range: List of channel ranges identified as astronomical line
+            org_direction: direction of the origin
+            atm_transmission: ATM tranmission data
+            atm_frequency: frequency label associated with ATM transmission
+            edge: Edge channels excluded from the baseline fitting
+
+        Returns:
+            Dictionary containing names of the figure with plot type and
+            polarization id as keys
+
+                plot_list[plot_type][polarization_id] = figfile
         """
         ms = self.ms
         origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
@@ -277,8 +550,8 @@ class BaselineSubtractionPlotManager(object):
         plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
                                            brightnessunit=bunit)
-        LOG.debug('vis %s ant %s spw %s plotter figure id %s has %s axes',
-                  ms.basename, antid, spwid, plotter.axes.figure_id, len(plotter.axes.figure.axes))
+        LOG.debug('vis %s ant %s spw %s plotter has %s axes',
+                  ms.basename, antid, spwid, len(plotter.axes.figure.axes))
 #         LOG.info('axes list: {}', [x.__hash__()  for x in plotter.axes.figure.axes])
         spw = ms.spectral_windows[spwid]
         nchan = spw.num_channels
@@ -419,7 +692,7 @@ class BaselineSubtractionPlotManager(object):
         del postfit_integrated_data
 
         return plot_list
-    
+
     def analyze_and_plot_flatness(self, spectrum: List[float], frequency: List[float],
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
@@ -500,12 +773,21 @@ class BaselineSubtractionPlotManager(object):
                 plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
         plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
         plt.plot(binned_freq, binned_data, 'ro')
-        plt.savefig(figfile, format='png', dpi=DPIDetail)
+        plt.savefig(figfile, dpi=DPIDetail)
         return binned_stat
-        
 
 
-def generate_grid_panel_map(ngrid, npanel, num_plane=1):
+def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
+    """Yield list of grid table indices that belong to the sparse map panel.
+
+    Args:
+        ngrid: Number of grid positions
+        npanel: Number of panels
+        num_plane: Number of planes per grid position. Defaults to 1.
+
+    Yields:
+        List of indices for the grid table
+    """
     ng = ngrid // npanel
     mg = ngrid % npanel
     ng_per_panel = [ng * num_plane for i in range(npanel)]
@@ -520,7 +802,24 @@ def generate_grid_panel_map(ngrid, npanel, num_plane=1):
         yield list(range(s, e))
 
 
-def configure_1d_panel(nx, ny, num_plane=1):
+def configure_1d_panel(
+    nx: int,
+    ny: int,
+    num_plane: int = 1
+) -> Tuple[List[List[int]], List[List[int]]]:
+    """Configure linear mapping between grid table index and sparse map panel.
+
+    When number of grid positions, nx * ny, exceeds 50, neighboring positions
+    are combined so that number of sparse map panels does not exceed 50.
+
+    Args:
+        nx: Number of grid positions along horizontal axis
+        ny: Number of grid positions along vertical axis
+        num_plane: Number of planes per grid position. Defaults to 1.
+
+    Returns:
+        Linear mapping between grid table index and sparse map panel
+    """
     max_panels = 50
     num_panels = nx * ny
 
@@ -545,7 +844,25 @@ def configure_1d_panel(nx, ny, num_plane=1):
     return xpanel, ypanel
 
 
-def configure_2d_panel(xpanel, ypanel, ngridx, ngridy, num_plane=3):
+def configure_2d_panel(
+    xpanel: List[List[int]],
+    ypanel: List[List[int]],
+    ngridx: int,
+    ngridy: int,
+    num_plane: int = 3
+) -> List[List[int]]:
+    """Confure two-dimensional mapping between grid table and sparse map panel.
+
+    Args:
+        xpanel: Linear mapping result returned by configure_1d_panel
+        ypanel: Linear mapping result returned by configure_1d_panel
+        ngridx: Number of grid positions along horizontal axis
+        ngridy: Number of grid positions along vertical axis
+        num_plane: Number of planes per grid position. Defaults to 3.
+
+    Returns:
+        Two-dimensional mapping between grid table and sparse map panel
+    """
     xypanel = []
     for ygrid in ypanel:
         for xgrid in xpanel:
@@ -559,7 +876,34 @@ def configure_2d_panel(xpanel, ypanel, ngridx, ngridy, num_plane=3):
 
 
 #@utils.profiler
-def analyze_plot_table(ms, origin_ms_id, antid, virtual_spwid, polids, grid_table, org_direction):
+def analyze_plot_table(
+    ms: 'MeasurementSet',
+    origin_ms_id: int,
+    antid: int,
+    virtual_spwid: int,
+    polids: List[int],
+    grid_table: List[List[Union[int, float, numpy.ndarray]]],
+    org_direction: dirutil.Direction
+) -> Tuple[int, int, int, List[dict]]:
+    """Create and analyze plot table.
+
+    Extract datatable row ids that match the selection given by
+    MS id, antenna id, (virtual) spw id, and polarization ids, and
+    associate them with the sparse map panels.
+
+    Args:
+        ms: Domain object for the MS (not used)
+        origin_ms_id: MS id for selection
+        antid: Antenna id for selection
+        virtual_spwid: Virtual spw id for selection
+        polids: List of polarization ids for selection
+        grid_table: grid_table created by simplegrid module
+        org_direction: direction of the origin
+
+    Returns:
+        Position information and associated datatable row ids
+        for each sparse map positions
+    """
     # plot table is separated into two parts: meta data part and row list part
     # plot_table layout: [RA_ID, DEC_ID, RA_DIR, DEC_DIR]
     # [[0, 0, RA0, DEC0], <- plane 0
@@ -614,9 +958,50 @@ def analyze_plot_table(ms, origin_ms_id, antid, virtual_spwid, polids, grid_tabl
 
 
 #@utils.profiler
-def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap=None,
-             integrated_data_storage=None, integrated_mask_storage=None,
-             map_data_storage=None, map_mask_storage=None):
+def get_data(
+    infile: str,
+    dtrows: numpy.ndarray,
+    num_ra: int,
+    num_dec: int,
+    num_chan: int,
+    num_pol: int,
+    rowlist: dict,
+    rowmap: Optional[dict] = None,
+    integrated_data_storage: Optional[numpy.ndarray] = None,
+    integrated_mask_storage: Optional[numpy.ndarray] = None,
+    map_data_storage: Optional[numpy.ndarray] = None,
+    map_mask_storage: Optional[numpy.ndarray] = None
+) -> Tuple[numpy.ma.masked_array, numpy.ma.masked_array]:
+    """Create array data for sparse map.
+
+    Computes two masked array data for sparse map. One is the integrated
+    spectrum averaged over whole spectral data regardless of their spatial
+    position, which is displayed in the top panel of the figure.
+    Another array is the spectra for sparse map averaged for each spatial
+    position of the sparse map panel. Spatial grouping information is
+    held by rowlist.
+
+    Args:
+        infile: Name of the MS
+        dtrows: List of datatable rows
+        num_ra: Number of panels along horizontal axis
+        num_dec: Number of panels along vertical axis
+        num_chan: Number of spectral channels
+        num_pol: Number of polarizaionts
+        rowlist: List of datatable row ids per sparse map panel with metadata
+        rowmap: Row mapping between original (calibrated) MS and the MS
+                specified by infile. It will be EchoDictionary if None is given.
+        integrated_data_storage: Storage for integrated spectrum. If None is given,
+                                 new array is created.
+        integrated_mask_storage: Storage for integrated mask (not used).
+        map_data_storage: Storage for sparse map. If None is given, new array is created.
+        map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
+
+    Returns:
+        Two masked arrays corresponding to integrated spectrum and sparse map data.
+        The former has the shape of (npol, nchan) while tha latter is four-dimensional,
+        (nx, ny, npol, nchan).
+    """
     # default rowmap is EchoDictionary
     if rowmap is None:
         rowmap = utils.EchoDictionary()
@@ -717,8 +1102,41 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
     return integrated_data_masked, map_data_masked
 
 
-def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap=None, map_data_storage=None,
-                      map_mask_storage=None):
+def get_averaged_data(
+    infile: str,
+    dtrows: numpy.ndarray,
+    num_ra: int,
+    num_dec: int,
+    num_chan: int,
+    num_pol: int,
+    rowlist: dict,
+    rowmap: Optional[dict] = None,
+    map_data_storage: Optional[numpy.ndarray] = None,
+    map_mask_storage: Optional[numpy.ndarray] = None
+) -> numpy.ma.masked_array:
+    """Create array data for sparse map.
+
+    Computes the spectra for sparse map averaged for each spatial
+    position of the sparse map panel. Spatial grouping information is
+    held by rowlist.
+
+    Args:
+        infile: Name of the MS
+        dtrows: List of datatable rows
+        num_ra: Number of panels along horizontal axis
+        num_dec: Number of panels along vertical axis
+        num_chan: Number of spectral channels
+        num_pol: Number of polarizaionts
+        rowlist: List of datatable row ids per sparse map panel with metadata
+        rowmap: Row mapping between original (calibrated) MS and the MS
+                specified by infile. Defaults to None.
+        map_data_storage: Storage for sparse map. If None is given, new array is created.
+        map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
+
+    Returns:
+        Sparse map data as masked array. Shape of the array is four-dimensional,
+        (nx, ny, npol, nchan).
+    """
     # default rowmap is EchoDictionary
     if rowmap is None:
         rowmap = utils.EchoDictionary()
@@ -784,7 +1202,26 @@ def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlis
     return map_data_masked
 
 
-def get_lines(datatable, num_ra, num_pol, rowlist):
+def get_lines(
+    datatable: 'DataTable',
+    num_ra: int,
+    num_pol: int,
+    rowlist: List[dict]
+) -> List[collections.defaultdict]:
+    """Get detected line ranges per sparse map panel.
+
+    Line information is taken from the datatable row specified
+    by 'MEDIAN_INDEX' value of each item in rowlist.
+
+    Args:
+        datatable  Datatable instance
+        num_ra: Number of panels along horizontal axis
+        num_pol: Number of polarizations
+        rowlist: List of datatable row indices per sparse map panel with metadata
+
+    Returns:
+        List of detected line ranges per panel
+    """
     lines_map = [collections.defaultdict(dict)] * num_pol
     # with casa_tools.TableReader(rwtablename) as tb:
     for d in rowlist:
@@ -804,7 +1241,32 @@ def get_lines(datatable, num_ra, num_pol, rowlist):
     return lines_map
 
 
-def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
+def get_lines2(
+    infile: str,
+    datatable: 'DataTable',
+    num_ra: int,
+    rowlist: dict,
+    polids: List[int],
+    rowmap: Optional[dict] = None
+) -> List[collections.defaultdict]:
+    """Get detected line ranges per sparse map panel.
+
+    get_lines2 performs the same operation with get_lines from
+    the different input arguments.
+
+    Args:
+        infile: Name of MS before baseline subtraction
+        datatable: Datatable instance
+        num_ra: Number of panels along horizontal axis
+        rowlist: List of datatable row ids per sparse map panel with metadata
+        polids: List of polarization ids
+        rowmap: Row mapping between original (calibrated) MS and the MS
+                before baseline subtraction. It will be EchoDictionary if
+                None is given.
+
+    Returns:
+        List of detected line ranges per panel
+    """
     if rowmap is None:
         rowmap = utils.EchoDictionary()
 
@@ -857,7 +1319,16 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
     return lines_map
 
 
-def median_index(arr):
+def median_index(arr: Iterable) -> 'Integral':
+    """Return array index that corresponds to median value.
+
+    Args:
+        arr (): Array with type that implements comparison operator
+
+    Returns:
+        Index of median value. If arr is empty or not iterable,
+        NaN is returned.
+    """
     if not numpy.iterable(arr) or len(arr) == 0:
         return numpy.nan
     else:
@@ -866,6 +1337,7 @@ def median_index(arr):
             return sorted_index[0]
         else:
             return sorted_index[len(arr) // 2]
+
 
 def binned_mean_ma(x: List[float], masked_data: MaskedArray,
                    nbin: int) -> Tuple[numpy.ndarray, MaskedArray]:

@@ -15,29 +15,68 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
     generating_task = spwphaseup.SpwPhaseup
 
     def handle(self, context, result):
-        vis= result.inputs['vis']
+        vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
 
-        # Check first for the combined spw map. Next the
-        # narrow to wide spw mzp. Note that the input
-        # field and intent parameters are no longer used.
-        if result.combine_spwmap:
-            score1 = self._phaseup_mapping_fraction(ms, True, result.combine_spwmap)
-        else:
-            score1 = self._phaseup_mapping_fraction(ms, False, result.phaseup_spwmap)
+        scores = []
+
+        # Step through each spwmapping to create QA scores.
+        for (intent, field), spwmapping in result.spwmaps.items():
+            # For PHASE calibrator fields, score the spwmapping based on
+            # fraction of unmapped science spws.
+            if intent == 'PHASE':
+                scores.append(qacalc.score_phaseup_mapping_fraction(ms, intent, field, spwmapping))
+            # For CHECK fields, score the spwmapping based on whether or not
+            # it is combining spws.
+            elif intent == 'CHECK':
+                scores.append(qacalc.score_combine_spwmapping(ms, intent, field, spwmapping))
+
+        # Create QA score for whether the phaseup caltable was created successfully.
         if not result.phaseup_result.final:
-            score2 = qacalc.score_path_exists(ms.name, list(result.phaseup_result.error)[0].gaintable, 'caltable')
+            gaintable = list(result.phaseup_result.error)[0].gaintable
         else:
-            score2 = qacalc.score_path_exists(ms.name, result.phaseup_result.final[0].gaintable, 'caltable')
-        scores = [score1, score2]
+            gaintable = result.phaseup_result.final[0].gaintable
+        scores.append(qacalc.score_path_exists(ms.name, gaintable, 'caltable'))
 
+        # Create QA scores for median SNR per field and per SpW, but skip this
+        # for SpWs that have been re-mapped.
+        for (intent, field, spw), median_snr in result.snr_info.items():
+            # Skip if encountering unhandled intent.
+            if intent not in ['CHECK', 'PHASE']:
+                LOG.warning(f"{ms.basename}: unexpected intent '{intent}' encountered in SNR info result, cannot"
+                            f" assign a QA score.")
+                continue
+
+            # Get SpW mapping info for current intent and field.
+            spwmapping = result.spwmaps.get((intent, field), None)
+
+            # If SpW mapping info exists for the current intent and field and
+            # the current SpW is not mapped to itself, then skip the QA score
+            # calculation. Note: if the SpW map is empty, that means by default
+            # that each SpW is mapped to itself, i.e. QA scoring gets run for
+            # current SpW.
+            if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
+                continue
+
+            # Check which QA score heuristic to use, based on intent.
+            if intent == 'CHECK':
+                score = qacalc.score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr,
+                                                                      result.inputs['phasesnr'])
+            elif intent == 'PHASE':
+                score = qacalc.score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr,
+                                                                      result.inputs['phasesnr'])
+
+            # If SpW mapping info exists for the current intent and field, and
+            # there is a non-empty SpW map in which other SpWs are mapped to
+            # current SpW, then mention this in the QA score message.
+            if spwmapping and spwmapping.spwmap and spwmapping.spwmap.count(spw) > 1:
+                score.longmsg += f' This SpW has one or more other SpWs mapped to it.'
+
+            # Add score to list of scores.
+            scores.append(score)
+
+        # Add scores to QA pool in result.
         result.qa.pool.extend(scores)
-
-    def _phaseup_mapping_fraction(self, ms, fullcombine, phaseup_spwmap):
-        """
-        Check whether or not there has been spw phaseup mapping . 
-        """
-        return qacalc.score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap)
 
 
 class SpwPhaseupListQAHandler(pqa.QAPlugin):

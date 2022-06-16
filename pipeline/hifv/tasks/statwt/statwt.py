@@ -79,8 +79,8 @@ class Statwt(basetask.StandardTaskTemplate):
         fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
         wtables = {}
-        if self.inputs.statwtmode == 'VLASS-SE' or self.inputs.statwtmode == 'VLA':
-            wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
+#        if self.inputs.statwtmode == 'VLASS-SE' :
+        wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
 
         flag_summaries = []
         # flag statistics before task
@@ -90,8 +90,8 @@ class Statwt(basetask.StandardTaskTemplate):
         # flag statistics after task
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
 
-        if self.inputs.statwtmode == 'VLASS-SE' or self.inputs.statwtmode == 'VLA':
-            wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
+#        if self.inputs.statwtmode == 'VLASS-SE':
+        wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
 
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
 
@@ -152,7 +152,7 @@ class Statwt(basetask.StandardTaskTemplate):
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
     def _make_weight_table(self, suffix='', dryrun=False):
-        print("Attempting to make a weight table:")
+
         stage_number = self.inputs.context.task_counter
         names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
         print("names:")
@@ -169,7 +169,7 @@ class Statwt(basetask.StandardTaskTemplate):
         if isdir:
             shutil.rmtree(outputvis)
 
-        task_args = {'vis': self.inputs.vis, # Start here again! 
+        task_args = {'vis': self.inputs.vis,
                      'outputvis': outputvis,
                      'spw': '*:0', # channel 0 for all spwids
                      'datacolumn': 'DATA',
@@ -199,9 +199,8 @@ class Statwt(basetask.StandardTaskTemplate):
                 stb.close()
 
         gaincal_spws = ','.join([str(s) for s in spws])
-        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',
+        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',  #solint='inf' needed for my original test dataset...
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
-        # it definitely successfully makes a weight table
-        print(wtable)
+        print("Weight table: ", wtable)
         return wtable

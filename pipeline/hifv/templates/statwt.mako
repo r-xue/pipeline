@@ -10,7 +10,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
 
-% if result[0].inputs['statwtmode'] == 'VLASS-SE' or result[0].inputs['statwtmode'] == 'VLA':
+<!--% if result[0].inputs['statwtmode'] == 'VLASS-SE' :-->
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
@@ -34,6 +34,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 </%self:plot_group>
 
 <%
+weight_stats=plotter.result.weight_stats
+before_by_spw=weight_stats['before']['per_spw']
+before_by_ant=weight_stats['before']['per_ant']
+after_by_spw=weight_stats['after']['per_spw']
+after_by_ant=weight_stats['after']['per_ant']
 import numpy as np
 
 def format_wt(wt):
@@ -133,4 +138,4 @@ def format_wt(wt):
 	</tbody>
 </table>
 
-%endif
+<!--%endif-->

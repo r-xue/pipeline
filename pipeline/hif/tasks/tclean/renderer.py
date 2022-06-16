@@ -634,8 +634,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plots_dict = make_plot_dict(plots)
 
         # construct the renderers so we know what the back/forward links will be
-        # sort the rows so the links will be in the same order as the rows
-        image_rows.sort(key=lambda row: (row.image_file.split('.')[0], row.field, utils.natural_sort_key(row.spw), row.pol))
         temp_urls = (None, None, None)
         qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
                         for row in image_rows]
@@ -679,8 +677,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 LOG.error(e)
             except:
                 final_rows.append(row)
-        # primary sort images by vis, field, secondary sort on spw, then by pol
-        final_rows.sort(key=lambda row: (row.vis, row.field, utils.natural_sort_key(row.spw), row.pol))
 
         chk_fit_rows = []
         for row in final_rows:
@@ -743,6 +739,13 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc', 'spectra']
         else:
             colorder = ['pbcorimage', 'residual', 'cleanmask']
+        
+        if 'VLA' in result.imaging_mode:
+            # PIPE-1462: use non-pbcor images for VLA in the tclean details page.
+            # Because 'mtmfs' CASA/tclean doesn't generate pbcor images for VLA and silently passes with a warning when pbcor=True,
+            # pbcor images are not produced from hif.tasks.tclean (see PIPE-1201/CAS-11636)
+            # Here, we set a fallback with non-pbcor images.
+            colorder = ['image' if im_type == 'pbcorimage' else im_type for im_type in colorder]
 
         self.extra_data = {
             'plots_dict': plots_dict,

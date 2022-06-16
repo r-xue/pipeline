@@ -1,8 +1,13 @@
-import collections
+"""Renderer module for importdata."""
 
-import pipeline.infrastructure.logging as logging
+import collections
+from typing import Any, Dict
+
 import pipeline.h.tasks.importdata.renderer as super_renderer
+import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.basetask import Results
+from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 
@@ -10,26 +15,45 @@ DeductionGroupTR = collections.namedtuple('ReductionGroupTR', 'id fmin fmax fiel
 
 
 class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImportDataRenderer):
-    def __init__(self, uri='hsd_importdata.mako',
-                 description='Register measurement sets with the pipeline', 
-                 always_rerender=False):
+    """Renders detailed HTML output for the task."""
+
+    def __init__(self, uri: str='hsd_importdata.mako',
+                 description: str='Register measurement sets with the pipeline',
+                 always_rerender: bool=False):
+        """Initialise of instance.
+
+        Args:
+            uri: uri of mako file
+            description: a short description of this stage to be appeared in 'Task Summaries' page of weblog
+            always_rerender: whether or not to render weblog every time.
+                             If True, weblog of this stage is rendered again whenever weblog is updated,
+                               e.g., by creating weblog of other stages.
+                             If False, weblog of this stage is generated only once when the stage is initially invoked.
+        """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).__init__(uri, description, always_rerender)
 
-    def update_mako_context(self, mako_context, pipeline_context, result):
+    def update_mako_context(self, mako_context: Dict[str, Any], pipeline_context: Context, result: Results):
+        """Update mako context.
+
+        Args:
+            mako_context: dict of mako context
+            pipeline_context: Pipeline context
+            result: Result object
+        """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).update_mako_context(mako_context, pipeline_context, result)
 
         # collect antennas of each MS and SPW combination
         row_values = []
         for group_id, group_desc in pipeline_context.observing_run.ms_reduction_group.items():
-            min_freq = '%7.1f'%(group_desc.min_frequency/1.e6)
-            max_freq = '%7.1f'%(group_desc.max_frequency/1.e6)
+            min_freq = '%7.1f' % (group_desc.min_frequency / 1.e6)
+            max_freq = '%7.1f' % (group_desc.max_frequency / 1.e6)
 
             # ant_collector[msname][spwid] = [ant1_name, ant2_name, ...]
             ant_collector = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
             for m in group_desc:
                 ant_collector[m.ms.basename][m.ms.spectral_windows[m.spw_id].id].append(m.ms.antennas[m.antenna_id].name)
 
-            # construct 
+            # construct
             for msname, ant_spw in ant_collector.items():
                 for spwid, antlist in ant_spw.items():
                     ants = str(', ').join(antlist)
