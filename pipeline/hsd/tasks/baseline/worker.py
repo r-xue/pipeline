@@ -413,6 +413,12 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Returns:
             BaselineSubtractionResults instance
         """
+
+        if basetask.DISABLE_WEBLOG:
+            results.outcome['plot_list'] = []
+            results.outcome['baseline_quality_stat'] = {}
+            return results
+
         # plot
         # initialize plot manager
         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
@@ -421,11 +427,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
         stats = {}
+
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
             LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
