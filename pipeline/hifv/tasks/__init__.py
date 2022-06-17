@@ -27,4 +27,6 @@ from .exportvlassdata import Exportvlassdata
 from .syspower import Syspower
 from .selfcal import Selfcal
 from .fixpointing import Fixpointing
+from .analyzestokescubes import Analyzestokescubes
 from .vlassmasking import Vlassmasking
+from .restorepims import Restorepims

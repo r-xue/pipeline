@@ -390,12 +390,15 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         If context.clean_list_pending is populated, then it will take 'imagename' parameter from the first imlist entry.
         The 'STAGENUMBER' substring is replaced by the current stage number.
         """
-        # TODO: context.stage for some reason returns x_1 instead of x_0. Until understood, force the latter.
+        # context.stage is defined as '{context.task_counter}_{context.subtask_counter}'
+        # Because this is a not multi_vis task (is_multi_vis_task=False, in contrast of hif_makeimages), the mask creation is done 
+        # as a subtask, with subtask_counter increases for each MS. Here we use '{context.task_counter}_0' to keep the 
+        # consistency with the naming convention of imaging products.
+
         if 'imagename' in self.inputs.context.clean_list_pending[0].keys():
             return self.inputs.context.clean_list_pending[0]['imagename'].replace('STAGENUMBER',
                                                                                   '{}_0'.format(
-                                                                                      self.inputs.context.stage.split(
-                                                                                          '_')[0]))
+                                                                                      self.inputs.context.task_counter))
         else:
             return 'VIP_'
 

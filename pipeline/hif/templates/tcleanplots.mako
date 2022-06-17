@@ -96,16 +96,11 @@ def get_plot(plots, prefix, field, spw, i, colname):
 			<td></td>
 		    % for colname in ['flux', 'psf', 'model']:
 		    	<td>
-		            % if colname == 'model':
-			            <!-- model plots are associated with the final iteration -->
+					<!-- model/psf/flux plots are associated with the final iteration -->
 		                <% 
 		                lastiter = sorted(plots_dict[prefix][field][spw].keys())[-1]
 		                plot = get_plot(plots_dict, prefix, field, spw, lastiter, colname)
 		                %>
-		            % else:
-			            <!-- flux and PSF plots are associated with iteration 0 -->
-		                <% plot = get_plot(plots_dict, prefix, field, spw, 0, colname) %>
-		            % endif
 		            % if plot is not None:
 		                <div class="thumbnail">
 		                    <a data-fancybox
