@@ -174,7 +174,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </div>
 
 <%
-accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
+weblog_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET])
 num_scores = 0
 score_color_counts = []
 representative_score = result.qa.representative
@@ -192,7 +192,7 @@ if representative_score is not None and representative_score.score is not None:
 else:
     representative_score_render_class = None
 
-error_scores = rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
+error_scores = rendererutils.scores_in_range(weblog_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
 if len(error_scores) > 0:
     num_scores += len(error_scores)
     score_color_counts.append('%d red' % (len(error_scores)))
@@ -200,7 +200,7 @@ if len(error_scores) > 0:
         representative_score = min(error_scores, key=lambda s: s.score)
         representative_score_render_class = 'danger alert-danger'
 
-warning_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
+warning_scores = rendererutils.scores_in_range(weblog_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
 if len(warning_scores) > 0:
     num_scores += len(warning_scores)
     score_color_counts.append('%d yellow' % (len(warning_scores)))
@@ -208,7 +208,7 @@ if len(warning_scores) > 0:
         representative_score = min(warning_scores, key=lambda s: s.score)
         representative_score_render_class = 'warning alert-warning'
 
-suboptimal_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL)
+suboptimal_scores = rendererutils.scores_in_range(weblog_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL)
 if len(suboptimal_scores) > 0:
     num_scores += len(suboptimal_scores)
     score_color_counts.append('%d blue' % (len(suboptimal_scores)))
@@ -216,7 +216,7 @@ if len(suboptimal_scores) > 0:
         representative_score = min(suboptimal_scores, key=lambda s: s.score)
         representative_score_render_class = 'info alert-info'
 
-optimal_scores = rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0)
+optimal_scores = rendererutils.scores_in_range(weblog_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0)
 if len(optimal_scores) > 0:
     num_scores += len(optimal_scores)
     score_color_counts.append('%d green' % (len(optimal_scores)))

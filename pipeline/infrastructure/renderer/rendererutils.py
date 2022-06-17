@@ -302,7 +302,10 @@ def get_notification_trs(result, alerts_info, alerts_success):
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
     all_scores: List[QAScore] = result.qa.pool
-    banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    # PIPE-1481 potentially asks for the removal of banner QA notification.
+    # Thus disabling these for now.
+    #banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    banner_scores = []
 
     notifications = []
     most_severe_render_class = None
