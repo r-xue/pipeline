@@ -277,7 +277,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def tclean_stopcode_ignore(self, iteration, hm_masking):
         """Tclean stop code(s) to be ignored for warning messages.
 
-        PIPE-667: We will ignore tclean_stopcode=1 (i.e., niter is reached) for iter1 of the VLA automasking sequence.
+        PIPE-677: We will ignore tclean_stopcode=1 (i.e., niter is reached) for iter1 of the VLA automasking sequence.
         """
         if iteration == 1 and hm_masking == 'auto':
             return [1]
