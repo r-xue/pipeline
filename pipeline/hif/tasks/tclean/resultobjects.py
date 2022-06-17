@@ -126,8 +126,7 @@ class TcleanResult(basetask.Results):
         return self._flux
 
     def set_flux(self, image):
-        if self._flux is None:
-            self._flux = image
+        self._flux = image
 
     @property
     def cleanmask(self, iter, image):
@@ -447,8 +446,7 @@ class TcleanResult(basetask.Results):
         return self._psf
 
     def set_psf(self, image):
-        if self._psf is None:
-            self._psf = image
+        self._psf = image
 
     @property
     def residual(self):
@@ -650,6 +648,18 @@ class TcleanResult(basetask.Results):
 
     def set_peakresidual_array(self, iteration, peakresidual_array):
         self.iterations[iteration]['peakresidual_array'] = peakresidual_array
+
+    @property
+    # Cleaned Plane id as a function of minor iteration number
+    def planeid_array(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('planeid_array', None)
+        else:
+            return None
+
+    def set_planeid_array(self, iteration, planeid_array):
+        self.iterations[iteration]['planeid_array'] = planeid_array
 
     @property
     # Total cleaned flux as a function of minor iteration number

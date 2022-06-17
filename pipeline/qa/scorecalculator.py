@@ -2410,22 +2410,20 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
         Pipeline QA score of baseline quality.
     """
     scores = []
-    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
-    # See PIPE-1073 for details of QA metrics.
+    LOG.info(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
+    # See PIPEREQ-168 for details of QA metrics.
+    # The values of bin_diff_ratio at the edges of ramp
+    ramp_range = (1.8, 3.6)
+    # The scores at the corresponding edges of ramp. These values are also
+    # adopted in extrapolation beyond ramp_range.
+    score_range = (1.0, 0.33)
+    metric_func = interpolate.interp1d(ramp_range, score_range,
+                                       kind='linear', bounds_error=False,
+                                       fill_value=score_range)
     for s in stat:
-        min_score = interpolate.interp1d([-1.25, -0.5], [0.175, 0.25],
-                                         kind='linear', bounds_error=False,
-                                         fill_value=(0.0, 0.25))(s.bin_min_ratio)
-        max_score = interpolate.interp1d([0.5, 1.25], [0.25, 0.175],
-                                         kind='linear', bounds_error=False,
-                                         fill_value=(0.25, 0.0))(s.bin_max_ratio)
-        diff_score = interpolate.interp1d([0.75, 2.0], [0.5, 0.0],
-                                          kind='linear', bounds_error=False,
-                                          fill_value=(0.5, 0.0)) (s.bin_diff_ratio)
-        total_score = min_score + max_score + diff_score
-        scores.append(total_score)
-        LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
-        LOG.trace(f'total score = {total_score} (min: {min_score}, max: {max_score}, diff: {diff_score})')
+        diff_score =  metric_func(s.bin_diff_ratio)
+        scores.append(diff_score)
+        LOG.info(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
     final_score = np.nanmin(scores)
     quality = 'Good'
     if final_score <= 0.66:

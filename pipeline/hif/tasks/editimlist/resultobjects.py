@@ -8,6 +8,7 @@ class EditimlistResult(basetask.Results):
         self._max_num_targets = 0
         self.buffer_size_arcsec = 0
         self.img_mode = ''
+        self.editmode = 'add'
 
     def add_target(self, target):
         self.targets.append(target)
@@ -16,7 +17,7 @@ class EditimlistResult(basetask.Results):
         self.buffer_size_arcsec = buffsize
 
     def merge_with_context(self, context):
-        if not hasattr(context, 'clean_list_pending'):
+        if not hasattr(context, 'clean_list_pending') or self.editmode == 'replace':
             context.clean_list_pending = []
 
         for new_target in self.targets:

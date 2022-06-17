@@ -29,12 +29,15 @@ import matplotlib.pyplot as plt
 import matplotlib.text as mtext
 import numpy as np
 
+from typing import Optional
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 
 from matplotlib.offsetbox import AnnotationBbox, HPacker, TextArea
 from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import get_stokes
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -65,7 +68,22 @@ def plotfilename(image, reportdir):
 class SkyDisplay(object):
     """Class to plot sky images."""
 
-    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', vmin=None, vmax=None, mom8_fc_peak_snr=None,
+    def plot_per_stokes(self, *args, stokes_list: Optional[list] = None, **kwargs):
+        """Plot sky images from a image file with multiple Stokes planes (one image per Stokes).
+        
+        PIPE-1401: a new keyword argument 'stokes' is added into SkyDisplay.plot(), SkyDisplay._plot_panel(), etc.
+        By design, the default stokes=None will preserve the behavior before PIPE-1401: it won't add
+        additional stokes-related suffix in .png or attach the 'stokes' key in the plot wrapper object.
+        """
+        plots = []
+        if stokes_list is None:
+            stokes_list = get_stokes(args[1])
+        for stokes in stokes_list:
+            plots.append(self.plot(*args, stokes=stokes, **kwargs))
+
+        return plots
+
+    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
              dpi=None, **imshow_args):
 
         self.dpi = dpi
@@ -84,7 +102,7 @@ class SkyDisplay(object):
         else:
             ms = None
 
-        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, ms=ms,
+        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, stokes=stokes, ms=ms,
                                                               mom8_fc_peak_snr=mom8_fc_peak_snr, **imshow_args)
 
         # field names may not be unique, which leads to incorrectly merged
@@ -99,6 +117,10 @@ class SkyDisplay(object):
         parameters = {k: miscinfo[k] for k in ['virtspw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
         parameters['ant'] = None
         parameters['band'] = band
+        if isinstance(stokes, str):
+            # PIPE-1401: only save the 'stokes' keyword when it was explicitly requested.
+            parameters['stokes'] = stokes
+
         try:
             parameters['prefix'] = miscinfo['filnam01']
         except:
@@ -110,26 +132,48 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', ms=None, mom8_fc_peak_snr=None, **imshow_args):
+    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', stokes: Optional[str] = None, ms=None, mom8_fc_peak_snr=None, **imshow_args):
         """Method to plot a map."""
 
-        plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
+        if isinstance(stokes, str):
+            # PIPE-1410: only attach the Stokes suffix when it's explicily specified.
+            plotfile = plotfilename(image=os.path.basename(result)+f'.{stokes}', reportdir=reportdir)
+        else:
+            plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
 
         LOG.info('Plotting %s' % result)
 
+        stokes_present = get_stokes(result)
+
         with casa_tools.ImageReader(result) as image:
+
+            if stokes not in stokes_present:
+                stokes_select = stokes_present[0]
+                # PIPE-1401: plot mask sky images for different stokes plane even when the mask file has a single Stokes plane.
+                # note: the fallback is required for vlass-se-cube because the user input mask is from vlass-se-cont with only Stokes=I.
+                if isinstance(stokes, str):
+                    LOG.warning(f'Stokes {stokes_select} is requested, but only Stokes={stokes_present} is present.')
+                    LOG.warning(f'We will try to create a plot with a fallback of Stokes={stokes_select}.')
+                else:
+                    LOG.info(
+                        f'No Stokes selection is specified, we will use the first present Stokes plane: Stokes={stokes_select}.')
+            else:
+                stokes_select = stokes
+                LOG.info(f'Stokes={stokes_select} is selected.')
+
             try:
                 if collapseFunction == 'center':
-                    collapsed = image.collapse(function='mean', chans=str(image.summary()['shape'][3]//2), axes=[2, 3])
+                    collapsed = image.collapse(function='mean', chans=str(
+                        image.summary()['shape'][3]//2), stokes=stokes_select, axes=3)
                 else:
                     # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
                     # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
-                    collapsed = image.collapse(function=collapseFunction, axes=[2, 3])
+                    collapsed = image.collapse(function=collapseFunction, stokes=stokes_select, axes=3)
             except:
                 # All channels flagged or some other error. Make collapsed zero image.
                 collapsed_new = image.newimagefromimage(infile=result)
                 collapsed_new.set(pixelmask=True, pixels='0')
-                collapsed = collapsed_new.collapse(function='mean', axes=[2, 3])
+                collapsed = collapsed_new.collapse(function='mean', stokes=stokes_select, axes=3)
                 collapsed_new.done()
 
             name = image.name(strippath=True)
@@ -156,7 +200,30 @@ class SkyDisplay(object):
             # don't replot if a file of the required name already exists
             if os.path.exists(plotfile):
                 LOG.info('plotfile already exists: %s', plotfile)
-                return plotfile, coord_names, miscinfo.get('field'), None
+
+                # We make sure that 'band' is still defined as if the figure is plotted.
+                # The code below is directly borrowed from the block inside the actual plotting sequence.
+
+                # VLA only, not VLASS (in which ms==None)
+                if ms:
+                    band = ms.get_vla_spw2band()
+                    band_spws = {}
+                    for k, v in band.items():
+                        band_spws.setdefault(v, []).append(k)
+                    for k, v in band_spws.items():
+                        for spw in miscinfo['virtspw'].split(','):
+                            if int(spw) in v:
+                                miscinfo['band'] = k
+                                del miscinfo['virtspw']
+                                break
+                        if 'virtspw' not in miscinfo:
+                            break
+                band = miscinfo.get('band', None)
+                # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
+                if band is None:
+                    band = cs.referencevalue(format='n')['numeric'][3]
+
+                return plotfile, coord_names, miscinfo.get('field'), band
 
             # otherwise do the plot
             data = collapsed.getchunk()
@@ -206,6 +273,8 @@ class SkyDisplay(object):
             yoff = 0.10
             yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
             for i, k in enumerate(coord_refs['string']):
+                # note: the labels present the reference value at individual axes of the collapsed image
+                # https://casa.nrao.edu/docs/casaref/image.collapse.html
                 yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
 
             # if peaksnr is available for the mom8_fc image, include it in the plot
@@ -271,6 +340,10 @@ class SkyDisplay(object):
                                             ('iter', 'k')]
                          if image_info.get(key) is not None]
                 band = None
+
+            # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
+            if band is None:
+                band = cs.referencevalue(format='n')['numeric'][3]
 
             # PIPE-997: plot a 41pix-wide PSF inset if the image is larger than 41*3
             if 'type' in image_info:
