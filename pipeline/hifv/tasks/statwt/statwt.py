@@ -79,7 +79,7 @@ class Statwt(basetask.StandardTaskTemplate):
         fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
         wtables = {}
-#        if self.inputs.statwtmode == 'VLASS-SE' :
+
         wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
 
         flag_summaries = []
@@ -90,7 +90,6 @@ class Statwt(basetask.StandardTaskTemplate):
         # flag statistics after task
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
 
-#        if self.inputs.statwtmode == 'VLASS-SE':
         wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
 
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
@@ -155,12 +154,8 @@ class Statwt(basetask.StandardTaskTemplate):
 
         stage_number = self.inputs.context.task_counter
         names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
-        print("names:")
-        print(names)
         outputvis = '.'.join(list(filter(None, names)))
-        print("outputvis: {}".format(outputvis))
         wtable = outputvis+'.tbl'
-        print("output wtable {}".format(wtable))
 
         if dryrun == True:
             return wtable
@@ -169,27 +164,30 @@ class Statwt(basetask.StandardTaskTemplate):
         if isdir:
             shutil.rmtree(outputvis)
 
+        if self.inputs.statwtmode == 'VLASS-SE': 
+            datacolumn = 'DATA'
+        else: 
+            datacolumn = 'CORRECTED'
+
         task_args = {'vis': self.inputs.vis,
                      'outputvis': outputvis,
-                     'spw': '*:0', # channel 0 for all spwids
-                     'datacolumn': 'DATA',
+                     'spw': '*:0', # Channel 0 for all spwids 
+                     'datacolumn': datacolumn,
                      'keepflags': False}
         job = casa_tasks.split(**task_args)
         self._executor.execute(job)
-        # I think this is supposed to generate outputvis. Does it fail? What happens here? 
 
         with casa_tools.MSMDReader(outputvis) as msmd:
-            print("Do we even try to get spws?")
             spws = msmd.spwfordatadesc(-1)
 
         with casa_tools.TableReader(outputvis, nomodify=False) as tb:
-            print("What about going in and trying to make a table for plotting?")
             for column in ['WEIGHT_SPECTRUM', 'SIGMA_SPECTRUM']:
                 if column in tb.colnames():
                     tb.removecols(column)
             for spw in spws:
                 stb = tb.query('DATA_DESC_ID=={0}'.format(spw))
                 weights = stb.getcol('WEIGHT')
+#                print("Weight stats: ", np.median(weights), np.mean(weights), np.var(weights))
                 weights_shape = weights.shape
                 if weights.size > 0:
                     stb.putcol('DATA', np.reshape(weights, newshape=(weights_shape[0], 1, weights_shape[1])))
@@ -199,8 +197,14 @@ class Statwt(basetask.StandardTaskTemplate):
                 stb.close()
 
         gaincal_spws = ','.join([str(s) for s in spws])
-        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',  #solint='inf' needed for my original test dataset...
+
+        if self.inputs.statwtmode == 'VLASS-SE': 
+            vla_solint = 'int'
+        else: 
+            vla_solint = 'int' # 'inf'? This seems to just fail sometimes depending on the dataset. 
+
+        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint=vla_solint,
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
-        print("Weight table: ", wtable)
+#        print("Weight table: ", wtable)
         return wtable

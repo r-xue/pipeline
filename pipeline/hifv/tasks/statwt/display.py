@@ -19,15 +19,15 @@ class weightboxChart(object):
         self.result.weight_stats = {}
 
     @staticmethod
-    def _get_weight_from_wtable(tbl, this_ant='', this_spw=''):#, this_scan=''):
+    def _get_weight_from_wtable(tbl, this_ant='', this_spw='', this_scan=''):
         if (this_ant != '') and (this_spw != ''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && ANTENNA1=={1} && ntrue(FLAG)==0'.format(this_spw, this_ant)
         elif (this_ant != ''):
             query_str = 'ANTENNA1=={0} && ntrue(FLAG)==0'.format(this_ant)
         elif (this_spw != ''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && ntrue(FLAG)==0'.format(this_spw)
-#        elif (this_scan !=''): # add other options including scan later
-#            query_str = 'SCAN_NUMBER=={0} && ntrue(FLAG)==0'.format(this_scan)
+        elif (this_scan !=''): #TODO: Add other options including scan later. They don't happen in the current code. 
+            query_str = 'SCAN_NUMBER=={0} && ntrue(FLAG)==0'.format(this_scan)
         else:
             query_str = ''
 
@@ -48,8 +48,7 @@ class weightboxChart(object):
 
         with casa_tools.TableReader(tbl) as tb:
             spws = np.sort(np.unique(tb.getcol('SPECTRAL_WINDOW_ID')))
-            # Also get list of scans now
-            #scans = np.sort(np.unique(tb.getcol('SCAN_NUMBER')))
+            scans = np.sort(np.unique(tb.getcol('SCAN_NUMBER')))
 
         with casa_tools.TableReader(tbl+'/ANTENNA') as tb:
             ant_names = tb.getcol('NAME')
@@ -89,24 +88,25 @@ class weightboxChart(object):
                 bxpstats_per_spw.extend(bxpstats)
             bxpstats_per_spw[-1]['spw'] = this_spw
         
-        # Add per-scan option
-        # bxpstats_per_scan = list()
-        # for this_scan in scans: 
-        #     dat = self._get_weight_from_wtable(tbl, this_scan=this_scan)
-        #     if dat.size > 0:
-        #         dat = dat[dat > 0]
-        #         bxpstats = cbook.boxplot_stats(dat, whis=whis)
-        #         bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
-        #         bxpstats[0]['stdev'] = dat.std()
-        #         bxpstats_per_scan.extend(bxpstats)
-        #     else:
-        #         bxpstats = cbook.boxplot_stats([0], whis=whis)
-        #         bxpstats[0]['quartiles'] = None
-        #         bxpstats[0]['stdev'] = None
-        #         bxpstats_per_scan.extend(bxpstats)
-        #     bxpstats_per_scan[-1]['scan'] = this_scan
+        # this needs to be if vla
+        bxpstats_per_scan = list()
+        for this_scan in scans: 
+            dat = self._get_weight_from_wtable(tbl, this_scan=this_scan)
+            if dat.size > 0:
+                dat = dat[dat > 0]
+                bxpstats = cbook.boxplot_stats(dat, whis=whis)
+                bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
+                bxpstats[0]['stdev'] = dat.std()
+                bxpstats_per_scan.extend(bxpstats)
+            else:
+                bxpstats = cbook.boxplot_stats([0], whis=whis)
+                bxpstats[0]['quartiles'] = None
+                bxpstats[0]['stdev'] = None
+                bxpstats_per_scan.extend(bxpstats)
+            bxpstats_per_scan[-1]['scan'] = this_scan
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
+        # this needs to be different if vlass
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(15, 6))
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
 
         ax1.bxp(bxpstats_per_ant, flierprops=flierprops)
@@ -121,19 +121,19 @@ class weightboxChart(object):
         ax2.set_ylabel('$Wt_{i}$')
         ax2.get_yaxis().get_major_formatter().set_useOffset(False)
 
-        # ax2.bxp(bxpstats_per_scan, flierprops=flierprops)
-        # ax2.axes.set_xticklabels(scans)
-        # ax2.set_xlabel('Scan Number')
-        # ax2.set_ylabel('$Wt_{i}$')
-        # ax2.get_yaxis().get_major_formatter().set_useOffset(False)
+        ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
+        ax3.axes.set_xticklabels(scans)
+        ax3.set_xlabel('Scan Number')
+        ax3.set_ylabel('$Wt_{i}$')
+        ax3.get_yaxis().get_major_formatter().set_useOffset(False)
 
         fig.tight_layout()
         fig.savefig(figfile)
         plt.close(fig)
 
         self.result.weight_stats[suffix] = {'per_spw': bxpstats_per_spw,
-                                            'per_ant': bxpstats_per_ant}#,
-#                                            'per_scan': bxpstats_per_scan}
+                                            'per_ant': bxpstats_per_ant,
+                                            'per_scan': bxpstats_per_scan} # only add this if vla, not vlass
 
         return
 
