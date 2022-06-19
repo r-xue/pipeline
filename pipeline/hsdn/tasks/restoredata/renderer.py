@@ -28,7 +28,7 @@ FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRenderer):
     def __init__(self, uri='hsdn_restoredata.mako',
-                 description='Restoredata with scale adjustment between beams for NRO FOREST data.',
+                 description='Restoredata with scale adjustment among beams for NRO FOREST data.',
                  always_rerender=False):
         super(T2_4MDetailsNRORestoreDataRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
