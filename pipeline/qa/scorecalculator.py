@@ -2964,7 +2964,7 @@ def score_sdimage_masked_pixels(context, result):
     metric_score_max = 1.0
     metric_score_min = 0.0
 
-    # convert score and threhold for logging purpose
+    # convert score and threshold for logging purpose
     frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
     imbasename = os.path.basename(imagename.rstrip('/'))
 
@@ -3248,49 +3248,47 @@ def score_fluxcsv(result):
 
 
 @log_qa
-def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
     """
 
-    outlier_fraction = n_outlier_pixels / n_pixels
+    mom8_fc_outlier_threshold1 = 5.0
+    mom8_fc_outlier_threshold2 = 3.5
+    mom8_fc_histogram_asymmetry_threshold1 = 0.20
+    mom8_fc_histogram_asymmetry_threshold2 = 0.05
+    mom8_fc_max_segment_beams_threshold = 1.0
+    mom8_fc_score_min = 0.33
+    mom8_fc_score_max = 1.00
+    mom8_fc_metric_scale = 270.0
+    if mom8_fc_frac_max_segment != 0.0:
+        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+    else:
+        mom8_fc_score = mom8_fc_score_max
+
     with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
         spw = info.get('virtspw')
 
-    if peak_snr <= outlier_threshold:
-        score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC peak SNR below QA threshold'
-        weblog_location = pqa.WebLogLocation.ACCORDION
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
+        mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
-        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
-                                          n_outlier_pixels,
-                                          outlier_fraction * 100.0,
-                                          outlier_threshold,
-                                          outlier_threshold * cube_chanScaled_MAD))
+        mom8_fc_final_score = max(mom8_fc_score, 0.67)
 
-        m8fc_score_min = 0.33
-        m8fc_score_max = 0.90
-        m8fc_metric_scale = 300.0
-        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log10(m8fc_metric_scale * outlier_fraction)))
-        if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
-            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
-            score = 0.65
-
-        if 0.33 <= score < 0.66:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC image indicates residual line emission'
-            weblog_location = pqa.WebLogLocation.UNSET
-        else:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is above the QA threshold.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC peak SNR above QA threshold'
-            weblog_location = pqa.WebLogLocation.ACCORDION
+    if 0.33 <= mom8_fc_final_score < 0.66:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} with a peak SNR of {:#.5g} and a flux histogram asymmetry which indicate that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC image indicates residual line emission'
+        weblog_location = pqa.WebLogLocation.UNSET
+    else:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} and no significant flux histogram asymmetry.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC peak SNR and flux histogram'
+        weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                          metric_score=(peak_snr, outlier_fraction),
-                          metric_units='Peak SNR / Outlier fraction')
+                          metric_score=(mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment),
+                          metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+    return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
