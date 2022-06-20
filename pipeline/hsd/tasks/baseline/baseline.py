@@ -282,37 +282,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
     Inputs = SDBaselineInputs
     is_multi_vis_task = True
 
-    def spw_for_vis(self, spw_in: str) -> dict:
-        """Convert virtual spw selection into real spw selection.
-
-        Real spw selection can be different among MS so that the
-        method returns dictionary contains selections per MS.
-
-        Args:
-            spw_in: virtual spw selection string
-
-        Returns:
-            real spw selection per MS
-        """
-        spw_out = {}
-        observing_run = self.inputs.context.observing_run
-        if not isinstance(spw_in, str):
-            raise TypeError('spw_in must be string.')
-        elif len(spw_in) == 0:
-            spw_out = dict((ms.name, spw_in) for ms in observing_run.measurement_sets)
-        else:
-            # only supports comma-separated spw id list
-            vspw_list = [int(v) for v in spw_in.split(',')]
-            for ms in observing_run.measurement_sets:
-                origin_ms = observing_run.get_ms(ms.origin_ms)
-                spw_list = [
-                    observing_run.virtual2real_spw_id(vspw, origin_ms)
-                    for vspw in vspw_list
-                ]
-                spw_out[ms.name] = ','.join(map(str, spw_list))
-
-        return spw_out
-
 #    @memory_profiler.profile
     def prepare(self) -> SDBaselineResults:
         """Perform baseline subtraction.
@@ -335,7 +304,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         vis_list = inputs.vis
         ms_list = inputs.ms
         args = inputs.to_casa_args()
-        args_spw = self.spw_for_vis(inputs.spw)
+        args_spw = utils.convert_spw_virtual2real(context, inputs.spw)
 
         window = inputs.linewindow
         windowmode = inputs.linewindowmode

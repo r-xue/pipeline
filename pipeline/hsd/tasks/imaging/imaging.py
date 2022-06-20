@@ -179,37 +179,6 @@ class SDImaging(basetask.StandardTaskTemplate):
         # finally replace task attribute with the top-level one
         result.task = cls
 
-    def spw_for_vis(self, spw_in: str) -> dict:
-        """Convert virtual spw selection into real spw selection.
-
-        Real spw selection can be different among MS so that the
-        method returns dictionary contains selections per MS.
-
-        Args:
-            spw_in: virtual spw selection string
-
-        Returns:
-            real spw selection per MS
-        """
-        spw_out = {}
-        observing_run = self.inputs.context.observing_run
-        if not isinstance(spw_in, str):
-            raise TypeError('spw_in must be string.')
-        elif len(spw_in) == 0:
-            spw_out = dict((ms.name, spw_in) for ms in observing_run.measurement_sets)
-        else:
-            # only supports comma-separated spw id list
-            vspw_list = [int(v) for v in spw_in.split(',')]
-            for ms in observing_run.measurement_sets:
-                origin_ms = observing_run.get_ms(ms.origin_ms)
-                spw_list = [
-                    observing_run.virtual2real_spw_id(vspw, origin_ms)
-                    for vspw in vspw_list
-                ]
-                spw_out[ms.name] = ','.join(map(str, spw_list))
-
-        return spw_out
-
     def prepare(self):
         inputs = self.inputs
         context = inputs.context
@@ -220,7 +189,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         ms_list = inputs.ms
         ms_names = [msobj.name for msobj in ms_list]
         in_spw = inputs.spw
-        args_spw = self.spw_for_vis(in_spw)
+        args_spw = utils.convert_spw_virtual2real(context, in_spw)
         # in_field is comma-separated list of target field names that are
         # extracted from all input MSs
         in_field = inputs.field
