@@ -16,7 +16,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <p>ALMA cross-correlations are divided by the auto-correlation as a function of frequency, in the correlator. This has a variety of advantages for operations and calibration, but if there is strong line emission detected in the autocorrelation (i.e. as would be detected in a single dish spectrum), that emission can anomalously decrease the cross-correlation amplitude at those frequencies.</p>
 <p>This effect can be mitigated by comparing the autocorrelation spectrum (AC) of the target with the AC of the bandpass, which is generally located away from any such bright contaminating line emission. The ratio of the bandpass AC to the target AC provides a scaling factor as a function of frequency that can be used as a first order correction spectrum. However, atmospheric and instrumental variation (e.g. baseline ripple) need to be fitted and removed, so the spectrum is divided into several segments (marked on the plots as thin dotted vertical lines) for that fitting. The fitted AC ratio is presented here as the 'renorm scale factor' or 'renorm amplitude'.</p>
-<p>All targets, spws, and measurement sets with maximum scaling above the observatory determined threshold will have the scaling applied.
+<p>All targets, spws, and measurement sets with maximum scaling above the observatory determined threshold are colored in the table.
 <p>Informative plots are included on this page and collected in a pdf for each spw and source, linked from the table below.</p>
 <p>The plot shown on this page is a ReNormSpectra summary plot showing the average scaling spectrum over all scans, and for mosaics, all fields in the mosaic with peak scaling above the threshold. All antennas are plotted as dashed red and blue (for XX and YY), and the mean is plotted solid.</p>
 <p>The pdf next contains RenormDiagnosicCheck plots corresponding to each field and scan. The scaling spectrum is plotted as solid lines for each antenna (again red and blue for XX and YY), and the median as a dashed line (green and black for XX and YY).</p>
@@ -27,7 +27,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <h2 id="table" class="jumptarget">Table</h2>
 
-<p><b>MS/Source/SPW that trigger the need for renormalization above a threshold of ${result[0].threshold} highlighted in ${highlight_color}.</b></p>
+<p><b>MS/Source/SPW that trigger the need for renormalization above a threshold of ${result[0].threshold} highlighted in ${table_color_text}</b></p>
 <p><em>Please refer to the Pipeline User's Guide (linked to this weblog's Home page) for more details on renormalization and interpretation of the plots.</em></p>
 <table class="table table-bordered table-striped" summary="Renormalization results">
     <thead>
@@ -72,9 +72,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         </%def>
 
         <%def name="preamble()">
-        </%def>
-
-        <%def name="row_title()">
         </%def>
 
         <%def name="mouseover(plot)">${plot.basename}</%def>

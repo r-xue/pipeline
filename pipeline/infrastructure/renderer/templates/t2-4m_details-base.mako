@@ -21,7 +21,6 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
                        data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='', separate_rows_by='', show_row_break_value=False)">
-                       )">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -62,7 +61,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for idx_row, plots_in_row in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
+        % for idx_row, (group_name, plots_in_row) in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
 
         % if show_row_break_value: 
             <h5>${group_name}</h5>
@@ -92,7 +91,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
                 %>
 
                 <div class="thumbnail">
-                    <a id="${plot.parameters['specplot']}" href="${fullsize_relpath}"
+                    <a id="${plot.parameters['link']}" href="${fullsize_relpath}"
                        % if rel_fn:
                            data-fancybox="${rel_fn(plot)}"
                        % elif relurl:
