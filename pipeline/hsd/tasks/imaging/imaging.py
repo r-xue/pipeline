@@ -966,8 +966,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     qout = qa.convert(converted['m0'], outunit='Hz')
                     return qout['value']
 
-            to_imageframe = numpy.vectorize(_to_imageframe)
-            image_rms_freq_range.extend(to_imageframe(exclude_freq_range))
+            image_rms_freq_range.extend( map(_to_imageframe, exclude_freq_range) )
             me.done()
 
         #LOG.info("#####Overall LINE CHANNELS IN IMAGE FRAME = {}".format(str(image_rms_freq_range)))
