@@ -219,11 +219,12 @@ class AquaXmlGenerator(object):
             generic_registry = {GenericMetricXmlGenerator()}
 
             # generate XML for those with a specific renderer
-            specific_elements = self._get_xml_for_qa_scores(needs_specific, _AQUA_REGISTRY)
-            generic_elements = self._get_xml_for_qa_scores(needs_generic, generic_registry)
+            #specific_elements = self._get_xml_for_qa_scores(needs_specific, _AQUA_REGISTRY)
+            #generic_elements = self._get_xml_for_qa_scores(needs_generic, generic_registry)
 
-            ###stage_element.extend(specific_elements)
-            # stage_element.extend(generic_elements)
+            # NOTE
+            #stage_element.extend(specific_elements)
+            #stage_element.extend(generic_elements)
 
             # add representative score element
             EBs = ','.join(representative_score.applies_to.vis)
@@ -237,6 +238,18 @@ class AquaXmlGenerator(object):
                 Intent = 'N/A'
             score_element = ElementTree.Element('RepresentativeScore', Score=str(representative_score.score), Reason=representative_score.longmsg)
             score_element.extend([ElementTree.Element('Metric', Name=representative_score.origin.metric_name, Value=str(representative_score.origin.metric_score), Units=representative_score.origin.metric_units)])
+
+            ##### Using existing Metric element generators TODO: simplify
+            needs_specific = [qa_score for qa_score in [representative_score]
+                              if any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
+            needs_generic = [qa_score for qa_score in [representative_score]
+                             if not any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
+            specific_elements = self._get_xml_for_qa_scores(needs_specific, _AQUA_REGISTRY)
+            generic_elements = self._get_xml_for_qa_scores(needs_generic, generic_registry)
+            score_element.extend(specific_elements)
+            score_element.extend(generic_elements)
+            #####
+
             score_element.extend([ElementTree.Element('DataSelection', EBs=EBs, Spw=Spw, Intent=Intent)])
             stage_element.extend([score_element])
 
@@ -253,6 +266,18 @@ class AquaXmlGenerator(object):
                     Intent = 'N/A'
                 score_element = ElementTree.Element('SubScore', Score=str(QA_score.score), Reason=QA_score.longmsg)
                 score_element.extend([ElementTree.Element('Metric', Name=QA_score.origin.metric_name, Value=str(QA_score.origin.metric_score), Units=QA_score.origin.metric_units)])
+
+                ##### Using existing Metric element generators TODO: simplify
+                needs_specific = [qa_score for qa_score in [QA_score]
+                                  if any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
+                needs_generic = [qa_score for qa_score in [QA_score]
+                                 if not any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
+                specific_elements = self._get_xml_for_qa_scores(needs_specific, _AQUA_REGISTRY)
+                generic_elements = self._get_xml_for_qa_scores(needs_generic, generic_registry)
+                score_element.extend(specific_elements)
+                score_element.extend(generic_elements)
+                #####
+
                 score_element.extend([ElementTree.Element('DataSelection', EBs=EBs, Spw=Spw, Intent=Intent)])
                 stage_element.extend([score_element])
 
@@ -455,11 +480,11 @@ class MetricXmlGenerator(object):
         self.attr_formatters = {
             'Name': str,
             'Value': str,
-            'Asdm': vis_to_asdm,
-            'QaScore': str,
-            'QaMessage': str,
+            #'Asdm': vis_to_asdm,
+            #'QaScore': str,
+            #'QaMessage': str,
             'Units': str,
-            'Session': str
+            #'Session': str
         }
         if formatters:
             self.attr_formatters.update(formatters)
@@ -505,19 +530,19 @@ class MetricXmlGenerator(object):
             Name=self.attr_formatters['Name'](origin.metric_name),
             Value=self.attr_formatters['Value'](origin.metric_score),
             Units=self.attr_formatters['Units'](origin.metric_units),
-            QaScore=self.attr_formatters['QaScore'](score_value),
-            QaMessage=self.attr_formatters['QaMessage'](score_message)
+            #QaScore=self.attr_formatters['QaScore'](score_value),
+            #QaMessage=self.attr_formatters['QaMessage'](score_message)
         )
 
-        target_asdms = qa_score.applies_to.vis
-        if target_asdms:
-            init_args['Asdm'] = ','.join([self.attr_formatters['Asdm'](a) for a in target_asdms])
+        #target_asdms = qa_score.applies_to.vis
+        #if target_asdms:
+        #    init_args['Asdm'] = ','.join([self.attr_formatters['Asdm'](a) for a in target_asdms])
 
-        target_session = qa_score.applies_to.session
-        if target_session:
-            init_args['Session'] = ','.join([self.attr_formatters['Session'](s) for s in target_session])
+        #target_session = qa_score.applies_to.session
+        #if target_session:
+        #    init_args['Session'] = ','.join([self.attr_formatters['Session'](s) for s in target_session])
 
-        return ElementTree.Element('Metric', **init_args)
+        return ElementTree.Element('MetricOld', **init_args)
 
 
 class LowestScoreMetricXmlGenerator(MetricXmlGenerator):
