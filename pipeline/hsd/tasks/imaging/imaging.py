@@ -1398,7 +1398,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
     # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
     dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)
-    dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] is True)]
+    dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] == True)]
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
