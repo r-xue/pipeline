@@ -103,59 +103,12 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
         return ','.join(fields)
 
-    @spw.convert
-    def spw(self, value: str):
-        """Convert input spw value.
-
-        Empty string is converted to science spw list.
-        Any input selection is regarded as virtual spw selection
-        so that it is converted to real spw selection.
-
-        Args:
-            value: (virtual) spw selection string
-
-        Returns:
-            real spw selection
-        """
-        LOG.trace(f'spw.convert: value="{value}" ms="{self.ms.basename}"')
-        converted = ''
-        observing_run = self.context.observing_run
-        if not isinstance(value, str):
-            raise TypeError('spw value must be string.')
-        elif len(value) == 0:
-            LOG.trace('spw.convert: value is empty string')
-            science_spws = self.ms.get_spectral_windows(science_windows_only=True)
-            converted = ','.join([str(spw.id) for spw in science_spws])
-        else:
-            LOG.trace('spw.convert: value is non-empty list')
-            # only supports comma-separated spw id list
-            vspw_list = [int(v) for v in value.split(',')]
-            spw_list = [
-                observing_run.virtual2real_spw_id(vspw, self.ms)
-                for vspw in vspw_list
-            ]
-            if all(spw_list):
-                # conversion to real spw was successful
-                LOG.trace('Conversion from virtual to real spw was successful')
-                converted = ','.join(map(str, spw_list))
-            else:
-                # conversion to real spw was failed probably because pipeline framework
-                # happened to set real spw although user input is virtual spw
-                LOG.trace('Conversion from virtual to real spw was failed. '
-                          'Assuming input value to be real spw selection.')
-                selected_spws = self.ms.get_spectral_windows(value, science_windows_only=True)
-                converted = ','.join([str(spw.id) for spw in selected_spws])
-
-        # converted spw selection should not include "None"
-        assert converted.find('None') == -1
-
-        LOG.trace(f'spw.convert: converted="{converted}"')
-        return converted
-
     @vdp.VisDependentProperty
     def pol(self):
-        # filters polarization by self.spw
-        selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(self.spw, with_channels=True)]
+        # filters polarization by spw
+        # need to convert input (virtual) spw into real spw
+        real_spw = sdutils.convert_spw_virtual2real(self.context, self.spw, [self.ms])[self.vis]
+        selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(real_spw, with_channels=True)]
         pols = set()
         for idx in selected_spwids:
             pols.update(self.ms.get_data_description(spw=idx).corr_axis)
@@ -290,7 +243,8 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         bl_name = match.name if match is not None else cal_name
         in_ant = inputs.antenna
         in_spw = inputs.spw
-        LOG.trace(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}"')
+        real_spw = sdutils.convert_spw_virtual2real(context, in_spw, [self.inputs.ms])[self.inputs.vis]
+        LOG.trace(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}" real_spw="{real_spw}"')
         in_field = inputs.field
         in_pol = '' if inputs.pol in ['', '*'] else inputs.pol.split(',')
         clip_niteration = inputs.iteration
@@ -307,7 +261,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         full_intent = utils.to_CASA_intent(inputs.ms, inputs.intent)
         flagdata_summary_job = casa_tasks.flagdata(vis=bl_name, mode='summary',
                                                    antenna=in_ant, field=in_field,
-                                                   spw=in_spw, intent=full_intent,
+                                                   spw=real_spw, intent=full_intent,
                                                    spwcorr=True, fieldcnt=True,
                                                    name='before')
         stats_before = self._executor.execute(flagdata_summary_job)
@@ -343,7 +297,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 continue
 
             # Which group in group_desc list should be processed
-            member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, field_sel, in_spw))
+            member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, field_sel, real_spw))
             LOG.trace('group %s: member_list=%s' % (group_id, member_list))
 
             # skip this group if valid member list is empty

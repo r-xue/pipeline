@@ -189,7 +189,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         ms_list = inputs.ms
         ms_names = [msobj.name for msobj in ms_list]
         in_spw = inputs.spw
-        args_spw = utils.convert_spw_virtual2real(context, in_spw)
+        args_spw = sdutils.convert_spw_virtual2real(context, in_spw)
         # in_field is comma-separated list of target field names that are
         # extracted from all input MSs
         in_field = inputs.field

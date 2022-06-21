@@ -62,7 +62,8 @@ def require_virtual_spw_id_handling(observing_run: ObservingRun) -> bool:
                       for spw in ms.get_spectral_windows(science_windows_only=True)])
 
 
-def convert_spw_virtual2real(context, spw_in: str) -> dict:
+def convert_spw_virtual2real(context, spw_in: str,
+                             mses: List[MeasurementSet] = []) -> dict:
     """Convert virtual spw selection into real spw selection.
 
     Real spw selection can be different among MS so that the
@@ -71,19 +72,21 @@ def convert_spw_virtual2real(context, spw_in: str) -> dict:
     Args:
         context: pipeline context
         spw_in: virtual spw selection string
+        mses: list of measurementset domain objects (optional)
     Returns:
         real spw selection per MS
     """
     spw_out = {}
     observing_run = context.observing_run
+    ms_list = mses if mses else context.observing_run.measurement_sets
     if not isinstance(spw_in, str):
         raise TypeError('spw_in must be string.')
     elif len(spw_in) == 0:
-        spw_out = dict((ms.name, '') for ms in observing_run.measurement_sets)
+        spw_out = dict((ms.name, '') for ms in ms_list)
     else:
         # only supports comma-separated spw id list
         vspw_list = [int(v) for v in spw_in.split(',')]
-        for ms in observing_run.measurement_sets:
+        for ms in ms_list:
             origin_ms = observing_run.get_ms(ms.origin_ms)
             spw_list = [
                 observing_run.virtual2real_spw_id(vspw, origin_ms)
