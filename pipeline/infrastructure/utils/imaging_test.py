@@ -5,7 +5,8 @@ from .imaging import _get_cube_freq_axis, chan_selection_to_frequencies, \
                      freq_selection_to_channels, spw_intersect, \
                      update_sens_dict, update_beams_dict, set_nested_dict, \
                      intersect_ranges, intersect_ranges_by_weight, merge_ranges, \
-                     equal_to_n_digits, velocity_to_frequency, frequency_to_velocity
+                     equal_to_n_digits, velocity_to_frequency, frequency_to_velocity, \
+                     predict_kernel
 
 from .. import casa_tools
 
@@ -289,6 +290,7 @@ def test_velocity_to_frequency(velocity, restfreq, result):
 
 frequency_to_velocity_test_params = (('100.0GHz', '100.01GHz', '29.976248175km/s'),)
 
+
 @pytest.mark.parametrize("frequency, restfreq, result", frequency_to_velocity_test_params)
 def test_frequency_to_velocity(frequency, restfreq, result):
     """
@@ -298,3 +300,48 @@ def test_frequency_to_velocity(frequency, restfreq, result):
     cqa = casa_tools.quanta
 
     assert cqa.eq(frequency_to_velocity(frequency, restfreq), result)
+
+
+predict_kernel_test_params = (({'major': {'unit': 'arcsec', 'value': 1.3},
+                                'minor': {'unit': 'arcsec', 'value': 1.2},
+                                'positionangle': {'unit': 'deg', 'value': 50.0}},
+                               {'major': {'unit': 'arcsec', 'value': 1.3},
+                                'minor': {'unit': 'arcsec', 'value': 1.2},
+                                'positionangle': {'unit': 'deg', 'value': 20.0}},
+                               1e-6, 1e-3,
+                               {'major': {'unit': 'arcsec', 'value': 0.0},
+                                'minor': {'unit': 'arcsec', 'value': 0.0},
+                                'pa': {'unit': 'deg', 'value': 0.0}},
+                               2),
+                              ({'major': {'unit': 'arcsec', 'value': 1.3},
+                                'minor': {'unit': 'arcsec', 'value': 1.2},
+                                'positionangle': {'unit': 'deg', 'value': 50.0}},
+                               {'major': {'unit': 'arcsec', 'value': 1.3},
+                                'minor': {'unit': 'arcsec', 'value': 1.2},
+                                'positionangle': {'unit': 'deg', 'value': 50.0}},
+                               1e-6, 1e-3,
+                               {'major': {'unit': 'arcsec', 'value': 0.0},
+                                'minor': {'unit': 'arcsec', 'value': 0.0},
+                                'pa': {'unit': 'deg', 'value': 0.0}},
+                               1),
+                              ({'major': {'unit': 'arcsec', 'value': 1.0},
+                                'minor': {'unit': 'arcsec', 'value': 1.0},
+                                  'positionangle': {'unit': 'deg', 'value': 50.0}},
+                               {'major': {'unit': 'arcsec', 'value': 1.3},
+                                'minor': {'unit': 'arcsec', 'value': 1.2},
+                                'positionangle': {'unit': 'deg', 'value': 20.0}},
+                               1e-6, 1e-3,
+                              {'major': {'unit': 'arcsec', 'value': 0.8306623862918077},
+                               'minor': {'unit': 'arcsec', 'value': 0.6633249580710798},
+                               'pa': {'unit': 'deg', 'value': 19.999999999999982}},
+                               0),
+                              )
+
+
+@pytest.mark.parametrize("beam, target_beam, pstol, patol, kn, kn_code", predict_kernel_test_params)
+def test_predict_kernel(beam, target_beam, pstol, patol, kn, kn_code):
+    """
+    Test predict_kernel()
+    """
+
+    assert predict_kernel(beam, target_beam, pstol=pstol, patol=patol) == (kn, kn_code)

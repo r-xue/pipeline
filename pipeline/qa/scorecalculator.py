@@ -1695,28 +1695,28 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
 @log_qa
 def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
     """
-    Score the median SNR for a given phase calibrator field and SpW.
+    Score the median achieved SNR for a given phase calibrator field and SpW.
     Introduced for hifa_spwphaseup (PIPE-665).
     """
     if median_snr <= 0.3 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median SNR ({median_snr:.1f}) is <= 30% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median SNR ({median_snr:.1f}) is <= 50% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median SNR ({median_snr:.1f}) is <= 75% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median SNR ({median_snr:.1f}) is > 75% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
@@ -1729,28 +1729,28 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
 @log_qa
 def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
     """
-    Score the median SNR for a given check source field and SpW.
+    Score the median achieved SNR for a given check source field and SpW.
     Introduced for hifa_spwphaseup (PIPE-665).
     """
     if median_snr <= 0.3 * snr_threshold:
         score = 0.7
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median SNR ({median_snr:.1f}) is <= 30% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = 0.8
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median SNR ({median_snr:.1f}) is <= 50% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = 0.9
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median SNR ({median_snr:.1f}) is <= 75% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median SNR ({median_snr:.1f}) is > 75% of the' \
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
                   f' phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
@@ -2410,22 +2410,20 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
         Pipeline QA score of baseline quality.
     """
     scores = []
-    LOG.trace(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
-    # See PIPE-1073 for details of QA metrics.
+    LOG.info(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
+    # See PIPEREQ-168 for details of QA metrics.
+    # The values of bin_diff_ratio at the edges of ramp
+    ramp_range = (1.8, 3.6)
+    # The scores at the corresponding edges of ramp. These values are also
+    # adopted in extrapolation beyond ramp_range.
+    score_range = (1.0, 0.33)
+    metric_func = interpolate.interp1d(ramp_range, score_range,
+                                       kind='linear', bounds_error=False,
+                                       fill_value=score_range)
     for s in stat:
-        min_score = interpolate.interp1d([-1.25, -0.5], [0.175, 0.25],
-                                         kind='linear', bounds_error=False,
-                                         fill_value=(0.0, 0.25))(s.bin_min_ratio)
-        max_score = interpolate.interp1d([0.5, 1.25], [0.25, 0.175],
-                                         kind='linear', bounds_error=False,
-                                         fill_value=(0.25, 0.0))(s.bin_max_ratio)
-        diff_score = interpolate.interp1d([0.75, 2.0], [0.5, 0.0],
-                                          kind='linear', bounds_error=False,
-                                          fill_value=(0.5, 0.0)) (s.bin_diff_ratio)
-        total_score = min_score + max_score + diff_score
-        scores.append(total_score)
-        LOG.trace(f'rmin = {s.bin_min_ratio}, rmax = {s.bin_max_ratio}, rdiff = {s.bin_diff_ratio}')
-        LOG.trace(f'total score = {total_score} (min: {min_score}, max: {max_score}, diff: {diff_score})')
+        diff_score =  metric_func(s.bin_diff_ratio)
+        scores.append(diff_score)
+        LOG.info(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
     final_score = np.nanmin(scores)
     quality = 'Good'
     if final_score <= 0.66:
@@ -2578,7 +2576,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         if beams is None:
             warnings.append('unfitted offset')
         else:
-            offset_score = max(0.0, 1.0 - min(1.0, beams))
+            offset_score = max(0.33, 1.0 - min(1.0, beams))
             offset_metric = beams
             if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
@@ -2592,7 +2590,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             warnings.append('gfluxscale value of 0.0 mJy')
         else:
             chk_fitflux_gfluxscale_ratio = fitflux * 1000. / gfluxscale
-            fitflux_score = max(0.0, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
+            fitflux_score = max(0.33, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
             fitflux_metric = chk_fitflux_gfluxscale_ratio
             if chk_fitflux_gfluxscale_ratio < 0.8:
                 warnings.append('low [Fitted / gfluxscale] Flux Density Ratio of %.2f' % (chk_fitflux_gfluxscale_ratio))
@@ -2606,7 +2604,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             warnings.append('Fitted Flux Density value of 0.0 mJy')
         else:
             chk_fitpeak_fitflux_ratio = fitpeak / fitflux
-            fitpeak_score = max(0.0, 1.0 - abs(1.0 - (chk_fitpeak_fitflux_ratio)))
+            fitpeak_score = max(0.33, 1.0 - abs(1.0 - (chk_fitpeak_fitflux_ratio)))
             fitpeak_metric = chk_fitpeak_fitflux_ratio
             if chk_fitpeak_fitflux_ratio < 0.7:
                 warnings.append('low Fitted [Peak Intensity / Flux Density] Ratio of %.2f' % (chk_fitpeak_fitflux_ratio))
@@ -2966,7 +2964,7 @@ def score_sdimage_masked_pixels(context, result):
     metric_score_max = 1.0
     metric_score_min = 0.0
 
-    # convert score and threhold for logging purpose
+    # convert score and threshold for logging purpose
     frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
     imbasename = os.path.basename(imagename.rstrip('/'))
 
@@ -3250,49 +3248,47 @@ def score_fluxcsv(result):
 
 
 @log_qa
-def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
     """
 
-    outlier_fraction = n_outlier_pixels / n_pixels
+    mom8_fc_outlier_threshold1 = 5.0
+    mom8_fc_outlier_threshold2 = 3.5
+    mom8_fc_histogram_asymmetry_threshold1 = 0.20
+    mom8_fc_histogram_asymmetry_threshold2 = 0.05
+    mom8_fc_max_segment_beams_threshold = 1.0
+    mom8_fc_score_min = 0.33
+    mom8_fc_score_max = 1.00
+    mom8_fc_metric_scale = 270.0
+    if mom8_fc_frac_max_segment != 0.0:
+        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+    else:
+        mom8_fc_score = mom8_fc_score_max
+
     with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
         spw = info.get('virtspw')
 
-    if peak_snr <= outlier_threshold:
-        score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC peak SNR below QA threshold'
-        weblog_location = pqa.WebLogLocation.ACCORDION
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
+        mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
-        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
-                                          n_outlier_pixels,
-                                          outlier_fraction * 100.0,
-                                          outlier_threshold,
-                                          outlier_threshold * cube_chanScaled_MAD))
+        mom8_fc_final_score = max(mom8_fc_score, 0.67)
 
-        m8fc_score_min = 0.33
-        m8fc_score_max = 0.90
-        m8fc_metric_scale = 300.0
-        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log10(m8fc_metric_scale * outlier_fraction)))
-        if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
-            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
-            score = 0.65
-
-        if 0.33 <= score < 0.66:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC image indicates residual line emission'
-            weblog_location = pqa.WebLogLocation.UNSET
-        else:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is above the QA threshold.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC peak SNR above QA threshold'
-            weblog_location = pqa.WebLogLocation.ACCORDION
+    if 0.33 <= mom8_fc_final_score < 0.66:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} with a peak SNR of {:#.5g} and a flux histogram asymmetry which indicate that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC image indicates residual line emission'
+        weblog_location = pqa.WebLogLocation.UNSET
+    else:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} and no significant flux histogram asymmetry.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC peak SNR and flux histogram'
+        weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                          metric_score=(peak_snr, outlier_fraction),
-                          metric_units='Peak SNR / Outlier fraction')
+                          metric_score=(mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment),
+                          metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+    return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

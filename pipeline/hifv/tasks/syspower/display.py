@@ -178,7 +178,13 @@ class compressionSummary(object):
         for time in sorted_time:
             q1 = qa.quantity(time, 's')
             time1 = qa.time(q1, form='fits')
-            datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+            try:
+                datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+            except ValueError:
+                timestr = time1[0]
+                timestr = timestr.replace('T24', 'T23')
+                datetime_object = datetime.datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%S')
+                datetime_object += datetime.timedelta(hours=1)
             utc_time.append(datetime_object)
 
         # Get scans
@@ -230,10 +236,11 @@ class compressionSummary(object):
         #                      fancybox=False)
         leg = axes[0].legend(loc='center right', ncol=1, bbox_to_anchor=(1.0, 1.52), frameon=True, numpoints=1,
                              fancybox=False)
-        title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
+        # title = axes[0].set_title('P_diff template summary    {!s}-band'.format(self.band))
+        title = axes[0].set_title('  ')
         title.set_position([.5, 1.225])
 
-        axes[numsubplots-1].set_xlabel('UTC Day Time [Day HH:MM]')
+        axes[numsubplots-1].set_xlabel('UTC Day Time [Day HH:MM]      {!s}-band'.format(self.band))
 
         fig0.set_size_inches(8, 10)
 
@@ -252,7 +259,7 @@ class compressionSummary(object):
 
         wrapper = logger.Plot(figfile, x_axis='time', y_axis='pdiff', parameters={'vis': self.ms.basename,
                                                                                    'type': prefix,
-                                                                                   'largecaption': 'Compression summary',
+                                                                                   'largecaption': 'Compression pdiff template summary',
                                                                                    'smallcaption': 'Compression summary (scan numbers indicated on the top axis)',
                                                                                    'spw': '',
                                                                                    'band': self.band})
@@ -311,7 +318,13 @@ class medianSummary(object):
         for time in sorted_time:
             q1 = qa.quantity(time, 's')
             time1 = qa.time(q1, form='fits')
-            datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+            try:
+                datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+            except ValueError:
+                timestr = time1[0]
+                timestr = timestr.replace('T24', 'T23')
+                datetime_object = datetime.datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%S')
+                datetime_object += datetime.timedelta(hours=1)
             utc_time.append(datetime_object)
 
         # Get scans

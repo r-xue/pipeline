@@ -20,7 +20,8 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </head>
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
-                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='', show_row_break_value=False)">
+                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='', separate_rows_by='', show_row_break_value=False)">
+                       )">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -61,10 +62,18 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for group_name, plots_in_row in rendererutils.group_plots(ms_plots, break_rows_by):
+        % for idx_row, plots_in_row in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
+
         % if show_row_break_value: 
             <h5>${group_name}</h5>
         % endif
+
+        % if idx_row!=0:
+            % if separate_rows_by=='thick-line':
+                <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+            % endif
+        % endif
+
         <div class="row">
             % if plots_in_row is not None:
 

@@ -33,7 +33,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     This class extends importdata.ImportDataInputs.
     """
 
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
+    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
