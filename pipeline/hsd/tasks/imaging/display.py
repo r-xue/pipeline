@@ -6,6 +6,7 @@ import time
 from typing import Callable, Generator, List, Optional, Union
 
 import numpy
+from scipy import interpolate
 import matplotlib
 import matplotlib.axes as axes
 import matplotlib.figure as figure
@@ -279,7 +280,7 @@ class SDMomentMapDisplay(SDImageDisplay):
         performing generic initialization defined in the super class.
         """
         if os.path.exists(self.inputs.moment_imagename):
-            os.system('rm -rf %s'%(self.inputs.moment_imagename))
+            os.system('rm -rf %s' % (self.inputs.moment_imagename))
         job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.inputs.MAP_MOMENT], outfile=self.inputs.moment_imagename)
         job.execute(dry_run=False)
         assert os.path.exists(self.inputs.moment_imagename)
@@ -308,9 +309,9 @@ class SDMomentMapDisplay(SDImageDisplay):
         TickSize = 6
 
         axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
-                                                  RAlocator, DEClocator,
-                                                  RArotation, DECrotation,
-                                                  TickSize, colormap)
+                                              RAlocator, DEClocator,
+                                              RArotation, DECrotation,
+                                              TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
         axes_tpmap = axes_manager.image_axes
         beam_circle = None
@@ -571,7 +572,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         """Enable overlay of ATM transmission curve."""
         self.showatm = True
 
-    def disable_atm(self)-> None:
+    def disable_atm(self) -> None:
         """Disable overlay of ATM transmission curve."""
         self.showatm = False
 
@@ -622,7 +623,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                 antenna_id = 0 # nominal
                 spw_id = self.inputs.spw
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=vis, antenna_id=antenna_id,
-                                                            spw_id=spw_id, doplot=False)
+                                                                      spw_id=spw_id, doplot=False)
                 frame = self.frequency_frame
                 if frame != 'TOPO':
                     # do conversion
@@ -641,21 +642,32 @@ class SDSparseMapDisplay(SDImageDisplay):
                                         v0=qmid_time)
                     position_ref = ms.antennas[antenna_id].position
 
-                    # initialize
-                    me.done()
-                    me.doframe(time_ref)
-                    me.doframe(direction_ref)
-                    me.doframe(position_ref)
+                    if frame == 'REST':
+                        mse = casa_tools.ms
+                        mse.open( ms.name )
+                        # use 'SOURCE' to get 'REST', Unit of atm_freq is GHz
+                        v_to   = mse.cvelfreqs( spwids=[spw_id], outframe='SOURCE' ) / 1.0E+9
+                        v_from = mse.cvelfreqs( spwids=[spw_id], outframe='TOPO'   ) / 1.0E+9
+                        mse.done()
+                        _frameconv = interpolate.interp1d( v_from, v_to,
+                                                           kind='linear',
+                                                           bounds_error=False,
+                                                           fill_value='extrapolate' )
+                    else:
+                        # initialize
+                        me.done()
+                        me.doframe(time_ref)
+                        me.doframe(direction_ref)
+                        me.doframe(position_ref)
 
-                    def tolsrk(x):
-                        # ATM is always in TOPO
-                        m = me.frequency(rf='TOPO', v0=qa.quantity(x, 'GHz'))
-                        converted = me.measure(v=m, rf=frame)
-                        qout = qa.convert(converted['m0'], outunit='GHz')
-                        return qout['value']
+                        def _frameconv(x):
+                            # ATM is always in TOPO
+                            m = me.frequency(rf='TOPO', v0=qa.quantity(x, 'GHz'))
+                            converted = me.measure(v=m, rf=frame)
+                            qout = qa.convert(converted['m0'], outunit='GHz')
+                            return qout['value']
 
-                    atm_freq = numpy.fromiter(map(tolsrk, atm_freq), dtype=atm_freq.dtype)
-
+                    atm_freq = numpy.fromiter(map(_frameconv, atm_freq), dtype=atm_freq.dtype)
                     me.done()
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
 
@@ -773,7 +785,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
                 group_msid = msname_list.index(absolute_path(g.ms.name))
                 if group_msid == msid and g.antenna_id == ant and \
-                    g.field_id == fid and g.spw_id == spw:
+                   g.field_id == fid and g.spw_id == spw:
                     found = True
                     break
             if found:
@@ -798,7 +810,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # if all pixels are masked, return fully masked array
         unweight_mask = unweight_ia.getchunk(getmask=True)
-        if numpy.all(unweight_mask == False):
+        if numpy.all(unweight_mask is False):
             unweight_ia.close()
             sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32),
                                            mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
@@ -818,7 +830,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         with casa_tools.ImageReader(imagename) as ia:
             maskname = ia.maskhandler('get')[0]
         with casa_tools.ImageReader(weightname) as ia:
-            if maskname!='T': #'T' is no mask (usually an image from completely flagged MSes)
+            if maskname != 'T': #'T' is no mask (usually an image from completely flagged MSes)
                 ia.maskhandler('delete', [maskname])
                 ia.maskhandler('copy', ['%s:%s' % (imagename, maskname), maskname])
                 ia.maskhandler('set', maskname)
@@ -959,11 +971,11 @@ class SDChannelMapDisplay(SDImageDisplay):
                 #if 0 <= ChanL and ChanL < nchan:
                 if 0 < ChanL and ChanL < self.nchan:
                     vertical_lines.append(
-                        axes_integsp2.axvline(x =0.5 * (self.velocity[ChanL] + self.velocity[ChanL - 1]) - VelC, linewidth=0.3, color='r')
+                        axes_integsp2.axvline(x = 0.5 * (self.velocity[ChanL] + self.velocity[ChanL - 1]) - VelC, linewidth=0.3, color='r')
                     )
                 elif ChanL == 0:
                     vertical_lines.append(
-                        axes_integsp2.axvline(x =0.5 * (self.velocity[ChanL] - self.velocity[ChanL + 1]) - VelC, linewidth=0.3, color='r')
+                        axes_integsp2.axvline(x = 0.5 * (self.velocity[ChanL] - self.velocity[ChanL + 1]) - VelC, linewidth=0.3, color='r')
                     )
                 #print 'DEBUG: Vel[ChanL]', i, (self.velocity[ChanL]+self.velocity[ChanL-1])/2.0 - VelC
 
@@ -1007,7 +1019,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # Plot Integrated Spectrum #1
 #                 Sp = numpy.sum(numpy.transpose((valid * numpy.transpose(flattened_data))),axis=0)/numpy.sum(valid,axis=0)
                 #Sp = numpy.sum(flattened_data * valid.reshape((nrow,1)), axis=0)/valid.sum()
-                Sp = Sp_integ[pol,:]
+                Sp = Sp_integ[pol, :]
                 (F0, F1) = (min(self.frequency[0], self.frequency[-1]), max(self.frequency[0], self.frequency[-1]))
                 spmin = Sp.min()
                 spmax = Sp.max()
@@ -1073,15 +1085,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                         axes_chmap[i].imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM)
                         x = i % self.NhPanel
                         if x == (self.NhPanel - 1):
-                            y = int(i // self.NhPanel)
                             axes_manager.set_colorbar_for(axes_chmap[i], Vmin, Vmax, f'{self.brightnessunit} km/s')
 
                         axes_chmap[i].set_title(Title[i], size=TickSize)
 
                 t4 = time.time()
-                LOG.debug('PROFILE: integrated intensity map: %s sec'%(t1-t0))
-                LOG.debug('PROFILE: integrated spectrum #1: %s sec'%(t2-t1))
-                LOG.debug('PROFILE: integrated spectrum #2: %s sec'%(t3-t2))
+                LOG.debug('PROFILE: integrated intensity map: %s sec' % (t1-t0))
+                LOG.debug('PROFILE: integrated spectrum #1: %s sec' % (t2-t1))
+                LOG.debug('PROFILE: integrated spectrum #2: %s sec' % (t3-t2))
                 LOG.debug('PROFILE: channel map: %s sec'%(t4-t3))
 
                 FigFileRoot = self.inputs.imagename + '.pol%s'%(pol)
@@ -1478,7 +1489,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
                                               FreqLocator,
                                               TickSize)
         axes_list = axes_manager.axes_list
-        plot_objects = []
 
         # MS-based procedure
         reference_data = self.context.observing_run.measurement_sets[self.inputs.msid_list[0]]
@@ -1531,10 +1541,10 @@ class SDSpectralMapDisplay(SDImageDisplay):
 #                         if self.num_valid_spectrum[_x][_y][pol] > 0:
                         if mask2d[_x][_y]:
                             a.plot(self.frequency, data[_x][_y], Mark, markersize=2, markeredgecolor='b',
-                                     markerfacecolor='b')
+                                   markerfacecolor='b')
                         else:
                             a.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', horizontalalignment='center',
-                                     verticalalignment='center', size=TickSize)
+                                   verticalalignment='center', size=TickSize)
                         a.title.set_text(title)
                         a.axis([xmin, xmax, ymin, ymax])
                     else:
@@ -1636,29 +1646,29 @@ class SDSpectralImageDisplay(SDImageDisplay):
             self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
         )
         t1 = time.time()
-        LOG.debug('sparse_map: elapsed time %s sec'%(t1-t0))
+        LOG.debug('sparse_map: elapsed time %s sec' % (t1-t0))
         plot_list.extend(
             self.__plot(SDChannelMapDisplay)
         )
         t2 = time.time()
-        LOG.debug('channel_map: elapsed time %s sec'%(t2-t1))
+        LOG.debug('channel_map: elapsed time %s sec' % (t2-t1))
         # skip spectral map (detailed profile map) if the data is NRO
         if not self.inputs.isnro:
             plot_list.extend(
                 self.__plot(SDSpectralMapDisplay)
             )
         t3 = time.time()
-        LOG.debug('spectral_map: elapsed time %s sec'%(t3-t2))
+        LOG.debug('spectral_map: elapsed time %s sec' % (t3-t2))
         plot_list.extend(
             self.__plot(SDRmsMapDisplay)
         )
         t4 = time.time()
-        LOG.debug('rms_map: elapsed time %s sec'%(t4-t3))
+        LOG.debug('rms_map: elapsed time %s sec' % (t4-t3))
         plot_list.extend(
             self.__plot(SDMomentMapDisplay)
         )
         t5 = time.time()
-        LOG.debug('moment_map: elapsed time %s sec'%(t5-t4))
+        LOG.debug('moment_map: elapsed time %s sec' % (t5-t4))
 
         # contamination plots
         plot_list.extend(self.add_contamination_plot())
@@ -1674,7 +1684,6 @@ class SDSpectralImageDisplay(SDImageDisplay):
         Returns:
             List of Plot instances.
         """
-        context = self.inputs.context
         plotfile = os.path.join(self.stage_dir, self.inputs.contamination_plot)
         if self.inputs.antenna == 'COMBINED' and os.path.exists(plotfile):
             parameters = {}
@@ -1710,7 +1719,7 @@ def SDImageDisplayFactory(mode: str) -> Union[SDChannelAveragedImageDisplay, SDS
     Returns:
         Appropriate display class
     """
-    LOG.debug('MODE=%s'%(mode))
+    LOG.debug('MODE=%s' % (mode))
     if mode == 'TP':
         return SDChannelAveragedImageDisplay
 
