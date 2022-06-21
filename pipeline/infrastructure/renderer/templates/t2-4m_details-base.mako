@@ -196,9 +196,9 @@ if representative_score is not None and representative_score.score is not None:
     elif rendererutils.SCORE_THRESHOLD_SUBOPTIMAL < representative_score.score <= 1.0:
         representative_score_render_class = 'success alert-success'
     else:
-        representative_score_render_class = None
+        representative_score_render_class = 'panel panel-default'
 else:
-    representative_score_render_class = None
+    representative_score_render_class = 'panel panel-default'
 
 error_scores = rendererutils.scores_in_range(weblog_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
 if len(error_scores) > 0:
