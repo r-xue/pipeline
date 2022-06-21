@@ -280,7 +280,7 @@ class SDMomentMapDisplay(SDImageDisplay):
         performing generic initialization defined in the super class.
         """
         if os.path.exists(self.inputs.moment_imagename):
-            os.system('rm -rf %s' % (self.inputs.moment_imagename))
+            status = casa_tools.image.removefile(self.inputs.moment_imagename) 
         job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.inputs.MAP_MOMENT], outfile=self.inputs.moment_imagename)
         job.execute(dry_run=False)
         assert os.path.exists(self.inputs.moment_imagename)
