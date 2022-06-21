@@ -33,7 +33,6 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Just put the plots into the right place inline here -- eventually move out to their own function
         import pipeline.infrastructure.renderer.logger as logger
-        import glob, re
         
         # Make a list of the plots to be plotted 
         summary_plots = collections.defaultdict(list)
@@ -66,11 +65,19 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         summary_plots[vis_html].append(plot)
                     else:
                        LOG.debug(f"Failed to copy {specplot_path} to {weblog_dir}")
+        
+        # If the results were applied, highlight table entries in blue, otherwise red
+        # this just updates the text describing the highlight color. 
+        if result.inputs['apply']:
+            highlight_color = 'blue'
+        else: 
+            highlight_color = 'red'
 
         mako_context.update({
             'table_rows': table_rows,
             'weblog_dir': weblog_dir,
-            'summary_plots': summary_plots
+            'summary_plots': summary_plots,
+            'highlight_color': highlight_color
         })
 
 TR = collections.namedtuple('TR', 'vis source spw max pdf')
