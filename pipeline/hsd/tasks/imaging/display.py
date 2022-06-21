@@ -643,12 +643,10 @@ class SDSparseMapDisplay(SDImageDisplay):
                     position_ref = ms.antennas[antenna_id].position
 
                     if frame == 'REST':
-                        mse = casa_tools.ms
-                        mse.open( ms.name )
-                        # use 'SOURCE' to get 'REST', Unit of atm_freq is GHz
-                        v_to   = mse.cvelfreqs( spwids=[spw_id], outframe='SOURCE' ) / 1.0E+9
-                        v_from = mse.cvelfreqs( spwids=[spw_id], outframe='TOPO'   ) / 1.0E+9
-                        mse.done()
+                        with casa_tools.MSReader( ms.name ) as mse:
+                            # use 'SOURCE' to get 'REST', Unit of atm_freq is GHz
+                            v_to   = mse.cvelfreqs( spwids=[spw_id], outframe='SOURCE' ) / 1.0E+9
+                            v_from = mse.cvelfreqs( spwids=[spw_id], outframe='TOPO'   ) / 1.0E+9
                         _frameconv = interpolate.interp1d( v_from, v_to,
                                                            kind='linear',
                                                            bounds_error=False,
