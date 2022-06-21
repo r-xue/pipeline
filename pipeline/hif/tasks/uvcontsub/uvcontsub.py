@@ -8,6 +8,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.domain import DataType
 from pipeline.infrastructure import task_registry
 
@@ -51,7 +52,7 @@ class UVcontSub(applycal.Applycal):
         result.applycal_result = applycal_result
 
         # Create line MS using subtracted data from the corrected column
-        outputvis = inputs.vis.replace('_cont', '_line')
+        outputvis = inputs.vis.replace('_targets', '_targets_line')
         # Check if it already exists and remove it
         if os.path.exists(outputvis):
             LOG.info('Removing {} from disk'.format(outputvis))
@@ -67,6 +68,13 @@ class UVcontSub(applycal.Applycal):
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, outputvis)
 
+        # Delete temporary corrected data column in science targets MS
+        LOG.info(f'Removing temporary corrected data column in science targets MS {inputs.vis}')
+        tbTool = casa_tools.table
+        tbTool.open(inputs.vis, nomodify=False)
+        tbTool.removecols('CORRECTED_DATA')
+        tbTool.done()
+
         result.vis = inputs.vis
         result.outputvis = outputvis
 
@@ -77,7 +85,7 @@ class UVcontSub(applycal.Applycal):
         if not result.mitigation_error:
             # Check for existence of the output vis. 
             if not os.path.exists(result.outputvis):
-                LOG.debug('Error creating target line MS %s' % (os.path.basename(result.outputvis)))
+                LOG.debug('Error creating science targets line MS %s' % (os.path.basename(result.outputvis)))
                 return result
 
             # Import the new measurement set.
@@ -99,7 +107,7 @@ class UVcontSub(applycal.Applycal):
             vis_source = os.path.join(vis, xml_filename)
             outputvis_target_line = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):
-                LOG.info('Copying %s from original MS to target line MS', xml_filename)
+                LOG.info('Copying %s from original MS to science targets line MS', xml_filename)
                 LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_line)
                 shutil.copyfile(vis_source, outputvis_target_line)
 
@@ -116,6 +124,8 @@ class UVcontSubResults(basetask.Results):
         self.vis = None
         self.outputvis = None
         self.line_mses = []
+        self.applied = set()
+        self.applied.update(applied)
 
     def merge_with_context(self, context):
         # Check for an output vis
@@ -165,6 +175,20 @@ class UVcontSubResults(basetask.Results):
             with open(outfile, 'w') as f:
                 f.writelines(template_text)
 
+    def __repr__(self):
+        for caltable in self.applied:
+            s = 'UVcontSubResults:\n'
+            if isinstance(caltable.gaintable, list):
+                basenames = [os.path.basename(x) for x in caltable.gaintable]
+                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
+                    spw=caltable.spw, vis=os.path.basename(caltable.vis),
+                    name=','.join(basenames))
+            else:
+                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
+                    name=caltable.gaintable, spw=caltable.spw,
+                    vis=os.path.basename(caltable.vis))
+        return s
+
 FLAGGING_TEMPLATE_HEADER = '''#
 # ___TITLESTR___
 #
@@ -176,57 +200,3 @@ FLAGGING_TEMPLATE_HEADER = '''#
 # mode='manual' antenna='DV07' timerange='2013/01/31/08:09:55.248~2013/01/31/08:10:01.296' reason='quack'
 #
 '''
-
-# May need this full class in the future when keeping records of
-# which source/spw combination actually did have valid uvcontsub
-# results (cf. "applied" parameter below). Note that the template
-# below is quite old and probably needs work to be used.
-#
-#
-#class UVcontSubResults(basetask.Results):
-#    """
-#    UVcontSubResults is the results class for the pipeline UVcontSub task.
-#    """
-#
-#    def __init__(self, applied=[]):
-#        """
-#        Construct and return a new UVContSubResults.
-#
-#        The resulting object should be initialized with a list of
-#        CalibrationTables corresponding to the caltables applied by this task.
-#
-#        :param applied: caltables applied by this task
-#        :type applied: list of :class:`~pipeline.domain.caltable.CalibrationTable`
-#        """
-#        super(UVcontSubResults, self).__init__()
-#        self.applied = set()
-#        self.applied.update(applied)
-#
-#    def merge_with_context(self, context):
-#        """
-#        Merges these results with the given context by examining the context
-#        and marking any applied caltables, so removing them from subsequent
-#        on-the-fly calibration calculations.
-#
-#        See :method:`~pipeline.Results.merge_with_context`
-#        """
-#        if not self.applied:
-#            LOG.error('No results to merge')
-#
-#        for calapp in self.applied:
-#            LOG.trace('Marking %s as applied' % calapp.as_applycal())
-#            context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
-#
-#    def __repr__(self):
-#        for caltable in self.applied:
-#            s = 'UVcontSubResults:\n'
-#            if isinstance(caltable.gaintable, list):
-#                basenames = [os.path.basename(x) for x in caltable.gaintable]
-#                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
-#                    spw=caltable.spw, vis=os.path.basename(caltable.vis),
-#                    name=','.join(basenames))
-#            else:
-#                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
-#                    name=caltable.gaintable, spw=caltable.spw,
-#                    vis=os.path.basename(caltable.vis))
-#        return s
