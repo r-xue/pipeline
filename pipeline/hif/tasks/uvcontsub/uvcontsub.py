@@ -48,7 +48,7 @@ class UVcontSub(applycal.Applycal):
                 return result
 
         applycal_result = super(UVcontSub, self).prepare()
-        result = UVcontSubResults()
+        result = UVcontSubResults(applycal_result.applied)
         result.applycal_result = applycal_result
 
         # Create line MS using subtracted data from the corrected column
@@ -176,6 +176,7 @@ class UVcontSubResults(basetask.Results):
                 f.writelines(template_text)
 
     def __repr__(self):
+        s = ''
         for caltable in self.applied:
             s = 'UVcontSubResults:\n'
             if isinstance(caltable.gaintable, list):
