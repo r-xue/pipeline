@@ -113,6 +113,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                      skipped. In that case the task determines this
                      automatically by inspecting the existing intents
                      in the dataset.
+
+                     Usually, a single datacolumns dictionary is used
+                     for all datasets. If necessary, one can define a 
+                     list of dictionaries, one for each EB, with
+                     different setups per EB.
         </description>
         <value>{}</value>
     </param>
