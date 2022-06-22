@@ -27,10 +27,10 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class ImportDataInputs(vdp.StandardInputs):
-    asimaging = vdp.VisDependentProperty(default=False)
     asis = vdp.VisDependentProperty(default='')
     bdfflags = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='automatic')
+    datacolumns = vdp.VisDependentProperty(default=False)
     lazy = vdp.VisDependentProperty(default=False)
     nocopy = vdp.VisDependentProperty(default=False)
     ocorr_mode = vdp.VisDependentProperty(default='ca')
