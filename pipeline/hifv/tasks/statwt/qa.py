@@ -29,6 +29,7 @@ class StatwtQAHandler(pqa.QAPlugin):
 
         result.qa.pool.extend(scores)
 
+
 class StatwtListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing StatwtResults.

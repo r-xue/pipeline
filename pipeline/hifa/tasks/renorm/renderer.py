@@ -6,7 +6,6 @@ import xml.etree.ElementTree as ET
 
 from pipeline.infrastructure.utils import weblog
 
-
 import pipeline.h.tasks.common.displays.image as image
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
@@ -34,14 +33,14 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
          mako_context['alerts_info']) = make_renorm_table(pipeline_context, result, weblog_dir)
         
         # Make a list of the plots to be plotted 
-        summary_plots = make_renorm_plots(pipeline_context, result, weblog_dir)
+        summary_plots = make_renorm_plots(result, weblog_dir)
        
         # If the results were applied (apply=T), highlight table entries in blue, otherwise red.
         # This variable just updates the text describing the highlight color (PIPE-1264) in the table description.
         if result.inputs['apply']:
             table_color_text = 'blue. Renormalization has been applied as detailed in the task inputs.'
         else: 
-            table_color_text = 'red. Renormalization has not been applied.'
+            table_color_text = 'red. Renormalization has <i>not</i> been applied.'
 
         mako_context.update({
             'table_rows': table_rows,
@@ -53,8 +52,6 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 TR = collections.namedtuple('TR', 'vis source spw max pdf')
 
 def make_renorm_table(context, results, weblog_dir):
-    tables = collections.defaultdict(list)
-
     # Will hold all the input and output MS(s)
     rows = []
     alert = []
@@ -91,8 +88,11 @@ def make_renorm_table(context, results, weblog_dir):
 
                 specplot = spw_stats.get('spec_plot')
 
+                # Add links from the MS and SPW in the table to the relevant group of plots, or 
+                # specific plot, respectively. See PIPE-1264
                 vis_html = f'<a href="#{vis}">{vis}</a>'
                 spw_html = f'<a href="#{specplot}">{spw}</a>'
+
                 tr = TR(vis_html, source, spw_html, maxrn_field, pdf_path_link)
                 rows.append(tr)
     
@@ -108,6 +108,7 @@ def make_renorm_table(context, results, weblog_dir):
                 for col in (-3, -2, -1):
                     cell = ET.fromstring(merged_rows[row][col])
                     innermost_child = getchild(cell)
+                    # If the results are applied, make the table entries blue, if not, red
                     if apply_results:
                         innermost_child.set('class','info alert-info') 
                     else:
@@ -123,7 +124,7 @@ def getchild(el):
         return el
 
 
-def make_renorm_plots(context, results, weblog_dir):
+def make_renorm_plots(results, weblog_dir):
     summary_plots = collections.defaultdict(list)
     for result in results:
         vis = os.path.basename(result.inputs['vis'])
