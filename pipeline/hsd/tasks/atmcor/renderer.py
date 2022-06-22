@@ -1,4 +1,5 @@
 """Renderer for hsd_atmcor stage."""
+import collections
 import itertools
 import os
 
@@ -57,26 +58,27 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
             vis = r.inputs['vis']
             atmvis = r.atmcor_ms_name
             ms = pipeline_context.observing_run.get_ms(os.path.basename(vis))
-            antenna_ids = [int(a.id) for a in ms.get_antenna()]
-            field_ids = [int(f.id) for f in ms.get_fields(intent='TARGET')]
-            science_spws = [int(s.id) for s in ms.get_spectral_windows(science_windows_only=True)]
+            antenna_ids = sorted([int(a.id) for a in ms.get_antenna()])
+            field_ids = sorted([int(f.id) for f in ms.get_fields(intent='TARGET')])
+            science_spws = sorted([int(s.id) for s in ms.get_spectral_windows(science_windows_only=True)])
             spw_selection = r.inputs['spw']
             if len(spw_selection) > 0:
                 selected_spws = set(map(int, spw_selection.split(','))).intersection(science_spws)
             else:
                 selected_spws = science_spws
+            selected_spws = sorted(selected_spws)
 
             plotter = PlotmsRealVsFreqPlotter(
                 ms=ms, atmvis=atmvis,
                 atmtype=r.inputs['atmtype'], output_dir=stage_dir
             )
-            summaries = {}
+            summaries = collections.OrderedDict()
             for field_id, spw_id in itertools.product(field_ids, selected_spws):
                 LOG.info(f'field {field_id} spw {spw_id}')
                 spw = str(spw_id)
                 plotter.set_field(field_id)
                 field_name = plotter.original_field_name
-                summaries.setdefault(field_name, {})
+                summaries.setdefault(field_name, collections.OrderedDict())
                 plotter.set_spw(spw)
                 # reset antenna selection
                 plotter.set_antenna()
