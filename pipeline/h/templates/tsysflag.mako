@@ -296,7 +296,7 @@ def flagcmd_file_data(caltable, flagcmd_file):
 	        <td><a class="replace-pre" href="${relpath_reports[0]}" 
                    data-title="Flagging Commands">Flag commands file</a></td>
             <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath_reports[0]))}</td>
-	        <td><a class="replace-pre"
+	        <td><a class="replace-pre" flaggingreport="true"
                    href="${relpath_reports[1]}" data-title="Flagging report">
                    Flagging report</a></td>
 	    </tr>
