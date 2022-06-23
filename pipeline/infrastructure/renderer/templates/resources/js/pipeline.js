@@ -1092,7 +1092,7 @@ var UTILS = (function() {
                 pipeline.history.pushState();
             }];
 
-            if (typeof $(this).attr('flaggingreport') !== 'undefined') {
+            if (typeof $(this).attr('no-escape-html') !== 'undefined') {
                 pipeline.detailsframe.load(this.href, onSuccess);
             } else {
                 pipeline.detailsframe.load(this.href, onSuccess, onGet);
