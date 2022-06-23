@@ -237,7 +237,7 @@ if len(optimal_scores) > 0:
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">
-            <h4 class="panel-heading-compact ${representative_score_render_class}">
+            <h5 class="panel-heading-compact ${representative_score_render_class}">
                 % if num_scores > 1:
                     % if representative_score.score is not None:
                         QA Score: &nbsp; ${'%0.2f' % representative_score.score} &nbsp; ${representative_score.longmsg} &nbsp;
@@ -261,7 +261,7 @@ if len(optimal_scores) > 0:
                         </tr>
                     % endif
                 % endif
-            </h4>
+            </h5>
         </div>
         % if num_scores > 1:
         <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
@@ -320,7 +320,7 @@ if len(optimal_scores) > 0:
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree">
-            <h4 class="panel-heading-compact ${most_severe_render_class}">
+            <h5 class="panel-heading-compact ${most_severe_render_class}">
                 % if len(notification_trs) > 1:
                     Most Severe Notification: &nbsp; ${notification_trs[0]} &nbsp;
                     <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -331,7 +331,7 @@ if len(optimal_scores) > 0:
                     Notification: &nbsp; ${notification_trs[0]}
                     </tr>
                 % endif
-            </h4>
+            </h5>
         </div>
         % if len(notification_trs) > 1:
         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
