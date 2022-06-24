@@ -402,10 +402,13 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         result.qa_wvr.gaintable_wvr = wvr_caltable
 
         LOG.info('qa: calculate ratio no-WVR phase RMS / with-WVR phase rms')
-        wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
-                               wvr_caltable, result.qa_wvr, qa_intent)
+        PHnoisy, BPnoisy = wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
+                                                  wvr_caltable, result.qa_wvr, qa_intent)
+        result.PHnoisy = PHnoisy
+        result.BPnoisy = BPnoisy
 
-        wvrg_qa.calculate_qa_numbers(result.qa_wvr)
+        suggest_remcloud = wvrg_qa.calculate_qa_numbers(result.qa_wvr, result.wvr_infos, PHnoisy, BPnoisy)
+        result.suggest_remcloud = suggest_remcloud
 
         # if the qa score indicates that applying the wvrg file will
         # make things worse then remove it from the results so that
