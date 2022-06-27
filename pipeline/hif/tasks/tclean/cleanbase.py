@@ -1,4 +1,5 @@
 import os
+import traceback
 
 import numpy as np
 
@@ -65,6 +66,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     restoringbeam = vdp.VisDependentProperty(default='common')
     robust = vdp.VisDependentProperty(default=-999.0)
     savemodel = vdp.VisDependentProperty(default='none')
+    startmodel = vdp.VisDependentProperty(default='')
     scales = vdp.VisDependentProperty(default=None)
     sensitivity = vdp.VisDependentProperty(default=None)
     spwsel_all_cont = vdp.VisDependentProperty(default=None)
@@ -123,7 +125,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
-                 robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
+                 robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
@@ -144,6 +146,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.spwsel_all_cont = spwsel_all_cont
         self.uvrange = uvrange
         self.savemodel = savemodel
+        self.startmodel = startmodel
         self.orig_specmode = orig_specmode
         self.specmode = specmode
         self.gridder = gridder
@@ -203,7 +206,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.rotatepastep = rotatepastep
         self.heuristics = heuristics
         self.calcpsf = calcpsf
-        self.calcres = calcres
+        self.calcres = calcres        
 
 
 class CleanBase(basetask.StandardTaskTemplate):
@@ -249,7 +252,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         except Exception as e:
             LOG.error('%s/%s/spw%s clean error: %s' % (inputs.field, inputs.intent, inputs.spw, str(e)))
             result.error = '%s/%s/spw%s clean error: %s' % (inputs.field, inputs.intent, inputs.spw, str(e))
-
+            LOG.info(traceback.format_exc())
         return result
 
     def analyse(self, result):
@@ -329,6 +332,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'restoringbeam': inputs.restoringbeam,
             'uvrange':       inputs.uvrange,
             'savemodel':     inputs.savemodel,
+            'startmodel':    inputs.startmodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
             'parallel':     parallel,
@@ -536,6 +540,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
         tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
         tclean_job_parameters['pointingoffsetsigdev'] = inputs.heuristics.pointingoffsetsigdev()
+        tclean_job_parameters['psfcutoff'] = inputs.heuristics.psfcutoff()
 
         # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
@@ -555,9 +560,22 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_iterdone = tclean_result['iterdone']
             tclean_niter = tclean_result['niter']
             tclean_nmajordone = tclean_result['nmajordone']
+
+            # Note: The return structure of tclean_result['summaryminor'] will change after CAS-6692 and
+            # the code block below is subjected to change after CASA ver >= 6.4.4.
+            # Before CAS-6692, for the tclean_result['summaryminor'] 2D array with 6 rows,
+            #   0 : iteration number
+            #   1 : peak residual
+            #   2 : model flux
+            #   3 : cyclethreshold
+            #   4 : deconvolver id (for multi-field)
+            #   5 : subimage id (channel id, stokes id..)
+            # see https://open-jira.nrao.edu/browse/CAS-6692?focusedCommentId=60810&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-60810
+
             tclean_nminordone = tclean_result['summaryminor'][0, :]
             tclean_peakresidual = tclean_result['summaryminor'][1, :]
             tclean_totalflux = tclean_result['summaryminor'][2, :]
+            tclean_planeid = tclean_result['summaryminor'][5, :]
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
 
@@ -578,6 +596,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             result.set_nminordone_array(iter, tclean_nminordone)
             result.set_peakresidual_array(iter, tclean_peakresidual)
             result.set_totalflux_array(iter, tclean_totalflux)
+            result.set_planeid_array(iter, tclean_planeid)            
 
             if tclean_stopcode in [5, 6]:
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
@@ -650,8 +669,52 @@ class CleanBase(basetask.StandardTaskTemplate):
         result.set_sensitivity(inputs.sensitivity)
         result.set_imaging_params(iter, tclean_job_parameters)
 
+        # This operation is used as a workaround for CAS-13401 and can be removed after the CAS ticket is resolved.
+        if tclean_job_parameters['stokes'] != 'I':
+            self._copy_restoringbeam_from_psf(tclean_job_parameters['imagename'])
+
         return result
 
+    def _copy_restoringbeam_from_psf(self, imagename):
+        """Copy the per-plane beam set from .psf image to .image/.residual.
+        
+        Note: this is a short-term workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
+              the per-plane restoring beam information into the residual and restored images.
+        """
+        bm_src = '.psf'
+        bm_src_ext_try = ['', '.tt0']
+        bm_dst = ['.image', '.residual', '.image.pbcor']
+        bm_dst_ext = ['', '.tt0', '.tt1', '.tt2']
+
+        is_src_present = False
+        for bm_src_ext in bm_src_ext_try:
+            if os.path.exists(imagename+bm_src+bm_src_ext):
+                is_src_present = True
+                break
+
+        if not is_src_present:
+            LOG.error('The restoring beam information source image is not found.')
+        else:
+            LOG.info(
+                f'Try to copy the restoring beam set from {imagename+bm_src+bm_src_ext} to the corresponding image products')
+        with casa_tools.ImageReader(imagename+bm_src+bm_src_ext) as bm_src_im:
+            src_shape = bm_src_im.shape()
+            LOG.info('The restoring beam information source image ')
+            for bm_dst0 in bm_dst:
+                for bm_ext0 in bm_dst_ext:
+                    if os.path.exists(imagename+bm_dst0+bm_ext0):
+                        with casa_tools.ImageReader(imagename+bm_dst0+bm_ext0) as bm_dst_im:
+                            LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
+                            dst_shape = bm_dst_im.shape()
+                            if (dst_shape == src_shape).all():
+                                for idx_c in range(src_shape[3]):
+                                    for idx_p in range(src_shape[2]):
+                                        LOG.debug(f'working on idx_chan={idx_c}, idx_pol={idx_p}')
+                                        bm = bm_src_im.restoringbeam(channel=idx_c, polarization=idx_p)
+                                        bm_dst_im.setrestoringbeam(beam=bm, channel=idx_c, polarization=idx_p)
+                            else:
+                                LOG.warning(
+                                    'The restoring beam information source and destination images have different shapes. We will not copy the per-plane beam set.')
 
 def rename_image(old_name, new_name, extensions=['']):
     """

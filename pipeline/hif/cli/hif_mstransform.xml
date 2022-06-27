@@ -32,7 +32,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>The list of output transformed MeasurementSets to be used for
                  imaging. The output list must be the same length as the input
                  list. The default output name defaults to
-                 &lt;msrootname&gt;_cont.ms
+                 &lt;msrootname&gt;_targets.ms
 
                  Examples: 'ngc5921.ms',
                            ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

@@ -876,23 +876,27 @@ class SingleDishPointingChart(object):
     def __del__(self):
         del self.datatable
 
-    def __get_field(self, field_id: Optional[int]):
+    def __get_field(self, field_id: Optional[int], intent: Optional[str] = None):
         """Get field domain object.
 
         If field_id is not given, None is returned.
 
         Args:
             field_id: Field ID
+            intent: Field intent
 
         Returns:
             Field: Field domain object or None.
         """
         if field_id is not None:
-            fields = self.ms.get_fields(field_id)
-            assert len(fields) == 1
-            field = fields[0]
-            LOG.debug('found field domain for %s'%(field_id))
-            return field
+            fields = self.ms.get_fields(field_id, intent=intent)
+            assert len(fields) < 2
+            if len(fields) == 1:
+                field = fields[0]
+                LOG.debug('found field domain for %s'%(field_id))
+                return field
+            else:
+                return None
         else:
             return None
 
@@ -916,10 +920,19 @@ class SingleDishPointingChart(object):
             Optional[Plot]: A Plot object.
         """
         self.antenna = antenna
-        self.target_field = self.__get_field(target_field_id)
-        self.reference_field = self.__get_field(reference_field_id)
         self.target_only = target_only
+        self.target_field = self.__get_field(target_field_id, intent='TARGET')
+        if self.target_only:
+            self.reference_field = None
+        else:
+            self.reference_field = self.__get_field(reference_field_id, intent='REFERENCE')
+
+            # do not produce target+reference plot if no reference field exists
+            if self.reference_field is None:
+                return None
+
         self.ofs_coord = ofs_coord
+
         self.figfile = self._get_figfile()
 
         if revise_plot is False and os.path.exists(self.figfile):
@@ -949,26 +962,30 @@ class SingleDishPointingChart(object):
         obs_pattern = ms.observing_pattern[antenna_id][spw_id]
         antenna_ids = self.datatable.getcol('ANTENNA')
         spw_ids = self.datatable.getcol('IF')
-        if self.target_field is None or self.reference_field is None:
-            # plot pointings regardless of field
-            if self.target_only == True:
+        if self.target_only:
+            # target only
+            if self.target_field is None:
+                # plot pointings regardless of field
                 srctypes = self.datatable.getcol('SRCTYPE')
                 func = lambda j, k, l: j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids, srctypes)
             else:
-                func = lambda j, k: j == antenna_id and k == spw_id
-                vfunc = np.vectorize(func)
-                dt_rows = vfunc(antenna_ids, spw_ids)
-        else:
-            field_ids = self.datatable.getcol('FIELD_ID')
-            if self.target_only == True:
+                field_ids = self.datatable.getcol('FIELD_ID')
                 srctypes = self.datatable.getcol('SRCTYPE')
                 field_id = [self.target_field.id]
                 func = lambda f, j, k, l: f in field_id and j == antenna_id and k == spw_id and l == 0
                 vfunc = np.vectorize(func)
                 dt_rows = vfunc(field_ids, antenna_ids, spw_ids, srctypes)
+        else:
+            # whole pointings including reference fields
+            if self.target_field is None or self.reference_field is None:
+                # plot pointings regardless of field
+                func = lambda j, k: j == antenna_id and k == spw_id
+                vfunc = np.vectorize(func)
+                dt_rows = vfunc(antenna_ids, spw_ids)
             else:
+                field_ids = self.datatable.getcol('FIELD_ID')
                 field_id = [self.target_field.id, self.reference_field.id]
                 func = lambda f, j, k: f in field_id and j == antenna_id and k == spw_id
                 vfunc = np.vectorize(func)
@@ -1026,7 +1043,8 @@ class SingleDishPointingChart(object):
         session_part = self.ms.session
         ms_part = self.ms.basename
         antenna_part = self.antenna.name
-        if self.target_field is None or self.reference_field is None:
+        if self.target_field is None or \
+            (self.reference_field is None and not self.target_only):
             identifier = antenna_part
         else:
             clean_name = self.target_field.clean_name
@@ -1053,7 +1071,8 @@ class SingleDishPointingChart(object):
 
         """
         intent = 'target' if self.target_only == True else 'target,reference'
-        if self.target_field is None or self.reference_field is None:
+        if self.target_field is None or \
+            (self.reference_field is None and not self.target_only):
             field_name = ''
         else:
             if self.target_only or self.target_field.name == self.reference_field.name:

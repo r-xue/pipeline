@@ -1,3 +1,5 @@
+import os
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.extern.findContinuum import findContinuum
@@ -21,7 +23,7 @@ class FindContHeuristics(object):
             return ['NONE'], 'none'
 
         # Run continuum finder on cube
-        channel_selection, png_name, aggregate_bw, all_continuum, warning_strings = \
+        channel_selection, png_name, aggregate_bw, all_continuum, warning_strings, joint_mask_name = \
             findContinuum(img=dirty_cube,
                           pbcube=pb_cube,
                           psfcube=psf_cube,
@@ -52,4 +54,4 @@ class FindContHeuristics(object):
                 refer = 'LSRK'
             frequency_ranges_GHz.extend([{'range': item, 'refer': refer} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
 
-        return frequency_ranges_GHz, png_name, single_range_channel_fraction, warning_strings
+        return frequency_ranges_GHz, png_name, single_range_channel_fraction, warning_strings, os.path.basename(joint_mask_name)

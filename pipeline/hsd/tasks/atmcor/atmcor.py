@@ -279,7 +279,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         # intent should include OFF_SOURCE data (for validation purpose)
         # TODO: remove it after PIPE-1062 is implemented
-        args['intent'] = 'OBSERVE_TARGET#ON_SOURCE,OBSERVE_TARGET#OFF_SOURCE'
+        args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
 
         return args
 
