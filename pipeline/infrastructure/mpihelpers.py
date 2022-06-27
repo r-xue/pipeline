@@ -167,7 +167,7 @@ class Tier0PipelineTask(Executable):
 
 
 class Tier0JobRequest(Executable):
-    def __init__(self, creator_fn, job_args):
+    def __init__(self, creator_fn, job_args, executor=None):
         """
         Create a new Tier0JobRequest representing a JobRequest to be executed
         on an MPI server.
@@ -177,10 +177,14 @@ class Tier0JobRequest(Executable):
         """
         self.__creator_fn = creator_fn
         self.__job_args = job_args
+        self.__executor = executor
 
     def get_executable(self):
         job_request = self.__creator_fn(**self.__job_args)
-        return lambda: job_request.execute(dry_run=False)
+        if self.__executor:
+            return lambda: self.__executor.execute(job_request)
+        else:
+            return lambda: job_request.execute(dry_run=False)
 
     def __str__(self):
         return 'Tier0JobRequest({}, {})'.format(self.__creator_fn, self.__job_args)

@@ -809,7 +809,6 @@ class Executor(object):
         self._cmdfile = os.path.join(context.report_dir,
                                      context.logs['casa_commands'])
         self._is_mpi_server = MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
-        self._cmdfile_per_rank = self._cmdfile+f'.rank{MPIEnvironment.mpi_processor_rank}'
 
     @capture_log
     def execute(self, job, merge=False, **kwargs):
@@ -862,8 +861,9 @@ class Executor(object):
                                 subsequent_indent=indent,
                                 width=80,
                                 break_long_words=False)
-        if self._is_mpi_server:
-            cmdfile_name = self._cmdfile_per_rank
+
+        if MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client:
+            cmdfile_name = self._cmdfile+f'.rank{MPIEnvironment.mpi_processor_rank}'
         else:
             cmdfile_name = self._cmdfile
         with open(cmdfile_name, 'a') as cmdfile:

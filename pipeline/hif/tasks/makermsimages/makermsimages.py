@@ -86,10 +86,11 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 LOG.info(f"Generating RMS image {rmsimagename} from {imagename}")
                 job_to_execute = casa_tasks.imdev(**self._get_imdev_args(imagename))
                 if tier0_imdev_enabled and mpihelpers.is_mpi_ready():
-                    executable = mpihelpers.Tier0JobRequest(casa_tasks.imdev, job_to_execute.kw)
+                    executable = mpihelpers.Tier0JobRequest(
+                        casa_tasks.imdev, job_to_execute.kw, executor=self._executor)
                     queued_job = mpihelpers.AsyncTask(executable)
                 else:
-                    queued_job = mpihelpers.SyncTask(job_to_execute)
+                    queued_job = mpihelpers.SyncTask(job_to_execute, self._executor)
                 queued_job_rmsimagename.append((queued_job, rmsimagename))
 
         for queue_job, rmsimagename in queued_job_rmsimagename:
