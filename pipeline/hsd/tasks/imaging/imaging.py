@@ -190,7 +190,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         # override attributes for image item
         # the following attribute is currently hard-coded
-        sorucetype = 'TARGET'
+        sourcetype = 'TARGET'
 
         _locals = locals()
         image_keys = ('sourcename', 'spwlist', 'antenna', 'ant_name', 'specmode', 'sourcetype')
@@ -229,7 +229,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      nfield=1,
                                      type='singledish',
                                      iter=1,  # nominal
-                                     intent='TARGET',
+                                     intent=sourcetype,
                                      specmode=specmode,
                                      is_per_eb=False,
                                      context=context)
