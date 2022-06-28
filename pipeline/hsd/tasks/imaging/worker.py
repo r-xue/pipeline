@@ -262,10 +262,10 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
     def vis(self) -> List[str]:
-        """Return the name of input file.
+        """Return the list of input file names
 
         Returns:
-            the name of input file
+            list of input file names
         """
         return self.infiles
 
