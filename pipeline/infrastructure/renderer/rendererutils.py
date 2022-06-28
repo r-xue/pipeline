@@ -251,7 +251,7 @@ def group_plots(data, axes):
     return _build_rows([], data, keyfuncs)
 
 
-def _build_rows(rows, data, keyfuncs, axis=''):
+def _build_rows(rows, data, keyfuncs, axis: str=''):
     # if this is a leaf, i.e., we are in the lowest level grouping and there's
     # nothing further to group by, add a new row
     if not keyfuncs:

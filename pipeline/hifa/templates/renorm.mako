@@ -65,6 +65,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
                   data_field="${True}"
                   break_rows_by="field"
                   sort_row_by="field,spw"
+                  separate_rows_by='thick-line'
                   show_row_break_value="${True}">
 
 

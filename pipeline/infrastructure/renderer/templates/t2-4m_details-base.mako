@@ -63,14 +63,14 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 
         % for idx_row, (group_name, plots_in_row) in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
 
-        % if show_row_break_value: 
-            <h5>${group_name}</h5>
-        % endif
-
         % if idx_row!=0:
             % if separate_rows_by=='thick-line':
                 <hr style="height:2px;border-width:0;color:gray;background-color:gray">
             % endif
+        % endif
+
+        % if show_row_break_value: 
+            <h5>${group_name}</h5>
         % endif
 
         <div class="row">
@@ -88,10 +88,15 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
                 <%
                     fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)
                     thumbnail_relpath = os.path.relpath(plot.thumbnail, pcontext.report_dir)
+                    link = plot.parameters.get('link', '')
+                    if link != '':
+                        id_link = 'id="{}"'.format(link)
+                    else: 
+                        id_link = ''
                 %>
 
                 <div class="thumbnail">
-                    <a id="${plot.parameters['link']}" href="${fullsize_relpath}"
+                    <a ${id_link} href="${fullsize_relpath}"
                        % if rel_fn:
                            data-fancybox="${rel_fn(plot)}"
                        % elif relurl:

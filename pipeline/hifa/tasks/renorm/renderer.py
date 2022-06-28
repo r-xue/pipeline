@@ -2,6 +2,7 @@ import os
 import collections
 import shutil
 import re
+from typing import Dict, List
 import xml.etree.ElementTree as ET
 
 from pipeline.infrastructure.utils import weblog
@@ -124,7 +125,17 @@ def getchild(el):
         return el
 
 
-def make_renorm_plots(results, weblog_dir):
+def make_renorm_plots(results, weblog_dir: str) -> Dict[str, List[logger.Plot]]:
+    """
+    Create and return a list of renorm plots. 
+
+    Args:
+        results: the renormalization results. 
+        weblog_dir: the weblog directory
+    Returns:
+        summary_plots: dictionary with MS with some additional html 
+                    as the keys and lists of plot objects as the values
+    """
     summary_plots = collections.defaultdict(list)
     for result in results:
         vis = os.path.basename(result.inputs['vis'])
