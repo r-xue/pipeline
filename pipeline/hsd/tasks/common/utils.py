@@ -66,8 +66,8 @@ def convert_spw_virtual2real(context, spw_in: str,
                              mses: List[MeasurementSet] = []) -> dict:
     """Convert virtual spw selection into real spw selection.
 
-    Real spw selection can be different among MS so that the
-    method returns dictionary contains selections per MS.
+    Real spw selection can be different among MSes. This method returns
+    the dictionary of real spw selections for each MS.
 
     Args:
         context: pipeline context
