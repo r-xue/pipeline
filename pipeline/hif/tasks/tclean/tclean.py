@@ -963,7 +963,7 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def _replace_psf(self, origin: str, target: str, clear_origin: bool = False):
-        """Replace multi-term CASA image
+        """Replace multi-term CASA image.
 
         The <origin>.tt0, <origin>.tt1 and <origin>.tt2 images are copied or moved
         to <target>.tt0, <target>.tt1 and <target>.tt2 images.
@@ -972,12 +972,16 @@ class Tclean(cleanbase.CleanBase):
         they will be deleted.
         """
         for tt in ['tt0', 'tt1', 'tt2']:
-            LOG.info("Copying {o}.{tt} to {t}.{tt}".format(o=origin, tt=tt, t=target))
-            shutil.rmtree('{}.{}'.format(target, tt), ignore_errors=True)
-            shutil.copytree('{}.{}'.format(origin, tt), '{}.{}'.format(target, tt))
+            target_psf = f'{target}.{tt}'
+            origin_psf = f'{origin}.{tt}'
+            if os.path.isdir(target_psf):
+                self._executor.execute(casa_tasks.rmtree(target_psf, ignore_errors=False))
             if clear_origin:
-                LOG.info("Deleting {}.{}".format(origin, tt))
-                shutil.rmtree('{}.{}'.format(origin, tt))
+                LOG.info(f'Moving {origin_psf} to {target_psf}')
+                self._executor.execute(casa_tasks.move(origin_psf, target_psf))
+            else:
+                LOG.info(f'Copying {origin_psf} to {target_psf}')
+                self._executor.execute(casa_tasks.copytree(origin_psf, target_psf))
 
     def _do_iterative_imaging(self, sequence_manager):
 
