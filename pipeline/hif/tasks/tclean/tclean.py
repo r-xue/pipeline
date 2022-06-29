@@ -639,7 +639,7 @@ class Tclean(cleanbase.CleanBase):
                 (self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT') or self.image_heuristics.imaging_mode.startswith('VLASS-SE-CUBE')):
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
-                                                          sensitivity=sensitivity, niter=inputs.niter)
+                                                          sensitivity=sensitivity, niter=inputs.niter, executor=self._executor)
 
         # Manually supplied mask
         elif inputs.hm_masking == 'manual':
@@ -847,7 +847,7 @@ class Tclean(cleanbase.CleanBase):
                 # PIPE-1401: copy input user masks (vlass-se-cont tier1/tier2) for imaging of each spw group.
                 # Because various metadata (e.g., spw list) are written into headers of mask images and later used by the
                 # weblog display/renderer class, we have to differentiate in-use mask files of individual spw groups, even
-                # they are identifcal. Here, we make mask copy per clean_target (i.e. a spw group of VLASS-SE-CUBE.)
+                # they are identical. Here, we make mask copy per clean_target (i.e. a spw group of VLASS-SE-CUBE.)
                 # under its distinct name.
                 if mask in ['', None, 'pb']:
                     new_cleanmask = mask

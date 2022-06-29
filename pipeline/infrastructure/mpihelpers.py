@@ -181,10 +181,10 @@ class Tier0JobRequest(Executable):
 
     def get_executable(self):
         job_request = self.__creator_fn(**self.__job_args)
-        if self.__executor:
-            return lambda: self.__executor.execute(job_request)
-        else:
+        if self.__executor is None:
             return lambda: job_request.execute(dry_run=False)
+        else:
+            return lambda: self.__executor.execute(job_request)
 
     def __str__(self):
         return 'Tier0JobRequest({}, {})'.format(self.__creator_fn, self.__job_args)
