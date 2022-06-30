@@ -302,7 +302,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
         context = inputs.context
         reduction_group = context.observing_run.ms_reduction_group
         vis_list = inputs.vis
-        ms_list = inputs.ms
         args = inputs.to_casa_args()
         args_spw = utils.convert_spw_virtual2real(context, inputs.spw)
 
@@ -312,7 +311,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
         edge = inputs.edge
         broadline = inputs.broadline
         fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
-        fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask

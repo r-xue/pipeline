@@ -367,7 +367,6 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # pick restfreq from restfreq_list
                 if isinstance(restfreq_list, list):
-                    # assuming input spw id is "real" spw id
                     v_spwid = context.observing_run.real2virtual_spw_id(spwids[0], msobjs[0])
                     v_spwid_list = [
                         context.observing_run.real2virtual_spw_id(int(i), msobjs[0])
