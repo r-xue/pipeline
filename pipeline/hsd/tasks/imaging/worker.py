@@ -350,7 +350,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         phasecenter, cellx, celly, nx, ny, org_direction = \
             self._get_map_coord(inputs, context, infiles, antid_list, spwid_list, fieldid_list)
         is_eph_obj = rep_ms.get_fields(field_id=rep_fieldid)[0].source.is_eph_obj
-        is_known_eph_obj = rep_ms.get_fields(field_id=rep_fieldid)[0].source.is_known_eph_obj
 
         status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
                                   edge, phasecenter, cellx, celly, nx, ny)
