@@ -64,6 +64,8 @@ class weightboxChart(object):
                 bxpstats = cbook.boxplot_stats(dat, whis=whis)
                 bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
                 bxpstats[0]['stdev'] = dat.std()
+                bxpstats[0]['min'] = np.min(dat)
+                bxpstats[0]['max'] = np.max(dat)
                 bxpstats_per_ant.extend(bxpstats)
             else:
                 bxpstats = cbook.boxplot_stats([0], whis=whis)
@@ -80,6 +82,8 @@ class weightboxChart(object):
                 bxpstats = cbook.boxplot_stats(dat, whis=whis)
                 bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
                 bxpstats[0]['stdev'] = dat.std()
+                bxpstats[0]['min'] = np.min(dat)
+                bxpstats[0]['max'] = np.max(dat)
                 bxpstats_per_spw.extend(bxpstats)
             else:
                 bxpstats = cbook.boxplot_stats([0], whis=whis)
@@ -97,6 +101,8 @@ class weightboxChart(object):
                 bxpstats = cbook.boxplot_stats(dat, whis=whis)
                 bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
                 bxpstats[0]['stdev'] = dat.std()
+                bxpstats[0]['min'] = np.min(dat)
+                bxpstats[0]['max'] = np.max(dat)
                 bxpstats_per_scan.extend(bxpstats)
             else:
                 bxpstats = cbook.boxplot_stats([0], whis=whis)
@@ -149,7 +155,7 @@ class weightboxChart(object):
         figfile = self._get_figfile(suffix)
         wrapper = logger.Plot(figfile, x_axis='antenna or spectral window', y_axis='antenna-based weight',
                               parameters={'vis': self.ms.basename,
-                                          'x_axis': 'ant/spw/scan',
+                                          'x_axis': 'ant/spw/scan', #only add if via not vlass
                                           'y_axis': 'weight',
                                           'type': suffix})
 
