@@ -20,17 +20,6 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
 
         scores = []
 
-        # Step through each spwmapping to create QA scores.
-        for (intent, field), spwmapping in result.spwmaps.items():
-            # For PHASE calibrator fields, score the spwmapping based on
-            # fraction of unmapped science spws.
-            if intent == 'PHASE':
-                scores.append(qacalc.score_phaseup_mapping_fraction(ms, intent, field, spwmapping))
-            # For CHECK fields, score the spwmapping based on whether or not
-            # it is combining spws.
-            elif intent == 'CHECK':
-                scores.append(qacalc.score_combine_spwmapping(ms, intent, field, spwmapping))
-
         # Create QA score for whether the phaseup caltable was created successfully.
         if not result.phaseup_result.final:
             gaintable = list(result.phaseup_result.error)[0].gaintable
