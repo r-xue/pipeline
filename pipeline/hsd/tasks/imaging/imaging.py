@@ -149,7 +149,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                                 spwlist: List[int],
                                 antenna: str,
                                 specmode: str,
-                                # sourcetype='TARGET',
                                 imagemode: str,
                                 stokes: str,
                                 validsp: List[List[int]],
@@ -160,7 +159,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                                 assoc_antennas: List[int],
                                 assoc_fields: List[int],
                                 assoc_spws: List[int],
-                                # assoc_pols=pols,
                                 sensitivity_info: Optional[SensitivityInfo]=None,
                                 theoretical_rms: Optional[Dict]=None):
         """
@@ -586,10 +584,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     file_index = [common.get_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result,
-                                                 sourcename=source_name, spwlist=v_spwids, antenna=ant_name, specmode=specmode, #sourcetype='TARGET',
+                                                 sourcename=source_name, spwlist=v_spwids, antenna=ant_name, specmode=specmode,
                                                  imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
                                                  reduction_group_id=group_id, file_index=file_index,
-                                                 assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids) #, assoc_pols=pols)
+                                                 assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids)
 
                     if inputs.is_ampcal:
                         if len(infiles) == 1 and (asdm not in ['', None]):
@@ -612,10 +610,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     file_index = [common.get_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result_nro,
-                                                 sourcename=source_name, spwlist=v_spwids, antenna=ant_name, specmode=specmode, #sourcetype='TARGET',
+                                                 sourcename=source_name, spwlist=v_spwids, antenna=ant_name, specmode=specmode,
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
                                                  reduction_group_id=group_id, file_index=file_index,
-                                                 assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids) #, assoc_pols=pols)
+                                                 assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids)
 
                     results.append(imager_result_nro)
 
@@ -819,10 +817,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                 sensitivity=theoretical_rms)
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
                 self._finalize_worker_result(context, imager_result,
-                                             sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  specmode=specmode, #sourcetype='TARGET',
+                                             sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  specmode=specmode,
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
                                              reduction_group_id=group_id, file_index=file_index,
-                                             assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
+                                             assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,
                                              sensitivity_info=sensitivity_info, theoretical_rms=theoretical_noise)
 
                 # PIPE-251: detect contamination
@@ -854,10 +852,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
                     self._finalize_worker_result(context, imager_result,
-                                                 sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED', specmode=specmode, #sourcetype='TARGET',
+                                                 sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED', specmode=specmode,
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
                                                  reduction_group_id=group_id, file_index=file_index,
-                                                 assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws)  #, assoc_pols=pols)
+                                                 assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws)
 
                     results.append(imager_result)
 
