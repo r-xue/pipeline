@@ -876,7 +876,7 @@ class Executor(object):
         """
 
         if not self._is_mpi_server:
-            cmdfile_list = glob.glob(self._cmdfile+'.rank*')
+            cmdfile_list = sorted(glob.glob(self._cmdfile+'.rank*'), key=os.path.getmtime)
             with open(self._cmdfile, 'a') as cmdfile:
                 for filename in cmdfile_list:
                     with open(filename, 'r') as cmdfile_local:
