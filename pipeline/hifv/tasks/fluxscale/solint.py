@@ -99,7 +99,7 @@ class SolintResults(basetask.Results):
         self.new_gain_solint1 = new_gain_solint1
         self.bpdgain_touse = bpdgain_touse
 
-    def merge_with_context(self, context):    
+    def merge_with_context(self, context):
         m = context.observing_run.get_ms(self.vis)
         context.evla['msinfo'][m.name].gain_solint2 = self.gain_solint2
         context.evla['msinfo'][m.name].longsolint = self.longsolint
@@ -431,7 +431,7 @@ class Solint(basetask.StandardTaskTemplate):
         old_field = ''
 
         with casa_tools.MSReader(calMs) as ms:
-            scan_summary = ms.getscansummary()    
+            scan_summary = ms.getscansummary()
 
             m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
@@ -490,16 +490,20 @@ class Solint(basetask.StandardTaskTemplate):
 
         nsearch = 5
         integration_time = m.get_vla_max_integration_time()
+        integration_time = np.around(integration_time, decimals=2)
         search_results = np.zeros(nsearch)
         longest_scan = np.round(np.max(orig_durations))
         zscore_solint = np.max(durations)
         solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
-        for i in range(nsearch):
-            # print('testing solint', solint_integer_integrations + i * integration_time)
-            search_results[i] = longest_scan / (solint_integer_integrations + i * integration_time) - int(longest_scan / (solint_integer_integrations + i * integration_time))
-        longsolint = solint_integer_integrations + np.argmax(search_results) * integration_time
+        if solint_integer_integrations:
+            for i in range(nsearch):
+                # print('testing solint', solint_integer_integrations + i * integration_time)
+                search_results[i] = longest_scan / (solint_integer_integrations + i * integration_time) - int(longest_scan / (solint_integer_integrations + i * integration_time))
+            longsolint = solint_integer_integrations + np.argmax(search_results) * integration_time
+        else:
+            longsolint = (np.max(durations)) * 1.01
+            LOG.warning("Using alternate long solint calculation.")
 
-        # longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
