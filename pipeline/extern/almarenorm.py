@@ -1812,11 +1812,11 @@ class ACreNorm(object):
                                             for cen, gam in zip(atm_centers, atm_gammas):
                                                 atm_mask[max(0,floor(cen-1.3*gam)):min(N.shape[1],ceil(cen+1.3*gam))] = True
                                             self.atmMask[str(fldname)][str(ispw)][str(iscan)] = atm_mask
-
-                                            if atmAutoExclude and atm_mask.any():
-                                                excludechan = self.suggestAtmExclude(target, str(ispw), return_dict=True)
-                                            else:
-                                                excludechan = {}
+            # we still want to keep the calculated atm area so we can compare user input to calculated input i think. new variable? or just simply save it to the dictionary self.atmExcludeCmd now! Also fix the wording in the output about "mitigating renorm features" be more specific that they are FALSE features!
+                                            if atm_mask.any():
+                                                self.atmExcludeCmd[str(fldname)][str(ispw)] = self.suggestAtmExclude(target, str(ispw), return_command=True)                                                
+                                                if atmAutoExclude:
+                                                    excludechan = self.suggestAtmExclude(target, str(ispw), return_dict=True)
 
                                 skipAtmCorr=True
                                 if correctATM:
@@ -2219,10 +2219,9 @@ class ACreNorm(object):
                     if checkFalsePositives:
                         if self.atmWarning[str(fldname)][str(ispw)]:
                             exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
-                            self.atmExcludeCmd[str(fldname)][str(ispw)] = exclude_cmd
                             if atmAutoExclude:
-                                print('Renorm features above the threshold have been mitigated by atmAutoExlude.')
-                                self.logReNorm.write('Renorm features above the threshold have been mitigated by atmAutoExlude.\n')
+                                print('Atmospheric features above the threshold have been mitigated by atmAutoExlude.')
+                                self.logReNorm.write('Atmospheric features above the threshold have been mitigated by atmAutoExlude.\n')
 
                                 print('Equivalent manual call: '+exclude_cmd)
                                 self.logReNorm.write('Equivalent manual call: '+exclude_cmd+'\n')
@@ -2938,7 +2937,7 @@ class ACreNorm(object):
                     # can easily reference it.
                     self.rnpipestats[target][str(spw)]['spec_plot'] = fname
                     if createpdf:
-                        self.convertPlotsToPDF(target, int(spw), include_summary=includeSummary, verbose=True)
+                        self.convertPlotsToPDF(target, int(spw), include_summary=includeSummary, verbose=False)
                 else:
                     plt.show()
                     # Python 2 vs. 3, raw_input() changed to input()
@@ -4142,7 +4141,7 @@ class ACreNorm(object):
                     cmd += str(rng[0])+'~'+str(rng[1])+';'
                 cmd = cmd[:-1] + '"}'
             else:
-                cmd = 'exludechan={"'+str(spw)+'":"'+str(ranges[0][0])+'~'+str(ranges[0][1])+'"}'
+                cmd = 'excludechan={"'+str(spw)+'":"'+str(ranges[0][0])+'~'+str(ranges[0][1])+'"}'
             return cmd
         else:
             return ranges
@@ -4717,7 +4716,7 @@ class ACreNorm(object):
         return(myindex)
 
     # AL added - PIPE 1168 (2)
-    def convertPlotsToPDF(self, target, spw, include_summary=True, include_heuristics=False, verbose=True):
+    def convertPlotsToPDF(self, target, spw, include_summary=True, include_heuristics=False, verbose=False):
         """
         Super hacky way to create PDFs of created plots so that we can display them in the weblog.
         Simply calls the bash commands "montage" (to create super plots of pngs), "convert" (to
