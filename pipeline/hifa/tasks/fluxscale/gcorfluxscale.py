@@ -452,6 +452,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
     def _do_ampcal(self, allantenna, filtered_refant, minblperant):
         inputs = self.inputs
 
+        ampcal_result = None
         check_ok = False
         try:
             ampcal_result = self._do_gaincal(
@@ -474,7 +475,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                                      transfer=inputs.transfer)
                 check_ok = True
         except:
-            caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
+            # Try to fetch caltable name from ampcal result.
+            caltable = ' %s' % ampcal_result.error.pop().gaintable if (ampcal_result and ampcal_result.error) else ''
             LOG.warning(f'Cannot compute phase solution table{os.path.basename(caltable)} for the phase and bandpass'
                         f' calibrator')
 
