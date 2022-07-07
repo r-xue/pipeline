@@ -9,6 +9,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
+<%
+mean =  result.jobs[0]['mean']
+variance = result.jobs[0]['variance'] 
+%>
+
+<p>Mean: ${mean}</p>
+<p>Variance: ${variance}</p>
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">

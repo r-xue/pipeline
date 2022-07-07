@@ -71,6 +71,8 @@ class weightboxChart(object):
                 bxpstats = cbook.boxplot_stats([0], whis=whis)
                 bxpstats[0]['quartiles'] = None
                 bxpstats[0]['stdev'] = None
+                bxpstats[0]['min'] = None
+                bxpstats[0]['max'] = None
                 bxpstats_per_ant.extend(bxpstats)
             bxpstats_per_ant[-1]['ant'] = ant_names[this_ant]
 
@@ -89,6 +91,8 @@ class weightboxChart(object):
                 bxpstats = cbook.boxplot_stats([0], whis=whis)
                 bxpstats[0]['quartiles'] = None
                 bxpstats[0]['stdev'] = None
+                bxpstats[0]['min'] = None
+                bxpstats[0]['max'] = None
                 bxpstats_per_spw.extend(bxpstats)
             bxpstats_per_spw[-1]['spw'] = this_spw
         
@@ -108,6 +112,8 @@ class weightboxChart(object):
                 bxpstats = cbook.boxplot_stats([0], whis=whis)
                 bxpstats[0]['quartiles'] = None
                 bxpstats[0]['stdev'] = None
+                bxpstats[0]['min'] = None
+                bxpstats[0]['max'] = None
                 bxpstats_per_scan.extend(bxpstats)
             bxpstats_per_scan[-1]['scan'] = this_scan
 

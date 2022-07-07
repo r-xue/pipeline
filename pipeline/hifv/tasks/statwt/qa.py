@@ -40,9 +40,10 @@ class StatwtQAHandler(pqa.QAPlugin):
         jobs_origin = pqa.QAOrigin(metric_name='%StatwtStats',
                                 metric_score=mean, #TODO: update to include both mean and variance
                                 metric_units='')
-        if mean > 0.1 and variance > 0.1: #TODO: remove -- only here to test how this shows up.
-#        if mean > 1000 and variance > 50000:
-            score = 0.1 #score=0.75
+#        if mean > 0.1 and variance > 0.1: #TODO: remove -- only here to test how this shows up.
+        if mean > 1000 and variance > 50000:
+            #score = 0.1 
+            score=0.75
             shortmsg = 'Moderately high mean and variance for weights.'
             longmsg = 'Moderately high mean and variance for weight; possibly erroneous weights present that may require flagging.'
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=jobs_origin, weblog_location=pqa.WebLogLocation.ACCORDION))
