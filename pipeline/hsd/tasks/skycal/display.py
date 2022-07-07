@@ -54,7 +54,7 @@ def get_field_from_ms(ms: 'MeasurementSet', field: str) -> List['Field']:
 
 class SingleDishSkyCalDisplayBase(object):
     """Base display class for skycal stage."""
-    
+
     def init_with_field(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
         """Initialize attributes using field information.
 
@@ -76,11 +76,12 @@ class SingleDishSkyCalDisplayBase(object):
             raise RuntimeError(f'No match found for field "{field}".')
 
         self.field_id = fields[0].id
-        self.field_name = fields[0].clean_name
+        self.field_name = fields[0].name
+        clean_field_name = fields[0].clean_name
 
-        LOG.debug('field: ID %s Name \'%s\''%(self.field_id, self.field_name))
+        LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
         old_prefix = self._figroot.replace('.png', '')
-        self._figroot = self._figroot.replace('.png', '-%s.png' % (self.field_name))
+        self._figroot = self._figroot.replace('.png', f'-{clean_field_name}.png')
         new_prefix = self._figroot.replace('.png', '')
 
         self._update_figfile(old_prefix, new_prefix)
@@ -90,7 +91,7 @@ class SingleDishSkyCalDisplayBase(object):
 
     def add_field_identifier(self, plots: List[logger.Plot]) -> None:
         """Add field identifier.
-        
+
         Args:
             plots: List of plot object.
         """
@@ -100,7 +101,7 @@ class SingleDishSkyCalDisplayBase(object):
 
     def _update_figfile(self) -> NoReturn:
         """Update the name of figure file.
-        
+
         Raise:
              NotImplementedError
         """
@@ -109,11 +110,11 @@ class SingleDishSkyCalDisplayBase(object):
 
 class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     """Class for plotting Amplitude vs. Frequency summary chart.
-    
+
     The summary charts are displayed in the main page of hsd_skycal in the weblog.
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
-    
+
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
         """Initialize the class.
 
@@ -136,7 +137,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 
     def plot(self) -> List[logger.Plot]:
         """Plot the Amplitude vs. Frequency summary chart.
-        
+
         Return:
             List of plot object.
         """
@@ -177,7 +178,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 
     def _update_figfile(self, old_prefix: str, new_prefix: str) -> None:
         """Update the name of figure file.
-        
+
         Args:
             old_prefix: Prefix before updating the name of figure file.
             new_prefix: Prefix after updating the name of figure file.
@@ -197,16 +198,16 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 
 class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleDishSkyCalDisplayBase):
     """Class for plotting Amplitude vs. Frequency detail chart.
-    
-    The detail charts are displayed in the sub page (sky_level_vs_frequency.html) of hsd_skycal 
+
+    The detail charts are displayed in the sub page (sky_level_vs_frequency.html) of hsd_skycal
     in the weblog.
     The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
 
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
         """Initialize the class.
-        
-        Args: 
+
+        Args:
             context: Pipeline context.
             result: Pipeline task execution result.
             field: Field string. Either field id or field name.
@@ -218,8 +219,8 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
     def plot(self) -> List[logger.Plot]:
         """Create Amplitude vs. Frequency detail plot.
-        
-        Return: 
+
+        Return:
             List of plot object.
         """
         wrappers = super(SingleDishSkyCalAmpVsFreqDetailChart, self).plot()
@@ -230,7 +231,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
     def _update_figfile(self, old_prefix: str, new_prefix: str) -> None:
         """Update the name of figure file.
-        
+
         Args:
             old_prefix: Prefix before updating the name of figure file.
             new_prefix: Prefix after updating the name of figure file.
@@ -243,10 +244,10 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
 class SingleDishPlotmsLeaf(object):
     """Class to execute plotms and return a plot wrapper.
-    
+
     Task arguments for plotms are customized for single dish usecase.
     """
-    
+
     def __init__(
         self,
         context: 'Context',
@@ -296,7 +297,8 @@ class SingleDishPlotmsLeaf(object):
             raise RuntimeError(f'No match found for field "{self.field}".')
 
         self.field_id = fields[0].id
-        self.field_name = fields[0].clean_name
+        self.field_name = fields[0].name
+        self.clean_field_name = fields[0].clean_name
 
         LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
 
@@ -313,17 +315,20 @@ class SingleDishPlotmsLeaf(object):
 
     def plot(self) -> List[logger.Plot]:
         """Generate a sky calibration plot.
-        
+
         Return:
             List of plot object.
         """
         prefix = '{caltable}-{y}_vs_{x}-{field}-{ant}-spw{spw}'.format(
-            caltable=os.path.basename(self.caltable), y=self.yaxis, x=self.xaxis, field=self.field_name,
+            caltable=os.path.basename(self.caltable),
+            y=self.yaxis, x=self.xaxis,
+            field=self.clean_field_name,
             ant=self.antenna_selection, spw=self.spw)
 
         title = '{caltable} \nField "{field}" Antenna {ant} Spw {spw} \ncoloraxis={caxis}'.format(
-            caltable=os.path.basename(self.caltable), field=self.field_name, ant=self.antenna_selection, spw=self.spw,
-            caxis=self.coloraxis)
+            caltable=os.path.basename(self.caltable),
+            field=self.field_name, ant=self.antenna_selection,
+            spw=self.spw, caxis=self.coloraxis)
 
         figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
 
@@ -345,7 +350,7 @@ class SingleDishPlotmsLeaf(object):
 
     def _create_task(self, title: str, figfile: str) -> 'JobRequest':
         """Create task of CASA plotms.
-        
+
         Args:
             title: Title of figure
             figfile: Name of figure file
@@ -370,11 +375,11 @@ class SingleDishPlotmsLeaf(object):
 
     def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
         """Generate parameters and return logger.Plot.
-        
+
         Args:
             figfile: Name of figure file.
             task: JobRequest object.
-                
+
         Return:
             logger.Plot
         """
@@ -392,32 +397,32 @@ class SingleDishPlotmsLeaf(object):
 
 class SingleDishPlotmsAntComposite(common.AntComposite):
     """Class to create a PlotLeaf for each antenna."""
-    
+
     leaf_class = SingleDishPlotmsLeaf
 
 
 class SingleDishPlotmsSpwComposite(common.SpwComposite):
     """Class to create a PlotLeaf for each spw."""
-    
+
     leaf_class = SingleDishPlotmsLeaf
 
 
 class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
     """Class to create a PlotLeaf for each antenna and spw."""
-    
+
     leaf_class = SingleDishPlotmsSpwComposite
 
 
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     """Class for plotting Amplitude vs. Time summary chart.
-    
+
     The summary charts are displayed in the main page of hsd_skycal in the weblog.
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
-    
+
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication') -> None:
         """Initialize the class.
-        
+
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
@@ -431,14 +436,14 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     """Class for plotting Amplitude vs. Time detail chart.
 
-    The detail charts are displayed in the sub page (sky_level_vs_time.html) of hsd_skycal 
+    The detail charts are displayed in the sub page (sky_level_vs_time.html) of hsd_skycal
     in the weblog.
     The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
-    
+
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication') -> None:
         """Initialize the class.
-        
+
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
@@ -451,13 +456,13 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
 
 class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     """Class to execute pyplot and return a plot (figure) of Interval vs. Time.
-    
+
     If figtype='summary', the first spw is used, while all spw are used if figtype='detail'.
     """
-    
+
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication', figtype: str='') -> None:
         """Initialize the class.
-        
+
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
@@ -473,7 +478,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
     @casa5style_plot
     def plot(self) -> List[logger.Plot]:
         """Generate a Interval vs, Time plot.
-                
+
         Return:
             List of logger.Plot.
         """
@@ -526,7 +531,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             ax.xaxis.set_major_formatter(sd_display.utc_formatter())
                             ax.tick_params( axis='both', labelsize=10 )
                             antenna_name = antennas[antenna_id].name
-                            field_name = field.clean_name
+                            field_name = field.name
                             plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
                             plt.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
                             plt.xlabel("UTC", fontsize=10)
@@ -535,13 +540,14 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             max_interval = numpy.max(interval)
                             ax.set_ylim([min_interval-3.0, max_interval+3.0])
                             plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
+                            clean_field_name = field.clean_name
                             if figtype == "summary":
-                                prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_summary_hsd_skycal_offinterval"
+                                prefix = '_'.join([vis, antenna_name, clean_field_name, "summary_hsd_skycal_offinterval"])
                             else:
-                                prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_spw" + '{}'.format(spw_id) + "_hsd_skycal_offinterval"
+                                prefix = '_'.join([vis, antenna_name, clean_field_name, f'spw{spw_id}', "hsd_skycal_offinterval"])
                             figroot = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-                            figpath = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
-                            LOG.info('Plot of Interval vs Time: figpath = {0}'.format(figpath))
+                            figpath = os.path.join(figroot, f'{prefix}.png')
+                            LOG.info(f'Plot of Interval vs Time: figpath = {figpath}')
                             plt.savefig(figpath)
                             plt.close()
                             if os.path.exists(figpath):
@@ -562,13 +568,13 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
 
 @casa5style_plot
 def plot_elevation_difference(
-        context: 'Context', 
-        result: 'SDSkyCalResults', 
-        eldiff: Dict, 
+        context: 'Context',
+        result: 'SDSkyCalResults',
+        eldiff: Dict,
         threshold: float=3.0
         ) -> List[logger.Plot]:
     """Generate plot of elevation difference.
-    
+
     Args:
         context: Pipeline context.
         result: SDSkyCalResults instance.
@@ -603,7 +609,7 @@ def plot_elevation_difference(
 
     def init_figure(figure_id: str) -> Tuple['Axes', 'Axes']:
         """Initialize the figure.
-        
+
         Args:
             figure_id: ID of figure.
         Return:
@@ -627,7 +633,7 @@ def plot_elevation_difference(
 
     def finalize_figure(figure_id: Union[str, int], vis: str, field_name: str, antenna_name: str) -> None:
         """Set axes, label, legend and title for the elevation difference figure.
-        
+
         Args:
             figure_id: ID of figure.
             vis: Name of Measurement Set.
@@ -669,20 +675,20 @@ def plot_elevation_difference(
                                                                                            antenna_name),
                   fontsize=12)
 
-    def generate_plot(figure_id: Union[str, int], vis: str, field_name: str, antenna_name: str) -> logger.Plot:
+    def generate_plot(figure_id: Union[str, int], vis: str, field: 'Field', antenna_name: str) -> logger.Plot:
         """Generate the file of elevation figure.
 
         Args:
             figure_id: ID of figure
             vis: Name of Measurement Set
-            field_name: Name of field
+            field: Field domain object
             antenna_name: Name of antenna
         Return:
             logger.Plot
         """
         plt.figure(figure_id)
         vis_prefix = '.'.join(vis.split('.')[:-1])
-        figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
+        figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field.clean_name, antenna_name)
         figpath = os.path.join(figroot, figfile)
         #LOG.info('figpath={}'.format(figpath))
         plt.savefig(figpath)
@@ -698,7 +704,7 @@ def plot_elevation_difference(
             plot = logger.Plot(figpath,
                                x_axis='Time',
                                y_axis='Elevation Difference',
-                               field=field_name,
+                               field=field.name,
                                parameters=parameters)
         return plot
 
@@ -716,7 +722,7 @@ def plot_elevation_difference(
         a2, a3 = init_figure(figure1)
 
         field = ms.fields[field_id]
-        field_name = field.clean_name
+        field_name = field.name
 
         plots_per_field = []
 
@@ -761,7 +767,7 @@ def plot_elevation_difference(
             finalize_figure(figure0, ms.basename, field_name, antenna_name)
 
             # generate plot object
-            plot = generate_plot(figure0, ms.basename, field_name, antenna_name)
+            plot = generate_plot(figure0, ms.basename, field, antenna_name)
             if plot is not None:
                 plots_per_field.append(plot)
 
@@ -769,7 +775,7 @@ def plot_elevation_difference(
         finalize_figure(figure1, ms.basename, field_name, 'ALL')
 
         # generate plot object
-        plot = generate_plot(figure1, ms.basename, field_name, '')
+        plot = generate_plot(figure1, ms.basename, field, '')
         if plot is not None:
             plots_per_field.append(plot)
 
