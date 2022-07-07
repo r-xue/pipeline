@@ -148,7 +148,7 @@ class SDBLFlagSummary(object):
                 # create summary data and pack statistics 
                 nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
                 nrow = len( dt_idx )
-                stat_dict = dict( (k, 100.0 * v / nrow) for k, v in nflags.items() )
+                stat_dict = dict( (k, dict(num=v, frac=100.0*v/nrow)) for k, v in nflags.items() )
 
                 # create plots
                 ### instance to be made outside pol loop if overplotting pols
@@ -171,9 +171,8 @@ class SDBLFlagSummary(object):
                                         'runmean_prefit'       : stat_dict['RunMeanPreFitFlag'] ,
                                         'runmean_postfit'      : stat_dict['RunMeanPostFitFlag'] ,
                                         'expected_rms_prefit'  : stat_dict['RmsExpectedPreFitFlag'] ,
-                                        'expected_rms_postfit' : stat_dict['RmsExpectedPostFitFlag'] 
+                                        'expected_rms_postfit' : stat_dict['RmsExpectedPostFitFlag']
                                     } )
-                                    
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
 

@@ -72,7 +72,15 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 	<tbody>
 	% for tr, subpage in zip(per_eb_summary_table_rows, statistics_subpages):
         <%
-            subpage_html = os.path.join( dirname, subpage['html'] )
+            subpage_html  = os.path.join( dirname, subpage['html'] )
+            subpage2_html = os.path.join( dirname, subpage['html2'] )
+            baseline_post  = os.path.join( dirname, subpages_per_type['Baseline RMS post-fit'] )
+            baseline_pre   = os.path.join( dirname, subpages_per_type['Baseline RMS pre-fit'] )
+            runmean_post   = os.path.join( dirname, subpages_per_type['Running mean post-fit'] )
+            runmean_pre    = os.path.join( dirname, subpages_per_type['Running mean pre-fit'] )
+            expectrms_post = os.path.join( dirname, subpages_per_type['Expected RMS post-fit'] )
+            expectrms_pre  = os.path.join( dirname, subpages_per_type['Expected RMS pre-fit'] )
+            outlyer_tsys   = os.path.join( dirname, subpages_per_type['Outlier Tsys'] )
         %>
 		<tr>
 		% for td in tr:
@@ -80,11 +88,26 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 		% endfor
         <TD>
         <a href="${subpage_html}" class="replace" data-vis="${subpage['vis']}">
-        Plots
+        with hist
+        </a>
+        |
+        <a href="${subpage2_html}" class="replace" data-vis="${subpage['vis']}">
+        without hist
         </a>
         </TD>
 		</tr>
-	%endfor
+	% endfor
+    <TR>
+    <TD> </TD>
+    <TD> <a href="${baseline_post}"  class="replace">Plots</a> </TD>
+    <TD> <a href="${baseline_pre}"   class="replace">Plots</a> </TD>
+    <TD> <a href="${runmean_post}"   class="replace">Plots</a> </TD>
+    <TD> <a href="${runmean_pre}"    class="replace">Plots</a> </TD>
+    <TD> <a href="${expectrms_post}" class="replace">Plots</a> </TD>
+    <TD> <a href="${expectrms_pre}"  class="replace">Plots</a> </TD>
+    <TD> <a href="${outlyer_tsys}"   class="replace">Plots</a> </TD>
+    <TD colspan="4"> </TD>
+    </TR>
 	</tbody>
 </table>
 
