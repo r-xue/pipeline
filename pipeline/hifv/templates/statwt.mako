@@ -10,8 +10,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
 <%
-mean =  result.jobs[0]['mean']
-variance = result.jobs[0]['variance'] 
+mean =  result[0].jobs[0]['mean'] # double-check: can these have more than one value
+variance = result[0].jobs[0]['variance'] # double-check: can these have more than one value
 %>
 
 <p>Mean: ${mean}</p>
