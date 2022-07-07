@@ -1913,20 +1913,24 @@ def score_derived_fluxes_snr(ms, measurements):
     score = 0.0
     minscore = 1.0
     minsnr = None
+    snr_thresh = 26.25
+    low_snr_flux = collections.defaultdict(list)
 
-    for value in measurements.values():
+    for fieldid, field_measurements in measurements.items():
         # Loop over the flux measurements
-        for flux in value:
-            fluxjy = flux.I.to_units(measures.FluxDensityUnits.JANSKY)
-            uncjy = flux.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
+        for measurement in field_measurements:
+            fluxjy = measurement.I.to_units(measures.FluxDensityUnits.JANSKY)
+            uncjy = measurement.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
             if fluxjy <= 0.0 or uncjy <= 0.0:
                 continue
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
             nmeasured += 1
-            score1 = linear_score(float(snr), 5.0, 26.25, 0.66, 1.0)
+            score1 = linear_score(float(snr), 5.0, snr_thresh, 0.66, 1.0)
             minscore = min(minscore, score1)
             score += score1
+            if score1 < 1.0:
+                low_snr_flux[fieldid].append(measurement.spw_id)
 
     if nmeasured > 0:
         score /= nmeasured
@@ -1940,8 +1944,12 @@ def score_derived_fluxes_snr(ms, measurements):
         longmsg = 'No low SNR derived fluxes for %s ' % ms.basename
         shortmsg = 'No low SNR derived fluxes'
     else:
-        longmsg = 'Low SNR derived fluxes for %s ' % ms.basename
-        shortmsg = 'Low SNR derived fluxes'
+        # Report which field(s) and SpW(s) had low SNR.
+        fld_summaries = [f'field {fid}, SpW(s) {", ".join(str(s) for s in sorted(spwids))}'
+                         for fid, spwids in sorted(low_snr_flux.items())]
+        longmsg = f'For {ms.basename}, the fractional uncertainty in the derived scaling factor is large' \
+                  f' (> {100/snr_thresh:.1f}%) for {"; ".join(fld_summaries)}. The calibrator may be too faint.'
+        shortmsg = 'Uncertainty in some of the derived fluxes'
 
     origin = pqa.QAOrigin(metric_name='score_derived_fluxes_snr',
                           metric_score=minsnr,
