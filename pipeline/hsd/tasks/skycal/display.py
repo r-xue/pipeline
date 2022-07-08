@@ -327,7 +327,7 @@ class SingleDishPlotmsLeaf(object):
 
         title = '{caltable} \nField "{field}" Antenna {ant} Spw {spw} \ncoloraxis={caxis}'.format(
             caltable=os.path.basename(self.caltable),
-            field=self.clean_field_name, ant=self.antenna_selection,
+            field=self.field_name, ant=self.antenna_selection,
             spw=self.spw, caxis=self.coloraxis)
 
         figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
@@ -531,8 +531,8 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             ax.xaxis.set_major_formatter(sd_display.utc_formatter())
                             ax.tick_params( axis='both', labelsize=10 )
                             antenna_name = antennas[antenna_id].name
-                            clean_field_name = field.clean_name
-                            plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, clean_field_name, antenna_name, spw_id), fontsize=12)
+                            field_name = field.name
+                            plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
                             plt.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
                             plt.xlabel("UTC", fontsize=10)
                             ax.plot(date_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
@@ -540,6 +540,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             max_interval = numpy.max(interval)
                             ax.set_ylim([min_interval-3.0, max_interval+3.0])
                             plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
+                            clean_field_name = field.clean_name
                             if figtype == "summary":
                                 prefix = '_'.join([vis, antenna_name, clean_field_name, "summary_hsd_skycal_offinterval"])
                             else:
@@ -559,7 +560,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                                 plot = logger.Plot(figpath,
                                     x_axis='Time',
                                     y_axis='Off-Source Interval / On-Source Interval',
-                                    field=field.name,
+                                    field=field_name,
                                     parameters=parameters)
                                 plots.append(plot)
         return plots
@@ -721,7 +722,7 @@ def plot_elevation_difference(
         a2, a3 = init_figure(figure1)
 
         field = ms.fields[field_id]
-        field_name = field.clean_name
+        field_name = field.name
 
         plots_per_field = []
 
