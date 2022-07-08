@@ -58,12 +58,48 @@ class AsyncTask(object):
                                                   verbose=True)
         response = response[0]
         if response['successful']:
+            self._merge_casa_commands(response)
             return response['ret']
         else:
             err_msg = "Failure executing job on MPI server {}, " \
                       "with traceback\n {}".format(response['server'], response['traceback'])
             raise exceptions.PipelineException(err_msg)
 
+    def _merge_casa_commands(self, response):
+        """Merge the "casa_commands" log entries from a Tier0 async task into the main logfile of the client.
+
+        note: this is expected to run on the MPI client only when the async task result is returned.
+
+        'reponse' is a dictionary containing the execuation details of a single MPI command request:
+            response['command']: the input command request string
+            response['parameters']['tier0_executable']: a copy of the input tier0_executable object, with modifications from the MPI server
+            response['ret']: return from the server-side constructed Tier0Executable.
+            response['server']: the MPI server rank
+            response['id']: the command request id (same as self.__pid)
+            response['command_start_time']: command start time 
+            response['command_stop_time']: command stop time
+        """
+        LOG.debug(
+            'receive a successful response from MPIserver-{server} for command_request_id={id}'.format(**response))               
+        LOG.debug('return request logs: {}'.format(response['parameters']['tier0_executable'].logs))
+
+        response_logs = response['parameters']['tier0_executable'].logs
+        client_cmdfile = response_logs.get('casa_commands')
+        tier0_cmdfile = response_logs.get('casa_commands_tier0')
+
+        if all(isinstance(cmdfile, str) and os.path.exists(cmdfile) for cmdfile in [client_cmdfile, tier0_cmdfile]):
+            LOG.info(f'Merge {tier0_cmdfile} into {client_cmdfile}')
+            with open(client_cmdfile, 'a') as client:
+                with open(tier0_cmdfile, 'r') as tier0:
+                    cmds = tier0.read()
+                    client.write('# MPIserver:           {}\n'.format(response['server']))
+                    client.write('# Duration:            {:.2f}s\n'.format(
+                        response['command_stop_time']-response['command_start_time']))
+                    client.write('# CommandRequest ID:   {}\n'.format(response['id']))
+                    client.write(cmds)
+                os.remove(tier0_cmdfile)
+        else:
+            LOG.debug('Cannot find Tier0 casa_commands.log for command_request_id={id}; no merge needed'.format(**response))
 
 class SyncTask(object):
     def __init__(self, task, executor=None):
@@ -106,6 +142,10 @@ class SyncTask(object):
 
 
 class Executable(object):
+
+    def __init__(self):
+        self.logs = {}
+
     @abc.abstractmethod
     def get_executable(self):
         """
@@ -125,6 +165,7 @@ class Tier0PipelineTask(Executable):
         :param task_args: any arguments to passed to the task Inputs
         :param context_path: the filesystem path to the pickled Context
         """
+        super().__init__()
         self.__task_cls = task_cls
         self.__context_path = context_path
 
@@ -147,6 +188,15 @@ class Tier0PipelineTask(Executable):
         try:
             with open(self.__context_path, 'rb') as context_file:
                 context = pickle.load(context_file)
+
+            self.logs['casa_commands'] = os.path.join(context.report_dir,
+                                                      context.logs['casa_commands'])
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.casa_commands.log', dir='', delete=True)
+            tmpfile.close()
+            self.logs['casa_commands_tier0'] = tmpfile.name
+
+            # modify the context copy used on the MPI server
+            context.logs['casa_commands'] = self.logs['casa_commands_tier0']
 
             with open(self.__task_args_path, 'rb') as task_args_file:
                 task_args = pickle.load(task_args_file)
@@ -175,15 +225,23 @@ class Tier0JobRequest(Executable):
         :param creator_fn: the class of the CASA task to execute
         :param job_args: any arguments to passed to the task Inputs
         """
+        super().__init__()        
         self.__creator_fn = creator_fn
         self.__job_args = job_args
         self.__executor = executor
 
     def get_executable(self):
+        """Construct executable on the MPI server."""
         job_request = self.__creator_fn(**self.__job_args)
         if self.__executor is None:
             return lambda: job_request.execute(dry_run=False)
         else:
+            # modify the executor copy used on the MPI server
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.casa_commands.log', dir='', delete=True)
+            tmpfile.close()
+            self.logs['casa_commands_tier0'] = tmpfile.name
+            self.logs['casa_commands'] = self.__executor._cmdfile
+            self.__executor._cmdfile = self.logs['casa_commands_tier0']
             return lambda: self.__executor.execute(job_request)
 
     def __str__(self):

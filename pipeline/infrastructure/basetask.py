@@ -10,9 +10,6 @@ import re
 import textwrap
 import traceback
 import uuid
-import glob
-
-from .mpihelpers import MPIEnvironment
 
 from . import api
 from . import casa_tools
@@ -672,11 +669,6 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             else:
                 result.logrecords.extend(handler.buffer)
 
-            # PIPE-1522: only gather per-rank casa_commands logs if the task is running on
-            # the client, so the subtask/job order on a MPI-server could be recorded/preserved seperately.
-            if not self._executor._is_mpi_server:
-                self._executor._gather_cmdfiles()
-
             event = TaskCompleteEvent(context_name=self.inputs.context.name,
                                       stage_number=self.inputs.context.task_counter)
             eventbus.send_message(event)
@@ -808,7 +800,6 @@ class Executor(object):
         self._context = context
         self._cmdfile = os.path.join(context.report_dir,
                                      context.logs['casa_commands'])
-        self._is_mpi_server = MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
 
     @capture_log
     def execute(self, job, merge=False, **kwargs):
@@ -862,31 +853,8 @@ class Executor(object):
                                 width=80,
                                 break_long_words=False)
 
-        if MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client:
-            cmdfile_name = self._cmdfile+f'.rank{MPIEnvironment.mpi_processor_rank}'
-        else:
-            cmdfile_name = self._cmdfile
-        with open(cmdfile_name, 'a') as cmdfile:
+        with open(self._cmdfile, 'a') as cmdfile:
             cmdfile.write('%s\n' % '\n'.join(wrapped))
-
-    def _gather_cmdfiles(self):
-        """Gather the log from per-rank casa_commands files into casa_commands.log
-        
-        note: this is only expected to run on the MPI client.
-        """
-
-        if not self._is_mpi_server:
-            cmdfile_list = sorted(glob.glob(self._cmdfile+'.rank*'), key=os.path.getmtime)
-            with open(self._cmdfile, 'a') as cmdfile:
-                for filename in cmdfile_list:
-                    with open(filename, 'r') as cmdfile_local:
-                        cmd_local = cmdfile_local.read()
-                        rank_name = filename.replace(self._cmdfile+'.', '')
-                        cmdfile.write('\n# {}\n#\n'.format(rank_name))
-                        cmdfile.write(cmd_local)
-                    os.remove(filename)
-        else:
-            LOG.warning('Gathering per-rank casa_commands log files should not be run on a MPIserver.')
 
 
 def _log_task(task, dry_run):
