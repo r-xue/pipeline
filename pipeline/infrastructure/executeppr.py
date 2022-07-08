@@ -32,9 +32,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                interactive: bool = True):
     """
     Runs Pipeline Processing Request (PPR).
-    
+
     Executes pipeline tasks based on instructions described in pprXmlFile.
-    
+
     Args:
         pprXmlFile: A path to PPR file.
         importonly: Whether or not to indicate to stop processing after
@@ -53,20 +53,20 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         plotlevel: A plot level. Available levels are, 'all', 'default', and
             'summary'
         interactive: If True, print pipeline log to STDOUT.
-    
+
     Examples:
        Only import EBs.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml')
-       
+
        Full execution of PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False)
-       
+
        Run pipeline tasks up to the 'breakpoint' in PPR and save context.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='break')
-       
+
        Resume execution from the 'breakpoint' in PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
-       
+
     """
     # Useful mode parameters
     echo_to_screen = interactive
@@ -252,6 +252,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                       'ALMAImportData', 'ALMARestoreData',
                                       'VLAImportData','VLARestoreData',
                                       'SDImportData', 'SDRestoreData',
+                                      'SerialSDImportData', 'HpcSDImportData',
                                       'NROImportData', 'NRORestoreData'):
                 task_args['vis'] = files
                 task_args['session'] = sessions
@@ -284,7 +285,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                        echo_to_screen=echo_to_screen)
                 break
 
-            if pipeline_task_name == 'SDImportData' and importonly:
+            if pipeline_task_name in ('SerialSDImportData', 'HpcSDImportData') and importonly:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
                                        echo_to_screen=echo_to_screen)
                 break

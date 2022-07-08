@@ -99,7 +99,7 @@ class NROImportDataResults(sd_importdata.SDImportDataResults):
 
 @task_registry.set_equivalent_casa_task('hsdn_importdata')
 @task_registry.set_casa_commands_comment('Import Nobeyama MeasurementSets.')
-class NROImportData(sd_importdata.SDImportData):
+class NROImportData(sd_importdata.SerialSDImportData):
     """NRO Data import execution task.
 
     This class extends importdata.ImportData class, and methods execute main logics depends on it.
