@@ -10,6 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import gaincal
 from pipeline.hifa.heuristics import atm as atm_heuristic
 from pipeline.hifa.heuristics import wvrgcal as wvrgcal_heuristic
@@ -410,6 +411,9 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         suggest_remcloud = wvrg_qa.calculate_qa_numbers(result.qa_wvr, result.wvr_infos, PHnoisy, BPnoisy)
         result.suggest_remcloud = suggest_remcloud
 
+        # PIPE-846: report improvement factors.
+        self._report_wvr_improvement(result)
+
         # if the qa score indicates that applying the wvrg file will
         # make things worse then remove it from the results so that
         # it cannot be accepted into the context.
@@ -420,6 +424,29 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             result.final[:] = []
 
         return result
+
+    def _report_wvr_improvement(self, result):
+        """
+        Report the improvement factors from QA data views to the log (PIPE-846).
+        """
+        # Get translation from antenna IDs to names.
+        ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
+        ant_names, _ = commonhelpermethods.get_antenna_names(ms)
+
+        # Report improvement values for each view:
+        for description in result.qa_wvr.descriptions():
+            # Get list of antennas and timestamps from data view.
+            qa_result = result.qa_wvr.last(description)
+            antids = qa_result.axes[0].data
+            timestamps = qa_result.axes[1].data
+
+            # For each antenna, and then each timestamp, report the improvement
+            # factor, and whether that entry was flagged.
+            LOG.info(f"Phase improvement ratios for {result.vis}, intent {qa_result.intent}, SpW {qa_result.spw}:")
+            for xid, antid in enumerate(antids):
+                for yid, timestamp in enumerate(timestamps):
+                    LOG.info(f"Ant #{antid} ({ant_names[antid]}), time {timestamp}: {qa_result.data[xid, yid]:.2f}"
+                             f" {'(flagged)' if qa_result.flag[xid, yid] else ''}")
 
     def _do_qa_bandpass(self, inputs):
         """
