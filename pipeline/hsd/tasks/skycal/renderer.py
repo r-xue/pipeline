@@ -21,10 +21,10 @@ LOG = logging.get_logger(__name__)
 
 class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """Weblog renderer class for skycal task."""
-
-    def __init__(self,
-                 uri: str = 'skycal.mako',
-                 description: str = 'Single-Dish Sky Calibration',
+    
+    def __init__(self, 
+                 uri: str = 'skycal.mako', 
+                 description: str = 'Single-Dish Sky Calibration', 
                  always_rerender: bool = False) -> None:
         """Initialize T2_4MDetailsSingleDishSkyCalRenderer instance.
 
@@ -37,9 +37,9 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         super(T2_4MDetailsSingleDishSkyCalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self,
-                            ctx: Dict[str, Any],
-                            context: 'Context',
+    def update_mako_context(self, 
+                            ctx: Dict[str, Any], 
+                            context: 'Context', 
                             results: 'ResultsList') -> None:
         """Update context for weblog rendering.
 
@@ -48,7 +48,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             context: Pipeline context.
             results: ResultsList instance. Should hold a list of SDSkyCalResults instance.
         """
-        stage_dir = os.path.join(context.report_dir,
+        stage_dir = os.path.join(context.report_dir, 
                                  'stage%d' % results.stage_number)
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
@@ -81,7 +81,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             # calibration table summary
             ms_applications = self.get_skycal_applications(context, result, ms)
             applications.extend(ms_applications)
-
+            
             # iterate over CalApplication instances
             final_original = result.final
 
@@ -130,7 +130,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     reference_coord = self._get_reference_coord(context, ms, field_domain)
                     reference_coords[vis][field_domain.name] = reference_coord
 
-            result.final = final_original
+            result.final = final_original  
 
             # Compute elevation difference
             eldiff = skycal_task.compute_elevation_difference(context, result)
@@ -150,31 +150,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             summary_interval_vs_time[vis].extend(summaries_interval)
             details_interval_vs_time[vis].extend(details_interval)
 
-        # sort plots
-        for vis in summary_amp_vs_freq:
-            ms = context.observing_run.get_ms(vis)
-
-            def key_func(plot):
-                field_name = plot.parameters['field']
-                spw_id = plot.parameters['spw']
-                field_id = ms.get_fields(field_name)[0].id
-                return field_id, spw_id
-
-            for summary_dict in (summary_amp_vs_freq, summary_amp_vs_time,):
-                if vis not in summary_dict:
-                    continue
-
-                _plot_list = summary_dict[vis]
-
-                if len(_plot_list) == 0:
-                    continue
-
-                LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
-                         (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
-                LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
-                _plot_list.sort(key=key_func)
-                LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
-
         # Sky Level vs Frequency
         flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
@@ -186,7 +161,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
         for vis in details_amp_vs_freq:
-            amp_vs_freq_subpages[vis] = os.path.basename(renderer.path)
+            amp_vs_freq_subpages[vis] = os.path.basename(renderer.path)        
 
         # Sky Level vs Time
         flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
@@ -229,7 +204,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         LOG.debug('reference_coords=%s' % reference_coords)
 
-        # update Mako context
+        # update Mako context                
         ctx.update({'applications': applications,
                     'summary_amp_vs_freq': summary_amp_vs_freq,
                     'amp_vs_freq_subpages': amp_vs_freq_subpages,
@@ -243,12 +218,12 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
     def get_skycal_applications(self, context: 'Context', result: skycal_task.SDSkyCalResults, ms: 'MeasurementSet') -> List[Dict]:
         """Get application information from SDSkyCalResults instance and set them into a list.
-
+        
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
             ms: MeasurementSet domain object.
-
+            
         Returns:
             A list "application" containing dictionary; they are used to a table in skycal.mako file.
         """
@@ -280,12 +255,12 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
     def _get_reference_coord(self, context: 'Context', ms: 'MeasurementSet', field: 'Field') -> str:
         """Get celestial coordinates and the reference.
-
+        
         Args:
             context: Pipeline context.
             ms: MeasurementSet domain object.
             field: field domain object.
-
+            
         Returns:
             Reference, RA and Declination.
         """
