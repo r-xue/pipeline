@@ -64,5 +64,16 @@ SDFlagRule = {\
         #{'ApplicableDuration': 'subscan'}, \
 }
 
+
+SDFlag_Desc = {
+    "TsysFlag"               : "Outlier Tsys",
+    "RmsPreFitFlag"          : "Baseline RMS pre-fit",
+    "RmsPostFitFlag"         : "Baseline RMS post-fit",
+    "RunMeanPreFitFlag"      : "Running mean pre-fit",
+    "RunMeanPostFitFlag"     : "Running mean post-fit",
+    "RmsExpectedPreFitFlag"  : "Expected RMS pre-fit",
+    "RmsExpectedPostFitFlag" : "Expected RMS post-fit"
+}
+
 # ApplicableDuration: 'raster' | 'subscan'
 

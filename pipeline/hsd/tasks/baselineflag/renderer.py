@@ -19,6 +19,7 @@ LOG = logging.get_logger(__name__)
 # max number of plots for histogram selector
 HIST_PLOTS_MAX = 1000
 
+
 class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """The renderer class for baselineflag."""
 
@@ -35,6 +36,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         Returns:
             (none)
         """
+        LOG.info( "###@@ T2_4MDetailsBLFlagRenderer.__init__()" )
         super(T2_4MDetailsBLFlagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
@@ -63,34 +65,35 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # classic style (without histogram selector) with all plots
         title = "Flag Statistics (all) ({} plots)".format(len(plots_list))
-        html = self._prepare_subpage( context, result, plots_list,
-                                      'hsd_blflag_statistics_full.html',
-                                      title, histogram=False )
-        vis_list = list(set([ p.get('vis') for p in plots_list ]))
+        html = self._prepare_subpage( 'hsd_blflag_statistics_nohist.mako', context, result, plots_list,
+                                      'hsd_blflag_statistics_full.html', title,
+                                      allflags=False, ownflag=False, types=True )
+        vis_list = list( set([ p.get('vis') for p in plots_list ]) )
         subpages2 = {}
         for vis in vis_list:
             subpages2[vis] = html
 
-
         # reduced plots with histogram selector
         plots_list_hist, title = self._filter_plots( plots_list, HIST_PLOTS_MAX, "Flag Statistics" )
-        html = self._prepare_subpage( context, result, plots_list_hist,
-                                      'hsd_blflag_statistics_historgram.html',
-                                      title, histogram=True )
+        html = self._prepare_subpage( 'hsd_blflag_statistics.mako', context, result, plots_list_hist,
+                                      'hsd_blflag_statistics_historgram.html', title,
+                                      allflags=True, ownflag=False, types=True )
         subpages = {}
         for vis in vis_list:
             subpages[vis] = html
 
         # per_type plots with histogram selector
-        type_list = list(set([ p.get('type') for p in plots_list ]))
+        type_list = list( set([ p.get('type') for p in plots_list ]) )
         subpages_per_type = {}
         for type in type_list:
-            sub_plots_list = [ p for p in plots_list if p.get('type')==type ]
+            sub_plots_list = [ p for p in plots_list if p.get('type') == type ]
+
             sub_plots_list_hist, title = self._filter_plots( sub_plots_list, HIST_PLOTS_MAX,
                                                              "Flag Statistics: {}".format(type) )
             filename = 'hsd_blflag_statistics_'+type.replace( ' ', '_' )+'.html'
-            html = self._prepare_subpage( context, result, sub_plots_list,
-                                          filename, title, histogram=True )
+            html = self._prepare_subpage( 'hsd_blflag_statistics_per_type.mako', context, result, sub_plots_list,
+                                          filename, title,
+                                          allflags=False, ownflag=True, types=False )
             subpages_per_type[type] = html
 
         # per EB table
@@ -101,8 +104,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                       'subpages_per_type'        : subpages_per_type,
                       'dovirtual'                : dovirtual } )
 
-
-    def _filter_plots( self, plots_list:List[Plot], max_plots, title_base ) ->Tuple[List[Plot], str]:
+    def _filter_plots( self, plots_list:List[Plot], max_plots, title_base ) -> Tuple[List[Plot], str]:
         """
         Fliter statistics to reduce the number of plots
 
@@ -146,8 +148,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         return plots_list_filtered, title
 
-
-    def _filter_plots_by_frac( self, plots_list: List[Plot], flag_frac_threshold:float ) -> List[Plot]:
+    def _filter_plots_by_frac( self, plots_list:List[Plot], flag_frac_threshold:float ) -> List[Plot]:
         """
         Apply plot filter by flagged fraction
 
@@ -167,13 +168,12 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                or p.get('expected_rms_prefit')['frac'] >= flag_frac_threshold \
                or p.get('expected_rms_postfit')['frac'] >= flag_frac_threshold:
                 plots_list_filtered.append(p)
-        LOG.info( "###@@ BLFLag plots: thres={} remain / total = {} / {}".format(
+        LOG.info( "###@@ BLFLag plots (filter_by_frac): thres={} remain / total = {} / {}".format(
             flag_frac_threshold, len(plots_list_filtered), len(plots_list)))
 
         return plots_list_filtered
 
-
-    def _filter_plots_by_num( self, plots_list: List[Plot], flag_num_threshold:int ) -> List[Plot]:
+    def _filter_plots_by_num( self, plots_list:List[Plot], flag_num_threshold:int ) -> List[Plot]:
         """
         Apply plot filter by number of flags
 
@@ -193,53 +193,56 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                or p.get('expected_rms_prefit')['num'] >= flag_num_threshold \
                or p.get('expected_rms_postfit')['num'] >= flag_num_threshold:
                 plots_list_filtered.append(p)
-        LOG.info( "###@@ BLFLag plots: thres={} remain / total = {} / {}".format(
+        LOG.info( "###@@ BLFLag plots (filter by num): thres={} remain / total = {} / {}".format(
             flag_num_threshold, len(plots_list_filtered), len(plots_list)))
 
         return plots_list_filtered
 
-
-    def _prepare_subpage( self, context:Context, result:SDBLFlagResults,
+    def _prepare_subpage( self, uri:str, context:Context, result:SDBLFlagResults,
                           plots_list:List[Plot], filename:str, title:str,
-                          histogram:bool=True ):
+                          allflags:Optional[bool]=False, ownflag:Optional[bool]=False, 
+                          types:Optional[bool]=True ):
         """
         prepare the subpage
 
         Args:
-            context: Pipeline context
-            result:
-            plots_list: List of plots
-            filename: output filename
-            histogram: Switch for histogram selector ( True:with, False: without )
+            context    : Pipeline context
+            result     : SDBLFlag results
+            plots_list : List of plots
+            filename   : output filename
+            allflags   : If true, feeds all flagging statistics to the selector
+            ownflag    : If true, feeds only the corresponding flag statistics to the selector
+            type       : If true, feeds the type information to the selector
         Returns:
             filename of the html file
         """
         wrappers = []
         for plot in plots_list:
             wrapper = logger.Plot( plot['FigFileDir']+plot['plot'],
-                                    x_axis="Xaxis",
-                                    y_axis="Yaxis",
-                                    field=plot['field'],
-                                    parameters = {
-                                        'vis' : plot['vis'],
-                                        'type' : plot['type'],
-                                        'spw' : plot['spw'],
-                                        'ant' : plot['ant'],
-                                        'field' : plot['field'],
-                                        'pol' : plot['pol'],
-                                        'outlier_Tsys'         : plot['outlier_Tsys'],
-                                        'rms_prefit'           : plot['rms_prefit'],
-                                        'rms_postfit'          : plot['rms_postfit'],
-                                        'runmean_prefit'       : plot['runmean_prefit'],
-                                        'runmean_postfit'      : plot['runmean_postfit'],
-                                        'expected_rms_prefit'  : plot['expected_rms_prefit'],
-                                        'expected_rms_postfit' : plot['expected_rms_postfit']
-                                    } )
+                                   x_axis="Xaxis",
+                                   y_axis="Yaxis",
+                                   field=plot['field'],
+                                   parameters = {
+                                       'vis'                  : plot['vis'],
+                                       'type'                 : plot['type'],
+                                       'spw'                  : plot['spw'],
+                                       'ant'                  : plot['ant'],
+                                       'field'                : plot['field'],
+                                       'pol'                  : plot['pol'],
+                                       'outlier_Tsys'         : plot['outlier_Tsys'],
+                                       'rms_prefit'           : plot['rms_prefit'],
+                                       'rms_postfit'          : plot['rms_postfit'],
+                                       'runmean_prefit'       : plot['runmean_prefit'],
+                                       'runmean_postfit'      : plot['runmean_postfit'],
+                                       'expected_rms_prefit'  : plot['expected_rms_prefit'],
+                                       'expected_rms_postfit' : plot['expected_rms_postfit'],
+                                       'ownflag'              : plot['ownflag']
+                                   } )
             wrappers.append( wrapper )
 
-        renderer = SDBLFlagStatisticsPlotRenderer( context, result, wrappers,
+        renderer = SDBLFlagStatisticsPlotRenderer( uri, context, result, wrappers,
                                                    filename, title,
-                                                   histogram=histogram )
+                                                   allflags=allflags, ownflag=ownflag, types=types )
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
 
@@ -248,26 +251,31 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
     """Renderer class for Flag Statistics."""
-    def __init__( self, context:Context, result:SDBLFlagResults, plots:List[Plot],
-                  filename:str, title:str, histogram:Optional[bool]=True ):
+    def __init__( self, uri:str, context:Context, result:SDBLFlagResults, plots:List[Plot],
+                  filename:str, title:str, 
+                  allflags:Optional[bool]=False, ownflag:Optional[bool]=False, types:Optional[bool]=True ):
         """
         Construct SDBLFlagStatisticsPlotRenderer instance.
 
         Args:
+            uri       : Mako template to use
             context   : Pipeline Context
             result    : SDBLFlagResults
             plots     : List of plot objects
             title     : Title string for the subpage
-            histogram : Switch for histogram selector ( True:with, False: without )
+            allflags  : If true, feeds all flagging statistics to the selector
+            ownflag   : If true, feeds only the corresponding flag statistics to the selector
+            types     : If true, feeds the type information to the selector
         Returns:
             (none)
         """
-        self.histogram = histogram
-        uri = 'hsd_blflag_statistics.mako' if histogram else 'hsd_blflag_statistics_nohist.mako'
+        LOG.info( "###@@ SDBLFlagStatisticsPlotRenderer.__init__()" )
+        self.allflags = allflags
+        self.ownflag  = ownflag
+        self.types    = types
 
         outfile = filenamer.sanitize( filename.replace( " ", "_") )
         super(SDBLFlagStatisticsPlotRenderer, self ).__init__( uri, context, result, plots, title, outfile )
-
 
     def update_json_dict( self, d:Dict, plot:Plot ):
         """
@@ -279,14 +287,18 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
         Returns:
             (none)
         """
-        d['type']                 = plot.parameters['type']
-        d['outlier_Tsys']         = plot.parameters['outlier_Tsys']['frac']
-        d['rms_prefit']           = plot.parameters['rms_prefit']['frac']
-        d['rms_postfit']          = plot.parameters['rms_postfit']['frac']
-        d['runmean_prefit']       = plot.parameters['runmean_prefit']['frac']
-        d['runmean_postfit']      = plot.parameters['runmean_postfit']['frac']
-        d['expected_rms_prefit']  = plot.parameters['expected_rms_prefit']['frac']
-        d['expected_rms_postfit'] = plot.parameters['expected_rms_postfit']['frac']
+        if self.ownflag:
+            d['ownflag']              = plot.parameters['ownflag']['frac']
+        if self.types:
+            d['type']                 = plot.parameters['type']
+        if self.allflags:
+            d['outlier_Tsys']         = plot.parameters['outlier_Tsys']['frac']
+            d['rms_prefit']           = plot.parameters['rms_prefit']['frac']
+            d['rms_postfit']          = plot.parameters['rms_postfit']['frac']
+            d['runmean_prefit']       = plot.parameters['runmean_prefit']['frac']
+            d['runmean_postfit']      = plot.parameters['runmean_postfit']['frac']
+            d['expected_rms_prefit']  = plot.parameters['expected_rms_prefit']['frac']
+            d['expected_rms_postfit'] = plot.parameters['expected_rms_postfit']['frac']
 
 
 def accumulate_flag_per_eb( context:Context, results:SDBLFlagResults ) -> Dict:

@@ -14,6 +14,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 
 from .SDFlagPlotter import SDFlagPlotter
+from . import SDFlagRule
 from .worker import _get_permanent_flag_summary, _get_iteration
 from .. import common
 from ..common import utils as sdutils
@@ -155,7 +156,9 @@ class SDBLFlagSummary(object):
                 flagplotter = SDFlagPlotter( self.ms, datatable, antid, spwid, time_gap, FigFileDir )
                 flagplotter.register_data( pol, is_baselined, FlagRule_local, PermanentFlag, NPp_dict, final_thres )
                 plots = flagplotter.create_plots( FigFileRoot )
+                flag_desc = SDFlagRule.SDFlag_Desc
                 for plot in plots:
+                    key = [ k for k, v in flag_desc.items() if v == plot['type'] ][0]
                     plot_list.append( { 'FigFileDir' : FigFileDir,
                                         'FigFileRoot' : FigFileRoot,
                                         'plot' : plot['file'],
@@ -167,11 +170,12 @@ class SDBLFlagSummary(object):
                                         'field' : field_name,
                                         'outlier_Tsys'         : stat_dict['TsysFlag'],
                                         'rms_prefit'           : stat_dict['RmsPreFitFlag'],
-                                        'rms_postfit'          : stat_dict['RmsPostFitFlag'] ,
-                                        'runmean_prefit'       : stat_dict['RunMeanPreFitFlag'] ,
-                                        'runmean_postfit'      : stat_dict['RunMeanPostFitFlag'] ,
-                                        'expected_rms_prefit'  : stat_dict['RmsExpectedPreFitFlag'] ,
-                                        'expected_rms_postfit' : stat_dict['RmsExpectedPostFitFlag']
+                                        'rms_postfit'          : stat_dict['RmsPostFitFlag'],
+                                        'runmean_prefit'       : stat_dict['RunMeanPreFitFlag'],
+                                        'runmean_postfit'      : stat_dict['RunMeanPostFitFlag'],
+                                        'expected_rms_prefit'  : stat_dict['RmsExpectedPreFitFlag'],
+                                        'expected_rms_postfit' : stat_dict['RmsExpectedPostFitFlag'],
+                                        'ownflag'              : stat_dict[key]
                                     } )
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
@@ -189,7 +193,6 @@ class SDBLFlagSummary(object):
         LOG.info('PROFILE execute: elapsed time is %s sec'%(end_time-start_time))
 
         return flagSummary, plot_list
-
 
     def pack_flags( self, datatable:DataTable, polid:int, ids, FlagRule_local:Dict ) -> Tuple[ List[int], Dict, List[int], Dict ]:
         """
