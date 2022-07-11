@@ -238,7 +238,7 @@ class Tier0JobRequest(Executable):
             # Exclude the context reference inside the executor shallow copy before pushing from the client
             # to reduce the risk of reaching the MPI buffer size limit (150MiB as of CASA ver6.4.1,
             # see PIPE-13656/PIPE-1337).
-            self.__executor = executor.copy(execlude_context=True)
+            self.__executor = executor.copy(exclude_context=True)
 
     def get_executable(self):
         """Recreate and return executable on the MPI server.
