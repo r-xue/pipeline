@@ -1266,7 +1266,8 @@ class SDSparseMapPlotter(object):
         axes.set_xlim((np.argmin(f), np.argmax(f)))
 
     def plot(self,
-             map_data: np.ndarray, averaged_data: np.ndarray,
+             map_data: Union[np.ndarray, np.ma.masked_array],
+             averaged_data: Union[np.ndarray, np.ma.masked_array],
              frequency: np.ndarray, fit_result: Optional[np.ndarray] = None,
              figfile: Optional[str] = None) -> bool:
         """Generate sparse profile map.
@@ -1309,7 +1310,7 @@ class SDSparseMapPlotter(object):
         # Auto scaling
         # to eliminate max/min value due to bad pixel or bad fitting,
         #  1/10-th value from max and min are used instead
-        valid_index = np.where(map_data.min(axis=2) > NoDataThreshold)
+        valid_index = np.ma.where(map_data.min(axis=2) > NoDataThreshold)
         valid_data = map_data[valid_index[0], valid_index[1], :]
         LOG.debug('valid_data.shape={shape}'.format(shape=valid_data.shape))
         del valid_index
@@ -1434,7 +1435,7 @@ class SDSparseMapPlotter(object):
                     xmin = global_xmin
                     xmax = global_xmax
                     if map_data[x][y].min() > NoDataThreshold:
-                        median = np.median(map_data[x][y])
+                        median = np.ma.median(map_data[x][y])
                         # mad = np.median(map_data[x][y] - median)
                         sigma = map_data[x][y].std()
                         ymin = median - 2.0 * sigma
