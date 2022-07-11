@@ -184,7 +184,11 @@ class Tier0PipelineTask(Executable):
             pickle.dump(task_args, pickle_file, protocol=-1)
 
     def get_executable(self):
-        # the constructor runs on the MPI server, this runs on the MPI client
+        """Recreate and return executable on the MPI server.
+        
+        The returned executable object should have an .execute() function.
+        This reconstruction is based on the content of the Tier0PipelineTask instance pushed from the client.        
+        """
         try:
             with open(self.__context_path, 'rb') as context_file:
                 context = pickle.load(context_file)
@@ -228,10 +232,20 @@ class Tier0JobRequest(Executable):
         super().__init__()        
         self.__creator_fn = creator_fn
         self.__job_args = job_args
-        self.__executor = executor
+        if executor is None:
+            self.__executor = None
+        else:
+            # Exclude the context reference inside the executor shallow copy before pushing from the client
+            # to reduce the risk of reaching the MPI buffer size limit (150MiB as of CASA ver6.4.1,
+            # see PIPE-13656/PIPE-1337).
+            self.__executor = executor.copy(execlude_context=True)
 
     def get_executable(self):
-        """Construct executable on the MPI server."""
+        """Recreate and return executable on the MPI server.
+        
+        The returned executable object should have an .execute() function.
+        This reconstruction is based on the content of the Tier0JobRequest instance pushed from the client.        
+        """
         job_request = self.__creator_fn(**self.__job_args)
         if self.__executor is None:
             return lambda: job_request.execute(dry_run=False)
@@ -240,9 +254,9 @@ class Tier0JobRequest(Executable):
             tmpfile = tempfile.NamedTemporaryFile(suffix='.casa_commands.log', dir='', delete=True)
             tmpfile.close()
             self.logs['casa_commands_tier0'] = tmpfile.name
-            self.logs['casa_commands'] = self.__executor._cmdfile
-            self.__executor._cmdfile = self.logs['casa_commands_tier0']
-            return lambda: self.__executor.execute(job_request)
+            self.logs['casa_commands'] = self.__executor.cmdfile
+            self.__executor.cmdfile = self.logs['casa_commands_tier0']
+            return lambda: self.__executor.execute(job_request, merge=False)
 
     def __str__(self):
         return 'Tier0JobRequest({}, {})'.format(self.__creator_fn, self.__job_args)
@@ -284,7 +298,7 @@ def mpiexec(tier0_executable):
     """
     Execute a pipeline task.
 
-    This function is used to recreate and execute tasks on cluster nodes.
+    This function is used to recreate and execute tasks/jobrequests on cluster nodes.
 
     :param tier0_executable: the Tier0Executable task to execute
     :return: the Result returned by executing the task
