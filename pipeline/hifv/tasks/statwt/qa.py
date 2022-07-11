@@ -32,6 +32,7 @@ class StatwtQAHandler(pqa.QAPlugin):
 
         result.qa.pool.extend(scores)
 
+        # Potentially make this "if vla, NOT VLASS" 
         mean =  result.jobs[0]['mean'] #TODO: will there ever be more than one? I don't think so
         variance = result.jobs[0]['variance'] 
         print("Adding new QA:")

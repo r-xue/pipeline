@@ -10,8 +10,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
 <%
-mean =  result[0].jobs[0]['mean'] #TODO: double-check: can these have more than one value?
-variance = result[0].jobs[0]['variance'] 
 import numpy as np
 
 def format_wt(wt):
@@ -20,11 +18,18 @@ def format_wt(wt):
         return 'N/A'
     else:
         return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
+
+if result[0].inputs['statwtmode'] == 'VLA':
+    mean =  result[0].jobs[0]['mean'] #TODO: double-check: can these have more than one value?
+    variance = result[0].jobs[0]['variance'] 
 %>
+
+% if result[0].inputs['statwtmode'] == 'VLA':
 <h3>Overall results:</h3>
 <b>Mean:</b> ${format_wt(mean)} 
 <br>
 <b>Variance:</b> ${format_wt(variance)}
+% endif 
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
@@ -151,15 +156,14 @@ if not is_vlass:
                 <th scope="col" >3rd Quartile</th>
                 <th scope="col" >Mean</th>
                 <th scope="col" >S.Dev.</th>
+                <th scope="col" >Minimum</th>
+                <th scope="col" >Maximum</th>
             % endif
-            
-            <!-- needs is_vla -->
-            <th scope="col" >Minimum</th>
-            <th scope="col" >Maximum</th>
+
             %if is_vlass:
-            <th scope="col" >Median</th>
-            <th scope="col" >1st/3rd Quartile</th>
-            <th scope="col" >Mean &#177 S.Dev.</th>
+                <th scope="col" >Median</th>
+                <th scope="col" >1st/3rd Quartile</th>
+                <th scope="col" >Mean &#177 S.Dev.</th>
             %endif
 		</tr>        
 	</thead>
@@ -235,9 +239,9 @@ if not is_vlass:
             % endif
 
             %if is_vlass:
-            <th scope="col" >Median</th>
-            <th scope="col" >1st/3rd Quartile</th>
-            <th scope="col" >Mean &#177 S.Dev.</th>
+                <th scope="col" >Median</th>
+                <th scope="col" >1st/3rd Quartile</th>
+                <th scope="col" >Mean &#177 S.Dev.</th>
             %endif
 		</tr>        
 	</thead>
