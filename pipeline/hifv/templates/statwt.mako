@@ -10,12 +10,21 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
 <%
-mean =  result[0].jobs[0]['mean'] # double-check: can these have more than one value
-variance = result[0].jobs[0]['variance'] # double-check: can these have more than one value
-%>
+mean =  result[0].jobs[0]['mean'] # double-check: can these have more than one value?
+variance = result[0].jobs[0]['variance'] 
+import numpy as np
 
-<p>Mean: ${mean}</p>
-<p>Variance: ${variance}</p>
+def format_wt(wt):
+
+    if wt is None:
+        return 'N/A'
+    else:
+        return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
+%>
+<h3>Overall results:</h3>
+<b>Mean:</b> ${format_wt(mean)} 
+<br>
+<b>Variance:</b> ${format_wt(variance)}
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
@@ -44,7 +53,6 @@ after_by_spw=weight_stats['after']['per_spw']
 after_by_ant=weight_stats['after']['per_ant']
 
 if result[0].inputs['statwtmode'] == 'VLA':
-#    before_by_scan=weight_stats['before']['per_scan']
     after_by_scan=weight_stats['after']['per_scan']
     description = "after"
     table_header = "Weight Properties"
@@ -56,16 +64,96 @@ else:
     is_vlass = True
     table_header = "statwt after"
 
+import collections
+def summarize_stats(input_stats):
+    summary = collections.defaultdict(list)
+    for i, row in enumerate(input_stats):
+        for stat in row:
+            val = input_stats[i][stat]
+            if val is None: 
+                summary[stat].append(0) #FIXME: TEMPORARY KLUDGE DO NOT COMMIT
+            else:
+                summary[stat].append(val)
+    return summary
+
+# None of this is needed for VLASS
+summary_spw_stats = summarize_stats(after_by_spw) #collections.defaultdict(list)
+summary_ant_stats = summarize_stats(after_by_ant) #collections.defaultdict(list)
+summary_scan_stats = summarize_stats(after_by_scan) #collections.defaultdict(list)
+
+## for i, row in enumerate(after_by_spw):
+##     for stat in row:
+##         val = after_by_spw[i][stat]
+##         if val is None: 
+##            summary_spw_stats[stat].append(0) #FIXME: TEMPORARY KLUDGE DO NOT COMMIT
+##         else:
+##             summary_spw_stats[stat].append(val)
+
+## # the structure is i:
+## # i : ['mean': val, 'std': val, ''] 
+## #    print("i, stat: {}, {}".format(i, stat))
+
+## for i, row in enumerate(after_by_scan):
+##     for stat in row: 
+##         val = after_by_scan[i][stat]
+##         print("Val: {}".format(val))
+##         if val is None: 
+##             summary_scan_stats[stat].append(0) #FIXME
+##         else:   
+##             summary_scan_stats[stat].append(after_by_scan[i][stat])
+
+## for i, row in enumerate(after_by_ant):
+##     for stat in row: 
+##         print("Val: {}".format(val))
+##         val = after_by_ant[i][stat]
+##         if val is None: 
+##             summary_spw_stats[stat].append(0) #FIXME
+##         else:
+##             summary_ant_stats[stat].append(after_by_ant[i][stat])
 
 import numpy as np
+from matplotlib.pyplot import cm
+import matplotlib.colors as colors
 
-def format_wt(wt):
+def dev2shade(x):
+    cmap=cm.get_cmap(name='Reds')
+    absx=abs(x)
+    if absx<4 and absx>=3:
+        rgb_hex=colors.to_hex(cmap(0.2))
+    elif absx<5 and absx>=4:
+        rgb_hex=colors.to_hex(cmap(0.3))
+    elif absx<6 and absx>=5:
+        rgb_hex=colors.to_hex(cmap(0.4))
+    elif absx>=6:
+        rgb_hex=colors.to_hex(cmap(0.5))
+    else: 
+        rgb_hex=colors.to_hex(cmap(0.1))
+    return rgb_hex  
 
-    if wt is None:
-        return 'N/A'
+def format_cell(whole, value, stat):
+    if (value is None) or (whole is None) or (stat is None) or (value == 'N/A') or is_vlass: # is is_vlass global? 
+        return ''
     else:
-        return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
+##         # eventually move this out so we don't compute _every time_ 
+##         ## summary = []
+##         ## for idx in range(len(whole)):
+##         ##     summary.append(whole[idx][stat])
+             
+        summary = whole[stat]
+        print("summary")
+        print(summary)
+        median = np.median(summary)
+        sigma = np.std(summary)
+        dev = abs(float(value)) - median
+        cell_title='{:.2f}'.format(dev/sigma)
+##         #if abs(dev) > sigma*3.0: #abs or skip it
+        if abs(dev) > 0.25*sigma: #FIXME: for testing
+            bgcolor = dev2shade(dev/(0.25*sigma)) #FIXME - for testing bgcolor = dev2shade(dev/sigma)
+            return f'style="background-color: {bgcolor}", debugging: {cell_title}' #" tooltip: {cell_title}' does not work without addition js
+        else: 
+            return f'debugging: {cell_title}'
 
+bgcolor_list=[dev2shade(3.), dev2shade(4.), dev2shade(5.), dev2shade(6.)]
 %>
 
 <h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>
@@ -79,13 +167,24 @@ def format_wt(wt):
 			<!-- flags before task is always first agent -->
             % if is_vlass: 
     			<th scope="col" colspan="3" style="text-align:center">statwt before</th>
+                <th scope="col" colspan="5" style="text-align:center">${table_header}</th>
+            % else: 
+                <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
             % endif
-			<th scope="col" colspan="5" style="text-align:center">${table_header}</th>
+			
 		</tr>
 		<tr>
             <th scope="col" >Median</th>
-            <th scope="col" >1st/3rd Quartile</th>
-            <th scope="col" >Mean &#177 S.Dev.</th>
+            % if is_vlass:
+                <th scope="col" >1st/3rd Quartile</th>
+                <th scope="col" >Mean &#177 S.Dev.</th>
+            % else: 
+                <th scope="col" >1st Quartile</th>
+                <th scope="col" >3rd Quartile</th>
+                <th scope="col" >Mean</th>
+                <th scope="col" >S.Dev.</th>
+            % endif
+            
             <!-- needs is_vla -->
             <th scope="col" >Minimum</th>
             <th scope="col" >Maximum</th>
@@ -110,15 +209,29 @@ def format_wt(wt):
                 <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>  
             % endif 
 
-            <td>${format_wt(after_by_ant[i]['med'])}</td>
-            % if after_by_ant[i]['quartiles'] is not None:
-                <td>${format_wt(after_by_ant[i]['q1'])}/${format_wt(after_by_ant[i]['q3'])}</td>
+            <td ${format_cell(summary_ant_stats, after_by_ant[i]['med'], 'med')}>${format_wt(after_by_ant[i]['med'])}</td>
+            
+            %if is_vlass:
+                % if after_by_ant[i]['quartiles'] is not None:
+                    <td>${format_wt(after_by_ant[i]['q1'])}/${format_wt(after_by_ant[i]['q3'])}</td>
+                % else:
+                    <td>N/A</td>
+                % endif
+                <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>    
             % else:
-                <td>N/A</td>
+                % if after_by_ant[i]['quartiles'] is not None:
+                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q1']), 'q1')}>${format_wt(after_by_ant[i]['q1'])}</td>
+                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q3']), 'q3')}>${format_wt(after_by_ant[i]['q3'])}</td>
+                % else:
+                    <td>N/A</td><!-- might be able to get rid ov via format_wt-->
+                    <td>N/A</td>
+                % endif
+                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['mean']), 'mean')}>${format_wt(after_by_ant[i]['mean'])}</td>
+                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['stdev']), 'stdev')}>${format_wt(after_by_ant[i]['stdev'])}</td>
             % endif
-            <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>    
-            <td>${format_wt(after_by_ant[i]['min'])}</td>
-            <td>${format_wt(after_by_ant[i]['max'])}</td>      
+
+            <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['min']), 'min')}>${format_wt(after_by_ant[i]['min'])}</td>
+            <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['max']), 'max')}>${format_wt(after_by_ant[i]['max'])}</td>
 		</tr>
 		% endfor
 	</tbody>
@@ -133,17 +246,27 @@ def format_wt(wt):
 			<th scope="col" rowspan="2">Spw Selection</th>
 			<!-- flags before task is always first agent -->
             % if is_vlass: 
-			<th scope="col" colspan="3" style="text-align:center">statwt before</th>
+                <th scope="col" colspan="3" style="text-align:center">statwt before</th>
+                <th scope="col" colspan="5" style="text-align:center">${table_header}</th>
+            % else: 
+                <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
             % endif 
-			<th scope="col" colspan="5" style="text-align:center">${table_header}</th>
 		</tr>
 		<tr>
             <th scope="col" >Median</th>
-            <th scope="col" >1st/3rd Quartile</th>
-            <th scope="col" >Mean &#177 S.Dev.</th>
-                        <!-- needs is_vla -->
-            <th scope="col" >Minimum</th>
-            <th scope="col" >Maximum</th>
+
+            % if is_vlass:
+                <th scope="col" >1st/3rd Quartile</th>
+                <th scope="col" >Mean &#177 S.Dev.</th>
+            % else: 
+                <th scope="col" >1st Quartile</th>
+                <th scope="col" >3rd Quartile</th>
+                <th scope="col" >Mean</th>
+                <th scope="col" >S.Dev.</th>
+                <th scope="col" >Minimum</th>
+                <th scope="col" >Maximum</th>
+            % endif
+
             %if is_vlass:
             <th scope="col" >Median</th>
             <th scope="col" >1st/3rd Quartile</th>
@@ -156,24 +279,38 @@ def format_wt(wt):
 		<tr>
 			<th style="text-align:center">${after_by_spw[i]['spw']}</th>  
             % if is_vlass: 
-            <td>${format_wt(before_by_spw[i]['med'])}</td>
-            % if before_by_spw[i]['quartiles'] is not None:
-                <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>
-            % else:
-                <td>N/A</td>
-            % endif            
-            <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>     
+                <td>${format_wt(before_by_spw[i]['med'])}</td>
+                % if before_by_spw[i]['quartiles'] is not None:
+                    <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>
+                % else:
+                    <td>N/A</td>
+                % endif            
+                <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>     
             %endif 
 
-            <td>${format_wt(after_by_spw[i]['med'])}</td>
-            % if after_by_spw[i]['quartiles'] is not None:
-                <td>${format_wt(after_by_spw[i]['q1'])}/${format_wt(after_by_spw[i]['q3'])}</td>
-            % else:
-                <td>N/A</td>
-            % endif
-            <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
-            <td>${format_wt(after_by_spw[i]['min'])}</td>
-            <td>${format_wt(after_by_spw[i]['max'])}</td>      
+            <td ${format_cell(summary_spw_stats, after_by_spw[i]['med'], 'med')}>${format_wt(after_by_spw[i]['med'])}</td>
+
+            %if is_vlass:
+                % if after_by_spw[i]['quartiles'] is not None:
+                    <td>${format_wt(after_by_spw[i]['q1'])}/${format_wt(after_by_spw[i]['q3'])}</td>
+                % else:
+                    <td>N/A</td>
+                % endif
+                <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
+            %else: 
+                % if after_by_spw[i]['quartiles'] is not None:
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['q1'], 'q1')}>${format_wt(after_by_spw[i]['q1'])}</td>
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['q3'], 'q3')}>${format_wt(after_by_spw[i]['q3'])}</td>
+                % else:
+                    <td>N/A</td>
+                    <td>N/A</td>
+                % endif
+                <td ${format_cell(summary_spw_stats, after_by_spw[i]['mean'], 'mean')}>${format_wt(after_by_spw[i]['mean'])}</td>
+                <td ${format_cell(summary_spw_stats, after_by_spw[i]['stdev'], 'stdev')}>${format_wt(after_by_spw[i]['stdev'])}</td>
+                <td ${format_cell(summary_spw_stats, after_by_spw[i]['min'], 'min')}>${format_wt(after_by_spw[i]['min'])}</td>
+                <td ${format_cell(summary_spw_stats, after_by_spw[i]['max'], 'max')}>${format_wt(after_by_spw[i]['max'])}</td>    
+            %endif
+  
 		</tr>
 		% endfor
 	</tbody>
@@ -187,20 +324,16 @@ def format_wt(wt):
 		<tr>
 			<th scope="col" rowspan="2">Scan Selection</th>
 			<!-- flags before task is always first agent -->
-			<th scope="col" colspan="5" style="text-align:center">${table_header}</th>
+			<th scope="col" colspan="8" style="text-align:center">${table_header}</th>
 		</tr>
 		<tr>
             <th scope="col" >Median</th>
-            <th scope="col" >1st/3rd Quartile</th>
-            <th scope="col" >Mean &#177 S.Dev.</th>
-            <!-- needs is_vla -->
+            <th scope="col" >1st Quartile</th>
+            <th scope="col" >3rd Quartile</th>
+            <th scope="col" >Mean</th>
+            <th scope="col" >S.Dev.</th>
             <th scope="col" >Minimum</th>
             <th scope="col" >Maximum</th>
-            %if is_vlass:
-            <th scope="col" >Median</th>
-            <th scope="col" >1st/3rd Quartile</th>
-            <th scope="col" >Mean &#177 S.Dev.</th>
-            %endif
 		</tr>        
 	</thead>
 
@@ -208,17 +341,21 @@ def format_wt(wt):
 		% for i in range(len(after_by_scan)):
 		<tr>
 			<th style="text-align:center">${after_by_scan[i]['scan']}</th>  
-            <td>${format_wt(after_by_scan[i]['med'])}</td>
+            <td ${format_cell(summary_scan_stats, after_by_scan[i]['med'], 'med')}>${format_wt(after_by_scan[i]['med'])}</td>
             % if after_by_scan[i]['quartiles'] is not None:
-                <td>${format_wt(after_by_scan[i]['q1'])}/${format_wt(after_by_scan[i]['q3'])}</td>
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['q1'], 'q1')}>${format_wt(after_by_scan[i]['q1'])}</td>
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['q3'], 'q3')}>${format_wt(after_by_scan[i]['q3'])}</td>
             % else:
                 <td>N/A</td>
             % endif
-            <td>${format_wt(after_by_scan[i]['mean'])} &#177 ${format_wt(after_by_scan[i]['stdev'])}</td>
-            <td>${format_wt(after_by_scan[i]['min'])}</td>
-            <td>${format_wt(after_by_scan[i]['max'])}</td>      
+            <td ${format_cell(summary_scan_stats, after_by_scan[i]['mean'], 'mean')}>${format_wt(after_by_scan[i]['mean'])}</td>
+            <td ${format_cell(summary_scan_stats, after_by_scan[i]['stdev'], 'stdev')}>${format_wt(after_by_scan[i]['stdev'])}</td>
+            <td ${format_cell(summary_scan_stats, after_by_scan[i]['min'], 'min')}>${format_wt(after_by_scan[i]['min'])}</td>
+            <td ${format_cell(summary_scan_stats, after_by_scan[i]['max'], 'max')}>${format_wt(after_by_scan[i]['max'])}</td>      
 		</tr>
 		% endfor
 	</tbody>
+    <caption> The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>
+    </caption>
 </table>
 %endif 
