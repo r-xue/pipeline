@@ -3,6 +3,9 @@ import os
 import pickle
 import tempfile
 
+from pipeline.extern.asizeof import asizeof
+from pipeline.domain.unitformat import file_size
+
 try:
     from casampi.MPIEnvironment import MPIEnvironment
     from casampi.MPICommandClient import MPICommandClient
@@ -37,6 +40,8 @@ class AsyncTask(object):
         :param executable: the TierN executable class to run
         :return: an AsyncTask object
         """
+        LOG.debug('pushing tier0executable {} from the client: {}'.format(
+            executable, file_size.format(asizeof(executable))))
         self.__pid = mpiclient.push_command_request(
             'pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)',
             block=False,

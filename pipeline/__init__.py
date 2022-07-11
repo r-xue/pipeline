@@ -10,6 +10,7 @@ import webbrowser
 # modules that depend on them.
 from . import extern
 
+from . import domain
 from . import environment
 from . import infrastructure
 
