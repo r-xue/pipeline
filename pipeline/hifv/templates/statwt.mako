@@ -95,14 +95,14 @@ def dev2shade(x):
 
 
 def format_cell(whole, value, stat):
-    if (value is None) or (whole is None) or (stat is None) or (value == 'N/A') or is_vlass: # Is is_vlass global? 
+    if (value is None) or (whole is None) or (stat is None) or (value == 'N/A') or is_vlass: #TODO: can't even call for VLASS anyway. Remove this part of conditional
         return ''
     else:
         summary = np.array(whole[stat], dtype=np.float)
         median = np.nanmedian(summary)
         #sigma = np.nanstd(summary)
-        sigma = 1.4826 * np.nanmedian(np.abs(summary - np.nanmedian(summary))) * 1.4826 #TODO: double check -- correct for MAD? 
-        dev = abs(float(value)) - median
+        sigma = 1.4826 * np.nanmedian(np.abs(summary - np.nanmedian(summary))) #TODO: double check -- correct for MAD? 
+        dev = abs(float(value)) - median #TODO
 
         if len(summary) <= 1: 
             return f'debugging: only one entry'
@@ -177,9 +177,8 @@ if not is_vlass:
                 <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>  
             % endif 
 
-            <td ${format_cell(summary_ant_stats, after_by_ant[i]['med'], 'med')}>${format_wt(after_by_ant[i]['med'])}</td>
-            
             %if is_vlass:
+                <td>${format_wt(after_by_ant[i]['med'])}</td>
                 % if after_by_ant[i]['quartiles'] is not None:
                     <td>${format_wt(after_by_ant[i]['q1'])}/${format_wt(after_by_ant[i]['q3'])}</td>
                 % else:
@@ -187,6 +186,7 @@ if not is_vlass:
                 % endif
                 <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>    
             % else:
+                <td ${format_cell(summary_ant_stats, after_by_ant[i]['med'], 'med')}>${format_wt(after_by_ant[i]['med'])}</td>
                 % if after_by_ant[i]['quartiles'] is not None:
                     <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q1']), 'q1')}>${format_wt(after_by_ant[i]['q1'])}</td>
                     <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q3']), 'q3')}>${format_wt(after_by_ant[i]['q3'])}</td>
@@ -196,10 +196,9 @@ if not is_vlass:
                 % endif
                 <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['mean']), 'mean')}>${format_wt(after_by_ant[i]['mean'])}</td>
                 <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['stdev']), 'stdev')}>${format_wt(after_by_ant[i]['stdev'])}</td>
+                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['min']), 'min')}>${format_wt(after_by_ant[i]['min'])}</td>
+                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['max']), 'max')}>${format_wt(after_by_ant[i]['max'])}</td>
             % endif
-
-            <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['min']), 'min')}>${format_wt(after_by_ant[i]['min'])}</td>
-            <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['max']), 'max')}>${format_wt(after_by_ant[i]['max'])}</td>
 		</tr>
 		% endfor
 	</tbody>
@@ -256,9 +255,9 @@ if not is_vlass:
                 <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>     
             %endif 
 
-            <td ${format_cell(summary_spw_stats, after_by_spw[i]['med'], 'med')}>${format_wt(after_by_spw[i]['med'])}</td>
 
             %if is_vlass:
+                <td>${format_wt(after_by_spw[i]['med'])}</td>
                 % if after_by_spw[i]['quartiles'] is not None:
                     <td>${format_wt(after_by_spw[i]['q1'])}/${format_wt(after_by_spw[i]['q3'])}</td>
                 % else:
@@ -266,6 +265,7 @@ if not is_vlass:
                 % endif
                 <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
             %else: 
+                <td ${format_cell(summary_spw_stats, after_by_spw[i]['med'], 'med')}>${format_wt(after_by_spw[i]['med'])}</td>
                 % if after_by_spw[i]['quartiles'] is not None:
                     <td ${format_cell(summary_spw_stats, after_by_spw[i]['q1'], 'q1')}>${format_wt(after_by_spw[i]['q1'])}</td>
                     <td ${format_cell(summary_spw_stats, after_by_spw[i]['q3'], 'q3')}>${format_wt(after_by_spw[i]['q3'])}</td>
