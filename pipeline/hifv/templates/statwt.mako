@@ -100,7 +100,8 @@ def format_cell(whole, value, stat):
     else:
         summary = np.array(whole[stat], dtype=np.float)
         median = np.nanmedian(summary)
-        sigma = np.nanstd(summary)
+        #sigma = np.nanstd(summary)
+        sigma = 1.4826 * np.nanmedian(np.abs(summary - np.nanmedian(summary))) * 1.4826 #TODO: double check -- correct for MAD? 
         dev = abs(float(value)) - median
 
         if len(summary) <= 1: 
@@ -322,7 +323,8 @@ if not is_vlass:
 		</tr>
 		% endfor
 	</tbody>
-    <caption> The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev</p>
+    <caption> The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">
+    6&#963&le;dev.</p> &#963 is defined as 1.4826*MAD.
     </caption>
 </table>
 %endif 
