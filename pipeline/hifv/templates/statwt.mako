@@ -10,7 +10,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Calculate data weights based on st. dev. within each spw.</p>
 
 <%
-mean =  result[0].jobs[0]['mean'] # double-check: can these have more than one value?
+mean =  result[0].jobs[0]['mean'] #TODO: double-check: can these have more than one value?
 variance = result[0].jobs[0]['variance'] 
 import numpy as np
 
@@ -65,55 +65,18 @@ else:
     table_header = "statwt after"
 
 import collections
+import numpy as np
+from matplotlib.pyplot import cm
+import matplotlib.colors as colors
+
 def summarize_stats(input_stats):
     summary = collections.defaultdict(list)
     for i, row in enumerate(input_stats):
         for stat in row:
             val = input_stats[i][stat]
-            if val is None: 
-                summary[stat].append(0) #FIXME: TEMPORARY KLUDGE DO NOT COMMIT
-            else:
-                summary[stat].append(val)
+            summary[stat].append(val)
     return summary
 
-# None of this is needed for VLASS
-summary_spw_stats = summarize_stats(after_by_spw) #collections.defaultdict(list)
-summary_ant_stats = summarize_stats(after_by_ant) #collections.defaultdict(list)
-summary_scan_stats = summarize_stats(after_by_scan) #collections.defaultdict(list)
-
-## for i, row in enumerate(after_by_spw):
-##     for stat in row:
-##         val = after_by_spw[i][stat]
-##         if val is None: 
-##            summary_spw_stats[stat].append(0) #FIXME: TEMPORARY KLUDGE DO NOT COMMIT
-##         else:
-##             summary_spw_stats[stat].append(val)
-
-## # the structure is i:
-## # i : ['mean': val, 'std': val, ''] 
-## #    print("i, stat: {}, {}".format(i, stat))
-
-## for i, row in enumerate(after_by_scan):
-##     for stat in row: 
-##         val = after_by_scan[i][stat]
-##         print("Val: {}".format(val))
-##         if val is None: 
-##             summary_scan_stats[stat].append(0) #FIXME
-##         else:   
-##             summary_scan_stats[stat].append(after_by_scan[i][stat])
-
-## for i, row in enumerate(after_by_ant):
-##     for stat in row: 
-##         print("Val: {}".format(val))
-##         val = after_by_ant[i][stat]
-##         if val is None: 
-##             summary_spw_stats[stat].append(0) #FIXME
-##         else:
-##             summary_ant_stats[stat].append(after_by_ant[i][stat])
-
-import numpy as np
-from matplotlib.pyplot import cm
-import matplotlib.colors as colors
 
 def dev2shade(x):
     cmap=cm.get_cmap(name='Reds')
@@ -130,30 +93,34 @@ def dev2shade(x):
         rgb_hex=colors.to_hex(cmap(0.1))
     return rgb_hex  
 
+
 def format_cell(whole, value, stat):
-    if (value is None) or (whole is None) or (stat is None) or (value == 'N/A') or is_vlass: # is is_vlass global? 
+    if (value is None) or (whole is None) or (stat is None) or (value == 'N/A') or is_vlass: # Is is_vlass global? 
         return ''
     else:
-##         # eventually move this out so we don't compute _every time_ 
-##         ## summary = []
-##         ## for idx in range(len(whole)):
-##         ##     summary.append(whole[idx][stat])
-             
-        summary = whole[stat]
-        print("summary")
-        print(summary)
-        median = np.median(summary)
-        sigma = np.std(summary)
+        summary = np.array(whole[stat], dtype=np.float)
+        median = np.nanmedian(summary)
+        sigma = np.nanstd(summary)
         dev = abs(float(value)) - median
+
+        if len(summary) <= 1: 
+            return f'debugging: only one entry'
+        
         cell_title='{:.2f}'.format(dev/sigma)
-##         #if abs(dev) > sigma*3.0: #abs or skip it
-        if abs(dev) > 0.25*sigma: #FIXME: for testing
-            bgcolor = dev2shade(dev/(0.25*sigma)) #FIXME - for testing bgcolor = dev2shade(dev/sigma)
-            return f'style="background-color: {bgcolor}", debugging: {cell_title}' #" tooltip: {cell_title}' does not work without addition js
+        # if abs(dev) > 0.25*sigma: force for testing
+        if abs(dev) > sigma*3.0: #TODO: ask if abs value is good here...
+            bgcolor = dev2shade(dev/sigma)
+            # bgcolor = dev2shade(dev/(0.25*sigma)) force for testing
+            return f'style="background-color: {bgcolor}", debugging: {cell_title}'
         else: 
             return f'debugging: {cell_title}'
 
-bgcolor_list=[dev2shade(3.), dev2shade(4.), dev2shade(5.), dev2shade(6.)]
+if not is_vlass:
+    summary_spw_stats = summarize_stats(after_by_spw)
+    summary_ant_stats = summarize_stats(after_by_ant)
+    summary_scan_stats = summarize_stats(after_by_scan)
+
+    bgcolor_list=[dev2shade(3.), dev2shade(4.), dev2shade(5.), dev2shade(6.)]
 %>
 
 <h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>

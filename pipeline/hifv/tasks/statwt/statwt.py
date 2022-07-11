@@ -207,5 +207,4 @@ class Statwt(basetask.StandardTaskTemplate):
         job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int', # is int the default? 
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
-#        print("Weight table: ", wtable)
         return wtable
