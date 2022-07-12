@@ -89,6 +89,33 @@ class RenormQAHandler(pqa.QAPlugin):
                 except:
                     # No factors for this spw. Just skip it.
                     pass
+        
+        for target in result.atmWarning: 
+            for spw in result.atmWarning[target]:
+                if result.atmWarning[target][spw]:
+                    if not result.apply:
+                        atm_score = 0.9
+                        shortmsg = "Renormalization correction may be incorrect due to an atmospheric feature"
+                        longmsg = "Renormalization correction may be incorrect in SPW {} due to an atmospheric feature. Suggested "\
+                                  "channel exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
+                    elif result.apply: 
+                        if result.atmAutoExclude: 
+                            atm_score = 0.9
+                            shortmsg = "Channels are being excluded from renormalization correction due to an atmospheric feature"
+                            longmsg = "Channels {} are being excluded from renormalization correction to SPW {} due to an atmospheric " \
+                                      "feature.".format(result.atmExcludeCmd[target][spw], spw)
+                        elif result.excludechan != "":
+                            atm_score = 0.85
+                            shortmsg = "Channels are being excluded from renormalization correction"
+                            longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
+                                      "exclusion: {}".format(result.excludechan, spw, result.atmExcludeCmd[target][spw])
+                        else: 
+                            atm_score = 0.66
+                            shortmsg = "Renormalization correction may be incorrectly applied"
+                            longmsg = "A renormalization correction may be incorrectly applied to SPW {} due to an atmospheric feature! " \
+                                      "Suggested channel exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
+
+                    result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
 
 class RenormListQAHandler(pqa.QAPlugin):

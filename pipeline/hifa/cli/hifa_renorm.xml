@@ -34,7 +34,7 @@
         <value>False</value>
     </param>  
 
-    <param name="spw" subparam="true" type="string">
+    <param name="spw" type="string">
         <shortdescription>List of spectral windows to use in data selection</shortdescription>
         <description>The list of spectral windows. Set to spw='' by default,
             which means the task will select all spectral windows.
@@ -44,9 +44,15 @@
         <value/>
     </param>
 
-    <param name="excludechan" subparam="true" type="string">
+    <param name="excludechan" type="string">
         <shortdescription>Channels to exclude</shortdescription>
         <description>Channels to exclude, e.g. excludechan="{'22':'100~150'}"</description>
+        <value/>
+    </param>
+
+    <param name="atmAutoExclude" type="bool">
+        <shortdescription>Use the recommended excludechans selection.</shortdescription>
+        <description> If True, automatically apply the recommended excludechans selection.</description>
         <value/>
     </param>
 
