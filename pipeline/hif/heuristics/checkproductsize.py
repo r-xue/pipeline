@@ -352,6 +352,7 @@ class CheckProductSizeHeuristics(object):
                         break
                 size_mitigation_parameters['spw'] = ','.join(map(str, sorted(mitigated_spws)))
 
+                LOG.info('At least one cube size exceeded the large cube limit. Only one large SPW will be imaged.')
                 LOG.info('Size mitigation: Setting (cube) spw to %s' % (size_mitigation_parameters['spw']))
 
                 # Recalculate sizes
@@ -400,7 +401,7 @@ class CheckProductSizeHeuristics(object):
                    maxcubesize, total_productsize, \
                    original_imsize, mitigated_imsize, \
                    False, \
-                   {'longmsg': 'Size had to be mitigated (%s)' % (','.join(str(x) for x in size_mitigation_parameters)), \
+                   {'longmsg': 'Size had to be mitigated (%s)%s' % (','.join(str(x) for x in size_mitigation_parameters), ' - large cube limit exceeded' if 'spw' in size_mitigation_parameters else ''), \
                     'shortmsg': 'Size was mitigated'}, \
                    known_synthesized_beams
         else:

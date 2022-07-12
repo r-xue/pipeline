@@ -25,7 +25,7 @@ class RflagDevHeuristic(api.Heuristic):
     """
 
     def __init__(self, ms, ignore_sefd=False):
-        self.vla_sefd = self._get_vla_sefd()
+        self.vla_sefd = self.get_vla_sefd()
         self.ms = ms
         self.spw_rms_scale = self._get_spw_rms_scale(ignore_sefd=ignore_sefd)
 
@@ -40,7 +40,7 @@ class RflagDevHeuristic(api.Heuristic):
             return None
 
     @staticmethod
-    def _get_vla_sefd():
+    def get_vla_sefd():
         """Load the VLA SEFD profile.
 
         PIPE-987: See the ticket attachement for the description of SEFD data files

@@ -35,6 +35,9 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         # requantizer gains (NB: requires CASA 4.1!)
         hifv_priorcals(pipelinemode=pipelinemode)
 
+        # Syspower task
+        hifv_syspower(pipelinemode=pipelinemode)
+
         # Initial test calibrations using bandpass and delay calibrators
         hifv_testBPdcals(pipelinemode=pipelinemode)
 
@@ -65,10 +68,7 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hifv_applycals(pipelinemode=pipelinemode)
 
         # Now run all calibrated data, including the target, through rflag/tfcropflag/extendflag
-        hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='target-vla')
-
-        # Now run all calibrated data, including the target, through rflag
-        hifv_targetflag(pipelinemode=pipelinemode, intents='*TARGET*')        
+        hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='target-vla')            
 
         # Calculate data weights based on standard deviation within each spw
         hifv_statwt(pipelinemode=pipelinemode)

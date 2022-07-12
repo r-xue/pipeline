@@ -55,7 +55,7 @@
             <param name="asis" subparam="true" type="string">
                 <shortdescription>Extra ASDM tables to convert as is</shortdescription>
                 <description>Extra ASDM tables to convert as is</description>
-                <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
+                <value>SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
             </param>
 
             <param name="process_caldevice" subparam="true" type="bool">
@@ -87,10 +87,34 @@
                 <value>True</value>
             </param>
 
-            <param name="asimaging" type="bool">
-                <shortdescription>Import MeasurementSets as imaging MeasurementSets</shortdescription>
-                <description>Import MeasurementSets as imaging MeasurementSets</description>
-                <value>False</value>
+            <param name="datacolumns" subparam="true" type="any">
+                <any type="variant"/>
+                <shortdescription>Define data type per column</shortdescription>
+                <description>Dictionary defining the data types of
+                             existing columns. The format is:
+
+                             {'data': 'data type 1'[, 'corrected': 'data type 2']}
+
+                             For ASDMs the data type can only be RAW and one
+                             can only specify it for the data column.
+
+                             For MSes one can define two different data types
+                             for the DATA and CORRECTED_DATA columns and they
+                             can be any of the known data types (RAW,
+                             REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,
+                             SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,
+                             SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The
+                             intent selection strings _ALL or _SCIENCE can be
+                             skipped. In that case the task determines this
+                             automatically by inspecting the existing intents
+                             in the dataset.
+
+                             Usually, a single datacolumns dictionary is used
+                             for all datasets. If necessary, one can define a
+                             list of dictionaries, one for each EB, with
+                             different setups per EB.
+                </description>
+                <value>{}</value>
             </param>
 
             <param name="lazy" type="bool">
@@ -147,7 +171,7 @@
                     </equals>
                     <equals type="string" value="interactive">
                         <default param="asis">
-                            <value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
+                            <value type="string">SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
                         </default>
                         <default param="ocorr_mode">
                             <value type="string">ca</value>
@@ -173,7 +197,7 @@
                     </equals>
                     <equals type="string" value="getinputs">
                         <default param="asis">
-                            <value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value>
+                            <value type="string">SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR</value>
                         </default>
                         <default param="process_caldevice">
                             <value type="bool">False</value>

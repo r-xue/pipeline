@@ -77,6 +77,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             # Get original coordinates
             ra_head = {'unit': header['cunit1'], 'value': header['crval1']}
             dec_head = {'unit': header['cunit2'], 'value': header['crval2']}
+            freq_head = {'unit': header['cunit3'], 'value': header['crval3']}
 
             # Mean observing time
             if date_time is None:
@@ -87,6 +88,11 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             # Compute correction
             offset = calc_wide_field_pos_cor(ra=ra_head, dec=dec_head, obs_long=obs_long,
                                              obs_lat=obs_lat, date_time=date_time)
+            
+            # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
+            freq_scale = (3.e9/freq_head['value'])**2
+            offset[0]['value'] = offset[0]['value']*freq_scale
+            offset[1]['value'] = offset[1]['value']*freq_scale
 
             # Apply corrections
             ra_rad_fixed = casa_tools.quanta.sub(
@@ -173,6 +179,7 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
         ha_rad = ha_rad + 2.0 * np.pi
 
     # Compute correction
+    # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
     amp = np.deg2rad(0.25 / 3600.0)
     offset = np.zeros(2)
     zd = np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad)

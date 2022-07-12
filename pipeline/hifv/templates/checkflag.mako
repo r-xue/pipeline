@@ -122,11 +122,11 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
     </ul>
 %endif
 
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped table-hover">
 	<caption></caption>
 	<thead>
 		<tr>
-			<th rowspan="2">Antenna Selection</th>
+			<th rowspan="2">Antenna</th>
 			<!-- flags before task is always first agent -->
 			<th rowspan="2">flagged before</th>
 			<th rowspan="2">flagged after</th>
@@ -145,13 +145,13 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
 	</tbody>
 </table>
 
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped table-hover">
 	<caption>Summary of flagged data. Each cell states the amount of data
 		flagged as a fraction of the specified data selection.
 	</caption>
 	<thead>
 		<tr>
-			<th rowspan="2">Spw Selection</th>
+			<th rowspan="2">Spw</th>
 			<!-- flags before task is always first agent -->
 			<th rowspan="2">flagged before</th>
 			<th rowspan="2">flagged after</th>

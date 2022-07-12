@@ -5,8 +5,9 @@ Classes:
     DataType: An Enum class to define data type.
 """
 
-from enum import Enum, auto
+from enum import Enum, auto, unique
 
+@unique
 class DataType(Enum):
     """
     A class to define DataType enum.
@@ -30,4 +31,3 @@ class DataType(Enum):
     SELFCAL_CONTLINE_SCIENCE = auto()
     REGCAL_LINE_SCIENCE = auto()
     SELFCAL_LINE_SCIENCE = auto()
-
