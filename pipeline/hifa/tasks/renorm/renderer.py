@@ -5,10 +5,6 @@ import re
 from typing import Dict, List
 import xml.etree.ElementTree as ET
 
-from pipeline.infrastructure.utils import weblog
-
-import pipeline.h.tasks.common.displays.image as image
-import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -100,7 +96,10 @@ def make_renorm_table(context, results, weblog_dir):
 
     merged_rows = utils.merge_td_columns(rows, num_to_merge=2)
     merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
-    apply_results = result.inputs['apply']
+
+    # Fetch the input value of 'apply' which is the same for all results
+    apply_results = results[0].inputs['apply'] 
+    
     for row, _ in enumerate(merged_rows):
         mm = re.search(r'<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
         if mm:  # do we have a pattern match?

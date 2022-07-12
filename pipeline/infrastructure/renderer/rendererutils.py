@@ -255,7 +255,7 @@ def _build_rows(rows, data, keyfuncs, axis: str=''):
     # if this is a leaf, i.e., we are in the lowest level grouping and there's
     # nothing further to group by, add a new row
     if not keyfuncs:
-        rows.append((axis, data))
+        rows.append((data, axis))
         return
 
     # otherwise, this is not the final sorting axis and so proceed to group

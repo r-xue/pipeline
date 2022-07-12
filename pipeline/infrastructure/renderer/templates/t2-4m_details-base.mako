@@ -61,7 +61,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for idx_row, (group_name, plots_in_row) in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
+        % for idx_row, (plots_in_row, group_name) in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
 
         % if idx_row!=0:
             % if separate_rows_by=='thick-line':

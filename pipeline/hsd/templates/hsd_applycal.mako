@@ -84,7 +84,7 @@ import pipeline.infrastructure.utils as utils
 				% endif
 			</h4>
 
-			% for plots_in_row in rendererutils.group_plots(ms_plots, break_rows_by):
+			% for plots_in_row, _ in rendererutils.group_plots(ms_plots, break_rows_by):
 			<div class="row">
 				% if plots_in_row is not None:
 				% for plot in rendererutils.sort_row_by(plots_in_row, sort_row_by):
