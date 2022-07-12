@@ -1024,6 +1024,16 @@ class SingleDishPointingChart(object):
 
         ret = self._get_plot_object()
 
+        # re-create thumbnail file
+        if revise_plot:
+            # remove thumbnail file
+            thumb_file = ret.thumbnail
+            if os.path.exists(thumb_file):
+                os.remove(thumb_file)
+
+            # access thumbnail attribute again to create thumbnail file
+            thumb_file = ret.thumbnail
+
         # execute gc.collect() when the number of uncollected objects reaches 256 (decided ad hoc) or more.
         # figure.Figure creates a huge number of objects, and if plot() is called a significant number of times to plot points,
         # the python kernel cannot collect objects all at once by default GC setting.
