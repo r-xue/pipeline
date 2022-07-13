@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Tuple
 from pipeline.infrastructure import Context
 from pipeline.domain import DataTable, MeasurementSet
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 
 from .SDFlagPlotter import SDFlagPlotter
@@ -95,6 +96,7 @@ class SDBLFlagSummary(object):
 
         flagSummary = []
         plot_list = []
+
         # loop over members (practically, per antenna loop in an MS)
         for (antid, fieldid, spwid, pollist) in zip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('Performing flagging for %s Antenna %d Field %d Spw %d' % (ms.basename, antid, fieldid, spwid))

@@ -33,7 +33,7 @@ LOG = infrastructure.get_logger(__name__)
 
 # A named tuple to store statistics of baseline quality
 BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
-
+QualityStat = collections.namedtuple('QualityStat', 'vis field spw ant pol stat')
 
 class PlotterPool(object):
     """Pool class to hold resources for plotting.
@@ -293,18 +293,14 @@ class BaselineSubtractionPlotManager(object):
         stage_number = self.context.task_counter
         self.stage_dir = os.path.join(self.context.report_dir, "stage%d" % stage_number)
         self.baseline_quality_stat = dict()
+        self.baseline_quality_stat = []
 
-        if basetask.DISABLE_WEBLOG:
-            self.pool = None
-            self.prefit_storage = None
-            self.postfit_storage = None
-        else:
-            if not os.path.exists(self.stage_dir):
-                os.makedirs(self.stage_dir, exist_ok=True)   #handle race condition in Tier-0 operation gracefully
+        if not os.path.exists(self.stage_dir):
+            os.makedirs(self.stage_dir, exist_ok=True)   #handle race condition in Tier-0 operation gracefully
 
-            self.pool = PlotterPool()
-            self.prefit_storage = PlotDataStorage()
-            self.postfit_storage = PlotDataStorage()
+        self.pool = PlotterPool()
+        self.prefit_storage = PlotDataStorage()
+        self.postfit_storage = PlotDataStorage()
 
     def initialize(self, ms: 'MeasurementSet', blvis: str) -> bool:
         """Initialize plot manager with given MS.
@@ -316,8 +312,6 @@ class BaselineSubtractionPlotManager(object):
         Returns:
             Initialization status
         """
-        if basetask.DISABLE_WEBLOG:
-            return True
 
         self.ms = ms
 
@@ -398,8 +392,6 @@ class BaselineSubtractionPlotManager(object):
         Returns:
             List of compressed Plot objects
         """
-        if basetask.DISABLE_WEBLOG:
-            return []
 
         if grid_table is None:
             return []
@@ -580,104 +572,106 @@ class BaselineSubtractionPlotManager(object):
             lines_map = None
 
         plot_list = {}
-
-        # plot post-fit spectra
-        plot_list['post_fit'] = {}
-        plotter.setup_reference_level(0.0)
-        plotter.set_deviation_mask(deviation_mask)
-        plotter.set_edge(edge)
-        plotter.set_atm_transmission(atm_transmission, atm_frequency)
-        plotter.set_global_scaling()
-        if utils.is_nro(self.context):
-            plotter.set_channel_axis()
-        for ipol in range(npol):
-            postfit_figfile = postfit_figfile_prefix + '_pol%s.png' % ipol
-            #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
-            if lines_map is not None:
-                plotter.setup_lines(line_range, lines_map[ipol])
-            else:
-                plotter.setup_lines(line_range)
-            plotter.plot(postfit_map_data[:, :, ipol, :],
-                         postfit_integrated_data[ipol],
-                         frequency, figfile=postfit_figfile)
-            #LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
-            if os.path.exists(postfit_figfile):
-                plot_list['post_fit'][ipol] = postfit_figfile
-
-        prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
-                                                           num_ra, num_dec,
-                                                           nchan, npol, rowlist,
-                                                           rowmap=in_rowmap,
-                                                           integrated_data_storage=self.prefit_storage.integrated_data,
-                                                           map_data_storage=self.prefit_storage.map_data,
-                                                           map_mask_storage=self.prefit_storage.map_mask)
-
-        # fit_result shares its storage with postfit_map_data to reduce memory usage
-        fit_result = postfit_map_data
-        for x in range(num_ra):
-            for y in range(num_dec):
-                prefit = prefit_map_data[x][y]
-                if not numpy.all(prefit == display.NoDataThreshold):
-                    postfit = postfit_map_data[x][y]
-                    fit_result[x, y] = prefit - postfit
+        if not basetask.DISABLE_WEBLOG:
+            # plot post-fit spectra
+            plot_list['post_fit'] = {}
+            plotter.setup_reference_level(0.0)
+            plotter.set_deviation_mask(deviation_mask)
+            plotter.set_edge(edge)
+            plotter.set_atm_transmission(atm_transmission, atm_frequency)
+            plotter.set_global_scaling()
+            if utils.is_nro(self.context):
+                plotter.set_channel_axis()
+            for ipol in range(npol):
+                postfit_figfile = postfit_figfile_prefix + '_pol%s.png' % ipol
+                #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
+                if lines_map is not None:
+                    plotter.setup_lines(line_range, lines_map[ipol])
                 else:
-                    fit_result[x, y, ::] = display.NoDataThreshold
-
-        # plot pre-fit spectra
-        plot_list['pre_fit'] = {}
-        plotter.setup_reference_level(None)
-        plotter.unset_global_scaling()
-        for ipol in range(npol):
-            prefit_figfile = prefit_figfile_prefix + '_pol%s.png'%(ipol)
-            #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
-            if lines_map is not None:
-                plotter.setup_lines(line_range, lines_map[ipol])
+                    plotter.setup_lines(line_range)
+                plotter.plot(postfit_map_data[:, :, ipol, :],
+                             postfit_integrated_data[ipol],
+                             frequency, figfile=postfit_figfile)
+                #LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
+                if os.path.exists(postfit_figfile):
+                    plot_list['post_fit'][ipol] = postfit_figfile
+    
+            prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
+                                                               num_ra, num_dec,
+                                                               nchan, npol, rowlist,
+                                                               rowmap=in_rowmap,
+                                                               integrated_data_storage=self.prefit_storage.integrated_data,
+                                                               map_data_storage=self.prefit_storage.map_data,
+                                                               map_mask_storage=self.prefit_storage.map_mask)
+    
+            # fit_result shares its storage with postfit_map_data to reduce memory usage
+            fit_result = postfit_map_data
+            for x in range(num_ra):
+                for y in range(num_dec):
+                    prefit = prefit_map_data[x][y]
+                    if not numpy.all(prefit == display.NoDataThreshold):
+                        postfit = postfit_map_data[x][y]
+                        fit_result[x, y] = prefit - postfit
+                    else:
+                        fit_result[x, y, ::] = display.NoDataThreshold
+    
+            # plot pre-fit spectra
+            plot_list['pre_fit'] = {}
+            plotter.setup_reference_level(None)
+            plotter.unset_global_scaling()
+            for ipol in range(npol):
+                prefit_figfile = prefit_figfile_prefix + '_pol%s.png'%(ipol)
+                #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
+                if lines_map is not None:
+                    plotter.setup_lines(line_range, lines_map[ipol])
+                else:
+                    plotter.setup_lines(line_range)
+                plotter.plot(prefit_map_data[:, :, ipol, :],
+                             prefit_integrated_data[ipol],
+                             frequency, fit_result=fit_result[:, :, ipol, :], figfile=prefit_figfile)
+                #LOG.info('#TIMING# End SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
+                if os.path.exists(prefit_figfile):
+                    plot_list['pre_fit'][ipol] = prefit_figfile
+    
+            del prefit_map_data, postfit_map_data, fit_result
+    
+            prefit_averaged_data = get_averaged_data(prefit_data, dtrows,
+                                                     num_ra, num_dec,
+                                                     nchan, npol, rowlist,
+                                                     rowmap=in_rowmap,
+                                                     map_data_storage=self.prefit_storage.map_data,
+                                                     map_mask_storage=self.prefit_storage.map_mask)
+    
+            if line_range is not None:
+                lines_map_avg = get_lines2(prefit_data, self.datatable, num_ra,
+                                           rowlist, polids, rowmap=in_rowmap)
             else:
-                plotter.setup_lines(line_range)
-            plotter.plot(prefit_map_data[:, :, ipol, :],
-                         prefit_integrated_data[ipol],
-                         frequency, fit_result=fit_result[:, :, ipol, :], figfile=prefit_figfile)
-            #LOG.info('#TIMING# End SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
-            if os.path.exists(prefit_figfile):
-                plot_list['pre_fit'][ipol] = prefit_figfile
-
-        del prefit_map_data, postfit_map_data, fit_result
-
-        prefit_averaged_data = get_averaged_data(prefit_data, dtrows,
-                                                 num_ra, num_dec,
-                                                 nchan, npol, rowlist,
-                                                 rowmap=in_rowmap,
-                                                 map_data_storage=self.prefit_storage.map_data,
-                                                 map_mask_storage=self.prefit_storage.map_mask)
-
-        if line_range is not None:
-            lines_map_avg = get_lines2(prefit_data, self.datatable, num_ra,
-                                       rowlist, polids, rowmap=in_rowmap)
-        else:
-            lines_map_avg = None
-        # plot pre-fit averaged spectra
-        plot_list['pre_fit_avg'] = {}
-        plotter.setup_reference_level(None)
-        plotter.unset_global_scaling()
-        for ipol in range(npol):
-            prefit_avg_figfile = prefit_figfile_prefix + '_avg_pol{}.png'.format(ipol)
-            if lines_map_avg is not None:
-                plotter.setup_lines(line_range, lines_map_avg[ipol])
-            else:
-                plotter.setup_lines(line_range)
-            plotter.plot(prefit_averaged_data[:, :, ipol, :],
-                         prefit_integrated_data[ipol],
-                         frequency, fit_result=None, figfile=prefit_avg_figfile)
-
-            if os.path.exists(prefit_avg_figfile):
-                plot_list['pre_fit_avg'][ipol] = prefit_avg_figfile
-
-        del prefit_integrated_data, prefit_averaged_data
-
-        plotter.done()
+                lines_map_avg = None
+            # plot pre-fit averaged spectra
+            plot_list['pre_fit_avg'] = {}
+            plotter.setup_reference_level(None)
+            plotter.unset_global_scaling()
+            for ipol in range(npol):
+                prefit_avg_figfile = prefit_figfile_prefix + '_avg_pol{}.png'.format(ipol)
+                if lines_map_avg is not None:
+                    plotter.setup_lines(line_range, lines_map_avg[ipol])
+                else:
+                    plotter.setup_lines(line_range)
+                plotter.plot(prefit_averaged_data[:, :, ipol, :],
+                             prefit_integrated_data[ipol],
+                             frequency, fit_result=None, figfile=prefit_avg_figfile)
+    
+                if os.path.exists(prefit_avg_figfile):
+                    plot_list['pre_fit_avg'][ipol] = prefit_avg_figfile
+    
+            del prefit_integrated_data, prefit_averaged_data
+    
+            plotter.done()
 
         # baseline flatness plots
         plot_list['post_fit_flatness'] = {}
+        source_name = ms.fields[self.field_id].source.name.replace(' ', '_').replace('/', '_')
+        quality_stat = []
         for ipol in range(npol):
             postfit_qa_figfile = postfit_figfile_prefix + '_flatness_pol%s.png' % ipol
             stat = self.analyze_and_plot_flatness(postfit_integrated_data[ipol],
@@ -686,8 +680,9 @@ class BaselineSubtractionPlotManager(object):
                                                   postfit_qa_figfile)
             if os.path.exists(postfit_qa_figfile):
                 plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
-                if len(stat) > 0:
-                    self.baseline_quality_stat[postfit_qa_figfile] = stat
+            if len(stat) > 0:
+                quality_stat = QualityStat(vis=os.path.basename(ms.origin_ms), field=source_name, spw=virtual_spwid, ant=ms.antennas[antid].name, pol=sd_polmap[ipol], stat=stat)
+                self.baseline_quality_stat.append(quality_stat)
 
         del postfit_integrated_data
 
@@ -740,40 +735,41 @@ class BaselineSubtractionPlotManager(object):
                           bin_max_ratio=bin_max/stddev,
                           bin_diff_ratio=(bin_max-bin_min)/stddev)
         binned_stat.append(stat)
-        # create a plot
-        xmin = min(frequency[0], frequency[-1])
-        xmax = max(frequency[0], frequency[-1])
-        ymin = -3*stddev
-        ymax = 3*stddev
-        plt.clf()
-        plt.plot(frequency, spectrum, color='b', linestyle='-', linewidth=0.4)
-        plt.axis((xmin, xmax, ymin, ymax))
-        plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
-        plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
-        plt.title('Spatially Averaged Spectrum')
-        plt.ylabel(f'Intensity ({brightnessunit})')
-        plt.xlabel('Frequency (GHz)')
-        if edge is not None:
-            (ch1, ch2) = edge
-            fedge0 = ch_to_freq(0, frequency)
-            fedge1 = ch_to_freq(ch1-1, frequency)
-            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
-            fedge3 = ch_to_freq(len(frequency)-1, frequency)
-            plt.axvspan(fedge0, fedge1, color='lightgray')
-            plt.axvspan(fedge2, fedge3, color='lightgray')
-        if line_range is not None:
-            for chmin, chmax in line_range:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
-                plt.axvspan(fmin, fmax, color='cyan')
-        if deviation_mask is not None:
-            for chmin, chmax in deviation_mask:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
-                plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
-        plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
-        plt.plot(binned_freq, binned_data, 'ro')
-        plt.savefig(figfile, dpi=DPIDetail)
+        if not basetask.DISABLE_WEBLOG:
+            # create a plot
+            xmin = min(frequency[0], frequency[-1])
+            xmax = max(frequency[0], frequency[-1])
+            ymin = -3*stddev
+            ymax = 3*stddev
+            plt.clf()
+            plt.plot(frequency, spectrum, color='b', linestyle='-', linewidth=0.4)
+            plt.axis((xmin, xmax, ymin, ymax))
+            plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
+            plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
+            plt.title('Spatially Averaged Spectrum')
+            plt.ylabel(f'Intensity ({brightnessunit})')
+            plt.xlabel('Frequency (GHz)')
+            if edge is not None:
+                (ch1, ch2) = edge
+                fedge0 = ch_to_freq(0, frequency)
+                fedge1 = ch_to_freq(ch1-1, frequency)
+                fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
+                fedge3 = ch_to_freq(len(frequency)-1, frequency)
+                plt.axvspan(fedge0, fedge1, color='lightgray')
+                plt.axvspan(fedge2, fedge3, color='lightgray')
+            if line_range is not None:
+                for chmin, chmax in line_range:
+                    fmin = ch_to_freq(chmin, frequency)
+                    fmax = ch_to_freq(chmax, frequency)
+                    plt.axvspan(fmin, fmax, color='cyan')
+            if deviation_mask is not None:
+                for chmin, chmax in deviation_mask:
+                    fmin = ch_to_freq(chmin, frequency)
+                    fmax = ch_to_freq(chmax, frequency)
+                    plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
+            plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
+            plt.plot(binned_freq, binned_data, 'ro')
+            plt.savefig(figfile, dpi=DPIDetail)
         return binned_stat
 
 

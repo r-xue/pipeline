@@ -1,5 +1,6 @@
 """Worker task for baseline subtraction."""
 import abc
+import collections
 import os
 
 from typing import TYPE_CHECKING, Any, List, Optional, Type, Union
@@ -27,6 +28,8 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.get_logger(__name__)
 
+# A named tuple to store statistics of baseline quality
+QualityStat = collections.namedtuple('QualityStat', 'vis field spw ant pol stat')
 
 class BaselineSubtractionInputsBase(vdp.StandardInputs):
     """Base class of inputs for baseline subtraction task."""
@@ -413,6 +416,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Returns:
             BaselineSubtractionResults instance
         """
+
         # plot
         # initialize plot manager
         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
@@ -425,7 +429,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
-        stats = {}
+        stats = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
             LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
@@ -445,7 +449,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                     org_direction,
                                                                     grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
-                stats.update(plot_manager.baseline_quality_stat)
+                stats = plot_manager.baseline_quality_stat
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list

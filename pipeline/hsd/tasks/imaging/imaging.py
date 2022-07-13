@@ -462,62 +462,64 @@ class SDImaging(basetask.StandardTaskTemplate):
                     if os.path.exists(imagename) and os.path.exists(imagename+'.weight'):
                         tocombine_images.append(imagename)
                         tocombine_org_directions.append(org_direction)
-                    # Additional Step.
-                    # Make grid_table and put rms and valid spectral number array
-                    # to the outcome.
-                    # The rms and number of valid spectra is used to create RMS maps.
-                    LOG.info('Additional Step. Make grid_table')
-                    imagename = imager_result.outcome['image'].imagename
-                    with casa_tools.ImageReader(imagename) as ia:
-                        cs = ia.coordsys()
-                        dircoords = [i for i in range(cs.naxes())
-                                     if cs.axiscoordinatetypes()[i] == 'Direction']
-                        cs.done()
-                        nx = ia.shape()[dircoords[0]]
-                        ny = ia.shape()[dircoords[1]]
 
-                    observing_pattern = msobjs[0].observing_pattern[antids[0]][spwids[0]][fieldids[0]]
-                    grid_task_class = gridding.gridding_factory(observing_pattern)
                     validsps = []
                     rmss = []
                     grid_input_dict = {}
-                    for (msobj, antid, spwid, fieldid, poltypes, _dummy) in _members:
-                        msname = msobj.name # Use parent ms
-                        for p in poltypes:
-                            if p not in grid_input_dict:
-                                grid_input_dict[p] = [[msname], [antid], [fieldid], [spwid]]
+                    if not basetask.DISABLE_WEBLOG:
+                        # Additional Step.
+                        # Make grid_table and put rms and valid spectral number array
+                        # to the outcome.
+                        # The rms and number of valid spectra is used to create RMS maps.
+                        LOG.info('Additional Step. Make grid_table')
+                        imagename = imager_result.outcome['image'].imagename
+                        with casa_tools.ImageReader(imagename) as ia:
+                            cs = ia.coordsys()
+                            dircoords = [i for i in range(cs.naxes())
+                                         if cs.axiscoordinatetypes()[i] == 'Direction']
+                            cs.done()
+                            nx = ia.shape()[dircoords[0]]
+                            ny = ia.shape()[dircoords[1]]
+    
+                        observing_pattern = msobjs[0].observing_pattern[antids[0]][spwids[0]][fieldids[0]]
+                        grid_task_class = gridding.gridding_factory(observing_pattern)
+                        for (msobj, antid, spwid, fieldid, poltypes, _dummy) in _members:
+                            msname = msobj.name # Use parent ms
+                            for p in poltypes:
+                                if p not in grid_input_dict:
+                                    grid_input_dict[p] = [[msname], [antid], [fieldid], [spwid]]
+                                else:
+                                    grid_input_dict[p][0].append(msname)
+                                    grid_input_dict[p][1].append(antid)
+                                    grid_input_dict[p][2].append(fieldid)
+                                    grid_input_dict[p][3].append(spwid)
+    
+                        # Generate grid table for each POL in image (per ANT,
+                        # FIELD, and SPW, over all MSes)
+                        for pol, member in grid_input_dict.items():
+                            _mses = member[0]
+                            _antids = member[1]
+                            _fieldids = member[2]
+                            _spwids = member[3]
+                            _pols = [pol for i in range(len(_mses))]
+                            gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
+                                                                     antennaids=_antids,
+                                                                     fieldids=_fieldids,
+                                                                     spwids=_spwids,
+                                                                     poltypes=_pols,
+                                                                     nx=nx, ny=ny)
+                            gridding_task = grid_task_class(gridding_inputs)
+                            gridding_result = self._executor.execute(gridding_task, merge=False,
+                                                                     datatable_dict=dt_dict)
+    
+                            # Extract RMS and number of spectra from grid_tables
+                            if isinstance(gridding_result.outcome, compress.CompressedObj):
+                                grid_table = gridding_result.outcome.decompress()
                             else:
-                                grid_input_dict[p][0].append(msname)
-                                grid_input_dict[p][1].append(antid)
-                                grid_input_dict[p][2].append(fieldid)
-                                grid_input_dict[p][3].append(spwid)
-
-                    # Generate grid table for each POL in image (per ANT,
-                    # FIELD, and SPW, over all MSes)
-                    for pol, member in grid_input_dict.items():
-                        _mses = member[0]
-                        _antids = member[1]
-                        _fieldids = member[2]
-                        _spwids = member[3]
-                        _pols = [pol for i in range(len(_mses))]
-                        gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
-                                                                 antennaids=_antids,
-                                                                 fieldids=_fieldids,
-                                                                 spwids=_spwids,
-                                                                 poltypes=_pols,
-                                                                 nx=nx, ny=ny)
-                        gridding_task = grid_task_class(gridding_inputs)
-                        gridding_result = self._executor.execute(gridding_task, merge=False,
-                                                                 datatable_dict=dt_dict)
-
-                        # Extract RMS and number of spectra from grid_tables
-                        if isinstance(gridding_result.outcome, compress.CompressedObj):
-                            grid_table = gridding_result.outcome.decompress()
-                        else:
-                            grid_table = gridding_result.outcome
-                        validsps.append([r[6] for r in grid_table])
-                        rmss.append([r[8] for r in grid_table])
-                        del grid_table
+                                grid_table = gridding_result.outcome
+                            validsps.append([r[6] for r in grid_table])
+                            rmss.append([r[8] for r in grid_table])
+                            del grid_table
 
                     # define RMS ranges in image
                     LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
@@ -605,62 +607,62 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
-
-                # Additional Step.
-                # Make grid_table and put rms and valid spectral number array
-                # to the outcome
-                # The rms and number of valid spectra is used to create RMS maps
-                LOG.info('Additional Step. Make grid_table')
-                imagename = imager_result.outcome['image'].imagename
-                org_direction = imager_result.outcome['image'].org_direction
-                with casa_tools.ImageReader(imagename) as ia:
-                    cs = ia.coordsys()
-                    dircoords = [i for i in range(cs.naxes())
-                                 if cs.axiscoordinatetypes()[i] == 'Direction']
-                    cs.done()
-                    nx = ia.shape()[dircoords[0]]
-                    ny = ia.shape()[dircoords[1]]
-                observing_pattern =  ref_ms.observing_pattern[combined_antids[0]][combined_spws[0]][combined_fieldids[0]]
-                grid_task_class = gridding.gridding_factory(observing_pattern)
                 validsps = []
                 rmss = []
                 grid_input_dict = {}
-                for (msname, antid, spwid, fieldid, poltypes) in zip(combined_infiles, combined_antids, combined_spws,
-                                                                     combined_fieldids, combined_pols):
-                    # msobj = context.observing_run.get_ms(name=common.get_parent_ms_name(context,msname)) # Use parent ms
-                    # ddobj = msobj.get_data_description(spw=spwid)
-                    for p in poltypes:
-                        if p not in grid_input_dict:
-                            grid_input_dict[p] = [[msname], [antid], [fieldid], [spwid]]
+                if not basetask.DISABLE_WEBLOG:
+                    # Additional Step.
+                    # Make grid_table and put rms and valid spectral number array
+                    # to the outcome
+                    # The rms and number of valid spectra is used to create RMS maps
+                    LOG.info('Additional Step. Make grid_table')
+                    imagename = imager_result.outcome['image'].imagename
+                    org_direction = imager_result.outcome['image'].org_direction
+                    with casa_tools.ImageReader(imagename) as ia:
+                        cs = ia.coordsys()
+                        dircoords = [i for i in range(cs.naxes())
+                                     if cs.axiscoordinatetypes()[i] == 'Direction']
+                        cs.done()
+                        nx = ia.shape()[dircoords[0]]
+                        ny = ia.shape()[dircoords[1]]
+                    observing_pattern =  ref_ms.observing_pattern[combined_antids[0]][combined_spws[0]][combined_fieldids[0]]
+                    grid_task_class = gridding.gridding_factory(observing_pattern)
+                    for (msname, antid, spwid, fieldid, poltypes) in zip(combined_infiles, combined_antids, combined_spws,
+                                                                         combined_fieldids, combined_pols):
+                        # msobj = context.observing_run.get_ms(name=common.get_parent_ms_name(context,msname)) # Use parent ms
+                        # ddobj = msobj.get_data_description(spw=spwid)
+                        for p in poltypes:
+                            if p not in grid_input_dict:
+                                grid_input_dict[p] = [[msname], [antid], [fieldid], [spwid]]
+                            else:
+                                grid_input_dict[p][0].append(msname)
+                                grid_input_dict[p][1].append(antid)
+                                grid_input_dict[p][2].append(fieldid)
+                                grid_input_dict[p][3].append(spwid)
+    
+                    for pol, member in grid_input_dict.items():
+                        _mses = member[0]
+                        _antids = member[1]
+                        _fieldids = member[2]
+                        _spwids = member[3]
+                        _pols = [pol for i in range(len(_mses))]
+                        gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
+                                                                 antennaids=_antids,
+                                                                 fieldids=_fieldids,
+                                                                 spwids=_spwids,
+                                                                 poltypes=_pols,
+                                                                 nx=nx, ny=ny)
+                        gridding_task = grid_task_class(gridding_inputs)
+                        gridding_result = self._executor.execute(gridding_task, merge=False,
+                                                                 datatable_dict=dt_dict)
+                        # Extract RMS and number of spectra from grid_tables
+                        if isinstance(gridding_result.outcome, compress.CompressedObj):
+                            grid_table = gridding_result.outcome.decompress()
                         else:
-                            grid_input_dict[p][0].append(msname)
-                            grid_input_dict[p][1].append(antid)
-                            grid_input_dict[p][2].append(fieldid)
-                            grid_input_dict[p][3].append(spwid)
-
-                for pol, member in grid_input_dict.items():
-                    _mses = member[0]
-                    _antids = member[1]
-                    _fieldids = member[2]
-                    _spwids = member[3]
-                    _pols = [pol for i in range(len(_mses))]
-                    gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
-                                                             antennaids=_antids,
-                                                             fieldids=_fieldids,
-                                                             spwids=_spwids,
-                                                             poltypes=_pols,
-                                                             nx=nx, ny=ny)
-                    gridding_task = grid_task_class(gridding_inputs)
-                    gridding_result = self._executor.execute(gridding_task, merge=False,
-                                                             datatable_dict=dt_dict)
-                    # Extract RMS and number of spectra from grid_tables
-                    if isinstance(gridding_result.outcome, compress.CompressedObj):
-                        grid_table = gridding_result.outcome.decompress()
-                    else:
-                        grid_table = gridding_result.outcome
-                    validsps.append([r[6] for r in grid_table])
-                    rmss.append([r[8] for r in grid_table])
-                    del grid_table
+                            grid_table = gridding_result.outcome
+                        validsps.append([r[6] for r in grid_table])
+                        rmss.append([r[8] for r in grid_table])
+                        del grid_table
 
                 # calculate RMS of line free frequencies in a combined image
                 LOG.info('Calculate sensitivity of combined image')
@@ -746,21 +748,25 @@ class SDImaging(basetask.StandardTaskTemplate):
                                              for iseg in range(0, len(freqs), 2)])
 
                 file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
-                sensitivity = Sensitivity(array='TP',
-                                          field=source_name,
-                                          spw=str(combined_spws[0]),
-                                          bandwidth=cqa.quantity(chan_width, 'Hz'),
-                                          bwmode='repBW',
-                                          beam=beam, cell=qcell,
-                                          sensitivity=cqa.quantity(image_rms, brightnessunit))
-                theoretical_noise = Sensitivity(array='TP',
-                                          field=source_name,
-                                          spw=str(combined_spws[0]),
-                                          bandwidth=cqa.quantity(chan_width, 'Hz'),
-                                          bwmode='repBW',
-                                          beam=beam, cell=qcell,
-                                          sensitivity=theoretical_rms)
-                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
+                if basetask.DISABLE_WEBLOG:
+                    theoretical_noise = None
+                    sensitivity_info = None
+                else:
+                    sensitivity = Sensitivity(array='TP',
+                                              field=source_name,
+                                              spw=str(combined_spws[0]),
+                                              bandwidth=cqa.quantity(chan_width, 'Hz'),
+                                              bwmode='repBW',
+                                              beam=beam, cell=qcell,
+                                              sensitivity=cqa.quantity(image_rms, brightnessunit))
+                    theoretical_noise = Sensitivity(array='TP',
+                                              field=source_name,
+                                              spw=str(combined_spws[0]),
+                                              bandwidth=cqa.quantity(chan_width, 'Hz'),
+                                              bwmode='repBW',
+                                              beam=beam, cell=qcell,
+                                              sensitivity=theoretical_rms)
+                    sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
