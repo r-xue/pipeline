@@ -32,7 +32,7 @@ except Exception as e:
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
-    asis = vdp.VisDependentProperty(default='Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
+    asis = vdp.VisDependentProperty(default='Annotation Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
     dbservice = vdp.VisDependentProperty(default=False)
     createmms = vdp.VisDependentProperty(default='false')
     # sets threshold for polcal parallactic angle coverage. See PIPE-597
@@ -40,12 +40,12 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, dbservice=None,
-                 createmms=None, ocorr_mode=None, asimaging=None, minparang=None):
+                 createmms=None, ocorr_mode=None, datacolumns=None, minparang=None):
         super(ALMAImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                    process_caldevice=process_caldevice, session=session,
                                                    overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                    save_flagonline=save_flagonline, createmms=createmms,
-                                                   ocorr_mode=ocorr_mode, asimaging=asimaging)
+                                                   ocorr_mode=ocorr_mode, datacolumns=datacolumns)
         self.dbservice = dbservice
         self.minparang = minparang
 

@@ -51,7 +51,7 @@ class PolcalflagResults(basetask.Results):
 
 class PolcalflagInputs(vdp.StandardInputs):
 
-    minsnr = vdp.VisDependentProperty(default=2.75)
+    minsnr = vdp.VisDependentProperty(default=2.0)
     phaseupsolint = vdp.VisDependentProperty(default='int')
     refant = vdp.VisDependentProperty(default='')
     solint = vdp.VisDependentProperty(default='inf')
@@ -393,8 +393,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # Convert CASA intent from flagging command to pipeline intent.
             intent_str = utils.to_pipeline_intent(ms, intent)
 
-            # Log a warning.
-            LOG.warning(
+            # Log an attention.
+            LOG.attention(
                 "{msname} - for intent {intent} (field "
                 "{fieldname}) and spw {spw}, the following antennas "
                 "are fully flagged: {ants}".format(
@@ -563,15 +563,6 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
                         # Reset the refant demotion list in the result to be empty.
                         result.refants_to_demote = set()
-                    else:
-                        # Log a warning if any antennas are to be demoted from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are moved to the end '
-                            'of the refant list because they are fully '
-                            'flagged for one or more spws, in one or more '
-                            'fields with intents among {1}: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
 
             # If no list of reference antennas was registered with the MS,
             # raise a warning.

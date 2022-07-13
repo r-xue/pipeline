@@ -12,11 +12,19 @@ import shutil
 import sys
 import tempfile
 
+try:
+    from mako.template import Template
+except ImportError as e:
+    import pipeline.extern
+    from mako.template import Template
 
 class NewTask():
 
     def __init__(self):
-        self.repository_path = os.environ['SCIPIPE_HEURISTICS']
+        try:
+            self.repository_path = os.path.abspath(os.path.expanduser(os.environ['SCIPIPE_HEURISTICS']))
+        except KeyError as e:
+            self.repository_path = None
 
     def parse_command_line(self, argv):
 
@@ -33,12 +41,18 @@ class NewTask():
                             help="Optional module name.  e.g. if task is 'foo' "
                                  "and module is 'bar' then 'tasks/foo/bar.py' is created",
                             type=str, default='', required=False)
+        parser.add_argument('--prefix',
+                            help="Optional repository path when the shell env variable 'SCIPIPE_HEURISTICS' is not available.",
+                            type=str, default=None, required=False)   
 
         try:
             args = parser.parse_args(script_args)
         except:
             parser.print_help()
             return '', '', ''
+
+        if self.repository_path is None and args.prefix is not None:
+            self.repository_path = os.path.abspath(os.path.expanduser(args.prefix))
 
         area = args.package
         task_name = args.task
