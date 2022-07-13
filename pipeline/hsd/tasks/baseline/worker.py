@@ -425,7 +425,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
