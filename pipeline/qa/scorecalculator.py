@@ -1367,7 +1367,7 @@ def score_wvrgcal(ms_name, dataresult):
         # if nothing else score passes will be >1.0
         # truncate to 1.0 - ratio_score now holding imporvement 
         score = 1.0
-        if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
+        if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 or dataresult.PHnoisy is True:
             score = 0.9  # i.e. to blue as a maximum value
             # now adjust 0.1 per bad entry
             reduceBy =  len(flagant_list)*0.1
@@ -1378,9 +1378,9 @@ def score_wvrgcal(ms_name, dataresult):
             if len(flagant_list) > 0:
                 qa_messages.append('Flagged antenna(s) in WVRGCAL') 
             if len(disc_limit) > 0:
-                qa_messages.append('Poor disc value')
+                qa_messages.append('Poor disc value(s) in WVRGCAL')
             if len(rms_limit) > 0:
-                qa_messages.append('Poor rms value')
+                qa_messages.append('Poor rms value(s) in WVRGCAL')
             # before making the score check if noisy BP was triggered
             if dataresult.BPnoisy:
                 score = 0.66  # should be yellow to trigger a warning
@@ -1399,9 +1399,9 @@ def score_wvrgcal(ms_name, dataresult):
         qa_messages.append('No WVR improvement - Check Phase stability')
 
         ## presuming disc list and rms list are all filled 
-        if np.median(disc_list) > disc_max or np.median(disc_list) > rms_max:
+        if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
             score = 0.33
-            qa_messages.append('Poor disc/rms')
+            qa_messages.append('Poor disc/rms value(s) in WVRGCAL')
             if len(flagant_list) > 0:
                 reduceBy = len(disc_limit)*0.1
                 qa_messages.append('Flagged antenna(s) in WVRGCAL')
@@ -1421,9 +1421,9 @@ def score_wvrgcal(ms_name, dataresult):
                 if len(flagant_list) > 0:
                     qa_messages.append('Flagged antenna(s) in WVRGCAL') 
                 if len(disc_limit) > 0:
-                    qa_messages.append('Poor disc value')
+                    qa_messages.append('Poor disc value(s) in WVRGCAL')
                 if len(rms_limit) > 0:
-                    qa_messages.append('Poor rms value')
+                    qa_messages.append('Poor rms value(s) in WVRGCAL')
             score = linear_score(score,0.0,0.66,0.34,0.66)
             # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
 
