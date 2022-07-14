@@ -221,6 +221,8 @@ class ExportDataInputs(vdp.StandardInputs):
     the directory where the data productions will be written
     """
 
+    processing_data_type = [DataType.RAW, DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE]
+
     calimages = vdp.VisDependentProperty(default=[])
     calintents = vdp.VisDependentProperty(default='')
     exportmses = vdp.VisDependentProperty(default=False)
