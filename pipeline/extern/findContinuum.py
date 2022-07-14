@@ -10,7 +10,7 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2022 from PIPE-1221: (as of June 24, 2022)
+Code changes for Pipeline2022 from PIPE-1221: (as of July 04, 2022)
 0) fix for PIPE-1227 (look for .virtspw first)
 1) Do not remove pbmom if it already exists (for speeding up manual use case)
 2) import pickle and add useJointMaskPrior control parameter for mom0mom8jointMask
@@ -22,13 +22,17 @@ Code changes for Pipeline2022 from PIPE-1221: (as of June 24, 2022)
 8) abbreviate Frequency to Freq. in the upper x-axis label to make room for nbin
 9) add removal of median in calculation of initialPeakOverMad (PIPE-848)
 10) Show horizontal cyan line even for ranges that are only one channel wide
-11) add control parameter for peakOverMadCriterion, set to 85
-12) add control parameter for minPeakOverMadForSFCAdjustment, set to 19
+11) add control parameter for peakOverMadCriterion, set to 65
+12) add control parameter for minPeakOverMadForSFCAdjustment, set to 25
 13) add additional clause for momDiffSNR<15 in order to adjust sFC in .autoLower
 14) prevent undefined var if returnSFC=True
 15) in autoLower, change scalingFactor for sFC from 5/7 to 6/7
 16) in ['.extraMask','.onlyExtraMask','.autoLower'], set finalSigmaFindContinuum
 17) skyThresholds adjusted to 5.0, 0.40
+18) change maxMadRatioForSFCAdjustmentInLaterIterations from 1.20 to 1.18
+19) in .extraMask, reset sigmaFindContinuum to sigmaFindContinuumForExtraMask=2.5
+20) fix crash in representativeSpw, remove call to isSingleContinuum
+21) do not revert if momDiffSNR < momDiffLevel
 
 Code changes for Pipeline2021 from PIPE-824: (as of July 20, 2021)
 0) fix for PRTSPR-50321
@@ -224,7 +228,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle9.py,v 5.26 2022/06/24 14:27:37 we Exp $" 
+    myversion = "$Id: findContinuumCycle9.py,v 5.35 2022/07/05 14:29:38 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -355,7 +359,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                   madRatioUpperLimit=1.5, madRatioLowerLimit=1.15,
                   projectCode='', useIAGetProfile=True, useThresholdWithMask=False, 
                   dpi=dpiDefault, normalizeByMAD='auto', returnSnrs=False, # 61
-                  overwriteMoments=False,minPeakOverMadForSFCAdjustment=19,
+                  overwriteMoments=False,minPeakOverMadForSFCAdjustment=25,
                   minPixelsInJointMask=3, userJointMask='', signalRatioTier1=0.967, 
                   snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, mom8minsnr=MOM8MINSNR_DEFAULT, overwriteMasks=True, 
                   rmStatContQuadratic=False, quadraticNsigma=1.8, bidirectionalMaskPhase2=False,
@@ -369,10 +373,10 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                   useMomentDiff=True, smallBandwidthFraction=0.05, smallSpreadFraction=0.33,
                   skipAmendMask=False, useAnnulus=True, cubeSigmaThreshold=7.5, 
                   npixThreshold=7, nbin=1, useJointMaskPrior=False, telescope='ALMA', 
-                  window='flat', subimage=False, maxMadRatioForSFCAdjustment=1.2,  # 104
-                  maxMadRatioForSFCAdjustmentInLaterIterations=1.2, 
+                  window='flat', subimage=False, maxMadRatioForSFCAdjustment=1.18,  # 104
+                  maxMadRatioForSFCAdjustmentInLaterIterations=1.18, 
                   sigmaFindContinuumForExtraMask=2.5,
-                  momDiffLevel=8.0, peakOverMadCriterion=85): # 107
+                  momDiffLevel=8.0, peakOverMadCriterion=65): # 107
                                           
     """
     This function calls functions to:
@@ -640,7 +644,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         TDM spws; it is automatically scaled upward for FDM spws.
     maxTrimFraction: in trimChannels='auto', the max fraction of channels to trim per group
     singleContinuum: if True, treat the cube as having come from a Single_Continuum setup;
-        For testing purpose. This option is overridden by the contents of vis (if specified).
+        For testing purpose, if None, then check the contents of vis (if specified).
     negativeThresholdFactor: scale the nominal negative threshold by this factor (to 
         adjust the sensitivity to absorption features: smaller values=more sensitive)
     signalRatioTier1: threshold for signalRatio, above which we desensitize the level to
@@ -685,7 +689,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     window: the smoothing window to apply to the mean spectrum (when nbin>4)
     """
     executionTimeSeconds = timeUtilities.time()
-    if singleContinuum is None:
+    if singleContinuum is None and vis == '':
         singleContinuum = False
     if meanSpectrumMethod not in meanSpectrumMethods:
         print("Unrecognized option for meanSpectrumMethod: %s" % meanSpectrumMethod)
@@ -788,9 +792,66 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
 
     # channelWidth, nchan, and maxBaseline are now defined, so we can define amendMaskIterations
     minRegions = 13 # 2021.1.00265.S spw18
+    casalogPost('Checking if nbin (%d) is too wide' % (nbin))
     if (nchan / nbin) < minRegions:
-        casalogPost('For nchan=%d, limiting nbin from %d to %d' % (nchan, nbin, nchan//minRegions))
-        nbin = nchan // minRegions
+        originalNbin = 1*nbin
+        if len(vis) == 0:
+            # look for any .ms in the img directory
+            vis = glob.glob(os.path.join(os.path.dirname(img),'*ms'))
+        if len(vis) > 0:
+            if os.path.exists(vis[0]):
+                result = representativeSpwBandwidth(vis[0])
+                if result is None:
+                    repSpw, repBW, repNchan, minBW, maxBW = surmiseRepresentativeSpw(vis[0], checkTarget=False)
+                else:
+                    repBW, repSpw, repNchan, minBW, maxBW = result
+                bandwidthForSensitivity = (repBW/repNchan)*nbin
+                casalogPost('bandwidthForSensitivity = %.6f GHz' % (bandwidthForSensitivity*1e-9))
+                myspw = getSpwFromPipelineImageName(img)
+                if myspw is not None:
+                    bandwidth = np.abs(nchan*channelWidth)
+                    if (minBW < 215e6 and bandwidth > 650e6):
+                        # If I am wide (937/1875) and any other window is 
+                        # narrow (58/117), then limit nbin
+                        if True:
+                            nbin = 1
+                        else:
+                            if maxBaseline < 60:
+                                nbin = 3
+                            else:
+                                nbin = 2
+                        casalogPost('Because my spw is wide and another spw is narrow, limiting nbin to %d' % (nbin))
+                    elif (bandwidthForSensitivity > bandwidth):
+                        # If the bwForSensitivity is 
+                        # wider than me, then limit nbin
+                        if True:
+                            nbin = 1
+                        else:
+                            if maxBaseline < 60:
+                                nbin = 3
+                            else:
+                                nbin = 2
+                        casalogPost('Because my spw bandwidth (%f) is narrower than the bandwidthForSensitivity (%f), limiting nbin to %d' % (bandwidth,bandwidthForSensitivity,nbin))
+                    else:
+                        if repBW <= 0:
+                            casalogPost('rep spw not found from ms.')
+                        else:
+                            casalogPost('My bandwidth is not much wider than the narrowest spw, nor is it narrower than the bandwidthForSensitivity.')
+                        nbin = nchan // minRegions
+                        casalogPost('Setting nbin to %d//%d = %d' % (nchan,minRegions,nbin))
+                else:
+                    casalogPost('spw ID not parsed from img name.')
+                    nbin = nchan // minRegions
+            else:
+                casalogPost('Could not find vis=%s.' % (vis[0]))
+                nbin = nchan // minRegions
+        else:
+            casalogPost('No vis specified. Skipping search for repSpw.')
+            nbin = nchan // minRegions
+        if nbin > 3:
+            casalogPost('For nchan=%d, limiting nbin from %d to %d' % (nchan, originalNbin, nbin))
+    else:
+        casalogPost('nchan/nbin = %d/%d = %f > %d' % (nchan,nbin,nchan/nbin,minRegions))
 
     if amendMaskIterations == 'auto':
         if tdmSpectrum(channelWidth, nchan, telescope):
@@ -1060,7 +1121,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         if meanSpectrumMethod != 'mom0mom8jointMask':
             # There can be multiple iterations, so highlight the first one in the log.
             casalogPost('---------- runFindContinuum iteration 0')
-        if vis != '':
+        if vis != '' and singleContinuum is None:  # this is now passed as a parameter
             singleContinuum = isSingleContinuum(vis, spw)
         if False:
             # dump all parameter values to casa log (for debugging purposes)
@@ -1086,8 +1147,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                          avoidance, enableRejectNarrowInnerWindows, 
                          avoidExtremaInNoiseCalcForJointMask, amendMask, momentdir]):
                 casalogPost('%d) %s.'%(v,str(variable)))
-#        if amendMaskIterationName == '.extraMask':
-#            sigmaFindContinuum = sigmaFindContinuumForExtraMask
+        if amendMaskIterationName == '.extraMask':
+            sigmaFindContinuum = sigmaFindContinuumForExtraMask
         casalogPost("amendMaskIteration%d (%s) runFindContinuum: sFC=%s" % (amendMaskIteration, amendMaskIterationName, str(sigmaFindContinuum)))
             
         result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, 
@@ -1367,6 +1428,12 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                 # save the first png again, with the tag "reverted" added, in case we need it later
                 labelDescs[-1].remove()
                 revertedAreaString = areaString + ', reverted'
+                warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                for warning in warnings:
+                    if warning.find('amount') > 0:
+                        revertedAreaString += ', LowBW'
+                    if warning.find('spread') > 0:
+                        revertedAreaString += ', LowSpread'
                 casalogPost("Drawing new areaString: %s" % (revertedAreaString))
                 labelDesc = ax1.text(0.5,0.99-3*0.03, revertedAreaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
                 labelDescs.append(labelDesc)
@@ -2379,9 +2446,9 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                 casalogPost('This mom8fc code triggers reversion to original result.')
         else: 
             code = momDiffCode
-            if momDiffCode in reversionCodes:
+            if momDiffCode in reversionCodes and momDiffSNR > momDiffLevel:
                 revert = True
-                casalogPost('This momDiff code triggers reversion to original result.')
+                casalogPost('This momDiff code with momDiffSNR>%.1f triggers reversion to original result.'%(momDiffLevel))
         if not revert:
             warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
             if len(warnings) == 2:
@@ -2529,9 +2596,9 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                             casalogPost('This mom8fc code triggers reversion to original result.')
                     else: 
                         code = momDiffCode
-                        if momDiffCode in reversionCodes:
+                        if momDiffCode in reversionCodes and momDiffSNR > momDiffLevel:
                             revert = True
-                            casalogPost('This momDiff code triggers reversion to original result.')
+                            casalogPost('This momDiff code with momDiffSNR>%.1f triggers reversion to original result.'%(momDiffLevel))
                 if len(warnings) == 2:
                     revert = True
                     casalogPost('This combination of bandwidth warnings triggers reversion to original result, which had only %d warning(s).' % (len(originalWarnings)))
@@ -2602,6 +2669,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         allContinuum = allContinuumSelected(selectionPreBluePruning, nchan)
 
     casalogPost("final png: %s" % (png))
+    casalogPost("final jointMask: %s" % jointMask)
     casalogPost("Finished findContinuum.py. Execution time: %.1f seconds" % (executionTimeSeconds))
     ########################################################################
     # There are 16 possible return lists, based on control parameters.
@@ -2667,9 +2735,12 @@ def gauss_kern(size):
     g = np.exp(-(x**2/float(size)))
     return g / g.sum()
 
-def smooth(x, window_len=10, window='hanning', verbose=False):
+def smooth(x, window_len=10, window='hanning', verbose=False, newMethod=True):
     """
-    smooth the data using a window with requested size.
+    https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
+    Date: 2017-07-13
+
+    Smooth the data using a window with requested size.
     
     This method is based on the convolution of a scaled window with the signal.
     The signal is prepared by introducing reflected copies of the signal 
@@ -2713,7 +2784,10 @@ def smooth(x, window_len=10, window='hanning', verbose=False):
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman', 'gauss']:
         raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman', 'gauss'")
 
-    s = np.r_[2*x[0]-x[window_len:1:-1], x, 2*x[-1]-x[-1:-window_len:-1]]
+    if newMethod:  # superior
+        s = np.r_[x[window_len:0:-1], x, x[-2:-window_len:-1]] 
+    else:  # this method introduces rollups or rolldowns at the edges
+        s = np.r_[2*x[0]-x[window_len:1:-1], x, 2*x[-1]-x[-1:-window_len:-1]]
     if verbose:
         print("kernel length: %d, window_len: %d, data_len: %d" % (len(s), window_len, len(x)))
     
@@ -4202,7 +4276,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                      useThresholdWithMask=False, dpi=dpiDefault, 
                      normalizeByMAD=False, overwriteMoments=False,
                      initialQuadraticImprovementThreshold=1.6,
-                     minPeakOverMadForSFCAdjustment=19, 
+                     minPeakOverMadForSFCAdjustment=25, 
                      maxMadRatioForSFCAdjustment=1.20,
                      maxMadRatioForSFCAdjustmentInLaterIterations=1.20,
                      minPixelsInJointMask=3, userJointMask='',
@@ -6138,17 +6212,22 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         if (len(channels) == 0):
             selection = ''
         else:
-#            casalogPost("Calling splitListIntoContiguousListsAndTrim(totalChannels=%s, channels=%s, trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(npts), str(channels), str(trimChannels), maxTrim, maxTrimFraction))
+            casalogPost("Calling splitListIntoContiguousListsAndTrim(totalChannels=%s, channels=%s, trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(npts), str(channels), str(trimChannels), maxTrim, maxTrimFraction))
             originalChannels = channels[:]
             channels = splitListIntoContiguousListsAndTrim(npts, channels, 
                          trimChannels, maxTrim, maxTrimFraction, verbose)
             selection = convertChannelListIntoSelection(channels)
             if selection == '':  # fix for PIPE-359
-                casalogPost("WARNING: all potential continuum channels trimmed, which is quite rare.  Reverting to maxTrim=0.1.", priority='WARN')
-                maxTrim = 0.1
+                maxTrim = 0.1; trimChannels = 2
+                casalogPost("WARNING: all potential continuum channels trimmed, which is quite rare.  Reverting to maxTrim=%.2f and trimChannels=%d." % (maxTrim,trimChannels), priority='WARN')
                 channels = splitListIntoContiguousListsAndTrim(npts, originalChannels, 
                               trimChannels, maxTrim, maxTrimFraction, verbose)
                 selection = convertChannelListIntoSelection(channels)
+                if selection == '':  
+                    casalogPost('WARNING: selection is still blank, skipping trim')
+                    channels = splitListIntoContiguousLists(originalChannels)
+                    selection = convertChannelListIntoSelection(channels)
+                    casalogPost('Selection = ', selection)
             groups = len(selection.split(separator))
             if (groups > maxGroupsForMaxTrimAdjustment and trimChannels=='auto'
                 and maxTrim>maxTrimDefault):
@@ -7319,7 +7398,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 nbin = 2 # np.min([2,NBIN_THRESHOLD])
             casalogPost('Limiting nbin to %d because initialPeakOverMad = %.2f > %d' % (nbin,initialPeakOverMad,MAX_PEAK_OVER_MAD))
         casalogPost('Applying nbin of %d' % (nbin))
-        intensity = smooth(intensity, nbin, window)
+        intensity = smooth(intensity, nbin, window)  # original heuristic
     writeMeanSpectrum(meanSpectrumFile, frequency, intensity, 
                       intensity, mom0threshold, 
                       nchan, numberPixelsInMask, mom8threshold, centralArcsec='mom0mom8jointMask', 
@@ -8203,6 +8282,16 @@ def parseFrequencyArgumentToGHz(bandwidth):
         value *= 1e-9
     return(value)
 
+def parseFrequencyArgumentToHz(bandwidth):
+    """
+    Converts a frequency string into floating point in Hz, based on the units.
+    If the units are not present, then the value is assumed to be GHz if less
+    than 1000 (in contrast to parseFrequencyArgument).
+    -Todd Hunter
+    """
+    value = parseFrequencyArgumentToGHz(bandwidth) * 1e9
+    return(value)
+
 def parseFrequencyArgument(bandwidth):
     """
     This function is called by parseFrequencyArgumentToGHz, topoFreqToChannel and cubeFrameToTopo.
@@ -8569,6 +8658,480 @@ def imageSNR(img, axes=[], mask='', maskWithAnnulus='', useAnnulus=False, verbos
     else:
         return snr
 
+def getSpwFromPipelineImageName(img, verbose=False):
+    """
+    Extracts the spw ID from the pipeline image file name.
+    -Todd Hunter
+    """
+    sourceName = os.path.basename(img.rstrip('/'))
+    if verbose: print("A = ", sourceName)
+    if (sourceName.find('.mfs.') < 0):
+        if (sourceName.find('.cube.') < 0):
+            return None
+        else:
+            sourceName = sourceName.split('.cube.')[0]
+    else:
+        sourceName = sourceName.split('.mfs.')[0]
+    if verbose: print("B = ", sourceName)
+    sourceName = sourceName.split('.spw')[1]
+    if verbose: print("spw = ", sourceName)
+    if sourceName.isdigit():
+        return int(sourceName)
+    else:
+        return None
+
+def representativeSpwBandwidth(vis, intent='TARGET', mymsmd=None, verbose=False):
+    """
+    Uses updateSBSummary to learn the name of the representativeWindow, then 
+    translates that name to a science spw ID using msmd.spwsfornames, and 
+    finally a bandwidth.  
+    Returns: spw ID, spw bandwidth in Hz (or 0 if no rep spw can be discerned),
+       minimum science spw bandwidth, maximum science spw bandwidth
+    -Todd Hunter
+    """
+    if not os.path.exists(vis):
+        print("Could not find vis: ", vis)
+        return
+    mytb = tbtool()
+    mytb.open(vis+'/ASDM_SBSUMMARY', nomodify=True)
+    scienceGoal = mytb.getcol('scienceGoal')
+    # Read the existing values for those that were not specified
+    info = {}
+    representativeSPW = None
+    for i,args in enumerate(scienceGoal):
+        # args will look like: 
+        # array(['representativeFrequency = 219.55647641503566 GHz'])
+        for arg in args:
+            # arg will look like: 
+            #  'representativeFrequency = 219.55647641503566 GHz'
+            loc = arg.find('representativeWindow')
+            if (loc >= 0 and representativeSPW is None):
+                tokens = arg[loc:].split()
+                representativeSPW = str(tokens[2])
+                representativeSpwPresent = True
+                info['representativeWindow'] = ' '.join(tokens[2:])
+    if 'representativeWindow' not in info:
+        print("SBSummary does not contain the representativeWindow key")
+        print(info)
+        return
+    if mymsmd is None:
+        mymsmd = msmdtool()
+        mymsmd.open(vis)
+        needToClose = True
+    else:
+        needToClose = False
+    spwname = info['representativeWindow']
+    myspws = mymsmd.spwsfornames(spwname)
+    if spwname not in myspws:
+        print("SBSummary does not contain a valid representativeWindow name")
+        return
+    spw = np.intersect1d(myspws[spwname], mymsmd.spwsforintent('*'+intent+'*'))
+#    spw = np.intersect1d(mymsmd.spwsfornames(info['representativeWindow'])[spwname], mymsmd.spwsforintent('*'+intent+'*'))
+    if len(spw) == 1:
+        spw = spw[0]
+        bandwidth = mymsmd.bandwidths()[spw]
+        nchan = mymsmd.nchan(spw)
+    else:
+        bandwidth = 0
+        nchan = 0
+    bws = getScienceSpwBandwidths(vis, mymsmd=mymsmd)
+    if needToClose:
+        mymsmd.close()
+    return spw, bandwidth, nchan, np.min(bws), np.max(bws)
+    
+def updateSBSummary(vis, representativeFrequency=None, 
+                    minAcceptableAngResolution=None, 
+                    maxAcceptableAngResolution=None,
+                    dynamicRange=None, representativeBandwidth=None,
+                    representativeSource=None, representativeSPW=None,
+                    maxAllowedBeamAxialRatio=None, verbose=True):
+    """
+    Updates the ASDM_SBSUMMARY table of a measurement set with one or more new
+    values.  If a value is not present in the existing table and also not 
+    specified, then it will remain not present in the updated table.
+    representativeFrequency: float value in typical units (GHz), 
+            or string with units (space before units is optional)
+    minAcceptableAngResolution: float value in typical units (arcsec), 
+            or string with units (space before units is required)
+    maxAcceptableAngResolution: float value in typical units (arcsec), 
+            or string with units (space before units is required)
+    dynamicRange: float value
+    representativeBandwidth: float value in typical units (GHz), 
+            or string with units (space before units is optional)
+    representativeSource: string
+    representativeSPW: string
+    maxAllowedBeamAxialRatio: float
+    Returns: dictionary keyed by parameter name
+    -Todd Hunter
+    """
+    if not os.path.exists(vis):
+        print("Could not find ms.")
+        return
+    t = vis+'/ASDM_SBSUMMARY'
+    if not os.path.exists(t):
+        print("Could not find ASDM_SBSUMMARY table for this ms.  Was it imported?")
+        return
+    if (representativeFrequency is not None or 
+        minAcceptableAngResolution is not None or 
+        maxAcceptableAngResolution is not None or maxAllowedBeamAxialRatio is not None or
+        dynamicRange is not None or representativeBandwidth is not None or
+        representativeSource is not None or representativeSPW is not None):
+        update = True
+    else:
+        update = False
+    mytb = tbtool()
+    nomodify = not update
+    mytb.open(vis+'/ASDM_SBSUMMARY', nomodify=nomodify)
+    scienceGoal = mytb.getcol('scienceGoal')
+    numScienceGoal = mytb.getcol('numScienceGoal')[0]
+    representativeSpwPresent = False
+    axialRatioPresent = False
+    mydict = {}
+    # Read the existing values for those that were not specified
+    for i,args in enumerate(scienceGoal):
+        # args will look like: 
+        # array(['representativeFrequency = 219.55647641503566 GHz'])
+        for arg in args:
+            # arg will look like: 
+            #  'representativeFrequency = 219.55647641503566 GHz'
+            loc = arg.find('representativeFrequency')
+            if (loc >= 0 and representativeFrequency is None):
+                tokens = arg[loc:].split()
+                representativeFrequency = float(tokens[2])
+                freqUnits = tokens[3]
+                mydict['representativeFrequency'] = ' '.join(tokens[2:])
+            loc = arg.find('minAcceptableAngResolution')
+            if (loc >= 0 and minAcceptableAngResolution is None):
+                tokens = arg[loc:].split()
+                minAcceptableAngResolution = float(tokens[2])
+                minUnits = tokens[3]
+                mydict['minAcceptableAngResolution'] = ' '.join(tokens[2:])
+            loc = arg.find('maxAcceptableAngResolution')
+            if (loc >= 0 and maxAcceptableAngResolution is None):
+                tokens = arg[loc:].split()
+                maxAcceptableAngResolution = float(tokens[2])
+                maxUnits = tokens[3]
+                mydict['maxAcceptableAngResolution'] = ' '.join(tokens[2:])
+            loc = arg.find('dynamicRange')
+            if (loc >= 0 and dynamicRange is None):
+                tokens = arg[loc:].split()
+                dynamicRange = float(tokens[2])
+                mydict['dynamicRange'] = ' '.join(tokens[2:])
+            loc = arg.find('representativeBandwidth')
+            if (loc >= 0 and representativeBandwidth is None):
+                tokens = arg[loc:].split()
+                representativeBandwidth = float(tokens[2])
+                bwUnits = tokens[3]
+                mydict['representativeBandwidth'] = ' '.join(tokens[2:])
+            loc = arg.find('representativeSource')
+            if (loc >= 0 and representativeSource is None):
+                tokens = arg[loc:].split()
+                representativeSource = str(tokens[2])
+                mydict['representativeSource'] = ' '.join(tokens[2:])
+            loc = arg.find('representativeWindow')
+            if (loc >= 0 and representativeSPW is None):
+                tokens = arg[loc:].split()
+                representativeSPW = str(tokens[2])
+                representativeSpwPresent = True
+                mydict['representativeWindow'] = ' '.join(tokens[2:])
+            loc = arg.find('maxAllowedBeamAxialRatio')
+            if (loc >= 0 and maxAllowedBeamAxialRatio is None):
+                tokens = arg[loc:].split()
+                maxAllowedBeamAxialRatio = float(tokens[2])
+                axialRatioPresent = True
+                mydict['maxAllowedBeamAxialRatio'] = ' '.join(tokens[2:])
+            loc = arg.find('SBName')
+            if (loc >= 0):
+                tokens = arg[loc:].split()
+                sbname = tokens[2]
+                mydict['SBName'] = sbname
+            loc = arg.find('sensitivityGoal')
+            if (loc >= 0):
+                tokens = arg[loc:].split()
+                sbname = tokens[2]
+                mydict['sensitivityGoal'] = sbname
+    if update:
+        # convert any command-line arguments from string to value and units
+        if type(representativeFrequency) is str:
+            representativeFrequency = parseFrequencyArgumentToGHz(representativeFrequency)
+            freqUnits = 'GHz'
+        if type(representativeBandwidth) is str:
+            representativeBandwidth = parseFrequencyArgumentToGHz(representativeBandwidth) * 1000
+            bwUnits = 'MHz'
+        if type(dynamicRange) is str:
+            dynamicRange = float(dynamicRange)
+        if type(minAcceptableAngResolution) is str:
+            result = minAcceptableAngResolution.split()
+            if len(result) == 1:
+                value = result
+                minUnits = 'arcsec'
+            else:
+                value, minUnits = result
+            minAcceptableAngResolution = float(value)
+        if type(maxAcceptableAngResolution) is str:
+            result = maxAcceptableAngResolution.split()
+            if len(result) == 1:
+                value = result
+                maxUnits = 'arcsec'
+            else:
+                value, maxUnits = result
+            maxAcceptableAngResolution = float(value)
+        newvalues = []
+        if representativeFrequency is not None:
+            newvalues += [['representativeFrequency = %f %s'%(representativeFrequency,freqUnits)]]
+        if minAcceptableAngResolution is not None:
+            newvalues += [['minAcceptableAngResolution = %f %s'%(minAcceptableAngResolution, minUnits)]]
+        if maxAcceptableAngResolution is not None:
+            newvalues += [['maxAcceptableAngResolution = %f %s'%(maxAcceptableAngResolution, maxUnits)]]
+        if dynamicRange is not None:
+            newvalues += [['dynamicRange = %f'%(dynamicRange)]]
+        if representativeBandwidth is not None:
+            newvalues += [['representativeBandwidth = %f %s'%(representativeBandwidth, bwUnits)]]
+        if representativeFrequency is not None:
+            newvalues += [['representativeSource = %s'%representativeSource]]
+        if representativeSPW is not None:
+            newvalues += [['representativeWindow = %s'%str(representativeSPW)]]
+        if maxAllowedBeamAxialRatio is not None:
+            newvalues += [['maxAllowedBeamAxialRatio = %f'%maxAllowedBeamAxialRatio]]
+        newvalues = np.array(newvalues, dtype=str)
+        if len(newvalues) != numScienceGoal:
+            print("Updating numScienceGoal to %d" % (len(newvalues)))
+            mytb.putcol('numScienceGoal',[len(newvalues)])
+            casalog.post('Wrote new value of numScienceGoal to %s/ASDM_SBSUMMARY: %d'%(vis,len(newvalues)))
+        print("Putting new values:\n", newvalues)
+        mytb.putcol('scienceGoal',newvalues)
+        casalog.post('Wrote new values to %s/ASDM_SBSUMMARY: %s'%(vis,str(newvalues)))
+    else:
+        if verbose:
+            print("Current values: shape=%s\n" % (str(np.shape(scienceGoal))), scienceGoal)
+        if not representativeSpwPresent:
+            print("Looking for spw that contains the representative frequency...")
+            spw, repBW, minBW, maxBW = representativeSpwBandwidth(vis,verbose=False)
+            if spw is not None:
+                print("spw = ", spw)
+    mytb.close()
+    return mydict
+
+def representativeFrequency(vis, verbose=True, reportSpw=True):
+    """
+    Get the representative frequency from the ASDM_SBSUMMARY table of a
+    measurement set, if it has been imported with asis.
+    e.g. [representativeFrequency = 230.0348592858192 GHz, ...] 
+    verbose: if True, then also print the min/max acceptable angular resolutions
+    reportSpw: if True, then also report the spw that contains this frequency
+    Returns the value in GHz.
+    """
+    if (not os.path.exists(vis)):
+        print("Could not find measurement set.")
+        return
+    mytb = tbtool()
+    if (not os.path.exists(vis+'/ASDM_SBSUMMARY')):
+        print("Could not find ASDM_SBSUMMARY table.  Did you not import it with asis='SBSummary'?")
+        return
+    mytb.open(vis+'/ASDM_SBSUMMARY')
+    scienceGoal = mytb.getcol('scienceGoal')
+    mytb.close()
+    freq = 0
+    minAcceptableResolution = 0
+    maxAcceptableResolution = 0
+    bw = None
+    for args in scienceGoal:
+        for arg in args:
+            loc = arg.find('representativeFrequency')
+            if (loc >= 0):
+                tokens = arg[loc:].split()
+                freq = parseFrequencyArgumentToGHz(tokens[2]+tokens[3])
+            loc = arg.find('representativeBandwidth')
+            if (loc >= 0):
+                tokens = arg[loc:].split()
+                bw = parseFrequencyArgumentToGHz(tokens[2]+tokens[3])
+            loc = arg.find('minAcceptableAngResolution')
+            if (loc >= 0):
+                tokens = arg[loc:].split()
+                minAcceptableResolution = float(tokens[2])
+                minUnits = tokens[3]
+            loc = arg.find('maxAcceptableAngResolution')
+            if (loc >= 0):
+                tokens = arg[loc:].split()
+                maxAcceptableResolution = float(tokens[2])
+                maxUnits = tokens[3]
+    if verbose:
+        print("minAcceptableResolution = %f %s" % (minAcceptableResolution, minUnits))
+        print("maxAcceptableResolution = %f %s" % (maxAcceptableResolution, maxUnits))
+        if bw is not None:
+            print("representativeBandwidth = %f GHz" % (bw))
+        if reportSpw:
+            print("Looking for spw that contains the representative frequency (%.3f GHz)..." % (freq))
+            spw = representativeSpw(vis, verbose=False)
+            if spw is not None:
+                print("representative spw = ", spw)
+    return(freq)
+
+def surmiseRepresentativeSpw(vis, checkTarget=True, verbose=True):
+    """
+    Reads the representative frequency from the measurement set, then computes which science
+    spw(s) contains it.
+    checkTarget: if True, then check whether the rep target is actually obsreved in the 
+        rep spw (SCIREQ-1735, PIPE-377)
+    -Todd Hunter
+    """
+    freq = representativeFrequency(vis, verbose, reportSpw=False)
+    mymsmd = msmdtool()
+    mymsmd.open(vis)
+    spws = getScienceSpwsForFrequency(vis, freq, mymsmd=mymsmd)
+    scienceSpws = getScienceSpws(vis, mymsmd=mymsmd, returnString=False)
+    if (len(spws) == 1):
+        value = spws[0]
+    elif (len(spws) == 0):
+        print("No spws cover the representative frequency (%g GHz)" % (freq))
+        spws = scienceSpws
+        print("Spw central frequencies in GHz: ", np.array([mymsmd.meanfreq(spw) for spw in spws]) * 1e-9)
+        value = None
+    else:
+        print("Multiple spws (%s) cover the representative frequency (%g GHz)" % (str(spws),freq))
+        print("Returning the one nearest to the center.")
+        spw = getScienceSpwsForFrequency(vis, freq, nearestOnly=True, mymsmd=mymsmd)
+        value = spw
+    if checkTarget:
+        mydict = representativeSource(vis, verbose, mymsmd)
+        fieldID = list(mydict.keys())[0]
+        fieldName = list(mydict.values())[0]
+        spws = mymsmd.spwsforfield(fieldID)
+        if value not in spws:
+            print("WARNING: representativeSource (%s) was not observed in representativeSpw (%d)" % (fieldName,value))
+        else:
+            print("The representativeSource (%s) was indeed observed in representativeSpw (%d)" % (fieldName,value))
+    repBW = mymsmd.bandwidths(value)
+    repNchan = mymsmd.nchan(value)
+    bandwidths = mymsmd.bandwidths(scienceSpws)
+    mymsmd.close()
+    return value, repBW, repNchan, np.min(bandwidths), np.max(bandwidths)
+
+def getScienceSpwsForFrequency(vis, frequency, nearestOnly=False, mymsmd=None):
+    """
+    Returns a list of science spws that cover a given frequency.
+    vis: name of measurement set
+    frequency: in Hz, GHz, or a string with units
+    nearestOnly: if True, the return only one spw (nearest to center)
+    -Todd Hunter
+    """
+    needToClose = False
+    if mymsmd is None:
+        mymsmd = createCasaTool(msmdtool)
+        mymsmd.open(vis)
+        needToClose = True
+    spws = getScienceSpws(vis, returnString=False, mymsmd=mymsmd)
+    frequency = parseFrequencyArgumentToHz(frequency)
+    spws2 = []
+    delta = []
+    for spw in spws:
+        freqs = mymsmd.chanfreqs(spw)
+        if (np.min(freqs) <= frequency and np.max(freqs) >= frequency):
+            spws2.append(spw)
+            delta.append(abs(frequency-mymsmd.meanfreq(spw)))
+    if needToClose:
+        mymsmd.close()
+    if nearestOnly:
+        return(spws2[np.argmin(delta)])
+    else:
+        return(spws2)
+
+def getScienceSpwBandwidths(vis, intent='OBSERVE_TARGET#ON_SOURCE', 
+                             tdm=True, fdm=True, mymsmd=None, sqld=False, 
+                             verbose=False, returnDict=False, returnMHz=False):
+    """
+    Returns: an array of bandwidths (in Hz) in order sorted by spw ID
+    returnDict: if True, then return a dictionary keyed by spw ID
+    -Todd Hunter
+    """
+    if mymsmd is None:
+        mymsmd = msmdtool()
+        mymsmd.open(vis)
+        needToClose = True
+    else:
+        needToClose = False
+    spws = sorted(getScienceSpws(vis, intent, False, False, tdm, fdm, mymsmd, sqld, verbose))
+    bandwidths = mymsmd.bandwidths(spws)
+    if needToClose:
+        mymsmd.close()
+    mymsmd.close()
+    if returnMHz:
+        bandwidths *= 1e-6
+    if returnDict:
+        mydict = {}
+        for i, spw in enumerate(spws):
+            mydict[spw] = bandwidths[i]
+        return mydict
+    else:
+        return bandwidths
+
+def getScienceSpws(vis, intent='OBSERVE_TARGET#ON_SOURCE', returnString=True, 
+                   returnListOfStrings=False, tdm=True, fdm=True, mymsmd=None, 
+                   sqld=False, verbose=False, returnFreqRanges=False):
+    """
+    Return a list of spws with the specified intent.  For ALMA data,
+    it ignores channel-averaged and SQLD spws.
+    intent: either full intent name including #subIntent, or an abbreviated key, like 'PHASE'
+    returnString: if True, return '1,2,3'
+                  if False, return [1,2,3]
+    returnListOfStrings: if True, return ['1','2','3']  (amenable to tclean spw parameter)
+                         if False, return [1,2,3]
+    returnFreqRanges: if True, returns a dictionary keyed by spw ID, with values
+          equal to the frequency of the middle of the min and max channel (Hz)
+    -- Todd Hunter
+    """
+    if returnString and returnListOfStrings:
+        print("You can only specify one of: returnString, returnListOfStrings")
+        return
+    needToClose = False
+    if (mymsmd is None):
+        mymsmd = msmdtool()
+        mymsmd.open(vis)
+        needToClose = True
+    allIntents = mymsmd.intents()
+    if (intent not in allIntents and intent != ''):
+        for i in allIntents:
+            if i.find(intent) >= 0:
+                intent = i
+                print("Translated intent to ", i)
+                break
+    # minimum match OBSERVE_TARGET to OBSERVE_TARGET#UNSPECIFIED
+    value = [i.find(intent.replace('*','')) for i in allIntents]
+    # If any intent gives a match, the mean value of the location list will be > -1
+    if np.mean(value) == -1 and intent != '':
+        print("%s not found in this dataset. Available intents: " % (intent), allIntents)
+        if needToClose: 
+            mymsmd.close()
+        if returnString:
+            return ''
+        else:
+            return []
+    if intent == '':
+        spws = mymsmd.spwsforintent('*')
+    else:
+        spws = mymsmd.spwsforintent(intent)
+    if (getObservatoryName(vis).find('ALMA') >= 0 or getObservatoryName(vis).find('OSF') >= 0):
+        almaspws = mymsmd.almaspws(tdm=tdm,fdm=fdm,sqld=sqld)
+        if (len(spws) == 0 or len(almaspws) == 0):
+            scienceSpws = []
+        else:
+            scienceSpws = np.intersect1d(spws,almaspws)
+    else:
+        scienceSpws = spws
+    mydict = {}
+    for spw in scienceSpws:
+        mydict[spw] = sorted([mymsmd.chanfreqs(spw)[0],mymsmd.chanfreqs(spw)[-1]])
+    if needToClose:
+        mymsmd.close()
+    if returnFreqRanges:
+        return mydict
+    if returnString:
+        return(','.join(str(i) for i in scienceSpws))
+    elif returnListOfStrings:
+        return list([str(i) for i in scienceSpws])
+    else:
+        return(list(scienceSpws))
+
 ################################################################################
 # Functions below this point are not used by the Cycle 6 or 7 pipeline or PL2020
 ################################################################################
@@ -8627,7 +9190,8 @@ def readContDatLSRKRanges(filename):
     return lsrkRanges
              
 def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='', 
-                     subimage=False, useAnnulus=True, datfile=''):
+                     subimage=False, useAnnulus=True, datfile='',
+                     outdir=''):
     """
     Allows rapid feedback for adjusting the channel ranges to use for momDiffSNR
     priorValuesFile: a pickle file generated by findContinuum()
@@ -8636,6 +9200,8 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
     subimage: setting this True will raise the pb level of the annulus
     useAnnulus: passed to fc.imageSNR
     datfile: if present, then generate new datfile with the missing ranges removed
+    outdir: if blank, then put it where the cube is
+    Returns: new momDiffSNR, new AggBW (GHz)
     """
     if datfile != '':
         if not os.path.exists(datfile):
@@ -8664,15 +9230,24 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
     selection = intersectRanges
     fcChannels = len(convertSelectionIntoChannelList(selection))
     # build mom8fc image
-    mom8fc = cube+'.recalcMomDiffSNR.mom8fc'
+    if outdir == '':
+        mom8fc = cube+'.recalcMomDiffSNR.mom8fc'
+    else:
+        mom8fc = os.path.join(outdir,os.path.basename(cube)+'.recalcMomDiffSNR.mom8fc')
     removeIfNecessary(mom8fc)  # in case there was a prior run
     immoments(cube, moments=[8], chans=selection, outfile=mom8fc)
     # build mom0fc image
-    mom0fc = cube+'.recalcMomDiffSNR.mom0fc'
+    if outdir == '':
+        mom0fc = cube+'.recalcMomDiffSNR.mom0fc'
+    else:
+        mom0fc = os.path.join(outdir,os.path.basename(cube)+'.recalcMomDiffSNR.mom0fc')
     removeIfNecessary(mom0fc)  # in case there was a prior run
     immoments(cube, moments=[0], chans=selection, outfile=mom0fc)
     # create scaled version
-    mom0fcScaled = mom0fc + '.scaled'
+    if outdir == '':
+        mom0fcScaled = mom0fc + '.scaled'
+    else:
+        mom0fcScaled = os.path.join(outdir, os.path.basename(mom0fc) + '.scaled')
     removeIfNecessary(mom0fcScaled)  # in case there was a prior run
     meanFreqHz = np.mean([firstFreq, lastFreq])
     channelWidth = (lastFreq-firstFreq)/(nchan-1)
@@ -8681,7 +9256,10 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
     print("scale factor = %f, chanWidthKms=%f, fcChannels=%d" % (factor, chanWidthKms, fcChannels))
     immath(mom0fc, mode='evalexpr', expr='IM0*%f'%(factor), outfile=mom0fcScaled)
     # Create momDiff 
-    momDiff = cube+'.recalcMomDiffSNR.momDiff'
+    if outdir == '':
+        momDiff = cube+'.recalcMomDiffSNR.momDiff'
+    else:
+        momDiff = os.path.join(outdir, os.path.basename(cube)+'.recalcMomDiffSNR.momDiff')
     removeIfNecessary(momDiff)  # in case there was a prior run
     pbcube = locatePBCube(cube)
     pbmom = pbcube+'mom'
@@ -8730,7 +9308,7 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
         f.write('%s\n' % (LSRKranges))
         f.close()
         print("Wrote ", foutput)
-    return momDiffSNR
+    return momDiffSNR, newAggBW
 
 def printPickleFile(priorValuesFile):
     """
@@ -9666,48 +10244,11 @@ def transition(vis, spw, source='', intent='OBSERVE_TARGET',
     else:
         transitions = []
     if (len(transitions) == 0):
-        print("No value found for this source/spw (row=%s)." % row)
+        print("No transition value found for this source/spw (row=%s)." % row)
     mytb.close()
     if needToClose:
         mymsmd.close()
     return(transitions)
-
-def getScienceSpws(vis, intent='OBSERVE_TARGET#ON_SOURCE', returnString=True, 
-                   tdm=True, fdm=True, mymsmd=None, sqld=False):
-    """
-    +++++++ This function is not used by pipeline, because it is only used by isSingleContinuum.
-    Return a list of the each spw with the specified intent.  For ALMA data,
-    it ignores channel-averaged and SQLD spws.
-    returnString: if True, it returns: '1,2,3'
-                  if False, it returns: [1,2,3]
-    """
-    needToClose = False
-    if (mymsmd is None or mymsmd == ''):
-        mymsmd = msmdtool()
-        mymsmd.open(vis)
-        needToClose = True
-    if (intent not in mymsmd.intents()):
-        if intent.split('#')[0] in [i.split('#')[0] for i in mymsmd.intents()]:
-            # VLA uses OBSERVE_TARGET#UNSPECIFIED, so try that before giving up
-            intent = intent.split('#')[0]+'*'
-        else:
-            casalogPost("Intent %s not in dataset (nor is %s*)." % (intent,intent.split('#')[0]))
-    spws = mymsmd.spwsforintent(intent)
-    observatory = getObservatoryName(vis)
-    if (observatory.find('ALMA') >= 0 or observatory.find('OSF') >= 0):
-        almaspws = mymsmd.almaspws(tdm=tdm,fdm=fdm,sqld=sqld)
-        if (len(spws) == 0 or len(almaspws) == 0):
-            scienceSpws = []
-        else:
-            scienceSpws = np.intersect1d(spws,almaspws)
-    else:
-        scienceSpws = spws
-    if needToClose:
-        mymsmd.close()
-    if (returnString):
-        return(','.join(str(i) for i in scienceSpws))
-    else:
-        return(list(scienceSpws))
 
 def getObservationStart(vis, obsid=-1, verbose=False):
     """
