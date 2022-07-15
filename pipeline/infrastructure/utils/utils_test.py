@@ -3,13 +3,16 @@ from unittest.mock import Mock
 
 import numpy as np
 import pytest
+import copy
+import os
 
 from pipeline import domain
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, casa_tasks
 
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
-    get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first
+    get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first, \
+    get_taskhistory_fromimage
 
 params_find_ranges = [('', ''), ([], ''), ('1:2', '1:2'), ([1, 2, 3], '1~3'),
                       (['5~12', '14', '16:17'], '5~12,14,16:17'),
@@ -242,3 +245,32 @@ def test_place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_s
     Test place_repr_source_first()
     """
     assert place_repr_source_first(itemlist, repr_source) == expected
+
+
+def test_get_taskhistory_fromimage(tmpdir):
+    """Test get_taskhistory_fromimage()."""
+
+    tclean_job_base = {'vis': 'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms',
+                       'field': 'Uranus', 'spw': ['0'], 'antenna': ['0,1,2,3,4,5,6,7,8,9,10&'],
+                       'scan': ['6'], 'intent': 'CALIBRATE_FLUX#ON_SOURCE', 'datacolumn': 'data',
+                       'imagename': 'oussid.s21_0.Uranus_flux.spw0.mfs.I.iter0', 'imsize': [90, 90],
+                       'cell': ['0.9arcsec'], 'phasecenter': 'TRACKFIELD', 'stokes': 'I', 'specmode': 'mfs',
+                       'pblimit': 0.2, 'deconvolver': 'hogbom', 'restoringbeam': 'common', 'pbcor': False,
+                       'weighting': 'briggs', 'robust': 0.5, 'npixels': 0, 'niter': 0, 'savemodel': 'none', 'parallel': False}
+
+    tclean_job_list = [copy.deepcopy(tclean_job_base) for i in range(2)]
+    tclean_job_list[1]['niter'] = 1
+
+    for tclean_job_parameters in tclean_job_list:
+        vis = casa_tools.utils.resolve(f"pl-unittest/{tclean_job_parameters['vis']}")
+        tclean_job_parameters['vis'] = vis
+        tclean_job_parameters['imagename'] = os.path.join(str(tmpdir), tclean_job_parameters['imagename'])
+        job = casa_tasks.tclean(**tclean_job_parameters)
+        job.execute(dry_run=False)
+
+    task_history_list = get_taskhistory_fromimage(tclean_job_parameters['imagename']+'.model')
+
+    assert len(task_history_list) == len(tclean_job_list)
+    for idx, task_job in enumerate(tclean_job_list):
+        for k, v in task_job.items():
+            assert task_history_list[idx][k] == v

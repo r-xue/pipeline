@@ -25,7 +25,7 @@ LOG = infrastructure.get_logger(__name__)
 class SDRestoreDataInputs(restoredata.RestoreDataInputs):
     """SDRestoreDataInputs manages the inputs for the SDRestoreData task."""
 
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR')
+    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
@@ -54,7 +54,7 @@ class SDRestoreDataInputs(restoredata.RestoreDataInputs):
 class SDRestoreDataResults(restoredata.RestoreDataResults):
     """Results object of SDRestoreData."""
 
-    def __init__(self, importdata_results: SDImportDataResults = None, applycal_results: SDApplycalResults = None, 
+    def __init__(self, importdata_results: SDImportDataResults = None, applycal_results: SDApplycalResults = None,
                  flagging_summaries: List[Dict[str,str]] = None):
         """
         Initialise the results objects.
@@ -123,7 +123,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
 @task_registry.set_equivalent_casa_task('hsd_restoredata')
 class SDRestoreData(restoredata.RestoreData):
     """Restore flagged and calibrated data produced during a previous pipeline run and archived on disk."""
-    
+
     Inputs = SDRestoreDataInputs
 
     def prepare(self):
@@ -153,10 +153,10 @@ class SDRestoreData(restoredata.RestoreData):
         # SDImportDataInputs operate in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
         # InputsContainer.
-        container = vdp.InputsContainer(importdata.SDImportData, inputs.context, vis=vislist, session=sessionlist,
+        container = vdp.InputsContainer(importdata.SerialSDImportData, inputs.context, vis=vislist, session=sessionlist,
                                         save_flagonline=False, lazy=inputs.lazy, bdfflags=inputs.bdfflags,
                                         asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
-        importdata_task = importdata.SDImportData(container)
+        importdata_task = importdata.SerialSDImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 
     def _do_applycal(self):
