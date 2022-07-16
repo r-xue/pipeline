@@ -12,23 +12,30 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <%
 import numpy as np
 
-def format_wt(wt):
-
+def format_wt(wt): #TODO: consider consolidating with below
     if wt is None:
         return 'N/A'
     else:
         return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
 
+def format_wt_overall(wt): #TODO: see above
+    if wt is None:
+        return 'N/A'
+    if wt >= 10**5:
+        return np.format_float_scientific(wt, precision=6, trim='-')
+    else:
+        return np.format_float_positional(wt, precision=6, fractional=False, trim='-')
+
 if result[0].inputs['statwtmode'] == 'VLA':
-    mean =  result[0].jobs[0]['mean'] #TODO: double-check: can these have more than one value?
+    mean =  result[0].jobs[0]['mean'] #TODO: double-check: can these have more than one value? Multiple MS output? 
     variance = result[0].jobs[0]['variance'] 
 %>
 
 % if result[0].inputs['statwtmode'] == 'VLA':
 <h3>Overall results:</h3>
-<b>Mean:</b> ${format_wt(mean)} 
+<b>Mean:</b> ${format_wt_overall(mean)} 
 <br>
-<b>Variance:</b> ${format_wt(variance)}
+<b>Variance:</b> ${format_wt_overall(variance)}
 % endif 
 
 <%self:plot_group plot_dict="${summary_plots}"
