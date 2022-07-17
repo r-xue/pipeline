@@ -375,7 +375,7 @@ def make_summary_table_per_eb( accum_flag:Dict, subpages:Dict, subpages2:Dict ) 
     statistics_subpages = []
     for ms_name in accum_flag.keys():
         row_total = accum_flag[ms_name]['total']
-        frac_before = accum_flag[ms_name]['flagdata_before']*10.00/accum_flag[ms_name]['flagdata_total']
+        frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
         frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total']
         tr = FlagSummaryEB_TR( ms_name, 
                                '{:.3f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
