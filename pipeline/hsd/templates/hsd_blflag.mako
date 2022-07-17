@@ -50,7 +50,6 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 	        <th scope="col" rowspan="3">Measurement Set</th>
 	        <th scope="col" colspan="7">Flags by Reason</th>
 	        <th scope="col" rowspan="2" colspan=3>Flagged Fraction</th>
-            <th scope="col" rowspan="3">Flagging Details</th>
 		</tr>
 		<tr>
 	        <th scope="col" colspan="2">Baseline RMS</th>
@@ -70,10 +69,8 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
             <th scope="col">Total</th>
 	</thead>
 	<tbody>
-	% for tr, subpage in zip(per_eb_summary_table_rows, statistics_subpages):
+	% for tr in per_eb_summary_table_rows:
         <%
-            subpage_html  = os.path.join( dirname, subpage['html'] )
-            subpage2_html = os.path.join( dirname, subpage['html2'] )
             baseline_post  = os.path.join( dirname, subpages_per_type['Baseline RMS post-fit'] )
             baseline_pre   = os.path.join( dirname, subpages_per_type['Baseline RMS pre-fit'] )
             runmean_post   = os.path.join( dirname, subpages_per_type['Running mean post-fit'] )
@@ -86,19 +83,10 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 		% for td in tr:
 			${td} 
 		% endfor
-        <TD>
-        <a href="${subpage_html}" class="replace" data-vis="${subpage['vis']}">
-        with hist
-        </a>
-        |
-        <a href="${subpage2_html}" class="replace" data-vis="${subpage['vis']}">
-        without hist
-        </a>
-        </TD>
 		</tr>
 	% endfor
     <TR>
-    <TD> </TD>
+    <th scope="row">Flagging Details</th>
     <TD> <a href="${baseline_post}"  class="replace">Plots</a> </TD>
     <TD> <a href="${baseline_pre}"   class="replace">Plots</a> </TD>
     <TD> <a href="${runmean_post}"   class="replace">Plots</a> </TD>
@@ -106,7 +94,7 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
     <TD> <a href="${expectrms_post}" class="replace">Plots</a> </TD>
     <TD> <a href="${expectrms_pre}"  class="replace">Plots</a> </TD>
     <TD> <a href="${outlyer_tsys}"   class="replace">Plots</a> </TD>
-    <TD colspan="4"> </TD>
+    <TD colspan="3"> </TD>
     </TR>
 	</tbody>
 </table>

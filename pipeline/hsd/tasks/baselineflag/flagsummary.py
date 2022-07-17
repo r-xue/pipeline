@@ -175,7 +175,7 @@ class SDBLFlagSummary(object):
                                         'runmean_postfit'      : stat_dict['RunMeanPostFitFlag'],
                                         'expected_rms_prefit'  : stat_dict['RmsExpectedPreFitFlag'],
                                         'expected_rms_postfit' : stat_dict['RmsExpectedPostFitFlag'],
-                                        'ownflag'              : stat_dict[key]
+                                        'myflag'               : stat_dict[key]
                                     } )
                 # delete variables not used after all
                 del FlagRule_local, NPp_dict
