@@ -96,7 +96,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             filename   : output filename
             allflags   : If true, feeds all flagging statistics to the selector
             myflag     : If true, feeds the corresponding flag statistics to the selector
-            type       : If true, feeds the type information to the selector
+            types      : If true, feeds the type information to the selector
         Returns:
             filename of the html file
         """
@@ -146,6 +146,7 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
             context   : Pipeline Context
             results   : SDBLFlagResults
             plots     : List of plot objects
+            filename  : output filename
             title     : Title string for the subpage
             allflags  : If true, feeds all flagging statistics to the selector
             myflag    : If true, feeds the corresponding flag statistics to the selector
