@@ -46,6 +46,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
+    drcorrect = vdp.VisDependentProperty(default=-999.0)
     overwrite_on_export = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -64,7 +65,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
-                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
+                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                  cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
@@ -93,6 +94,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_maxpsffraction = hm_maxpsffraction
         self.hm_weighting = hm_weighting
         self.tlimit = tlimit
+        self.drcorrect = drcorrect
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
         self.calcsb = calcsb
@@ -328,6 +330,7 @@ class CleanTaskFactory(object):
             'weighting': inputs.hm_weighting,
             # other vals
             'tlimit': inputs.tlimit,
+            'drcorrect': inputs.drcorrect,
             'masklimit': inputs.masklimit,
             'cleancontranges': inputs.cleancontranges,
             'calcsb': inputs.calcsb,

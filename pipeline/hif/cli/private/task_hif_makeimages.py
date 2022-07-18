@@ -10,7 +10,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                    hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                    hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
-                   hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
+                   hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                    cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, parallel=None,
                    pipelinemode=None, dryrun=None, acceptresults=None):
 

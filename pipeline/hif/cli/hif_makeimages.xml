@@ -176,6 +176,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>2.0</value>
   </param>
 
+  <param name="drcorrect" type="double">
+    <shortdescription>Apply a specific dynamic range correction factor instead of the heuristics-based value</shortdescription>
+    <description>Apply a specific dynamic range correction factor instead of the heuristics-based value</description>
+    <value type="double">-999.0</value>
+  </param>
+
   <param name="masklimit" subparam="true" type="int">
     <shortdescription>Times good mask pixels for cleaning</shortdescription>
     <description>Times good mask pixels for cleaning</description>
