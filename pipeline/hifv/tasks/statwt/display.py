@@ -118,7 +118,11 @@ class weightboxChart(object):
             bxpstats_per_scan[-1]['scan'] = this_scan
 
         # this needs to be different if vlass
-        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(15, 6))
+        if len(spws) > 80 or len(scans) > 80:
+            plot_len = 20
+        else:
+            plot_len = 15
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(plot_len, 6))
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
 
         ax1.bxp(bxpstats_per_ant, flierprops=flierprops)
@@ -128,13 +132,19 @@ class weightboxChart(object):
         ax1.get_yaxis().get_major_formatter().set_useOffset(False)
 
         ax2.bxp(bxpstats_per_spw, flierprops=flierprops)
-        ax2.axes.set_xticklabels(spws)
+        if(len(spws) > 80): 
+           ax2.axes.set_xticklabels(spws, fontdict={'fontsize': 6}) 
+        else: 
+           ax2.axes.set_xticklabels(spws)
         ax2.set_xlabel('SPW ID')
         ax2.set_ylabel('$Wt_{i}$')
         ax2.get_yaxis().get_major_formatter().set_useOffset(False)
 
         ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
-        ax3.axes.set_xticklabels(scans)
+        if (len(scans) > 80): 
+            ax3.axes.set_xticklabels(scans, fontdict={'fontsize': 6}) 
+        else: 
+            ax3.axes.set_xticklabels(scans)
         ax3.set_xlabel('Scan Number')
         ax3.set_ylabel('$Wt_{i}$')
         ax3.get_yaxis().get_major_formatter().set_useOffset(False)
