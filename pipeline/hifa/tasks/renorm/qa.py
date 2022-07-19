@@ -82,14 +82,17 @@ class RenormQAHandler(pqa.QAPlugin):
                             score = max(0.66+threshold-max_factor, 0.34)
                             shortmsg = 'Renormalization factor outside threshold'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%}'.format( \
+                                      'is outside threshold of {:.1%} but corrections were not applied to the data.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
                     result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                 except:
                     # No factors for this spw. Just skip it.
                     pass
-        
+
+        # Make a copy of this dict for mutation
+        excludechan = result.excludechan
+
         for target in result.atmWarning: 
             for spw in result.atmWarning[target]:
                 if result.atmWarning[target][spw]:
@@ -104,19 +107,32 @@ class RenormQAHandler(pqa.QAPlugin):
                             shortmsg = "Channels are being excluded from renormalization correction due to an atmospheric feature"
                             longmsg = "Channels {} are being excluded from renormalization correction to SPW {} due to an atmospheric " \
                                       "feature.".format(result.atmExcludeCmd[target][spw], spw)
-                        elif result.excludechan != "":
+                        elif excludechan != "":
+                            excluded_spws = excludechan.keys()
+                            if spw in excluded_spws: 
+                                longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
+                                      "exclusion: {}".format(excludechan[spw], spw, result.atmExcludeCmd[target][spw])
+                                del excludechan[spw]
+                            else: 
+                                longmsg = "No channels are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
+                                      "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw]) 
                             atm_score = 0.85
                             shortmsg = "Channels are being excluded from renormalization correction"
-                            longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
-                                      "exclusion: {}".format(result.excludechan, spw, result.atmExcludeCmd[target][spw])
                         else: 
                             atm_score = 0.66
                             shortmsg = "Renormalization correction may be incorrectly applied"
-                            longmsg = "A renormalization correction may be incorrectly applied to SPW {} due to an atmospheric feature! " \
+                            longmsg = "A renormalization correction may be incorrectly applied to SPW {} due to an atmospheric feature. " \
                                       "Suggested channel exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
-
                     result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
+        # If there were any entries in excludechan that weren't covered by flagged spws 
+        if result.apply:
+            for exclude_spw in excludechan:
+                longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel exclusion indicated " \
+                        "that no channels need to be excluded for SPW {}.".format(excludechan[exclude_spw], exclude_spw, exclude_spw)
+                shortmsg = "Channels are being excluded from renormalization correction"
+                atm_score = 0.85
+                result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
 class RenormListQAHandler(pqa.QAPlugin):
     """

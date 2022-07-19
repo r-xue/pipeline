@@ -13,7 +13,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Informative plots are collected in a pdf for each spw and source, linked from the table below.</p>
 <p>The first plot in the pdf is a ReNormSpectra summary plot showing the average scaling spectrum over all scans, and for mosaics, all fields in the mosaic with peak scaling above the threshold. All antennas are plotted as dashed red and blue (for XX and YY), and the mean is plotted solid.</p>
 <p>The pdf next contains RenormDiagnosicCheck plots corresponding to each field and scan. The scaling spectrum is plotted as solid lines for each antenna (again red and blue for XX and YY), and the median as a dashed line (green and black for XX and YY).</p>
-<p>Heuristics in the renormalization script have been applied to detect and correct spikes, dips, and jumps near the segment boundaries (marked with thin vertical dotted lines). Less significant (below the threshold for applying the correction) features may remain.</p>
+<p>The renormalization script has heuristics to detect and correct spikes, dips, and jumps near the segment boundaries (marked with thin vertical dotted lines). Less significant (below the threshold for applying the correction) features may remain.</p>
+
 <p>Features in the scaling spectrum associated with atmospheric features require additional care - ALMA data reduction staff will have evaluated these and minimized them insofar as possible with current heuristics, but PIs should take note of the shape and magnitude of any applied correction when performing line science at frequencies overlapping atmospheric lines.</p>
 
 <hr/>
