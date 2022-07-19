@@ -72,8 +72,8 @@
             </param>
 
             <param name="editmode" type="string">
-                <shortdescription>The edit mode of the task (e.g. add, edit). Defaults to \'add\'.</shortdescription>
-                <description>The edit mode of the task (e.g. add, edit). Defaults to 'add'.</description>
+                <shortdescription>The edit mode of the task (\'add\' or \'replace\'). Defaults to \'add\'.</shortdescription>
+                <description>The edit mode of the task ('add' or 'replace'). Defaults to 'add'.</description>
                 <value/>
             </param>
 

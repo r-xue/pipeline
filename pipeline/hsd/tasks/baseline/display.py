@@ -244,22 +244,17 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 class ClusterDisplay(object):
     """Plotter to create plots that visualize clustering analysis.
 
-    For each detected cluster, this class creates three types of
+    For each detected cluster, this class creates two types of
     plots described below:
 
-        1. Cluster property plot (ClusterPropertyDisplay):
+        1. Cluster validation plot (ClusterValidationDisplay):
+            displays spatial distribution of detected
+            lines associated with the cluster
+
+        2. Cluster property plot (ClusterPropertyDisplay):
             displays property of the cluster in two dimensional
             space of line center against line width of the
             detected lines
-
-        2. Cluster score plot (ClusterScoreDisplay):
-            displays score against number of clusters for K-mean
-            clustering analysis (not meaningful for hierarchical
-            clustering analysis)
-
-        3. Cluster validation plot (ClusterValidationDisplay):
-            displays spatial distribution of detected
-            lines associated with the cluster
     """
 
     Inputs = SingleDishDisplayInputs
@@ -356,16 +351,11 @@ class ClusterDisplay(object):
             plot_list.extend(validation_plot)
             t1 = time.time()
 
-            plot_score = ClusterScoreDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
-            plot_list.extend(plot_score.plot())
-            t2 = time.time()
-
             plot_property = ClusterPropertyDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_property.plot())
-            t3 = time.time()
+            t2 = time.time()
 
-            LOG.debug('PROFILE: ClusterScoreDisplay elapsed time is %s sec' % (t2-t1))
-            LOG.debug('PROFILE: ClusterPropertyDisplay elapsed time is %s sec' % (t3-t2))
+            LOG.debug('PROFILE: ClusterPropertyDisplay elapsed time is %s sec' % (t2-t1))
             LOG.debug('PROFILE: ClusterValidationDisplay elapsed time is %s sec' % (t1-t0))
 
         end_time = time.time()
@@ -453,38 +443,6 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
             NotImplementedError: always raise an exception
         """
         raise NotImplementedError
-
-
-class ClusterScoreDisplay(ClusterDisplayWorker):
-    """Plotter to create cluster score plot."""
-
-    def _plot(self) -> Generator[logger.Plot, None, None]:
-        """Yield plot object for cluster score plot.
-
-        Cluster score plot displays score against number of clusters
-        for K-mean clustering analysis. Note that the plot is not
-        meaningful for hierarchical clustering analysis.
-
-        Yields:
-            Plot object for cluster score plot
-        """
-        ncluster, score = self.cluster['cluster_score']
-        plt.plot(ncluster, score, 'bx', markersize=10)
-        [xmin, xmax, ymin, ymax] = plt.axis()
-        plt.xlabel('Number of Clusters', fontsize=11)
-        plt.ylabel('Score (Lower is better)', fontsize=11)
-        plt.title('Score are plotted versus number of the cluster', fontsize=11)
-        plt.axis([0, xmax + 1, ymin, ymax])
-
-        if ShowPlot:
-            plt.draw()
-
-        plotfile = os.path.join(self.stage_dir,
-                                'cluster_score_group%s_spw%s_iter%s.png' % (self.group_id, self.spw, self.iteration))
-        plt.savefig(plotfile, format='png', dpi=DPIDetail)
-        plot = self._create_plot(plotfile, 'cluster_score',
-                                 'Number of Clusters', 'Score')
-        yield plot
 
 
 class ClusterPropertyDisplay(ClusterDisplayWorker):

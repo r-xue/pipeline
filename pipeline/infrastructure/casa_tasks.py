@@ -93,6 +93,8 @@ def immoments(*v, **k):
 def imregrid(*v, **k):
     return _get_job(casatasks.imregrid, *v, **k)
 
+def imsmooth(*v, **k):
+    return _get_job(casatasks.imsmooth, *v, **k)
 
 def impbcor(*v, **k):
     return _get_job(casatasks.impbcor, *v, **k)
