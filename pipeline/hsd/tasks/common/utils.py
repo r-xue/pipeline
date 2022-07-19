@@ -62,6 +62,41 @@ def require_virtual_spw_id_handling(observing_run: ObservingRun) -> bool:
                       for spw in ms.get_spectral_windows(science_windows_only=True)])
 
 
+def convert_spw_virtual2real(context, spw_in: str,
+                             mses: List[MeasurementSet] = []) -> dict:
+    """Convert virtual spw selection into real spw selection.
+
+    Real spw selection can be different among MSes. This method returns
+    the dictionary of real spw selections for each MS.
+
+    Args:
+        context: pipeline context
+        spw_in: virtual spw selection string
+        mses: list of measurementset domain objects (optional)
+    Returns:
+        real spw selection per MS
+    """
+    spw_out = {}
+    observing_run = context.observing_run
+    ms_list = mses if mses else context.observing_run.measurement_sets
+    if not isinstance(spw_in, str):
+        raise TypeError('spw_in must be string.')
+    elif len(spw_in) == 0:
+        spw_out = dict((ms.name, '') for ms in ms_list)
+    else:
+        # only supports comma-separated spw id list
+        vspw_list = [int(v) for v in spw_in.split(',')]
+        for ms in ms_list:
+            origin_ms = observing_run.get_ms(ms.origin_ms)
+            spw_list = [
+                observing_run.virtual2real_spw_id(vspw, origin_ms)
+                for vspw in vspw_list
+            ]
+            spw_out[ms.name] = ','.join(map(str, spw_list))
+
+    return spw_out
+
+
 def is_nro(context: Context) -> bool:
     """
     Test if processing Nobeyama data or not.
@@ -540,10 +575,11 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
         index_dict[vis] = numpy.asarray(index_dict[vis])
     return index_dict
 
-# TODO (ksugimoto): refactor get_valid_ms_members and get_valid_ms_members2
+
+# TODO (ksugimoto): refactor get_valid_ms_members
 def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                          ant_selection: str, field_selection: str,
-                         spw_selection: str) -> Generator[int, None, None]:
+                         spw_selection: Union[str, dict]) -> Generator[int, None, None]:
     """
     Yield IDs of reduction groups that matches selection criteria.
 
@@ -554,7 +590,9 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
         msname_filter: Names of MeasurementSets to select.
         ant_selection: Antenna selection syntax.
         field_selection: Field selection syntax.
-        spw_selection: SpW selection syntax.
+        spw_selection: SpW selection syntax. It can be string or dictionary
+                       containing per-MS spw selection string. Keys for the
+                       dictionary should be absolute path to the MS.
 
     Yields:
         IDs of reduction group.
@@ -586,7 +624,16 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                         if not _field_selection.startswith('"'):
                             _field_selection = '"{}"'.format(field_selection)
                 LOG.debug('field_selection = "{}"'.format(_field_selection))
-                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+
+                if isinstance(spw_selection, str):
+                    _spw_selection = spw_selection
+                elif isinstance(spw_selection, dict):
+                    _spw_selection = spw_selection.get(msobj.name, '')
+                else:
+                    _spw_selection = ''
+                LOG.debug(f'spw_selection = {_spw_selection}')
+
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=_spw_selection,
                                                    field=_field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
@@ -598,47 +645,6 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
             if ((len(spwsel) == 0 or spw_id in spwsel) and
                     (len(fieldsel) == 0 or field_id in fieldsel) and
                     (len(antsel) == 0 or ant_id in antsel)):
-                yield member_id
-
-
-def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
-                          ant_selection: str, field_selection: str,
-                          spw_selection: str) -> Generator[int, None, None]:
-    """
-    Yield IDs of reduction groups that matches selection criteria.
-
-    Args:
-        group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are
-            pipeline.domain.singledish.MSReductionGroupDesc instances.
-        ms_filter: A list of Measurementset domain objects.
-        ant_selection: Antenna selection syntax.
-        field_selection: Field selection syntax.
-        spw_selection: SpW selection syntax.
-
-    Yields:
-        IDs of reduction group.
-    """
-    for member_id in range(len(group_desc)):
-        member = group_desc[member_id]
-        spw_id = member.spw_id
-        field_id = member.field_id
-        ant_id = member.antenna_id
-        msobj = member.ms
-        if msobj in ms_filter:
-            try:
-                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                   field=field_selection, baseline=ant_selection)
-            except RuntimeError as e:
-                LOG.trace('RuntimeError: {0}'.format(str(e)))
-                LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, field_selection))
-                continue
-            spwsel = mssel['spw']
-            fieldsel = mssel['field']
-            antsel = mssel['antenna1']
-            if ((spwsel.size == 0 or spw_id in spwsel) and
-                    (fieldsel.size == 0 or field_id in fieldsel) and
-                    (antsel.size == 0 or ant_id in antsel)):
                 yield member_id
 
 
