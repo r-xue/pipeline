@@ -158,6 +158,7 @@ class SDBLFlagSummary(object):
                 plots = flagplotter.create_plots( FigFileRoot )
                 flag_desc = SDFlagRule.SDFlag_Desc
                 for plot in plots:
+                    assert plot['type'] in flag_desc.values()
                     key = [ k for k, v in flag_desc.items() if v == plot['type'] ][0]
                     plot_list.append( { 'FigFileDir' : FigFileDir,
                                         'FigFileRoot' : FigFileRoot,
