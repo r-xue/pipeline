@@ -153,6 +153,9 @@ class MsSplit(basetask.StandardTaskTemplate):
                     data_type = t
                     LOG.debug('Identified data type %s' % data_type)
                     break
+            if 'data_type' not in locals():
+                data_type = DataType.RAW
+                LOG.warning(f'The datatype of the requested datacolumn is unknown, and a fallback value of {data_type} is used.')
         out_column = in_column if datacolumn != 'corrected' else 'DATA'
         LOG.info('Setting {} to {}'.format(data_type, out_column))
         msobj.set_data_column(data_type, out_column)
