@@ -402,7 +402,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         wvr_caltable = wvr_result.inputs['caltable']
         result.qa_wvr.gaintable_wvr = wvr_caltable
 
-        LOG.info('qa: calculate ratio no-WVR phase RMS / with-WVR phase rms')
+        LOG.info('qa: calculate ratio with-WVR phase RMS / without-WVR phase rms')
         PHnoisy, BPnoisy = wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
                                                   wvr_caltable, result.qa_wvr, qa_intent)
         result.PHnoisy = PHnoisy
