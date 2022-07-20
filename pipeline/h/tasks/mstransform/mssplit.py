@@ -145,19 +145,24 @@ class MsSplit(basetask.StandardTaskTemplate):
         #    # Replace RAW column if original MS was replaced.
         #    data_type = DataType.RAW
         #el
+
+        data_type = None
         if self.inputs.intent == 'TARGET':
             data_type = DataType.REGCAL_CONTLINE_SCIENCE
         else:
             for t, c in self.inputs.ms.data_column.items():
                 if c == in_column:
                     data_type = t
-                    LOG.debug('Identified data type %s' % data_type)
+                    LOG.debug(f'Identified data type {data_type}')
                     break
-            if 'data_type' not in locals():
-                data_type = DataType.RAW
-                LOG.warning(f'The datatype of the requested datacolumn is unknown, and a fallback value of {data_type} is used.')
+
+        if data_type is None:
+            data_type = DataType.RAW
+            LOG.warning(
+                f'The datatype of the requested datacolumn is unknown, and a fallback value of {data_type} is used.')
+
         out_column = in_column if datacolumn != 'corrected' else 'DATA'
-        LOG.info('Setting {} to {}'.format(data_type, out_column))
+        LOG.info(f'Setting {data_type} to {out_column}')
         msobj.set_data_column(data_type, out_column)
 
 class MsSplitResults(basetask.Results):
