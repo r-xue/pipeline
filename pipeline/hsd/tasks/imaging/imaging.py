@@ -843,7 +843,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
                 combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images_nro,
                                                                 outfile=imagename,
-                                                                org_directions=tocombine_org_directions_nro)
+                                                                org_directions=tocombine_org_directions_nro,
+                                                                specmodes=tocombine_specmodes)
                 combine_task = sdcombine.SDImageCombine(combine_inputs)
                 imager_result = self._executor.execute(combine_task)
 
