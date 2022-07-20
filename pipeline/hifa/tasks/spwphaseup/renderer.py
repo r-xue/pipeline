@@ -1,9 +1,12 @@
 import collections
+import glob
 import os
-from typing import List
+import shutil
+from typing import Dict, List
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
@@ -14,6 +17,7 @@ PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
 SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
 SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
+PhaseRmsTR = collections.namedtuple('PhaseRmsTR', 'ms type time median_phase_rms noisy_ant')
 
 
 class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -35,12 +39,20 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Get info on phase caltable.
         applications = get_gaincal_applications(context, results)
 
+        # Get info on the RMS plots and tables
+        weblog_dir = os.path.join(context.report_dir, 'stage%s' % results[0].stage_number)
+        rmsplots = make_rms_plots(results, weblog_dir)
+        phaserms_table_rows = get_phaserms_table_rows(context, results)
+
         # Update mako context.
         ctx.update({
             'applications': applications,
             'pcal_table_rows': pcal_table_rows,
             'snr_table_rows': snr_table_rows,
+            'phaserms_table_rows': phaserms_table_rows,
             'spwmaps': spwmaps,
+            'rmsplots' : rmsplots,
+            'results' : results
         })
 
 
@@ -205,3 +217,70 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
             rows.append(SnrTR(ms.basename, '', '', '', '', ''))
 
     return utils.merge_td_columns(rows)
+
+def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]:
+    """
+    Return list of strings containing HTML TD columns, representing rows for
+    the phase rms results table.
+
+    Args:
+        context: the pipeline context.
+        results: list of task results.
+
+    Returns:
+        List of strings containing rows for phase rms table.
+    """
+    rows = []
+    for result in results:
+        ms = context.observing_run.get_ms(result.vis)
+        noisier_antennas = ''.join(result.phaserms_antout)
+        if noisier_antennas == '':
+            noisier_antennas = "None"
+        total_time = f'{result.phaserms_totaltime:.1f}'
+        cycle_time = f'{result.phaserms_cycletime:.1f}'
+        phasermsp80 = result.phaserms_results['phasermsP80']
+        phasermscyclep80 = result.phaserms_results['phasermscycleP80']
+        phaserms_totaltime = f'{phasermsp80:.2f}'
+        phaserms_cycletime = f'{phasermscyclep80:.2f}'
+        
+        rows.append(PhaseRmsTR(ms.basename, 'Total Time', total_time, \
+                    phaserms_totaltime, noisier_antennas))
+        rows.append(PhaseRmsTR(ms.basename, 'Cycle Time', cycle_time, \
+                    phaserms_cycletime, noisier_antennas))
+    return utils.merge_td_columns(rows)
+
+#TODO: This is a copied verison of the function from PIPE-1264 lightly edited.
+def make_rms_plots(results, weblog_dir: str) -> Dict[str, List[logger.Plot]]:
+    """
+    Create and return a list of renorm plots. 
+
+    Args:
+        results: the renormalization results. 
+        weblog_dir: the weblog directory
+    Returns:
+        summary_plots: dictionary with MS with some additional html 
+                    as the keys and lists of plot objects as the values
+    """
+    summary_plots = collections.defaultdict(list)
+    for result in results:
+        vis = os.path.basename(result.inputs['vis'])
+#        specplot = spw_stats.get('spec_plot')
+        specplot = glob.glob('uid*PIPE-692_SSF.png')
+        if specplot:
+            specplot=specplot[0]
+#        specplot = 'uid___A002_Xc845c0_X2fea.ms_PIPE-692_SSF.png' #uid___A002_Xef72bb_X9d29.ms_PIPE-692_SSF.png'
+        #specplot_path = f"RN_plots/{specplot}"
+        specplot_path = f"{specplot}"
+        if os.path.exists(specplot_path):
+            LOG.trace(f"Copying {specplot_path} to {weblog_dir}")
+            shutil.copy(specplot_path, weblog_dir)
+            specplot_path = f'{weblog_dir}/{specplot_path}'
+            plot = {vis : [logger.Plot(specplot_path,
+                    x_axis='Fill in',
+                    y_axis='Fill in',
+                    parameters={'vis': vis, 
+                                'desc': 'Plot Description'})]}
+        else:
+            LOG.debug(f"Failed to copy {specplot_path} to {weblog_dir}")
+            plot = {}
+    return plot

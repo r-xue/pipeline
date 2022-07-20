@@ -157,16 +157,21 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             pipe692.analysis()        # launches the analysis
 
-            resul = pipe692.score()   # get the results dictionary
+            qa_dict = pipe692.score()   # get the results dictionary
                                     # keys are
                                     # basescore, basecolor,shortmsg, longmsg
 
-            LOG.info('This is the phase RMS score '+str(resul['basescore']))
+            LOG.info('This is the phase RMS score '+str(qa_dict['basescore']))
 
             pipe692.plotSSF() # makes the SSF plot that would be included in the Weblog
 
             ### optional for full PL weblog page plot - this is not needed for actual PL implementation ###
-            pipe692.plotSSF_mockup(resul) # TESTING pass the results now - triggers mock-up figure options - i.e. a weblog page 
+            #pipe692.plotSSF_mockup(resul) # TESTING pass the results now - triggers mock-up figure options - i.e. a weblog page 
+
+            luke_results = pipe692.allResult #TODO: obviously a temp variable name...
+            luke_cycletime = pipe692.cycletime 
+            luke_totaltime = pipe692.totaltime
+            luke_antout = pipe692.antout
 
             pipe692.close()
 
@@ -175,7 +180,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
-                                   snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing)
+                                   snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing,
+                                   phaserms_totaltime = luke_totaltime, phaserms_cycletime = luke_cycletime, 
+                                   phaserms_results = luke_results, phaserms_antout = luke_antout, qa_dict=qa_dict)
 
         return result
 
@@ -849,7 +856,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
-                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False):
+                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False, 
+                 phaserms_totaltime = None, phaserms_cycletime = None, phaserms_results = None, phaserms_antout = '', qa_dict = {}): 
+                 #TODO: modify order to put optional last and add typehints?
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -864,6 +873,15 @@ class SpwPhaseupResults(basetask.Results):
         self.snr_info = snr_info
         self.spwmaps = spwmaps
         self.unregister_existing = unregister_existing
+        self.phaserms_totaltime = phaserms_totaltime
+        self.phaserms_cycletime = phaserms_cycletime
+        self.phaserms_results = phaserms_results
+        self.qa_dict = qa_dict 
+
+        if len(phaserms_antout) > 0:
+            self.phaserms_antout = ",".join(phaserms_antout)
+        else: 
+            self.phaserms_antout = ''
 
     def merge_with_context(self, context):
         if self.vis is None:
