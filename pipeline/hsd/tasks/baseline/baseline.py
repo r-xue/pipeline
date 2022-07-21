@@ -468,8 +468,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
         vis_map = {} # key and value are input and output vis name, respectively
         plot_list = []
-#        baseline_quality_stat = {}
-        baseline_quality_stat = [] ###
+        baseline_quality_stat = []
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
 
         # Generate and apply baseline fitting solutions
@@ -575,7 +574,7 @@ class HeuristicsTask(object):
         """Perform Heuristics and return its result.
 
         Args:
-            dry_run: Set True to enalbe dry-run mode. Defaults to False.
+            dry_run: Set True to enable dry-run mode. Defaults to False.
 
         Returns:
             Heuristics result. Actual contents of return value
