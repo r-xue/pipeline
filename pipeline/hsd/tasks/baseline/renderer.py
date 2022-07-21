@@ -87,7 +87,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             plot_group = self._group_by_axes(plots)
             # Render stage details pages
             details_title = ["R.A. vs Dec."]
-            name_list = ['R.A. vs Dec.', 'Line Center vs Line Width', 'Number of Clusters vs Score']
+            name_list = ['R.A. vs Dec.', 'Line Center vs Line Width']
             for name in name_list:
                 if name not in plot_group:
                     # no plots available. probably no lines are detected.

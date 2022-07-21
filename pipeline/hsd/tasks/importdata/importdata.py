@@ -33,7 +33,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     This class extends importdata.ImportDataInputs.
     """
 
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
+    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
@@ -48,6 +48,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                  overwrite: Optional[bool]=None,
                  nocopy: Optional[bool]=None,
                  bdfflags: Optional[bool]=None,
+                 datacolumns: Optional[Dict]=None,
                  save_flagonline: Optional[bool]=None,
                  lazy: Optional[bool]=None,
                  with_pointing_correction: Optional[bool]=None,
@@ -76,7 +77,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                                                  process_caldevice=process_caldevice, session=session,
                                                  overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                  save_flagonline=save_flagonline, createmms=createmms,
-                                                 ocorr_mode=ocorr_mode, asimaging=False)
+                                                 ocorr_mode=ocorr_mode, datacolumns=datacolumns)
         self.with_pointing_correction = with_pointing_correction
 
 
@@ -146,9 +147,7 @@ class SDImportDataResults(basetask.Results):
         return 'SDImportDataResults:\n\t{0}'.format('\n\t'.join([ms.name for ms in self.mses]))
 
 
-@task_registry.set_equivalent_casa_task('hsd_importdata')
-@task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
-class SDImportData(importdata.ImportData):
+class SerialSDImportData(importdata.ImportData):
     """Data import execution task of SingleDish.
 
     This class extends importdata.ImportData class, and methods execute main logics depends on it.
@@ -165,7 +164,7 @@ class SDImportData(importdata.ImportData):
             SDImportDataResults : result object
         """
         # get results object by running super.prepare()
-        results = super(SDImportData, self).prepare()
+        results = super(SerialSDImportData, self).prepare()
 
         # per MS inspection
         table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),
@@ -245,11 +244,13 @@ class HpcSDImportDataInputs(SDImportDataInputs):
         self.parallel = parallel
 
 
+@task_registry.set_equivalent_casa_task('hsd_importdata')
+@task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class HpcSDImportData(sessionutils.ParallelTemplate):
     """SDImportData class for parallelization."""
 
     Inputs = HpcSDImportDataInputs
-    Task = SDImportData
+    Task = SerialSDImportData
 
     def __init__(self, inputs: HpcSDImportDataInputs):
         """Initialize HpcSDImportData class.

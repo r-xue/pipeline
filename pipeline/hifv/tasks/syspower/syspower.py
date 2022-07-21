@@ -173,11 +173,28 @@ class Syspower(basetask.StandardTaskTemplate):
             rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
             LOG.debug(ex)
 
+        band_baseband_spw = collections.defaultdict(dict)
+
+        # Look for flux cal
         fields = m.get_fields(intent='AMPLITUDE')
+
+        # No amp cal - look for bandpass
+        if not fields:
+            fields = m.get_fields(intent='BANDPASS')
+            LOG.error("Unable to identify field with intent='AMPLITUDE'.  Trying BANDPASS calibrator.")
+
+        # Exit if no amp or bp
+        if not fields:
+            LOG.error("No AMPLITUDE or BANDPASS intents found.  Exiting task.")
+            return SyspowerResults(gaintable=rq_table, spowerdict={}, dat_common=None,
+                                   clip_sp_template=None, template_table=None,
+                                   band_baseband_spw=band_baseband_spw)
+
         field = fields[0]
         flux_field = field.id
         flux_times = field.time
-        LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
+        LOG.info("Using field: {0}  (ID: {1})".format(field.name, flux_field))
+
         antenna_ids = np.array([a.id for a in m.antennas])
         antenna_names = [a.name for a in m.antennas]
         # spws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
@@ -192,7 +209,6 @@ class Syspower(basetask.StandardTaskTemplate):
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         allprocessedspws = []
 
-        band_baseband_spw = collections.defaultdict(dict)
         for band in banddict:
             baseband2spw = {}
             for baseband in banddict[band]:
@@ -260,13 +276,6 @@ class Syspower(basetask.StandardTaskTemplate):
             dat_sum          = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
             dat_sum_flux     = np.zeros((len(antenna_ids), len(spws), 2, len(sorted_time)))
 
-            # Obtain online flagging commands from flagdata result. **Assumes** flagdata
-            #   was executed in the 3rd stage position
-            flagresult = self.inputs.context.results[2]
-            result = flagresult.read()
-            result = result[0]
-            onlineflagslist = result._flagcmds
-
             # get online flags from .flagonline.txt
             flag_file_name = self.inputs.vis.replace('.ms', '.flagonline.txt')
             if os.path.isfile(flag_file_name):
@@ -318,14 +327,17 @@ class Syspower(basetask.StandardTaskTemplate):
 
             # Determine which spws go with which basebands
             # There could be multiple baseband names per band - count them
-            bband2spw = []
             bband_common_indices = []
             bbindex = 0
             # for band in band_baseband_spw:
             for baseband in band_baseband_spw[band]:
                 if band_baseband_spw[band][baseband]:
-                    bband2spw.append(band_baseband_spw[band][baseband])
-                    bband_common_indices.append(list(range(bbindex * len(bband2spw[bbindex]), (bbindex + 1) * len(bband2spw[bbindex]))))
+                    numspws = len(band_baseband_spw[band][baseband])
+                    if bbindex == 0:
+                        bband_common_indices.append(list(range(0, numspws)))
+                    else:
+                        startindex = bband_common_indices[bbindex - 1][-1] + 1
+                        bband_common_indices.append(list(range(startindex, startindex + numspws)))
                     bbindex += 1
 
             LOG.debug('----------------------------------')

@@ -17,7 +17,7 @@ import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
-from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain import MeasurementSet
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import applycal
@@ -195,29 +195,34 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         return result
 
     @staticmethod
-    def _check_caltable(caltable, ms, reference, transfer):
+    def _check_caltable(caltable: str, ms: MeasurementSet, reference: str, transfer: str):
         """
-        Check that the give caltable is well-formed so that a 'fluxscale'
-        will run successfully on it:
+        Check that the given caltable is well-formed so that a 'fluxscale' will
+        run successfully on it, by checking that the caltable contains results
+        for the reference and transfer field(s). Log a warning if fields are
+        missing.
 
-          1. Check that the caltable contains results for the reference and
-             transfer fields.
+        Args:
+            caltable: path to caltable to evaluate
+            ms: MeasurementSet domain object
+            reference: string with name(s) of reference field(s)
+            transfer: string with names of transfer fields
         """
-        # get the ids of the reference source and phase source(s)
-        ref_fieldid = {field.id for field in ms.fields if field.name == reference}
-        transfer_fieldids = {field.id for field in ms.fields if field.name in transfer}
+        # Get the ids of the reference source and transfer calibrator source(s).
+        ref_fieldid = {field.id for field in ms.fields if field.name in reference.split(',')}
+        transfer_fieldids = {field.id for field in ms.fields if field.name in transfer.split(',')}
 
+        # Get field IDs in caltable.
         with casa_tools.TableReader(caltable) as table:
             fieldids = table.getcol('FIELD_ID')
 
-        # warn if field IDs does not contains the amplitude and phase calibrators
+        # Warn if field IDs in caltable do not include the reference and transfer sources.
         fieldids = set(fieldids)
         if fieldids.isdisjoint(ref_fieldid):
             LOG.warning('%s contains ambiguous reference calibrator field names' % os.path.basename(caltable))
         if not fieldids.issuperset(transfer_fieldids):
             LOG.warning('%s does not contain results for all transfer calibrators' % os.path.basename(caltable))
 
-        return True
 
     def _compute_calvis_flux(self, fieldid, spwid):
 
@@ -447,6 +452,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
     def _do_ampcal(self, allantenna, filtered_refant, minblperant):
         inputs = self.inputs
 
+        ampcal_result = None
+        check_ok = False
         try:
             ampcal_result = self._do_gaincal(
                 field=f'{inputs.transfer},{inputs.reference}', intent=f'{inputs.transintent},{inputs.refintent}',
@@ -461,20 +468,17 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
                 LOG.warning(f'Cannot compute compute the flux scaling table{os.path.basename(caltable)}')
 
-            # To make the following fluxscale reliable the caltable
-            # should contain gains for the same set of antennas for
-            # each of the amplitude and phase calibrators - looking
-            # at each spw separately.
+            # Check that the caltable exists and contains data for the
+            # reference and transfer fields.
             if os.path.exists(caltable):
-                check_ok = self._check_caltable(caltable=caltable, ms=inputs.ms, reference=inputs.reference,
-                                                transfer=inputs.transfer)
-            else:
-                check_ok = False
+                self._check_caltable(caltable=caltable, ms=inputs.ms, reference=inputs.reference,
+                                     transfer=inputs.transfer)
+                check_ok = True
         except:
-            caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
+            # Try to fetch caltable name from ampcal result.
+            caltable = ' %s' % ampcal_result.error.pop().gaintable if (ampcal_result and ampcal_result.error) else ''
             LOG.warning(f'Cannot compute phase solution table{os.path.basename(caltable)} for the phase and bandpass'
                         f' calibrator')
-            check_ok = False
 
         return ampcal_result, caltable, check_ok
 
