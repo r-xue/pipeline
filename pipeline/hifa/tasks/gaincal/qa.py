@@ -165,11 +165,11 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA2_score = 1.0
                                     QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} within range'
                                     QA2_shortmsg = 'Phase offsets standard deviation within range'
-                                    if S > max(QA2_Thresh1, QA2_Factor1 * S):
+                                    if S > max(QA2_Thresh1, QA2_Factor1 * Stot):
                                         QA2_score = 0.8
                                         QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding first threshold'
                                         QA2_shortmsg = 'Phase offsets standard deviation too large'
-                                    if S > max(QA2_Thresh2, QA2_Factor2 * S):
+                                    if S > max(QA2_Thresh2, QA2_Factor2 * Stot):
                                         QA2_score = 0.5
                                         QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding second threshold'
                                         QA2_shortmsg = 'Phase offsets standard deviation too large'
@@ -185,11 +185,11 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     QA3_score = 1.0
                                     QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} within range'
                                     QA3_shortmsg = 'Phase offsets maximum within range'
-                                    if np.abs(MaxOff) > max(QA3_Thresh1, QA3_Factor * S):
+                                    if np.abs(MaxOff) > max(QA3_Thresh1, QA3_Factor * Stot):
                                         QA3_score = 0.8
                                         QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding first threshold'
                                         QA3_shortmsg = 'Phase offsets maximum too large'
-                                    if np.abs(MaxOff) > max(QA3_Thresh2, QA3_Factor * S):
+                                    if np.abs(MaxOff) > max(QA3_Thresh2, QA3_Factor * Stot):
                                         QA3_score = 0.5
                                         QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]} exceeding second threshold'
                                         QA3_shortmsg = 'Phase offsets maximum too large'
@@ -227,8 +227,21 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     # Minimum of per aggregated ant/pol scores as per EB/spw score
                     EB_spw_min_index = np.argmin([qas.score for qas in EB_spw_QA_scores])
                     EB_spw_QA_score = EB_spw_QA_scores[EB_spw_min_index].score
+
+                    # The case of 0.85 scores is handled separately below
+                    if EB_spw_QA_score == 0.85:
+                        continue
+
                     if EB_spw_QA_score == 0.8:
-                        antenna_names = ', '.join([antenna_id_to_name[ant_id] for ant_id in sorted(list(set(ant_ids)))])
+                        antenna_names_list = []
+                        for ant_id in sorted(list(set(ant_ids))):
+                            per_antenna_score = min(subscores[gaintable][spw_id][ant_id][pol_id]['QA'].score for pol_id in range(phase_offsets.shape[0]))
+                            if per_antenna_score <= 0.66:
+                                # Highlight bad antennas with an asterisk
+                                antenna_names_list.append(f'*{antenna_id_to_name[ant_id]}')
+                            elif 0.66 < per_antenna_score <= 0.9:
+                                antenna_names_list.append(antenna_id_to_name[ant_id])
+                        antenna_names = ', '.join(antenna_names_list)
                         EB_spw_QA_longmsg = f'Potential phase offset outliers for {ms.basename} SPW {spw_id} Antenna{"" if len(ant_ids) == 1 else "s"} {antenna_names}'
                         EB_spw_QA_shortmsg = f'Potential phase offset outliers'
                     elif EB_spw_QA_score <= 0.66:
@@ -237,8 +250,8 @@ class TimegaincalQAPool(pqa.QAScorePool):
                             per_antenna_score = min(subscores[gaintable][spw_id][ant_id][pol_id]['QA'].score for pol_id in range(phase_offsets.shape[0]))
                             if per_antenna_score <= 0.66:
                                 # Highlight bad antennas with an asterisk
-                                antenna_names_list.append(f'{antenna_id_to_name[ant_id]}*')
-                            else:
+                                antenna_names_list.append(f'*{antenna_id_to_name[ant_id]}')
+                            elif 0.66 < per_antenna_score <= 0.9:
                                 antenna_names_list.append(antenna_id_to_name[ant_id])
                         antenna_names = ', '.join(antenna_names_list)
                         EB_spw_QA_longmsg = f'Potential phase offset outliers for {ms.basename} SPW {spw_id} Antenna{"" if len(antenna_names_list) == 1 else "s"} {antenna_names}'
@@ -383,7 +396,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
     def _MaxOff(self, phase_offsets: np.ndarray, scan_numbers: np.ndarray, phase_scan_ids: np.ndarray, spw_ids: np.ndarray, ant_ids: np.ndarray, spw_id: int, ant_id: int, pol_id: int) -> float:
 
         """
-        Compute maximum phase offset for given spw, ant, pol selection.
+        Compute absolute maximum phase offset for given spw, ant, pol selection.
         Uses index arrays to parse the table structure.
 
         :param phase_offsets:  numpy masked array with phase offset from calibration table
@@ -396,7 +409,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
         :param pol_id:         selected polarization id
         """
 
-        return np.ma.max(phase_offsets[pol_id, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids==ant_id))])
+        return np.ma.max(np.ma.abs(phase_offsets[pol_id, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids==ant_id))]))
 
     def _Stot(self, phase_offsets: np.ndarray, scan_numbers: np.ndarray, phase_scan_ids: np.ndarray, spw_ids: np.ndarray, spw_id: int) -> float:
 
