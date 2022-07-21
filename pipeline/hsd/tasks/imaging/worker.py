@@ -548,7 +548,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                       'width': step,
                       # the task only accepts lower letter
                       'outframe': outframe.lower(),
-                      'specmode': specmode,
                       'gridfunction': gridfunction,
                       'convsupport': convsupport,
                       'truncate': truncate,
@@ -595,6 +594,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # execute job
         # tentative soltion for tsdimaging speed issue
         if phasecenter == 'TRACKFIELD':
+            image_args['specmode'] = specmode   # tsdimaging specific parameter
             image_job = casa_tasks.tsdimaging(**image_args)
             self._executor.execute(image_job)
             # tsdimaging changes the image filename, workaround to revert it
