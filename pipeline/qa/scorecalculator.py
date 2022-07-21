@@ -35,8 +35,6 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
-           'score_combine_spwmapping',                        # ALMA specific
-           'score_phaseup_mapping_fraction',                  # ALMA specific
            'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
@@ -1617,82 +1615,6 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
 
 
 @log_qa
-def score_combine_spwmapping(ms, intent, field, spwmapping):
-    """
-    Evaluate whether or not a spw mapping is using combine.
-    If not, then set score to 1. If so, then set score to the sub-optimal
-    threshold (for blue info message).
-    """
-    if spwmapping.combine:
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
-        longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'Using combined spw mapping'
-    else:
-        score = 1.0
-        longmsg = f'No combined spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'No combined spw mapping'
-
-    origin = pqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
-                          metric_score=spwmapping.combine,
-                          metric_units='Using combined spw mapping')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
-
-
-@log_qa
-def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
-    """
-    Compute the fraction of science spws that have not been
-    mapped to other probably wider windows.
-    """
-    if not spwmapping.spwmap:
-        nunmapped = len([spw for spw in ms.get_spectral_windows(science_windows_only=True)])
-        score = 1.0
-        longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'No spw mapping'
-    elif spwmapping.combine:
-        nunmapped = 0
-        score = rutils.SCORE_THRESHOLD_WARNING
-        longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'Combined spw mapping'
-    else:
-        # Expected science windows
-        scispws = [spw for spw in ms.get_spectral_windows(science_windows_only=True)]
-        scispwids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-        nexpected = len(scispwids)
-
-        nunmapped = 0
-        samesideband = True
-        for spwid, scispw in zip(scispwids, scispws):
-            if spwid == spwmapping.spwmap[spwid]:
-                nunmapped += 1
-            else:
-                if scispw.sideband != ms.get_spectral_window(spwmapping.spwmap[spwid]).sideband:
-                    samesideband = False
-
-        if nunmapped >= nexpected:
-            score = 1.0
-            longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
-            shortmsg = 'No spw mapping'
-        else:
-            # Replace the previous score with a warning
-            if samesideband is True:
-                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
-                longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
-                shortmsg = 'Spw mapping within sidebands'
-            else:
-                score = rutils.SCORE_THRESHOLD_WARNING
-                longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
-                shortmsg = 'Spw mapping across sidebands'
-
-    origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
-                          metric_score=nunmapped,
-                          metric_units='Number of unmapped science spws')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
-
-
-@log_qa
 def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
     """
     Score the median achieved SNR for a given phase calibrator field and SpW.
@@ -1991,20 +1913,24 @@ def score_derived_fluxes_snr(ms, measurements):
     score = 0.0
     minscore = 1.0
     minsnr = None
+    snr_thresh = 26.25
+    low_snr_flux = collections.defaultdict(list)
 
-    for value in measurements.values():
+    for fieldid, field_measurements in measurements.items():
         # Loop over the flux measurements
-        for flux in value:
-            fluxjy = flux.I.to_units(measures.FluxDensityUnits.JANSKY)
-            uncjy = flux.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
+        for measurement in field_measurements:
+            fluxjy = measurement.I.to_units(measures.FluxDensityUnits.JANSKY)
+            uncjy = measurement.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
             if fluxjy <= 0.0 or uncjy <= 0.0:
                 continue
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
             nmeasured += 1
-            score1 = linear_score(float(snr), 5.0, 26.25, 0.66, 1.0)
+            score1 = linear_score(float(snr), 5.0, snr_thresh, 0.66, 1.0)
             minscore = min(minscore, score1)
             score += score1
+            if score1 < 1.0:
+                low_snr_flux[fieldid].append(measurement.spw_id)
 
     if nmeasured > 0:
         score /= nmeasured
@@ -2018,8 +1944,12 @@ def score_derived_fluxes_snr(ms, measurements):
         longmsg = 'No low SNR derived fluxes for %s ' % ms.basename
         shortmsg = 'No low SNR derived fluxes'
     else:
-        longmsg = 'Low SNR derived fluxes for %s ' % ms.basename
-        shortmsg = 'Low SNR derived fluxes'
+        # Report which field(s) and SpW(s) had low SNR.
+        fld_summaries = [f'field {fid}, SpW(s) {", ".join(str(s) for s in sorted(spwids))}'
+                         for fid, spwids in sorted(low_snr_flux.items())]
+        longmsg = f'For {ms.basename}, the fractional uncertainty in the derived scaling factor is large' \
+                  f' (> {100/snr_thresh:.1f}%) for {"; ".join(fld_summaries)}. The calibrator may be too faint.'
+        shortmsg = 'Uncertainty in some of the derived fluxes'
 
     origin = pqa.QAOrigin(metric_name='score_derived_fluxes_snr',
                           metric_score=minsnr,

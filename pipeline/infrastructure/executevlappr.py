@@ -46,7 +46,7 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
         rawDir = os.path.join (os.path.expandvars("$SCIPIPE_ROOTDIR"),
             relativePath, "rawdata")
 
-        # Get the pipeline context 
+        # Get the pipeline context
         context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
 
     except Exception:
@@ -151,8 +151,6 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
                     or pipeline_task_name == 'VLARestoreData':
                 task_args['vis'] = files
                 task_args['session'] = sessions
-            elif pipeline_task_name == 'SDImportData':
-                task_args['infiles'] = files
 
             remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
             inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
@@ -258,18 +256,18 @@ def _getFirstRequest (pprXmlFile):
 
     # Get the intents dictionary
     numIntents, intentsDict  = _getIntents (pprObject=pprObject,
-        requestId=0, numRequests=numRequests) 
+        requestId=0, numRequests=numRequests)
     print('Number of intents: {}'.format(numIntents))
     print('Intents dictionary: {}'.format(intentsDict))
 
     # Get the commands list
     procedureName, numCommands, commandsList  = _getCommands (pprObject=pprObject,
-        requestId=0, numRequests=numRequests) 
+        requestId=0, numRequests=numRequests)
     print('Number of commands: {}'.format(numCommands))
     print('Commands list: {}'.format(commandsList))
 
     # Count the scheduling block sets. Normally there should be only
-    # one although the schema allows multiple sets. Check for this 
+    # one although the schema allows multiple sets. Check for this
     # condition and process only the first.
     numSbSets = _getNumSchedBlockSets(pprObject=pprObject,
         requestId=0, numRequests=numRequests)
@@ -338,7 +336,7 @@ def _getNumRequests(pprObject):
 
     numRequests = 0
 
-    # Try single element / single scheduling block first. 
+    # Try single element / single scheduling block first.
     try:
         relative_path = ppr_prequests.ProcessingRequest.DataSet.RelativePath.getValue()
         numRequests = 1
@@ -441,7 +439,7 @@ def _getCommands (pprObject, requestId, numRequests):
         ppr_cmds = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest[requestId].ProcessingProcedure
 
     try:
-        procedureName = ppr_cmds.ProcedureTitle.getValue() 
+        procedureName = ppr_cmds.ProcedureTitle.getValue()
     except Exception:
         procedureName = "Undefined"
     commandsList = []

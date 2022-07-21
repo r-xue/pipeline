@@ -76,7 +76,7 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
     tmint = vdp.VisDependentProperty(default=0.085)
 
     # Solutions below this SNR are rejected
-    minsnr = vdp.VisDependentProperty(default=2.75)
+    minsnr = vdp.VisDependentProperty(default=2.0)
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
                  antenna=None, hm_phaseup=None, phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None,

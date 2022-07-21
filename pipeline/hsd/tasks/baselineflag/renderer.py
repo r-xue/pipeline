@@ -199,14 +199,14 @@ def make_summary_table_per_eb( accum_flag:Dict, subpages:Dict ) -> Tuple[List[st
         frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
         frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total']
         html = "<A href={} class=\"replace\" data-vis=\"{}\">Plots</A>".format( subpages[ms_name], ms_name )
-        tr = FlagSummaryEB_TR( ms_name, 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
+        tr = FlagSummaryEB_TR( ms_name,
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total),
                                '{:.3f} %'.format( frac_before ),
                                '{:.3f} %'.format( frac_after - frac_before ),
                                '{:.3f} %'.format( frac_after ) )
@@ -239,8 +239,15 @@ def accumulate_flag_per_source_spw(context, results):
             accum_flag.setdefault(field, {})
             fieldflag = after[field]
             spwflag = fieldflag['spw']
+            LOG.debug(f'after spwflag keys: {list(spwflag.keys())}')
+            _bfs = before[field]['spw']
+            LOG.debug(f'before spwflag keys: {list(_bfs.keys())}')
             for spw, flagval in spwflag.items():
+                if spw not in before[field]['spw']:
+                    continue
+
                 vspw = context.observing_run.real2virtual_spw_id(spw, ms)
+                LOG.debug(f'vis "{vis}" spw {spw} vspw {vspw}')
                 accum_flag[field].setdefault(vspw, dict(before=0, additional=0, after=0, total=0))
                 # sum up incremental flags
                 accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
