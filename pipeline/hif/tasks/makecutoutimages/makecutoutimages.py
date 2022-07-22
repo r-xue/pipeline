@@ -7,6 +7,7 @@ import collections
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
+from pipeline.domain import DataType
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
@@ -70,6 +71,9 @@ class MakecutoutimagesResults(basetask.Results):
 
 
 class MakecutoutimagesInputs(vdp.StandardInputs):
+
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     @vdp.VisDependentProperty
     def offsetblc(self):
         return []   # Units of arcseconds

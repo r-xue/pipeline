@@ -60,6 +60,7 @@ class ExportvlassdataResults(basetask.Results):
 
 class ExportvlassdataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, gainmap=None):
