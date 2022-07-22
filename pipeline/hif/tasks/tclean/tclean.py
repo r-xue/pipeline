@@ -521,7 +521,10 @@ class Tclean(cleanbase.CleanBase):
                 # Thus shift by 0.5 channels if no start is supplied.
                 # Additionally skipping the edge channel (cf. "- 2" above)
                 # means a correction of 1.5 channels.
-                inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
+                if inputs.nbin not in (None, -1):
+                    inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width / inputs.nbin) / 1e9)
+                else:
+                    inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             inputs.width = '%.7fMHz' % (channel_width / 1e6)
