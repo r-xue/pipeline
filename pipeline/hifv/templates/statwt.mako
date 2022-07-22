@@ -90,9 +90,12 @@ def summarize_stats(input_stats):
     return summary
 
 
-def dev2shade(x):
-    cmap=cm.get_cmap(name='Reds')
+def dev2shade(x, above_median=True):
     absx=abs(x)
+    if above_median: 
+        cmap=cm.get_cmap(name='Reds')
+    else: 
+        cmap=cm.get_cmap(name='Blues')
     if absx<4 and absx>=3:
         rgb_hex=colors.to_hex(cmap(0.2))
     elif absx<5 and absx>=4:
@@ -122,7 +125,7 @@ def format_cell(whole, value, stat):
         cell_title='{:.2f}'.format(dev/sigma)
         # if abs(dev) > 0.25*sigma: force for testing
         if abs(dev) > sigma*3.0: #TODO: ask if abs value is good here...
-            bgcolor = dev2shade(dev/sigma)
+            bgcolor = dev2shade(dev/sigma, float(value) > median)
             # bgcolor = dev2shade(dev/(0.25*sigma)) force for testing
             return f'style="background-color: {bgcolor}", debugging: {cell_title}'
         else: 
@@ -133,10 +136,22 @@ if not is_vlass:
     summary_ant_stats = summarize_stats(after_by_ant)
     summary_scan_stats = summarize_stats(after_by_scan)
 
-    bgcolor_list=[dev2shade(3.), dev2shade(4.), dev2shade(5.), dev2shade(6.)]
+    bgcolor_list=[dev2shade(3., True), dev2shade(4., True), dev2shade(5., True), dev2shade(6., True)]
+    bgcolor_list_blue=[dev2shade(3., False), dev2shade(4., False), dev2shade(5., False), dev2shade(6., False)]
 %>
 
 <h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>
+
+<p>The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): 
+<p> For values above the meidan, shades of red are used: </p>
+<p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; 
+<p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev,</p>
+<p>where &#963 is defined as 1.4826*MAD.</p>
+<p>For values below the median, shades of blue are used: </p> 
+<p style="background-color:${bgcolor_list_blue[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list_blue[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; 
+<p style="background-color:${bgcolor_list_blue[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list_blue[3]}; display:inline;">
+    6&#963&le;dev,</p> 
+<p>where &#963 is defined as 1.4826*MAD.</p>
 
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
 	<caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
@@ -334,8 +349,5 @@ if not is_vlass:
 		</tr>
 		% endfor
 	</tbody>
-    <caption> The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">
-    6&#963&le;dev.</p> &#963 is defined as 1.4826*MAD.
-    </caption>
 </table>
 %endif 
