@@ -162,7 +162,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Dict keys are: 'basescore', 'basecolor', 'shortmsg', 'longmsg'
             qa_dict = pipe692.score()
 
-            LOG.info('This is the phase RMS score '+str(qa_dict['basescore']))
+            LOG.info('The Phase RMS assessment score is: '+str(qa_dict['basescore']))
 
             # Create the SSF plot to include in the weblog
             pipe692.plotSSF()

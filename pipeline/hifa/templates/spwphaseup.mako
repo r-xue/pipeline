@@ -165,9 +165,10 @@ and the caltable containing per spw phase offsets.</p>
     target images can suffer from significant decoherence up to 50%. Self-calibration can help improve the final products. In conditions 
     exceeding the poor stability threshold, phase RMS (&gt; 70 deg), target images are expected to be poor, suffer from extreme levels of 
     decoherence and possibly have structure defects. Only self-calibration of known strong targets could recover these data. 
+    Self-calibration on bright enough targets may be able to mitigate the degradation caused by phase instability.
     </p>
     <p>
-    Self-calibration on bright enough targets may be able to mitigate the degradation caused by phase instability.
+    If the cycle time is longer than the total length of the bandpass scan, the phase RMS is only reported for the total time.
     </p>
 
     <table class="table table-bordered table-striped" summary="Phase RMS structure results">
