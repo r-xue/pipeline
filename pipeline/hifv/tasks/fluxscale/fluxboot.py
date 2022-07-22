@@ -430,15 +430,16 @@ class Fluxboot(basetask.StandardTaskTemplate):
         for field in calfieldlist:
             fitorder = self.inputs.fitorder
             spwlist = []
+
+            for scan in m.get_scans(field=field):
+                for spw in list(scan.spws):
+                    spwlist.append(spw.id)
+
+            spwlist = list(np.unique(spwlist))
+            spwlist.sort()
+            spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
+
             if self.inputs.fitorder == -1 and field not in fluxcalfieldlist:
-                for scan in m.get_scans(field=field):
-                    for spw in list(scan.spws):
-                        spwlist.append(spw.id)
-
-                spwlist = list(np.unique(spwlist))
-                spwlist.sort()
-                spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
-
                 fitorder = self.find_fitorder(spwlist)
             elif self.inputs.fitorder > -1:
                 LOG.info("Keyword override:  Using input fitorder={!s}".format(fitorder))
