@@ -1429,7 +1429,7 @@ def score_wvrgcal(ms_name, dataresult):
 
     # check the booleans that pass important information
     if dataresult.PHnoisy:
-        qa_messages.append('Only Bandpass use for WVR improvement')
+        qa_messages.append('Only Bandpass used for WVR improvement')
     if dataresult.suggest_remcloud:
         qa_messages.append('Remcloud suggested')
 
