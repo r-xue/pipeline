@@ -1363,6 +1363,12 @@ def score_wvrgcal(ms_name, dataresult):
 
     qa_messages = []
 
+    # check the booleans that pass important information
+    if dataresult.PHnoisy:
+        qa_messages.append('Only Bandpass used for WVR improvement assessment')
+    if dataresult.suggest_remcloud:
+        qa_messages.append('Remcloud suggested')
+
     if score > 1.0:
         # if nothing else score passes will be >1.0
         # truncate to 1.0 - ratio_score now holding imporvement 
@@ -1384,7 +1390,7 @@ def score_wvrgcal(ms_name, dataresult):
             # before making the score check if noisy BP was triggered
             if dataresult.BPnoisy:
                 score = 0.66  # should be yellow to trigger a warning
-                qa_messages.append('Phase RMS appears high')
+                qa_messages.append('Atmospheric phases appear unstable')
                 if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                     # inherit previous reduceBy values
                     score = score - reduceBy
@@ -1426,12 +1432,6 @@ def score_wvrgcal(ms_name, dataresult):
                     qa_messages.append('Poor rms value(s) in WVRGCAL')
             score = linear_score(score,0.0,0.66,0.34,0.66)
             # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
-
-    # check the booleans that pass important information
-    if dataresult.PHnoisy:
-        qa_messages.append('Only Bandpass used for WVR improvement')
-    if dataresult.suggest_remcloud:
-        qa_messages.append('Remcloud suggested')
 
     # join the short messages for the QA score (are these stored?? ) 
     qa_mesg = ' - '.join(qa_messages)
