@@ -64,20 +64,16 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Add score to list of scores.
             scores.append(score)
 
-        # Add QA for PIPE-692
+        # Create QA scores for PIPE-692
         ssr_qa = result.qa_dict
         if ssr_qa: 
             base_score = ssr_qa['basescore']
             shortmsg = ssr_qa['shortmsg']
             longmsg = ssr_qa['longmsg']
-#            origin = pqa.QAOrigin(metric_name='ssr_metric',
-#                          metric_score=base_score,
-#                          metric_units='')
-            scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename)) #, origin=origin, weblog_location=pqa.WebLogLocation.BANNER))
-        # Add scores to QA pool in result.
-        else:
-            print("error could not get SSR QA scores")
+            # Add score to list of scores.
+            scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
 
+        # Add all scores to the QA pool
         result.qa.pool.extend(scores)
 
 

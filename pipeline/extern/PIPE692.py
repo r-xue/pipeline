@@ -1,58 +1,12 @@
-# L T Maud - April 2020 0RIG
+#################
+# L T Maud - ESO 
+#          - April 2020 0RIG
 #          - May 2021 full CASA 6 version mockup
 #          - March 2022 CASA 6.4 'class' version for PL 
+#          - July 2022 Edit for PL2022 implementation
 
+##################
 
-# NOTES for developers
-
-## I have recoded everything that was completed for the PIPEREQ-121 (CASR-422)
-## and then subsequently presented and tested as a mock-up in PIPE-692
-## - this _hopefully_ makes this code this easy to integrate
-
-## As I do not fully understand all the various links within PL tasks/functs/classes
-## I hope this single class format is at least easy to understand 
-
-
-# *******************************************
-# I have tested this inside an active PL run in the call inside spwphaseup:
-#
-# 1) add import at the top if THIS code is in 'extern' folder
-#   
-# from pipeline.extern.PIPE692 import SSFanalysis   # not yet written as a class
-#
-# 2) In the class "SpwPhaseup" at the "prepare" function 
-#    add a try/except statement to run the PIPE692 code
-#
-# a) in the try:
-#
-#  try:
-#      LOG.info(" The Pipe 692 class is running for phase RMS.")
-#      LOG.info(" New check testing - March 2022 - L Maud ")
-#      pipe692 = SSFanalysis(inputs, outlierlimit=100., ftoll=0.3, maxpoorant=11)
-#                                #  pass the inputs from spwphaseup and options (these would be as PL inputs task call)
-#
-#      pipe692.analysis()        # launches the analysis
-#
-#      resul = pipe692.score()   # get the results dictionary
-#                                # keys are
-#                                # basescore, basecolor,shortmsg, longmsg
-#
-#      LOG.info('This is the phase RMS score '+str(resul['basescore']))
-#
-#      pipe692.plotSSF() # makes the SSF plot that would be included in the Weblog
-#
-#      ### optional for full PL weblog page plot - this is not needed for actual PL implementation ###
-#      pipe692.plotSSF_mockup(resul) # TESTING pass the results now - triggers mock-up figure options - i.e. a weblog page 
-#
-#      pipe692.close()
-#      
-# b) for the exception
-#
-#  except Exception as e:
-#      LOG.error(' Unable to compute Phase RMS Pipe692')
-#
-#
-# *******************************************
 
 import sys
 import os
@@ -81,7 +35,7 @@ class SSFanalysis(object):
     def __init__(self,inputsin, outlierlimit, ftoll, maxpoorant):   
 
         # the only gets all inputs needed throughout the class
-        print('INITILIZING')
+        #print('INITILIZING')
 
         self.visUse=inputsin.ms.basename
         self.outlierlimit = outlierlimit  ## NOTE TO DEV this (could be) an input variable to the task
@@ -164,21 +118,35 @@ class SSFanalysis(object):
         # setup the main analysis dictionary
         self.allResult={}
 
-        ## NOTE TO DEV - Print to logger some nice information too ? Like below?
+        
         print('')
         print(' ***************************')
+        print(' Decoherence Phase RMS assessment ')
         print(' Working on the MS '+str(self.visUse))
         print(' Selected scan',self.scanUse)
         print(' Selected spw',self.spwUse)
         print(' Using field', self.fieldUse)
         print(' Using caltab', self.caltable)
-        print(' The refant is', self.refant, ' id= ', self.refantid)
-        print(' Is it ACA with PM data? ', self.PMinACA)
+        print(' The refant is', self.refant, ' id=', self.refantid)
+        print(' Is ACA with PM data ', self.PMinACA)
         print(' Total BP scan time ', self.totaltime)
         print(' Phase referencing cycle time ', self.cycletime)
         print(' The median integration time ', self.difftime)
         print(' ***************************')
         print('')
+
+        # new logger output inside the code 
+        casalog.post('*** Phase RMS vs Baseline assessment ***', 'INFO','Decoherence')
+        casalog.post(' Working on the MS '+str(self.visUse), 'INFO', 'Decoherence')
+        casalog.post(' Selected scan '+str(self.scanUse), 'INFO','Decoherence')
+        casalog.post(' Selected spw '+str(self.spwUse), 'INFO','Decoherence')
+        casalog.post(' Using field '+str(self.fieldUse), 'INFO','Decoherence')
+        casalog.post(' Using caltab'+str(self.caltable), 'INFO','Decoherence')
+        casalog.post(' The refant is '+str(self.refant)+' id '+str(self.refantid), 'INFO','Decoherence')
+        casalog.post(' Is ACA with PM data '+str(self.PMinACA), 'INFO','Decoherence')
+        casalog.post(' Total BP scan time '+str(self.totaltime), 'INFO','Decoherence')
+        casalog.post(' Phase referencing cycle time '+str(self.cycletime), 'INFO','Decoherence')
+        casalog.post(' The median integration time '+str(self.difftime), 'INFO','Decoherence')
 
 
     def close(self):
@@ -204,7 +172,7 @@ class SSFanalysis(object):
         self.antlist=[]
         self.antout=[]
         self.allResult={}
-        print('Closing PIPE 692 ')
+        #print('Closing PIPE 692 ')
 
 
     # Main function to do the phase RMS calculation, and outlier analysis 
@@ -236,7 +204,7 @@ class SSFanalysis(object):
         # the total time (i.e. length of BP scan) and 
         # the cycle time (time it takes to cycle the start of a phase cal scan to the next - ties with a 'decohernce time' over the target)
 
-        print('DOING ANALYSIS')
+        #print('DOING ANALYSIS')
         if self.cycletime < self.totaltime:
             self.allResult= self.phRMScaltab(timeScale=self.cycletime) # if cycle time is shorter we pass the option so it gets assessed
         else:
@@ -346,7 +314,7 @@ class SSFanalysis(object):
             self.allResult['bllenbad']=None
 
 
-        print("FINISHED ANALYSIS")
+        #print("FINISHED ANALYSIS")
 
     def pmInACA(self):
         ''' Check if the array is ACA and has PM antennas
@@ -735,77 +703,83 @@ class SSFanalysis(object):
         # run in a try/except incase there are errors that nothing was passed
         # NOTE TO DEV - if that occurred should the exception be raised?
 
-        print(' DOING THE SCORE')
+        #print(' DOING THE SCORE')
         try:
             baseScore = 1.0 - self.allResult['phasermscycleP80']/100. 
+            RMSstring = str(round(self.allResult['phasermscycleP80'],2))
+
+            if baseScore > 0.7:
+                # this is for <30 deg phaseRMS - i.e green - stable phases 
+                baseScore  = 1.0
+                baseCol = 'green'
+                shortmsg = 'Excellent stability Phase RMS (<30deg).'
+                longmsg = 'Excellent stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time.'
+                # now check for problem antennas - if yes, change the score
+                # these are outliers >100 deg, or those beyond stat outlierlimit in function 'analysis' (6 MAD)
+                if len(self.antout)>0:
+                    baseScore = 0.9 
+                    baseCol = 'blue'
+                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
+                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.' 
+
+            elif baseScore > 0.5 and baseScore < 0.7:
+                # this is for 30 to 50 deg - should be blue, not really a problem just informative
+                # that the phase noise is elevated - no 'need' to look
+                # as 50 deg phase RMS can still cause ~30% decoherence
+                baseScore = 0.9
+                baseCol='blue'
+                shortmsg = 'Stable conditions phase RMS (30-50deg).'
+                longmsg = 'Good stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time.'
+                if len(self.antout)>0:
+                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
+                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
+
+            # these are high phase noise - remember the 
+            # in funtion 'analysis' we already did outlier clips 
+            # past 100deg, and those >4 MAD above the P80 phase RMS value
+            # so, if we still get here, the phases were poor/v.bad - or there 
+            # were too many antennas classed as bad in the analysis function
+            elif baseScore < 0.5 and baseScore > 0.3:
+                # this is 50 - 70 deg phase RMS, i.e. 30-50% lost due to decoehrence
+                # score is representative
+                baseCol ='yellow'
+                shortmsg = 'Elevated Phase RMS (50-70deg) exceeds stable parameters.'
+                longmsg='Elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time. Some image artifacts/defects may occur.'
+                if len(self.antout)>0:
+                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
+                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.' 
+
+            elif baseScore < 0.3:
+                baseCol = 'red'
+                if baseScore < 0.0:
+                    baseScore=0.0
+                shortmsg='High Phase RMS (>70deg) exceeds limit for poor stability'
+                longmsg= 'Very poor phase stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time. Significant image artifacts/defects may be present.'
+                if len(self.antout)>0:
+                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
+                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.' 
+
+            else:  ## default error - set to zero score for stage error
+                baseCol = 'red'
+                baseScore = 0.0
+                shortmsg = 'The phase RMS could not be assessed.'
+                longmsg= 'The Spatial structure function could not be assessed for '+self.visUse+'.'
+    
+
         except:
             # if there is some error 
-            baseScore = 0.0 
-
-        if baseScore > 0.7:
-            # this is for <30 deg phaseRMS - i.e green - stable phases 
-            baseScore  = 1.0
-            baseCol = 'green'
-            shortmsg = 'Excellent stability phase RMS (<30deg).'
-            longmsg = 'The baseline-based median phase RMS for baselines longer than P80 is less\n than 30 deg over the cycle time. The residual phase noise for the target(s) is\n expected to be low after phase referencing and decoherence will be minimal.'
-            # now check for problem antennas - if yes, change the score
-            # these are outliers >100 deg, or those beyond stat outlierlimit in function 'analysis' (6 MAD)
-            if len(self.antout)>0:
-                baseScore = 0.9 
-                baseCol = 'blue'
-                shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
-                longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.' 
-
-        elif baseScore > 0.5 and baseScore < 0.7:
-            # this is for 30 to 50 deg - should be blue, not really a problem just informative
-            # that the phase noise is elevated - no 'need' to look
-            # as 50 deg phase RMS can still cause ~30% decoherence
-            baseScore = 0.9
-            baseCol='blue'
-            shortmsg = 'Stable conditions phase RMS (30-50deg).'
-            longmsg = 'The baseline-based median phase RMS for baselines longer than P80 is between\n 30 and 50 deg over the cycle time. The residual phase noise of the target(s)\n after phase referncing could be slighty elevated and lead to decoherence\n of up to 30%.  Self-calibration could help achieve the best imaging.' 
-            if len(self.antout)>0:
-                shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
-                longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
-
-        # these are high phase noise - remember the 
-        # in funtion 'analysis' we already did outlier clips 
-        # past 100deg, and those >4 MAD above the P80 phase RMS value
-        # so, if we still get here, the phases were poor/v.bad - or there 
-        # were too many antennas classed as bad in the analysis function
-        elif baseScore < 0.5 and baseScore > 0.3:
-            # this is 50 - 70 deg phase RMS, i.e. 30-50% lost due to decoehrence
-            # score is representative
-            baseCol ='yellow'
-            shortmsg = 'Elevated Phase RMS (50-70deg) exceeds stable parameters.'
-            longmsg='The baseline-based median phase RMS on baselines longer than P80 is\n between 50 and 70 deg over the cycle time. The residual phase noise of the\n target(s) after phase referncing will be elevated leading to decoherence\n of up to 50%.  Self-calibration (if possible) is absolutely recommended.'
-            if len(self.antout)>0:
-                shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
-                longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.' 
-
-        elif baseScore < 0.3:
-            baseCol = 'red'
-            if baseScore < 0.0:
-                baseScore=0.0
-            shortmsg='High Phase RMS (>70deg) exceeds limit for poor stability'
-            longmsg= 'The baseline-based median phase RMS on the baselines longer than P80 is\n greater than 70deg over the cycle time. The residual phase noise for the\n target(s) is expected to be significantly elevated after phase referencing. The\n phase transfer could be poor and decoherence could be over 50%, reducing the\n image peak, spreading flux around the image and causing image defects.'
-            if len(self.antout)>0:
-                shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
-                longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.' 
-
-        else:  ## default error - set to zero score for stage error
             baseCol = 'red'
             baseScore = 0.0
             shortmsg = 'The phase RMS could not be assessed.'
             longmsg= 'The Spatial structure function could not be assessed for '+self.visUse+'.'
-    
+        
         scoreout={}
         scoreout['basescore']=baseScore
         scoreout['basecolor']=baseCol
         scoreout['shortmsg']=shortmsg
         scoreout['longmsg']=longmsg
-        print('Scoring', scoreout)
-        print(' FINISHED SCORE')
+        #print('Scoring', scoreout)
+        #print(' FINISHED SCORE')
         return scoreout
      
      
@@ -833,10 +807,10 @@ class SSFanalysis(object):
 
         ax1 = fig.add_axes([0.10,0.17,0.82,0.75])   # positons,  width,  height - main plot
 
-        print('plot the main res')
+        #print('plot the main res')
         ax1.plot(self.allResult['bllen'],self.allResult['blphaserms'],linestyle='',marker='o',c='0.6',zorder=0,label='Total-Time')
         ax1.plot(self.allResult['bllen'],self.allResult['blphasermscycle'],linestyle='',marker='o',c='r',zorder=1, label='Cycle-Time') # after is red - same as WVR plots etc 
-        print('completed')
+        #print('completed')
 
         ax1.set_xscale('log')
         ax1.set_yscale('log')
@@ -847,9 +821,9 @@ class SSFanalysis(object):
         ax1.plot([1.0,20000.0],[67.0,67.0],linestyle='-',c='yellow',linewidth=10.0,zorder=2,alpha=0.5) # line width  - blue limit
 
         # median marker 
-        print('plot median')
-        ax1.plot([self.allResult['blP80'],np.max(self.allResult['bllen'])],[self.allResult['phasermscycleP80'],self.allResult['phasermscycleP80']],c='0.2',linewidth=10,zorder=5, label='Median (bl > P80)')
-        print('completed')
+        #print('plot median')
+        ax1.plot([self.allResult['blP80'],np.max(self.allResult['bllen'])],[self.allResult['phasermscycleP80'],self.allResult['phasermscycleP80']],c='0.2',linewidth=10,zorder=5, label='Median (bl > P80)', alpha=0.5)
+        #print('completed')
 
         ## need to assess allResults here phasermscycleP80
         if self.allResult['phasermscycleP80'] < 50. :
@@ -869,28 +843,28 @@ class SSFanalysis(object):
         else: # ACA should default to this 
             ax1.set_xticks((10.0,20.0,30.0,50.0,70.0,90.0, 100.))
 
-        print('line annotate')
+        #print('line annotate')
         ax1.annotate('30deg RMS limit',xy=(np.min(self.allResult['bllen'])/2.0,27),xycoords='data')
         ax1.annotate('50deg RMS limit',xy=(np.min(self.allResult['bllen'])/2.0,44.5),xycoords='data')
         ax1.annotate('70deg RMS limit',xy=(np.min(self.allResult['bllen'])/2.0,61.5),xycoords='data')
-        print('completed')
+        #print('completed')
 
-        print(self.allResult['bllenbad']) # prob some are nan...?
+        #print(self.allResult['bllenbad']) # prob some are nan...?
         ## if there are any outliers passed they are plotted in 'shade' 
         if self.allResult['bllenbad'] is not None:
-            print('plotting outliers')
+            #print('plotting outliers')
             # should over plot on the plot, i.e cover the full plot already - white them out
             ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermsbad'],linestyle='',marker='o',c='w',zorder=3)
             ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermscyclebad'],linestyle='',marker='o',c='w',zorder=4)
             # over plot as shade
             ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermsbad'],linestyle='',marker='o',c='0.6',zorder=5, alpha=0.1, label='Total-time (outlier)')
             ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermscyclebad'],linestyle='',marker='o',c='r',zorder=6,alpha=0.1, label='Cycle-time (outlier)') 
-            print('completed')
+            #print('completed')
 
-        print('calc max and min')
+        #print('calc max and min')
         phaseRMSmax = np.max([np.max(self.allResult['blphasermscycle'][np.isfinite(self.allResult['blphasermscycle'])]),np.max(self.allResult['blphaserms'][np.isfinite(self.allResult['blphaserms'])])])
         phaseRMSmin = np.min([np.min(self.allResult['blphasermscycle'][np.isfinite(self.allResult['blphasermscycle'])]),np.min(self.allResult['blphaserms'][np.isfinite(self.allResult['blphaserms'])])])
-        print('completed')
+        #print('completed')
 
         # make limit at least 35 on plot for green data
         if phaseRMSmax < 35:
@@ -909,7 +883,7 @@ class SSFanalysis(object):
         # extend the plot max range
         plotrange = [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100,200,300, 400, 500]
         idplot = [ id for id, val in enumerate(plotrange) if phaseRMSmin < val and phaseRMSmax > val]
-        print(len(idplot))
+        #print(len(idplot))
         indexplt=10-len(idplot) + np.max(idplot)
         if len(idplot)<10 and indexplt < len(plotrange)-1:  # i.e. if we cannot adjust further than plotrange, we don't
             phaseRMSmax = plotrange[indexplt]
@@ -937,270 +911,3 @@ class SSFanalysis(object):
         plt.savefig('{0}_PIPE-692_SSF.png'.format(self.visUse),format='png', dpi=100.)
         
  
-    ### NOTE NEEDED IN FINAL PL IMPLEMENTATION
-    ### it is for the mockup weblog plot page 
-    def plotSSF_mockup(self, resultuse): # should not need inputs ,QAin,fig_name=None, medline=True, QAinitial=None):
-        '''plotting task used to make the
-        spatial structure functions plots 
-        as are shown on the PIPE-692 ticket
-        and ALSO will the fullPL weblog page mock-up. 
-        
-        # input for mock are the scores and message strings
-        # passed from resultsuse via the 'score' function
-
-        '''
-
-        print('NOTE - Running the full MOCKUP weblog plot')
-
-        # do the plot
-        figsize=[12.0, 17.5] # appears mostly to affect the savefig not the interactive one 
-        figsize=np.array(figsize)
-        plt.close(1)
-        fig=plt.figure(1)#, figsize=figsize)
-        fig.set_size_inches(figsize[0], figsize[1], forward=True)
-        fig.clf()
-    
-
-        # positions for the PIPE-692 layout - fully flexible with any ideas other changes etc
-        # i.e. the text would be on the page, not the plot
-
-        ax1 = fig.add_axes([0.17,0.25,0.7,0.36])   # positons,  width,  height - main plot
-   
-        # below are layout hacks for PL looking weblog figure
-
-        ax2a = fig.add_axes([0.05,0.66,0.20,0.04])  # mimic the top table left
-        ax2b = fig.add_axes([0.25,0.66,0.08,0.04])  # mimic the top table middle
-        ax2c = fig.add_axes([0.33,0.66,0.08,0.04])  # mimic the top table right
-        ax2d = fig.add_axes([0.41,0.66,0.19,0.04])  # mimic the top table right
-        ax2e = fig.add_axes([0.60,0.66,0.38,0.04])  # mimic the top table right
-
-        ax2Ha = fig.add_axes([0.05,0.7,0.20,0.02])  # mimic the top table
-        ax2Hb = fig.add_axes([0.25,0.7,0.08,0.02])  # mimic the top table
-        ax2Hc = fig.add_axes([0.33,0.7,0.08,0.02])  # mimic the top table
-        ax2Hd = fig.add_axes([0.41,0.7,0.19,0.02])  # mimic the top table
-        ax2He = fig.add_axes([0.60,0.7,0.38,0.02])  # mimic the top table
-
-        ax3F  = fig.add_axes([0.055,0.04,0.91,0.08])  # Pipeline QA accordian
-        ax3T  = fig.add_axes([0.055,0.10,0.91,0.02]) # Pipeline QA accordian
-        ax3Ha = fig.add_axes([0.07,0.07,0.15,0.02])
-        ax3Hb = fig.add_axes([0.18,0.07,0.76,0.02])
-        ax3a = fig.add_axes([0.07,0.05,0.15,0.02])   # mimic the score QA
-        ax3b = fig.add_axes([0.18,0.05,0.76,0.02])   # mimic short comment QA
-
-        # warning message at top need set axes 
-        ax4H = fig.add_axes([0.055,0.935,0.91,0.02])  # mimic the top table
-        ax4 = fig.add_axes([0.055,0.915,0.91,0.02])  # mimic the top table
-
-        ax1.plot(self.allResult['bllen'],self.allResult['blphaserms'],linestyle='',marker='o',c='0.6',zorder=0,label='Total-Time')
-        ax1.plot(self.allResult['bllen'],self.allResult['blphasermscycle'],linestyle='',marker='o',c='r',zorder=1, label='Cycle-Time') # after is red - same as WVR plots etc 
-
-        ax1.set_xscale('log')
-        ax1.set_yscale('log')
-
-        ## make wide lines for 'limits' at 30, 50, 70 deg 
-        ax1.plot([1.0,20000.0],[29.0,29.0],linestyle='-',c='g',linewidth=10.0,zorder=2,alpha=0.5) # line width  - green limit
-        ax1.plot([1.0,20000.0],[48.0,48.0],linestyle='-',c='b',linewidth=10.0,zorder=2,alpha=0.5) # line width  - blue limit
-        ax1.plot([1.0,20000.0],[67.0,67.0],linestyle='-',c='yellow',linewidth=10.0,zorder=2,alpha=0.5) # line width  - blue limit
-
-        # median marker 
-        ax1.plot([self.allResult['blP80'],np.max(self.allResult['bllen'])],[self.allResult['phasermscycleP80'],self.allResult['phasermscycleP80']],c='0.2',linewidth=10,zorder=5, label='Median (bl > P80)')
-    
-        # green < 30 ,  blue is 30-50, yellow is >50 rms, red is > 70 deg rms - over the cycle time
-        # messages pass from score for the mockup
-        warStr= resultuse['longmsg']
-        shortStr=resultuse['shortmsg']
-        xyUse = (0.01,0.1)
-
-        if resultuse['basecolor'] == 'green' or resultuse['basecolor']=='blue':
-            ax1.set_yticks([10.0,20.0,30.0,50.0])
-        
-        elif resultuse['basecolor'] == 'yellow' or resultuse['basecolor']=='red':
-            ax1.set_yticks([10.0,20.0,30.0,50.0,70.0, 100.0, 300.0])
-
-
-        # max baselines for getting ticks
-        if np.max(self.allResult['bllen'])> 5000.:
-            ax1.set_xticks((50.0,100.0,500.0,1000.,5000.0,10000.0))
-        elif np.max(self.allResult['bllen'])> 1000.:
-            ax1.set_xticks((10.0,50.0,100.0,500.0,1000.0,3000.0))
-        elif np.max(self.allResult['bllen'])> 500.:
-            ax1.set_xticks((10.0,50.0,100.,300.,500.,700.))
-        elif np.max(self.allResult['bllen'])> 100.:
-            ax1.set_xticks((10.0,30.0,50.0,70.0, 100., 300.))
-        else: # ACA should default to this 
-            ax1.set_xticks((10.0,20.0,30.0,50.0,70.0,90.0, 100.))
-
-        ax1.annotate('30deg RMS limit',xy=(np.min(self.allResult['bllen'])/2.0,27),xycoords='data')
-        ax1.annotate('50deg RMS limit',xy=(np.min(self.allResult['bllen'])/2.0,44.5),xycoords='data')
-        ax1.annotate('70deg RMS limit',xy=(np.min(self.allResult['bllen'])/2.0,61.5),xycoords='data')
-                  
-        ## if there are any outliers passed they should be added in the message, main code does the logic
-        if self.allResult['bllenbad'] is not None:
-            # should over plot on the plot, i.e cover the full plot already
-            # white out then shade over using python zordering
-            ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermsbad'],linestyle='',marker='o',c='w',zorder=3)
-            ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermscyclebad'],linestyle='',marker='o',c='w',zorder=4) 
-            ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermsbad'],linestyle='',marker='o',c='0.6',zorder=5, alpha=0.1, label='Total-time (outlier)')
-            ax1.plot(self.allResult['bllenbad'],self.allResult['blphasermscyclebad'],linestyle='',marker='o',c='r',zorder=6,alpha=0.1, label='Cycle-time (outlier)') 
-
-           
-        phaseRMSmax = np.max([np.max(self.allResult['blphasermscycle'][np.isfinite(self.allResult['blphasermscycle'])]),np.max(self.allResult['blphaserms'][np.isfinite(self.allResult['blphaserms'])])])
-        phaseRMSmin = np.min([np.min(self.allResult['blphasermscycle'][np.isfinite(self.allResult['blphasermscycle'])]),np.min(self.allResult['blphaserms'][np.isfinite(self.allResult['blphaserms'])])])
-
-        # make limit at least 35 on plot for green data
-        if phaseRMSmax < 35:
-            phaseRMSmax = 35.
-        ax1.grid(True)
-
-        # extend plot range if ticks <9 as matplotlib adding extra values other than the set_yticks
-        plotrange = [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100,200,300, 400, 500]
-        idplot = [ id for id, val in enumerate(plotrange) if phaseRMSmin < val and phaseRMSmax > val]
-        print(len(idplot))
-        indexplt=10-len(idplot) + np.max(idplot)
-        if len(idplot)<10 and indexplt < len(plotrange)-1:  # i.e. if we cannot adjust further than plotrange, we don't
-            phaseRMSmax = plotrange[indexplt]
-
-        # Added SPW and Scans 
-        fig_name='MOCKUP_'+str(self.visUse)
-        infoLine='SPW '+str(self.spwUse)+' Correlation X        All Unflagged Antennas     Bandpass: '+str(self.fieldUse)+'     Scan '+str(self.scanUse)
-        ax1.set_title('Spatial structure function: ' + fig_name+'\n '+infoLine, fontsize=10)
-        ax1.set_ylabel('Phase RMS (deg)')
-        ax1.set_xlabel('Baseline Length (m)')
-
-        ax1.set_xlim(np.min(self.allResult['bllen'])/2.0,np.max(self.allResult['bllen'])*1.1)
-        ax1.set_ylim(phaseRMSmin*0.9,phaseRMSmax*1.1) 
-
-        ax1.xaxis.set_major_formatter(ticker.ScalarFormatter())
-        ax1.yaxis.set_major_formatter(ticker.ScalarFormatter())
-        #fontL = FontProperties
-        #fontL = set_size('small')
-        ax1.legend(loc='upper left', bbox_to_anchor=(0.01, -0.085), prop={'size':8}, frameon=False, ncol=3)# upper center is where the box of the elgend locator is
-
- 
-        ### Extras for weblog page plot mockup ###
-
-        print(' -- EXTRAS for MOCK UP -- ')
-        ax1.annotate(' The pipeline uses the bandpass phase solutions to create structure functions plots, baseline length versus phase RMS.\n The measure of the phase RMS over a time interval equal to the phase referencing cycle-time is useful as a proxy for\n the expected residual phase RMS of a target source(s) after phase referencing. The action of phase referencing itself\n acting to correct phase fluctuations, caused by the atmosphere, on timescales longer than the cycle-time. For excellent\n stability conditions, phase RMS (<30deg), the target images will have minimal decoherence. For stable conditions, phase\n RMS (30-50deg), the target image can have slight decoherence which could be improved by self-calibration. When\n exceeding the phase RMS considered as stable conditions (50-70deg), target images can suffer from significant\n decoherence up to 50%. Self-calibration can help improve the final products. In conditions exceeding the poor stability\n threshold, phase RMS (>70deg), target images are expected to be poor, suffer from extreme levels of decoherence and\n possibly have image structure defects. Only self-calibration of known strong targets could recover these data.', xy=(0.05,0.735), xycoords='figure fraction', fontsize=10)
-
-        ax1.annotate('Phase RMS structure plots', xy=(0.05,0.865), xycoords='figure fraction', fontsize=15, weight='bold')
-
-        # required for CASA 6
-        ax3T.set_facecolor('0.9')   
-        ax2a.set_facecolor('0.9')   
-        ax2b.set_facecolor('0.9')   
-        ax2c.set_facecolor('0.9')   
-        if resultuse['basecolor']=='green':
-            ax3a.set_facecolor('lightgreen') 
-            ax3b.set_facecolor('lightgreen') 
-        if resultuse['basecolor']=='blue':
-            ax3a.set_facecolor('lightskyblue') 
-            ax3b.set_facecolor('lightskyblue') 
-        if resultuse['basecolor']=='yellow':
-            ax3a.set_facecolor('lightyellow') 
-            ax3b.set_facecolor('lightyellow') 
-        if resultuse['basecolor']=='red':
-            print('at color set')
-            ax3a.set_facecolor('lightsalmon') 
-            ax3b.set_facecolor('lightsalmon') 
-            print('red colour set')
-
-        # Headings and Titles
-        ax2Ha.annotate('Measurement Set',xy=(0.05,0.1),xycoords='axes fraction',fontsize=8, weight='bold')
-        ax2Hb.annotate('Type',xy=(0.05,0.1),xycoords='axes fraction',fontsize=8, weight='bold')
-        ax2Hc.annotate('Time (sec)',xy=(0.05,0.1),xycoords='axes fraction',fontsize=8, weight='bold')
-        ax2Hd.annotate('Median Phase RMS (deg)',xy=(0.02,0.1),xycoords='axes fraction',fontsize=8, weight='bold')
-        ax2He.annotate('Noisier antennas',xy=(0.02,0.1),xycoords='axes fraction',fontsize=8, weight='bold')
-
-        ax2a.annotate(self.visUse,xy=(0.02,0.55),xycoords='axes fraction',fontsize=8)
-        ax2b.annotate('Total-Time',xy=(0.02,0.55),xycoords='axes fraction',fontsize=8)
-        ax2b.annotate('Cycle-Time',xy=(0.02,0.1),xycoords='axes fraction',fontsize=8)
-        ax2c.annotate(np.round(self.totaltime,2),xy=(0.02,0.55),xycoords='axes fraction',fontsize=8)
-        ax2c.annotate(np.round(self.cycletime,2),xy=(0.02,0.1),xycoords='axes fraction',fontsize=8)
-        plotRMS = np.round(self.allResult['phasermscycleP80'],2)
-        plotRMStot = np.round(self.allResult['phasermsP80'],2)
-        ax2d.annotate(plotRMS,xy=(0.01,0.1),xycoords='axes fraction',fontsize=8)
-        ax2d.annotate(plotRMStot,xy=(0.01,0.55),xycoords='axes fraction',fontsize=8)
-
-        # check length of bad antennas for a return string - or a split
-        ax2e.annotate(','.join(self.antout),xy=(0.01,0.55),xycoords='axes fraction',fontsize=8)
-
-        ax3T.annotate('Pipeline QA',xy=xyUse,xycoords='axes fraction',weight='bold')
-        ax3Ha.annotate('Score',xy=xyUse,xycoords='axes fraction',weight='bold',fontsize=10)
-        ax3Hb.annotate('Reason',xy=xyUse,xycoords='axes fraction',weight='bold',fontsize=10)
-
-        # score dependent
-        if resultuse['basecolor'] == 'green':
-            ax3a.annotate(str(resultuse['basescore']),xy=xyUse,xycoords='axes fraction',fontsize=8,color='green')
-            ax3b.annotate(shortStr,xy=xyUse,xycoords='axes fraction',fontsize=8, color='green')
-            ax4.axis('off')
-            ax4H.axis('off')
-
-        if resultuse['basecolor']=='blue':
-            ax3a.annotate(str(resultuse['basescore']),xy=xyUse,xycoords='axes fraction',fontsize=8,color='blue')
-            ax3b.annotate(shortStr,xy=xyUse,xycoords='axes fraction',fontsize=8, color='blue')
-            ax4.axis('off')
-            ax4H.axis('off')        
-
-        # in case of red or yellow - banner message
-        if resultuse['basecolor']=='yellow':
-            ax3a.annotate(str(np.round(resultuse['basescore'],1)),xy=xyUse,xycoords='axes fraction',fontsize=8,color='gold')
-            ax3b.annotate(shortStr,xy=xyUse,xycoords='axes fraction',fontsize=8, color='gold')
-            ax4H.annotate('Task notifications', xy=xyUse, xycoords='axes fraction',weight='bold', fontsize=10) 
-            ax4.set_facecolor('lightyellow')
-            ax4.annotate('Warning! '+shortStr, xy=xyUse, xycoords='axes fraction',fontsize=8, color='gold')
-
-        if resultuse['basecolor']=='red':
-            print('in the color red')
-            ax3a.annotate(str(np.round(resultuse['basescore'],1)),xy=xyUse,xycoords='axes fraction',fontsize=10,color='red')
-            ax3b.annotate(shortStr,xy=xyUse,xycoords='axes fraction',fontsize=10, color='red')
-            ax4H.annotate('Task notifications', xy=xyUse, xycoords='axes fraction', weight='bold', fontsize=10) 
-            ax4.set_facecolor('lightsalmon')
-            ax4.annotate('QA '+shortStr, xy=xyUse, xycoords='axes fraction', fontsize=8, color='red')
-            print('dont color red')
-        
-        ax2Ha.set_xticks([])
-        ax2Hb.set_xticks([])
-        ax2Hc.set_xticks([])
-        ax2Hd.set_xticks([])
-        ax2He.set_xticks([])
-        ax2a.set_xticks([])
-        ax2b.set_xticks([])
-        ax2c.set_xticks([])
-        ax2d.set_xticks([])
-        ax2e.set_xticks([])
-
-        ax3F.set_xticks([])
-        ax3T.set_xticks([])
-        ax3Ha.set_xticks([])
-        ax3Hb.set_xticks([])
-        ax3a.set_xticks([])
-        ax3b.set_xticks([])
-
-        ax2Ha.set_yticks([])
-        ax2Hb.set_yticks([])
-        ax2Hc.set_yticks([])
-        ax2Hd.set_yticks([])
-        ax2He.set_yticks([])
-        ax2a.set_yticks([])
-        ax2b.set_yticks([])
-        ax2c.set_yticks([])
-        ax2d.set_yticks([])
-        ax2e.set_yticks([])
-
-        ax3F.set_yticks([])
-        ax3T.set_yticks([])
-        ax3Ha.set_yticks([])
-        ax3Hb.set_yticks([])
-        ax3a.set_yticks([])
-        ax3b.set_yticks([])
-
-        ax4H.set_xticks([])
-        ax4H.set_yticks([])
-        ax4.set_xticks([])
-        ax4.set_yticks([])
-
-        print('SAVING MOCKUP PLOT')
-        plt.savefig('{0}_PIPE-692_SSF.png'.format(fig_name),format='png', dpi=100.)
-        print('...DONE...')
- 
-

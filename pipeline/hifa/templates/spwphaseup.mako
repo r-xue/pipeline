@@ -25,10 +25,18 @@ def format_field(field_name, field_id):
 
 <%block name="title">Compute Spw Phaseup Map and Offsets</%block>
 
+<h2>Contents</h2>
+
+<ul>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#structure">Phase RMS structure plots</a></li>
+<ul>
+
 <p>This task computes the spectral window map that will be used to apply the time gaincal phase solutions
 and the caltable containing per spw phase offsets.</p>
 
 <h2 id="results">Results</h2>
+
 <table class="table table-bordered table-striped" summary="Narrow to wide spw mapping results">
 	<caption>Phase solution spw map per measurement set. If a measurement set
         is listed with no further information, this indicates that there were
@@ -146,70 +154,61 @@ and the caltable containing per spw phase offsets.</p>
 </table>
 
 <h2 id="structure">Phase RMS structure plots</h2>
+% if rmsplots: 
+    <p>
+    The pipeline uses the bandpass phase solutions to create structure functions plots, baseline length versus phase RMS. 
+    The measure of the phase RMS over a time interval equal to the phase referencing cycle-time is useful as a proxy for the 
+    expected residual phase RMS of a target source after phase referencing. The action of phase referencing itself is to correct 
+    phase fluctuations, caused by the atmosphere, on timescales longer than the cycle-time. For excellent stability conditions, phase RMS (	&lt; 30 deg), 
+    the target images will have minimal decoherence. For stable conditions, phase RMS (30-50 deg), the target image can have slight 
+    decoherence which could be improved by self-calibration. When exceeding the phase RMS considered as stable conditions (50-70 deg), 
+    target images can suffer from significant decoherence up to 50%. Self-calibration can help improve the final products. In conditions 
+    exceeding the poor stability threshold, phase RMS (&gt; 70 deg), target images are expected to be poor, suffer from extreme levels of 
+    decoherence and possibly have structure defects. Only self-calibration of known strong targets could recover these data. 
+    </p>
+    <p>
+    Self-calibration on bright enough targets may be able to mitigate the degradation caused by phase instability.
+    </p>
 
-<p>
-The pipeline uses the bandpass phase solutions to create structure functions plots, baseline length versus phase RMS. 
-The measure of the phase RMS over a time interval equal to the phase referencing cycle-time is useful as a proxy for the 
-expected residual phase RMS of a target source after phase referencing. The action of phase referencing itself is to correct 
-phase fluctuations, caused by the atmosphere, on timescales longer than the cycle-time. For excellent stability conditions, phase RMS (	&lt; 30 deg), 
-the target images will have minimal decoherence. For stable conditions, phase RMS (30-50 deg), the target image can have slight 
-decoherence which could be improved by self-calibration. When exceeding the phase RMS considered as stable conditions (50-70 deg), 
-target images can suffer from significant decoherence up to 50%. Self-calibration can help improve the final products. In conditions 
-exceeding the poor stability threshold, phase RMS (&gt; 70 deg), target images are expected to be poor, suffer from extreme levels of 
-decoherence and possibly have structure defects. Only self-calibration of known strong targets could recover these data. 
-</p>
+    <table class="table table-bordered table-striped" summary="Phase RMS structure results">
+        <thead>
+            <tr>
+                <th scope="col">Measurement Set</th>
+                <th scope="col">Type</th>
+                <th scope="col">Time</th>
+                <th scope="col">Median Phase RMS (deg)</th>
+                <th scope="col">Noisier antennas</th>
+            </tr>
+        </thead>
+        <tbody>
+        % for tr in phaserms_table_rows:
+            <tr>
+            % for td in tr:
+                ${td}
+            % endfor
+            </tr>
+        %endfor
+        </tbody>
+    </table>
 
-<table class="table table-bordered table-striped" summary="Phase RMS structure results">
-    <thead>
-        <tr>
-            <th scope="col">Measurement Set</th>
-            <th scope="col">Type</th>
-            <th scope="col">Time</th>
-            <th scope="col">Median Phase RMS (deg)</th>
-            <th scope="col">Noisier antennas</th>
-        </tr>
-    </thead>
-    <tbody>
-    % for tr in phaserms_table_rows:
-        <tr>
-        % for td in tr:
-            ${td}
-        % endfor
-        </tr>
-    %endfor
-<!--        <tr>
-            <td>${results[0].vis}</td>
-            <td>Total Time</td>
-            <td>${results[0].phaserms_totaltime}</td>
-            <td>${results[0].phaserms_results['phasermsP80']}</td>
-            <td>${results[0].phaserms_antout}</td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td>Cycle Time</td>
-            <td>${results[0].phaserms_cycletime}</td>
-            <td>${results[0].phaserms_results['phasermscycleP80']}</td>
-            <td>${results[0].phaserms_antout}</td>
-        </tr>-->
-    </tbody>
-</table>
+    <%self:plot_group plot_dict="${rmsplots}"
+                    url_fn="${lambda ms: 'noop'}">
+            <%def name="title()">
+            </%def>
 
+            <%def name="preamble()">
+            </%def>
 
-<%self:plot_group plot_dict="${rmsplots}"
-                  url_fn="${lambda ms:  'noop'}">
-        <%def name="title()">
-        </%def>
+            <%def name="mouseover(plot)">${plot.basename}</%def>
 
-        <%def name="preamble()">
-        </%def>
+            <%def name="fancybox_caption(plot)">
+                ${plot.parameters['desc']}
+            </%def>
 
-        <%def name="mouseover(plot)">${plot.basename}</%def>
-
-        <%def name="fancybox_caption(plot)">
-            ${plot.parameters['desc']}
-        </%def>
-
-        <%def name="caption_title(plot)">
-            ${plot.parameters['desc']}
-        </%def>
-</%self:plot_group>
+            <%def name="caption_title(plot)">
+                ${plot.parameters['desc']}
+            </%def>
+    </%self:plot_group>
+%else: 
+    <p>Decoherence Phase RMS Structure function assessment could not be made.</p>
+%endif 

@@ -150,39 +150,44 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         snr_info = self._compute_median_snr(diag_phase_results, spwmaps)
 
         try:
-            LOG.info(" The Pipe 692 class is running for phase RMS.")
-            LOG.info(" New check testing - March 2022 - L Maud ")
+            LOG.info("Starting decoherence assessment.")
+
+            # Initialize the decoherence assessment
             pipe692 = SSFanalysis(inputs, outlierlimit=100., ftoll=0.3, maxpoorant=11)
-                                    #  pass the inputs from spwphaseup and options (these would be as PL inputs task call)
 
-            pipe692.analysis()        # launches the analysis
+            # Launch the analysis
+            pipe692.analysis()
 
-            qa_dict = pipe692.score()   # get the results dictionary
-                                    # keys are
-                                    # basescore, basecolor,shortmsg, longmsg
+            # Get the result dictionary: 
+            # Dict keys are: 'basescore', 'basecolor', 'shortmsg', 'longmsg'
+            qa_dict = pipe692.score()
 
             LOG.info('This is the phase RMS score '+str(qa_dict['basescore']))
 
-            pipe692.plotSSF() # makes the SSF plot that would be included in the Weblog
+            # Create the SSF plot to include in the weblog
+            pipe692.plotSSF()
 
-            ### optional for full PL weblog page plot - this is not needed for actual PL implementation ###
-            #pipe692.plotSSF_mockup(resul) # TESTING pass the results now - triggers mock-up figure options - i.e. a weblog page 
-
-            luke_results = pipe692.allResult #TODO: obviously a temp variable name...
-            luke_cycletime = pipe692.cycletime 
-            luke_totaltime = pipe692.totaltime
-            luke_antout = pipe692.antout
+            # Store the values which need to be reported on the weblog
+            decoherence_results = pipe692.allResult
+            decoherence_cycletime = pipe692.cycletime 
+            decoherence_totaltime = pipe692.totaltime
+            decoherence_antout = pipe692.antout
 
             pipe692.close()
 
         except Exception as e:
-            LOG.error(' Unable to compute Phase RMS Pipe692')
+            # If the script fails, report this failure via the following QA score
+            qa_dict = {'basescore':0.9, 'basecolor':'blue', 'shortmsg':'Cannot assess Phase RMS', 'longmsg':'Unable to assess the Phase RMS decohernce'}
+            decoherence_results = None
+            decoherence_cycletime = None
+            decoherence_totaltime = None
+            decoherence_antout = []
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
                                    snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing,
-                                   phaserms_totaltime = luke_totaltime, phaserms_cycletime = luke_cycletime, 
-                                   phaserms_results = luke_results, phaserms_antout = luke_antout, qa_dict=qa_dict)
+                                   phaserms_totaltime = decoherence_totaltime, phaserms_cycletime = decoherence_cycletime, 
+                                   phaserms_results = decoherence_results, phaserms_antout = decoherence_antout, qa_dict=qa_dict)
 
         return result
 
@@ -857,7 +862,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
                  snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False, 
-                 phaserms_totaltime = None, phaserms_cycletime = None, phaserms_results = None, phaserms_antout = '', qa_dict = {}): 
+                 phaserms_totaltime = None, phaserms_cycletime = None, phaserms_results = None, phaserms_antout = [], qa_dict = {}): 
                  #TODO: modify order to put optional last and add typehints?
         """
         Initialise the phaseup spw mapping results object.
