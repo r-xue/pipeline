@@ -91,8 +91,13 @@ class RenormQAHandler(pqa.QAPlugin):
                     pass
 
         # Make a copy of this dict to keep track of whether a QA message was issued for
-        # each SPW yet.
+        # each excludechan SPW yet. 
         excludechan = result.excludechan
+
+        # Only warn about spws in excludechan not matching the spws for the automated suggestions if there are whole suggested spws
+        # not covered by the input excludechan dict. (Without this, there is a QA warning when the input excludechan values are 
+        # so close to the ones that would be recommeded by renorm, that no additional automated suggestions are made.) 
+        warn_excludechan_spw = False
 
         for target in result.atmWarning: 
             for spw in result.atmWarning[target]:
@@ -108,11 +113,12 @@ class RenormQAHandler(pqa.QAPlugin):
                             if spw in excluded_spws: 
                                 longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
                                       "exclusion: {}".format(excludechan[spw], spw, result.atmExcludeCmd[target][spw])
-                                # Since we printed a message about the excluded channels for this SPW, remove it from the tracking dict.
+                                # Since we printed a message about the excluded channels for this SPW, remove it from the list that haven't yet been covered.
                                 del excludechan[spw]
                             else: 
                                 longmsg = "No channels are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
                                       "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw]) 
+                                warn_excludechan_spw = True
                             atm_score = 0.85
                             shortmsg = "Channels are being excluded from renormalization correction"
                         elif result.atmAutoExclude:
@@ -128,11 +134,11 @@ class RenormQAHandler(pqa.QAPlugin):
                     result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         # If there were any entries in excludechan for spws that weren't identified as having an atmospheric feature by renorm,
-        # when apply=True, provide a QA message.
-        if result.apply:
+        # when apply=True, and there are also provide a QA message.
+        if result.apply and warn_excludechan_spw:
             for exclude_spw in excludechan:
-                longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. After excluding these channels, " \
-                          "auto-calculated channel exclusion indicated that no channels need to be excluded for SPW {}." \
+                longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. " \
+                          "Auto-calculated channel exclusion indicated that no channels need to be excluded for SPW {}." \
                           .format(excludechan[exclude_spw], exclude_spw, exclude_spw)
                 shortmsg = "Channels are being excluded from renormalization correction"
                 atm_score = 0.85

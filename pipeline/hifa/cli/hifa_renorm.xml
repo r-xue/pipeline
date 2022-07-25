@@ -53,7 +53,7 @@
     <param name="atmAutoExclude" type="bool">
         <shortdescription>Use the recommended excludechans selection.</shortdescription>
         <description> If True, automatically apply the recommended excludechans selection.</description>
-        <value/>
+        <value>False</value>
     </param>
 
     <param type="string" name="pipelinemode">
