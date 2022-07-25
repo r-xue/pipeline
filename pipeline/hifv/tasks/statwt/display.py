@@ -103,9 +103,9 @@ class weightboxChart(object):
         number_of_plots = 3 
         number_of_scan_plots = 1
 
-        #if (len(scans)>80): 
-        if (len(scans) > 5): 
-            number_of_scan_plots = math.ceil(len(scans)/5) #80) #TODO: remove testing value when testing a more normally-sized dataset
+        max_scans_per_plot = 80 # 5 for quick tests
+        if (len(scans) > max_scans_per_plot): 
+            number_of_scan_plots = math.ceil(len(scans)/max_scans_per_plot)
             number_of_plots = number_of_scan_plots + 2 
 
         plot_height = number_of_plots * 2 # was fixed at 6. 
@@ -145,6 +145,7 @@ class weightboxChart(object):
         else: 
             ax1 = subplots[0]
             ax2 = subplots[1]
+            ax3 = subplots[2]
             ax_scans = subplots[2:]
 
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
@@ -168,15 +169,27 @@ class weightboxChart(object):
             ax3.set_ylabel('$Wt_{i}$')
             ax3.get_yaxis().get_major_formatter().set_useOffset(False)
         else: 
-            print(bxpstats_per_scan)
+#            print(bxpstats_per_scan)
+            # ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
+            # ax3.axes.set_xticklabels(scans)
+            # ax3.set_xlabel('Scan Number')
+            # ax3.set_ylabel('$Wt_{i}$')
+            # ax3.get_yaxis().get_major_formatter().set_useOffset(False)
+#            y_min, y_max = ax3.get_ylim()
+            # remove this subplot if needed 
+#            fig.delaxes(ax3)
             bxpstats_per_scan_split = list(split(bxpstats_per_scan, number_of_scan_plots))
+            y_min = np.min([dat['min'] for dat in bxpstats_per_scan])
+            y_max = np.min([dat['max'] for dat in bxpstats_per_scan])
             scans_split = list(split(scans, number_of_scan_plots))
             for i, axis in enumerate(ax_scans): 
                 axis.bxp(bxpstats_per_scan_split[i], flierprops=flierprops)
                 axis.axes.set_xticklabels(scans_split[i])
                 axis.set_xlabel('Scan Number')
                 axis.set_ylabel('$Wt_{i}$')
-                axis.get_yaxis().get_major_formatter().set_useOffset(False)  
+                axis.set_ymargin(0.1) 
+                axis.set_ylim([y_min, y_max])
+                axis.get_yaxis().get_major_formatter().set_useOffset(False) 
 
         fig.tight_layout()
         fig.savefig(figfile)
