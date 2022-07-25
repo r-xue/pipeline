@@ -103,7 +103,7 @@ class weightboxChart(object):
         number_of_plots = 3 
         number_of_scan_plots = 1
 
-        max_scans_per_plot = 80 # 5 for quick tests
+        max_scans_per_plot = 75 # 5 for quick tests
         if (len(scans) > max_scans_per_plot): 
             number_of_scan_plots = math.ceil(len(scans)/max_scans_per_plot)
             number_of_plots = number_of_scan_plots + 2 
@@ -181,13 +181,16 @@ class weightboxChart(object):
             bxpstats_per_scan_split = list(split(bxpstats_per_scan, number_of_scan_plots))
             y_min = np.min([dat['min'] for dat in bxpstats_per_scan])
             y_max = np.min([dat['max'] for dat in bxpstats_per_scan])
+            y_min = y_min - 0.1*(y_max - y_min)
+            y_max = y_max + 0.1*(y_max - y_min)
+
             scans_split = list(split(scans, number_of_scan_plots))
             for i, axis in enumerate(ax_scans): 
                 axis.bxp(bxpstats_per_scan_split[i], flierprops=flierprops)
-                axis.axes.set_xticklabels(scans_split[i])
+                axis.axes.set_xticklabels(scans_split[i], rotation=45, ha='center')
                 axis.set_xlabel('Scan Number')
                 axis.set_ylabel('$Wt_{i}$')
-                axis.set_ymargin(0.1) 
+#                axis.set_ymargin(0.15) 
                 axis.set_ylim([y_min, y_max])
                 axis.get_yaxis().get_major_formatter().set_useOffset(False) 
 
