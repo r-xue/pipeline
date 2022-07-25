@@ -30,10 +30,9 @@ class TimegaincalQAPool(pqa.QAScorePool):
         self.phase_qa_results_dict = phase_qa_results_dict
         self.phase_offsets_qa_results_dict = phase_offsets_qa_results_dict
 
-    def update_scores(self, ms):
-
+    def update_scores(self, ms, refant):
         # Phase offsets scores
-        hidden_phase_offsets_scores, public_phase_offsets_scores = self._get_phase_offset_scores(ms)
+        hidden_phase_offsets_scores, public_phase_offsets_scores = self._get_phase_offset_scores(ms, refant.split(',')[0])
         self.pool.extend(public_phase_offsets_scores)
 
         # X-Y / X2-X1 scores
@@ -47,7 +46,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
         # phase_field_ids = [field.id for field in ms.get_fields(intent='PHASE')]
         # self.pool.extend([self._get_xy_x2x1_qascore(ms, phase_field_ids, t) for t in self.xy_x2x1_score_types])
 
-    def _get_phase_offset_scores(self, ms):
+    def _get_phase_offset_scores(self, ms, refant):
 
         """
         Calculate phase offsets scores.
@@ -77,6 +76,9 @@ class TimegaincalQAPool(pqa.QAScorePool):
             # Create antenna ID to name translation dictionary, reject empty antenna name strings.
             antenna_id_to_name = {ant.id: ant.name for ant in ms.antennas if ant.name.strip()}
 
+            # Get refant ID
+            refant_id = [ant.id for ant in ms.antennas if ant.name.strip() == refant][0]
+
             hidden_phase_offsets_scores = []
             public_phase_offsets_scores = []
             subscores = {}
@@ -96,11 +98,11 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     subscores[gaintable][spw_id] = {}
                     # Get names of polarisations, and create polarisation index 
                     corr_type = commonhelpermethods.get_corr_axis(ms, spw_id)
-                    Stot = self._Stot(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, spw_id)
+                    Stot = self._Stot(phase_offsets, scan_numbers, phase_scan_ids, spw_ids, ant_ids, refant_id, spw_id)
                     if Stot > NoiseThresh:
                         # Noise too high for further evaluation
                         noisy_spw_ids.append(spw_id)
-                        for ant_id in sorted(list(set(ant_ids))):
+                        for ant_id in sorted(list(set(ant_ids)-{refant_id})):
                             subscores[gaintable][spw_id][ant_id] = {}
                             for pol_id in range(phase_offsets.shape[0]):
                                 subscores[gaintable][spw_id][ant_id][pol_id] = {}
@@ -116,7 +118,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location)
                                     hidden_phase_offsets_scores.append(subscores[gaintable][spw_id][ant_id][pol_id][scorekey])
                     else:
-                        for ant_id in sorted(list(set(ant_ids))):
+                        for ant_id in sorted(list(set(ant_ids)-{refant_id})):
                             subscores[gaintable][spw_id][ant_id] = {}
                             for pol_id in range(phase_offsets.shape[0]):
                                 subscores[gaintable][spw_id][ant_id][pol_id] = {}
@@ -204,7 +206,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                 # Create aggregated scores
                 for spw_id in sorted(list(set(spw_ids))):
                     EB_spw_QA_scores = []
-                    for ant_id in sorted(list(set(ant_ids))):
+                    for ant_id in sorted(list(set(ant_ids)-{refant_id})):
                         for pol_id in range(phase_offsets.shape[0]):
                             # Minimum of QA1, QA2, QA3 scores
                             QA_scores = [subscores[gaintable][spw_id][ant_id][pol_id]['QA1'], subscores[gaintable][spw_id][ant_id][pol_id]['QA2'], subscores[gaintable][spw_id][ant_id][pol_id]['QA3']]
@@ -228,13 +230,13 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     EB_spw_min_index = np.argmin([qas.score for qas in EB_spw_QA_scores])
                     EB_spw_QA_score = EB_spw_QA_scores[EB_spw_min_index].score
 
-                    # The case of 0.85 scores is handled separately below
-                    if EB_spw_QA_score == 0.85:
+                    # The aggregation of 0.82 and 0.85 scores is handled separately outside this loop
+                    if EB_spw_QA_score in [0.82, 0.85]:
                         continue
 
                     if EB_spw_QA_score == 0.8:
                         antenna_names_list = []
-                        for ant_id in sorted(list(set(ant_ids))):
+                        for ant_id in sorted(list(set(ant_ids)-{refant_id})):
                             per_antenna_score = min(subscores[gaintable][spw_id][ant_id][pol_id]['QA'].score for pol_id in range(phase_offsets.shape[0]))
                             if per_antenna_score <= 0.66:
                                 # Highlight bad antennas with an asterisk
@@ -246,7 +248,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                         EB_spw_QA_shortmsg = f'Potential phase offset outliers'
                     elif EB_spw_QA_score <= 0.66:
                         antenna_names_list = []
-                        for ant_id in sorted(list(set(ant_ids))):
+                        for ant_id in sorted(list(set(ant_ids)-{refant_id})):
                             per_antenna_score = min(subscores[gaintable][spw_id][ant_id][pol_id]['QA'].score for pol_id in range(phase_offsets.shape[0]))
                             if per_antenna_score <= 0.66:
                                 # Highlight bad antennas with an asterisk
@@ -411,7 +413,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
         return np.ma.max(np.ma.abs(phase_offsets[pol_id, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids==ant_id))]))
 
-    def _Stot(self, phase_offsets: np.ndarray, scan_numbers: np.ndarray, phase_scan_ids: np.ndarray, spw_ids: np.ndarray, spw_id: int) -> float:
+    def _Stot(self, phase_offsets: np.ndarray, scan_numbers: np.ndarray, phase_scan_ids: np.ndarray, spw_ids: np.ndarray, ant_ids: np.ndarray, refant_id: int, spw_id: int) -> float:
 
         """
         Compute maximum phase offset for given spw selection.
@@ -421,10 +423,12 @@ class TimegaincalQAPool(pqa.QAScorePool):
         :param scan_numbers:   numpy array with scan numbers from calibration table
         :param phase_scan_ids: numpy array with phase calibrator scan numbers
         :param spw_ids:        numpy array with spw ids from calibration table
+        :param ant_ids:        numpy array with antenna ids from calibration table
+        :param refant_id:      reference antenna id
         :param spw_id:         selected spw id
         """
 
-        data_selection = phase_offsets[:, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id))]
+        data_selection = phase_offsets[:, 0, np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids==spw_id) & (ant_ids!=refant_id))]
         return 1.4826 * np.ma.median(np.ma.abs(data_selection - np.ma.median(data_selection)))
 
 
@@ -460,7 +464,7 @@ class TimegaincalQAHandler(pqa.QAPlugin):
                 phase_offsets_qa_results_dict[calapp.gaintable] = True
 
             result.qa = TimegaincalQAPool(phase_qa_results_dict, phase_offsets_qa_results_dict)
-            result.qa.update_scores(ms)
+            result.qa.update_scores(ms, result.inputs['refant'])
         except Exception as e:
             LOG.error('Problem occurred running QA analysis. QA results will not be available for this task')
             LOG.exception(e)
