@@ -4,7 +4,8 @@
 #          - May 2021 full CASA 6 version mockup
 #          - March 2022 CASA 6.4 'class' version for PL 
 #          - July 2022 Edit for PL2022 implementation
-
+#            includes logger output messages
+#            included bl-name, bl-len, phase RMS in log
 ##################
 
 
@@ -13,6 +14,8 @@ import os
 import re
 import numpy as np
 import glob
+import pipeline.infrastructure as infrastructure
+
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool
 except:
@@ -30,6 +33,8 @@ import matplotlib.ticker as ticker
 mytb=tbtool()
 myms=mstool()
 mymsmd=msmdtool()
+
+LOG = infrastructure.get_logger(__name__)
 
 class SSFanalysis(object):
     def __init__(self,inputsin, outlierlimit, ftoll, maxpoorant):   
@@ -119,34 +124,47 @@ class SSFanalysis(object):
         self.allResult={}
 
         
-        print('')
-        print(' ***************************')
-        print(' Decoherence Phase RMS assessment ')
-        print(' Working on the MS '+str(self.visUse))
-        print(' Selected scan',self.scanUse)
-        print(' Selected spw',self.spwUse)
-        print(' Using field', self.fieldUse)
-        print(' Using caltab', self.caltable)
-        print(' The refant is', self.refant, ' id=', self.refantid)
-        print(' Is ACA with PM data ', self.PMinACA)
-        print(' Total BP scan time ', self.totaltime)
-        print(' Phase referencing cycle time ', self.cycletime)
-        print(' The median integration time ', self.difftime)
-        print(' ***************************')
-        print('')
+        #print('')
+        #print(' ***************************')
+        #print(' Decoherence Phase RMS assessment ')
+        #print(' Working on the MS '+str(self.visUse))
+        #print(' Selected scan',self.scanUse)
+        #print(' Selected spw',self.spwUse)
+        #print(' Using field', self.fieldUse)
+        #print(' Using caltab', self.caltable)
+        #print(' The refant is', self.refant, ' id=', self.refantid)
+        #print(' Is ACA with PM data ', self.PMinACA)
+        #print(' Total BP scan time ', self.totaltime)
+        #print(' Phase referencing cycle time ', self.cycletime)
+        #print(' The median integration time ', self.difftime)
+        #print(' ***************************')
+        #print('')
 
         # new logger output inside the code 
-        casalog.post('*** Phase RMS vs Baseline assessment ***', 'INFO','Decoherence')
-        casalog.post(' Working on the MS '+str(self.visUse), 'INFO', 'Decoherence')
-        casalog.post(' Selected scan '+str(self.scanUse), 'INFO','Decoherence')
-        casalog.post(' Selected spw '+str(self.spwUse), 'INFO','Decoherence')
-        casalog.post(' Using field '+str(self.fieldUse), 'INFO','Decoherence')
-        casalog.post(' Using caltab'+str(self.caltable), 'INFO','Decoherence')
-        casalog.post(' The refant is '+str(self.refant)+' id '+str(self.refantid), 'INFO','Decoherence')
-        casalog.post(' Is ACA with PM data '+str(self.PMinACA), 'INFO','Decoherence')
-        casalog.post(' Total BP scan time '+str(self.totaltime), 'INFO','Decoherence')
-        casalog.post(' Phase referencing cycle time '+str(self.cycletime), 'INFO','Decoherence')
-        casalog.post(' The median integration time '+str(self.difftime), 'INFO','Decoherence')
+        #casalog.post('*** Phase RMS vs Baseline assessment ***', 'INFO','Decoherence')
+        #casalog.post(' Working on the MS '+str(self.visUse), 'INFO', 'Decoherence')
+        #casalog.post(' Selected scan '+str(self.scanUse), 'INFO','Decoherence')
+        #casalog.post(' Selected spw '+str(self.spwUse), 'INFO','Decoherence')
+        #casalog.post(' Using field '+str(self.fieldUse), 'INFO','Decoherence')
+        #casalog.post(' Using caltab'+str(self.caltable), 'INFO','Decoherence')
+        #casalog.post(' The refant is '+str(self.refant)+' id '+str(self.refantid), 'INFO','Decoherence')
+        #casalog.post(' Is ACA with PM data '+str(self.PMinACA), 'INFO','Decoherence')
+        #casalog.post(' Total BP scan time '+str(self.totaltime), 'INFO','Decoherence')
+        #casalog.post(' Phase referencing cycle time '+str(self.cycletime), 'INFO','Decoherence')
+        #casalog.post(' The median integration time '+str(self.difftime), 'INFO','Decoherence')
+
+        LOG.info('*** Phase RMS vs Baseline assessment ***')#, 'INFO','Decoherence')
+        LOG.info(' Working on the MS '+str(self.visUse))#, 'INFO', 'Decoherence')
+        LOG.info(' Selected scan '+str(self.scanUse))#, 'INFO','Decoherence')
+        LOG.info(' Selected spw '+str(self.spwUse))#, 'INFO','Decoherence')
+        LOG.info(' Using field '+str(self.fieldUse))#, 'INFO','Decoherence')
+        LOG.info(' Using caltab'+str(self.caltable))#, 'INFO','Decoherence')
+        LOG.info(' The refant is '+str(self.refant)+' id '+str(self.refantid))#, 'INFO','Decoherence')
+        LOG.info(' Is ACA with PM data '+str(self.PMinACA))#, 'INFO','Decoherence')
+        LOG.info(' Total BP scan time '+str(self.totaltime))#, 'INFO','Decoherence')
+        LOG.info(' Phase referencing cycle time '+str(self.cycletime))#, 'INFO','Decoherence')
+        LOG.info(' The median integration time '+str(self.difftime))#, 'INFO','Decoherence')
+
 
 
     def close(self):
@@ -246,7 +264,7 @@ class SSFanalysis(object):
         
         # now begin the outlier checks
         # first check if any antennas are just above 100 deg phase RMS (this means ~pure phase noise for phases between -180 to +180 deg)
-        # so sensible to identify these antennas
+        # so sensible to identify these antennas - over total time
         ID_poorant = np.where(np.array(self.allResult['antphaserms'])[np.isfinite(self.allResult['antphaserms'])]>self.outlierlimit)[0]
         
 
@@ -260,8 +278,8 @@ class SSFanalysis(object):
         # self.antout is used/passed in the score function as it adjusts the score and message too
         if self.allResult['phasermscycleP80'] > 50.:
             statsoutlierlimit = self.allResult['phasermscycleP80'] + 4.*phaseRMScycleP80mad # tested limit works well
-        
-            ID_poorant = np.where(np.array(self.allResult['antphaserms'])[np.isfinite(self.allResult['antphaserms'])]>statsoutlierlimit)[0]
+            # ant phase on cycle time !
+            ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])]>statsoutlierlimit)[0]
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
                     self.antout.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
@@ -269,7 +287,7 @@ class SSFanalysis(object):
             # max limit on number of 'bad' antennas to be allowed to exclude from calculations (set at 11 good as tested in PIPE692)
             # we clip them out and recalculate - score function also tracks and gives a warning
             # if >11, basically the data is rubbish, so don't clip and let scores be low
-            print(len(self.antout))
+            #print(len(self.antout))
             if len(self.antout) > 0 and len(self.antout) < self.maxpoorant: 
 
                 # crude way to get the index values is a loop over the baselines
@@ -294,7 +312,7 @@ class SSFanalysis(object):
                 self.allResult['blphasermscyclebad']=np.array(self.allResult['blphasermscycle'])[np.array(ID_badbl)]
                 self.allResult['bllenbad']=np.array(self.allResult['bllen'])[np.array(ID_badbl)]
             else:
-                # none the 'bad' entires in dict - they are all just bad 
+                # none the 'bad' entires in dict 
                 self.allResult['blphasermsbad']=None
                 self.allResult['blphasermscyclebad']=None
                 self.allResult['bllenbad']=None
@@ -302,7 +320,8 @@ class SSFanalysis(object):
             # this else is for <50deg phase RMS where we do not recalcualte the phase RMS as its low already
             # but we still want to identify any outliers to notify in the messages
             statsoutlierlimit = np.max([self.allResult['phasermscycleP80'] + 6.*phaseRMScycleP80mad,2.*self.allResult['phasermscycleP80']])
-            ID_poorant = np.where(np.array(self.allResult['antphaserms'])[np.isfinite(self.allResult['antphaserms'])]>statsoutlierlimit)[0]
+            # outlier on cycle time 
+            ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])]>statsoutlierlimit)[0]
             # add them to the list so score code picks them up if required and changes the messages
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
@@ -313,8 +332,24 @@ class SSFanalysis(object):
             self.allResult['blphasermscyclebad']=None
             self.allResult['bllenbad']=None
 
+        # now loop over and log write the phase RMS parameters
+        # sort by baseline len
+        LOG.info(' Phase RMS calculated over the cycle time as function of baseline length')
+        for bnblph in list(zip(np.array(self.allResult['blname'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['bllen'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['blphasermscycle'])[np.array(self.allResult['bllen']).argsort()])):
 
-        #print("FINISHED ANALYSIS")
+            # add simple text to flagged (i.e. we made nan for the calculation), or outlier antennas (outlier comes first)
+            if str(bnblph[0].split('-')[0]) in self.antout or str(bnblph[0].split('-')[1]) in self.antout:
+                LOG.info(str(bnblph)+' - outlier')
+            elif not np.isfinite(bnblph[2]):
+                LOG.info(str(bnblph)+' - flagged')
+            else:
+                LOG.info(str(bnblph))
+
+
+        if len(self.antout)>0:
+            antoutstr = ",".join(self.antout)
+            LOG.info(" Possible high phase RMS on antenna(s): "+str(antoutstr))
+
 
     def pmInACA(self):
         ''' Check if the array is ACA and has PM antennas
@@ -677,7 +712,8 @@ class SSFanalysis(object):
             times.append(np.min(mymsmd.timesforscan(scan)))
         mymsmd.close()
         if len(times) == 1:
-            print("There was only 1 scan with this intent.")
+            #print("There was only 1 scan with this intent.")
+            LOG.warning("There was only 1 scan with this intent.")
             return # possible error return ? or default as none
         diffs = np.diff(times)
         return np.median(diffs)
@@ -701,12 +737,11 @@ class SSFanalysis(object):
         '''
         
         # run in a try/except incase there are errors that nothing was passed
-        # NOTE TO DEV - if that occurred should the exception be raised?
 
-        #print(' DOING THE SCORE')
         try:
             baseScore = 1.0 - self.allResult['phasermscycleP80']/100. 
             RMSstring = str(round(self.allResult['phasermscycleP80'],2))
+            LOG.info(" The Phase RMS calculated over the cycle time for baselines longer than 80th percentile is "+RMSstring+"deg")
 
             if baseScore > 0.7:
                 # this is for <30 deg phaseRMS - i.e green - stable phases 
@@ -793,8 +828,6 @@ class SSFanalysis(object):
 
         '''
 
-        # NOTE TO DEV - please check/adjust as required for PL
-        # I have NOT included the stage number etc into the fig save name 
 
         # do the plot
         figsize=[11.0, 8.5] # appears mostly to affect the savefig not the interactive one 
@@ -822,7 +855,7 @@ class SSFanalysis(object):
 
         # median marker 
         #print('plot median')
-        ax1.plot([self.allResult['blP80'],np.max(self.allResult['bllen'])],[self.allResult['phasermscycleP80'],self.allResult['phasermscycleP80']],c='0.2',linewidth=10,zorder=5, label='Median (bl > P80)', alpha=0.5)
+        ax1.plot([self.allResult['blP80'],np.max(self.allResult['bllen'])],[self.allResult['phasermscycleP80'],self.allResult['phasermscycleP80']],c='0.2',linewidth=10,zorder=5, label='Median (bl > P80)', alpha=0.75)
         #print('completed')
 
         ## need to assess allResults here phasermscycleP80
@@ -873,7 +906,6 @@ class SSFanalysis(object):
                 phaseRMSmin = 2.
         ax1.grid(True)
 
-        # NOTE TO DEV
         # crude logic here as log-log plots have some issue when there are <9 tick markers
         # if this happens, matplotlib is adding its own extra (minor) tick markers with wrong formatting
         # e.g. if the plot range is 20 to 100, there are only 9 markers, so the set_ytick is not obeyed
