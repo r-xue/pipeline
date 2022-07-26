@@ -738,8 +738,10 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 
         if show_mom0_8_fc:
             colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc', 'spectra']
+            show_psf_per_channel = True
         else:
             colorder = ['pbcorimage', 'residual', 'cleanmask']
+            show_psf_per_channel = False
         
         if 'VLA' in result.imaging_mode:
             # PIPE-1462: use non-pbcor images for VLA in the tclean details page.
@@ -757,7 +759,8 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             'qa_previous': urls[0],
             'qa_next': urls[2],
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
-            'cube_all_cont': cube_all_cont
+            'cube_all_cont': cube_all_cont,
+            'show_psf_per_channel': show_psf_per_channel
         }
 
     def update_mako_context(self, mako_context):

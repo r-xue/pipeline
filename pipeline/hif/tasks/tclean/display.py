@@ -11,6 +11,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.infrastructure import casa_tools
 from .plot_spectra import plot_spectra
+from .plot_beams import plot_beams
 from pipeline.infrastructure.utils import get_stokes
 
 LOG = infrastructure.get_logger(__name__)
@@ -150,7 +151,7 @@ class CleanSummary(object):
                                                          intent=r.intent, stokes_list=stokes_list, collapseFunction=collapse_function,
                                                          **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
 
-                # cube spectra for this iteration
+                # cube spectra and PSF per channel plot for this iteration
                 if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
                     imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
                     with casa_tools.ImageReader(imagename) as image:
@@ -174,11 +175,18 @@ class CleanSummary(object):
                         LOG.warning('Could not determine receiver type. Assuming TSB.')
                         rec_info = {'type': 'TSB', 'LO1': '0GHz'}
 
+                    # Diagnostic spectra
                     plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
                     field_id = int(r.field_ids[0].split(',')[0])
                     plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile, ref_ms.name, str(real_spw), field_id)
-
                     plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
+
+                    # PSF per channels plot
+                    psf_per_channel_plotfile = '%s.beams.png' % (os.path.join(stage_dir, os.path.basename(r.psf)))
+                    plot_beams(r.psf, psf_per_channel_plotfile)
+                    psf_per_channel_parameters = copy.deepcopy(parameters)
+                    psf_per_channel_parameters['type'] = 'psf_per_channel'
+                    plot_wrappers.append(logger.Plot(psf_per_channel_plotfile, parameters=psf_per_channel_parameters))
 
         return [p for p in plot_wrappers if p is not None]
 

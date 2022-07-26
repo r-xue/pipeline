@@ -11,7 +11,8 @@ columns = {'cleanmask' : ('Clean Mask', 'Clean Mask'),
 	   'psf' : ('PSF', 'PSF'),
 	   'mom0_fc': ('Line-free Moment 0', 'Integrated intensity (moment 0) of line-free channels after continuum subtraction'),
 	   'mom8_fc': ('Line-free Moment 8', 'Integrated intensity (moment 8) of line-free channels after continuum subtraction'),
-	   'spectra': ('Spectra', 'Spectrum from flattened clean mask and per channel MAD')}
+	   'spectra': ('Spectra', 'Spectra from flattened clean mask and per channel MAD'),
+           'psf_per_channel': ('Beam per channel', 'Beam per channel')}
 
 def get_plot(plots, prefix, field, spw, i, colname):
 	try:
@@ -94,7 +95,14 @@ def get_plot(plots, prefix, field, spw, i, colname):
 
 		<tr>
 			<td></td>
-		    % for colname in ['flux', 'psf', 'model']:
+                    <%
+                    if show_psf_per_channel:
+                        colnames = ['flux', 'psf', 'model', 'psf_per_channel']
+                    else:
+                        colnames = ['flux', 'psf', 'model']
+                    %>
+
+		    % for colname in colnames:
 		    	<td>
 					<!-- model/psf/flux plots are associated with the final iteration -->
 		                <% 
