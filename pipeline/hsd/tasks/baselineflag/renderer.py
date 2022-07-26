@@ -1,12 +1,10 @@
 """Renderer hsd_blflag."""
 import os
 import collections
-import copy
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.filenamer as filenamer
-import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.logging as logging
 from ..common import utils as sdutils
@@ -67,7 +65,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         subpages_per_type = {}
         for type in type_list:
             sub_plots_list = [ p for p in plots_list if p.get('type') == type ]
-            filename = 'hsd_blflag_statistics_'+type.replace( ' ', '_' )+'.html'
+            filename = 'hsd_blflag_statistics_' + type.replace( ' ', '_' ) + '.html'
             title = "Flag Statistics: {}".format(type)
             html = self._prepare_subpage( 'hsd_blflag_statistics_per_type.mako', context, results, sub_plots_list,
                                           filename, title,
@@ -83,8 +81,8 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def _prepare_subpage( self, uri:str, context:'Context', results:'SDBLFlagResults',
                           plots_list:List['Plot'], filename:str, title:str,
-                          allflags:Optional[bool]=False, 
-                          myflag:Optional[bool]=False, 
+                          allflags:Optional[bool]=False,
+                          myflag:Optional[bool]=False,
                           types:Optional[bool]=True ):
         """
         prepare the subpage
@@ -102,7 +100,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         """
         wrappers = []
         for plot in plots_list:
-            wrapper = logger.Plot( plot['FigFileDir']+plot['plot'],
+            wrapper = logger.Plot( plot['FigFileDir'] + plot['plot'],
                                    x_axis="Xaxis",
                                    y_axis="Yaxis",
                                    field=plot['field'],
@@ -120,7 +118,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                        'runmean_postfit'      : plot['runmean_postfit'],
                                        'expected_rms_prefit'  : plot['expected_rms_prefit'],
                                        'expected_rms_postfit' : plot['expected_rms_postfit'],
-                                       'myflag'              : plot['myflag']
+                                       'myflag'               : plot['myflag']
                                    } )
             wrappers.append( wrapper )
 
@@ -136,7 +134,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
     """Renderer class for Flag Statistics."""
     def __init__( self, uri:str, context:'Context', results:'SDBLFlagResults', plots:List['Plot'],
-                  filename:str, title:str, 
+                  filename:str, title:str,
                   allflags:Optional[bool]=False, myflag:Optional[bool]=False, types:Optional[bool]=True ):
         """
         Construct SDBLFlagStatisticsPlotRenderer instance.
@@ -185,7 +183,7 @@ class SDBLFlagStatisticsPlotRenderer( basetemplates.JsonPlotRenderer ):
             d['expected_rms_postfit'] = plot.parameters['expected_rms_postfit']['frac']
 
 
-def accumulate_flag_per_eb( context:'Context', results:'SDBLFlagResultss' ) -> Dict:
+def accumulate_flag_per_eb( context:'Context', results:'SDBLFlagResults' ) -> Dict:
     """
     Accumulate flag per field, spw from the output of flagdata to a dictionary.
 
@@ -258,13 +256,13 @@ def make_summary_table_per_eb( accum_flag:Dict ) -> List[str]:
         frac_before = accum_flag[ms_name]['flagdata_before']*100.0/accum_flag[ms_name]['flagdata_total']
         frac_after  = accum_flag[ms_name]['flagdata_after']*100.0/accum_flag[ms_name]['flagdata_total']
         tr = FlagSummaryEB_TR( ms_name, 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total), 
-                               '{:.3f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total), 
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPostFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsPreFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPostFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RunMeanPreFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPostFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['RmsExpectedPreFitFlag']*100.0/row_total),
+                               '{:.3f} %'.format(accum_flag[ms_name]['TsysFlag']*100.0/row_total),
                                '{:.3f} %'.format( frac_before ),
                                '{:.3f} %'.format( frac_after - frac_before ),
                                '{:.3f} %'.format( frac_after ) )
@@ -312,7 +310,7 @@ def accumulate_flag_per_source_spw( context:'Context', results:'SDBLFlagResults'
                 accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
                 accum_flag[field][vspw]['after'] += flagval['flagged']
                 accum_flag[field][vspw]['total'] += flagval['total']
-                accum_flag[field][vspw]['additional'] += (flagval['flagged']-before[field]['spw'][spw]['flagged'])
+                accum_flag[field][vspw]['additional'] += (flagval['flagged'] - before[field]['spw'][spw]['flagged'])
     return accum_flag
 
 
@@ -322,11 +320,13 @@ def make_summary_table_per_field(flagdict):
     rows = []
     for field, flagperspw in flagdict.items():
         for spw, flagval in flagperspw.items():
-            frac_before = flagval['before']/flagval['total']
-            frac_total = flagval['after']/flagval['total']
-            frac_additional = (flagval['after']-flagval['before'])/flagval['total']
-            tr = FlagSummaryField_TR(field, spw, '%0.3f%%' % (frac_before*100), '%0.3f%%' % (frac_additional*100),
-                               '%0.3f%%' % (frac_total*100))
+            frac_before = flagval['before'] / flagval['total']
+            frac_total = flagval['after'] / flagval['total']
+            frac_additional = (flagval['after'] - flagval['before']) / flagval['total']
+            tr = FlagSummaryField_TR(field, spw,
+                                     '%0.3f%%' % (frac_before*100),
+                                     '%0.3f%%' % (frac_additional*100),
+                                     '%0.3f%%' % (frac_total*100))
             rows.append(tr)
 
     return utils.merge_td_columns(rows, num_to_merge=2)

@@ -76,4 +76,3 @@ SDFlag_Desc = {
 }
 
 # ApplicableDuration: 'raster' | 'subscan'
-

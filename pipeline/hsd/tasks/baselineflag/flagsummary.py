@@ -6,7 +6,7 @@ import collections
 
 import numpy as np
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 from pipeline.infrastructure import Context
 from pipeline.domain import DataTable, MeasurementSet
@@ -146,7 +146,7 @@ class SDBLFlagSummary(object):
                     FlagRule_local['RmsExpectedPostFitFlag']['isActive'] = False
                 # pack flag values
                 FlaggedRows, FlaggedRowsCategory, PermanentFlag, NPp_dict = self.pack_flags( datatable, polid, dt_idx, FlagRule_local )
-                # create summary data and pack statistics 
+                # create summary data and pack statistics
                 nflags = self.create_summary_data( FlaggedRows, FlaggedRowsCategory )
                 nrow = len( dt_idx )
                 stat_dict = dict( (k, dict(num=v, frac=100.0*v/nrow)) for k, v in nflags.items() )
@@ -389,14 +389,6 @@ class SDBLFlagSummary(object):
         flag_nums['RunMeanPreFitFlag']      = len( FlaggedRowsCategory['RunMeanPreFitFlag'] )
         flag_nums['RmsExpectedPostFitFlag'] = len( FlaggedRowsCategory['RmsExpectedPostFitFlag'] )
         flag_nums['RmsExpectedPreFitFlag']  = len( FlaggedRowsCategory['RmsExpectedPreFitFlag'] )
-
-        # added following the discussion
-        total_additional = list(set(
-            FlaggedRowsCategory['TsysFlag']
-            + FlaggedRowsCategory['RmsPostFitFlag'] +FlaggedRowsCategory['RmsPreFitFlag']
-            + FlaggedRowsCategory['RunMeanPostFitFlag'] + FlaggedRowsCategory['RunMeanPreFitFlag']
-            + FlaggedRowsCategory['RmsExpectedPostFitFlag'] + FlaggedRowsCategory['RmsExpectedPreFitFlag']
-        ))
 
         return flag_nums
 
