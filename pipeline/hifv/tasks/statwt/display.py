@@ -1,3 +1,4 @@
+import collections
 import math
 import os
 
@@ -75,37 +76,80 @@ class weightboxChart(object):
                 bxpstats[0]['max'] = None
                 bxpstats_per_ant.extend(bxpstats)
             bxpstats_per_ant[-1]['ant'] = ant_names[this_ant]
+        
+        # break this up into per-band first, since there's a pretty direct mapping from bands to spws
+        spw2band = self.ms.get_vla_spw2band()
+        #{'1':'C', '2':'K' }
+        band2spw = collections.defaultdict(list)
+     #   spwobjlist = self.ms.get_spectral_windows(science_windows_only=True)
+        listspws = [spw for spw in spws]
+        for spw, band in spw2band.items():
+            if spw in listspws:
+                band2spw[band].append(str(spw))
+        print(band2spw)
+        # {'C':[1,2,3], 'K':[4,5,6]}
 
-        bxpstats_per_spw = list()
-        for this_spw in spws:
-            dat = self._get_weight_from_wtable(tbl, this_spw=this_spw)
-            if dat.size > 0:
-                dat = dat[dat > 0]
-                bxpstats = cbook.boxplot_stats(dat, whis=whis)
-                bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
-                bxpstats[0]['stdev'] = dat.std()
-                bxpstats[0]['min'] = np.min(dat)
-                bxpstats[0]['max'] = np.max(dat)
-                bxpstats_per_spw.extend(bxpstats)
-            else:
-                bxpstats = cbook.boxplot_stats([0], whis=whis)
-                bxpstats[0]['quartiles'] = None
-                bxpstats[0]['stdev'] = None
-                bxpstats[0]['min'] = None
-                bxpstats[0]['max'] = None
-                bxpstats_per_spw.extend(bxpstats)
-            bxpstats_per_spw[-1]['spw'] = this_spw
+        # only do per-band if more than one, or all the time? 
+        #TODO: new version attempt
+        bxpstats_per_band_per_spw = collections.defaultdict(list)
+        for band in band2spw:
+            bxpstats_per_spw = list() 
+            for this_spw in band2spw[band]:
+                dat = self._get_weight_from_wtable(tbl, this_spw=this_spw)
+                if dat.size > 0:
+                    dat = dat[dat > 0]
+                    bxpstats = cbook.boxplot_stats(dat, whis=whis)
+                    bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
+                    bxpstats[0]['stdev'] = dat.std()
+                    bxpstats[0]['min'] = np.min(dat)
+                    bxpstats[0]['max'] = np.max(dat)
+                    bxpstats_per_spw.extend(bxpstats)
+                else:
+                    bxpstats = cbook.boxplot_stats([0], whis=whis)
+                    bxpstats[0]['quartiles'] = None
+                    bxpstats[0]['stdev'] = None
+                    bxpstats[0]['min'] = None
+                    bxpstats[0]['max'] = None
+                    bxpstats_per_spw.extend(bxpstats)
+                bxpstats_per_spw[-1]['spw'] = this_spw
+            bxpstats_per_band_per_spw[band] = bxpstats_per_spw
+
+# TODO: old version, working
+        # bxpstats_per_spw = list()
+        # for this_spw in spws:
+        #     dat = self._get_weight_from_wtable(tbl, this_spw=this_spw)
+        #     if dat.size > 0:
+        #         dat = dat[dat > 0]
+        #         bxpstats = cbook.boxplot_stats(dat, whis=whis)
+        #         bxpstats[0]['quartiles'] = np.percentile(dat, [0, 25, 50, 75, 100])
+        #         bxpstats[0]['stdev'] = dat.std()
+        #         bxpstats[0]['min'] = np.min(dat)
+        #         bxpstats[0]['max'] = np.max(dat)
+        #         bxpstats_per_spw.extend(bxpstats)
+        #     else:
+        #         bxpstats = cbook.boxplot_stats([0], whis=whis)
+        #         bxpstats[0]['quartiles'] = None
+        #         bxpstats[0]['stdev'] = None
+        #         bxpstats[0]['min'] = None
+        #         bxpstats[0]['max'] = None
+        #         bxpstats_per_spw.extend(bxpstats)
+        #     bxpstats_per_spw[-1]['spw'] = this_spw
         
 
         # Initial default plot sizes
         plot_len = 15
-        number_of_plots = 3 
+        #number_of_plots = 3 
         number_of_scan_plots = 1
+        #TODO: for new number of spw plots: 
+        number_of_spw_plots = len(bxpstats_per_band_per_spw)
+        number_of_antenna_plots = 1
+        number_of_plots = number_of_scan_plots + number_of_spw_plots + number_of_antenna_plots
 
         max_scans_per_plot = 75 # 5 for quick tests
         if (len(scans) > max_scans_per_plot): 
             number_of_scan_plots = math.ceil(len(scans)/max_scans_per_plot)
-            number_of_plots = number_of_scan_plots + 2 
+            # old: number_of_plots = number_of_scan_plots + 2 
+            number_of_plots = number_of_scan_plots + number_of_spw_plots + number_of_antenna_plots
 
         plot_height = number_of_plots * 2 # was fixed at 6. 
 
@@ -139,13 +183,12 @@ class weightboxChart(object):
             k, m = divmod(len(a), n)
             return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-        if number_of_scan_plots == 1:
+        if number_of_scan_plots == 1 and number_of_spw_plots == 1: #TODO: new here
             ax1, ax2, ax3 = subplots
         else: 
             ax1 = subplots[0]
-            ax2 = subplots[1]
-            ax3 = subplots[2]
-            ax_scans = subplots[2:]
+            ax_spws = subplots[1:(number_of_spw_plots+1)]
+            ax_scans = subplots[(number_of_spw_plots+1):]
 
         flierprops = dict(marker='+', markerfacecolor='royalblue', markeredgecolor='royalblue')
 
@@ -154,13 +197,24 @@ class weightboxChart(object):
         ax1.set_ylabel('$Wt_{i}$')
         ax1.set_title('Antenna-based weights')
         ax1.get_yaxis().get_major_formatter().set_useOffset(False)
+        y_min, y_max = ax1.get_ylim()
 
-        ax2.bxp(bxpstats_per_spw, flierprops=flierprops)
-        ax2.axes.set_xticklabels(spws)
-        ax2.set_xlabel('SPW ID')
-        ax2.set_ylabel('$Wt_{i}$')
-        ax2.get_yaxis().get_major_formatter().set_useOffset(False)
-        y_min, y_max = ax2.get_ylim()
+        if number_of_spw_plots <= 1: 
+            ax2.bxp(bxpstats_per_spw, flierprops=flierprops)
+            ax2.axes.set_xticklabels(spws)
+            ax2.set_xlabel('SPW ID')
+            ax2.set_ylabel('$Wt_{i}$')
+            ax2.get_yaxis().get_major_formatter().set_useOffset(False)
+            y_min, y_max = ax2.get_ylim() #TODO Where will this come from? Make a parent throwaway plot and use that? 
+        else: 
+            for i, band in enumerate(bxpstats_per_band_per_spw):
+                axis=ax_spws[i]
+                axis.bxp(bxpstats_per_band_per_spw[band], flierprops=flierprops)
+                axis.axes.set_xticklabels(band2spw[band], rotation=45, ha='center')
+                axis.set_xlabel('Spw Number (Band: {})'.format(band))
+                axis.set_ylabel('$Wt_{i}$')
+                axis.set_ylim([y_min, y_max])
+                axis.get_yaxis().get_major_formatter().set_useOffset(False)
 
         if number_of_scan_plots <= 1: 
             ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
