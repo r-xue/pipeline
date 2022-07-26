@@ -25,7 +25,7 @@ class MstransformInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
-        return vis_root + '_cont.ms'
+        return vis_root + '_targets.ms'
 
     @outputvis.convert
     def outputvis(self, value):
@@ -177,7 +177,7 @@ class Mstransform(basetask.StandardTaskTemplate):
 
         # Check for existence of the output vis. 
         if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating target continuum MS %s' % (os.path.basename(result.outputvis)))
+            LOG.debug('Error creating science targets cont+line MS %s' % (os.path.basename(result.outputvis)))
             return result
 
         # Import the new measurement set.
@@ -200,11 +200,11 @@ class Mstransform(basetask.StandardTaskTemplate):
     def _copy_xml_files(vis, outputvis):
         for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
             vis_source = os.path.join(vis, xml_filename)
-            outputvis_target_continuum = os.path.join(outputvis, xml_filename)
+            outputvis_targets_contline = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):
-                LOG.info('Copying %s from original MS to target continuum MS', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_continuum)
-                shutil.copyfile(vis_source, outputvis_target_continuum)
+                LOG.info('Copying %s from original MS to science targets cont+line MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_targets_contline)
+                shutil.copyfile(vis_source, outputvis_targets_contline)
 
 
 class MstransformResults(basetask.Results):

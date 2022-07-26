@@ -371,7 +371,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            is_eph_obj=image_heuristics.is_eph_obj(target['field']),
                                                            ref_ms_name=ref_ms.name,
                                                            nbin=reprBW_nbin)
-                    joint_mask_names[(target['field'], spwid)] = joint_mask_name
+                    joint_mask_names[(source_name, spwid)] = joint_mask_name
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '

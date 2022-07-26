@@ -30,7 +30,7 @@ class NROImportDataInputs(importdata.ImportDataInputs):
     """
 
     def __init__(self, context: Context, vis: Optional[List[str]]=None, output_dir: Optional[str]=None, session: Optional[List[str]]=None,
-                 overwrite: Optional[bool]=None, nocopy: Optional[bool]=None, createmms: Optional[str]=None):
+                 datacolumns: Optional[Dict]=None, overwrite: Optional[bool]=None, nocopy: Optional[bool]=None, createmms: Optional[str]=None):
         """Initialise NROImportDataInputs class.
 
         Args:
@@ -54,7 +54,7 @@ class NROImportDataInputs(importdata.ImportDataInputs):
                                                   process_caldevice=process_caldevice, session=session,
                                                   overwrite=overwrite, nocopy=nocopy, save_flagonline=save_flagonline,
                                                   bdfflags=bdfflags, lazy=lazy, createmms=createmms,
-                                                  ocorr_mode=ocorr_mode)
+                                                  ocorr_mode=ocorr_mode, datacolumns=datacolumns)
 
 
 class NROImportDataResults(sd_importdata.SDImportDataResults):
@@ -99,7 +99,7 @@ class NROImportDataResults(sd_importdata.SDImportDataResults):
 
 @task_registry.set_equivalent_casa_task('hsdn_importdata')
 @task_registry.set_casa_commands_comment('Import Nobeyama MeasurementSets.')
-class NROImportData(sd_importdata.SDImportData):
+class NROImportData(sd_importdata.SerialSDImportData):
     """NRO Data import execution task.
 
     This class extends importdata.ImportData class, and methods execute main logics depends on it.
