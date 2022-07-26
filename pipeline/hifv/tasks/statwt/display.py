@@ -40,7 +40,6 @@ class weightboxChart(object):
         return weights.real
 
     def _create_plot_from_wtable(self, suffix):
-
         tbl = self.result.wtables[suffix]
         figfile = self._get_figfile(suffix)
         fig_title = os.path.basename(tbl)
@@ -53,7 +52,7 @@ class weightboxChart(object):
 
         with casa_tools.TableReader(tbl+'/ANTENNA') as tb:
             ant_names = tb.getcol('NAME')
-            ant_idxs = range(len(ant_names))
+            ant_idxs = range(len(ant_names)) # How are these numbered? 
 
         whis = 3.944
 
@@ -161,6 +160,7 @@ class weightboxChart(object):
         ax2.set_xlabel('SPW ID')
         ax2.set_ylabel('$Wt_{i}$')
         ax2.get_yaxis().get_major_formatter().set_useOffset(False)
+        y_min, y_max = ax2.get_ylim()
 
         if number_of_scan_plots <= 1: 
             ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
@@ -170,19 +170,11 @@ class weightboxChart(object):
             ax3.get_yaxis().get_major_formatter().set_useOffset(False)
         else: 
 #            print(bxpstats_per_scan)
-            # ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
-            # ax3.axes.set_xticklabels(scans)
-            # ax3.set_xlabel('Scan Number')
-            # ax3.set_ylabel('$Wt_{i}$')
-            # ax3.get_yaxis().get_major_formatter().set_useOffset(False)
-#            y_min, y_max = ax3.get_ylim()
-            # remove this subplot if needed 
-#            fig.delaxes(ax3)
             bxpstats_per_scan_split = list(split(bxpstats_per_scan, number_of_scan_plots))
-            y_min = np.min([dat['min'] for dat in bxpstats_per_scan])
-            y_max = np.min([dat['max'] for dat in bxpstats_per_scan])
-            y_min = y_min - 0.1*(y_max - y_min)
-            y_max = y_max + 0.1*(y_max - y_min)
+#            y_min = np.min([dat['min'] for dat in bxpstats_per_scan])
+#            y_max = np.min([dat['max'] for dat in bxpstats_per_scan])
+#            y_min = y_min - 0.1*(y_max - y_min)
+#            y_max = y_max + 0.1*(y_max - y_min)
 
             scans_split = list(split(scans, number_of_scan_plots))
             for i, axis in enumerate(ax_scans): 
