@@ -61,17 +61,17 @@ if result[0].inputs['statwtmode'] == 'VLA':
 
 <%
 weight_stats=plotter.result.weight_stats
-after_by_spw=weight_stats['after']['per_spw']
-after_by_ant=weight_stats['after']['per_ant']
+#after_by_spw=weight_stats['after']['per_spw']
+#after_by_ant=weight_stats['after']['per_ant']
 
 if result[0].inputs['statwtmode'] == 'VLA':
-    after_by_scan=weight_stats['after']['per_scan']
+#    after_by_scan=weight_stats['after']['per_scan']
     description = "after"
     table_header = "Weight Properties"
     is_vlass = False
 else: 
-    before_by_spw=weight_stats['before']['per_spw']
-    before_by_ant=weight_stats['before']['per_ant']
+#    before_by_spw=weight_stats['before']['per_spw']
+#    before_by_ant=weight_stats['before']['per_ant']
     description = "before/after"
     is_vlass = True
     table_header = "statwt after"
@@ -131,13 +131,8 @@ def format_cell(whole, value, stat):
         else: 
             return f'debugging: {cell_title}'
 
-if not is_vlass:
-    summary_spw_stats = summarize_stats(after_by_spw)
-    summary_ant_stats = summarize_stats(after_by_ant)
-    summary_scan_stats = summarize_stats(after_by_scan)
-
-    bgcolor_list=[dev2shade(3., True), dev2shade(4., True), dev2shade(5., True), dev2shade(6., True)]
-    bgcolor_list_blue=[dev2shade(3., False), dev2shade(4., False), dev2shade(5., False), dev2shade(6., False)]
+bgcolor_list=[dev2shade(3., True), dev2shade(4., True), dev2shade(5., True), dev2shade(6., True)]
+bgcolor_list_blue=[dev2shade(3., False), dev2shade(4., False), dev2shade(5., False), dev2shade(6., False)]
 %>
 
 <h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>
@@ -152,6 +147,18 @@ if not is_vlass:
 <p style="background-color:${bgcolor_list_blue[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list_blue[3]}; display:inline;">
     6&#963&le;dev,</p> 
 <p>where &#963 is defined as 1.4826*MAD.</p>
+
+% for band in band2spw: 
+    <%
+    after_by_spw=weight_stats['after'][band]['per_spw']
+    after_by_ant=weight_stats['after'][band]['per_ant']
+    after_by_scan=weight_stats['after'][band]['per_scan']
+
+    if not is_vlass:
+        summary_spw_stats = summarize_stats(after_by_spw)
+        summary_ant_stats = summarize_stats(after_by_ant)
+        summary_scan_stats = summarize_stats(after_by_scan)
+    %>
 
 <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
 	<caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
@@ -351,3 +358,4 @@ if not is_vlass:
 	</tbody>
 </table>
 %endif 
+%endfor

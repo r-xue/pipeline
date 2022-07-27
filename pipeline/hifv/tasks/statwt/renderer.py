@@ -23,6 +23,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plotter = statwtdisplay.weightboxChart(context, result)
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
+            # Add per-band into here, too.
             summary_plots[ms] = plots
 
             if result.inputs['statwtmode'] == 'VLASS-SE':
@@ -44,6 +45,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         ctx.update({'summary_plots': summary_plots,
                     'plotter': plotter,
-                    'dirname': weblog_dir})
+                    'dirname': weblog_dir,
+                    'band2spw': plotter.band2spw})
 
         return ctx
