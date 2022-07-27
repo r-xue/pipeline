@@ -466,7 +466,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                                 Sp = tb.getcell(ms_colname, mapped_row)
                             if not numpy.all(numpy.isfinite(Sp[Pol])):
                                 LOG.debug('vis "%s" row %s pol %s contains NaN or Inf', os.path.basename(vis), tROW, Pol)
-                                Sp = numpy.where(numpy.isfinite(Sp), Sp, 0)
+                                Sp[Pol, :] = numpy.where(numpy.isfinite(Sp[Pol]), Sp[Pol], 0)
                             if Mask is None:
                                 Mask = numpy.asarray(numpy.logical_not(tb.getcell('FLAG', mapped_row)),
                                                      dtype=int)#vquery(tb.getcell('FLAG', mapped_row) == False)
