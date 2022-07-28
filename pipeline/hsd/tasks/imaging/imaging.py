@@ -45,7 +45,12 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.get_logger(__name__)
 
-SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
+# SensitivityInfo:
+#     sensitivity: Sensitivity of an image
+#     representative: True if the image is of the representative SpW (regardless of source)
+#     frequency_range: frequency ranges from which the sensitivity is calculated
+#     to_export: True if the sensitivity shall be exported to aqua report. (to avoid exporting NRO sensitivity in K)
+SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range to_export')
 # RasterInfo: center_ra, center_dec = R.A. and Declination of map center
 #             width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
@@ -803,7 +808,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                 bwmode='repBW',
                                                 beam=beam, cell=qcell,
                                                 sensitivity=theoretical_rms)
-                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
+                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs, is_nro)
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  specmode=specmode,
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
