@@ -59,7 +59,7 @@ def get_plot(plots, prefix, field, spw, i, colname, moment=None):
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Iteration</th>
+            <th>Iterations</th>
             % for colname, moment in colorders[0]:
                 <th>${columns[colname][0]}s</th>
             % endfor
