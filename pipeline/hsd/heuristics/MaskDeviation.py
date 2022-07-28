@@ -1,6 +1,5 @@
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -13,9 +12,7 @@ LOG = infrastructure.get_logger(__name__)
 def _calculate(worker, consider_flag=False):
     worker.SubtractMedian(threshold=3.0, consider_flag=consider_flag)
     worker.CalcStdSpectrum(consider_flag=consider_flag)
-    #worker.PlotSpectrum()
     worker.CalcRange(threshold=3.0, detection=5.0, extension=2.0, iteration=10, consider_flag=consider_flag)
-    #worker.SavePlot()
     mask_list = worker.masklist
     return mask_list
 
@@ -37,17 +34,6 @@ class MaskDeviationHeuristic(api.Heuristic):
         mask_list = _calculate(worker, consider_flag=consider_flag)
         del worker
         return mask_list
-
-
-def VarPlot(infile):
-    # infile is asap format
-    s = MaskDeviation(infile)
-    s.ReadData()
-    s.SubtractMedian(threshold=3.0)
-    s.CalcStdSpectrum()
-    s.PlotSpectrum()
-    s.CalcRange(threshold=3.0, detection=5.0, extension=2.0, iteration=10)
-    s.SavePlot()
 
 
 class MaskDeviation(object):
@@ -213,7 +199,6 @@ class MaskDeviation(object):
         self.masklist = []
         for i in range(len(L)):
             self.masklist.append([L[i], R[i]])
-        self.PlotRange(L, R)
         if len(self.mask) > 0:
             LOG.trace('MaskDeviation.CalcRange: %s %s %s %s %s'%(self.masklist, L, R, self.mask[0], self.mask[-1]))
         else:
@@ -230,39 +215,3 @@ class MaskDeviation(object):
         for i in range(len(mask)-1, 1, -1):
             if mask[i] == False and self.stdSP[i-1]>threshold: mask[i-1] = False
         return mask
-
-    def PlotSpectrum(self):
-        """
-        plot max, min, mean, and standard deviation of the spectra
-        """
-        color = ['r', 'm', 'b', 'g', 'k']
-        label = ['max', 'mean', 'min', 'STD', 'MASK']
-        plt.clf()
-        plt.plot(self.maxSP, color=color[0])
-        plt.plot(self.meanSP, color=color[1])
-        plt.plot(self.minSP, color=color[2])
-        plt.plot(self.stdSP, color=color[3])
-        plt.xlim(-10, self.nchan + 9)
-        posx = (self.nchan + 20) * 0.8 - 10
-        deltax = (self.nchan + 20) * 0.05
-        posy = (self.ymax - self.ymin) * 0.95 + self.ymin
-        deltay = (self.ymax - self.ymin) * 0.06
-        for i in range(len(label)):
-            plt.text(posx, posy - i * deltay, label[i], color=color[i])
-        plt.title(self.infile)
-
-    def PlotRange(self, L, R):
-        """
-        Plot masked range
-        """
-        if len(L)>0:
-            plt.vlines(L, self.ymin, self.ymax)
-            plt.vlines(R, self.ymin, self.ymax)
-            Y = [(self.ymax-self.ymin)*0.8+self.ymin for x in range(len(L))]
-            plt.hlines(Y, L, R)
-
-    def SavePlot(self):
-        """
-        Save the plot in PNG format
-        """
-        plt.savefig(self.infile + '.png', format='png')
