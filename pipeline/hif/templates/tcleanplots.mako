@@ -9,9 +9,9 @@ columns = {'cleanmask' : ('Clean Mask', 'Clean Mask'),
            'residual' : ('Residual', 'Residual'),
            'model' : ('Final Model', 'Final Model'),
            'psf' : ('PSF', 'PSF'),
-           'mom0_fc': ('Line-free Moment', 'Integrated intensity (moment 0) of line-free channels after continuum subtraction'),
-           'mom8_fc': ('Line-free Moment', 'Maximum intensity (moment 8) of line-free channels after continuum subtraction'),
-           'spectra': ('Spectra / Masks', 'Spectra from flattened clean mask and per channel MAD'),
+           'mom0_fc': ('Line-free Moment 0', 'Integ. int. (mom0) of line-free channels'),
+           'mom8_fc': ('Line-free Moment 8', 'Maximum int. (mom8) of line-free channels'),
+           'spectra': ('Spectra / Mask', 'Spectra from flattened clean mask'),
            'psf_per_channel': ('Beam per channel', 'Beam per channel')}
 
 def get_plot(plots, prefix, field, spw, i, colname, moment=None):
@@ -57,18 +57,18 @@ def get_plot(plots, prefix, field, spw, i, colname, moment=None):
 
 <div class="row">
 <table class="table table-striped">
-        <thead>
-                <tr>
-                        <th>Iteration</th>
-                    % for colname, moment in colorders[0]:
-                        <th>${columns[colname][0]}</th>
-                    % endfor
-                </tr>
-        </thead>
-        <tbody>
+    <thead>
+        <tr>
+            <th>Iteration</th>
+            % for colname, moment in colorders[0]:
+                <th>${columns[colname][0]}s</th>
+            % endfor
+        </tr>
+    </thead>
+    <tbody>
 
-                % for i in sorted(plots_dict[prefix][field][spw].keys())[::-1]:
-                % for colorder in colorders:
+        % for i in sorted(plots_dict[prefix][field][spw].keys())[::-1]:
+            % for colorder in colorders:
                 <tr>
                     <!-- iteration row heading -->
                     <td class="vertical-align"><p class="text-center">${i}
@@ -85,59 +85,61 @@ def get_plot(plots, prefix, field, spw, i, colname, moment=None):
                     <div class="thumbnail">
                         <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
                            title="Iteration ${i}: ${columns[colname][1]}"
-                       data-caption="${columns[colname][1]}<br>Iteration ${i}"
-                           data-fancybox="iteration-${colname}"
-                           >
-                           <img data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                                            title="Iteration ${i}: ${columns[colname][1]}"
-                                            alt="Iteration ${i}: ${columns[colname][1]}"
-                                            class="lazyload img-responsive">
+                           data-caption="${columns[colname][1]}<br>Iteration ${i}"
+                           data-fancybox="iteration-${colname}">
+                            <img data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
+                                 title="Iteration ${i}: ${columns[colname][1]}"
+                                 alt="Iteration ${i}: ${columns[colname][1]}"
+                                 class="lazyload img-responsive">
                         </a>
+                        <div class="caption">
+                            <% moment_label = '' if moment is None else f' ({moment})' %>
+                            <p class="text-center">${columns[colname][1]}${moment_label}</p>
+                        </div>
                     </div>
                     % endif
                 </td>
                 % endfor <!-- /colname,moment loop-->
-                % endfor <!-- /colorders loop-->
+            % endfor <!-- /colorders loop-->
             </tr>
-                % endfor <!-- /iteration loop -->
+        % endfor <!-- /iteration loop -->
 
-                <tr>
-                        <td></td>
-                    <%
-                    if cube_mode:
-                        colnames = ['flux', 'psf', 'model', 'psf_per_channel']
-                    else:
-                        colnames = ['flux', 'psf', 'model']
+        <tr>
+            <td></td>
+            <%
+            if cube_mode:
+                colnames = ['flux', 'psf', 'model', 'psf_per_channel']
+            else:
+                colnames = ['flux', 'psf', 'model']
+            %>
+
+            % for colname in colnames:
+                <td>
+                    <!-- model/psf/flux plots are associated with the final iteration -->
+                    <% 
+                    lastiter = sorted(plots_dict[prefix][field][spw].keys())[-1]
+                    plot = get_plot(plots_dict, prefix, field, spw, lastiter, colname)
                     %>
-
-                    % for colname in colnames:
-                            <td>
-                                        <!-- model/psf/flux plots are associated with the final iteration -->
-                                <% 
-                                lastiter = sorted(plots_dict[prefix][field][spw].keys())[-1]
-                                plot = get_plot(plots_dict, prefix, field, spw, lastiter, colname)
-                                %>
-                            % if plot is not None:
-                                <div class="thumbnail">
-                                    <a data-fancybox
-                                       href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
+                    % if plot is not None:
+                        <div class="thumbnail">
+                            <a data-fancybox
+                               href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
                                data-caption="${columns[colname][1]}"
-                                       title="${columns[colname][1]}">
-                                                                <img data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                                                                         title="${columns[colname][1]}"
-                                                                     alt="${columns[colname][1]}"]
-                                                                     class="lazyload img-responsive">
-                                                        </a>
-                                                        <div class="caption">
-                                                                <p class="text-center">${columns[colname][1]}</p>
-                                               </div>
-                                         </div>
-                            % endif
-                        </td>
-                    % endfor <!-- /colname loop -->
-                </tr>
-
-        </tbody>
+                               title="${columns[colname][1]}">
+                                <img data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
+                                     title="${columns[colname][1]}"
+                                     alt="${columns[colname][1]}"]
+                                     class="lazyload img-responsive">
+                            </a>
+                            <div class="caption">
+                                <p class="text-center">${columns[colname][1]}</p>
+                            </div>
+                        </div>
+                    % endif
+                </td>
+            % endfor <!-- /colname loop -->
+        </tr>
+    </tbody>
 </table>
 </div>
 
