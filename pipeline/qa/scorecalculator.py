@@ -35,8 +35,6 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
-           'score_combine_spwmapping',                        # ALMA specific
-           'score_phaseup_mapping_fraction',                  # ALMA specific
            'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
@@ -1617,82 +1615,6 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
 
 
 @log_qa
-def score_combine_spwmapping(ms, intent, field, spwmapping):
-    """
-    Evaluate whether or not a spw mapping is using combine.
-    If not, then set score to 1. If so, then set score to the sub-optimal
-    threshold (for blue info message).
-    """
-    if spwmapping.combine:
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
-        longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'Using combined spw mapping'
-    else:
-        score = 1.0
-        longmsg = f'No combined spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'No combined spw mapping'
-
-    origin = pqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
-                          metric_score=spwmapping.combine,
-                          metric_units='Using combined spw mapping')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
-
-
-@log_qa
-def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
-    """
-    Compute the fraction of science spws that have not been
-    mapped to other probably wider windows.
-    """
-    if not spwmapping.spwmap:
-        nunmapped = len([spw for spw in ms.get_spectral_windows(science_windows_only=True)])
-        score = 1.0
-        longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'No spw mapping'
-    elif spwmapping.combine:
-        nunmapped = 0
-        score = rutils.SCORE_THRESHOLD_WARNING
-        longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
-        shortmsg = 'Combined spw mapping'
-    else:
-        # Expected science windows
-        scispws = [spw for spw in ms.get_spectral_windows(science_windows_only=True)]
-        scispwids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-        nexpected = len(scispwids)
-
-        nunmapped = 0
-        samesideband = True
-        for spwid, scispw in zip(scispwids, scispws):
-            if spwid == spwmapping.spwmap[spwid]:
-                nunmapped += 1
-            else:
-                if scispw.sideband != ms.get_spectral_window(spwmapping.spwmap[spwid]).sideband:
-                    samesideband = False
-
-        if nunmapped >= nexpected:
-            score = 1.0
-            longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
-            shortmsg = 'No spw mapping'
-        else:
-            # Replace the previous score with a warning
-            if samesideband is True:
-                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
-                longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
-                shortmsg = 'Spw mapping within sidebands'
-            else:
-                score = rutils.SCORE_THRESHOLD_WARNING
-                longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
-                shortmsg = 'Spw mapping across sidebands'
-
-    origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
-                          metric_score=nunmapped,
-                          metric_units='Number of unmapped science spws')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
-
-
-@log_qa
 def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
     """
     Score the median achieved SNR for a given phase calibrator field and SpW.
@@ -1991,20 +1913,24 @@ def score_derived_fluxes_snr(ms, measurements):
     score = 0.0
     minscore = 1.0
     minsnr = None
+    snr_thresh = 26.25
+    low_snr_flux = collections.defaultdict(list)
 
-    for value in measurements.values():
+    for fieldid, field_measurements in measurements.items():
         # Loop over the flux measurements
-        for flux in value:
-            fluxjy = flux.I.to_units(measures.FluxDensityUnits.JANSKY)
-            uncjy = flux.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
+        for measurement in field_measurements:
+            fluxjy = measurement.I.to_units(measures.FluxDensityUnits.JANSKY)
+            uncjy = measurement.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
             if fluxjy <= 0.0 or uncjy <= 0.0:
                 continue
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
             nmeasured += 1
-            score1 = linear_score(float(snr), 5.0, 26.25, 0.66, 1.0)
+            score1 = linear_score(float(snr), 5.0, snr_thresh, 0.66, 1.0)
             minscore = min(minscore, score1)
             score += score1
+            if score1 < 1.0:
+                low_snr_flux[fieldid].append(measurement.spw_id)
 
     if nmeasured > 0:
         score /= nmeasured
@@ -2018,8 +1944,12 @@ def score_derived_fluxes_snr(ms, measurements):
         longmsg = 'No low SNR derived fluxes for %s ' % ms.basename
         shortmsg = 'No low SNR derived fluxes'
     else:
-        longmsg = 'Low SNR derived fluxes for %s ' % ms.basename
-        shortmsg = 'Low SNR derived fluxes'
+        # Report which field(s) and SpW(s) had low SNR.
+        fld_summaries = [f'field {fid}, SpW(s) {", ".join(str(s) for s in sorted(spwids))}'
+                         for fid, spwids in sorted(low_snr_flux.items())]
+        longmsg = f'For {ms.basename}, the fractional uncertainty in the derived scaling factor is large' \
+                  f' (> {100/snr_thresh:.1f}%) for {"; ".join(fld_summaries)}. The calibrator may be too faint.'
+        shortmsg = 'Uncertainty in some of the derived fluxes'
 
     origin = pqa.QAOrigin(metric_name='score_derived_fluxes_snr',
                           metric_score=minsnr,
@@ -2576,7 +2506,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         if beams is None:
             warnings.append('unfitted offset')
         else:
-            offset_score = max(0.0, 1.0 - min(1.0, beams))
+            offset_score = max(0.33, 1.0 - min(1.0, beams))
             offset_metric = beams
             if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
@@ -2590,7 +2520,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             warnings.append('gfluxscale value of 0.0 mJy')
         else:
             chk_fitflux_gfluxscale_ratio = fitflux * 1000. / gfluxscale
-            fitflux_score = max(0.0, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
+            fitflux_score = max(0.33, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
             fitflux_metric = chk_fitflux_gfluxscale_ratio
             if chk_fitflux_gfluxscale_ratio < 0.8:
                 warnings.append('low [Fitted / gfluxscale] Flux Density Ratio of %.2f' % (chk_fitflux_gfluxscale_ratio))
@@ -2604,7 +2534,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             warnings.append('Fitted Flux Density value of 0.0 mJy')
         else:
             chk_fitpeak_fitflux_ratio = fitpeak / fitflux
-            fitpeak_score = max(0.0, 1.0 - abs(1.0 - (chk_fitpeak_fitflux_ratio)))
+            fitpeak_score = max(0.33, 1.0 - abs(1.0 - (chk_fitpeak_fitflux_ratio)))
             fitpeak_metric = chk_fitpeak_fitflux_ratio
             if chk_fitpeak_fitflux_ratio < 0.7:
                 warnings.append('low Fitted [Peak Intensity / Flux Density] Ratio of %.2f' % (chk_fitpeak_fitflux_ratio))
@@ -2964,7 +2894,7 @@ def score_sdimage_masked_pixels(context, result):
     metric_score_max = 1.0
     metric_score_min = 0.0
 
-    # convert score and threhold for logging purpose
+    # convert score and threshold for logging purpose
     frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
     imbasename = os.path.basename(imagename.rstrip('/'))
 
@@ -3248,49 +3178,47 @@ def score_fluxcsv(result):
 
 
 @log_qa
-def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
     """
 
-    outlier_fraction = n_outlier_pixels / n_pixels
+    mom8_fc_outlier_threshold1 = 5.0
+    mom8_fc_outlier_threshold2 = 3.5
+    mom8_fc_histogram_asymmetry_threshold1 = 0.20
+    mom8_fc_histogram_asymmetry_threshold2 = 0.05
+    mom8_fc_max_segment_beams_threshold = 1.0
+    mom8_fc_score_min = 0.33
+    mom8_fc_score_max = 1.00
+    mom8_fc_metric_scale = 270.0
+    if mom8_fc_frac_max_segment != 0.0:
+        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+    else:
+        mom8_fc_score = mom8_fc_score_max
+
     with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
         spw = info.get('virtspw')
 
-    if peak_snr <= outlier_threshold:
-        score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC peak SNR below QA threshold'
-        weblog_location = pqa.WebLogLocation.ACCORDION
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
+        mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
-        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
-                                          n_outlier_pixels,
-                                          outlier_fraction * 100.0,
-                                          outlier_threshold,
-                                          outlier_threshold * cube_chanScaled_MAD))
+        mom8_fc_final_score = max(mom8_fc_score, 0.67)
 
-        m8fc_score_min = 0.33
-        m8fc_score_max = 0.90
-        m8fc_metric_scale = 300.0
-        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log10(m8fc_metric_scale * outlier_fraction)))
-        if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
-            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
-            score = 0.65
-
-        if 0.33 <= score < 0.66:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC image indicates residual line emission'
-            weblog_location = pqa.WebLogLocation.UNSET
-        else:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is above the QA threshold.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC peak SNR above QA threshold'
-            weblog_location = pqa.WebLogLocation.ACCORDION
+    if 0.33 <= mom8_fc_final_score < 0.66:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} with a peak SNR of {:#.5g} and a flux histogram asymmetry which indicate that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC image indicates residual line emission'
+        weblog_location = pqa.WebLogLocation.UNSET
+    else:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} and no significant flux histogram asymmetry.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC peak SNR and flux histogram'
+        weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                          metric_score=(peak_snr, outlier_fraction),
-                          metric_units='Peak SNR / Outlier fraction')
+                          metric_score=(mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment),
+                          metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+    return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

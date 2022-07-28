@@ -138,8 +138,6 @@ class Flagtargetsdata(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
-        LOG.info("This Flagtargetsdata class is running.")
-
         inputs = self.inputs
 
         flag_cmds = self._get_flag_commands()

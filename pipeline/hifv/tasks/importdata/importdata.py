@@ -27,12 +27,12 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None):
+                 ocorr_mode=None, datacolumns=None):
         super(VLAImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                   process_caldevice=process_caldevice, session=session,
                                                   overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                   save_flagonline=save_flagonline, createmms=createmms,
-                                                  ocorr_mode=ocorr_mode, asimaging=False)
+                                                  ocorr_mode=ocorr_mode, datacolumns=datacolumns)
 
 
 class VLAImportDataResults(basetask.Results):

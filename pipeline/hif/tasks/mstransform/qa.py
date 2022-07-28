@@ -17,17 +17,17 @@ class MstransformQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
 
-        # Check for existance of the the continuum MS.
-        score1 = self._contms_exists(os.path.dirname(result.outputvis), os.path.basename(result.outputvis))
+        # Check for existence of the science targets cont+line MS.
+        score1 = self._targets_ms_exists(os.path.dirname(result.outputvis), os.path.basename(result.outputvis))
         scores = [score1]
 
         result.qa.pool.extend(scores)
 
-    def _contms_exists(self, output_dir, target_ms):
+    def _targets_ms_exists(self, output_dir, target_ms):
         """
-        Check for the existence of the continuum MS
+        Check for the existence of the science targets cont+line MS
         """
-        return qacalc.score_path_exists(output_dir, target_ms, 'science target continuum ms')
+        return qacalc.score_path_exists(output_dir, target_ms, 'science targets cont+line ms')
 
 
 class MstransformListQAHandler(pqa.QAPlugin):
@@ -44,5 +44,5 @@ class MstransformListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing target continuum MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
+        longmsg = 'No missing science targets cont+line MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
