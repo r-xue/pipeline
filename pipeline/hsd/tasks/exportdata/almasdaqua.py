@@ -84,8 +84,7 @@ def _hsd_imaging_sensitivity_exporter(stage_results: ResultsList) \
     # XML exporter expects this function to return a list of dictionaries
     sensitivities = []
     for result in stage_results:
-        if result.sensitivity_info is not None and \
-                result.sensitivity_info.representative:
+        if result.sensitivity_info is not None:
             sensitivities.append(result.sensitivity_info.sensitivity)
     return sensitivities
 
