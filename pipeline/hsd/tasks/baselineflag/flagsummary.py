@@ -313,7 +313,7 @@ class SDBLFlagSummary(object):
         Output flag statistics to LOG.
 
         Args:
-            nrows               : number of rows
+            nrow                : number of rows
             is_baselined        : True if baselined, Fause if not
             FlaggedRows         : flagged rows
             FlaggedRowsCategory : flagged rows by category
