@@ -618,12 +618,6 @@ class T1_3MRenderer(RendererBase):
             scores[result.stage_number] = result.qa.representative
             results_list = get_results_by_time(context, result)
 
-            qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-            tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-            qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-            tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
-
             error_msgs = utils.get_logrecords(results_list, logging.ERROR)
             tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
@@ -1255,12 +1249,6 @@ class T2_3_XMBaseRenderer(RendererBase):
 
             # CAS-11344: present results ordered by stage number
             for results_list in sorted(list_of_results_lists, key=operator.attrgetter('stage_number')):
-                qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-                tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-                qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-                tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
-
                 error_msgs = utils.get_logrecords(results_list, logging.ERROR)
                 tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
