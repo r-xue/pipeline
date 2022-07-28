@@ -808,7 +808,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                 bwmode='repBW',
                                                 beam=beam, cell=qcell,
                                                 sensitivity=theoretical_rms)
-                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs, is_nro)
+                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs, (not is_nro))
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  specmode=specmode,
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
