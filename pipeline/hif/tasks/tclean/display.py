@@ -50,6 +50,7 @@ class CleanSummary(object):
             extension = '.tt0' if r.multiterm else ''
 
             # psf map
+            # TODO: Check if r.imaging_mode should be used
             if self.context.imaging_mode == 'VLASS-SE-CUBE':
                 # PIPE-1401: use the same selecting list constructed from the Stokes plane present in the PSF image.
                 stokes_list = get_stokes(r.psf + extension)
@@ -76,7 +77,7 @@ class CleanSummary(object):
                     plot_wrappers.extend(
                         sky.SkyDisplay().plot_per_stokes(self.context, image_path, reportdir=stage_dir, intent=r.intent, stokes_list=stokes_list,
                                                          collapseFunction=collapse_function))
-                    # For cubes also make mom0 of the PB corrected image (PIPE-652)
+                    # For cubes (i.e. when mom8 is selected above) also make mom0 of the PB corrected image (PIPE-652)
                     if collapse_function == 'mom8':
                         plot_wrappers.extend(
                             sky.SkyDisplay().plot_per_stokes(self.context, image_path, reportdir=stage_dir, intent=r.intent, stokes_list=stokes_list,
@@ -111,12 +112,18 @@ class CleanSummary(object):
                                                    collapseFunction=collapse_function, **extra_args))
 
                 # residual for this iteration
-                plot_wrappers.extend(
-                    sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
-                                               intent=r.intent, stokes_list=stokes_list, collapseFunction='mom8'))
-                plot_wrappers.extend(
-                    sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
-                                               intent=r.intent, stokes_list=stokes_list, collapseFunction='mom0'))
+                if r.imaging_mode == 'ALMA':
+                    # ALMA requested a change to mom8 and mom0 displays (PIPE-652)
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
+                                                   intent=r.intent, stokes_list=stokes_list, collapseFunction='mom8'))
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
+                                                   intent=r.intent, stokes_list=stokes_list, collapseFunction='mom0'))
+                else:
+                    plot_wrappers.extend(
+                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
+                                                   intent=r.intent, stokes_list=stokes_list))
 
                 # model for this iteration (currently only last but allow for others in future)
                 if 'model' in iteration and os.path.exists(iteration['model'] + extension):

@@ -680,7 +680,9 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 final_rows.append(new_row)
             except IOError as e:
                 LOG.error(e)
-            except:
+            except Exception as e:
+                # Probably some detail page rendering exception.
+                LOG.error(e)
                 final_rows.append(row)
 
         chk_fit_rows = []
@@ -735,6 +737,20 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
         self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
 
+        if result.specmode in ('mfs', 'cont'):
+            colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
+        else:
+            colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
+                         [('pbcorimage', 'mom0'), ('residual', 'mom0'), ('mom0_fc', None), ('cleanmask', None)]]
+
+        if 'VLA' in result.imaging_mode:
+            # PIPE-1462: use non-pbcor images for VLA in the tclean details page.
+            # Because 'mtmfs' CASA/tclean doesn't generate pbcor images for VLA and silently passes with a warning when pbcor=True,
+            # pbcor images are not produced from hif.tasks.tclean (see PIPE-1201/CAS-11636)
+            # Here, we set a fallback with non-pbcor images.
+            for i, colorder in enumerate(colorders):
+                colorders[i] = [('image', moment) if im_type == 'pbcorimage' else (im_type, moment) for im_type, moment in colorder]
+
         self.extra_data = {
             'plots_dict': plots_dict,
             'prefix': prefix.split('.')[0],
@@ -745,7 +761,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
             'cube_all_cont': cube_all_cont,
             'cube_mode': result.specmode in ('cube', 'repBW'),
-            'imaging_mode': result.imaging_mode
+            'colorders': colorders
         }
 
     def update_mako_context(self, mako_context):
@@ -1517,7 +1533,9 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 final_rows.append(new_row)
             except IOError as e:
                 LOG.error(e)
-            except:
+            except Exception as e:
+                # Probably some detail page rendering exception.
+                LOG.error(e)
                 final_rows.append(row)
 
         # primary sort images by vis, field, secondary sort on spw, then by pol

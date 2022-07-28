@@ -1,37 +1,28 @@
-<%
+<%!
 rsc_path = ""
 import os
 
-columns = {'cleanmask' : ('Clean Mask', 'Clean Mask', 'mean'),
-           'flux' : ('Primary Beam', 'Primary Beam', 'mean'),
-           'pbcorimage' : ('Pb-corrected Image', 'Pb-corrected Image', 'mean'),
-           'image' : ('Image', 'Image', 'mean'),
-           'residual' : ('Residual', 'Residual', 'mom8'),
-           'model' : ('Final Model', 'Final Model', 'mean'),
-           'psf' : ('PSF', 'PSF', 'mean'),
-           'mom0_fc': ('Line-free Moment 0', 'Integrated intensity (moment 0) of line-free channels after continuum subtraction', 'mean'),
-           'mom8_fc': ('Line-free Moment 8', 'Integrated intensity (moment 8) of line-free channels after continuum subtraction', 'mean'),
-           'spectra': ('Spectra', 'Spectra from flattened clean mask and per channel MAD', 'N/A'),
-           'psf_per_channel': ('Beam per channel', 'Beam per channel', 'N/A')}
+columns = {'cleanmask' : ('Clean Mask', 'Clean Mask'),
+           'flux' : ('Primary Beam', 'Primary Beam'),
+           'pbcorimage' : ('Pb-corrected Image', 'Pb-corrected Image'),
+           'image' : ('Image', 'Image'),
+           'residual' : ('Residual', 'Residual'),
+           'model' : ('Final Model', 'Final Model'),
+           'psf' : ('PSF', 'PSF'),
+           'mom0_fc': ('Line-free Moment', 'Integrated intensity (moment 0) of line-free channels after continuum subtraction'),
+           'mom8_fc': ('Line-free Moment', 'Maximum intensity (moment 8) of line-free channels after continuum subtraction'),
+           'spectra': ('Spectra / Masks', 'Spectra from flattened clean mask and per channel MAD'),
+           'psf_per_channel': ('Beam per channel', 'Beam per channel')}
 
-colorder = ['pbcorimage', 'residual', 'cleanmask']
-
-if cube_mode:
-    columns['image'] = ('Image', 'Image', 'mom8')
-    columns['pbcorimage'] = ('Pb-corrected Image', 'Pb-corrected Image', 'mom8')
-    columns['cleanmask'] = ('Clean Mask', 'Clean Mask', 'mom8')
-    colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc', 'spectra']
-
-if 'VLA' in imaging_mode:
-    # PIPE-1462: use non-pbcor images for VLA in the tclean details page.
-    # Because 'mtmfs' CASA/tclean doesn't generate pbcor images for VLA and silently passes with a warning when pbcor=True,
-    # pbcor images are not produced from hif.tasks.tclean (see PIPE-1201/CAS-11636)
-    # Here, we set a fallback with non-pbcor images.
-    colorder = ['image' if im_type == 'pbcorimage' else im_type for im_type in colorder]
-
-def get_plot(plots, prefix, field, spw, i, colname, moment):
+def get_plot(plots, prefix, field, spw, i, colname, moment=None):
     try:
-        return plots[prefix][field][spw][i][colname][moment]
+        if moment is not None:
+            return plots[prefix][field][spw][i][colname][moment]
+        else:
+            for m in ('mean', 'mom8', 'mom0', 'N/A'):
+                if m in plots[prefix][field][spw][i][colname]:
+                    return plots[prefix][field][spw][i][colname][m]
+            return None
     except KeyError:
         return None
 %>
@@ -69,7 +60,7 @@ def get_plot(plots, prefix, field, spw, i, colname, moment):
         <thead>
                 <tr>
                         <th>Iteration</th>
-                    % for colname in colorder:
+                    % for colname, moment in colorders[0]:
                         <th>${columns[colname][0]}</th>
                     % endfor
                 </tr>
@@ -77,6 +68,7 @@ def get_plot(plots, prefix, field, spw, i, colname, moment):
         <tbody>
 
                 % for i in sorted(plots_dict[prefix][field][spw].keys())[::-1]:
+                % for colorder in colorders:
                 <tr>
                     <!-- iteration row heading -->
                     <td class="vertical-align"><p class="text-center">${i}
@@ -85,9 +77,9 @@ def get_plot(plots, prefix, field, spw, i, colname, moment):
                     %endif
                     </p></td>
                     <!-- plots for this iteration, in column order -->
-                % for colname in colorder:
+                % for colname, moment in colorder:
                 <td>
-                    <% plot = get_plot(plots_dict, prefix, field, spw, i, colname, columns[colname][2]) %>
+                    <% plot = get_plot(plots_dict, prefix, field, spw, i, colname, moment) %>
                     <!-- use bootstrap markup for thumbnails -->
                     % if plot is not None:
                     <div class="thumbnail">
@@ -104,7 +96,8 @@ def get_plot(plots, prefix, field, spw, i, colname, moment):
                     </div>
                     % endif
                 </td>
-                % endfor <!-- /colname loop-->
+                % endfor <!-- /colname,moment loop-->
+                % endfor <!-- /colorders loop-->
             </tr>
                 % endfor <!-- /iteration loop -->
 
@@ -122,7 +115,7 @@ def get_plot(plots, prefix, field, spw, i, colname, moment):
                                         <!-- model/psf/flux plots are associated with the final iteration -->
                                 <% 
                                 lastiter = sorted(plots_dict[prefix][field][spw].keys())[-1]
-                                plot = get_plot(plots_dict, prefix, field, spw, lastiter, colname, columns[colname][2])
+                                plot = get_plot(plots_dict, prefix, field, spw, lastiter, colname)
                                 %>
                             % if plot is not None:
                                 <div class="thumbnail">
@@ -155,7 +148,7 @@ When the beam shape is significantly non-Gaussian, the dotted contour of the 50%
 of the PSF image will become distinctly visible apart from the fitted synthesized beam, 
 which is shown as the solid contour.
 </li>
-%if 'mom0_fc' in colorder: 
+%if cube_mode:
 <li>
 The Line-free Moment 0 and Moment 8 images are created from the line-free
 (continuum) channels identified in the hif_findcont stage. In the absence of
