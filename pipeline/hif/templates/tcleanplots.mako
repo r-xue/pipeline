@@ -9,8 +9,8 @@ columns = {'cleanmask' : ('Clean Mask', 'Clean Mask'),
            'residual' : ('Residual', 'Residual'),
            'model' : ('Final Model', 'Final Model'),
            'psf' : ('PSF', 'PSF'),
-           'mom0_fc': ('Line-free Moment 0', 'Integ. int. (mom0) of line-free channels'),
-           'mom8_fc': ('Line-free Moment 8', 'Maximum int. (mom8) of line-free channels'),
+           'mom0_fc': ('Line-free Moment', 'Integ. int. (mom0) of line-free channels'),
+           'mom8_fc': ('Line-free Moment', 'Maximum int. (mom8) of line-free channels'),
            'spectra': ('Spectra / Mask', 'Spectra from flattened clean mask'),
            'psf_per_channel': ('Beam per channel', 'Beam per channel')}
 
