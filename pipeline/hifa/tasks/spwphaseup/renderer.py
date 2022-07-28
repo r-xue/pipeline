@@ -39,12 +39,9 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Get info on phase caltable.
         applications = get_gaincal_applications(context, results)
 
-        # Get info on the RMS plots and tables
-        weblog_dir = os.path.join(context.report_dir, 'stage%s' % results[0].stage_number)
-
-        # Don't even try to make the plots and the table if there are no decoherence assessment
-        # results for the first result (PIPE-692)
+        # Get info on the Decoherence Assessment RMS plots and tables
         if results[0].phaserms_results: 
+            weblog_dir = os.path.join(context.report_dir, 'stage%s' % results[0].stage_number)
             rmsplots = make_rms_plots(results, weblog_dir)
             phaserms_table_rows = get_phaserms_table_rows(context, results)
         else: 
@@ -228,7 +225,7 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
 def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]:
     """
     Return list of strings containing HTML TD columns, representing rows for
-    the phase rms results table.
+    the decoherence assessment phase rms results table. (SEE PIPE-692)
 
     Args:
         context: the pipeline context.
@@ -258,13 +255,14 @@ def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]
 
 def make_rms_plots(results, weblog_dir: str) -> Dict[str, List[logger.Plot]]:
     """
-    Create and return a list of SSF plots. 
+    Create and return a list of the Spatial Structure Functions (SSF) plots. 
+    (See PIPE-692)
 
     Args:
         results: the spwphaseup results. 
         weblog_dir: the weblog directory
     Returns:
-        summary_plots: dictionary with MS with some additional html 
+        summary_plots: dictionary with MS
                     as the keys and lists of plot objects as the values
     """
     rms_plots = collections.defaultdict(list)

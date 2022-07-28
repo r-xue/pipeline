@@ -64,12 +64,18 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Add score to list of scores.
             scores.append(score)
 
-        # Create QA scores for PIPE-692
-        ssr_qa = result.qa_dict
-        if ssr_qa: 
-            base_score = ssr_qa['basescore']
-            shortmsg = ssr_qa['shortmsg']
-            longmsg = ssr_qa['longmsg']
+        # Create QA scores for decoherence assessment (See: PIPE-692)
+        phase_rms_qa = result.phaserms_qa
+        if phase_rms_qa: 
+            base_score = phase_rms_qa['basescore']
+            shortmsg = phase_rms_qa['shortmsg']
+            longmsg = phase_rms_qa['longmsg']
+            # Add the MS name at the end of the long message. 
+            if longmsg[-1] == '.':
+                longmsg = longmsg[0:-1] + ", for {}.".format(ms.name)
+            else:
+                longmsg += ", for {}.".format(ms.name)
+
             # Add score to list of scores.
             scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
 
