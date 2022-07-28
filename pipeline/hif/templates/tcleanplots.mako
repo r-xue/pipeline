@@ -92,10 +92,12 @@ def get_plot(plots, prefix, field, spw, i, colname, moment=None):
                                  alt="Iteration ${i}: ${columns[colname][1]}"
                                  class="lazyload img-responsive">
                         </a>
+                        % if cube_mode:
                         <div class="caption">
                             <% moment_label = '' if moment is None else f' ({moment})' %>
                             <p class="text-center">${columns[colname][1]}${moment_label}</p>
                         </div>
+                        % endif
                     </div>
                     % endif
                 </td>
