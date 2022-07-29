@@ -60,9 +60,7 @@ REF_MS_ID = 0
 
 
 class SDImagingInputs(vdp.StandardInputs):
-    """
-    Inputs for imaging
-    """
+    """Inputs for imaging task class."""
     # Search order of input vis
     processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
                             DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
