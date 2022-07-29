@@ -248,7 +248,7 @@ def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]
         
         rows.append(PhaseRmsTR(ms.basename, 'Total Time', total_time, \
                     phaserms_totaltime, result.phaserms_antout))
-        rows.append(PhaseRmsTR(ms.basename, 'Cycle Time', cycle_time, \
+        rows.append(PhaseRmsTR(ms.basename, 'Cycle Time', cycle_time,
                     phaserms_cycletime, result.phaserms_antout))
     return utils.merge_td_columns(rows)
 
