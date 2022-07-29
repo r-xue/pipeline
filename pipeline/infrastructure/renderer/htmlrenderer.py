@@ -1013,7 +1013,7 @@ class T2_2_2Renderer(T2_2_XRendererBase):
                 # Always show the column for ALMA. If it's cycle 2 data, display a '?' in the table
                 show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
             elif 'VLA' in ms.antenna_array.name:
-                # For VLA only display the column if an sdm_num_bin of != 1 is present for at least one entry in there.
+                # For VLA only display the column if an sdm_num_bin > 1 is present for at least one entry in there.
                 sdm_num_bins = [spw for spw in ms.get_spectral_windows() if spw.sdm_num_bin > 1]
                 if len(sdm_num_bins) >= 1:
                     science_sdm_num_bins = [spw for spw in ms.get_spectral_windows(
