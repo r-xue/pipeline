@@ -484,7 +484,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         for ROW in range(nrow):
             LOG.debug('Calculate weighed average for row %s', ROW)
             [IF, POL, X, Y, RAcent, DECcent, RowDelta] = grid_table[ROW]
-            if StorageNumSp[ROW] == 0 or all(StorageWeight[ROW] == 0.0):
+            if StorageNumSp[ROW] == 0 or numpy.all(StorageWeight[ROW] == 0.0):
                 StorageOut[ROW,:] = NoData
                 RMS = 0.0
             else:
