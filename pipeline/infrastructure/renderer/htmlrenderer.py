@@ -1001,23 +1001,27 @@ class T2_2_2Renderer(T2_2_XRendererBase):
 
         # Determine whether to show the Online Spec. Avg. column on the Spectral Setup Details page
         # For ALMA, this is always displayed
-        # For VLA, it is only displayed if sdm_num_bin is > 1 and it is possible for this to differ between 
+        # For VLA, it is only displayed if sdm_num_bin is > 1 and it is possible for this to differ between
         # the "Science Windows" and the "All Windows" tabs.
         ShowColumn = collections.namedtuple('ShowColumn', 'science_windows all_windows')
-        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=False)
 
-        if ms.antenna_array.name == 'ALMA':
-            # Always show the column for ALMA. If it's cycle 2 data, display a '?' in the table
-            show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
-        elif 'VLA' in ms.antenna_array.name:
-            # For VLA only display the column if an sdm_num_bin of != 1 is present for at least one entry in there.
-            sdm_num_bins = [spw for spw in ms.get_spectral_windows() if spw.sdm_num_bin > 1]
-            if len(sdm_num_bins) >= 1:
-                science_sdm_num_bins = [spw for spw in ms.get_spectral_windows(science_windows_only=True) if spw.sdm_num_bin > 1]
-                if len(science_sdm_num_bins) >= 1: 
-                    show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
-                else: 
-                    show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=True)
+        if None in [spw.sdm_num_bin for spw in ms.get_spectral_windows()]:
+            # PIPE-1572: the MS is likely imported by older CASA versions (ver<=5.6.0), and we don't display the column.
+            show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=False)
+        else:
+            if ms.antenna_array.name == 'ALMA':
+                # Always show the column for ALMA. If it's cycle 2 data, display a '?' in the table
+                show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+            elif 'VLA' in ms.antenna_array.name:
+                # For VLA only display the column if an sdm_num_bin of != 1 is present for at least one entry in there.
+                sdm_num_bins = [spw for spw in ms.get_spectral_windows() if spw.sdm_num_bin > 1]
+                if len(sdm_num_bins) >= 1:
+                    science_sdm_num_bins = [spw for spw in ms.get_spectral_windows(
+                        science_windows_only=True) if spw.sdm_num_bin > 1]
+                    if len(science_sdm_num_bins) >= 1:
+                        show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+                    else:
+                        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=True)
 
         return {'pcontext'                 : context,
                 'ms'                       : ms, 
