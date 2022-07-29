@@ -259,16 +259,17 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             datacolumn = ''
 
-        # Select the correct vis list
-        if inputs.vis in ('', [''], [], None):
-            if inputs.intent == 'TARGET':
-                if inputs.specmode in ('mfs', 'cont'):
-                    datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-                else:
-                    datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        if inputs.intent == 'TARGET':
+            if inputs.specmode in ('mfs', 'cont'):
+                datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
             else:
-                datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        else:
+            datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
+        # Select the correct vis list
+        selected_datatype = None
+        if inputs.vis in ('', [''], [], None):
             ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
 
             if ms_objects_and_columns == collections.OrderedDict():
@@ -830,6 +831,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             actual_spwids.append(spwid)
                         if not valid_field_spwspec_combination:
                             continue
+
+                        # Check if the globally selected data type is available for this field/spw combination.
+                        # If not, fall back to next available data type.
+                        if selected_datatype is not None:
+                            for spwid in actual_spwids:
+                                local_ms_objects_and_columns, local_selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False, source=field_intent[0], spw=str(spwid))
+                                if local_selected_datatype != selected_datatype:
+                                    LOG.warn(f'Data type {str(selected_datatype).split(".")[-1]} is not available for field {field_intent[0]} SPW {spwid}. Falling back to data type {str(local_selected_datatype).split(".")[-1]}.')
+                                # TODO: Check and adjust vis list
 
                         # Save the specific vislist in a copy of the heuristics object tailored to the
                         # current imaging target
