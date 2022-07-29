@@ -245,7 +245,7 @@ def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]
         phaserms_totaltime = f'{phasermsp80:.2f}'
         phaserms_cycletime = f'{phasermscyclep80:.2f}'
         
-        rows.append(PhaseRmsTR(ms.basename, 'Total Time', total_time, \
+        rows.append(PhaseRmsTR(ms.basename, 'Total Time', total_time,
                     phaserms_totaltime, result.phaserms_antout))
         rows.append(PhaseRmsTR(ms.basename, 'Cycle Time', cycle_time,
                     phaserms_cycletime, result.phaserms_antout))
