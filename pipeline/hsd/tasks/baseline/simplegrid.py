@@ -1,4 +1,4 @@
-"""Task to perform simple two-dimensional ridding with "BOX" kernel."""
+"""Task to perform simple two-dimensional gridding with "BOX" kernel."""
 import collections
 import functools
 import os
