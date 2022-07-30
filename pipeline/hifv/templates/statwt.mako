@@ -144,8 +144,29 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
      <a href="#flagged_data_summary">Top of page </a> | (Click to Jump)<br><br>
             ${band}-band
      </h4> <br>
+     
     <!--Insert plots for band-->
     <!-- PLOT -->     
+    <%self:plot_group plot_dict="${summary_plots[band]}"
+                                    url_fn="${lambda ms:  'noop'}">
+
+            <%def name="title()">
+                Statwt Summary Plot
+            </%def>
+
+            <%def name="preamble()">
+            </%def>
+
+            <%def name="mouseover(plot)">Summary window for band ${band}</%def>
+
+            <%def name="fancybox_caption(plot)">
+                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+            </%def>
+
+            <%def name="caption_title(plot)">
+                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+            </%def>
+    </%self:plot_group>
 
     <!--Insert antenna, spw, scans tables for band--> 
     <%
@@ -351,25 +372,3 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
     </div>
 %endif
 %endfor
-
-<!-- plots still need to be appropriately separated out by band -->
-    <%self:plot_group plot_dict="${summary_plots}"
-                                    url_fn="${lambda ms:  'noop'}">
-
-            <%def name="title()">
-                Statwt Summary Plot
-            </%def>
-
-            <%def name="preamble()">
-            </%def>
-
-            <%def name="mouseover(plot)">Summary window for band, BAND</%def>
-
-            <%def name="fancybox_caption(plot)">
-                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
-            </%def>
-
-            <%def name="caption_title(plot)">
-                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
-            </%def>
-    </%self:plot_group>

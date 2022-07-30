@@ -26,15 +26,14 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             ms = os.path.basename(result.inputs['vis'])
             # Add per-band into here, too.
 
-            summary_plots[ms] = {}
             bands = plotter.band2spw.keys()
             for band in bands: 
-                summary_plots[ms][band] = collections.defaultdict(list)
+                summary_plots[band] = collections.defaultdict(list)
 
             for plot in plots: 
                 print(plot)
-                band = plot.parameters.band
-                summary_plots[ms][band].append(plot)
+                band = plot.parameters['band']
+                summary_plots[band][ms].append(plot)
 
             #stats_table_rows = make_stats_table(context, plotter.result.weight_stats)
 
@@ -59,7 +58,8 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'plotter': plotter,
                     'dirname': weblog_dir,
 #                   'stats_table_rows': stats_table_rows,
-                    'band2spw': plotter.band2spw})
+                    'band2spw': plotter.band2spw,
+                    'vis':result.inputs['vis']})
 
         return ctx
 
