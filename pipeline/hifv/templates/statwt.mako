@@ -30,35 +30,6 @@ if result[0].inputs['statwtmode'] == 'VLA':
     mean =  result[0].jobs[0]['mean'] #TODO: double-check: can these have more than one value? Multiple MS output? 
     variance = result[0].jobs[0]['variance'] 
 %>
-
-% if result[0].inputs['statwtmode'] == 'VLA':
-<h3>Overall results:</h3>
-<b>Mean:</b> ${format_wt_overall(mean)} 
-<br>
-<b>Variance:</b> ${format_wt_overall(variance)}
-% endif 
-
-<%self:plot_group plot_dict="${summary_plots}"
-                                  url_fn="${lambda ms:  'noop'}">
-
-        <%def name="title()">
-            Statwt Summary Plot
-        </%def>
-
-        <%def name="preamble()">
-        </%def>
-
-        <%def name="mouseover(plot)">Summary window</%def>
-
-        <%def name="fancybox_caption(plot)">
-            Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
-        </%def>
-
-        <%def name="caption_title(plot)">
-            Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
-        </%def>
-</%self:plot_group>
-
 <%
 weight_stats=plotter.result.weight_stats
 #after_by_spw=weight_stats['after']['per_spw']
@@ -135,10 +106,17 @@ bgcolor_list=[dev2shade(3., True), dev2shade(4., True), dev2shade(5., True), dev
 bgcolor_list_blue=[dev2shade(3., False), dev2shade(4., False), dev2shade(5., False), dev2shade(6., False)]
 %>
 
+% if result[0].inputs['statwtmode'] == 'VLA':
+<h3>Overall results:</h3>
+<b>Mean:</b> ${format_wt_overall(mean)} 
+<br>
+<b>Variance:</b> ${format_wt_overall(variance)}
+% endif 
+
 <h2 id="flagged_data_summary" class="jumptarget">Statwt Summary</h2>
 
 <p>The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): 
-<p> For values above the meidan, shades of red are used: </p>
+<p> For values above the median, shades of red are used: </p>
 <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; 
 <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev,</p>
 <p>where &#963 is defined as 1.4826*MAD.</p>
@@ -148,7 +126,28 @@ bgcolor_list_blue=[dev2shade(3., False), dev2shade(4., False), dev2shade(5., Fal
     6&#963&le;dev,</p> 
 <p>where &#963 is defined as 1.4826*MAD.</p>
 
-% for band in band2spw: 
+<% 
+bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9}
+%>
+
+% for band in bandsort.keys():
+    % if band in band2spw.keys():
+    <a id="${band}"></a><br>
+    <div class="row">
+    <hr>
+    <h4>
+    % for bb in bandsort.keys():
+        % if bb in band2spw.keys():
+            <a href="#${bb}">${bb}-band</a>&nbsp;|&nbsp;
+        % endif
+    % endfor
+     <a href="#flagged_data_summary">Top of page </a> | (Click to Jump)<br><br>
+            ${band}-band
+     </h4> <br>
+    <!--Insert plots for band-->
+    <!-- PLOT -->     
+
+    <!--Insert antenna, spw, scans tables for band--> 
     <%
     after_by_spw=weight_stats['after'][band]['per_spw']
     after_by_ant=weight_stats['after'][band]['per_ant']
@@ -160,202 +159,217 @@ bgcolor_list_blue=[dev2shade(3., False), dev2shade(4., False), dev2shade(5., Fal
         summary_scan_stats = summarize_stats(after_by_scan)
     %>
 
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
-	<caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
-    </caption>
-	<thead>
-		<tr>
-			<th scope="col" rowspan="2">Antenna Selection</th>
-			<!-- flags before task is always first agent -->
-            % if is_vlass: 
-    			<th scope="col" colspan="3" style="text-align:center">statwt before</th>
-                <th scope="col" colspan="5" style="text-align:center">${table_header}</th>
-            % else: 
-                <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
-            % endif
-			
-		</tr>
-		<tr>
-            <th scope="col" >Median</th>
-            % if is_vlass:
-                <th scope="col" >1st/3rd Quartile</th>
-                <th scope="col" >Mean &#177 S.Dev.</th>
-            % else: 
-                <th scope="col" >1st Quartile</th>
-                <th scope="col" >3rd Quartile</th>
-                <th scope="col" >Mean</th>
-                <th scope="col" >S.Dev.</th>
-                <th scope="col" >Minimum</th>
-                <th scope="col" >Maximum</th>
-            % endif
-
-            %if is_vlass:
+    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+        <caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna, Band ${band}. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
+        </caption>
+        <thead>
+            <tr>
+                <th scope="col" rowspan="2">Antenna Selection</th>
+                <!-- flags before task is always first agent -->
+                % if is_vlass: 
+                    <th scope="col" colspan="3" style="text-align:center">statwt before</th>
+                    <th scope="col" colspan="5" style="text-align:center">${table_header}</th>
+                % else: 
+                    <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
+                % endif
+                
+            </tr>
+            <tr>
                 <th scope="col" >Median</th>
-                <th scope="col" >1st/3rd Quartile</th>
-                <th scope="col" >Mean &#177 S.Dev.</th>
-            %endif
-		</tr>        
-	</thead>
-	<tbody>
-		% for i in range(len(after_by_ant)):
-		<tr>  
-			<th style="text-align:center">${after_by_ant[i]['ant']}</th>  
-            % if is_vlass: 
-                <td>${format_wt(before_by_ant[i]['med'])}</td>
-                % if before_by_ant[i]['quartiles'] is not None:
-                    <td>${format_wt(before_by_ant[i]['q1'])}/${format_wt(before_by_ant[i]['q3'])}</td>
-                % else:
-                    <td>N/A</td>
+                % if is_vlass:
+                    <th scope="col" >1st/3rd Quartile</th>
+                    <th scope="col" >Mean &#177 S.Dev.</th>
+                % else: 
+                    <th scope="col" >1st Quartile</th>
+                    <th scope="col" >3rd Quartile</th>
+                    <th scope="col" >Mean</th>
+                    <th scope="col" >S.Dev.</th>
+                    <th scope="col" >Minimum</th>
+                    <th scope="col" >Maximum</th>
+                % endif
+
+                %if is_vlass:
+                    <th scope="col" >Median</th>
+                    <th scope="col" >1st/3rd Quartile</th>
+                    <th scope="col" >Mean &#177 S.Dev.</th>
+                %endif
+            </tr>        
+        </thead>
+        <tbody>
+            % for i in range(len(after_by_ant)):
+            <tr>  
+                <th style="text-align:center">${after_by_ant[i]['ant']}</th>  
+                % if is_vlass: 
+                    <td>${format_wt(before_by_ant[i]['med'])}</td>
+                    % if before_by_ant[i]['quartiles'] is not None:
+                        <td>${format_wt(before_by_ant[i]['q1'])}/${format_wt(before_by_ant[i]['q3'])}</td>
+                    % else:
+                        <td>N/A</td>
+                    % endif 
+                    <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>  
                 % endif 
-                <td>${format_wt(before_by_ant[i]['mean'])} &#177 ${format_wt(before_by_ant[i]['stdev'])}</td>  
-            % endif 
 
-            %if is_vlass:
-                <td>${format_wt(after_by_ant[i]['med'])}</td>
-                % if after_by_ant[i]['quartiles'] is not None:
-                    <td>${format_wt(after_by_ant[i]['q1'])}/${format_wt(after_by_ant[i]['q3'])}</td>
+                %if is_vlass:
+                    <td>${format_wt(after_by_ant[i]['med'])}</td>
+                    % if after_by_ant[i]['quartiles'] is not None:
+                        <td>${format_wt(after_by_ant[i]['q1'])}/${format_wt(after_by_ant[i]['q3'])}</td>
+                    % else:
+                        <td>N/A</td>
+                    % endif
+                    <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>    
                 % else:
-                    <td>N/A</td>
+                    <td ${format_cell(summary_ant_stats, after_by_ant[i]['med'], 'med')}>${format_wt(after_by_ant[i]['med'])}</td>
+                    % if after_by_ant[i]['quartiles'] is not None:
+                        <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q1']), 'q1')}>${format_wt(after_by_ant[i]['q1'])}</td>
+                        <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q3']), 'q3')}>${format_wt(after_by_ant[i]['q3'])}</td>
+                    % else:
+                        <td>N/A</td><!-- might be able to get rid ov via format_wt-->
+                        <td>N/A</td>
+                    % endif
+                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['mean']), 'mean')}>${format_wt(after_by_ant[i]['mean'])}</td>
+                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['stdev']), 'stdev')}>${format_wt(after_by_ant[i]['stdev'])}</td>
+                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['min']), 'min')}>${format_wt(after_by_ant[i]['min'])}</td>
+                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['max']), 'max')}>${format_wt(after_by_ant[i]['max'])}</td>
                 % endif
-                <td>${format_wt(after_by_ant[i]['mean'])} &#177 ${format_wt(after_by_ant[i]['stdev'])}</td>    
-            % else:
-                <td ${format_cell(summary_ant_stats, after_by_ant[i]['med'], 'med')}>${format_wt(after_by_ant[i]['med'])}</td>
-                % if after_by_ant[i]['quartiles'] is not None:
-                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q1']), 'q1')}>${format_wt(after_by_ant[i]['q1'])}</td>
-                    <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['q3']), 'q3')}>${format_wt(after_by_ant[i]['q3'])}</td>
-                % else:
-                    <td>N/A</td><!-- might be able to get rid ov via format_wt-->
-                    <td>N/A</td>
-                % endif
-                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['mean']), 'mean')}>${format_wt(after_by_ant[i]['mean'])}</td>
-                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['stdev']), 'stdev')}>${format_wt(after_by_ant[i]['stdev'])}</td>
-                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['min']), 'min')}>${format_wt(after_by_ant[i]['min'])}</td>
-                <td ${format_cell(summary_ant_stats, format_wt(after_by_ant[i]['max']), 'max')}>${format_wt(after_by_ant[i]['max'])}</td>
-            % endif
-		</tr>
-		% endfor
-	</tbody>
-</table>
+            </tr>
+            % endfor
+        </tbody>
+    </table>
 
 
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
-	<caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each spectral window. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>.
-    </caption>
-	<thead>
-		<tr>
-			<th scope="col" rowspan="2">Spw Selection</th>
-			<!-- flags before task is always first agent -->
-            % if is_vlass: 
-                <th scope="col" colspan="3" style="text-align:center">statwt before</th>
-                <th scope="col" colspan="5" style="text-align:center">${table_header}</th>
-            % else: 
-                <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
-            % endif 
-		</tr>
-		<tr>
-            <th scope="col" >Median</th>
-
-            % if is_vlass:
-                <th scope="col" >1st/3rd Quartile</th>
-                <th scope="col" >Mean &#177 S.Dev.</th>
-            % else: 
-                <th scope="col" >1st Quartile</th>
-                <th scope="col" >3rd Quartile</th>
-                <th scope="col" >Mean</th>
-                <th scope="col" >S.Dev.</th>
-                <th scope="col" >Minimum</th>
-                <th scope="col" >Maximum</th>
-            % endif
-
-            %if is_vlass:
+    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+        <caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each spectral window. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>.
+        </caption>
+        <thead>
+            <tr>
+                <th scope="col" rowspan="2">Spw Selection</th>
+                <!-- flags before task is always first agent -->
+                % if is_vlass: 
+                    <th scope="col" colspan="3" style="text-align:center">statwt before</th>
+                    <th scope="col" colspan="5" style="text-align:center">${table_header}</th>
+                % else: 
+                    <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
+                % endif 
+            </tr>
+            <tr>
                 <th scope="col" >Median</th>
-                <th scope="col" >1st/3rd Quartile</th>
-                <th scope="col" >Mean &#177 S.Dev.</th>
-            %endif
-		</tr>        
-	</thead>
-	<tbody>
-		% for i in range(len(after_by_spw)):
-		<tr>
-			<th style="text-align:center">${after_by_spw[i]['spw']}</th>  
-            % if is_vlass: 
-                <td>${format_wt(before_by_spw[i]['med'])}</td>
-                % if before_by_spw[i]['quartiles'] is not None:
-                    <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>
-                % else:
-                    <td>N/A</td>
-                % endif            
-                <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>     
-            %endif 
 
-
-            %if is_vlass:
-                <td>${format_wt(after_by_spw[i]['med'])}</td>
-                % if after_by_spw[i]['quartiles'] is not None:
-                    <td>${format_wt(after_by_spw[i]['q1'])}/${format_wt(after_by_spw[i]['q3'])}</td>
-                % else:
-                    <td>N/A</td>
+                % if is_vlass:
+                    <th scope="col" >1st/3rd Quartile</th>
+                    <th scope="col" >Mean &#177 S.Dev.</th>
+                % else: 
+                    <th scope="col" >1st Quartile</th>
+                    <th scope="col" >3rd Quartile</th>
+                    <th scope="col" >Mean</th>
+                    <th scope="col" >S.Dev.</th>
+                    <th scope="col" >Minimum</th>
+                    <th scope="col" >Maximum</th>
                 % endif
-                <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
-            %else: 
-                <td ${format_cell(summary_spw_stats, after_by_spw[i]['med'], 'med')}>${format_wt(after_by_spw[i]['med'])}</td>
-                % if after_by_spw[i]['quartiles'] is not None:
+
+                %if is_vlass:
+                    <th scope="col" >Median</th>
+                    <th scope="col" >1st/3rd Quartile</th>
+                    <th scope="col" >Mean &#177 S.Dev.</th>
+                %endif
+            </tr>        
+        </thead>
+        <tbody>
+            % for i in range(len(after_by_spw)):
+            <tr>
+                <th style="text-align:center">${after_by_spw[i]['spw']}</th>  
+                % if is_vlass: 
+                    <td>${format_wt(before_by_spw[i]['med'])}</td>
+                    % if before_by_spw[i]['quartiles'] is not None:
+                        <td>${format_wt(before_by_spw[i]['q1'])}/${format_wt(before_by_spw[i]['q3'])}</td>
+                    % else:
+                        <td>N/A</td>
+                    % endif            
+                    <td>${format_wt(before_by_spw[i]['mean'])} &#177 ${format_wt(before_by_spw[i]['stdev'])}</td>     
+                %endif 
+
+
+                %if is_vlass:
+                    <td>${format_wt(after_by_spw[i]['med'])}</td>
+                    % if after_by_spw[i]['quartiles'] is not None:
+                        <td>${format_wt(after_by_spw[i]['q1'])}/${format_wt(after_by_spw[i]['q3'])}</td>
+                    % else:
+                        <td>N/A</td>
+                    % endif
+                    <td>${format_wt(after_by_spw[i]['mean'])} &#177 ${format_wt(after_by_spw[i]['stdev'])}</td>
+                %else: 
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['med'], 'med')}>${format_wt(after_by_spw[i]['med'])}</td>
                     <td ${format_cell(summary_spw_stats, after_by_spw[i]['q1'], 'q1')}>${format_wt(after_by_spw[i]['q1'])}</td>
                     <td ${format_cell(summary_spw_stats, after_by_spw[i]['q3'], 'q3')}>${format_wt(after_by_spw[i]['q3'])}</td>
-                % else:
-                    <td>N/A</td>
-                    <td>N/A</td>
-                % endif
-                <td ${format_cell(summary_spw_stats, after_by_spw[i]['mean'], 'mean')}>${format_wt(after_by_spw[i]['mean'])}</td>
-                <td ${format_cell(summary_spw_stats, after_by_spw[i]['stdev'], 'stdev')}>${format_wt(after_by_spw[i]['stdev'])}</td>
-                <td ${format_cell(summary_spw_stats, after_by_spw[i]['min'], 'min')}>${format_wt(after_by_spw[i]['min'])}</td>
-                <td ${format_cell(summary_spw_stats, after_by_spw[i]['max'], 'max')}>${format_wt(after_by_spw[i]['max'])}</td>    
-            %endif
-  
-		</tr>
-		% endfor
-	</tbody>
-</table>
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['mean'], 'mean')}>${format_wt(after_by_spw[i]['mean'])}</td>
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['stdev'], 'stdev')}>${format_wt(after_by_spw[i]['stdev'])}</td>
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['min'], 'min')}>${format_wt(after_by_spw[i]['min'])}</td>
+                    <td ${format_cell(summary_spw_stats, after_by_spw[i]['max'], 'max')}>${format_wt(after_by_spw[i]['max'])}</td>    
+                %endif
+    
+            </tr>
+            % endfor
+	    </tbody>
+    </table>
 
-%if result[0].inputs['statwtmode'] == 'VLA' :
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
-	<caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each scan. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>.
-    </caption>
-	<thead>
-		<tr>
-			<th scope="col" rowspan="2">Scan Selection</th>
-			<!-- flags before task is always first agent -->
-			<th scope="col" colspan="8" style="text-align:center">${table_header}</th>
-		</tr>
-		<tr>
-            <th scope="col" >Median</th>
-            <th scope="col" >1st Quartile</th>
-            <th scope="col" >3rd Quartile</th>
-            <th scope="col" >Mean</th>
-            <th scope="col" >S.Dev.</th>
-            <th scope="col" >Minimum</th>
-            <th scope="col" >Maximum</th>
-		</tr>        
-	</thead>
+    %if result[0].inputs['statwtmode'] == 'VLA' :
+    <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+        <caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each scan. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>.
+        </caption>
+        <thead>
+            <tr>
+                <th scope="col" rowspan="2">Scan Selection</th>
+                <!-- flags before task is always first agent -->
+                <th scope="col" colspan="8" style="text-align:center">${table_header}</th>
+            </tr>
+            <tr>
+                <th scope="col" >Median</th>
+                <th scope="col" >1st Quartile</th>
+                <th scope="col" >3rd Quartile</th>
+                <th scope="col" >Mean</th>
+                <th scope="col" >S.Dev.</th>
+                <th scope="col" >Minimum</th>
+                <th scope="col" >Maximum</th>
+            </tr>        
+        </thead>
 
-	<tbody>
-		% for i in range(len(after_by_scan)):
-		<tr>
-			<th style="text-align:center">${after_by_scan[i]['scan']}</th>  
-            <td ${format_cell(summary_scan_stats, after_by_scan[i]['med'], 'med')}>${format_wt(after_by_scan[i]['med'])}</td>
-            % if after_by_scan[i]['quartiles'] is not None:
+        <tbody>
+            % for i in range(len(after_by_scan)):
+            <tr>
+                <th style="text-align:center">${after_by_scan[i]['scan']}</th>  
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['med'], 'med')}>${format_wt(after_by_scan[i]['med'])}</td>
                 <td ${format_cell(summary_scan_stats, after_by_scan[i]['q1'], 'q1')}>${format_wt(after_by_scan[i]['q1'])}</td>
                 <td ${format_cell(summary_scan_stats, after_by_scan[i]['q3'], 'q3')}>${format_wt(after_by_scan[i]['q3'])}</td>
-            % else:
-                <td>N/A</td>
-            % endif
-            <td ${format_cell(summary_scan_stats, after_by_scan[i]['mean'], 'mean')}>${format_wt(after_by_scan[i]['mean'])}</td>
-            <td ${format_cell(summary_scan_stats, after_by_scan[i]['stdev'], 'stdev')}>${format_wt(after_by_scan[i]['stdev'])}</td>
-            <td ${format_cell(summary_scan_stats, after_by_scan[i]['min'], 'min')}>${format_wt(after_by_scan[i]['min'])}</td>
-            <td ${format_cell(summary_scan_stats, after_by_scan[i]['max'], 'max')}>${format_wt(after_by_scan[i]['max'])}</td>      
-		</tr>
-		% endfor
-	</tbody>
-</table>
-%endif 
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['mean'], 'mean')}>${format_wt(after_by_scan[i]['mean'])}</td>
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['stdev'], 'stdev')}>${format_wt(after_by_scan[i]['stdev'])}</td>
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['min'], 'min')}>${format_wt(after_by_scan[i]['min'])}</td>
+                <td ${format_cell(summary_scan_stats, after_by_scan[i]['max'], 'max')}>${format_wt(after_by_scan[i]['max'])}</td>      
+            </tr>
+            % endfor
+        </tbody>
+    </table>
+    %endif 
+    </div>
+%endif
 %endfor
+
+<!-- plots still need to be appropriately separated out by band -->
+    <%self:plot_group plot_dict="${summary_plots}"
+                                    url_fn="${lambda ms:  'noop'}">
+
+            <%def name="title()">
+                Statwt Summary Plot
+            </%def>
+
+            <%def name="preamble()">
+            </%def>
+
+            <%def name="mouseover(plot)">Summary window for band, BAND</%def>
+
+            <%def name="fancybox_caption(plot)">
+                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+            </%def>
+
+            <%def name="caption_title(plot)">
+                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+            </%def>
+    </%self:plot_group>

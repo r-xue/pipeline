@@ -199,11 +199,6 @@ class Statwt(basetask.StandardTaskTemplate):
 
         gaincal_spws = ','.join([str(s) for s in spws])
 
-#        if self.inputs.statwtmode == 'VLASS-SE': 
-#            vla_solint = 'int'
-#        else: 
-#            vla_solint = 'int' # 'inf'? This seems to just fail sometimes depending on the dataset. 
-
         job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int', # is int the default? 
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)

@@ -47,6 +47,15 @@ class weightboxChart(object):
 
         return weights.real
 
+    def _get_scans_with_spws(self, tbl, spws=[]):
+        query = 'ntrue(FLAG)==0 && SPECTRAL_WINDOW_ID IN {0}'.format(list(map(int, spws)))
+        
+        with casa_tools.TableReader(tbl) as tb:
+            stb = tb.query(query)
+            scans = np.sort(np.unique(stb.getcol('SCAN_NUMBER')))
+            stb.done()
+        return scans
+
     def _create_plot_from_wtable(self, suffix):
         tbl = self.result.wtables[suffix]
 
@@ -79,6 +88,7 @@ class weightboxChart(object):
             LOG.info('Making antenna-based weight plot: {}'.format(figfile))
             print("Processing for band: {}", band)
             bxpstats_per_ant = list()
+            #ants, ant_names = get_ants_with_spw #TODO: write this and do same for scans...
             for this_ant in ant_idxs:
                 dat = self._get_weight_from_wtable(tbl, this_ant=this_ant, spw_list=band2spw[band]) #needs to get updated ticks at the same time?
                 if dat.size > 0:
@@ -150,6 +160,8 @@ class weightboxChart(object):
             number_of_antenna_plots = 1
             number_of_plots = number_of_scan_plots + number_of_spw_plots + number_of_antenna_plots
 
+            scans = self._get_scans_with_spws(tbl, band2spw[band]) #TODO: do similar for ants?
+
             max_scans_per_plot = 75 # 5 for quick tests
             if (len(scans) > max_scans_per_plot): 
                 number_of_scan_plots = math.ceil(len(scans)/max_scans_per_plot)
@@ -160,7 +172,7 @@ class weightboxChart(object):
             # this needs to be if vla
             bxpstats_per_scan = list()
             for this_scan in scans: 
-                dat = self._get_weight_from_wtable(tbl, this_scan=this_scan, spw_list=band2spw[band])
+                dat = self._get_weight_from_wtable(tbl, this_scan=this_scan)#, spw_list=band2spw[band])
                 if dat.size > 0:
                     dat = dat[dat > 0]
                     bxpstats = cbook.boxplot_stats(dat, whis=whis)
@@ -242,6 +254,7 @@ class weightboxChart(object):
 
             if not self.result.weight_stats:
                 self.result.weight_stats[suffix] = {}
+            # it might make sense to re-order these (band, then suffix, since bands will be grouped together.)
             self.result.weight_stats[suffix][band] =  {'per_spw': bxpstats_per_spw,
                                                       'per_ant': bxpstats_per_ant,
                                                       'per_scan': bxpstats_per_scan} # only add this if vla, not vlass
@@ -277,7 +290,7 @@ class weightboxChart(object):
                 figfile = self._get_figfile(suffix, band)
                 wrapper = logger.Plot(figfile, x_axis='antenna or spectral window', y_axis='antenna-based weight',
                         parameters={'vis': self.ms.basename,
-                                    'x_axis': 'ant/spw/scan', #only add if via not vlass
+                                    'x_axis': 'ant/spw/scan', # Only add if via not vlass
                                     'y_axis': 'weight',
                                     'type': suffix, 
                                     'band': band})
