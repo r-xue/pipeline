@@ -86,7 +86,7 @@ class weightboxChart(object):
             # Needs to be updated to actually be per-band
             figfile = self._get_figfile(suffix, band)
             LOG.info('Making antenna-based weight plot: {}'.format(figfile))
-            print("Processing for band: {}", band)
+            print("Processing for band: {}".format(band))
             bxpstats_per_ant = list()
             #ants, ant_names = get_ants_with_spw #TODO: write this and do same for scans...
             for this_ant in ant_idxs:
@@ -213,14 +213,14 @@ class weightboxChart(object):
             ax1.bxp(bxpstats_per_ant, flierprops=flierprops)
             ax1.axes.set_xticklabels(ant_names, rotation=45, ha='center')
             ax1.set_ylabel('$Wt_{i}$')
-            ax1.set_title('Antenna-based weights, band {}'.format(band))
+            ax1.set_title('Antenna-based weights, {}-band'.format(band))
             ax1.get_yaxis().get_major_formatter().set_useOffset(False)
             y_min, y_max = ax1.get_ylim()
 
             # create per-spw plots
             ax2.bxp(bxpstats_per_spw, flierprops=flierprops)
             ax2.axes.set_xticklabels(band2spw[band])
-            ax2.set_xlabel('SPW ID, band:{}'.format(band))
+            ax2.set_xlabel('SPW ID')
             ax2.set_ylabel('$Wt_{i}$')
             ax2.get_yaxis().get_major_formatter().set_useOffset(False)
             y_min, y_max = ax2.get_ylim()
@@ -229,7 +229,7 @@ class weightboxChart(object):
             if number_of_scan_plots <= 1: 
                 ax3.bxp(bxpstats_per_scan, flierprops=flierprops)
                 ax3.axes.set_xticklabels(scans)
-                ax3.set_xlabel('Scan Number, band: {}'.format(band))
+                ax3.set_xlabel('Scan Number')
                 ax3.set_ylabel('$Wt_{i}$')
                 ax3.get_yaxis().get_major_formatter().set_useOffset(False)
             else: 
@@ -239,7 +239,7 @@ class weightboxChart(object):
                 for i, axis in enumerate(ax_scans): 
                     axis.bxp(bxpstats_per_scan_split[i], flierprops=flierprops)
                     axis.axes.set_xticklabels(scans_split[i], rotation=45, ha='center')
-                    axis.set_xlabel('Scan Number, band: {}'.format(band))
+                    axis.set_xlabel('Scan Number')
                     axis.set_ylabel('$Wt_{i}$')
                     axis.set_ylim([y_min, y_max])
                     axis.get_yaxis().get_major_formatter().set_useOffset(False) 

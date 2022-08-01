@@ -143,10 +143,9 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
     % endfor
      <a href="#flagged_data_summary">Top of page </a> | (Click to Jump)<br><br>
             ${band}-band
-     </h4> <br>
+     </h4> 
      
-    <!--Insert plots for band-->
-    <!-- PLOT -->     
+    <!--Plots for band -->
     <%self:plot_group plot_dict="${summary_plots[band]}"
                                     url_fn="${lambda ms:  'noop'}">
 
@@ -160,15 +159,15 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
             <%def name="mouseover(plot)">Summary window for band ${band}</%def>
 
             <%def name="fancybox_caption(plot)">
-                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight, ${band}-band)
             </%def>
 
             <%def name="caption_title(plot)">
-                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight)
+                Plot of ${plot.y_axis} vs. ${plot.x_axis} (${plot.parameters['type']} re-weight, ${band}-band)
             </%def>
     </%self:plot_group>
 
-    <!--Insert antenna, spw, scans tables for band--> 
+    <!--Antenna, spw, scans tables for band--> 
     <%
     after_by_spw=weight_stats['after'][band]['per_spw']
     after_by_ant=weight_stats['after'][band]['per_ant']
