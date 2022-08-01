@@ -55,13 +55,13 @@ class MaskDeviation(object):
         """
         Reads data from input MS. 
         """
-        if vis != '': 
+        if vis != '':
             self.infile=vis
-        if vis == '': 
+        if vis == '':
             vis = self.infile
         spwsel = '' if self.spw is None else str(self.spw)
-        mssel = {'field': str(field), 
-                 'spw': str(spwsel), 
+        mssel = {'field': str(field),
+                 'spw': str(spwsel),
                  'scanintent': 'OBSERVE_TARGET#ON_SOURCE*'}
         LOG.debug('vis="%s"'%(vis))
         LOG.debug('mssel=%s'%(mssel))
@@ -100,7 +100,7 @@ class MaskDeviation(object):
         spectrum. Final median value is determined by using the channels having the value
         inside the range: MED_0 - threshold * STD < VALUE < MED_0 + threshold * STD
         """
-        if hasattr(self, 'flag') and consider_flag == True:
+        if hasattr(self, 'flag') and consider_flag:
             with_flag = True
         else:
             with_flag = False
@@ -127,7 +127,7 @@ class MaskDeviation(object):
         meanSP, maxSP, minSP, ymax, ymin: used only for plotting and should be
          commented out when implemented in the pipeline
         """
-        if hasattr(self, 'flag') and consider_flag == True:
+        if hasattr(self, 'flag') and consider_flag:
             with_flag = True
         else:
             with_flag = False
@@ -157,7 +157,7 @@ class MaskDeviation(object):
             self.stdSp: 1D spectrum with self.nchan channels calculated in CalcStdSpectrum
                         Each channel records standard deviation of the channel in all original spectra
         """
-        if hasattr(self.stdSP, 'mask') and consider_flag == True:
+        if hasattr(self.stdSP, 'mask') and consider_flag:
             with_flag = True
             stdSP = self.stdSP.data
         else:
