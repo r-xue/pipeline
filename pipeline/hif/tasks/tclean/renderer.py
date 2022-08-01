@@ -1564,8 +1564,10 @@ def make_plot_dict_stokes(plots):
     spws = sorted({p.parameters['stokes'] for p in plots})
     iterations = sorted({p.parameters['iter'] for p in plots})
     types = sorted({p.parameters['type'] for p in plots})
+    moments = sorted({p.parameters['moment'] for p in plots})
 
-    def iteration_dim(): return collections.defaultdict(dict)
+    def type_dim(): return collections.defaultdict(dict)
+    def iteration_dim(): return collections.defaultdict(type_dim)
     def spw_dim(): return collections.defaultdict(iteration_dim)
     def field_dim(): return collections.defaultdict(spw_dim)
     plots_dict = collections.defaultdict(field_dim)
@@ -1575,13 +1577,15 @@ def make_plot_dict_stokes(plots):
             for spw in spws:
                 for iteration in iterations:
                     for t in types:
-                        matching = [p for p in plots
-                                    if p.parameters['prefix'] == prefix
-                                    and p.parameters['field']+': '+p.parameters['virtspw'] == field
-                                    and p.parameters['stokes'] == spw
-                                    and p.parameters['iter'] == iteration
-                                    and p.parameters['type'] == t]
-                        if matching:
-                            plots_dict[prefix][field][spw][iteration][t] = matching[0]
+                        for moment in moments:
+                            matching = [p for p in plots
+                                        if p.parameters['prefix'] == prefix
+                                        and p.parameters['field']+': '+p.parameters['virtspw'] == field
+                                        and p.parameters['stokes'] == spw
+                                        and p.parameters['iter'] == iteration
+                                        and p.parameters['type'] == t
+                                        and p.parameters['moment'] == moment]
+                            if matching:
+                                plots_dict[prefix][field][spw][iteration][t][moment] = matching[0]
 
     return plots_dict
