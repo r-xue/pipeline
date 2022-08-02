@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import copy
 
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
@@ -92,7 +93,7 @@ class RenormQAHandler(pqa.QAPlugin):
 
         # Make a copy of this dict to keep track of whether a QA message was issued for
         # each excludechan SPW yet. 
-        excludechan = result.excludechan
+        excludechan = copy.deepcopy(result.excludechan)
 
         # Only warn about spws in excludechan not matching the spws for the automated suggestions if there are whole suggested spws
         # not covered by the input excludechan dict. (Without this, there is a QA warning when the input excludechan values are 
