@@ -178,7 +178,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         except Exception as e:
             # If the script fails, report this failure via the following QA score
             phaserms_qa = {'basescore':0.9, 'basecolor':'blue', 'shortmsg':'Cannot assess Phase RMS', 
-                           'longmsg':'Unable to assess the Phase RMS decohernce'}
+                           'longmsg':'Unable to assess the Phase RMS decoherence'}
             phaserms_results = None
             phaserms_cycletime = None
             phaserms_totaltime = None

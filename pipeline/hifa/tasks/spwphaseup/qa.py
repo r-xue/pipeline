@@ -70,11 +70,16 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             base_score = phase_rms_qa['basescore']
             shortmsg = phase_rms_qa['shortmsg']
             longmsg = phase_rms_qa['longmsg']
+
             # Add the MS name at the end of the long message. 
             if longmsg[-1] == '.':
                 longmsg = longmsg[0:-1] + ", for {}.".format(ms.name)
             else:
                 longmsg += ", for {}.".format(ms.name)
+
+            # Remove the outlier antenna list from the end of the short message, if present 
+            if "have higher phase RMS" in shortmsg:
+                shortmsg = shortmsg.split('.')[0] + '.'
 
             # Add score to list of scores.
             scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
