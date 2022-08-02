@@ -211,7 +211,7 @@ class MaskDeviation(object):
         """
         LOG.trace('MaskDeviation.ExtendMask: threshold = %s'%(threshold))
         for i in range(len(mask)-1):
-            if not mask[i] and self.stdSP[i+1]>threshold: mask[i+1] = False
+            if (not mask[i]) and self.stdSP[i+1]>threshold: mask[i+1] = False
         for i in range(len(mask)-1, 1, -1):
-            if not mask[i] and self.stdSP[i-1]>threshold: mask[i-1] = False
+            if (not mask[i]) and self.stdSP[i-1]>threshold: mask[i-1] = False
         return mask
