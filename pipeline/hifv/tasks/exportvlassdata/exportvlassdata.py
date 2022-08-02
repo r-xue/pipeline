@@ -546,9 +546,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #    Forced to one file now but keep the template structure for the moment
         if pprfile == '':
             ps = context.project_structure
-            if ps is None:
-                pprtemplate = None
-            elif ps.ppr_file == '':
+            if ps is None or ps.ppr_file == '':
                 pprtemplate = None
             else:
                 pprtemplate = os.path.basename(ps.ppr_file)
@@ -560,7 +558,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # should be only one match but if there are more copy them all.
         pprmatches = []
         if pprtemplate is not None:
-            for file in os.listdir(output_dir):
+            for file in os.listdir(os.path.abspath(output_dir)):
                 if fnmatch.fnmatch(file, pprtemplate):
                     LOG.debug('Located pipeline processing request %s' % file)
                     pprmatches.append(os.path.join(output_dir, file))
