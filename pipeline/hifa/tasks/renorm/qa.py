@@ -107,7 +107,7 @@ class RenormQAHandler(pqa.QAPlugin):
                         shortmsg = "Renormalization correction may be incorrect due to an atmospheric feature"
                         longmsg = "Renormalization correction may be incorrect in SPW {} due to an atmospheric feature. Suggested "\
                                   "channel exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
-                    elif result.apply: 
+                    else:
                         if excludechan:
                             excluded_spws = excludechan.keys()
                             if spw in excluded_spws: 

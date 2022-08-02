@@ -1,10 +1,9 @@
-import os
 import ast
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure import task_registry
 from pipeline.extern.almarenorm import ACreNorm
 
 LOG = infrastructure.get_logger(__name__)
@@ -55,7 +54,7 @@ class RenormInputs(vdp.StandardInputs):
     correctATM = vdp.VisDependentProperty(default=False)
     spw = vdp.VisDependentProperty(default='')
     excludechan = vdp.VisDependentProperty(default='')
-    atmAutoExclude = vdp.VisDependentProperty(default=False)
+    atm_auto_exclude = vdp.VisDependentProperty(default=False)
 
     @spw.convert
     def spw(self, value):
@@ -68,7 +67,7 @@ class RenormInputs(vdp.StandardInputs):
         if isinstance(pyobj, dict):
             return pyobj
 
-    def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None, atmAutoExclude=False):
+    def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None, atm_auto_exclude=False):
         super(RenormInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -77,7 +76,7 @@ class RenormInputs(vdp.StandardInputs):
         self.correctATM = correctATM
         self.spw = spw
         self.excludechan = excludechan
-        self.atmAutoExclude = atmAutoExclude
+        self.atm_auto_exclude = atm_auto_exclude
 
 @task_registry.set_equivalent_casa_task('hifa_renorm')
 @task_registry.set_casa_commands_comment('Renormalize data affected by strong line emission.')
@@ -113,13 +112,15 @@ class Renorm(basetask.StandardTaskTemplate):
 
             stats = {}
             rnstats = {}
+            atmWarning = {}
+            atmExcludeCmd = {}
 
             if not alltdm:
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
-                               spws=inp.spw, excludechan=inp.excludechan, atmAutoExclude=inp.atmAutoExclude)
+                               spws=inp.spw, excludechan=inp.excludechan, atmAutoExclude=inp.atm_auto_exclude)
                 rn.plotSpectra(includeSummary=False)
 
-                # if we tried to renormalize and it was done, store info in the results
+                # if we tried to renormalize, and it was done, store info in the results
                 #   so that it can be passed to the manifest and used during restore
                 if inp.apply and rn.checkApply():
                     renorm_applied = True
@@ -129,16 +130,16 @@ class Renorm(basetask.StandardTaskTemplate):
                     stats = rn.rnpipestats
                     # get all factors for QA
                     rnstats = rn.stats()
-                    # get information related to detecting false positives caused by atmostpheric features, also needed for QA
+                    # get information related to detecting false positives caused by atmospheric features, also needed for QA
                     atmWarning = rn.atmWarning
                     atmExcludeCmd = rn.atmExcludeCmd
 
             rn.close()
 
-            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, inp.atmAutoExclude, atmWarning, atmExcludeCmd)
+            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm, inp.atm_auto_exclude, atmWarning, atmExcludeCmd)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
-            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, inp.atmAutoExclude, {}, {}, e)
+            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw, inp.excludechan, False, False, {}, {}, alltdm, inp.atm_auto_exclude, {}, {}, e)
 
         return result
 
