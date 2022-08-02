@@ -188,7 +188,6 @@ class Statwt(basetask.StandardTaskTemplate):
             for spw in spws:
                 stb = tb.query('DATA_DESC_ID=={0}'.format(spw))
                 weights = stb.getcol('WEIGHT')
-#                print("Weight stats: ", np.median(weights), np.mean(weights), np.var(weights))
                 weights_shape = weights.shape
                 if weights.size > 0:
                     stb.putcol('DATA', np.reshape(weights, newshape=(weights_shape[0], 1, weights_shape[1])))
@@ -199,7 +198,7 @@ class Statwt(basetask.StandardTaskTemplate):
 
         gaincal_spws = ','.join([str(s) for s in spws])
 
-        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int', # is int the default? 
+        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int', #TODO: is int the default? 
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
         return wtable
