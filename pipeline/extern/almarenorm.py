@@ -604,7 +604,7 @@ class ACreNorm(object):
     def chanfreqs(self,ispw):
         return self.msmeta.chanfreqs(ispw)
         
-    def getBscan(self,spw,verbose):
+    def getBscan(self,spw,verbose=False):
         Bspw=[]
         Bscans=self.msmeta.scansforintent('*BANDPASS*')
         Spwscans=self.msmeta.scansforspw(spw)
@@ -620,7 +620,7 @@ class ACreNorm(object):
 
     # LM added function - get Phasecal scan
     # - could have just added options to BP scan function but this is explicit
-    def getPhscan(self,spw,verbose):
+    def getPhscan(self,spw,verbose=False):
         PHscan=[]
         Phscans=self.msmeta.scansforintent('*PHASE*')
         Spwscans=self.msmeta.scansforspw(spw)
@@ -1530,6 +1530,7 @@ class ACreNorm(object):
                     print(' e.g. {"22":"100~150"}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise SyntaxError('excludechan requires a channel range separator of "~" (tilde)')
+        self.rnstats['inputs']['excludechan'] = excludechan
 
         # LM added - bwthreshspw (dictionary)
         if bwthreshspw:
@@ -1812,11 +1813,12 @@ class ACreNorm(object):
                                             for cen, gam in zip(atm_centers, atm_gammas):
                                                 atm_mask[max(0,floor(cen-1.3*gam)):min(N.shape[1],ceil(cen+1.3*gam))] = True
                                             self.atmMask[str(fldname)][str(ispw)][str(iscan)] = atm_mask
-
-                                            if atmAutoExclude and atm_mask.any():
-                                                excludechan = self.suggestAtmExclude(target, str(ispw), return_dict=True)
-                                            else:
-                                                excludechan = {}
+            # we still want to keep the calculated atm area so we can compare user input to calculated input i think. new variable? or just simply save it to the dictionary self.atmExcludeCmd now! Also fix the wording in the output about "mitigating renorm features" be more specific that they are FALSE features!
+                                            if atm_mask.any():
+                                                self.atmExcludeCmd[str(fldname)][str(ispw)] = self.suggestAtmExclude(target, str(ispw), return_command=True)                                                
+                                                if atmAutoExclude:
+                                                    excludechan = self.suggestAtmExclude(target, str(ispw), return_dict=True)
+                                                    self.rnstats['inputs']['excludechan'].update(excludechan)
 
                                 skipAtmCorr=True
                                 if correctATM:
@@ -1929,34 +1931,9 @@ class ACreNorm(object):
                                     # and apply the exclusion (set data in channel ranges = 1.0)
                                     if str(ispw) in excludechan.keys():
                                         ranges = [rng.strip() for rng in excludechan[str(ispw)].split(';')]
-                                        for rng in ranges:
-                                            # If the range is given in GHz rather than channels, need to find the 
-                                            # correct indicies for that frequency range.
-                                            if 'GHz' in rng:
-                                                exlofq, exhifq = rng.split('~')
-                                                if 'GHz' in exlofq:
-                                                    exlofq = float(exlofq.split('GHz')[0])
-                                                else:
-                                                    exlofq = float(exlofq)
-                                                exloch = self.findNearest(
-                                                        self.msmeta.chanfreqs(ispw, 'GHz'), 
-                                                        exlofq, 
-                                                        index=True
-                                                        )
-                                                if 'GHz' in exhifq:
-                                                    exhifq = float(exhifq.split('GHz')[0])
-                                                else:
-                                                    exhifq = float(exhifq)
-                                                exhich = self.findNearest(
-                                                        self.msmeta.chanfreqs(ispw, 'GHz'), 
-                                                        exhifq, 
-                                                        index=True
-                                                        )
-                                            else:
-                                                rng = rng.split('~')
-                                                exloch = int(rng[0])
-                                                exhich = int(rng[1])
-                                            N[:,exloch:exhich,:].fill(1.0)
+                                        exloch, exhich = self.interpretExcludechan(ranges, ispw)
+                                        for i in range(len(exloch)):
+                                            N[:,exloch[i]:exhich[i],:].fill(1.0)
 
 
                                 # LM added - the checking and fixing of outlier antennas compared to a representative median spectrumd
@@ -2014,24 +1991,29 @@ class ACreNorm(object):
                                                             ),
                                                         axis=1
                                                         )
-                                            if (Nmax_atm > hardLim).any():
-                                                if atmAutoExclude:
-                                                    if verbose:
-                                                        print('   Significant atmospheric signal was removed by atmAutoExclude!')
-                                                    self.logReNorm.write('   Significant atmospheric signal was removed by atmAutoExclude!\n')
-
-                                                else:
-                                                    if verbose:
-                                                        print('   WARNING! There may be significant artifical signal from an' \
-                                                                ' atmospheric feature that will trigger renorm application!!!')
-                                                    self.logReNorm.write('   WARNING! There may be significant artifical' \
-                                                            ' signal from an atmospheric feature that will trigger renorm' \
-                                                            ' application!!!\n')
-                                                self.atmWarning[str(fldname)][str(ispw)] = True
-                                            elif self.atmWarning[str(fldname)][str(ispw)]:
-                                                pass
-                                            else:
+                                            # Check to see if the atm region was blanked by other means (excludechan)
+                                            # such that the np.nanmean() of it will return NaN. 
+                                            if sum(Nmax_atm) != sum(Nmax_atm):
                                                 self.atmWarning[str(fldname)][str(ispw)] = False
+                                            else:
+                                                if (Nmax_atm > hardLim).any():
+                                                    if atmAutoExclude:
+                                                        if verbose:
+                                                            print('   Significant atmospheric signal was removed by atmAutoExclude!')
+                                                        self.logReNorm.write('   Significant atmospheric signal was removed by atmAutoExclude!\n')
+
+                                                    else:
+                                                        if verbose:
+                                                            print('   WARNING! There may be significant artifical signal from an' \
+                                                                    ' atmospheric feature that will trigger renorm application!!!')
+                                                        self.logReNorm.write('   WARNING! There may be significant artifical' \
+                                                                ' signal from an atmospheric feature that will trigger renorm' \
+                                                                ' application!!!\n')
+                                                    self.atmWarning[str(fldname)][str(ispw)] = True
+                                                elif self.atmWarning[str(fldname)][str(ispw)]:
+                                                    pass
+                                                else:
+                                                    self.atmWarning[str(fldname)][str(ispw)] = False
                                         else:
                                             self.atmWarning[str(fldname)][str(ispw)] = False 
 
@@ -2219,10 +2201,9 @@ class ACreNorm(object):
                     if checkFalsePositives:
                         if self.atmWarning[str(fldname)][str(ispw)]:
                             exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
-                            self.atmExcludeCmd[str(fldname)][str(ispw)] = exclude_cmd
                             if atmAutoExclude:
-                                print('Renorm features above the threshold have been mitigated by atmAutoExlude.')
-                                self.logReNorm.write('Renorm features above the threshold have been mitigated by atmAutoExlude.\n')
+                                print('Atmospheric features above the threshold have been mitigated by atmAutoExlude.')
+                                self.logReNorm.write('Atmospheric features above the threshold have been mitigated by atmAutoExlude.\n')
 
                                 print('Equivalent manual call: '+exclude_cmd)
                                 self.logReNorm.write('Equivalent manual call: '+exclude_cmd+'\n')
@@ -2382,6 +2363,73 @@ class ACreNorm(object):
     def stats(self):
         return self.rnstats
 
+    def interpretExcludechan(self, ranges, spw):
+        """
+        Pupose: 
+            As an option to the self.renormalize() method, a user may input 
+            channel ranges to be excluded from the analysis via the excludechan 
+            option. Additionally, if the atmAutoExclude option is enabled the 
+            renormalize method will attempt to fix any atmospheric features 
+            that it thinks to be problematic. Those channel ranges, either 
+            input or generated, are added to a dictionary and then need to be 
+            interpreted correctly for both the exclusion and later plotting. 
+
+        Inputs: 
+            ranges : list
+                This is a list of the different ranges within a single spectral
+                window that need to be excluded. The expected format is:
+                    
+                ["low_channel~high_channel"; "low_channel~high_channel"; ...]
+
+            spw : integer
+                This is the spectral window number. This is only needed if the
+                inputs of ranges are in frequency but must always be given.
+
+        Outputs: 
+            starts : list
+                A list containing the starting channels for each range to be 
+                excluded.
+
+            ends : list
+                A list containing the ending channels for each range to be 
+                excluded.
+        """
+        starts, ends = [], []
+        for rng in ranges:
+            # If the range is given in GHz rather than channels, need to find the 
+            # correct indicies for that frequency range.
+            if 'GHz' in rng:
+                exlofq, exhifq = rng.split('~')
+                if 'GHz' in exlofq:
+                    exlofq = float(exlofq.split('GHz')[0])
+                else:
+                    exlofq = float(exlofq)
+                exloch = self.findNearest(
+                        self.msmeta.chanfreqs(spw, 'GHz'), 
+                        exlofq, 
+                        index=True
+                        )
+                if 'GHz' in exhifq:
+                    exhifq = float(exhifq.split('GHz')[0])
+                else:
+                    exhifq = float(exhifq)
+                exhich = self.findNearest(
+                        self.msmeta.chanfreqs(spw, 'GHz'), 
+                        exhifq, 
+                        index=True
+                        )
+            else:
+                rng = rng.split('~')
+                exloch = int(rng[0])
+                exhich = int(rng[1])
+            # Protect from "backward" inputs.     
+            if exloch > exhich:
+                tmp = exloch
+                exloch = exhich
+                exhich = tmp
+            starts.append(exloch)
+            ends.append(exhich)
+        return starts, ends
 
     def fitAtmLines(self, ATMprof, spw, verbose=False):
         """
@@ -2531,7 +2579,8 @@ class ACreNorm(object):
             createpdf=True, 
             includeSummary=True,
             plotOriginal=True,
-            shadeAtm=True):
+            shadeAtm=True,
+            showExcluded=True):
         """
         Purpose:
             This function makes a summary plot of the renormalization spectrum for every spectral 
@@ -2588,6 +2637,11 @@ class ACreNorm(object):
                 If set to True, this will shade the region of the spectrum influenced by 
                 atmospheric features. Features are found and fitted if plotATM=True, otherwise
                 this option has no effect.
+                Default: True
+
+            showExcluded : boolean : OPTIONAL
+                If set to True, then areas of the spectrum that have been excluded via the 
+                excludechan option in renormalize() will be shown. 
                 Default: True
         """
         # Check that renormalize() has been run
@@ -2752,6 +2806,27 @@ class ACreNorm(object):
                 lims[2]=min(0.999,lims[2])
                 lims[3]=max(1.15*lims[3]-0.15*lims[2],1.02)
                 ax_rn.axis(lims)
+                
+                # If True, then show a small yellow area indicating where the spectrum
+                # has been blanked.
+                if showExcluded:
+                    # Check to make sure it is not an empty input
+                    if self.rnstats['inputs']['excludechan']:
+                        # Check to make sure this spw has anything input, then grab the 
+                        # range and plot it.
+                        if str(spw) in self.rnstats['inputs']['excludechan'].keys():
+                            ranges = [rng.strip() for rng in self.rnstats['inputs']['excludechan'][str(spw)].split(';')]
+                            starts, ends = self.interpretExcludechan(ranges, int(spw))
+                            for i in range(len(starts)):
+                                ax_rn.axvspan(
+                                        freqs[starts[i]], 
+                                        freqs[ends[i]], 
+                                        ymin=0.05, 
+                                        ymax=0.06, 
+                                        facecolor='yellow', 
+                                        ec='black', 
+                                        zorder=0
+                                        )
 
                 # If True, draw thin, dotted lines at the locations where the renormalization 
                 # spectrum was broken up during the fitting process.
@@ -2775,8 +2850,12 @@ class ACreNorm(object):
                 if plotATM:
                     # Setup the axis to draw on, using the same frequency axis
                     ax_atm = ax_rn.twinx()
-                    # Grab the bandpass scan and protect against multiple existing
+                    # Grab the bandpass scan and protect against multiple existing. Also 
+                    # protect from a missing bandpass scan by falling back to the phase
+                    # calibrator if necessary.
                     Bscanatm = self.getBscan(int(spw), verbose=False)
+                    if not Bscanatm:
+                        Bscanatm = self.getPhscan(int(spw), verbose=False)
                     if type(Bscanatm) is list:
                         Bscanatm = Bscanatm[0]
                     # If renormalize(correctATM=True) was run, the ATM profile already exists
@@ -2938,7 +3017,7 @@ class ACreNorm(object):
                     # can easily reference it.
                     self.rnpipestats[target][str(spw)]['spec_plot'] = fname
                     if createpdf:
-                        self.convertPlotsToPDF(target, int(spw), include_summary=includeSummary, verbose=True)
+                        self.convertPlotsToPDF(target, int(spw), include_summary=includeSummary, verbose=False)
                 else:
                     plt.show()
                     # Python 2 vs. 3, raw_input() changed to input()
@@ -3476,7 +3555,7 @@ class ACreNorm(object):
 
     # Main diagnostic spectra at lowest level - scaling that each spw, scan, field, ant, correlation will have
     # these plots should look good
-    def plotdiagSpectra(self, R, scanin, spwin, fldin, threshline=None, plotATM=True, plotDivisions=True, N_atm=None, shadeAtm=True):
+    def plotdiagSpectra(self, R, scanin, spwin, fldin, threshline=None, plotATM=True, plotDivisions=True, N_atm=None, shadeAtm=True, showExcluded=True):
         """
         Purpose: 
             This creates diagnotic spectra at the per field per spectral window level for each scan.
@@ -3525,6 +3604,12 @@ class ACreNorm(object):
                 If set to True, this will find atmospheric features, fit them with a Lorentzian 
                 profile and shade the regions of the spectrum influenced by the feature.
                 Default: True
+
+            showExcluded : boolean : OPTIONAL
+                If set to True, then areas of the spectrum that have been excluded via the 
+                excludechan option in renormalize() will be shown. 
+                Default: True
+         
         """
 
         # If an original Renormalization spectrum was provided (i.e. one without any atmospheric
@@ -3605,6 +3690,27 @@ class ACreNorm(object):
         ax_rn.ticklabel_format(useOffset=False)
         ax_rn.set_xlim(min(freqs)*0.99999, max(freqs)*1.00001)
         ax_rn.set_ylim(plMin,plMax)
+
+        # If True, then show a small yellow area indicating where the spectrum
+        # has been blanked.
+        if showExcluded:
+            # Check to make sure it is not an empty input
+            if self.rnstats['inputs']['excludechan']:
+                # Check to make sure this spw has anything input, then grab the 
+                # range and plot it.
+                if str(spwin) in self.rnstats['inputs']['excludechan'].keys():
+                    ranges = [rng.strip() for rng in self.rnstats['inputs']['excludechan'][str(spwin)].split(';')]
+                    starts, ends = self.interpretExcludechan(ranges, int(spwin))
+                    for i in range(len(starts)):
+                        ax_rn.axvspan(
+                                freqs[starts[i]], 
+                                freqs[ends[i]], 
+                                ymin=0.05, 
+                                ymax=0.06, 
+                                facecolor='yellow', 
+                                ec='black', 
+                                zorder=0
+                                )
 
         # If selected, plot the locations where the spectrum was divided during the fitting proces
         if plotDivisions:
@@ -4142,7 +4248,7 @@ class ACreNorm(object):
                     cmd += str(rng[0])+'~'+str(rng[1])+';'
                 cmd = cmd[:-1] + '"}'
             else:
-                cmd = 'exludechan={"'+str(spw)+'":"'+str(ranges[0][0])+'~'+str(ranges[0][1])+'"}'
+                cmd = 'excludechan={"'+str(spw)+'":"'+str(ranges[0][0])+'~'+str(ranges[0][1])+'"}'
             return cmd
         else:
             return ranges
@@ -4717,7 +4823,7 @@ class ACreNorm(object):
         return(myindex)
 
     # AL added - PIPE 1168 (2)
-    def convertPlotsToPDF(self, target, spw, include_summary=True, include_heuristics=False, verbose=True):
+    def convertPlotsToPDF(self, target, spw, include_summary=True, include_heuristics=False, verbose=False):
         """
         Super hacky way to create PDFs of created plots so that we can display them in the weblog.
         Simply calls the bash commands "montage" (to create super plots of pngs), "convert" (to

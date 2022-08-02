@@ -1,9 +1,10 @@
 """Worker classes of SDImaging."""
 
+from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
+
 import math
 import os
 import shutil
-from typing import Dict, List, NewType, Optional, Tuple, Union
 
 import numpy
 
@@ -22,8 +23,9 @@ from . import resultobjects
 
 LOG = infrastructure.get_logger(__name__)
 
-Angle = NewType('Angle', Dict[str, Union[str, float]])
-Direction = NewType('Direction', Dict[str, Union[str, float]])
+if TYPE_CHECKING:
+    Angle = NewType('Angle', Dict[str, Union[str, float]])
+    Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 
 def ImageCoordinateUtil(
@@ -32,7 +34,7 @@ def ImageCoordinateUtil(
     ant_list: List[Optional[int]],
     spw_list: List[int],
     fieldid_list: List[int]
-) -> Union[Tuple[str, Angle, Angle, int, int, Direction], bool]:
+) -> Union[Tuple[str, 'Angle', 'Angle', int, int, 'Direction'], bool]:
     """
     Calculate spatial coordinate of image.
 
@@ -101,7 +103,7 @@ def ImageCoordinateUtil(
         msobj = context.observing_run.get_ms(vis)
         # get first org_direction if source if ephemeris source
         # if is_eph_obj and org_direction==None:
-        if (is_eph_obj or is_known_eph_obj) and org_direction == None:
+        if (is_eph_obj or is_known_eph_obj) and org_direction is None:
             # get org_direction
             org_direction = msobj.get_fields(field_id)[0].source.org_direction
 
@@ -259,21 +261,21 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
-    def vis(self) -> str:
-        """Return the name of input file.
+    def vis(self) -> List[str]:
+        """Return the list of input file names
 
         Returns:
-            the name of input file
+            list of input file names
         """
         return self.infiles
 
     def __init__(self, context: Context, infiles: List[str], outfile: str, mode: str,
                  antids: List[int], spwids: List[int], fieldids: List[int], restfreq: str,
                  stokes: str, edge: Optional[List[int]]=None, phasecenter: Optional[str]=None,
-                 cellx: Optional[Angle]=None,
-                 celly: Optional[Angle]=None,
+                 cellx: Optional['Angle']=None,
+                 celly: Optional['Angle']=None,
                  nx: Optional[int]=None, ny: Optional[int]=None,
-                 org_direction: Optional[Direction]=None):
+                 org_direction: Optional['Direction']=None):
         """Initialise an instance of SDImagingWorkerInputs.
 
         Args:
@@ -342,21 +344,24 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         mses = [context.observing_run.get_ms(name) for name in infiles]
         v_spwids = [context.observing_run.real2virtual_spw_id(i, ms) for i, ms in zip(spwid_list, mses)]
         rep_ms = mses[0]
+        rep_fieldid = fieldid_list[0]
         ant_name = rep_ms.antennas[antid_list[0]].name
-        source_name = rep_ms.fields[fieldid_list[0]].clean_name
+        source_name = rep_ms.fields[rep_fieldid].clean_name
         phasecenter, cellx, celly, nx, ny, org_direction = \
             self._get_map_coord(inputs, context, infiles, antid_list, spwid_list, fieldid_list)
+        is_eph_obj = rep_ms.get_fields(field_id=rep_fieldid)[0].source.is_eph_obj
 
         status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
                                   edge, phasecenter, cellx, celly, nx, ny)
 
         if status is True:
+            specmode = 'cubesource' if is_eph_obj else 'cube'
             # missing attributes in result instance will be filled in by the
             # parent class
             image_item = imagelibrary.ImageItem(imagename=outfile,
                                                 sourcename=source_name,
                                                 spwlist=v_spwids,  # virtual
-                                                specmode='cube',
+                                                specmode=specmode,
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             image_item.antenna = ant_name  # name #(group name)
@@ -379,7 +384,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _get_map_coord(self, inputs: SDImagingWorkerInputs, context: Context, infiles: List[str],
                        ant_list: List[int], spw_list: List[int], field_list: List[int]) \
-            -> Tuple[str, Angle, Angle, int, int, Direction]:
+            -> Tuple[str, 'Angle', 'Angle', int, int, 'Direction']:
         """Gather or generate the input image parameters.
 
         Args:
@@ -408,7 +413,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _do_imaging(self, infiles: List[str], antid_list: List[int], spwid_list: List[int],
                     fieldid_list: List[int], imagename: str, imagemode: str, edge: List[int],
-                    phasecenter: str, cellx: Angle, celly: Angle, nx: int, ny: int) -> bool:
+                    phasecenter: str, cellx: 'Angle', celly: 'Angle', nx: int, ny: int) -> bool:
         """Process imaging.
 
         Args:
@@ -513,7 +518,10 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                 raise RuntimeError("Invalid restfreq '{0}' (inappropriate unit)".format(restfreq))
 
         # outframe
-        outframe = 'LSRK'
+        outframe = '' if is_eph_obj else 'LSRK'
+
+        # specmode
+        specmode = 'cubesource' if is_eph_obj else 'cube'
 
         # gridfunction
         gridfunction = 'SF'
@@ -527,7 +535,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
 
-        # phasecenter=TRACKFIELD only for sources with ephemeris table
+        # override phasecenter for sources with ephemeris table
         if is_eph_obj:
             phasecenter = 'TRACKFIELD'
             LOG.info("phasecenter is overrided with \'TRACKFIELD\'")
@@ -586,6 +594,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # execute job
         # tentative soltion for tsdimaging speed issue
         if phasecenter == 'TRACKFIELD':
+            image_args['specmode'] = specmode   # tsdimaging specific parameter
             image_job = casa_tasks.tsdimaging(**image_args)
             self._executor.execute(image_job)
             # tsdimaging changes the image filename, workaround to revert it

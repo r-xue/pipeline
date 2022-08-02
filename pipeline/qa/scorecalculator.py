@@ -3191,7 +3191,7 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
     mom8_fc_max_segment_beams_threshold = 1.0
     mom8_fc_score_min = 0.33
     mom8_fc_score_max = 1.00
-    mom8_fc_metric_scale = 270.0
+    mom8_fc_metric_scale = 100.0
     if mom8_fc_frac_max_segment != 0.0:
         mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
     else:
