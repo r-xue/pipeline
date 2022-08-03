@@ -202,7 +202,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Use only the current spw ID here !
                     if0, if1, channel_width = image_heuristics.freq_intersection(vislist, target['field'], target['intent'], spwid, frame)
                     if (if0 == -1) or (if1 == -1):
-                        LOG.error('No %d frequency intersect among selected MSs for Field %s '
+                        LOG.error('No %s frequency intersect among selected MSs for Field %s '
                                   'SPW %s' % (frame, target['field'], spwid))
                         cont_ranges['fields'][source_name][spwid] = ['NONE']
                         result_cont_ranges[source_name][spwid] = {
