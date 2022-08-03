@@ -1335,13 +1335,111 @@ def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
 
 
 @log_qa
-def score_wvrgcal(ms_name, wvr_score):
-    if wvr_score < 1.0:
-        score = 0
-    else:
-        score = linear_score(wvr_score, 1.0, 2.0, 0.5, 1.0)
+def score_wvrgcal(ms_name, dataresult):
 
-    longmsg = 'RMS improvement was %0.2f for %s' % (wvr_score, ms_name)
+    wvr_score = dataresult.qa_wvr.overall_score
+    score = wvr_score.copy()
+
+    # create lists for disc, rms, and flagged antennas checks
+    disc_list=[]
+    rms_list=[]
+    flagant_list=[]
+    for WVRinfo in dataresult.wvr_infos:
+        disc_list.append(WVRinfo.disc.value)
+        rms_list.append(WVRinfo.rms.value)
+        if WVRinfo.flag:
+            flagant_list.append(WVRinfo.antenna)
+
+    # limits for disc and rms triggers - 
+    # same as hard coded in wvrg_qa to make the remcloud 
+    # trigger result object boolean
+    disc_max = 500 # in um
+    rms_max = 500 # in um 
+    # subset lists for ants exceeding the limits
+    disc_limit=[dval for dval in disc_list if dval > disc_max]
+    rms_limit=[rval for rval in rms_list if rval > rms_max]
+
+    qa_messages = []
+
+    # check the booleans that pass important information
+    if dataresult.PHnoisy:
+        qa_messages.append('Only Bandpass used for WVR improvement assessment')
+    if dataresult.suggest_remcloud:
+        qa_messages.append('Remcloud suggested')
+
+    if score > 1.0:
+        # if nothing else score passes will be >1.0
+        # truncate to 1.0 - ratio_score now holding improvement 
+        score = 1.0
+        if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 or dataresult.PHnoisy is True:
+            score = 0.9  # i.e. to blue as a maximum value
+            # now adjust 0.1 per bad entry
+            reduceBy =  len(flagant_list)*0.1
+            reduceBy += len(disc_limit)*0.1
+            reduceBy += len(rms_limit)*0.1
+            score = score - reduceBy
+            # Crude check for the message - check if flag or disc/rms
+            if len(flagant_list) > 0:
+                qa_messages.append('Flagged antenna(s) in WVRGCAL') 
+            if len(disc_limit) > 0:
+                qa_messages.append('Poor disc value(s) in WVRGCAL')
+            if len(rms_limit) > 0:
+                qa_messages.append('Poor rms value(s) in WVRGCAL')
+            # before making the score check if noisy BP was triggered
+            if dataresult.BPnoisy:
+                score = 0.66  # should be yellow to trigger a warning
+                qa_messages.append('Atmospheric phases appear unstable')
+                if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
+                    # inherit previous reduceBy values
+                    score = score - reduceBy
+                # new linear score for yellow trucation
+                score = linear_score(score,0.0,0.66,0.34,0.66)
+            else:
+                score = linear_score(score,0.0,0.9,0.67,0.9)
+                # i.e. inputs will be truncated to between 0.0 and 0.9, linfited to be then between 0.67 and 0.9 - blue
+
+    # now for scores < 1.0 
+    elif score < 1.0:
+        qa_messages.append('No WVR improvement - Check Phase stability')
+
+        ## presuming disc list and rms list are all filled 
+        if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
+            score = 0.33
+            qa_messages.append('Poor disc/rms value(s) in WVRGCAL')
+            if len(flagant_list) > 0:
+                reduceBy = len(disc_limit)*0.1
+                qa_messages.append('Flagged antenna(s) in WVRGCAL')
+                score = score - reduceBy
+            score = linear_score(score,0.0,0.33,0.0,0.33)
+            # i.e. inputs will be truncated to between 0.0 and 0.33, linfited to be then between 0.0 and 0.33 RED
+
+        else:
+            score = 0.66
+            if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
+                # now adjust 0.1 per bad entry
+                reduceBy =  len(flagant_list)*0.1
+                reduceBy += len(disc_limit)*0.1
+                reduceBy += len(rms_limit)*0.1
+                score = score - reduceBy
+                # Crude check for the message - check if flag or disc/rms
+                if len(flagant_list) > 0:
+                    qa_messages.append('Flagged antenna(s) in WVRGCAL') 
+                if len(disc_limit) > 0:
+                    qa_messages.append('Poor disc value(s) in WVRGCAL')
+                if len(rms_limit) > 0:
+                    qa_messages.append('Poor rms value(s) in WVRGCAL')
+            score = linear_score(score,0.0,0.66,0.34,0.66)
+            # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
+
+    # join the short messages for the QA score (are these stored?? ) 
+    qa_mesg = ' - '.join(qa_messages)
+
+    if qa_mesg:
+        longmsg = 'phase RMS improvement was %0.2f for %s - %s' % (wvr_score, ms_name, qa_mesg)
+    else:
+        longmsg = 'phase RMS improvement was %0.2f for %s' % (wvr_score, ms_name)
+
+    # should be made always 
     shortmsg = '%0.2fx improvement' % wvr_score
 
     origin = pqa.QAOrigin(metric_name='score_wvrgcal',
