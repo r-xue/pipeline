@@ -244,7 +244,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                             elif 0.66 < per_antenna_score <= 0.9:
                                 antenna_names_list.append(antenna_id_to_name[ant_id])
                         antenna_names = ', '.join(antenna_names_list)
-                        EB_spw_QA_longmsg = f'Potential phase offset outliers for {ms.basename} SPW {spw_id} Antenna{"" if len(ant_ids) == 1 else "s"} {antenna_names}'
+                        EB_spw_QA_longmsg = f'Potential phase offset outliers for {ms.basename} SPW {spw_id} Antenna{"" if len(antenna_names_list) == 1 else "s"} {antenna_names}'
                         EB_spw_QA_shortmsg = f'Potential phase offset outliers'
                     elif EB_spw_QA_score <= 0.66:
                         antenna_names_list = []
