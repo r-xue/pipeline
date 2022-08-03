@@ -254,11 +254,6 @@ class MakeImList(basetask.StandardTaskTemplate):
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
 
-        if inputs.datacolumn not in (None, ''):
-            datacolumn = inputs.datacolumn
-        else:
-            datacolumn = ''
-
         if inputs.intent == 'TARGET':
             if inputs.specmode in ('mfs', 'cont'):
                 datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
@@ -284,21 +279,23 @@ class MakeImList(basetask.StandardTaskTemplate):
             if selected_datatype == DataType.RAW:
                 LOG.warn('Falling back to raw data for imaging.')
 
-            columns = list(ms_objects_and_columns.values())
-            if not all(column == columns[0] for column in columns):
+            global_columns = list(ms_objects_and_columns.values())
+            if not all(global_column == global_columns[0] for global_column in global_columns):
                 LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
 
-            if datacolumn != '':
-                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+            if inputs.datacolumn not in (None, ''):
+                global_datacolumn = inputs.datacolumn
+                LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
             else:
-                if columns[0] == 'DATA':
-                    datacolumn = 'data'
-                elif columns[0] == 'CORRECTED_DATA':
-                    datacolumn = 'corrected'
+                if global_columns[0] == 'DATA':
+                    global_datacolumn = 'data'
+                elif global_columns[0] == 'CORRECTED_DATA':
+                    global_datacolumn = 'corrected'
                 else:
-                    LOG.warn(f'Unknown column name {columns[0]}')
-                    datacolumn = ''
+                    LOG.warn(f'Unknown column name {global_columns[0]}')
+                    global_datacolumn = ''
 
+            datacolumn = global_datacolumn
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
@@ -832,20 +829,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         if not valid_field_spwspec_combination:
                             continue
 
-                        # Check if the globally selected data type is available for this field/spw combination.
-                        # If not, fall back to next available data type.
-                        if selected_datatype is not None:
-                            for spwid in actual_spwids:
-                                local_ms_objects_and_columns, local_selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False, source=field_intent[0], spw=str(spwid))
-                                if local_selected_datatype != selected_datatype:
-                                    LOG.warn(f'Data type {str(selected_datatype).split(".")[-1]} is not available for field {field_intent[0]} SPW {spwid}. Falling back to data type {str(local_selected_datatype).split(".")[-1]}.')
-                                # TODO: Check and adjust vis list
-
-                        # Save the specific vislist in a copy of the heuristics object tailored to the
-                        # current imaging target
-                        target_heuristics = copy.deepcopy(self.heuristics)
-                        target_heuristics.vislist = vislist_field_spw_combinations[field_intent[0]]['vislist']
-
                         # For 'cont' mode we still need to restrict the virtual spw ID list to just
                         # the ones that were actually observed for this field.
                         adjusted_spwspec = ','.join(map(str, actual_spwids))
@@ -857,6 +840,38 @@ class MakeImList(basetask.StandardTaskTemplate):
                         cont_ranges_spwsel_dict = {}
                         all_continuum_spwsel_dict = {}
                         spwsel_spwid_dict = {}
+
+                        # Check if the globally selected data type is available for this field/spw combination.
+                        # If not, fall back to next available data type.
+                        if selected_datatype is not None:
+                            local_ms_objects_and_columns, local_selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                            if local_selected_datatype != selected_datatype:
+                                LOG.warn(f'Data type {str(selected_datatype).split(".")[-1]} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {str(local_selected_datatype).split(".")[-1]}.')
+
+                                local_columns = list(local_ms_objects_and_columns.values())
+                                if not all(local_column == local_columns[0] for local_column in local_columns):
+                                    LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
+
+                                if inputs.datacolumn not in (None, ''):
+                                    LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                                else:
+                                    if local_columns[0] == 'DATA':
+                                        local_datacolumn = 'data'
+                                    elif columns[0] == 'CORRECTED_DATA':
+                                        local_datacolumn = 'corrected'
+                                    else:
+                                        LOG.warn(f'Unknown column name {local_columns[0]}')
+                                        local_datacolumn = ''
+
+                                    datacolumn = local_datacolumn
+                                    if vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
+                                        LOG.warn(f'''Modifying vis list from {vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {str(local_selected_datatype).split(".")[-1]}.''')
+                                        vislist_field_spw_combinations[field_intent[0]]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
+
+                        # Save the specific vislist in a copy of the heuristics object tailored to the
+                        # current imaging target
+                        target_heuristics = copy.deepcopy(self.heuristics)
+                        target_heuristics.vislist = vislist_field_spw_combinations[field_intent[0]]['vislist']
 
                         for spwid in adjusted_spwspec.split(','):
                             cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
