@@ -1371,7 +1371,7 @@ def score_wvrgcal(ms_name, dataresult):
 
     if score > 1.0:
         # if nothing else score passes will be >1.0
-        # truncate to 1.0 - ratio_score now holding imporvement 
+        # truncate to 1.0 - ratio_score now holding improvement 
         score = 1.0
         if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 or dataresult.PHnoisy is True:
             score = 0.9  # i.e. to blue as a maximum value
