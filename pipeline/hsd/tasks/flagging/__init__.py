@@ -1,7 +1,11 @@
 import pipeline.h.tasks.flagging.renderer as super_renderer
+import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
 from .flagdeteralmasd import FlagDeterALMASingleDish, HpcFlagDeterALMASingleDish
 from . import renderer
+from . import flagdeteralmasd
+
+qaadapter.registry.register_to_flagging_topic(flagdeteralmasd.FlagDeterALMASingleDishResults)
 
 # Use generic deterministic flagging renderer for ALMA SD
 # deterministic flagging.
