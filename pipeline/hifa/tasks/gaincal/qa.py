@@ -92,8 +92,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                 tbTool.done()
                 subscores[gaintable] = {}
                 noisy_spw_ids = []
-                poor_stats_spw_ids = []
-                poor_stats_ant_ids = []
+                poor_stats_spw_ids = {}
                 for spw_id in sorted(list(set(spw_ids))):
                     subscores[gaintable][spw_id] = {}
                     # Get names of polarisations, and create polarisation index 
@@ -149,8 +148,10 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
                                 if N < 4:
                                     # Poor statistics
-                                    poor_stats_spw_ids.append(spw_id)
-                                    poor_stats_ant_ids.append(ant_id)
+                                    if spw_id not in poor_stats_spw_ids:
+                                        poor_stats_spw_ids[spw_id] = [ant_id]
+                                    else:
+                                        poor_stats_spw_ids[spw_id].append(ant_id)
                                     for scorekey, score in [('QA2', 0.85)]:
                                         longmsg = f'Phase offsets with poor statistics for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]}'
                                         shortmsg = 'Poor phase offsets statistics'
@@ -269,18 +270,19 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     EB_spw_QA_weblog_location = pqa.WebLogLocation.ACCORDION
                     public_phase_offsets_scores.append(pqa.QAScore(score=EB_spw_QA_score, longmsg=EB_spw_QA_longmsg, shortmsg=EB_spw_QA_shortmsg, vis=ms.basename, origin=EB_spw_QA_origin, applies_to=EB_spw_QA_data_selection, weblog_location=EB_spw_QA_weblog_location))
 
-                if poor_stats_spw_ids != []:
-                    # Add aggregated score for poor statistics spws and antennas
+                if poor_stats_spw_ids != {}:
+                    # Add aggregated score for poor statistics spws and their antennas
                     score = 0.85
-                    antenna_names = ', '.join([antenna_id_to_name[ant_id] for ant_id in sorted(list(set(poor_stats_ant_ids)))])
-                    longmsg = f'Phase offsets: insufficient data to evaluate stability for {ms.basename} SPW {",".join(map(str, sorted(list(set(poor_stats_spw_ids)))))} Antenna{"" if len(poor_stats_ant_ids) == 1 else "s"} {antenna_names}'
-                    shortmsg = 'Phase offsets: insufficient data'
-                    origin = pqa.QAOrigin(metric_name='Number of solutions',
-                                          metric_score=-1,
-                                          metric_units='N/A')
-                    data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw=set(poor_stats_spw_ids), intent={'PHASE'})
-                    weblog_location = pqa.WebLogLocation.ACCORDION
-                    public_phase_offsets_scores.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
+                    for spw_id in poor_stats_spw_ids:
+                        antenna_names = ', '.join([antenna_id_to_name[ant_id] for ant_id in sorted(poor_stats_spw_ids[spw_id])])
+                        longmsg = f'Phase offsets: insufficient data to evaluate stability for {ms.basename} SPW {spw_id} Antenna{"" if len(poor_stats_spw_ids[spw_id]) == 1 else "s"} {antenna_names}'
+                        shortmsg = 'Phase offsets: insufficient data'
+                        origin = pqa.QAOrigin(metric_name='Number of solutions',
+                                              metric_score=-1,
+                                              metric_units='N/A')
+                        data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw=spw_id, intent={'PHASE'})
+                        weblog_location = pqa.WebLogLocation.ACCORDION
+                        public_phase_offsets_scores.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
 
                 if noisy_spw_ids != []:
                     # Add aggregated score for noisy spws
