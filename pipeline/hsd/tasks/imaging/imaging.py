@@ -774,8 +774,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                                              assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
                                              sensitivity_info=sensitivity_info, theoretical_rms=theoretical_noise)
 
-                # PIPE-251: detect contamination
-                detectcontamination.detect_contamination(context, imager_result.outcome['image'])
+                if not basetask.DISABLE_WEBLOG:
+                    # PIPE-251: detect contamination
+                    detectcontamination.detect_contamination(context, imager_result.outcome['image'])
 
                 results.append(imager_result)
 
