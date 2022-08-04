@@ -659,7 +659,7 @@ def xml_for_sensitivity_stage(context, stage_results, exporter, name):
     xml_root = ElementTree.Element(tagname,
                                    Origin=stage_name,
                                    StageNumber=str(stage_results.stage_number),
-                                   Score=str(stage_score))
+                                   Score=str(representative_score.score))
 
     sensitivity_dicts = exporter(stage_results)
 
