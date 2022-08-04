@@ -5328,6 +5328,13 @@ a.list-group-item-danger.active:focus {
 .panel-heading > .dropdown .dropdown-toggle {
   color: inherit;
 }
+.panel-heading-compact {
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.panel-heading-compact > .dropdown .dropdown-toggle {
+  color: inherit;
+}
 .panel-title {
   margin-top: 0;
   margin-bottom: 0;
@@ -5339,6 +5346,18 @@ a.list-group-item-danger.active:focus {
 .panel-title > .small,
 .panel-title > small > a,
 .panel-title > .small > a {
+  color: inherit;
+}
+.panel-title-compact {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 10px 15px;
+}
+.panel-title-compact > a,
+.panel-title-compact > small,
+.panel-title-compact > .small,
+.panel-title-compact > small > a,
+.panel-title-compact > .small > a {
   color: inherit;
 }
 .panel-footer {
