@@ -460,11 +460,7 @@ class MetricXmlGenerator(object):
 
             'Name': convert to string
             'Value': convert to string
-            'Asdm': return basename minus extension
-            'QaScore': convert to string
-            'QaMessage': convert to string
             'Units': convert to string
-            'Session': convert to string
 
         :param metric_name: metric to match
         :param formatters: (optional) dict string formatters
@@ -475,11 +471,7 @@ class MetricXmlGenerator(object):
         self.attr_formatters = {
             'Name': str,
             'Value': str,
-            'Asdm': vis_to_asdm,
-            'Score': str,
-            'Reason': str,
             'Units': str,
-            'Session': str
         }
         if formatters:
             self.attr_formatters.update(formatters)
