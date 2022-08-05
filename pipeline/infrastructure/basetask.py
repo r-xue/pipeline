@@ -838,6 +838,9 @@ class Executor(object):
         # if requested, merge the result with the context.
         if merge and not self._dry_run:
             if self._context is None:
+                # PIPE-1522: A "context-free" copy of the Executor instance can be created from the 'copy' 
+                # method (exclude_context=True), and sent to MPI servers for Tier0JobRequest executions.
+                # This reduces the MPI message size.
                 LOG.error('The context object is detached from the Executor instance and \
                             the job/subtask result merge is not allowed.')
             else:

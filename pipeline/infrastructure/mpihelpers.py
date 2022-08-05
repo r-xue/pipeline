@@ -71,21 +71,31 @@ class AsyncTask(object):
             raise exceptions.PipelineException(err_msg)
 
     def _merge_casa_commands(self, response):
-        """Merge the "casa_commands" log entries from a Tier0 async task into the main logfile of the client.
+        """Merge the "casa_commands" log entries from a Tier0 AsyncTask into the client-side main logfile.
 
-        note: this is expected to run on the MPI client only when the async task result is returned.
+        This method is expected to run on the MPI client when retrieving the AsyncTask result.
+        It will delete the individual tier0 casa command files created by MPI servers.
 
-        'reponse' is a dictionary containing the execuation details of a single MPI command request:
-            response['command']: the input command request string
-            response['parameters']['tier0_executable']: a copy of the input tier0_executable object, with modifications from the MPI server
-            response['ret']: return from the server-side constructed Tier0Executable.
-            response['server']: the MPI server rank
-            response['id']: the command request id (same as self.__pid)
-            response['command_start_time']: command start time 
-            response['command_stop_time']: command stop time
+        Args:
+            response:   the response of a MPI command request, returned from mpiclient.get_command_response().
+                        Expected to be a dictionary containing the command execution details from the server-side.
+
+        Note on the "response" dictionary structure:
+            The following keys of "response" are used in this method:
+
+                response['parameters']['tier0_executable']: a copy of the input tier0_executable object, with modifications from the MPI server
+                response['server']: the MPI server rank
+                response['id']: the command request id (same as self.__pid)
+                response['command_start_time']: command start time
+                response['command_stop_time']: command stop time
+            
+            The rest keys include:
+                response['ret']: return from the server-side constructed PipelineTask/JobRequest executable
+                response['command']: the input command request string 
         """
+
         LOG.debug(
-            'receive a successful response from MPIserver-{server} for command_request_id={id}'.format(**response))               
+            'Received a successful response from MPIserver-{server} for command_request_id={id}'.format(**response))               
         LOG.debug('return request logs: {}'.format(response['parameters']['tier0_executable'].logs))
 
         response_logs = response['parameters']['tier0_executable'].logs
@@ -96,12 +106,11 @@ class AsyncTask(object):
             LOG.info(f'Merge {tier0_cmdfile} into {client_cmdfile}')
             with open(client_cmdfile, 'a') as client:
                 with open(tier0_cmdfile, 'r') as tier0:
-                    cmds = tier0.read()
                     client.write('# MPIserver:           {}\n'.format(response['server']))
                     client.write('# Duration:            {:.2f}s\n'.format(
                         response['command_stop_time']-response['command_start_time']))
                     client.write('# CommandRequest ID:   {}\n'.format(response['id']))
-                    client.write(cmds)
+                    client.write(tier0.read())
                 os.remove(tier0_cmdfile)
         else:
             LOG.debug('Cannot find Tier0 casa_commands.log for command_request_id={id}; no merge needed'.format(**response))
@@ -153,10 +162,7 @@ class Executable(object):
 
     @abc.abstractmethod
     def get_executable(self):
-        """
-        Recreate and return the executable object. The executable object
-        should have an .execute() function.
-        """
+        """Create and return an executable object, intended to run on the MPI server."""
         raise NotImplementedError
 
 
@@ -189,10 +195,9 @@ class Tier0PipelineTask(Executable):
             pickle.dump(task_args, pickle_file, protocol=-1)
 
     def get_executable(self):
-        """Recreate and return executable on the MPI server.
+        """Create and return a Pipeline task executable, intended to run on the MPI server.
         
-        The returned executable object should have an .execute() function.
-        This reconstruction is based on the content of the Tier0PipelineTask instance pushed from the client.        
+        The construction is based on the content of Tier0PipelineTask instance pushed from the client.        
         """
         try:
             with open(self.__context_path, 'rb') as context_file:
@@ -246,10 +251,9 @@ class Tier0JobRequest(Executable):
             self.__executor = executor.copy(exclude_context=True)
 
     def get_executable(self):
-        """Recreate and return executable on the MPI server.
-        
-        The returned executable object should have an .execute() function.
-        This reconstruction is based on the content of the Tier0JobRequest instance pushed from the client.        
+        """Create and return a JobRequest executable, intended to run on the MPI server.
+
+        The construction is based on the content of Tier0JobRequest instance pushed from the client.        
         """
         job_request = self.__creator_fn(**self.__job_args)
         if self.__executor is None:
