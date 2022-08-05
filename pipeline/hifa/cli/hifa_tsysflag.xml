@@ -142,7 +142,7 @@
         <description>Flag channels bracketing a channel to channel
             difference &gt; fb_sharps_limit.
         </description>
-        <value>0.05</value>
+        <value>0.15</value>
     </param>
 
     <param name="flag_toomany" type="bool">
@@ -280,7 +280,7 @@
 
         <when param="flag_birdies">
             <equals type="bool" value="True">
-                <default param="fb_sharps_limit"><value>0.05</value></default>
+                <default param="fb_sharps_limit"><value>0.15</value></default>
             </equals>
             <equals type="bool" value="False">
             </equals>

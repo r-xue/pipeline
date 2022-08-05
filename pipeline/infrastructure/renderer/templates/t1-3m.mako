@@ -31,9 +31,7 @@ def get_lowest_scoring_results(topic, context):
 	return (anchor,
 			minresult.qa.representative)
 
-tablerow_css_classes = {'QA Error'   : 'danger alert-danger',
-			'QA Warning' : 'warning alert-warning',
-			'Error'      : 'danger alert-danger',
+tablerow_css_classes = {'Error'      : 'danger alert-danger',
 			'Warning'    : 'warning alert-warning',
 			'Attention'  : 'attention alert-attention'}
 
@@ -113,7 +111,32 @@ def flagcolortable(flagpct):
 }
 </style>
 
-<h3>Warnings and Errors</h3>
+<h3>QA Scores: Lowest by Topic</h3>
+<table class="table">
+	<thead>
+		<tr>
+			<th class="col-md-1">Topic</th>
+			<th class="col-md-8">Lowest Scoring Task</th>
+			<th class="col-md-2">Min Score</th>
+			<th class="col-md-1"></th>
+		</tr>
+	</thead>
+	<tbody>
+		% for _, topic in registry.get_topics().items():
+		<% (task_description, pqascore) = get_lowest_scoring_results(topic, pcontext) %>
+			% if not task_description == 'No tasks in this topic':
+			<tr>
+				<td><a href="${topic.url}">${topic.description}</a></td>
+				<td>${task_description}<span class="pull-right">${rendererutils.format_shortmsg(pqascore)}</span></td>
+				<td><div class="progress" style="margin-bottom:0px;"><div class="progress-bar${rendererutils.get_bar_class(pqascore)}" role="progressbar" style="width:${rendererutils.get_bar_width(pqascore)}%;"><span class="text-center"></span></div></div></td>
+				<td><span class="badge${rendererutils.get_badge_class(pqascore)}">${rendererutils.format_score(pqascore)}</span></td>
+			</tr>
+			% endif
+		% endfor			
+	</tbody>
+</table>
+
+<h3>Task Notifications: Warnings and Errors</h3>
 % if tablerows:
 <table class="table table-bordered table-striped table-condensed"
 	   summary="Messages from tasks">
@@ -139,31 +162,6 @@ def flagcolortable(flagpct):
 % else:
 <p>No warnings or errors.</p>
 % endif
-
-<h3>Tasks by Topic</h3>
-<table class="table">
-	<thead>
-		<tr>
-			<th class="col-md-1">Topic</th>
-			<th class="col-md-8">Lowest Scoring Task</th>
-			<th class="col-md-2">Min Score</th>
-			<th class="col-md-1"></th>
-		</tr>
-	</thead>
-	<tbody>
-		% for _, topic in registry.get_topics().items():
-		<% (task_description, pqascore) = get_lowest_scoring_results(topic, pcontext) %>
-			% if not task_description == 'No tasks in this topic':
-			<tr>
-				<td><a href="${topic.url}">${topic.description}</a></td>
-				<td>${task_description}<span class="pull-right">${rendererutils.format_shortmsg(pqascore)}</span></td>
-				<td><div class="progress" style="margin-bottom:0px;"><div class="progress-bar${rendererutils.get_bar_class(pqascore)}" role="progressbar" style="width:${rendererutils.get_bar_width(pqascore)}%;"><span class="text-center"></span></div></div></td>
-				<td><span class="badge${rendererutils.get_badge_class(pqascore)}">${rendererutils.format_score(pqascore)}</span></td>
-			</tr>
-			% endif
-		% endfor			
-	</tbody>
-</table>
 
 
 % if flagtables:

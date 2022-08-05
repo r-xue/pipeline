@@ -186,7 +186,7 @@ In the current standard pipeline, all six metrics are active, and evaluated in t
    **View flagging**
 
    The views are evaluated against the "sharps" vector flagging rule, which flags each view in two passes:
-   1. flag all channels whose absolute difference in value to the following channel exceeds a threshold "fb_sharps_limit" (default: 0.05)
+   1. flag all channels whose absolute difference in value to the following channel exceeds a threshold "fb_sharps_limit" (default: 0.15)
    2. around each newly flagged channel, flag neighbouring channels until their channel-to-channel difference falls below 2 times the median channel-to-channel difference (this is intended to flag the wings of sharp features)
     
    A single flagging command is generated for all channels newly identified as "birdies".

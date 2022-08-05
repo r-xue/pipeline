@@ -272,7 +272,7 @@ bgcolor_snr_list=[snr2shade(8.),snr2shade(6.),snr2shade(4.),snr2shade(2.)]
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx])}</td>
             <td colspan="1" ${cell_style_rms}>${fmt_cell(snr,scale=1.)}</td>
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['model_flux'][idx])}</td>
-            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx]-stats['peak_stokesi']['model_flux'][idx])}</td>
+            <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesi'][idx]-stats[roi_name]['model_flux'][idx])}</td>
             <td colspan="1" ${cell_style_pct}>${fmt_cell(diff_pct,scale=1.)}&#37</td>
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesq'][idx])}</td>
             <td colspan="1" ${cell_style_default}>${fmt_cell(stats[roi_name]['stokesu'][idx])}</td>

@@ -151,6 +151,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             masktype = 'jointmask2'
         elif joint_mask_name.endswith('.joint.mask'):
             masktype = 'jointmask'
+        elif joint_mask_name.endswith('.amendedJointMask.original'):
+            masktype = 'amendedmask'
         else:
             return 'No plot available'
 
