@@ -1,6 +1,5 @@
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -13,9 +12,7 @@ LOG = infrastructure.get_logger(__name__)
 def _calculate(worker, consider_flag=False):
     worker.SubtractMedian(threshold=3.0, consider_flag=consider_flag)
     worker.CalcStdSpectrum(consider_flag=consider_flag)
-    #worker.PlotSpectrum()
     worker.CalcRange(threshold=3.0, detection=5.0, extension=2.0, iteration=10, consider_flag=consider_flag)
-    #worker.SavePlot()
     mask_list = worker.masklist
     return mask_list
 
@@ -39,17 +36,6 @@ class MaskDeviationHeuristic(api.Heuristic):
         return mask_list
 
 
-def VarPlot(infile):
-    # infile is asap format
-    s = MaskDeviation(infile)
-    s.ReadData()
-    s.SubtractMedian(threshold=3.0)
-    s.CalcStdSpectrum()
-    s.PlotSpectrum()
-    s.CalcRange(threshold=3.0, detection=5.0, extension=2.0, iteration=10)
-    s.SavePlot()
-
-
 class MaskDeviation(object):
     """
     The class is used to detect channels having large variation or deviation. If there's any
@@ -69,13 +55,13 @@ class MaskDeviation(object):
         """
         Reads data from input MS. 
         """
-        if vis != '': 
+        if vis != '':
             self.infile=vis
-        if vis == '': 
+        if vis == '':
             vis = self.infile
         spwsel = '' if self.spw is None else str(self.spw)
-        mssel = {'field': str(field), 
-                 'spw': str(spwsel), 
+        mssel = {'field': str(field),
+                 'spw': str(spwsel),
                  'scanintent': 'OBSERVE_TARGET#ON_SOURCE*'}
         LOG.debug('vis="%s"'%(vis))
         LOG.debug('mssel=%s'%(mssel))
@@ -114,7 +100,7 @@ class MaskDeviation(object):
         spectrum. Final median value is determined by using the channels having the value
         inside the range: MED_0 - threshold * STD < VALUE < MED_0 + threshold * STD
         """
-        if hasattr(self, 'flag') and consider_flag == True:
+        if hasattr(self, 'flag') and consider_flag:
             with_flag = True
         else:
             with_flag = False
@@ -141,7 +127,7 @@ class MaskDeviation(object):
         meanSP, maxSP, minSP, ymax, ymin: used only for plotting and should be
          commented out when implemented in the pipeline
         """
-        if hasattr(self, 'flag') and consider_flag == True:
+        if hasattr(self, 'flag') and consider_flag:
             with_flag = True
         else:
             with_flag = False
@@ -171,7 +157,7 @@ class MaskDeviation(object):
             self.stdSp: 1D spectrum with self.nchan channels calculated in CalcStdSpectrum
                         Each channel records standard deviation of the channel in all original spectra
         """
-        if hasattr(self.stdSP, 'mask') and consider_flag == True:
+        if hasattr(self.stdSP, 'mask') and consider_flag:
             with_flag = True
             stdSP = self.stdSP.data
         else:
@@ -213,7 +199,6 @@ class MaskDeviation(object):
         self.masklist = []
         for i in range(len(L)):
             self.masklist.append([L[i], R[i]])
-        self.PlotRange(L, R)
         if len(self.mask) > 0:
             LOG.trace('MaskDeviation.CalcRange: %s %s %s %s %s'%(self.masklist, L, R, self.mask[0], self.mask[-1]))
         else:
@@ -226,43 +211,7 @@ class MaskDeviation(object):
         """
         LOG.trace('MaskDeviation.ExtendMask: threshold = %s'%(threshold))
         for i in range(len(mask)-1):
-            if mask[i] == False and self.stdSP[i+1]>threshold: mask[i+1] = False
+            if (not mask[i]) and self.stdSP[i+1]>threshold: mask[i+1] = False
         for i in range(len(mask)-1, 1, -1):
-            if mask[i] == False and self.stdSP[i-1]>threshold: mask[i-1] = False
+            if (not mask[i]) and self.stdSP[i-1]>threshold: mask[i-1] = False
         return mask
-
-    def PlotSpectrum(self):
-        """
-        plot max, min, mean, and standard deviation of the spectra
-        """
-        color = ['r', 'm', 'b', 'g', 'k']
-        label = ['max', 'mean', 'min', 'STD', 'MASK']
-        plt.clf()
-        plt.plot(self.maxSP, color=color[0])
-        plt.plot(self.meanSP, color=color[1])
-        plt.plot(self.minSP, color=color[2])
-        plt.plot(self.stdSP, color=color[3])
-        plt.xlim(-10, self.nchan + 9)
-        posx = (self.nchan + 20) * 0.8 - 10
-        deltax = (self.nchan + 20) * 0.05
-        posy = (self.ymax - self.ymin) * 0.95 + self.ymin
-        deltay = (self.ymax - self.ymin) * 0.06
-        for i in range(len(label)):
-            plt.text(posx, posy - i * deltay, label[i], color=color[i])
-        plt.title(self.infile)
-
-    def PlotRange(self, L, R):
-        """
-        Plot masked range
-        """
-        if len(L)>0:
-            plt.vlines(L, self.ymin, self.ymax)
-            plt.vlines(R, self.ymin, self.ymax)
-            Y = [(self.ymax-self.ymin)*0.8+self.ymin for x in range(len(L))]
-            plt.hlines(Y, L, R)
-
-    def SavePlot(self):
-        """
-        Save the plot in PNG format
-        """
-        plt.savefig(self.infile + '.png', format='png')
