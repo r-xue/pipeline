@@ -234,7 +234,7 @@ def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]
         List of strings containing rows for phase rms table.
     """
     rows = []
-    for result in results:
+    for result in sorted(results, key=lambda result: result.vis):
         ms = context.observing_run.get_ms(result.vis)
         if result.phaserms_antout == '':
             result.phaserms_antout = "None"
@@ -265,7 +265,7 @@ def make_rms_plots(results, weblog_dir: str) -> Dict[str, List[logger.Plot]]:
                     as the keys and lists of plot objects as the values
     """
     rms_plots = collections.defaultdict(list)
-    for result in results:
+    for result in sorted(results, key=lambda result: result.vis):
         vis = os.path.basename(result.inputs['vis'])
         rmsplot = "{}_PIPE-692_SSF.png".format(vis)
         rmsplot_path = f"{rmsplot}"
