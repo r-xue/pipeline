@@ -34,6 +34,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
         # Phase offsets scores
         hidden_phase_offsets_scores, public_phase_offsets_scores = self._get_phase_offset_scores(ms, refant.split(',')[0])
         self.pool.extend(public_phase_offsets_scores)
+        self.pool.extend(hidden_phase_offsets_scores)
 
         # X-Y / X2-X1 scores
         #
@@ -92,7 +93,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                 tbTool.done()
                 subscores[gaintable] = {}
                 noisy_spw_ids = []
-                poor_stats_spw_ids = {}
+                poor_stats_spw_ids = collections.OrderedDict()
                 for spw_id in sorted(list(set(spw_ids))):
                     subscores[gaintable][spw_id] = {}
                     # Get names of polarisations, and create polarisation index 
@@ -149,9 +150,9 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 if N < 4:
                                     # Poor statistics
                                     if spw_id not in poor_stats_spw_ids:
-                                        poor_stats_spw_ids[spw_id] = [ant_id]
+                                        poor_stats_spw_ids[spw_id] = {ant_id}
                                     else:
-                                        poor_stats_spw_ids[spw_id].append(ant_id)
+                                        poor_stats_spw_ids[spw_id].add(ant_id)
                                     for scorekey, score in [('QA2', 0.85)]:
                                         longmsg = f'Phase offsets with poor statistics for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {corr_type[pol_id]}'
                                         shortmsg = 'Poor phase offsets statistics'
@@ -238,24 +239,29 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     if EB_spw_QA_score == 0.8:
                         antenna_names_list = []
                         for ant_id in sorted(list(set(ant_ids)-{refant_id})):
+                            # Get only the non-noisy antennas
+                            QA2_scores = [subscores[gaintable][spw_id][ant_id][pol_id]['QA2'].score for pol_id in range(phase_offsets.shape[0])]
                             per_antenna_score = min(subscores[gaintable][spw_id][ant_id][pol_id]['QA'].score for pol_id in range(phase_offsets.shape[0]))
-                            if per_antenna_score <= 0.66:
-                                # Highlight bad antennas with an asterisk
-                                antenna_names_list.append(f'*{antenna_id_to_name[ant_id]}')
-                            elif 0.66 < per_antenna_score <= 0.9:
-                                antenna_names_list.append(antenna_id_to_name[ant_id])
+                            if per_antenna_score not in [0.82, 0.85]:
+                                if per_antenna_score <= 0.66:
+                                    # Highlight bad antennas with an asterisk
+                                    antenna_names_list.append(f'*{antenna_id_to_name[ant_id]}')
+                                elif 0.66 < per_antenna_score <= 0.9:
+                                    antenna_names_list.append(antenna_id_to_name[ant_id])
                         antenna_names = ', '.join(antenna_names_list)
                         EB_spw_QA_longmsg = f'Potential phase offset outliers for {ms.basename} SPW {spw_id} Antenna{"" if len(antenna_names_list) == 1 else "s"} {antenna_names}'
                         EB_spw_QA_shortmsg = f'Potential phase offset outliers'
-                    elif EB_spw_QA_score <= 0.66:
+                    elif EB_spw_QA_score == 0.5:
                         antenna_names_list = []
                         for ant_id in sorted(list(set(ant_ids)-{refant_id})):
+                            # Get only the non-noisy antennas
                             per_antenna_score = min(subscores[gaintable][spw_id][ant_id][pol_id]['QA'].score for pol_id in range(phase_offsets.shape[0]))
-                            if per_antenna_score <= 0.66:
-                                # Highlight bad antennas with an asterisk
-                                antenna_names_list.append(f'*{antenna_id_to_name[ant_id]}')
-                            elif 0.66 < per_antenna_score <= 0.9:
-                                antenna_names_list.append(antenna_id_to_name[ant_id])
+                            if per_antenna_score not in [0.82, 0.85]:
+                                if per_antenna_score <= 0.66:
+                                    # Highlight bad antennas with an asterisk
+                                    antenna_names_list.append(f'*{antenna_id_to_name[ant_id]}')
+                                elif 0.66 < per_antenna_score <= 0.9:
+                                    antenna_names_list.append(antenna_id_to_name[ant_id])
                         antenna_names = ', '.join(antenna_names_list)
                         EB_spw_QA_longmsg = f'Potential phase offset outliers for {ms.basename} SPW {spw_id} Antenna{"" if len(antenna_names_list) == 1 else "s"} {antenna_names}'
                         EB_spw_QA_shortmsg = f'Potential phase offset outliers'
@@ -270,17 +276,19 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     EB_spw_QA_weblog_location = pqa.WebLogLocation.ACCORDION
                     public_phase_offsets_scores.append(pqa.QAScore(score=EB_spw_QA_score, longmsg=EB_spw_QA_longmsg, shortmsg=EB_spw_QA_shortmsg, vis=ms.basename, origin=EB_spw_QA_origin, applies_to=EB_spw_QA_data_selection, weblog_location=EB_spw_QA_weblog_location))
 
-                if poor_stats_spw_ids != {}:
+                if poor_stats_spw_ids != collections.OrderedDict():
                     # Add aggregated score for poor statistics spws and their antennas
                     score = 0.85
-                    for spw_id in poor_stats_spw_ids:
-                        antenna_names = ', '.join([antenna_id_to_name[ant_id] for ant_id in sorted(poor_stats_spw_ids[spw_id])])
-                        longmsg = f'Phase offsets: insufficient data to evaluate stability for {ms.basename} SPW {spw_id} Antenna{"" if len(poor_stats_spw_ids[spw_id]) == 1 else "s"} {antenna_names}'
+                    unique_ant_id_selections = collections.OrderedDict((tuple(poor_stats_ant_ids), None) for poor_stats_ant_ids in poor_stats_spw_ids.values())
+                    for unique_ant_id_selection in unique_ant_id_selections:
+                        spw_ids_selection = ','.join(str(spw_id) for spw_id in poor_stats_spw_ids if tuple(poor_stats_spw_ids[spw_id]) == unique_ant_id_selection)
+                        antenna_names = ', '.join([antenna_id_to_name[ant_id] for ant_id in sorted(unique_ant_id_selection)])
+                        longmsg = f'Phase offsets: insufficient data to evaluate stability for {ms.basename} SPW {spw_ids_selection} Antenna{"" if len(unique_ant_id_selection) == 1 else "s"} {antenna_names}'
                         shortmsg = 'Phase offsets: insufficient data'
                         origin = pqa.QAOrigin(metric_name='Number of solutions',
                                               metric_score=-1,
                                               metric_units='N/A')
-                        data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw=spw_id, intent={'PHASE'})
+                        data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'})
                         weblog_location = pqa.WebLogLocation.ACCORDION
                         public_phase_offsets_scores.append(pqa.QAScore(score=score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=data_selection, weblog_location=weblog_location))
 
