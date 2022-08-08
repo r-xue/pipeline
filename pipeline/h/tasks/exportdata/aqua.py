@@ -48,7 +48,7 @@ import datetime
 import itertools
 import operator
 import os
-from typing import List
+from typing import List, Optional
 import xml.etree.cElementTree as ElementTree
 from xml.dom import minidom
 
@@ -280,7 +280,7 @@ class AquaXmlGenerator(object):
 
         return [ElementTree.Element('DataSelection', Asdm=Asdm, Session=Session, Spw=Spw, Intent=Intent)]
 
-    def _get_xml_for_qa_scores(self, items, registry):
+    def _get_xml_for_qa_scores(self, items, registry) -> List[ElementTree.Element]:
         """
         Generate the XML elements for a list of QA scores.
 
@@ -476,7 +476,7 @@ class MetricXmlGenerator(object):
         if formatters:
             self.attr_formatters.update(formatters)
 
-    def __call__(self, qa_scores: List[QAScore]) -> List[ElementTree.ElementTree]:
+    def __call__(self, qa_scores: List[QAScore]) -> List[Optional[ElementTree.Element]]:
         scores_to_process = self.filter(qa_scores)
         return [self.to_xml(score) for score in scores_to_process]
 
@@ -498,7 +498,7 @@ class MetricXmlGenerator(object):
         """
         return qa_scores
 
-    def to_xml(self, qa_score: QAScore) -> ElementTree.ElementTree:
+    def to_xml(self, qa_score: QAScore) -> Optional[ElementTree.Element]:
         """
         Return the XML representation of a QA score and associated metric.
 
