@@ -1,6 +1,5 @@
 """Worker task for baseline subtraction."""
 import abc
-import collections
 import os
 
 from typing import TYPE_CHECKING, Any, List, Optional, Type, Union
@@ -414,7 +413,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Returns:
             BaselineSubtractionResults instance
         """
-
         # plot
         # initialize plot manager
         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
@@ -423,6 +421,8 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
+        LOG.info('deviationmask_list={}'.format(deviationmask_list))
+
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
