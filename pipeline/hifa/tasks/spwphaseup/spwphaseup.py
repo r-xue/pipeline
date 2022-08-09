@@ -153,7 +153,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             LOG.info("Starting decoherence assessment.")
 
             # Initialize the Decoherence Phase RMS Structure function assessment
-            pipe692 = SSFanalysis(inputs, outlierlimit=100., ftoll=0.3, maxpoorant=11)
+            pipe692 = SSFanalysis(inputs, outlierlimit=180., ftoll=0.3, maxpoorant=11)
 
             # Launch the analysis
             pipe692.analysis()

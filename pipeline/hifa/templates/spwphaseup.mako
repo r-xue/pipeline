@@ -159,7 +159,13 @@ and the caltable containing per spw phase offsets.</p>
     The pipeline uses the bandpass phase solutions to create structure functions plots, baseline length versus phase RMS. 
     The measure of the phase RMS over a time interval equal to the phase referencing cycle-time is useful as a proxy for the 
     expected residual phase RMS of a target source after phase referencing. The action of phase referencing itself is to correct 
-    phase fluctuations, caused by the atmosphere, on timescales longer than the cycle-time. For excellent stability conditions, phase RMS (	&lt; 30 deg), 
+    phase fluctuations, caused by the atmosphere, on timescales longer than the cycle-time. 
+    
+    The median phase RMS reported in the table is for the longest baselines of the array above the &gt;80th percentile unprojected baseline (labeled "P80"). 
+    Previously flagged baseline(s)/antenna(s) are excluded and listed as 'flagged' in the log, while any antenna with noticeably elevated values as identified 
+    in this stage will be listed in the table as "Noisier antennas" and marked as 'outlier' in the log.
+    
+    For excellent stability conditions, phase RMS (	&lt; 30 deg), 
     the target images will have minimal decoherence. For stable conditions, phase RMS (30-50 deg), the target image can have slight 
     decoherence which could be improved by self-calibration. When exceeding the phase RMS considered as stable conditions (50-70 deg), 
     target images can suffer from significant decoherence up to 50%. Self-calibration can help improve the final products. In conditions 
