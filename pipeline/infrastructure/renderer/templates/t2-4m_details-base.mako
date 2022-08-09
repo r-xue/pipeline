@@ -20,8 +20,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </head>
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
-                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='',
-                       separate_rows_by='')">
+                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='', separate_rows_by='', show_row_break_value=False)">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -62,7 +61,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for idx_row, plots_in_row in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
+        % for idx_row, (plots_in_row, group_name) in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
 
         % if idx_row!=0:
             % if separate_rows_by=='thick-line':
@@ -70,8 +69,13 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             % endif
         % endif
 
+        % if show_row_break_value: 
+            <h5>${group_name}</h5>
+        % endif
+
         <div class="row">
             % if plots_in_row is not None:
+
             % for plot in rendererutils.sort_row_by(plots_in_row, sort_row_by):
             <%
                 intent = plot.parameters.get('intent', 'No intent')
@@ -84,10 +88,15 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
                 <%
                     fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)
                     thumbnail_relpath = os.path.relpath(plot.thumbnail, pcontext.report_dir)
+                    link = plot.parameters.get('link', '')
+                    if link != '':
+                        id_link = 'id="{}"'.format(link)
+                    else: 
+                        id_link = ''
                 %>
 
                 <div class="thumbnail">
-                    <a href="${fullsize_relpath}"
+                    <a ${id_link} href="${fullsize_relpath}"
                        % if rel_fn:
                            data-fancybox="${rel_fn(plot)}"
                        % elif relurl:
