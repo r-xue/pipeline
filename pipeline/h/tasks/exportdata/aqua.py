@@ -48,6 +48,7 @@ import datetime
 import itertools
 import operator
 import os
+import copy
 from typing import List, Optional
 import xml.etree.cElementTree as ElementTree
 from xml.dom import minidom
@@ -55,6 +56,7 @@ from xml.dom import minidom
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.pipelineqa import QAScore
@@ -605,13 +607,17 @@ def _create_value_formatter(format_spec):
     return f
 
 
-def _get_pipeline_stage_and_scores(result):
+def _get_pipeline_stage_and_scores(result, include_hidden_scores=False):
     """
     Get the CASA equivalent task name which is stored by the infrastructure
-    as  <task_name> (<arg1> = <value1>, ...)
+    as  <task_name> (<arg1> = <value1>, ...). Also get the representative
+    scores and the subscores. Optionally also include hidden scores.
     """
     stage_name = result.pipeline_casa_task.split('(')[0]
-    subscores = result.qa.pool
+    if include_hidden_scores:
+        subscores = copy.deepcopy(result.qa.pool)
+    else:
+        subscores = [score for score in result.qa.pool if score.weblog_location != pqa.WebLogLocation.HIDDEN]
     representative_score = result.qa.representative
     return stage_name, representative_score, subscores
 
