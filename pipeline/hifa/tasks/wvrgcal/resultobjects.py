@@ -48,6 +48,11 @@ class WvrgcalResult(basetask.Results):
         # record wvrgcal tie arguments for weblog 
         self.tie = ''
 
+        # various flags
+        self.PHnoisy = False
+        self.BPnoisy = False
+        self.suggest_remcloud = False
+
     def merge_with_context(self, context):
         if not self.final:
             LOG.info('No results to merge')

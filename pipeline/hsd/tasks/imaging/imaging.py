@@ -45,17 +45,22 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.get_logger(__name__)
 
-SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
+# SensitivityInfo:
+#     sensitivity: Sensitivity of an image
+#     representative: True if the image is of the representative SpW (regardless of source)
+#     frequency_range: frequency ranges from which the sensitivity is calculated
+#     to_export: True if the sensitivity shall be exported to aqua report. (to avoid exporting NRO sensitivity in K)
+SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range to_export')
 # RasterInfo: center_ra, center_dec = R.A. and Declination of map center
 #             width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
 RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width height scan_angle row_separation row_duration')
+# Reference MS in combined list
+REF_MS_ID = 0
 
 
 class SDImagingInputs(vdp.StandardInputs):
-    """
-    Inputs for imaging
-    """
+    """Inputs for imaging task class."""
     # Search order of input vis
     processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
                             DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
@@ -620,7 +625,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                 continue
             # reference MS
-            ref_ms = context.observing_run.get_ms(name=combined_infiles[0])
+            ref_ms = context.observing_run.get_ms(name=combined_infiles[REF_MS_ID])
 
             # image name
             # image name should be based on virtual spw id
@@ -630,27 +635,13 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             # Step 3.
             # Imaging of all antennas
-            LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
-            if False:
-                imager_inputs = worker.SDImagingWorker.Inputs(context, combined_infiles,
-                                                              outfile=imagename, mode=imagemode,
-                                                              antids=combined_antids,
-                                                              spwids=combined_spws,
-                                                              fieldids=combined_fieldids,
-                                                              stokes=self.stokes,
-                                                              edge=edge,
-                                                              phasecenter=phasecenter,
-                                                              cellx=cellx, celly=celly,
-                                                              nx=nx, ny=ny)
-                imager_task = worker.SDImagingWorker(imager_inputs)
-                imager_result = self._executor.execute(imager_task)
-            else:
-                combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images,
-                                                                outfile=imagename,
-                                                                org_directions=tocombine_org_directions,
-                                                                specmodes=tocombine_specmodes)
-                combine_task = sdcombine.SDImageCombine(combine_inputs)
-                imager_result = self._executor.execute(combine_task)
+            LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_v_spws[REF_MS_ID]))
+            combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images,
+                                                            outfile=imagename,
+                                                            org_directions=tocombine_org_directions,
+                                                            specmodes=tocombine_specmodes)
+            combine_task = sdcombine.SDImageCombine(combine_inputs)
+            imager_result = self._executor.execute(combine_task)
 
             if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
@@ -669,7 +660,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     cs.done()
                     nx = ia.shape()[dircoords[0]]
                     ny = ia.shape()[dircoords[1]]
-                observing_pattern = ref_ms.observing_pattern[combined_antids[0]][combined_spws[0]][combined_fieldids[0]]
+                observing_pattern = ref_ms.observing_pattern[combined_antids[REF_MS_ID]][combined_spws[REF_MS_ID]][combined_fieldids[REF_MS_ID]]
                 grid_task_class = gridding.gridding_factory(observing_pattern)
                 validsps = []
                 rmss = []
@@ -754,8 +745,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # estimate
                 rep_bw = ref_ms.representative_target[2]
-                rep_spwid = ref_ms.get_representative_source_spw()[1]
-                is_representative_spw = (rep_spwid == combined_spws[0] and rep_bw is not None)
+                (rep_source_name, rep_spwid) = ref_ms.get_representative_source_spw()
+                is_representative_spw = (rep_spwid == combined_spws[REF_MS_ID] and rep_bw is not None)
+                is_representative_source_spw = (rep_spwid == combined_spws[REF_MS_ID]) and \
+                                               (rep_source_name == utils.dequote(source_name))
                 if is_representative_spw:
                     # skip estimate if data is Cycle 2 and earlier + th effective BW is nominal (= chan_width)
                     spwobj = ref_ms.get_spectral_window(rep_spwid)
@@ -796,20 +789,24 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
                 sensitivity = Sensitivity(array='TP',
+                                          intent='TARGET',
                                           field=source_name,
-                                          spw=str(combined_spws[0]),
+                                          spw=str(combined_v_spws[REF_MS_ID]),
+                                          is_representative=is_representative_source_spw,
                                           bandwidth=cqa.quantity(chan_width, 'Hz'),
                                           bwmode='repBW',
                                           beam=beam, cell=qcell,
                                           sensitivity=cqa.quantity(image_rms, brightnessunit))
                 theoretical_noise = Sensitivity(array='TP',
+                                                intent='TARGET',
                                                 field=source_name,
-                                                spw=str(combined_spws[0]),
+                                                spw=str(combined_v_spws[REF_MS_ID]),
+                                                is_representative=is_representative_source_spw,
                                                 bandwidth=cqa.quantity(chan_width, 'Hz'),
                                                 bwmode='repBW',
                                                 beam=beam, cell=qcell,
                                                 sensitivity=theoretical_rms)
-                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
+                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs, (not is_nro))
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  specmode=specmode,
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
@@ -834,7 +831,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # Step 3.
                 # Imaging of all antennas
-                LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
+                LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_v_spws[REF_MS_ID]))
                 combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images_nro,
                                                                 outfile=imagename,
                                                                 org_directions=tocombine_org_directions_nro,
