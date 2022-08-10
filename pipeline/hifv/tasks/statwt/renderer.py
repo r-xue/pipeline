@@ -38,6 +38,8 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 try:
                     weight_stats = plotter.result.weight_stats
                     before_by_ant = weight_stats['before']['per_ant']
+                    print("before by ant in renderer:")
+                    print(before_by_ant)
                     after_by_ant = weight_stats['after']['per_ant']
 
                     for idx in range(before_by_ant):
@@ -95,12 +97,6 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 summary[stat].append(val)
         return summary
 
-    def format_wt(self, wt):
-        if wt is None:
-            return 'N/A'
-        else:
-            return np.format_float_positional(wt, precision=4, fractional=False, trim='-')
-
     def format_cell(self, whole, value, stat):
         if (value is None) or (whole is None) or (stat is None) or (value == 'N/A'):
             return ''
@@ -149,7 +145,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if i == 0: 
                 to_return.append(elt)
             else: 
-                val = self.format_wt(elt)
+                val = format_wt(elt)
                 format = self.format_cell(summary_stats, val, tr._fields[i])
                 formatted = "<td {0}>{1}</td>".format(format, val)
                 to_return.append(formatted)
@@ -178,3 +174,10 @@ def dev2shade(x, above_median=True):
     else: 
         rgb_hex=colors.to_hex(cmap(0.1))
     return rgb_hex 
+
+
+def format_wt(wt):
+    if wt is None:
+        return 'N/A'
+    else:
+        return np.format_float_positional(wt, precision=4, fractional=False, trim='-')

@@ -363,6 +363,7 @@ class weightboxChart(object):
     def plot(self):
         plots = []
         for k, _ in self.result.wtables.items():
+            print("making a plot for stage {}".format(k))
             plots.extend(self._get_plot_wrapper(suffix=k))
         return [p for p in plots if p is not None]
 
