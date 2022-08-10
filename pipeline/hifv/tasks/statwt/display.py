@@ -23,17 +23,17 @@ class weightboxChart(object):
         self.band2spw = None
 
     @staticmethod
-    def _get_weight_from_wtable(tbl, this_ant='', this_spw='', this_scan=''): #, spw_list=[]):
+    def _get_weight_from_wtable(tbl, this_ant='', this_spw='', this_scan='', spw_list=[]):
         if (this_ant != '') and (this_spw != '') and (this_scan!=''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && ANTENNA1=={1} && SCAN_NUMBER=={2} ntrue(FLAG)==0'.format(this_spw, this_ant, this_scan)
         elif (this_ant != '') and (this_spw != ''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && ANTENNA1=={1} && ntrue(FLAG)==0'.format(this_spw, this_ant)
-        #elif (this_ant != '') and spw_list: 
-        #    query_str = 'ANTENNA1=={0} && ntrue(FLAG)==0 && SPECTRAL_WINDOW_ID IN {1}'.format(this_ant, list(map(int, spw_list)))
         elif (this_ant != '') and (this_scan != ''):
             query_str = 'SCAN_NUMBER=={0} && ANTENNA1=={1} && ntrue(FLAG)==0'.format(this_scan, this_ant)
         elif (this_scan != '') and (this_spw != ''):
             query_str = 'SPECTRAL_WINDOW_ID=={0} && SCAN_NUMBER=={1} && ntrue(FLAG)==0'.format(this_spw, this_scan)
+        elif (this_ant != '') and spw_list: 
+            query_str = 'ANTENNA1=={0} && ntrue(FLAG)==0 && SPECTRAL_WINDOW_ID IN {1}'.format(this_ant, list(map(int, spw_list)))
         elif (this_ant != ''):
             query_str = 'ANTENNA1=={0} && ntrue(FLAG)==0'.format(this_ant)
         elif (this_spw != ''):
@@ -82,11 +82,11 @@ class weightboxChart(object):
             bxpstats_per_ant = list()
             # TODO: handle this section, both with the query and with the "correct ticks" better
             # antenna names should come from the full MS passed in
-            ant_idxs = self._get_ants_with_spws(tbl, self.band2spw[band]) #TODO: works? indices come from the wts table ANTENNA1 is for example 0,1,2,3
-            antname_labels = []
+            #ant_idxs = self._get_ants_with_spws(tbl, self.band2spw[band]) #TODO: works? indices come from the wts table ANTENNA1 is for example 0,1,2,3
+            #antname_labels = []
             for this_ant in ant_idxs:
-                print("Populating ant: {}".format(this_ant))
-                dat = self._get_weight_from_wtable(tbl, this_ant=this_ant)#, spw_list=band2spw[band]) # needs to get updated ticks at the same time?
+                #print("Populating ant: {}".format(this_ant))
+                dat = self._get_weight_from_wtable(tbl, this_ant=this_ant, spw_list=self.band2spw[band]) # needs to get updated ticks at the same time?
                 if dat.size > 0:
                     dat = dat[dat > 0]
                     bxpstats = cbook.boxplot_stats(dat, whis=self.whis)
@@ -103,11 +103,11 @@ class weightboxChart(object):
                     bxpstats[0]['max'] = None
                     bxpstats_per_ant.extend(bxpstats)
                 bxpstats_per_ant[-1]['ant'] = ant_names[this_ant]
-                antname_labels.append(ant_names[this_ant])
+                #antname_labels.append(ant_names[this_ant])
 
             bxpstats_per_spw = list()
             for this_spw in self.band2spw[band]:
-                print("Populatin spw: {}".format(this_spw))
+                #print("Populatin spw: {}".format(this_spw))
                 dat = self._get_weight_from_wtable(tbl, this_spw=this_spw)
                 if dat.size > 0:
                     dat = dat[dat > 0]
@@ -130,7 +130,7 @@ class weightboxChart(object):
 
             bxpstats_per_scan = list()
             for this_scan in scans: 
-                print("Populating scan: {}".format(this_scan))
+                #print("Populating scan: {}".format(this_scan))
                 dat = self._get_weight_from_wtable(tbl, this_scan=this_scan)
                 if dat.size > 0:
                     dat = dat[dat > 0]
@@ -170,7 +170,7 @@ class weightboxChart(object):
 
             # Create per-antenna plots
             ax1.bxp(bxpstats_per_ant, flierprops=flierprops)
-            ax1.axes.set_xticklabels(antname_labels, rotation=45, ha='center')
+            ax1.axes.set_xticklabels(ant_names, rotation=45, ha='center')
             ax1.set_ylabel('$Wt_{i}$')
             ax1.set_title('Antenna-based weights, {}-band'.format(band))
             ax1.get_yaxis().get_major_formatter().set_useOffset(False)
