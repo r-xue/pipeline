@@ -37,7 +37,7 @@ else:
     table_header = "statwt after"
 %>
 
-<!-- For VLA PI: show the overall mean and variance at the top -->
+<!-- VLA PI: show the overall mean and variance at the top -->
 % if result[0].inputs['statwtmode'] == 'VLA':
     <% 
     mean =  result[0].jobs[0]['mean']
@@ -69,6 +69,7 @@ else:
     <p>where &#963 is defined as 1.4826*MAD.</p>
 % endif 
 
+<!-- The table and plot display below is different for VLA PI and VLASS -->
 <!-- VLA PI has per-band plots and tables for only after statwt was run, and includes per-scan plots and tables and also highlights table cells--> 
 <!-- vs. VLASS has before/after plots and tables without being separated by band, doesn't include per-scan plots or tables, and doesn't include highlighting of table cells-->
 % if result[0].inputs['statwtmode'] == 'VLA':
@@ -115,7 +116,7 @@ else:
         </%self:plot_group>
 
         <!--Antenna, spw, scans tables for band--> 
-        <!-- TODO: turn this into a loop over Scan, Spw, Ant? --> 
+        <!-- TODO: Consider turn this into a loop over Scan, Spw, Ant? --> 
         <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
             <caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna, Band ${band}. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
             </caption>
@@ -126,13 +127,13 @@ else:
                     <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
                 </tr>
                 <tr>
-                    <th scope="col" >Median</th>
-                    <th scope="col" >1st Quartile</th>
-                    <th scope="col" >3rd Quartile</th>
-                    <th scope="col" >Mean</th>
-                    <th scope="col" >S.Dev.</th>
-                    <th scope="col" >Minimum</th>
-                    <th scope="col" >Maximum</th>
+                    <th scope="col">Median</th>
+                    <th scope="col">1st Quartile</th>
+                    <th scope="col">3rd Quartile</th>
+                    <th scope="col">Mean</th>
+                    <th scope="col">S.Dev.</th>
+                    <th scope="col">Minimum</th>
+                    <th scope="col">Maximum</th>
                 </tr>        
             </thead>
             <tbody>
@@ -160,13 +161,13 @@ else:
                     <th scope="col" colspan="7" style="text-align:center">${table_header}</th>
                 </tr>
                 <tr>
-                    <th scope="col" >Median</th>
-                    <th scope="col" >1st Quartile</th>
-                    <th scope="col" >3rd Quartile</th>
-                    <th scope="col" >Mean</th>
-                    <th scope="col" >S.Dev.</th>
-                    <th scope="col" >Minimum</th>
-                    <th scope="col" >Maximum</th>
+                    <th scope="col">Median</th>
+                    <th scope="col">1st Quartile</th>
+                    <th scope="col">3rd Quartile</th>
+                    <th scope="col">Mean</th>
+                    <th scope="col">S.Dev.</th>
+                    <th scope="col">Minimum</th>
+                    <th scope="col">Maximum</th>
                 </tr>        
             </thead>
             <tbody>
@@ -221,7 +222,7 @@ else:
     %endfor
 %else: 
     <!-- Include plots and tables for VLASS --> 
-    <!-- Plots for VLASS before/after, not separated by band, doesn't include per-scan plots or tables-->
+    <!-- Plots for VLASS before/after, not separated by band, doesn't include per-scan plots or tables or shaded cells-->
     <%self:plot_group plot_dict="${summary_plots}"
                                     url_fn="${lambda ms:  'noop'}">
 

@@ -31,7 +31,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
 
-            # Only VLASS has 'before' and 'after' available
+            # Only VLASS-SE has 'before' and 'after' available
             if result.inputs['statwtmode'] == 'VLASS-SE':
                 summary_plots[ms] = plots
                 is_same = True
@@ -45,7 +45,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         is_same &= before_by_ant[idx]['med'] == after_by_ant[idx]['med']
                         is_same &= before_by_ant[idx]['stdev'] == after_by_ant[idx]['stdev']
                     
-                    # Make table rows for VLASS as well? 
+                    #TODO: Make table rows for VLASS as well? This is optional
 
                 except:
                     is_same = False
@@ -53,7 +53,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 if is_same:
                     raise exceptions.PipelineException("Statwt failed to recalculate the weights, cannot continue.")
             else:
-                # VLA PI has per-band plots and tables
+                # VLA PI has per-band plots and tables for only "after"
                 bands = plotter.band2spw.keys()
 
                 scan_table_rows = collections.defaultdict(list)
@@ -83,7 +83,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'ant_table_rows': ant_table_rows, # only populated for VLA-PI
                     'spw_table_rows': spw_table_rows, # only populated for VLA-PI
                     'scan_table_rows': scan_table_rows, # only populated for VLA-PI
-                    'band2spw': plotter.band2spw}) #
+                    'band2spw': plotter.band2spw}) # only populated for VLA-PI
 
         return ctx
 
