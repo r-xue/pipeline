@@ -112,7 +112,8 @@ class vlaWeightboxChart(weightboxChart):
                                           'y_axis': 'weight',
                                           'type': suffix, 
                                           'band': band})
-                wrappers.append(wrapper)
+                    wrappers.append(wrapper)
+                
             except Exception as ex:
                 LOG.error('Could not create ' + suffix + ' plot.')
                 LOG.exception(ex)
