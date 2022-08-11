@@ -27,12 +27,12 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         scan_table_rows = None
 
         for result in results:
+
             if result.inputs['statwtmode'] == 'VLASS-SE':
                 weightboxChart = statwtdisplay.vlassWeightboxChart
             else:
                 weightboxChart = statwtdisplay.vlaWeightboxChart
 
-            #plotter = statwtdisplay.weightboxChart(context, result)
             plotter = weightboxChart(context, result)
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
@@ -50,12 +50,6 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         is_same &= before_by_ant[idx]['mean'] == after_by_ant[idx]['mean']
                         is_same &= before_by_ant[idx]['med'] == after_by_ant[idx]['med']
                         is_same &= before_by_ant[idx]['stdev'] == after_by_ant[idx]['stdev']
-                    
-                    #TODO: Make table rows for VLASS as well? This is optional
-                    # all_ants = before_by_ant
-                    # ant_table_rows = self.make_vlass_stats_table(after_by_ant, table_type='ant')
-                    # print("ant table rows: ", ant_table_rows)
-                    # spw_table_rows = self.make_vlass_stats_table(after_by_spw, table_type='spw')
                     
                 except:
                     is_same = False
@@ -89,10 +83,10 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         ctx.update({'summary_plots': summary_plots,
                     'plotter': plotter,
                     'dirname': weblog_dir,
-                    'ant_table_rows': ant_table_rows,
-                    'spw_table_rows': spw_table_rows,
+                    'ant_table_rows': ant_table_rows, # only populated for VLA-PI
+                    'spw_table_rows': spw_table_rows, # only populated for VLA-PI
                     'scan_table_rows': scan_table_rows, # only populated for VLA-PI
-                    'band2spw': plotter.band2spw}) # only populated with non-None value for VLA-PI
+                    'band2spw': plotter.band2spw}) # only populated for VLA-PI
 
         return ctx
 
@@ -128,7 +122,6 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 return ''
 
     StatsTR = collections.namedtuple('StatsTR', 'index median q1 q2 mean stdev min max')
-    VlassStatsTR = collections.namedtuple('VlassStatsTR', 'index median quartiles mean_std')
 
     def make_stats_table(self, weight_stats, table_type='scan'):
         summary_stats = self.summarize_stats(weight_stats)
@@ -158,27 +151,10 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 formatted = "<td {0}>{1}</td>".format(format, val)
                 to_return.append(formatted)
         return to_return
-    
-    def make_vlass_stats_table(self, weight_stats, table_type='ant'):
-        rows = []
-        for i in range(len(weight_stats)):
-            median = weight_stats[i]['med']
-            q1 = format_wt(weight_stats[i]['q1'])
-            q3 = format_wt(weight_stats[i]['q3'])
-            if weight_stats[i]['quartiles'] is not None: 
-                quartiles = "{0}/{1}".format(q1, q3)
-            else: 
-                quartiles = "N/A"
-            mean = format_wt(weight_stats[i]['mean'])
-            std = format_wt(weight_stats[i]['stdev'])
-            mean_std = "{0} &#177 {1}".format(mean, std)
 
-            tr = self.StatsTR(weight_stats[i][table_type], median, quartiles, mean_std)
-            rows.append(tr)
-        return rows
 
-# Note: this is copied and slightly modified from Rui's verision 
-# this is a potential candidate for refactoring out into a common location
+# Note: this is copied and slightly modified from Rui's verision in hif_makecutoutimages 
+# This is a potential candidate for refactoring out into a common location
 # in the future.
 def dev2shade(x, above_median=True):
     absx=abs(x)

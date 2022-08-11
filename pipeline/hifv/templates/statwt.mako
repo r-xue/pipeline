@@ -57,7 +57,12 @@ else:
     bgcolor_list_blue=[render.dev2shade(3., False), render.dev2shade(4., False), render.dev2shade(5., False), render.dev2shade(6., False)]
     %>
 
-    <p>The color background highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): 
+    <p>    
+    In the tables below, the "antenna-based" weights are defined by Wt_bl_ij=Wt_i*Wt_j, so there is a square scale difference between the baseline weights and the "antenna-based" weights 
+    presented in the table.
+    </p>
+
+    <p>The color background present in some table cells highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): 
     <p> For values above the median, shades of red are used: </p>
     <p style="background-color:${bgcolor_list[0]}; display:inline;">3&#963&le;dev&lt;4&#963</p>; <p style="background-color:${bgcolor_list[1]}; display:inline;">4&#963&le;dev&lt;5&#963</p>; 
     <p style="background-color:${bgcolor_list[2]}; display:inline;">5&#963&le;dev&lt;6&#963</p>; <p style="background-color:${bgcolor_list[3]}; display:inline;">6&#963&le;dev,</p>
