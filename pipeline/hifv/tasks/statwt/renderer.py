@@ -104,14 +104,14 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         if (value is None) or (whole is None) or (stat is None) or (value == 'N/A'):
             return ''
         else:
-            summary = np.array(whole[stat], dtype=np.float) #TODO: Why am I not just doing this in the first place when I summarize the stats? 
+            summary = np.array(whole[stat], dtype=np.float)
 
             # When the table column has only one or zero entires, it doesn't make sense to compare
             # it to "the other values in the table"
             if len(summary) <= 1: 
                 return ''
 
-            median = np.nanmedian(summary) # TODO: and this
+            median = np.nanmedian(summary)
             sigma = 1.4826 * np.nanmedian(np.abs(summary - median))
             dev = abs(float(value)) - median
 

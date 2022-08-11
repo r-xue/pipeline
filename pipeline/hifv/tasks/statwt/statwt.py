@@ -198,7 +198,7 @@ class Statwt(basetask.StandardTaskTemplate):
 
         gaincal_spws = ','.join([str(s) for s in spws])
 
-        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int', #TODO: is int the default? 
+        job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
         return wtable

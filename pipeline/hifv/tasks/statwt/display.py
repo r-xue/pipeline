@@ -148,7 +148,6 @@ class vlaWeightboxChart(weightboxChart):
             LOG.info('Making antenna-based weight plot: {0} for band: {1}'.format(figfile, band))
             bxpstats_per_ant = list()
             for this_ant in ant_idxs:
-                print("Populating ant: {}".format(this_ant))
                 dat = self._get_weight_from_wtable(tbl, this_ant=this_ant, spw_list=self.band2spw[band])
                 if dat.size > 0:
                     dat = dat[dat > 0]
@@ -169,7 +168,6 @@ class vlaWeightboxChart(weightboxChart):
 
             bxpstats_per_spw = list()
             for this_spw in self.band2spw[band]:
-                print("Populating spw: {}".format(this_spw))
                 dat = self._get_weight_from_wtable(tbl, this_spw=this_spw)
                 if dat.size > 0:
                     dat = dat[dat > 0]
@@ -192,7 +190,6 @@ class vlaWeightboxChart(weightboxChart):
 
             bxpstats_per_scan = list()
             for this_scan in scans: 
-                print("Populating scan: {}".format(this_scan))
                 dat = self._get_weight_from_wtable(tbl, this_scan=this_scan)
                 if dat.size > 0:
                     dat = dat[dat > 0]

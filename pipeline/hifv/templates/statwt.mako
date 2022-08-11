@@ -121,7 +121,6 @@ else:
         </%self:plot_group>
 
         <!--Antenna, spw, scans tables for band--> 
-        <!-- TODO: Consider turn this into a loop over Scan, Spw, Ant? --> 
         <table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
             <caption>Summary of ${description}-statwt antenna-based weights (<i>W</i><sub>i</sub>) for each antenna, Band ${band}. The antenna-based weights are derived from the visibility WEIGHT column: <i>W</i><sub>ij</sub>&asymp;<i>W</i><sub>i</sub><i>W</i><sub>j</sub>. 
             </caption>
