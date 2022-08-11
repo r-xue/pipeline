@@ -334,7 +334,7 @@ class Plot(object):
     def thumbnail(self):
         thumb_dir = os.path.join(os.path.dirname(self.abspath), 'thumbs')
         thumb_file = os.path.join(thumb_dir, os.path.basename(self.abspath))
-        print("We're trying to create a thumbnail for {}".format(thumb_file))
+
         if os.path.exists(thumb_file):
             return thumb_file
 
@@ -349,9 +349,9 @@ class Plot(object):
         """
         if THUMBNAIL_CMD is None:
             return self.abspath
+
         thumb_dir = os.path.join(os.path.dirname(self.abspath), 'thumbs')
         thumb_file = os.path.join(thumb_dir, os.path.basename(self.abspath))
-        print("We're trying to create a thumbnail part2 for {}".format(thumb_file))
 
         if not os.path.exists(thumb_dir):
             os.mkdir(thumb_dir) 
@@ -364,7 +364,7 @@ class Plot(object):
         # Set the command to perform. The module defines whether to use sips
         # or ImageMagick; all that remains is to append, in order, the output
         # and input files
-        LOG.debug('Creating thumbnail with %s(%s, %s)',
+        LOG.trace('Creating thumbnail with %s(%s, %s)',
                   THUMBNAIL_CMD, self.abspath, thumb_file)
         cmd = THUMBNAIL_CMD(self.abspath, thumb_file)
 
