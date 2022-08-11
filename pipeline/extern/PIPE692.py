@@ -70,8 +70,9 @@ class SSFanalysis(object):
             if elma.name == self.refant:
                 self.refantid=elma.id
             self.antlist.append(elma.name)
-        # store all ant info for baselines - call later to get lengths
-        self.baselines=inputsin.ms.antenna_array
+
+        # store all ant info for baselines - call later to get lengths - from context
+        #self.baselines=inputsin.ms.antenna_array
 
         scispws = inputsin.ms.get_spectral_windows(task_arg=inputsin.spw, science_windows_only=True)
         # Find the maximum science spw bandwidth for each science receiver band.
@@ -96,11 +97,12 @@ class SSFanalysis(object):
         targeted_scans = inputsin.ms.get_scans(scan_intent=inputsin.intent, spw=str(self.spwUse))
         bp_scan=[]
         bp_field = []
+        bp_id = []
         for elm in targeted_scans:
             bp_scan.append(elm.id) # take the ID
             for elms in elm.fields:
                 bp_field.append(elms.name)  # fields is a dict again...
-            
+
         self.scanUse = bp_scan[0] # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON)
         self.fieldUse = bp_field[0]
 
@@ -109,6 +111,10 @@ class SSFanalysis(object):
  
         # run my converted function from Todd's aU.cycletime
         self.cycletime = self.getcycletime()
+
+        # for BP scan only values from function for given scan/field/spw only
+        # this is keyed by blname, e.g.  self.baselines['DA42-DA42'] 
+        self.baselines=self.getbaselinesproj()
 
         # run my function to get the time/length of the bandpass scan
         alltime = self.getTime() # no inputs needed within the class (uses self.caltab, self.spwUse, self.scanUse)
@@ -123,35 +129,6 @@ class SSFanalysis(object):
         # setup the main analysis dictionary
         self.allResult={}
 
-        
-        #print('')
-        #print(' ***************************')
-        #print(' Decoherence Phase RMS assessment ')
-        #print(' Working on the MS '+str(self.visUse))
-        #print(' Selected scan',self.scanUse)
-        #print(' Selected spw',self.spwUse)
-        #print(' Using field', self.fieldUse)
-        #print(' Using caltab', self.caltable)
-        #print(' The refant is', self.refant, ' id=', self.refantid)
-        #print(' Is ACA with PM data ', self.PMinACA)
-        #print(' Total BP scan time ', self.totaltime)
-        #print(' Phase referencing cycle time ', self.cycletime)
-        #print(' The median integration time ', self.difftime)
-        #print(' ***************************')
-        #print('')
-
-        # new logger output inside the code 
-        #casalog.post('*** Phase RMS vs Baseline assessment ***', 'INFO','Decoherence')
-        #casalog.post(' Working on the MS '+str(self.visUse), 'INFO', 'Decoherence')
-        #casalog.post(' Selected scan '+str(self.scanUse), 'INFO','Decoherence')
-        #casalog.post(' Selected spw '+str(self.spwUse), 'INFO','Decoherence')
-        #casalog.post(' Using field '+str(self.fieldUse), 'INFO','Decoherence')
-        #casalog.post(' Using caltab'+str(self.caltable), 'INFO','Decoherence')
-        #casalog.post(' The refant is '+str(self.refant)+' id '+str(self.refantid), 'INFO','Decoherence')
-        #casalog.post(' Is ACA with PM data '+str(self.PMinACA), 'INFO','Decoherence')
-        #casalog.post(' Total BP scan time '+str(self.totaltime), 'INFO','Decoherence')
-        #casalog.post(' Phase referencing cycle time '+str(self.cycletime), 'INFO','Decoherence')
-        #casalog.post(' The median integration time '+str(self.difftime), 'INFO','Decoherence')
 
         LOG.info('*** Phase RMS vs Baseline assessment ***')#, 'INFO','Decoherence')
         LOG.info(' Working on the MS '+str(self.visUse))#, 'INFO', 'Decoherence')
@@ -656,8 +633,13 @@ class SSFanalysis(object):
                     
                 # fill baseline information now
                 rms_results['blname'].append(self.antlist[i]+'-'+self.antlist[j])
-                rms_results['bllen'].append(float(self.baselines.get_baseline(i,j).length.value)) # from context input
+                # OLD (new) WAY from context - average all as overview
+                # not direcrtly the BP only
+                #rms_results['bllen'].append(float(self.baselines.get_baseline(i,j).length.value)) # from context input
                 
+                rms_results['bllen'].append(float(self.baselines[self.antlist[i]+'-'+self.antlist[j]])) # from function
+
+
                 # make assessment if this is a bad antenna
                 if self.antlist[i] in antout or self.antlist[j] in antout: 
                     rms_results['blphaserms'].append(np.nan)
@@ -719,6 +701,51 @@ class SSFanalysis(object):
         return np.median(diffs)
 
 
+    def getbaselinesproj(self, fieldin=None):
+        ''' Code to get the projected baseline from the openend 
+        visibilitiy file already - these are ordered in 
+        terms of antennas. This is a modified stand alone version
+        similar to the getProjectedBaselines from Todd Hunter's aUs.
+
+        returns a dict of lengths which are BL name keyed
+        e.g. bllens[DA41-DA42] - key is name ant 1 - dash - name ant 2
+        '''
+        mymsmd.open(self.visUse)
+        spwchan = mymsmd.nchan(self.spwUse)
+        datadescid= mymsmd.datadescids(spw=self.spwUse)[0]
+        mymsmd.close()
+        # these arrays contain...
+        uv = []  # ... median bl-length in the UV plane (m) - should be projected if UV
+        bl = []  # ... baseline name (ANT1-ANT2)
+
+        myms.open(self.visUse)
+        myms.selectinit(datadescid=datadescid)
+        myms.select({'uvdist':[1e-9,1e12]}) # avoid auto corr
+        myms.selectchannel(1,0, spwchan, 1) # data structure related 
+        myms.select({'scan_number': int(self.scanUse)})
+        if fieldin:
+            myms.select({'field_id': int(fieldin)})
+        alldata = myms.getdata(['uvdist','antenna1','antenna2']) 
+        myms.close()
+        ## the length of e.g. alldata['uvdist'] is >total no. of Bls - it loops over all time stamps of the BP 
+        ## we need a mean of the unique values (as Todd's aU) otherwise we just get the first time entry in the below
+        bldict = {}
+        uniBl = []
+        baselineLen = {}
+        for allID in range(len(alldata['uvdist'])):
+            myBl = '%s-%s' %(self.antlist[alldata['antenna1'][allID]],self.antlist[alldata['antenna2'][allID]])
+            ##print(myBl)
+            thelen = alldata['uvdist'][allID]
+            if myBl not in bldict:
+                bldict[myBl]=[]
+            bldict[myBl].append(thelen)
+            uniBl.append(myBl)
+        uniBl = np.unique(uniBl)
+        for myBl in uniBl:
+            baselineLen[myBl]= np.mean(bldict[myBl]) # this has a list for each 
+        
+        # order irrelavant as keyed here with BL Name
+        return baselineLen
 
     def score(self): 
         ''' Code to create score (between 0.0 and 1.0)  and short and long messaging.
