@@ -27,7 +27,13 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         scan_table_rows = None
 
         for result in results:
-            plotter = statwtdisplay.weightboxChart(context, result)
+            if result.inputs['statwtmode'] == 'VLASS-SE':
+                weightboxChart = statwtdisplay.vlassWeightboxChart
+            else:
+                weightboxChart = statwtdisplay.vlaWeightboxChart
+
+            #plotter = statwtdisplay.weightboxChart(context, result)
+            plotter = weightboxChart(context, result)
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
 
@@ -38,8 +44,6 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 try:
                     weight_stats = plotter.result.weight_stats
                     before_by_ant = weight_stats['before']['per_ant']
-                    print("before by ant in renderer:")
-                    print(before_by_ant)
                     after_by_ant = weight_stats['after']['per_ant']
 
                     for idx in range(before_by_ant):
@@ -48,7 +52,11 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         is_same &= before_by_ant[idx]['stdev'] == after_by_ant[idx]['stdev']
                     
                     #TODO: Make table rows for VLASS as well? This is optional
-
+                    # all_ants = before_by_ant
+                    # ant_table_rows = self.make_vlass_stats_table(after_by_ant, table_type='ant')
+                    # print("ant table rows: ", ant_table_rows)
+                    # spw_table_rows = self.make_vlass_stats_table(after_by_spw, table_type='spw')
+                    
                 except:
                     is_same = False
 
@@ -75,19 +83,19 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     spw_table_rows[band] = self.make_stats_table(after_by_spw, table_type='spw')
 
                 for plot in plots: 
-                    print("PLOT, ", plot)
                     band = plot.parameters['band']
                     summary_plots[band][ms].append(plot)
 
         ctx.update({'summary_plots': summary_plots,
                     'plotter': plotter,
                     'dirname': weblog_dir,
-                    'ant_table_rows': ant_table_rows, # only populated for VLA-PI
-                    'spw_table_rows': spw_table_rows, # only populated for VLA-PI
+                    'ant_table_rows': ant_table_rows,
+                    'spw_table_rows': spw_table_rows,
                     'scan_table_rows': scan_table_rows, # only populated for VLA-PI
-                    'band2spw': plotter.band2spw}) # only populated for VLA-PI
+                    'band2spw': plotter.band2spw}) # only populated with non-None value for VLA-PI
 
         return ctx
+
 
     def summarize_stats(self, input_stats):
         summary = collections.defaultdict(list)
@@ -96,6 +104,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 val = input_stats[i][stat]
                 summary[stat].append(val)
         return summary
+
 
     def format_cell(self, whole, value, stat):
         if (value is None) or (whole is None) or (stat is None) or (value == 'N/A'):
@@ -135,11 +144,10 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             tr = self.StatsTR(weight_stats[i][table_type], median, q1, q3, mean, std, min, max)
             tds = self.make_shaded_tds(tr, summary_stats)
             rows.append(tds)
-        print(rows)           
         return rows
     
-    # Takes a StatsTR and shades and formats it
     def make_shaded_tds(self, tr, summary_stats): 
+        """Takes a StatsTR and shades and formats it"""        
         to_return = []
         for i, elt in enumerate(tr):
             if i == 0: 
@@ -151,12 +159,27 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 to_return.append(formatted)
         return to_return
     
-    def make_vlass_stats_table(self):
-        # TODO: Either implement or remove
-        return None
+    def make_vlass_stats_table(self, weight_stats, table_type='ant'):
+        rows = []
+        for i in range(len(weight_stats)):
+            median = weight_stats[i]['med']
+            q1 = format_wt(weight_stats[i]['q1'])
+            q3 = format_wt(weight_stats[i]['q3'])
+            if weight_stats[i]['quartiles'] is not None: 
+                quartiles = "{0}/{1}".format(q1, q3)
+            else: 
+                quartiles = "N/A"
+            mean = format_wt(weight_stats[i]['mean'])
+            std = format_wt(weight_stats[i]['stdev'])
+            mean_std = "{0} &#177 {1}".format(mean, std)
 
-# Note: this is copied and slightly modified from Rui's verision in {}
+            tr = self.StatsTR(weight_stats[i][table_type], median, quartiles, mean_std)
+            rows.append(tr)
+        return rows
+
+# Note: this is copied and slightly modified from Rui's verision 
 # this is a potential candidate for refactoring out into a common location
+# in the future.
 def dev2shade(x, above_median=True):
     absx=abs(x)
     if above_median: 

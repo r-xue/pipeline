@@ -29,8 +29,6 @@ if result[0].inputs['statwtmode'] == 'VLA':
 else: 
     before_by_spw=weight_stats['before']['per_spw']
     before_by_ant=weight_stats['before']['per_ant']
-    print("before by ant in mako:")
-    print(before_by_ant)
 
     after_by_spw=weight_stats['after']['per_spw']
     after_by_ant=weight_stats['after']['per_ant']
@@ -277,14 +275,14 @@ else:
             % else:
                 <td>N/A</td>
             % endif 
-            <td>${render.format_wt(before_by_ant[i]['mean'])} &#177 ${render.format_wt(before_by_ant[i]['stdev'])}</td>         
+            <td>${render.format_wt(before_by_ant[i]['mean'])} &#177 ${render.format_wt(before_by_ant[i]['stdev'])}</td>    
             <td>${render.format_wt(after_by_ant[i]['med'])}</td>
             % if after_by_ant[i]['quartiles'] is not None:
                 <td>${render.format_wt(after_by_ant[i]['q1'])}/${render.format_wt(after_by_ant[i]['q3'])}</td>
             % else:
                 <td>N/A</td>
             % endif
-            <td>${render.format_wt(after_by_ant[i]['mean'])} &#177 ${render.format_wt(after_by_ant[i]['stdev'])}</td>          
+            <td>${render.format_wt(after_by_ant[i]['mean'])} &#177 ${render.format_wt(after_by_ant[i]['stdev'])}</td>      
 		</tr>
 		% endfor
 	</tbody>
@@ -319,7 +317,7 @@ else:
             % else:
                 <td>N/A</td>
             % endif            
-            <td>${render.format_wt(before_by_spw[i]['mean'])} &#177 ${render.format_wt(before_by_spw[i]['stdev'])}</td>         
+            <td>${render.format_wt(before_by_spw[i]['mean'])} &#177 ${render.format_wt(before_by_spw[i]['stdev'])}</td>  
             <td>${render.format_wt(after_by_spw[i]['med'])}</td>
             % if after_by_spw[i]['quartiles'] is not None:
                 <td>${render.format_wt(after_by_spw[i]['q1'])}/${render.format_wt(after_by_spw[i]['q3'])}</td>
@@ -327,7 +325,6 @@ else:
                 <td>N/A</td>
             % endif
             <td>${render.format_wt(after_by_spw[i]['mean'])} &#177 ${render.format_wt(after_by_spw[i]['stdev'])}</td>
-           
 		</tr>
 		% endfor
 	</tbody>
