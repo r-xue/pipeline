@@ -40,7 +40,7 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Get info on the Decoherence Assessment RMS plots and tables
         if results[0].phaserms_results: 
-            weblog_dir = os.path.join(context.report_dir, 'stage%s' % results[0].stage_number)
+            weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
             rmsplots = make_rms_plots(results, weblog_dir)
             phaserms_table_rows = get_phaserms_table_rows(context, results)
         else: 

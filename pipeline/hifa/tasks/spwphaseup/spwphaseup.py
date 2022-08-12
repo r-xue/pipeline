@@ -149,46 +149,15 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # correction.
         snr_info = self._compute_median_snr(diag_phase_results, spwmaps)
 
-        try:
-            LOG.info("Starting decoherence assessment.")
-
-            # Initialize the Decoherence Phase RMS Structure function assessment
-            pipe692 = SSFanalysis(inputs, outlierlimit=180., ftoll=0.3, maxpoorant=11)
-
-            # Launch the analysis
-            pipe692.analysis()
-
-            # Get the QA dictionary: 
-            # keys are: 'basescore', 'basecolor', 'shortmsg', 'longmsg'
-            phaserms_qa = pipe692.score()
-
-            LOG.info('The Phase RMS assessment score is: '+str(phaserms_qa['basescore']))
-
-            # Create the SSF plot(s) to include in the weblog
-            pipe692.plotSSF()
-
-            # Store the values which need to be reported on the weblog
-            phaserms_results = pipe692.allResult
-            phaserms_cycletime = pipe692.cycletime 
-            phaserms_totaltime = pipe692.totaltime
-            phaserms_antout = pipe692.antout
-
-            pipe692.close()
-
-        except Exception as e:
-            # If the script fails, report this failure via the following QA score
-            phaserms_qa = {'basescore':0.9, 'basecolor':'blue', 'shortmsg':'Cannot assess Phase RMS', 
-                           'longmsg':'Unable to assess the Phase RMS decoherence'}
-            phaserms_results = None
-            phaserms_cycletime = None
-            phaserms_totaltime = None
-            phaserms_antout = []
+        # Do the decoherence assessment
+        phaserms_qa, phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout \
+            = self._do_decoherence_assessment()
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
                                    snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing,
-                                   phaserms_totaltime = phaserms_totaltime, phaserms_cycletime = phaserms_cycletime, 
-                                   phaserms_results = phaserms_results, phaserms_antout = phaserms_antout, 
+                                   phaserms_totaltime=phaserms_totaltime, phaserms_cycletime=phaserms_cycletime, 
+                                   phaserms_results=phaserms_results, phaserms_antout=phaserms_antout, 
                                    phaserms_qa=phaserms_qa)
 
         return result
@@ -768,6 +737,41 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     continue
 
         return snr_info
+
+    def _do_decoherence_assessment(self) -> Tuple[Dict, Dict, str, str, List]:
+        try:
+            LOG.info("Starting decoherence assessment.")
+
+            # Initialize the Decoherence Phase RMS Structure function assessment
+            pipe692 = SSFanalysis(self.inputs, outlierlimit=180., ftoll=0.3, maxpoorant=11)
+
+            # Launch the analysis
+            pipe692.analysis()
+
+            # Get the QA dictionary: 
+            # keys are: 'basescore', 'basecolor', 'shortmsg', 'longmsg'
+            phaserms_qa = pipe692.score()
+
+            LOG.info('The Phase RMS assessment score is: '+str(phaserms_qa['basescore']))
+
+            # Create the SSF plot(s) to include in the weblog
+            pipe692.plotSSF()
+
+            # Store the values which need to be reported on the weblog
+            phaserms_results = pipe692.allResult
+            phaserms_cycletime = pipe692.cycletime 
+            phaserms_totaltime = pipe692.totaltime
+            phaserms_antout = pipe692.antout
+
+            pipe692.close()
+        except Exception as e:
+            phaserms_qa = None
+            phaserms_results = None
+            phaserms_cycletime = None
+            phaserms_totaltime = None
+            phaserms_antout = []
+
+        return phaserms_qa, phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout
 
     @staticmethod
     def _get_intent_field(ms: MeasurementSet, intents: str, exclude_intents: str = None) -> List[Tuple[str, str]]:

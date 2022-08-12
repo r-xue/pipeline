@@ -80,9 +80,15 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Remove the outlier antenna list from the end of the short message, if present 
             if "have higher phase RMS" in shortmsg:
                 shortmsg = shortmsg.split('.')[0] + '.'
+        else:
+            # If there was no qa result for the decoherence assessment, use the following score and 
+            # messages:
+            base_score = 0.9 
+            shortmsg = "Cannot assess Phase RMS."
+            longmsg = 'Unable to assess the Phase RMS decoherence, for {}.'.format(ms.name)
 
-            # Add score to list of scores.
-            scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
+        # Add decoherence assessment score to list of scores
+        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
 
         # Add all scores to the QA pool
         result.qa.pool.extend(scores)
