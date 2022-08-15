@@ -459,7 +459,7 @@ class ACreNorm(object):
 
         # Version
 
-        self.RNversion='v1.3-2021/08/05-alipnick'
+        self.RNversion='v1.4-2022/08/12-alipnick'
 
         # LM added 
         # file for logger named per EB and runtime - will make a new file every run
@@ -1531,6 +1531,8 @@ class ACreNorm(object):
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise SyntaxError('excludechan requires a channel range separator of "~" (tilde)')
         elif excludechan is None:
+            excludechan={}
+        elif type(excludechan) is str:
             excludechan={}
         self.rnstats['inputs']['excludechan'] = excludechan
 
