@@ -11,8 +11,14 @@ from pipeline.infrastructure.renderer import rendererutils
 <%block name="title">WVR Calibration and Flagging</%block>
 
 <p>This task checks whether the WVR radiometers are working as intended,
-interpolating for antennas that are not. The WVR caltable is only added to 
-subsequent pre-applys if it gives a tangible improvement.</p>
+interpolating for antennas that are not. Scoring assessment investigates
+the phase RMS improvement ratio and number of flagged antennas, checks if
+the phase and bandpass source phase RMS values are elevated or noisy, and
+finally whether the solutions from running the CASA wvrgcal task have
+elevated rms path or discrepancy values (&gt;500&mu;m). Poor scores and very
+high rms path and discrepancy values may point to cloud conditions during
+the observations. The WVR caltable is only added to subsequent pre-applys
+if it gives a tangible improvement.</p>
 
 <h2>Results</h2>
 
@@ -24,10 +30,9 @@ been skipped.</p>
 %endif
 
 % if flag_plots or phase_offset_summary_plots or baseline_summary_plots:
-<h2>Plots</h2>
 
 <p>The pipeline tests whether application of WVR correction improves the data
-by performing a gaincal for a chosen field, usually the bandpass calibrator,
+by performing a phase gaincal on the bandpass and phase calibrators,
 and comparing the resulting phase corrections evaluated both with and without
 application of WVR correction. Plots based on these data in these evaluation
 caltables are presented below.</p>
@@ -72,6 +77,10 @@ caltables are presented below.</p>
 	</%def>
 
 	<%def name="preamble()">
+        After flagging discrepant WVRs based on the bandpass calibrator, the
+        phase improvement on both bandpass and phase calibrators is used to
+        assess the effectiveness of the WVR correction.
+
         % if metric_plots:
 
             <p>The following set of plots show the improvement in the rms phase
