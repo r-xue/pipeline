@@ -239,6 +239,11 @@ except:
                         <th>image file</th>
                         <td colspan="2">${row.image_file}</td>
                     </tr>
+
+                    <tr>
+                        <th>data type</th>
+                        <td colspan="2">${row.datatype_info}</td>
+                    </tr>
                 %endif
             
             %endfor

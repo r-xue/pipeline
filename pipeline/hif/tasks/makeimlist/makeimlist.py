@@ -202,11 +202,6 @@ class MakeImListInputs(vdp.StandardInputs):
         self.known_synthesized_beams = known_synthesized_beams
 
 
-# tell the infrastructure to give us mstransformed data when possible by
-# registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(MakeImListInputs)
-
-
 @task_registry.set_equivalent_casa_task('hif_makeimlist')
 @task_registry.set_casa_commands_comment('A list of target sources to be imaged is constructed.')
 class MakeImList(basetask.StandardTaskTemplate):
@@ -263,9 +258,13 @@ class MakeImList(basetask.StandardTaskTemplate):
             datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
         # Select the correct vis list
+        datacolumn = inputs.datacolumn
         selected_datatype = None
+        selected_datatype_info = 'N/A'
         if inputs.vis in ('', [''], [], None):
             ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
+            global_datatype_info = f'{str(selected_datatype).split(".")[-1]}'
+            selected_datatype_info = global_datatype_info
 
             if ms_objects_and_columns == collections.OrderedDict():
                 result.set_info({'msg': 'No data found. No imaging targets were created.',
@@ -512,6 +511,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                             max_num_targets += 1
                         else:
                             max_num_targets += len(spwids_for_field)
+
+                # Save original vislist_field_spw_combinations dictionary to be able to generate
+                # proper messages if the vis list changes when falling back to a different data
+                # type for a given source/spw combination later on. The vislist_field_spw_combinations
+                # dictionary is possibly being modified on-the-fly below.
+                original_vislist_field_spw_combinations = copy.deepcopy(vislist_field_spw_combinations)
 
                 # Remove bad spws and record actual vis/field/spw combinations containing data.
                 # Record all spws with actual data in a global list.
@@ -848,6 +853,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             local_ms_objects_and_columns, local_selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
                             if local_selected_datatype != selected_datatype:
                                 LOG.warn(f'Data type {str(selected_datatype).split(".")[-1]} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {str(local_selected_datatype).split(".")[-1]}.')
+                                selected_datatype_info = f'{str(local_selected_datatype).split(".")[-1]} instead of {str(selected_datatype).split(".")[-1]}'
 
                                 local_columns = list(local_ms_objects_and_columns.values())
                                 if not all(local_column == local_columns[0] for local_column in local_columns):
@@ -866,10 +872,12 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                     datacolumn = local_datacolumn
                             else:
+                                selected_datatype_info = global_datatype_info
                                 datacolumn = global_datacolumn
 
                             if vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
-                                LOG.warn(f'''Modifying vis list from {vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {str(local_selected_datatype).split(".")[-1]}.''')
+                                if original_vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
+                                    LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {str(local_selected_datatype).split(".")[-1]}.''')
                                 vislist_field_spw_combinations[field_intent[0]]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
 
                         # Save the specific vislist in a copy of the heuristics object tailored to the
@@ -1012,6 +1020,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 heuristics=target_heuristics,
                                 vis=filtered_vislist,
                                 datacolumn=datacolumn,
+                                datatype_info=selected_datatype_info,
                                 is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                 usepointing=usepointing,
                                 mosweight=mosweight
