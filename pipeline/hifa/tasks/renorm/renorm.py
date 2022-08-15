@@ -53,7 +53,7 @@ class RenormInputs(vdp.StandardInputs):
     threshold = vdp.VisDependentProperty(default=1.02)
     correctATM = vdp.VisDependentProperty(default=False)
     spw = vdp.VisDependentProperty(default='')
-    excludechan = vdp.VisDependentProperty(default='')
+    excludechan = vdp.VisDependentProperty(default={})
     atm_auto_exclude = vdp.VisDependentProperty(default=False)
 
     @spw.convert
@@ -116,6 +116,7 @@ class Renorm(basetask.StandardTaskTemplate):
             atmExcludeCmd = {}
 
             if not alltdm:
+
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
                                spws=inp.spw, excludechan=inp.excludechan, atmAutoExclude=inp.atm_auto_exclude)
                 rn.plotSpectra(includeSummary=False)
