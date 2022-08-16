@@ -9,9 +9,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
-from . import fitorder
-from . import fragmentation
-from ..tasks.common.utils import make_row_map_between_ms
+from pipeline.hsd.heuristics import fitorder
+from pipeline.hsd.heuristics import fragmentation
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -212,7 +211,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                         spectra[i] = tb.getcell(datacolumn, row).real
                     #get_mask_from_flagtra: 1 valid 0 invalid
                     #arg for mask_to_masklist: 0 valid 1 invalid
-                    flaglist = [self._mask_to_masklist(tb.getcell('FLAG', row).astype(int))
+                    flaglist = [self.__convert_flags_to_masklist(tb.getcell('FLAG', row).astype(int))
                                 for row in rows]
 
                     #LOG.trace("Flag Mask = %s" % str(flaglist))
@@ -285,9 +284,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             irow = row
                             param = self._calc_baseline_param(irow, pol, polyorder, nchan, 0, edge, _masklist,
                                                               win_polyorder, fragment, nwindow, mask_array)
-                            # definition of masklist differs in pipeline and ASAP
-                            # (masklist = [a, b+1] in pipeline masks a channel range a ~ b-1)
-                            param[BLP.MASK] = [[start, end-1] for [start, end] in param[BLP.MASK]]
                             param[BLP.MASK] = as_maskstring(param[BLP.MASK])
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
@@ -311,36 +307,35 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         else:
             LOG.critical('Invalid masklist')
         #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
-        num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan-edge[1]] * 1.0))
-        # here meaning of "masklist" is changed
-        #     masklist: list of channel ranges to be *excluded* from the fit
-        # masklist_all: list of channel ranges to be *included* in the fit
-        masklist_all = self.__mask_to_masklist(mask)
+        num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan - edge[1]] * 1.0))
+        unmaskedlist = self.__convert_mask_to_masklist(mask)
         #LOG.info('__ masklist (before)= {}'.format(masklist))
-        #LOG.info('__ masklist (after) = {}'.format(masklist_all))
+        #LOG.info('__ masklist (after) = {}'.format(unmaskedlist))
 
         if TRACE():
             LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
                 nchan_without_edge, num_mask))
 
         outdata = self._get_param(row_idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, num_mask, fragment,
-                                  nwindow, win_polyorder, masklist_all)
+                                  nwindow, win_polyorder, unmaskedlist)
 
         if TRACE():
             LOG.trace('outdata={}'.format(outdata))
 
         return outdata
 
-    def _mask_to_masklist(self, mask):
-        return [self.__mask_to_masklist(m) for m in mask]
+    def __convert_flags_to_masklist(self, masks):
+        return [self.__convert_mask_to_masklist(mask) for mask in masks]
 
-    def __mask_to_masklist(self, mask):
+    def __convert_mask_to_masklist(self, mask):
         """
-        Converts mask array to masklist
+        Converts mask array to masklist / unmaskedlist
         Resulting masklist is a list of channel ranges whose values are 1
 
         Argument
             mask : an array of channel mask in values 0 or 1
+        Returns
+            A list of channel range [start, end]. It means a (un)mask list
         """
         # get indices of clump boundaries
         idx = (mask[1:] ^ mask[:-1]).nonzero()
@@ -364,7 +359,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 r = (idx.reshape(-1, 2).tolist())
         if mask[-1]:
             r.append([idx[-1], len(mask)])
-        return r
+        return [[start, end - 1] for start, end in r]
 
     @abc.abstractmethod
     def _get_param(self, idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, nchan_masked, fragment, nwindow,
