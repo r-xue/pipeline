@@ -775,14 +775,18 @@ class SSFanalysis(object):
                 baseScore  = 1.0
                 baseCol = 'green'
                 shortmsg = 'Excellent stability Phase RMS (<30deg).'
-                longmsg = 'Excellent stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time.'
+                longmsg = 'Excellent stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time for '+self.visUse+'.'
                 # now check for problem antennas - if yes, change the score
                 # these are outliers >100 deg, or those beyond stat outlierlimit in function 'analysis' (6 MAD)
                 if len(self.antout)>0:
                     baseScore = 0.9 
                     baseCol = 'blue'
-                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
-                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.' 
+                    #shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
+                    if len(self.antout) == 1:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' has higher phase RMS.'## NOTE not excluded from median calculation.'
+                    else:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
+
 
             elif baseScore > 0.5 and baseScore < 0.7:
                 # this is for 30 to 50 deg - should be blue, not really a problem just informative
@@ -791,10 +795,13 @@ class SSFanalysis(object):
                 baseScore = 0.9
                 baseCol='blue'
                 shortmsg = 'Stable conditions phase RMS (30-50deg).'
-                longmsg = 'Good stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time.'
+                longmsg = 'Good stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time for '+self.visUse+'.'
                 if len(self.antout)>0:
-                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
-                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
+                    #shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'## NOTE not excluded from median calculation.'
+                    if len(self.antout) == 1:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' has higher phase RMS.'## NOTE not excluded from median calculation.'
+                    else:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
 
             # these are high phase noise - remember the 
             # in funtion 'analysis' we already did outlier clips 
@@ -806,20 +813,25 @@ class SSFanalysis(object):
                 # score is representative
                 baseCol ='yellow'
                 shortmsg = 'Elevated Phase RMS (50-70deg) exceeds stable parameters.'
-                longmsg='Elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time. Some image artifacts/defects may occur.'
+                longmsg='Elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time. Some image artifacts/defects may occur for '+self.visUse+'.'
                 if len(self.antout)>0:
-                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
-                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.' 
-
+                    #shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
+                    if len(self.antout) == 1:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' has higher phase RMS.'
+                    else:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
             elif baseScore < 0.3:
                 baseCol = 'red'
                 if baseScore < 0.0:
                     baseScore=0.0
                 shortmsg='High Phase RMS (>70deg) exceeds limit for poor stability'
-                longmsg= 'Very poor phase stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time. Significant image artifacts/defects may be present.'
+                longmsg= 'Very poor phase stability: The baseline-based median phase RMS for baselines longer than P80 is '+RMSstring+'deg over the cycle time. Significant image artifacts/defects may be present for '+self.visUse+'.'
                 if len(self.antout)>0:
-                    shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
-                    longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.' 
+                    #shortmsg = shortmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
+                    if len(self.antout) == 1:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' has higher phase RMS.'
+                    else:
+                        longmsg = longmsg+' '+str(','.join(self.antout))+' have higher phase RMS.'
 
             else:  ## default error - set to zero score for stage error
                 baseCol = 'red'
