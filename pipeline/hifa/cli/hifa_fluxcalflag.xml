@@ -74,7 +74,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <param name="threshold" type="double">
         <shortdescription>Threshold for flagging the entire spw</shortdescription>
         <description> If the fraction of an spw occupied by line regions is greater
-            then threshold flag the entire spectral window.
+            than threshold flag the entire spectral window.
         </description>
         <value type="double">0.75</value>
     </param>

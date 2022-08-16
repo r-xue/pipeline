@@ -12,18 +12,8 @@ and applied on the fly to the data, before the bandpass is computed.
 The hif_refant task may be used to pre-compute a prioritized list of
 reference antennas.
 
-If pipeline mode is 'getinputs' then None is returned. Otherwise
+If pipeline mode is 'getinputs' then None is returned. Otherwise,
 the results object for the pipeline task is returned.
-
-Issues:
-There is currently some discussion about whether or not to do an 'ampup'
-operations at the same time as the 'phaseup'. This is not required for the
-bandpass computation but the amplitude information may provide a useful quality
-assessment measure.
-
-The specified minsnr parameter is currently applied to the bandpass
-solution computation but not the 'phaseup' computation. Some noisy
-solutions in the phaseup may not be properly rejected.
 </description>
 
 <input>
@@ -127,8 +117,8 @@ solutions in the phaseup may not be properly rejected.
 
     <param name="phaseupsnr" subparam="true" type="double">
         <shortdescription>SNR for phaseup solution</shortdescription>
-        <description>The required SNR for the phaseup solution. Used only if
-            hm_phaseup='snr'.
+        <description>The required SNR for the phaseup solution. Used to calculate
+            the phaseup time solint, and only if hm_phaseup='snr'.
 
             Example: phaseupsnr=10.0
         </description>
@@ -259,8 +249,8 @@ solutions in the phaseup may not be properly rejected.
     </param>
 
     <param name="minsnr" subparam="true" type="double">
-        <shortdescription>Solutions below this SNR are rejected</shortdescription>
-        <description>Solutions below this SNR are rejected</description>
+        <shortdescription>Solutions below this SNR are rejected in the phaseup and bandpass solves</shortdescription>
+        <description>Solutions below this SNR are rejected in the phaseup and bandpass solves</description>
         <value>3.0</value>
     </param>
 

@@ -2,7 +2,7 @@
 
 <task category="pipeline" name="hifa_gfluxscaleflag" type="function">
 
-<shortdescription>Derive the flux density scale with flagging</shortdescription>
+<shortdescription>Flag the phase, pol, flux calibrators</shortdescription>
 
 <description>
 This task computes the flagging heuristics on the phase calibrator and flux

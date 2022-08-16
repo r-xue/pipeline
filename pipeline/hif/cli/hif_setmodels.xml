@@ -9,12 +9,12 @@ sources are the bandpass, phase, and check source calibrators. Reference sources
 which are also in the transfer source list are removed from the transfer source list.
 
 Built-in lookup tables are used to compute models for solar system object calibrators.
-Point source models for other calibrators are provided in the reference file.
-Normalize fluxes are computed for transfer sources if the normfluxes parameter is
+Point source models are used for other calibrators with flux densities provided in the reference file.
+Normalized fluxes are computed for transfer sources if the normfluxes parameter is
 set to True.
 
-The reference file default to a file called 'flux.csv' in the current working
-directory. This file is normal created in the importdata step. The file is in
+The default reference file is 'flux.csv' in the current working directory.
+This file is usually created in the importdata stage. The file is in
 'csv' format and contains the following comma delimited columns.
 
 vis,fieldid,spwid,I,Q,U,V,pix,comment
@@ -94,7 +94,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <param name="normfluxes" type="bool">
         <shortdescription>Normalize lookup fluxes</shortdescription>
-        <description>
+        <description>Normalize the transfer source flux densities.
         </description>
         <value>True</value>
     </param>

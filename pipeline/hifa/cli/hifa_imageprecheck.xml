@@ -2,7 +2,7 @@
 
 <task category="pipeline" name="hifa_imageprecheck" type="function">
 
-<shortdescription>Calculates the best robust value and Briggs weighting parameter to achieve sensitivity and angular resolution goals.</shortdescription>
+<shortdescription>Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</shortdescription>
 <description>
 In this task, the representative source and the spw containing the
 representative frequency selected by the PI in the OT are used to calculate

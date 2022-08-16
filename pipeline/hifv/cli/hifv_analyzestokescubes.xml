@@ -5,9 +5,8 @@
 	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="hifv_analyzestokescubes" category="pipeline">
-<shortdescription>Base analyzestokescubes task</shortdescription>
-<description>
-</description>
+<shortdescription>Characterize stokes IQUV flux densities as a function of frequency for VLASS coarse cube images</shortdescription>
+<description>Characterize stokes IQUV flux densities as a function of frequency for VLASS coarse cube images</description>
 <input>
     <param type="stringVec" name="vis" subparam="true">
 	<description>List of input visibility data</description>

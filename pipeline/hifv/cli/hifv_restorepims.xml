@@ -5,9 +5,8 @@
 	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="hifv_restorepims" category="pipeline">
-<shortdescription>Base restorepims task</shortdescription>
-<description>
-</description>
+<shortdescription> Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</shortdescription>
+<description> Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</description>
 <input>
     <param type="stringVec" name="vis" subparam="true">
 	<description>List of input visibility data</description>

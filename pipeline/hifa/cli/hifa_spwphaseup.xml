@@ -58,6 +58,10 @@ calibrator observations, using the solution interval 'inf'.
 At the end of the task the spectral window map and the phase offset calibration
 table in the pipeline are stored in the context for use by later tasks.
 
+Finally, the SNR of the calibration solutions are inspected and if the median value
+on a per-spw basis does not reach specific thresholds, then issue a warning and reduced
+QA score, with thresholds at phasesnr*0.75 (blue), *0.5 (yellow) and *0.33 (red).
+
 
 Output
 

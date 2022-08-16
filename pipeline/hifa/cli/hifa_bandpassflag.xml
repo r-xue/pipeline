@@ -336,7 +336,7 @@ results object for the pipeline task is returned.
 
     <param name="relaxed_factor" subparam="true" type="double">
         <shortdescription>Relaxed value to set the threshold scaling factor to under
-            certain conditions (see task description).
+            certain conditions (see documentation of the underlying correctedampflag task).
         </shortdescription>
         <description>Relaxed value to set the threshold scaling factor to under
             certain conditions (see task description).

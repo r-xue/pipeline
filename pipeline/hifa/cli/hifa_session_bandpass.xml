@@ -2,8 +2,10 @@
 
 <task category="pipeline" name="hifa_session_bandpass" type="function">
 
-<shortdescription>Compute bandpass calibration solutions</shortdescription>
+<shortdescription>Compute bandpass calibration solutions (Experimental)</shortdescription>
 <description>
+(Experimental)
+
 Compute amplitude and phase as a function of frequency for each spectral
 window in each MeasurementSet.
 
@@ -24,11 +26,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
 
 Issues
-
-There is currently some discussion about whether or not to do an 'ampup'
-operations at the same time as the 'phaseup'. This is not required for the
-bandpass computation but the amplitude information may provide a useful quality
-assessment measure.
 
 The specified minsnr parameter is currently applied to the bandpass
 solution computation but not the 'phaseup' computation. Some noisy

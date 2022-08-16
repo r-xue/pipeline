@@ -13,16 +13,12 @@ task.
 
 Previous calibrations that have been stored in the pipeline context are
 applied on the fly. Users can interact with these calibrations via the
-hif_export_calstate and hif_import_calstate tasks.
+h_export_calstate and h_import_calstate tasks.
 
 Output
 
 results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     the results object for the pipeline task is returned.
-
-Issues
-
-The 'gspline' (smooth) option is still under development in CASA.
 </description>
 
 <input>

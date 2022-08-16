@@ -231,7 +231,7 @@
 
 2. Load an MS in the current directory into the context:
 
-    hifa_importdata(vis=[uid___A002_X30a93d_X43e.ms])
+    hifa_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
 
 3. Load a tarred ASDM in ../rawdata into the context:
 
@@ -253,6 +253,11 @@
 
     results = hifa_importdata(vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
     results = hifa_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
+
+7. Run with explicit setting of data column types:
+
+    hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_contline'})
+    hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})
         </example>
     </task>
 </casaxml>
