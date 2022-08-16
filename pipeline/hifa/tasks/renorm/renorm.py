@@ -126,7 +126,7 @@ class Renorm(basetask.StandardTaskTemplate):
                 if inp.apply and rn.checkApply():
                     renorm_applied = True
 
-                if corrColExists and not corrApplied:
+                if (corrColExists or (not inp.apply)) and not corrApplied:
                     # get stats (dictionary) indexed by source, spw
                     stats = rn.rnpipestats
                     # get all factors for QA

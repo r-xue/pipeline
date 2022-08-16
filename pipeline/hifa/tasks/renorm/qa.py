@@ -39,8 +39,8 @@ class RenormQAHandler(pqa.QAPlugin):
             longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
-        if not result.corrColExists:
-            # CORRECTED_DATA column does not exist
+        if not result.corrColExists and result.apply:
+            # CORRECTED_DATA column does not exist and apply is True
             score = 0.0
             shortmsg = 'No corrected data column'
             longmsg = 'EB {}: Corrected data column does not exist'.format(os.path.basename(result.vis))
