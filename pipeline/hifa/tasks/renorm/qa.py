@@ -40,7 +40,7 @@ class RenormQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         if not result.corrColExists and result.apply:
-            # CORRECTED_DATA column does not exist and apply is True
+            # Request for correcting data when there is no CORRECTED_DATA column
             score = 0.0
             shortmsg = 'No corrected data column'
             longmsg = 'EB {}: Corrected data column does not exist'.format(os.path.basename(result.vis))
