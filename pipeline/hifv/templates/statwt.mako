@@ -57,9 +57,11 @@ else:
     bgcolor_list_blue=[render.dev2shade(3., False), render.dev2shade(4., False), render.dev2shade(5., False), render.dev2shade(6., False)]
     %>
 
-    <p>    
-    In the tables below, the "antenna-based" weights are defined by Wt_bl_ij=Wt_i*Wt_j, so there is a square scale difference between the baseline weights and the "antenna-based" weights 
-    presented in the table.
+    <p>
+    In the tables and plots below, the weight properties are shown in the "antenna-based" scale: we first derive the optimized solutions 
+    to Wt_bl_ij=Wt_i*Wt_j for individual integrations, where Wt_bl_ij is the "baseline" weight (i.e., the MS WEIGHT column) and Wt_i/Wt_j is 
+    the "antenna-based" weight; then we compute and present the statistical properties of the latter values after slicing them along different 
+    data axes (antenna, spw, scan). Note that there is a square scale difference between the baseline weights and the antenna-based weights.
     </p>
 
     <p>The color background present in some table cells highlights spectral windows with a statistical property signficantly deviated from its median over all of the relevant group (spw, scan, antenna): 
