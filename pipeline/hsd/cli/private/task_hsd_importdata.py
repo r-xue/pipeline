@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hsd_importdata(vis=None, session=None, pipelinemode=None, asis=None, process_caldevice=None, overwrite=None,
-                   nocopy=None, bdfflags=None, lazy=None, with_pointing_correction=None, createmms=None, dryrun=None,
+                   nocopy=None, bdfflags=None, datacolumns=None, lazy=None, with_pointing_correction=None, createmms=None, dryrun=None,
                    acceptresults=None):
 
     ##########################################################################

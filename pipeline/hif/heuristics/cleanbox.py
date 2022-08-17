@@ -51,7 +51,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             # Area inside clean mask
             statsmask = '"%s" > 0.1' % (os.path.basename(cleanmask))
 
-            resid_clean_stats = image.statistics(mask=statsmask, robust=False)
+            resid_clean_stats = image.statistics(mask=statsmask, robust=False, stretch=True)
 
             try:
                 residual_cleanmask_rms = resid_clean_stats['rms'][0]
@@ -74,7 +74,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             have_mask = False
             statsmask = ''
 
-        residual_stats = image.statistics(mask=statsmask, robust=False)
+        residual_stats = image.statistics(mask=statsmask, robust=False, stretch=True)
 
         try:
             residual_non_cleanmask_rms = residual_stats['rms'][0]
@@ -89,7 +89,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
         # where spikes can occur)
         if pb is not None and os.path.exists(pb+extension):
             residual_stats = image.statistics(
-              mask='"%s" > %f' % (os.path.basename(pb)+extension, pblimit_image), robust=False)
+              mask='"%s" > %f' % (os.path.basename(pb)+extension, pblimit_image), robust=False, stretch=True)
         else:
             residual_stats = image.statistics(robust=False)
 
@@ -136,7 +136,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 statsmask = ''
 
             if 'TARGET' in image.miscinfo().get('intent', None):
-                image_stats = image.statistics(mask=statsmask)
+                image_stats = image.statistics(mask=statsmask, stretch=True)
             else:
                 # Restrict region to inner 25% x 25% of the image for calibrators to
                 # avoid picking up sidelobes (PIPE-611)
@@ -144,7 +144,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 rgTool = casa_tools.regionmanager
                 nPixels = max(shape[0], shape[1])
                 region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[1]-1, shape[2]-1])
-                image_stats = image.statistics(mask=statsmask, region=region)
+                image_stats = image.statistics(mask=statsmask, region=region, stretch=True)
                 rgTool.done()
 
             pbcor_image_min = image_stats['min'][0]
@@ -174,10 +174,15 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
             with casa_tools.ImageReader(cleanmask) as image:
-                flattened_mask_image = image.collapse(
-                    function='max', axes=[2, 3], outfile=flattened_mask, overwrite=True)
+                image_shape = image.shape()
+                if image_shape[2] == 1 and image_shape[3] == 1:
+                    flattened_mask = cleanmask
+                    flattened_mask_image = image
+                else:
+                    flattened_mask_image = image.collapse(
+                        function='max', axes=[2, 3], outfile=flattened_mask, overwrite=True)
                 try:
-                    npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), robust=False)['npts']
+                    npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), robust=False, stretch=True)['npts']
                     if npoints_mask.shape != (0,):
                         nonpbcor_image_cleanmask_npoints = int(npoints_mask)
                     else:
@@ -231,7 +236,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                              pb_name, pblimit_cleanmask)
                 # Check for number of points per channel (PIPE-541):
                 try:
-                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5, stretch=True)
                     if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
                         # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
                         LOG.warning('Using full annulus for noise spectrum due to voluminous mask "%s".' %
@@ -264,7 +269,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 # Get image RMS for all channels (this is for the weblog)
                 # Avoid repeat if the check for npts was done and is OK.
                 if image_stats is None:
-                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5, stretch=True)
                 nonpbcor_image_statsmask = statsmask
 
                 # Filter continuum frequency ranges if given
@@ -316,7 +321,21 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_cleanmask_spectrum_pblimit = pblimit_cleanmask
             else:
                 spectrum_mask = None
-            nonpbcor_image_cleanmask_spectrum = image.getprofile(function='flux', mask=spectrum_mask, stretch=True, axis=freq_axis)['values']
+
+            # Because image.getprofile(axis=freq_axis) doesn't work on an image/cube with more than
+            # one polarization plane (e.g. VLASS fullstokes images), we first create a stokes-I only
+            # image with 'spectrum_mask' included, and then run ia.getprofile().
+            # note: the stoke-i extraction can also be done with imagepol.stokesi()
+
+            image_csys = image.coordsys()
+            rgTool = casa_tools.regionmanager
+            region = rgTool.frombcs(csys=image_csys.torecord(), shape=image.shape(), stokes='I', stokescontrol='a')
+            image_csys.done()
+            rgTool.done()
+
+            image_stokesi = image.subimage(region=region, mask=spectrum_mask, dropdeg=False, stretch=True)
+            nonpbcor_image_cleanmask_spectrum = image_stokesi.getprofile(function='flux', axis=freq_axis)['values']
+            image_stokesi.done()
 
     return (residual_cleanmask_rms, residual_non_cleanmask_rms, residual_min, residual_max,
             nonpbcor_image_non_cleanmask_rms_min, nonpbcor_image_non_cleanmask_rms_max,
