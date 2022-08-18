@@ -391,7 +391,6 @@ class T1_1Renderer(RendererBase):
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
             is_single_dish_data = is_singledish_ms(context)
             if scan_has_intent(target_scans, 'REFERENCE') or is_single_dish_data:
-                # target scans have OFF-source integrations or Single Dish data. Need to do harder way.
                 time_on_source = utils.total_time_on_target_on_source(ms, is_single_dish_data)
             else:
                 time_on_source = utils.total_time_on_source(target_scans)
