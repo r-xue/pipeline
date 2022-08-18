@@ -3,6 +3,7 @@ import os
 import re
 
 import numpy as np
+from scipy.ndimage import label
 import shutil
 
 import pipeline.domain.measures as measures
@@ -231,6 +232,38 @@ class Tclean(cleanbase.CleanBase):
             job = casa_tasks.copytree(image_name, newname)
             self._executor.execute(job)
 
+    def move_products(self, old_pname, new_pname, ignore_list=None, remove_list=None, copy_list=None):
+        """Move imaging products of one iteration to another.
+        
+        Certain image types can be excluded from the default "move" operation using the following keywords (in the precedence order):
+            ignore_list:    do nothing (no 'remove', 'copy', or 'move'), if any string from the list is in the image name.
+            remove_list:    remove without 'move' or 'copy', if any string from the list in the image name.
+            copy_list:      copy instead move, if any string from the list is in the image name.
+        """
+        imlist = glob.glob('%s.*' % (old_pname))
+        for image_name in imlist:
+            newname = image_name.replace(old_pname, new_pname)
+            if isinstance(ignore_list, (list, tuple)):
+                if any([ignore_pattern in image_name for ignore_pattern in ignore_list]):
+                    continue
+            if isinstance(remove_list, (list, tuple)):
+                if any([remove_pattern in image_name for remove_pattern in remove_list]):
+                    LOG.info('Remove {}'.format(image_name))
+                    job = casa_tasks.rmtree(image_name)
+                    self._executor.execute(job)
+                    continue
+            if isinstance(copy_list, (list, tuple)):
+                if any([copy_pattern in image_name for copy_pattern in copy_list]):
+                    LOG.info('Copying {} to {}'.format(image_name, newname))
+                    job = casa_tasks.copytree(image_name, newname)
+                    self._executor.execute(job)
+                    continue
+            LOG.info('Moving {} to {}'.format(image_name, newname))
+            job = casa_tasks.move(image_name, newname)
+            self._executor.execute(job)
+
+        return
+
     def prepare(self):
         inputs = self.inputs
         context = self.inputs.context
@@ -444,18 +477,12 @@ class Tclean(cleanbase.CleanBase):
                 LOG.info('Applying binning factor %d' % inputs.nbin)
                 channel_width *= inputs.nbin
 
-            # Get spw sideband
-            ref_ms = context.observing_run.get_ms(inputs.vis[0])
-            real_spw = context.observing_run.virtual2real_spw_id(inputs.spw, ref_ms)
-            real_spw_obj = ref_ms.get_spectral_window(real_spw)
-            if real_spw_obj.sideband == '-1':
-                sideband = 'LSB'
-            else:
-                sideband = 'USB'
-
             if self.image_heuristics.is_eph_obj(inputs.field):
                 # Determine extra channels to skip for ephemeris objects to
                 # account for fast moving objects.
+                ref_ms = context.observing_run.get_ms(inputs.vis[0])
+                real_spw = context.observing_run.virtual2real_spw_id(inputs.spw, ref_ms)
+                real_spw_obj = ref_ms.get_spectral_window(real_spw)
                 centre_frequency_TOPO = float(real_spw_obj.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
@@ -494,7 +521,10 @@ class Tclean(cleanbase.CleanBase):
                 # Thus shift by 0.5 channels if no start is supplied.
                 # Additionally skipping the edge channel (cf. "- 2" above)
                 # means a correction of 1.5 channels.
-                inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
+                if inputs.nbin not in (None, -1):
+                    inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width / inputs.nbin) / 1e9)
+                else:
+                    inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             inputs.width = '%.7fMHz' % (channel_width / 1e6)
@@ -608,10 +638,11 @@ class Tclean(cleanbase.CleanBase):
 
         # VLASS-SE masking
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032 as of 01.03.2021
-        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT'):
+        elif inputs.hm_masking == 'manual' and \
+                (self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT') or self.image_heuristics.imaging_mode.startswith('VLASS-SE-CUBE')):
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
-                                                          sensitivity=sensitivity, niter=inputs.niter)
+                                                          sensitivity=sensitivity, niter=inputs.niter, executor=self._executor)
 
         # Manually supplied mask
         elif inputs.hm_masking == 'manual':
@@ -633,7 +664,7 @@ class Tclean(cleanbase.CleanBase):
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
         if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
-                                                  'VLASS-SE-CONT-MOSAIC']:
+                                                  'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         else:
             result = self._do_iterative_imaging(sequence_manager=sequence_manager)
@@ -719,52 +750,87 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('Initialise tclean iter 0')
         iteration = 0
 
+        if hasattr(self.image_heuristics, 'restore_startmodel') and isinstance(self.image_heuristics.restore_startmodel, (str, list)):
+            restore_startmodel = self.image_heuristics.restore_startmodel
+            restore_imagename = self.image_heuristics.restore_imagename
+            calcres_iter0 = False
+            LOG.info(f'set calcres=False for the tclean initilization call because we are going to restore the model column.')
+            LOG.info(f'Will use startmodel: {restore_startmodel}, for the final modelcolumn prediction.')
+        else:
+            restore_imagename = restore_startmodel = calcres_iter0 = None
+
         # Restore main CFCache reference / initialise tclean
         inputs.cfcache = cfcache
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
-                                sensitivity=sequence_manager.sensitivity, result=None)
+                                sensitivity=sequence_manager.sensitivity, result=None, calcres=calcres_iter0)
 
         if inputs.gridder == 'awproject':
+            # only run for AWPproject, see VLASS memo 15 Sec2.2.
             LOG.info('Replacing PSF with wbawp=False PSF')
             # Remove *psf.tmp.* files with clear_origin=True argument
             self._replace_psf(result_psf.psf.replace('iter%s' % iteration, 'tmp'), result.psf, clear_origin=False)
             del result_psf  # Not needed in further steps
 
-        # Determine masking limits depending on PB
-        extension = '.tt0' if result.multiterm else ''
-        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux + extension)
+        if restore_imagename is not None:
+            # only run this block for the selfcal modelcolumn restoration
+            # for now we make a copy of models under the tclean-predict imagename
+            # the use of startmodel introduces a side effect from CAS-13338 when the original model was made with mpicasa, which causes the model images to be regridded.
+            # One will see a model image regridding warning as below:
+            #
+            #           WARN    SIImageStore::Open existing Images (file src/code/synthesis/ImagerObjects/SIImageStore.cc, line 568)     
+            #           Mismatch in Csys latpoles between existing image on disk ([350.792, 50.4044, 180, 50.4044]) 
+            #           The DirectionCoordinates have differing latpoles -- Resetting to match image on disk
+            #
+            # if copying models under imagename.model.**, you should see a resetting warning instead            
+            # regridding is not desired in the VLASS-SE-CUBE case.
+            # we assume that restore_imagename and new_pname are different.
+            
+            rootname, _ = os.path.splitext(result.psf)
+            rootname, _ = os.path.splitext(rootname)
+            LOG.info('Copying model images for the modelcolumn prediction tclean call.')
+            new_pname = f'{rootname}.iter{iteration}'
+            self.copy_products(restore_imagename, os.path.basename(new_pname))
+            restore_startmodel = None
 
-        # Keep pblimits for mom8_fc QA statistics and score (PIPE-704)
-        result.set_pblimit_image(self.pblimit_image)
-        result.set_pblimit_cleanmask(self.pblimit_cleanmask)
+        if calcres_iter0 is None or calcres_iter0:
+            # tclean results assessment only happen when calcres=True or implicit default (None) for iter0
 
-        # Give the result to the sequence_manager for analysis
-        (residual_cleanmask_rms,  # printed
-         residual_non_cleanmask_rms,  # printed
-         residual_min,  # printed
-         residual_max,  # USED
-         nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
-         nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
-         nonpbcor_image_non_cleanmask_rms,  # printed added to result, later used in Weblog under name 'image_rms'
-         pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
-         pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
-         # USED
-         residual_robust_rms,
-         nonpbcor_image_robust_rms_and_spectra) = \
-            sequence_manager.iteration_result(model=result.model,
-                                              restored=result.image, residual=result.residual,
-                                              flux=result.flux, cleanmask=None,
-                                              pblimit_image=self.pblimit_image,
-                                              pblimit_cleanmask=self.pblimit_cleanmask,
-                                              cont_freq_ranges=self.cont_freq_ranges)
+            # Determine masking limits depending on PB
+            extension = '.tt0' if result.multiterm else ''
+            self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux + extension)
 
-        LOG.info('Dirty image stats')
-        LOG.info('    Residual rms: %s', residual_non_cleanmask_rms)
-        LOG.info('    Residual max: %s', residual_max)
-        LOG.info('    Residual min: %s', residual_min)
-        LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
+            # Keep pblimits for mom8_fc QA statistics and score (PIPE-704)
+            result.set_pblimit_image(self.pblimit_image)
+            result.set_pblimit_cleanmask(self.pblimit_cleanmask)
 
-        LOG.info('Continue cleaning')
+            # Give the result to the sequence_manager for analysis
+            (residual_cleanmask_rms,  # printed
+             residual_non_cleanmask_rms,  # printed
+             residual_min,  # printed
+             residual_max,  # USED
+             nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
+             nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
+             nonpbcor_image_non_cleanmask_rms,  # printed added to result, later used in Weblog under name 'image_rms'
+             pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
+             pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
+             # USED
+             residual_robust_rms,
+             nonpbcor_image_robust_rms_and_spectra) = \
+                sequence_manager.iteration_result(model=result.model,
+                                                  restored=result.image, residual=result.residual,
+                                                  flux=result.flux, cleanmask=None,
+                                                  pblimit_image=self.pblimit_image,
+                                                  pblimit_cleanmask=self.pblimit_cleanmask,
+                                                  cont_freq_ranges=self.cont_freq_ranges)
+
+            LOG.info('Dirty image stats')
+            LOG.info('    Residual rms: %s', residual_non_cleanmask_rms)
+            LOG.info('    Residual max: %s', residual_max)
+            LOG.info('    Residual min: %s', residual_min)
+            LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
+
+            LOG.info('Continue cleaning')
+
         # Continue iterating (calcpsf and calcres are set automatically false)
         iteration = 1
 
@@ -779,10 +845,27 @@ class Tclean(cleanbase.CleanBase):
 
             # Delete any old files with this naming root
             self.rm_iter_files(rootname, iteration)
-            # Determine stage mask name and replace stage substring place holder with actual stage number.
-            # Special cases when mask is an empty string, None, or when it is set to 'pb'.
-            new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
-                self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
+
+            if self.image_heuristics.imaging_mode == 'VLASS-SE-CUBE':
+                # PIPE-1401: copy input user masks (vlass-se-cont tier1/tier2) for imaging of each spw group.
+                # Because various metadata (e.g., spw list) are written into headers of mask images and later used by the
+                # weblog display/renderer class, we have to differentiate in-use mask files of individual spw groups, even
+                # they are identical. Here, we make mask copy per clean_target (i.e. a spw group of VLASS-SE-CUBE.)
+                # under its distinct name.
+                if mask in ['', None, 'pb']:
+                    new_cleanmask = mask
+                else:
+                    # note: this "new_cleanmask" name must be different from imagename+'.mask'.
+                    #   1) tclean() doesn't support specifying usemask='user' and mask=imagename+'.mask' (pre-exists) at the same time.
+                    #   2) the vlass-se-cont mask is Stokes-I only and needs to be "regridded" (i.e. broadcasted) in the Pol. axis.
+                    #      Therefore a "restart" by copying the user mask under imagename+'.mask' is also not supported in tclean() as of ver 6.4.1.
+                    new_cleanmask = f'{rootname}.iter{iteration}.cleanmask'
+            else:
+                # Determine stage mask name and replace stage substring place holder with actual stage number.
+                # Special cases when mask is an empty string, None, or when it is set to 'pb'.
+                new_cleanmask = mask if mask in ['', None, 'pb'] else 's{:d}_0.{}'.format(
+                    self.inputs.context.task_counter, re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
+
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
 
@@ -792,8 +875,16 @@ class Tclean(cleanbase.CleanBase):
             # Use previous iterations's products as starting point
             old_pname = '%s.iter%s' % (rootname, iteration - 1)
             new_pname = '%s.iter%s' % (rootname, iteration)
-            self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
-                               ignore='mask' if do_not_copy_mask else None)
+            if self.image_heuristics.imaging_mode == 'VLASS-SE-CUBE':
+                # PIPE-1401: We move (instead of copy) most imaging products from one iteration to the next,
+                # to reduce the disk I/O operations and storage use.
+                self.move_products(os.path.basename(old_pname), os.path.basename(new_pname),
+                                   ignore_list=['.cleanmask'] if do_not_copy_mask else [],
+                                   copy_list=['.residual', '.image'],
+                                   remove_list=['.mask'] if do_not_copy_mask else [])
+            else:
+                self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
+                                   ignore='mask' if do_not_copy_mask else None)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
@@ -869,13 +960,13 @@ class Tclean(cleanbase.CleanBase):
             LOG.info("Saving predicted model visibilities to MeasurementSet after last iteration (iter %s)" %
                      (iteration-1))
             _ = self._do_clean(iternum=iteration-1, cleanmask='', niter=0, threshold='0.0mJy',
-                               sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
-                               result=None, calcpsf=False, calcres=False, parallel=False)
+                               sensitivity=sequence_manager.sensitivity, savemodel=savemodel, startmodel=restore_startmodel,
+                               result=None, calcpsf=False, calcres=False, parallel=False)                               
 
         return result
 
     def _replace_psf(self, origin: str, target: str, clear_origin: bool = False):
-        """Replace multi-term CASA image
+        """Replace multi-term CASA image.
 
         The <origin>.tt0, <origin>.tt1 and <origin>.tt2 images are copied or moved
         to <target>.tt0, <target>.tt1 and <target>.tt2 images.
@@ -884,12 +975,16 @@ class Tclean(cleanbase.CleanBase):
         they will be deleted.
         """
         for tt in ['tt0', 'tt1', 'tt2']:
-            LOG.info("Copying {o}.{tt} to {t}.{tt}".format(o=origin, tt=tt, t=target))
-            shutil.rmtree('{}.{}'.format(target, tt), ignore_errors=True)
-            shutil.copytree('{}.{}'.format(origin, tt), '{}.{}'.format(target, tt))
+            target_psf = f'{target}.{tt}'
+            origin_psf = f'{origin}.{tt}'
+            if os.path.isdir(target_psf):
+                self._executor.execute(casa_tasks.rmtree(target_psf, ignore_errors=False))
             if clear_origin:
-                LOG.info("Deleting {}.{}".format(origin, tt))
-                shutil.rmtree('{}.{}'.format(origin, tt))
+                LOG.info(f'Moving {origin_psf} to {target_psf}')
+                self._executor.execute(casa_tasks.move(origin_psf, target_psf))
+            else:
+                LOG.info(f'Copying {origin_psf} to {target_psf}')
+                self._executor.execute(casa_tasks.copytree(origin_psf, target_psf))
 
     def _do_iterative_imaging(self, sequence_manager):
 
@@ -1099,7 +1194,7 @@ class Tclean(cleanbase.CleanBase):
         # intensity for the line-free channels.
         if inputs.specmode == 'cube':
             # Moment maps of line-free channels
-            self._calc_mom0_8_fc(result)
+            self._calc_mom0_8_10_fc(result)
             # Moment maps of all channels
             self._calc_mom0_8(result)
 
@@ -1108,7 +1203,7 @@ class Tclean(cleanbase.CleanBase):
 
         return result
 
-    def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None,
+    def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None, startmodel=None,
                   calcres=None, calcpsf=None, wbawp=None, parallel=None):
         """
         Do basic cleaning.
@@ -1168,6 +1263,7 @@ class Tclean(cleanbase.CleanBase):
                                                   iter=iternum,
                                                   mask=cleanmask,
                                                   savemodel=savemodel,
+                                                  startmodel=startmodel,
                                                   hm_masking=inputs.hm_masking,
                                                   hm_sidelobethreshold=inputs.hm_sidelobethreshold,
                                                   hm_noisethreshold=inputs.hm_noisethreshold,
@@ -1232,7 +1328,7 @@ class Tclean(cleanbase.CleanBase):
         '''
         Computes moment image, writes it to disk and updates moment image metadata.
 
-        This method is used in _calc_mom0_8() and _calc_mom0_8_fc().
+        This method is used in _calc_mom0_8() and _calc_mom0_8_10_fc().
         '''
         context = self.inputs.context
 
@@ -1242,6 +1338,8 @@ class Tclean(cleanbase.CleanBase):
             mom_type += "mom0"
         elif ".mom8" in outfile:
             mom_type += "mom8"
+        elif ".mom10" in outfile:
+            mom_type += "mom10"
         if "_fc" in outfile:
             mom_type += "_fc"
 
@@ -1259,14 +1357,16 @@ class Tclean(cleanbase.CleanBase):
                                  intent=self.inputs.intent, specmode=self.inputs.orig_specmode,
                                  context=context)
 
-    # Calculate a "mom0_fc" and "mom8_fc" image: this is a moment 0 and 8
-    # integration over the line-free channels of the non-primary-beam
-    # corrected image-cube, after continuum subtraction; where the "line-free"
-    # channels are taken from those identified as continuum channels.
+    # Calculate a "mom0_fc", "mom8_fc" and "mom10_fc: images: this is a moment
+    # 0 (integrated value of the spectrum), 8 (maximum value of the spectrum)
+    # and 10 (minimum value of the spectrum) integration over the line-free
+    # channels of the non-primary-beam corrected image-cube, after continuum
+    # subtraction; where the "line-free" channels are taken from those identified
+    # as continuum channels.
     # This is a diagnostic plot representing the residual emission
     # in the line-free (aka continuum) channels. If the continuum subtraction
     # worked well, then this image should just contain noise.
-    def _calc_mom0_8_fc(self, result):
+    def _calc_mom0_8_10_fc(self, result):
 
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
@@ -1280,6 +1380,9 @@ class Tclean(cleanbase.CleanBase):
 
         # Set output filename for MOM8_FC image.
         mom8fc_name = '%s.mom8_fc' % imagename
+
+        # Set output filename for MOM10_FC image.
+        mom10fc_name = '%s.mom10_fc' % imagename
 
         # Convert frequency ranges to channel ranges.
         cont_chan_ranges = utils.freq_selection_to_channels(imagename, self.cont_freq_ranges)
@@ -1305,10 +1408,14 @@ class Tclean(cleanbase.CleanBase):
             self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8fc_name, chans=cont_chan_ranges_str,
                                     iter=maxiter)
 
+            # Calculate MOM10_FC image
+            self._calc_moment_image(imagename=imagename, moments=[10], outfile=mom10fc_name, chans=cont_chan_ranges_str,
+                                    iter=maxiter)
+
             # Calculate the MOM8_FC peak SNR for the QA
 
             # Create flattened PB over continuum channels
-            flattened_pb_name = result.flux + extension + '.flattened_mom_0_8_fc'
+            flattened_pb_name = result.flux + extension + '.flattened_mom_0_8_10_fc'
             with casa_tools.ImageReader(result.flux + extension) as image:
                 flattened_pb = image.collapse(function='mean', axes=[2, 3], chans=cont_chan_ranges_str, outfile=flattened_pb_name)
                 flattened_pb.done()
@@ -1317,9 +1424,9 @@ class Tclean(cleanbase.CleanBase):
             cleanmask = result.iterations[maxiter].get('cleanmask', '')
             if os.path.exists(cleanmask):
                 if '.mask' in cleanmask:
-                    flattened_mask_name = cleanmask.replace('.mask', '.mask.flattened_mom_0_8_fc')
+                    flattened_mask_name = cleanmask.replace('.mask', '.mask.flattened_mom_0_8_10_fc')
                 elif '.cleanmask' in cleanmask:
-                    flattened_mask_name = cleanmask.replace('.cleanmask', '.cleanmask.flattened_mom_0_8_fc')
+                    flattened_mask_name = cleanmask.replace('.cleanmask', '.cleanmask.flattened_mom_0_8_10_fc')
                 else:
                     raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
@@ -1329,71 +1436,164 @@ class Tclean(cleanbase.CleanBase):
             else:
                 flattened_mask_name = None
 
-            outlier_threshold = 5.0
-
-            # Calculate statistics
+            # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
-                statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
-                stats = image.statistics(mask=statsmask, robust=True)
-
-                image_median_all = stats.get('median')[0]
-                image_mad = stats.get('medabsdevmed')[0]
-                image_min = stats.get('min')[0]
-                image_max = stats.get('max')[0]
-                n_pixels = int(stats.get('npts')[0])
+                mom8_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom8_stats = image.statistics(mask=mom8_statsmask, robust=True, stretch=True)
+                mom8_image_median_all = mom8_stats.get('median')[0]
+                mom8_image_mad = mom8_stats.get('medabsdevmed')[0]
+                mom8_image_min = mom8_stats.get('min')[0]
+                mom8_image_max = mom8_stats.get('max')[0]
+                mom8_n_pixels = int(mom8_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                stats = image.statistics(mask=statsmask, robust=True)
+                mom8_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom8_stats2 = image.statistics(mask=mom8_statsmask2, robust=True, stretch=True)
 
-                image_median_annulus = stats.get('median')[0]
+                mom8_image_median_annulus = mom8_stats2.get('median')[0]
+
+            # Calculate MOM10 FC statistics
+            with casa_tools.ImageReader(mom10fc_name) as image:
+                # Get the min, max, median, MAD and number of pixels of the MOM10 FC image from the area excluding the cleaned area edges
+                mom10_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom10_stats = image.statistics(mask=mom10_statsmask, robust=True)
+                mom10_image_median_all = mom10_stats.get('median')[0]
+                mom10_image_mad = mom10_stats.get('medabsdevmed')[0]
+                mom10_image_min = mom10_stats.get('min')[0]
+                mom10_image_max = mom10_stats.get('max')[0]
+                mom10_n_pixels = int(mom10_stats.get('npts')[0])
+
+                # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
+                mom10_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom10_stats2 = image.statistics(mask=mom10_statsmask2, robust=True)
+
+                mom10_image_median_annulus = mom10_stats2.get('median')[0]
 
             # Get sigma and channel scaled MAD from the cube
             if flattened_mask_name is not None:
                 # Mask cleanmask and 1.05 * pblimit_image < pb < pblimit_cleanmask
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
             else:
                 # Mask 1.05 * pblimit_image < pb < pblimit_cleanmask
-                statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
 
             with casa_tools.ImageReader(imagename) as image:
-                stats_masked = image.statistics(mask=statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                cube_stats_masked = image.statistics(mask=cube_statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
-            cube_sigma = np.median(stats_masked.get('sigma')[cont_chan_indices])
-            cube_chanScaledMAD = np.median(stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
+            cube_sigma_fc_chans = np.median(cube_stats_masked.get('sigma')[cont_chan_indices])
+            cube_scaledMAD_fc_chans = np.median(cube_stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
 
-            peak_snr = (image_max - image_median_annulus) / cube_chanScaledMAD
+            mom8_fc_peak_snr = (mom8_image_max - mom8_image_median_annulus) / cube_scaledMAD_fc_chans
 
-            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), image_max, image_median_annulus, peak_snr, cube_chanScaledMAD))
+            LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), mom8_image_max, mom8_image_median_annulus, mom8_fc_peak_snr, cube_scaledMAD_fc_chans))
 
-            # Calculate outlier fraction for QA scoring
+            # New score based on mom8/mom10 histogram asymmetry and largest mom8 segment needs
+            # more metrics (PIPE-1232)
+            histogram_threshold = mom8_image_median_all + 2.0 * mom8_image_mad / 0.6745
+
+            # Get the PB image as numpy array
+            with casa_tools.ImageReader(flattened_pb_name) as image:
+                flattened_pb_image = image.getchunk()[:,:,0,0]
+
+            # Get the MOM8 FC image as numpy array
             with casa_tools.ImageReader(mom8fc_name) as image:
-                statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + image_median_annulus)
-                stats_outliers = image.statistics(mask=statsmask, robust=True)
-                npts = stats_outliers.get('npts')
-                if npts.shape != (0,):
-                    n_outlier_pixels = int(npts[0])
-                else:
-                    n_outlier_pixels = 0
+                mom8fc_image = image.getchunk()[:,:,0,0]
+                mom8fc_image_summary = image.summary()
+
+            mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+
+            # Get number of pixels per beam
+            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
+            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad')) / 2
+            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad')))
+            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
+            num_pixels_in_beam = float(major_radius * minor_radius * np.pi / np.log(2) / cellx / celly)
+            # Get threshold for maximum segment calculation
+            cut1 = mom8_image_median_annulus + 3.0 * cube_scaledMAD_fc_chans
+            cut2 = mom8_image_median_annulus + 0.5 * np.ma.max(mom8fc_masked_image - mom8_image_median_annulus)
+            cut3 = mom8_image_median_annulus + 2.0 * cube_scaledMAD_fc_chans
+            segments_threshold = max(min(cut1, cut2), cut3)
+
+            # Get largest segment
+            mom8_segments_image = np.ma.where(mom8fc_masked_image > segments_threshold, 1, 0)
+            mom8_frac_max_segment = 0.0
+            mom8_max_segment_beams = 0.0
+            # Label segments
+            mom8_label_image, num_labels = label(mom8_segments_image)
+            if num_labels > 0:
+                # Calculate largest segment size
+                mom8_num_pixels_in_largest_segment = np.max([np.ma.sum(np.ma.where(mom8_label_image == i, 1, 0)) for i in range(1, num_labels + 1)])
+                # Prune small segments
+                if mom8_num_pixels_in_largest_segment >= 0.1 * num_pixels_in_beam:
+                    mom8_frac_max_segment = mom8_num_pixels_in_largest_segment / mom8_n_pixels
+                    mom8_max_segment_beams = mom8_num_pixels_in_largest_segment / num_pixels_in_beam
+
+            # Get the MOM10 FC image as numpy array
+            with casa_tools.ImageReader(mom10fc_name) as image:
+                mom10fc_image = image.getchunk()[:,:,0,0]
+
+            mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+
+            # Get histogram asymmetry
+
+            # Global minimum/maximum of both images
+            mom8_10fc_min = np.ma.min(np.ma.append(mom8fc_masked_image, mom10fc_masked_image))
+            mom8_10fc_max = np.ma.max(np.ma.append(mom8fc_masked_image, mom10fc_masked_image))
+
+            # Calculate histograms
+            # np.histogram does not know masked arrays; need to convert to normal array using inverted mask as index
+            mom8fc_histogram, bins = np.histogram(mom8fc_masked_image[np.invert(mom8fc_masked_image.mask)], range=[mom8_10fc_min, mom8_10fc_max], bins='auto')
+            mom8fc_flux_bins = 0.5*(bins[:-1]+bins[1:])
+
+            # np.histogram does not know masked arrays; need to convert to normal array using inverted mask as index
+            mom10fc_histogram, bins = np.histogram(mom10fc_masked_image[np.invert(mom10fc_masked_image.mask)], range=[mom8_10fc_min, mom8_10fc_max], bins='auto')
+            mom10fc_flux_bins = 0.5*(bins[:-1]+bins[1:])
+
+            # Interpolating numpix of moment10 at the position of moment8 flux
+            mom8fc_histogram_interp = np.interp(mom10fc_flux_bins, mom8fc_flux_bins, mom8fc_histogram, left=0.0, right=0.0)
+
+            # Interpolating numpix of moment8 at the position of moment10 flux
+            mom10fc_histogram_interp = np.interp(mom8fc_flux_bins, mom10fc_flux_bins, mom10fc_histogram, left=0.0, right=0.0)
+
+            # Compute the deviation between mom8 and mom10 pixel histogram for every flux bin
+            deviation1 = mom8fc_histogram_interp[mom10fc_flux_bins > histogram_threshold] - mom10fc_histogram[mom10fc_flux_bins > histogram_threshold]
+            deviation2 = mom10fc_histogram_interp[mom8fc_flux_bins > histogram_threshold] - mom8fc_histogram[mom8fc_flux_bins > histogram_threshold]
+
+            # Compute the area of the histogram (whatever miminum)
+            smallerarea = np.min(np.append(np.sum(mom10fc_histogram[mom10fc_flux_bins > histogram_threshold]), np.sum(mom8fc_histogram[mom8fc_flux_bins > histogram_threshold])))
+
+            # histasymm is now comparing the summation of the absolute deviation vs histogram area
+            mom_8_10_histogram_asymmetry = 0.5 * (np.sum(np.abs(deviation1)) + np.sum(np.abs(deviation2))) / smallerarea
 
             # Update the result.
+            result.set_cube_sigma_fc_chans(maxiter, cube_sigma_fc_chans)
+            result.set_cube_scaledMAD_fc_chans(maxiter, cube_scaledMAD_fc_chans)
+
             result.set_mom8_fc(maxiter, mom8fc_name)
-            result.set_mom8_fc_image_min(maxiter, image_min)
-            result.set_mom8_fc_image_max(maxiter, image_max)
-            result.set_mom8_fc_image_median_all(maxiter, image_median_all)
-            result.set_mom8_fc_image_median_annulus(maxiter, image_median_annulus)
-            result.set_mom8_fc_image_mad(maxiter, image_mad)
-            result.set_mom8_fc_cube_sigma(maxiter, cube_sigma)
-            result.set_mom8_fc_cube_chanScaledMAD(maxiter, cube_chanScaledMAD)
-            result.set_mom8_fc_peak_snr(maxiter, peak_snr)
-            result.set_mom8_fc_outlier_threshold(maxiter, outlier_threshold)
-            result.set_mom8_fc_n_pixels(maxiter, n_pixels)
-            result.set_mom8_fc_n_outlier_pixels(maxiter, n_outlier_pixels)
+            result.set_mom8_fc_image_min(maxiter, mom8_image_min)
+            result.set_mom8_fc_image_max(maxiter, mom8_image_max)
+            result.set_mom8_fc_image_median_all(maxiter, mom8_image_median_all)
+            result.set_mom8_fc_image_median_annulus(maxiter, mom8_image_median_annulus)
+            result.set_mom8_fc_image_mad(maxiter, mom8_image_mad)
+            result.set_mom8_fc_peak_snr(maxiter, mom8_fc_peak_snr)
+            result.set_mom8_fc_n_pixels(maxiter, mom8_n_pixels)
+            result.set_mom8_fc_frac_max_segment(maxiter, mom8_frac_max_segment)
+            result.set_mom8_fc_max_segment_beams(maxiter, mom8_max_segment_beams)
+
+            result.set_mom10_fc(maxiter, mom10fc_name)
+            result.set_mom10_fc_image_min(maxiter, mom10_image_min)
+            result.set_mom10_fc_image_max(maxiter, mom10_image_max)
+            result.set_mom10_fc_image_median_all(maxiter, mom10_image_median_all)
+            result.set_mom10_fc_image_median_annulus(maxiter, mom10_image_median_annulus)
+            result.set_mom10_fc_image_mad(maxiter, mom10_image_mad)
+            result.set_mom10_fc_n_pixels(maxiter, mom10_n_pixels)
+
+            result.set_mom8_10_fc_histogram_asymmetry(maxiter, mom_8_10_histogram_asymmetry)
 
         else:
-            LOG.warning('Cannot create MOM0_FC / MOM8_FC images for intent "%s", '
+            LOG.warning('Cannot create MOM0_FC / MOM8_FC / MOM10_FC images for intent "%s", '
                         'field %s, spw %s, no continuum ranges found.' %
                         (self.inputs.intent, self.inputs.field, self.inputs.spw))
 

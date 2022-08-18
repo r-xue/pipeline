@@ -20,17 +20,6 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
 
         scores = []
 
-        # Step through each spwmapping to create QA scores.
-        for (intent, field), spwmapping in result.spwmaps.items():
-            # For PHASE calibrator fields, score the spwmapping based on
-            # fraction of unmapped science spws.
-            if intent == 'PHASE':
-                scores.append(qacalc.score_phaseup_mapping_fraction(ms, intent, field, spwmapping))
-            # For CHECK fields, score the spwmapping based on whether or not
-            # it is combining spws.
-            elif intent == 'CHECK':
-                scores.append(qacalc.score_combine_spwmapping(ms, intent, field, spwmapping))
-
         # Create QA score for whether the phaseup caltable was created successfully.
         if not result.phaseup_result.final:
             gaintable = list(result.phaseup_result.error)[0].gaintable
@@ -75,7 +64,23 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Add score to list of scores.
             scores.append(score)
 
-        # Add scores to QA pool in result.
+        # Create QA scores for decoherence assessment (See: PIPE-692)
+        phase_rms_qa = result.phaserms_qa
+        if phase_rms_qa: 
+            base_score = phase_rms_qa['basescore']
+            shortmsg = phase_rms_qa['shortmsg']
+            longmsg = phase_rms_qa['longmsg']
+        else:
+            # If there was no qa result for the decoherence assessment, use the following score and 
+            # messages:
+            base_score = 0.9 
+            shortmsg = "Cannot assess Phase RMS."
+            longmsg = 'Unable to assess the Phase RMS decoherence, for {}.'.format(ms.name)
+
+        # Add decoherence assessment score to list of scores
+        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
+
+        # Add all scores to the QA pool
         result.qa.pool.extend(scores)
 
 

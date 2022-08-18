@@ -473,7 +473,7 @@ class RasterGridding(GriddingBase):
                 Delta = sDeltaDEC * sDeltaDEC + sDeltaRA * sDeltaRA
                 SelectR = numpy.where(Delta < ThresholdR)[0]
                 if len(SelectR > 0):
-                    ssRMS = numpy.take(sRMS, SelectR)
+                    ssRMS = numpy.take(sRMS[1], SelectR)
                     ssIDX = numpy.take(sIDX, SelectR)
                     ssMS = numpy.take(sMS, SelectR)
                     ssDelta = numpy.sqrt(numpy.take(Delta, SelectR))

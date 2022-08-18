@@ -1,5 +1,6 @@
 import abc
 import collections
+import copy
 import datetime
 import functools
 import inspect
@@ -10,8 +11,6 @@ import re
 import textwrap
 import traceback
 import uuid
-
-from .mpihelpers import MPIEnvironment
 
 from . import api
 from . import casa_tools
@@ -628,8 +627,8 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         self._executor = Executor(self.inputs.context, dry_run)
 
         # create a new log handler that will capture all messages above
-        # WARNING level.
-        handler = logging.CapturingHandler(logging.WARNING)
+        # ATTENTION level.
+        handler = logging.CapturingHandler(logging.ATTENTION)
 
         try:
             # if this task does not handle multiple input mses but was
@@ -800,8 +799,20 @@ class Executor(object):
     def __init__(self, context, dry_run=True):
         self._dry_run = dry_run
         self._context = context
-        self._cmdfile = os.path.join(context.report_dir,
-                                     context.logs['casa_commands'])
+        self._output_dir = self._context.output_dir
+        self.cmdfile = os.path.join(context.report_dir,
+                                    context.logs['casa_commands'])
+
+    @property
+    def cmdfile(self):
+        return self._cmdfile
+
+    @cmdfile.setter
+    def cmdfile(self, value):
+        if isinstance(value, str):
+            if hasattr(self, '_cmdfile'):
+                LOG.debug(f'Switch the CASA commands log file from {self._cmdfile} to {value}.')
+            self._cmdfile = value
 
     @capture_log
     def execute(self, job, merge=False, **kwargs):
@@ -822,17 +833,18 @@ class Executor(object):
 
         # if the job was a JobRequest, log it to our command log
         if isinstance(job, jobrequest.JobRequest):
-            # don't print shutil commands from MPI servers as the interleaved
-            # commands become confusing.
-            is_MPI_server = MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
-            omit_log = True if is_MPI_server and job.fn.__module__ == 'shutil' else False
-            if not omit_log:
-                self._log_jobrequest(job)
+            self._log_jobrequest(job)
 
-        # if requested, merge the result with the context. No type checking
-        # here.
+        # if requested, merge the result with the context.
         if merge and not self._dry_run:
-            result.accept(self._context)
+            if self._context is None:
+                # PIPE-1522: A "context-free" copy of the Executor instance can be created from the 'copy' 
+                # method (exclude_context=True), and sent to MPI servers for Tier0JobRequest executions.
+                # This reduces the MPI message size.
+                LOG.error('The context object is detached from the Executor instance and \
+                            the job/subtask result merge is not allowed.')
+            else:
+                result.accept(self._context)
 
         return result
 
@@ -844,8 +856,8 @@ class Executor(object):
         # occurrence of this output path in arguments with an empty string, to
         # ensure the casa commands log does not contain hardcoded paths
         # specific to where the pipeline ran.
-        if os.path.isdir(self._context.output_dir):
-            job_str = re.sub(r'%s/' % self._context.output_dir, '', str(job))
+        if os.path.isdir(self._output_dir):
+            job_str = re.sub(r'%s/' % self._output_dir, '', str(job))
         else:
             job_str = str(job)
 
@@ -862,6 +874,20 @@ class Executor(object):
 
         with open(self._cmdfile, 'a') as cmdfile:
             cmdfile.write('%s\n' % '\n'.join(wrapped))
+
+    def copy(self, exclude_context=False):
+        """Return a shallow copy of the Executor instance.
+
+        Optionally, we can exclude the "context" object to reduce the return object 
+        size (e.g. when pushing it from the MPI client to the server). However, in that 
+        case, merge=True will not be allowed in the "execute" method.
+        """
+
+        executor_copy = copy.copy(self)
+        if exclude_context:
+            executor_copy._context = None
+        # executor_copy = utils.pickle_copy(executor_copy)
+        return executor_copy
 
 
 def _log_task(task, dry_run):

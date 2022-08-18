@@ -22,11 +22,12 @@ class ManualMaskThresholdSequence(BaseCleanSequence):
             raise Exception('no data for iteration')
 
         if iteration == 1:
+
+            LOG.info('Copying {} to {}'.format(self.mask, new_cleanmask))
             tbTool = casa_tools.table
             tbTool.open(self.mask)
             tbTool.copy(new_cleanmask)
             tbTool.done()
-            LOG.info('Copyied {} to {}'.format(self.mask, new_cleanmask))
 
             self.result.cleanmask = new_cleanmask
             self.result.threshold = self.threshold

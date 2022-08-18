@@ -39,6 +39,7 @@ the results object for the pipeline task is returned.
 	    <value>trace</value>
 	    <value>debug</value>
 	    <value>info</value>
+	    <value>attention</value>
 	    <value>warning</value>
 	    <value>error</value>
 	    <value>critical</value>

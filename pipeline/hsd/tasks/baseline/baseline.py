@@ -302,8 +302,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
         context = inputs.context
         reduction_group = context.observing_run.ms_reduction_group
         vis_list = inputs.vis
-        ms_list = inputs.ms
         args = inputs.to_casa_args()
+        args_spw = utils.convert_spw_virtual2real(context, inputs.spw)
 
         window = inputs.linewindow
         windowmode = inputs.linewindowmode
@@ -311,7 +311,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
         edge = inputs.edge
         broadline = inputs.broadline
         fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
-        fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
@@ -370,10 +369,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 LOG.info('Skip channel averaged spw %s.', vspw)
                 continue
 
-            LOG.debug('spw=\'%s\'', args['spw'])
+            LOG.debug('spw=\'%s\'', args_spw)
             LOG.debug('vis_list=%s', vis_list)
             member_list = numpy.fromiter(
-                utils.get_valid_ms_members2(group_desc, ms_list, args['antenna'], args['field'], args['spw']),
+                utils.get_valid_ms_members(group_desc, vis_list, args['antenna'], args['field'], args_spw),
                 dtype=numpy.int32)
             # skip this group if valid member list is empty
             LOG.debug('member_list=%s', member_list)

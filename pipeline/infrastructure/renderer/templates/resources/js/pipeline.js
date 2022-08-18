@@ -1092,7 +1092,11 @@ var UTILS = (function() {
                 pipeline.history.pushState();
             }];
 
-            pipeline.detailsframe.load(this.href, onSuccess, onGet);
+            if (typeof $(this).attr('no-escape-html') !== 'undefined') {
+                pipeline.detailsframe.load(this.href, onSuccess);
+            } else {
+                pipeline.detailsframe.load(this.href, onSuccess, onGet);
+            }
         });
     };
 
@@ -1457,6 +1461,9 @@ var PLOTS = function() {
         },
         "K": function(xAxisLabel) {
             xAxisLabel.text("K");
+        },
+        "Flagged fraction": function(xAxisLabel) {
+            xAxisLabel.text("Flagged %");
         }
     };
 

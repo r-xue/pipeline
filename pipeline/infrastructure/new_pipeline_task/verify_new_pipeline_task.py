@@ -10,7 +10,7 @@ import argparse
 import pipeline
 pipeline.initcli()
 
-class NewTask():
+class NewTask:
 
     def __init__(self):
         self.repository_path = os.environ['SCIPIPE_HEURISTICS']
