@@ -202,7 +202,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Use only the current spw ID here !
                     if0, if1, channel_width = image_heuristics.freq_intersection(vislist, target['field'], target['intent'], spwid, frame)
                     if (if0 == -1) or (if1 == -1):
-                        LOG.error('No %d frequency intersect among selected MSs for Field %s '
+                        LOG.error('No %s frequency intersect among selected MSs for Field %s '
                                   'SPW %s' % (frame, target['field'], spwid))
                         cont_ranges['fields'][source_name][spwid] = ['NONE']
                         result_cont_ranges[source_name][spwid] = {
@@ -225,7 +225,7 @@ class FindCont(basetask.StandardTaskTemplate):
                             continue
                         LOG.info('Using supplied start frequency %s' % (target['start']))
 
-                    if target['width'] != '' and target['nbin'] != -1:
+                    if target['width'] != '' and target['nbin'] not in (None, -1):
                         LOG.error('Field %s SPW %s: width and nbin are mutually exclusive' % (target['field'],
                                                                                               target['spw']))
                         continue
@@ -240,18 +240,14 @@ class FindCont(basetask.StandardTaskTemplate):
                         channel_width = channel_width_manual
                         if channel_width > channel_width_auto:
                             target['nbin'] = int(utils.round_half_up(channel_width / channel_width_auto) + 0.5)
-                    elif target['nbin'] != -1:
+                    elif target['nbin'] not in (None, -1):
                         LOG.info('Applying binning factor %d' % (target['nbin']))
                         channel_width *= target['nbin']
 
-                    # Get spw sideband
+                    # Get real spwid
                     ref_ms = context.observing_run.get_ms(vislist[0])
                     real_spwid = context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
                     real_spwid_obj = ref_ms.get_spectral_window(real_spwid)
-                    if real_spwid_obj.sideband == '-1':
-                        sideband = 'LSB'
-                    else:
-                        sideband = 'USB'
 
                     if image_heuristics.is_eph_obj(target['field']):
                         # Determine extra channels to skip for ephemeris objects to
@@ -288,7 +284,10 @@ class FindCont(basetask.StandardTaskTemplate):
                         # Thus shift by 0.5 channels if no start is supplied.
                         # Additionally skipping the edge channel (cf. "- 2" above)
                         # means a correction of 1.5 channels.
-                        start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
+                        if target['nbin'] not in (None, -1):
+                            start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width / target['nbin']) / 1e9)
+                        else:
+                            start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
                     else:
                         start = target['start']
 

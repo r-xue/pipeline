@@ -1,9 +1,11 @@
 import collections
 import os
-from typing import List
+import shutil
+from typing import Dict, List
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
@@ -14,6 +16,7 @@ PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
 SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
 SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
+PhaseRmsTR = collections.namedtuple('PhaseRmsTR', 'ms type time median_phase_rms noisy_ant')
 
 
 class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -35,12 +38,23 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Get info on phase caltable.
         applications = get_gaincal_applications(context, results)
 
+        # Get info on the Decoherence Assessment RMS plots and tables
+        if results[0].phaserms_results: 
+            weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
+            rmsplots = make_rms_plots(results, weblog_dir)
+            phaserms_table_rows = get_phaserms_table_rows(context, results)
+        else: 
+            rmsplots = None
+            phaserms_table_rows = None
+
         # Update mako context.
         ctx.update({
             'applications': applications,
             'pcal_table_rows': pcal_table_rows,
             'snr_table_rows': snr_table_rows,
+            'phaserms_table_rows': phaserms_table_rows,
             'spwmaps': spwmaps,
+            'rmsplots' : rmsplots
         })
 
 
@@ -205,3 +219,66 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
             rows.append(SnrTR(ms.basename, '', '', '', '', ''))
 
     return utils.merge_td_columns(rows)
+
+
+def get_phaserms_table_rows(context: Context, results: ResultsList) -> List[str]:
+    """
+    Return list of strings containing HTML TD columns, representing rows for
+    the decoherence assessment phase rms results table. (SEE PIPE-692)
+
+    Args:
+        context: the pipeline context.
+        results: list of task results.
+
+    Returns:
+        List of strings containing rows for phase rms table.
+    """
+    rows = []
+    for result in sorted(results, key=lambda result: result.vis):
+        ms = context.observing_run.get_ms(result.vis)
+        if result.phaserms_antout == '':
+            result.phaserms_antout = "None"
+        total_time = f'{result.phaserms_totaltime:.1f}'
+        cycle_time = f'{result.phaserms_cycletime:.1f}'
+        phasermsp80 = result.phaserms_results['phasermsP80']
+        phasermscyclep80 = result.phaserms_results['phasermscycleP80']
+        phaserms_totaltime = f'{phasermsp80:.2f}'
+        phaserms_cycletime = f'{phasermscyclep80:.2f}'
+        
+        rows.append(PhaseRmsTR(ms.basename, 'Total Time', total_time,
+                    phaserms_totaltime, result.phaserms_antout))
+        rows.append(PhaseRmsTR(ms.basename, 'Cycle Time', cycle_time,
+                    phaserms_cycletime, result.phaserms_antout))
+    return utils.merge_td_columns(rows)
+
+
+def make_rms_plots(results, weblog_dir: str) -> Dict[str, List[logger.Plot]]:
+    """
+    Create and return a list of the Spatial Structure Functions (SSF) plots. 
+    (See PIPE-692)
+
+    Args:
+        results: the spwphaseup results. 
+        weblog_dir: the weblog directory
+    Returns:
+        summary_plots: dictionary with MS
+                    as the keys and lists of plot objects as the values
+    """
+    rms_plots = collections.defaultdict(list)
+    for result in sorted(results, key=lambda result: result.vis):
+        vis = os.path.basename(result.inputs['vis'])
+        rmsplot = "{}_PIPE-692_SSF.png".format(vis)
+        rmsplot_path = f"{rmsplot}"
+        if os.path.exists(rmsplot_path):
+            LOG.trace(f"Copying {rmsplot_path} to {weblog_dir}")
+            shutil.copy(rmsplot_path, weblog_dir)
+            rmsplot_path = f'{weblog_dir}/{rmsplot_path}'
+            plot = logger.Plot(rmsplot_path,
+                    x_axis='Baseline length (m)',
+                    y_axis='Phase RMS (deg)',
+                    parameters={'vis': vis, 
+                                'desc': 'Baseline length vs. Phase RMS'})
+            rms_plots[vis].append(plot)
+        else:
+            LOG.debug(f"Failed to copy {rmsplot_path} to {weblog_dir}")
+    return rms_plots

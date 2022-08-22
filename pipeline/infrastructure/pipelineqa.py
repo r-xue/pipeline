@@ -168,7 +168,7 @@ class QAScore(object):
         self.hierarchy = hierarchy
 
     def __str__(self):
-        return 'QAScore(%r, %r, %r, %s)'.format(self.score, self.longmsg, self.shortmsg, self.applies_to)
+        return 'QAScore({!s}, {!r}, {!r}, {!s})'.format(self.score, self.longmsg, self.shortmsg, self.applies_to)
 
     def __repr__(self):
         origin = None if self.origin is NULL_ORIGIN else self.origin
