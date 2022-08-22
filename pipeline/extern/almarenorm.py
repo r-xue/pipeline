@@ -556,7 +556,8 @@ class ACreNorm(object):
         if len(self.fdmspws) != 0:
             self.tdm_only = False
             bandFreq = spwInfo[str(self.fdmspws[0])]['Chan1Freq']
-            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.fdmspws[0]))
+            # Maybe a better way?
+            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.datadescids(spw=self.fdmspws[0])[0]))
             # AC data will only use the parallel hands, so if 4 correlations are detected in the FDM
             # window, we set the full_pol flag to True and reset num_corrs to 2.
             if self.num_corrs == 4:
@@ -577,7 +578,7 @@ class ACreNorm(object):
             self.logReNorm.write('No FDM windows found! Renormalization unnecessary.')
             self.tdm_only = True
             bandFreq = spwInfo['0']['Chan1Freq']
-            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.tdmspws()[-1]))
+            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.datadescids(spw=self.msmeta.tdmspws()[-1])[0]))
         
         self.Band = int(self.getband(bandFreq))
 
@@ -2079,17 +2080,34 @@ class ACreNorm(object):
                                                     print('replacing scan with good for '+str(self.AntName[lpAnt]))
                                                     self.rnstats['N'][target][str(ispw)][:,:,lpAnt]= N[:,:,lpAnt] 
                                                 if (self.corrATM and not skipAtmCorr) or excludechan:
-                                                    if lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
-                                                        self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N_atm[:,:,lpAnt]/(ngoodscan+1)
-                                                    elif lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
-                                                        self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]= N_atm[:,:,lpAnt]
+                                                    try: 
+                                                        if lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N_atm[:,:,lpAnt]/(ngoodscan+1)
+                                                        elif lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]= N_atm[:,:,lpAnt]
+                                                    # If we end up here, then the atmAutoExclude algorithm has only just 
+                                                    # started excluding scans. So we need to instantiate the N_atm dict
+                                                    # with everything that is contained in N so far and then we can add
+                                                    # the new data.
+                                                    except KeyError:
+                                                        self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]
+                                                        if lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N_atm[:,:,lpAnt]/(ngoodscan+1)
+                                                        elif lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]= N_atm[:,:,lpAnt]
                                             # remember to add to the scans assessed
                                             ngoodscan+=1
                                         else:
                                             # if no flagged antennas were passed we do the default cumulative average as normal
                                             self.rnstats['N'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N/(ngoodscan+1)
                                             if (self.corrATM and not skipAtmCorr) or excludechan:
-                                                self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N_atm'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N_atm/(ngoodscan+1)
+                                                try:
+                                                    self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N_atm'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N_atm/(ngoodscan+1)
+                                                # If we end up here, then the atmAutoExclude algorithm has only just 
+                                                # started excluding scans. So we need to instantiate the N_atm dict
+                                                # with everything that is contained in N so far plus the new data.
+                                                except KeyError:
+                                                    self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1) + N_atm/(ngoodscan+1)
                                             ngoodscan+=1
                                     ## Non flagged antenna cases
                                     else:
