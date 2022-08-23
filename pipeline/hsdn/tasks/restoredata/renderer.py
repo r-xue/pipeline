@@ -39,9 +39,10 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
         ctx_result0 = ctx_result[0]
         ctx_result0_inputs = ctx_result0.inputs
         inputs = {}
-        for key, value in ctx_result0_inputs.items():
-            if 'rawdata_dir' in key or 'products_dir' in key or 'vis' in key or 'output_dir' in key or 'reffile' in key:
-                inputs[key] = value
+        inputs_keys = ('rawdata_dir', 'products_dir', 'vis', 'output_dir', 'reffile', 'hm_rasterscan')
+        for key in inputs_keys:
+            if key in ctx_result0_inputs:
+                inputs[key] = ctx_result0_inputs[key]
         result_inputs = inputs
         LOG.debug('result_inputs = {0}'.format(result_inputs));
         ctx['result'].inputs = result_inputs
