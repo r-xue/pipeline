@@ -44,7 +44,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
             if key in ctx_result0_inputs:
                 inputs[key] = ctx_result0_inputs[key]
         result_inputs = inputs
-        LOG.debug('result_inputs = {0}'.format(result_inputs));
+        LOG.debug('result_inputs = {0}'.format(result_inputs))
         ctx['result'].inputs = result_inputs
         reffile = None
         spw_factors = collections.defaultdict(lambda: [])
@@ -70,7 +70,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                 metadata = ['No Data : No Data']
                 break
             else:
-                LOG.info('os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
+                LOG.info('os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)))
                 with open(reffile, 'r') as f:
                     lines = f.readlines()
                 # Count the line numbers for the beginning of metadata part and the end of it.
@@ -112,7 +112,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                         check = elem.split()
                         # The lines without "#" are regarded as all FreeMemo's values.
                         if len(elem) == 0:
-                            LOG.debug('Skipped the blank line of the reffile.');
+                            LOG.debug('Skipped the blank line of the reffile.')
                             continue
                         else:
                             if not ":" in check[0]:
@@ -164,7 +164,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                     spw_band[vspwid] = spw.band
 
                 for ant in ms.get_antenna():
-                    LOG.debug('ant = {0}'.format(ant));
+                    LOG.debug('ant = {0}'.format(ant))
                     ant_name = ant.name
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
 
@@ -184,7 +184,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                         if factor is not None:
                             valid_spw_factors[vspwid][corr].append(factor)
             reffile = r.reffile
-            LOG.debug('reffile = {0}'.format(reffile));
+            LOG.debug('reffile = {0}'.format(reffile))
         stage_dir = os.path.join(context.report_dir, 'stage%s' % ampcal_results.stage_number)
 
         # input file to correct relative amplitude
@@ -204,12 +204,12 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % applycal_results.stage_number)
-        LOG.debug('weblog_dir = {0}'.format(weblog_dir));
+        LOG.debug('weblog_dir = {0}'.format(weblog_dir))
 
         intents_to_summarise = ['TARGET']
         flag_totals = {}
         for r in applycal_results:
-            LOG.debug('r in applycal_results = {0}'.format(r));
+            LOG.debug('r in applycal_results = {0}'.format(r))
 
             if r.inputs['flagsum'] == True:
                 flag_totals = utils.dict_merge(flag_totals,
@@ -220,13 +220,13 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
         for r in applycal_results:
             calapps = utils.dict_merge(calapps,
                                        self.calapps_for_result(r))
-        LOG.debug('calapps = {0}'.format(calapps));
+        LOG.debug('calapps = {0}'.format(calapps))
 
         caltypes = {}
         for r in applycal_results:
             caltypes = utils.dict_merge(caltypes,
                                         self.caltypes_for_result(r))
-        LOG.debug('caltypes = {0}'.format(caltypes));
+        LOG.debug('caltypes = {0}'.format(caltypes))
 
         filesizes = {}
         for r in applycal_results:
