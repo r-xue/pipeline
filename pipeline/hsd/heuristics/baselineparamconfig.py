@@ -11,7 +11,6 @@ from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from . import fitorder
 from . import fragmentation
-from ..tasks.common.utils import make_row_map_between_ms
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -82,7 +81,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         super(BaselineFitParamConfig, self).__init__()
         self.paramdict = {}
         self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
-        if switchpoly == True:
+        if switchpoly is True:
             self.switching_heuristic = do_switching
         else:
             self.switching_heuristic = no_switching
@@ -202,9 +201,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         with open(blparam, 'a') as blparamfileobj:
 
             with casa_tools.TableReader(vis) as tb:
-                for y in range(len(member_list)):
-                    origin_rows = member_list[y][0] # origin_ms row ID
-                    idxs = member_list[y][1] # datatable row ID
+                for y, member in enumerate( member_list ):
+                    origin_rows = member[0] # origin_ms row ID
+                    idxs = member[1] # datatable row ID
                     rows = [rowmap[i] for i in origin_rows] # vis row ID
 
                     spectra = numpy.zeros((len(rows), npol, nchan,), dtype=numpy.float32)
@@ -231,16 +230,19 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                     npol = spectra.shape[1]
                     for pol in range(npol):
                         # fit order determination
-                        polyorder = self.fitorder_heuristic(
+                        averaged_polyorder = self.fitorder_heuristic(
                             spectra[:, pol, :], [list(masklist[i]) + flaglist[i][pol] for i in range(len(idxs))], edge)
+                        # TENTATIVE patch to deal with all masked cases
+                        if averaged_polyorder is None:
+                            averaged_polyorder = 5
                         #del spectra
                         if fit_order == 'automatic' and self.MaxPolynomialOrder != 'none':
-                            polyorder = min(polyorder, self.MaxPolynomialOrder)
+                            averaged_polyorder = min(averaged_polyorder, self.MaxPolynomialOrder)
                         #LOG.debug('time group {} pol {}: fitting order={}'.format(
-                        #            y, pol, polyorder))
+                        #            y, pol, averaged_polyorder))
 
                         # calculate fragmentation
-                        (fragment, nwindow, win_polyorder) = fragmentation_heuristic(polyorder, nchan, edge)
+                        (fragment, nwindow, win_polyorder) = fragmentation_heuristic(averaged_polyorder, nchan, edge)
 
                         nrow = len(rows)
                         if DEBUG() or TRACE():
@@ -274,10 +276,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                                 LOG.trace('Masked Region from previous processes = {}'.format(
                                     _masklist))
                                 LOG.trace('edge parameters= {}'.format(edge))
-                                LOG.trace('Polynomial order = {}  Max Polynomial order = {}'.format(polyorder, max_polyorder))
+                                LOG.trace('Polynomial order = {}  Max Polynomial order = {}'.format(averaged_polyorder, max_polyorder))
 
                             # fitting
-                            polyorder = min(polyorder, max_polyorder)
+                            polyorder = min(averaged_polyorder, max_polyorder)
                             mask_array[:] = base_mask_array
                             #LOG.info('mask_array = {}'.format(''.join(map(str, mask_array))))
                             #irow = len(row_list_total)+len(row_list)
