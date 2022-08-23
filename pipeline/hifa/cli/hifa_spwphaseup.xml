@@ -4,38 +4,44 @@
 
 <shortdescription>Compute phase calibration spw map and per spw phase offsets</shortdescription>
 <description>
-The spw map for phase calibration is computed. Phase offsets as a function of spectral
-window are computed using high signal to noise calibration observations.
+The spw map for phase calibration is computed. Phase offsets as a function of
+spectral window are computed using high signal to noise calibration observations.
 
 Previous calibrations are applied on the fly.
 
-
 hifa_spwphaseup performs two functions:
-            o determines the spectral window mapping mode for the phase vs time
-              calibrations and computes spectral window map that will be used to
-              apply those calibrations
-            o computes the per spectral window phase offset table that will be
-              applied to the data to remove mean phase differences between
-              the spectral windows
 
-If hm_spwmapmode = 'auto' the spectral window map is computed using the
-following algorithm:
+o determines the spectral window mapping or combination mode, for each phase and
+    check source, to use when solving for phase as a function of time (gfluxscale
+    and timegaincal), and when applying those solutions to targets.
 
-o estimate the per spectral window per scan signal to noise ratio of the phase
-  calibrator observations
-o if the signal to noise of any single phase calibration spectral window is
-  less than the value of 'phasesnr' hm_spwmapmode defaults to 'combine'
-o if all phase calibrator spectral windows meet the low  signal to noise
-  criterion then hm_spwmapmode defaults to default'
-o if the phase calibrator signal to noise values cannot be computed for any
-  reason, for example there is no flux information, then hm_spwmapmode defaults
-  to 'combine'
+o computes the per spectral window phase offset table that will be applied to the
+    data to remove mean phase differences between the spectral windows
 
-If hm_spwmapmode = 'combine' hifa_spwphaseup maps all the science windows to a
-single science spectral window. For example if the list of science spectral
-windows is [9, 11, 13, 15] then all the science spectral windows in the data
-will be combined and mapped to the science window 9 in the combined phase vs
-time calibration table.
+If hm_spwmapmode = 'auto' the spectral window map is computed for each spectralSpec
+and each source with phase or check intent, using the following algorithm:
+
+o estimate the per spectral window (spw) per scan signal to noise ratio for each
+    phase and check source based on catalog flux densities, Tsys, number of
+    antennas, and integration scan time
+
+o if the signal to noise of all spws is greater than 'phasesnr', then
+    hm_spwmapmode='default' mapping is used in which each spw is used
+    to calibrate itself.
+
+o if the signal to noise of only some spws are greater than the value of
+    'phasesnr', then each lower-SNR spw is mapped to the highest SNR
+    one in the same spectralSpec
+
+o if all spws have low SNR, or SNR cannot be computed for any reason,
+    for example there is no flux information, then hm_spwmapmode='combine'
+
+
+If hm_spwmapmode = 'combine', hifa_spwphaseup maps all the science windows
+to a single science spectral window. For example if the list of science
+spectral windows is [9, 11, 13, 15] then all the science spectral windows
+in the data will be combined and mapped to the science window 9 in the
+combined phase vs time calibration table.
 
 If hm_spwmapmode = 'simple', a mapping from narrow science to wider science
 spectral windows is computed using the following algorithm:

@@ -257,7 +257,7 @@
 7. Run with explicit setting of data column types:
 
     hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_contline'})
-    hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})
+    hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets_line.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})
         </example>
     </task>
 </casaxml>
