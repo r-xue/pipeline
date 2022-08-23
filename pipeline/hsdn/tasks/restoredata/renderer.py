@@ -1,28 +1,17 @@
-import os
 import collections
+import os
 import shutil
-import itertools
-import operator
 
-import pipeline.domain.measures as measures
-import pipeline.infrastructure
-import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
-from . import csvfilereader
-
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
-from pipeline.h.tasks.common.displays import applycal as applycal
-from pipeline.hsd.tasks.common import utils as sdutils
-from pipeline.h.tasks.applycal import renderer as super_renderer
 from pipeline.hsd.tasks.applycal import renderer as sdapplycal
+from pipeline.hsd.tasks.common import utils as sdutils
 
 LOG = logging.get_logger(__name__)
 
 JyperKTRV = collections.namedtuple('JyperKTRV', 'virtualspw msname realspw antenna pol factor')
-JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
+JyperKTR  = collections.namedtuple('JyperKTR', 'spw msname antenna pol factor')
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
