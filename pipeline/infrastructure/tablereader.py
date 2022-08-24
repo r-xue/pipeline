@@ -542,12 +542,11 @@ class SpectralWindowTable(object):
         # Read and return the online spectral averaging information if available
         sdm_num_bin = None
         if 'ALMA' in msmd.observatorynames() or 'EVLA' in msmd.observatorynames():
-            try:
-                with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+            with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+                if 'SDM_NUM_BIN' in table.colnames():
                     sdm_num_bin = table.getcol('SDM_NUM_BIN')
-            except: 
-                LOG.info("SDM_NUM_BIN not set for MS {}".format(_get_ms_basename(ms)))
-                sdm_num_bin = None
+                else:
+                    LOG.info("SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {}".format(_get_ms_basename(ms)))
         return sdm_num_bin
 
 

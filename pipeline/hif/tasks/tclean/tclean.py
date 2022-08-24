@@ -521,7 +521,10 @@ class Tclean(cleanbase.CleanBase):
                 # Thus shift by 0.5 channels if no start is supplied.
                 # Additionally skipping the edge channel (cf. "- 2" above)
                 # means a correction of 1.5 channels.
-                inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
+                if inputs.nbin not in (None, -1):
+                    inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width / inputs.nbin) / 1e9)
+                else:
+                    inputs.start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             inputs.width = '%.7fMHz' % (channel_width / 1e6)
@@ -639,7 +642,7 @@ class Tclean(cleanbase.CleanBase):
                 (self.image_heuristics.imaging_mode.startswith('VLASS-SE-CONT') or self.image_heuristics.imaging_mode.startswith('VLASS-SE-CUBE')):
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
-                                                          sensitivity=sensitivity, niter=inputs.niter)
+                                                          sensitivity=sensitivity, niter=inputs.niter, executor=self._executor)
 
         # Manually supplied mask
         elif inputs.hm_masking == 'manual':
@@ -847,7 +850,7 @@ class Tclean(cleanbase.CleanBase):
                 # PIPE-1401: copy input user masks (vlass-se-cont tier1/tier2) for imaging of each spw group.
                 # Because various metadata (e.g., spw list) are written into headers of mask images and later used by the
                 # weblog display/renderer class, we have to differentiate in-use mask files of individual spw groups, even
-                # they are identifcal. Here, we make mask copy per clean_target (i.e. a spw group of VLASS-SE-CUBE.)
+                # they are identical. Here, we make mask copy per clean_target (i.e. a spw group of VLASS-SE-CUBE.)
                 # under its distinct name.
                 if mask in ['', None, 'pb']:
                     new_cleanmask = mask
@@ -963,7 +966,7 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def _replace_psf(self, origin: str, target: str, clear_origin: bool = False):
-        """Replace multi-term CASA image
+        """Replace multi-term CASA image.
 
         The <origin>.tt0, <origin>.tt1 and <origin>.tt2 images are copied or moved
         to <target>.tt0, <target>.tt1 and <target>.tt2 images.
@@ -972,12 +975,16 @@ class Tclean(cleanbase.CleanBase):
         they will be deleted.
         """
         for tt in ['tt0', 'tt1', 'tt2']:
-            LOG.info("Copying {o}.{tt} to {t}.{tt}".format(o=origin, tt=tt, t=target))
-            shutil.rmtree('{}.{}'.format(target, tt), ignore_errors=True)
-            shutil.copytree('{}.{}'.format(origin, tt), '{}.{}'.format(target, tt))
+            target_psf = f'{target}.{tt}'
+            origin_psf = f'{origin}.{tt}'
+            if os.path.isdir(target_psf):
+                self._executor.execute(casa_tasks.rmtree(target_psf, ignore_errors=False))
             if clear_origin:
-                LOG.info("Deleting {}.{}".format(origin, tt))
-                shutil.rmtree('{}.{}'.format(origin, tt))
+                LOG.info(f'Moving {origin_psf} to {target_psf}')
+                self._executor.execute(casa_tasks.move(origin_psf, target_psf))
+            else:
+                LOG.info(f'Copying {origin_psf} to {target_psf}')
+                self._executor.execute(casa_tasks.copytree(origin_psf, target_psf))
 
     def _do_iterative_imaging(self, sequence_manager):
 

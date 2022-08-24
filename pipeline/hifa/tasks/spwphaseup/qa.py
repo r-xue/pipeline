@@ -64,7 +64,23 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Add score to list of scores.
             scores.append(score)
 
-        # Add scores to QA pool in result.
+        # Create QA scores for decoherence assessment (See: PIPE-692)
+        phase_rms_qa = result.phaserms_qa
+        if phase_rms_qa: 
+            base_score = phase_rms_qa['basescore']
+            shortmsg = phase_rms_qa['shortmsg']
+            longmsg = phase_rms_qa['longmsg']
+        else:
+            # If there was no qa result for the decoherence assessment, use the following score and 
+            # messages:
+            base_score = 0.9 
+            shortmsg = "Cannot assess Phase RMS."
+            longmsg = 'Unable to assess the Phase RMS decoherence, for {}.'.format(ms.name)
+
+        # Add decoherence assessment score to list of scores
+        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
+
+        # Add all scores to the QA pool
         result.qa.pool.extend(scores)
 
 
