@@ -1380,11 +1380,11 @@ def score_wvrgcal(ms_name, dataresult):
             score = score - reduceBy
             # Crude check for the message - check if flag or disc/rms
             if len(flagant_list) > 0:
-                qa_messages.append('Flagged antenna(s) in WVRGCAL') 
+                qa_messages.append('Flagged antenna(s)') 
             if len(disc_limit) > 0:
-                qa_messages.append('Poor disc value(s) in WVRGCAL')
+                qa_messages.append('Elevated disc value(s)')
             if len(rms_limit) > 0:
-                qa_messages.append('Poor rms value(s) in WVRGCAL')
+                qa_messages.append('Elevated rms value(s)')
             # before making the score check if noisy BP was triggered
             if dataresult.BPnoisy:
                 score = 0.66  # should be yellow to trigger a warning
@@ -1405,10 +1405,10 @@ def score_wvrgcal(ms_name, dataresult):
         ## presuming disc list and rms list are all filled 
         if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
             score = 0.33
-            qa_messages.append('Poor disc/rms value(s) in WVRGCAL')
+            qa_messages.append('Elevated disc/rms value(s)')
             if len(flagant_list) > 0:
                 reduceBy = len(disc_limit)*0.1
-                qa_messages.append('Flagged antenna(s) in WVRGCAL')
+                qa_messages.append('Flagged antenna(s)')
                 score = score - reduceBy
             score = linear_score(score,0.0,0.33,0.0,0.33)
             # i.e. inputs will be truncated to between 0.0 and 0.33, linfited to be then between 0.0 and 0.33 RED
@@ -1423,11 +1423,11 @@ def score_wvrgcal(ms_name, dataresult):
                 score = score - reduceBy
                 # Crude check for the message - check if flag or disc/rms
                 if len(flagant_list) > 0:
-                    qa_messages.append('Flagged antenna(s) in WVRGCAL') 
+                    qa_messages.append('Flagged antenna(s)') 
                 if len(disc_limit) > 0:
-                    qa_messages.append('Poor disc value(s) in WVRGCAL')
+                    qa_messages.append('Elevated disc value(s)')
                 if len(rms_limit) > 0:
-                    qa_messages.append('Poor rms value(s) in WVRGCAL')
+                    qa_messages.append('Elevated rms value(s)')
             score = linear_score(score,0.0,0.66,0.34,0.66)
             # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
 
@@ -1713,6 +1713,86 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
 
 
 @log_qa
+def score_combine_spwmapping(ms, intent, field, spwmapping):
+    """
+    Evaluate whether or not a spw mapping is using combine.
+    If not, then set score to 1. If so, then set score to the sub-optimal
+    threshold (for blue info message).
+    """
+    if spwmapping.combine:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'Using combined spw mapping'
+    else:
+        score = 1.0
+        longmsg = f'No combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'No combined spw mapping'
+
+    origin = pqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
+                          metric_score=spwmapping.combine,
+                          metric_units='Using combined spw mapping')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
+    """
+    Compute the fraction of science spws that have not been
+    mapped to other probably wider windows.
+    """
+    if not spwmapping.spwmap:
+        nunmapped = len([spw for spw in ms.get_spectral_windows(science_windows_only=True)])
+        score = 1.0
+        longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'No spw mapping'
+    elif spwmapping.combine:
+        nunmapped = 0
+        score = rutils.SCORE_THRESHOLD_WARNING
+        longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'Combined spw mapping'
+    else:
+        # Expected science windows
+        scispws = [spw for spw in ms.get_spectral_windows(science_windows_only=True)]
+        scispwids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+        nexpected = len(scispwids)
+
+        nunmapped = 0
+        samesideband = True
+        for spwid, scispw in zip(scispwids, scispws):
+            if spwid == spwmapping.spwmap[spwid]:
+                nunmapped += 1
+            else:
+                if scispw.sideband != ms.get_spectral_window(spwmapping.spwmap[spwid]).sideband:
+                    samesideband = False
+
+        if nunmapped >= nexpected:
+            score = 1.0
+            longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
+            shortmsg = 'No spw mapping'
+        else:
+            # Replace the previous score with a warning
+            if samesideband is True:
+                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+                longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
+                shortmsg = 'Spw mapping within sidebands'
+            else:
+                score = rutils.SCORE_THRESHOLD_WARNING
+                longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
+                shortmsg = 'Spw mapping across sidebands'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
+                          metric_score=nunmapped,
+                          metric_units='Number of unmapped science spws')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
 def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
     """
     Score the median achieved SNR for a given phase calibrator field and SpW.
@@ -1743,7 +1823,9 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
                           metric_score=median_snr,
                           metric_units='Median SNR')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1777,7 +1859,9 @@ def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_thres
                           metric_score=median_snr,
                           metric_units='Median SNR')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 @log_qa
 def score_missing_phaseup_snrs(ms, spwids, phsolints):
@@ -1810,7 +1894,9 @@ def score_missing_phaseup_snrs(ms, spwids, phsolints):
                           metric_score=nmissing,
                           metric_units='Number of spws with missing SNR measurements')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1846,7 +1932,9 @@ def score_poor_phaseup_solutions(ms, spwids, nphsolutions, min_nsolutions):
                           metric_score=npoor,
                           metric_units='Number of poor phaseup solutions')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
