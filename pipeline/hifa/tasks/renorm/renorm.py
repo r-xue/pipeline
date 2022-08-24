@@ -59,9 +59,15 @@ class RenormInputs(vdp.StandardInputs):
 
     @excludechan.convert
     def excludechan(self, value):
-        pyobj = ast.literal_eval(value)
-        if isinstance(pyobj, dict):
-            return pyobj
+        # Convert PPR strings to dicts
+        if type(value) == str:
+            pyobj = ast.literal_eval(value)
+            if isinstance(pyobj, dict):
+                return pyobj
+            else:
+                raise TypeError('excludechan must be a dictionary or a list of dictionaries')
+        else:
+            return value
 
     def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None):
         super(RenormInputs, self).__init__()
