@@ -18,18 +18,20 @@ from pipeline.hsd.tasks.importdata import SDImportDataResults
 from pipeline.hsd.tasks.applycal import SDApplycalResults
 from .. import applycal
 from ..importdata import importdata as importdata
-from typing import List, Dict # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
+from typing import List, Dict, Optional # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
 
 LOG = infrastructure.get_logger(__name__)
+
 
 class SDRestoreDataInputs(restoredata.RestoreDataInputs):
     """SDRestoreDataInputs manages the inputs for the SDRestoreData task."""
 
     asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
+    hm_rasterscan = vdp.VisDependentProperty(default='time')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
-                 vis=None, bdfflags=None, lazy=None, asis=None, ocorr_mode=None):
+                 vis=None, bdfflags=None, lazy=None, asis=None, ocorr_mode=None, hm_rasterscan: Optional[str] = None):
         """
         Initialise the Inputs, initialising any property values to those given here.
 
@@ -44,11 +46,14 @@ class SDRestoreDataInputs(restoredata.RestoreDataInputs):
             bdfflags: set the BDF flags
             lazy: use the lazy filler to restore data
             asis: list of ASDM tables to import as is
+            hm_rasterscan: Heuristics method for raster scan analysis
         """
         super(SDRestoreDataInputs, self).__init__(context, copytoraw=copytoraw, products_dir=products_dir,
                                                   rawdata_dir=rawdata_dir, output_dir=output_dir, session=session,
                                                   vis=vis, bdfflags=bdfflags, lazy=lazy, asis=asis,
                                                   ocorr_mode=ocorr_mode)
+
+        self.hm_rasterscan = hm_rasterscan
 
 
 class SDRestoreDataResults(restoredata.RestoreDataResults):
@@ -155,7 +160,7 @@ class SDRestoreData(restoredata.RestoreData):
         # InputsContainer.
         container = vdp.InputsContainer(importdata.SerialSDImportData, inputs.context, vis=vislist, session=sessionlist,
                                         save_flagonline=False, lazy=inputs.lazy, bdfflags=inputs.bdfflags,
-                                        asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
+                                        asis=inputs.asis, ocorr_mode=inputs.ocorr_mode, hm_rasterscan=inputs.hm_rasterscan)
         importdata_task = importdata.SerialSDImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 
