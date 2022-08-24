@@ -113,6 +113,11 @@
                              for all datasets. If necessary, one can define a
                              list of dictionaries, one for each EB, with
                              different setups per EB.
+
+                             If no types are specified,
+                             {'data':'raw','corrected':'regcal_contline'}
+                             or {'data':'raw'} will be assumed, depending on
+                             whether the corrected column exists or not.
                 </description>
                 <value>{}</value>
             </param>

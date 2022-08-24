@@ -118,6 +118,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                      for all datasets. If necessary, one can define a 
                      list of dictionaries, one for each EB, with
                      different setups per EB.
+
+                     If no type is specified, {'data':'raw'} will
+                     be assumed.
         </description>
         <value>{}</value>
     </param>
