@@ -46,8 +46,20 @@
 
     <param name="excludechan" subparam="true" type="string">
         <shortdescription>Channels to exclude</shortdescription>
-        <description>Channels to exclude, e.g. excludechan="{'22':'100~150'}"</description>
-        <value/>
+        <description>Channels to exclude in either channel or frequency space (TOPO, GHz)
+            Examples: excludechan={'22':'100~150;800~850', '24':'100~200'}
+                      excludechan={'22':'230.1GHz~230.2GHz'}
+        </description>
+        <any type="variant"/>
+        <value type="string">{}</value>
+    </param>
+
+    <param name="atm_auto_exclude" type="bool">
+        <shortdescription>Automatically find and exclude regions with atmospheric features.</shortdescription>
+        <description>Automatically find and exclude regions with atmospheric features.
+                Default is False
+        </description>
+        <value>False</value>
     </param>
 
     <param type="string" name="pipelinemode">
