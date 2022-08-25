@@ -93,7 +93,9 @@
                 <description>Dictionary defining the data types of
                              existing columns. The format is:
 
-                             {'data': 'data type 1'[, 'corrected': 'data type 2']}
+                             {'data': 'data type 1'}
+                             or
+                             {'data': 'data type 1', 'corrected': 'data type 2'}
 
                              For ASDMs the data type can only be RAW and one
                              can only specify it for the data column.
