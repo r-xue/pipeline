@@ -144,7 +144,7 @@ class PlotmsLeaf(object):
         is_null_select = False
 
         # reject the case that the spw/scan/intent selection leads to zero scan.
-        if not self._ms.get_scans(spw=self._spw, field=self._scan, scan_intent=self._intent):
+        if not self._ms.get_scans(spw=self._spw, field=self._field, scan_intent=self._intent):
             is_null_select = True
 
         # reject the case that the requested correlation(s) is not in any selected spw, only for VLA
