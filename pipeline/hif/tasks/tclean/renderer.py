@@ -684,7 +684,13 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # Probably some detail page rendering exception.
                 LOG.error(e)
                 final_rows.append(row)
-
+        
+        # PIPE-1595: sort targets by field/spw/pol for VLA, so multiple bands of the same objects will 
+        # stay in the same weblog table row. Note that this additional VLA-only sorting might introduce 
+        # a difference between the target sequences of hif_makeimages and hif_makeimlist (see PIPE-1302).
+        if final_rows and 'VLA' in final_rows[0].result.imaging_mode:
+            final_rows.sort(key=lambda row: (row.vis, row.field, utils.natural_sort_key(row.spw), row.pol))
+        
         chk_fit_rows = []
         for row in final_rows:
             if row.frequency is not None:
