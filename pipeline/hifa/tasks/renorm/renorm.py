@@ -81,6 +81,9 @@ class Renorm(basetask.StandardTaskTemplate):
         inp = self.inputs
         alltdm = True  # assume no FDM present
 
+        if type(inp.excludechan) is not dict:
+             LOG.error('excludechan parameter requires dictionary input')
+
         LOG.info("This Renorm class is running.")
 
         # Issue warning if band 9 and 10 data is found
