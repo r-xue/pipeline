@@ -1,4 +1,5 @@
 import ast
+from copy import deepcopy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -116,9 +117,11 @@ class Renorm(basetask.StandardTaskTemplate):
             atmExcludeCmd = {}
 
             if not alltdm:
+                # Make a copy of the excludechan input so it isn't modified by almarenorm.py, see: PIPE-1612
+                excludechan_copy = deepcopy(inp.excludechan)
 
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
-                               spws=inp.spw, excludechan=inp.excludechan, atmAutoExclude=inp.atm_auto_exclude)
+                               spws=inp.spw, excludechan=excludechan_copy, atmAutoExclude=inp.atm_auto_exclude)
                 rn.plotSpectra(includeSummary=False)
 
                 # if we tried to renormalize, and it was done, store info in the results
