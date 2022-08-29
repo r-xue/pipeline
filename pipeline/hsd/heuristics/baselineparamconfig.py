@@ -308,34 +308,49 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.critical('Invalid masklist')
         #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
         num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan - edge[1]] * 1.0))
-        unmaskedlist = self.__convert_mask_to_masklist(mask)
+        # here meaning of "masklist" is changed
+        #         masklist: list of channel ranges to be *excluded* from the fit
+        # fit_channel_list: list of channel ranges to be *included* in the fit
+        fit_channel_list = self.__convert_mask_to_masklist(mask)
         #LOG.info('__ masklist (before)= {}'.format(masklist))
-        #LOG.info('__ masklist (after) = {}'.format(unmaskedlist))
+        #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
 
         if TRACE():
             LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
                 nchan_without_edge, num_mask))
 
         outdata = self._get_param(row_idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, num_mask, fragment,
-                                  nwindow, win_polyorder, unmaskedlist)
+                                  nwindow, win_polyorder, fit_channel_list)
 
         if TRACE():
             LOG.trace('outdata={}'.format(outdata))
 
         return outdata
 
-    def __convert_flags_to_masklist(self, masks):
-        return [self.__convert_mask_to_masklist(mask) for mask in masks]
+    def __convert_flags_to_masklist(self, flags):
+        """
+        Converts flag list to masklist.
+
+        Args:
+            flags : list of binary flag are loaded from FLAG column of MeasurementSet.
+
+        Returns:
+            list of masklist
+        """
+        return [self.__convert_mask_to_masklist(flag) for flag in flags]
 
     def __convert_mask_to_masklist(self, mask):
         """
-        Converts mask array to masklist / unmaskedlist
+        Converts binary mask array to masklist / channellist for fitting.
+
         Resulting masklist is a list of channel ranges whose values are 1
 
         Argument
             mask : an array of channel mask in values 0 or 1
         Returns
-            A list of channel range [start, end]. It means a (un)mask list
+            A list of channel range [start, end]. It means below:
+            - list of masking channel ranges to be *excluded* from the fit. __conver_flags_to_masklist() calls it.
+            - list of fitting channel ranges to be *included* in the fit. ___calc_baseline_param() calls it.
         """
         # get indices of clump boundaries
         idx = (mask[1:] ^ mask[:-1]).nonzero()
