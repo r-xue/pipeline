@@ -29,7 +29,7 @@ def plot_type(plot):
 
 <%block name="header" />
 
-<%block name="title">Phased-up Fluxscale Calibration and Flagging</%block>
+<%block name="title">Flagging of phase, pol, and flux calibrator</%block>
 
 <p>
     This task computes the flagging heuristics on the phase calibrator and flux

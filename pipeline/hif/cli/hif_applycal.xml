@@ -10,16 +10,7 @@ context to the set of visibility files using predetermined field and
 spectral window maps and default values for the interpolation schemes.
 
 Users can interact with the pipeline calibration state using the tasks
-hif_export_calstate and hif_import_calstate.
-
-Issues
-
-There is some discussion about the appropriate values of calwt. Given
-properly scaled data, the correct value should be the CASA default of True.
-However at the current time ALMA is suggesting that calwt be set to True for
-applying observatory calibrations, e.g. antenna positions, WVR, and system
-temperature corrections, and to False for applying instrument calibrations,
-e.g. bandpass, gain, and flux.
+h_export_calstate and h_import_calstate.
 
 Output:
 
