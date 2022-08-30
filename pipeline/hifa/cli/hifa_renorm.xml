@@ -53,7 +53,7 @@
                       excludechan={'22':'230.1GHz~230.2GHz'}
         </description>
         <any type="variant"/>
-        <value type="string">{}</value>
+        <value>{}</value>
     </param>
 
     <param name="atm_auto_exclude" type="bool">
