@@ -82,7 +82,9 @@ class Renorm(basetask.StandardTaskTemplate):
         alltdm = True  # assume no FDM present
 
         if type(inp.excludechan) is not dict:
-             LOG.error('excludechan parameter requires dictionary input')
+            msg = "excludechan parameter requires dictionary input. {0} with type {1} is not valid input.".format(inp.excludechan, type(inp.excludechan).__name__)
+            LOG.error(msg)
+            raise TypeError(msg)
 
         LOG.info("This Renorm class is running.")
 
