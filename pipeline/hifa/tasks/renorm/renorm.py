@@ -132,9 +132,9 @@ class Renorm(basetask.StandardTaskTemplate):
                 # Only populate the following variables used for QA and to the populate the weblog
                 # if this was run in a 'valid' way: on data which has not already been corrected 
                 # (not corrApplied) and on data which has a corrected column. If apply=False, it
-                # doesn't matter if the corrected column exists because the correction isn't
-                # actually done.
-                if (corrColExists or (not inp.apply)) and not corrApplied:
+                # doesn't matter if the corrected column exists or if the data has already been 
+                # corrected, because the correction isn't actually done.
+                if (corrColExists or (not inp.apply)) and (not corrApplied or (not inp.apply)):
                     # get stats (dictionary) indexed by source, spw
                     stats = rn.rnpipestats
                     # get all factors for QA
