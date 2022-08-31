@@ -57,7 +57,8 @@ SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity represe
 RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width height scan_angle row_separation row_duration')
 # Reference MS in combined list
 REF_MS_ID = 0
-
+# The limit of weight to skip incorporating to sensitivity calculation.
+SMALL_WEIGHT_LIMIT = 1.0e-3
 
 class SDImagingInputs(vdp.StandardInputs):
     """Inputs for imaging task class."""
@@ -1191,7 +1192,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         assert len(infiles) == len(pols)
         assert len(infiles) == len(raster_infos)
         sq_rms = 0.0
-        N = 0.0
+        weight_sum = 0.0
         time_unit = 's'
         ang_unit = cqa.getunit(cell[0])
         cx_val = cqa.getvalue(cell[0])[0]
@@ -1348,16 +1349,20 @@ class SDImaging(basetask.StandardTaskTemplate):
             c_proj = numpy.sqrt( (cy_val * numpy.sin(ang))**2 + (cx_val * numpy.cos(ang))**2 )
             inv_variant_on = effBW * numpy.abs(cx_val * cy_val) * t_on_act / width / height
             inv_variant_off = effBW * c_proj * t_sub_off * t_on_act / t_sub_on / height
+            weight = t_on_act**2 * t_sub_off/t_sub_on
+            if weight < SMALL_WEIGHT_LIMIT:
+                LOG.debug('Skip adding to theoretical sensitivity due to small weight.')
+                continue
 
             for ipol in polids:
-                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
-                N += 1.0
+                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol]*weight)**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
+                weight_sum += weight
 
-        if N == 0:
+        if weight_sum == 0.0:
             LOG.warning('No rms estimate is available.')
             return failed_rms
 
-        theoretical_rms = numpy.sqrt(sq_rms)/N
+        theoretical_rms = numpy.sqrt(sq_rms)/weight_sum
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return cqa.quantity(theoretical_rms, imageunit)
 
@@ -1473,17 +1478,20 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     complete_idx = numpy.where(num_integration >= num_row_int)
     # raster scan parameters
     row_duration = numpy.array(duration)[complete_idx].mean()
+    assert row_duration > 0.0
     row_delta_ra = numpy.abs(delta_ra)[complete_idx].mean()
     row_delta_dec = numpy.abs(delta_dec)[complete_idx].mean()
     width = numpy.hypot(row_delta_ra, row_delta_dec)
+    assert width > 0.0
     sign_ra = +1.0 if delta_ra[complete_idx[0][0]] >= 0 else -1.0
     sign_dec = +1.0 if delta_dec[complete_idx[0][0]] >= 0 else -1.0
     scan_angle = math.atan2(sign_dec*row_delta_dec, sign_ra*row_delta_ra)
-    hight = numpy.max(height_list)
+    height = numpy.max(height_list)
+    assert height > 0.0
     center = (cqa.quantity(0.5*(center_ra.min()+center_ra.max()), radec_unit),
               cqa.quantity(0.5*(center_dec.min()+center_dec.max()), radec_unit))
     raster_info = RasterInfo(center[0], center[1],
-                             cqa.quantity(width, radec_unit), cqa.quantity(hight, radec_unit),
+                             cqa.quantity(width, radec_unit), cqa.quantity(height, radec_unit),
                              cqa.quantity(scan_angle, 'rad'), cqa.quantity(row_separation, radec_unit),
                              cqa.quantity(row_duration, exp_unit))
     LOG.info('Raster Information')
