@@ -148,7 +148,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Compute what SNR is achieved for PHASE fields after the SpW phase-up
         # correction.
-        snr_info = self._compute_median_snr(diag_phase_results, spwmaps)
+        snr_info = self._compute_median_snr(diag_phase_results)
 
         # Do the decoherence assessment
         phaserms_qa, phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout \
@@ -687,8 +687,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return gaincal_results
 
-    def _compute_median_snr(self, gaincal_results: List[GaincalResults], spwmaps: Dict[IntentField, SpwMapping])\
-            -> Dict[Tuple[str, str, str], float]:
+    def _compute_median_snr(self, gaincal_results: List[GaincalResults]) -> Dict[Tuple[str, str, str], float]:
         """
         This method evaluates the diagnostic phase caltable(s) produced in an
         earlier step to compute the median achieved SNR for each phase calibrator /
@@ -697,8 +696,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         Args:
             gaincal_results: List of gaincal worker task results representing
                 the diagnostic phase caltable(s).
-            spwmaps: dictionary with (Intent, Field) combinations as keys and
-                corresponding spectral window mapping as values.
 
         Returns:
             Dictionary with intent, field name, and SpW as keys, and
@@ -714,9 +711,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             caltable = result.final[0].gaintable
             field = result.inputs['field']
             intent = result.inputs['intent']
-
-            # Get SpW mapping info for current intent and field.
-            spwmapping = spwmaps.get((intent, field), None)
 
             # Get SpWs and SNR info from caltable.
             with casa_tools.TableReader(caltable) as table:
@@ -743,15 +737,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 # Otherwise, i.e. SpW is multi-pol, use all columns.
                 else:
                     snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, ind_spw])
-
-                # If SpW mapping info exists for the current intent and field
-                # and the current SpW is not be mapped to itself, then continue
-                # with the next SpW. Otherwise, check whether to log a warning
-                # for low SNR. Note: if the SpW map is empty, that means by
-                # default that each SpW is mapped to itself, i.e. reason enough
-                # to skip.
-                if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
-                    continue
 
         return snr_info
 
