@@ -9,6 +9,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hif.tasks.gaincal.common import GaincalResults
@@ -724,8 +725,24 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             # Evaluate each unique SpW separately.
             for spw in sorted(set(spws)):
-                # Compute median achieved SNR and store in snr_info.
-                snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, numpy.where(spws == spw)[0]])
+                # Get indices in caltable data corresponding to current SpW.
+                ind_spw = numpy.where(spws == spw)[0]
+
+                # Get number of correlations for this SpW.
+                corr_type = commonhelpermethods.get_corr_products(inputs.ms, spw)
+                ncorrs = len(corr_type)
+
+                # Compute median achieved SNR and store in snr_info. If this
+                # SpW covers a single polarisation, then compute the median SNR
+                # using only the one corresponding column in the caltable.
+                if ncorrs == 1:
+                    # Identify which column in caltable to use for computing
+                    # the median SNR.
+                    ind_col = commonhelpermethods.get_pol_id(inputs.ms, spw, corr_type[0])
+                    snr_info[(intent, field, spw)] = numpy.median(snrs[ind_col, 0, ind_spw])
+                # Otherwise, i.e. SpW is multi-pol, use all columns.
+                else:
+                    snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, ind_spw])
 
                 # If SpW mapping info exists for the current intent and field
                 # and the current SpW is not be mapped to itself, then continue
