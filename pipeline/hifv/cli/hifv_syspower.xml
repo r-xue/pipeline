@@ -26,7 +26,14 @@
     <param name="usemedian" type="bool">
 	    <shortdescription>Use median values of good antennas</shortdescription>
             <description>If antexclude is specified with usemedian=False, the template values are replaced with 1.0.
-             If usemedian = True, the template values are replaced with the median of the good antennas
+             If usemedian = True, the template values are replaced with the median of the good antennas.
+            </description>
+	    <value>True</value>
+	</param>
+
+    <param name="apply" type="bool">
+	    <shortdescription>Apply task results to RQ table</shortdescription>
+            <description>Apply task results to RQ table
             </description>
 	    <value>False</value>
 	</param>

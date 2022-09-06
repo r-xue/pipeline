@@ -1,11 +1,14 @@
 import pipeline.h.tasks.flagging.renderer as super_renderer
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
+from . import flagdeteralma
+from . import flagtargetsalma
 from . import qa
 from . import renderer
 from .flagdeteralma import FlagDeterALMA
 from .flagtargetsalma import FlagTargetsALMA
 
+qaadapter.registry.register_to_flagging_topic(flagdeteralma.FlagDeterALMAResults)
 qaadapter.registry.register_to_flagging_topic(flagtargetsalma.FlagTargetsALMAResults)
 
 # Use generic deterministic flagging renderer for ALMA interferometry

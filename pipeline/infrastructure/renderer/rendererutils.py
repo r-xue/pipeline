@@ -146,6 +146,8 @@ def get_symbol_badge(result):
         symbol = '<span class="glyphicon glyphicon-remove-sign alert-danger transparent-bg" aria-hidden="true"></span>'
     elif get_warnings_badge(result):
         symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-warning transparent-bg" aria-hidden="true"></span>'
+    elif get_attentions_badge(result):
+        symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-attention transparent-bg" aria-hidden="true"></span>'
     elif get_suboptimal_badge(result):
         symbol = '<span class="glyphicon glyphicon-question-sign alert-info transparent-bg" aria-hidden="true"></span>'
     else:
@@ -158,6 +160,15 @@ def get_failures_badge(result):
     n = len(failure_tracebacks)
     if n > 0:
         return '<span class="badge alert-important pull-right">%s</span>' % n
+    else:
+        return ''
+
+
+def get_attentions_badge(result):
+    attention_logrecords = utils.get_logrecords(result, logging.ATTENTION)
+    l = len(attention_logrecords)
+    if l > 0:
+        return '<span class="badge alert-attention pull-right">%s</span>' % l
     else:
         return ''
 
@@ -240,11 +251,11 @@ def group_plots(data, axes):
     return _build_rows([], data, keyfuncs)
 
 
-def _build_rows(rows, data, keyfuncs):
+def _build_rows(rows, data, keyfuncs, axis: str=''):
     # if this is a leaf, i.e., we are in the lowest level grouping and there's
     # nothing further to group by, add a new row
     if not keyfuncs:
-        rows.append(data)
+        rows.append((data, axis))
         return
 
     # otherwise, this is not the final sorting axis and so proceed to group
@@ -255,7 +266,7 @@ def _build_rows(rows, data, keyfuncs):
         # convert to list so we don't exhaust the generator
         items_with_value = list(items_with_value_generator)
         # ... , creating sub-groups for each group as we go
-        _build_rows(rows, items_with_value, keyfuncs[1:])
+        _build_rows(rows, items_with_value, keyfuncs[1:], axis=group_value)
 
     return rows
 
@@ -302,35 +313,56 @@ def get_notification_trs(result, alerts_info, alerts_success):
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
     all_scores: List[QAScore] = result.qa.pool
-    banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    # PIPE-1481 potentially asks for the removal of banner QA notification.
+    # Thus disabling these for now.
+    #banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    banner_scores = []
 
     notifications = []
+    most_severe_render_class = None
 
     if banner_scores:
         for qa_score in scores_in_range(banner_scores, -0.1, SCORE_THRESHOLD_ERROR):
             n = format_notification('danger alert-danger', 'QA', qa_score.longmsg, 'glyphicon glyphicon-remove-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'danger alert-danger'
         for qa_score in scores_in_range(banner_scores, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING):
             n = format_notification('warning alert-warning', 'QA', qa_score.longmsg, 'glyphicon glyphicon-exclamation-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'warning alert-warning'
 
     for logrecord in utils.get_logrecords(result, logging.ERROR):
         n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'danger alert-danger'
     for logrecord in utils.get_logrecords(result, logging.WARNING):
         n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'warning alert-warning'
+    for logrecord in utils.get_logrecords(result, logging.ATTENTION):
+        n = format_notification('attention alert-attention', 'Attention!', logrecord.msg)
+        notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'attention alert-attention'
 
     if alerts_info:
         for msg in alerts_info:
             n = format_notification('info alert-info', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'info alert-info'
     if alerts_success:
         for msg in alerts_success:
             n = format_notification('success alert-success', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'success alert-success'
 
-    return notifications
+    return notifications, most_severe_render_class
 
 
 def format_notification(tr_class, alert, msg, icon_class=None):

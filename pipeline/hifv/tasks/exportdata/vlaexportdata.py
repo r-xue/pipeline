@@ -1,6 +1,7 @@
 import os
 import shutil
 import collections
+import tarfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -18,6 +19,7 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     exportcalprods = vdp.VisDependentProperty(default=False)
     imaging_products_only = vdp.VisDependentProperty(default=False)
+    tarms = vdp.VisDependentProperty(default=True)
 
     @exportcalprods.postprocess
     def exportcalprods(self, value):
@@ -29,7 +31,8 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
         elif not self.exportmses: return True
         else: return value
 
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, exportcalprods=None, 
+    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
+                 tarms=None, exportcalprods=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None,
                  imaging_products_only=None):
         super(VLAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
@@ -38,6 +41,7 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
                                                   products_dir=products_dir, imaging_products_only=imaging_products_only)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
+        self.tarms = tarms
 
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')
@@ -111,9 +115,7 @@ class VLAExportData(exportdata.ExportData):
                                                    self.inputs.imaging_products_only)
 
         # Export the AQUA report
-        aquareport_name = 'pipeline_aquareport.xml'
-        pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, oussid, aquareport_name,
-                                                        self.inputs.products_dir)
+        pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, oussid, self.inputs.products_dir)
 
         # Update the manifest
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
@@ -202,11 +204,11 @@ finally:
 
         return os.path.basename(out_script_file)
 
-    def _export_aqua_report (self, context, oussid, aquareport_name, products_dir):
+    def _export_aqua_report (self, context, oussid, products_dir):
         """
         Save the AQUA report.
         """
-        aqua_file = os.path.join(context.output_dir, aquareport_name)
+        aqua_file = os.path.join(context.output_dir, context.logs['aqua_report'])
 
         report_generator = vlaifaqua.VLAAquaXmlGenerator()
         LOG.info('Generating pipeline AQUA report')
@@ -218,11 +220,45 @@ finally:
             return 'Undefined'
 
         ps = context.project_structure
-        out_aqua_file = self.NameBuilder.aqua_report(aquareport_name,
+        out_aqua_file = self.NameBuilder.aqua_report(context.logs['aqua_report'],
                                                      project_structure=ps,
                                                      ousstatus_entity_id=oussid,
                                                      output_dir=products_dir)
 
         LOG.info('Copying AQUA report %s to %s', aqua_file, out_aqua_file)
         shutil.copy(aqua_file, out_aqua_file)
+
+        # put aqua report into html directory, so it can be linked to the weblog
+        LOG.info('Copying AQUA report %s to %s', aqua_file, context.report_dir)
+        shutil.copy(aqua_file, context.report_dir)
+
         return os.path.basename(out_aqua_file)
+
+    def _export_final_ms(self, context, vis, products_dir):
+        """
+        If kwarg exportmses is True then...
+            If tarms is True (default):  Save the ms to a compressed tarfile in products directory
+            Else copy the ms directly to the products directory.
+        """
+        # Define the name of the output tarfile
+        visname = os.path.basename(vis)
+
+        if self.inputs.tarms:
+
+            tarfilename = visname + '.tgz'
+            LOG.info('Storing final ms %s in %s', visname, tarfilename)
+
+            # Create the tar file
+            if self._executor._dry_run:
+                return tarfilename
+
+            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+            tar.add(visname)
+            tar.close()
+
+            return tarfilename
+        else:
+            LOG.info('Copying final ms %s to %s', visname, os.path.join(products_dir, visname))
+            shutil.copytree(visname, os.path.join(products_dir, visname))
+
+            return visname

@@ -315,7 +315,7 @@ class T1_1Renderer(RendererBase):
     TableRow = collections.namedtuple(
                 'Tablerow', 
                 'ousstatus_entity_id schedblock_id schedblock_name session '
-                'execblock_id ms href filesize ' 
+                'execblock_id ms acs_software_version acs_software_build_version href filesize ' 
                 'receivers '
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
@@ -389,10 +389,9 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            if scan_has_intent(target_scans, 'REFERENCE'):
-                # target scans have OFF-source integrations. Need to do harder way.
-                autocorr_only = is_singledish_ms(context)
-                time_on_source =  utils.total_time_on_target_on_source(ms, autocorr_only)
+            is_single_dish_data = is_singledish_ms(context)
+            if scan_has_intent(target_scans, 'REFERENCE') or is_single_dish_data:
+                time_on_source = utils.total_time_on_target_on_source(ms, is_single_dish_data)
             else:
                 time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
@@ -445,6 +444,8 @@ class T1_1Renderer(RendererBase):
                                             session=ms.session,
                                             execblock_id=ms.execblock_id,
                                             ms=ms.basename,
+                                            acs_software_version = ms.acs_software_version,             # None for VLA
+                                            acs_software_build_version = ms.acs_software_build_version, # None for VLA
                                             href=href,
                                             filesize=ms.filesize,
                                             receivers=receivers,
@@ -615,12 +616,6 @@ class T1_3MRenderer(RendererBase):
         for result in context.results:
             scores[result.stage_number] = result.qa.representative
             results_list = get_results_by_time(context, result)
-
-            qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-            tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-            qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-            tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
 
             error_msgs = utils.get_logrecords(results_list, logging.ERROR)
             tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
@@ -801,10 +796,10 @@ class T2_1DetailsRenderer(object):
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        if scan_has_intent(science_scans, 'REFERENCE'):
-            # target scans have OFF-source integrations. Need to do harder way.
-            autocorr_only = is_singledish_ms(context)
-            time_on_science =  utils.total_time_on_target_on_source(ms, autocorr_only)
+        is_single_dish_data = is_singledish_ms(context)
+        if scan_has_intent(science_scans, 'REFERENCE') or is_single_dish_data:
+            # target scans have OFF-source integrations or Single Dish Data. Need to do harder way.
+            time_on_science = utils.total_time_on_target_on_source(ms, is_single_dish_data)
         else:
             time_on_science = utils.total_time_on_source(science_scans)
 
@@ -996,8 +991,34 @@ class T2_2_2Renderer(T2_2_XRendererBase):
 
     @staticmethod
     def get_display_context(context, ms):
-        return {'pcontext' : context,
-                'ms'       : ms}
+        """Determine whether to show the Online Spec. Avg. column on the Spectral Setup Details page."""
+
+        ShowColumn = collections.namedtuple('ShowColumn', 'science_windows all_windows')
+        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=False)
+
+        if None not in [spw.sdm_num_bin for spw in ms.get_spectral_windows()]:
+            # PIPE-1572: when None exists in spw.sdm_num_bin, the MS is likely imported by older
+            # CASA/importasdm versions (ver<=5.6.0). We won't modifiy the initialzed setup, which does
+            # not display the Online Spec. Avg. column.
+            if ms.antenna_array.name == 'ALMA':
+                # PIPE-584: Always show the column for ALMA. If it's cycle 2 data, display a '?' in the table.
+                show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+            elif 'VLA' in ms.antenna_array.name:
+                # PIPE-584: For VLA, only display the column if sdm_num_bin > 1 is present for at least one
+                # entry. It is possible for this to differ between the "Science Windows" and the "All Windows" tabs.
+                sdm_num_bins = [spw for spw in ms.get_spectral_windows() if spw.sdm_num_bin > 1]
+                if len(sdm_num_bins) >= 1:
+                    science_sdm_num_bins = [spw for spw in ms.get_spectral_windows(
+                        science_windows_only=True) if spw.sdm_num_bin > 1]
+                    if len(science_sdm_num_bins) >= 1:
+                        show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+                    else:
+                        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=True)
+
+        return {'pcontext': context,
+                'ms': ms,
+                'show_online_spec_avg_col': show_online_spec_avg_col
+                }
 
 
 class T2_2_3Renderer(T2_2_XRendererBase):
@@ -1230,12 +1251,6 @@ class T2_3_XMBaseRenderer(RendererBase):
 
             # CAS-11344: present results ordered by stage number
             for results_list in sorted(list_of_results_lists, key=operator.attrgetter('stage_number')):
-                qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-                tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-                qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-                tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
-
                 error_msgs = utils.get_logrecords(results_list, logging.ERROR)
                 tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
