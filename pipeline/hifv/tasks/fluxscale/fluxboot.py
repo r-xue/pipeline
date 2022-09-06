@@ -430,15 +430,16 @@ class Fluxboot(basetask.StandardTaskTemplate):
         for field in calfieldlist:
             fitorder = self.inputs.fitorder
             spwlist = []
+
+            for scan in m.get_scans(field=field):
+                for spw in list(scan.spws):
+                    spwlist.append(spw.id)
+
+            spwlist = list(np.unique(spwlist))
+            spwlist.sort()
+            spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
+
             if self.inputs.fitorder == -1 and field not in fluxcalfieldlist:
-                for scan in m.get_scans(field=field):
-                    for spw in list(scan.spws):
-                        spwlist.append(spw.id)
-
-                spwlist = list(np.unique(spwlist))
-                spwlist.sort()
-                spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
-
                 fitorder = self.find_fitorder(spwlist)
             elif self.inputs.fitorder > -1:
                 LOG.info("Keyword override:  Using input fitorder={!s}".format(fitorder))
@@ -936,7 +937,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                          'listmodels': False,
                          'scalebychan': True,
                          'fluxdensity': [fluxscale_result[fieldid]['fitFluxd'], 0, 0, 0],
-                         'spix': list(fluxscale_result[fieldid]['spidx'][1:3]),
+                         'spix': list(fluxscale_result[fieldid]['spidx'][1:]),
                          'reffreq': str(fluxscale_result[fieldid]['fitRefFreq']) + 'Hz',
                          'standard': 'manual',
                          'usescratch': True}

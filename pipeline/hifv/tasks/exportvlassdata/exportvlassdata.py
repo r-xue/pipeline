@@ -60,6 +60,7 @@ class ExportvlassdataResults(basetask.Results):
 
 class ExportvlassdataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, gainmap=None):
@@ -546,9 +547,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #    Forced to one file now but keep the template structure for the moment
         if pprfile == '':
             ps = context.project_structure
-            if ps is None:
-                pprtemplate = None
-            elif ps.ppr_file == '':
+            if ps is None or ps.ppr_file == '':
                 pprtemplate = None
             else:
                 pprtemplate = os.path.basename(ps.ppr_file)
@@ -560,7 +559,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # should be only one match but if there are more copy them all.
         pprmatches = []
         if pprtemplate is not None:
-            for file in os.listdir(output_dir):
+            for file in os.listdir(os.path.abspath(output_dir)):
                 if fnmatch.fnmatch(file, pprtemplate):
                     LOG.debug('Located pipeline processing request %s' % file)
                     pprmatches.append(os.path.join(output_dir, file))

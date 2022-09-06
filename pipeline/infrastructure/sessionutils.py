@@ -265,7 +265,6 @@ def get_spwmap(source_ms, target_ms):
     :type source_ms: domain.MeasurementSet
     :param target_ms: the MS to map spws to
     :type target_ms: domain.MeasurementSet
-    :param spws: the spw argument to convert
     :return: dict of integer spw IDs
     """
     # spw names are not guaranteed to be unique. They seem to be unique
