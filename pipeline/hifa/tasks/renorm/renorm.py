@@ -61,12 +61,6 @@ class RenormInputs(vdp.StandardInputs):
         # turn comma seperated string into a list of integers
         return [int(x) for x in value.split(',')]
 
-    @excludechan.convert
-    def excludechan(self, value):
-        pyobj = ast.literal_eval(value)
-        if isinstance(pyobj, dict):
-            return pyobj
-
     def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None, atm_auto_exclude=False):
         super(RenormInputs, self).__init__()
         self.context = context
@@ -86,6 +80,11 @@ class Renorm(basetask.StandardTaskTemplate):
     def prepare(self):
         inp = self.inputs
         alltdm = True  # assume no FDM present
+
+        if type(inp.excludechan) is not dict:
+            msg = "excludechan parameter requires dictionary input. {0} with type {1} is not valid input.".format(inp.excludechan, type(inp.excludechan).__name__)
+            LOG.error(msg)
+            raise TypeError(msg)
 
         LOG.info("This Renorm class is running.")
 
