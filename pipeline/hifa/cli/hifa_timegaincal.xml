@@ -6,9 +6,8 @@
 <description>
 The time-dependent complex gains for each antenna/spwid are determined
 from the raw data (DATA column) divided by the model (MODEL column), for the
-specified fields. The gains are computed independently for each specified
-spectral window. One gain solution is computed for the calibrator source
-targets and one for the science targets.
+specified fields. The gains are computed according to the spw-combination model
+determined in hifa_spwphaseup.
 
 Previous calibrations are applied on the fly.
 
@@ -24,7 +23,7 @@ task.
 
 Previous calibrations that have been stored in the pipeline context are
 applied on the fly. Users can interact with these calibrations via the
-hif_export_calstate and hif_import_calstate tasks.
+h_export_calstate and h_import_calstate tasks.
 
 
 Output

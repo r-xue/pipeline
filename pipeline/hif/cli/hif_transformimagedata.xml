@@ -1,10 +1,8 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_transformimagedata" type="function">
-<shortdescription>Base transformimagedata task</shortdescription>
-<description>
-The hif_transformimagedata task.
-
+<shortdescription>Extract fields for the desired VLASS image to a new MS and reset weights if desired</shortdescription>
+<description>Extract fields for the desired VLASS image to a new MS and reset weights if desired
 
 Output:
 

@@ -1,10 +1,12 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_selfcal" type="function">
-<shortdescription>Selfcal task executing gaincal and applycal</shortdescription>
-<description>Output:
-             results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-             the results object for the pipeline task is returned.
+<shortdescription>Perform phase-only self-calibration, per scan row, on VLASS SE images</shortdescription>
+<description>Perform phase-only self-calibration, per scan row, on VLASS SE images
+
+Output:
+    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+               the results object for the pipeline task is returned.
 </description>
 <input>
     <param name="vis" type="stringVec">

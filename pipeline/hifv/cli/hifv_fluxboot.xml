@@ -2,7 +2,7 @@
 
 <task category="pipeline" name="hifv_fluxboot" type="function">
 <shortdescription>Fluxboot</shortdescription>
-<description>
+<description>Determine flux density bootstrapping for gain calibrators relative to flux calibrator.
 </description>
 <input>
     <param name="vis" type="stringVec">
@@ -26,7 +26,7 @@
         <description>Polynomial order of the spectral fitting for valid flux densities
                      with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
                      fractional bandwidth and receiver bands present in the observation.
-                     An override value of 0,1,2,3 or 4 may be specified by the user.
+                     An override value of 1,2,3 or 4 may be specified by the user.
                      Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
                      If no determination can be made by the heuristics, a fitorder of 1 will be used.
         </description>
