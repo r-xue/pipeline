@@ -26,18 +26,18 @@ from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from . import gridding
-from . import sdcombine
-from . import weighting
-from . import worker
-from . import resultobjects
-from . import detectcontamination
-from .. import common
-from ..baseline import baseline
-from ..common import compress
-from ..common import direction_utils
-from ..common import rasterutil
-from ..common import utils as sdutils
+from pipeline.hsd.tasks.imaging import gridding
+from pipeline.hsd.tasks.imaging import sdcombine
+from pipeline.hsd.tasks.imaging import weighting
+from pipeline.hsd.tasks.imaging import worker
+from pipeline.hsd.tasks.imaging import resultobjects
+from pipeline.hsd.tasks.imaging import detectcontamination
+from pipeline.hsd.tasks import common
+from pipeline.hsd.tasks.baseline import baseline
+from pipeline.hsd.tasks.common import compress
+from pipeline.hsd.tasks.common import direction_utils
+from pipeline.hsd.tasks.common import rasterutil
+from pipeline.hsd.tasks.common import utils as sdutils
 
 if TYPE_CHECKING:
     from pipeline.infrastructure import Context
@@ -230,55 +230,55 @@ class SDImaging(basetask.StandardTaskTemplate):
         result.task = cls
 
     def prepare(self):
-        inputs = self.inputs
-        context = inputs.context
-        reduction_group = context.observing_run.ms_reduction_group
-        infiles = inputs.infiles
-        restfreq_list = inputs.restfreq
+        common_inputs = self.inputs
+        common_context = common_inputs.context
+        common_reduction_group = common_context.observing_run.ms_reduction_group
+        common_infiles = common_inputs.infiles
+        common_restfreq_list = common_inputs.restfreq
         # list of ms to process
-        ms_list = inputs.ms
-        ms_names = [msobj.name for msobj in ms_list]
-        in_spw = inputs.spw
-        args_spw = sdutils.convert_spw_virtual2real(context, in_spw)
+        common_ms_list = common_inputs.ms
+        common_ms_names = [msobj.name for msobj in common_ms_list]
+        common_in_spw = common_inputs.spw
+        common_args_spw = sdutils.convert_spw_virtual2real(common_context, common_in_spw)
         # in_field is comma-separated list of target field names that are
         # extracted from all input MSs
-        in_field = inputs.field
+        common_in_field = common_inputs.field
 #         antennalist = inputs.antennalist
-        imagemode = inputs.mode.upper()
-        cqa = casa_tools.quanta
+        common_imagemode = common_inputs.mode.upper()
+        common_cqa = casa_tools.quanta
 
         # check if data is NRO
-        is_nro = sdutils.is_nro(context)
+        common_is_nro = sdutils.is_nro(common_context)
 
         # task returns ResultsList
-        results = resultobjects.SDImagingResults()
+        common_results = resultobjects.SDImagingResults()
         # search results and retrieve edge parameter from the most
         # recent SDBaselineResults if it exists
-        getresult = lambda r: r.read() if hasattr(r, 'read') else r
-        registered_results = [getresult(r) for r in context.results]
-        baseline_stage = -1
-        for stage in range(len(registered_results) - 1, -1, -1):
-            if isinstance(registered_results[stage], baseline.SDBaselineResults):
-                baseline_stage = stage
-        if baseline_stage > 0:
-            edge = list(registered_results[baseline_stage].outcome['edge'])
-            LOG.info('Retrieved edge information from SDBaselineResults: {}'.format(edge))
+        common_getresult = lambda r: r.read() if hasattr(r, 'read') else r
+        common_registered_results = [common_getresult(r) for r in common_context.results]
+        common_baseline_stage = -1
+        for __stage in range(len(common_registered_results) - 1, -1, -1):
+            if isinstance(common_registered_results[__stage], baseline.SDBaselineResults):
+                common_baseline_stage = __stage
+        if common_baseline_stage > 0:
+            common_edge = list(common_registered_results[common_baseline_stage].outcome['edge'])
+            LOG.info('Retrieved edge information from SDBaselineResults: {}'.format(common_edge))
         else:
             LOG.info('No SDBaselineResults available. Set edge as [0,0]')
-            edge = [0, 0]
+            common_edge = [0, 0]
         # dt_dict: key=input MS, value=datatable corresponding to the MS
-        dt_dict = dict((ms.basename, DataTable(sdutils.get_data_table_path(context, ms)))
-                       for ms in ms_list)
+        common_dt_dict = dict((__ms.basename, DataTable(sdutils.get_data_table_path(common_context, __ms)))
+                       for __ms in common_ms_list)
 
         # loop over reduction group (spw and source combination)
-        for group_id, group_desc in reduction_group.items():
-            LOG.debug('Processing Reduction Group {}'.format(group_id))
+        for redgrp_group_id, redgrp_group_desc in common_reduction_group.items():
+            LOG.debug('Processing Reduction Group {}'.format(redgrp_group_id))
             LOG.debug('Group Summary:')
-            for m in group_desc:
-                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(m.ms.basename,
-                                                                                    m.antenna_id, m.antenna_name,
-                                                                                    m.spw_id,
-                                                                                    m.field_id, m.field_name))
+            for __group in redgrp_group_desc:
+                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(__group.ms.basename,
+                                                                                    __group.antenna_id, __group.antenna_name,
+                                                                                    __group.spw_id,
+                                                                                    __group.field_id, __group.field_name))
             # Which group in group_desc list should be processed
 
             # fix for CAS-9747
@@ -287,363 +287,360 @@ class SDImaging(basetask.StandardTaskTemplate):
             # to get_valid_ms_members causes trouble. As a workaround, ad hoc pre-selection
             # of field name is applied here.
             # 2017/02/23 TN
-            field_sel = ''
-            if len(in_field) == 0:
+            redgrp_field_sel = ''
+            if len(common_in_field) == 0:
                 # fine, just go ahead
-                field_sel = in_field
-            elif group_desc.field_name in [x.strip('"') for x in in_field.split(',')]:
+                redgrp_field_sel = common_in_field
+            elif redgrp_group_desc.field_name in [x.strip('"') for x in common_in_field.split(',')]:
                 # pre-selection of the field name
-                field_sel = group_desc.field_name
+                redgrp_field_sel = redgrp_group_desc.field_name
             else:
                 # no field name is included in in_field, skip
-                LOG.info('Skip reduction group {:d}'.format(group_id))
+                LOG.info('Skip reduction group {:d}'.format(redgrp_group_id))
                 continue
 
-            member_list = list(common.get_valid_ms_members(group_desc, ms_names, inputs.antenna, field_sel, args_spw))
-            LOG.trace('group {}: member_list={}'.format(group_id, member_list))
+            redgrp_member_list = list(common.get_valid_ms_members(redgrp_group_desc, common_ms_names, common_inputs.antenna, redgrp_field_sel, common_args_spw))
+            LOG.trace('group {}: member_list={}'.format(redgrp_group_id, redgrp_member_list))
 
             # skip this group if valid member list is empty
-            if len(member_list) == 0:
-                LOG.info('Skip reduction group {:d}'.format(group_id))
+            if len(redgrp_member_list) == 0:
+                LOG.info('Skip reduction group {:d}'.format(redgrp_group_id))
                 continue
 
-            member_list.sort()  # list of group_desc IDs to image
-            antenna_list = [group_desc[i].antenna_id for i in member_list]
-            spwid_list = [group_desc[i].spw_id for i in member_list]
-            ms_list = [group_desc[i].ms for i in member_list]
-            fieldid_list = [group_desc[i].field_id for i in member_list]
-            temp_dd_list = [ms_list[i].get_data_description(spw=spwid_list[i])
-                            for i in range(len(member_list))]
-            channelmap_range_list = [group_desc[i].channelmap_range for i in member_list]
+            redgrp_member_list.sort()  # list of group_desc IDs to image
+            redgrp_antenna_list = [redgrp_group_desc[i].antenna_id for i in redgrp_member_list]
+            redgrp_spwid_list = [redgrp_group_desc[i].spw_id for i in redgrp_member_list]
+            common_ms_list = [redgrp_group_desc[i].ms for i in redgrp_member_list]
+            redgrp_fieldid_list = [redgrp_group_desc[i].field_id for i in redgrp_member_list]
+            __temp_dd_list = [common_ms_list[i].get_data_description(spw=redgrp_spwid_list[i])
+                            for i in range(len(redgrp_member_list))]
+            redgrp_channelmap_range_list = [redgrp_group_desc[i].channelmap_range for i in redgrp_member_list]
             # this becomes list of list [[poltypes for ms0], [poltypes for ms1], ...]
 #             polids_list = [[ddobj.get_polarization_id(corr) for corr in ddobj.corr_axis \
 #                             if corr in self.required_pols ] for ddobj in temp_dd_list]
-            pols_list = [[corr for corr in ddobj.corr_axis
-                          if corr in self.required_pols] for ddobj in temp_dd_list]
-            del temp_dd_list
+            redgrp_pols_list = [[__corr for __corr in __ddobj.corr_axis
+                          if __corr in self.required_pols] for __ddobj in __temp_dd_list]
+            del __temp_dd_list
 
             # NRO specific
-            correlations = None
-            if is_nro:
-                _correlations = []
-                for c in pols_list:
-                    if c not in _correlations:
-                        _correlations.append(c)
-                assert len(_correlations) == 1
-                correlations = ''.join(_correlations[0])
+            redgrp_correlations = None
+            if common_is_nro:
+                __correlations = []
+                for __c in redgrp_pols_list:
+                    if __c not in __correlations:
+                        __correlations.append(__c)
+                assert len(__correlations) == 1
+                redgrp_correlations = ''.join(__correlations[0])
 
             LOG.debug('Members to be processed:')
-            for i in range(len(member_list)):
-                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(ms_list[i].basename,
-                                                                    antenna_list[i],
-                                                                    spwid_list[i],
-                                                                    fieldid_list[i]))
+            for i in range(len(redgrp_member_list)):
+                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(common_ms_list[i].basename,
+                                                                    redgrp_antenna_list[i],
+                                                                    redgrp_spwid_list[i],
+                                                                    redgrp_fieldid_list[i]))
 
             # image is created per antenna (science) or per asdm and antenna (ampcal)
-            image_group = {}
-            for (msobj, ant, spwid, fieldid, pollist, chanmap) in zip(ms_list, antenna_list,
-                                                                      spwid_list, fieldid_list,
-                                                                      pols_list, channelmap_range_list):
-                field_name = msobj.fields[fieldid].name
-                identifier = field_name
-                antenna = msobj.antennas[ant].name
-                identifier += ('.'+antenna)
+            redgrp_image_group = {}
+            for (__msobj, __ant, __spwid, __fieldid, __pollist, __chanmap) in zip(common_ms_list, redgrp_antenna_list,
+                                                                      redgrp_spwid_list, redgrp_fieldid_list,
+                                                                      redgrp_pols_list, redgrp_channelmap_range_list):
+                __identifier = __msobj.fields[__fieldid].name
+                __antenna = __msobj.antennas[__ant].name
+                __identifier += ('.'+__antenna)
                 # create image per asdm and antenna for ampcal
-                if inputs.is_ampcal:
-                    asdm_name = common.asdm_name_from_ms(msobj)
-                    identifier += ('.'+asdm_name)
-                if identifier in image_group:
-                    image_group[identifier].append([msobj, ant, spwid, fieldid, pollist, chanmap])
+                if common_inputs.is_ampcal:
+                    __asdm_name = common.asdm_name_from_ms(__msobj)
+                    __identifier += ('.'+__asdm_name)
+                if __identifier in redgrp_image_group:
+                    redgrp_image_group[__identifier].append([__msobj, __ant, __spwid, __fieldid, __pollist, __chanmap])
                 else:
-                    image_group[identifier] = [[msobj, ant, spwid, fieldid, pollist, chanmap]]
-            LOG.debug('image_group={}'.format(image_group))
+                    redgrp_image_group[__identifier] = [[__msobj, __ant, __spwid, __fieldid, __pollist, __chanmap]]
+            LOG.debug('image_group={}'.format(redgrp_image_group))
 
             # loop over antennas
-            combined_infiles = []
-            combined_antids = []
-            combined_fieldids = []
-            combined_spws = []
-            combined_v_spws = []
-            tocombine_images = []
-            tocombine_org_directions = []
-            tocombine_specmodes = []
-            combined_pols = []
-            combined_rms_exclude = []
+            redgrp_combined_infiles = []
+            redgrp_combined_antids = []
+            redgrp_combined_fieldids = []
+            redgrp_combined_spws = []
+            redgrp_combined_v_spws = []
+            redgrp_tocombine_images = []
+            redgrp_tocombine_org_directions = []
+            redgrp_tocombine_specmodes = []
+            redgrp_combined_pols = []
+            redgrp_combined_rms_exclude = []
 
             # for combined images for NRO
-            tocombine_images_nro = []
-            tocombine_org_directions_nro = []
+            redgrp_tocombine_images_nro = []
+            redgrp_tocombine_org_directions_nro = []
 
-            coord_set = False
-            for name, _members in image_group.items():
-                msobjs = [x[0] for x in _members]
-                antids = [x[1] for x in _members]
-                spwids = [x[2] for x in _members]
-                fieldids = [x[3] for x in _members]
-                polslist = [x[4] for x in _members]
-                chanmap_range_list = [x[5] for x in _members]
-                LOG.info("Processing image group: {}".format(name))
-                for idx in range(len(msobjs)):
+            redgrp_coord_set = False
+            for redgrp_name, redgrp_members in redgrp_image_group.items():
+                redgrp_msobjs = [x[0] for x in redgrp_members]
+                redgrp_antids = [x[1] for x in redgrp_members]
+                redgrp_spwids = [x[2] for x in redgrp_members]
+                redgrp_fieldids = [x[3] for x in redgrp_members]
+                redgrp_polslist = [x[4] for x in redgrp_members]
+                redgrp_chanmap_range_list = [x[5] for x in redgrp_members]
+                LOG.info("Processing image group: {}".format(redgrp_name))
+                for idx in range(len(redgrp_msobjs)):
                     LOG.info("\t{}: Antenna {:d} ({}) Spw {} Field {:d} ({})"
-                             "".format(msobjs[idx].basename, antids[idx], msobjs[idx].antennas[antids[idx]].name,
-                                       spwids[idx], fieldids[idx], msobjs[idx].fields[fieldids[idx]].name))
+                             "".format(redgrp_msobjs[idx].basename, redgrp_antids[idx], redgrp_msobjs[idx].antennas[redgrp_antids[idx]].name,
+                                       redgrp_spwids[idx], redgrp_fieldids[idx], redgrp_msobjs[idx].fields[redgrp_fieldids[idx]].name))
 
                 # reference data is first MS
-                ref_ms = msobjs[0]
-                ant_name = ref_ms.antennas[antids[0]].name
+                redgrp_ref_ms = redgrp_msobjs[0]
+                redgrp_ant_name = redgrp_ref_ms.antennas[redgrp_antids[0]].name
                 # for ampcal
-                asdm = None
-                if inputs.is_ampcal:
-                    asdm = common.asdm_name_from_ms(ref_ms)
+                redgrp_asdm = None
+                if common_inputs.is_ampcal:
+                    redgrp_asdm = common.asdm_name_from_ms(redgrp_ref_ms)
 
                 # source name
-                source_name = group_desc.field_name.replace(' ', '_')
+                redgrp_source_name = redgrp_group_desc.field_name.replace(' ', '_')
 
                 # specmode
-                ref_field = fieldids[0]
-                is_eph_obj = ref_ms.get_fields(field_id=ref_field)[0].source.is_eph_obj
-                specmode = 'cubesource' if is_eph_obj else 'cube'
+                __ref_field = redgrp_fieldids[0]
+                __is_eph_obj = redgrp_ref_ms.get_fields(field_id=__ref_field)[0].source.is_eph_obj
+                redgrp_specmode = 'cubesource' if __is_eph_obj else 'cube'
 
                 # filenames for gridding
-                infiles = [ms.name for ms in msobjs]
+                common_infiles = [__ms.name for __ms in redgrp_msobjs]
 
-                LOG.debug('infiles={}'.format(infiles))
+                LOG.debug('infiles={}'.format(common_infiles))
 
                 # image name
                 # image name should be based on virtual spw id
-                v_spwids = [context.observing_run.real2virtual_spw_id(s, m) for s, m in zip(spwids, msobjs)]
-                v_spwids_unique = numpy.unique(v_spwids)
-                assert len(v_spwids_unique) == 1
-                imagename = self.get_imagename(source_name, v_spwids_unique, ant_name, asdm, specmode=specmode)
-                LOG.info("Output image name: {}".format(imagename))
-                imagename_nro = None
-                if is_nro:
-                    imagename_nro = self.get_imagename(source_name, v_spwids_unique, ant_name, asdm, stokes=correlations, specmode=specmode)
-                    LOG.info("Output image name for NRO: {}".format(imagename_nro))
+                redgrp_v_spwids = [common_context.observing_run.real2virtual_spw_id(s, m) for s, m in zip(redgrp_spwids, redgrp_msobjs)]
+                __v_spwids_unique = numpy.unique(redgrp_v_spwids)
+                assert len(__v_spwids_unique) == 1
+                redgrp_imagename = self.get_imagename(redgrp_source_name, __v_spwids_unique, redgrp_ant_name, redgrp_asdm, specmode=redgrp_specmode)
+                LOG.info("Output image name: {}".format(redgrp_imagename))
+                redgrp_imagename_nro = None
+                if common_is_nro:
+                    redgrp_imagename_nro = self.get_imagename(redgrp_source_name, __v_spwids_unique, redgrp_ant_name, redgrp_asdm, stokes=redgrp_correlations, specmode=redgrp_specmode)
+                    LOG.info("Output image name for NRO: {}".format(redgrp_imagename_nro))
 
                 # pick restfreq from restfreq_list
-                if isinstance(restfreq_list, list):
-                    v_spwid = context.observing_run.real2virtual_spw_id(spwids[0], msobjs[0])
-                    v_spwid_list = [
-                        context.observing_run.real2virtual_spw_id(int(i), msobjs[0])
-                        for i in args_spw[msobjs[0].name].split(',')
+                if isinstance(common_restfreq_list, list):
+                    __v_spwid = common_context.observing_run.real2virtual_spw_id(redgrp_spwids[0], redgrp_msobjs[0])
+                    __v_spwid_list = [
+                        common_context.observing_run.real2virtual_spw_id(int(i), redgrp_msobjs[0])
+                        for i in common_args_spw[redgrp_msobjs[0].name].split(',')
                     ]
-                    v_idx = v_spwid_list.index(v_spwid)
-                    if len(restfreq_list) > v_idx:
-                        restfreq = restfreq_list[v_idx]
-                        if restfreq is None:
-                            restfreq = ''
-                        LOG.info( "Picked restfreq = '{}' from {}".format(restfreq, restfreq_list) )
+                    __v_idx = __v_spwid_list.index(__v_spwid)
+                    if len(common_restfreq_list) > __v_idx:
+                        redgrp_restfreq = common_restfreq_list[__v_idx]
+                        if redgrp_restfreq is None:
+                            redgrp_restfreq = ''
+                        LOG.info( "Picked restfreq = '{}' from {}".format(redgrp_restfreq, common_restfreq_list) )
                     else:
-                        restfreq = ''
-                        LOG.warning( "No restfreq for spw {} in {}. Applying default value.".format(v_spwid, restfreq_list) )
+                        redgrp_restfreq = ''
+                        LOG.warning( "No restfreq for spw {} in {}. Applying default value.".format(__v_spwid, common_restfreq_list) )
                 else:
-                    restfreq = restfreq_list
-                    LOG.info("Processing with restfreq = {}".format(restfreq))
+                    redgrp_restfreq = common_restfreq_list
+                    LOG.info("Processing with restfreq = {}".format(redgrp_restfreq))
 
                 # Step 1.
                 # Initialize weight column based on baseline RMS.
-                origin_ms = [msobj.origin_ms for msobj in msobjs]
-                work_ms = [msobj.name for msobj in msobjs]
-                weighting_inputs = vdp.InputsContainer(weighting.WeightMS, context,
-                                                       infiles=origin_ms, outfiles=work_ms,
-                                                       antenna=antids, spwid=spwids, fieldid=fieldids)
-                weighting_task = weighting.WeightMS(weighting_inputs)
-                weighting_result = self._executor.execute(weighting_task, merge=False,
-                                                          datatable_dict=dt_dict)
-                del weighting_result # Not used
+                __origin_ms = [msobj.origin_ms for msobj in redgrp_msobjs]
+                __work_ms = [msobj.name for msobj in redgrp_msobjs]
+                __weighting_inputs = vdp.InputsContainer(weighting.WeightMS, common_context,
+                                                       infiles=__origin_ms, outfiles=__work_ms,
+                                                       antenna=redgrp_antids, spwid=redgrp_spwids, fieldid=redgrp_fieldids)
+                __weighting_task = weighting.WeightMS(__weighting_inputs)
+                self._executor.execute(__weighting_task, merge=False, datatable_dict=common_dt_dict)
 
                 # Step 2.
                 # Imaging
                 # Image per antenna, source
-                LOG.info('Imaging Source {}, Ant {} Spw {:d}'.format(source_name, ant_name, spwids[0]))
+                LOG.info('Imaging Source {}, Ant {} Spw {:d}'.format(redgrp_source_name, redgrp_ant_name, redgrp_spwids[0]))
                 # map coordinate (use identical map coordinate per spw)
-                if not coord_set:
+                if not redgrp_coord_set:
                     # PIPE-313: evaluate map extent using pointing data from all the antenna in the data
-                    dummyids = [None for _ in antids]
-                    image_coord = worker.ImageCoordinateUtil(context, infiles, dummyids, spwids, fieldids)
-                    if not image_coord:  # No valid data is found
+                    __dummyids = [None for _ in redgrp_antids]
+                    __image_coord = worker.ImageCoordinateUtil(common_context, common_infiles, __dummyids, redgrp_spwids, redgrp_fieldids)
+                    if not __image_coord:  # No valid data is found
                         continue
-                    coord_set = True
-                    (phasecenter, cellx, celly, nx, ny, org_direction) = image_coord
+                    redgrp_coord_set = True
+                    (redgrp_phasecenter, redgrp_cellx, redgrp_celly, redgrp_nx, redgrp_ny, redgrp_org_direction) = __image_coord
 
                 # register data for combining
-                combined_infiles.extend(infiles)
-                combined_antids.extend(antids)
-                combined_fieldids.extend(fieldids)
-                combined_spws.extend(spwids)
-                combined_v_spws.extend(v_spwids)
-                combined_pols.extend(polslist)
+                redgrp_combined_infiles.extend(common_infiles)
+                redgrp_combined_antids.extend(redgrp_antids)
+                redgrp_combined_fieldids.extend(redgrp_fieldids)
+                redgrp_combined_spws.extend(redgrp_spwids)
+                redgrp_combined_v_spws.extend(redgrp_v_spwids)
+                redgrp_combined_pols.extend(redgrp_polslist)
 
-                stokes_list = [self.stokes]
-                imagename_list = [imagename]
-                if is_nro:
-                    stokes_list.append(correlations)
-                    imagename_list.append(imagename_nro)
+                redgrp_stokes_list = [self.stokes]
+                __imagename_list = [redgrp_imagename]
+                if common_is_nro:
+                    redgrp_stokes_list.append(redgrp_correlations)
+                    __imagename_list.append(redgrp_imagename_nro)
 
-                imager_results = []
-                for _stokes, _imagename in zip(stokes_list, imagename_list):
-                    imager_inputs = worker.SDImagingWorker.Inputs(context, infiles,
-                                                                  outfile=_imagename,
-                                                                  mode=imagemode,
-                                                                  antids=antids,
-                                                                  spwids=spwids,
-                                                                  fieldids=fieldids,
-                                                                  restfreq=restfreq,
-                                                                  stokes=_stokes,
-                                                                  edge=edge,
-                                                                  phasecenter=phasecenter,
-                                                                  cellx=cellx,
-                                                                  celly=celly,
-                                                                  nx=nx, ny=ny,
-                                                                  org_direction=org_direction)
-                    imager_task = worker.SDImagingWorker(imager_inputs)
-                    _imager_result = self._executor.execute(imager_task)
-                    imager_results.append(_imager_result)
+                __imager_results = []
+                for __stokes, __imagename in zip(redgrp_stokes_list, __imagename_list):
+                    __imager_inputs = worker.SDImagingWorker.Inputs(common_context, common_infiles,
+                                                                  outfile=__imagename,
+                                                                  mode=common_imagemode,
+                                                                  antids=redgrp_antids,
+                                                                  spwids=redgrp_spwids,
+                                                                  fieldids=redgrp_fieldids,
+                                                                  restfreq=redgrp_restfreq,
+                                                                  stokes=__stokes,
+                                                                  edge=common_edge,
+                                                                  phasecenter=redgrp_phasecenter,
+                                                                  cellx=redgrp_cellx,
+                                                                  celly=redgrp_celly,
+                                                                  nx=redgrp_nx, ny=redgrp_ny,
+                                                                  org_direction=redgrp_org_direction)
+                    __imager_task = worker.SDImagingWorker(__imager_inputs)
+                    __imager_result = self._executor.execute(__imager_task)
+                    __imager_results.append(__imager_result)
                 # per-antenna image (usually Stokes I)
-                imager_result = imager_results[0]
+                redgrp_imager_result = __imager_results[0]
                 # per-antenna correlation image (XXYY/RRLL)
-                imager_result_nro = imager_results[1] if is_nro else None
+                redgrp_imager_result_nro = __imager_results[1] if common_is_nro else None
 
-                if imager_result.outcome is not None:
+                if redgrp_imager_result.outcome is not None:
                     # Imaging was successful, proceed following steps
 
                     # add image list to combine
-                    if os.path.exists(imagename) and os.path.exists(imagename+'.weight'):
-                        tocombine_images.append(imagename)
-                        tocombine_org_directions.append(org_direction)
-                        tocombine_specmodes.append(specmode)
+                    if os.path.exists(redgrp_imagename) and os.path.exists(redgrp_imagename+'.weight'):
+                        redgrp_tocombine_images.append(redgrp_imagename)
+                        redgrp_tocombine_org_directions.append(redgrp_org_direction)
+                        redgrp_tocombine_specmodes.append(redgrp_specmode)
                     # Additional Step.
                     # Make grid_table and put rms and valid spectral number array
                     # to the outcome.
                     # The rms and number of valid spectra is used to create RMS maps.
                     LOG.info('Additional Step. Make grid_table')
-                    imagename = imager_result.outcome['image'].imagename
-                    with casa_tools.ImageReader(imagename) as ia:
-                        cs = ia.coordsys()
-                        dircoords = [i for i in range(cs.naxes())
-                                     if cs.axiscoordinatetypes()[i] == 'Direction']
-                        cs.done()
-                        nx = ia.shape()[dircoords[0]]
-                        ny = ia.shape()[dircoords[1]]
+                    redgrp_imagename = redgrp_imager_result.outcome['image'].imagename
+                    with casa_tools.ImageReader(redgrp_imagename) as ia:
+                        __cs = ia.coordsys()
+                        __dircoords = [i for i in range(__cs.naxes())
+                                     if __cs.axiscoordinatetypes()[i] == 'Direction']
+                        __cs.done()
+                        redgrp_nx = ia.shape()[__dircoords[0]]
+                        redgrp_ny = ia.shape()[__dircoords[1]]
 
-                    observing_pattern = msobjs[0].observing_pattern[antids[0]][spwids[0]][fieldids[0]]
-                    grid_task_class = gridding.gridding_factory(observing_pattern)
-                    validsps = []
-                    rmss = []
-                    grid_input_dict = {}
-                    for (msobj, antid, spwid, fieldid, poltypes, _dummy) in _members:
-                        msname = msobj.name # Use parent ms
-                        for p in poltypes:
-                            if p not in grid_input_dict:
-                                grid_input_dict[p] = [[msname], [antid], [fieldid], [spwid]]
+                    redgrp_observing_pattern = redgrp_msobjs[0].observing_pattern[redgrp_antids[0]][redgrp_spwids[0]][redgrp_fieldids[0]]
+                    redgrp_grid_task_class = gridding.gridding_factory(redgrp_observing_pattern)
+                    redgrp_validsps = []
+                    redgrp_rmss = []
+                    redgrp_grid_input_dict = {}
+                    for (__msobj, __antid, __spwid, __fieldid, __poltypes, _dummy) in redgrp_members:
+                        __msname = __msobj.name # Use parent ms
+                        for p in __poltypes:
+                            if p not in redgrp_grid_input_dict:
+                                redgrp_grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
                             else:
-                                grid_input_dict[p][0].append(msname)
-                                grid_input_dict[p][1].append(antid)
-                                grid_input_dict[p][2].append(fieldid)
-                                grid_input_dict[p][3].append(spwid)
+                                redgrp_grid_input_dict[p][0].append(__msname)
+                                redgrp_grid_input_dict[p][1].append(__antid)
+                                redgrp_grid_input_dict[p][2].append(__fieldid)
+                                redgrp_grid_input_dict[p][3].append(__spwid)
 
                     # Generate grid table for each POL in image (per ANT,
                     # FIELD, and SPW, over all MSes)
-                    for pol, member in grid_input_dict.items():
-                        _mses = member[0]
-                        _antids = member[1]
-                        _fieldids = member[2]
-                        _spwids = member[3]
-                        _pols = [pol for i in range(len(_mses))]
-                        gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
-                                                                 antennaids=_antids,
-                                                                 fieldids=_fieldids,
-                                                                 spwids=_spwids,
-                                                                 poltypes=_pols,
-                                                                 nx=nx, ny=ny)
-                        gridding_task = grid_task_class(gridding_inputs)
-                        gridding_result = self._executor.execute(gridding_task, merge=False,
-                                                                 datatable_dict=dt_dict)
+                    for __pol, __member in redgrp_grid_input_dict.items():
+                        __mses = __member[0]
+                        __antids = __member[1]
+                        __fieldids = __member[2]
+                        __spwids = __member[3]
+                        __pols = [__pol for i in range(len(__mses))]
+                        __gridding_inputs = redgrp_grid_task_class.Inputs(common_context, infiles=__mses,
+                                                                 antennaids=__antids,
+                                                                 fieldids=__fieldids,
+                                                                 spwids=__spwids,
+                                                                 poltypes=__pols,
+                                                                 nx=redgrp_nx, ny=redgrp_ny)
+                        __gridding_task = redgrp_grid_task_class(__gridding_inputs)
+                        __gridding_result = self._executor.execute(__gridding_task, merge=False,
+                                                                 datatable_dict=common_dt_dict)
 
                         # Extract RMS and number of spectra from grid_tables
-                        if isinstance(gridding_result.outcome, compress.CompressedObj):
-                            grid_table = gridding_result.outcome.decompress()
+                        if isinstance(__gridding_result.outcome, compress.CompressedObj):
+                            __grid_table = __gridding_result.outcome.decompress()
                         else:
-                            grid_table = gridding_result.outcome
-                        validsps.append([r[6] for r in grid_table])
-                        rmss.append([r[8] for r in grid_table])
-                        del grid_table
+                            __grid_table = __gridding_result.outcome
+                        redgrp_validsps.append([r[6] for r in __grid_table])
+                        redgrp_rmss.append([r[8] for r in __grid_table])
+                        del __grid_table
 
                     # define RMS ranges in image
                     LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
-                    with casa_tools.ImageReader(imagename) as ia:
-                        cs = ia.coordsys()
-                        frequency_frame = cs.getconversiontype('spectral')
-                        cs.done()
-                        rms_exclude_freq = self._get_rms_exclude_freq_range_image(
-                            frequency_frame, chanmap_range_list, edge, msobjs, antids, spwids, fieldids)
-                        LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(rms_exclude_freq)))
-                    combined_rms_exclude.extend(rms_exclude_freq)
+                    with casa_tools.ImageReader(redgrp_imagename) as ia:
+                        __cs = ia.coordsys()
+                        __frequency_frame = __cs.getconversiontype('spectral')
+                        __cs.done()
+                        __rms_exclude_freq = self._get_rms_exclude_freq_range_image(
+                            __frequency_frame, redgrp_chanmap_range_list, common_edge, redgrp_msobjs, redgrp_antids, redgrp_spwids, redgrp_fieldids)
+                        LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(__rms_exclude_freq)))
+                    redgrp_combined_rms_exclude.extend(__rms_exclude_freq)
 
-                    file_index = [common.get_ms_idx(context, name) for name in infiles]
-                    self._finalize_worker_result(context, imager_result,
-                                                 sourcename=source_name, spwlist=v_spwids, antenna=ant_name, specmode=specmode,
-                                                 imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
-                                                 reduction_group_id=group_id, file_index=file_index,
-                                                 assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids)
+                    __file_index = [common.get_ms_idx(common_context, name) for name in common_infiles]
+                    self._finalize_worker_result(common_context, redgrp_imager_result,
+                                                 sourcename=redgrp_source_name, spwlist=redgrp_v_spwids, antenna=redgrp_ant_name, specmode=redgrp_specmode,
+                                                 imagemode=common_imagemode, stokes=self.stokes, validsp=redgrp_validsps, rms=redgrp_rmss, edge=common_edge,
+                                                 reduction_group_id=redgrp_group_id, file_index=__file_index,
+                                                 assoc_antennas=redgrp_antids, assoc_fields=redgrp_fieldids, assoc_spws=redgrp_v_spwids)
 
-                    if inputs.is_ampcal:
-                        if len(infiles) == 1 and (asdm not in ['', None]):
-                            imager_result.outcome['vis'] = asdm
+                    if common_inputs.is_ampcal:
+                        if len(common_infiles) == 1 and (redgrp_asdm not in ['', None]):
+                            redgrp_imager_result.outcome['vis'] = redgrp_asdm
 #                         # to register exported_ms to each scantable instance
 #                         outcome['export_results'] = export_results
 
                     # NRO doesn't need per-antenna Stokes I images
-                    if not is_nro:
-                        results.append(imager_result)
+                    if not common_is_nro:
+                        common_results.append(redgrp_imager_result)
 
-                if imager_result_nro is not None and imager_result_nro.outcome is not None:
+                if redgrp_imager_result_nro is not None and redgrp_imager_result_nro.outcome is not None:
                     # Imaging was successful, proceed following steps
 
                     # add image list to combine
-                    if os.path.exists(imagename_nro) and os.path.exists(imagename_nro+'.weight'):
-                        tocombine_images_nro.append(imagename_nro)
-                        tocombine_org_directions_nro.append(org_direction)
-                        tocombine_specmodes.append(specmode)
+                    if os.path.exists(redgrp_imagename_nro) and os.path.exists(redgrp_imagename_nro+'.weight'):
+                        redgrp_tocombine_images_nro.append(redgrp_imagename_nro)
+                        redgrp_tocombine_org_directions_nro.append(redgrp_org_direction)
+                        redgrp_tocombine_specmodes.append(redgrp_specmode)
 
-                    file_index = [common.get_ms_idx(context, name) for name in infiles]
-                    self._finalize_worker_result(context, imager_result_nro,
-                                                 sourcename=source_name, spwlist=v_spwids, antenna=ant_name, specmode=specmode,
-                                                 imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
-                                                 reduction_group_id=group_id, file_index=file_index,
-                                                 assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids)
+                    __file_index = [common.get_ms_idx(common_context, name) for name in common_infiles]
+                    self._finalize_worker_result(common_context, redgrp_imager_result_nro,
+                                                 sourcename=redgrp_source_name, spwlist=redgrp_v_spwids, antenna=redgrp_ant_name, specmode=redgrp_specmode,
+                                                 imagemode=common_imagemode, stokes=redgrp_stokes_list[1], validsp=redgrp_validsps, rms=redgrp_rmss, edge=common_edge,
+                                                 reduction_group_id=redgrp_group_id, file_index=__file_index,
+                                                 assoc_antennas=redgrp_antids, assoc_fields=redgrp_fieldids, assoc_spws=redgrp_v_spwids)
 
-                    results.append(imager_result_nro)
+                    common_results.append(redgrp_imager_result_nro)
 
-            if inputs.is_ampcal:
+            if common_inputs.is_ampcal:
                 LOG.info("Skipping combined image for the amplitude calibrator.")
                 continue
 
             # Make combined image
-            if len(tocombine_images) == 0:
-                LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
+            if len(redgrp_tocombine_images) == 0:
+                LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(redgrp_source_name, redgrp_spwids[0]))
                 continue
             # reference MS
-            ref_ms = context.observing_run.get_ms(name=combined_infiles[REF_MS_ID])
+            redgrp_ref_ms = common_context.observing_run.get_ms(name=redgrp_combined_infiles[REF_MS_ID])
 
             # image name
             # image name should be based on virtual spw id
-            combined_v_spws_unique = numpy.unique(combined_v_spws)
-            assert len(combined_v_spws_unique) == 1
-            imagename = self.get_imagename(source_name, combined_v_spws_unique, specmode=specmode)
+            redgrp_combined_v_spws_unique = numpy.unique(redgrp_combined_v_spws)
+            assert len(redgrp_combined_v_spws_unique) == 1
+            redgrp_imagename = self.get_imagename(redgrp_source_name, redgrp_combined_v_spws_unique, specmode=redgrp_specmode)
 
             # Step 3.
             # Imaging of all antennas
-            LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_v_spws[REF_MS_ID]))
-            combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images,
-                                                            outfile=imagename,
-                                                            org_directions=tocombine_org_directions,
-                                                            specmodes=tocombine_specmodes)
-            combine_task = sdcombine.SDImageCombine(combine_inputs)
-            imager_result = self._executor.execute(combine_task)
+            LOG.info('Combine images of Source {} Spw {:d}'.format(redgrp_source_name, redgrp_combined_v_spws[REF_MS_ID]))
+            __combine_inputs = sdcombine.SDImageCombineInputs(common_context, inimages=redgrp_tocombine_images,
+                                                            outfile=redgrp_imagename,
+                                                            org_directions=redgrp_tocombine_org_directions,
+                                                            specmodes=redgrp_tocombine_specmodes)
+            __combine_task = sdcombine.SDImageCombine(__combine_inputs)
+            redgrp_imager_result = self._executor.execute(__combine_task)
 
-            if imager_result.outcome is not None:
+            if redgrp_imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
 
                 # Additional Step.
@@ -651,207 +648,207 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # to the outcome
                 # The rms and number of valid spectra is used to create RMS maps
                 LOG.info('Additional Step. Make grid_table')
-                imagename = imager_result.outcome['image'].imagename
-                org_direction = imager_result.outcome['image'].org_direction
-                with casa_tools.ImageReader(imagename) as ia:
-                    cs = ia.coordsys()
-                    dircoords = [i for i in range(cs.naxes())
-                                 if cs.axiscoordinatetypes()[i] == 'Direction']
-                    cs.done()
-                    nx = ia.shape()[dircoords[0]]
-                    ny = ia.shape()[dircoords[1]]
-                observing_pattern = ref_ms.observing_pattern[combined_antids[REF_MS_ID]][combined_spws[REF_MS_ID]][combined_fieldids[REF_MS_ID]]
-                grid_task_class = gridding.gridding_factory(observing_pattern)
-                validsps = []
-                rmss = []
-                grid_input_dict = {}
-                for (msname, antid, spwid, fieldid, poltypes) in zip(combined_infiles, combined_antids, combined_spws,
-                                                                     combined_fieldids, combined_pols):
+                postprocess_imagename = redgrp_imager_result.outcome['image'].imagename
+                postprocess_org_direction = redgrp_imager_result.outcome['image'].org_direction
+                with casa_tools.ImageReader(postprocess_imagename) as ia:
+                    __cs = ia.coordsys()
+                    __dircoords = [i for i in range(__cs.naxes())
+                                 if __cs.axiscoordinatetypes()[i] == 'Direction']
+                    __cs.done()
+                    postprocess_nx = ia.shape()[__dircoords[0]]
+                    postprocess_ny = ia.shape()[__dircoords[1]]
+                postprocess_observing_pattern = redgrp_ref_ms.observing_pattern[redgrp_combined_antids[REF_MS_ID]][redgrp_combined_spws[REF_MS_ID]][redgrp_combined_fieldids[REF_MS_ID]]
+                postprocess_grid_task_class = gridding.gridding_factory(postprocess_observing_pattern)
+                postprocess_validsps = []
+                postprocess_rmss = []
+                postprocess_grid_input_dict = {}
+                for (__msname, __antid, __spwid, __fieldid, __poltypes) in zip(redgrp_combined_infiles, redgrp_combined_antids, redgrp_combined_spws,
+                                                                     redgrp_combined_fieldids, redgrp_combined_pols):
                     # msobj = context.observing_run.get_ms(name=common.get_parent_ms_name(context,msname)) # Use parent ms
                     # ddobj = msobj.get_data_description(spw=spwid)
-                    for p in poltypes:
-                        if p not in grid_input_dict:
-                            grid_input_dict[p] = [[msname], [antid], [fieldid], [spwid]]
+                    for p in __poltypes:
+                        if p not in postprocess_grid_input_dict:
+                            postprocess_grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
                         else:
-                            grid_input_dict[p][0].append(msname)
-                            grid_input_dict[p][1].append(antid)
-                            grid_input_dict[p][2].append(fieldid)
-                            grid_input_dict[p][3].append(spwid)
+                            postprocess_grid_input_dict[p][0].append(__msname)
+                            postprocess_grid_input_dict[p][1].append(__antid)
+                            postprocess_grid_input_dict[p][2].append(__fieldid)
+                            postprocess_grid_input_dict[p][3].append(__spwid)
 
-                for pol, member in grid_input_dict.items():
-                    _mses = member[0]
-                    _antids = member[1]
-                    _fieldids = member[2]
-                    _spwids = member[3]
-                    _pols = [pol for i in range(len(_mses))]
-                    gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
-                                                             antennaids=_antids,
-                                                             fieldids=_fieldids,
-                                                             spwids=_spwids,
-                                                             poltypes=_pols,
-                                                             nx=nx, ny=ny)
-                    gridding_task = grid_task_class(gridding_inputs)
-                    gridding_result = self._executor.execute(gridding_task, merge=False,
-                                                             datatable_dict=dt_dict)
+                for __pol, __member in postprocess_grid_input_dict.items():
+                    __mses = __member[0]
+                    __antids = __member[1]
+                    __fieldids = __member[2]
+                    __spwids = __member[3]
+                    __pols = [__pol for i in range(len(__mses))]
+                    __gridding_inputs = postprocess_grid_task_class.Inputs(common_context, infiles=__mses,
+                                                             antennaids=__antids,
+                                                             fieldids=__fieldids,
+                                                             spwids=__spwids,
+                                                             poltypes=__pols,
+                                                             nx=postprocess_nx, ny=postprocess_ny)
+                    __gridding_task = postprocess_grid_task_class(__gridding_inputs)
+                    __gridding_result = self._executor.execute(__gridding_task, merge=False,
+                                                             datatable_dict=common_dt_dict)
                     # Extract RMS and number of spectra from grid_tables
-                    if isinstance(gridding_result.outcome, compress.CompressedObj):
-                        grid_table = gridding_result.outcome.decompress()
+                    if isinstance(__gridding_result.outcome, compress.CompressedObj):
+                        __grid_table = __gridding_result.outcome.decompress()
                     else:
-                        grid_table = gridding_result.outcome
-                    validsps.append([r[6] for r in grid_table])
-                    rmss.append([r[8] for r in grid_table])
-                    del grid_table
+                        __grid_table = __gridding_result.outcome
+                    postprocess_validsps.append([r[6] for r in __grid_table])
+                    postprocess_rmss.append([r[8] for r in __grid_table])
+                    del __grid_table
 
                 # calculate RMS of line free frequencies in a combined image
                 LOG.info('Calculate sensitivity of combined image')
-                with casa_tools.ImageReader(imagename) as ia:
-                    cs = ia.coordsys()
-                    faxis = cs.findaxisbyname('spectral')
-                    chan_width = cs.increment()['numeric'][faxis]
-                    brightnessunit = ia.brightnessunit()
-                    beam = ia.restoringbeam()
-                qcell = list(cs.increment(format='q', type='direction')['quantity'].values())  # cs.increment(format='s', type='direction')['string']
+                with casa_tools.ImageReader(postprocess_imagename) as ia:
+                    postprocess_cs = ia.coordsys()
+                    postprocess_faxis = postprocess_cs.findaxisbyname('spectral')
+                    postprocess_chan_width = postprocess_cs.increment()['numeric'][postprocess_faxis]
+                    postprocess_brightnessunit = ia.brightnessunit()
+                    postprocess_beam = ia.restoringbeam()
+                postprocess_qcell = list(postprocess_cs.increment(format='q', type='direction')['quantity'].values())  # cs.increment(format='s', type='direction')['string']
 
                 # Define image channels to calculate statistics
-                include_channel_range = self._get_stat_chans(imagename, combined_rms_exclude, edge)
-                stat_chans = convert_range_list_to_string(include_channel_range)
+                postprocess_include_channel_range = self._get_stat_chans(postprocess_imagename, redgrp_combined_rms_exclude, common_edge)
+                postprocess_stat_chans = convert_range_list_to_string(postprocess_include_channel_range)
 
                 # Define region to calculate statistics
-                raster_infos = self.get_raster_info_list(context, combined_infiles,
-                                                         combined_antids,
-                                                         combined_fieldids,
-                                                         combined_spws, dt_dict)
-                region = self._get_stat_region(raster_infos, org_direction, beam)
+                postprocess_raster_infos = self.get_raster_info_list(common_context, redgrp_combined_infiles,
+                                                         redgrp_combined_antids,
+                                                         redgrp_combined_fieldids,
+                                                         redgrp_combined_spws, common_dt_dict)
+                postprocess_region = self._get_stat_region(postprocess_raster_infos, postprocess_org_direction, postprocess_beam)
 
                 # Image statistics
-                if region is None:
+                if postprocess_region is None:
                     LOG.warning('Could not get valid region of interest to calculate image statistics.')
-                    image_rms = -1.0
+                    postprocess_image_rms = -1.0
                 else:
-                    statval = calc_image_statistics(imagename, stat_chans, region)
-                    if len(statval['rms']):
-                        image_rms = statval['rms'][0]
-                        LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                    __statval = calc_image_statistics(postprocess_imagename, postprocess_stat_chans, postprocess_region)
+                    if len(__statval['rms']):
+                        postprocess_image_rms = __statval['rms'][0]
+                        LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(postprocess_stat_chans, __statval['rms'][0], postprocess_brightnessunit, __statval['sigma'][0], postprocess_brightnessunit, __statval['mean'][0], postprocess_brightnessunit))
                     else:
                         LOG.warning('Could not get image statistics. Potentially no valid pixel in region of interest.')
-                        image_rms = -1.0
+                        postprocess_image_rms = -1.0
                 # Theoretical RMS
-                LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
-                theoretical_rms = self.calculate_theoretical_image_rms(combined_infiles, combined_antids,
-                                                                       combined_fieldids, combined_spws,
-                                                                       combined_pols, raster_infos, qcell,
-                                                                       chan_width, brightnessunit,
-                                                                       dt_dict)
+                LOG.info('Calculating theoretical RMS of image, {}'.format(postprocess_imagename))
+                postprocess_theoretical_rms = self.calculate_theoretical_image_rms(redgrp_combined_infiles, redgrp_combined_antids,
+                                                                       redgrp_combined_fieldids, redgrp_combined_spws,
+                                                                       redgrp_combined_pols, postprocess_raster_infos, postprocess_qcell,
+                                                                       postprocess_chan_width, postprocess_brightnessunit,
+                                                                       common_dt_dict)
 
                 # estimate
-                rep_bw = ref_ms.representative_target[2]
-                (rep_source_name, rep_spwid) = ref_ms.get_representative_source_spw()
-                is_representative_spw = (rep_spwid == combined_spws[REF_MS_ID] and rep_bw is not None)
-                is_representative_source_spw = (rep_spwid == combined_spws[REF_MS_ID]) and \
-                                               (rep_source_name == utils.dequote(source_name))
-                if is_representative_spw:
+                __rep_bw = redgrp_ref_ms.representative_target[2]
+                (__rep_source_name, __rep_spwid) = redgrp_ref_ms.get_representative_source_spw()
+                postprocess_is_representative_spw = (__rep_spwid == redgrp_combined_spws[REF_MS_ID] and __rep_bw is not None)
+                postprocess_is_representative_source_spw = (__rep_spwid == redgrp_combined_spws[REF_MS_ID]) and \
+                                               (__rep_source_name == utils.dequote(redgrp_source_name))
+                if postprocess_is_representative_spw:
                     # skip estimate if data is Cycle 2 and earlier + th effective BW is nominal (= chan_width)
-                    spwobj = ref_ms.get_spectral_window(rep_spwid)
-                    if cqa.time(ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
-                            spwobj.channels.chan_effbws[0] == numpy.abs(spwobj.channels.chan_widths[0]):
-                        is_representative_spw = False
+                    __spwobj = redgrp_ref_ms.get_spectral_window(__rep_spwid)
+                    if common_cqa.time(redgrp_ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
+                            __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
+                        postprocess_is_representative_spw = False
                         LOG.warning("Cycle 2 and earlier project with nominal effective band width. Reporting RMS at native resolution.")
                     else:
-                        if not cqa.isquantity(rep_bw): # assume Hz
-                            rep_bw = cqa.quantity(rep_bw, 'Hz')
-                        LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'kHz'))[0], chan_width*1.e-3))
-                        factor = sensitivity_improvement.sensitivityImprovement(ref_ms.name, rep_spwid, cqa.tos(rep_bw))
-                        if factor is None:
+                        if not common_cqa.isquantity(__rep_bw): # assume Hz
+                            __rep_bw = common_cqa.quantity(__rep_bw, 'Hz')
+                        LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(common_cqa.getvalue(common_cqa.convert(common_cqa.quantity(__rep_bw), 'kHz'))[0], postprocess_chan_width*1.e-3))
+                        __factor = sensitivity_improvement.sensitivityImprovement(redgrp_ref_ms.name, __rep_spwid, common_cqa.tos(__rep_bw))
+                        if __factor is None:
                             LOG.warning('No image RMS improvement because representative bandwidth is narrower than native width')
-                            factor = 1.0
-                        LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(factor, image_rms, image_rms/factor, brightnessunit))
-                        image_rms = image_rms/factor
-                        chan_width = numpy.abs(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'Hz'))[0])
-                        theoretical_rms['value'] = theoretical_rms['value']/factor
-                elif rep_bw is None:
+                            __factor = 1.0
+                        LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(__factor, postprocess_image_rms, postprocess_image_rms/__factor, postprocess_brightnessunit))
+                        postprocess_image_rms = postprocess_image_rms / __factor
+                        postprocess_chan_width = numpy.abs(common_cqa.getvalue(common_cqa.convert(common_cqa.quantity(__rep_bw), 'Hz'))[0])
+                        postprocess_theoretical_rms['value'] = postprocess_theoretical_rms['value'] / __factor
+                elif __rep_bw is None:
                     LOG.warning(
                         "Representative bandwidth is not available. Skipping estimate of sensitivity in representative band width.")
-                elif rep_spwid is None:
+                elif __rep_spwid is None:
                     LOG.warning(
                         "Representative SPW is not available. Skipping estimate of sensitivity in representative band width.")
 
                 # calculate channel and frequency ranges of line free channels
-                ref_pixel = cs.referencepixel()['numeric']
-                freqs = []
-                for ichan in include_channel_range:
-                    ref_pixel[faxis] = ichan
-                    freqs.append(cs.toworld(ref_pixel)['numeric'][faxis])
-                cs.done()
-                if len(freqs) > 1 and freqs[0] > freqs[1]:  # LSB
-                    freqs.reverse()
-                stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
-                                             for iseg in range(0, len(freqs), 2)])
+                __ref_pixel = postprocess_cs.referencepixel()['numeric']
+                __freqs = []
+                for __ichan in postprocess_include_channel_range:
+                    __ref_pixel[postprocess_faxis] = __ichan
+                    __freqs.append(postprocess_cs.toworld(__ref_pixel)['numeric'][postprocess_faxis])
+                postprocess_cs.done()
+                if len(__freqs) > 1 and __freqs[0] > __freqs[1]:  # LSB
+                    __freqs.reverse()
+                postprocess_stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(__freqs[__iseg]*1.e-9, __freqs[__iseg+1]*1.e-9)
+                                             for __iseg in range(0, len(__freqs), 2)])
 
-                file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
-                sensitivity = Sensitivity(array='TP',
+                __file_index = [common.get_ms_idx(common_context, name) for name in redgrp_combined_infiles]
+                __sensitivity = Sensitivity(array='TP',
                                           intent='TARGET',
-                                          field=source_name,
-                                          spw=str(combined_v_spws[REF_MS_ID]),
-                                          is_representative=is_representative_source_spw,
-                                          bandwidth=cqa.quantity(chan_width, 'Hz'),
+                                          field=redgrp_source_name,
+                                          spw=str(redgrp_combined_v_spws[REF_MS_ID]),
+                                          is_representative=postprocess_is_representative_source_spw,
+                                          bandwidth=common_cqa.quantity(postprocess_chan_width, 'Hz'),
                                           bwmode='repBW',
-                                          beam=beam, cell=qcell,
-                                          sensitivity=cqa.quantity(image_rms, brightnessunit))
-                theoretical_noise = Sensitivity(array='TP',
+                                          beam=postprocess_beam, cell=postprocess_qcell,
+                                          sensitivity=common_cqa.quantity(postprocess_image_rms, postprocess_brightnessunit))
+                __theoretical_noise = Sensitivity(array='TP',
                                                 intent='TARGET',
-                                                field=source_name,
-                                                spw=str(combined_v_spws[REF_MS_ID]),
-                                                is_representative=is_representative_source_spw,
-                                                bandwidth=cqa.quantity(chan_width, 'Hz'),
+                                                field=redgrp_source_name,
+                                                spw=str(redgrp_combined_v_spws[REF_MS_ID]),
+                                                is_representative=postprocess_is_representative_source_spw,
+                                                bandwidth=common_cqa.quantity(postprocess_chan_width, 'Hz'),
                                                 bwmode='repBW',
-                                                beam=beam, cell=qcell,
-                                                sensitivity=theoretical_rms)
-                sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs, (not is_nro))
-                self._finalize_worker_result(context, imager_result,
-                                             sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  specmode=specmode,
-                                             imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
-                                             reduction_group_id=group_id, file_index=file_index,
-                                             assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,
-                                             sensitivity_info=sensitivity_info, theoretical_rms=theoretical_noise)
+                                                beam=postprocess_beam, cell=postprocess_qcell,
+                                                sensitivity=postprocess_theoretical_rms)
+                __sensitivity_info = SensitivityInfo(__sensitivity, postprocess_is_representative_spw, postprocess_stat_freqs, (not common_is_nro))
+                self._finalize_worker_result(common_context, redgrp_imager_result,
+                                             sourcename=redgrp_source_name, spwlist=redgrp_combined_v_spws, antenna='COMBINED',  specmode=redgrp_specmode,
+                                             imagemode=common_imagemode, stokes=self.stokes, validsp=postprocess_validsps, rms=postprocess_rmss, edge=common_edge,
+                                             reduction_group_id=redgrp_group_id, file_index=__file_index,
+                                             assoc_antennas=redgrp_combined_antids, assoc_fields=redgrp_combined_fieldids, assoc_spws=redgrp_combined_v_spws,
+                                             sensitivity_info=__sensitivity_info, theoretical_rms=__theoretical_noise)
 
                 # PIPE-251: detect contamination
-                detectcontamination.detect_contamination(context, imager_result.outcome['image'])
+                detectcontamination.detect_contamination(common_context, redgrp_imager_result.outcome['image'])
 
-                results.append(imager_result)
+                common_results.append(redgrp_imager_result)
 
             # NRO specific: generate combined image for each correlation
-            if is_nro:
-                if len(tocombine_images_nro) == 0:
-                    LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
+            if common_is_nro:
+                if len(redgrp_tocombine_images_nro) == 0:
+                    LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(redgrp_source_name, redgrp_spwids[0]))
                     continue
 
                 # image name
                 # image name should be based on virtual spw id
-                imagename = self.get_imagename(source_name, combined_v_spws_unique, stokes=correlations, specmode=specmode)
+                postprocess_imagename = self.get_imagename(redgrp_source_name, redgrp_combined_v_spws_unique, stokes=redgrp_correlations, specmode=redgrp_specmode)
 
                 # Step 3.
                 # Imaging of all antennas
-                LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_v_spws[REF_MS_ID]))
-                combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images_nro,
-                                                                outfile=imagename,
-                                                                org_directions=tocombine_org_directions_nro,
-                                                                specmodes=tocombine_specmodes)
-                combine_task = sdcombine.SDImageCombine(combine_inputs)
-                imager_result = self._executor.execute(combine_task)
+                LOG.info('Combine images of Source {} Spw {:d}'.format(redgrp_source_name, redgrp_combined_v_spws[REF_MS_ID]))
+                __combine_inputs = sdcombine.SDImageCombineInputs(common_context, inimages=redgrp_tocombine_images_nro,
+                                                                outfile=postprocess_imagename,
+                                                                org_directions=redgrp_tocombine_org_directions_nro,
+                                                                specmodes=redgrp_tocombine_specmodes)
+                __combine_task = sdcombine.SDImageCombine(__combine_inputs)
+                redgrp_imager_result = self._executor.execute(__combine_task)
 
-                if imager_result.outcome is not None:
+                if redgrp_imager_result.outcome is not None:
                     # Imaging was successful, proceed following steps
 
-                    file_index = [common.get_ms_idx(context, name) for name in combined_infiles]
-                    self._finalize_worker_result(context, imager_result,
-                                                 sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED', specmode=specmode,
-                                                 imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
-                                                 reduction_group_id=group_id, file_index=file_index,
-                                                 assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws)
+                    __file_index = [common.get_ms_idx(common_context, name) for name in redgrp_combined_infiles]
+                    self._finalize_worker_result(common_context, redgrp_imager_result,
+                                                 sourcename=redgrp_source_name, spwlist=redgrp_combined_v_spws, antenna='COMBINED', specmode=redgrp_specmode,
+                                                 imagemode=common_imagemode, stokes=redgrp_stokes_list[1], validsp=postprocess_validsps, rms=postprocess_rmss, edge=common_edge,
+                                                 reduction_group_id=redgrp_group_id, file_index=__file_index,
+                                                 assoc_antennas=redgrp_combined_antids, assoc_fields=redgrp_combined_fieldids, assoc_spws=redgrp_combined_v_spws)
 
-                    results.append(imager_result)
+                    common_results.append(redgrp_imager_result)
 
-        return results
+        return common_results
 
     def analyse(self, result):
         return result
