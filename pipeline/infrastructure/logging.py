@@ -3,6 +3,7 @@ import logging
 import sys
 import time
 import types
+import functools
 
 from casatasks import casalog
 
@@ -44,6 +45,21 @@ logging.getLogger().setLevel(INFO)
 _loggers = []
 
 
+def pipeline_origin(method):
+    """Use 'Pipeline' as the CASAlog Origin/task."""
+    @functools.wraps(method)
+    def pipeline_as_origin(self, *args, **kwargs):
+        # use 'Pipeline::loggername::' as Origin
+        casalog.processorOrigin('')
+        casalog.origin('pipeline')
+        retval = method(self, *args, **kwargs)
+        # revert to the CASA default
+        casalog.processorOrigin('casa')
+        casalog.origin('')
+        return retval
+    return pipeline_as_origin
+
+
 class CASALogHandler(logging.Handler):
     """
     A handler class which writes logging records, appropriately formatted,
@@ -68,6 +84,7 @@ class CASALogHandler(logging.Handler):
         """
         pass
 
+    @pipeline_origin
     def emit(self, record):
         """
         Emit a record.
