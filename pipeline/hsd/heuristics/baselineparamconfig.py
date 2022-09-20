@@ -335,7 +335,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return outdata
 
-    def __convert_flags_to_masklist(self, flags):
+    def __convert_flags_to_masklist(self, flags: 'numpy.ndarray[numpy.ndarray[numpy.int64]]') -> List[List[List[int]]]:
         """
         Converts flag list to masklist.
 
@@ -347,7 +347,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         """
         return [self.__convert_mask_to_masklist(flag) for flag in flags]
 
-    def __convert_mask_to_masklist(self, mask):
+    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]') -> List[List[int]]:
         """
         Converts binary mask array to masklist / channellist for fitting.
 
