@@ -531,7 +531,21 @@ class SDExportData(exportdata.ExportData):
                                                          restore_task_name,
                                                          args)
 
-    def _get_hm_rasterscan_value(self, context: Context):
+    def _get_hm_rasterscan_value(self, context: Context) -> str:
+        """Retrieve hm_rasterscan value from Results object.
+
+        This method checks if either SDImportDataResults or
+        SDRestoreDataResults object is registered to Pipeline context.
+        If exists, hm_rasterscan value is retrieved from the results
+        object. If no SDImportDataResults nor SDRestoreDataResults
+        object is registered, 'time' will be returned.
+
+        Args:
+            context: Pipeline context
+
+        Returns:
+            The hm_rasterscan value.
+        """
         results_filter = filter(
             lambda x: isinstance(x, basetask.ResultsList) and isinstance(x[0], (SDImportDataResults, SDRestoreDataResults)),
             map(lambda x: x.read(), context.results)
