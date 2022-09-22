@@ -11,14 +11,17 @@ import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.hsd.tasks.importdata import SDImportDataResults
-from pipeline.hsd.tasks.applycal import SDApplycalResults
 from .. import applycal
 from ..importdata import importdata as importdata
-from typing import List, Dict, Optional # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
+from typing import List, Dict, Optional, TYPE_CHECKING # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
+
+if TYPE_CHECKING:
+    from pipeline.hsd.tasks.applycal import SDApplycalResults
+    from pipeline.hsd.tasks.importdata import SDImportDataResults
+    from pipeline.infrastructure.launcher import Context
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,8 +33,10 @@ class SDRestoreDataInputs(restoredata.RestoreDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='ao')
     hm_rasterscan = vdp.VisDependentProperty(default='time')
 
-    def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
-                 vis=None, bdfflags=None, lazy=None, asis=None, ocorr_mode=None, hm_rasterscan: Optional[str] = None):
+    def __init__(self, context: 'Context', copytoraw: Optional[bool] = None, products_dir: Optional[str] = None,
+                 rawdata_dir: Optional[str] = None, output_dir: Optional[str] = None, session: Optional[str] = None,
+                 vis: List[str] = None, bdfflags: Optional[bool] = None, lazy: Optional[bool] = None,
+                 asis: Optional[str] = None, ocorr_mode: Optional[str] = None, hm_rasterscan: Optional[str] = None):
         """
         Initialise the Inputs, initialising any property values to those given here.
 
@@ -41,7 +46,7 @@ class SDRestoreDataInputs(restoredata.RestoreDataInputs):
             products_dir: the directory of archived pipeline products
             rawdata_dir: the raw data directory for ASDM(s) and products
             output_dir: the working directory for the restored data
-            session: the  parent session of each vis
+            session: the parent session of each vis
             vis: the ASDMs(s) for which data is to be restored
             bdfflags: set the BDF flags
             lazy: use the lazy filler to restore data
@@ -59,8 +64,8 @@ class SDRestoreDataInputs(restoredata.RestoreDataInputs):
 class SDRestoreDataResults(restoredata.RestoreDataResults):
     """Results object of SDRestoreData."""
 
-    def __init__(self, importdata_results: SDImportDataResults = None, applycal_results: SDApplycalResults = None,
-                 flagging_summaries: List[Dict[str,str]] = None):
+    def __init__(self, importdata_results: 'SDImportDataResults', applycal_results: 'SDApplycalResults',
+                 flagging_summaries: List[Dict[str, str]]):
         """
         Initialise the results objects.
 
@@ -71,7 +76,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         """
         super(SDRestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
 
-    def merge_with_context(self, context: Context):
+    def merge_with_context(self, context: 'Context'):
         """
         Call same method of superclass and _merge_k2jycal().
 
@@ -87,7 +92,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         else:
             self._merge_k2jycal(context, self.applycal_results)
 
-    def _merge_k2jycal(self, context: Context, applycal_results: SDApplycalResults):
+    def _merge_k2jycal(self, context: 'Context', applycal_results: 'SDApplycalResults'):
         """
         Merge K to Jy.
 
