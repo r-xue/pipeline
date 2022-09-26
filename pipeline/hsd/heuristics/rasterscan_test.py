@@ -20,6 +20,7 @@ from typing import Tuple
 
 import numpy as np
 import pytest
+import scipy
 
 from . import rasterscan
 
@@ -719,3 +720,17 @@ def test_find_raster_gap(oneway_row, oneway_map, scan_angle, interval_factor, po
     else:
         gaplist = rasterscan.find_raster_gap(ra, dec, rowlist)
         assert np.array_equal(gaplist, expected)
+
+
+def test_get_func_compute_mad():
+    """Test scipy.stats.median_abs(olute)_deviation to ensure compatibility between py3.6 and py3.8."""
+    mad_func = rasterscan.get_func_compute_mad()
+
+    # generate fixed random array
+    np.random.seed(1234567)
+    arr = np.asarray([np.random.rand() for _ in range(100)])
+
+    mad = mad_func(arr)
+    print(f'scipy version {scipy.__version__}')
+    print(f'mad={mad}')
+    assert np.allclose(mad, 0.3234774)
