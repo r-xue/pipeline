@@ -70,7 +70,7 @@ def get_func_compute_mad() -> Callable:
     major = next(versioning)
     minor = next(versioning)
     if major > 1 or (major == 1 and minor >= 5):
-        return lambda x: scipy.stats.median_abs_deviation(x, scale='normal')
+        return lambda x: scipy.stats.median_abs_deviation(x, scale=0.6744907594765952)
     elif major == 1 and minor >= 3:
         return scipy.stats.median_absolute_deviation
     else:
