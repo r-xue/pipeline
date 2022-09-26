@@ -131,12 +131,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 File contents will be updated by this heuristics
 
         Note:
-            In the method, The boundaries of channel ranges are indicated by a list [start, end].
+            In this method, the boundaries of channel ranges are indicated by a list [start, end].
             Basically, the treatment of pythonic range is [start, end+1], but it is not intuitive for
-            dealing with channels and masks of MeasurementSet. so these are written as [start, end]
+            dealing with channels and masks of MeasurementSet. Therefore these are written as [start, end]
             in this source. Pythonic range-lists as boundaries for MS are only used in local processing
-            scopes like a local function or loop block. Outer of these scopes, we should write
-            the channel/mask range [start, end].
+            scopes like a local function or loop block. Other than these scopes, we should write
+            the channel/mask range as [start, end].
 
         Returns:
             Name of the BLParam file
