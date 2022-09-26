@@ -1,7 +1,12 @@
 import collections
 import os
 import numpy as np
-from scipy.stats import median_absolute_deviation
+import scipy
+
+if int(scipy.__version__.replace('.', '')) < 150:
+    from scipy.stats import median_absolute_deviation as median_abs_deviation
+else:
+    from scipy.stats import median_abs_deviation
 
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.common.displays import sky as sky
@@ -76,7 +81,7 @@ class VlassCubeRmsimagesSummary(object):
             value_arr = np.array([stats[item] for stats in self.result.stats])
             # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
             # It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
-            stats_summary[item]['spwwise_madrms'] = median_absolute_deviation(value_arr, axis=0, scale=1.4826)
+            stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale=1.4826)
             stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
         self.result.stats_summary = stats_summary
 
