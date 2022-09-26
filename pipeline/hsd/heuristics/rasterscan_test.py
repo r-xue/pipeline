@@ -728,9 +728,20 @@ def test_get_func_compute_mad():
 
     # generate fixed random array
     np.random.seed(1234567)
-    arr = np.asarray([np.random.rand() for _ in range(100)])
+    array_length = 100
+    array_list = [
+        np.asarray([np.random.rand() for _ in range(array_length)]),
+        np.asarray([np.random.rand() for _ in range(array_length)]),
+    ]
 
-    mad = mad_func(arr)
+    expected_mad_list = [
+        0.3234774,
+        0.3683437,
+    ]
+
     print(f'scipy version {scipy.__version__}')
-    print(f'mad={mad}')
-    assert np.allclose(mad, 0.3234774)
+    for arr, expected_mad in zip(array_list, expected_mad_list):
+        mad = mad_func(arr)
+        print(f'arr={arr[:10].tolist()}')
+        print(f'mad={mad}, expected={expected_mad}')
+        assert np.allclose(mad, expected_mad)
