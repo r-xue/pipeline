@@ -4,7 +4,7 @@ import numpy as np
 import scipy
 
 if int(scipy.__version__.replace('.', '')) < 150:
-    from scipy.stats import median_absolute_deviation as median_abs_deviation
+    from scipy.stats import median_absolute_deviation
 else:
     from scipy.stats import median_abs_deviation
 
@@ -83,9 +83,10 @@ class VlassCubeRmsimagesSummary(object):
             # It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
             if int(scipy.__version__.replace('.', '')) < 150:
                 scale = 1.4826
+                stats_summary[item]['spwwise_madrms'] = median_absolute_deviation(value_arr, axis=0, scale=scale)
             else:
                 scale = 'normal'
-            stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale=scale)
+                stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale=scale)
             stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
         self.result.stats_summary = stats_summary
 
