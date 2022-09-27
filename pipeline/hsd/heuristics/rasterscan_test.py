@@ -734,11 +734,13 @@ def test_get_func_compute_mad():
         np.asarray([np.random.rand() for _ in range(array_length)]),
     ]
 
+    # expected values based on casa-6.4.1-12-pipeline-2022.2.0.64 (py3.6)
     expected_mad_list = [
         0.3234774,
         0.3683437,
     ]
 
+    # relatively loose test using np.allclose with default setting
     print(f'scipy version {scipy.__version__}')
     for arr, expected_mad in zip(array_list, expected_mad_list):
         mad = mad_func(arr)
