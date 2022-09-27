@@ -81,7 +81,11 @@ class VlassCubeRmsimagesSummary(object):
             value_arr = np.array([stats[item] for stats in self.result.stats])
             # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
             # It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
-            stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale=1.4826)
+            if int(scipy.__version__.replace('.', '')) < 150:
+                scale = 1.4826
+            else:
+                scale = 'normal'
+            stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale=scale)
             stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
         self.result.stats_summary = stats_summary
 

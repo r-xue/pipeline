@@ -70,7 +70,20 @@ def get_func_compute_mad() -> Callable:
     major = next(versioning)
     minor = next(versioning)
     if major > 1 or (major == 1 and minor >= 5):
-        return lambda x: scipy.stats.median_abs_deviation(x, scale=0.6744907594765952)
+        # The 'normal' scale corresponds to the numerical value
+        # scipy.stats.norm().ppf(0.75), which is approximately
+        # 0.67449. It is supposed to be compatible with the result
+        # obtained by scipy.stats.median_absolute_deviation (of version
+        # 1.4.1) with default parameters. But there is suble difference.
+        # As an experiment, I empirically derived the scale value that
+        # reproduced fully compatible result. Here is a fine-tuned value:
+        #
+        # scale_fine_tune = 0.6744907594765952
+        #
+        # The experiment is based on "test_get_func_compute_mad" test
+        # defined in rasterscan_test.py.
+        scale_normal = 'normal'
+        return lambda x: scipy.stats.median_abs_deviation(x, scale=scale_normal)
     elif major == 1 and minor >= 3:
         return scipy.stats.median_absolute_deviation
     else:
