@@ -415,16 +415,20 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         """
         # plot
         # initialize plot manager
-        plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
-        outfile = results.outcome['outfile']
         ms = self.inputs.ms
+        outfile = results.outcome['outfile']
+        plot_manager_base = plotter.BaselineSubtractionPlotManagerBase(ms, outfile, self.inputs.context, self.datatable)
+        plot_manager = plotter.BaselineSubtractionPlotManager(ms, outfile, self.inputs.context, self.datatable)
+        quality_manager = plotter.BaselineSubtractionQualityManager(ms, outfile, self.inputs.context, self.datatable)
+
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
 
         formatted_edge = list(common.parseEdge(self.inputs.edge))
-        status = plot_manager.initialize(ms, outfile)
+        status = plot_manager_base.initialize()
+
         plot_list = []
         stats = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
@@ -446,9 +450,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                     org_direction,
                                                                     grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
-                stats.extend(plot_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id, grid_table, deviationmask, 
-                                                                     channelmap_range, org_direction, formatted_edge)) ###
-        plot_manager.finalize()
+                stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id, 
+                                                                          org_direction,
+                                                                          grid_table, 
+                                                                          deviationmask, channelmap_range, formatted_edge)) ###
+        plot_manager_base.finalize()
 
         results.outcome['plot_list'] = plot_list
         results.outcome['baseline_quality_stat'] = stats
