@@ -17,7 +17,7 @@ class CompressedObj(object):
         return decompress_object(self.compressed)
 
 
-def compress_object(obj, protocol=pickle.HIGHEST_PROTOCOL, compresslevel=9):
+def compress_object(obj, protocol=pickle.DEFAULT_PROTOCOL, compresslevel=9):
     size_org = asizeof.asizeof(obj)
     start = time.time()
     try:

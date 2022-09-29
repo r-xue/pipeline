@@ -341,7 +341,7 @@ class Results(api.Results):
 
                 utils.mkdir_p(os.path.dirname(path))
                 with open(path, 'wb') as outfile:
-                    pickle.dump(context, outfile, -1)
+                    pickle.dump(context, outfile, pickle.DEFAULT_PROTOCOL)
 
         event = ResultAcceptedEvent(context_name=context.name, stage_number=self.stage_number)
         eventbus.send_message(event)
@@ -416,7 +416,7 @@ class ResultsProxy(object):
 
         utils.mkdir_p(os.path.dirname(path))
         with open(path, 'wb') as outfile:
-            pickle.dump(result, outfile, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(result, outfile, pickle.DEFAULT_PROTOCOL)
 
     def read(self):
         """

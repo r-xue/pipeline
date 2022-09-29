@@ -192,7 +192,7 @@ class Tier0PipelineTask(Executable):
         # write task args object to pickle
         with open(self.__task_args_path, 'wb') as pickle_file:
             LOG.info('Saving task arguments to {!s}'.format(self.__task_args_path))
-            pickle.dump(task_args, pickle_file, protocol=-1)
+            pickle.dump(task_args, pickle_file, protocol=pickle.DEFAULT_PROTOCOL)
 
     def get_executable(self):
         """Create and return a Pipeline task executable, intended to run on the MPI server.
