@@ -145,7 +145,7 @@ class PlotDataStorage(object):
         self.integrated_data = numpy.reshape(self.integrated_data_storage[:num_integrated], (num_pol, num_chan))
 
 
-class BaselineSubtractionPlotManager(object):
+class BaselineSubtractionPlotManagerBase(object):
     """Manages any operation necessary to produce baseline subtraction plot."""
 
     @staticmethod
@@ -203,7 +203,7 @@ class BaselineSubtractionPlotManager(object):
                  ...
                  [M, N, RAM, DECN]] <- plane 2
         """
-        new_table = list(BaselineSubtractionPlotManager._generate_plot_meta_table(spw_id,
+        new_table = list(BaselineSubtractionPlotManagerBase._generate_plot_meta_table(spw_id,
                                                                                   polarization_ids,
                                                                                   grid_table))
         return new_table
@@ -272,7 +272,7 @@ class BaselineSubtractionPlotManager(object):
         xlist = [ plot_table[idx][0] for idx in each_plane ]
         ylist = [ plot_table[idx][1] for idx in each_plane ]
         grid_list = list(zip( xlist, ylist ))
-        new_table = list(BaselineSubtractionPlotManager._generate_plot_rowlist(origin_ms_id,
+        new_table = list(BaselineSubtractionPlotManagerBase._generate_plot_rowlist(origin_ms_id,
                                                                                antenna_id,
                                                                                spw_id,
                                                                                polarization_ids,
@@ -280,15 +280,30 @@ class BaselineSubtractionPlotManager(object):
                                                                                grid_list))
         return list(itertools.chain.from_iterable(new_table))
 
-    def __init__(self, context: 'Context', datatable: 'DataTable') -> None:
-        """Construct BaselineSubtractionPlotManager instance.
+    def __init__(self, ms: 'MeasurementSet', blvis: str, context: 'Context', datatable: 'DataTable') -> None:
+        """Construct BaselineSubtractionPlotManagerBase instance.
 
         Args:
+            ms: Domain object for the MS before baseline subtraction
+            blvis: Name of the MS after baseline subtraction
             context: Pipeline context
             datatable: DataTable instance
         """
+        self.ms = ms
         self.context = context
+        origin_ms = self.context.observing_run.get_ms(self.ms.origin_ms)
+        self.out_rowmap = utils.make_row_map(origin_ms, blvis)
+        self.in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
+        self.prefit_data = ms.name
+        self.postfit_data = blvis
         self.datatable = datatable
+
+    def initialize(self) -> bool:
+        """Initialize plot manager with given MS.
+
+        Returns:
+            Initialization status
+        """
         stage_number = self.context.task_counter
         self.stage_dir = os.path.join(self.context.report_dir, "stage%d" % stage_number)
 
@@ -298,25 +313,6 @@ class BaselineSubtractionPlotManager(object):
         self.pool = PlotterPool()
         self.prefit_storage = PlotDataStorage()
         self.postfit_storage = PlotDataStorage()
-
-    def initialize(self, ms: 'MeasurementSet', blvis: str) -> bool:
-        """Initialize plot manager with given MS.
-
-        Args:
-            ms: Domain object for the MS before baseline subtraction
-            blvis: Name of the MS after baseline subtraction
-
-        Returns:
-            Initialization status
-        """
-
-        self.ms = ms
-
-        origin_ms = self.context.observing_run.get_ms(self.ms.origin_ms)
-        self.out_rowmap = utils.make_row_map(origin_ms, blvis)
-        self.in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
-        self.prefit_data = ms.name
-        self.postfit_data = blvis
 
         return True
 
@@ -339,6 +335,23 @@ class BaselineSubtractionPlotManager(object):
         """
         self.prefit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
+
+
+class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
+#class BaselineSubtractionPlotManager(object):
+    """Manages any operation necessary to produce baseline subtraction plot."""
+
+    def __init__(self, ms, blvis, context, datatable):
+        """Construct BaselineSubtractionPlotManager instance.
+
+        Args:
+            ms: Domain object for the MS before baseline subtraction
+            blvis: Name of the MS after baseline subtraction
+            context: Pipeline context
+            datatable: DataTable instance
+        """
+        super(BaselineSubtractionPlotManager, self).__init__(ms, blvis, context, datatable)
+        super(BaselineSubtractionPlotManager, self).initialize()
 
     @casa5style_plot
     def plot_spectra_with_fit(
@@ -434,6 +447,12 @@ class BaselineSubtractionPlotManager(object):
                                                    deviation_mask, line_range,
                                                    org_direction,
                                                    atm_transmission, atm_freq, edge)
+        plot_flatness = self.plot_flatness_profile(prefit_prefix, postfit_prefix, grid_table,
+                                               deviation_mask, line_range,
+                                               org_direction,
+                                               atm_transmission, atm_freq, edge)
+        plot_list.update(plot_flatness)
+
         ret = []
         for plot_type, plots in plot_list.items():
             if plot_type == 'pre_fit':
@@ -488,7 +507,6 @@ class BaselineSubtractionPlotManager(object):
             - sparse profile map for spatially averaged spectra before baseline subtraction
             - sparse profile map for raw spectra after baseline subtraction
             - sparse profile map for spatially averaged spectra after baseline subtraction
-            - visual illustration of baseline flatness after baseline subtraction
 
         Args:
             prefit_figfile_prefix: Prefix string for the filename (before baseline subtraction)
@@ -497,7 +515,7 @@ class BaselineSubtractionPlotManager(object):
             deviation_mask: List of channel ranges identified as the "deviation mask"
             line_range: List of channel ranges identified as astronomical line
             org_direction: direction of the origin
-            atm_transmission: ATM tranmission data
+            atm_transmission: ATM transmission data
             atm_frequency: frequency label associated with ATM transmission
             edge: Edge channels excluded from the baseline fitting
 
@@ -525,7 +543,7 @@ class BaselineSubtractionPlotManager(object):
         # default is Jy/beam
         bunit = utils.get_brightness_unit(ms.name, defaultunit='Jy/beam')
 
-        # grid_table is baseed on virtual spw id
+        # grid_table is based on virtual spw id
         num_ra, num_dec, num_plane, rowlist = analyze_plot_table(ms,
                                                                  origin_ms_id,
                                                                  antid,
@@ -543,7 +561,6 @@ class BaselineSubtractionPlotManager(object):
                                            brightnessunit=bunit)
         LOG.debug('vis %s ant %s spw %s plotter has %s axes',
                   ms.basename, antid, spwid, len(plotter.axes.figure.axes))
-#         LOG.info('axes list: {}', [x.__hash__()  for x in plotter.axes.figure.axes])
         spw = ms.spectral_windows[spwid]
         nchan = spw.num_channels
         data_desc = ms.get_data_description(spw=spw)
@@ -595,9 +612,8 @@ class BaselineSubtractionPlotManager(object):
                 plot_list['post_fit'][ipol] = postfit_figfile
 
         prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
-                                                           num_ra, num_dec,
-                                                           nchan, npol, rowlist,
-                                                           rowmap=in_rowmap,
+                                                           num_ra, num_dec, nchan, npol,
+                                                           rowlist, rowmap=in_rowmap,
                                                            integrated_data_storage=self.prefit_storage.integrated_data,
                                                            map_data_storage=self.prefit_storage.map_data,
                                                            map_mask_storage=self.prefit_storage.map_mask)
@@ -631,12 +647,11 @@ class BaselineSubtractionPlotManager(object):
             if os.path.exists(prefit_figfile):
                 plot_list['pre_fit'][ipol] = prefit_figfile
 
-        del prefit_map_data, postfit_map_data, fit_result
+        del postfit_integrated_data, postfit_map_data, fit_result
 
         prefit_averaged_data = get_averaged_data(prefit_data, dtrows,
-                                                 num_ra, num_dec,
-                                                 nchan, npol, rowlist,
-                                                 rowmap=in_rowmap,
+                                                 num_ra, num_dec, nchan, npol,
+                                                 rowlist, rowmap=in_rowmap,
                                                  map_data_storage=self.prefit_storage.map_data,
                                                  map_mask_storage=self.prefit_storage.map_mask)
 
@@ -662,10 +677,96 @@ class BaselineSubtractionPlotManager(object):
             if os.path.exists(prefit_avg_figfile):
                 plot_list['pre_fit_avg'][ipol] = prefit_avg_figfile
 
-        del prefit_integrated_data, prefit_averaged_data
-
+        del prefit_integrated_data, prefit_map_data, prefit_averaged_data
         plotter.done()
 
+        return plot_list
+
+    def plot_flatness_profile(
+        self,
+        prefit_figfile_prefix: str,
+        postfit_figfile_prefix: str,
+        grid_table: List[List[Union[int, float, numpy.ndarray]]],
+        deviation_mask: Optional[List[Tuple[int, int]]],
+        line_range: Optional[List[Tuple[int, int]]],
+        org_direction: dirutil.Direction,
+        atm_transmission: Optional[numpy.ndarray],
+        atm_frequency: Optional[numpy.ndarray],
+        edge: Optional[List[int]]
+    ) -> dict:
+        """Create plots of baseline flatness profile of a spectrum after baseline subtraction
+
+        Args:
+            prefit_figfile_prefix: Prefix string for the filename (before baseline subtraction)
+            postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
+            grid_table: grid_table generated by simplegrid module
+            deviation_mask: List of channel ranges identified as the "deviation mask"
+            line_range: List of channel ranges identified as astronomical line
+            org_direction: direction of the origin
+            atm_transmission: ATM transmission data
+            atm_frequency: frequency label associated with ATM transmission
+            edge: Edge channels excluded from the baseline fitting
+
+        Returns:
+            Dictionary containing names of the figure with plot type and
+            polarization id as keys
+
+                plot_list[plot_type][polarization_id] = figfile
+        """
+        ms = self.ms
+        origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
+        origin_ms_id = self.context.observing_run.measurement_sets.index(origin_ms)
+        antid = self.antenna_id
+        spwid = self.spw_id
+        virtual_spwid = self.virtual_spw_id
+        polids = self.pol_list
+        prefit_data = self.prefit_data
+        postfit_data = self.postfit_data
+        out_rowmap = self.out_rowmap
+        in_rowmap = self.in_rowmap
+
+        dtrows = self.datatable.getcol('ROW')
+
+        # get brightnessunit from MS
+        # default is Jy/beam
+        bunit = utils.get_brightness_unit(ms.name, defaultunit='Jy/beam')
+
+        # grid_table is based on virtual spw id
+        num_ra, num_dec, num_plane, rowlist = analyze_plot_table(ms,
+                                                                 origin_ms_id,
+                                                                 antid,
+                                                                 virtual_spwid,
+                                                                 polids,
+                                                                 grid_table,
+                                                                 org_direction)
+
+        # ralist/declist holds coordinates for axis labels (center of each panel)
+        ralist  = [ r.get('RA')  for r in rowlist if r['DECID']==0 ]
+        declist = [ r.get('DEC') for r in rowlist if r['RAID'] ==0 ]
+
+        plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
+                                           direction_reference=self.datatable.direction_ref,
+                                           brightnessunit=bunit)
+        LOG.debug('vis %s ant %s spw %s plotter has %s axes',
+                  ms.basename, antid, spwid, len(plotter.axes.figure.axes))
+        spw = ms.spectral_windows[spwid]
+        nchan = spw.num_channels
+        data_desc = ms.get_data_description(spw=spw)
+        npol = data_desc.num_polarizations
+        LOG.debug('nchan=%s', nchan)
+
+        self.resize_storage(num_ra, num_dec, npol, nchan)
+
+        frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
+                                   dtype=numpy.float64)  # unit in GHz
+        LOG.debug('frequency=%s~%s (nchan=%s)',
+                  frequency[0], frequency[-1], len(frequency))
+
+        plot_list = {}
+        postfit_integrated_data = get_integrated_data(postfit_data, dtrows,
+                                                      num_ra, num_dec, nchan, npol,
+                                                      rowlist, rowmap=out_rowmap,
+                                                      integrated_data_storage=self.postfit_storage.integrated_data)
         # baseline flatness plots
         plot_list['post_fit_flatness'] = {}
         source_name = ms.fields[self.field_id].source.name.replace(' ', '_').replace('/', '_')
@@ -679,6 +780,7 @@ class BaselineSubtractionPlotManager(object):
                 plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
 
         del postfit_integrated_data
+        plotter.done()
 
         return plot_list
 
@@ -688,7 +790,7 @@ class BaselineSubtractionPlotManager(object):
                          edge: Tuple[int, int], brightnessunit: str,
                          figfile: str):
         """
-        Calculate baseline flatness of a spectrum and create a plot.
+        Create a plot of baseline flatness of a spectrum.
 
         Args:
             spectrum: A spectrum to analyze baseline flatness and plot.
@@ -752,16 +854,52 @@ class BaselineSubtractionPlotManager(object):
         plt.plot(binned_freq, binned_data, 'ro')
         plt.savefig(figfile, dpi=DPIDetail)
 
-    def calculate_baseline_quality_stat(self, field_id: int, antenna_id: int, spw_id: int, grid_table: List[List[Union[int, float, numpy.ndarray]]], deviation_mask: Optional[List[Tuple[int, int]]], channelmap_range: Optional[List[Tuple[int, int, bool]]], org_direction: dirutil.Direction, edge: Optional[List[int]]) -> List:
+class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
 
+    def __init__(self, ms, blvis, context, datatable):
+        """Construct BaselineSubtractionQualityManager instance.
+
+        Args:
+            ms: Domain object for the MS before baseline subtraction
+            blvis: Name of the MS after baseline subtraction
+            context: Pipeline context
+            datatable: DataTable instance
+        """
+        super(BaselineSubtractionQualityManager, self).__init__(ms, blvis, context, datatable)
+        super(BaselineSubtractionQualityManager, self).initialize()
+
+    def calculate_baseline_quality_stat(self, field_id: int, ant_id: int, spw_id: int,
+                                        org_direction: dirutil.Direction,
+                                        grid_table: List[List[Union[int, float, numpy.ndarray]]],
+                                        deviation_mask: Optional[List[Tuple[int, int]]],
+                                        channelmap_range: Optional[List[Tuple[int, int, bool]]],
+                                        edge: Optional[List[int]]) -> List:
+        """Calculate quality status after baseline subtraction.
+    
+        Args:
+            prefit_figfile_prefix: Prefix string for the filename (before baseline subtraction)
+            postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
+            grid_table: grid_table generated by simplegrid module
+            deviation_mask: List of channel ranges identified as the "deviation mask"
+            channelmap_range: List of channel ranges identified as astronomical lines by
+                              line detection and validation process. Channel range is represented
+                              as a tuple of line center channel, line width in channel, and
+                              validation result (boolean). Those ranges are shown as cyan rectangle
+                              to indicate they are excluded from the fit. None means no line ranges
+                              are provided.
+            org_direction: direction of the origin
+            edge: Edge channels excluded from the baseline fitting
+    
+        Returns:
+            Dictionary containing names of the figure with plot type and
+            polarization id as keys
+    
+                plot_list[plot_type][polarization_id] = figfile
+        """
         ms = self.ms
         origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
         origin_ms_id = self.context.observing_run.measurement_sets.index(origin_ms)
-        field_id = field_id
-        antid = antenna_id
-        spwid = spw_id
-        virtual_spw_id = self.context.observing_run.real2virtual_spw_id(spwid, ms)
-        virtual_spwid = virtual_spw_id
+        virtual_spw_id = self.context.observing_run.real2virtual_spw_id(spw_id, ms)
         data_desc = self.ms.get_data_description(spw=spw_id)
         num_pol = data_desc.num_polarizations
         pol_list = numpy.arange(num_pol, dtype=int)
@@ -770,9 +908,9 @@ class BaselineSubtractionPlotManager(object):
         postfit_data = self.postfit_data
         out_rowmap = self.out_rowmap
         in_rowmap = self.in_rowmap
-        dtrows = self.datatable.getcol('ROW')
+        dtrows = self.datatable.getcol('ROW')       
         baseline_quality_stat = []
-
+    
         # convert channelmap_range to plotter-aware format
         if channelmap_range is None:
             line_range = None
@@ -780,56 +918,54 @@ class BaselineSubtractionPlotManager(object):
             line_range = [[r[0] - 0.5 * r[1], r[0] + 0.5 * r[1]] for r in channelmap_range if r[2] is True]
             if len(line_range) == 0:
                 line_range = None
-
+    
         # get brightnessunit from MS
         # default is Jy/beam
         bunit = utils.get_brightness_unit(ms.name, defaultunit='Jy/beam')
-
+    
         # grid_table is baseed on virtual spw id
         num_ra, num_dec, num_plane, rowlist = analyze_plot_table(ms,
                                                                  origin_ms_id,
-                                                                 antid,
-                                                                 virtual_spwid,
+                                                                 ant_id,
+                                                                 virtual_spw_id,
                                                                  polids,
                                                                  grid_table,
                                                                  org_direction)
-
-        spw = ms.spectral_windows[spwid]
+    
+        spw = ms.spectral_windows[spw_id]
         nchan = spw.num_channels
         npol = data_desc.num_polarizations
-
+    
         self.resize_storage(num_ra, num_dec, npol, nchan)
         frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
                                    dtype=numpy.float64)  # unit in GHz
-
+    
         if out_rowmap is None:
             out_rowmap = utils.make_row_map(origin_ms, postfit_data)
-
-        postfit_integrated_data, postfit_map_data = get_data(postfit_data, dtrows,
-                                                             num_ra, num_dec, nchan, npol,
-                                                             rowlist, rowmap=out_rowmap,
-                                                             integrated_data_storage=self.postfit_storage.integrated_data,
-                                                             map_data_storage=self.postfit_storage.map_data,
-                                                             map_mask_storage=self.postfit_storage.map_mask)
+    
+        postfit_integrated_data = get_integrated_data(postfit_data, dtrows,
+                                                      num_ra, num_dec, nchan, npol,
+                                                      rowlist, rowmap=out_rowmap,
+                                                      integrated_data_storage=self.postfit_storage.integrated_data)
         for ipol in range(npol):
             stat = self.analyze_flatness(postfit_integrated_data[ipol],
                                                   frequency, line_range,
                                                   deviation_mask, edge, bunit)
             if len(stat) > 0:
-                quality_stat = QualityStat(vis=os.path.basename(ms.origin_ms), field=source_name, spw=virtual_spwid, ant=ms.antennas[antid].name, pol=sd_polmap[ipol], stat=stat)
+                quality_stat = QualityStat(vis=os.path.basename(ms.origin_ms), field=source_name, spw=virtual_spw_id, ant=ms.antennas[ant_id].name, pol=sd_polmap[ipol], stat=stat)
                 baseline_quality_stat.append(quality_stat)
-        del postfit_integrated_data, postfit_map_data
+        del postfit_integrated_data
         return baseline_quality_stat
-
+    
     def analyze_flatness(self, spectrum: List[float], frequency: List[float],
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
                          edge: Tuple[int, int], brightnessunit: str) -> List[BinnedStat]:
         """
         Calculate baseline flatness of a spectrum.
-
+    
         Args:
-            spectrum: A spectrum to analyze baseline flatness and plot.
+            spectrum: A spectrum to analyze baseline flatness.
             frequency: Frequency values of each element in spectrum.
             line_range: ID ranges in spectrum array that should be considered
                 as spectral lines and eliminated from inspection of baseline
@@ -839,7 +975,7 @@ class BaselineSubtractionPlotManager(object):
             edge: Number of elements in left and right edges that should be
                 eliminates from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
-
+    
         Returns:
             Statistic information to evaluate baseline flatness.
         """
@@ -1006,9 +1142,12 @@ def analyze_plot_table(
     #  [0, 1, RA0, DEC1], <- plane 0
     #  ...
     #  [M, N, RAM, DECN]] <- plane 2
-    plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(virtual_spwid,
+    plot_table = BaselineSubtractionPlotManagerBase.generate_plot_meta_table(virtual_spwid,
                                                                          polids,
-                                                                         grid_table)
+                                                                         grid_table) ###
+#    plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(virtual_spwid,
+#                                                                         polids,
+#                                                                         grid_table)
     num_grid_rows = len(plot_table)  # num_plane * num_grid_ra * num_grid_dec
     assert num_grid_rows > 0
     num_grid_dec = plot_table[-1][1] + 1
@@ -1023,13 +1162,20 @@ def analyze_plot_table(
     rowlist = [{} for i in range(num_dec * num_ra)]
 
     for row_index, each_plane in enumerate(each_grid):
-        dataids = BaselineSubtractionPlotManager.generate_plot_rowlist( origin_ms_id,
+        dataids = BaselineSubtractionPlotManagerBase.generate_plot_rowlist( origin_ms_id,
                                                                         antid,
                                                                         virtual_spwid,
                                                                         polids,
                                                                         grid_table,
                                                                         plot_table,
-                                                                        each_plane )
+                                                                        each_plane ) ###
+#        dataids = BaselineSubtractionPlotManager.generate_plot_rowlist( origin_ms_id,
+#                                                                        antid,
+#                                                                        virtual_spwid,
+#                                                                        polids,
+#                                                                        grid_table,
+#                                                                        plot_table,
+#                                                                        each_plane )
         raid = row_index % num_ra
         decid = row_index // num_ra
         ralist = [plot_table[i][2] for i in each_plane]
@@ -1078,7 +1224,7 @@ def get_data(
         num_ra: Number of panels along horizontal axis
         num_dec: Number of panels along vertical axis
         num_chan: Number of spectral channels
-        num_pol: Number of polarizaionts
+        num_pol: Number of polarizations
         rowlist: List of datatable row ids per sparse map panel with metadata
         rowmap: Row mapping between original (calibrated) MS and the MS
                 specified by infile. It will be EchoDictionary if None is given.
@@ -1090,7 +1236,7 @@ def get_data(
 
     Returns:
         Two masked arrays corresponding to integrated spectrum and sparse map data.
-        The former has the shape of (npol, nchan) while tha latter is four-dimensional,
+        The former has the shape of (npol, nchan) while the latter is four-dimensional,
         (nx, ny, npol, nchan).
     """
     # default rowmap is EchoDictionary
@@ -1191,6 +1337,107 @@ def get_data(
     LOG.trace('map_data.shape=%s', map_data.shape)
 
     return integrated_data_masked, map_data_masked
+
+#@utils.profiler
+def get_integrated_data(
+    infile: str,
+    dtrows: numpy.ndarray,
+    num_ra: int,
+    num_dec: int,
+    num_chan: int,
+    num_pol: int,
+    rowlist: dict,
+    rowmap: Optional[dict] = None,
+    integrated_data_storage: Optional[numpy.ndarray] = None
+) -> numpy.ma.masked_array:
+    """Create array data for sparse map.
+
+    Computes masked array data for sparse map, which is the integrated
+    spectrum averaged over whole spectral data regardless of their spatial
+    position. Spatial grouping information is held by rowlist.
+
+    Args:
+        infile: Name of the MS
+        dtrows: List of datatable rows
+        num_ra: Number of panels along horizontal axis
+        num_dec: Number of panels along vertical axis
+        num_chan: Number of spectral channels
+        num_pol: Number of polarizaionts
+        rowlist: List of datatable row ids per sparse map panel with metadata
+        rowmap: Row mapping between original (calibrated) MS and the MS
+                specified by infile. It will be EchoDictionary if None is given.
+        integrated_data_storage: Storage for integrated spectrum. If None is given,
+                                 new array is created.
+
+    Returns:
+        Masked arrays corresponding to integrated spectrum, which has the shape of (npol, nchan).
+    """
+    # default rowmap is EchoDictionary
+    if rowmap is None:
+        rowmap = utils.EchoDictionary()
+
+    integrated_shape = (num_pol, num_chan)
+    map_shape = (num_ra, num_dec, num_pol, num_chan)
+    if integrated_data_storage is not None:
+        assert integrated_data_storage.shape == integrated_shape
+        assert integrated_data_storage.dtype == float
+        integrated_data = integrated_data_storage
+        integrated_data[:] = 0.0
+    else:
+        integrated_data = numpy.zeros((num_pol, num_chan), dtype=float)
+
+    num_accumulated = numpy.zeros((num_pol, num_chan), dtype=int)
+
+    # column name for spectral data
+    with casa_tools.TableReader(infile) as tb:
+        colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
+        colname = None
+        for name in colnames:
+            if name in tb.colnames():
+                colname = name
+                break
+        assert colname is not None
+
+        for d in rowlist:
+            ix = num_ra - 1 - d['RAID']
+            iy = d['DECID']
+            idxs = d['IDS']
+            if len(idxs) > 0:
+                # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
+                rows = dtrows[idxs].copy()
+                sorted_index = numpy.argsort(rows)
+                idxperpol = [[], [], [], []]
+                for isort in sorted_index:
+                    row = rows[isort]
+                    mapped_row = rowmap[row]
+                    LOG.debug('row %s: mapped_row %s', row, mapped_row)
+                    this_data = tb.getcell(colname, mapped_row)
+                    this_mask = tb.getcell('FLAG', mapped_row)
+                    LOG.trace('this_mask.shape=%s', this_mask.shape)
+                    for ipol in range(num_pol):
+                        pmask = this_mask[ipol]
+                        allflagged = numpy.all(pmask == True)
+                        LOG.trace('all(this_mask==True) = %s', allflagged)
+                        if allflagged == False:
+                            idxperpol[ipol].append(idxs[isort])
+                        else:
+                            LOG.debug('spectrum for pol %s is completely flagged at %s, %s (row %s)',
+                                      ipol, ix, iy, mapped_row)
+                    binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
+                    integrated_data += this_data.real * binary_mask
+                    num_accumulated += binary_mask
+                midxperpol = []
+            else:
+                LOG.debug('no data is available for (%s,%s)', ix, iy)
+                midxperpol = [None for ipol in range(num_pol)]
+            d['MEDIAN_INDEX'] = midxperpol
+            LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
+    integrated_data_masked = numpy.ma.masked_array(integrated_data, num_accumulated == 0)
+    integrated_data_masked /= num_accumulated
+    LOG.trace('integrated_data=%s', integrated_data)
+    LOG.trace('num_accumulated=%s', num_accumulated)
+
+    return integrated_data_masked
 
 
 def get_averaged_data(
