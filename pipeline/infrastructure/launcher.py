@@ -187,7 +187,7 @@ class Context(object):
 
         with open(filename, 'wb') as context_file:
             LOG.info('Saving context: %s', filename)
-            pickle.dump(self, context_file, protocol=-1)
+            pickle.dump(self, context_file, protocol=4)
 
     def __str__(self):
         ms_names = [ms.name 
