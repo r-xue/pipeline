@@ -146,7 +146,7 @@ class PlotDataStorage(object):
 
 
 class BaselineSubtractionPlotManagerBase(object):
-    """Manages any operation necessary to produce baseline subtraction plot."""
+    """Base class to produce baseline subtraction plot and to calculate quality statistics."""
 
     @staticmethod
     def _generate_plot_meta_table(
@@ -874,7 +874,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
                                         deviation_mask: Optional[List[Tuple[int, int]]],
                                         channelmap_range: Optional[List[Tuple[int, int, bool]]],
                                         edge: Optional[List[int]]) -> List:
-        """Calculate quality status after baseline subtraction.
+        """Calculate quality statistics after baseline subtraction.
     
         Args:
             prefit_figfile_prefix: Prefix string for the filename (before baseline subtraction)
