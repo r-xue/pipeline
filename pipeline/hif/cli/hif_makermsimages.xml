@@ -1,10 +1,8 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_makermsimages" type="function">
-<shortdescription>Base makermsimages task</shortdescription>
-<description>
-The hif_makermsimages task.
-
+<shortdescription>Create RMS images for VLASS data.</shortdescription>
+<description>Create RMS images for VLASS data.
 
 Output:
 

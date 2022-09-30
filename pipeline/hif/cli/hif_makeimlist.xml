@@ -3,26 +3,24 @@
 <task category="pipeline" name="hif_makeimlist" type="function">
 <shortdescription>Compute list of clean images to be produced</shortdescription>
 <description>
-Create a a list of images to be cleaned.
-
-Generate a list of images to be cleaned. By default the list will include
+Generate a list of images to be cleaned. By default, the list will include
 one image per science target per spw. Calibrator targets can be selected
 by setting appropriate values for intent.
 
-By default the output image cell size is set to the minimum cell size
+By default, the output image cell size is set to the minimum cell size
 consistent with the UV coverage.
 
-By default the image size in pixels is set to values determined by the
-cell size and the single dish beam size. If a calibrator is being
+By default, the image size in pixels is set to values determined by the
+cell size and the primary beam size. If a calibrator is being
 imaged (intents 'PHASE', 'BANDPASS', 'FLUX' or 'AMPLITUDE') then the
 image dimensions are limited to 'calmaxpix' pixels.
 
-By default science target images are cubes and calibrator target images
-are single channel. Science target images may be mosaics or single fields.
+By default, science target images are cubes and calibrator target images
+are mfs. Science target images may be mosaics or single fields.
 
 Output
 
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise,
            the results object for the pipeline task is returned.
 </description>
 <input>

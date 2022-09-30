@@ -119,6 +119,18 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR</value>
     </param>
 
+    <param name="hm_rasterscan" type="string">
+        <shortdescription>Heuristics method for raster scan analysis (\'time\' or \'direction\')</shortdescription>
+        <description>Heuristics method for raster scan analysis. Two analysis modes,
+        time-domain analysis ('time') and direction analysis ('direction'), are available.
+        Default is 'time'. </description>
+        <value>time</value>
+        <allowed kind="enum">
+            <value>time</value>
+            <value>direction</value>
+        </allowed>
+    </param>
+
     <param name="pipelinemode" type="string">
       	<shortdescription>The pipeline operating mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the pipeline

@@ -5,7 +5,7 @@
 <description>
 Check interferometry imaging product size and try to mitigate to maximum
 allowed values. The task implements a mitigation cascade computing the largest
-cube size and trying to reduce it below a given limit by adjusting the nbins,
+cube size and tries to reduce it below a given limit by adjusting the nbins,
 hm_imsize and hm_cell parameters. If this step succeeds, it also checks the
 overall imaging product size and if necessary reduces the number of fields to
 be imaged.
@@ -17,7 +17,7 @@ the image field is truncated around the phase center by forcing hm_imsize
 = maximsize.
 
 Note that mitigation for image pixel count and for the product size currently
-are mutually exclusive.
+are mutually exclusive, with maximsize taking precedence if set.
 
 Output:
 

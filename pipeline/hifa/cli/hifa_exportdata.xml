@@ -20,22 +20,8 @@ o a FITS image for each selected science target source image
 o a tar file per session containing the caltables for that session
 o a tar file containing the file web log
 o a text file containing the final list of CASA commands
-
-
-Issues
-
-Support for merging the calibration state information into the pipeline
-context / results structure and retrieving it still needs to be added.
-
-Support for merging the clean results into the pipeline context / results
-structure and retrieving it still needs to be added.
-
-Support for creating the final pipeline results entity still needs to
-be added.
-
-Session information is not currently handled by the pipeline context.
-By default all ASDMs are combined into one session.
-
+o an XML "manifest" file listing the products
+o an XML "aquareport" file listing the QA scores and sub-scores, image sensitivities, and other numerical information
 
 Output
 

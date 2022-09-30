@@ -99,8 +99,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="hm_fastnoise" type="any">
-    <shortdescription>Faster noise calucation for automask or nsigma stopping</shortdescription>
-    <description>Faster noise calucation for automask or nsigma stopping
+    <shortdescription>Faster noise calculation for automask or nsigma stopping</shortdescription>
+    <description>Faster noise calculation for automask or nsigma stopping
 
                  Defaults to '' to enable the automatic heuristics calculation.
                  Can be set to True or False manually.

@@ -3,11 +3,11 @@
 <task category="pipeline" name="hif_uvcontfit" type="function">
 <shortdescription>Fit the continuum in the UV plane</shortdescription>
 <description>
-This task estimates the continuum emission by fitting polynomials to
-the real and imaginary parts of the spectral windows and channels
-selected by spw and exclude spw. This fit represents a model of
-the continuum in all channels. Fit orders less than 2 are strongly
-recommended. Spw window combination is not currently supported.
+This task estimates the continuum emission by fitting polynomials to the real and
+imaginary parts of the spectral windows and frequency ranges selected by the spw
+parameter and specified in the contfile. This fit represents a model of the continuum
+in all channels. Fit orders less than 2 are strongly recommended. Spw window
+combination is not currently supported.
 </description>
 <input>
   <param name="vis" subparam="true" type="stringVec">
