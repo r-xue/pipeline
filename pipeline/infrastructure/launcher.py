@@ -187,7 +187,7 @@ class Context(object):
 
         with open(filename, 'wb') as context_file:
             LOG.info('Saving context: %s', filename)
-            pickle.dump(self, context_file, protocol=pickle.DEFAULT_PROTOCOL)
+            pickle.dump(self, context_file, protocol=-1)
 
     def __str__(self):
         ms_names = [ms.name 
@@ -346,4 +346,4 @@ class Pipeline(object):
     def close(self):
         filename = self.context.name
         with open(filename, 'r+b') as session:            
-            pickle.dump(self.context, session, protocol=pickle.DEFAULT_PROTOCOL)
+            pickle.dump(self.context, session, protocol=-1)

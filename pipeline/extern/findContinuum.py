@@ -4529,7 +4529,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                 avgSpectrumNansReplaced, normalized, numberPixelsInJointMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak, jointMask, nbin, initialPeakOverMad = results
                 # Write values to <img>_mom0mom8jointMaskPrior.pkl
                 open_file = open(priorValuesFile, 'wb')
-                pickle.dump(results, open_file, protocol=pickle.DEFAULT_PROTOCOL)
+                pickle.dump(results, open_file)
                 print("wrote %d values to pickle file: %s" % (len(results), priorValuesFile))
                 open_file.close()
             print("returned from meanSpectrumFromMom0Mom8JointMask: numberPixelsInMom8Mask = ", numberPixelsInMom8Mask)

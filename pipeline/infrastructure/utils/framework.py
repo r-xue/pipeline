@@ -94,7 +94,7 @@ def get_calfroms(context, vis, caltypes=None):
 
 def pickle_copy(original):
     stream = io.BytesIO()
-    pickle.dump(original, stream, pickle.DEFAULT_PROTOCOL)
+    pickle.dump(original, stream, pickle.HIGHEST_PROTOCOL)
     # rewind to the start of the 'file', allowing it to be read in its
     # entirety - otherwise we get an EOFError
     stream.seek(0)

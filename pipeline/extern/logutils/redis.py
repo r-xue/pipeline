@@ -29,7 +29,7 @@ class RedisQueueHandler(QueueHandler):
         QueueHandler.__init__(self, redis)
 
     def enqueue(self, record):
-        s = pickle.dumps(vars(record), protocol=pickle.DEFAULT_PROTOCOL)
+        s = pickle.dumps(vars(record))
         self.queue.rpush(self.key, s)
         if self.limit:
             self.queue.ltrim(self.key, -self.limit, -1)
