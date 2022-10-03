@@ -3,8 +3,9 @@ import html
 import os
 import xml.sax.saxutils as saxutils
 
+import pympler.asizeof as asizeof
+
 import pipeline.domain.measures as measures
-import pipeline.extern.asizeof as asizeof
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.htmlrenderer as hr
