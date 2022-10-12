@@ -745,7 +745,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         # The following code loops through the MSes specified in vis,
         # executing the task for the first value (head) and then appending the
         # results of executing the remainder of the MS list (tail).
-        if len(self.inputs.vis) is 0:
+        if len(self.inputs.vis) == 0:
             # we don't return an empty list as the timestamp decorator wants
             # to set attributes on this value, which it can't on a built-in
             # list

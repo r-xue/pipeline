@@ -516,7 +516,7 @@ class InputsContainer(object):
         # compare self against that.
         casa_tasks = [m.casa_task for m in task_registry.task_map if m.pipeline_class.Inputs == self._task_cls.Inputs]
 
-        if len(casa_tasks) is not 1:
+        if len(casa_tasks) != 1:
             return
 
         # map Python Inputs arguments back to their CASA equivalent
@@ -1028,9 +1028,9 @@ def format_value_list(val):
     # return single values where possible, which is when only one value
     # is present because the inputs covers one ms or because the values
     # for each ms are all the same.
-    if len(val) is 0:
+    if len(val) == 0:
         return val
-    elif len(val) is 1:
+    elif len(val) == 1:
         return val[0]
     else:
         if all_unique(val):
