@@ -28,6 +28,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.imaging import gridding
+from pipeline.hsd.tasks.imaging import imaging_params
 from pipeline.hsd.tasks.imaging import sdcombine
 from pipeline.hsd.tasks.imaging import weighting
 from pipeline.hsd.tasks.imaging import worker
@@ -136,134 +137,18 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     is_multi_vis_task = True
 
-    class CommonParameters:
+    def prepare(self) -> resultobjects.SDImagingResults:
+        """Execute imaging process. This is the main method of imaging.
 
-        def __init__(self):
-            self.args_spw = None         # spw selection per MS
-            self.cqa = None              # reference of casatools.quanta
-            self.dt_dict = None          # dictionary of input MS and corresponding datatable
-            self.edge = None             # edge channel of most recent SDBaselineResults or [0, 0]
-            self.imagemode = None        # input image mode
-            self.in_field = None         # comma-separated list of target field names that are extracted from all input MSs
-            self.infiles = None          # list of input files
-            self.is_nro = None           # flag of NRO data
-            self.ms_list = None          # list of ms to process
-            self.ms_names = None         # list of name of ms in ms_list
-            self.reduction_group = None  # reduction group object
-            self.restfreq_list = None    # list of rest frequency
-            self.results = None          # instance of SDImagingResults
+        Returns:
+            SDImagingResults: result object of imaging
+        """
 
-    class ReductionGroupParameters:
-
-        def __init__(self, group_id, group_desc):
-            self.group_id = group_id
-            self.group_desc = group_desc
-            self.antenna_list = None
-            self.antids = None
-            self.ant_name = None
-            self.asdm = None
-            self.cellx = None
-            self.celly = None
-            self.chanmap_range_list = None
-            self.channelmap_range_list = None
-            self.combined = None
-            self.coord_set = False
-            self.correlations = None
-            self.fieldid_list = None
-            self.fieldids = None
-            self.grid_input_dict = None
-            self.grid_task_class = None
-            self.image_group = None
-            self.imagename = None
-            self.imagename_nro = None
-            self.imager_result = None
-            self.imager_result_nro = None
-            self.member_list = None
-            self.members = None
-            self.msobjs = None
-            self.name = None
-            self.nx = None
-            self.ny = None
-            self.observing_pattern = None
-            self.org_direction = None
-            self.phasecenter = None
-            self.polslist = None
-            self.pols_list = None
-            self.ref_ms = None
-            self.restfreq = None
-            self.rmss = None
-            self.source_name = None
-            self.specmode = None
-            self.spwid_list = None
-            self.spwids = None
-            self.stokes_list = None
-            self.tocombine = None
-            self.validsps = None
-            self.v_spwids = None
-
-    class CombinedImageParameters:
-
-        def __init__(self):
-            self.antids = []
-            self.fieldids = []
-            self.infiles = []
-            self.pols = []
-            self.rms_exclude = []
-            self.spws = []
-            self.v_spws = []
-            self.v_spws_unique = []
-
-        def extend(self, _cp, _rgp):
-            self.infiles.extend(_cp.infiles)
-            self.antids.extend(_rgp.antids)
-            self.fieldids.extend(_rgp.fieldids)
-            self.spws.extend(_rgp.spwids)
-            self.v_spws.extend(_rgp.v_spwids)
-            self.pols.extend(_rgp.polslist)
-
-    class ToCombineImageParameters:
-
-        def __init__(self):
-            self.images = []
-            self.images_nro = []
-            self.org_directions = []
-            self.org_directions_nro = []
-            self.specmodes = []
-
-    class PostProcessParameters:
-
-        def __init__(self):
-            self.beam = None
-            self.brightnessunit = None
-            self.chan_width = None
-            self.cs = None
-            self.faxis = None
-            self.grid_input_dict = None
-            self.grid_task_class = None
-            self.imagename = None
-            self.image_rms = None
-            self.include_channel_range = None
-            self.is_representative_source_spw = None
-            self.is_representative_spw = None
-            self.nx = None
-            self.ny = None
-            self.observing_pattern = None
-            self.org_direction = None
-            self.qcell = None
-            self.raster_infos = None
-            self.region = None
-            self.rmss = None
-            self.stat_chans = None
-            self.stat_freqs = None
-            self.theoretical_rms = None
-            self.validsps = None
-
-    def prepare(self):
         _cp = self.__initialize_common_parameters()
 
         # loop over reduction group (spw and source combination)
         for __group_id, __group_desc in _cp.reduction_group.items():
-            _rgp = self.ReductionGroupParameters(__group_id, __group_desc)
+            _rgp = imaging_params.ReductionGroupParameters(__group_id, __group_desc)
 
             if not self.__initialize_reduction_group_parameters(_cp, _rgp):
                 continue
@@ -306,7 +191,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             # Step 3: imaging of all antennas
             self.__execute_combine_images(_rgp)
 
-            _pp = self.PostProcessParameters()
+            _pp = imaging_params.PostProcessParameters()
             if self.__has_imager_result_outcome(_rgp):
 
                 # Imaging was successful, proceed following steps
@@ -429,12 +314,12 @@ class SDImaging(basetask.StandardTaskTemplate):
         # finally replace task attribute with the top-level one
         result.task = cls
 
-    def __get_edge(self, _cp: CommonParameters) -> List[int]:
+    def __get_edge(self, _cp: imaging_params.CommonParameters) -> List[int]:
         """
         Search results and retrieve edge parameter from the most recent SDBaselineResults if it exists.
 
         Args:
-            _cp (CommonParameters): common parameters object of prepare()
+            _cp (imaging_params.CommonParameters): common parameters object of prepare()
 
         Returns:
             List[int, int]: edge
@@ -455,7 +340,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def __initialize_common_parameters(self):
         """Initialize common parameters of prepare()."""
-        _cp = self.CommonParameters()
+        _cp = imaging_params.CommonParameters()
         _cp.reduction_group = self.inputs.context.observing_run.ms_reduction_group
         _cp.infiles = self.inputs.infiles
         _cp.restfreq_list = self.inputs.restfreq
@@ -472,12 +357,13 @@ class SDImaging(basetask.StandardTaskTemplate):
                            for __ms in _cp.ms_list)
         return _cp
 
-    def __get_correlations_if_nro(self, _cp: CommonParameters, _rgp: ReductionGroupParameters) -> Optional[str]:
+    def __get_correlations_if_nro(self, _cp: imaging_params.CommonParameters,
+                                  _rgp: imaging_params.ReductionGroupParameters) -> Optional[str]:
         """If data is from NRO, then get correlations.
 
         Args:
-            _cp (CommonParameters): common parameters object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameters object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
 
         Returns:
             Optional[str]: joined list of correlations
@@ -493,12 +379,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         else:
             return None
 
-    def __get_rgp_image_group(self, _cp: CommonParameters, _rgp: ReductionGroupParameters) -> Dict[str, List[List[str]]]:
+    def __get_rgp_image_group(self, _cp: imaging_params.CommonParameters,
+                              _rgp: imaging_params.ReductionGroupParameters) -> Dict[str, List[List[str]]]:
         """Get image group of reduction group
 
         Args:
-            _cp (CommonParameters): common parameters object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameters object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
 
         Returns:
             Dict[str, List[List[str]]]: image group dictionary,
@@ -522,14 +409,15 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         return __image_group
 
-    def __initialize_reduction_group_parameters(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
-        """Set default values into the instance of ReductionGroupParameters
+    def __initialize_reduction_group_parameters(self, _cp: imaging_params.CommonParameters,
+                                                _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+        """Set default values into the instance of imaging_params.ReductionGroupParameters
 
         Note: _cp.ms_list is set in this function.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         LOG.debug('Processing Reduction Group {}'.format(_rgp.group_id))
         LOG.debug('Group Summary:')
@@ -564,12 +452,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         if len(_rgp.member_list) == 0:
             LOG.info('Skip reduction group {:d}'.format(_rgp.group_id))
             return False
-        _rgp.member_list.sort() # list of group_desc IDs to image
+        _rgp.member_list.sort()  # list of group_desc IDs to image
         _rgp.antenna_list = [_rgp.group_desc[i].antenna_id for i in _rgp.member_list]
         _rgp.spwid_list = [_rgp.group_desc[i].spw_id for i in _rgp.member_list]
         _cp.ms_list = [_rgp.group_desc[i].ms for i in _rgp.member_list]
         _rgp.fieldid_list = [_rgp.group_desc[i].field_id for i in _rgp.member_list]
-        __temp_dd_list = [_cp.ms_list[i].get_data_description(spw=_rgp.spwid_list[i]) for i in range(len(_rgp.member_list))]
+        __temp_dd_list = [_cp.ms_list[i].get_data_description(spw=_rgp.spwid_list[i])
+                          for i in range(len(_rgp.member_list))]
         _rgp.channelmap_range_list = [_rgp.group_desc[i].channelmap_range for i in _rgp.member_list]
         # this becomes list of list [[poltypes for ms0], [poltypes for ms1], ...]
         #             polids_list = [[ddobj.get_polarization_id(corr) for corr in ddobj.corr_axis \
@@ -590,22 +479,23 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         LOG.debug('image_group={}'.format(_rgp.image_group))
 
-        _rgp.combined = self.CombinedImageParameters()
-        _rgp.tocombine = self.ToCombineImageParameters()
+        _rgp.combined = imaging_params.CombinedImageParameters()
+        _rgp.tocombine = imaging_params.ToCombineImageParameters()
 
         return True
 
-    def __pick_restfreq_from_restfreq_list(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __pick_restfreq_from_restfreq_list(self, _cp: imaging_params.CommonParameters,
+                                           _rgp: imaging_params.ReductionGroupParameters):
         """Pick restfreq from restfreq_list.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         if isinstance(_cp.restfreq_list, list):
             __v_spwid = self.inputs.context.observing_run.real2virtual_spw_id(_rgp.spwids[0], _rgp.msobjs[0])
             __v_spwid_list = [
-                self.inputs.context.observing_run.real2virtual_spw_id(int(i), _rgp.msobjs[0]) for 
+                self.inputs.context.observing_run.real2virtual_spw_id(int(i), _rgp.msobjs[0]) for
                 i in _cp.args_spw[_rgp.msobjs[0].name].split(',')]
             __v_idx = __v_spwid_list.index(__v_spwid)
             if len(_cp.restfreq_list) > __v_idx:
@@ -620,12 +510,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp.restfreq = _cp.restfreq_list
             LOG.info("Processing with restfreq = {}".format(_rgp.restfreq))
 
-    def __set_image_name_based_on_virtual_spwid(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __set_image_name_based_on_virtual_spwid(self, _cp: imaging_params.CommonParameters,
+                                                _rgp: imaging_params.ReductionGroupParameters):
         """Generate image name based on virtual spw id and set it to RGP.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         __v_spwids_unique = numpy.unique(_rgp.v_spwids)
         assert len(__v_spwids_unique) == 1
@@ -637,12 +528,13 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                     stokes=_rgp.correlations, specmode=_rgp.specmode)
             LOG.info("Output image name for NRO: {}".format(_rgp.imagename_nro))
 
-    def __set_image_group_item_into_reduction_group_patameters(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __set_image_group_item_into_reduction_group_patameters(self, _cp: imaging_params.CommonParameters,
+                                                               _rgp: imaging_params.ReductionGroupParameters):
         """Set values of an item of image group into RGP.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         _rgp.msobjs = [x[0] for x in _rgp.members]
         _rgp.antids = [x[1] for x in _rgp.members]
@@ -680,7 +572,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         LOG.debug('infiles={}'.format(_cp.infiles))
 
         # virtual spw ids
-        _rgp.v_spwids = [self.inputs.context.observing_run.real2virtual_spw_id(s, m) for s, m in zip(_rgp.spwids, _rgp.msobjs)]
+        _rgp.v_spwids = [self.inputs.context.observing_run.real2virtual_spw_id(s, m)
+                         for s, m in zip(_rgp.spwids, _rgp.msobjs)]
 
         # image name
         self.__set_image_name_based_on_virtual_spwid(_cp, _rgp)
@@ -688,12 +581,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         # restfreq
         self.__pick_restfreq_from_restfreq_list(_cp, _rgp)
 
-    def __initialize_weight_column_based_on_baseline_rms(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __initialize_weight_column_based_on_baseline_rms(self, _cp: imaging_params.CommonParameters,
+                                                         _rgp: imaging_params.ReductionGroupParameters):
         """Initialize weight column of MS.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         __origin_ms = [msobj.origin_ms for msobj in _rgp.msobjs]
         __work_ms = [msobj.name for msobj in _rgp.msobjs]
@@ -703,32 +597,35 @@ class SDImaging(basetask.StandardTaskTemplate):
         __weighting_task = weighting.WeightMS(__weighting_inputs)
         self._executor.execute(__weighting_task, merge=False, datatable_dict=_cp.dt_dict)
 
-    def __initialize_coord_set(self, _cp: CommonParameters, _rgp: ReductionGroupParameters) -> Boolean:
+    def __initialize_coord_set(self, _cp: imaging_params.CommonParameters,
+                               _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
         """Initialize coordinate set of MS.
 
         if initialize is fault, current loop of reduction group goes to next loop immediately.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
             Boolean: initialise succeeded or not
         """
         # PIPE-313: evaluate map extent using pointing data from all the antenna in the data
         __dummyids = [None for _ in _rgp.antids]
-        __image_coord = worker.ImageCoordinateUtil(self.inputs.context, _cp.infiles, __dummyids, _rgp.spwids, _rgp.fieldids)
+        __image_coord = worker.ImageCoordinateUtil(self.inputs.context, _cp.infiles,
+                                                   __dummyids, _rgp.spwids, _rgp.fieldids)
         if not __image_coord:  # No valid data is found
             return False
         _rgp.coord_set = True
         _rgp.phasecenter, _rgp.cellx, _rgp.celly, _rgp.nx, _rgp.ny, _rgp.org_direction = __image_coord
         return True
 
-    def __executer_imageing_worker(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __executer_imageing_worker(self, _cp: imaging_params.CommonParameters,
+                                   _rgp: imaging_params.ReductionGroupParameters):
         """Execute imaging worker.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         # register data for combining
         _rgp.combined.extend(_cp, _rgp)
@@ -763,12 +660,12 @@ class SDImaging(basetask.StandardTaskTemplate):
         # per-antenna correlation image (XXYY/RRLL)
         _rgp.imager_result_nro = __imager_results[1] if _cp.is_nro else None
 
-    def __make_grid_table(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __make_grid_table(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Make grid table for gridding.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         LOG.info('Additional Step. Make grid_table')
         _rgp.imagename = _rgp.imager_result.outcome['image'].imagename
@@ -778,37 +675,37 @@ class SDImaging(basetask.StandardTaskTemplate):
             __cs.done()
             _rgp.nx = ia.shape()[__dircoords[0]]
             _rgp.ny = ia.shape()[__dircoords[1]]
-        _rgp.observing_pattern = _rgp.msobjs[0].observing_pattern[_rgp.antids[0]][_rgp.spwids[0]][_rgp.fieldids[0]]
-        _rgp.grid_task_class = gridding.gridding_factory(_rgp.observing_pattern)
+        __observing_pattern = _rgp.msobjs[0].observing_pattern[_rgp.antids[0]][_rgp.spwids[0]][_rgp.fieldids[0]]
+        __grid_task_class = gridding.gridding_factory(__observing_pattern)
         _rgp.validsps = []
         _rgp.rmss = []
-        _rgp.grid_input_dict = {}
+        __grid_input_dict = {}
         for __msobj, __antid, __spwid, __fieldid, __poltypes, _dummy in _rgp.members:
             __msname = __msobj.name  # Use parent ms
             for p in __poltypes:
-                if p not in _rgp.grid_input_dict:
-                    _rgp.grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
+                if p not in __grid_input_dict:
+                    __grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
                 else:
-                    _rgp.grid_input_dict[p][0].append(__msname)
-                    _rgp.grid_input_dict[p][1].append(__antid)
-                    _rgp.grid_input_dict[p][2].append(__fieldid)
-                    _rgp.grid_input_dict[p][3].append(__spwid)
+                    __grid_input_dict[p][0].append(__msname)
+                    __grid_input_dict[p][1].append(__antid)
+                    __grid_input_dict[p][2].append(__fieldid)
+                    __grid_input_dict[p][3].append(__spwid)
 
         # Generate grid table for each POL in image (per ANT,
         # FIELD, and SPW, over all MSes)
-        for __pol, __member in _rgp.grid_input_dict.items():
+        for __pol, __member in __grid_input_dict.items():
             __mses = __member[0]
             __antids = __member[1]
             __fieldids = __member[2]
             __spwids = __member[3]
             __pols = [__pol for i in range(len(__mses))]
-            __gridding_inputs = _rgp.grid_task_class.Inputs(self.inputs.context, infiles=__mses,
-                                                            antennaids=__antids,
-                                                            fieldids=__fieldids,
-                                                            spwids=__spwids,
-                                                            poltypes=__pols,
-                                                            nx=_rgp.nx, ny=_rgp.ny)
-            __gridding_task = _rgp.grid_task_class(__gridding_inputs)
+            __gridding_inputs = __grid_task_class.Inputs(self.inputs.context, infiles=__mses,
+                                                         antennaids=__antids,
+                                                         fieldids=__fieldids,
+                                                         spwids=__spwids,
+                                                         poltypes=__pols,
+                                                         nx=_rgp.nx, ny=_rgp.ny)
+            __gridding_task = __grid_task_class(__gridding_inputs)
             __gridding_result = self._executor.execute(__gridding_task, merge=False,
                                                        datatable_dict=_cp.dt_dict)
             # Extract RMS and number of spectra from grid_tables
@@ -819,23 +716,24 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp.validsps.append([r[6] for r in __grid_table])
             _rgp.rmss.append([r[8] for r in __grid_table])
 
-    def __add_image_list_to_combine(self, _rgp: ReductionGroupParameters):
+    def __add_image_list_to_combine(self, _rgp: imaging_params.ReductionGroupParameters):
         """Add image list to combine.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         if os.path.exists(_rgp.imagename) and os.path.exists(_rgp.imagename + '.weight'):
             _rgp.tocombine.images.append(_rgp.imagename)
             _rgp.tocombine.org_directions.append(_rgp.org_direction)
             _rgp.tocombine.specmodes.append(_rgp.specmode)
 
-    def __define_rms_range_in_image(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __define_rms_range_in_image(self, _cp: imaging_params.CommonParameters,
+                                    _rgp: imaging_params.ReductionGroupParameters):
         """Define RMS range and finalize worker result.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
         with casa_tools.ImageReader(_rgp.imagename) as ia:
@@ -843,7 +741,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             __frequency_frame = __cs.getconversiontype('spectral')
             __cs.done()
             __rms_exclude_freq = self._get_rms_exclude_freq_range_image(
-                __frequency_frame, _rgp.chanmap_range_list, _cp.edge, _rgp.msobjs, _rgp.antids, _rgp.spwids, _rgp.fieldids)
+                __frequency_frame, _rgp.chanmap_range_list, _cp.edge, _rgp.msobjs,
+                _rgp.antids, _rgp.spwids, _rgp.fieldids)
             LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(__rms_exclude_freq)))
         _rgp.combined.rms_exclude.extend(__rms_exclude_freq)
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
@@ -854,12 +753,13 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      file_index=__file_index, assoc_antennas=_rgp.antids, assoc_fields=_rgp.fieldids,
                                      assoc_spws=_rgp.v_spwids)
 
-    def __additional_imaging_process_for_nro(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __additional_imaging_process_for_nro(self, _cp: imaging_params.CommonParameters,
+                                             _rgp: imaging_params.ReductionGroupParameters):
         """Add image list to combine and finalize worker result.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         # Imaging was successful, proceed following steps
         # add image list to combine
@@ -876,13 +776,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      assoc_spws=_rgp.v_spwids)
         _cp.results.append(_rgp.imager_result_nro)
 
-    def __make_post_grid_table(self, _cp: CommonParameters, _rgp: ReductionGroupParameters, _pp: PostProcessParameters):
+    def __make_post_grid_table(self, _cp: imaging_params.CommonParameters,
+                               _rgp: imaging_params.ReductionGroupParameters,
+                               _pp: imaging_params.PostProcessParameters):
         """Make grid table on post process.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
-            _pp (PostProcessParameters): imaging post process parameters of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
         """
         LOG.info('Additional Step. Make grid_table')
         _pp.imagename = _rgp.imager_result.outcome['image'].imagename
@@ -896,34 +798,37 @@ class SDImaging(basetask.StandardTaskTemplate):
         __antid = _rgp.combined.antids[REF_MS_ID]
         __spwid = _rgp.combined.spws[REF_MS_ID]
         __fieldid = _rgp.combined.fieldids[REF_MS_ID]
-        _pp.observing_pattern = _rgp.ref_ms.observing_pattern[__antid][__spwid][__fieldid]
-        _pp.grid_task_class = gridding.gridding_factory(_pp.observing_pattern)
+        __observing_pattern = _rgp.ref_ms.observing_pattern[__antid][__spwid][__fieldid]
+        __grid_task_class = gridding.gridding_factory(__observing_pattern)
         _pp.validsps = []
         _pp.rmss = []
-        _pp.grid_input_dict = {}
-        for __msname, __antid, __spwid, __fieldid, __poltypes in zip(_rgp.combined.infiles, _rgp.combined.antids, _rgp.combined.spws, 
-            _rgp.combined.fieldids, _rgp.combined.pols):
+        __grid_input_dict = {}
+        for __msname, __antid, __spwid, __fieldid, __poltypes in zip(_rgp.combined.infiles,
+                                                                     _rgp.combined.antids,
+                                                                     _rgp.combined.spws,
+                                                                     _rgp.combined.fieldids,
+                                                                     _rgp.combined.pols):
             # msobj = context.observing_run.get_ms(name=common.get_parent_ms_name(context,msname)) # Use parent ms
             # ddobj = msobj.get_data_description(spw=spwid)
             for p in __poltypes:
-                if p not in _pp.grid_input_dict:
-                    _pp.grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
+                if p not in __grid_input_dict:
+                    __grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
                 else:
-                    _pp.grid_input_dict[p][0].append(__msname)
-                    _pp.grid_input_dict[p][1].append(__antid)
-                    _pp.grid_input_dict[p][2].append(__fieldid)
-                    _pp.grid_input_dict[p][3].append(__spwid)
+                    __grid_input_dict[p][0].append(__msname)
+                    __grid_input_dict[p][1].append(__antid)
+                    __grid_input_dict[p][2].append(__fieldid)
+                    __grid_input_dict[p][3].append(__spwid)
 
-        for __pol, __member in _pp.grid_input_dict.items():
+        for __pol, __member in __grid_input_dict.items():
             __mses = __member[0]
             __antids = __member[1]
             __fieldids = __member[2]
             __spwids = __member[3]
             __pols = [__pol for i in range(len(__mses))]
-            __gridding_inputs = _pp.grid_task_class.Inputs(self.inputs.context, infiles=__mses, antennaids=__antids,
-                                                           fieldids=__fieldids, spwids=__spwids, poltypes=__pols,
-                                                           nx=_pp.nx, ny=_pp.ny)
-            __gridding_task = _pp.grid_task_class(__gridding_inputs)
+            __gridding_inputs = __grid_task_class.Inputs(self.inputs.context, infiles=__mses, antennaids=__antids,
+                                                         fieldids=__fieldids, spwids=__spwids, poltypes=__pols,
+                                                         nx=_pp.nx, ny=_pp.ny)
+            __gridding_task = __grid_task_class(__gridding_inputs)
             __gridding_result = self._executor.execute(__gridding_task, merge=False, datatable_dict=_cp.dt_dict)
             # Extract RMS and number of spectra from grid_tables
             if isinstance(__gridding_result.outcome, compress.CompressedObj):
@@ -933,13 +838,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             _pp.validsps.append([r[6] for r in __grid_table])
             _pp.rmss.append([r[8] for r in __grid_table])
 
-    def __generate_parameters_for_calculate_sensitivity(self, _cp: CommonParameters, _rgp: ReductionGroupParameters, _pp: PostProcessParameters):
+    def __generate_parameters_for_calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
+                                                        _rgp: imaging_params.ReductionGroupParameters,
+                                                        _pp: imaging_params.PostProcessParameters):
         """Generate parameters for calculate sensitivity.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
-            _pp (PostProcessParameters): imaging post process parameters of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
         """
         LOG.info('Calculate sensitivity of combined image')
         with casa_tools.ImageReader(_pp.imagename) as ia:
@@ -948,7 +855,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _pp.chan_width = _pp.cs.increment()['numeric'][_pp.faxis]
             _pp.brightnessunit = ia.brightnessunit()
             _pp.beam = ia.restoringbeam()
-        _pp.qcell = list(_pp.cs.increment(format='q', type='direction')['quantity'].values()) # cs.increment(format='s', type='direction')['string']
+        _pp.qcell = list(_pp.cs.increment(format='q', type='direction')['quantity'].values())  # cs.increment(format='s', type='direction')['string']
         # Define image channels to calculate statistics
         _pp.include_channel_range = self._get_stat_chans(_pp.imagename, _rgp.combined.rms_exclude, _cp.edge)
         _pp.stat_chans = convert_range_list_to_string(_pp.include_channel_range)
@@ -965,7 +872,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             __statval = calc_image_statistics(_pp.imagename, _pp.stat_chans, _pp.region)
             if len(__statval['rms']):
                 _pp.image_rms = __statval['rms'][0]
-                LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(_pp.stat_chans, __statval['rms'][0], _pp.brightnessunit, __statval['sigma'][0], _pp.brightnessunit, __statval['mean'][0], _pp.brightnessunit))
+                LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, "
+                         "Mean = {:f} {}".format(_pp.stat_chans, __statval['rms'][0], _pp.brightnessunit,
+                                                 __statval['sigma'][0], _pp.brightnessunit,
+                                                 __statval['mean'][0], _pp.brightnessunit))
             else:
                 LOG.warning('Could not get image statistics. Potentially no valid pixel in region of interest.')
                 _pp.image_rms = -1.0
@@ -977,11 +887,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                    _rgp.combined.pols, _pp.raster_infos, _pp.qcell,
                                                                    _pp.chan_width, _pp.brightnessunit, _cp.dt_dict)
 
-    def __execute_combine_images(self, _rgp: ReductionGroupParameters):
+    def __execute_combine_images(self, _rgp: imaging_params.ReductionGroupParameters):
         """Combine images.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         LOG.info('Combine images of Source {} Spw {:d}'.format(_rgp.source_name, _rgp.combined.v_spws[REF_MS_ID]))
         __combine_inputs = sdcombine.SDImageCombineInputs(self.inputs.context, inimages=_rgp.tocombine.images,
@@ -991,50 +901,61 @@ class SDImaging(basetask.StandardTaskTemplate):
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
         _rgp.imager_result = self._executor.execute(__combine_task)
 
-    def __estimate_sensitivity(self, _cp: CommonParameters, _rgp: ReductionGroupParameters, _pp: PostProcessParameters):
+    def __estimate_sensitivity(self, _cp: imaging_params.CommonParameters,
+                               _rgp: imaging_params.ReductionGroupParameters,
+                               _pp: imaging_params.PostProcessParameters):
         """Estimate sensitivity before calculation.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
-            _pp (PostProcessParameters): imaging post process parameters of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
         """
         __rep_bw = _rgp.ref_ms.representative_target[2]
         __rep_source_name, __rep_spwid = _rgp.ref_ms.get_representative_source_spw()
         _pp.is_representative_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_bw is not None
-        _pp.is_representative_source_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_source_name == utils.dequote(_rgp.source_name)
+        _pp.is_representative_source_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_source_name == \
+            utils.dequote(_rgp.source_name)
         if _pp.is_representative_spw:
             # skip estimate if data is Cycle 2 and earlier + th effective BW is nominal (= chan_width)
             __spwobj = _rgp.ref_ms.get_spectral_window(__rep_spwid)
-            if _cp.cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
+            if _cp.cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
+                    __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
                 _pp.is_representative_spw = False
-                LOG.warning("Cycle 2 and earlier project with nominal effective band width. Reporting RMS at native resolution.")
+                LOG.warning("Cycle 2 and earlier project with nominal effective band width. "
+                            "Reporting RMS at native resolution.")
             else:
                 if not _cp.cqa.isquantity(__rep_bw):  # assume Hz
                     __rep_bw = _cp.cqa.quantity(__rep_bw, 'Hz')
-                LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(_cp.cqa.getvalue(_cp.cqa.convert(_cp.cqa.quantity(__rep_bw), 'kHz'))[0], _pp.chan_width * 1.e-3))
-                __factor = sensitivity_improvement.sensitivityImprovement(_rgp.ref_ms.name, __rep_spwid, _cp.cqa.tos(__rep_bw))
+                LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(
+                    _cp.cqa.getvalue(_cp.cqa.convert(_cp.cqa.quantity(__rep_bw), 'kHz'))[0], _pp.chan_width * 1.e-3))
+                __factor = sensitivity_improvement.sensitivityImprovement(_rgp.ref_ms.name, __rep_spwid,
+                                                                          _cp.cqa.tos(__rep_bw))
                 if __factor is None:
-                    LOG.warning('No image RMS improvement because representative bandwidth is narrower than native width')
+                    LOG.warning('No image RMS improvement because representative bandwidth '
+                                'is narrower than native width')
                     __factor = 1.0
-                LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(__factor, _pp.image_rms, _pp.image_rms / __factor, _pp.brightnessunit))
+                LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(
+                    __factor, _pp.image_rms, _pp.image_rms / __factor, _pp.brightnessunit))
                 _pp.image_rms = _pp.image_rms / __factor
                 _pp.chan_width = numpy.abs(_cp.cqa.getvalue(_cp.cqa.convert(_cp.cqa.quantity(__rep_bw), 'Hz'))[0])
                 _pp.theoretical_rms['value'] = _pp.theoretical_rms['value'] / __factor
         elif __rep_bw is None:
-            LOG.warning(
-                "Representative bandwidth is not available. Skipping estimate of sensitivity in representative band width.")
+            LOG.warning("Representative bandwidth is not available. "
+                        "Skipping estimate of sensitivity in representative band width.")
         elif __rep_spwid is None:
-            LOG.warning(
-                "Representative SPW is not available. Skipping estimate of sensitivity in representative band width.")
+            LOG.warning("Representative SPW is not available. "
+                        "Skipping estimate of sensitivity in representative band width.")
 
-    def __calculate_sensitivity(self, _cp: CommonParameters, _rgp: ReductionGroupParameters, _pp: PostProcessParameters):
+    def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
+                                _rgp: imaging_params.ReductionGroupParameters,
+                                _pp: imaging_params.PostProcessParameters):
         """Calculate channel and frequency ranges of line free channels.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
-            _pp (PostProcessParameters): imaging post process parameters of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
         """
         __ref_pixel = _pp.cs.referencepixel()['numeric']
         __freqs = []
@@ -1045,8 +966,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         _pp.cs.done()
         if len(__freqs) > 1 and __freqs[0] > __freqs[1]:  # LSB
             __freqs.reverse()
-        _pp.stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(__freqs[__iseg] * 1.e-9, __freqs[__iseg + 1] * 1.e-9) for
-                __iseg in range(0, len(__freqs), 2)])
+        _pp.stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(__freqs[__iseg] * 1.e-9, __freqs[__iseg + 1] * 1.e-9)
+                                        for __iseg in range(0, len(__freqs), 2)])
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
         __sensitivity = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                     spw=str(_rgp.combined.v_spws[REF_MS_ID]),
@@ -1069,13 +990,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      assoc_spws=_rgp.combined.v_spws, sensitivity_info=__sensitivity_info,
                                      theoretical_rms=__theoretical_noise)
 
-    def __execute_combine_images_for_nro(self, _cp: CommonParameters, _rgp: ReductionGroupParameters, _pp: PostProcessParameters) -> Boolean:
+    def __execute_combine_images_for_nro(self, _cp: imaging_params.CommonParameters,
+                                         _rgp: imaging_params.ReductionGroupParameters,
+                                         _pp: imaging_params.PostProcessParameters) -> Boolean:
         """Combine images for NRO data.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
-            _pp (PostProcessParameters): imaging post process parameters of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
         Returns:
             Boolean: False if images for NRO is not exists
         """
@@ -1107,11 +1030,11 @@ class SDImaging(basetask.StandardTaskTemplate):
             _cp.results.append(_rgp.imager_result)
         return True
 
-    def __prepare_for_combine_images(self, _rgp: ReductionGroupParameters):
+    def __prepare_for_combine_images(self, _rgp: imaging_params.ReductionGroupParameters):
         """Prepare before combining images.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         # reference MS
         _rgp.ref_ms = self.inputs.context.observing_run.get_ms(name=_rgp.combined.infiles[REF_MS_ID])
@@ -1121,11 +1044,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         assert len(_rgp.combined.v_spws_unique) == 1
         _rgp.imagename = self.get_imagename(_rgp.source_name, _rgp.combined.v_spws_unique, specmode=_rgp.specmode)
 
-    def __skip_this_loop(self, _rgp: ReductionGroupParameters):
+    def __skip_this_loop(self, _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
         """Check to skip combine.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         if self.inputs.is_ampcal:
             LOG.info("Skipping combined image for the amplitude calibrator.")
@@ -1136,12 +1059,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             return True
         return False
 
-    def __execute_imaging(self, _cp: CommonParameters, _rgp: ReductionGroupParameters) -> Boolean:
+    def __execute_imaging(self, _cp: imaging_params.CommonParameters,
+                          _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
         """Execute imaging per antenna, source.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
             Boolean: False if coodinate setting is fault before execute imaging
         """
@@ -1152,59 +1076,60 @@ class SDImaging(basetask.StandardTaskTemplate):
         self.__executer_imageing_worker(_cp, _rgp)
         return True
 
-    def __set_asdm_to_outcome_vis_if_imagemode_is_ampcal(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __set_asdm_to_outcome_vis_if_imagemode_is_ampcal(self, _cp: imaging_params.CommonParameters,
+                                                         _rgp: imaging_params.ReductionGroupParameters):
         """Set ASDM to vis.outcome if imagemode of the vis is AMPCAL.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         if self.inputs.is_ampcal:
             if len(_cp.infiles) == 1 and (_rgp.asdm not in ['', None]):
                 _rgp.imager_result.outcome['vis'] = _rgp.asdm
 
-    def __has_imager_result_outcome(self, _rgp: ReductionGroupParameters) -> Boolean:
+    def __has_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
         """Check imager_result.outcome.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
             Boolean: result of check
         """
         return _rgp.imager_result.outcome is not None
 
-    def __has_nro_imager_result_outcome(self, _rgp: ReductionGroupParameters) -> Boolean:
+    def __has_nro_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
         """Check imager_result_nro.outcome.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
             Boolean: result of check
         """
         return _rgp.imager_result_nro is not None and _rgp.imager_result_nro.outcome is not None
 
-    def __detect_contamination(self, _rgp: ReductionGroupParameters):
+    def __detect_contamination(self, _rgp: imaging_params.ReductionGroupParameters):
         """Detect contamination of image.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         # PIPE-251: detect contamination
         detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'])
 
-    def __append_result(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+    def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.
 
         Args:
-            _rgp (ReductionGroupParameters): reduction group parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         """
         _cp.results.append(_rgp.imager_result)
 
-    def __is_nro(self, _cp: CommonParameters) -> Boolean:
+    def __is_nro(self, _cp: imaging_params.CommonParameters) -> Boolean:
         """Check the data is for NRO.
 
         Args:
-            _cp (CommonParameters): common parameter object of prepare()
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
 
         Returns:
             Boolean: Flag of NRO
@@ -1215,7 +1140,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         return result
 
     def _get_rms_exclude_freq_range_image(self, to_frame, chanmap_ranges, edge,
-                                          msobj_list, antid_list, spwid_list, fieldid_list):
+                                          msobj_list, antid_list, spwid_list,
+                                          fieldid_list) -> List[Tuple[Number, Number]]:
         """
         Return a combined list of frequency ranges.
 
@@ -1234,12 +1160,12 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         image_rms_freq_range = []
         channelmap_range = []
-        #LOG.info("#####Raw chanmap_range={}".format(str(chanmap_ranges)))
+        # LOG.info("#####Raw chanmap_range={}".format(str(chanmap_ranges)))
         for chanmap_range in chanmap_ranges:
             for map_range in chanmap_range:
                 if map_range[2]:
-                    min_chan = int(map_range[0]-map_range[1]*0.5)
-                    max_chan = int(numpy.ceil(map_range[0]+map_range[1]*0.5))
+                    min_chan = int(map_range[0] - map_range[1] * 0.5)
+                    max_chan = int(numpy.ceil(map_range[0] + map_range[1] * 0.5))
                     channelmap_range.append([min_chan, max_chan])
         LOG.debug("#####CHANNEL MAP RANGE = {}".format(str(channelmap_range)))
         for i in range(len(msobj_list)):
@@ -1252,13 +1178,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             deviation_mask = getattr(msobj, 'deviation_mask', {})
             exclude_range = deviation_mask.get((fieldid, antid, spwid), [])
             LOG.debug("#####{} : DEVIATION MASK = {}".format(msobj.basename, str(exclude_range)))
-            if len(exclude_range) == 1 and exclude_range[0] == [0, spwobj.num_channels-1]:
+            if len(exclude_range) == 1 and exclude_range[0] == [0, spwobj.num_channels - 1]:
                 # deviation mask is full channel range when all data are flagged
-                LOG.warning("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). Possibly all data flagged".format(
-                    msobj.basename, spwid, fieldid, antid))
+                LOG.warning("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). "
+                            "Possibly all data flagged".format(msobj.basename, spwid, fieldid, antid))
                 exclude_range = []
-            if edge[0] > 0: exclude_range.append([0, edge[0]-1])
-            if edge[1] > 0: exclude_range.append([spwobj.num_channels-edge[1], spwobj.num_channels-1])
+            if edge[0] > 0:
+                exclude_range.append([0, edge[0] - 1])
+            if edge[1] > 0:
+                exclude_range.append([spwobj.num_channels - edge[1], spwobj.num_channels - 1])
             if len(channelmap_range) > 0:
                 exclude_range.extend(channelmap_range)
             # check the validity of channel number and fix it when out of range
@@ -1266,13 +1194,14 @@ class SDImaging(basetask.StandardTaskTemplate):
             max_chan = spwobj.num_channels - 1
             exclude_channel_range = [[max(min_chan, x[0]), min(max_chan, x[1])]
                                      for x in merge_ranges(exclude_range)]
-            LOG.info("{} : channel map and deviation mask channel ranges in MS frame = {}".format(msobj.basename, str(exclude_channel_range)))
+            LOG.info("{} : channel map and deviation mask channel ranges "
+                     "in MS frame = {}".format(msobj.basename, str(exclude_channel_range)))
             # define frequency ranges of RMS
-            exclude_freq_range = numpy.zeros(2*len(exclude_channel_range))
+            exclude_freq_range = numpy.zeros(2 * len(exclude_channel_range))
             for jseg in range(len(exclude_channel_range)):
                 (lfreq, rfreq) = (spwobj.channels.chan_freqs[jchan] for jchan in exclude_channel_range[jseg])
                 # handling of LSB
-                exclude_freq_range[2*jseg:2*jseg+2] = [min(lfreq, rfreq), max(lfreq, rfreq)]
+                exclude_freq_range[2 * jseg: 2 * jseg + 2] = [min(lfreq, rfreq), max(lfreq, rfreq)]
             LOG.debug("#####CHANNEL MAP AND DEVIATION MASK FREQ RANGE = {}".format(str(exclude_freq_range)))
             if len(exclude_freq_range) == 0:
                 continue  # no ranges to add
@@ -1292,15 +1221,13 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             if to_frame == 'REST':
                 mse = casa_tools.ms
-                mse.open( msobj.name )
-                obstime = qa.time( qmid_time, form='ymd' )[0]
-                v_to   = mse.cvelfreqs( spwids=[spwid], obstime=obstime, outframe='SOURCE' )
-                v_from = mse.cvelfreqs( spwids=[spwid], obstime=obstime, outframe=spwobj.frame )
+                mse.open(msobj.name)
+                obstime = qa.time(qmid_time, form='ymd')[0]
+                v_to = mse.cvelfreqs(spwids=[spwid], obstime=obstime, outframe='SOURCE')
+                v_from = mse.cvelfreqs(spwids=[spwid], obstime=obstime, outframe=spwobj.frame)
                 mse.close()
-                _to_imageframe = interpolate.interp1d( v_from, v_to,
-                                                       kind='linear',
-                                                       bounds_error=False,
-                                                       fill_value='extrapolate' )
+                _to_imageframe = interpolate.interp1d(v_from, v_to, kind='linear',
+                                                      bounds_error=False, fill_value='extrapolate')
             else:
                 # initialize
                 me.done()
@@ -1314,14 +1241,14 @@ class SDImaging(basetask.StandardTaskTemplate):
                     qout = qa.convert(converted['m0'], outunit='Hz')
                     return qout['value']
 
-            image_rms_freq_range.extend( map(_to_imageframe, exclude_freq_range) )
+            image_rms_freq_range.extend(map(_to_imageframe, exclude_freq_range))
             me.done()
 
-        #LOG.info("#####Overall LINE CHANNELS IN IMAGE FRAME = {}".format(str(image_rms_freq_range)))
+        # LOG.info("#####Overall LINE CHANNELS IN IMAGE FRAME = {}".format(str(image_rms_freq_range)))
         if len(image_rms_freq_range) == 0:
             return image_rms_freq_range
 
-        return merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range)//2, 2), 'C'))
+        return merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range) // 2, 2), 'C'))
 
     def get_imagename(self, source: str, spwids: List[int],
                       antenna: str=None, asdm: str=None, stokes: str=None, specmode: str='cube') -> str:
@@ -1358,8 +1285,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 nameroot = 'oussid'
         nameroot = filenamer.sanitize(nameroot)
         namer._associations.asdm(nameroot)
-        #output_dir = context.output_dir
-        #if output_dir:
+        # output_dir = context.output_dir
+        # if output_dir:
         #    namer.output_dir(output_dir)
         if not is_nro:
             namer.stage(context.stage)
@@ -1375,11 +1302,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         if stokes is None:
             stokes = self.stokes
         namer.polarization(stokes)
-        namer.specmode( specmode )
+        namer.specmode(specmode)
         # so far we always create native resolution, full channel image
-        #namer.spectral_image()
+        # namer.spectral_image()
         namer._associations.format('image.sd')
-        #namer.single_dish()
+        # namer.single_dish()
         namer.antenna(antenna)
         # iteration is necessary for exportdata
         namer.iteration(0)
@@ -1432,11 +1359,12 @@ class SDImaging(basetask.StandardTaskTemplate):
         cqa = casa_tools.quanta
         beam_unit = cqa.getunit(beam['major'])
         assert cqa.getunit(beam['minor']) == beam_unit
-        beam_size = numpy.sqrt(cqa.getvalue(beam['major'])*cqa.getvalue(beam['minor']))[0]
+        beam_size = numpy.sqrt(cqa.getvalue(beam['major']) * cqa.getvalue(beam['minor']))[0]
         center_unit = 'deg'
         angle_unit = None
         for r in raster_infos:
-            if r is None: continue
+            if r is None:
+                continue
             angle_unit = cqa.getunit(r.scan_angle)
             break
         if angle_unit is None:
@@ -1458,7 +1386,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         center_dec = numpy.nanmedian(__extract_values('center_dec', center_unit))
         width = rep_width - beam_size
         height = rep_height - beam_size
-        if width <= 0 or height <= 0: # No valid region selected.
+        if width <= 0 or height <= 0:  # No valid region selected.
             return None
         if org_direction is not None:
             (center_ra, center_dec) = direction_utils.direction_recover(center_ra,
@@ -1513,7 +1441,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             except Exception:
                 f = msobj.get_fields(field_id=fieldid)[0]
                 a = msobj.get_antenna(antid)[0]
-                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
+                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. '
+                         'Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
                 raster_info_list.append(None)
         assert len(infiles) == len(raster_info_list)
         return raster_info_list
@@ -1533,7 +1462,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             raster_infos: a list of RasterInfo
             cell: cell size of an image
             bandwidth: channel width of an image
-            imageunit: the brightness unit of image. If unit is not 'K', Jy/K factor is used to convert unit (need Jy/K factor applied in a previous stage)
+            imageunit: the brightness unit of image. If unit is not 'K', Jy/K factor is used to convert unit
+                       (need Jy/K factor applied in a previous stage)
         Note: the number of elements in antids, fieldids, spws, and pols should be equal to that of infiles
         Retruns:
             A quantum value of theoretical image RMS.
