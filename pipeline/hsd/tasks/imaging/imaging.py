@@ -1,16 +1,12 @@
 """Imaging stage."""
 
-from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
-
 import collections
 import math
 import os
 from numbers import Number
-from xmlrpc.client import Boolean
+from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
 
 import numpy
-from scipy import interpolate
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -18,28 +14,20 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable, DataType
-from pipeline.domain import MeasurementSet
+from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
-from pipeline.hsd.heuristics import rasterscan
 from pipeline.h.tasks.common.sensitivity import Sensitivity
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
-from pipeline.hsd.tasks.imaging import gridding
-from pipeline.hsd.tasks.imaging import imaging_params
-from pipeline.hsd.tasks.imaging import sdcombine
-from pipeline.hsd.tasks.imaging import weighting
-from pipeline.hsd.tasks.imaging import worker
-from pipeline.hsd.tasks.imaging import resultobjects
-from pipeline.hsd.tasks.imaging import detectcontamination
+from pipeline.hsd.heuristics import rasterscan
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
-from pipeline.hsd.tasks.common import compress
-from pipeline.hsd.tasks.common import direction_utils
-from pipeline.hsd.tasks.common import rasterutil
+from pipeline.hsd.tasks.common import compress, direction_utils, rasterutil
 from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
+                                        imaging_params, resultobjects,
+                                        sdcombine, weighting, worker)
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from scipy import interpolate
 
 if TYPE_CHECKING:
     from pipeline.infrastructure import Context
@@ -119,7 +107,7 @@ class SDImagingInputs(vdp.StandardInputs):
         return self.infiles
 
     @property
-    def is_ampcal(self) -> Boolean:
+    def is_ampcal(self) -> bool:
         return self.mode.upper() == 'AMPCAL'
 
     def __init__(self, context: 'Context', mode: Optional[str]=None, restfreq: Optional[str]=None,
@@ -170,7 +158,6 @@ class SDImaging(basetask.StandardTaskTemplate):
         Returns:
             SDImagingResults: result object of imaging
         """
-
         _cp = self.__initialize_common_parameters()
 
         # loop over reduction group (spw and source combination)
@@ -438,7 +425,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         return __image_group
 
     def __initialize_reduction_group_parameters(self, _cp: imaging_params.CommonParameters,
-                                                _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+                                                _rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Set default values into the instance of imaging_params.ReductionGroupParameters.
 
         Note: _cp.ms_list is set in this function.
@@ -628,7 +615,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         self._executor.execute(__weighting_task, merge=False, datatable_dict=_cp.dt_dict)
 
     def __initialize_coord_set(self, _cp: imaging_params.CommonParameters,
-                               _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+                               _rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Initialize coordinate set of MS.
 
         if initialize is fault, current loop of reduction group goes to next loop immediately.
@@ -637,7 +624,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _cp (imaging_params.CommonParameters): common parameter object of prepare()
             _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
-            Boolean: initialise succeeded or not
+            bool: initialise succeeded or not
         """
         # PIPE-313: evaluate map extent using pointing data from all the antenna in the data
         __dummyids = [None for _ in _rgp.antids]
@@ -1018,7 +1005,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def __execute_combine_images_for_nro(self, _cp: imaging_params.CommonParameters,
                                          _rgp: imaging_params.ReductionGroupParameters,
-                                         _pp: imaging_params.PostProcessParameters) -> Boolean:
+                                         _pp: imaging_params.PostProcessParameters) -> bool:
         """Combine images for NRO data.
 
         Args:
@@ -1026,7 +1013,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
             _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
         Returns:
-            Boolean: False if images for NRO is not exists
+            bool: False if images for NRO is not exists
         """
         if len(_rgp.tocombine.images_nro) == 0:
             LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(_rgp.source_name, _rgp.spwids[0]))
@@ -1070,7 +1057,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         assert len(_rgp.combined.v_spws_unique) == 1
         _rgp.imagename = self.get_imagename(_rgp.source_name, _rgp.combined.v_spws_unique, specmode=_rgp.specmode)
 
-    def __skip_this_loop(self, _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+    def __skip_this_loop(self, _rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Check to skip combine.
 
         Args:
@@ -1086,14 +1073,14 @@ class SDImaging(basetask.StandardTaskTemplate):
         return False
 
     def __execute_imaging(self, _cp: imaging_params.CommonParameters,
-                          _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+                          _rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Execute imaging per antenna, source.
 
         Args:
             _cp (imaging_params.CommonParameters): common parameter object of prepare()
             _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
-            Boolean: False if coodinate setting is fault before execute imaging
+            bool: False if coodinate setting is fault before execute imaging
         """
         LOG.info('Imaging Source {}, Ant {} Spw {:d}'.format(_rgp.source_name, _rgp.ant_name, _rgp.spwids[0]))
         # map coordinate (use identical map coordinate per spw)
@@ -1114,23 +1101,23 @@ class SDImaging(basetask.StandardTaskTemplate):
             if len(_cp.infiles) == 1 and (_rgp.asdm not in ['', None]):
                 _rgp.imager_result.outcome['vis'] = _rgp.asdm
 
-    def __has_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+    def __has_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Check imager_result.outcome.
 
         Args:
             _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
-            Boolean: result of check
+            bool: result of check
         """
         return _rgp.imager_result.outcome is not None
 
-    def __has_nro_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> Boolean:
+    def __has_nro_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Check imager_result_nro.outcome.
 
         Args:
             _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
         Returns:
-            Boolean: result of check
+            bool: result of check
         """
         return _rgp.imager_result_nro is not None and _rgp.imager_result_nro.outcome is not None
 
@@ -1151,14 +1138,14 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         _cp.results.append(_rgp.imager_result)
 
-    def __is_nro(self, _cp: imaging_params.CommonParameters) -> Boolean:
+    def __is_nro(self, _cp: imaging_params.CommonParameters) -> bool:
         """Check the data is for NRO.
 
         Args:
             _cp (imaging_params.CommonParameters): common parameter object of prepare()
 
         Returns:
-            Boolean: Flag of NRO
+            bool: Flag of NRO
         """
         return _cp.is_nro
 
@@ -1474,9 +1461,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Calculate theoretical RMS of an image (PIPE-657).
 
         Args:
-            _cp (imaging_params.CommonParameters): _description_
-            _rgp (imaging_params.ReductionGroupParameters): _description_
-            _pp (imaging_params.PostProcessParameters): _description_
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
 
         Note: the number of elements in _rgp.combined.antids, fieldids, spws, and pols should be equal
               to that of infiles
@@ -1679,17 +1666,17 @@ class SDImaging(basetask.StandardTaskTemplate):
 
 def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
                             fieldid: int, spwid: int, antid: int) -> RasterInfo:
-    """
-    Analyze raster scan pattern from pointing in DataTable.
+    """Analyze raster scan pattern from pointing in DataTable.
 
     Args:
-        datatable: DataTable instance
-        msobj: MS class instance to process
-        fieldid: a field ID to process
-        spwid: an SpW ID to process
-        antid: an antenna ID to process
-        polid: a polarization ID to process
-    Returns: a named Tuple of RasterInfo
+        datatable (DataTable): DataTable instance
+        msobj (MeasurementSet): MS class instance to process
+        fieldid (int): a field ID to process
+        spwid (int): an SpW ID to process
+        antid (int): an antenna ID to process
+
+    Returns:
+        RasterInfo: a named Tuple of RasterInfo
     """
     origin_basename = os.path.basename(msobj.origin_ms)
     metadata = rasterutil.read_datatable(datatable)
@@ -1814,16 +1801,15 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
 
 
 def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
-    """
-    Retrun image statistics with channel and region selection.
+    """Retrun image statistics with channel and region selection.
 
     Args:
-        imagename: Path to image to calculate statistics
-        chans: Channel range selection string, e.g., '0~110;240~300'
-        region: Region definition string.
+        imagename (str): Path to image to calculate statistics
+        chans (str): Channel range selection string, e.g., '0~110;240~300'
+        region (str): Region definition string.
 
     Returns:
-        A dictionary of statistic values returned by ia.statistics.
+        dict: A dictionary of statistic values returned by ia.statistics.
     """
     LOG.info("Calculateing image statistics of chans='{}', region='{}' in {}".format(chans, region, imagename))
     rg = casa_tools.regionmanager
@@ -1845,16 +1831,16 @@ def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
 # Utility methods to calcluate channel ranges
 def convert_frequency_ranges_to_channels(range_list: List[Tuple[float, float]],
                                          cs, num_chan: int) -> List[Tuple[int, int]]:
-    """
-    Convert frequency ranges to channel ones.
+    """Convert frequency ranges to channel ones.
 
     Args:
-        range_list: A list of min/max frequency ranges,
+        range_list (List[Tuple[float, float]]): A list of min/max frequency ranges,
             e.g., [[fmin0,fmax0],[fmin1, fmax1],...]
-        cs: A coordinate system to convert world values to pixel one
-        num_chan: the number of channels in frequency axis
+        cs (_type_): A coordinate system to convert world values to pixel one
+        num_chan (int): the number of channels in frequency axis
+
     Returns:
-        A list of min/max channels, e.g., [[imin0, imax0],[imin1,imax1],...]
+        List[Tuple[int, int]]: A list of min/max channels, e.g., [[imin0, imax0],[imin1,imax1],...]
     """
     faxis = cs.findaxisbyname('spectral')
     ref_world = cs.referencevalue()['numeric']
@@ -1879,13 +1865,14 @@ def convert_frequency_ranges_to_channels(range_list: List[Tuple[float, float]],
 
 
 def convert_range_list_to_string(range_list: List[int]) -> str:
-    """
-    Convert a list of index ranges to string.
+    """Convert a list of index ranges to string.
 
     Args:
-        range_list: A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
-    Retruns:
-        A string in form, e.g., 'imin0~imax0;imin1~imax1'
+        range_list (List[int]):  A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
+
+    Returns:
+        str: A string in form, e.g., 'imin0~imax0;imin1~imax1'
+
     Examples:
         >>> convert_range_list_to_string( [5, 10, 15, 20] )
         '5~10;15~20'
@@ -1896,15 +1883,18 @@ def convert_range_list_to_string(range_list: List[int]) -> str:
 
 
 def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, Number]]:
-    """
-    Merge overlapping ranges in range_list.
+    """Merge overlapping ranges in range_list.
 
     Args:
-        range_list    : a list of ranges to merge, e.g., [ [min0,max0], [min1,max1], .... ]
+        range_list (List[Tuple[Number, Number]]): a list of ranges to merge, e.g., [ [min0,max0], [min1,max1], .... ]
                         each range in the list should be in ascending order (min0 <= max0)
                         there is no assumption in the order of ranges, e.g., min0 w.r.t min1
+
+    Raises:
+        ValueError: segment is fewer
+
     Returns:
-        a list of merged ranges
+        List[Tuple[Number, Number]]: a list of merged ranges
         e.g., [[min_merged0,max_marged0], [min_merged1,max_merged1], ....]
     """
     # LOG.info("#####Merge ranges: {}".format(str(range_list)))
@@ -1938,17 +1928,16 @@ def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, 
 
 def invert_ranges(id_range_list: List[Tuple[int, int]],
                   num_ids: int, edge: Tuple[int, int]) -> List[int]:
-    """
-    Return invert ID ranges.
+    """Return invert ID ranges.
 
     Args:
-        id_range_list: A list of min/max ID ranges to invert. The list should
+        id_range_list (List[Tuple[int, int]]): A list of min/max ID ranges to invert. The list should
             be sorted in the ascending order of min IDs.
-        num_ids: A number of IDs to consider
-        edge: The left and right edges to exclude
+        num_ids (int): A number of IDs to consider
+        edge (Tuple[int, int]): The left and right edges to exclude
 
     Returns:
-        A 1-d list of inverted ranges
+        List[int]: A 1-d list of inverted ranges
 
     Examples:
         >>> id_range_list = [[5,10],[15,20]]
