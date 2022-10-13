@@ -1,3 +1,5 @@
+"""Parameter classes of Imaging."""
+
 import inspect
 import logging
 import os
@@ -18,7 +20,14 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 
-def debug(cls, obj, msg):
+def __debug(cls: object, obj: object, msg: str):
+    """Output debug strings.
+
+    Args:
+        cls (object): caller class object
+        obj (_type_): object to output
+        msg (_type_): action message
+    """
     outerframes = inspect.getouterframes(inspect.currentframe())
     for i, frame in enumerate(inspect.getouterframes(inspect.currentframe())):
         if not frame.filename.endswith(__file__):
@@ -30,44 +39,71 @@ def debug(cls, obj, msg):
 
 
 class ObservedList(list):
+    """Class inherit list to observe its behavior."""
 
-    def __setitem__(self, index, value):
+    def __setitem__(self, index: int, value: object):
+        """Overrode list.__setitem__().
+
+        Args:
+            index (int): index
+            value (object): object to set at index
+        """
         super().__setitem__(index, value)
         if LOG.level <= logging.DEBUG:
-            debug(self, value, 'list.setitem')
+            __debug(self, value, 'list.setitem')
 
-    def insert(self, index, value):
+    def insert(self, index: int, value: object):
+        """Overrode list.insert().
+
+        Args:
+            index (int): index
+            value (object): object to insert at index
+        """
         super().insert(index, value)
         if LOG.level <= logging.DEBUG:
-            debug(self, value, 'list.insert')
+            __debug(self, value, 'list.insert')
 
-    def append(self, value):
+    def append(self, value: object):
+        """Overrode list.append().
+
+        Args:
+            value (object): object to append
+        """
         super().append(value)
         if LOG.level <= logging.DEBUG:
-            debug(self, value, 'list.append')
+            __debug(self, value, 'list.append')
 
-    def extend(self, value):
+    def extend(self, value: list):
+        """Overrode list.extend().
+
+        Args:
+            value (list): object to merge
+        """
         super().extend(value)
         if LOG.level <= logging.DEBUG:
-            debug(self, value, 'list.extend')
+            __debug(self, value, 'list.extend')
 
 
 class Parameters:
+    """Abstract class of Parameter object."""
 
-    def setvalue(self, name, value):
+    def setvalue(self, name: str, value: object):
+        """Set value by setattr().
+
+        Args:
+            name (str): property
+            value (object): object
+        """
         setattr(self, name, value)
         if LOG.level <= logging.DEBUG:
-            debug(self, value, 'set')
-
-    def extend_list(self, name, value):
-        _list = getattr(self, name)
-        _list.extend(value)
+            __debug(self, value, 'set')
 
 
 class CommonParameters(Parameters):
     """Common parameters class of prepare()."""
 
     def __init__(self):
+        """Initialize an object."""
         self._args_spw = None         # spw selection per MS
         self._cqa = None              # LoggingQuanta: reference of casatools.quanta
         self._dt_dict = None          # Dict[str, DataTableImpl]: dictionary of input MS and corresponding datatable
@@ -186,7 +222,13 @@ class CommonParameters(Parameters):
 class ReductionGroupParameters(Parameters):
     """Parameters of Reduction Group Processing."""
 
-    def __init__(self, group_id, group_desc):
+    def __init__(self, group_id: str, group_desc: 'MSReductionGroupDesc'):
+        """Initialize an object with group value.
+
+        Args:
+            group_id (str): Reduction group ID
+            group_desc (MSReductionGroupDesc): MeasurementSet Reduction Group Desciption object
+        """
         self._group_id = None               # Reduction group ID
         self.group_id = group_id
         self._group_desc = None             # MSReductionGroupDesc(spw_name:str, frequency_range:List[float], nchan:int,
@@ -203,7 +245,7 @@ class ReductionGroupParameters(Parameters):
         self._channelmap_range_list = None  # List[List[List[Float, Boolean]]]: List of channel map range
         self._combined = None               # CombinedParameters: CombinedParameters object
         self._coord_set = False             # Boolean: Flag of Coord setting
-        self._correlations = None           #
+        self._correlations = None           # str: a string figures correlation
         self._fieldid_list = None           # List[int]: List of field ID
         self._fieldids = None               # List[int]: List of field ID
         self._image_group = None            # Dict[str, List[MeasurementSet, List[str, List[Float, Boolean]], int]]:
@@ -218,7 +260,7 @@ class ReductionGroupParameters(Parameters):
         self._name = None                   # str: name of MeasurementSet
         self._nx = None                     # Union[int, numpy.int64]: X of image shape
         self._ny = None                     # Union[int, numpy.int64]: Y of image shape
-        self._org_direction = None          # Direction: directions of the origin for moving targets
+        self._org_direction = None          # Direction: directions of the origin for moving targets, like an ephemeris object
         self._phasecenter = None            # str: phase center of coord set
         self._polslist = None               # List[List[str]]: List of Polarization
         self._pols_list = None              # List[List[str]]: List of Polarization
@@ -482,8 +524,10 @@ class ReductionGroupParameters(Parameters):
 
 
 class CombinedImageParameters(Parameters):
+    """Parameter class for combined image."""
 
     def __init__(self):
+        """Initialize an object."""
         self._antids = ObservedList()           # List[int]: List of antenna ID
         self._fieldids = ObservedList()         # List[int]: List of field ID
         self._infiles = ObservedList()          # List[str]: List of input file names
@@ -493,13 +537,19 @@ class CombinedImageParameters(Parameters):
         self._v_spws = ObservedList()           # List[int]: List of Virtual Spectral window IDs
         self._v_spws_unique = ObservedList()    # List[int]: List of unique values of _v_spws
 
-    def extend(self, _cp, _rgp):
-        self.extend_list('_infiles', _cp.infiles)
-        self.extend_list('_antids', _rgp.antids)
-        self.extend_list('_fieldids', _rgp.fieldids)
-        self.extend_list('_spws', _rgp.spwids)
-        self.extend_list('_v_spws', _rgp.v_spwids)
-        self.extend_list('_pols', _rgp.polslist)
+    def extend(self, _cp: CommonParameters, _rgp: ReductionGroupParameters):
+        """Extend list properties using CP and RGP.
+
+        Args:
+            _cp (CommonParameters): CommonParameters object
+            _rgp (ReductionGroupParameters): ReductionGroupParameters object
+        """
+        self._infiles.extend(_cp.infiles)
+        self._antids.extend(_rgp.antids)
+        self._fieldids.extend(_rgp.fieldids)
+        self._spws.extend(_rgp.spwids)
+        self._v_spws.extend(_rgp.v_spwids)
+        self._pols.extend(_rgp.polslist)
 
     @property
     def antids(self): return self._antids
@@ -551,8 +601,10 @@ class CombinedImageParameters(Parameters):
 
 
 class ToCombineImageParameters(Parameters):
+    """Parameter class to combine image."""
 
     def __init__(self):
+        """Initialize an object."""
         self._images = ObservedList()               # ObservedList[str]: list of image name
         self._images_nro = ObservedList()           # ObservedList[str]: list of image name for NRO
         self._org_directions = ObservedList()       # ObservedList[Direction]: list of origins
@@ -591,8 +643,10 @@ class ToCombineImageParameters(Parameters):
 
 
 class PostProcessParameters(Parameters):
+    """Parameters for post proccessing of image generating."""
 
     def __init__(self):
+        """Initialize an object."""
         self._beam = None                           # Dict[str, Dict[str, float]]
         self._brightnessunit = None                 # str: brightness unit like 'Jy/beam'
         self._chan_width = None                     # numpy.float64: channel width of faxis
