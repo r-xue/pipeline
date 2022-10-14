@@ -128,8 +128,8 @@ wvr gain table is not accepted into the context for subsequent use.
     </param>
             
     <param name="disperse" type="bool">
-	<shortdescription>Apply correction for dispersion</shortdescription>
-    <description>Apply correction for dispersion.</description>
+	<shortdescription>Apply correction for dispersion (Deprecated; will be removed)</shortdescription>
+    <description>Apply correction for dispersion. (Deprecated; will be removed)</description>
 	<value>False</value>
     </param>
             

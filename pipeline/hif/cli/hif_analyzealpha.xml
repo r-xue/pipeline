@@ -1,9 +1,8 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_analyzealpha" type="function">
-<shortdescription>Base analyzealpha task</shortdescription>
-<description>
-  Base analyzealpha task.
+<shortdescription>Extract spectral index from intensity peak in VLA/VLASS images</shortdescription>
+<description>Extract spectral index from intensity peak in VLA/VLASS images
 
   If pipeline mode is 'getinputs' then None is returned. Otherwise
   the results object for the pipeline task is returned.

@@ -1,7 +1,7 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_semiFinalBPdcals" type="function">
-<shortdescription>Runs a second quick calibration to set up for heuristic flagging</shortdescription>
+<shortdescription>Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging</shortdescription>
 <description>
 </description>
 <input>
