@@ -1455,6 +1455,300 @@ class SDImaging(basetask.StandardTaskTemplate):
         assert len(_rgp.combined.infiles) == len(raster_info_list)
         return raster_info_list
 
+    class TheoreticalImageRmsParameters(imaging_params.Parameters):
+        """ Parameter class of calculate_theoretical_image_rms()."""
+
+        def __init__(self, _pp: imaging_params.PostProcessParameters, context: 'Context'):
+            """Initiarize the object.
+
+            Args:
+                _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
+                context (Context): pipeline Context
+            """
+            self.cqa = casa_tools.quanta
+            self.failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)
+            self.sq_rms = 0.0
+            self.N = 0.0
+            self.time_unit = 's'
+            self.ang_unit = self.cqa.getunit(_pp.qcell[0])
+            self.cx_val = self.cqa.getvalue(_pp.qcell[0])[0]
+            self.cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]
+            self.bandwidth = numpy.abs(_pp.chan_width)
+            self.context = context
+            self.is_nro = sdutils.is_nro(context)
+            self.infile = None
+            self.antid = None
+            self.fieldid = None
+            self.spwid = None
+            self.pol_names = None
+            self.raster_info = None
+            self.msobj = None
+            self.calmsobj = None
+            self.polids = None
+            self.error_msg = None
+            self.dt = None
+            self.index_list = None
+            self.effBW = None
+            self.mean_tsys_per_pol = None
+            self.width = None
+            self.height = None
+            self.t_on_act = None
+            self.calst = None
+            self.t_sub_on = None
+            self.t_sub_off = None
+
+    def __obtain_t_sub_on_off(self, _tirp: TheoreticalImageRmsParameters) -> bool:
+        """Obtain TsubON and TsubOFF. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+
+        Returns:
+            bool: result flag
+        """
+        _tirp.t_sub_on = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.row_duration, _tirp.time_unit))[0]
+        __sky_field = _tirp.calmsobj.calibration_strategy['field_strategy'][_tirp.fieldid]
+        try:
+            __skytab = ''
+            __caltabs = _tirp.context.callibrary.applied.get_caltable('ps')
+            # For some reasons, sky caltable is not registered to calstate
+            for __cto, __cfrom in _tirp.context.callibrary.applied.merged().items():
+                if __cto.vis == _tirp.calmsobj.name and (__cto.field == '' or
+                                                         _tirp.fieldid in
+                                                         [f.id for f in _tirp.calmsobj.get_fields(name=__cto.field)]):
+                    for __cf in __cfrom:
+                        if __cf.gaintable in __caltabs:
+                            __skytab = __cf.gaintable
+                            break
+        except BaseException:
+            LOG.error('Could not find a sky caltable applied. ' + _tirp.error_msg)
+            raise
+        if not os.path.exists(__skytab):
+            LOG.warning('Could not find a sky caltable applied. ' + _tirp.error_msg)
+            return False
+        LOG.info('Searching OFF scans in {}'.format(os.path.basename(__skytab)))
+        with casa_tools.TableReader(__skytab) as tb:
+            __interval_unit = tb.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
+            __t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(_tirp.spwid, _tirp.antid,
+                                                                                       __sky_field),
+                           columns='INTERVAL')
+            if __t.nrows == 0:
+                LOG.warning('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(
+                    _tirp.spwid, _tirp.antid, __sky_field, os.path.basename(__skytab), _tirp.error_msg))
+                __t.close()
+                return False
+            try:
+                __interval = __t.getcol('INTERVAL')
+            finally:
+                __t.close()
+
+        _tirp.t_sub_off = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.cqa.quantity(__interval.mean(),
+                                                                                  __interval_unit), _tirp.time_unit))[0]
+        LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(_tirp.t_sub_on, _tirp.time_unit,
+                 _tirp.t_sub_off, _tirp.time_unit))
+        return True
+
+    def __obtain_jy_per_k(self, _pp: imaging_params.PostProcessParameters,
+                          _tirp: TheoreticalImageRmsParameters) -> Union[float, bool]:
+        """Obtain Jy/K. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+
+        Returns:
+            Union[float, bool]: Jy/K value or failure flag
+        """
+        if _pp.brightnessunit == 'K':
+            __jy_per_k = 1.0
+            LOG.info('No Kelvin to Jansky conversion was performed to the image.')
+        else:
+            try:
+                __k2jytab = ''
+                __caltabs = _tirp.context.callibrary.applied.get_caltable(('amp', 'gaincal'))
+                __found = __caltabs.intersection(_tirp.calst.get_caltable(('amp', 'gaincal')))
+                if len(__found) == 0:
+                    LOG.warning('Could not find a Jy/K caltable applied. ' + _tirp.error_msg)
+                    return False
+                if len(__found) > 1:
+                    LOG.warning('More than one Jy/K caltables are found.')
+                __k2jytab = __found.pop()
+                LOG.info('Searching Jy/K factor in {}'.format(os.path.basename(__k2jytab)))
+            except BaseException:
+                LOG.error('Could not find a Jy/K caltable applied. ' + _tirp.error_msg)
+                raise
+            if not os.path.exists(__k2jytab):
+                LOG.warning('Could not find a Jy/K caltable applied. ' + _tirp.error_msg)
+                return False
+            with casa_tools.TableReader(__k2jytab) as tb:
+                __t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(_tirp.spwid, _tirp.antid),
+                               columns='CPARAM')
+                if __t.nrows == 0:
+                    LOG.warning('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(_tirp.spwid,
+                                _tirp.antid, os.path.basename(__k2jytab), _tirp.error_msg))
+                    __t.close()
+                    return False
+                try:
+                    tc = __t.getcol('CPARAM')
+                finally:
+                    __t.close()
+
+                __jy_per_k = (1. / tc.mean(axis=-1).real ** 2).mean()
+                LOG.info('Jy/K factor = {}'.format(__jy_per_k))  # obtain Jy/k factor
+        return __jy_per_k
+
+    def __obtain_factors_by_convolution_function(self, _pp: imaging_params.PostProcessParameters,
+                                                 _tirp: TheoreticalImageRmsParameters) -> bool:
+        """Obtain factors by convlution function. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+
+        Returns:
+            bool: result flag
+        """
+        conv2d = 0.3193 if _tirp.is_nro else 0.1597
+        conv1d = 0.5592 if _tirp.is_nro else 0.3954
+        jy_per_k = self.__obtain_jy_per_k(_pp, _tirp)
+        if jy_per_k is False:
+            return False
+        ang = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.scan_angle, 'rad'))[0] + 0.5 * numpy.pi
+        c_proj = numpy.sqrt((_tirp.cy_val * numpy.sin(ang)) ** 2 + (_tirp.cx_val * numpy.cos(ang)) ** 2)
+        inv_variant_on = _tirp.effBW * numpy.abs(_tirp.cx_val * _tirp.cy_val) * \
+            _tirp.t_on_act / _tirp.width / _tirp.height
+        inv_variant_off = _tirp.effBW * c_proj * _tirp.t_sub_off * _tirp.t_on_act / _tirp.t_sub_on / _tirp.height
+        for ipol in _tirp.polids:
+            _tirp.sq_rms += (jy_per_k * _tirp.mean_tsys_per_pol[ipol]) ** 2 * \
+                (conv2d ** 2 / inv_variant_on + conv1d ** 2 / inv_variant_off)
+            _tirp.N += 1.0
+        return True
+
+    def __obtain_t_on_actual(self, _tirp: TheoreticalImageRmsParameters):
+        """Obtain Ton actual. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+        """
+        unit = _tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
+        t_on_tot = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.cqa.quantity(
+            _tirp.dt.getcol('EXPOSURE').take(_tirp.index_list, axis=-1).sum(), unit), _tirp.time_unit))[0]
+        # flagged fraction
+        full_intent = utils.to_CASA_intent(_tirp.msobj, 'TARGET')
+        flagdata_summary_job = casa_tasks.flagdata(vis=_tirp.infile, mode='summary',
+                                                   antenna='{}&&&'.format(_tirp.antid),
+                                                   field=str(_tirp.fieldid),
+                                                   spw=str(_tirp.spwid), intent=full_intent,
+                                                   spwcorr=False, fieldcnt=False,
+                                                   name='summary')
+        flag_stats = self._executor.execute(flagdata_summary_job)
+        frac_flagged = flag_stats['spw'][str(_tirp.spwid)]['flagged'] / flag_stats['spw'][str(_tirp.spwid)]['total']
+        # the actual time on source
+        _tirp.t_on_act = t_on_tot * (1.0 - frac_flagged)
+        LOG.info('The actual on source time = {} {}'.format(_tirp.t_on_act, _tirp.time_unit))
+        LOG.info('- total time on source = {} {}'.format(t_on_tot, _tirp.time_unit))
+        LOG.info('- flagged Fraction = {} %'.format(100 * frac_flagged))
+
+    def __obtain_calibration_tables_applied(self, _tirp: TheoreticalImageRmsParameters):
+        """Obtain calibration tables applied. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+        """
+        __calto = callibrary.CalTo(vis=_tirp.calmsobj.name, field=str(_tirp.fieldid))
+        _tirp.calst = _tirp.context.callibrary.applied.trimmed(_tirp.context, __calto)
+
+    def __obtain_wx_and_wy(self, _tirp: TheoreticalImageRmsParameters):
+        """Obtain Wx and Wy. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+        """
+        _tirp.width = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.width, _tirp.ang_unit))[0]
+        _tirp.height = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.height, _tirp.ang_unit))[0]
+
+    def __obtain_average_tsys(self, _tirp: TheoreticalImageRmsParameters):
+        """Obtain average Tsys. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+        """
+        _tirp.mean_tsys_per_pol = _tirp.dt.getcol('TSYS').take(_tirp.index_list, axis=-1).mean(axis=-1)
+        LOG.info('Mean Tsys = {} K'.format(str(_tirp.mean_tsys_per_pol)))
+
+    def __obtain_effective_BW(self, _tirp: TheoreticalImageRmsParameters):
+        """Obtain effective BW. A sub method of calculate_theoretical_image_rms().
+
+        Args:
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+        """
+        with casa_tools.MSMDReader(_tirp.infile) as __msmd:
+            __ms_chanwidth = numpy.abs(__msmd.chanwidths(_tirp.spwid).mean())
+            __ms_effbw = __msmd.chaneffbws(_tirp.spwid).mean()
+            __ms_nchan = __msmd.nchan(_tirp.spwid)
+            __nchan_avg = sensitivity_improvement.onlineChannelAveraging(_tirp.infile, _tirp.spwid, __msmd)
+        if _tirp.bandwidth / __ms_chanwidth < 1.1:  # imaging by the original channel
+            _tirp.effBW = __ms_effbw
+            LOG.info('Using an MS effective bandwidth, {} kHz'.format(_tirp.effBW * 0.001))
+        else:
+            __image_map_chan = _tirp.bandwidth / __ms_chanwidth
+            _tirp.effBW = __ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
+                                                                                  channelAveraging=__nchan_avg,
+                                                                                  returnValue='EffectiveBW',
+                                                                                  useCAS8534=True,
+                                                                                  spwchan=__ms_nchan,
+                                                                                  nchan=__image_map_chan)
+            LOG.info('Using an adjusted effective bandwidth of image, {} kHz'.format(_tirp.effBW * 0.001))
+            # else: # pre-Cycle 3 alma data
+
+        #    effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
+        #                                                                  channelAveraging=nchan_avg,
+        #                                                                  returnValue='EffectiveBW')
+        #    LOG.info('Using an estimated effective bandwidth {} kHz'.format(effBW*0.001))
+
+    def __loop_initializer_of_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
+                                                    _rgp: imaging_params.ReductionGroupParameters,
+                                                    _tirp: TheoreticalImageRmsParameters) -> Tuple[bool]:
+        """Initialize TheoreticalImageRmsParameters for the loop of calculate_theoretical_image_rms().
+
+        Args:
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+
+        Returns:
+            Tuple[bool]: flag of loop action[go|halt|skip]
+        """
+        _tirp.msobj = _tirp.context.observing_run.get_ms(name=_tirp.infile)
+        __callist = _tirp.context.observing_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_ALL])
+        _tirp.calmsobj = sdutils.match_origin_ms(__callist, _tirp.msobj.origin_ms)
+        __dd_corrs = _tirp.msobj.get_data_description(spw=_tirp.spwid).corr_axis
+        _tirp.polids = [__dd_corrs.index(p) for p in _tirp.pol_names if p in __dd_corrs]
+        __field_name = _tirp.msobj.get_fields(field_id=_tirp.fieldid)[0].name
+        _tirp.error_msg = 'Aborting calculation of theoretical thermal noise of ' + \
+                          'Field {} and SpW {}'.format(__field_name, _rgp.combined.spws)
+        __HALT = (True, True)
+        __SKIP = (False, True)
+        __GO = (False, False)
+        if _tirp.msobj.observing_pattern[_tirp.antid][_tirp.spwid][_tirp.fieldid] != 'RASTER':
+            LOG.warning('Unable to calculate RMS of non-Raster map. ' + _tirp.error_msg)
+            return __HALT
+        LOG.info(
+            'Processing MS {}, Field {}, SpW {}, '
+            'Antenna {}, Pol {}'.
+            format(_tirp.msobj.basename, __field_name, _tirp.spwid,
+                   _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
+        if _tirp.raster_info is None:
+            LOG.warning('Raster scan analysis failed. Skipping further calculation.')
+            return __SKIP
+        _tirp.dt = _cp.dt_dict[_tirp.msobj.basename]
+        _tirp.index_list = common.get_index_list_for_ms(_tirp.dt, [_tirp.msobj.origin_ms],
+                                                        [_tirp.antid], [_tirp.fieldid], [_tirp.spwid])
+        if len(_tirp.index_list) == 0:  # this happens when permanent flag is set to all selection.
+            LOG.info('No unflagged row in DataTable. Skipping further calculation.')
+            return __SKIP
+        return __GO
+
     def calculate_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
                                         _rgp: imaging_params.ReductionGroupParameters,
                                         _pp: imaging_params.PostProcessParameters) -> Dict[str, float]:
@@ -1472,196 +1766,52 @@ class SDImaging(basetask.StandardTaskTemplate):
             Dict[str, float]: A quantum value of theoretical image RMS.
             The value of quantity will be negative when calculation is aborted, i.e., -1.0 Jy/beam
         """
-        cqa = casa_tools.quanta
-        failed_rms = cqa.quantity(-1, _pp.brightnessunit)
+        _tirp = self.TheoreticalImageRmsParameters(_pp, self.inputs.context)
+
         if len(_rgp.combined.infiles) == 0:
             LOG.error('No MS given to calculate a theoretical RMS. Aborting calculation of theoretical thermal noise.')
-            return failed_rms
+            return _tirp.failed_rms
         assert len(_rgp.combined.infiles) == len(_rgp.combined.antids)
         assert len(_rgp.combined.infiles) == len(_rgp.combined.fieldids)
         assert len(_rgp.combined.infiles) == len(_rgp.combined.spws)
         assert len(_rgp.combined.infiles) == len(_rgp.combined.pols)
         assert len(_rgp.combined.infiles) == len(_pp.raster_infos)
-        sq_rms = 0.0
-        N = 0.0
-        time_unit = 's'
-        ang_unit = cqa.getunit(_pp.qcell[0])
-        cx_val = cqa.getvalue(_pp.qcell[0])[0]
-        cy_val = cqa.getvalue(cqa.convert(_pp.qcell[1], ang_unit))[0]
-        bandwidth = numpy.abs(_pp.chan_width)
-        context = self.inputs.context
-        is_nro = sdutils.is_nro(context)
-        for (infile, antid, fieldid, spwid, pol_names, raster_info) in \
+
+        for (_tirp.infile, _tirp.antid, _tirp.fieldid, _tirp.spwid, _tirp.pol_names, _tirp.raster_info) in \
             zip(_rgp.combined.infiles, _rgp.combined.antids, _rgp.combined.fieldids,
                 _rgp.combined.spws, _rgp.combined.pols, _pp.raster_infos):
-            msobj = context.observing_run.get_ms(name=infile)
-            callist = context.observing_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_ALL])
-            calmsobj = sdutils.match_origin_ms(callist, msobj.origin_ms)
-            dd_corrs = msobj.get_data_description(spw=spwid).corr_axis
-            polids = [dd_corrs.index(p) for p in pol_names if p in dd_corrs]
-            field_name = msobj.get_fields(field_id=fieldid)[0].name
-            error_msg = 'Aborting calculation of theoretical thermal noise of ' + \
-                        'Field {} and SpW {}'.format(field_name, _rgp.combined.spws)
-            if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
-                LOG.warning('Unable to calculate RMS of non-Raster map. ' + error_msg)
-                return failed_rms
-            LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(msobj.basename,
-                                                                                     field_name,
-                                                                                     spwid,
-                                                                                     msobj.get_antenna(antid)[0].name,
-                                                                                     str(pol_names)))
-            if raster_info is None:
-                LOG.warning('Raster scan analysis failed. Skipping further calculation.')
+            halt, skip = self.__loop_initializer_of_theoretical_image_rms(_cp, _rgp, _tirp)
+            if halt:
+                return _tirp.failed_rms
+            if skip:
                 continue
 
-            dt = _cp.dt_dict[msobj.basename]
-            _index_list = common.get_index_list_for_ms(dt, [msobj.origin_ms], [antid], [fieldid],
-                                                       [spwid])
-            if len(_index_list) == 0:  # this happens when permanent flag is set to all selection.
-                LOG.info('No unflagged row in DataTable. Skipping further calculation.')
-                continue
             # effective BW
-            with casa_tools.MSMDReader(infile) as msmd:
-                ms_chanwidth = numpy.abs(msmd.chanwidths(spwid).mean())
-                ms_effbw = msmd.chaneffbws(spwid).mean()
-                ms_nchan = msmd.nchan(spwid)
-                nchan_avg = sensitivity_improvement.onlineChannelAveraging(infile, spwid, msmd)
-            if bandwidth / ms_chanwidth < 1.1:  # imaging by the original channel
-                effBW = ms_effbw
-                LOG.info('Using an MS effective bandwidth, {} kHz'.format(effBW * 0.001))
-                # else: # pre-Cycle 3 alma data
-                #    effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
-                #                                                                  channelAveraging=nchan_avg,
-                #                                                                  returnValue='EffectiveBW')
-                #    LOG.info('Using an estimated effective bandwidth {} kHz'.format(effBW*0.001))
-            else:
-                image_map_chan = bandwidth / ms_chanwidth
-                effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning', channelAveraging=nchan_avg,
-                                                                              returnValue='EffectiveBW',
-                                                                              useCAS8534=True, spwchan=ms_nchan,
-                                                                              nchan=image_map_chan)
-                LOG.info('Using an adjusted effective bandwidth of image, {} kHz'.format(effBW * 0.001))
+            self.__obtain_effective_BW(_tirp)
             # obtain average Tsys
-            mean_tsys_per_pol = dt.getcol('TSYS').take(_index_list, axis=-1).mean(axis=-1)
-            LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
+            self.__obtain_average_tsys(_tirp)
             # obtain Wx, and Wy
-            width = cqa.getvalue(cqa.convert(raster_info.width, ang_unit))[0]
-            height = cqa.getvalue(cqa.convert(raster_info.height, ang_unit))[0]
-            # obtain T_OS,f
-            unit = dt.getcolkeyword('EXPOSURE', 'UNIT')
-            t_on_tot = cqa.getvalue(cqa.convert(cqa.quantity(dt.getcol('EXPOSURE').take(_index_list, axis=-1).sum(),
-                                                             unit), time_unit))[0]
-            # flagged fraction
-            full_intent = utils.to_CASA_intent(msobj, 'TARGET')
-            flagdata_summary_job = casa_tasks.flagdata(vis=infile, mode='summary',
-                                                       antenna='{}&&&'.format(antid),
-                                                       field=str(fieldid),
-                                                       spw=str(spwid), intent=full_intent,
-                                                       spwcorr=False, fieldcnt=False,
-                                                       name='summary')
-            flag_stats = self._executor.execute(flagdata_summary_job)
-            frac_flagged = flag_stats['spw'][str(spwid)]['flagged'] / flag_stats['spw'][str(spwid)]['total']
-            # the actual time on source
-            t_on_act = t_on_tot * (1.0 - frac_flagged)
-            LOG.info('The actual on source time = {} {}'.format(t_on_act, time_unit))
-            LOG.info('- total time on source = {} {}'.format(t_on_tot, time_unit))
-            LOG.info('- flagged Fraction = {} %'.format(100 * frac_flagged))
+            self.__obtain_wx_and_wy(_tirp)
+            # obtain T_ON
+            self.__obtain_t_on_actual(_tirp)
             # obtain calibration tables applied
-            calto = callibrary.CalTo(vis=calmsobj.name, field=str(fieldid))
-            calst = context.callibrary.applied.trimmed(context, calto)
+            self.__obtain_calibration_tables_applied(_tirp)
             # obtain T_sub,on, T_sub,off
-            t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
-            sky_field = calmsobj.calibration_strategy['field_strategy'][fieldid]
-            try:
-                skytab = ''
-                caltabs = context.callibrary.applied.get_caltable('ps')
-                # For some reasons, sky caltable is not registered to calstate
-                for cto, cfrom in context.callibrary.applied.merged().items():
-                    if cto.vis == calmsobj.name and (cto.field == '' or
-                                                     fieldid in [f.id for f in calmsobj.get_fields(name=cto.field)]):
-                        for cf in cfrom:
-                            if cf.gaintable in caltabs:
-                                skytab = cf.gaintable
-                                break
-            except BaseException:
-                LOG.error('Could not find a sky caltable applied. ' + error_msg)
-                raise
-            if not os.path.exists(skytab):
-                LOG.warning('Could not find a sky caltable applied. ' + error_msg)
-                return failed_rms
-            LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
-            with casa_tools.TableReader(skytab) as tb:
-                interval_unit = tb.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
-                t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field),
-                             columns='INTERVAL')
-                if t.nrows == 0:
-                    LOG.warning('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(
-                        spwid, antid, sky_field, os.path.basename(skytab), error_msg))
-                    t.close()
-                    return failed_rms
-                try:
-                    interval = t.getcol('INTERVAL')
-                finally:
-                    t.close()
-            t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(interval.mean(), interval_unit), time_unit))[0]
-            LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(t_sub_on, time_unit, t_sub_off, time_unit))
+            if not self.__obtain_t_sub_on_off(_tirp):
+                return _tirp.failed_rms
             # obtain factors by convolution function
             # (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
-            conv2d = 0.3193 if is_nro else 0.1597
-            conv1d = 0.5592 if is_nro else 0.3954
-            if _pp.brightnessunit == 'K':
-                jy_per_k = 1.0
-                LOG.info('No Kelvin to Jansky conversion was performed to the image.')
-            else:
-                # obtain Jy/k factor
-                try:
-                    k2jytab = ''
-                    caltabs = context.callibrary.applied.get_caltable(('amp', 'gaincal'))
-                    found = caltabs.intersection(calst.get_caltable(('amp', 'gaincal')))
-                    if len(found) == 0:
-                        LOG.warning('Could not find a Jy/K caltable applied. ' + error_msg)
-                        return failed_rms
-                    if len(found) > 1:
-                        LOG.warning('More than one Jy/K caltables are found.')
-                    k2jytab = found.pop()
-                    LOG.info('Searching Jy/K factor in {}'.format(os.path.basename(k2jytab)))
-                except BaseException:
-                    LOG.error('Could not find a Jy/K caltable applied. ' + error_msg)
-                    raise
-                if not os.path.exists(k2jytab):
-                    LOG.warning('Could not find a Jy/K caltable applied. ' + error_msg)
-                    return failed_rms
-                with casa_tools.TableReader(k2jytab) as tb:
-                    t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
-                    if t.nrows == 0:
-                        LOG.warning('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid,
-                                    antid, os.path.basename(k2jytab), error_msg))
-                        t.close()
-                        return failed_rms
-                    try:
-                        tc = t.getcol('CPARAM')
-                    finally:
-                        t.close()
-                    jy_per_k = (1. / tc.mean(axis=-1).real**2).mean()
-                    LOG.info('Jy/K factor = {}'.format(jy_per_k))
-            ang = cqa.getvalue(cqa.convert(raster_info.scan_angle, 'rad'))[0] + 0.5 * numpy.pi
-            c_proj = numpy.sqrt((cy_val * numpy.sin(ang))**2 + (cx_val * numpy.cos(ang))**2)
-            inv_variant_on = effBW * numpy.abs(cx_val * cy_val) * t_on_act / width / height
-            inv_variant_off = effBW * c_proj * t_sub_off * t_on_act / t_sub_on / height
+            if not self.__obtain_factors_by_convolution_function(_pp, _tirp):
+                return _tirp.failed_rms
 
-            for ipol in polids:
-                sq_rms += (jy_per_k * mean_tsys_per_pol[ipol])**2 * \
-                          (conv2d**2 / inv_variant_on + conv1d**2 / inv_variant_off)
-                N += 1.0
-
-        if N == 0:
+        if _tirp.N == 0:
             LOG.warning('No rms estimate is available.')
-            return failed_rms
+            return _tirp.failed_rms
 
-        theoretical_rms = numpy.sqrt(sq_rms) / N
-        LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, _pp.brightnessunit))
-        return cqa.quantity(theoretical_rms, _pp.brightnessunit)
+        __theoretical_rms = numpy.sqrt(_tirp.sq_rms) / _tirp.N
+        LOG.info('Theoretical RMS of image = {} {}'.format(__theoretical_rms, _pp.brightnessunit))
+        return _tirp.cqa.quantity(__theoretical_rms, _pp.brightnessunit)
 
 
 def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
