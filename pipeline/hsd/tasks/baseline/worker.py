@@ -450,10 +450,10 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                     org_direction,
                                                                     grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
-                stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id, 
-                                                                          org_direction,
-                                                                          grid_table, 
-                                                                          deviationmask, channelmap_range, formatted_edge)) ###
+                stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
+                                                                             org_direction,
+                                                                             grid_table,
+                                                                             deviationmask, channelmap_range, formatted_edge)) ###
         plot_manager_base.finalize()
 
         results.outcome['plot_list'] = plot_list
