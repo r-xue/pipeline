@@ -47,7 +47,7 @@ class SetjyInputs(vdp.StandardInputs):
         # hard-coded as the default value in the task interface return the
         # default tuple which is composed of the reference frequency, the
         # Stokes fluxdensity and the spectral index
-        if self.fluxdensity is not -1:
+        if self.fluxdensity != -1:
             return self.reffreq, self.fluxdensity, self.spix
 
         # There is no ms object.
