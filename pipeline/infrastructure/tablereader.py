@@ -128,8 +128,8 @@ class MeasurementSetReader(object):
                     dd_mask = (scan_number_col == scan_id) & (data_desc_id_col == dd.id)
 
                     raw_midpoints = list(time_col[dd_mask])
-                    unique_midpoints = set(raw_midpoints)
-                    epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit)) for o in unique_midpoints]
+                    epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit))
+                                       for o in (numpy.min(raw_midpoints), numpy.max(raw_midpoints))]
 
                     scan_times[dd.spw.id] = list(zip(epoch_midpoints, itertools.repeat(exposures[dd.spw.id])))
 
