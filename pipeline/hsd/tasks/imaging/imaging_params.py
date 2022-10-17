@@ -7,11 +7,13 @@ from typing import TYPE_CHECKING, Dict, List, NewType, Union
 
 import numpy
 
+from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure as infrastructure
 
 if TYPE_CHECKING:
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
-    from pipeline.infrastructure import casa_tools
+    from pipeline.infrastructure import Context
     from pipeline.domain.datatable import DataTableImpl
     from pipeline.domain import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupDesc
@@ -109,7 +111,8 @@ class CommonParameters(Parameters):
         self._dt_dict = None          # Dict[str, DataTableImpl]: dictionary of input MS and corresponding datatable
         self._edge = None             # List[int]: edge channel of most recent SDBaselineResults or [0, 0]
         self._imagemode = None        # str: input image mode, str
-        self._in_field = None         # str: comma-separated list of target field names that are extracted from all input MSs
+        self._in_field = None         # str: comma-separated list of target field names that are extracted
+                                      # from all input MSs
         self._infiles = None          # List[str]: list of input files
         self._is_nro = None           # numpy.bool_: flag of NRO data
         self._ms_list = None          # List[MeasurementSet]: list of ms to process
@@ -794,3 +797,232 @@ class PostProcessParameters(Parameters):
 
     @validsps.setter
     def validsps(self, value): self.setvalue('_validsps', value)
+
+
+class TheoreticalImageRmsParameters(Parameters):
+    """ Parameter class of calculate_theoretical_image_rms()."""
+
+    def __init__(self, _pp: PostProcessParameters, context: 'Context'):
+        """Initiarize the object.
+
+        Args:
+            _pp (PostProcessParameters): imaging post process parameters of prepare()
+            context (Context): pipeline Context
+        """
+        self._cqa = casa_tools.quanta       # LoggingQuanta: LoggingQuanta object
+        self._failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
+        self._sq_rms = 0.0                  # float: Square RMS value
+        self._N = 0.0                       # float: RMS counter
+        self._time_unit = 's'               # str: time unit
+        self._ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: ang unit
+        self._cx_val = self.cqa.getvalue(_pp.qcell[0])[0]   # float: cx
+        self._cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]  # float: cy
+        self._bandwidth = numpy.abs(_pp.chan_width)         # float: band width
+        self._context = context                             # Context: pipeline context
+        self._is_nro = sdutils.is_nro(context)              # bool: NRO flag
+        self._infile = None                 # str: input file
+        self._antid = None                  # int antenna ID
+        self._fieldid = None                # int: field ID
+        self._spwid = None                  # int: spectrum ID
+        self._pol_names = None              # List[str]: polarization names
+        self._raster_info = None            # RasterInfo: RasterInfo object
+        self._msobj = None                  # MeasurementSet: MeasuremetSet
+        self._calmsobj = None               # MeasurementSet: calibrated MeasurementSet
+        self._polids = None                 # List[int]: polarization ID
+        self._error_msg = None              # str: error message
+        self._dt = None                     # DataTableImpl: datatable object
+        self._index_list = None             # numpy.array[int64]: index list
+        self._effBW = None                  # float: effective BW
+        self._mean_tsys_per_pol = None      # numpy.array[float]: mean of Tsys per polarization
+        self._width = None                  # float: width
+        self._height = None                 # float: height
+        self._t_on_act = None               # float: Ton actual
+        self._calst = None                  # IntercalCalState: interval calibration state object
+        self._t_sub_on = None               # float: Tsub on
+        self._t_sub_off = None              # float: Tsub off
+
+    @property
+    def cqa(self): return self._cqa
+
+    @cqa.setter
+    def cqa(self, value): self.setvalue('_cqa', value)
+
+    @property
+    def failed_rms(self): return self._failed_rms
+
+    @failed_rms.setter
+    def failed_rms(self, value): self.setvalue('_failed_rms', value)
+
+    @property
+    def sq_rms(self): return self._sq_rms
+
+    @sq_rms.setter
+    def sq_rms(self, value): self.setvalue('_sq_rms', value)
+
+    @property
+    def N(self): return self._N
+
+    @N.setter
+    def N(self, value): self.setvalue('_N', value)
+
+    @property
+    def time_unit(self): return self._time_unit
+
+    @time_unit.setter
+    def time_unit(self, value): self.setvalue('_time_unit', value)
+
+    @property
+    def ang_unit(self): return self._ang_unit
+
+    @ang_unit.setter
+    def ang_unit(self, value): self.setvalue('_ang_unit', value)
+
+    @property
+    def cx_val(self): return self._cx_val
+
+    @cx_val.setter
+    def cx_val(self, value): self.setvalue('_cx_val', value)
+
+    @property
+    def cy_val(self): return self._cy_val
+
+    @cy_val.setter
+    def cy_val(self, value): self.setvalue('_cy_val', value)
+
+    @property
+    def bandwidth(self): return self._bandwidth
+
+    @bandwidth.setter
+    def bandwidth(self, value): self.setvalue('_bandwidth', value)
+
+    @property
+    def context(self): return self._context
+
+    @context.setter
+    def context(self, value): self.setvalue('_context', value)
+
+    @property
+    def is_nro(self): return self._is_nro
+
+    @is_nro.setter
+    def is_nro(self, value): self.setvalue('_is_nro', value)
+
+    @property
+    def infile(self): return self._infile
+
+    @infile.setter
+    def infile(self, value): self.setvalue('_infile', value)
+
+    @property
+    def antid(self): return self._antid
+
+    @antid.setter
+    def antid(self, value): self.setvalue('_antid', value)
+
+    @property
+    def fieldid(self): return self._fieldid
+
+    @fieldid.setter
+    def fieldid(self, value): self.setvalue('_fieldid', value)
+
+    @property
+    def spwid(self): return self._spwid
+
+    @spwid.setter
+    def spwid(self, value): self.setvalue('_spwid', value)
+
+    @property
+    def pol_names(self): return self._pol_names
+
+    @pol_names.setter
+    def pol_names(self, value): self.setvalue('_pol_names', value)
+
+    @property
+    def raster_info(self): return self._raster_info
+
+    @raster_info.setter
+    def raster_info(self, value): self.setvalue('_raster_info', value)
+
+    @property
+    def msobj(self): return self._msobj
+
+    @msobj.setter
+    def msobj(self, value): self.setvalue('_msobj', value)
+
+    @property
+    def calmsobj(self): return self._calmsobj
+
+    @calmsobj.setter
+    def calmsobj(self, value): self.setvalue('_calmsobj', value)
+
+    @property
+    def polids(self): return self._polids
+
+    @polids.setter
+    def polids(self, value): self.setvalue('_polids', value)
+
+    @property
+    def error_msg(self): return self._error_msg
+
+    @error_msg.setter
+    def error_msg(self, value): self.setvalue('_error_msg', value)
+
+    @property
+    def dt(self): return self._dt
+
+    @dt.setter
+    def dt(self, value): self.setvalue('_dt', value)
+
+    @property
+    def index_list(self): return self._index_list
+
+    @index_list.setter
+    def index_list(self, value): self.setvalue('_index_list', value)
+
+    @property
+    def effBW(self): return self._effBW
+
+    @effBW.setter
+    def effBW(self, value): self.setvalue('_effBW', value)
+
+    @property
+    def mean_tsys_per_pol(self): return self._mean_tsys_per_pol
+
+    @mean_tsys_per_pol.setter
+    def mean_tsys_per_pol(self, value): self.setvalue('_mean_tsys_per_pol', value)
+
+    @property
+    def width(self): return self._width
+
+    @width.setter
+    def width(self, value): self.setvalue('_width', value)
+
+    @property
+    def height(self): return self._height
+
+    @height.setter
+    def height(self, value): self.setvalue('_height', value)
+
+    @property
+    def t_on_act(self): return self._t_on_act
+
+    @t_on_act.setter
+    def t_on_act(self, value): self.setvalue('_t_on_act', value)
+
+    @property
+    def calst(self): return self._calst
+
+    @calst.setter
+    def calst(self, value): self.setvalue('_calst', value)
+
+    @property
+    def t_sub_on(self): return self._t_sub_on
+
+    @t_sub_on.setter
+    def t_sub_on(self, value): self.setvalue('_t_sub_on', value)
+
+    @property
+    def t_sub_off(self): return self._t_sub_off
+
+    @t_sub_off.setter
+    def t_sub_off(self, value): self.setvalue('_t_sub_off', value)

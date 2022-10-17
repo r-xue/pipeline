@@ -1455,53 +1455,75 @@ class SDImaging(basetask.StandardTaskTemplate):
         assert len(_rgp.combined.infiles) == len(raster_info_list)
         return raster_info_list
 
-    class TheoreticalImageRmsParameters(imaging_params.Parameters):
-        """ Parameter class of calculate_theoretical_image_rms()."""
+    def calculate_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
+                                        _rgp: imaging_params.ReductionGroupParameters,
+                                        _pp: imaging_params.PostProcessParameters) -> Dict[str, float]:
+        """Calculate theoretical RMS of an image (PIPE-657).
 
-        def __init__(self, _pp: imaging_params.PostProcessParameters, context: 'Context'):
-            """Initiarize the object.
+        Args:
+            _cp (imaging_params.CommonParameters): common parameter object of prepare()
+            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
+            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
 
-            Args:
-                _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
-                context (Context): pipeline Context
-            """
-            self.cqa = casa_tools.quanta
-            self.failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)
-            self.sq_rms = 0.0
-            self.N = 0.0
-            self.time_unit = 's'
-            self.ang_unit = self.cqa.getunit(_pp.qcell[0])
-            self.cx_val = self.cqa.getvalue(_pp.qcell[0])[0]
-            self.cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]
-            self.bandwidth = numpy.abs(_pp.chan_width)
-            self.context = context
-            self.is_nro = sdutils.is_nro(context)
-            self.infile = None
-            self.antid = None
-            self.fieldid = None
-            self.spwid = None
-            self.pol_names = None
-            self.raster_info = None
-            self.msobj = None
-            self.calmsobj = None
-            self.polids = None
-            self.error_msg = None
-            self.dt = None
-            self.index_list = None
-            self.effBW = None
-            self.mean_tsys_per_pol = None
-            self.width = None
-            self.height = None
-            self.t_on_act = None
-            self.calst = None
-            self.t_sub_on = None
-            self.t_sub_off = None
+        Note: the number of elements in _rgp.combined.antids, fieldids, spws, and pols should be equal
+              to that of infiles
 
-    def __obtain_t_sub_on_off(self, _tirp: TheoreticalImageRmsParameters) -> bool:
+        Returns:
+            Dict[str, float]: A quantum value of theoretical image RMS.
+            The value of quantity will be negative when calculation is aborted, i.e., -1.0 Jy/beam
+        """
+        _tirp = imaging_params.TheoreticalImageRmsParameters(_pp, self.inputs.context)
+
+        if len(_rgp.combined.infiles) == 0:
+            LOG.error('No MS given to calculate a theoretical RMS. Aborting calculation of theoretical thermal noise.')
+            return _tirp.failed_rms
+        assert len(_rgp.combined.infiles) == len(_rgp.combined.antids)
+        assert len(_rgp.combined.infiles) == len(_rgp.combined.fieldids)
+        assert len(_rgp.combined.infiles) == len(_rgp.combined.spws)
+        assert len(_rgp.combined.infiles) == len(_rgp.combined.pols)
+        assert len(_rgp.combined.infiles) == len(_pp.raster_infos)
+
+        for (_tirp.infile, _tirp.antid, _tirp.fieldid, _tirp.spwid, _tirp.pol_names, _tirp.raster_info) in \
+            zip(_rgp.combined.infiles, _rgp.combined.antids, _rgp.combined.fieldids,
+                _rgp.combined.spws, _rgp.combined.pols, _pp.raster_infos):
+            halt, skip = self.__loop_initializer_of_theoretical_image_rms(_cp, _rgp, _tirp)
+            if halt:
+                return _tirp.failed_rms
+            if skip:
+                continue
+
+            # effective BW
+            self.__obtain_effective_BW(_tirp)
+            # obtain average Tsys
+            self.__obtain_average_tsys(_tirp)
+            # obtain Wx, and Wy
+            self.__obtain_wx_and_wy(_tirp)
+            # obtain T_ON
+            self.__obtain_t_on_actual(_tirp)
+            # obtain calibration tables applied
+            self.__obtain_calibration_tables_applied(_tirp)
+            # obtain T_sub,on, T_sub,off
+            if not self.__obtain_t_sub_on_off(_tirp):
+                return _tirp.failed_rms
+            # obtain factors by convolution function
+            # (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
+            # TODO: Ggeneralize factor for SF, and Gaussian convolution function
+            if not self.__obtain_factors_by_convolution_function(_pp, _tirp):
+                return _tirp.failed_rms
+
+        if _tirp.N == 0:
+            LOG.warning('No rms estimate is available.')
+            return _tirp.failed_rms
+
+        __theoretical_rms = numpy.sqrt(_tirp.sq_rms) / _tirp.N
+        LOG.info('Theoretical RMS of image = {} {}'.format(__theoretical_rms, _pp.brightnessunit))
+        return _tirp.cqa.quantity(__theoretical_rms, _pp.brightnessunit)
+
+    def __obtain_t_sub_on_off(self, _tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
         """Obtain TsubON and TsubOFF. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
 
         Returns:
             bool: result flag
@@ -1549,12 +1571,12 @@ class SDImaging(basetask.StandardTaskTemplate):
         return True
 
     def __obtain_jy_per_k(self, _pp: imaging_params.PostProcessParameters,
-                          _tirp: TheoreticalImageRmsParameters) -> Union[float, bool]:
+                          _tirp: imaging_params.TheoreticalImageRmsParameters) -> Union[float, bool]:
         """Obtain Jy/K. A sub method of calculate_theoretical_image_rms().
 
         Args:
             _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
 
         Returns:
             Union[float, bool]: Jy/K value or failure flag
@@ -1598,12 +1620,12 @@ class SDImaging(basetask.StandardTaskTemplate):
         return __jy_per_k
 
     def __obtain_factors_by_convolution_function(self, _pp: imaging_params.PostProcessParameters,
-                                                 _tirp: TheoreticalImageRmsParameters) -> bool:
+                                                 _tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
         """Obtain factors by convlution function. A sub method of calculate_theoretical_image_rms().
 
         Args:
             _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
 
         Returns:
             bool: result flag
@@ -1624,11 +1646,11 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp.N += 1.0
         return True
 
-    def __obtain_t_on_actual(self, _tirp: TheoreticalImageRmsParameters):
+    def __obtain_t_on_actual(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain Ton actual. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
         """
         unit = _tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
         t_on_tot = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.cqa.quantity(
@@ -1649,38 +1671,38 @@ class SDImaging(basetask.StandardTaskTemplate):
         LOG.info('- total time on source = {} {}'.format(t_on_tot, _tirp.time_unit))
         LOG.info('- flagged Fraction = {} %'.format(100 * frac_flagged))
 
-    def __obtain_calibration_tables_applied(self, _tirp: TheoreticalImageRmsParameters):
+    def __obtain_calibration_tables_applied(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain calibration tables applied. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
         """
         __calto = callibrary.CalTo(vis=_tirp.calmsobj.name, field=str(_tirp.fieldid))
         _tirp.calst = _tirp.context.callibrary.applied.trimmed(_tirp.context, __calto)
 
-    def __obtain_wx_and_wy(self, _tirp: TheoreticalImageRmsParameters):
+    def __obtain_wx_and_wy(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain Wx and Wy. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
         """
         _tirp.width = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.width, _tirp.ang_unit))[0]
         _tirp.height = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.height, _tirp.ang_unit))[0]
 
-    def __obtain_average_tsys(self, _tirp: TheoreticalImageRmsParameters):
+    def __obtain_average_tsys(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain average Tsys. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
         """
         _tirp.mean_tsys_per_pol = _tirp.dt.getcol('TSYS').take(_tirp.index_list, axis=-1).mean(axis=-1)
         LOG.info('Mean Tsys = {} K'.format(str(_tirp.mean_tsys_per_pol)))
 
-    def __obtain_effective_BW(self, _tirp: TheoreticalImageRmsParameters):
+    def __obtain_effective_BW(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain effective BW. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
         """
         with casa_tools.MSMDReader(_tirp.infile) as __msmd:
             __ms_chanwidth = numpy.abs(__msmd.chanwidths(_tirp.spwid).mean())
@@ -1708,13 +1730,13 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def __loop_initializer_of_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
                                                     _rgp: imaging_params.ReductionGroupParameters,
-                                                    _tirp: TheoreticalImageRmsParameters) -> Tuple[bool]:
-        """Initialize TheoreticalImageRmsParameters for the loop of calculate_theoretical_image_rms().
+                                                    _tirp: imaging_params.TheoreticalImageRmsParameters) -> Tuple[bool]:
+        """Initialize imaging_params.TheoreticalImageRmsParameters for the loop of calculate_theoretical_image_rms().
 
         Args:
             _cp (imaging_params.CommonParameters): common parameter object of prepare()
             _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
-            _tirp (TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
+            _tirp (imaging_params.TheoreticalImageRmsParameters): parameter object of calculate_theoretical_image_rms()
 
         Returns:
             Tuple[bool]: flag of loop action[go|halt|skip]
@@ -1748,70 +1770,6 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('No unflagged row in DataTable. Skipping further calculation.')
             return __SKIP
         return __GO
-
-    def calculate_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
-                                        _rgp: imaging_params.ReductionGroupParameters,
-                                        _pp: imaging_params.PostProcessParameters) -> Dict[str, float]:
-        """Calculate theoretical RMS of an image (PIPE-657).
-
-        Args:
-            _cp (imaging_params.CommonParameters): common parameter object of prepare()
-            _rgp (imaging_params.ReductionGroupParameters): reduction group parameter object of prepare()
-            _pp (imaging_params.PostProcessParameters): imaging post process parameters of prepare()
-
-        Note: the number of elements in _rgp.combined.antids, fieldids, spws, and pols should be equal
-              to that of infiles
-
-        Returns:
-            Dict[str, float]: A quantum value of theoretical image RMS.
-            The value of quantity will be negative when calculation is aborted, i.e., -1.0 Jy/beam
-        """
-        _tirp = self.TheoreticalImageRmsParameters(_pp, self.inputs.context)
-
-        if len(_rgp.combined.infiles) == 0:
-            LOG.error('No MS given to calculate a theoretical RMS. Aborting calculation of theoretical thermal noise.')
-            return _tirp.failed_rms
-        assert len(_rgp.combined.infiles) == len(_rgp.combined.antids)
-        assert len(_rgp.combined.infiles) == len(_rgp.combined.fieldids)
-        assert len(_rgp.combined.infiles) == len(_rgp.combined.spws)
-        assert len(_rgp.combined.infiles) == len(_rgp.combined.pols)
-        assert len(_rgp.combined.infiles) == len(_pp.raster_infos)
-
-        for (_tirp.infile, _tirp.antid, _tirp.fieldid, _tirp.spwid, _tirp.pol_names, _tirp.raster_info) in \
-            zip(_rgp.combined.infiles, _rgp.combined.antids, _rgp.combined.fieldids,
-                _rgp.combined.spws, _rgp.combined.pols, _pp.raster_infos):
-            halt, skip = self.__loop_initializer_of_theoretical_image_rms(_cp, _rgp, _tirp)
-            if halt:
-                return _tirp.failed_rms
-            if skip:
-                continue
-
-            # effective BW
-            self.__obtain_effective_BW(_tirp)
-            # obtain average Tsys
-            self.__obtain_average_tsys(_tirp)
-            # obtain Wx, and Wy
-            self.__obtain_wx_and_wy(_tirp)
-            # obtain T_ON
-            self.__obtain_t_on_actual(_tirp)
-            # obtain calibration tables applied
-            self.__obtain_calibration_tables_applied(_tirp)
-            # obtain T_sub,on, T_sub,off
-            if not self.__obtain_t_sub_on_off(_tirp):
-                return _tirp.failed_rms
-            # obtain factors by convolution function
-            # (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
-            # TODO: Ggeneralize factor for SF, and Gaussian convolution function
-            if not self.__obtain_factors_by_convolution_function(_pp, _tirp):
-                return _tirp.failed_rms
-
-        if _tirp.N == 0:
-            LOG.warning('No rms estimate is available.')
-            return _tirp.failed_rms
-
-        __theoretical_rms = numpy.sqrt(_tirp.sq_rms) / _tirp.N
-        LOG.info('Theoretical RMS of image = {} {}'.format(__theoretical_rms, _pp.brightnessunit))
-        return _tirp.cqa.quantity(__theoretical_rms, _pp.brightnessunit)
 
 
 def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
