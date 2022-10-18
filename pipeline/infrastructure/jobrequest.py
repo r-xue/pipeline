@@ -9,6 +9,7 @@ import sys
 import almatasks
 import casaplotms
 import casatasks
+import casaviewer
 
 from . import logging
 from . import utils
@@ -319,7 +320,7 @@ def get_fn_name(fn):
         # called and logged in the same manner as CASA operations. The check
         # below distinguishes CASA tasks/functions from non-CASA code.
         #
-        for m in (almatasks, casatasks, casaplotms):
+        for m in (almatasks, casatasks, casaplotms, casaviewer):
             for k, v in m.__dict__.items():
                 if v == fn:
                     return k, True
