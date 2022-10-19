@@ -94,10 +94,13 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
 
     def _merge_k2jycal(self, context: 'Context', applycal_results: 'SDApplycalResults'):
         """
-        Merge K to Jy.
+        Merge k2jycal caltable into context.
+
+        Jy/K factors are retrieved from caltables and are attached to
+        measurementset domain object.
 
         Args:
-            conext: the pipeline Context state object
+            context: the pipeline Context state object
             applycal_results: results object of applycal
         """
         for calapp in applycal_results.applied:
