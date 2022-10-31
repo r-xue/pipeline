@@ -367,7 +367,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         # depending on first and last mask value
         if mask[0]:
             if len(idx) == 0:
-                return [[0, len(mask)]]
+                return [[0, len(mask) - 1]]
             r = [[0, idx[0]]]
             if len(idx) % 2 == 1:
                 r.extend(idx[1:].reshape(-1, 2).tolist())
