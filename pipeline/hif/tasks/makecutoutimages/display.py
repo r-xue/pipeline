@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 from matplotlib.pyplot import cm
-import scipy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils.compatibility as compatibility
