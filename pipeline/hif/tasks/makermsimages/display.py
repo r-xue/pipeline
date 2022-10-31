@@ -1,7 +1,6 @@
 import collections
 import os
 import numpy as np
-import scipy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils.compatibility as compatibility
