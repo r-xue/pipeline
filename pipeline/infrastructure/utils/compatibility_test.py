@@ -11,10 +11,7 @@ def test_get_func_compute_mad():
     # generate fixed random array
     np.random.seed(1234567)
     array_length = 100
-    array_list = [
-        np.asarray([np.random.rand() for _ in range(array_length)]),
-        np.asarray([np.random.rand() for _ in range(array_length)]),
-    ]
+    array_list = np.random.rand(2, array_length)
 
     # expected values based on casa-6.4.1-12-pipeline-2022.2.0.64 (py3.6)
     expected_mad_list = [
