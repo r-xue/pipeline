@@ -20,9 +20,6 @@ from typing import Tuple
 
 import numpy as np
 import pytest
-import scipy
-
-import pipeline.infrastructure.utils.compatibility as compatibility
 
 from . import rasterscan
 
