@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hsd_importdata(vis=None, session=None, pipelinemode=None, asis=None, process_caldevice=None, overwrite=None,
+def hsd_importdata(vis=None, session=None, hm_rasterscan=None, pipelinemode=None, asis=None, process_caldevice=None, overwrite=None,
                    nocopy=None, bdfflags=None, datacolumns=None, lazy=None, with_pointing_correction=None, createmms=None, dryrun=None,
                    acceptresults=None):
 
