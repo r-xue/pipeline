@@ -28,7 +28,7 @@ def get_scipy_function_for_mad() -> Callable:
         # 0.67449. It is supposed to be compatible with the result
         # obtained by scipy.stats.median_absolute_deviation (of version
         # 1.4.1) with default parameters, scale=1.4826. But there is
-        # suble difference between them. As an experiment, I empirically
+        # subtle difference between them. As an experiment, I empirically
         # derived the scale value that reproduced fully compatible result.
         # Here is a fine-tuned value:
         #
