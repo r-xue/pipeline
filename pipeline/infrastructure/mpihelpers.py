@@ -3,7 +3,8 @@ import os
 import pickle
 import tempfile
 
-from pipeline.extern.asizeof import asizeof
+from pympler.asizeof import asizeof
+
 from pipeline.domain.unitformat import file_size
 
 try:
