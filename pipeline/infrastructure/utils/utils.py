@@ -48,7 +48,7 @@ def find_ranges(data: Union[str, List[int]]) -> str:
             return data
 
         data = range_to_list(data)
-        if len(data) is 0:
+        if len(data) == 0:
             return ''
 
     try:
@@ -148,7 +148,7 @@ def get_num_caltable_polarizations(caltable: str) -> int:
         else:
             raise ValueError('Could not find shape of polarisation from %s' % shape)
 
-    if len(col_pols) is not 1:
+    if len(col_pols) != 1:
         raise ValueError('Got %s polarisations from %s' % (len(col_pols), col_shapes))
 
     return int(col_pols.pop())
