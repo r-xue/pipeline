@@ -9,11 +9,10 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
-from typing import Callable, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 # import 3rd party modules
 import numpy as np
-import scipy
 
 # import pipeline submodules
 import pipeline.infrastructure.api as api
