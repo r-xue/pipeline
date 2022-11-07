@@ -32,9 +32,9 @@ def __debug(cls: object, obj: object, msg: str):
     """Output debug strings.
 
     Args:
-        cls (object): caller class object
-        obj (_type_): object to output
-        msg (_type_): action message
+        cls : caller class object
+        obj : object to output
+        msg : action message
     """
     outerframes = inspect.getouterframes(inspect.currentframe())
     for i, frame in enumerate(inspect.getouterframes(inspect.currentframe())):
@@ -53,8 +53,8 @@ class ObservedList(list):
         """Overrode list.__setitem__().
 
         Args:
-            index (int): index
-            value (object): object to set at index
+            index : index
+            value : object to set at index
         """
         super().__setitem__(index, value)
         if LOG.level <= logging.DEBUG:
@@ -64,8 +64,8 @@ class ObservedList(list):
         """Overrode list.insert().
 
         Args:
-            index (int): index
-            value (object): object to insert at index
+            index : index
+            value : object to insert at index
         """
         super().insert(index, value)
         if LOG.level <= logging.DEBUG:
@@ -75,7 +75,7 @@ class ObservedList(list):
         """Overrode list.append().
 
         Args:
-            value (object): object to append
+            value : object to append
         """
         super().append(value)
         if LOG.level <= logging.DEBUG:
@@ -85,7 +85,7 @@ class ObservedList(list):
         """Overrode list.extend().
 
         Args:
-            value (list): object to merge
+            value : object to merge
         """
         super().extend(value)
         if LOG.level <= logging.DEBUG:
@@ -99,8 +99,8 @@ class Parameters:
         """Set value by setattr().
 
         Args:
-            name (str): property
-            value (object): object
+            name : property
+            value : object
         """
         setattr(self, name, value)
         if LOG.level <= logging.DEBUG:
@@ -235,8 +235,8 @@ class ReductionGroupParameters(Parameters):
         """Initialize an object with group value.
 
         Args:
-            group_id (str): Reduction group ID
-            group_desc (MSReductionGroupDesc): MeasurementSet Reduction Group Desciption object
+            group_id : Reduction group ID
+            group_desc : MeasurementSet Reduction Group Desciption object
         """
         self._group_id = None               # int: Reduction group ID
         self.group_id = group_id
@@ -553,8 +553,8 @@ class CombinedImageParameters(Parameters):
         """Extend list properties using CP and RGP.
 
         Args:
-            _cp (CommonParameters): CommonParameters object
-            _rgp (ReductionGroupParameters): ReductionGroupParameters object
+            _cp : CommonParameters object
+            _rgp : ReductionGroupParameters object
         """
         self._infiles.extend(_cp.infiles)
         self._antids.extend(_rgp.antids)
@@ -819,8 +819,8 @@ class TheoreticalImageRmsParameters(Parameters):
         """Initiarize the object.
 
         Args:
-            _pp (PostProcessParameters): imaging post process parameters of prepare()
-            context (Context): pipeline Context
+            _pp : imaging post process parameters of prepare()
+            context : pipeline Context
         """
         self._cqa = casa_tools.quanta       # LoggingQuanta: LoggingQuanta object
         self._failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
