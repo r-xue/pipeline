@@ -30,7 +30,7 @@ from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 from scipy import interpolate
 
 if TYPE_CHECKING:
-    from pipeline.infrastructure import casa_tools
+    from casatools import coordsys
     from pipeline.infrastructure import Context
     from resultobjects import SDImagingResults
     Direction = NewType('Direction', Dict[str, Union[str, float]])
@@ -1942,7 +1942,7 @@ def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
 
 # Utility methods to calcluate channel ranges
 def convert_frequency_ranges_to_channels(range_list: List[Tuple[float, float]],
-                                         cs: casa_tools.coordsys, num_chan: int) -> List[Tuple[int, int]]:
+                                         cs: 'coordsys', num_chan: int) -> List[Tuple[int, int]]:
     """Convert frequency ranges to channel ones.
 
     Args:

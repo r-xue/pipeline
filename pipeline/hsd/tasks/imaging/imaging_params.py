@@ -13,6 +13,7 @@ from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure as infrastructure
 
 if TYPE_CHECKING:
+    from casatools import coordsys
     from collections import namedtuple
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
     from pipeline.infrastructure import Context
@@ -682,7 +683,7 @@ class PostProcessParameters(Parameters):
         self._validsps = None                       # List[int]: List of valid spectrum
 
     def done(self):
-        if isinstance(self._cs, casa_tools.ImageReader.coordsys):
+        if isinstance(self._cs, coordsys):
             self._cs.done()
 
     @property
@@ -704,10 +705,10 @@ class PostProcessParameters(Parameters):
     def chan_width(self, value: numpy.float64): self.setvalue('_chan_width', value)
 
     @property
-    def cs(self) -> 'casa_tools.ImageReader.coordsys': return self._cs
+    def cs(self) -> 'coordsys': return self._cs
 
     @cs.setter
-    def cs(self, value: 'casa_tools.ImageReader.coordsys'): self.setvalue('_cs', value)
+    def cs(self, value: 'coordsys'): self.setvalue('_cs', value)
 
     @property
     def faxis(self) -> int: return self._faxis
