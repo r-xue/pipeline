@@ -1909,7 +1909,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
 
 
 def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
-    """Retrun image statistics with channel and region selection.
+    """Return image statistics with channel and region selection.
 
     Args:
         imagename (str): Path to image to calculate statistics
