@@ -217,11 +217,14 @@ class SDImaging(basetask.StandardTaskTemplate):
                 self.__make_post_grid_table(_cp, _rgp, _pp)
 
                 # calculate RMS of line free frequencies in a combined image
-                self.__generate_parameters_for_calculate_sensitivity(_cp, _rgp, _pp)
+                try:
+                    self.__generate_parameters_for_calculate_sensitivity(_cp, _rgp, _pp)
 
-                self.__estimate_sensitivity(_cp, _rgp, _pp)
+                    self.__estimate_sensitivity(_cp, _rgp, _pp)
 
-                self.__calculate_sensitivity(_cp, _rgp, _pp)
+                    self.__calculate_sensitivity(_cp, _rgp, _pp)
+                finally:
+                    _pp.done()
 
                 self.__detect_contamination(_rgp)
 
@@ -976,7 +979,6 @@ class SDImaging(basetask.StandardTaskTemplate):
             __ref_pixel[_pp.faxis] = __ichan
             __freqs.append(_pp.cs.toworld(__ref_pixel)['numeric'][_pp.faxis])
 
-        _pp.cs.done()
         if len(__freqs) > 1 and __freqs[0] > __freqs[1]:  # LSB
             __freqs.reverse()
         _pp.stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(__freqs[__iseg] * 1.e-9, __freqs[__iseg + 1] * 1.e-9)
@@ -1349,7 +1351,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             cs = ia.coordsys()
             faxis = cs.findaxisbyname('spectral')
             num_chan = ia.shape()[faxis]
-        exclude_chan_ranges = convert_frequency_ranges_to_channels(combined_rms_exclude, cs, num_chan)
+            exclude_chan_ranges = convert_frequency_ranges_to_channels(combined_rms_exclude, cs, num_chan)
+            cs.done()
         LOG.info("Merged spectral line channel ranges of combined image = {}".format(str(exclude_chan_ranges)))
         include_chan_ranges = invert_ranges(exclude_chan_ranges, num_chan, edge)
         LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_chan_ranges)))

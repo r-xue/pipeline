@@ -681,6 +681,10 @@ class PostProcessParameters(Parameters):
         self._theoretical_rms = None                # Dict[str, float]: Theoretical RMSs
         self._validsps = None                       # List[int]: List of valid spectrum
 
+    def done(self):
+        if isinstance(self._cs, casa_tools.ImageReader.coordsys):
+            self._cs.done()
+
     @property
     def beam(self) -> Dict[str, Dict[str, float]]: return self._beam
 
