@@ -1,9 +1,8 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="hifv_vlassmasking" category="pipeline">
-<shortdescription>Base vlassmasking task</shortdescription>
-<description>VLASS Masking Task
-</description>
+<shortdescription>Create clean masks for VLASS SE images</shortdescription>
+<description>Create clean masks for VLASS SE images</description>
 <input>
     <param name="vis" subparam="true" type="stringVec">
 	<shortdescription>List of input visibility data</shortdescription>

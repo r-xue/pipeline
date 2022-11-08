@@ -2,7 +2,8 @@ import bz2
 import pickle
 import time
 
-import pipeline.extern.asizeof as asizeof
+import pympler.asizeof as asizeof
+
 import pipeline.infrastructure.logging as logging
 
 LOG = logging.get_logger(__name__)

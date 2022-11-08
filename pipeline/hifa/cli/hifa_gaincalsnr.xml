@@ -41,7 +41,7 @@ o The per scan sensitivity and signal to noise estimates are computed per
   band provide by the ALMA project are used for this estimate.
 
 o The QA score is based on how many signal to noise estimates greater than the
-  requested signal to noise ration can be computed.
+  requested signal to noise ratio can be computed.
 
 
 Output
