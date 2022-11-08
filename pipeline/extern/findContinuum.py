@@ -132,8 +132,9 @@ except:
     pass  # reload is already available in python 2.x
 # Check if this is CASA6  CASA 6
 try:
-    import casalith
-    casaVersion = casalith.version_string()
+    import casatools
+    cu = casatools.utils.utils()
+    casaVersion = cu.version_string()
 except:
     import casadef
     if casadef.casa_version >= '5.0.0':
