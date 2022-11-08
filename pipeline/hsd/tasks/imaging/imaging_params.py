@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Union
 
 import numpy
 
+from casatools import coordsys
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure as infrastructure
 
 if TYPE_CHECKING:
-    from casatools import coordsys
     from collections import namedtuple
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
     from pipeline.infrastructure import Context
