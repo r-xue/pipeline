@@ -72,6 +72,7 @@ MakeImList:cont+MakeImages (per clean_target, tier0)
     Tclean (per clean_target,tier0) <- selfcal-specific imaging sequence
         CleanBase("iter0","dirty",data)
         CleanBase("iter1","initial",data)
+
         solint1->solint2->solint3->...solintX ("iter2")
             CleanBase:savemodel(priorcal)
             per MS
@@ -80,6 +81,7 @@ MakeImList:cont+MakeImages (per clean_target, tier0)
         solintX-1 ("step back" when X is worse than X-1)
             per MS
                 appplycal
+        
         CleanBase(corrected,"final",'iter3')
 
 MakeImList+MakeImages (per clean_target per spw, corrected, final, tier0, optional)
@@ -91,6 +93,7 @@ per clean_target
 register the datatype per clean_target per MS
 ```
 
+Note that the model/corrected columns and flagging states of per_clean_target MSes are actively modified during the selfcal operations (notably, the "iter2" step).
 
 ## MS/Caltable/Image naming convention (tentative):
 
@@ -121,7 +124,7 @@ Each of them is a uvdata container that the selfcal "ImageSolver-CalSolver" loop
 The MS split policy is largely decided due to a CASA limitation that `casatools` doesn't support parallel-write in MS tables (even though `casacore` does via the parallel storage manager `Adios`):
 if the uvdata of different "clean_targets" are stored in separate MSes, their selfcal operations, notably the modelcolumn prediction/write, can proceed simultaneously/independently without locking tables; therefore they become tier0-parallelizable.
 
-For the selfcal operation described in the prototype, splitting the per-EB MSes into per_clean_target MSes generally doesn't produce duplications of bulky visibility records (time, uvw, data, etc.).
+For the selfcal logic described in the prototype, splitting the per-EB MSes into per_clean_target MSes generally doesn't produce duplications of bulky visibility records (time, uvw, data, etc.).
 This is in contrast to the situation of splitting by spws of the same source, where certain columns (e.g. uvw, time) get duplicated for each spw. 
 However, a plain mstransform() call will still lead to the duplication of the pointing table from input MS, which can degrade the I/O performance and take unnecessary storage space.
 We manage this issue through an I/O-efficient mstransform wrapper function named `ms_transform`: 
