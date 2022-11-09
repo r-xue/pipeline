@@ -1,18 +1,19 @@
 ############################################################################
-#
+# 
 # setup:
 #
 #   install mambaforge: the recommended minimal conda installer
 #     https://github.com/conda-forge/miniforge#mambaforge
-#
+#  
 #   step-by-step to reproduce the Pipeline/CASA environment
-#     $ mamba env create -f pipeline.yaml
+#     $ mamba env create -f pipeline_docs.yaml
 #     $ mamba activate pipeline
 #     $ pip install -r requirements.txt
+#     $ pip install -r docs/requirements_docs.txt
 #
 #   update:
 #     $ # conda update -n pipeline --all
-#     $ mamba env update -f pipeline.yaml
+#     $ mamba env update -f pipeline_docs.yaml
 #
 # execute:
 #     $ xvfb-run -a python run_pipeline.py
@@ -27,7 +28,7 @@ channels:
 
 dependencies:
   # core
-  - python=3.8 # the casa packages wheels are not available for Python 3.9 yet, therefore
+  - python=3.8 # the casa packages wheels are not available for Python 3.9 yet, therefore 
                # Python 3.8 is used.
   - ipython
   - pip
@@ -53,3 +54,14 @@ dependencies:
   - pycodestyle
   - pytest-cov
   - pytest-pep8
+  # build docs
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx-copybutton
+  - nbsphinx
+  - sphinx_rtd_theme
+  - commonmark
+  - recommonmark
+  - ipympl
+  - nodejs 
+  - pandoc # nbsphinx requires 'pandoc' (from macports/homebrew or apt, but not 'pandoc' from PyPI) to work properly.
