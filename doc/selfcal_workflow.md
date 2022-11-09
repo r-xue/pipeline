@@ -5,12 +5,12 @@
 * VLASS selfcal workflow
 
     ```python
-    hif_makeimages (tclean,savemodel)
+    hif_makeimages (tclean:savemodel)
     hifv_selfcal (gaincal,applycal)
     hif_makeimages (tclean)
     ```
 
-* VLASS Selfcal/Restore workflow
+* VLASS selfcal/restore workflow
 
     ```python
     hifv_restorpims
@@ -24,71 +24,71 @@
 
 ```console
 per target per band
-    tclean(dirty)
-    tclean(initial)
+    tclean(data,dirty)
+    tclean(data,initial)
 per target per band per spw (optional)
-    tclean(dirty)
-    tclean(initial)        
+    tclean(data,dirty)
+    tclean(data,initial)        
 
 per target per band
-    solin1->solin2->solin3->...solinX
-        tclean:savemodel:priorcal
-        per vis
+    solint1->solint2->solint3->...solintX
+        tclean:savemodel(data,priorcal)
+        per MS
             gaincal
-        per vis
+        per MS
             applycal
-        tclean:postcal
-    solinX-1 (go back when X is worse than X-1)
-        per vis
+        tclean(corrected,resume-model,postcal)
+    solintX-1 ("step back" when X is worse than X-1)
+        per MS
             appplycal
 
 per target per band
-    tclean(final)
+    tclean(corrected,final)
 per target per band per spw (optional)
-    tclean(final)
+    tclean(corrected,final)
 
 per target 
     per band 
-        per vis
-            applycal(to originMS): write to a script / or apply on-teh-fly
+        per MS
+            applycal(to originMS): write to a script / or apply on-the-fly
 ```
 
 # PipelineTask: `hif_selfcal`
 
 ```console
-MakeImList(cont): derive clean_target_list
+MakeImList:cont: derive clean_target_list
 
-per clean_target (a target/band combination)
+per clean_target (i.e. a target/band combination)
     ms_transform()
-        pointing table hard linked to the original MS
-        output ms per clean_target (so the modelcolumn prediction can happen simultaneously when running tier0)
+        * ms per clean_target
+        * pointing table hardlinked to the original MS
+        
+Creat copies of temporary context and start using per_clean_target MSs
 
-Creat a temporary context and start using per_clean_target MSs
+MakeImList+MakeImages (per clean_target per spw, data, dirty/initial, tier0, optional)
 
-hif_tclean (per clean_target per spw, data, tier0) dirty/initial (optional)
+MakeImList:cont+MakeImages (per clean_target, tier0)
 
-hif_tclean (per clean_target,tier0) <- selfcal-specific imaging sequence
-    tclean(dirty,data)
-    tclean(initial,data)
-    solin1->solin2->solin3->...solinX
-        tclean:savemodel:priorcal
-        per vis
-            gaincal
-        per vis
-            applycal
-        tclean:postcal
-    solinX-1 (go back when X is worse than X-1)
-        per vis
-            appplycal
-        tclean(final,corrected)
+    Tclean (per clean_target,tier0) <- selfcal-specific imaging sequence
+        CleanBase("iter0","dirty",data)
+        CleanBase("iter1","initial",data)
+        solint1->solint2->solint3->...solintX ("iter2")
+            CleanBase:savemodel(priorcal)
+            per MS
+                gaincal/applycal
+            CleanBase(postcal)
+        solintX-1 ("step back" when X is worse than X-1)
+            per MS
+                appplycal
+        CleanBase(corrected,"final",'iter3')
 
-hif_tclean (per clean_target per spw, corrected, tier0) final (optional)
+MakeImList+MakeImages (per clean_target per spw, corrected, final, tier0, optional)
 
 per clean_target 
-    per vis
+    per MS
         applycal(to originMS)
 
-register the datatype per target per band
+register the datatype per clean_target per MS
 ```
 
 
@@ -103,7 +103,7 @@ eb2_targets.ms
 eb3_targets.ms
 ```
 
-the "MS working copies" generated and used by `hifv_selfcal` will be
+the "rebinned MS working copies" generated and used by `hifv_selfcal` will be
 
 ```console 
 eb1_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms
@@ -115,15 +115,17 @@ eb3_targets.04288_1802.spw16_18_20_22_24_26_28_30.selfcal.ms
 ....
 ```
 
-Note that the per-EB MSes are split and channel-rebinned into smaller MS quanta, i.e. per-"clean_target" (a target/band combination) MSes.
-Each of them is a uvdata container on which the selfcal "ImageSolver-CalSolver" loop can operate.
-The MS/data division policy is largely due to a CASA limitation that `casatools` doesn't support parallel-write in MS tables (even though `casacore` does via the parallel storage manager `Adios`):
-when their uvdata are stored in separate MSes, multiple selfcal operations of different "clean_targets", notably the modelcolumn prediction/write, can proceed simultaneously; therefore they become tier0-parallelizable.
+Note that the original per-EB MSes are split and rebinned into smaller MS quanta, i.e. per-"clean_target" MSes 
+"clean_target" here is equivalent to a "target/band" combination in the prototype.
+Each of them is a uvdata container that the selfcal "ImageSolver-CalSolver" loop can operate on.
+The MS split policy is largely decided due to a CASA limitation that `casatools` doesn't support parallel-write in MS tables (even though `casacore` does via the parallel storage manager `Adios`):
+if the uvdata of different "clean_targets" are stored in separate MSes, their selfcal operations, notably the modelcolumn prediction/write, can proceed simultaneously/independently without locking tables; therefore they become tier0-parallelizable.
 
-Diving MS into per_clean_target MSes generally doesn't produce duplications of visibility data (uvw, uvdata, etc.) as they are target-band-specific. This is in contrast to the situation of splitting by spw, where the same uvw gets duplicated for each spw. 
-However, a plain group of mstransform() calls will lead to the duplication of the pointing table of the input MS, which can be costly in storage I/O and space.
-We manage the issue through an I/O-efficient mstransform wrapper function named `ms_transform`: 
-by default, the pointing table of each output MS is a hardlink to the original MS (see `ms_transform` for details).
+For the selfcal operation described in the prototype, splitting the per-EB MSes into per_clean_target MSes generally doesn't produce duplications of bulky visibility records (time, uvw, data, etc.).
+This is in contrast to the situation of splitting by spws of the same source, where certain columns (e.g. uvw, time) get duplicated for each spw. 
+However, a plain mstransform() call will still lead to the duplication of the pointing table from input MS, which can degrade the I/O performance and take unnecessary storage space.
+We manage this issue through an I/O-efficient mstransform wrapper function named `ms_transform`: 
+by default, the pointing table content of each output MS is hardlinked to the table inside the input MS (see `ms_transform` for details).
 
 
 ### Caltable Names
@@ -135,18 +137,23 @@ eb1_targets.04287+1801.spw16_18_20_22_24_26_28_30.selfcal.ms.hif_selfcal.{stage_
 
 ### Image Names
 
-For the selfcal image names, we follow a scheme loosely based on the traditional `hif_makeimlist` naming pattern.
+For the selfcal image names, we follow a schema loosely based on the traditional `hif_makeimlist` naming pattern.
+
+Generally, hif_selfcal will produce the following image types:
 
 ```
-iter0: dirty
-iter1: initial image
+iter0: dirty image generated from data
+iter1: "properly-cleaned" image generated from DATA before selfcal (in prototype this is called 'initial')
 iter2: 
-    iter2_solin_prior.image
-    iter2_solin_post.image 
-iter3: final image 
+    iter2_solint1_prior.image: moderately-cleaned image for create selfcal model
+    iter2_solint1_post.image: "properly-cleaned" image for selfcal assessment
+    iter2_solint2_prior.image: ...
+    iter2_solint2_post.image: ...
+    ....
+iter3: final image generated from corrected data 
 ```
 
-Here is a short example:
+Here is a practical example of their names:
 
 ```
 oussid.s2_2.04287+1801_sci.spw16_18_20_22_24_26_28_30.cont.I.iter1.image
@@ -159,6 +166,3 @@ oussid.s2_2.04287+1801_sci.spw16_18_20_22_24_26_28_30.cont.solint3_prior.I.iter2
 oussid.s2_2.04287+1801_sci.spw16_18_20_22_24_26_28_30.cont.solint3_post.I.iter2.image
 oussid.s2_2.04287+1801_sci.spw16_18_20_22_24_26_28_30.cont.I.iter3.image
 ```
-
-
-
