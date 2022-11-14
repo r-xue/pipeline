@@ -2005,7 +2005,7 @@ def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, 
                     there is no assumption in the order of ranges, e.g., min0 w.r.t min1
 
     Raises:
-        ValueError: found range_list contains a segment has fewer(<2) stuff
+        ValueError: to few elements in the range description, such as [] or [min0]
 
     Returns:
         a list of merged ranges
