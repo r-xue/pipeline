@@ -114,7 +114,6 @@ class CommonParameters(Parameters):
     def __init__(self):
         """Initialize an object."""
         self._args_spw = None         # spw selection per MS
-        self._cqa = None              # LoggingQuanta: reference of casatools.quanta
         self._dt_dict = None          # Dict[str, DataTableImpl]: dictionary of input MS and corresponding datatable
         self._edge = None             # List[int]: edge channel of most recent SDBaselineResults or [0, 0]
         self._imagemode = None        # str: input image mode, str
@@ -133,12 +132,6 @@ class CommonParameters(Parameters):
 
     @args_spw.setter
     def args_spw(self, value): self.setvalue('_args_spw', value)
-
-    @property
-    def cqa(self) -> 'casa_tools.LoggingQuanta': return self._cqa
-
-    @cqa.setter
-    def cqa(self, value: 'casa_tools.LoggingQuanta'): self.setvalue('_cqa', value)
 
     @property
     def dt_dict(self) -> Dict[str, 'DataTableImpl']:

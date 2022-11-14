@@ -368,7 +368,6 @@ class SDImaging(basetask.StandardTaskTemplate):
         _cp.args_spw = sdutils.convert_spw_virtual2real(self.inputs.context, self.inputs.spw)
         _cp.in_field = self.inputs.field
         _cp.imagemode = self.inputs.mode.upper()
-        _cp.cqa = casa_tools.quanta
         _cp.is_nro = sdutils.is_nro(self.inputs.context)
         _cp.results = resultobjects.SDImagingResults()
         _cp.edge = self.__get_edge(_cp)
@@ -933,21 +932,23 @@ class SDImaging(basetask.StandardTaskTemplate):
         _pp.is_representative_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_bw is not None
         _pp.is_representative_source_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_source_name == \
             utils.dequote(_rgp.source_name)
+        __cqa = casa_tools.quanta
+
         if _pp.is_representative_spw:
             # skip estimate if data is Cycle 2 and earlier + th effective BW is nominal (= chan_width)
             __spwobj = _rgp.ref_ms.get_spectral_window(__rep_spwid)
-            if _cp.cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
+            if __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
                     __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
                 _pp.is_representative_spw = False
                 LOG.warning("Cycle 2 and earlier project with nominal effective band width. "
                             "Reporting RMS at native resolution.")
             else:
-                if not _cp.cqa.isquantity(__rep_bw):  # assume Hz
-                    __rep_bw = _cp.cqa.quantity(__rep_bw, 'Hz')
+                if not __cqa.isquantity(__rep_bw):  # assume Hz
+                    __rep_bw = __cqa.quantity(__rep_bw, 'Hz')
                 LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(
-                    _cp.cqa.getvalue(_cp.cqa.convert(_cp.cqa.quantity(__rep_bw), 'kHz'))[0], _pp.chan_width * 1.e-3))
+                    __cqa.getvalue(__cqa.convert(__cqa.quantity(__rep_bw), 'kHz'))[0], _pp.chan_width * 1.e-3))
                 __factor = sensitivity_improvement.sensitivityImprovement(_rgp.ref_ms.name, __rep_spwid,
-                                                                          _cp.cqa.tos(__rep_bw))
+                                                                          __cqa.tos(__rep_bw))
                 if __factor is None:
                     LOG.warning('No image RMS improvement because representative bandwidth '
                                 'is narrower than native width')
@@ -955,7 +956,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(
                     __factor, _pp.image_rms, _pp.image_rms / __factor, _pp.brightnessunit))
                 _pp.image_rms = _pp.image_rms / __factor
-                _pp.chan_width = numpy.abs(_cp.cqa.getvalue(_cp.cqa.convert(_cp.cqa.quantity(__rep_bw), 'Hz'))[0])
+                _pp.chan_width = numpy.abs(__cqa.getvalue(__cqa.convert(__cqa.quantity(__rep_bw), 'Hz'))[0])
                 _pp.theoretical_rms['value'] = _pp.theoretical_rms['value'] / __factor
         elif __rep_bw is None:
             LOG.warning("Representative bandwidth is not available. "
@@ -976,6 +977,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         __ref_pixel = _pp.cs.referencepixel()['numeric']
         __freqs = []
+        __cqa = casa_tools.quanta
+
         for __ichan in _pp.include_channel_range:
             __ref_pixel[_pp.faxis] = __ichan
             __freqs.append(_pp.cs.toworld(__ref_pixel)['numeric'][_pp.faxis])
@@ -988,13 +991,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         __sensitivity = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                     spw=str(_rgp.combined.v_spws[REF_MS_ID]),
                                     is_representative=_pp.is_representative_source_spw,
-                                    bandwidth=_cp.cqa.quantity(_pp.chan_width, 'Hz'),
+                                    bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                     bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
-                                    sensitivity=_cp.cqa.quantity(_pp.image_rms, _pp.brightnessunit))
+                                    sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit))
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                           spw=str(_rgp.combined.v_spws[REF_MS_ID]),
                                           is_representative=_pp.is_representative_source_spw,
-                                          bandwidth=_cp.cqa.quantity(_pp.chan_width, 'Hz'),
+                                          bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                           bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
         __sensitivity_info = SensitivityInfo(__sensitivity, _pp.is_representative_spw, _pp.stat_freqs, (not _cp.is_nro))
