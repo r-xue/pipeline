@@ -1349,11 +1349,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             statistics, e.g., [imin0, imax0, imin0, imax0, ...]
         """
         with casa_tools.ImageReader(imagename) as ia:
-            cs = ia.coordsys()
-            faxis = cs.findaxisbyname('spectral')
-            num_chan = ia.shape()[faxis]
-            exclude_chan_ranges = convert_frequency_ranges_to_channels(combined_rms_exclude, cs, num_chan)
-            cs.done()
+            try:
+                cs = ia.coordsys()
+                faxis = cs.findaxisbyname('spectral')
+                num_chan = ia.shape()[faxis]
+                exclude_chan_ranges = convert_frequency_ranges_to_channels(combined_rms_exclude, cs, num_chan)
+            finally:
+                cs.done()
         LOG.info("Merged spectral line channel ranges of combined image = {}".format(str(exclude_chan_ranges)))
         include_chan_ranges = invert_ranges(exclude_chan_ranges, num_chan, edge)
         LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_chan_ranges)))
