@@ -1,0 +1,8 @@
+# for CASA ver-6.5.3
+
+astropy == 5.1.1            # https://www.astropy.org/
+pympler == 1.0.1            # https://pympler.readthedocs.io/en/latest/
+csscompressor               # https://pypi.org/project/csscompressor/
+                            # only when running `python setup.py buildmytasks -i`
+bdsf == 1.10.1              # https://github.com/lofar-astron/PyBDSF
+
