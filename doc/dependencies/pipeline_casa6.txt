@@ -1,0 +1,9 @@
+# the casa package versions are not specified here therefore the latest versions from PyPI are used.
+casatools
+casatasks
+casadata
+casaplotms
+casaviewer
+casampi
+almatasks
+casashell
