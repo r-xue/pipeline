@@ -35,6 +35,8 @@ dependencies:
                   # Python 3.8 is used.
   - ipython
   - pip
+  - conda-ecosystem-user-package-isolation  # https://github.com/conda-forge/conda-ecosystem-user-package-isolation-feedstock
+                                            # prevent Python and R from searching for packages outside of the current environment
   - numpy
   - matplotlib
   - scipy
