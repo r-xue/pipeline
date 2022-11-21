@@ -1,8 +1,5 @@
 """Parameter classes of Imaging."""
 
-import inspect
-import logging
-import os
 from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Union
 
 import numpy
@@ -11,7 +8,7 @@ from casatools import coordsys
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.infrastructure import casa_tools
-import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure.utils.debugwrapper import debugwrapper
 
 if TYPE_CHECKING:
     from collections import namedtuple
@@ -26,30 +23,12 @@ if TYPE_CHECKING:
                                                                 'height scan_angle row_separation row_duration'))
     ImageGroup = Dict[str, List[Union['MeasurementSet', int,
                                       List[Union[str, List[List[Union[float, bool]]]]]]]]
-LOG = infrastructure.get_logger(__name__)
-
-
-def __debug(cls: object, obj: object, msg: str):
-    """Output debug strings.
-
-    Args:
-        cls : caller class object
-        obj : object to output
-        msg : action message
-    """
-    outerframes = inspect.getouterframes(inspect.currentframe())
-    for i, frame in enumerate(inspect.getouterframes(inspect.currentframe())):
-        if not frame.filename.endswith(__file__):
-            break
-    source = os.path.basename(outerframes[i].filename)
-    clsname = cls.__class__.__name__
-    LOG.debug(f'{source}[{outerframes[i].lineno}] {msg}: {clsname}.{outerframes[i-1].function}: {type(obj)} {obj} '
-              f'at {outerframes[i].function}')
 
 
 class ObservedList(list):
     """Class inherit list to observe its behavior."""
 
+    # @debugwrapper(msg='list.setitem')
     def __setitem__(self, index: int, value: object):
         """Overrode list.__setitem__().
 
@@ -58,9 +37,8 @@ class ObservedList(list):
             value : object to set at index
         """
         super().__setitem__(index, value)
-        if LOG.level <= logging.DEBUG:
-            __debug(self, value, 'list.setitem')
 
+    # @debugwrapper(msg='list.insert')
     def insert(self, index: int, value: object):
         """Overrode list.insert().
 
@@ -69,9 +47,8 @@ class ObservedList(list):
             value : object to insert at index
         """
         super().insert(index, value)
-        if LOG.level <= logging.DEBUG:
-            __debug(self, value, 'list.insert')
 
+    # @debugwrapper(msg='list.append')
     def append(self, value: object):
         """Overrode list.append().
 
@@ -79,9 +56,8 @@ class ObservedList(list):
             value : object to append
         """
         super().append(value)
-        if LOG.level <= logging.DEBUG:
-            __debug(self, value, 'list.append')
 
+    # @debugwrapper(msg='list.extend')
     def extend(self, value: list):
         """Overrode list.extend().
 
@@ -89,13 +65,12 @@ class ObservedList(list):
             value : object to merge
         """
         super().extend(value)
-        if LOG.level <= logging.DEBUG:
-            __debug(self, value, 'list.extend')
 
 
 class Parameters:
     """Abstract class of Parameter object."""
 
+    @debugwrapper(msg='set')
     def setvalue(self, name: str, value: object):
         """Set value by setattr().
 
@@ -104,8 +79,6 @@ class Parameters:
             value : object
         """
         setattr(self, name, value)
-        if LOG.level <= logging.DEBUG:
-            __debug(self, value, 'set')
 
 
 class CommonParameters(Parameters):
