@@ -10,6 +10,8 @@ import subprocess
 import sys
 
 import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
+from importlib import resources
 
 import casalith
 from .infrastructure import mpihelpers
@@ -226,6 +228,30 @@ def _cluster_details():
             env_details.append(r['ret'])
 
     return env_details
+
+
+def _get_dependency_details(package_list=None):
+    """Get dependency package version/path.
+
+    ref: https://docs.python.org/3.8/library/importlib.metadata.html#metadata
+    """
+    if package_list is None:
+        package_list = ['numpy', 'scipy', 'matplotlib',
+                        'astropy', 'bdsf', 'pympler',
+                        'csscompressor',
+                        'casatools', 'casatasks', 'almatasks', 'casadata']
+
+    package_details = dict.fromkeys(package_list)
+    for r in package_list:
+        try:
+            package_version = version(r)
+            with resources.path(r, '') as p:
+                package_path = p
+            package_details[r] = {'version': package_version, 'path': package_path}
+        except PackageNotFoundError:
+            # unknown or uninstalled
+            pass
+    return package_details
 
 
 casa_version = casalith.version()
