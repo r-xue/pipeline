@@ -19,7 +19,7 @@ from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure import utils
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores',
-           'memory_size', 'pipeline_revision', 'role', 'cluster_details']
+           'memory_size', 'pipeline_revision', 'role', 'cluster_details', 'dependency_details']
 
 
 def _cpu_type():
@@ -266,6 +266,7 @@ memory_size = _memory_size()
 role = _role()
 pipeline_revision = _pipeline_revision()
 ulimit = _ulimit()
+dependency_details = _get_dependency_details()
 
 node_details = {
     'cpu': cpu_type,

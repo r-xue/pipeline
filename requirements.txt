@@ -1,7 +1,8 @@
 #####################################################################################################
-# CASA ver-6.5.3
+# CASA ver-6.5.3 (monolithic)
 #
-# $ PYTHONNOUSERSITE=1 ${casa_dir}/bin/pip3 --use-pep517 --disable-pip-version-check install -r requirements.txt
+# PYTHONNOUSERSITE=1 ${casa_dir}/bin/pip3 --use-pep517 --disable-pip-version-check \
+#    install -r requirements.txt
 #
 #####################################################################################################
 astropy == 5.1.1            # https://www.astropy.org/
