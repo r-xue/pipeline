@@ -62,9 +62,10 @@ dependencies:
   - pytest-cov
   - pytest-pep8
 
-
   - pip:
-    # the casa package versions are not specified here therefore the latest versions from PyPI are used.
+    # the casa package versions are not specified here therefore the latest versions from the specified channel are used.
+    # --index-url https://casa-pip.nrao.edu/repository/pypi-casa-release/simple # latest released version
+    - --index-url https://casa-pip.nrao.edu/repository/pypi-group/simple # eqauivelent to releaseprep
     - casatools
     - casatasks
     - casadata
@@ -73,3 +74,5 @@ dependencies:
     - casampi
     - almatasks
     - casashell
+    - casalith
+    - bdsf-1.10.1-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl # local build .whl, assume it's in the same directory of pipeline.yaml
