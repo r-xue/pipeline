@@ -92,7 +92,7 @@ class CommonParameters(Parameters):
         self._args_spw = None         # Spw selection per MS
         self._dt_dict = None          # Dict[str, DataTableImpl]: Dictionary of input MS and corresponding datatable
         self._edge = None             # List[int]: Edge channel of most recent SDBaselineResults or [0, 0]
-        self._imagemode = None        # str: Input image mode, str
+        self._imagemode = None        # str: Image mode
         self._in_field = None         # str: Comma-separated list of target field names that are extracted
                                       # from all input MSs
         self._infiles = None          # List[str]: List of input files
