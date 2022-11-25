@@ -640,8 +640,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         _rgp.phasecenter, _rgp.cellx, _rgp.celly, _rgp.nx, _rgp.ny, _rgp.org_direction = __image_coord
         return True
 
-    def __executer_imageing_worker(self, _cp: imaging_params.CommonParameters,
-                                   _rgp: imaging_params.ReductionGroupParameters):
+    def __execute_imaging_worker(self, _cp: imaging_params.CommonParameters,
+                                 _rgp: imaging_params.ReductionGroupParameters):
         """Execute imaging worker.
 
         Args:
@@ -1093,7 +1093,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # map coordinate (use identical map coordinate per spw)
         if not _rgp.coord_set and not self.__initialize_coord_set(_cp, _rgp):
             return False
-        self.__executer_imageing_worker(_cp, _rgp)
+        self.__execute_imaging_worker(_cp, _rgp)
         return True
 
     def __set_asdm_to_outcome_vis_if_imagemode_is_ampcal(self, _cp: imaging_params.CommonParameters,
