@@ -1661,7 +1661,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         return True
 
     def __obtain_t_on_actual(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
-        """Obtain Ton actual. A sub method of calculate_theoretical_image_rms().
+        """Obtain T_on actual. A sub method of calculate_theoretical_image_rms().
 
         Args:
             _tirp : Parameter object of calculate_theoretical_image_rms()
@@ -1753,7 +1753,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            flag of loop action[go|halt|skip]
+            Tupled flag of loop action [go|halt|skip].
+                GO   : (False, False)
+                HALT : (True,  True)
+                SKIP : (False, True)
         """
         _tirp.msobj = _tirp.context.observing_run.get_ms(name=_tirp.infile)
         __callist = _tirp.context.observing_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_ALL])
