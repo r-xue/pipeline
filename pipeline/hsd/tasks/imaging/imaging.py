@@ -119,13 +119,13 @@ class SDImagingInputs(vdp.StandardInputs):
 
         Args:
             context : Pipeline context
-            mode : Spectrum mode. Defaults to None.
-            restfreq : Rest frequency. Defaults to None.
+            mode : Spectrum mode. Defaults to None, but in effect to 'line'.
+            restfreq : Rest frequency. Defaults to None, it executes without rest frequency.
             infiles : String joined infiles list. Defaults to None.
-            field : Field ID. Defaults to None.
-            spw : Spectral window. Defaults to None.
+            field : Field ID. Defaults to None, all fields are used.
+            spw : Spectral window. Defaults to None, all spws are used.
             org_direction : Directions of the origin for moving targets.
-                            Defaults to None.
+                            Defaults to None, it doesn't have some moving targets.
         """
         super(SDImagingInputs, self).__init__()
 
