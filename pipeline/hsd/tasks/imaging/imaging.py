@@ -1535,6 +1535,9 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Returns:
             Result flag
+        
+        Raises:
+            BaseException : raises when it cannot find a sky caltable applied.
         """
         _tirp.t_sub_on = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.row_duration, _tirp.time_unit))[0]
         __sky_field = _tirp.calmsobj.calibration_strategy['field_strategy'][_tirp.fieldid]
