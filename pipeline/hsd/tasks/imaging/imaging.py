@@ -1275,7 +1275,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def get_imagename(self, source: str, spwids: List[int],
                       antenna: str=None, asdm: str=None, stokes: str=None, specmode: str='cube') -> str:
-        """Generate image filename.
+        """Generate a filename of the image.
 
         Args:
             source : Source name
@@ -1289,7 +1289,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             ValueError: if asdm is not provided for ampcal
 
         Returns:
-            Image filename
+            A filename of the image
         """
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
@@ -1343,7 +1343,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Return a list of channel ranges to calculate image statistics.
 
         Args:
-            imagename : A name of image
+            imagename : A filename of the image
             combined_rms_exclude : A list of frequency ranges to exclude
             edge : The left and right edge channels to exclude. Defaults to (0, 0).
         Retruns:
