@@ -863,7 +863,7 @@ class SDImaging(basetask.StandardTaskTemplate):
     def __generate_parameters_for_calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                                         _rgp: imaging_params.ReductionGroupParameters,
                                                         _pp: imaging_params.PostProcessParameters):
-        """Generate parameters for calculate sensitivity.
+        """Generate parameters to calculate sensitivity.
 
         Args:
             _cp : Common parameter object of prepare()
@@ -2038,12 +2038,12 @@ def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, 
 
 def invert_ranges(id_range_list: List[Tuple[int, int]],
                   num_ids: int, edge: Tuple[int, int]) -> List[int]:
-    """Return invert ID ranges.
+    """Return inverted ID ranges.
 
     Args:
         id_range_list : A list of min/max ID ranges to invert. The list should
             be sorted in the ascending order of min IDs.
-        num_ids : A number of IDs to consider
+        num_ids : Number of IDs to consider
         edge : The left and right edges to exclude
 
     Returns:
