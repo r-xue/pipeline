@@ -232,7 +232,7 @@ class ReductionGroupParameters(Parameters):
         self._channelmap_range_list = None  # List[List[List[Union[float, bool]]]]: List of channel map range
         self._combined = None               # CombinedImageParameters: CombinedImageParameters object
         self._coord_set = False             # bool: Flag of Coord setting
-        self._correlations = None           # str: A string figures correlation
+        self._correlations = None           # str: A joined list of correlations
         self._fieldid_list = None           # List[int]: List of field ID
         self._fieldids = None               # List[int]: List of field ID
         self._image_group = None            # ImageGroup: Dictionary of image group of reduction group
