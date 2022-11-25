@@ -197,6 +197,14 @@ class CommonParameters(Parameters):
     def results(self, value: 'SDImagingResults'):
         self.setvalue('_results', value)
 
+    def is_not_nro(self) -> numpy.bool_:
+        """Return True if is_nro is False.
+
+        Returns:
+            Data is from NRO or not.
+        """
+        return not self._is_nro
+
 
 class ReductionGroupParameters(Parameters):
     """Parameters of Reduction Group Processing."""

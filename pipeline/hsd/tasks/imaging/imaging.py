@@ -193,7 +193,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     self.__set_asdm_to_outcome_vis_if_imagemode_is_ampcal(_cp, _rgp)
 
                     # NRO doesn't need per-antenna Stokes I images
-                    if not self.__is_nro(_cp):
+                    if _cp.is_not_nro():
                         self.__append_result(_cp, _rgp)
 
                 if self.__has_nro_imager_result_outcome(_rgp):
@@ -233,9 +233,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 self.__append_result(_cp, _rgp)
 
             # NRO specific: generate combined image for each correlation
-            if self.__is_nro(_cp):
-                if not self.__execute_combine_images_for_nro(_cp, _rgp, _pp):
-                    continue
+            if _cp.is_nro and not self.__execute_combine_images_for_nro(_cp, _rgp, _pp):
+                continue
 
         return _cp.results
 
@@ -1002,7 +1001,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                           bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
-        __sensitivity_info = SensitivityInfo(__sensitivity, _pp.is_representative_spw, _pp.stat_freqs, (not _cp.is_nro))
+        __sensitivity_info = SensitivityInfo(__sensitivity, _pp.is_representative_spw, _pp.stat_freqs, (_cp.is_not_nro()))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
                                      spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes, validsp=_pp.validsps, rms=_pp.rmss,
@@ -1145,17 +1144,6 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
         """
         _cp.results.append(_rgp.imager_result)
-
-    def __is_nro(self, _cp: imaging_params.CommonParameters) -> bool:
-        """Check the data is for NRO.
-
-        Args:
-            _cp : Common parameter object of prepare()
-
-        Returns:
-            Flag of NRO
-        """
-        return _cp.is_nro
 
     def analyse(self, result: 'SDImagingResults') -> 'SDImagingResults':
         """Override method of basetask.
