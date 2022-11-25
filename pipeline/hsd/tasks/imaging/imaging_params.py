@@ -802,8 +802,8 @@ class TheoreticalImageRmsParameters(Parameters):
         """
         self._cqa = casa_tools.quanta       # LoggingQuanta: LoggingQuanta object
         self._failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
-        self._sq_rms = 0.0                  # float: Square RMS value
-        self._N = 0.0                       # float: RMS counter
+        self._sq_rms = 0.0                  # float: Square of RMS
+        self._N = 0.0                       # float: Number of data for statistics
         self._time_unit = 's'               # str: Time unit
         self._ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: Ang unit
         self._cx_val = self.cqa.getvalue(_pp.qcell[0])[0]   # float: cx
@@ -819,7 +819,6 @@ class TheoreticalImageRmsParameters(Parameters):
         self._raster_info = None            # RasterInfo: RasterInfo object
         self._msobj = None                  # MeasurementSet: MeasuremetSet
         self._calmsobj = None               # MeasurementSet: Calibrated MeasurementSet
-        self._polids = None                 # List[int]: Polarization ID
         self._error_msg = None              # str: Error message
         self._dt = None                     # DataTableImpl: Datatable object
         self._index_list = None             # numpy.ndarray[int64]: Index list
@@ -827,7 +826,7 @@ class TheoreticalImageRmsParameters(Parameters):
         self._mean_tsys_per_pol = None      # numpy.ndarray[float]: Mean of Tsys per polarization
         self._width = None                  # float: Width
         self._height = None                 # float: Height
-        self._t_on_act = None               # float: Ton actual
+        self._t_on_act = None               # float: T_on actual
         self._calst = None                  # IntervalCalState: Interval calibration state object
         self._t_sub_on = None               # float: Tsub on
         self._t_sub_off = None              # float: Tsub off
