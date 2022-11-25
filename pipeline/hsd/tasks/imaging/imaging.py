@@ -1588,6 +1588,9 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Returns:
             Jy/K value or failure flag
+        
+        Raises:
+            BaseException : raises when it cannot find a Jy/K caltable applied.
         """
         if _pp.brightnessunit == 'K':
             __jy_per_k = 1.0
