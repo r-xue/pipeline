@@ -86,19 +86,19 @@ class CommonParameters(Parameters):
 
     def __init__(self):
         """Initialize an object."""
-        self._args_spw = None         # spw selection per MS
-        self._dt_dict = None          # Dict[str, DataTableImpl]: dictionary of input MS and corresponding datatable
-        self._edge = None             # List[int]: edge channel of most recent SDBaselineResults or [0, 0]
-        self._imagemode = None        # str: input image mode, str
-        self._in_field = None         # str: comma-separated list of target field names that are extracted
+        self._args_spw = None         # Spw selection per MS
+        self._dt_dict = None          # Dict[str, DataTableImpl]: Dictionary of input MS and corresponding datatable
+        self._edge = None             # List[int]: Edge channel of most recent SDBaselineResults or [0, 0]
+        self._imagemode = None        # str: Input image mode, str
+        self._in_field = None         # str: Comma-separated list of target field names that are extracted
                                       # from all input MSs
-        self._infiles = None          # List[str]: list of input files
-        self._is_nro = None           # numpy.bool_: flag of NRO data
-        self._ms_list = None          # List[MeasurementSet]: list of ms to process
-        self._ms_names = None         # List[str]: list of name of ms in ms_list
-        self._reduction_group = None  # Dict[int, MSReductionGroupDesc]: eduction group object
-        self._restfreq_list = None    # Union[str, List[str]]: list of rest frequency
-        self._results = None          # SDImagingResults: instance of SDImagingResults
+        self._infiles = None          # List[str]: List of input files
+        self._is_nro = None           # numpy.bool_: Flag of NRO data
+        self._ms_list = None          # List[MeasurementSet]: List of ms to process
+        self._ms_names = None         # List[str]: List of name of ms in ms_list
+        self._reduction_group = None  # Dict[int, MSReductionGroupDesc]: Eduction group object
+        self._restfreq_list = None    # Union[str, List[str]]: List of rest frequency
+        self._results = None          # SDImagingResults: Instance of SDImagingResults
 
     @property
     def args_spw(self): return self._args_spw
@@ -215,35 +215,35 @@ class ReductionGroupParameters(Parameters):
         self._antids = None                 # List[int]: List of antenna ID
         self._ant_name = None               # str: Name of antenna
         self._asdm = None                   # str: ASDM name of reference MS
-        self._cellx = None                  # Dict[str, float]: cell size x, {'unit': 'arcsec', 'value': 6.4}
-        self._celly = None                  # Dict[str, float]: cell size y, {'unit': 'arcsec', 'value': 6.4}
+        self._cellx = None                  # Dict[str, float]: Cell size x, {'unit': 'arcsec', 'value': 6.4}
+        self._celly = None                  # Dict[str, float]: Cell size y, {'unit': 'arcsec', 'value': 6.4}
         self._chanmap_range_list = None     # List[List[List[Union[float, bool]]]]: List of channel map range
         self._channelmap_range_list = None  # List[List[List[Union[float, bool]]]]: List of channel map range
         self._combined = None               # CombinedImageParameters: CombinedImageParameters object
         self._coord_set = False             # bool: Flag of Coord setting
-        self._correlations = None           # str: a string figures correlation
+        self._correlations = None           # str: A string figures correlation
         self._fieldid_list = None           # List[int]: List of field ID
         self._fieldids = None               # List[int]: List of field ID
-        self._image_group = None            # ImageGroup: dictionary of image group of reduction group
-        self._imagename = None              # str: image name
-        self._imagename_nro = None          # Optional[str]: image name for NRO
-        self._imager_result = None          # SDImagingResultItem: result object of imager
-        self._imager_result_nro = None      # SDImagingResultItem: result object of imager for NRO
+        self._image_group = None            # ImageGroup: Dictionary of image group of reduction group
+        self._imagename = None              # str: Image name
+        self._imagename_nro = None          # Optional[str]: Image name for NRO
+        self._imager_result = None          # SDImagingResultItem: Result object of imager
+        self._imager_result_nro = None      # SDImagingResultItem: Result object of imager for NRO
         self._member_list = None            # List[int]: List of reduction group ID
-        self._members = None                # List[List[MeasurementSet, int, List[str]]]: image group of reduction group
+        self._members = None                # List[List[MeasurementSet, int, List[str]]]: Image group of reduction group
         self._msobjs = None                 # List[MeasurementSet]: List of MeasurementSet
-        self._name = None                   # str: name of MeasurementSet
+        self._name = None                   # str: Name of MeasurementSet
         self._nx = None                     # Union[int, numpy.int64]: X of image shape
         self._ny = None                     # Union[int, numpy.int64]: Y of image shape
-        self._org_direction = None          # Direction: directions of the origin for moving targets, like an ephemeris object
-        self._phasecenter = None            # str: phase center of coord set
+        self._org_direction = None          # Direction: Directions of the origin for moving targets, like an ephemeris object
+        self._phasecenter = None            # str: Phase center of coord set
         self._polslist = None               # List[List[str]]: List of Polarization
         self._pols_list = None              # List[List[str]]: List of Polarization
-        self._ref_ms = None                 # MeasurementSet: reference MS object
+        self._ref_ms = None                 # MeasurementSet: Reference MS object
         self._restfreq = None               # str: Rest frequency
         self._rmss = None                   # List[float]: List of RMSs
-        self._source_name = None            # str: name of source like 'M100'
-        self._specmode = None               # str: spec mode like 'cube'
+        self._source_name = None            # str: Name of source like 'M100'
+        self._specmode = None               # str: Spec mode like 'cube'
         self._spwid_list = None             # List[int]: List of Spectral window IDs
         self._spwids = None                 # List[int]: List of Spectral window IDs
         self._stokes_list = None            # List[str]: List of stokes
@@ -584,11 +584,11 @@ class ToCombineImageParameters(Parameters):
 
     def __init__(self):
         """Initialize an object."""
-        self._images = ObservedList()               # ObservedList[str]: list of image name
-        self._images_nro = ObservedList()           # ObservedList[str]: list of image name for NRO
-        self._org_directions = ObservedList()       # ObservedList[Direction]: list of origins
-        self._org_directions_nro = ObservedList()   # ObservedList[Direction]: list of origins for NRO
-        self._specmodes = ObservedList()            # ObservedList[str]: list of spec mode
+        self._images = ObservedList()               # ObservedList[str]: List of image name
+        self._images_nro = ObservedList()           # ObservedList[str]: List of image name for NRO
+        self._org_directions = ObservedList()       # ObservedList[Direction]: List of origins
+        self._org_directions_nro = ObservedList()   # ObservedList[Direction]: List of origins for NRO
+        self._specmodes = ObservedList()            # ObservedList[str]: List of spec mode
 
     @property
     def images(self) -> 'ObservedList[str]': return self._images
@@ -626,25 +626,25 @@ class PostProcessParameters(Parameters):
 
     def __init__(self):
         """Initialize an object."""
-        self._beam = None                           # Dict[str, Dict[str, float]]: beam data
-        self._brightnessunit = None                 # str: brightness unit like 'Jy/beam'
-        self._chan_width = None                     # numpy.float64: channel width of faxis
-        self._cs = None                             # coordsys: coordsys object
-        self._faxis = None                          # int: spectral axis which is found
-        self._imagename = None                      # str: image name
-        self._image_rms = None                      # float: image statistics
+        self._beam = None                           # Dict[str, Dict[str, float]]: Beam data
+        self._brightnessunit = None                 # str: Brightness unit like 'Jy/beam'
+        self._chan_width = None                     # numpy.float64: Channel width of faxis
+        self._cs = None                             # coordsys: Coordsys object
+        self._faxis = None                          # int: Spectral axis which is found
+        self._imagename = None                      # str: Image name
+        self._image_rms = None                      # float: Image statistics
         self._include_channel_range = None          # List[int]: List of channel ranges to calculate image statistics
         self._is_representative_source_spw = None   # bool: Flag of representative source spw
         self._is_representative_spw = None          # bool: Flag of representative spw
         self._nx = None                             # numpy.int64: X of image shape
         self._ny = None                             # numpy.int64: Y of image shape
-        self._org_direction = None                  # Direction: directions of the origin for moving targets
-        self._qcell = None                          # Dict[str, Dict[str, float]]: cell data
-        self._raster_infos = None                   # List[RasterInfo]: list of RasterInfo(center/width/height/angle/row)
-        self._region = None                         # str: region to calculate statistics
+        self._org_direction = None                  # Direction: Directions of the origin for moving targets
+        self._qcell = None                          # Dict[str, Dict[str, float]]: Cell data
+        self._raster_infos = None                   # List[RasterInfo]: List of RasterInfo(center/width/height/angle/row)
+        self._region = None                         # str: Region to calculate statistics
         self._rmss = None                           # List[float]: List of RMSs
-        self._stat_chans = None                     # str: converted string from include_channel_range
-        self._stat_freqs = None                     # str: statistics frequencies
+        self._stat_chans = None                     # str: Converted string from include_channel_range
+        self._stat_freqs = None                     # str: Statistics frequencies
         self._theoretical_rms = None                # Dict[str, float]: Theoretical RMSs
         self._validsps = None                       # List[int]: List of valid spectrum
 
@@ -793,31 +793,31 @@ class TheoreticalImageRmsParameters(Parameters):
         self._failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
         self._sq_rms = 0.0                  # float: Square RMS value
         self._N = 0.0                       # float: RMS counter
-        self._time_unit = 's'               # str: time unit
-        self._ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: ang unit
+        self._time_unit = 's'               # str: Time unit
+        self._ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: Ang unit
         self._cx_val = self.cqa.getvalue(_pp.qcell[0])[0]   # float: cx
         self._cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]  # float: cy
-        self._bandwidth = numpy.abs(_pp.chan_width)         # float: band width
-        self._context = context                             # Context: pipeline context
+        self._bandwidth = numpy.abs(_pp.chan_width)         # float: Band width
+        self._context = context                             # Context: Pipeline context
         self._is_nro = sdutils.is_nro(context)              # bool: NRO flag
-        self._infile = None                 # str: input file
-        self._antid = None                  # int antenna ID
-        self._fieldid = None                # int: field ID
-        self._spwid = None                  # int: spectrum ID
-        self._pol_names = None              # List[str]: polarization names
+        self._infile = None                 # str: Input file
+        self._antid = None                  # int Antenna ID
+        self._fieldid = None                # int: Field ID
+        self._spwid = None                  # int: Spectrum ID
+        self._pol_names = None              # List[str]: Polarization names
         self._raster_info = None            # RasterInfo: RasterInfo object
         self._msobj = None                  # MeasurementSet: MeasuremetSet
-        self._calmsobj = None               # MeasurementSet: calibrated MeasurementSet
-        self._polids = None                 # List[int]: polarization ID
-        self._error_msg = None              # str: error message
-        self._dt = None                     # DataTableImpl: datatable object
-        self._index_list = None             # numpy.ndarray[int64]: index list
-        self._effBW = None                  # float: effective BW
-        self._mean_tsys_per_pol = None      # numpy.ndarray[float]: mean of Tsys per polarization
-        self._width = None                  # float: width
-        self._height = None                 # float: height
+        self._calmsobj = None               # MeasurementSet: Calibrated MeasurementSet
+        self._polids = None                 # List[int]: Polarization ID
+        self._error_msg = None              # str: Error message
+        self._dt = None                     # DataTableImpl: Datatable object
+        self._index_list = None             # numpy.ndarray[int64]: Index list
+        self._effBW = None                  # float: Effective BW
+        self._mean_tsys_per_pol = None      # numpy.ndarray[float]: Mean of Tsys per polarization
+        self._width = None                  # float: Width
+        self._height = None                 # float: Height
         self._t_on_act = None               # float: Ton actual
-        self._calst = None                  # IntervalCalState: interval calibration state object
+        self._calst = None                  # IntervalCalState: Interval calibration state object
         self._t_sub_on = None               # float: Tsub on
         self._t_sub_off = None              # float: Tsub off
 
