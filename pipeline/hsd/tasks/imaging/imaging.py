@@ -7,6 +7,8 @@ from numbers import Number
 from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
 
 import numpy
+from scipy import interpolate
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -27,7 +29,6 @@ from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
                                         imaging_params, resultobjects,
                                         sdcombine, weighting, worker)
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
-from scipy import interpolate
 
 if TYPE_CHECKING:
     from casatools import coordsys
