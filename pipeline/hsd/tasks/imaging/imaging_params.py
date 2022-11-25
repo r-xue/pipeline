@@ -26,7 +26,10 @@ if TYPE_CHECKING:
 
 
 class ObservedList(list):
-    """Class inherit list to observe its behavior."""
+    """Class inherit list to observe its behavior.
+    
+    This class intends to observe/output list stuff for debugging more easier.
+    If you want to search a needle in a haystack, please uncomment out @debugwrapper()."""
 
     # @debugwrapper(msg='list.setitem')
     def __setitem__(self, index: int, value: object):
