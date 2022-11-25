@@ -1071,10 +1071,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         _rgp.imagename = self.get_imagename(_rgp.source_name, _rgp.combined.v_spws_unique, specmode=_rgp.specmode)
 
     def __skip_this_loop(self, _rgp: imaging_params.ReductionGroupParameters) -> bool:
-        """Check to skip combine.
+        """Determine whether combine should be skipped.
 
         Args:
             _rgp : Reduction group parameter object of prepare()
+        
+        Returns:
+            A boolean flag of determination whether the loop should be skipped or not.
         """
         if self.inputs.is_ampcal:
             LOG.info("Skipping combined image for the amplitude calibrator.")
