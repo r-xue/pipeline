@@ -1118,22 +1118,22 @@ class SDImaging(basetask.StandardTaskTemplate):
                 _rgp.imager_result.outcome['vis'] = _rgp.asdm
 
     def __has_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> bool:
-        """Check imager_result.outcome.
+        """Check whether imager_result.outcome has some value or not.
 
         Args:
             _rgp : Reduction group parameter object of prepare()
         Returns:
-            result of check
+            True if imager_result.outcome has some value.
         """
         return _rgp.imager_result.outcome is not None
 
     def __has_nro_imager_result_outcome(self, _rgp: imaging_params.ReductionGroupParameters) -> bool:
-        """Check imager_result_nro.outcome.
+        """Check whether imager_result_nro.outcome has some value or not.
 
         Args:
             _rgp : Reduction group parameter object of prepare()
         Returns:
-            result of check
+            True if imager_result_nro.outcome has some value.
         """
         return _rgp.imager_result_nro is not None and _rgp.imager_result_nro.outcome is not None
 
