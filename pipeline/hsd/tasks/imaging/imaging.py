@@ -71,7 +71,7 @@ class SDImagingInputs(vdp.StandardInputs):
         """Get fields as a string.
 
         Args:
-            unprocessed : unprocessed fields
+            unprocessed : Unprocessed fields
 
         Returns:
             fields as a string
@@ -118,13 +118,13 @@ class SDImagingInputs(vdp.StandardInputs):
         """Initialize an object.
 
         Args:
-            context : pipeline Context
-            mode : spectrum mode. Defaults to None.
-            restfreq : rest frequency. Defaults to None.
-            infiles : string joined infiles list. Defaults to None.
-            field : field ID. Defaults to None.
-            spw : spectral window. Defaults to None.
-            org_direction : directions of the origin for moving targets.
+            context : Pipeline context
+            mode : Spectrum mode. Defaults to None.
+            restfreq : Rest frequency. Defaults to None.
+            infiles : String joined infiles list. Defaults to None.
+            field : Field ID. Defaults to None.
+            spw : Spectral window. Defaults to None.
+            org_direction : Directions of the origin for moving targets.
                             Defaults to None.
         """
         super(SDImagingInputs, self).__init__()
@@ -311,7 +311,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         # set some information to image header
         image_item = result.outcome['image']
         imagename = image_item.imagename
-        # check if data is NRO
+
+        # is_nro() returns True if data is from NRO, then the 'virtspw' flag must be False.
         virtspw = not sdutils.is_nro(context)
 
         for name in (imagename, imagename + '.weight'):
@@ -335,7 +336,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         Search results and retrieve edge parameter from the most recent SDBaselineResults if it exists.
 
         Args:
-            _cp : common parameters object of prepare()
+            _cp : Common parameters object of prepare()
 
         Returns:
             A list of edge
@@ -381,8 +382,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """If data is from NRO, then get correlations.
 
         Args:
-            _cp : common parameters object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameters object of prepare()
+            _rgp : Reduction group parameter object of prepare()
 
         Returns:
             joined list of correlations
@@ -403,8 +404,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Get image group of reduction group.
 
         Args:
-            _cp : common parameters object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameters object of prepare()
+            _rgp : Reduction group parameter object of prepare()
 
         Returns:
             image group dictionary, value is list of [ms, antenna, spwid,
@@ -435,8 +436,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         Note: _cp.ms_list is set in this function.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         LOG.debug('Processing Reduction Group {}'.format(_rgp.group_id))
         LOG.debug('Group Summary:')
@@ -508,8 +509,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Pick restfreq from restfreq_list.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         if isinstance(_cp.restfreq_list, list):
             __v_spwid = self.inputs.context.observing_run.real2virtual_spw_id(_rgp.spwids[0], _rgp.msobjs[0])
@@ -535,8 +536,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Generate image name based on virtual spw id and set it to RGP.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         __v_spwids_unique = numpy.unique(_rgp.v_spwids)
         assert len(__v_spwids_unique) == 1
@@ -554,8 +555,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Set values of an item of image group into RGP.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         _rgp.msobjs = [x[0] for x in _rgp.members]
         _rgp.antids = [x[1] for x in _rgp.members]
@@ -607,8 +608,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Initialize weight column of MS.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         __origin_ms = [msobj.origin_ms for msobj in _rgp.msobjs]
         __work_ms = [msobj.name for msobj in _rgp.msobjs]
@@ -625,8 +626,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         if initialize is fault, current loop of reduction group goes to next loop immediately.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         Returns:
             A flag initialize succeeded or not
         """
@@ -645,8 +646,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Execute imaging worker.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         # register data for combining
         _rgp.combined.extend(_cp, _rgp)
@@ -685,8 +686,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Make grid table for gridding.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         LOG.info('Additional Step. Make grid_table')
         _rgp.imagename = _rgp.imager_result.outcome['image'].imagename
@@ -741,7 +742,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Add image list to combine.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         if os.path.exists(_rgp.imagename) and os.path.exists(_rgp.imagename + '.weight'):
             _rgp.tocombine.images.append(_rgp.imagename)
@@ -753,8 +754,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Define RMS range and finalize worker result.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
         with casa_tools.ImageReader(_rgp.imagename) as ia:
@@ -777,8 +778,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Add image list to combine and finalize worker result.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         # Imaging was successful, proceed following steps
         # add image list to combine
@@ -801,9 +802,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Make grid table on post process.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _pp : imaging post process parameters of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _pp : Imaging post process parameters of prepare()
         """
         LOG.info('Additional Step. Make grid_table')
         _pp.imagename = _rgp.imager_result.outcome['image'].imagename
@@ -863,9 +864,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Generate parameters for calculate sensitivity.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _pp : imaging post process parameters of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _pp : Imaging post process parameters of prepare()
         """
         LOG.info('Calculate sensitivity of combined image')
         with casa_tools.ImageReader(_pp.imagename) as ia:
@@ -908,7 +909,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Combine images.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         LOG.info('Combine images of Source {} Spw {:d}'.format(_rgp.source_name, _rgp.combined.v_spws[REF_MS_ID]))
         __combine_inputs = sdcombine.SDImageCombineInputs(self.inputs.context, inimages=_rgp.tocombine.images,
@@ -924,9 +925,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Estimate sensitivity before calculation.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _pp : imaging post process parameters of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _pp : Imaging post process parameters of prepare()
         """
         __rep_bw = _rgp.ref_ms.representative_target[2]
         __rep_source_name, __rep_spwid = _rgp.ref_ms.get_representative_source_spw()
@@ -972,9 +973,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Calculate channel and frequency ranges of line free channels.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _pp : imaging post process parameters of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _pp : Imaging post process parameters of prepare()
         """
         __ref_pixel = _pp.cs.referencepixel()['numeric']
         __freqs = []
@@ -1016,9 +1017,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Combine images for NRO data.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _pp : imaging post process parameters of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _pp : Imaging post process parameters of prepare()
         Returns:
             False if images for NRO is not exists
         """
@@ -1054,7 +1055,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Prepare before combining images.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         # reference MS
         _rgp.ref_ms = self.inputs.context.observing_run.get_ms(name=_rgp.combined.infiles[REF_MS_ID])
@@ -1068,7 +1069,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Check to skip combine.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         if self.inputs.is_ampcal:
             LOG.info("Skipping combined image for the amplitude calibrator.")
@@ -1084,8 +1085,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Execute imaging per antenna, source.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         Returns:
             False if coodinate setting is fault before execute imaging
         """
@@ -1101,8 +1102,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Set ASDM to vis.outcome if imagemode of the vis is AMPCAL.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         if self.inputs.is_ampcal:
             if len(_cp.infiles) == 1 and (_rgp.asdm not in ['', None]):
@@ -1112,7 +1113,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Check imager_result.outcome.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         Returns:
             result of check
         """
@@ -1122,7 +1123,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Check imager_result_nro.outcome.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         Returns:
             result of check
         """
@@ -1132,7 +1133,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Detect contamination of image.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         # PIPE-251: detect contamination
         detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'])
@@ -1141,7 +1142,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Append result to RGP.
 
         Args:
-            _rgp : reduction group parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
         """
         _cp.results.append(_rgp.imager_result)
 
@@ -1149,7 +1150,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Check the data is for NRO.
 
         Args:
-            _cp : common parameter object of prepare()
+            _cp : Common parameter object of prepare()
 
         Returns:
             Flag of NRO
@@ -1160,10 +1161,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Override method of basetask.
 
         Args:
-            result : result object
+            result : Result object
 
         Returns:
-            result object
+            Result object
         """
         return result
 
@@ -1175,9 +1176,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         This method combines deviation mask, channel map ranges, and edges.
 
         Args
-            to_frame : the frequency frame of output
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            to_frame : The frequency frame of output
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
 
         Returns:
             a list of combined frequency ranges in output frequency frame (to_frame),
@@ -1291,7 +1292,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             ValueError: if asdm is not provided for ampcal
 
         Returns:
-            image filename
+            Image filename
         """
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
@@ -1374,7 +1375,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         size in each direction.
 
         Arg:
-            _pp : imaging post process parameters of prepare()
+            _pp : Imaging post process parameters of prepare()
 
         Retruns:
             Region expression string of a rotating box.
@@ -1434,8 +1435,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         infile, antenna, field, and SpW IDs in input parameter lists.
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
 
         Returns:
             A list of RasterInfo. If raster information could not be obtained,
@@ -1471,9 +1472,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Calculate theoretical RMS of an image (PIPE-657).
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _pp : imaging post process parameters of prepare()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _pp : Imaging post process parameters of prepare()
 
         Note: the number of elements in _rgp.combined.antids, fieldids, spws, and pols should be equal
               to that of infiles
@@ -1533,10 +1534,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain TsubON and TsubOFF. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            result flag
+            Result flag
         """
         _tirp.t_sub_on = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.row_duration, _tirp.time_unit))[0]
         __sky_field = _tirp.calmsobj.calibration_strategy['field_strategy'][_tirp.fieldid]
@@ -1585,8 +1586,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain Jy/K. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _pp : imaging post process parameters of prepare()
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _pp : Imaging post process parameters of prepare()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
             Jy/K value or failure flag
@@ -1634,11 +1635,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain factors by convlution function. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _pp : imaging post process parameters of prepare()
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _pp : Imaging post process parameters of prepare()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            result flag
+            Result flag
         """
         conv2d = 0.3193 if _tirp.is_nro else 0.1597
         conv1d = 0.5592 if _tirp.is_nro else 0.3954
@@ -1660,7 +1661,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain Ton actual. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         unit = _tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
         t_on_tot = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.cqa.quantity(
@@ -1685,7 +1686,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain calibration tables applied. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         __calto = callibrary.CalTo(vis=_tirp.calmsobj.name, field=str(_tirp.fieldid))
         _tirp.calst = _tirp.context.callibrary.applied.trimmed(_tirp.context, __calto)
@@ -1694,7 +1695,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain Wx and Wy. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         _tirp.width = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.width, _tirp.ang_unit))[0]
         _tirp.height = _tirp.cqa.getvalue(_tirp.cqa.convert(_tirp.raster_info.height, _tirp.ang_unit))[0]
@@ -1703,7 +1704,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain average Tsys. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         _tirp.mean_tsys_per_pol = _tirp.dt.getcol('TSYS').take(_tirp.index_list, axis=-1).mean(axis=-1)
         LOG.info('Mean Tsys = {} K'.format(str(_tirp.mean_tsys_per_pol)))
@@ -1712,7 +1713,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Obtain effective BW. A sub method of calculate_theoretical_image_rms().
 
         Args:
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         with casa_tools.MSMDReader(_tirp.infile) as __msmd:
             __ms_chanwidth = numpy.abs(__msmd.chanwidths(_tirp.spwid).mean())
@@ -1744,9 +1745,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """Initialize imaging_params.TheoreticalImageRmsParameters for the loop of calculate_theoretical_image_rms().
 
         Args:
-            _cp : common parameter object of prepare()
-            _rgp : reduction group parameter object of prepare()
-            _tirp : parameter object of calculate_theoretical_image_rms()
+            _cp : Common parameter object of prepare()
+            _rgp : Reduction group parameter object of prepare()
+            _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
             flag of loop action[go|halt|skip]
@@ -1789,12 +1790,12 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     Args:
         datatable : DataTable instance
         msobj : MS class instance to process
-        fieldid : a field ID to process
-        spwid : an SpW ID to process
-        antid : an antenna ID to process
+        fieldid : A field ID to process
+        spwid : An SpW ID to process
+        antid : An antenna ID to process
 
     Returns:
-        a named Tuple of RasterInfo
+        A named Tuple of RasterInfo
     """
     origin_basename = os.path.basename(msobj.origin_ms)
     metadata = rasterutil.read_datatable(datatable)
@@ -1955,7 +1956,7 @@ def convert_frequency_ranges_to_channels(range_list: List[Tuple[float, float]],
         range_list : A list of min/max frequency ranges,
             e.g., [[fmin0,fmax0],[fmin1, fmax1],...]
         cs : A coordinate system to convert world values to pixel one
-        num_chan : the number of channels in frequency axis
+        num_chan : The number of channels in frequency axis
 
     Returns:
         A list of min/max channels, e.g., [[imin0, imax0],[imin1,imax1],...]
@@ -2004,15 +2005,15 @@ def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, 
     """Merge overlapping ranges in range_list.
 
     Args:
-        range_list : a list of ranges to merge, e.g., [ [min0,max0], [min1,max1], .... ]
-                    each range in the list should be in ascending order (min0 <= max0)
-                    there is no assumption in the order of ranges, e.g., min0 w.r.t min1
+        range_list : A list of ranges to merge, e.g., [ [min0,max0], [min1,max1], .... ]
+                    Each range in the list should be in ascending order (min0 <= max0)
+                    There is no assumption in the order of ranges, e.g., min0 w.r.t min1
 
     Raises:
         ValueError: to few elements in the range description, such as [] or [min0]
 
     Returns:
-        a list of merged ranges
+        A list of merged ranges
         e.g., [[min_merged0,max_marged0], [min_merged1,max_merged1], ....]
     """
     # LOG.info("#####Merge ranges: {}".format(str(range_list)))
