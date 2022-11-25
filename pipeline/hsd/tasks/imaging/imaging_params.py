@@ -786,7 +786,7 @@ class TheoreticalImageRmsParameters(Parameters):
     """ Parameter class of calculate_theoretical_image_rms()."""
 
     def __init__(self, _pp: PostProcessParameters, context: 'Context'):
-        """Initiarize the object.
+        """Initialize the object.
 
         Args:
             _pp : imaging post process parameters of prepare()
