@@ -1594,7 +1594,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         if _pp.brightnessunit == 'K':
             __jy_per_k = 1.0
-            LOG.info('No Kelvin to Jansky conversion was performed to the image.')
+            LOG.info('No Jy/K conversion was performed to the image.')
         else:
             try:
                 __k2jytab = ''
