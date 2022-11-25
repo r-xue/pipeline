@@ -1516,7 +1516,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             # obtain factors by convolution function
             # (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
-            if not self.__obtain_factors_by_convolution_function(_pp, _tirp):
+            if not self.__obtain_and_set_factors_by_convolution_function(_pp, _tirp):
                 return _tirp.failed_rms
 
         if _tirp.N == 0:
@@ -1630,9 +1630,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info('Jy/K factor = {}'.format(__jy_per_k))  # obtain Jy/k factor
         return __jy_per_k
 
-    def __obtain_factors_by_convolution_function(self, _pp: imaging_params.PostProcessParameters,
-                                                 _tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
-        """Obtain factors by convlution function. A sub method of calculate_theoretical_image_rms().
+    def __obtain_and_set_factors_by_convolution_function(self, _pp: imaging_params.PostProcessParameters,
+                                                         _tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
+        """Obtain factors by convlution function, and set it into TIRP. A sub method of calculate_theoretical_image_rms().
 
         Args:
             _pp : Imaging post process parameters of prepare()
