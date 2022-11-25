@@ -1096,7 +1096,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _cp : Common parameter object of prepare()
             _rgp : Reduction group parameter object of prepare()
         Returns:
-            False if coodinate setting is fault before execute imaging
+            False if coordinate setting fails before imaging is executed.
         """
         LOG.info('Imaging Source {}, Ant {} Spw {:d}'.format(_rgp.source_name, _rgp.ant_name, _rgp.spwids[0]))
         # map coordinate (use identical map coordinate per spw)
