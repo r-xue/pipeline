@@ -865,6 +865,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                         _pp: imaging_params.PostProcessParameters):
         """Generate parameters to calculate sensitivity.
 
+        Note: If it fails to calculate image statistics for some reason, it sets the RMS value to -1.0.
+              -1.0 is the special value in image statistics calculation of all tasks.
+
         Args:
             _cp : Common parameter object of prepare()
             _rgp : Reduction group parameter object of prepare()
