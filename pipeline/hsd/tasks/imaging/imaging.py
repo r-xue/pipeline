@@ -2014,7 +2014,7 @@ def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, 
                     There is no assumption in the order of ranges, e.g., min0 w.r.t min1
 
     Raises:
-        ValueError: to few elements in the range description, such as [] or [min0]
+        ValueError: too few elements in the range description, such as [] or [min0]
 
     Returns:
         A list of merged ranges
