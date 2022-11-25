@@ -389,9 +389,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         if _cp.is_nro:
             __correlations = []
-            for __c in _rgp.pols_list:
-                if __c not in __correlations:
-                    __correlations.append(__c)
+            for c in _rgp.pols_list:
+                if c not in __correlations:
+                    __correlations.append(c)
 
             assert len(__correlations) == 1
             return ''.join(__correlations[0])
@@ -830,8 +830,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                      _rgp.combined.spws,
                                                                      _rgp.combined.fieldids,
                                                                      _rgp.combined.pols):
-            # msobj = context.observing_run.get_ms(name=common.get_parent_ms_name(context,msname)) # Use parent ms
-            # ddobj = msobj.get_data_description(spw=spwid)
             for p in __poltypes:
                 if p not in __grid_input_dict:
                     __grid_input_dict[p] = [[__msname], [__antid], [__fieldid], [__spwid]]
