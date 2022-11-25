@@ -625,7 +625,7 @@ class ToCombineImageParameters(Parameters):
 
 
 class PostProcessParameters(Parameters):
-    """Parameters for post proccessing of image generating."""
+    """Parameters for post processing of image generating."""
 
     def __init__(self):
         """Initialize an object."""
