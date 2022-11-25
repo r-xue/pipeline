@@ -1,4 +1,4 @@
-"""Debug wrapper decolator class."""
+"""Debug wrapper decorator class."""
 import functools
 import inspect
 import logging
@@ -8,7 +8,7 @@ import pipeline.infrastructure as infrastructure
 
 
 def debugwrapper(msg: str=''):
-    """Decolate methods to debug
+    """Decorate methods to debug
 
     Args:
         msg (str, optional): debug message. Defaults to ''.
