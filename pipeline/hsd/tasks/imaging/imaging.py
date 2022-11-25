@@ -1534,7 +1534,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            Result flag
+            False if it cannot get Tsub On/Off values by some error.
         
         Raises:
             BaseException : raises when it cannot find a sky caltable applied.
@@ -1642,7 +1642,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            Result flag
+            False if it cannot get Jy/K
         """
         conv2d = 0.3193 if _tirp.is_nro else 0.1597
         conv1d = 0.5592 if _tirp.is_nro else 0.3954
