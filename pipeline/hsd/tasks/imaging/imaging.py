@@ -551,7 +551,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def __set_image_group_item_into_reduction_group_patameters(self, _cp: imaging_params.CommonParameters,
                                                                _rgp: imaging_params.ReductionGroupParameters):
-        """Set values of an item of image group into RGP.
+        """Set values for imaging into RGP.
+
+        This method does (1)get parameters from image group in RGP to do gridding(imaging) and set them into RGP,
+        and (2)generate an image name and pick the rest frequency.
 
         Args:
             _cp : Common parameter object of prepare()
