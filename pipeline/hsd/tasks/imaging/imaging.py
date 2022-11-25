@@ -1026,7 +1026,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
             _pp : Imaging post process parameters of prepare()
         Returns:
-            False if images for NRO do not exist
+            False if a valid image to combine does not exist for a specified source or spw.
         """
         if len(_rgp.tocombine.images_nro) == 0:
             LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(_rgp.source_name, _rgp.spwids[0]))
