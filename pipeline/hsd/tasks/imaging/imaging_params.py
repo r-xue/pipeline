@@ -816,6 +816,7 @@ class TheoreticalImageRmsParameters(Parameters):
         self._fieldid = None                # int: Field ID
         self._spwid = None                  # int: Spectrum ID
         self._pol_names = None              # List[str]: Polarization names
+        self._polids = None                 # List[int]: Polarization ID
         self._raster_info = None            # RasterInfo: RasterInfo object
         self._msobj = None                  # MeasurementSet: MeasuremetSet
         self._calmsobj = None               # MeasurementSet: Calibrated MeasurementSet
@@ -826,8 +827,8 @@ class TheoreticalImageRmsParameters(Parameters):
         self._mean_tsys_per_pol = None      # numpy.ndarray[float]: Mean of Tsys per polarization
         self._width = None                  # float: Width
         self._height = None                 # float: Height
-        self._t_on_act = None               # float: T_on actual
         self._calst = None                  # IntervalCalState: Interval calibration state object
+        self._t_on_act = None               # float: T_on actual
         self._t_sub_on = None               # float: Tsub on
         self._t_sub_off = None              # float: Tsub off
 
