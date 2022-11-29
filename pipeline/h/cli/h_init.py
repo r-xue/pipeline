@@ -5,8 +5,8 @@ import pipeline.infrastructure.launcher as launcher
 import pipeline.infrastructure.basetask as basetask
 
 
-def h_init(pipelinemode=None, loglevel=None, plotlevel=None, weblog=None, overwrite=None, dryrun=None,
-           acceptresults=None):
+def h_init(pipelinemode='automatic', loglevel='info', plotlevel='default', weblog=True, overwrite=True, dryrun=False,
+           acceptresults=True):
 
     """
     h_init ---- Initialize the interferometry pipeline
