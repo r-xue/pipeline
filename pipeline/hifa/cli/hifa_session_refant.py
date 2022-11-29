@@ -5,6 +5,48 @@ import pipeline.h.cli.utils as utils
 
 def hifa_session_refant(vis=None, phase_threshold=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
+    """
+    hifa_session_refant ---- Select best reference antenna for session(s)
+
+    
+    This task re-evaluates the reference antenna lists from all measurement sets
+    within a session and combines these to select a single common reference
+    antenna (per session) that is to be used by any subsequent pipeline stages.
+    
+    If pipeline mode is 'getinputs' then None is returned. Otherwise the
+    results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+
+    vis             List of input MeasurementSets. Defaults to the list of
+                    MeasurementSets specified in the pipeline context.
+                    
+                    Example: vis=['ngc5921.ms']
+    phase_threshold Threshold (in degrees) used to identify absolute phase
+                    solution outliers in caltables.
+                    
+                    Example: phase_threshold=0.005
+    pipelinemode    The pipeline operating mode. In 'automatic' mode the pipeline
+                    determines the values of all context defined pipeline inputs automatically.
+                    In interactive mode the user can set the pipeline context defined parameters
+                    manually. In 'getinputs' mode the user can check the settings of
+                    all pipeline parameters without running the task.
+    dryrun          Run the commands (True) or generate the commands to be run but
+                    do not execute (False).
+    acceptresults   Automatically accept the results of the task into the pipeline context (True)
+                    or reject them (False).
+
+    --------- examples -----------------------------------------------------------
+
+    
+    1. Compute a single common reference antenna per session:
+    
+    hifa_session_refant()
+
+
+    """
+
+
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

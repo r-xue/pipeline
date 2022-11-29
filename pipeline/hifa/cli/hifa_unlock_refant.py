@@ -4,6 +4,36 @@ import pipeline.h.cli.utils as utils
 
 
 def hifa_unlock_refant(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+
+    """
+    hifa_unlock_refant ---- Unlock reference antenna list
+
+    hifa_unlock_refant unlocks the reference antenna list, allowing the list to
+    be modified by subsequent tasks. After hifa_unlock_refant, the default
+    gaincal refantmode reverts to 'flex'.
+
+    --------- parameter descriptions ---------------------------------------------
+
+    vis           List of input MeasurementSets. Defaults to the list of
+                  MeasurementSets specified in the pipeline context.
+                  
+                  Example: vis=['ngc5921.ms']
+    pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
+                  determines the values of all context defined pipeline inputs
+                  automatically. In 'interactive' mode the user can set the
+                  pipeline context defined parameters manually. In 'getinputs'
+                  mode the user can check the settings of all pipeline
+                  parameters without running the task.
+    dryrun        Run the task (False) or display task command (True)
+    acceptresults Add the results into the pipeline context
+
+    --------- examples -----------------------------------------------------------
+
+    
+
+
+    """
+
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
