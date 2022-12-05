@@ -210,11 +210,3 @@ class SDImportData(sessionutils.ParallelTemplate):
 
     Inputs = SDImportDataInputs
     Task = SerialSDImportData
-
-    def __init__(self, inputs: SDImportDataInputs):
-        """Initialize HpcSDImportData class.
-
-        Args:
-            inputs: SDImportDataInputs
-        """
-        super().__init__(inputs)
