@@ -1,5 +1,6 @@
 import abc
 import collections
+import datetime
 import itertools
 import os
 import tempfile
@@ -84,7 +85,7 @@ def group_into_sessions(context, all_results, measurement_sets=None):
 
     def get_start_time(r):
         basename = os.path.basename(r[0])
-        return ms_start_times.get(basename, None)
+        return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
 
     results_by_session = sorted(all_results, key=get_session)
     return {session_id: sorted(results_for_session, key=get_start_time)
