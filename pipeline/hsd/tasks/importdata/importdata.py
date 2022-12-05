@@ -39,6 +39,8 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     createmms = vdp.VisDependentProperty(default='false')
     hm_rasterscan = vdp.VisDependentProperty(default='time')
 
+    parallel = sessionutils.parallel_inputs_impl()
+
     def __init__(self,
                  context: Context,
                  vis: Optional[List[str]]=None,
@@ -55,7 +57,8 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                  with_pointing_correction: Optional[bool]=None,
                  createmms: Optional[str]=None,
                  ocorr_mode: Optional[str]=None,
-                 hm_rasterscan: Optional[str]=None):
+                 hm_rasterscan: Optional[str]=None,
+                 parallel: str = 'automatic'):
         """Initialise SDImportDataInputs class.
 
         Args:
@@ -75,14 +78,16 @@ class SDImportDataInputs(importdata.ImportDataInputs):
             ocorr_mode: Selection of baseline correlation to import.
                         Valid only if input visibility is ASDM. See a document of CASA, casatasks::importasdm, for available options.
             hm_rasterscan: heuristics method for raster scan analysis
+            parallel: Execute using CASA HPC functionality, if available. Default is 'automatic'.
         """
-        super(SDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
-                                                 process_caldevice=process_caldevice, session=session,
-                                                 overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
-                                                 save_flagonline=save_flagonline, createmms=createmms,
-                                                 ocorr_mode=ocorr_mode, datacolumns=datacolumns)
+        super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
+                         process_caldevice=process_caldevice, session=session,
+                         overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
+                         save_flagonline=save_flagonline, createmms=createmms,
+                         ocorr_mode=ocorr_mode, datacolumns=datacolumns)
         self.with_pointing_correction = with_pointing_correction
         self.hm_rasterscan = hm_rasterscan
+        self.parallel = parallel
 
 
 class SDImportDataResults(basetask.Results):
@@ -201,60 +206,12 @@ class SerialSDImportData(importdata.ImportData):
 class HpcSDImportDataInputs(SDImportDataInputs):
     """SDImportDataInputs class for parallelization."""
 
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self,
-                 context: Context,
-                 vis: Optional[List[str]]=None,
-                 output_dir: Optional[str]=None,
-                 asis: Optional[str]=None,
-                 process_caldevice: Optional[bool]=None,
-                 session: Optional[List[str]]=None,
-                 overwrite: Optional[bool]=None,
-                 nocopy: Optional[bool]=None,
-                 bdfflags: Optional[bool]=None,
-                 save_flagonline: Optional[bool]=None,
-                 lazy: Optional[bool]=None,
-                 with_pointing_correction: Optional[bool]=None,
-                 createmms: Optional[str]=None,
-                 ocorr_mode: Optional[str]=None,
-                 hm_rasterscan: Optional[str]=None,
-                 parallel: Optional[property]=None):
-        """
-        Initialise HpcSDImportDataInputs class. Arguments are same with SDImportDataInputs.
-
-        Args:
-            context: pipeline context
-            vis: List of input visibility data
-            output_dir: path of output directory
-            asis: Extra ASDM tables to convert as is
-            process_caldevice: Import the caldevice table from the ASDM
-            session: List of visibility data sessions
-            overwrite: Overwrite existing files on import
-            nocopy: Disable copying of MS to working directory
-            bdfflags: Apply BDF flags on import
-            save_flagonline: Save flag commands, flagging template, imaging targets, to text files
-            lazy: use the lazy filler to import data
-            with_pointing_correction: Apply pointing correction to DIRECTION
-            createmms: Create an MMS
-            ocorr_mode: Correlation data mode
-            hm_rasterscan: Heuristics method for raster scan analysis
-            parallel: Parallel execution or not
-        """
-        super(HpcSDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
-                                                    process_caldevice=process_caldevice, session=session,
-                                                    overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
-                                                    save_flagonline=save_flagonline,
-                                                    with_pointing_correction=with_pointing_correction,
-                                                    createmms=createmms, ocorr_mode=ocorr_mode,
-                                                    hm_rasterscan=hm_rasterscan)
-        self.parallel = parallel
+    pass
 
 
 @task_registry.set_equivalent_casa_task('hsd_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
-class HpcSDImportData(sessionutils.ParallelTemplate):
+class SDImportData(sessionutils.ParallelTemplate):
     """SDImportData class for parallelization."""
 
     Inputs = HpcSDImportDataInputs
@@ -266,7 +223,7 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
         Args:
             inputs: HpcSDImportDataInputs
         """
-        super(HpcSDImportData, self).__init__(inputs)
+        super().__init__(inputs)
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis, exception) -> basetask.FailedTaskResults:

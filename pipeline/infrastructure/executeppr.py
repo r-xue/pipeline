@@ -252,7 +252,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                       'ALMAImportData', 'ALMARestoreData',
                                       'VLAImportData','VLARestoreData',
                                       'SDImportData', 'SDRestoreData',
-                                      'SerialSDImportData', 'HpcSDImportData',
+                                      'SerialSDImportData',
                                       'NROImportData', 'NRORestoreData'):
                 task_args['vis'] = files
                 task_args['session'] = sessions
@@ -285,7 +285,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                        echo_to_screen=echo_to_screen)
                 break
 
-            if pipeline_task_name in ('SerialSDImportData', 'HpcSDImportData') and importonly:
+            if pipeline_task_name in ('SerialSDImportData', 'SDImportData') and importonly:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
                                        echo_to_screen=echo_to_screen)
                 break

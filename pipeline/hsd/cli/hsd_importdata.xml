@@ -163,6 +163,17 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
+    <param name="parallel" subparam="true" type="string">
+        <shortdescription>Execute using CASA HPC functionality, if available.</shortdescription>
+        <description>Execute using CASA HPC functionality, if available.</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>true</value>
+            <value>false</value>
+        </allowed>
+    </param>
+
     <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the task (False) or display task command (True).
