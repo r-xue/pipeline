@@ -351,13 +351,14 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
-        """Return FailedTaskResult with exception raised.
+        """Generate FailedTaskResult with exception raised.
 
         This provides default implementation of exception handling.
 
         Args:
             vis: List of input visibility data
             exception: Exception occured
+
         Return:
             a results object with exception rised
         """
