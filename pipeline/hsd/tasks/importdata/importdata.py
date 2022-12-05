@@ -203,25 +203,19 @@ class SerialSDImportData(importdata.ImportData):
 
 
 # Tier-0 parallelization
-class HpcSDImportDataInputs(SDImportDataInputs):
-    """SDImportDataInputs class for parallelization."""
-
-    pass
-
-
 @task_registry.set_equivalent_casa_task('hsd_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class SDImportData(sessionutils.ParallelTemplate):
     """SDImportData class for parallelization."""
 
-    Inputs = HpcSDImportDataInputs
+    Inputs = SDImportDataInputs
     Task = SerialSDImportData
 
-    def __init__(self, inputs: HpcSDImportDataInputs):
+    def __init__(self, inputs: SDImportDataInputs):
         """Initialize HpcSDImportData class.
 
         Args:
-            inputs: HpcSDImportDataInputs
+            inputs: SDImportDataInputs
         """
         super().__init__(inputs)
 
