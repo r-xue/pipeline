@@ -4,9 +4,11 @@ import datetime
 import itertools
 import os
 import tempfile
+import traceback
 
 from pipeline.infrastructure import basetask
 from pipeline.infrastructure import exceptions
+from pipeline.infrastructure import logging
 from . import mpihelpers
 from . import utils
 from . import vdp
@@ -21,6 +23,8 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
+
+LOG = logging.get_logger(__file__)
 
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
@@ -345,8 +349,24 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
     def __init__(self, inputs):
         super(ParallelTemplate, self).__init__(inputs)
 
-    def get_result_for_exception(self, vis, result):
-        raise NotImplementedError
+    @basetask.result_finaliser
+    def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
+        """Return FailedTaskResult with exception raised.
+
+        This provides default implementation of exception handling.
+
+        Args:
+            vis: List of input visibility data
+            exception: Exception occured
+        Return:
+            a results object with exception rised
+        """
+        LOG.error('Error importing {!s}'.format(os.path.basename(vis)))
+        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
+        tb = traceback.format_exc()
+        if tb.startswith('None'):
+            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
+        return basetask.FailedTaskResults(self.__class__, exception, tb)
 
     def prepare(self):
         inputs = self.inputs
