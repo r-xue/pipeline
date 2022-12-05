@@ -351,7 +351,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
-        """Generate FailedTaskResult with exception raised.
+        """Generate FailedTaskResults with exception raised.
 
         This provides default implementation of exception handling.
 
