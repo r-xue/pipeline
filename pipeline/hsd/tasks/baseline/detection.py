@@ -1,7 +1,7 @@
 """Spectral line detection task."""
-# import os
 import collections
 import math
+import numbers
 import numpy
 import os
 import time
@@ -500,7 +500,8 @@ class LineWindowParser(object):
     [MS channel selection syntax] -- apply to selected spectral windows
       - channel selection string 'A:chmin~chmax;chmin~chmax,B:fmin~fmax,...'
 
-    Note that frequencies are interpreted as the value in LSRK frame.
+    Note that frequencies are interpreted as the value in LSRK frame except
+    for the MS selection syntax format.
     Note also that frequencies given as a floating point number is interpreted
     as the value in Hz.
 
@@ -545,27 +546,29 @@ class LineWindowParser(object):
             if self.window.strip().startswith('{'):
                 # should be a dictionary as a string (PPR execution)
                 # convert string into dictionary
-                s = 'tmpdict={}'.format(self.window.strip())
-                exec(s)
-                processed = self._exclude_non_science_spws(self._dict2dict(tmpdict))
+                processed = self._exclude_non_science_spws(
+                    self._dict2dict(eval(self.window))
+                )
             elif self.window.strip().startswith('['):
                 # should be a list as a string (PPR execution)
                 # convert string into list
-                s = 'tmplist={}'.format(self.window.strip())
-                exec(s)
-                processed = self._list2dict(tmplist)
+                processed = self._list2dict(eval(self.window))
             else:
                 # should be MS channel selection syntax
                 # convert string into dictionary
                 # then, filter out non-science spectral windows
-                processed = self._exclude_non_science_spws(self._string2dict(self.window))
+                processed = self._exclude_non_science_spws(
+                    self._string2dict(self.window)
+                )
         elif isinstance(self.window, (list, numpy.ndarray)):
             # convert string into dictionary
             # keys are all science spectral window ids
             processed = self._list2dict(self.window)
         elif isinstance(self.window, dict):
             # filter out non-science spectral windows
-            processed = self._exclude_non_science_spws(self._dict2dict(self.window))
+            processed = self._exclude_non_science_spws(
+                self._dict2dict(self.window)
+            )
         else:
             # unsupported format or None
             processed = dict((spw, []) for spw in self.science_spw)
@@ -759,12 +762,12 @@ class LineWindowParser(object):
             return converted
 
         # return without conversion if item is an integer
-        if item_type in (int, numpy.int32, numpy.int64):
+        if issubclass(item_type, numbers.Integral):
             window.sort()
             return window
 
         # convert floating-point value to quantity string
-        if item_type in (float, numpy.float32, numpy.float64):
+        if issubclass(item_type, numbers.Real):
             return self._freq2chan(spwid, ['{0}Hz'.format(x) for x in window])
 
         # now list item should be a quantity string
@@ -866,6 +869,8 @@ class LineWindowParser(object):
         self.me.done()
 
 
+# TODO: move this to detection_test.py when appropriate MS data is available
+#       or testable ms domain object can be created
 def test_parser(ms: 'MeasurementSet') -> None:
     """Test LineWindowParser.
 
