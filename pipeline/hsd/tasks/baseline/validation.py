@@ -35,7 +35,6 @@ class ValidateLineInputs(vdp.StandardInputs):
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
-    window = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
     nsigma = vdp.VisDependentProperty(default=3.0)
     xorder = vdp.VisDependentProperty(default=-1.0)
@@ -223,8 +222,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         indexer = DataTableIndexer(self.inputs.context)
 
         # for Pre-Defined Spectrum Window
-        if len(window) != 0 and windowmode == 'replace':
-            LOG.info('Skip clustering analysis since predefined line window is set.')
+        if windowmode == 'replace' and (window is None or len(window) > 0):
+            LOG.info(f'Skip line validation: windowmode="{windowmode}", window="{window}"')
             lines = _to_validated_lines(detect_signal)
             # TODO: review whether this relies on order of dictionary values.
             signal = list(detect_signal.values())[0]
@@ -560,8 +559,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         indexer = DataTableIndexer(self.inputs.context)
 
         # for Pre-Defined Spectrum Window
-        if len(window) != 0 and windowmode == 'replace':
-            LOG.info('Skip clustering analysis since predefined line window is set.')
+        if windowmode == 'replace' and (window is None or len(window) > 0):
+            LOG.info(f'Skip line validation: windowmode="{windowmode}", window="{window}"')
             lines = _to_validated_lines(detect_signal)
             # TODO: review whether this relies on order of dictionary values.
             signal = list(detect_signal.values())[0]

@@ -38,7 +38,6 @@ class DetectLineInputs(vdp.StandardInputs):
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
-    window = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
 
@@ -190,12 +189,14 @@ class DetectLine(basetask.StandardTaskTemplate):
 
         # Pre-Defined Spectrum Window
         LOG.debug('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
-        if len(window) != 0 and windowmode == 'replace':
-            LOG.info('Skip line detection since line window is set.')
+        if windowmode == 'replace' and (window is None or len(window) > 0):
+            LOG.info(f'Skip line detection: windowmode="{windowmode}", window="{window}"')
             nrow = len(grid_table)
             assert nrow > 0
             # predefined_window should be derived at the upper task (MaskLine)
             # and should be passed to inputs.window
+            if window is None:
+                window = []
             group_id = self.inputs.group_id
             group_desc = self.inputs.context.observing_run.ms_reduction_group[group_id]
             LOG.trace('predefined_window={0}'.format(window))

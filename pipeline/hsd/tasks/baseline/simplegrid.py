@@ -163,8 +163,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         LOG.debug('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         grid_table = self.make_grid_table(datatable_dict, index_list)
         # LOG.debug('work_dir=%s'%(work_dir))
-        if len(window) != 0 and windowmode == 'replace':
+        if windowmode == 'replace' and (window is None or len(window) > 0):
             # gridding should not be necessary
+            LOG.info(f'Skip SimpleGridding: windowmode="{windowmode}", window="{window}"')
             retval = [None, None]
         else:
             import time
