@@ -576,7 +576,9 @@ class LineWindowParser(object):
             for spwid, _window in processed.items():
                 LOG.trace('_window=%s type %s', _window, type(_window))
                 new_window = self._freq2chan(spwid, _window)
-                if len(new_window) > 0 and not isinstance(new_window[0], list):
+                if new_window is not None \
+                    and len(new_window) > 0 \
+                        and not isinstance(new_window[0], list):
                     new_window = [new_window]
 #                 if len(new_window) > 0:
 #                     tmp = []
@@ -702,7 +704,11 @@ class LineWindowParser(object):
         new_window = {}
         for spwid in self.science_spw:
             if spwid in window:
-                new_window[spwid] = list(window[spwid])
+                w = window[spwid]
+                if w is None:
+                    new_window[spwid] = None
+                else:
+                    new_window[spwid] = list(w)
             else:
                 new_window[spwid] = []
 
@@ -727,6 +733,9 @@ class LineWindowParser(object):
         Returns:
             Line window list in channel domain
         """
+        if window is None:
+            return window
+
         # window must be a list
         assert isinstance(window, list), "Unexpected value for 'window', must be a list."
 
