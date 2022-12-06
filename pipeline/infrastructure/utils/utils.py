@@ -10,6 +10,7 @@ import os
 import re
 import string
 import ast
+import pickle
 from typing import Collection, Dict, List, Tuple, Optional, Sequence, Union
 
 import bisect
@@ -27,7 +28,7 @@ __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_ca
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
            'imstat_items', 'get_stokes','get_taskhistory_fromimage',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details']
+           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -548,3 +549,18 @@ def get_taskhistory_fromimage(imagename: str):
     LOG.info(f'Found {len(taskhistory_list)} task history entry/entries from {imagename}')
 
     return taskhistory_list
+
+
+def get_obj_size(obj):
+    """Estimate the Python object size after serialization.
+
+    This is a rudimentary implementation to estimate the size of a serialized Python object.
+    Note that is NOT the same as the size of the object in memory, and compression also happens during the
+    serialization.
+
+    More precise direct measurement of memory consumption from an object could be done by using:
+        pympler.asizeof.asizeof(obj) # https://pypi.org/project/Pympler
+        or
+        objsize.get_deep_size(obj)   # https://pypi.org/project/objsize
+    """
+    return len(pickle.dumps(obj))
