@@ -46,16 +46,12 @@ _loggers = []
 
 
 def pipeline_origin(method):
-    """Use 'Pipeline' as the CASAlog Origin/task."""
+    """Use 'pipeline' as the CASAlog Origin by default."""
     @functools.wraps(method)
     def pipeline_as_origin(self, *args, **kwargs):
-        # use 'Pipeline::loggername::' as Origin
-        casalog.processorOrigin('')
-        casalog.origin('pipeline')
+        if casalog.getOrigin() not in ('casa', 'pipeline'):
+            casalog.origin('pipeline')
         retval = method(self, *args, **kwargs)
-        # revert to the CASA default
-        casalog.processorOrigin('casa')
-        casalog.origin('')
         return retval
     return pipeline_as_origin
 
