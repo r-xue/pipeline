@@ -24,6 +24,10 @@ ATTENTION = 25
 logging.addLevelName(ATTENTION, 'ATTENTION')
 colorize.ColorizingStreamHandler.level_map[ATTENTION] = ('white', 'blue', False)
 
+# PIPE-1699: this is to replicate the modification from d86115b to the logutils 
+# source code originally saved in pipeline/extern/logutils.
+colorize.ColorizingStreamHandler.level_map[INFO] = (None, None, False)
+
 LOGGING_LEVELS = {'critical'  : CRITICAL,
                   'error'     : ERROR,
                   'warning'   : WARNING,
