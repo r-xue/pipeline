@@ -495,7 +495,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         A threshold of 10x sigma (measured on image) and a pblimit of 0.4 is applied.
         """
         # Only for first imaging stage, restoration with QL mask, and if there is a mask
-        if self.vlass_stage == 1 and iteration == 1 and cleanmask is not '':
+        if self.vlass_stage == 1 and iteration == 1 and cleanmask != '':
             # Check if files exist
             warn_message = '%s does not exist, flux fraction outside mask cannot be computed.'
             if not os.path.exists(image):
