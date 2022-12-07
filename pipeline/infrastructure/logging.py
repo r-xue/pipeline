@@ -6,8 +6,8 @@ import types
 
 from casatasks import casalog
 
-import pipeline.extern.logutils as logutils
-import pipeline.extern.logutils.colorize as colorize
+import logutils
+import logutils.colorize as colorize
 
 from logging import CRITICAL, WARNING, ERROR, INFO, DEBUG
 
