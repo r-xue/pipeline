@@ -2,9 +2,8 @@
 # CASA ver-6.5.3-py3.8 (monolithic)
 # 
 # usage:
-#   PYTHONNOUSERSITE=1 ${casa_dir}/bin/pip3 --use-pep517 
-#       --disable-pip-version-check \
-#       install -r requirements_dev.txt
+#   PYTHONNOUSERSITE=1 ${casa_dir}/bin/pip3 install --use-pep517 --disable-pip-version-check \
+#        --upgrade-strategy=only-if-needed -r requirements.txt
 #
 #####################################################################################################
 
