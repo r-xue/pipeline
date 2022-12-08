@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
-               refant=None, geometry=None, flagging=None, pipelinemode=None,
+               refant=None, geometry=None, flagging=None, parallel=None, pipelinemode=None,
                dryrun=None, acceptresults=None, refantignore=None):
 
     ##########################################################################
