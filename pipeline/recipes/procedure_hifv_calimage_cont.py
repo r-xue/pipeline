@@ -1,5 +1,9 @@
 import traceback
 
+import pipeline
+# Make pipeline tasks available in local name space
+pipeline.initcli(locals())
+
 IMPORT_ONLY = 'Import only'
 
 

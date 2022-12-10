@@ -147,9 +147,12 @@ def stop_weblog():
             HTTP_SERVER = None
 
 
-def initcli():
+def initcli(user_globals=None):
     LOG.info('Initializing cli...')
-    my_globals = find_frame()
+    if user_globals is None:
+        my_globals = find_frame()
+    else:
+        my_globals = user_globals
     exec('from casashell import extra_task_modules', my_globals)
     for package in ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']:
         abs_cli_package = 'pipeline.{package}.cli'.format(package=package)
@@ -166,7 +169,8 @@ def initcli():
             exec('from {} import *'.format(abs_gotasks_package), my_globals)
             # Add the tasks to taskhelp()
             exec('import {} as {}_cli'.format(abs_cli_package, package), my_globals)
-            exec('extra_task_modules.append({}_cli)'.format(package), my_globals)
+            if eval('{}_cli'.format(package), my_globals) not in my_globals['extra_task_modules']:
+                exec('extra_task_modules.append({}_cli)'.format(package), my_globals)
             LOG.info('Loaded CASA tasks from package: {!s}'.format(package))
 
 

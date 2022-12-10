@@ -2,6 +2,10 @@
 
 import traceback
 
+import pipeline
+# Make pipeline tasks available in local name space
+pipeline.initcli(locals())
+
 # sys.path.insert (0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
 
 # IMPORT_ONLY = 'Import only'
