@@ -319,7 +319,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'niter':         inputs.niter,
             'threshold':     inputs.threshold,
             'deconvolver':   inputs.deconvolver,
-            'interactive':   0,
+            'interactive':   False,
             'nchan':         inputs.nchan,
             'start':         inputs.start,
             'width':         inputs.width,
