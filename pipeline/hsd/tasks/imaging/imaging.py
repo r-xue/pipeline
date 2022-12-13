@@ -330,12 +330,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         # finally replace task attribute with the top-level one
         result.task = cls
 
-    def __get_edge(self, _cp: imaging_params.CommonParameters) -> List[int]:
+    def __get_edge(self) -> List[int]:
         """
         Search results and retrieve edge parameter from the most recent SDBaselineResults if it exists.
-
-        Args:
-            _cp : Common parameters object of prepare()
 
         Returns:
             A list of edge
@@ -348,7 +345,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 __baseline_stage = __stage
         if __baseline_stage > 0:
             ret = list(__registered_results[__baseline_stage].outcome['edge'])
-            LOG.info('Retrieved edge information from SDBaselineResults: {}'.format(_cp.edge))
+            LOG.info('Retrieved edge information from SDBaselineResults: {}'.format(ret))
         else:
             LOG.info('No SDBaselineResults available. Set edge as [0,0]')
             ret = [0, 0]
@@ -360,21 +357,21 @@ class SDImaging(basetask.StandardTaskTemplate):
         Returns:
             common parameters object of prepare()
         """
-        _cp = imaging_params.CommonParameters()
-        _cp.reduction_group = self.inputs.context.observing_run.ms_reduction_group
-        _cp.infiles = self.inputs.infiles
-        _cp.restfreq_list = self.inputs.restfreq
-        _cp.ms_list = self.inputs.ms
-        _cp.ms_names = [msobj.name for msobj in _cp.ms_list]
-        _cp.args_spw = sdutils.convert_spw_virtual2real(self.inputs.context, self.inputs.spw)
-        _cp.in_field = self.inputs.field
-        _cp.imagemode = self.inputs.mode.upper()
-        _cp.is_nro = sdutils.is_nro(self.inputs.context)
-        _cp.results = resultobjects.SDImagingResults()
-        _cp.edge = self.__get_edge(_cp)
-        _cp.dt_dict = dict((__ms.basename, DataTable(sdutils.get_data_table_path(self.inputs.context, __ms)))
-                           for __ms in _cp.ms_list)
-        return _cp
+        return imaging_params.initialize_common_parameters(
+            reduction_group=self.inputs.context.observing_run.ms_reduction_group,
+            infiles=self.inputs.infiles,
+            restfreq_list=self.inputs.restfreq,
+            ms_list=self.inputs.ms,
+            ms_names=[msobj.name for msobj in self.inputs.ms],
+            args_spw=sdutils.convert_spw_virtual2real(self.inputs.context, self.inputs.spw),
+            in_field=self.inputs.field,
+            imagemode=self.inputs.mode.upper(),
+            is_nro=sdutils.is_nro(self.inputs.context),
+            results=resultobjects.SDImagingResults(),
+            edge=self.__get_edge(),
+            dt_dict=dict((__ms.basename, DataTable(sdutils.get_data_table_path(self.inputs.context, __ms)))
+                         for __ms in self.inputs.ms)
+        )
 
     def __get_correlations_if_nro(self, _cp: imaging_params.CommonParameters,
                                   _rgp: imaging_params.ReductionGroupParameters) -> Optional[str]:
