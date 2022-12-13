@@ -1,5 +1,6 @@
 """Parameter classes of Imaging."""
 
+import re
 from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union
 
 import numpy
@@ -83,8 +84,14 @@ class Parameters:
 
     def __init__(self) -> None:
         """Initialize an instance."""
+        self.__dict__[self._immutable_prefix] = False
+        # initialize immutable-able parameters.
+        # the name of parameters must be started with an alphanumeric character.
         for _name in self._immutable_parameters:
-            self.__dict__[f'{self._immutable_prefix}{_name}'] = True
+            if re.match(r'^[a-zA-Z0-9].\w*$', _name):
+                self.__dict__[f'{self._immutable_prefix}{_name}'] = True
+            else:
+                raise ValueError('invalid parameter name')
 
     def is_immutable(self, _name: Optional[str]=None) -> bool:
         """Check itself or an attribute whether immutable or not.
@@ -96,7 +103,7 @@ class Parameters:
         Returns:
             True if it is immutable.
         """
-        return self.__dict__.get(f'{self._immutable_prefix}{_name}')
+        return self.__dict__.get(f'{self._immutable_prefix}{_name}', False)
 
     def freeze(self) -> None:
         """Set the instance immutable."""
