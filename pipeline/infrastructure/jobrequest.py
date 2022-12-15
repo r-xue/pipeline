@@ -210,7 +210,7 @@ class JobRequest(object):
         self._positional = [FunctionArg(name, arg) for name, arg in zip(argnames, args)]
         self._defaulted = [FunctionArg(name, argdefs[name])
                            for name in argnames[len(args):]
-                           if name not in kw and name is not 'self']
+                           if name not in kw and name != 'self']
         self._keyword = [FunctionArg(name, kw[name]) for name in argnames if name in kw]
         self._nameless = [NamelessArg(a) for a in args[argcount:]]
 
