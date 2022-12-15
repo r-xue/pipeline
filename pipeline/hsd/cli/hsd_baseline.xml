@@ -137,6 +137,20 @@
                           &quot;19:11215MHz~11216MHz&quot; # frequency frame is taken from the data
                                                            # (TOPO for ALMA)
 
+                     None is allowed as a value of dictionary input to indicate that
+                     no line detection/validation is required even if manually specified
+                     line window does not exist. When None is given as a value and if
+                     linewindowmode is 'replace', line detection/validation is not performed
+                     for the corresponding spw. For example, suppose the following parameter
+                     is given for the data with four science spws, 17, 19, 21, and 23.
+                         linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
+                         linewindowmode='replace'
+                     The task will use given line window for 17 and 19 while the task performs
+                     line deteciton/validation for spw 23 because no line window is set.
+                     On the other hand, line detection/validation is skipped for spw 21 due to
+                     the effect of None.
+
+
    example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz)
             ['115GHz', '115.1GHz'], see above for more examples
         </description>
@@ -152,10 +166,16 @@
                      On the other hand, when 'merge' is specified, line
                      detection/validation will be performed and manually
                      specified line windows are added to the result.
+
                      Note that this has no effect when linewindow for target
-                     spw is empty. In that case, line detection/validation
-                     will be performed regardless of the value of
-                     linewindowmode.
+                     spw is empty list. In that case, line detection/validation
+                     will be performed regardless of the value of linewindowmode.
+                     In case if no linewindow nor line detection/validation
+                     are necessary, you should set linewindowmode to 'replace'
+                     and specify None as a value of the linewindow dictionary
+                     for the spw to apply. See parameter description of linewindow
+                     for detail.
+
         </description>
         <value>replace</value>
         <allowed kind="enum">
