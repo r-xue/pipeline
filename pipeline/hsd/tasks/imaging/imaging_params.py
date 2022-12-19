@@ -221,7 +221,7 @@ class ReductionGroupParameters(Parameters):
         self.name = None                   # str: Name of MeasurementSet
         self.nx = None                     # Union[int, numpy.int64]: X of image shape
         self.ny = None                     # Union[int, numpy.int64]: Y of image shape
-        self.org_direction = None          # Direction: Directions of the origin for moving targets, like an ephemeris object
+        self.org_direction = None          # Direction: a direction of origin for ephemeris object
         self.phasecenter = None            # str: Phase center of coord set
         self.polslist = None               # List[List[str]]: List of Polarization. NOT USED NOW virtually.
         self.pols_list = None              # List[List[str]]: List of Polarization
@@ -276,8 +276,8 @@ class ToCombineImageParameters(Parameters):
         super().__init__()
         self.images = ObservedList()               # ObservedList[str]: List of image name
         self.images_nro = ObservedList()           # ObservedList[str]: List of image name for NRO
-        self.org_directions = ObservedList()       # ObservedList[Direction]: List of origins
-        self.org_directions_nro = ObservedList()   # ObservedList[Direction]: List of origins for NRO
+        self.org_directions = ObservedList()       # ObservedList[Direction]: List of directions of origin for ephemeris object
+        self.org_directions_nro = ObservedList()   # ObservedList[Direction]: List of Directions for NRO
         self.specmodes = ObservedList()            # ObservedList[str]: List of spec mode
 
 
@@ -299,7 +299,7 @@ class PostProcessParameters(Parameters):
         self.is_representative_spw = None          # bool: Flag of representative spw
         self.nx = None                             # numpy.int64: X of image shape
         self.ny = None                             # numpy.int64: Y of image shape
-        self.org_direction = None                  # Direction: Directions of the origin for moving targets
+        self.org_direction = None                  # Direction: a direction of origin for ephemeris object
         self.qcell = None                          # Dict[str, Dict[str, float]]: Cell data
         self.raster_infos = None                   # List[RasterInfo]: List of RasterInfo(center/width/height/angle/row)
         self.region = None                         # str: Region to calculate statistics
