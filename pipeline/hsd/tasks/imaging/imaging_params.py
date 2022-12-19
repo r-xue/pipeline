@@ -93,12 +93,12 @@ class Parameters:
             else:
                 raise ValueError('invalid parameter name')
 
-    def is_immutable(self, _name: Optional[str]=None) -> bool:
+    def is_immutable(self, _name: str='') -> bool:
         """Check itself or an attribute whether immutable or not.
 
         Args:
-            _name (str, optional): Attribute name. if it is None, the method returns
-                                   whether the instance itself is immutable or not.
+            _name (str): Attribute name. if it is None, the method returns
+                         whether the instance itself is immutable or not.
 
         Returns:
             True if it is immutable.
