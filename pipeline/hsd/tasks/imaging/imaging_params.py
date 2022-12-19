@@ -135,7 +135,7 @@ class CommonParameters(Parameters):
         """Return True if is_nro is False.
 
         Returns:
-            Data is from NRO or not.
+            True if this data is not from NRO.
         """
         return not self.is_nro
 
