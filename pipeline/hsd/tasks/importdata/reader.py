@@ -647,7 +647,7 @@ class MetaDataReader(object):
             field_ids = tb.getcol('FIELD_ID')
             getsourcename = numpy.vectorize(lambda x: ms.get_fields(x)[0].source.name, otypes=['str'])
             Tsrc = getsourcename(field_ids)
-            NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=numpy.int)
+            NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=int)
 
         ID = len(self.datatable)
         LOG.info('ID=%s' % ID)
