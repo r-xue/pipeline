@@ -345,9 +345,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Returns:
             list of masklist
         """
-        return [self.__convert_mask_to_masklist(flag) for flag in flags]
+        return [self.__convert_mask_to_masklist(flag, 0) for flag in flags]
 
-    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]') -> List[List[int]]:
+    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]', eoffset: int=1) -> List[List[int]]:
         """
         Converts binary mask array to masklist / channellist for fitting.
 
@@ -367,7 +367,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         # depending on first and last mask value
         if mask[0]:
             if len(idx) == 0:
-                return [[0, len(mask) - 1]]
+                return [[0, len(mask)-eoffset]]
             r = [[0, idx[0]]]
             if len(idx) % 2 == 1:
                 r.extend(idx[1:].reshape(-1, 2).tolist())
@@ -382,7 +382,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 r = (idx.reshape(-1, 2).tolist())
         if mask[-1]:
             r.append([idx[-1], len(mask)])
-        return [[start, end - 1] for start, end in r]
+        return [[start, end-eoffset] for start, end in r]
 
     @abc.abstractmethod
     def _get_param(self, idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, nchan_masked, fragment, nwindow,
