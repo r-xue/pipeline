@@ -107,7 +107,7 @@ class MaskMaker(MaskMakerNoLine):
         flag = self.flag.copy()
         for line in self.lines[row]:
             if line[0] != -1:
-                flag[line[0]:line[1]] = 0
+                flag[line[0]:line[1] + 1] = 0  # line[1] is an index of the end of the line
         return flag
 
 
@@ -140,7 +140,7 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
             # number of masked edge channels: Right side
             edge_mask1 = list(map(max, masklist))
             assert edge[1] >= 0
-            nchan_edge1 = max(nchan - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
+            nchan_edge1 = max(nchan - 1 - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
             # merge result
         nchan_edge = max(nchan_edge0, nchan_edge1)
         nchan_segment = int(round(float(nchan) / num_pieces))

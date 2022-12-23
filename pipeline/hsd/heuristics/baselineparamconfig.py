@@ -45,7 +45,6 @@ class BaselineParamKeys(object):
 BLP = BaselineParamKeys
 
 
-# @sdutils.profiler
 def write_blparam(fileobj, param):
     param_values = collections.defaultdict(str)
     for key in BLP.ORDERED_KEY:
@@ -292,6 +291,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             irow = row
                             param = self._calc_baseline_param(irow, pol, polyorder, nchan, 0, edge, _masklist,
                                                               win_polyorder, fragment, nwindow, mask_array)
+                            # MASK, in short, fit_channel_list in _calc_baseline_param() contains lists of indices [start, end+1]
+                            param[BLP.MASK] = [[start, end - 1] for [start, end] in param[BLP.MASK]]
                             param[BLP.MASK] = as_maskstring(param[BLP.MASK])
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
@@ -303,17 +304,19 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return blparam
 
-    #@sdutils.profiler
     def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, modification, edge, masklist, win_polyorder,
                              fragment, nwindow, mask):
         # Create mask for line protection
         nchan_without_edge = nchan - sum(edge)
         #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
+
+        # a stuff of masklist is a list of index [start, end]
         if isinstance(masklist, (list, numpy.ndarray)):
             for [m0, m1] in masklist:
                 mask[max(0, m0):min(nchan, m1 + 1)] = 0
         else:
             LOG.critical('Invalid masklist')
+
         #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
         num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan - edge[1]] * 1.0))
         # here meaning of "masklist" is changed
@@ -345,9 +348,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Returns:
             list of masklist
         """
-        return [self.__convert_mask_to_masklist(flag, 0) for flag in flags]
+        return [self.__convert_mask_to_masklist(flag, 1) for flag in flags]
 
-    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]', eoffset: int=1) -> List[List[int]]:
+    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]', end_offset: int=0) -> List[List[int]]:
         """
         Converts binary mask array to masklist / channellist for fitting.
 
@@ -355,10 +358,13 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         Argument
             mask : an array of channel mask in values 0 or 1
+            end_offset : the offset value of the 'end' of [start, end]
         Returns
             A list of channel range [start, end]. It means below:
             - list of masking channel ranges to be *excluded* from the fit. __conver_flags_to_masklist() calls it.
+              It consists of a pair of start and end index, [start, end].
             - list of fitting channel ranges to be *included* in the fit. ___calc_baseline_param() calls it.
+              It consists of a pair of start and end+1 index, [start, end+1], for convenience of calculation.
         """
         # get indices of clump boundaries
         idx = (mask[1:] ^ mask[:-1]).nonzero()
@@ -367,7 +373,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         # depending on first and last mask value
         if mask[0]:
             if len(idx) == 0:
-                return [[0, len(mask)-eoffset]]
+                return [[0, len(mask) - end_offset]]
             r = [[0, idx[0]]]
             if len(idx) % 2 == 1:
                 r.extend(idx[1:].reshape(-1, 2).tolist())
@@ -382,7 +388,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 r = (idx.reshape(-1, 2).tolist())
         if mask[-1]:
             r.append([idx[-1], len(mask)])
-        return [[start, end-eoffset] for start, end in r]
+        return [[start, end - end_offset] for start, end in r]
 
     @abc.abstractmethod
     def _get_param(self, idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, nchan_masked, fragment, nwindow,
