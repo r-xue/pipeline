@@ -472,35 +472,19 @@ class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
             atm_transmission = None
             atm_freq = None
         plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix,
-                                                   postfit_integrated_data,
-                                                   postfit_map_data,
-                                                   prefit_integrated_data,
-                                                   prefit_map_data,
+                                                   postfit_integrated_data, postfit_map_data,
+                                                   prefit_integrated_data, prefit_map_data,
                                                    prefit_averaged_data,
-                                                   num_ra,
-                                                   num_dec,
-                                                   num_plane,
-                                                   rowlist,
-                                                   npol,
-                                                   nchan,
-                                                   frequency,
-                                                   grid_table,
-                                                   deviation_mask, line_range,
-                                                   org_direction,
-                                                   atm_transmission, atm_freq, edge)
+                                                   num_ra, num_dec, num_plane, rowlist, 
+                                                   npol, nchan, frequency,
+                                                   grid_table, deviation_mask, line_range,
+                                                   org_direction, atm_transmission, atm_freq, edge)
         plot_flatness = self.plot_flatness_profile(postfit_prefix,
                                                    postfit_integrated_data,
-                                                   num_ra,
-                                                   num_dec,
-                                                   num_plane,
-                                                   rowlist,
-                                                   npol,
-                                                   nchan,
-                                                   frequency,
-                                                   grid_table,
-                                                   deviation_mask, line_range,
-                                                   org_direction,
-                                                   atm_transmission, atm_freq, edge)
+                                                   num_ra, num_dec, num_plane, rowlist,
+                                                   npol, nchan, frequency,
+                                                   grid_table, deviation_mask, line_range,
+                                                   org_direction, atm_transmission, atm_freq, edge)
         plot_list.update(plot_flatness)
 
         ret = []
@@ -793,10 +777,10 @@ class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
         return plot_list
 
     def plot_flatness(self, spectrum: List[float], frequency: List[float],
-                         line_range: Optional[List[Tuple[float, float]]],
-                         deviation_mask: Optional[List[Tuple[int, int]]],
-                         edge: Tuple[int, int], brightnessunit: str,
-                         figfile: str):
+                      line_range: Optional[List[Tuple[float, float]]],
+                      deviation_mask: Optional[List[Tuple[int, int]]],
+                      edge: Tuple[int, int], brightnessunit: str,
+                      figfile: str):
         """
         Create a plot of baseline flatness of a spectrum.
 
@@ -879,12 +863,8 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
     def calculate_baseline_quality_stat(self, field_id: int, ant_id: int, spw_id: int,
                                         org_direction: dirutil.Direction,
                                         postfit_integrated_data: numpy.ma.masked_array,
-                                        num_ra: int,
-                                        num_dec: int,
-                                        num_plane: int,
-                                        npol: int,
-                                        nchan: int,
-                                        frequency: int,
+                                        num_ra: int, num_dec: int, num_plane: int,
+                                        npol: int, nchan: int, frequency: int,
                                         grid_table: List[List[Union[int, float, numpy.ndarray]]],
                                         deviation_mask: Optional[List[Tuple[int, int]]],
                                         channelmap_range: Optional[List[Tuple[int, int, bool]]],
@@ -892,6 +872,9 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
         """Calculate quality statistics after baseline subtraction.
     
         Args:
+            field_id: Field id to process
+            ant_id: Antnena id to process
+            spw_id: Spw id to process. Should be the real spw id.
             postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
             org_direction: direction of the origin
             postfit_integrated_data: integrated spectral data after baseline subtraction.
