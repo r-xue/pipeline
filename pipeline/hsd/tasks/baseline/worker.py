@@ -1,5 +1,6 @@
 """Worker task for baseline subtraction."""
 import abc
+import numpy
 import os
 
 from typing import TYPE_CHECKING, Any, List, Optional, Type, Union
@@ -413,26 +414,33 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Returns:
             BaselineSubtractionResults instance
         """
-        # plot
+        # plot png files of weblog and calculate QA score
         # initialize plot manager
         ms = self.inputs.ms
         outfile = results.outcome['outfile']
+        origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        origin_ms_id = self.inputs.context.observing_run.measurement_sets.index(origin_ms)
+
         plot_manager_base = plotter.BaselineSubtractionPlotManagerBase(ms, outfile, self.inputs.context, self.datatable)
-        plot_manager = plotter.BaselineSubtractionPlotManager(ms, outfile, self.inputs.context, self.datatable)
+        data_manager = plotter.BaselineSubtractionDataManager(ms, outfile, self.inputs.context, self.datatable)
         quality_manager = plotter.BaselineSubtractionQualityManager(ms, outfile, self.inputs.context, self.datatable)
+        plot_manager = plotter.BaselineSubtractionPlotManager(ms, outfile, self.inputs.context, self.datatable)
 
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))
-
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager_base.initialize()
-
         plot_list = []
         stats = []
+        resultdict = {}
+
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
+            virtual_spwid = self.inputs.context.observing_run.real2virtual_spw_id(spw_id, ms)
+            data_desc = ms.get_data_description(spw=spw_id)
+            num_pol = data_desc.num_polarizations
+            polids = numpy.arange(num_pol, dtype=int)
             LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
@@ -446,14 +454,42 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                     raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
                                        "".format(source_name, list(org_directions_dict.keys())))
                 org_direction = org_directions_dict[source_name]
+                num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(ms, origin_ms_id, antenna_id, 
+                                                                                      virtual_spwid, polids, 
+                                                                                      grid_table, org_direction)
+                spw = ms.spectral_windows[spw_id]
+                nchan = spw.num_channels
+                data_desc = ms.get_data_description(spw=spw)
+                npol = data_desc.num_polarizations
+                data_manager.resize_storage(num_ra, num_dec, npol, nchan)
+                frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
+                                           dtype=numpy.float64)  # unit in GHz
+                postfit_data = outfile
+                prefit_data = ms.name
+                data = data_manager.store_result_get_data(field_id, antenna_id, spw_id, grid_table, org_direction, 
+                                                          num_ra, num_dec, num_plane, rowlist, npol, nchan, frequency)
+                prefit_integrated_data = data[0]
+                prefit_map_data = data[1]
+                postfit_integrated_data = data[2]
+                postfit_map_data = data[3]
+                prefit_averaged_data = data[4]
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
-                                                                    grid_table,
+                                                                    postfit_integrated_data,
+                                                                    postfit_map_data,
+                                                                    prefit_integrated_data,
+                                                                    prefit_map_data,
+                                                                    prefit_averaged_data, num_ra, num_dec, num_plane,
+                                                                    rowlist, npol, nchan, frequency, grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
+
                 stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id, 
-                                                                          org_direction,
-                                                                          grid_table, 
-                                                                          deviationmask, channelmap_range, formatted_edge)) ###
+                                                                             org_direction,
+                                                                             postfit_integrated_data,
+                                                                             num_ra, num_dec, num_plane, npol, nchan,
+                                                                             frequency, grid_table, deviationmask, 
+                                                                             channelmap_range, formatted_edge))
+
         plot_manager_base.finalize()
 
         results.outcome['plot_list'] = plot_list
