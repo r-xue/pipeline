@@ -43,7 +43,7 @@ def get_task_description(result_obj, context, include_stage=True):
     if not isinstance(result_obj, (list, basetask.ResultsList)):
         return get_task_description([result_obj, ], context)
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get description for zero-length results list'
         LOG.error(msg)
         return msg
@@ -153,7 +153,7 @@ def get_task_name(result_obj, include_stage=True):
         if not isinstance(result_obj, (list, basetask.ResultsList)):
             return get_task_name([result_obj, ])
 
-        if len(result_obj) is 0:
+        if len(result_obj) == 0:
             msg = 'Cannot get task name for zero-length results list'
             LOG.error(msg)
             return msg
@@ -196,7 +196,7 @@ def get_stage_number(result_obj):
     if not isinstance(result_obj, collections.Iterable):
         return get_stage_number([result_obj, ])
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get stage number for zero-length results list'
         LOG.error(msg)
         return msg
@@ -389,10 +389,9 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            if scan_has_intent(target_scans, 'REFERENCE'):
-                # target scans have OFF-source integrations. Need to do harder way.
-                autocorr_only = is_singledish_ms(context)
-                time_on_source =  utils.total_time_on_target_on_source(ms, autocorr_only)
+            is_single_dish_data = is_singledish_ms(context)
+            if scan_has_intent(target_scans, 'REFERENCE') or is_single_dish_data:
+                time_on_source = utils.total_time_on_target_on_source(ms, is_single_dish_data)
             else:
                 time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
@@ -797,10 +796,10 @@ class T2_1DetailsRenderer(object):
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        if scan_has_intent(science_scans, 'REFERENCE'):
-            # target scans have OFF-source integrations. Need to do harder way.
-            autocorr_only = is_singledish_ms(context)
-            time_on_science =  utils.total_time_on_target_on_source(ms, autocorr_only)
+        is_single_dish_data = is_singledish_ms(context)
+        if scan_has_intent(science_scans, 'REFERENCE') or is_single_dish_data:
+            # target scans have OFF-source integrations or Single Dish Data. Need to do harder way.
+            time_on_science = utils.total_time_on_target_on_source(ms, is_single_dish_data)
         else:
             time_on_science = utils.total_time_on_source(science_scans)
 
@@ -2032,7 +2031,7 @@ def get_results_by_time(context, resultslist):
     # as this is a ResultsList with important properties attached, results
     # should be sorted in place.
     if hasattr(resultslist, 'sort'):
-        if len(resultslist) is not 1:
+        if len(resultslist) != 1:
             try:
                 # sort the list of results by the MS start time
                 resultslist.sort(key=lambda r: get_ms_start_time_for_result(context, r))

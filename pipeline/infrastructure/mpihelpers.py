@@ -3,7 +3,6 @@ import os
 import pickle
 import tempfile
 
-from pipeline.extern.asizeof import asizeof
 from pipeline.domain.unitformat import file_size
 
 try:
@@ -21,6 +20,7 @@ except ImportError:
 
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import logging
+from pipeline.infrastructure.utils import get_obj_size
 
 # global variable for toggling MPI usage
 USE_MPI = True
@@ -41,7 +41,7 @@ class AsyncTask(object):
         :return: an AsyncTask object
         """
         LOG.debug('pushing tier0executable {} from the client: {}'.format(
-            executable, file_size.format(asizeof(executable))))
+            executable, file_size.format(get_obj_size(executable))))
         self.__pid = mpiclient.push_command_request(
             'pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)',
             block=False,

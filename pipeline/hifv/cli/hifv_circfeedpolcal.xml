@@ -1,8 +1,12 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_circfeedpolcal" type="function">
-<shortdescription>Base circfeedpolcal task</shortdescription>
-<description>
+<shortdescription>Perform polarization calibration for VLA circular feeds.</shortdescription>
+<description>Perform polarization calibration for VLA circular feeds.
+
+Only validated for VLA sky survey data in S-band continuum mode with 3C138
+or 3C286 as polarization angle. Requires that all polarization intents are
+properly set during observation.
 </description>
 <input>
     <param name="vis" subparam="true" type="stringVec">
@@ -19,7 +23,7 @@
 
     <param name="refantignore" type="string">
 	<shortdescription>String list of antennas to ignore</shortdescription>
-	<description>String list of antennas to ignore</description>
+	<description>Help appears with Dterm_solint parameter</description>
 	<value/>
     </param>
 
@@ -36,8 +40,8 @@
     </param>
 
     <param name="clipminmax" type="doubleVec">
-	<shortdescription>Range to use for flag clipping</shortdescription>
-	<description>Range to use for flag clipping</description>
+	<shortdescription>Acceptable range for leakage amplitudes, values outside will be flagged.</shortdescription>
+	<description>Acceptable range for leakage amplitudes, values outside will be flagged.</description>
 	<value><value>0.0</value><value>0.25</value></value>
     </param>
 

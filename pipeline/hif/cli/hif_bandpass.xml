@@ -21,11 +21,6 @@ reference antennas.
 
 Issues
 
-There is currently some discussion about whether or not to do an 'ampup'
-operations at the same time as the 'phaseup'. This is not required for the
-bandpass computation but the amplitude information may provide a useful quality
-assessment measure.
-
 The specified minsnr parameter is currently applied to the bandpass
 solution computation but not the 'phaseup' computation. Some noisy
 solutions in the phaseup may not be properly rejected.

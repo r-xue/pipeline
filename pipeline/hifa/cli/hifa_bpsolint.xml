@@ -45,7 +45,7 @@ o The science spw parameters, exposure time(s), and integration time(s) are
 o The phase up time interval, in time units and number of integrations required
   to meet the phaseupsnr are computed, along with the phaseup sensitivity in mJy
   and the signal to noise per integration. Nominal Tsys and sensitivity values
-  per receiver band provide by the ALMA project are used for this estimate.
+  per receiver band provided by the ALMA project are used for this estimate.
 
 o Warnings are issued if estimated phaseup gain time solution would contain fewer
   than minphaseupints solutions
@@ -53,13 +53,15 @@ o Warnings are issued if estimated phaseup gain time solution would contain fewe
 o The frequency interval, in MHz and number of channels required to meet the
   bpsnr are computed, along with the per channel sensitivity in mJy and the
   per channel signal to noise. Nominal Tsys and sensitivity values per receiver
-  band provide by the ALMA project are used for this estimate.
+  band provided by the ALMA project are used for this estimate.
 
 o Warnings are issued if estimated bandpass solution would contain fewer than
   minbpnchan solutions
 
-o If Tsys spectra has strong atmospheric features, the frequency interval of bandpass
-  solution is recalculate with to meet the lower threshold, minbpsnr.
+o If strong atmospheric features are detected in the Tsys spectrum for a given
+  spw, the frequency interval of bandpass solution is recalculated to meet the
+  lower threshold, minbpsnr - i.e. a lower snr is tolerated in order to preserve
+  enough frequency intervals to capture the atmospheric line.
 
 
 Output
@@ -133,7 +135,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
    <param name="evenbpints" type="bool">
     <shortdescription>Force the bandpass frequency solution intervals to be an even number of channels</shortdescription>
-        <description>
+        <description>Use a bandpass frequency solint that is an integer divisor of the spw bandwidth,
+            to prevent the occurrence of one narrower fractional frequency interval.
         </description>
         <value>False</value>
    </param>

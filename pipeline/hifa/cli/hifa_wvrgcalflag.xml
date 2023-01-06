@@ -23,7 +23,7 @@
     Second, apply the WVR calibration to the data specified by 'flag_intent',
     calculate flagging 'views' showing the ratio
     'phase-rms with WVR / phase-rms without WVR' for each scan. A ratio &lt; 1
-    implies that the phase noise is improved, a score &gt; 1 implies that it
+    implies that the phase noise is improved, a ratio &gt; 1 implies that it
     is made worse.
 
     Third, search the flagging views for antennas with anomalous high values.
@@ -156,8 +156,8 @@
     </param>
 
     <param name="disperse" type="bool">
-        <shortdescription>Apply correction for dispersion</shortdescription>
-        <description>Apply correction for dispersion.</description>
+        <shortdescription>Apply correction for dispersion (Deprecated; will be removed)</shortdescription>
+        <description>Apply correction for dispersion.  (Deprecated; will be removed)</description>
         <value>False</value>
     </param>
 

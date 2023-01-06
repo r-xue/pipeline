@@ -1,7 +1,7 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_exportdata" type="function">
-<shortdescription>Prepare interferometry data for export</shortdescription>
+<shortdescription>Prepare and export interferometry and imaging data</shortdescription>
 <description>
 The hifv_exportdata task for the VLA CASA pipeline exports the data defined
 in the pipeline context and exports it to the data products directory, 
