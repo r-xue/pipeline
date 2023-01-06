@@ -312,7 +312,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         imagename = image_item.imagename
 
         # Virtual spws are not applicable for NRO data.
-        # So if is_nro() returned True, the 'virtspw' flag is set False.
+        # So if is_nro() returns True, the 'virtspw' flag is set to False.
         virtspw = not sdutils.is_nro(context)
 
         for name in (imagename, imagename + '.weight'):
