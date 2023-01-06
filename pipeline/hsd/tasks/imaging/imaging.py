@@ -1749,7 +1749,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            Tupled flag of loop action [go|halt|skip].
+            Tupled flag to describe the loop action [go|halt|skip].
                 GO   : (False, False)
                 HALT : (True,  True)
                 SKIP : (False, True)
