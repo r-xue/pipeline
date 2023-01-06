@@ -731,9 +731,10 @@ class BaselineSubtractionPlotManager(object):
                 masked_data.mask[chmin:chmax+1] = True
         nbin = 20 if len(frequency) >= 512 else 10
         binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
-        if binned_data.count() <  2: # not enough valid data
-            return binned_stat
         stddev = masked_data.std()
+        if binned_data.count() < 2 or stddev in (None, numpy.ma.masked):
+            # not enough valid data or stddev is invalid
+            return binned_stat
         bin_min = numpy.nanmin(binned_data)
         bin_max = numpy.nanmax(binned_data)
         stat = BinnedStat(bin_min_ratio=bin_min/stddev,
@@ -1371,4 +1372,8 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
         else:
             binned_data[i] = numpy.nanmean(masked_data[min_i:max_i+1])
         min_i = max_i+1
+
+    # mask NaN or Inf value
+    binned_data.mask |= numpy.logical_not(numpy.isfinite(binned_data.data))
+
     return binned_x, binned_data
