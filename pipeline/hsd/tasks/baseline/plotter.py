@@ -847,6 +847,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
         plt.savefig(figfile, dpi=DPIDetail)
 
 class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
+    """Class to calculate quality statistics."""
 
     def __init__(self, ms, blvis, context, datatable):
         """Construct BaselineSubtractionQualityManager instance.
@@ -984,7 +985,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
 
 
 class BaselineSubtractionDataManager(BaselineSubtractionPlotManagerBase):
-    """Class to calculate quality statistics."""
+    """Class to produce data of baseline subtraction plot and quality statistics."""
 
     def __init__(self, ms, blvis, context, datatable):
         """Construct BaselineSubtractionDataManager instance.
