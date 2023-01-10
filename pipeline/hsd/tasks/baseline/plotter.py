@@ -313,7 +313,7 @@ class BaselineSubtractionPlotManagerBase(object):
             self.postfit_storage = PlotDataStorage()
 
     def initialize(self) -> bool:
-        """Initialize plot manager with given MS.
+        """Initialize plot manager.
 
         Returns:
             Initialization status
@@ -397,7 +397,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
 
         Args:
             field_id: Field id to process
-            antenna_id: Antnena id to process
+            antenna_id: Antenna id to process
             spw_id: Spw id to process. Should be the real spw id.
             org_direction: direction of the origin
             postfit_integrated_data: integrated spectral data after baseline subtraction.
@@ -713,7 +713,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]]
     ) -> dict:
-        """Create plots of baseline flatness profile of a spectrum after baseline subtraction
+        """Create plots of baseline flatness profile of a spectrum (after baseline subtraction).
 
         Args:
             postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
@@ -763,10 +763,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionPlotManagerBase):
         source_name = ms.fields[self.field_id].source.name.replace(' ', '_').replace('/', '_')
         for ipol in range(npol):
             postfit_qa_figfile = postfit_figfile_prefix + '_flatness_pol%s.png' % ipol
-            self.plot_flatness(postfit_integrated_data[ipol],
-                                                  frequency, line_range,
-                                                  deviation_mask, edge, bunit,
-                                                  postfit_qa_figfile)
+            self.plot_flatness(postfit_integrated_data[ipol], frequency, line_range,
+                               deviation_mask, edge, bunit, postfit_qa_figfile)
             if os.path.exists(postfit_qa_figfile):
                 plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
 
@@ -859,7 +857,6 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
             datatable: DataTable instance
         """
         super(BaselineSubtractionQualityManager, self).__init__(ms, blvis, context, datatable)
-        super(BaselineSubtractionQualityManager, self).initialize()
 
     def calculate_baseline_quality_stat(self, field_id: int, ant_id: int, spw_id: int,
                                         org_direction: dirutil.Direction,
@@ -895,10 +892,8 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
             edge: Edge channels excluded from the baseline fitting
     
         Returns:
-            Dictionary containing names of the figure with plot type and
-            polarization id as keys
-    
-                plot_list[plot_type][polarization_id] = figfile
+            List of namedtuple 'QualityStat' containing 'vis field spw ant pol stat'.
+            The 'stat' is also namedtuple 'BinnedStat'. (see method analyze_flatness.)
         """
         ms = self.ms
         origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
@@ -907,7 +902,6 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
         source_name = self.ms.fields[field_id].source.name.replace(' ', '_').replace('/', '_')
         postfit_data = self.postfit_data
         out_rowmap = self.out_rowmap
-        in_rowmap = self.in_rowmap
         dtrows = self.datatable.getcol('ROW')       
         baseline_quality_stat = []
     
@@ -941,7 +935,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
                          deviation_mask: Optional[List[Tuple[int, int]]],
                          edge: Tuple[int, int], brightnessunit: str) -> List[BinnedStat]:
         """
-        Calculate baseline flatness of a spectrum.
+        Calculate baseline flatness statistics of a spectrum.
     
         Args:
             spectrum: A spectrum to analyze baseline flatness.
@@ -956,7 +950,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionPlotManagerBase):
                   brightnessunit: Brightness unit of spectrum.
     
         Returns:
-            Statistic information to evaluate baseline flatness.
+            List of namedtuple 'BinnedStat' containing 'bin_min_ratio bin_max_ratio bin_diff_ratio'.
         """
         binned_stat = []
         masked_data = numpy.ma.masked_array(spectrum, mask=False)
@@ -1494,104 +1488,6 @@ def configure_2d_panel(
                     p.extend(list(range(a, a + num_plane)))
             xypanel.append(p)
     return xypanel
-
-def get_averaged_data(
-    infile: str,
-    dtrows: numpy.ndarray,
-    num_ra: int,
-    num_dec: int,
-    num_chan: int,
-    num_pol: int,
-    rowlist: dict,
-    rowmap: Optional[dict] = None,
-    map_data_storage: Optional[numpy.ndarray] = None,
-    map_mask_storage: Optional[numpy.ndarray] = None
-) -> numpy.ma.masked_array:
-    """Create array data for sparse map.
-
-    Computes the spectra for sparse map averaged for each spatial
-    position of the sparse map panel. Spatial grouping information is
-    held by rowlist.
-
-    Args:
-        infile: Name of the MS
-        dtrows: List of datatable rows
-        num_ra: Number of panels along horizontal axis
-        num_dec: Number of panels along vertical axis
-        num_chan: Number of spectral channels
-        num_pol: Number of polarizaionts
-        rowlist: List of datatable row ids per sparse map panel with metadata
-        rowmap: Row mapping between original (calibrated) MS and the MS
-                specified by infile. Defaults to None.
-        map_data_storage: Storage for sparse map. If None is given, new array is created.
-        map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
-
-    Returns:
-        Sparse map data as masked array. Shape of the array is four-dimensional,
-        (nx, ny, npol, nchan).
-    """
-    # default rowmap is EchoDictionary
-    if rowmap is None:
-        rowmap = utils.EchoDictionary()
-
-    map_shape = (num_ra, num_dec, num_pol, num_chan)
-
-    num_accumulated = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=int)
-
-    if map_data_storage is not None:
-        assert map_data_storage.shape == map_shape
-        assert map_data_storage.dtype == float
-        map_data = map_data_storage
-        map_data[:] = 0.0
-    else:
-        map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
-    if map_mask_storage is not None:
-        assert map_mask_storage.shape == map_shape
-        assert map_mask_storage.dtype == bool
-        map_mask = map_mask_storage
-        map_mask[:] = False
-    else:
-        map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
-
-    # column name for spectral data
-    with casa_tools.TableReader(infile) as tb:
-        colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
-        colname = None
-        for name in colnames:
-            if name in tb.colnames():
-                colname = name
-                break
-        assert colname is not None
-
-        for d in rowlist:
-            ix = num_ra - 1 - d['RAID']
-            iy = d['DECID']
-            idxs = d['IDS']
-            if len(idxs) > 0:
-                # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
-                rows = dtrows[idxs].copy()
-                sorted_index = numpy.argsort(rows)
-#                 idxperpol = [[], [], [], []]
-                for isort in sorted_index:
-                    row = rows[isort]
-                    mapped_row = rowmap[row]
-                    LOG.debug('row %s: mapped_row %s', row, mapped_row)
-                    this_data = tb.getcell(colname, mapped_row)
-                    this_mask = tb.getcell('FLAG', mapped_row)
-                    LOG.trace('this_mask.shape=%s', this_mask.shape)
-                    binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
-                    map_data[ix, iy] += this_data.real * binary_mask
-                    num_accumulated[ix, iy] += binary_mask
-            else:
-                LOG.debug('no data is available for (%s,%s)', ix, iy)
-    map_mask[:] = num_accumulated == 0
-    map_data[map_mask] = display.NoDataThreshold
-    map_data_masked = numpy.ma.masked_array(map_data, map_mask)
-    map_data_masked /= num_accumulated
-    LOG.trace('num_accumulated=%s', num_accumulated)
-    LOG.trace('map_data.shape=%s', map_data.shape)
-
-    return map_data_masked
 
 
 def get_lines(

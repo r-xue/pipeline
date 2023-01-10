@@ -482,7 +482,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                     prefit_averaged_data, num_ra, num_dec, num_plane,
                                                                     rowlist, npol, nchan, frequency, grid_table,
                                                                     deviationmask, channelmap_range, formatted_edge))
-
                 stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id, 
                                                                              org_direction,
                                                                              postfit_integrated_data,
