@@ -251,11 +251,11 @@ def group_plots(data, axes):
     return _build_rows([], data, keyfuncs)
 
 
-def _build_rows(rows, data, keyfuncs):
+def _build_rows(rows, data, keyfuncs, axis: str=''):
     # if this is a leaf, i.e., we are in the lowest level grouping and there's
     # nothing further to group by, add a new row
     if not keyfuncs:
-        rows.append(data)
+        rows.append((data, axis))
         return
 
     # otherwise, this is not the final sorting axis and so proceed to group
@@ -266,7 +266,7 @@ def _build_rows(rows, data, keyfuncs):
         # convert to list so we don't exhaust the generator
         items_with_value = list(items_with_value_generator)
         # ... , creating sub-groups for each group as we go
-        _build_rows(rows, items_with_value, keyfuncs[1:])
+        _build_rows(rows, items_with_value, keyfuncs[1:], axis=group_value)
 
     return rows
 
@@ -420,7 +420,7 @@ def percent_flagged(flagsummary: Any) -> str:
     flagged = flagsummary.flagged
     total = flagsummary.total
 
-    if total is 0:
+    if total == 0:
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * flagged / total)

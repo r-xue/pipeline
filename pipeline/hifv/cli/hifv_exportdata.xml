@@ -1,7 +1,7 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_exportdata" type="function">
-<shortdescription>Prepare interferometry data for export</shortdescription>
+<shortdescription>Prepare and export interferometry and imaging data</shortdescription>
 <description>
 The hifv_exportdata task for the VLA CASA pipeline exports the data defined
 in the pipeline context and exports it to the data products directory, 
@@ -10,7 +10,7 @@ converting and or packing it as necessary.
 The current version of the task exports the following products
 
 o an XML file containing the pipeline processing request
-o a tar file per ASDM / MS containing the final flags version
+o a tar file per ASDM / MS containing the final flags version OR the MS if tarms is False
 o a text file per ASDM / MS containing the final calibration apply list
 o a FITS image for each selected calibrator source image
 o a FITS image for each selected science target source image
@@ -70,6 +70,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <description>Export the final MeasurementSets instead of the final flags,
         calibration tables, and calibration instructions.</description>
 	<value>False</value>
+    </param>
+
+    <param name="tarms" type="bool">
+	<shortdescription>Tar the MS</shortdescription>
+        <description>Tar final MeasurementSets</description>
+	<value>True</value>
     </param>
 
     <param name="exportcalprods" subparam="true" type="bool">

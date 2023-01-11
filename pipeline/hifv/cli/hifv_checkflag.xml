@@ -1,7 +1,7 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_checkflag" type="function">
-<shortdescription>Run flagdata in rflag mode</shortdescription>
+<shortdescription>Run RFI flagging using flagdata in various modes</shortdescription>
 <description>
 </description>
 <input>
@@ -17,7 +17,8 @@
 
     <param name="checkflagmode" type="string">
         <shortdescription>String name of the mode to run checkflag</shortdescription>
-        <description>-- blank string default use of rflag on bandpass and delay calibrators
+        <description>-- Standard VLA modes with improved RFI flagging heuristics: 'bpd-vla', 'allcals-vla', 'target-vla'
+                     -- blank string default use of rflag on bandpass and delay calibrators
                      -- use string 'semi' after hifv_semiFinalBPdcals() for executing rflag on calibrators
                      -- use string 'bpd', for the bandpass and delay calibrators:
                           execute rflag on all calibrated cross-hand corrected data;
@@ -43,7 +44,6 @@
                            thresholds, and catches more of the RFI.                      
                      -- Mode 'vlass-imaging' is similar to 'target-vlass', except that it executes on the split off target
                            data, intent='*TARGET', datacolumn='data' and uses a timedevscale of 4.0.
-                     -- Standard VLA modes with improved RFI flaggig heuristics: 'bpd-vla', 'allcals-vla', 'target-vla' 
         </description>
         <value/>
     </param>

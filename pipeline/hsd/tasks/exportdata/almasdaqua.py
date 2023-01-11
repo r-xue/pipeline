@@ -85,7 +85,7 @@ def _hsd_imaging_sensitivity_exporter(stage_results: ResultsList) \
     sensitivities = []
     for result in stage_results:
         if result.sensitivity_info is not None and \
-                result.sensitivity_info.representative:
+                result.sensitivity_info.to_export:
             sensitivities.append(result.sensitivity_info.sensitivity)
     return sensitivities
 

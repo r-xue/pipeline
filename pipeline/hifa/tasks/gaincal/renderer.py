@@ -331,7 +331,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         self._qa_data = {}
         for result in results:
             b = os.path.basename(result.inputs['vis'])
-            self._qa_data[b] = [v for k, v in result.qa.qa_results_dict.items() if b in k]
+            self._qa_data[b] = [v for k, v in result.qa.phase_qa_results_dict.items() if b in k]
 
         self._score_types = frozenset(['PHASE_SCORE_XY', 'PHASE_SCORE_X2X1'])
 

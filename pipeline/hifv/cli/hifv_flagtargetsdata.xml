@@ -5,9 +5,8 @@
 	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="hifv_flagtargetsdata" category="pipeline">
-<shortdescription>Base flagtargetsdata task</shortdescription>
-<description>
-</description>
+<shortdescription>Apply a flagtemplate to target data prior to running imaging pipeline tasks</shortdescription>
+<description>Apply a flagtemplate to target data prior to running imaging pipeline tasks</description>
 <input>
         <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets to flag</shortdescription>

@@ -542,12 +542,11 @@ class SpectralWindowTable(object):
         # Read and return the online spectral averaging information if available
         sdm_num_bin = None
         if 'ALMA' in msmd.observatorynames() or 'EVLA' in msmd.observatorynames():
-            try:
-                with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+            with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+                if 'SDM_NUM_BIN' in table.colnames():
                     sdm_num_bin = table.getcol('SDM_NUM_BIN')
-            except: 
-                LOG.info("SDM_NUM_BIN not set for MS {}".format(_get_ms_basename(ms)))
-                sdm_num_bin = None
+                else:
+                    LOG.info("SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {}".format(_get_ms_basename(ms)))
         return sdm_num_bin
 
 
@@ -715,7 +714,7 @@ class AntennaTable(object):
     def get_antenna_array(msmd):
         position = msmd.observatoryposition()            
         names = set(msmd.observatorynames())
-        assert len(names) is 1
+        assert len(names) == 1
         name = names.pop()
         array = domain.AntennaArray(name, position)
 
@@ -1068,7 +1067,7 @@ class SourceTable(object):
             # results (AttributeError: 'Field' object has no attribute
             # 'source'). Prevent this by testing all fields for the
             # presence of scans.
-            source_id_to_scans[source_id] = any([len(msmd.scansforfield(field_id)) is not 0
+            source_id_to_scans[source_id] = any([len(msmd.scansforfield(field_id)) != 0
                                                  for field_id in fields_for_source])
 
         return [row for row in all_sources if source_id_to_scans.get(row[0], False)]
@@ -1115,7 +1114,7 @@ class StateTable(object):
     @staticmethod
     def get_state_factory(msmd):
         names = set(msmd.observatorynames())
-        assert len(names) is 1
+        assert len(names) == 1
         facility = names.pop()
 
         first_scan = min(msmd.scannumbers())
@@ -1164,7 +1163,7 @@ class FieldTable(object):
 
         # only return sources for which scans are present
         # create a mapping of source id to a boolean of whether any scans are present for that source
-        field_id_to_scans = {field_id: (len(msmd.scansforfield(field_id)) is not 0) for field_id in set(field_ids)}
+        field_id_to_scans = {field_id: (len(msmd.scansforfield(field_id)) != 0) for field_id in set(field_ids)}
 
         return [row for row in all_fields if field_id_to_scans.get(row[0], False)]
 

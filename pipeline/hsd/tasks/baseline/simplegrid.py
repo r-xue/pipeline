@@ -1,4 +1,4 @@
-"""Task to perform simple two-dimensional ridding with "BOX" kernel."""
+"""Task to perform simple two-dimensional gridding with "BOX" kernel."""
 import collections
 import functools
 import os
@@ -464,8 +464,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                         if SFLAG == 1:
                             if Sp is None:
                                 Sp = tb.getcell(ms_colname, mapped_row)
-                            if numpy.any(numpy.isnan(Sp[Pol])):
-                                LOG.debug('vis "%s" row %s pol %s contains NaN', os.path.basename(vis), tROW, Pol)
+                            if not numpy.all(numpy.isfinite(Sp[Pol])):
+                                LOG.debug('vis "%s" row %s pol %s contains NaN or Inf', os.path.basename(vis), tROW, Pol)
+                                Sp[Pol, :] = numpy.where(numpy.isfinite(Sp[Pol]), Sp[Pol], 0)
                             if Mask is None:
                                 Mask = numpy.asarray(numpy.logical_not(tb.getcell('FLAG', mapped_row)),
                                                      dtype=int)#vquery(tb.getcell('FLAG', mapped_row) == False)
@@ -483,7 +484,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         for ROW in range(nrow):
             LOG.debug('Calculate weighed average for row %s', ROW)
             [IF, POL, X, Y, RAcent, DECcent, RowDelta] = grid_table[ROW]
-            if StorageNumSp[ROW] == 0 or all(StorageWeight[ROW] == 0.0):
+            if StorageNumSp[ROW] == 0 or numpy.all(StorageWeight[ROW] == 0.0):
                 StorageOut[ROW,:] = NoData
                 RMS = 0.0
             else:

@@ -1,6 +1,21 @@
 <%!
+import collections
 rsc_path = ""
 SELECTORS = ['vis', 'type', 'spw', 'ant', 'field', 'pol']
+HISTOGRAM_LABELS = collections.OrderedDict([
+    ( 'outlier_Tsys',         'Outlier Tsys' ),
+    ( 'rms_prefit',           'Baseline RMS pre-fit'   ),
+    ( 'rms_postfit',          'Baseline RMS post-fit'  ),
+    ( 'runmean_prefit',       'Running mean pre-fit'   ),
+    ( 'runmean_postfit',      'Running mean post-fit'  ),
+    ( 'expected_rms_prefit',  'Expected RMS pre-fit'   ),
+    ( 'expected_rms_postfit', 'Expected RMS post-fit'  )
+])
+
+# set all X-axis labels to 'Flagged %' (see pipeline.js for defs)
+HISTOGRAM_AXES = collections.OrderedDict([
+    ( key, 'PLOTS.xAxisLabels["Flagged fraction"]' ) for key in HISTOGRAM_LABELS
+])
 %>
 <%inherit file="detail_plots_basetemplate.mako"/>
 

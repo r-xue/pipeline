@@ -35,6 +35,18 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
+    <param name="hm_rasterscan" type="string">
+        <shortdescription>Heuristics method for raster scan analysis (\'time\' or \'direction\')</shortdescription>
+        <description>Heuristics method for raster scan analysis. Two analysis modes,
+        time-domain analysis ('time') and direction analysis ('direction'), are available.
+        Default is 'time'. </description>
+        <value>time</value>
+        <allowed kind="enum">
+            <value>time</value>
+            <value>direction</value>
+        </allowed>
+    </param>
+
     <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operating mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the pipeline
@@ -98,7 +110,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <description>Dictionary defining the data types of
                      existing columns. The format is:
 
-                     {'data': 'data type 1'[, 'corrected': 'data type 2']}
+                     {'data': 'data type 1'}
+                     or
+                     {'data': 'data type 1', 'corrected': 'data type 2'}
 
                      For ASDMs the data type can only be RAW and one
                      can only specify it for the data column.
@@ -115,9 +129,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                      in the dataset.
 
                      Usually, a single datacolumns dictionary is used
-                     for all datasets. If necessary, one can define a 
+                     for all datasets. If necessary, one can define a
                      list of dictionaries, one for each EB, with
                      different setups per EB.
+
+                     If no type is specified, {'data':'raw'} will
+                     be assumed.
         </description>
         <value>{}</value>
     </param>

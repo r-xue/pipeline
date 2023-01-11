@@ -9,6 +9,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hif.tasks.gaincal.common import GaincalResults
@@ -18,6 +19,7 @@ from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.extern.PIPE692 import SSFanalysis
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -146,11 +148,18 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Compute what SNR is achieved for PHASE fields after the SpW phase-up
         # correction.
-        snr_info = self._compute_median_snr(diag_phase_results, spwmaps)
+        snr_info = self._compute_median_snr(diag_phase_results)
+
+        # Do the decoherence assessment
+        phaserms_qa, phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout \
+            = self._do_decoherence_assessment()
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
-                                   snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing)
+                                   snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing,
+                                   phaserms_totaltime=phaserms_totaltime, phaserms_cycletime=phaserms_cycletime, 
+                                   phaserms_results=phaserms_results, phaserms_antout=phaserms_antout, 
+                                   phaserms_qa=phaserms_qa)
 
         return result
 
@@ -678,8 +687,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return gaincal_results
 
-    def _compute_median_snr(self, gaincal_results: List[GaincalResults], spwmaps: Dict[IntentField, SpwMapping])\
-            -> Dict[Tuple[str, str, str], float]:
+    def _compute_median_snr(self, gaincal_results: List[GaincalResults]) -> Dict[Tuple[str, str, str], float]:
         """
         This method evaluates the diagnostic phase caltable(s) produced in an
         earlier step to compute the median achieved SNR for each phase calibrator /
@@ -688,8 +696,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         Args:
             gaincal_results: List of gaincal worker task results representing
                 the diagnostic phase caltable(s).
-            spwmaps: dictionary with (Intent, Field) combinations as keys and
-                corresponding spectral window mapping as values.
 
         Returns:
             Dictionary with intent, field name, and SpW as keys, and
@@ -706,9 +712,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             field = result.inputs['field']
             intent = result.inputs['intent']
 
-            # Get SpW mapping info for current intent and field.
-            spwmapping = spwmaps.get((intent, field), None)
-
             # Get SpWs and SNR info from caltable.
             with casa_tools.TableReader(caltable) as table:
                 spws = table.getcol("SPECTRAL_WINDOW_ID")
@@ -716,19 +719,61 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             # Evaluate each unique SpW separately.
             for spw in sorted(set(spws)):
-                # Compute median achieved SNR and store in snr_info.
-                snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, numpy.where(spws == spw)[0]])
+                # Get indices in caltable data corresponding to current SpW.
+                ind_spw = numpy.where(spws == spw)[0]
 
-                # If SpW mapping info exists for the current intent and field
-                # and the current SpW is not be mapped to itself, then continue
-                # with the next SpW. Otherwise, check whether to log a warning
-                # for low SNR. Note: if the SpW map is empty, that means by
-                # default that each SpW is mapped to itself, i.e. reason enough
-                # to skip.
-                if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
-                    continue
+                # Get number of correlations for this SpW.
+                corr_type = commonhelpermethods.get_corr_products(inputs.ms, spw)
+                ncorrs = len(corr_type)
+
+                # Compute median achieved SNR and store in snr_info. If this
+                # SpW covers a single polarisation, then compute the median SNR
+                # using only the one corresponding column in the caltable.
+                if ncorrs == 1:
+                    # Identify which column in caltable to use for computing
+                    # the median SNR.
+                    ind_col = commonhelpermethods.get_pol_id(inputs.ms, spw, corr_type[0])
+                    snr_info[(intent, field, spw)] = numpy.median(snrs[ind_col, 0, ind_spw])
+                # Otherwise, i.e. SpW is multi-pol, use all columns.
+                else:
+                    snr_info[(intent, field, spw)] = numpy.median(snrs[:, 0, ind_spw])
 
         return snr_info
+
+    def _do_decoherence_assessment(self) -> Tuple[Dict, Dict, str, str, List]:
+        try:
+            LOG.info("Starting decoherence assessment.")
+
+            # Initialize the Decoherence Phase RMS Structure function assessment
+            pipe692 = SSFanalysis(self.inputs, outlierlimit=180., ftoll=0.3, maxpoorant=11)
+
+            # Launch the analysis
+            pipe692.analysis()
+
+            # Get the QA dictionary: 
+            # keys are: 'basescore', 'basecolor', 'shortmsg', 'longmsg'
+            phaserms_qa = pipe692.score()
+
+            LOG.info('The Phase RMS assessment score is: '+str(phaserms_qa['basescore']))
+
+            # Create the SSF plot(s) to include in the weblog
+            pipe692.plotSSF()
+
+            # Store the values which need to be reported on the weblog
+            phaserms_results = pipe692.allResult
+            phaserms_cycletime = pipe692.cycletime 
+            phaserms_totaltime = pipe692.totaltime
+            phaserms_antout = pipe692.antout
+
+            pipe692.close()
+        except Exception as e:
+            phaserms_qa = None
+            phaserms_results = None
+            phaserms_cycletime = None
+            phaserms_totaltime = None
+            phaserms_antout = []
+
+        return phaserms_qa, phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout
 
     @staticmethod
     def _get_intent_field(ms: MeasurementSet, intents: str, exclude_intents: str = None) -> List[Tuple[str, str]]:
@@ -824,7 +869,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
-                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False):
+                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False, 
+                 phaserms_totaltime: str = None, phaserms_cycletime: str = None, phaserms_results = None, 
+                 phaserms_antout: List = [], phaserms_qa: Dict = {}): 
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -839,6 +886,12 @@ class SpwPhaseupResults(basetask.Results):
         self.snr_info = snr_info
         self.spwmaps = spwmaps
         self.unregister_existing = unregister_existing
+        self.phaserms_totaltime = phaserms_totaltime
+        self.phaserms_cycletime = phaserms_cycletime
+        self.phaserms_results = phaserms_results
+        self.phaserms_qa = phaserms_qa
+        self.phaserms_antout = ",".join(phaserms_antout)
+
 
     def merge_with_context(self, context):
         if self.vis is None:

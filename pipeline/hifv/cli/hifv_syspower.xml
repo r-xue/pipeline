@@ -1,7 +1,7 @@
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_syspower" type="function">
-<shortdescription>Base syspower task</shortdescription>
+<shortdescription>Determine amount of gain compression affecting VLA data below Ku-band</shortdescription>
 <description>
 </description>
 <input>
@@ -12,8 +12,8 @@
     </param>
 
     <param name="clip_sp_template" type="doubleVec">
-	<shortdescription>Clipping range</shortdescription>
-	<description>Clipping range</description>
+	<shortdescription>Acceptable range for Pdiff data; data are clipped outside this range and flagged</shortdescription>
+	<description>Acceptable range for Pdiff data; data are clipped outside this range and flagged</description>
 	<value><value>0.7</value><value> 1.2</value></value>
     </param>
 
