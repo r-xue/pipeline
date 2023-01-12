@@ -78,6 +78,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
     def __init__(self, switchpoly=True):
+        """
+        Construct BaselineFitParamConfig instance
+        """
         super(BaselineFitParamConfig, self).__init__()
         self.paramdict = {}
         self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
