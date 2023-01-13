@@ -16,14 +16,14 @@ import traceback
 
 from ..extern import XmlObjectifier
 
-from . import Pipeline
 from . import argmapper
-from . import project
-from . import utils
-from . import vdp
 from . import casa_tools
 from . import exceptions
+from . import Pipeline
+from . import project
 from . import task_registry
+from . import utils
+from . import vdp
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True,

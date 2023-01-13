@@ -14,16 +14,15 @@ import os
 import sys
 import traceback
 
-from ..extern import XmlObjectifier
-
-from . import Pipeline
 from . import argmapper
-from . import project
-from . import utils
-from . import vdp
 from . import casa_tools
 from . import exceptions
+from . import Pipeline
+from . import project
 from . import task_registry
+from . import utils
+from . import vdp
+from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject
 
 
 def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
@@ -289,13 +288,6 @@ def _getFirstRequest (pprXmlFile):
     return info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList
 
 
-# Give the path to the pipeline processing request XML file return the pipeline
-# processing request object.
-def _getPprObject(pprXmlFile):
-    pprObject = XmlObjectifier.XmlObject (fileName=pprXmlFile)
-    return pprObject
-
-
 # Given the pipeline processing request object print some project summary
 # information. Returns a list of tuples to preserve order (key, (prompt, value))
 def _getProjectSummary(pprObject):
@@ -362,110 +354,6 @@ def _getNumRequests(pprObject):
     return numRequests
 
 
-# Given the pipeline processing request object return a list of processing
-# intents in the form of a keyword and value dictionary
-def _getIntents (pprObject, requestId, numRequests):
-
-    if numRequests == 1:
-        ppr_intents = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.ProcessingIntents
-    else:
-        ppr_intents = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest[requestId].ProcessingIntents
-
-    intentsDict = {}
-    numIntents = 0
-    try:
-        intentName = ppr_intents.Intents.Keyword.getValue()
-        try:
-            intentValue = ppr_intents.Intents.Value.getValue()
-        except Exception:
-            intentValue = ""
-        numIntents = 1
-        intentsDict[intentName] = intentValue
-    except Exception:
-        search = 1
-        while (search):
-            try:
-                intentName = ppr_intents.Intents[numIntents].Keyword.getValue()
-                try:
-                    intentValue = ppr_intents.Intents[numIntents].Value.getValue()
-                except Exception:
-                    intentValue = ""
-                numIntents = numIntents + 1
-                intentsDict[intentName] = intentValue
-            except Exception:
-                search = 0
-
-    return numIntents, intentsDict
-
-
-def _getPerformanceParameters(intentsDict):
-
-    # Initalize
-    performanceParams = project.PerformanceParameters()
-
-    # No performance parameters
-    if len(intentsDict) <= 0:
-        return performanceParams
-
-    # Supported performance parameters
-    #   Don't use. Rely on class __init__ method
-    #params = ['desired_angular_resolution',
-        #'desired_largest_scale',
-        #'desired_spectral_resolution',
-        #'desired_sensitivity',
-        #'desired_dynamic_range']
-
-    # Set supported attributes
-    for key in intentsDict:
-        # Parameter not defined in __init__ method
-        if not hasattr (performanceParams, key):
-            continue
-        # Parameter not supported
-        #if key not in params:
-            #continue
-        setattr (performanceParams, key, intentsDict[key])
-
-    return performanceParams
-
-
-# Given the pipeline processing request object return a list of processing
-# commands where each element in the list is a tuple consisting of the
-# processing command name and the parameter set dictionary.
-def _getCommands (pprObject, requestId, numRequests):
-
-    if numRequests == 1:
-        ppr_cmds = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.ProcessingProcedure
-    else:
-        ppr_cmds = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest[requestId].ProcessingProcedure
-
-    try:
-        procedureName = ppr_cmds.ProcedureTitle.getValue()
-    except Exception:
-        procedureName = "Undefined"
-    commandsList = []
-    numCommands = 0
-
-    try:
-        cmdName = ppr_cmds.ProcessingCommand.Command.getValue()
-        ppr_params = ppr_cmds.ProcessingCommand.ParameterSet
-        numParams, paramsDict = _getParameters (ppr_params)
-        numCommands = 1
-        commandsList.append((cmdName, paramsDict))
-    except Exception:
-        search = 1
-        while (search):
-            try:
-                cmdName = ppr_cmds.ProcessingCommand[numCommands].Command.getValue()
-                ppr_params = ppr_cmds.ProcessingCommand[numCommands].ParameterSet
-                numParams, paramsDict = _getParameters (ppr_params)
-                numCommands = numCommands + 1
-                commandsList.append((cmdName, paramsDict))
-            except Exception:
-                search = 0
-
-    return procedureName, numCommands, commandsList
-
-
 # Given the pipeline processing request object return the number of scheduling
 # block sets. For the EVLA there can be only one.
 def _getNumSchedBlockSets (pprObject, requestId, numRequests):
@@ -512,35 +400,3 @@ def _getAsdmList (pprObject, sbsetId, numSbSets, requestId, numRequests):
         numAsdms = 0
 
     return relativePath, numAsdms, asdmList
-
-
-# Given a parameter set object retrieve the parameter set dictionary for
-# each command.
-def _getParameters (ppsetObject):
-
-    numParams = 0
-    paramsDict = {}
-
-    try:
-        paramName = ppsetObject.Parameter.Keyword.getValue()
-        try:
-            paramValue = ppsetObject.Parameter.Value.getValue()
-        except Exception:
-            paramValue = ""
-        numParams = 1
-        paramsDict[paramName] = paramValue
-    except Exception:
-        search = 1
-        while (search):
-            try:
-                paramName = ppsetObject.Parameter[numParams].Keyword.getValue()
-                try:
-                    paramValue = ppsetObject.Parameter[numParams].Value.getValue()
-                except Exception:
-                    paramValue = ""
-                numParams = numParams + 1
-                paramsDict[paramName] = paramValue
-            except Exception:
-                search = 0
-
-    return numParams, paramsDict
