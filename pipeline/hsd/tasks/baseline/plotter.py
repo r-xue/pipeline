@@ -1003,6 +1003,11 @@ class BaselineSubtractionDataManager(BaselineSubtractionPlotManagerBase):
         self.datatable = datatable
         self.prefit_storage = PlotDataStorage()
         self.postfit_storage = PlotDataStorage()
+        self.prefit_integrated_data = None
+        self.prefit_map_data = None
+        self.postfit_integrated_data = None
+        self.postfit_map_data = None
+        self.prefit_averaged_data = None
 
     def store_result_get_data(self,
                               field_id: int,
@@ -1045,24 +1050,24 @@ class BaselineSubtractionDataManager(BaselineSubtractionPlotManagerBase):
         if out_rowmap is None:
             out_rowmap = utils.make_row_map(origin_ms, postfit_data)
 
-        prefit_averaged_data = self.get_averaged_data(prefit_data, dtrows, num_ra, num_dec, nchan, npol,
-                                                      rowlist, rowmap=in_rowmap,
-                                                      map_data_storage=self.prefit_storage.map_data,
-                                                      map_mask_storage=self.prefit_storage.map_mask)
+        if not basetask.DISABLE_WEBLOG:
+            self.get_averaged_data(prefit_data, dtrows, num_ra, num_dec, nchan, npol,
+                                   rowlist, rowmap=in_rowmap,
+                                   map_data_storage=self.prefit_storage.map_data,
+                                   map_mask_storage=self.prefit_storage.map_mask)
+            self.get_data(prefit_data, dtrows, num_ra, num_dec, nchan, npol,
+                          rowlist, rowmap=in_rowmap,
+                          integrated_data_storage=self.prefit_storage.integrated_data,
+                          map_data_storage=self.prefit_storage.map_data,
+                          map_mask_storage=self.prefit_storage.map_mask)
 
-        prefit_integrated_data, prefit_map_data = self.get_data(prefit_data, dtrows, num_ra, num_dec, nchan, npol,
-                                                                rowlist, rowmap=in_rowmap,
-                                                                integrated_data_storage=self.prefit_storage.integrated_data,
-                                                                map_data_storage=self.prefit_storage.map_data,
-                                                                map_mask_storage=self.prefit_storage.map_mask)
+        self.get_data(postfit_data, dtrows, num_ra, num_dec, nchan, npol,
+                      rowlist, rowmap=out_rowmap,
+                      integrated_data_storage=self.postfit_storage.integrated_data,
+                      map_data_storage=self.postfit_storage.map_data,
+                      map_mask_storage=self.postfit_storage.map_mask)
 
-        postfit_integrated_data, postfit_map_data = self.get_data(postfit_data, dtrows, num_ra, num_dec, nchan, npol,
-                                                                  rowlist, rowmap=out_rowmap,
-                                                                  integrated_data_storage=self.postfit_storage.integrated_data,
-                                                                  map_data_storage=self.postfit_storage.map_data,
-                                                                  map_mask_storage=self.postfit_storage.map_mask)
-
-        return prefit_integrated_data, prefit_map_data, postfit_integrated_data, postfit_map_data, prefit_averaged_data
+        return self.postfit_integrated_data, self.postfit_map_data, self.prefit_integrated_data, self.prefit_map_data, self.prefit_averaged_data
 
     def analyze_plot_table(
         self,
@@ -1193,105 +1198,116 @@ class BaselineSubtractionDataManager(BaselineSubtractionPlotManagerBase):
             The former has the shape of (npol, nchan) while tha latter is four-dimensional,
             (nx, ny, npol, nchan).
         """
-        # default rowmap is EchoDictionary
-        if rowmap is None:
-            rowmap = utils.EchoDictionary()
-    
-        integrated_shape = (num_pol, num_chan)
-        map_shape = (num_ra, num_dec, num_pol, num_chan)
-        if integrated_data_storage is not None:
-            assert integrated_data_storage.shape == integrated_shape
-            assert integrated_data_storage.dtype == float
-            integrated_data = integrated_data_storage
-            integrated_data[:] = 0.0
+
+        if infile == self.postfit_data and not self.postfit_integrated_data is None:
+            pass
+        elif infile == self.prefit_data and not self.prefit_integrated_data is None:
+            pass
         else:
-            integrated_data = numpy.zeros((num_pol, num_chan), dtype=float)
-    
-        num_accumulated = numpy.zeros((num_pol, num_chan), dtype=int)
-    
-        if map_data_storage is not None:
-            assert map_data_storage.shape == map_shape
-            assert map_data_storage.dtype == float
-            map_data = map_data_storage
-            map_data[:] = display.NoDataThreshold
-        else:
-            map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float) + display.NoDataThreshold
-        if map_mask_storage is not None:
-            assert map_mask_storage.shape == map_shape
-            assert map_mask_storage.dtype == bool
-            map_mask = map_mask_storage
-            map_mask[:] = False
-        else:
-            map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
-    
-        # column name for spectral data
-        with casa_tools.TableReader(infile) as tb:
-            colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
-            colname = None
-            for name in colnames:
-                if name in tb.colnames():
-                    colname = name
-                    break
-            assert colname is not None
-    
-            for d in rowlist:
-                ix = num_ra - 1 - d['RAID']
-                iy = d['DECID']
-                idxs = d['IDS']
-                if len(idxs) > 0:
-                    # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
-                    rows = dtrows[idxs].copy()
-                    sorted_index = numpy.argsort(rows)
-                    idxperpol = [[], [], [], []]
-                    for isort in sorted_index:
-                        row = rows[isort]
-                        mapped_row = rowmap[row]
-                        LOG.debug('row %s: mapped_row %s', row, mapped_row)
-                        this_data = tb.getcell(colname, mapped_row)
-                        this_mask = tb.getcell('FLAG', mapped_row)
-                        LOG.trace('this_mask.shape=%s', this_mask.shape)
-                        for ipol in range(num_pol):
-                            pmask = this_mask[ipol]
-                            allflagged = numpy.all(pmask == True)
-                            LOG.trace('all(this_mask==True) = %s', allflagged)
-                            if allflagged == False:
-                                idxperpol[ipol].append(idxs[isort])
-                            else:
-                                LOG.debug('spectrum for pol %s is completely flagged at %s, %s (row %s)',
-                                          ipol, ix, iy, mapped_row)
-                        binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
-                        integrated_data += this_data.real * binary_mask
-                        num_accumulated += binary_mask
-                    midxperpol = []
-                    for ipol in range(num_pol):
-                        pidxs = idxperpol[ipol]
-                        if len(pidxs) > 0:
-                            midx = median_index(pidxs)
-                            median_row = dtrows[pidxs[midx]]
-                            mapped_row = rowmap[median_row]
-                            LOG.debug('median row for (%s,%s) with pol %s is %s (mapped to %s)',
-                                      ix, iy, ipol, median_row, mapped_row)
+            # default rowmap is EchoDictionary
+            if rowmap is None:
+                rowmap = utils.EchoDictionary()
+
+            integrated_shape = (num_pol, num_chan)
+            map_shape = (num_ra, num_dec, num_pol, num_chan)
+            if integrated_data_storage is not None:
+                assert integrated_data_storage.shape == integrated_shape
+                assert integrated_data_storage.dtype == float
+                integrated_data = integrated_data_storage
+                integrated_data[:] = 0.0
+            else:
+                integrated_data = numpy.zeros((num_pol, num_chan), dtype=float)
+
+            num_accumulated = numpy.zeros((num_pol, num_chan), dtype=int)
+
+            if map_data_storage is not None:
+                assert map_data_storage.shape == map_shape
+                assert map_data_storage.dtype == float
+                map_data = map_data_storage
+                map_data[:] = display.NoDataThreshold
+            else:
+                map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float) + display.NoDataThreshold
+            if map_mask_storage is not None:
+                assert map_mask_storage.shape == map_shape
+                assert map_mask_storage.dtype == bool
+                map_mask = map_mask_storage
+                map_mask[:] = False
+            else:
+                map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
+
+            # column name for spectral data
+            with casa_tools.TableReader(infile) as tb:
+                colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
+                colname = None
+                for name in colnames:
+                    if name in tb.colnames():
+                        colname = name
+                        break
+                assert colname is not None
+
+                for d in rowlist:
+                    ix = num_ra - 1 - d['RAID']
+                    iy = d['DECID']
+                    idxs = d['IDS']
+                    if len(idxs) > 0:
+                        # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
+                        rows = dtrows[idxs].copy()
+                        sorted_index = numpy.argsort(rows)
+                        idxperpol = [[], [], [], []]
+                        for isort in sorted_index:
+                            row = rows[isort]
+                            mapped_row = rowmap[row]
+                            LOG.debug('row %s: mapped_row %s', row, mapped_row)
                             this_data = tb.getcell(colname, mapped_row)
                             this_mask = tb.getcell('FLAG', mapped_row)
-                            map_data[ix, iy, ipol] = this_data[ipol].real
-                            map_mask[ix, iy, ipol] = this_mask[ipol]
-                            midxperpol.append(midx)
-                        else:
-                            midxperpol.append(None)
-                else:
-                    LOG.debug('no data is available for (%s,%s)', ix, iy)
-                    midxperpol = [None for ipol in range(num_pol)]
-                d['MEDIAN_INDEX'] = midxperpol
-                LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
-        integrated_data_masked = numpy.ma.masked_array(integrated_data, num_accumulated == 0)
-        integrated_data_masked /= num_accumulated
-        map_data_masked = numpy.ma.masked_array(map_data, map_mask)
-        LOG.trace('integrated_data=%s', integrated_data)
-        LOG.trace('num_accumulated=%s', num_accumulated)
-        LOG.trace('map_data.shape=%s', map_data.shape)
+                            LOG.trace('this_mask.shape=%s', this_mask.shape)
+                            for ipol in range(num_pol):
+                                pmask = this_mask[ipol]
+                                allflagged = numpy.all(pmask == True)
+                                LOG.trace('all(this_mask==True) = %s', allflagged)
+                                if allflagged == False:
+                                    idxperpol[ipol].append(idxs[isort])
+                                else:
+                                    LOG.debug('spectrum for pol %s is completely flagged at %s, %s (row %s)',
+                                              ipol, ix, iy, mapped_row)
+                            binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
+                            integrated_data += this_data.real * binary_mask
+                            num_accumulated += binary_mask
+                        midxperpol = []
+                        for ipol in range(num_pol):
+                            pidxs = idxperpol[ipol]
+                            if len(pidxs) > 0:
+                                midx = median_index(pidxs)
+                                median_row = dtrows[pidxs[midx]]
+                                mapped_row = rowmap[median_row]
+                                LOG.debug('median row for (%s,%s) with pol %s is %s (mapped to %s)',
+                                          ix, iy, ipol, median_row, mapped_row)
+                                this_data = tb.getcell(colname, mapped_row)
+                                this_mask = tb.getcell('FLAG', mapped_row)
+                                map_data[ix, iy, ipol] = this_data[ipol].real
+                                map_mask[ix, iy, ipol] = this_mask[ipol]
+                                midxperpol.append(midx)
+                            else:
+                                midxperpol.append(None)
+                    else:
+                        LOG.debug('no data is available for (%s,%s)', ix, iy)
+                        midxperpol = [None for ipol in range(num_pol)]
+                    d['MEDIAN_INDEX'] = midxperpol
+                    LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
+            integrated_data_masked = numpy.ma.masked_array(integrated_data, num_accumulated == 0)
+            integrated_data_masked /= num_accumulated
+            map_data_masked = numpy.ma.masked_array(map_data, map_mask)
+            LOG.trace('integrated_data=%s', integrated_data)
+            LOG.trace('num_accumulated=%s', num_accumulated)
+            LOG.trace('map_data.shape=%s', map_data.shape)
 
-        return integrated_data_masked, map_data_masked
-    
+            if infile == self.postfit_data:
+                self.postfit_integrated_data = integrated_data_masked
+                self.postfit_map_data = map_data_masked
+            else:
+                self.prefit_integrated_data = integrated_data_masked
+                self.prefit_map_data = map_data_masked
+   
     def get_averaged_data(
         self,
         infile: str,
@@ -1328,68 +1344,72 @@ class BaselineSubtractionDataManager(BaselineSubtractionPlotManagerBase):
             Sparse map data as masked array. Shape of the array is four-dimensional,
             (nx, ny, npol, nchan).
         """
-        # default rowmap is EchoDictionary
-        if rowmap is None:
-            rowmap = utils.EchoDictionary()
-    
-        map_shape = (num_ra, num_dec, num_pol, num_chan)
-    
-        num_accumulated = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=int)
-    
-        if map_data_storage is not None:
-            assert map_data_storage.shape == map_shape
-            assert map_data_storage.dtype == float
-            map_data = map_data_storage
-            map_data[:] = 0.0
+
+        if not self.prefit_averaged_data is None:
+            pass
         else:
-            map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
-        if map_mask_storage is not None:
-            assert map_mask_storage.shape == map_shape
-            assert map_mask_storage.dtype == bool
-            map_mask = map_mask_storage
-            map_mask[:] = False
-        else:
-            map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
-    
-        # column name for spectral data
-        with casa_tools.TableReader(infile) as tb:
-            colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
-            colname = None
-            for name in colnames:
-                if name in tb.colnames():
-                    colname = name
-                    break
-            assert colname is not None
-    
-            for d in rowlist:
-                ix = num_ra - 1 - d['RAID']
-                iy = d['DECID']
-                idxs = d['IDS']
-                if len(idxs) > 0:
-                    # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
-                    rows = dtrows[idxs].copy()
-                    sorted_index = numpy.argsort(rows)
-    #                 idxperpol = [[], [], [], []]
-                    for isort in sorted_index:
-                        row = rows[isort]
-                        mapped_row = rowmap[row]
-                        LOG.debug('row %s: mapped_row %s', row, mapped_row)
-                        this_data = tb.getcell(colname, mapped_row)
-                        this_mask = tb.getcell('FLAG', mapped_row)
-                        LOG.trace('this_mask.shape=%s', this_mask.shape)
-                        binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
-                        map_data[ix, iy] += this_data.real * binary_mask
-                        num_accumulated[ix, iy] += binary_mask
-                else:
-                    LOG.debug('no data is available for (%s,%s)', ix, iy)
-        map_mask[:] = num_accumulated == 0
-        map_data[map_mask] = display.NoDataThreshold
-        map_data_masked = numpy.ma.masked_array(map_data, map_mask)
-        map_data_masked /= num_accumulated
-        LOG.trace('num_accumulated=%s', num_accumulated)
-        LOG.trace('map_data.shape=%s', map_data.shape)
-    
-        return map_data_masked
+            # default rowmap is EchoDictionary
+            if rowmap is None:
+                rowmap = utils.EchoDictionary()
+
+            map_shape = (num_ra, num_dec, num_pol, num_chan)
+
+            num_accumulated = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=int)
+
+            if map_data_storage is not None:
+                assert map_data_storage.shape == map_shape
+                assert map_data_storage.dtype == float
+                map_data = map_data_storage
+                map_data[:] = 0.0
+            else:
+                map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
+            if map_mask_storage is not None:
+                assert map_mask_storage.shape == map_shape
+                assert map_mask_storage.dtype == bool
+                map_mask = map_mask_storage
+                map_mask[:] = False
+            else:
+                map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
+
+            # column name for spectral data
+            with casa_tools.TableReader(infile) as tb:
+                colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
+                colname = None
+                for name in colnames:
+                    if name in tb.colnames():
+                        colname = name
+                        break
+                assert colname is not None
+
+                for d in rowlist:
+                    ix = num_ra - 1 - d['RAID']
+                    iy = d['DECID']
+                    idxs = d['IDS']
+                    if len(idxs) > 0:
+                        # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
+                        rows = dtrows[idxs].copy()
+                        sorted_index = numpy.argsort(rows)
+        #                 idxperpol = [[], [], [], []]
+                        for isort in sorted_index:
+                            row = rows[isort]
+                            mapped_row = rowmap[row]
+                            LOG.debug('row %s: mapped_row %s', row, mapped_row)
+                            this_data = tb.getcell(colname, mapped_row)
+                            this_mask = tb.getcell('FLAG', mapped_row)
+                            LOG.trace('this_mask.shape=%s', this_mask.shape)
+                            binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
+                            map_data[ix, iy] += this_data.real * binary_mask
+                            num_accumulated[ix, iy] += binary_mask
+                    else:
+                        LOG.debug('no data is available for (%s,%s)', ix, iy)
+            map_mask[:] = num_accumulated == 0
+            map_data[map_mask] = display.NoDataThreshold
+            map_data_masked = numpy.ma.masked_array(map_data, map_mask)
+            map_data_masked /= num_accumulated
+            LOG.trace('num_accumulated=%s', num_accumulated)
+            LOG.trace('map_data.shape=%s', map_data.shape)
+
+            self.prefit_averaged_data = map_data_masked
 
 
 def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
