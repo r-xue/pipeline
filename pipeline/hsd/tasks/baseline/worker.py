@@ -420,11 +420,9 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         outfile = results.outcome['outfile']
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
         origin_ms_id = self.inputs.context.observing_run.measurement_sets.index(origin_ms)
-
         plot_manager_base = plotter.BaselineSubtractionPlotManagerBase(ms, outfile, self.inputs.context, self.datatable)
         quality_manager = plotter.BaselineSubtractionQualityManager(ms, outfile, self.inputs.context, self.datatable)
         plot_manager = plotter.BaselineSubtractionPlotManager(ms, outfile, self.inputs.context, self.datatable)
-
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
@@ -432,7 +430,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         status = plot_manager_base.initialize()
         plot_list = []
         stats = []
-        resultdict = {}
 
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
             virtual_spwid = self.inputs.context.observing_run.real2virtual_spw_id(spw_id, ms)
