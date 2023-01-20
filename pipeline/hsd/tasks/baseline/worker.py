@@ -465,19 +465,16 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 data = data_manager.store_result_get_data(field_id, antenna_id, spw_id, grid_table, org_direction,
                                                           num_ra, num_dec, num_plane, rowlist, npol, nchan, frequency)
                 postfit_integrated_data = data[0]
+                postfit_map_data = data[1]
+                prefit_integrated_data = data[2]
+                prefit_map_data = data[3]
+                prefit_averaged_data = data[4]
                 stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
                                                                              org_direction,
                                                                              postfit_integrated_data,
                                                                              num_ra, num_dec, num_plane, npol, nchan,
                                                                              frequency, grid_table, deviationmask, 
                                                                              channelmap_range, formatted_edge))
-                data = data_manager.store_result_get_data(field_id, antenna_id, spw_id, grid_table, org_direction, 
-                                                          num_ra, num_dec, num_plane, rowlist, npol, nchan, frequency)
-                postfit_integrated_data = data[0]
-                postfit_map_data = data[1]
-                prefit_integrated_data = data[2]
-                prefit_map_data = data[3]
-                prefit_averaged_data = data[4]
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
                                                                     postfit_integrated_data,
