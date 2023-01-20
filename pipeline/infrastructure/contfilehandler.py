@@ -240,13 +240,13 @@ class ContFileHandler(object):
         return topo_freq_selections, topo_chan_selections, aggregate_frame_bw
 
 
-def cont_file_to_CASA(vis, context, contfile='cont.dat', use_realspw=True):
-    """
-    Take the dictionary created by _read_cont_file and put it into the format:
-    spw = '0:1.380~1.385GHz;1.390~1.400GHz'
+def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
+    """Translate continuum ranges specified in contfile to frequency selection string.
 
-    If the frequencies specified in the contfile are in LSRK, they will be
-    converted to TOPO.
+    By default (use_realspw=True), the frequency selection string is in real SPWs. The return is 
+    a dictionary with field names with keys and spwsel as values, e.g.:
+        {'04287+1801': '20:327.464~328.183GHz;328.402~329.136GHz,26:340.207~340.239GHz;340.280~340.313GHz'}
+    If the frequencies specified in the contfile are in LSRK, they will be converted to TOPO.
     """
 
     contfile_handler = ContFileHandler(contfile)
