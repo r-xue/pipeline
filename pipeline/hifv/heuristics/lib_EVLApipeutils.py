@@ -56,7 +56,7 @@ def find_EVLA_band(frequency, bandlimits=[0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9,
     return BBAND[i]
 
 
-def cont_file_to_CASA(vis, context, contfile='cont.dat'):
+def cont_file_to_CASA(vis, context, contfile='cont.dat', use_realspw=True):
     """
     Take the dictionary created by _read_cont_file and put it into the format:
     spw = '0:1.380~1.385GHz;1.390~1.400GHz'
@@ -84,7 +84,6 @@ def cont_file_to_CASA(vis, context, contfile='cont.dat'):
                 LOG.info("Converting from LSRK to TOPO...")
                 # Convert from LSRK to TOPO
                 sname = field
-                spw_id = spw
                 fieldobj = m.get_fields(name=field)
                 fieldobjlist = [fieldobjitem for fieldobjitem in fieldobj]
                 field_id = str(fieldobjlist[0].id)
@@ -92,10 +91,10 @@ def cont_file_to_CASA(vis, context, contfile='cont.dat'):
                 cranges_spwsel = collections.OrderedDict()
 
                 cranges_spwsel[sname] = collections.OrderedDict()
-                cranges_spwsel[sname][spw_id], _ = contfile_handler.get_merged_selection(sname, spw_id)
+                cranges_spwsel[sname][spw], _ = contfile_handler.get_merged_selection(sname, spw)
 
                 freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.to_topo(
-                    cranges_spwsel[sname][spw_id], [vis], [field_id], int(spw_id),
+                    cranges_spwsel[sname][spw], [vis], [field_id], int(spw),
                     context.observing_run)
                 freq_ranges_list = freq_ranges[0].split(';')
                 spwstring = spwstring + spw + ':'
@@ -112,11 +111,14 @@ def cont_file_to_CASA(vis, context, contfile='cont.dat'):
                 spwstring = spwstring[:-1]
                 spwstring = spwstring + ','
         spwstring = spwstring[:-1]  # Remove appending semicolon
-        fielddict[field] = spwstring
+
+        if use_realspw:
+            spwstring = context.observing_run.get_real_spwsel([spwstring], [vis])
+        fielddict[field] = spwstring[0]
 
     LOG.info("Using frequencies in TOPO reference frame:")
-    for field, spw in fielddict.items():
-        LOG.info("    Field: {!s}   SPW: {!s}".format(field, spw))
+    for field, spwsel in fielddict.items():
+        LOG.info("    Field: {!s}   SPW: {!s}".format(field, spwsel))
 
     return fielddict
 
