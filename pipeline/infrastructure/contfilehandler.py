@@ -7,18 +7,25 @@ The keyword "NONE" can be written in case of non-detection of a continuum
 frequency range.
 """
 
+import collections
 import re
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
-import collections
 
-from . import casa_tools
-from . import utils
-from . import logging
-
-from typing import Union, Tuple, List, Dict, Any, Generator
+from . import casa_tools, logging, utils
 
 LOG = logging.get_logger(__name__)
+
+
+try:
+    # CASA ver<6.5.2
+    from casatasks.private.task_uvcontsub import _quantityRangesToChannels
+except ImportError:
+    # CASA ver>=6.5.2
+    # We might need to copy the private CASA function to the Pipeline codebase or adapted it using MS 
+    # objects in the future. For now, we just import it from the CASA installation.
+    from casatasks.private.task_uvcontsub_old import _quantityRangesToChannels
 
 
 class ContFileHandler(object):
@@ -243,9 +250,9 @@ class ContFileHandler(object):
 def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
     """Translate continuum ranges specified in contfile to frequency selection string.
 
-    By default (use_realspw=True), the frequency selection string is in real SPWs. The return is 
-    a dictionary with field names with keys and spwsel as values, e.g.:
+    The return is a dictionary with field names with keys and spwsel as values, e.g.,
         {'04287+1801': '20:327.464~328.183GHz;328.402~329.136GHz,26:340.207~340.239GHz;340.280~340.313GHz'}
+    By default (use_realspw=True), the frequency selection string is in real SPWs of input vis.
     If the frequencies specified in the contfile are in LSRK, they will be converted to TOPO.
     """
 
@@ -305,3 +312,20 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
         LOG.info("    Field: {!s}   SPW: {!s}".format(field, spwsel))
 
     return fielddict
+
+
+def contfile_to_chansel(vis, context, contfile='cont.dat', excludechans=False):
+    """Translate continuum ranges specified in contfile to channel selection string.
+
+    The return is a dictionary with field names with keys and chansel as values, e.g.,
+        {'04287+1801': '20:327~328,26:340~341'}
+    The channel selection string is in real SPWs of input vis.
+    If excludechans=True, the returned string will select channels outside the continuum ranges instead.        
+    """
+
+    spwsel_dict = contfile_to_spwsel(vis, context, contfile, use_realspw=True)
+    chansel_dict = collections.OrderedDict()
+    for field, spwsel in spwsel_dict.items():
+        chansel_dict[field] = _quantityRangesToChannels(vis, field, spwsel, excludechans)
+
+    return chansel_dict
