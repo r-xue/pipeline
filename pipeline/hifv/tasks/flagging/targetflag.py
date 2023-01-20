@@ -2,7 +2,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.hifv.heuristics import cont_file_to_CASA
+from pipeline.infrastructure.contfilehandler import cont_file_to_CASA
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 

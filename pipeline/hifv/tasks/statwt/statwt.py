@@ -2,13 +2,13 @@ import os
 import shutil
 
 import numpy as np
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.hifv.heuristics import cont_file_to_CASA, set_add_model_column_parameters
+from pipeline.hifv.heuristics import set_add_model_column_parameters
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.infrastructure.contfilehandler import cont_file_to_CASA
 
 LOG = infrastructure.get_logger(__name__)
 
