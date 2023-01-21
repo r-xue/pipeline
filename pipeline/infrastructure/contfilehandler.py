@@ -258,29 +258,27 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
     contfile_handler = ContFileHandler(contfile)
     contdict = contfile_handler.read(warn_nonexist=False)
-
-    #if contdict == {}:
-    #    #LOG.error(contfile + " is empty, does not exist or cannot be read.")
-    #    LOG.info('cont.dat file not present.  Default to VLA Continuum Heuristics.')
-    #    return {}
-
     m = context.observing_run.get_ms(vis)
-
     fielddict = {}
 
     for field in contdict['fields']:
+
+        fieldobj = m.get_fields(name=field)
+        fieldobjlist = [fieldobjitem for fieldobjitem in fieldobj]
+
+        # If field is not found, skip it.
+        if not fieldobjlist:
+            continue
+
         spwstring = ''
         for spw in contdict['fields'][field]:
             if contdict['fields'][field][spw][0]['refer'] == 'LSRK':
                 LOG.info("Converting from LSRK to TOPO...")
                 # Convert from LSRK to TOPO
                 sname = field
-                fieldobj = m.get_fields(name=field)
-                fieldobjlist = [fieldobjitem for fieldobjitem in fieldobj]
                 field_id = str(fieldobjlist[0].id)
 
                 cranges_spwsel = collections.OrderedDict()
-
                 cranges_spwsel[sname] = collections.OrderedDict()
                 cranges_spwsel[sname][spw], _ = contfile_handler.get_merged_selection(sname, spw)
 
@@ -301,7 +299,9 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
                     spwstring = spwstring + str(freqrange['range'][0]) + '~' + str(freqrange['range'][1]) + 'GHz;'
                 spwstring = spwstring[:-1]
                 spwstring = spwstring + ','
-        spwstring = spwstring[:-1]  # Remove appending semicolon
+
+        # remove appending semicolon
+        spwstring = spwstring[:-1]
 
         if use_realspw:
             spwstring = context.observing_run.get_real_spwsel([spwstring], [vis])
