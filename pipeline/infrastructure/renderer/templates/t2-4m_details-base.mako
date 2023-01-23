@@ -3,7 +3,7 @@ import html
 import os
 import xml.sax.saxutils as saxutils
 
-import pympler.asizeof as asizeof
+from pipeline.infrastructure.utils import get_obj_size
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.filenamer as filenamer
@@ -428,7 +428,7 @@ ${next.body()}
                     <dd>${utils.format_timedelta(result.timestamps.end - result.timestamps.start, dp=3)}</dd>
                     % if logging.logging_level <= logging.DEBUG:
                         <dt>Context size</dt>
-                        <dd>${str(measures.FileSize(asizeof.asizeof(pcontext), measures.FileSizeUnits.BYTES))}</dd>
+                        <dd>${str(measures.FileSize(get_obj_size(pcontext), measures.FileSizeUnits.BYTES))}</dd>
                     % endif
                 </dl>
             Note, WebLog generation is not included in the time.
