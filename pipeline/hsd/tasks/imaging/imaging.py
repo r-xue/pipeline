@@ -23,7 +23,7 @@ from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
-from pipeline.hsd.tasks.common import compress, direction_utils, rasterutil
+from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy ,rasterutil
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
                                         imaging_params, resultobjects,
@@ -1631,7 +1631,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def __obtain_and_set_factors_by_convolution_function(self, _pp: imaging_params.PostProcessParameters,
                                                          _tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
-        """Obtain factors by convlution function, and set it into TIRP. A sub method of calculate_theoretical_image_rms().
+        """Obtain factors by convolution function, and set it into TIRP. A sub method of calculate_theoretical_image_rms().
 
         Args:
             _pp : Imaging post process parameters of prepare()
@@ -1640,8 +1640,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         Returns:
             False if it cannot get Jy/K
         """
-        conv2d = 0.3193 if _tirp.is_nro else 0.1597
-        conv1d = 0.5592 if _tirp.is_nro else 0.3954
+        policy = observatory_policy.get_imaging_policy(_tirp.context)
         jy_per_k = self.__obtain_jy_per_k(_pp, _tirp)
         if jy_per_k is False:
             return False
@@ -1652,7 +1651,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         inv_variant_off = _tirp.effBW * c_proj * _tirp.t_sub_off * _tirp.t_on_act / _tirp.t_sub_on / _tirp.height
         for ipol in _tirp.polids:
             _tirp.sq_rms += (jy_per_k * _tirp.mean_tsys_per_pol[ipol]) ** 2 * \
-                (conv2d ** 2 / inv_variant_on + conv1d ** 2 / inv_variant_off)
+                (policy.get_conv2d() ** 2 / inv_variant_on + policy.get_conv1d() ** 2 / inv_variant_off)
             _tirp.N += 1.0
         return True
 
