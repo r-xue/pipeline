@@ -177,41 +177,6 @@ class MinifyCSSCommand(distutils.cmd.Command):
             f.write('\n')
 
 
-class SubprocessScheduler:
-    def __init__(self, concurrency=1):
-        self._maxlen = concurrency
-        self.procs = []
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.__join()
-
-    def add(self, process):
-        assert isinstance(process, subprocess.Popen)
-        self.__update(process)
-
-    def __join(self):
-        if len(self.procs) > 0:
-            list(map(lambda p: p.communicate(), self.procs))
-            ret = list(map(lambda p: p.returncode, self.procs))
-            self.procs.clear()
-            if any([r != 0 for r in ret]):
-                raise RuntimeError('Failed to execute process')
-
-    def __update(self, process):
-        self.procs.append(process)
-
-        while len(self.procs) >= self._maxlen:
-            p = self.procs.pop(0)
-            p.communicate()
-            r = p.returncode
-            if r != 0:
-                self.__join()
-                raise RuntimeError('Failed to execute process')
-
-
 class VersionCommand(distutils.cmd.Command):
     description = 'Generate the version file'
     user_options = [('inplace', 'i', 'Generate the version file in src directory')]
