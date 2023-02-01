@@ -32,5 +32,6 @@ logutils == 0.3.5           # https://pypi.org/project/logutils/
 ps_mem == 3.14              # https://pypi.org/project/ps-mem/
                             # replaced: pipeline/external/ps_mem.py (ver3.1)
 astropy == 5.2.1            # https://docs.astropy.org/en/stable/changelog.html
-bdsf == 1.10.1              # https://github.com/lofar-astron/PyBDSF (.whl not available for macOS)
+bdsf == 1.10.1              ; sys_platform != "darwin"
+                            # https://github.com/lofar-astron/PyBDSF (.whl not available for macOS)
                             # only required for the VLASS pipeline.
