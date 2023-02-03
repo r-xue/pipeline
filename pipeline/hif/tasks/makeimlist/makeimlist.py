@@ -170,7 +170,7 @@ class MakeImListInputs(vdp.StandardInputs):
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, datacolumn=None, parallel=None,
-                 known_synthesized_beams=None):
+                 known_synthesized_beams=None, scal=False):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -200,6 +200,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
+        self.scal = scal
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -224,8 +225,15 @@ class MakeImList(basetask.StandardTaskTemplate):
             known_synthesized_beams = inputs.known_synthesized_beams
         else:
             known_synthesized_beams = inputs.context.synthesized_beams
-
         qaTool = casa_tools.quanta
+
+        imaging_mode = inputs.context.project_summary.telescope
+
+        if inputs.scal:
+            if imaging_mode in ['ALMA', 'VLA', 'JVLA', 'EVLA']:
+                imaging_mode += '-SCAL'
+            else:
+                raise Exception('The self-cal imaging modes (*-SCAL) are only allowed for ALMA and VLA')
 
         result = MakeImListResult()
         result.clearlist = inputs.clearlist
@@ -312,8 +320,8 @@ class MakeImList(basetask.StandardTaskTemplate):
             contfile=inputs.contfile,
             linesfile=inputs.linesfile,
             imaging_params=inputs.context.imaging_parameters,
-            imaging_mode=inputs.context.project_summary.telescope
-            )
+            imaging_mode=imaging_mode
+        )
 
         # Get representative target information
         repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.heuristics.representative_target()
@@ -450,7 +458,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     contfile=inputs.contfile,
                     linesfile=inputs.linesfile,
                     imaging_params=inputs.context.imaging_parameters,
-                    imaging_mode=inputs.context.project_summary.telescope
+                    imaging_mode=imaging_mode
                 )
                 if inputs.specmode == 'cont':
                     # Make sure the spw list is sorted numerically

@@ -1204,10 +1204,8 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None, startmodel=None,
-                  calcres=None, calcpsf=None, wbawp=None, parallel=None):
-        """
-        Do basic cleaning.
-        """
+                  calcres=None, calcpsf=None, wbawp=None, parallel=None, clean_imagename=None):
+        """Do basic cleaning."""
         inputs = self.inputs
 
         if parallel is None:
@@ -1220,11 +1218,17 @@ class Tclean(cleanbase.CleanBase):
         if self.width_as_velocity:
             inputs.width = casa_tools.quanta.tos(self.width_as_velocity)
 
+        # optionally override the output image rootname
+        if isinstance(clean_imagename, str):
+            imagename = clean_imagename
+        else:
+            imagename = inputs.imagename
+
         clean_inputs = cleanbase.CleanBase.Inputs(inputs.context,
                                                   output_dir=inputs.output_dir,
                                                   vis=inputs.vis,
                                                   is_per_eb=inputs.is_per_eb,
-                                                  imagename=inputs.imagename,
+                                                  imagename=imagename,
                                                   antenna=inputs.antenna,
                                                   intent=inputs.intent,
                                                   field=inputs.field,
