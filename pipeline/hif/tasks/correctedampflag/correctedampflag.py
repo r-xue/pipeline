@@ -539,6 +539,11 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             # Identify new flags.
             newflags = self._run_flagging_iteration(ms, antenna_id_to_name)
 
+            # Run step that will propagate flags under certain conditions.
+            # PIPE-1630: run this within iterative flagging loop to ensure that
+            # propagated flags show up in the "after" flagging summary.
+            newflags = _propagate_phase_flags(newflags, ms, antenna_id_to_name)
+
             # Add flags to overall list.
             allflags.extend(newflags)
 
@@ -575,9 +580,6 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         if allflags:
             # Consolidate final list of all flagging commands.
             allflags = _consolidate_flags(allflags)
-
-            # Propagate PHASE 'bad baseline' flags to TARGET.
-            allflags = _propagate_phase_flags(allflags, ms, antenna_id_to_name)
 
             # Report final number of new flags (CAS-7336: show as info message instead of warning).
             LOG.info("Evaluation of flagging heuristics for {} raised total of {} flagging command(s)"
