@@ -4,8 +4,6 @@ Execute the pipeline processing request.
 Code first as module and convert to class if appropriate
 Factor and document properly  when details worked out
 
-Turn some print statement into CASA log statements
-
 Raises:
     exceptions.PipelineException
 """
@@ -304,8 +302,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
 # Return the intents list, the ASDM list, and the processing commands
 # for the first processing request. There should in general be only
 # one but the schema permits more. Generalize later if necessary.
-#
-# TDB: Turn some print statement into CASA log statements
 def _getFirstRequest(pprXmlFile):
     # Initialize
     info = []
@@ -320,10 +316,11 @@ def _getFirstRequest(pprXmlFile):
     # Count the processing requests.
     numRequests = _getNumRequests(pprObject=pprObject)
     if numRequests <= 0:
-        print("Terminating execution: No valid processing requests")
+        casa_tools.post_to_log("Terminating execution: No valid processing requests")
         return info, relativePath, intentsDict, asdmList, commandsList
     elif numRequests > 1:
-        print("Warning: More than one processing request")
+        casa_tools.post_to_log("Warning: More than one processing request")
+    casa_tools.post_to_log('Number of processing requests: ', numRequests)
 
     # Get brief project summary
     info = _getProjectSummary(pprObject)
@@ -333,23 +330,30 @@ def _getFirstRequest(pprXmlFile):
 
     # Get the intents dictionary
     numIntents, intentsDict = _getIntents(pprObject=pprObject, requestId=0, numRequests=numRequests)
+    casa_tools.post_to_log('Number of intents: {}'.format(numIntents))
+    casa_tools.post_to_log('Intents dictionary: {}'.format(intentsDict))
 
     # Get the commands list
     procedureName, numCommands, commandsList = _getCommands(pprObject=pprObject, requestId=0, numRequests=numRequests)
+    casa_tools.post_to_log('Number of commands: {}'.format(numCommands))
+    casa_tools.post_to_log('Commands list: {}'.format(commandsList))
 
     # Count the scheduling block sets. Normally there should be only
     # one although the schema allows multiple sets. Check for this
     # condition and process only the first.
     numSbSets = _getNumSchedBlockSets(pprObject=pprObject, requestId=0, numRequests=numRequests)
     if numSbSets <= 0:
-        print("Terminating execution: No valid scheduling block sets")
+        casa_tools.post_to_log("Terminating execution: No valid scheduling block sets")
         return info, relativePath, intentsDict, asdmList, commandsList
     elif numSbSets > 1:
-        print("Warning: More than one scheduling block set")
+        casa_tools.post_to_log("Warning: More than one scheduling block set")
 
     # Get the ASDM list
     relativePath, numAsdms, asdmList = _getAsdmList(pprObject=pprObject, sbsetId=0, numSbSets=numSbSets, requestId=0,
                                                     numRequests=numRequests)
+    casa_tools.post_to_log('Relative path: {}'.format(relativePath))
+    casa_tools.post_to_log('Number of Asdms: {}'.format(numAsdms))
+    casa_tools.post_to_log('ASDM list: {}'.format(asdmList))
 
     return info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList
 
