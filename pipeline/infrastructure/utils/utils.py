@@ -11,6 +11,8 @@ import re
 import string
 import ast
 import pickle
+import contextlib
+import shutil
 from typing import Collection, Dict, List, Tuple, Optional, Sequence, Union
 
 import bisect
@@ -26,9 +28,9 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes','get_taskhistory_fromimage',
+           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size']
+           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'ignore_pointing']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -577,3 +579,64 @@ def get_obj_size(obj, serialize=True):
             raise Exception(
                 "Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).")
         return asizeof(obj)
+
+
+@contextlib.contextmanager
+def ignore_pointing(vis):
+    """A context manager to ignore pointing tables of MSes during I/O operations.
+
+    The original pointing table will be temperarily renamed to POINTING_ORIGIN, and a new empty pointing table 
+    is created. When the context manager exits, the original table is restored.
+
+    For example, to ignore the pointing table of a MS during mstransform() calls, use:
+    
+        with ignore_pointing('test.ms'):
+            casatasks.mstransform(vis='test.ms',outputvis='test_output.ms',scan='16',datacolumn='data')
+
+    The pointing table of the output MS should be empty.    
+    
+    On the other hand, if the pointing table is needed in the output vis, e.g. for imaging with tclean(usepointing=True),
+    we can manually create hardlinks of pointing table afterwards while minimizing the disk space usage:
+    
+        import shutil, os
+        shutil.rmtree('test_small.ms/POINTING')
+        shutil.copytree('test.ms/POINTING', 'test_output.ms/POINTING', copy_function=os.link)
+    
+    One can verify the indoes of the pointing table files, which should be the same:
+
+        ls -lih test.ms/POINTING
+        ls -lih test_small.ms/POINTING
+
+    """
+    if isinstance(vis, list):
+        vis_list = vis
+    else:
+        vis_list = [vis]
+
+    vis_list_ignore = []
+    try:
+        for ms in vis_list:
+            if not os.path.isdir(ms+'/POINTING') and not os.path.isdir(ms+'/POINTING_ORIGIN'):
+                LOG.warning(f'No pointing table found in {ms}.')
+                continue
+            vis_list_ignore.append(ms)
+            if not os.path.isdir(ms+'/POINTING_ORIGIN'):
+                LOG.info(f'backup the pointing table for {ms}')
+                shutil.move(ms+'/POINTING', ms+'/POINTING_ORIGIN')
+            with casa_tools.TableReader(ms+'/POINTING_ORIGIN', nomodify=True) as table:
+                tabdesc = table.getdesc()
+                dminfo = table.getdminfo()
+            if os.path.isdir(ms+'/POINTING'):
+                shutil.rmtree(ms+'/POINTING')
+            LOG.info(f'empty the pointing table for {ms}')
+            tb = casa_tools._logging_table_cls()
+            tb.create(ms+'/POINTING', tabdesc, dminfo=dminfo)
+            tb.close
+        yield
+    finally:
+        for ms in vis_list_ignore:
+            if os.path.isdir(ms+'/POINTING_ORIGIN'):
+                if os.path.isdir(ms+'/POINTING'):
+                    shutil.rmtree(ms+'/POINTING')
+                LOG.info(f'restore the pointing table for {ms}')
+                shutil.move(ms+'/POINTING_ORIGIN', ms+'/POINTING')
