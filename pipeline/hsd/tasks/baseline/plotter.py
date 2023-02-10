@@ -202,7 +202,11 @@ class BaselineSubtractionDataManager(object):
                               frequency: int,
                               out_rowmap: Optional[dict] = None,
                               in_rowmap: Optional[dict] = None
-                              ) -> Tuple[numpy.ma.masked_array, numpy.ma.masked_array, numpy.ma.masked_array, numpy.ma.masked_array, numpy.ma.masked_array]:
+                              ) -> Tuple[numpy.ma.masked_array,
+                                         numpy.ma.masked_array,
+                                         Optional[numpy.ma.masked_array],
+                                         Optional[numpy.ma.masked_array],
+                                         Optional[numpy.ma.masked_array]]:
         """
         Args:
             field_id: Field id to process
@@ -435,7 +439,7 @@ class BaselineSubtractionDataManager(object):
                             LOG.trace('this_mask.shape=%s', this_mask.shape)
                             for ipol in range(num_pol):
                                 pmask = this_mask[ipol]
-                                allflagged = numpy.all(pmask is True)
+                                allflagged = numpy.all(pmask == True)
                                 LOG.trace('all(this_mask==True) = %s', allflagged)
                                 if allflagged == False:
                                     idxperpol[ipol].append(idxs[isort])
