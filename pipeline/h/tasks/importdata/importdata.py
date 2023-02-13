@@ -300,6 +300,12 @@ class ImportData(basetask.StandardTaskTemplate):
                 ms.set_data_column(data_types['CORRECTED'].enum_data_type, correcteddatacolumn_name)
                 LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].str_data_type}')
 
+            #1575: correct invalid coordinate system name in Cycle 2 and earlier datasets
+            for field in ms.fields:
+                if field._mdirection['refer'] in ['J2000', 'j2000']:
+                    LOG.info(f'changing coords from J2000 to ICRS for {field}')
+                    field._mdirection['refer'] = 'ICRS'
+
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
 
