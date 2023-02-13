@@ -9,7 +9,6 @@ import pipeline.infrastructure.renderer.qaadapter as qaadapter
 
 qaadapter.registry.register_to_dataset_topic(SDImportDataResults)
 
-# # use the standard ImportData renderer to render ALMAImportData results
 importdata_renderer = renderer.T2_4MDetailsSingleDishImportDataRenderer(
     uri='hsd_importdata.mako'
 )
