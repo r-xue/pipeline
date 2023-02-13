@@ -357,10 +357,10 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
 
         Args:
             vis: List of input visibility data
-            exception: Exception occured
+            exception: Exception occurred
 
         Return:
-            a results object with exception rised
+            a results object with exception raised
         """
         LOG.error('Error importing {!s}'.format(os.path.basename(vis)))
         LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
