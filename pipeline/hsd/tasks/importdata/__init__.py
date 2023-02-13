@@ -2,9 +2,9 @@
 import pipeline.infrastructure.renderer.weblog as weblog
 from . import qa
 from . import renderer
-from .importdata import SerialSDImportData as SerialSDImportData
-from .importdata import SDImportData as SDImportData
-from .importdata import SDImportDataResults as SDImportDataResults
+from .importdata import SerialSDImportData
+from .importdata import SDImportData
+from .importdata import SDImportDataResults
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 
 qaadapter.registry.register_to_dataset_topic(SDImportDataResults)
