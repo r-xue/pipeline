@@ -61,7 +61,7 @@ class RefAntInputs(vdp.StandardInputs):
         raise NotImplementedError
 
     def __init__(self, context, vis=None, output_dir=None, field=None, spw=None, intent=None, hm_refant=None,
-                 refant=None, geometry=None, flagging=None, refantignore=None, parallel='automatic'):
+                 refant=None, geometry=None, flagging=None, refantignore=None, parallel=None):
         self.context = context
         self.vis = vis
         self.output_dir = output_dir

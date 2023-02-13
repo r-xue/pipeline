@@ -58,7 +58,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                  createmms: Optional[str]=None,
                  ocorr_mode: Optional[str]=None,
                  hm_rasterscan: Optional[str]=None,
-                 parallel: str = 'automatic'):
+                 parallel: Optional[Union[str, bool]] = None):
         """Initialise SDImportDataInputs class.
 
         Args:
@@ -78,7 +78,9 @@ class SDImportDataInputs(importdata.ImportDataInputs):
             ocorr_mode: Selection of baseline correlation to import.
                         Valid only if input visibility is ASDM. See a document of CASA, casatasks::importasdm, for available options.
             hm_rasterscan: heuristics method for raster scan analysis
-            parallel: Execute using CASA HPC functionality, if available. Default is 'automatic'.
+            parallel: Execute using CASA HPC functionality, if available.
+                      Default is None, which intends to turn on parallel
+                      processing if possible.
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                          process_caldevice=process_caldevice, session=session,
