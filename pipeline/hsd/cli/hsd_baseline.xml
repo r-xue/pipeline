@@ -141,8 +141,8 @@
                      no line detection/validation is required even if manually specified
                      line window does not exist. When None is given as a value and if
                      linewindowmode is 'replace', line detection/validation is not performed
-                     for the corresponding spw. For example, suppose the following parameter
-                     is given for the data with four science spws, 17, 19, 21, and 23.
+                     for the corresponding spw. For example, suppose the following parameters
+                     are given for the data with four science spws, 17, 19, 21, and 23.
                          linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
                          linewindowmode='replace'
                      The task will use given line window for 17 and 19 while the task performs
@@ -168,7 +168,7 @@
                      specified line windows are added to the result.
 
                      Note that this has no effect when linewindow for target
-                     spw is empty list. In that case, line detection/validation
+                     spw is an empty list. In that case, line detection/validation
                      will be performed regardless of the value of linewindowmode.
                      In case if no linewindow nor line detection/validation
                      are necessary, you should set linewindowmode to 'replace'
