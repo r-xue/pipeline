@@ -223,8 +223,6 @@ class DetectLine(basetask.StandardTaskTemplate):
                                        success=True,
                                        outcome={'signals': detect_signal})
 
-            result.task = self.__class__
-
             return result
 
         # move assertion for spectral_data here since spectral_data is
@@ -322,8 +320,6 @@ class DetectLine(basetask.StandardTaskTemplate):
         result = DetectLineResults(task=self.__class__,
                                    success=True,
                                    outcome={'signals': detect_signal})
-
-        result.task = self.__class__
 
         return result
 

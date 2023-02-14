@@ -240,8 +240,6 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
                                          success=True,
                                          outcome=outcome)
 
-            result.task = self.__class__
-
             return result
 
         # Dictionary for final output
@@ -298,8 +296,6 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         result = ValidateLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
-
-        result.task = self.__class__
 
         return result
 
@@ -664,8 +660,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                          success=True,
                                          outcome=outcome)
 
-            result.task = self.__class__
-
             return result
 
         # 2008/9/20 Dec Effect was corrected
@@ -726,7 +720,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
-            result.task = self.__class__
             return result
 
         ### 2011/05/17 anti-scaling of the line width
@@ -804,8 +797,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         result = ValidateLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
-
-        result.task = self.__class__
 
         return result
 

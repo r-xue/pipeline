@@ -178,7 +178,6 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                    'meta_data': retval[1],
                    'grid_table': grid_table}
         result = SDSimpleGriddingResults(task=self.__class__, success=True, outcome=outcome)
-        result.task = self.__class__
 
         return result
 
