@@ -720,7 +720,7 @@ class LineWindowParser(object):
 
     def _freq2chan(self,
                    spwid: int,
-                   window: Union[List[str], List[float], List[int]]) -> List[int]:
+                   window: Optional[Union[List[str], List[float], List[int]]]) -> List[int]:
         """Convert frequency selection into channel selection.
 
         If float values are given, they are interpreted as the value in Hz.
