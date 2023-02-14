@@ -272,7 +272,8 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
         spwstring = ''
         for spw in contdict['fields'][field]:
-            if contdict['fields'][field][spw][0]['refer'] == 'LSRK':
+            crange_list = [crange for crange in contdict['fields'][field][spw] if crange != 'ALL']
+            if crange_list[0]['refer'] == 'LSRK':
                 LOG.info("Converting from LSRK to TOPO...")
                 # Convert from LSRK to TOPO
                 sname = field
@@ -292,10 +293,10 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
                 spwstring = spwstring[:-1]
                 spwstring = spwstring + ','
 
-            if contdict['fields'][field][spw][0]['refer'] == 'TOPO':
+            if crange_list[0]['refer'] == 'TOPO':
                 LOG.info("Using TOPO frequency specified in {!s}".format(contfile))
                 spwstring = spwstring + spw + ':'
-                for freqrange in contdict['fields'][field][spw]:
+                for freqrange in crange_list:
                     spwstring = spwstring + str(freqrange['range'][0]) + '~' + str(freqrange['range'][1]) + 'GHz;'
                 spwstring = spwstring[:-1]
                 spwstring = spwstring + ','
