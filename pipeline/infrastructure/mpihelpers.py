@@ -399,9 +399,9 @@ else:
 
 
 class TaskQueue:
-    """A interface class that manage/execute tier0 PipelineTask, JobRquests, or FunctionaCalls in parallel.
+    """A interface class that manages/executes tier0 PipelineTask, JobRquests, or FunctionaCalls in parallel.
 
-    TaskQueue provide a API simialr to multirocessing.Pool, but use the casampi fifo queue underneath.
+    TaskQueue provide a API simialr to multirocessing.Pool, but use the casampi FIFO queue underneath (if MPI is enabled)
 
     Example 1: 
 
@@ -420,19 +420,18 @@ class TaskQueue:
         results = q.get_results()
     """
 
-    def __init__(self):
+    def __init__(self, parallel=True):
 
         self.__queue = []
         self.__running = True
         self.__executor = None
         self.__mpi_server_list = mpi_server_list
         self.__is_mpi_ready = is_mpi_ready()
-        self.__async = is_mpi_ready()
+        self.__async = parallel and self.__is_mpi_ready
 
         LOG.info('Initialize TaskQueue with MPI server list: %s', self.__mpi_server_list)
 
-    def __enter__(self, parallel=True):
-        self.__async = parallel and self.__is_mpi_ready
+    def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
