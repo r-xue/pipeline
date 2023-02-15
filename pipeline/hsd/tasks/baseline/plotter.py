@@ -686,8 +686,8 @@ class BaselineSubtractionPlotManager(object):
                                                   postfit_qa_figfile)
             if os.path.exists(postfit_qa_figfile):
                 plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
-                if len(stat) > 0:
-                    self.baseline_quality_stat[postfit_qa_figfile] = stat
+                if stat:
+                    self.baseline_quality_stat[postfit_qa_figfile] = [stat]
 
         del postfit_integrated_data
 
@@ -697,7 +697,7 @@ class BaselineSubtractionPlotManager(object):
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
                          edge: Tuple[int, int], brightnessunit: str,
-                         figfile: str) -> List[BinnedStat]:
+                         figfile: str) -> Optional[BinnedStat]:
         """
         Calculate baseline flatness of a spectrum and create a plot.
 
@@ -717,7 +717,6 @@ class BaselineSubtractionPlotManager(object):
         Returns:
             Statistic information to evaluate baseline flatness.
         """
-        binned_stat = []
         masked_data = numpy.ma.masked_array(spectrum, mask=False)
         if edge is not None:
             (ch1, ch2) = edge
@@ -736,13 +735,12 @@ class BaselineSubtractionPlotManager(object):
            or stddev is numpy.ma.masked \
            or not numpy.isfinite(stddev):
             # not enough valid data or stddev is invalid
-            return binned_stat
+            return None
         bin_min = numpy.nanmin(binned_data)
         bin_max = numpy.nanmax(binned_data)
         stat = BinnedStat(bin_min_ratio=bin_min/stddev,
                           bin_max_ratio=bin_max/stddev,
                           bin_diff_ratio=(bin_max-bin_min)/stddev)
-        binned_stat.append(stat)
         # create a plot
         xmin = min(frequency[0], frequency[-1])
         xmax = max(frequency[0], frequency[-1])
@@ -777,7 +775,7 @@ class BaselineSubtractionPlotManager(object):
         plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
         plt.plot(binned_freq, binned_data, 'ro')
         plt.savefig(figfile, dpi=DPIDetail)
-        return binned_stat
+        return stat
 
 
 def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
