@@ -37,6 +37,26 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    {{#selfcal}}
+    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
+    
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{field}}</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">spw</Keyword>
+                <Value xmlns="">{{spw}}</Value>
+            </Parameter>                     
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <!-- end of the selfcal section -->
+    {{/selfcal}}
+
     <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
         <ParameterSet>
