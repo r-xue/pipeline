@@ -451,6 +451,10 @@ class TaskQueue:
     def done(self):
         return self.get_results()
 
+    def is_async(self):
+        """Return True if the TaskQueue is running in parallel mode."""
+        return self.__async
+
     def get_results(self):
 
         self.__running = False
