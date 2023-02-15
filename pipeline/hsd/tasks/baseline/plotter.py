@@ -710,7 +710,7 @@ class BaselineSubtractionPlotManager(object):
             deviation_mask: ID ranges of deviation mask. These ranges are also
                 eliminated from inspection of baseline flatness.
             edge: Number of elements in left and right edges that should be
-                eliminates from inspection of baseline flatness.
+                eliminated from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
             figfile: A file name to save figure.
 
