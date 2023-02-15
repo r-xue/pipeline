@@ -73,6 +73,10 @@ def plotfilename(image, reportdir, collapseFunction=None):
 class SkyDisplay(object):
     """Class to plot sky images."""
 
+    def __init__(self, exclude_desc=False, overwrite=False):
+        self.exclude_desc = exclude_desc    # exclude the text descriptions from image metadata.
+        self.overwrite = overwrite          # decide whether to overwrite existing figures or not.
+
     def plot_per_stokes(self, *args, stokes_list: Optional[list] = None, **kwargs):
         """Plot sky images from a image file with multiple Stokes planes (one image per Stokes).
         
@@ -218,7 +222,7 @@ class SkyDisplay(object):
                 beam = None
 
             # don't replot if a file of the required name already exists
-            if os.path.exists(plotfile):
+            if os.path.exists(plotfile) and not self.overwrite:
                 LOG.info('plotfile already exists: %s', plotfile)
 
                 # We make sure that 'band' is still defined as if the figure is plotted.
@@ -289,18 +293,19 @@ class SkyDisplay(object):
                 label.set_fontsize(fontsize)
             cb.set_label(brightness_unit, fontsize=fontsize)
 
-            # image reference pixel
-            yoff = 0.10
-            yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
-            for i, k in enumerate(coord_refs['string']):
-                # note: the labels present the reference value at individual axes of the collapsed image
-                # https://casa.nrao.edu/docs/casaref/image.collapse.html
-                yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
+            if not self.exclude_desc:
+                # image reference pixel
+                yoff = 0.10
+                yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
+                for i, k in enumerate(coord_refs['string']):
+                    # note: the labels present the reference value at individual axes of the collapsed image
+                    # https://casa.nrao.edu/docs/casaref/image.collapse.html
+                    yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
 
-            # if peaksnr is available for the mom8_fc image, include it in the plot
-            if 'mom8_fc' in result and mom8_fc_peak_snr is not None:
-                yoff = 0.90
-                self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
+                # if peaksnr is available for the mom8_fc image, include it in the plot
+                if 'mom8_fc' in result and mom8_fc_peak_snr is not None:
+                    yoff = 0.90
+                    self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
 
             # plot beam
             if beam is not None:
@@ -416,7 +421,8 @@ class SkyDisplay(object):
                                   xycoords='axes fraction',
                                   frameon=True,
                                   box_alignment=(0.5, 0.5))
-            ax.add_artist(bbox)
+            if not self.exclude_desc:
+                ax.add_artist(bbox)
 
             # save the image
             fig.tight_layout()
