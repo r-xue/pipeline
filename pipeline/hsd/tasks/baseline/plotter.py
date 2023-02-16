@@ -161,9 +161,6 @@ class BaselineSubtractionDataManager(object):
 
         self.ms = ms
         self.context = context
-        origin_ms = self.context.observing_run.get_ms(self.ms.origin_ms)
-        self.out_rowmap = utils.make_row_map(origin_ms, blvis)
-        self.in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         self.prefit_data = ms.name
         self.postfit_data = blvis
         self.datatable = datatable
@@ -228,21 +225,13 @@ class BaselineSubtractionDataManager(object):
         dtrows = self.datatable.getcol('ROW')
 
         if not basetask.DISABLE_WEBLOG:
-            self.get_averaged_data(self.prefit_data, dtrows, num_ra, num_dec, nchan, npol,
-                                   rowlist, rowmap=in_rowmap,
-                                   map_data_storage=self.prefit_storage.map_data,
-                                   map_mask_storage=self.prefit_storage.map_mask)
-            self.get_data(self.prefit_data, dtrows, num_ra, num_dec, nchan, npol,
-                          rowlist, rowmap=in_rowmap,
-                          integrated_data_storage=self.prefit_storage.integrated_data,
-                          map_data_storage=self.prefit_storage.map_data,
-                          map_mask_storage=self.prefit_storage.map_mask)
+            self.get_averaged_data(dtrows, num_ra, num_dec, nchan, npol,
+                                   rowlist, rowmap=in_rowmap)
+            self.get_data(dtrows, num_ra, num_dec, nchan, npol,
+                          rowlist, infile=self.prefit_data, rowmap=in_rowmap)
 
-        self.get_data(self.postfit_data, dtrows, num_ra, num_dec, nchan, npol,
-                      rowlist, rowmap=out_rowmap,
-                      integrated_data_storage=self.postfit_storage.integrated_data,
-                      map_data_storage=self.postfit_storage.map_data,
-                      map_mask_storage=self.postfit_storage.map_mask)
+        self.get_data(dtrows, num_ra, num_dec, nchan, npol,
+                      rowlist, infile=self.postfit_data, rowmap=out_rowmap)
 
         return self.postfit_integrated_data, self.postfit_map_data, self.prefit_integrated_data, self.prefit_map_data, self.prefit_averaged_data
 
@@ -331,18 +320,14 @@ class BaselineSubtractionDataManager(object):
 
     def get_data(
         self,
-        infile: str,
         dtrows: numpy.ndarray,
         num_ra: int,
         num_dec: int,
         num_chan: int,
         num_pol: int,
         rowlist: dict,
-        rowmap: Optional[dict] = None,
-        integrated_data_storage: Optional[numpy.ndarray] = None,
-        integrated_mask_storage: Optional[numpy.ndarray] = None,
-        map_data_storage: Optional[numpy.ndarray] = None,
-        map_mask_storage: Optional[numpy.ndarray] = None
+        infile: str = None,
+        rowmap: Optional[dict] = None
     ) -> Tuple[numpy.ma.masked_array, numpy.ma.masked_array]:
         """Create array data for sparse map.
 
@@ -354,26 +339,30 @@ class BaselineSubtractionDataManager(object):
         held by rowlist.
 
         Args:
-            infile: Name of the MS
             dtrows: List of datatable rows
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
             num_chan: Number of spectral channels
             num_pol: Number of polarizaionts
             rowlist: List of datatable row ids per sparse map panel with metadata
+            infile: Name of the MS
             rowmap: Row mapping between original (calibrated) MS and the MS
                     specified by infile. It will be EchoDictionary if None is given.
-            integrated_data_storage: Storage for integrated spectrum. If None is given,
-                                     new array is created.
-            integrated_mask_storage: Storage for integrated mask (not used).
-            map_data_storage: Storage for sparse map. If None is given, new array is created.
-            map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
 
         Returns:
             Two masked arrays corresponding to integrated spectrum and sparse map data.
             The former has the shape of (npol, nchan) while tha latter is four-dimensional,
             (nx, ny, npol, nchan).
         """
+
+        if infile == self.postfit_data:
+            integrated_data_storage = self.postfit_storage.integrated_data
+            map_data_storage = self.postfit_storage.map_data
+            map_mask_storage = self.postfit_storage.map_mask
+        else:
+            integrated_data_storage = self.prefit_storage.integrated_data
+            map_data_storage = self.prefit_storage.map_data
+            map_mask_storage = self.prefit_storage.map_mask
 
         if infile == self.postfit_data and self.postfit_integrated_data is not None:
             pass
@@ -486,16 +475,13 @@ class BaselineSubtractionDataManager(object):
 
     def get_averaged_data(
         self,
-        infile: str,
         dtrows: numpy.ndarray,
         num_ra: int,
         num_dec: int,
         num_chan: int,
         num_pol: int,
         rowlist: dict,
-        rowmap: Optional[dict] = None,
-        map_data_storage: Optional[numpy.ndarray] = None,
-        map_mask_storage: Optional[numpy.ndarray] = None
+        rowmap: Optional[dict] = None
     ) -> numpy.ma.masked_array:
         """Create array data for sparse map.
 
@@ -504,7 +490,6 @@ class BaselineSubtractionDataManager(object):
         held by rowlist.
 
         Args:
-            infile: Name of the MS
             dtrows: List of datatable rows
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
@@ -513,13 +498,15 @@ class BaselineSubtractionDataManager(object):
             rowlist: List of datatable row ids per sparse map panel with metadata
             rowmap: Row mapping between original (calibrated) MS and the MS
                     specified by infile. Defaults to None.
-            map_data_storage: Storage for sparse map. If None is given, new array is created.
-            map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
 
         Returns:
             Sparse map data as masked array. Shape of the array is four-dimensional,
             (nx, ny, npol, nchan).
         """
+
+        infile = self.prefit_data
+        map_data_storage = self.prefit_storage.map_data
+        map_mask_storage = self.prefit_storage.map_mask
 
         if self.prefit_averaged_data is not None:
             pass
@@ -607,8 +594,6 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
 
         if basetask.DISABLE_WEBLOG:
             self.pool = None
-            self.prefit_storage = None
-            self.postfit_storage = None
         else:
             if not os.path.exists(self.stage_dir):
                 os.makedirs(self.stage_dir, exist_ok=True)   # handle race condition in Tier-0 operation gracefully
@@ -1194,19 +1179,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             brightnessunit: Brightness unit of spectrum.
             figfile: A file name to save figure.
         """
-        masked_data = numpy.ma.masked_array(spectrum, mask=False)
-        if edge is not None:
-            (ch1, ch2) = edge
-            masked_data.mask[0:ch1] = True
-            masked_data.mask[len(masked_data)-ch2-1:] = True
-        if line_range is not None:
-            for chmin, chmax in line_range:
-                masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
-        if deviation_mask is not None:
-            for chmin, chmax in deviation_mask:
-                masked_data.mask[chmin:chmax+1] = True
-        nbin = 20 if len(frequency) >= 512 else 10
-        binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+        masked_data, binned_freq, binned_data = data_flatness(spectrum, frequency, line_range,
+                                                              deviation_mask, edge)
         stddev = masked_data.std()
         # create a plot
         xmin = min(frequency[0], frequency[-1])
@@ -1345,19 +1319,8 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             List of namedtuple 'BinnedStat' containing 'bin_min_ratio bin_max_ratio bin_diff_ratio'.
         """
         binned_stat = []
-        masked_data = numpy.ma.masked_array(spectrum, mask=False)
-        if edge is not None:
-            (ch1, ch2) = edge
-            masked_data.mask[0:ch1] = True
-            masked_data.mask[len(masked_data)-ch2-1:] = True
-        if line_range is not None:
-            for chmin, chmax in line_range:
-                masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
-        if deviation_mask is not None:
-            for chmin, chmax in deviation_mask:
-                masked_data.mask[chmin:chmax+1] = True
-        nbin = 20 if len(frequency) >= 512 else 10
-        binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+        masked_data, binned_freq, binned_data = data_flatness(spectrum, frequency, line_range,
+                                                              deviation_mask, edge)
         if binned_data.count() < 2:  # not enough valid data
             return binned_stat
         stddev = masked_data.std()
@@ -1368,6 +1331,43 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
                           bin_diff_ratio=(bin_max-bin_min)/stddev)
         binned_stat.append(stat)
         return binned_stat
+
+
+def data_flatness(spectrum: List[float], frequency: List[float],
+                  line_range: Optional[List[Tuple[float, float]]],
+                  deviation_mask: Optional[List[Tuple[int, int]]],
+                  edge: Tuple[int, int]) -> Tuple[MaskedArray, numpy.ndarray, MaskedArray]:
+    """
+    Create a data of baseline flatness of a spectrum.
+
+    Args:
+        spectrum: A spectrum to analyze baseline flatness and plot.
+        frequency: Frequency values of each element in spectrum.
+        line_range: ID ranges in spectrum array that should be considered
+            as spectral lines and eliminated from inspection of baseline
+            flatness.
+        deviation_mask: ID ranges of deviation mask. These ranges are also
+            eliminated from inspection of baseline flatness.
+        edge: Number of elements in left and right edges that should be
+            eliminates from inspection of baseline flatness.
+
+    Return:
+        Arrays of binned abcissa, binned data and masked data
+    """
+    masked_data = numpy.ma.masked_array(spectrum, mask=False)
+    if edge is not None:
+        (ch1, ch2) = edge
+        masked_data.mask[0:ch1] = True
+        masked_data.mask[len(masked_data)-ch2-1:] = True
+    if line_range is not None:
+        for chmin, chmax in line_range:
+            masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
+    if deviation_mask is not None:
+        for chmin, chmax in deviation_mask:
+            masked_data.mask[chmin:chmax+1] = True
+    nbin = 20 if len(frequency) >= 512 else 10
+    binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+    return masked_data, binned_freq, binned_data
 
 
 def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
