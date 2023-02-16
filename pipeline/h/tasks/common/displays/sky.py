@@ -73,9 +73,10 @@ def plotfilename(image, reportdir, collapseFunction=None):
 class SkyDisplay(object):
     """Class to plot sky images."""
 
-    def __init__(self, exclude_desc=False, overwrite=False):
+    def __init__(self, exclude_desc=False, overwrite=False, figsize=(6.4, 4.8)):
         self.exclude_desc = exclude_desc    # exclude the text descriptions from image metadata.
         self.overwrite = overwrite          # decide whether to overwrite existing figures or not.
+        self.figsize = figsize
 
     def plot_per_stokes(self, *args, stokes_list: Optional[list] = None, **kwargs):
         """Plot sky images from a image file with multiple Stokes planes (one image per Stokes).
@@ -266,7 +267,7 @@ class SkyDisplay(object):
 
             # remove any incomplete matplotlib plots, if left these can cause weird errors
             plt.close('all')
-            fig, ax = plt.subplots(figsize=(6.4, 4.8))
+            fig, ax = plt.subplots(figsize=self.figsize)
 
             # plot data
             if 'cmap' not in imshow_args:
