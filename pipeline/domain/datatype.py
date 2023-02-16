@@ -17,9 +17,9 @@ class DataType(Enum):
         REGCAL_CONTLINE_ALL: calibrated data
         BASELINED: data after spectral baseline subtraction
         ATMCORR: data corrected for residual ATM
-        REGCAL_CONTLINE_SCIENCE: data in target MS
+        REGCAL_CONTLINE_SCIENCE: calibrated data of target scans
         SELFCAL_CONTLINE_SCIENCE: self-calibrated data of target scans
-        REGCAL_LINE_SCIENCE: spectral line data
+        REGCAL_LINE_SCIENCE: calibrated spectral line data
         SELFCAL_LINE_SCIENCE self-calibrated spectral line data
     """
 
