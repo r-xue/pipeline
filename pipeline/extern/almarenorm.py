@@ -435,6 +435,7 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
+import copy
 
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool
@@ -1192,7 +1193,11 @@ class ACreNorm(object):
 
 
     # LM added / edited lots
-    def renormalize(self,spws=[],targscans=[],nfit=5,bwthresh=120e6,bwthreshspw={},bwdiv='odd',docorr=False, excludespws=[],excludeants=[],excludechan={},fthresh=0.01,datacolumn='CORRECTED_DATA',fixOutliers=True,mededge=0.01,excflagged=True, diagSpectra=True, antHeuristicsSpectra=True, verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85, checkFalsePositives=True, atmAutoExclude=False, docorrThresh=None):
+    def renormalize(self, spws=[], targscans=[], nfit=5, bwthresh=120e6, bwthreshspw={}, bwdiv='odd', docorr=False,
+                    excludespws=[], excludeants=[], excludechan={}, fthresh=0.01, datacolumn='CORRECTED_DATA',
+                    fixOutliers=True, mededge=0.01, excflagged=True, diagSpectra=True, antHeuristicsSpectra=True,
+                    verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85,
+                    checkFalsePositives=True, atmAutoExclude=False, docorrThresh=None):
         """
         spws=[]  - to manually set only certain SPW to be analysed and/or corrected
         targscans=[]  - to manually set only certain scans to be analysed and/or corrected
@@ -1496,12 +1501,12 @@ class ACreNorm(object):
 
         if atmAutoExclude:
             if excludechan:
-                print('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExlude option.')
-                self.logReNorm.write('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExlude option.\n')
+                print('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExclude option.')
+                self.logReNorm.write('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExclude option.\n')
                 atmAutoExclude = False
             else:
-                print('Regions of the spectrum where atmospheric lines are found will be exluded.')
-                self.logReNorm.write('Regions of the spectrum where atmospheric lines are found will be exluded.\n')
+                print('Regions of the spectrum where atmospheric lines are found will be excluded.')
+                self.logReNorm.write('Regions of the spectrum where atmospheric lines are found will be excluded.\n')
                 checkFalsePositives = True
 
         if excludechan:
@@ -1535,7 +1540,9 @@ class ACreNorm(object):
             excludechan={}
         elif type(excludechan) is str:
             excludechan={}
-        self.rnstats['inputs']['excludechan'] = excludechan
+
+        # PIPE-1612: make a copy of the excludechan input so that it's not modified in the upstream code
+        self.rnstats['inputs']['excludechan'] = copy.deepcopy(excludechan)
 
         # LM added - bwthreshspw (dictionary)
         if bwthreshspw:
@@ -1975,7 +1982,7 @@ class ACreNorm(object):
                                     if checkFalsePositives:
                                         # Check and make sure there actually is an ATM line, otherwise ignore.
                                         if atm_mask.any():
-                                            # If we automatically exluded ATM lines then everything is set to 1.0
+                                            # If we automatically excluded ATM lines then everything is set to 1.0
                                             # in the range, therefore we need to check the N_atm array rather than
                                             # the N array.
                                             if atmAutoExclude:
@@ -2224,8 +2231,8 @@ class ACreNorm(object):
                         if self.atmWarning[str(fldname)][str(ispw)]:
                             exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
                             if atmAutoExclude:
-                                print('Atmospheric features above the threshold have been mitigated by atmAutoExlude.')
-                                self.logReNorm.write('Atmospheric features above the threshold have been mitigated by atmAutoExlude.\n')
+                                print('Atmospheric features above the threshold have been mitigated by atmAutoExclude.')
+                                self.logReNorm.write('Atmospheric features above the threshold have been mitigated by atmAutoExclude.\n')
 
                                 print('Equivalent manual call: '+exclude_cmd)
                                 self.logReNorm.write('Equivalent manual call: '+exclude_cmd+'\n')
@@ -4377,7 +4384,7 @@ class ACreNorm(object):
             if len(ranges) == 0:
                 return 'No flagging suggested.'
             elif len(ranges) > 1:
-                cmd = 'exludechan={"'+str(spw)+'":"'
+                cmd = 'excludechan={"'+str(spw)+'":"'
                 for rng in ranges:
                     cmd += str(rng[0])+'~'+str(rng[1])+';'
                 cmd = cmd[:-1] + '"}'

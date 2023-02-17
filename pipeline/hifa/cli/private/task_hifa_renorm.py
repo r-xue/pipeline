@@ -5,9 +5,9 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, spw=None,
-                excludechan=None, atm_auto_exclude=None, pipelinemode=None, dryrun=None,
-                acceptresults=None):
+def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
+                excludechan=None, atm_auto_exclude=None, bwthreshspw=None,
+                pipelinemode=None, dryrun=None, acceptresults=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
