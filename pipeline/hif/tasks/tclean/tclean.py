@@ -3,9 +3,6 @@ import os
 import re
 
 import numpy as np
-from scipy.ndimage import label
-import shutil
-
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 #import pipeline.infrastructure.api as api
@@ -16,17 +13,18 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from scipy.ndimage import label
+
 from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
-from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
+from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
-from .vlassmaskthresholdsequence import VlassMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
+from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
+from .vlassmaskthresholdsequence import VlassMaskThresholdSequence
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -630,6 +628,11 @@ class Tclean(cleanbase.CleanBase):
             sequence_manager = VlaAutoMaskThresholdSequence(multiterm=multiterm,
                                                             gridder=inputs.gridder, threshold=threshold,
                                                             sensitivity=sensitivity, niter=inputs.niter)
+        # Auto-boxing-selfcal
+        elif inputs.hm_masking == 'auto' and '-SCAL' in self.image_heuristics.imaging_mode:
+            sequence_manager = AutoScalThresholdSequence(multiterm=multiterm,
+                                                         gridder=inputs.gridder, threshold=threshold,
+                                                         sensitivity=sensitivity, niter=inputs.niter)
         # Auto-boxing
         elif inputs.hm_masking == 'auto':
             sequence_manager = AutoMaskThresholdSequence(multiterm=multiterm,
@@ -663,9 +666,12 @@ class Tclean(cleanbase.CleanBase):
         # not optimal. Thus, PSFs need to be created with the tclean parameter
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
+
         if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
                                                   'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
+        elif '-SCAL' in self.image_heuristics.imaging_mode:
+            result = self._do_scal_imaging(sequence_manager=sequence_manager)
         else:
             result = self._do_iterative_imaging(sequence_manager=sequence_manager)
 
@@ -985,6 +991,18 @@ class Tclean(cleanbase.CleanBase):
             else:
                 LOG.info(f'Copying {origin_psf} to {target_psf}')
                 self._executor.execute(casa_tasks.copytree(origin_psf, target_psf))
+
+    def _do_scal_imaging(self, sequence_manager):
+        """Do self-calibration imaging sequence.
+        
+        This method produces the optimal selfcal solution via the iterative imaging-selfcal loop.
+        It also generate before-scal/after-scal. The input MS is assumed to be calibrated via 
+        standard calibration procedures but they have been splitted from the original *_targets.ms 
+        and rebinned in frequency.
+        """
+
+        raise NotImplementedError("The self-calibration imaging/gaincal loop is not implemented yet!")
+        return
 
     def _do_iterative_imaging(self, sequence_manager):
 

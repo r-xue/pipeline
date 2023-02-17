@@ -25,6 +25,7 @@ from . import utils
 from . import vdp
 from .eventbus import TaskStartedEvent, TaskCompleteEvent, TaskAbnormalExitEvent
 from .eventbus import ResultAcceptingEvent, ResultAcceptedEvent, ResultAcceptErrorEvent
+from .casa_tasks import CasaTasks
 
 LOG = logging.get_logger(__name__)
 
@@ -625,6 +626,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
         # create a job executor that tasks can use to execute subtasks
         self._executor = Executor(self.inputs.context, dry_run)
+        self._executable = CasaTasks(executor=self._executor)
 
         # create a new log handler that will capture all messages above
         # ATTENTION level.
@@ -727,6 +729,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
             # delete the executor so that the pickled context can be released
             self._executor = None
+            self._executable = None
 
     def _handle_multiple_vis(self, dry_run, **parameters):
         """

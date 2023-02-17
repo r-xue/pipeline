@@ -1255,8 +1255,10 @@ class ImageParamsHeuristics(object):
         return ref_field_ids
 
     def calc_topo_ranges(self, inputs):
-
-        """Calculate TOPO ranges for hif_tclean inputs."""
+        """Calculate TOPO ranges for hif_tclean inputs.
+        
+        Note: we might consider consolidating this with the similar code in contfilehelper.
+        """
 
         spw_topo_freq_param_lists = []
         spw_topo_chan_param_lists = []
