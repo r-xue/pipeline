@@ -19,6 +19,7 @@ import numpy as np
 from pipeline.infrastructure.utils import ignore_pointing
 from pipeline.infrastructure.mpihelpers import TaskQueue
 import shutil
+import traceback
 
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 
@@ -99,7 +100,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         self.check_all_spws = False   # generate per-spw images to check phase transfer did not go poorly for narrow windows
         self.apply_to_target_ms = False  # apply final selfcal solutions back to the input _target.ms files
 
-        #if 'VLA' in self.telescope:
+        # if 'VLA' in self.telescope:
         #    self.check_all_spws = False
 
     def prepare(self):
@@ -164,13 +165,14 @@ class Selfcal(basetask.StandardTaskTemplate):
         selfcal_library, solints, bands = None, None, None
 
         try:
-            os.chdir(target['sc_workdir'])
+            os.chdir(cleantarget['sc_workdir'])
             LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}/'.format(
                 cleantarget['field'], cleantarget['spw'], cleantarget['sc_workdir']))
             selfcal_library, solints, bands = auto_selfcal.selfcal_workflow(cleantarget)
-            #auto_selfcal.save_sclib(selfcal_library, solints, bands, filename='selfcal_results.pickle')
-        except:
-            LOG.error('hif.heuristics.auto_selfcal crashed.')
+        except Exception as e:
+            LOG.error('Exception from hif.heuristics.auto_selfcal.')
+            LOG.error(str(e))
+            LOG.debug(traceback.format_exc())
         finally:
             os.chdir(workdir)
 
@@ -314,7 +316,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         """Restore the before lineflagging flag state, after splitting per_cleantarget tmp MS."""
         for vis in self.inputs.vis:
             # restore to the starting flags
-            #self._executable.initweights(vis=vis, wtmode='delwtsp')  # remove channelized weights
+            # self._executable.initweights(vis=vis, wtmode='delwtsp')  # remove channelized weights
             if os.path.exists(vis+".flagversions/flags.before_hif_selfcal"):
                 self._executable.flagmanager(vis=vis, mode='restore', versionname='before_hif_selfcal',
                                              comment='Flag states before hif_selfcal')
@@ -323,7 +325,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         """Flag the lines when cont.dat is present, before splitting per_cleantarget tmp MS."""
 
         for vis in self.inputs.vis:
-            #self._executable.initweights(vis=vis, wtmode='weight', dowtsp=True)  # initialize channelized weights
+            # self._executable.initweights(vis=vis, wtmode='weight', dowtsp=True)  # initialize channelized weights
             # save starting flags or restore to the starting flags
             if os.path.exists(vis+".flagversions/flags.before_hif_selfcal"):
                 self._executable.flagmanager(vis=vis, mode='restore', versionname='before_hif_selfcal',
