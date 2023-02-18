@@ -84,13 +84,13 @@ class Selfcal(basetask.StandardTaskTemplate):
         self.delta_beam_thresh = 0.05
 
         self.telescope = self.inputs.context.project_summary.telescope
-        if self.telescope == 'ALMA':
-            repr_ms = self.inputs.ms[0]
-            diameter = min([a.diameter for a in repr_ms.antennas])
-            if diameter == 7.0:
-                self.telescope = 'ACA'
-            else:
-                self.telescope = 'ALMA'
+        # if self.telescope == 'ALMA':
+        #     repr_ms = self.inputs.ms[0]
+        #     diameter = min([a.diameter for a in repr_ms.antennas])
+        #     if diameter == 7.0:
+        #         self.telescope = 'ACA'
+        #     else:
+        #         self.telescope = 'ALMA'
 
         self.apply_cal_mode_default = 'calflag'
         self.rel_thresh_scaling = 'log10'  # can set to linear, log10, or loge (natural log)
@@ -99,13 +99,15 @@ class Selfcal(basetask.StandardTaskTemplate):
         self.check_all_spws = False   # generate per-spw images to check phase transfer did not go poorly for narrow windows
         self.apply_to_target_ms = False  # apply final selfcal solutions back to the input _target.ms files
 
-        if 'VLA' in self.telescope:
-            self.check_all_spws = False
+        #if 'VLA' in self.telescope:
+        #    self.check_all_spws = False
 
     def prepare(self):
 
         inputs = self.inputs
-        LOG.info("This Selfcal class is running.")
+        if inputs.vis is None or inputs.vis == [] or inputs.vis == '':
+            raise ValueError(
+                f'No input visibilities specified matching required DataType {inputs.processing_data_type}, please review in the DataType information in Imported MS(es).')
 
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
@@ -198,7 +200,11 @@ class Selfcal(basetask.StandardTaskTemplate):
         This essenially runs MakeImList and go through all nesscary steps to get the target list.
         However, it will pick up the selfcal heuristics from imageparams_factory,ImageParamsHeuristicsFactory
         """
-        makeimlist_inputs = MakeImList.Inputs(self.inputs.context, vis=vislist, specmode='cont',
+        makeimlist_inputs = MakeImList.Inputs(self.inputs.context,
+                                              vis=vislist,
+                                              intent='TARGET',
+                                              specmode='cont',
+                                              clearlist=True,
                                               scal=scal, contfile=self.inputs.contfile,
                                               field=self.inputs.field,
                                               spw=self.inputs.spw)
