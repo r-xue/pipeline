@@ -672,7 +672,7 @@ def selfcal_workflow(cleantarget):
                         # (iteration == 0) and
                         if (iteration < len(solints[band])-1) and (selfcal_library[target][band][vis][solint]['SNR_post'] > selfcal_library[target][band]['SNR_orig']):
                             LOG.info('Updating solint = '+solints[band][iteration+1]+' SNR')
-                            LOG.info('Was: ', solint_snr[target][band][solints[band][iteration+1]])
+                            LOG.info(f'Was: {solint_snr[target][band][solints[band][iteration+1]]}')
                             get_SNR_self_update([target], band, vislist, selfcal_library, n_ants, solint,
                                                 solints[band][iteration+1], integration_time, solint_snr)
                             LOG.info(f'Now: {solint_snr[target][band][solints[band][iteration+1]]}')
