@@ -1,4 +1,7 @@
 import os
+import shutil
+import traceback
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -7,19 +10,17 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.filenamer as filenamer
 
 from pipeline.domain import DataType
-
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 
 import pipeline.infrastructure.mpihelpers as mpihelpers
 from pipeline.hif.tasks.makeimlist import MakeImList
 from pipeline.infrastructure import casa_tasks, task_registry
 import pipeline.domain.measures as measures
-import numpy as np
 
 from pipeline.infrastructure.utils import ignore_pointing
 from pipeline.infrastructure.mpihelpers import TaskQueue
-import shutil
-import traceback
+
+import pipeline.infrastructure.utils as utils
 
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 
@@ -148,7 +149,13 @@ class Selfcal(basetask.StandardTaskTemplate):
                 raise ValueError(f'auto_selfcal failed for target {target["field"]}.')
             target['sc_band'] = bands[0]
             target['sc_solints'] = solints[bands[0]]
-            target['sc_lib'] = scal_library[target['field']][target['sc_band']]
+            # note scal_library is keyed by field name without quotes at this moment.
+            # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
+            #       utils.fieldname_for_casa() and 
+            #       utils.dequote_fieldname_for_casa()
+            field_name=utils.dequote(target['field'])
+            target['sc_lib'] = scal_library[field_name][target['sc_band']]
+            target['field_name']=field_name
 
         # import pickle
         # with open('clean_targets.pickle', 'wb') as f:
@@ -177,6 +184,12 @@ class Selfcal(basetask.StandardTaskTemplate):
             LOG.debug(traceback.format_exc())
         finally:
             os.chdir(workdir)
+            if cleantarget['parallel']:
+                # parallel=True sugguests that we are running tclean(parallel=true in a sequential TaskQueue.
+                # A side effect of this is that the working directory of MPIServers will be "stuck" to the one where tclean(paralllel=True) started.
+                # As a workaround, we send the chdir command to the MPIServers exeplicitly.
+                mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
+                
 
         return selfcal_library, solints, bands
 

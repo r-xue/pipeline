@@ -35,7 +35,7 @@ class SelfcalSummary(object):
         self.report_dir = self.context.report_dir
         self.scal_dir = target['sc_workdir']
         self.slib = target['sc_lib']
-        self.field = target['field']
+        self.field = target['field_name']
         self.band = target['sc_band']
         self.solints = target['sc_solints']
 

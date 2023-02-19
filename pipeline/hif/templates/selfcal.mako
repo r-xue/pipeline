@@ -120,7 +120,7 @@ def fm_reason(slib):
 
 % for target in cleantargets:
 
-    <a class="anchor" id="${target['field']}${target['sc_band']}"></a>
+    <a class="anchor" id="${target['field_name']}${target['sc_band']}"></a>
     <h4>
       ${fm_target(target['field'])}&nbsp;${fm_band(target['sc_band'])}
       <a href="#targetlist" class="btn btn-link btn-sm">
@@ -130,7 +130,7 @@ def fm_reason(slib):
     
     <%
     slib=target['sc_lib']
-    key=(target['field'],target['sc_band'])
+    key=(target['field_name'],target['sc_band'])
     %>
 
             

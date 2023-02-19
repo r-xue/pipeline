@@ -20,7 +20,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         super().__init__('selfcalqa.mako', context, results)
 
         slib = cleantarget['sc_lib']
-        target, band = cleantarget['field'], cleantarget['sc_band']
+        target, band = cleantarget['field_name'], cleantarget['sc_band']
 
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         r = results[0]
@@ -158,7 +158,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for target in cleantargets:
 
-            key = (target['field'], target['sc_band'])
+            key = (target['field_name'], target['sc_band'])
             summary_plots[key], noisehist_plots[key] = display.SelfcalSummary(context, r, target).plot()
 
             slib = target['sc_lib']
@@ -180,7 +180,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def make_solint_summary_table(self, cleantarget, context, results):
 
-        solints, target, band = cleantarget['sc_solints'], cleantarget['field'], cleantarget['sc_band']
+        solints, target, band = cleantarget['sc_solints'], cleantarget['field_name'], cleantarget['sc_band']
         slib = cleantarget['sc_lib']
         if not slib['SC_success']:
             return None
