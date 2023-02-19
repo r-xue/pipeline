@@ -144,6 +144,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         for idx, target in enumerate(cleantargets_sc):
             scal_library, solints, bands = tq_results[idx]
+            if scal_library is None:
+                raise ValueError(f'auto_selfcal failed for target {target["field"]}.')
             target['sc_band'] = bands[0]
             target['sc_solints'] = solints[bands[0]]
             target['sc_lib'] = scal_library[target['field']][target['sc_band']]
