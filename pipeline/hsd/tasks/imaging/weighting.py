@@ -215,7 +215,7 @@ class WeightMS(basetask.StandardTaskTemplate):
                             weight[row][ipol] = 0.0
                     else:
                         # treat flagged data
-                        pass
+                        weight[row][ipol] = 0.0
 
         if weight_tintsys:
             exposures = datatable.getcol('EXPOSURE').take(index_list)
