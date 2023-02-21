@@ -150,9 +150,11 @@ class SyncTask(object):
             if self.__executor:
                 return self.__executor.execute(self.__task)
             else:
-                if isinstance(self.__task, JobRequest):
+                if not callable(self.__task):
+                    # for JobRequest or PipelineTask
                     return self.__task.execute(dry_run=False)
                 else:
+                    # for FunctionCall
                     return self.__task()
         except Exception as e:
             import traceback
