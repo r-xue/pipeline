@@ -422,11 +422,12 @@ class TaskQueue:
         results = q.get_results()
     """
 
-    def __init__(self, parallel=True):
+    def __init__(self, parallel=True, executor=None):
 
         self.__queue = []
+        self.__results = []
         self.__running = True
-        self.__executor = None
+        self.__executor = executor
         self.__mpi_server_list = mpi_server_list
         self.__is_mpi_ready = is_mpi_ready()
         self.__async = parallel and self.__is_mpi_ready
@@ -439,7 +440,7 @@ class TaskQueue:
     def __exit__(self, exc_type, exc_val, exc_tb):
 
         if self.__running:
-            self.__results = self.get_results()
+            _ = self.get_results()
         else:
             pass
         if exc_type:
@@ -459,12 +460,16 @@ class TaskQueue:
 
     def get_results(self):
 
-        self.__running = False
-        results = []
-        for task in self.__queue:
-            results.append(task.get_result())
+        if not self.__running and not self.__results:
+            return self.__results
+        else:
+            self.__running = False
+            results = []
+            for task in self.__queue:
+                results.append(task.get_result())
+            self.__results = results
 
-        return results
+        return self.__results
 
     def map(self, fn, iterable):
 
@@ -488,7 +493,7 @@ class TaskQueue:
             executable = Tier0JobRequest(fn, job_args, executor=executor)
             task = AsyncTask(executable)
         else:
-            task = SyncTask(fn(**job_args), self.__executor)
+            task = SyncTask(fn(**job_args), executor)
         self.__queue.append(task)
 
     def add_functioncall(self, fn, *args, **kwargs):
@@ -500,7 +505,10 @@ class TaskQueue:
             task = SyncTask(lambda: fn(*args, **kwargs))
         self.__queue.append(task)
 
-    def add_pipelinetask(self, task_cls, task_args, context):
+    def add_pipelinetask(self, task_cls, task_args, context, executor=None):
+
+        if executor is None:
+            executor = self.__executor
 
         if self.__async:
             tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
@@ -514,5 +522,5 @@ class TaskQueue:
         else:
             inputs = task_cls.Inputs(context, **task_args)
             task = task_cls(inputs)
-            task = SyncTask(task, self.__executor)
+            task = SyncTask(task, executor)
         self.__queue.append(task)
