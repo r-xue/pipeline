@@ -1,28 +1,23 @@
 import os
 import shutil
 import traceback
-import numpy as np
 
+import numpy as np
+import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.filenamer as filenamer
+import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.filenamer as filenamer
-
 from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
-
-import pipeline.infrastructure.mpihelpers as mpihelpers
+from pipeline.hif.tasks.applycal import IFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import casa_tasks, task_registry
-import pipeline.domain.measures as measures
-
-from pipeline.infrastructure.utils import ignore_pointing
-from pipeline.infrastructure.mpihelpers import TaskQueue
-
-import pipeline.infrastructure.utils as utils
-
+from pipeline.infrastructure import callibrary, casa_tasks, task_registry
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
+from pipeline.infrastructure.mpihelpers import TaskQueue
+from pipeline.infrastructure.utils import ignore_pointing
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -35,7 +30,19 @@ class SelfcalResults(basetask.Results):
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
+        self._register_datatypes(context)
+
         return
+
+    def _register_datatypes(self, context):
+        vislist = []
+        for target in self.targets:
+            vislist.extend(target['sc_vislist'])
+        vislist = list(set(vislist))
+
+        for vis in vislist:
+            ms = context.observing_run.get_ms(vis)
+            ms.set_data_column(DataType.SELFCAL_CONTLINE_SCIENCE, 'CORRECTED_DATA')
 
     def __repr__(self):
         return 'SelfcalResults:'
@@ -153,17 +160,11 @@ class Selfcal(basetask.StandardTaskTemplate):
             # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
             #       utils.fieldname_for_casa() and 
             #       utils.dequote_fieldname_for_casa()
-            field_name=utils.dequote(target['field'])
+            field_name = utils.dequote(target['field'])
             target['sc_lib'] = scal_library[field_name][target['sc_band']]
-            target['field_name']=field_name
+            target['field_name'] = field_name
 
-        # import pickle
-        # with open('clean_targets.pickle', 'wb') as f:
-        #     pickle.dump(cleantargets_sc, f, protocol=pickle.HIGHEST_PROTOCOL)
-        # import pprint as pp
-        # pp.pprint(cleantargets_sc)
-        # with open('clean_targets.pickle', 'rb') as f:
-        #     cleantargets_sc = pickle.load(f)
+        self._apply_scal(cleantargets_sc)
 
         return SelfcalResults(cleantargets_sc)
 
@@ -190,12 +191,71 @@ class Selfcal(basetask.StandardTaskTemplate):
                 # As a workaround, we send the chdir command to the MPIServers exeplicitly.
                 mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
                 
-
         return selfcal_library, solints, bands
 
-    def _apply_scal(self, scal_library):
+    def _apply_scal_old(self, sc_targets):
 
-        return
+        with open('applycal_to_orig_MSes.py', 'w') as applyCalOut:
+
+            for cleantarget in sc_targets:
+
+                cleantarget['spw_real'] = cleantarget['spw']
+                sc_lib = cleantarget['sc_lib']
+                vislist = sc_lib['vislist']
+
+                calapps = []
+                if sc_lib['SC_success']:
+                    for vis in vislist:
+                        solint = sc_lib['final_solint']
+                        iteration = sc_lib[vis][solint]['iteration']
+                        line = 'applycal(vis="' + vis.replace('.selfcal', '') + '",gaintable=' + str(
+                            sc_lib[vis]['gaintable_final']) + ',interp=' + str(
+                            sc_lib[vis]['applycal_interpolate_final']) + ', calwt=True,spwmap=' + str(
+                            sc_lib[vis]['spwmap_final']) + ', applymode="' + sc_lib[vis]['applycal_mode_final'] + '",field="' + cleantarget['field'] + '",spw="' + cleantarget['spw_real'] + '")\n'
+                        applyCalOut.writelines(line)
+
+    def _apply_scal(self, sc_targets):
+
+        calapps = []
+        vislist = []
+        for cleantarget in sc_targets:
+
+            cleantarget['spw_real'] = cleantarget['spw']
+            sc_lib = cleantarget['sc_lib']
+            sc_workdir = cleantarget['sc_workdir']
+            sc_vislist = sc_lib['vislist']
+            vislist.extend(sc_vislist)
+
+            if sc_lib['SC_success']:
+                for vis in sc_vislist:
+                    # workaround a potential issue from heuristics.auto_selfcal when gaintable has only one element, when it's not a list of list.
+                    spwmap_final = sc_lib[vis]['spwmap_final']
+                    if any(not isinstance(spwmap, list) for spwmap in spwmap_final) or not spwmap_final:
+                        spwmap_final = [spwmap_final]
+                    for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):
+                        gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
+                        calfrom = callibrary.CalFrom(gaintable=gaintable,
+                                                     interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=True,
+                                                     spwmap=spwmap_final[idx], caltype='gaincal')
+                        calto = callibrary.CalTo(vis=vis, field=cleantarget['field'], spw=cleantarget['spw_real'])
+                        # applymode=sc_lib[vis]['applycal_mode_final']
+                        calapps.append(callibrary.CalApplication(calto, calfrom))
+
+        for calapp in calapps:
+            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
+
+        with TaskQueue(executor=self._executor) as tq:
+
+            for vis in set(vislist):
+                task_args = {'vis': vis, 'applymode': 'calflag'}
+                tq.add_pipelinetask(IFApplycal, task_args, self.inputs.context)
+
+        tq_results = tq.get_results()
+
+        return tq_results
+
+    def analyse(self, results):
+        return results
 
     def _register_percleantarget_ms(self, vislist):
         """Register the per cleantarget MSes in the context and add the selfcal heuristics to the targets."""
@@ -354,6 +414,3 @@ class Selfcal(basetask.StandardTaskTemplate):
             for field, lines_sel in lines_sel_dict.items():
                 LOG.info("Flagging lines in field {} with the spw selection {}".format(field, lines_sel))
                 self._executable.flagdata(vis=vis, field=field, mode='manual', spw=lines_sel, flagbackup=False, action='apply')
-
-    def analyse(self, results):
-        return results
