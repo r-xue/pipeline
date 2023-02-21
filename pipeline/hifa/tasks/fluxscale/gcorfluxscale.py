@@ -572,6 +572,12 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         pc_intents = {'CHECK', 'PHASE'} & trans_intents
         non_pc_intents = trans_intents - pc_intents
 
+        # PIPE-1154: identify set of all calibrator intents that are not PHASE
+        # / CHECK; these impact which fields are in subsequent phase
+        # calibrations.
+        amp_intent = set(self.inputs.refintent.split(','))
+        exclude_intents = amp_intent | non_pc_intents
+
         # Compute phase caltable for the flux calibrator, using restricted set
         # of antennas.
         phase_results.append(self._do_phasecal_for_amp_calibrator(restr_ants, refant, minblperant, uvrange))
@@ -579,7 +585,11 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # PIPE-1154: compute phase caltable(s) with optimal parameters for
         # PHASE and/or CHECK fields that do not cover any of the other
         # calibrator intents.
-        phase_results.extend(self._do_phase_for_phase_check_no_overlap(pc_intents, non_pc_intents, all_ants, refant))
+        phase_results.extend(self._do_phase_for_phase_check_no_overlap(pc_intents, exclude_intents, all_ants, refant))
+
+        # PIPE-1490: for PHASE fields that do cover other calibrator intents,
+        # create a separate solve.
+        phase_results.extend(self._do_phase_for_phase_with_overlap(exclude_intents, all_ants, refant))
 
         # PIPE-1154: for the remaining calibrator intents, compute phase
         # solutions using full set of antennas.
@@ -650,7 +660,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                                         interp=None)
         return phase_result
 
-    def _do_phase_for_phase_check_no_overlap(self, pc_intents: Set, non_pc_intents: Set, antenna: str,
+    def _do_phase_for_phase_check_no_overlap(self, pc_intents: Set, exclude_intents: Set, antenna: str,
                                              refant: str) -> List[GaincalResults]:
         # Collect phase cal results.
         phase_results = []
@@ -661,12 +671,28 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # fields, derive separate phase solutions for each combination of
         # intent, field, and use optimal gaincal parameters based on spwmapping
         # registered in the measurement set.
-        amp_intent = set(self.inputs.refintent.split(','))
-        exclude_intents = amp_intent | non_pc_intents
         intent_field_to_assess = self._get_intent_field(self.inputs.ms, intents=pc_intents,
                                                         exclude_intents=exclude_intents)
 
         for intent, field in intent_field_to_assess:
+            phase_results.append(self._do_phasecal_for_intent_field(intent, field, antenna, refant))
+
+        return phase_results
+
+    def _do_phase_for_phase_with_overlap(self, exclude_intents: Set, antenna: str, refant: str) -> List[GaincalResults]:
+        # Collect phase cal results.
+        phase_results = []
+
+        # PIPE-1154, PIPE-1490: identify which fields cover the PHASE
+        # calibrator while also covering one of the other calibrator intents.
+        # For these fields, derive phase solutions in a separate caltable.
+        intent_field = set()
+        for field in self.inputs.ms.get_fields(intent="PHASE"):
+            if field.intents.intersection(exclude_intents):
+                intent_field.add(("PHASE", field.name))
+
+        # Run phase gaincal for selected PHASE fields.
+        for intent, field in intent_field:
             phase_results.append(self._do_phasecal_for_intent_field(intent, field, antenna, refant))
 
         return phase_results
