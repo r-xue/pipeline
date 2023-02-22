@@ -15,7 +15,7 @@ from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 from pipeline.hif.tasks.applycal import IFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import callibrary, casa_tasks, task_registry, utils
+from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, utils, task_registry
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
 
@@ -30,19 +30,29 @@ class SelfcalResults(basetask.Results):
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
-        self._register_datatypes(context)
 
-        return
-
-    def _register_datatypes(self, context):
         vislist = []
         for target in self.targets:
             vislist.extend(target['sc_vislist'])
         vislist = list(set(vislist))
 
         for vis in vislist:
-            ms = context.observing_run.get_ms(vis)
-            ms.set_data_column(DataType.SELFCAL_CONTLINE_SCIENCE, 'CORRECTED_DATA')
+            with casa_tools.TableReader(vis) as tb:
+                # check for the existance of CORRECTED_DATA first
+                if 'CORRECTED_DATA' not in tb.colnames():
+                    LOG.warning('No CORRECTED_DATA column in {}'.format(vis))
+                    LOG.warning('Skip DataType.SELFCAL_CONTLINE_SCIENCE registration for {}'.format(vis))
+                    continue
+                # register by cleantargets:
+                for target in self.targets:
+                    if vis in target['sc_vislist']:
+                        field_sel = target['field_name']
+                        spw_sel = target['spw_real'][vis]
+                        LOG.info(
+                            'Register the CORRECTED_DATA column as DataType.SELFCAL_CONTLINE_SCIENCE for {} {} {}'.format(
+                                vis, field_sel, spw_sel))
+                        ms = context.observing_run.get_ms(vis)
+                        ms.set_data_column(DataType.SELFCAL_CONTLINE_SCIENCE, 'CORRECTED_DATA', source=field_sel, spw=spw_sel)
 
     def __repr__(self):
         return 'SelfcalResults:'
@@ -158,7 +168,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             target['sc_solints'] = solints[bands[0]]
             # note scal_library is keyed by field name without quotes at this moment.
             # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
-            #       utils.fieldname_for_casa() and 
+            #       utils.fieldname_for_casa() and
             #       utils.dequote_fieldname_for_casa()
             field_name = utils.dequote(target['field'])
             target['sc_lib'] = scal_library[field_name][target['sc_band']]
@@ -190,7 +200,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 # A side effect of this is that the working directory of MPIServers will be "stuck" to the one where tclean(paralllel=True) started.
                 # As a workaround, we send the chdir command to the MPIServers exeplicitly.
                 mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
-                
+
         return selfcal_library, solints, bands
 
     def _apply_scal_old(self, sc_targets):
@@ -199,7 +209,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
             for cleantarget in sc_targets:
 
-                cleantarget['spw_real'] = cleantarget['spw']
                 sc_lib = cleantarget['sc_lib']
                 vislist = sc_lib['vislist']
 
@@ -211,7 +220,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         line = 'applycal(vis="' + vis.replace('.selfcal', '') + '",gaintable=' + str(
                             sc_lib[vis]['gaintable_final']) + ',interp=' + str(
                             sc_lib[vis]['applycal_interpolate_final']) + ', calwt=True,spwmap=' + str(
-                            sc_lib[vis]['spwmap_final']) + ', applymode="' + sc_lib[vis]['applycal_mode_final'] + '",field="' + cleantarget['field'] + '",spw="' + cleantarget['spw_real'] + '")\n'
+                            sc_lib[vis]['spwmap_final']) + ', applymode="' + sc_lib[vis]['applycal_mode_final'] + '",field="' + cleantarget['field'] + '",spw="' + cleantarget['spw_real'][vis] + '")\n'
                         applyCalOut.writelines(line)
 
     def _apply_scal(self, sc_targets):
@@ -220,7 +229,6 @@ class Selfcal(basetask.StandardTaskTemplate):
         vislist = []
         for cleantarget in sc_targets:
 
-            cleantarget['spw_real'] = cleantarget['spw']
             sc_lib = cleantarget['sc_lib']
             sc_workdir = cleantarget['sc_workdir']
             sc_vislist = sc_lib['vislist']
@@ -237,7 +245,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         calfrom = callibrary.CalFrom(gaintable=gaintable,
                                                      interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=True,
                                                      spwmap=spwmap_final[idx], caltype='gaincal')
-                        calto = callibrary.CalTo(vis=vis, field=cleantarget['field'], spw=cleantarget['spw_real'])
+                        calto = callibrary.CalTo(vis=vis, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
                         # applymode=sc_lib[vis]['applycal_mode_final']
                         calapps.append(callibrary.CalApplication(calto, calfrom))
 
@@ -324,11 +332,13 @@ class Selfcal(basetask.StandardTaskTemplate):
                         shutil.rmtree(sc_workdir)
                     os.mkdir(sc_workdir)
 
+                    spw_real = {}
                     for vis in target['vis']:
 
                         field = target['field']
                         # we use virtualspw here for the naming convention (similar to the imaging naming convention).
                         real_spwsel = self.inputs.context.observing_run.get_real_spwsel([target['spw']], [vis])[0]
+                        spw_real[vis] = real_spwsel
                         outputvis = os.path.join(sc_workdir, os.path.basename(vis))
                         self._remove_ms(outputvis)
 
@@ -347,7 +357,9 @@ class Selfcal(basetask.StandardTaskTemplate):
 
                         tq.add_jobrequest(casa_tasks.mstransform, task_args, executor=self._executor)
                         vislist.append(os.path.basename(outputvis))
+
                     target['sc_workdir'] = sc_workdir
+                    target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
 
         return targets

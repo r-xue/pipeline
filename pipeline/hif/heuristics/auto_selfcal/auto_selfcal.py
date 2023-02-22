@@ -33,8 +33,8 @@ def selfcal_workflow(cleantarget):
 
     vislist, vis, all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, telescope, rel_thresh_scaling, dividing_factor, check_all_spws, apply_to_target_ms, bands, band_properties, spwsarray, vislist_orig, spwstring_orig, cellsize, imsize, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = prep_selfcal(
         vislist)
-    #cellsize=cleantarget['cell'][0]
-    #imsize=cleantarget['imsize'][0]
+    cellsize=cleantarget['cell'][0]
+    imsize=cleantarget['imsize'][0]
     parallel = cleantarget['parallel']
     #nterms=cleantarget['nterms']
 
