@@ -375,6 +375,11 @@ if MPIEnvironment.is_mpi_enabled:
     try:
         if MPIEnvironment.is_mpi_client:
             __client = MPICommandClient()
+            # PIPE-1757: use the 'redirect' mode to forward tier0 messages to console stdout.
+            #   * checkout different log_mode options in casampi.private.server_run.run()
+            #   * also see the log_mode example here:
+            #       https://casadocs.readthedocs.io/en/latest/notebooks/parallel-processing.html#Advanced:-Interface-Framework
+            __client.set_log_mode('redirect')
             __client.start_services()
 
             mpi_server_list = MPIEnvironment.mpi_server_rank_list()
