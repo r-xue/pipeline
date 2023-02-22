@@ -3,6 +3,7 @@ import shutil
 import traceback
 
 import numpy as np
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -14,10 +15,9 @@ from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 from pipeline.hif.tasks.applycal import IFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import callibrary, casa_tasks, task_registry
+from pipeline.infrastructure import callibrary, casa_tasks, task_registry, utils
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
-from pipeline.infrastructure.utils import ignore_pointing
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -310,7 +310,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         vislist = []
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
 
-        with ignore_pointing(self.inputs.vis):
+        with utils.ignore_pointing(self.inputs.vis):
             with TaskQueue(parallel=parallel) as tq:
 
                 for target in targets:

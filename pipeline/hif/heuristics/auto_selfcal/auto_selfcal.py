@@ -901,42 +901,42 @@ def selfcal_workflow(cleantarget):
             #      LOG.info('Final spwmap: ',selfcal_library[target][band][vis]['spwmap'])
             # else:
             #   LOG.info('Selfcal failed on '+target+'. No solutions applied.')
+    
+    # applyCalOut = open('applycal_to_orig_MSes.py', 'w')
+    # # apply selfcal solutions back to original ms files
+    # if apply_to_target_ms:
+    #     for vis in vislist_orig:
+    #         clearcal(vis=vis)
+    # for target in all_targets:
+    #     for band in selfcal_library[target].keys():
+    #         if selfcal_library[target][band]['SC_success']:
+    #             for vis in vislist:
+    #                 solint = selfcal_library[target][band]['final_solint']
+    #                 iteration = selfcal_library[target][band][vis][solint]['iteration']
+    #                 line = 'applycal(vis="' + vis.replace('.selfcal', '') + '",gaintable=' + str(
+    #                     selfcal_library[target][band][vis]['gaintable_final']) + ',interp=' + str(
+    #                     selfcal_library[target][band][vis]['applycal_interpolate_final']) + ', calwt=True,spwmap=' + str(
+    #                     selfcal_library[target][band][vis]['spwmap_final']) + ', applymode="' + selfcal_library[target][
+    #                     band][vis]['applycal_mode_final'] + '",field="' + target + '",spw="' + spwstring_orig + '")\n'
+    #                 applyCalOut.writelines(line)
+    #                 if apply_to_target_ms:
+    #                     if os.path.exists(vis.replace('.selfcal', '')+".flagversions/flags.starting_flags"):
+    #                         flagmanager(vis=vis.replace('.selfcal', ''),
+    #                                     mode='restore', versionname='starting_flags',
+    #                                     comment='Flag states at start of reduction')
+    #                     else:
+    #                         flagmanager(vis=vis.replace('.selfcal', ''), mode='save',
+    #                                     versionname='before_final_applycal')
+    #                     applycal(
+    #                         vis=vis.replace('.selfcal', ''),
+    #                         gaintable=selfcal_library[target][band][vis]['gaintable_final'],
+    #                         interp=selfcal_library[target][band][vis]['applycal_interpolate_final'],
+    #                         calwt=True, spwmap=[selfcal_library[target][band][vis]['spwmap_final']],
+    #                         applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
+    #                         field=target, spw=spwstring_orig)
 
-    applyCalOut = open('applycal_to_orig_MSes.py', 'w')
-    # apply selfcal solutions back to original ms files
-    if apply_to_target_ms:
-        for vis in vislist_orig:
-            clearcal(vis=vis)
-    for target in all_targets:
-        for band in selfcal_library[target].keys():
-            if selfcal_library[target][band]['SC_success']:
-                for vis in vislist:
-                    solint = selfcal_library[target][band]['final_solint']
-                    iteration = selfcal_library[target][band][vis][solint]['iteration']
-                    line = 'applycal(vis="' + vis.replace('.selfcal', '') + '",gaintable=' + str(
-                        selfcal_library[target][band][vis]['gaintable_final']) + ',interp=' + str(
-                        selfcal_library[target][band][vis]['applycal_interpolate_final']) + ', calwt=True,spwmap=' + str(
-                        selfcal_library[target][band][vis]['spwmap_final']) + ', applymode="' + selfcal_library[target][
-                        band][vis]['applycal_mode_final'] + '",field="' + target + '",spw="' + spwstring_orig + '")\n'
-                    applyCalOut.writelines(line)
-                    if apply_to_target_ms:
-                        if os.path.exists(vis.replace('.selfcal', '')+".flagversions/flags.starting_flags"):
-                            flagmanager(vis=vis.replace('.selfcal', ''),
-                                        mode='restore', versionname='starting_flags',
-                                        comment='Flag states at start of reduction')
-                        else:
-                            flagmanager(vis=vis.replace('.selfcal', ''), mode='save',
-                                        versionname='before_final_applycal')
-                        applycal(
-                            vis=vis.replace('.selfcal', ''),
-                            gaintable=selfcal_library[target][band][vis]['gaintable_final'],
-                            interp=selfcal_library[target][band][vis]['applycal_interpolate_final'],
-                            calwt=True, spwmap=[selfcal_library[target][band][vis]['spwmap_final']],
-                            applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
-                            field=target, spw=spwstring_orig)
-
-    applyCalOut.close()
-
+    # applyCalOut.close()
+    
     # if os.path.exists("cont.dat"):
     #     uvcontsubOut = open('uvcontsub_orig_MSes.py', 'w')
     #     line = 'import os\n'
