@@ -24,6 +24,16 @@ You are expected to have the _targets.ms and cont.data as input.
         </ParameterSet>
     </ProcessingCommand>
 
+    <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>  
+
     <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
     
     <ProcessingCommand>
@@ -47,13 +57,61 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datacolumns</Keyword>
+                <Value xmlns="">data</Value>
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
+            </Parameter>
         </ParameterSet>
-    </ProcessingCommand>        
+    </ProcessingCommand>    
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datacolumns</Keyword>
+                <Value xmlns="">corrected</Value>
+            </Parameter>              
+        </ParameterSet>
+    </ProcessingCommand>    
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_exportdata</Command>
+        <ParameterSet>
+          <Parameter>
+            <Keyword xmlns="">imaging_products_only</Keyword>
+            <Value xmlns="">True</Value>
+          </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>    
 
 </ProcessingProcedure>

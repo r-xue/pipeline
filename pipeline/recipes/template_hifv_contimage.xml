@@ -37,6 +37,16 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
     {{#selfcal}}
     <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
     
@@ -55,17 +65,7 @@
     </ProcessingCommand>
 
     <!-- end of the selfcal section -->
-    {{/selfcal}}
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_checkproductsize</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">maximsize</Keyword>
-                <Value xmlns="">16384</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
+    {{/selfcal}}    
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>

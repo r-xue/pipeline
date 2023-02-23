@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_contimage</ProcedureTitle>
+    <ProcedureTitle>test_hifv_selfcal_only</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
@@ -12,7 +12,15 @@
         </ParameterSet>
     </ProcessingCommand>
 
-    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
+    <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
     
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
@@ -27,21 +35,5 @@
             </Parameter>                     
         </ParameterSet>
     </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>    
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>        
 
 </ProcessingProcedure>
