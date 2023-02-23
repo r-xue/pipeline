@@ -50,7 +50,7 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Value xmlns="">cont</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">datacolumns</Keyword>
+                <Keyword xmlns="">datacolumn</Keyword>
                 <Value xmlns="">data</Value>
             </Parameter>          
         </ParameterSet>
@@ -70,7 +70,7 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Value xmlns="">cont</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">datacolumns</Keyword>
+                <Keyword xmlns="">datacolumn</Keyword>
                 <Value xmlns="">corrected</Value>
             </Parameter>   
         </ParameterSet>
