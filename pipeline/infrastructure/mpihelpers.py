@@ -465,14 +465,14 @@ class TaskQueue:
 
     def get_results(self):
 
-        if not self.__running and not self.__results:
+        if not self.__running and self.__results:
             return self.__results
         else:
-            self.__running = False
             results = []
             for task in self.__queue:
                 results.append(task.get_result())
             self.__results = results
+            self.__running = False
 
         return self.__results
 
