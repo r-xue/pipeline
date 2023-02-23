@@ -668,11 +668,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
         # PIPE-1723: display a message in the weblog depending on the observatory
-        try:
-            imaging_mode = results[0].results[0].imaging_mode
-        except Exception as e:
-            LOG.error('Cannot determine imaging mode: {}'.format(e))
-            imaging_mode = None
+        imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
 
         ctx.update({
             'imaging_mode': imaging_mode,
