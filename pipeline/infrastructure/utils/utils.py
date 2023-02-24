@@ -2,14 +2,16 @@
 The utils module contains general-purpose uncategorised utility functions and
 classes.
 """
+import ast
 import collections
 import copy
+import errno
 import itertools
 import operator
 import os
 import re
 import string
-import ast
+import tarfile
 from typing import Collection, Dict, List, Tuple, Optional, Sequence, Union
 
 import bisect
@@ -25,9 +27,10 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes','get_taskhistory_fromimage',
+           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details']
+           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_products_dir',
+           'export_weblog_as_tar', 'ensure_products_dir_exists']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -548,3 +551,32 @@ def get_taskhistory_fromimage(imagename: str):
     LOG.info(f'Found {len(taskhistory_list)} task history entry/entries from {imagename}')
 
     return taskhistory_list
+
+
+def ensure_products_dir_exists(products_dir):
+    try:
+        LOG.trace(f"Creating products directory: {products_dir}")
+        os.makedirs(products_dir)
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise
+
+
+def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
+    # Construct filename for weblog output tar archive.
+    tarfilename = name_builder.weblog(project_structure=context.project_structure,
+                                      ousstatus_entity_id=context.get_oussid())
+    # Save weblog directory to tar archive.
+    LOG.info(f"Saving final weblog in {tarfilename}")
+    if not dry_run:
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
+        tar.close()
+    return tarfilename
+
+
+def get_products_dir(context):
+    if context.products_dir is None:
+        return os.path.abspath('./')
+    else:
+        return context.products_dir

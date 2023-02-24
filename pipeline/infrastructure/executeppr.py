@@ -11,6 +11,7 @@ Raises:
 """
 
 import os
+import shutil
 import sys
 import traceback
 
@@ -18,6 +19,7 @@ from ..extern import XmlObjectifier
 
 from . import Pipeline
 from . import argmapper
+from . import filenamer
 from . import project
 from . import utils
 from . import vdp
@@ -302,19 +304,24 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
-            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
             break
 
         # Stop execution if result is a failed task result or a list
         # containing a failed task result.
         tracebacks = utils.get_tracebacks(results)
         if len(tracebacks) > 0:
+            # If we have a traceback from an exception that occurred during
+            # the pipeline stage, then create local error exit file and export
+            # error file and weblog to products.
+            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
+            export_on_exception(context, errorfile)
+
             # Save the context
+            casa_tools.post_to_log('Saving context...')
             context.save()
 
             casa_tools.set_log_origin(fromwhere='')
 
-            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
             previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
             raise exceptions.PipelineException(previous_tracebacks_as_string)
 
@@ -326,6 +333,22 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
     casa_tools.set_log_origin(fromwhere='')
 
     return
+
+
+def export_on_exception(context, errorfile):
+    # Define path for exporting output products, and ensure path exists.
+    products_dir = utils.get_products_dir(context)
+    utils.ensure_products_dir_exists(products_dir)
+
+    # Copy error file to products.
+    if os.path.exists(errorfile):
+        shutil.copyfile(errorfile, os.path.join(products_dir, os.path.basename(errorfile)))
+
+    # Attempt to export weblog.
+    try:
+         utils.export_weblog_as_tar(context, products_dir, filenamer.PipelineProductNameBuilder)
+    except:
+        casa_tools.post_to_log("Unable to export weblog to products.")
 
 
 # Return the intents list, the ASDM list, and the processing commands
