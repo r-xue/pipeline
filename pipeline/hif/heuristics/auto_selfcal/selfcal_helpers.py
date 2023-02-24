@@ -1,4 +1,4 @@
-"""This moodule is an adaptation from the original auto_selfcal prototype.
+"""This module is an adaptation from the original auto_selfcal prototype.
 
 see: https://github.com/jjtobin/auto_selfcal
 """
@@ -15,7 +15,6 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure.casa_tasks import casa_tasks as cts
 from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
-from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 
 LOG = infrastructure.get_logger(__name__)
@@ -54,150 +53,6 @@ def get_selfcal_logger(loggername='auto_selfcal', loglevel='DEBUG', logfile=None
     logger.addHandler(logfile_handler)
 
     return logger
-
-
-def tclean_wrapper(
-        vis, imagename, band_properties, band, telescope='undefined', scales=[0],
-        smallscalebias=0.6, mask='', nsigma=5.0, imsize=None, cellsize=None, interactive=False, robust=0.5, gain=0.1,
-        niter=50000, cycleniter=300, uvtaper=[],
-        savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0, noisethreshold=5.0,
-        lownoisethreshold=1.5, parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', phasecenter='',
-        startmodel='', pblimit=0.1, pbmask=0.1, field='', datacolumn='', spw='', obstype='single-point',):
-    """
-    Wrapper for tclean with keywords set to values desired for the Large Program imaging
-    See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters
-    """
-    msmd.open(vis[0])
-    fieldid = msmd.fieldsforname(field)
-    msmd.done()
-    tb.open(vis[0]+'/FIELD')
-    ephem_column = tb.getcol('EPHEMERIS_ID')
-    tb.close()
-    if ephem_column[fieldid[0]] != -1:
-        phasecenter = 'TRACKFIELD'
-
-    if obstype == 'mosaic':
-        phasecenter = get_phasecenter(vis[0], field)
-
-    if mask == '':
-        usemask = 'auto-multithresh'
-    else:
-        usemask = 'user'
-    if threshold != '0.0Jy':
-        nsigma = 0.0
-    if telescope == 'ALMA':
-        sidelobethreshold = 3.0
-        smoothfactor = 1.0
-        noisethreshold = 5.0
-        lownoisethreshold = 1.5
-        cycleniter = -1
-        cyclefactor = 1.0
-        LOG.info(band_properties)
-        if band_properties[vis[0]][band]['75thpct_uv'] > 2000.0:
-            sidelobethreshold = 2.0
-
-    if telescope == 'ACA':
-        sidelobethreshold = 1.25
-        smoothfactor = 1.0
-        noisethreshold = 5.0
-        lownoisethreshold = 2.0
-        cycleniter = -1
-        cyclefactor = 1.0
-
-    elif 'VLA' in telescope:
-        sidelobethreshold = 2.0
-        smoothfactor = 1.0
-        noisethreshold = 5.0
-        lownoisethreshold = 1.5
-        pblimit = -0.1
-        cycleniter = -1
-        cyclefactor = 3.0
-        pbmask = 0.0
-    wprojplanes = 1
-    if band == 'EVLA_L' or band == 'EVLA_S':
-        gridder = 'wproject'
-        wprojplanes = -1
-    if (band == 'EVLA_L' or band == 'EVLA_S') and obstype == 'mosaic':
-        LOG.info('WARNING DETECTED VLA L- OR S-BAND MOSAIC; WILL USE gridder="mosaic" IGNORING W-TERM')
-    if obstype == 'mosaic':
-        gridder = 'mosaic'
-    else:
-        if gridder != 'wproject':
-            gridder = 'standard'
-
-    if gridder == 'mosaic' and startmodel != '':
-        parallel = False
-    for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
-        os.system('rm -rf ' + imagename + ext)
-    cts.tclean(vis=vis,
-               imagename=imagename,
-               field=field,
-               specmode='mfs',
-               deconvolver='mtmfs',
-               scales=scales,
-               gridder=gridder,
-               weighting='briggs',
-               robust=robust,
-               gain=gain,
-               imsize=imsize,
-               cell=cellsize,
-               smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-               niter=niter,  # we want to end on the threshold
-               interactive=interactive,
-               nsigma=nsigma,
-               cycleniter=cycleniter,
-               cyclefactor=cyclefactor,
-               uvtaper=uvtaper,
-               savemodel='none',
-               mask=mask,
-               usemask=usemask,
-               sidelobethreshold=sidelobethreshold,
-               smoothfactor=smoothfactor,
-               pbmask=pbmask,
-               pblimit=pblimit,
-               nterms=nterms,
-               uvrange=uvrange,
-               threshold=threshold,
-               parallel=parallel,
-               phasecenter=phasecenter,
-               startmodel=startmodel,
-               datacolumn=datacolumn, spw=spw, wprojplanes=wprojplanes)
-    # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
-    if savemodel == 'modelcolumn':
-        LOG.info("")
-        LOG.info("Running tclean a second time to save the model...")
-        cts.tclean(vis=vis,
-                   imagename=imagename,
-                   field=field,
-                   specmode='mfs',
-                   deconvolver='mtmfs',
-                   scales=scales,
-                   gridder=gridder,
-                   weighting='briggs',
-                   robust=robust,
-                   gain=gain,
-                   imsize=imsize,
-                   cell=cellsize,
-                   smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-                   niter=0,
-                   interactive=False,
-                   nsigma=0.0,
-                   cycleniter=cycleniter,
-                   cyclefactor=cyclefactor,
-                   uvtaper=uvtaper,
-                   usemask='user',
-                   savemodel=savemodel,
-                   sidelobethreshold=sidelobethreshold,
-                   smoothfactor=smoothfactor,
-                   pbmask=pbmask,
-                   pblimit=pblimit,
-                   calcres=False,
-                   calcpsf=False,
-                   nterms=nterms,
-                   uvrange=uvrange,
-                   threshold=threshold,
-                   parallel=False,
-                   phasecenter=phasecenter, spw=spw, wprojplanes=wprojplanes)
 
 
 def collect_listobs_per_vis(vislist):
@@ -1493,24 +1348,6 @@ def importdata(vislist, all_targets, telescope):
             bands.remove(delband)
 
     return listdict, bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, spwslist, spwstring, spwsarray, mosaic_field_dict
-
-
-def get_phasecenter(vis, field):
-    msmd.open(vis)
-    fieldid = msmd.fieldsforname(field)
-    ra_phasecenter_arr = np.zeros(len(fieldid))
-    dec_phasecenter_arr = np.zeros(len(fieldid))
-    for i in range(len(fieldid)):
-        phasecenter = msmd.phasecenter(fieldid[i])
-        ra_phasecenter_arr[i] = phasecenter['m0']['value']
-        dec_phasecenter_arr[i] = phasecenter['m1']['value']
-
-    msmd.done()
-
-    ra_phasecenter = np.median(ra_phasecenter_arr)
-    dec_phasecenter = np.median(dec_phasecenter_arr)
-    phasecenter_string = 'ICRS {:0.8f}rad {:0.8f}rad '.format(ra_phasecenter, dec_phasecenter)
-    return phasecenter_string
 
 
 def get_flagged_solns_per_spw(spwlist, gaintable):

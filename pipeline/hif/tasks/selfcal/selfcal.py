@@ -129,26 +129,18 @@ class Selfcal(basetask.StandardTaskTemplate):
         self._flag_lines()
         self._split_scaltargets(scal_targets)
         self._restore_flags()
-        # import pprint as pp
-        # pp.pprint('*'*120)
-        # pp.pprint(cleantargets_sc)
-        # pp.pprint('*'*120)
 
         # # register the percleantarget MSes
         # self._register_percleantarget_ms(vislist)
-
-        # # collect the target list based on the percleantarget MSes
-        # cleantargets_scal = self._get_cleantargets(self.inputs.context, vislist=vislist, scal=True)
 
         # # start the selfcal sequence.
 
         tclean_parallel_request = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(scal_targets) > 1
-
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
             for target in scal_targets:
                 target['sc_parallel'] = (tclean_parallel_request and not tq.is_async())
-                tq.add_functioncall(self._run_selfcal_sequence, target)
+                tq.add_functioncall(self._run_selfcal_sequence, target, self._executor.copy(exclude_context=True))
         tq_results = tq.get_results()
 
         for idx, target in enumerate(scal_targets):
@@ -170,7 +162,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         return SelfcalResults(scal_targets)
 
     @staticmethod
-    def _run_selfcal_sequence(scal_targets):
+    def _run_selfcal_sequence(scal_targets, executor):
 
         workdir = os.path.abspath('./')
         selfcal_library, solints, bands = None, None, None
@@ -179,11 +171,12 @@ class Selfcal(basetask.StandardTaskTemplate):
             os.chdir(scal_targets['sc_workdir'])
             LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}/'.format(
                 scal_targets['field'], scal_targets['spw'], scal_targets['sc_workdir']))
-            selfcal_library, solints, bands = auto_selfcal.selfcal_workflow(scal_targets)
+            selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_targets, executor=executor)
+            selfcal_library, solints, bands = selfcal_heuristics()
         except Exception as e:
-            LOG.error('Exception from hif.heuristics.auto_selfcal')
+            LOG.error('Exception from hif.heuristics.auto_selfcal.SelfcalHeuristics:')
             LOG.error(str(e))
-            LOG.debug(traceback.format_exc())
+            LOG.error(traceback.format_exc())
         finally:
             os.chdir(workdir)
             if scal_targets['sc_parallel']:
@@ -244,9 +237,10 @@ class Selfcal(basetask.StandardTaskTemplate):
         for calapp in calapps:
             self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
-        with TaskQueue(executor=self._executor) as tq:
-
-            for vis in set(vislist):
+        vislist = sorted(set(vislist))
+        taskqueue_parallel_request = len(vislist) > 1
+        with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
+            for vis in vislist:
                 task_args = {'vis': vis, 'applymode': 'calflag'}
                 tq.add_pipelinetask(IFApplycal, task_args, self.inputs.context)
 
@@ -258,7 +252,10 @@ class Selfcal(basetask.StandardTaskTemplate):
         return results
 
     def _register_percleantarget_ms(self, vislist):
-        """Register the per cleantarget MSes in the context and add the selfcal heuristics to the targets."""
+        """Register the per cleantarget MSes in the context and add the selfcal heuristics to the targets.
+        
+        note: not used in the current implementation.
+        """
 
         # modify context and target_list to include the new measurement sets and selfcal heuristics.
         for vis in vislist:
@@ -302,12 +299,6 @@ class Selfcal(basetask.StandardTaskTemplate):
         for scal_target in scal_targets:
             scal_target['sc_telescope'] = telescope
 
-        # pp.pprint('*'*120)
-        # pp.pprint(makeimlist_results.targets)
-        # pp.pprint('*'*120)
-        # pp.pprint(makeimlist_results.clean_list_info)
-        # pp.pprint('*'*120)
-
         return scal_targets
 
     def _remove_ms(self, vis):
@@ -321,11 +312,11 @@ class Selfcal(basetask.StandardTaskTemplate):
     def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
 
-        vislist = []
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
 
+        taskqueue_parallel_request = len(scal_targets) > 1 and parallel
         with utils.ignore_pointing(self.inputs.vis):
-            with TaskQueue(parallel=parallel) as tq:
+            with TaskQueue(parallel=taskqueue_parallel_request) as tq:
 
                 for target in scal_targets:
 
@@ -372,6 +363,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     @staticmethod
     def get_desired_width(meanfreq):
+        """Get the desired channel width for the given mean frequency."""
         if meanfreq >= 50.0e9:
             chanwidth = 15.625e6
         elif (meanfreq < 50.0e9) and (meanfreq >= 40.0e9):
