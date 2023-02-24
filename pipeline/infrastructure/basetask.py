@@ -815,7 +815,7 @@ class Executor(object):
         if isinstance(value, str):
             if hasattr(self, '_cmdfile'):
                 LOG.debug(f'Switch the CASA commands log file from {self._cmdfile} to {value}.')
-            self._cmdfile = value
+            self._cmdfile = os.path.abspath(value)
 
     @capture_log
     def execute(self, job, merge=False, **kwargs):
