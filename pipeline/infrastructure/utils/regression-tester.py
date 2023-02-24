@@ -303,7 +303,7 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage
                             input_dir='pl-unittest',
                             visname='uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms',
                             expectedoutput=('pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/' +
-                                            'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.casa-6.1.1-15-pipeline-2020.1.0.40.results.txt'))
+                                            'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.casa-6.5.3-26-pipeline-2023.0.0.3.results.txt'))
 
     pr.run(ppr='pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/PPR.xml')
 
