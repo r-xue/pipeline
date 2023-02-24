@@ -3,15 +3,15 @@
 see: https://github.com/jjtobin/auto_selfcal
 """
 
+import fnmatch
 import logging
 import os
 import time
 
 import casatools
 import numpy as np
-from casatasks import casalog
-
 import pipeline.infrastructure as infrastructure
+from casatasks import casalog
 from pipeline.infrastructure.casa_tasks import casa_tasks as cts
 from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
@@ -80,7 +80,16 @@ def fetch_scan_times(vislist, targets, listdict):
             scantimes = np.array([])
             integrations = np.array([])
             for key in keylist:
-                if 'scan' in key and listdict[vis][key]['0']['FieldName'] == target:
+                # listobs output seems to abbreviate long field names, e.g.:
+                #  'scan_8': {'0': {'BeginTime': 58705.919112777774,
+                #    'EndTime': 58705.92016277778,
+                #       'FieldId': 4,
+                #   'FieldName': '2MASS_J16281370-243*391',
+                #   'IntegrationTime': 6.0480000000000835,
+                #  'SpwIds': array([25, 27, 29, 31, 33, 35]),
+                # we use fnmatch as a short-term workaround.
+                # Eventually, most functions from selfcal_helpers should be replaced using methods from domain objects.
+                if 'scan' in key and fnmatch.fnmatch(target, listdict[vis][key]['0']['FieldName']):
                     countscans += 1
                     scantime = (listdict[vis][key]['0']['EndTime'] - listdict[vis][key]['0']['BeginTime'])*86400.0
                     ints_per_scan = np.round(scantime/listdict[vis][key]['0']['IntegrationTime'])
@@ -133,7 +142,7 @@ def fetch_scan_times_band_aware(vislist, targets, listdict, band_properties, ban
             scanstarts = np.array([])
             scanends = np.array([])
             for key in keylist:
-                if ('scan' in key) and (listdict[vis][key]['0']['FieldName'] == target) and np.all(np.in1d(np.array(listdict[vis][key]['0']['SpwIds']), band_properties[vis][band]['spwarray'])):
+                if ('scan' in key) and fnmatch.fnmatch(target, listdict[vis][key]['0']['FieldName']) and np.all(np.in1d(np.array(listdict[vis][key]['0']['SpwIds']), band_properties[vis][band]['spwarray'])):
                     countscans += 1
                     scantime = (listdict[vis][key]['0']['EndTime'] - listdict[vis][key]['0']['BeginTime'])*86400.0
                     ints_per_scan = np.round(scantime/listdict[vis][key]['0']['IntegrationTime'])
@@ -185,7 +194,7 @@ def fetch_spws(vislist, targets, listdict):
         for target in targets:
             countscans = 0
             for key in keylist:
-                if 'scan' in key and listdict[vis][key]['0']['FieldName'] == target:
+                if 'scan' in key and fnmatch.fnmatch(target, listdict[vis][key]['0']['FieldName']):
                     countscans += 1
                     n_spws = np.append(len(listdict[vis][key]['0']['SpwIds']), n_spws)
                     min_spws = np.append(np.min(listdict[vis][key]['0']['SpwIds']), min_spws)
@@ -220,7 +229,7 @@ def fetch_scan_times_target(vislist, target, listdict):
         integrations = np.array([])
         for key in keylist:
             if 'scan' in key:
-                if listdict[vis][key]['0']['FieldName'] == target:
+                if fnmatch.fnmatch(target, listdict[vis][key]['0']['FieldName']):
                     countscans += 1
                     scantime = (listdict[vis][key]['0']['EndTime'] - listdict[vis][key]['0']['BeginTime'])*86400.0
                     scantimes = np.append(scantimes, np.array([scantime]))

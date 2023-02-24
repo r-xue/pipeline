@@ -146,7 +146,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         for idx, target in enumerate(scal_targets):
             scal_library, solints, bands = tq_results[idx]
             if scal_library is None:
-                raise ValueError(f'auto_selfcal failed for target {target["field"]}.')
+                raise ValueError(f'auto_selfcal heuristics failed for target {0} spw {1} from {2}'.format(
+                    target['field'], target['spw'], target['sc_workdir']))
             target['sc_band'] = bands[0]
             target['sc_solints'] = solints[bands[0]]
             # note scal_library is keyed by field name without quotes at this moment.
@@ -162,16 +163,16 @@ class Selfcal(basetask.StandardTaskTemplate):
         return SelfcalResults(scal_targets)
 
     @staticmethod
-    def _run_selfcal_sequence(scal_targets, executor):
+    def _run_selfcal_sequence(scal_target, executor):
 
         workdir = os.path.abspath('./')
         selfcal_library, solints, bands = None, None, None
 
         try:
-            os.chdir(scal_targets['sc_workdir'])
-            LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}/'.format(
-                scal_targets['field'], scal_targets['spw'], scal_targets['sc_workdir']))
-            selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_targets, executor=executor)
+            os.chdir(scal_target['sc_workdir'])
+            LOG.info(f'Running auto_selfcal heuristics on target {0} spw {1} from {2}'.format(
+                scal_target['field'], scal_target['spw'], scal_target['sc_workdir']))
+            selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, executor=executor)
             selfcal_library, solints, bands = selfcal_heuristics()
         except Exception as e:
             LOG.error('Exception from hif.heuristics.auto_selfcal.SelfcalHeuristics:')
@@ -179,7 +180,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             LOG.error(traceback.format_exc())
         finally:
             os.chdir(workdir)
-            if scal_targets['sc_parallel']:
+            if scal_target['sc_parallel']:
                 # sc_parallel=True indicats that we are certainly running tclean(parallel=true) in a sequential TaskQueue.
                 # A side effect of doing this while changing cwd is that the working directory of MPIServers will be "stuck"
                 # to the one where tclean(paralllel=True) started.
