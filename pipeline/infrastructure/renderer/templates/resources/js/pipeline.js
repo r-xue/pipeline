@@ -1124,7 +1124,7 @@ var UTILS = (function() {
     while the pipeline is running and web log content is still being generated. If the pipeline is not running yet
     the problem perists, the error is most likely to be caused by your web browser security settings preventing 
     viewing the web log as flat files. In this case, to view the web log you must serve the web log via HTTP by using 
-    <code>h_weblog</code> from inside a CASA session, or relax your web browser security.</p>
+    <code>h_weblog</code> from inside a CASA session or from a local http server.</p>
 <h2>Solutions</h2>
 <p>First, ensure that pipeline is not currently running. If the problem persists, follow one of the approaches 
     described below.</p>
@@ -1156,12 +1156,27 @@ CASA <5>: h_weblog()
 <pre>
 ssh -L 30000:localhost:30000 remotepc</name>
 </pre>
-</samp>     
-<h3>Alternative: lower browser security</h3>
+</samp>
+<h3>Alternative: launch a local http server outside of CASA</h3>
+<p>Outside of CASA one can also create the http server in which to view a local weblog. 
+    In the command line, go to the folder where the weblog is located (e.g.,
+    <samp>&lt;path_to_untarred_weblog&gt;/pipeline-procedure_hifa_calimage/html</samp>) and simply type:</p>
+<samp>
+<pre>
+python3 -m http.server 8080 --bind localhost
+</pre>
+</samp>
+<p>Then open your browser at the webpage <samp>http://localhost:8080/</samp></p>
+<p>This method uses python3, either already available on your system or bundled with CASA.
+    In the latter case, you may find it at
+    <samp>/Applications/CASA.app/Contents/MacOS/python3</samp> (on MacOS) or at
+    <samp>&lt;casa_install_path&gt;/casa-6.4.1-12-pipeline-2022.2.0.64/bin/python3</samp> (on Linux).</p>
+<h3>Alternative 2 (not recommended): relax browser security</h3>
 <p><strong>These modification lowers your browser security and should be reverted after viewing the weblog!</strong></p>
 <h4>Firefox</h4>
-<p>Navigate to <code>about:config</code> and search for the <code>privacy.file_unique_origin</code> preference. Change
-    the preference value to false.</p>
+<p>Navigate to <code>about:config</code> and search for the <code>privacy.file_unique_origin</code> preference 
+    (versions 68&mdash;94) or <code>security.fileuri.strict_origin_policy</code> (version 95 and newer, 
+    but note that may be removed in the future as well). Change the preference value to <code>false</code>.</p>
 <h4>Safari</h4>
 <p>Open Safari preferences, navigate to <em>Advanced</em> tab and check the <em>Show Develop in menu bar</em> option. 
     From the new <em>Develop</em> menu option now visible at the top of the screen, select <em>Disable Local File 
@@ -1171,7 +1186,7 @@ ssh -L 30000:localhost:30000 remotepc</name>
     Chrome via the command line. For example, on MacOS start Chrome like this:</p>
 <samp>
 <pre>
-/Applications/Chrome.app/Contents/MacOS/Chrome --disable-web-security --user-data-dir=~/tmp
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --disable-web-security --user-data-dir=~
 </pre>
 </samp>`;
 
