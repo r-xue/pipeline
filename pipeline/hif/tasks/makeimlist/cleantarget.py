@@ -47,3 +47,20 @@ class CleanTarget(dict):
         self['mosweight'] = None       # boolean
 
         dict.__init__(self, *args, **kwargs)
+
+
+class ScalTarget(CleanTarget):
+    """Selfcal target template definition."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self['sc_band'] = None            # string
+        self['sc_solints'] = None         # list
+        self['sc_lib'] = None             # dictionary
+        self['sc_workdir'] = None         # string
+        self['sc_vislist'] = None         # input vis list
+        self['sc_telescope'] = None       # string
+        self['sc_parallel'] = None        # string
+        self['field_name'] = None         # string, dequoted
+        self['field_id'] = None           # int
+        self['spw_real'] = None           # spw_real lookup table

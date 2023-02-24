@@ -102,15 +102,6 @@ class Selfcal(basetask.StandardTaskTemplate):
         self.minsnr_to_proceed = 3.0
         self.delta_beam_thresh = 0.05
 
-        self.telescope = self.inputs.context.project_summary.telescope
-        # if self.telescope == 'ALMA':
-        #     repr_ms = self.inputs.ms[0]
-        #     diameter = min([a.diameter for a in repr_ms.antennas])
-        #     if diameter == 7.0:
-        #         self.telescope = 'ACA'
-        #     else:
-        #         self.telescope = 'ALMA'
-
         self.apply_cal_mode_default = 'calflag'
         self.rel_thresh_scaling = 'log10'  # can set to linear, log10, or loge (natural log)
         self.dividing_factor = -99.0    # number that the peak SNR is divided by to determine first clean threshold -99.0 uses default
@@ -132,11 +123,11 @@ class Selfcal(basetask.StandardTaskTemplate):
             inputs.vis = [inputs.vis]
 
         # collect the target list
-        cleantargets_sc = self._get_cleantargets(self.inputs.context, scal=True)
+        scal_targets = self._get_scaltargets(scal=True)
 
         # split percleantarget MSes with spectral line flagged
         self._flag_lines()
-        self._split_cleantargets(cleantargets_sc)
+        self._split_scaltargets(scal_targets)
         self._restore_flags()
         # import pprint as pp
         # pp.pprint('*'*120)
@@ -152,15 +143,15 @@ class Selfcal(basetask.StandardTaskTemplate):
         # # start the selfcal sequence.
 
         tclean_parallel_request = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
-        taskqueue_parallel_request = len(cleantargets_sc) > 1
+        taskqueue_parallel_request = len(scal_targets) > 1
 
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
-            for target in cleantargets_sc:
-                target['parallel'] = (tclean_parallel_request and not tq.is_async())
+            for target in scal_targets:
+                target['sc_parallel'] = (tclean_parallel_request and not tq.is_async())
                 tq.add_functioncall(self._run_selfcal_sequence, target)
         tq_results = tq.get_results()
 
-        for idx, target in enumerate(cleantargets_sc):
+        for idx, target in enumerate(scal_targets):
             scal_library, solints, bands = tq_results[idx]
             if scal_library is None:
                 raise ValueError(f'auto_selfcal failed for target {target["field"]}.')
@@ -174,30 +165,31 @@ class Selfcal(basetask.StandardTaskTemplate):
             target['sc_lib'] = scal_library[field_name][target['sc_band']]
             target['field_name'] = field_name
 
-        self._apply_scal(cleantargets_sc)
+        self._apply_scal(scal_targets)
 
-        return SelfcalResults(cleantargets_sc)
+        return SelfcalResults(scal_targets)
 
     @staticmethod
-    def _run_selfcal_sequence(cleantarget):
+    def _run_selfcal_sequence(scal_targets):
 
         workdir = os.path.abspath('./')
         selfcal_library, solints, bands = None, None, None
 
         try:
-            os.chdir(cleantarget['sc_workdir'])
+            os.chdir(scal_targets['sc_workdir'])
             LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}/'.format(
-                cleantarget['field'], cleantarget['spw'], cleantarget['sc_workdir']))
-            selfcal_library, solints, bands = auto_selfcal.selfcal_workflow(cleantarget)
+                scal_targets['field'], scal_targets['spw'], scal_targets['sc_workdir']))
+            selfcal_library, solints, bands = auto_selfcal.selfcal_workflow(scal_targets)
         except Exception as e:
-            LOG.error('Exception from hif.heuristics.auto_selfcal.')
+            LOG.error('Exception from hif.heuristics.auto_selfcal')
             LOG.error(str(e))
             LOG.debug(traceback.format_exc())
         finally:
             os.chdir(workdir)
-            if cleantarget['parallel']:
-                # parallel=True sugguests that we are running tclean(parallel=true in a sequential TaskQueue.
-                # A side effect of this is that the working directory of MPIServers will be "stuck" to the one where tclean(paralllel=True) started.
+            if scal_targets['sc_parallel']:
+                # sc_parallel=True indicats that we are certainly running tclean(parallel=true) in a sequential TaskQueue.
+                # A side effect of doing this while changing cwd is that the working directory of MPIServers will be "stuck"
+                # to the one where tclean(paralllel=True) started.
                 # As a workaround, we send the chdir command to the MPIServers exeplicitly.
                 mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
@@ -279,14 +271,24 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         return
 
-    def _get_cleantargets(self, context=None, vislist=None, scal=True):
+    def _get_scaltargets(self, scal=True):
         """Get the cleantarget list from the context.
         
         This essenially runs MakeImList and go through all nesscary steps to get the target list.
         However, it will pick up the selfcal heuristics from imageparams_factory,ImageParamsHeuristicsFactory
         """
+
+        telescope = self.inputs.context.project_summary.telescope
+        if telescope == 'ALMA':
+            repr_ms = self.inputs.ms[0]
+            diameter = min([a.diameter for a in repr_ms.antennas])
+            if diameter == 7.0:
+                telescope = 'ACA'
+            else:
+                telescope = 'ALMA'
+
         makeimlist_inputs = MakeImList.Inputs(self.inputs.context,
-                                              vis=vislist,
+                                              vis=None,
                                               intent='TARGET',
                                               specmode='cont',
                                               clearlist=True,
@@ -296,13 +298,17 @@ class Selfcal(basetask.StandardTaskTemplate):
         makeimlist_task = MakeImList(makeimlist_inputs)
         makeimlist_results = makeimlist_task.execute(dry_run=False)
 
+        scal_targets = makeimlist_results.targets
+        for scal_target in scal_targets:
+            scal_target['sc_telescope'] = telescope
+
         # pp.pprint('*'*120)
         # pp.pprint(makeimlist_results.targets)
         # pp.pprint('*'*120)
         # pp.pprint(makeimlist_results.clean_list_info)
         # pp.pprint('*'*120)
 
-        return makeimlist_results.targets
+        return scal_targets
 
     def _remove_ms(self, vis):
 
@@ -312,7 +318,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 LOG.debug(f'removing {vis_dir}')
                 self._executable.rmtree(vis_dir)
 
-    def _split_cleantargets(self, targets):
+    def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
 
         vislist = []
@@ -321,7 +327,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         with utils.ignore_pointing(self.inputs.vis):
             with TaskQueue(parallel=parallel) as tq:
 
-                for target in targets:
+                for target in scal_targets:
 
                     vislist = []
 
@@ -362,41 +368,41 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
 
-        return targets
+        return scal_targets
 
     @staticmethod
     def get_desired_width(meanfreq):
         if meanfreq >= 50.0e9:
-            desiredWidth = 15.625e6
+            chanwidth = 15.625e6
         elif (meanfreq < 50.0e9) and (meanfreq >= 40.0e9):
-            desiredWidth = 16.0e6
+            chanwidth = 16.0e6
         elif (meanfreq < 40.0e9) and (meanfreq >= 26.0e9):
-            desiredWidth = 8.0e6
+            chanwidth = 8.0e6
         elif (meanfreq < 26.0e9) and (meanfreq >= 18.0e9):
-            desiredWidth = 16.0e6
+            chanwidth = 16.0e6
         elif (meanfreq < 18.0e9) and (meanfreq >= 8.0e9):
-            desiredWidth = 8.0e6
+            chanwidth = 8.0e6
         elif (meanfreq < 8.0e9) and (meanfreq >= 4.0e9):
-            desiredWidth = 4.0e6
+            chanwidth = 4.0e6
         elif (meanfreq < 4.0e9) and (meanfreq >= 2.0e9):
-            desiredWidth = 4.0e6
+            chanwidth = 4.0e6
         elif (meanfreq < 4.0e9):
-            desiredWidth = 2.0e6
-        return desiredWidth
+            chanwidth = 2.0e6
+        return chanwidth
 
     @staticmethod
-    def get_spw_chanbin(bwarray, chanarray, desiredWidth=15.625e6):
+    def get_spw_chanbin(bwarray, chanarray, chanwidth=15.625e6):
         """Calculate the number of channels to average over for each spw.
         
         note: mstransform only accept chanbin as integer.
         """
         avgarray = [1]*len(bwarray)
-        for i in range(len(bwarray)):
-            nchan = bwarray[i]/desiredWidth
+        for idx, bw in enumerate(bwarray):
+            nchan = bw/chanwidth
             nchan = np.round(nchan)
-            avgarray[i] = int(chanarray[i]/nchan)
-            if avgarray[i] < 1.0:
-                avgarray[i] = 1
+            avgarray[idx] = int(chanarray[idx]/nchan)
+            if avgarray[idx] < 1.0:
+                avgarray[idx] = 1
         return avgarray
 
     def _restore_flags(self):

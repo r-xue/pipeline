@@ -378,7 +378,7 @@ class SelfcalSummary(object):
             ia.close()
             ia.done()
         elif telescope == 'VLA':
-            residual_stats = imstat(imagename=imagename.replace('image', 'residual'), algorithm='chauvenet')
+            residual_stats = ct.imstat(imagename=imagename.replace('image', 'residual'), algorithm='chauvenet')
             rms = residual_stats['rms'][0]
             ia.open(residualImage)
             pix_unmasked = np.squeeze(ia.getchunk())

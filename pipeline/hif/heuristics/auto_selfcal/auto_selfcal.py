@@ -3,40 +3,40 @@
 see: https://github.com/jjtobin/auto_selfcal
 """
 
-import glob
 import os
 import pickle
-import sys
+
 
 import numpy as np
 import pipeline.infrastructure as infrastructure
-from casatasks import *
-from pipeline.infrastructure.casa_tasks import casa_tasks as ct
+from pipeline.infrastructure.casa_tasks import casa_tasks as cts
 
-from .selfcal_helpers import *
+from .selfcal_helpers import sanitize_string, tclean_wrapper, estimate_SNR, get_sensitivity, get_dr_correction
+from .selfcal_helpers import estimate_near_field_SNR, checkmask, get_intflux, get_spw_bandwidth, get_SNR_self
+from .selfcal_helpers import compare_beams, fetch_targets, fetch_spws, get_SNR_self_update, get_n_ants
+from .selfcal_helpers import get_image_parameters, get_solints_simple, get_uv_range, rank_refants
+from .selfcal_helpers import importdata, analyze_inf_EB_flagging
 
 LOG = infrastructure.get_logger(__name__)
 
 
-###################################################################################################
-######################## All code until line ~170 is just jumping through hoops ###################
-######################## to get at metadata pipeline should have in the context ###################
-#################### And it will do flagging of lines and/or spectral averaging ###################
-######################## Some of this code is not elegant nor efficient ###########################
-###################################################################################################
+def selfcal_workflow(scaltarget):
+    """Execute auto_selfcal on a set of per-targets MSes.
 
+    cleantarget: a list of CleanTarget objects.
+    """
 
-def selfcal_workflow(cleantarget):
-    """Perform auto_selfcal for the specified MSs."""
+    all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, rel_thresh_scaling, dividing_factor, check_all_spws, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = _prep_selfcal(
+        scaltarget)
 
-    vislist = cleantarget['sc_vislist']
+    cellsize = scaltarget['cell'][0]
+    imsize = scaltarget['imsize'][0]
 
-    vislist, vis, all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, telescope, rel_thresh_scaling, dividing_factor, check_all_spws, apply_to_target_ms, bands, band_properties, spwsarray, vislist_orig, spwstring_orig, cellsize, imsize, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = prep_selfcal(
-        vislist)
-    cellsize=cleantarget['cell'][0]
-    imsize=cleantarget['imsize'][0]
-    parallel = cleantarget['parallel']
-    #nterms=cleantarget['nterms']
+    vislist = scaltarget['sc_vislist']
+    parallel = scaltarget['sc_parallel']
+    telescope = scaltarget['sc_telescope']
+
+    vis = vislist[-1]
 
     ##
     # create initial images for each target to evaluate SNR and beam
@@ -49,7 +49,7 @@ def selfcal_workflow(cleantarget):
         for band in selfcal_library[target].keys():
             # make images using the appropriate tclean heuristics for each telescope
             if os.path.exists(sani_target+'_'+band+'_dirty.image.tt0'):
-                ct.rmtree(sani_target+'_'+band+'_dirty.image.tt0')
+                cts.rmtree(sani_target+'_'+band+'_dirty.image.tt0')
             tclean_wrapper(
                 vislist, sani_target + '_' + band + '_dirty', band_properties, band, telescope=telescope, nsigma=4.0,
                 scales=[0],
@@ -73,7 +73,7 @@ def selfcal_workflow(cleantarget):
                 sensitivity_nomod = sensitivity.copy()
                 LOG.info(f'DR modifier: {dr_mod}')
             if os.path.exists(sani_target+'_'+band+'_initial.image.tt0'):
-                ct.rmtree(sani_target+'_'+band+'_initial.image.tt0')
+                cts.rmtree(sani_target+'_'+band+'_initial.image.tt0')
             if telescope == 'ALMA' or telescope == 'ACA':
                 sensitivity = sensitivity*dr_mod   # apply DR modifier
                 if band == 'Band_9' or band == 'Band_10':   # adjust for DSB noise increase
@@ -94,7 +94,7 @@ def selfcal_workflow(cleantarget):
                 initial_NF_SNR, initial_NF_RMS = estimate_near_field_SNR(sani_target+'_'+band+'_initial.image.tt0')
             else:
                 initial_NF_SNR, initial_NF_RMS = initial_SNR, initial_RMS
-            header = imhead(imagename=sani_target+'_'+band+'_initial.image.tt0')
+            header = cts.imhead(imagename=sani_target+'_'+band+'_initial.image.tt0')
             if telescope == 'ALMA' or telescope == 'ACA':
                 selfcal_library[target][band]['theoretical_sensitivity'] = sensitivity_nomod
             if 'VLA' in telescope:
@@ -379,7 +379,7 @@ def selfcal_workflow(cleantarget):
                     else:
                         SNR_NF, RMS_NF = SNR, RMS
 
-                    header = imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
+                    header = cts.imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
 
                     if iteration == 0:
                         gaincal_preapply_gaintable = {}
@@ -394,11 +394,11 @@ def selfcal_workflow(cleantarget):
                         # Restore original flagging state each time before applying a new gaintable
                         ##
                         if os.path.exists(vis+".flagversions/flags.selfcal_starting_flags_"+sani_target):
-                            flagmanager(
+                            cts.flagmanager(
                                 vis=vis, mode='restore', versionname='selfcal_starting_flags_' + sani_target,
                                 comment='Flag states at start of reduction')
                         else:
-                            flagmanager(vis=vis, mode='save', versionname='selfcal_starting_flags_'+sani_target)
+                            cts.flagmanager(vis=vis, mode='save', versionname='selfcal_starting_flags_'+sani_target)
                         applycal_gaintable[vis] = []
                         applycal_spwmap[vis] = []
                         applycal_interpolate[vis] = []
@@ -485,7 +485,7 @@ def selfcal_workflow(cleantarget):
                             solnorm = True
                         else:
                             solnorm = False
-                        gaincal(
+                        cts.gaincal(
                             vis=vis, caltable=sani_target + '_' + vis + '_' + band + '_' + solint + '_' + str(iteration) + '_' +
                             solmode[band][iteration] + '.g', gaintype=gaincal_gaintype,
                             spw=selfcal_library[target][band][vis]['spws'],
@@ -506,7 +506,7 @@ def selfcal_workflow(cleantarget):
                             test_gaincal_combine = 'scan,spw'
                             if selfcal_library[target][band]['obstype'] == 'mosaic':
                                 test_gaincal_combine += ',field'
-                            gaincal(
+                            cts.gaincal(
                                 vis=vis, caltable='test_inf_EB.g', gaintype=gaincal_gaintype,
                                 spw=selfcal_library[target][band][vis]['spws'],
                                 refant=selfcal_library[target][band][vis]['refant'],
@@ -544,7 +544,7 @@ def selfcal_workflow(cleantarget):
                         ##
                         # Apply gain solutions per MS, target, solint, and band
                         ##
-                        applycal(
+                        cts.applycal(
                             vis=vis, gaintable=applycal_gaintable[vis],
                             interp=applycal_interpolate[vis],
                             calwt=True, spwmap=applycal_spwmap[vis],
@@ -620,7 +620,7 @@ def selfcal_workflow(cleantarget):
                                 'RMS_curr']:
                             selfcal_library[target][band]['RMS_curr'] = selfcal_library[target][band][vis][solint][
                                 'RMS_post'].copy()
-                        header = imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
+                        header = cts.imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
                         selfcal_library[target][band][vis][solint]['Beam_major_post'] = header['restoringbeam'][
                             'major']['value']
                         selfcal_library[target][band][vis][solint]['Beam_minor_post'] = header['restoringbeam'][
@@ -705,18 +705,18 @@ def selfcal_workflow(cleantarget):
                                     '****************Applying ' +
                                     str(selfcal_library[target][band][vis]['gaintable_final']) + ' to ' + target + ' ' +
                                     band + '*************')
-                                flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags_'+sani_target)
-                                applycal(vis=vis,
-                                         gaintable=selfcal_library[target][band][vis]['gaintable_final'],
-                                         interp=selfcal_library[target][band][vis]['applycal_interpolate_final'],
-                                         calwt=True, spwmap=selfcal_library[target][band][vis]['spwmap_final'],
-                                         applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
-                                         field=target, spw=selfcal_library[target][band][vis]['spws'])
+                                cts.flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags_'+sani_target)
+                                cts.applycal(vis=vis,
+                                             gaintable=selfcal_library[target][band][vis]['gaintable_final'],
+                                             interp=selfcal_library[target][band][vis]['applycal_interpolate_final'],
+                                             calwt=True, spwmap=selfcal_library[target][band][vis]['spwmap_final'],
+                                             applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
+                                             field=target, spw=selfcal_library[target][band][vis]['spws'])
                         else:
                             LOG.info('****************Removing all calibrations for '+target+' '+band+'**************')
                             for vis in vislist:
-                                flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags_'+sani_target)
-                                clearcal(vis=vis, field=target, spw=selfcal_library[target][band][vis]['spws'])
+                                cts.flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags_'+sani_target)
+                                cts.clearcal(vis=vis, field=target, spw=selfcal_library[target][band][vis]['spws'])
                                 selfcal_library[target][band]['SNR_post'] = selfcal_library[target][band][
                                     'SNR_orig'].copy()
                                 selfcal_library[target][band]['RMS_post'] = selfcal_library[target][band][
@@ -783,7 +783,7 @@ def selfcal_workflow(cleantarget):
             selfcal_library[target][band]['RMS_final'] = final_RMS
             selfcal_library[target][band]['SNR_NF_final'] = final_NF_SNR
             selfcal_library[target][band]['RMS_NF_final'] = final_NF_RMS
-            header = imhead(imagename=sani_target+'_'+band+'_final.image.tt0')
+            header = cts.imhead(imagename=sani_target+'_'+band+'_final.image.tt0')
             selfcal_library[target][band]['Beam_major_final'] = header['restoringbeam']['major']['value']
             selfcal_library[target][band]['Beam_minor_final'] = header['restoringbeam']['minor']['value']
             selfcal_library[target][band]['Beam_PA_final'] = header['restoringbeam']['positionangle']['value']
@@ -822,7 +822,7 @@ def selfcal_workflow(cleantarget):
                 for spw in spwlist:
                     # omit DR modifiers here since we should have increased DR significantly
                     if os.path.exists(sani_target+'_'+band+'_final.image.tt0'):
-                        ct.rmtree(sani_target+'_'+band+'_final.image.tt0')
+                        cts.rmtree(sani_target+'_'+band+'_final.image.tt0')
                     if telescope == 'ALMA' or telescope == 'ACA':
                         sensitivity = get_sensitivity(
                             vislist, selfcal_library[target][band],
@@ -901,58 +901,6 @@ def selfcal_workflow(cleantarget):
             #      LOG.info('Final spwmap: ',selfcal_library[target][band][vis]['spwmap'])
             # else:
             #   LOG.info('Selfcal failed on '+target+'. No solutions applied.')
-    
-    # applyCalOut = open('applycal_to_orig_MSes.py', 'w')
-    # # apply selfcal solutions back to original ms files
-    # if apply_to_target_ms:
-    #     for vis in vislist_orig:
-    #         clearcal(vis=vis)
-    # for target in all_targets:
-    #     for band in selfcal_library[target].keys():
-    #         if selfcal_library[target][band]['SC_success']:
-    #             for vis in vislist:
-    #                 solint = selfcal_library[target][band]['final_solint']
-    #                 iteration = selfcal_library[target][band][vis][solint]['iteration']
-    #                 line = 'applycal(vis="' + vis.replace('.selfcal', '') + '",gaintable=' + str(
-    #                     selfcal_library[target][band][vis]['gaintable_final']) + ',interp=' + str(
-    #                     selfcal_library[target][band][vis]['applycal_interpolate_final']) + ', calwt=True,spwmap=' + str(
-    #                     selfcal_library[target][band][vis]['spwmap_final']) + ', applymode="' + selfcal_library[target][
-    #                     band][vis]['applycal_mode_final'] + '",field="' + target + '",spw="' + spwstring_orig + '")\n'
-    #                 applyCalOut.writelines(line)
-    #                 if apply_to_target_ms:
-    #                     if os.path.exists(vis.replace('.selfcal', '')+".flagversions/flags.starting_flags"):
-    #                         flagmanager(vis=vis.replace('.selfcal', ''),
-    #                                     mode='restore', versionname='starting_flags',
-    #                                     comment='Flag states at start of reduction')
-    #                     else:
-    #                         flagmanager(vis=vis.replace('.selfcal', ''), mode='save',
-    #                                     versionname='before_final_applycal')
-    #                     applycal(
-    #                         vis=vis.replace('.selfcal', ''),
-    #                         gaintable=selfcal_library[target][band][vis]['gaintable_final'],
-    #                         interp=selfcal_library[target][band][vis]['applycal_interpolate_final'],
-    #                         calwt=True, spwmap=[selfcal_library[target][band][vis]['spwmap_final']],
-    #                         applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
-    #                         field=target, spw=spwstring_orig)
-
-    # applyCalOut.close()
-    
-    # if os.path.exists("cont.dat"):
-    #     uvcontsubOut = open('uvcontsub_orig_MSes.py', 'w')
-    #     line = 'import os\n'
-    #     uvcontsubOut.writelines(line)
-    #     for target in all_targets:
-    #         sani_target = sanitize_string(target)
-    #         for band in selfcal_library[target].keys():
-    #             for vis in vislist:
-    #                 contdot_dat_flagchannels_string = flagchannels_from_contdotdat(
-    #                     vis.replace('.selfcal', ''), target, spwsarray)[:-2]
-    #                 line = 'uvcontsub(vis="'+vis.replace('.selfcal', '')+'",field="'+target+'", spw="'+spwstring_orig + \
-    #                     '",fitspw="'+contdot_dat_flagchannels_string+'",excludechans=True, combine="spw")\n'
-    #                 uvcontsubOut.writelines(line)
-    #                 line = 'os.system("mv '+vis.replace('.selfcal', '')+'.contsub '+sani_target+'_'+vis+'.contsub")\n'
-    #                 uvcontsubOut.writelines(line)
-    #     uvcontsubOut.close()
 
     #
     # Perform a check on the per-spw images to ensure they didn't lose quality in self-calibration
@@ -990,8 +938,9 @@ def selfcal_workflow(cleantarget):
     return selfcal_library, solints, bands
 
 
-def prep_selfcal(vislist):
-
+def _prep_selfcal(scaltarget):
+    vislist = scaltarget['sc_vislist']
+    telescope = scaltarget['sc_telescope']
     ##
     # Find targets, assumes all targets are in all ms files for simplicity and only science targets, will fail otherwise
     ##
@@ -1000,22 +949,19 @@ def prep_selfcal(vislist):
     ##
     # Global environment variables for control of selfcal
     ##
-    spectral_average = True
     do_amp_selfcal = True
     inf_EB_gaincal_combine = 'scan'
     inf_EB_gaintype = 'G'
-    inf_EB_override = False
     gaincal_minsnr = 2.0
     minsnr_to_proceed = 3.0
     delta_beam_thresh = 0.05
     n_ants = get_n_ants(vislist)
-    telescope = get_telescope(vislist[0])
+
     apply_cal_mode_default = 'calflag'
     rel_thresh_scaling = 'log10'  # can set to linear, log10, or loge (natural log)
     dividing_factor = -99.0  # number that the peak SNR is divided by to determine first clean threshold -99.0 uses default
     # default is 40 for <8ghz and 15.0 for all other frequencies
     check_all_spws = False   # generate per-spw images to check phase transfer did not go poorly for narrow windows
-    apply_to_target_ms = False  # apply final selfcal solutions back to the input _target.ms files
 
     if 'VLA' in telescope:
         check_all_spws = False
@@ -1023,8 +969,6 @@ def prep_selfcal(vislist):
 
     listdict, bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationsdict,\
         integrationtimesdict, spwslist, spwstring, spwsarray, mosaic_field = importdata(vislist, all_targets, telescope)
-    vislist_orig = vislist.copy()
-    spwstring_orig = spwstring
 
     ##
     # Save/restore starting flags
@@ -1032,20 +976,19 @@ def prep_selfcal(vislist):
 
     for vis in vislist:
         if os.path.exists(vis+'.flagversions/flags.selfcal_starting_flags'):
-            flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags')
+            cts.flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags')
         else:
-            flagmanager(vis=vis, mode='save', versionname='selfcal_starting_flags')
+            cts.flagmanager(vis=vis, mode='save', versionname='selfcal_starting_flags')
 
     ##
     # set image parameters based on the visibility data properties and frequency
     ##
-    cellsize = {}
-    imsize = {}
+
     nterms = {}
     applycal_interp = {}
 
     for band in bands:
-        cellsize, imsize, nterms = get_image_parameters(vislist, telescope, band, band_properties)
+        _, _, nterms = get_image_parameters(vislist, telescope, band, band_properties)
         if band_properties[vislist[0]][band]['meanfreq'] > 12.0e9:
             applycal_interp[band] = 'linearPD'
         else:
@@ -1143,62 +1086,4 @@ def prep_selfcal(vislist):
         for band in selfcal_library[target].keys():
             if selfcal_library[target][band]['Total_TOS'] == 0.0:
                 selfcal_library[target].pop(band)
-    return vislist, vis, all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, telescope, rel_thresh_scaling, dividing_factor, check_all_spws, apply_to_target_ms, bands, band_properties, spwsarray, vislist_orig, spwstring_orig, cellsize, imsize, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time
-
-
-def get_vislist():
-    """Get list of MS files in directory."""
-
-    vislist = glob.glob('*_targets.ms')
-    if len(vislist) == 0:
-        vislist = glob.glob('*_cont.ms')   # adaptation for PL2022 output
-        if len(vislist) == 0:
-            sys.exit('No Measurement sets found in current working directory, exiting')
-    return vislist
-
-
-def save_sclib(selfcal_library, solints, bands, filename='selfcal_results.pickle'):
-    """Save final library results."""
-
-    with open(filename, 'wb') as f:
-        pickle.dump((selfcal_library, solints, bands), f, protocol=pickle.HIGHEST_PROTOCOL)
-
-
-def read_sclib(filename='selfcal_results.pickle'):
-    """Read selfcal library."""
-
-    with open(filename, 'rb') as f:
-        selfcal_library, solints, bands = pickle.load(f)
-    return selfcal_library, solints, bands
-
-
-def do_scal_iteration(vislist):
-    """Interface to Tclean to do selfcal iteration."""
-
-    LOG.info('Start the auto_selfcal iteration within Tclean...')
-
-    selfcal_library, solints, bands = selfcal_workflow(vislist)
-    save_sclib(selfcal_library, solints, bands, filename='selfcal_results.pickle')
-
-    selfcal_library, solints, bands = read_sclib(filename='selfcal_results.pickle')
-    generate_weblog(selfcal_library, solints, bands)
-
-    return selfcal_library, solints, bands
-
-
-def main():
-
-    LOG.info('Start the auto_selfcal workflow...')
-
-    vislist = get_vislist()
-
-    selfcal_library, solints, bands = selfcal_workflow(vislist)
-    save_sclib(selfcal_library, solints, bands, filename='selfcal_results.pickle')
-
-    selfcal_library, solints, bands = read_sclib(filename='selfcal_results.pickle')
-    generate_weblog(selfcal_library, solints, bands)
-
-
-if __name__ == '__main__':
-
-    main()
+    return all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, rel_thresh_scaling, dividing_factor, check_all_spws, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time
