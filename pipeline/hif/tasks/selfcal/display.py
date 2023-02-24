@@ -233,7 +233,7 @@ class SelfcalSummary(object):
                 try:
                     figname = os.path.join(self.stage_dir, 'plot_' + ant + '_' + gaintable.replace('.g', '.png'))
                     tq.add_functioncall(self._plot_phasefreq_perant, caltb_loc, xaxis, yaxis, plotrange, ant, figname)
-                    phasefreq_plots.append(logger.Plot(figname))
+                    phasefreq_plots.append(logger.Plot(figname, x_axis=f'Freq. ({ant})', y_axis='Phase/SNR'))
                 except Exception as e:
                     continue
 
