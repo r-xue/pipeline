@@ -297,7 +297,7 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage
 
     Recipe name:                procedure_hifa_calimage
     Dataset:                    uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms
-    Expected results version:   casa-6.1.1-15-pipeline-2020.1.0.40
+    Expected results version:   ccasa-6.5.3-26-pipeline-2023.0.0.3
     """
     pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
                             input_dir='pl-unittest',
