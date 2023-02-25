@@ -1523,9 +1523,10 @@ class ACreNorm(object):
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise TypeError('excludechan parameter requires a string dict input')
                 if int(excch) not in spws:
-                    print(' excludechan specified SPW '+excch+' is not a SPW of this dataset')
+                    errormsg = ' excludechan specified SPW {0} is not among SPWs of this dataset {1}'.format(excch, spws)
+                    print(errormsg)
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    raise SyntaxError('Inconsistent input parameters: excludechan contains spws not in spw parameter')
+                    raise SyntaxError(errormsg)
                 if type(excludechan[excch]) is not str:
                     print(' excludechan requires a string dict input for channels')
                     print(' e.g. {"22":"100~150"}')
@@ -1559,9 +1560,10 @@ class ACreNorm(object):
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise TypeError('bwthreshspw requires the spw as a string input')
                 if int(spwth) not in spws:
-                    print(' bwthreshspw SPW specified is not a SPW of this dataset')
-                    casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    raise SyntaxError('bwthreshspw SPW specified is not a SPW of this dataset')
+                    errormsg = ' bwthreshspw specified SPW {0} is not among SPWs of this dataset {1}'.format(spwth, spws)
+                    print(errormsg)
+                    casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')
+                    raise SyntaxError(errormsg)
                 if type(bwthreshspw[spwth]) is not float:
                     print(' bwthreshspw requires a float for the bw-threshold')
                     print(' e.g. {"22":120e6}')
