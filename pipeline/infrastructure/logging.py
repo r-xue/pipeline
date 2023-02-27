@@ -49,7 +49,7 @@ def pipeline_origin(method):
     """Use 'pipeline' as the CASAlog Origin by default."""
     @functools.wraps(method)
     def pipeline_as_origin(self, *args, **kwargs):
-        if casalog.getOrigin() not in ('casa', 'pipeline'):
+        if casalog.getOrigin() != 'pipeline':
             casalog.origin('pipeline')
         retval = method(self, *args, **kwargs)
         return retval
