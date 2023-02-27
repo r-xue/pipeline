@@ -226,11 +226,11 @@ def visstat(*v, **k) -> JobRequest:
 def uvcontfit(*v, **k) -> JobRequest:
     """The wrapper function to create jobrequests for task_uvcontfit.uvcontfit.
 
-    Note this is pipeline CASA-style task rather than a genuine CASA task
-    The in-function import is nesscarry to avoid circular imports.
+    Note this is a Pipeline CASA-style task rather than a genuine CASA task
+    The in-function import is necessary to avoid circular imports.
     """
-    import pipeline.hif.cli.private.task_uvcontfit as task_uvcontfit
-    return JobRequest(task_uvcontfit.uvcontfit, *v, **k)
+    import pipeline.hif.cli.uvcontfit as uvcontfit
+    return JobRequest(uvcontfit, *v, **k)
 
 
 @register_task

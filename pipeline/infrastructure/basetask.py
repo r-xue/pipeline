@@ -286,7 +286,7 @@ class Results(api.Results):
                 LOG.error(tb)
 
                 # Create a special result object representing the failed task.
-                failedresult = FailedTaskResults(self[0].task, ex, tb)
+                failedresult = FailedTaskResults(self._get_task(), ex, tb)
                 # Copy over necessary properties from real result.
                 failedresult.stage_number = self.stage_number
                 failedresult.inputs = self.inputs
@@ -373,6 +373,9 @@ class Results(api.Results):
             return True
 
         return False
+
+    def _get_task(self):
+        return getattr(self, 'task', None)
 
 
 class FailedTaskResults(Results):
@@ -494,6 +497,12 @@ class ResultsList(Results):
     def merge_with_context(self, context):
         for result in self.__results:
             result.merge_with_context(context)
+
+    def _get_task(self):
+        if len(self) > 0:
+            return self[0]._get_task()
+        else:
+            return None
 
 
 class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
