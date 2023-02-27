@@ -319,7 +319,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'niter':         inputs.niter,
             'threshold':     inputs.threshold,
             'deconvolver':   inputs.deconvolver,
-            'interactive':   0,
+            'interactive':   False,
             'nchan':         inputs.nchan,
             'start':         inputs.start,
             'width':         inputs.width,
@@ -336,8 +336,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
             'parallel':     parallel,
-            'wbawp':        inputs.wbawp
-            }
+            'wbawp':        inputs.wbawp,
+            'fullsummary':   True
+        }
 
         # Set special phasecenter and outframe for ephemeris objects.
         # Needs to be done here since the explicit coordinates are
@@ -547,6 +548,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         # With CASA 6.2.0-57 the cube refactor is in place and the two step
         # process is no longer needed (PIPE-980). See removed code at:
         # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/cleanbase.py?at=15e495a29d0bfc93892c65eceb660d61a1805790#521
+
+        # PIPE-1672: use fullsummary=False for cube imaging to avoid potential MPIbuffer-related issues.
+        if 'cube' in tclean_job_parameters['specmode']:
+            tclean_job_parameters['fullsummary'] = False
 
         job = casa_tasks.tclean(**tclean_job_parameters)
         tclean_result = self._executor.execute(job)
