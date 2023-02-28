@@ -5,7 +5,9 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hif_selfcal(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hif_selfcal(vis=None, field=None, spw=None, contflie=None, apply=None,
+                parallel=None, recal=None,
+                pipelinemode=None, dryrun=None, acceptresults=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
