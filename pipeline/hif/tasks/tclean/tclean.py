@@ -122,7 +122,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cleaning=None,
-                 iter=None, mask=None, niter=None, threshold=None, tlimit=None, masklimit=None,
+                 iter=None, mask=None, niter=None, threshold=None, tlimit=None, drcorrect=None, masklimit=None,
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
                  weighting=None, robust=None, uvtaper=None, scales=None, cycleniter=None, cyclefactor=None,
@@ -169,6 +169,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.num_good_spws = num_good_spws
         self.bl_ratio = bl_ratio
         self.tlimit = tlimit
+        self.drcorrect = drcorrect
 
         # For MOM0/8_FC and cube RMS we need the LSRK frequency ranges in
         # various places
@@ -1085,7 +1086,7 @@ class Tclean(cleanbase.CleanBase):
         dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
         new_threshold, DR_correction_factor, maxEDR_used = \
             self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
-                                                inputs.intent, inputs.tlimit)
+                                                inputs.intent, inputs.tlimit, inputs.drcorrect)
         sequence_manager.threshold = new_threshold
         sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 

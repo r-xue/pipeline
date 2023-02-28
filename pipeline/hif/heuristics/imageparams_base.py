@@ -1843,8 +1843,7 @@ class ImageParamsHeuristics(object):
         else:
             return 0.0, effectiveBW_of_1chan, sens_bw
 
-    def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit):
-
+    def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit, drcorrect):
         """Adjustment of cleaning threshold due to dynamic range limitations."""
 
         DR_correction_factor = 1.0
