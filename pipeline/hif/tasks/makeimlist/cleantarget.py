@@ -45,6 +45,7 @@ class CleanTarget(dict):
         self['is_per_eb'] = None       # boolean
         self['usepointing'] = None     # boolean
         self['mosweight'] = None       # boolean
+        self['drcorrect'] = None       # float
 
         dict.__init__(self, *args, **kwargs)
 

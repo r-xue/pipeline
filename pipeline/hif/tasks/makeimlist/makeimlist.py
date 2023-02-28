@@ -995,7 +995,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 datacolumn=datacolumn,
                                 is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                 usepointing=usepointing,
-                                mosweight=mosweight
+                                mosweight=mosweight,
+                                drcorrect=self._get_drcorrect(field_intent[0], actual_spwspec, datacolumn)
                             )
 
                             result.add_target(target)
@@ -1026,6 +1027,25 @@ class MakeImList(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _get_drcorrect(self, field, spw_sel, datacolumn):
+        """Get the modified drcorrect parameter based on existing selfcal results.
+        
+        Note: currently we assume that selfcal'ed data only exist in the 'corrected' column.
+        """
+
+        drcorrect = None
+
+        if hasattr(self.inputs.context, 'scal_targets') and datacolumn == 'corrected':
+            for sc_target in self.inputs.context.scal_targets:
+                sc_spw = set(sc_target['spw'].split(','))
+                im_spw = set(spw_sel.split(','))
+                if sc_target['field'] == field and im_spw.intersection(sc_spw):
+                    drcorrect = sc_target['sc_rms_scale']
+                    LOG.info('Using dr_correct=%s for field %s and spw %s based on previous selfcal results.', drcorrect, field, spw_sel)
+                    break
+
+        return drcorrect
 
 
 # maps intent and specmode Inputs parameters to textual description of execution context.
