@@ -36,8 +36,8 @@ class SelfcalHeuristics(object):
         self.cts = CasaTasks(executor=self.executor)
         self.scaltarget = scaltarget
         self.image_heuristics = scaltarget['heuristics']
-        self.cellsize = scaltarget['cell'][0]
-        self.imsize = scaltarget['imsize'][0]
+        self.cellsize = scaltarget['cell']
+        self.imsize = scaltarget['imsize']
         self.phasecenter = scaltarget['phasecenter']
         self.spw_virtual = scaltarget['spw']
 
@@ -45,6 +45,8 @@ class SelfcalHeuristics(object):
         self.parallel = scaltarget['sc_parallel']
         self.telescope = scaltarget['sc_telescope']
         self.vis = self.vislist[-1]
+        self.uvtaper = scaltarget['uvtaper']
+        self.robust = scaltarget['robust']
 
     def tclean_wrapper(self,
                        vis, imagename, band_properties, band, telescope='undefined', scales=[0],
@@ -188,6 +190,21 @@ class SelfcalHeuristics(object):
                             parallel=False,
                             phasecenter=phasecenter, spw=spw, wprojplanes=wprojplanes)
 
+    def get_sensitivity(self):
+        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.image_heuristics.representative_target()
+
+        repr_field = list(self.image_heuristics.field_intent_list('TARGET', repr_source))[0][0]
+        gridder = self.image_heuristics.gridder('TARGET', repr_field)
+
+        sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
+            self.vislist, repr_field, 'TARGET', self.spw_virtual, -1, {},
+            'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
+            False)
+        return sensitivity[0], sens_bw[0]
+
+    def get_dr_correction(self):
+        return
+
     def __call__(self):
         """Execute auto_selfcal on a set of per-targets MSes.
 
@@ -233,8 +250,9 @@ class SelfcalHeuristics(object):
                         vislist, selfcal_library[target][band],
                         selfcal_library[target][band][vis]['spws'],
                         spw=selfcal_library[target][band][vis]['spwsarray'],
-                        imsize=imsize,
-                        cellsize=cellsize)
+                        imsize=imsize[0],
+                        cellsize=cellsize[0])
+                    sensitivity, sens_bw = self.get_sensitivity()
                     dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
                     sensitivity_nomod = sensitivity.copy()
                     LOG.info(f'DR modifier: {dr_mod}')
@@ -338,8 +356,9 @@ class SelfcalHeuristics(object):
                                 sensitivity = get_sensitivity(
                                     vislist, selfcal_library[target][band],
                                     spw, spw=np.array([int(spw)]),
-                                    imsize=imsize,
-                                    cellsize=cellsize)
+                                    imsize=imsize[0],
+                                    cellsize=cellsize[0])
+                                sensitivity, sens_bw = self.get_sensitivity()
                                 dr_mod = 1.0
                                 dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
                                 LOG.info(f'DR modifier: {dr_mod}  SPW: {spw}')
@@ -468,8 +487,9 @@ class SelfcalHeuristics(object):
                         vislist, selfcal_library[target][band],
                         selfcal_library[target][band][vis]['spws'],
                         spw=selfcal_library[target][band][vis]['spwsarray'],
-                        imsize=imsize,
-                        cellsize=cellsize)
+                        imsize=imsize[0],
+                        cellsize=cellsize[0])
+                    sensitivity, sens_bw = self.get_sensitivity()
                     if band == 'Band_9' or band == 'Band_10':   # adjust for DSB noise increase
                         sensitivity = sensitivity*4.0
                     if ('VLA' in self.telescope):
@@ -917,8 +937,9 @@ class SelfcalHeuristics(object):
                         vislist, selfcal_library[target][band],
                         selfcal_library[target][band][vis]['spws'],
                         spw=selfcal_library[target][band][vis]['spwsarray'],
-                        imsize=imsize,
-                        cellsize=cellsize)
+                        imsize=imsize[0],
+                        cellsize=cellsize[0])
+                    sensitivity, sens_bw = self.get_sensitivity()
                     dr_mod = 1.0
                     if not selfcal_library[target][band]['SC_success']:  # fetch the DR modifier if selfcal failed on source
                         dr_mod = get_dr_correction(
@@ -993,8 +1014,9 @@ class SelfcalHeuristics(object):
                             sensitivity = get_sensitivity(
                                 vislist, selfcal_library[target][band],
                                 spw, spw=np.array([int(spw)]),
-                                imsize=imsize,
-                                cellsize=cellsize)
+                                imsize=imsize[0],
+                                cellsize=cellsize[0])
+                            sensitivity, sens_bw = self.get_sensitivity()
                             dr_mod = 1.0
                             # fetch the DR modifier if selfcal failed on source
                             if not selfcal_library[target][band]['SC_success']:

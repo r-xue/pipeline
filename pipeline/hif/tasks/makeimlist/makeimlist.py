@@ -1035,9 +1035,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         """
 
         drcorrect = None
-
-        if hasattr(self.inputs.context, 'scal_targets') and datacolumn == 'corrected':
-            for sc_target in self.inputs.context.scal_targets:
+        context = self.inputs.context
+        if hasattr(context, 'scal_targets') and datacolumn == 'corrected' and context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):
+            for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw):
