@@ -35,37 +35,23 @@ class SelfcalHeuristics(object):
         self.executor = executor
         self.cts = CasaTasks(executor=self.executor)
         self.scaltarget = scaltarget
+        self.image_heuristics = scaltarget['heuristics']
         self.cellsize = scaltarget['cell'][0]
         self.imsize = scaltarget['imsize'][0]
+        self.phasecenter = scaltarget['phasecenter']
+        self.spw_virtual = scaltarget['spw']
 
         self.vislist = scaltarget['sc_vislist']
         self.parallel = scaltarget['sc_parallel']
         self.telescope = scaltarget['sc_telescope']
         self.vis = self.vislist[-1]
 
-    @staticmethod
-    def get_phasecenter(vis, field):
-        msmd.open(vis)
-        fieldid = msmd.fieldsforname(field)
-        ra_phasecenter_arr = np.zeros(len(fieldid))
-        dec_phasecenter_arr = np.zeros(len(fieldid))
-        for i in range(len(fieldid)):
-            phasecenter = msmd.phasecenter(fieldid[i])
-            ra_phasecenter_arr[i] = phasecenter['m0']['value']
-            dec_phasecenter_arr[i] = phasecenter['m1']['value']
-        msmd.done()
-
-        ra_phasecenter = np.median(ra_phasecenter_arr)
-        dec_phasecenter = np.median(dec_phasecenter_arr)
-        phasecenter_string = 'ICRS {:0.8f}rad {:0.8f}rad '.format(ra_phasecenter, dec_phasecenter)
-        return phasecenter_string
-
     def tclean_wrapper(self,
                        vis, imagename, band_properties, band, telescope='undefined', scales=[0],
                        smallscalebias=0.6, mask='', nsigma=5.0, imsize=None, cellsize=None, interactive=False, robust=0.5, gain=0.1,
                        niter=50000, cycleniter=300, uvtaper=[],
                        savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0, noisethreshold=5.0,
-                       lownoisethreshold=1.5, parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', phasecenter='',
+                       lownoisethreshold=1.5, parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy',
                        startmodel='', pblimit=0.1, pbmask=0.1, field='', datacolumn='', spw='', obstype='single-point',):
         """
         Wrapper for tclean with keywords set to values desired for the Large Program imaging
@@ -79,9 +65,8 @@ class SelfcalHeuristics(object):
         tb.close()
         if ephem_column[fieldid[0]] != -1:
             phasecenter = 'TRACKFIELD'
-
-        if obstype == 'mosaic':
-            phasecenter = self.get_phasecenter(vis[0], field)
+        else:
+            phasecenter = self.phasecenter
 
         if mask == '':
             usemask = 'auto-multithresh'

@@ -32,24 +32,8 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Value xmlns="">16384</Value>
             </Parameter>
         </ParameterSet>
-    </ProcessingCommand>  
-
-    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
-    
-    <ProcessingCommand>
-        <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter>                     
-        </ParameterSet>
     </ProcessingCommand>
-
+    
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -74,6 +58,22 @@ You are expected to have the _targets.ms and cont.data as input.
         </ParameterSet>
     </ProcessingCommand>    
 
+    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
+    
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns=""></Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">spw</Keyword>
+                <Value xmlns=""></Value>
+            </Parameter>                     
+        </ParameterSet>
+    </ProcessingCommand>
+ 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
