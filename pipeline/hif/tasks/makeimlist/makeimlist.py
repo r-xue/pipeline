@@ -1040,7 +1040,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
-                if sc_target['field'] == field and im_spw.intersection(sc_spw):
+                if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
                     drcorrect = sc_target['sc_rms_scale']
                     LOG.info('Using dr_correct=%s for field %s and spw %s based on previous selfcal results.', drcorrect, field, spw_sel)
                     break
