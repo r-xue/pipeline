@@ -1140,7 +1140,7 @@ python3 -m http.server 8080 --bind localhost
 <p>This method uses python3, either already available on your system or bundled with CASA.
     In the latter case, you may find it at
     <samp>/Applications/CASA.app/Contents/MacOS/python3</samp> (on MacOS) or at
-    <samp>&lt;casa_install_path&gt;/casa-6.4.1-12-pipeline-2022.2.0.64/bin/python3</samp> (on Linux).</p>
+    <samp>&lt;casa_install_path&gt;/bin/python3</samp> (on Linux).</p>
 <h3>Alternative: use <code>h_weblog()</code></h3>
 <p>From inside a CASA session, navigate to the root of the untarred weblog directory, <em>e.g.</em>,
     pipeline-procedure_hifa_calimage, and run <code>h_weblog</code>. This command will serve the web log via HTTP and
