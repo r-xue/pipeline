@@ -23,36 +23,52 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class SelfcalResults(basetask.Results):
-    def __init__(self, targets):
+    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None):
         super().__init__()
         self.pipeline_casa_task = 'Selfcal'
         self.targets = targets
+        self.applycal_result_contline = applycal_result_contline
+        self.applycal_result_line = applycal_result_line
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
+
+        # save selfcal results into the Pipeline context
+        if not hasattr(context, 'scal_targets'):
+            context.scal_targets = self.targets
+
+        if self.applycal_result_contline is not None:
+            self._register_datatype(context, self.applycal_result_contline, DataType.SELFCAL_CONTLINE_SCIENCE)
+        if self.applycal_result_line is not None:
+            self._register_datatype(context, self.applycal_result_line, DataType.SELFCAL_LINE_SCIENCE)
+
+    def _register_datatype(self, context, appycal_result, dtype):
+
+        calto_list = []
+        for r in appycal_result:
+            for calapp in r.applied:
+                calto_list.append(calapp.calto)
 
         vislist = []
         for target in self.targets:
             vislist.extend(target['sc_vislist'])
         vislist = list(set(vislist))
 
-        for vis in vislist:
+        # register the selfcal results to the observing run
+        for calto in calto_list:
+
+            vis = calto.vis
+            field_sel = calto.field
+            spw_sel = calto.spw
+
             with casa_tools.TableReader(vis) as tb:
                 # check for the existance of CORRECTED_DATA first
                 if 'CORRECTED_DATA' not in tb.colnames():
-                    LOG.warning('No CORRECTED_DATA column in {}'.format(vis))
-                    LOG.warning('Skip DataType.SELFCAL_CONTLINE_SCIENCE registration for {}'.format(vis))
+                    LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype} registration')
                     continue
-                # register by cleantargets:
-                for target in self.targets:
-                    if vis in target['sc_vislist']:
-                        field_sel = target['field_name']
-                        spw_sel = target['spw_real'][vis]
-                        LOG.info(
-                            'Register the CORRECTED_DATA column as DataType.SELFCAL_CONTLINE_SCIENCE for {} {} {}'.format(
-                                vis, field_sel, spw_sel))
-                        ms = context.observing_run.get_ms(vis)
-                        ms.set_data_column(DataType.SELFCAL_CONTLINE_SCIENCE, 'CORRECTED_DATA', source=field_sel, spw=spw_sel)
+                LOG.info(f'Register the CORRECTED_DATA column as {dtype} for {vis} {field_sel} {spw_sel}')
+                ms = context.observing_run.get_ms(vis)
+                ms.set_data_column(DataType.SELFCAL_CONTLINE_SCIENCE, 'CORRECTED_DATA', source=field_sel, spw=spw_sel)
 
     def __repr__(self):
         return 'SelfcalResults:'
@@ -72,8 +88,9 @@ class SelfcalInputs(vdp.StandardInputs):
     contfile = vdp.VisDependentProperty(default='cont.dat')
     apply = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
+    recal = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, apply=None, parallel=None):
+    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, apply=None, parallel=None, recal=None):
         super().__init__()
         self.context = context
         self.vis = vis
@@ -82,6 +99,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.contfile = contfile
         self.apply = apply
         self.parallel = parallel
+        self.recal = recal
 
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
@@ -122,6 +140,53 @@ class Selfcal(basetask.StandardTaskTemplate):
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
 
+        if not hasattr(self.inputs.context, 'scal_targets') or self.inputs.recal:
+            # skip the "selfcal-solver" executation if the selfcal results are already in the context and recal is False.
+            LOG.info('No selfcal results found in the context. Proceed to execute the selfcal solver.')
+            scal_targets = self._solve_selfcal()
+        else:
+            LOG.info('Found selfcal results in the context. Skip the selfcal solver.')
+            scal_targets = self.inputs.context.scal_targets
+
+        obs_run = self.inputs.context.observing_run
+
+        mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
+        mses_selfcal_contline = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_CONTLINE_SCIENCE], msonly=True)
+
+        applycal_result_contline = applycal_result_line = None
+        if mses_regcal_contline:
+            if not mses_selfcal_contline:
+                LOG.info('No DataType:SELFCAL_CONTLINE_SCIENCE found.')
+                LOG.info('Attempt to apply any selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es):')
+                for ms in mses_regcal_contline:
+                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
+            else:
+                LOG.info('Found DataType:SELFCAL_CONTLINE_SCIENCE.')
+                for ms in mses_selfcal_contline:
+                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                LOG.info('Skip applying selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es).')
+
+        mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
+        mses_selfcal_line = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_LINE_SCIENCE], msonly=True)
+
+        if mses_regcal_line:
+            if not mses_selfcal_line:
+                LOG.info('No DataType:SELFCAL_LINE_SCIENCE found.')
+                LOG.info('Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+                for ms in mses_regcal_line:
+                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                applycal_result_line = self._apply_scal(scal_targets,  mses_regcal_line)
+            else:
+                LOG.info('Found DataType:SELFCAL_LINE_SCIENCE.')
+                for ms in mses_selfcal_line:
+                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+
+        return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line)
+
+    def _solve_selfcal(self):
+
         # collect the target list
         scal_targets = self._get_scaltargets(scal=True)
 
@@ -157,10 +222,10 @@ class Selfcal(basetask.StandardTaskTemplate):
             field_name = utils.dequote(target['field'])
             target['sc_lib'] = scal_library[field_name][target['sc_band']]
             target['field_name'] = field_name
+            target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
+            target['sc_success'] = target['sc_lib']['SC_success']
 
-        self._apply_scal(scal_targets)
-
-        return SelfcalResults(scal_targets)
+        return scal_targets
 
     @staticmethod
     def _run_selfcal_sequence(scal_target, executor):
@@ -174,9 +239,9 @@ class Selfcal(basetask.StandardTaskTemplate):
                 scal_target['field'], scal_target['spw'], scal_target['sc_workdir']))
             selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, executor=executor)
             selfcal_library, solints, bands = selfcal_heuristics()
-        except Exception as e:
+        except Exception as err:
             LOG.error('Exception from hif.heuristics.auto_selfcal.SelfcalHeuristics:')
-            LOG.error(str(e))
+            LOG.error(str(err))
             LOG.error(traceback.format_exc())
         finally:
             os.chdir(workdir)
@@ -209,31 +274,38 @@ class Selfcal(basetask.StandardTaskTemplate):
                             sc_lib[vis]['spwmap_final']) + ', applymode="' + sc_lib[vis]['applycal_mode_final'] + '",field="' + cleantarget['field'] + '",spw="' + cleantarget['spw_real'][vis] + '")\n'
                         applyCalOut.writelines(line)
 
-    def _apply_scal(self, sc_targets):
+    def _apply_scal(self, sc_targets, mses):
 
         calapps = []
         vislist = []
+
+        # collect a name list of MSes which we could apply the selfcal solutions to.
+        vislist_calto = [ms.name for ms in mses]
+
         for cleantarget in sc_targets:
 
             sc_lib = cleantarget['sc_lib']
             sc_workdir = cleantarget['sc_workdir']
-            sc_vislist = sc_lib['vislist']
-            vislist.extend(sc_vislist)
+            if not sc_lib['SC_success']:
+                continue
 
-            if sc_lib['SC_success']:
-                for vis in sc_vislist:
-                    # workaround a potential issue from heuristics.auto_selfcal when gaintable has only one element, when it's not a list of list.
-                    spwmap_final = sc_lib[vis]['spwmap_final']
-                    if any(not isinstance(spwmap, list) for spwmap in spwmap_final) or not spwmap_final:
-                        spwmap_final = [spwmap_final]
-                    for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):
-                        gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
-                        calfrom = callibrary.CalFrom(gaintable=gaintable,
-                                                     interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=True,
-                                                     spwmap=spwmap_final[idx], caltype='gaincal')
-                        calto = callibrary.CalTo(vis=vis, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
-                        # applymode=sc_lib[vis]['applycal_mode_final']
-                        calapps.append(callibrary.CalApplication(calto, calfrom))
+            for vis in sc_lib['vislist']:
+                for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):
+                    for vis_calto in vislist_calto:
+                        if vis_calto.startswith(os.path.splitext(os.path.basename(vis))[0]):
+                            # workaround a potential issue from heuristics.auto_selfcal when gaintable has only one element, when it's not a list of list.
+                            spwmap_final = sc_lib[vis]['spwmap_final']
+
+                            if any(not isinstance(spwmap, list) for spwmap in spwmap_final) or not spwmap_final:
+                                spwmap_final = [spwmap_final]
+                            gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
+                            calfrom = callibrary.CalFrom(gaintable=gaintable,
+                                                         interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=True,
+                                                         spwmap=spwmap_final[idx], caltype='gaincal')
+                            calto = callibrary.CalTo(vis=vis_calto, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
+                            # applymode=sc_lib[vis]['applycal_mode_final']
+                            calapps.append(callibrary.CalApplication(calto, calfrom))
+                            vislist.append(vis_calto)
 
         for calapp in calapps:
             self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
