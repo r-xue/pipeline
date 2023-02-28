@@ -336,12 +336,11 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         # Avoid offset values (PIPE-644)
         ax.yaxis.set_major_formatter(plt.ScalarFormatter(useOffset=False))
 
-        # PIPE-1550: cycle through different symbols and colors simultaneously
-        # (diagonally across the 7x10 matrix of unique combinations, rather than row-by-row)
-        # also use Matplotlib Tableau colors for better visibility
+        # PIPE-1550: cycle through different symbols and colours simultaneously
+        # (diagonally across the 7x10 matrix of unique combinations, rather than row-by-row);
+        # note that this assumes that the numbers of symbols and colours are coprime
         symbols_and_colours = zip(itertools.cycle('osDv^<>'),
-                                  itertools.cycle(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
-                                                   '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']))
+                                  itertools.cycle(plt.get_cmap('tab10').colors))  # standard Tableau colormap
 
         x_min = 1e99
         x_max = 0
