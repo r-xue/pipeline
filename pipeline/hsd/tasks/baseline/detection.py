@@ -594,7 +594,7 @@ class LineWindowParser(object):
         for spwid in self.science_spw:
             assert spwid in self.parsed
 
-    def get_result(self, spw_id: int) -> List[int]:
+    def get_result(self, spw_id: int) -> Optional[List[int]]:
         """Return parsed line windows for given spw id.
 
         Args:
@@ -716,7 +716,7 @@ class LineWindowParser(object):
 
     def _freq2chan(self,
                    spwid: int,
-                   window: Optional[Union[List[str], List[float], List[int]]]) -> List[int]:
+                   window: Optional[Union[List[str], List[float], List[int]]]) -> Optional[List[int]]:
         """Convert frequency selection into channel selection.
 
         If float values are given, they are interpreted as the value in Hz.
