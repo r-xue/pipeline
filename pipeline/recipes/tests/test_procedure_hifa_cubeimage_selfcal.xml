@@ -24,6 +24,19 @@ You are expected to have the _targets.ms and cont.data as input.
     </ProcessingCommand>
     <!-- end of import MS-->
 
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_uvcontfit</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_uvcontsub</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>        
+
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -39,24 +52,29 @@ You are expected to have the _targets.ms and cont.data as input.
     </ProcessingCommand>    
 
     <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cube</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datacolumn</Keyword>
+                <Value xmlns="">data</Value>
+            </Parameter>             
+        </ParameterSet>
+    </ProcessingCommand>    
+
+    <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>    
 
-    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
-    
+
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter> 
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter>               
+        <ParameterSet>            
         </ParameterSet>
     </ProcessingCommand>
 
@@ -80,57 +98,8 @@ You are expected to have the _targets.ms and cont.data as input.
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>       
+    </ProcessingCommand>  
 
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontfit</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontsub</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">data</Value>
-            </Parameter>             
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
-
-    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
-    
-    <ProcessingCommand>
-        <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter> 
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter>               
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <!-- end of the selfcal section -->    
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -150,8 +119,7 @@ You are expected to have the _targets.ms and cont.data as input.
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>        
-
+    </ProcessingCommand>            
 
 
     <ProcessingCommand>
