@@ -52,6 +52,12 @@ You are expected to have the _targets.ms and cont.data as input.
     </ProcessingCommand>    
 
     <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>      
+
+    <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
             <Parameter>
