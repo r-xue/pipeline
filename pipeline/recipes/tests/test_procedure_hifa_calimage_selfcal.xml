@@ -235,22 +235,6 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
-
-    <ProcessingCommand>
         <Command xmlns="">hif_uvcontfit</Command>
         <ParameterSet>
         </ParameterSet>
@@ -274,13 +258,15 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">data</Value>
-            </Parameter>               
+            </Parameter>             
         </ParameterSet>
     </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -288,11 +274,7 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">data</Value>
-            </Parameter>               
+            </Parameter>             
         </ParameterSet>
     </ProcessingCommand>
 
@@ -302,19 +284,11 @@
         </ParameterSet>
     </ProcessingCommand>          
 
-
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
         <ParameterSet>             
         </ParameterSet>
     </ProcessingCommand>
-
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>        
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -336,7 +310,6 @@
         </ParameterSet>
     </ProcessingCommand>          
     
-
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
