@@ -4,13 +4,14 @@ see: https://github.com/jjtobin/auto_selfcal
 """
 
 import os
-import numpy as np
 
+import numpy as np
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.tablereader as tablereader
+from pipeline.domain.observingrun import ObservingRun
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
+from pipeline.infrastructure.tablereader import MeasurementSetReader
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
@@ -45,8 +46,22 @@ class SelfcalHeuristics(object):
         self.vis = self.vislist[-1]
         self.uvtaper = scaltarget['uvtaper']
         self.robust = scaltarget['robust']
+        self.field = scaltarget['field']
+
         LOG.info('recreating observing run from per-selfcal-target MS(es)')
-        self.image_heuristics.observing_run = tablereader.ObservingRunReader.get_observing_run(self.vislist)
+        self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
+
+    @staticmethod
+    def get_observing_run(ms_files):
+        if isinstance(ms_files, str):
+            ms_files = [ms_files]
+
+        observing_run = ObservingRun()
+        for ms_file in ms_files:
+            ms = MeasurementSetReader.get_measurement_set(ms_file)
+            ms.exclude_num_chans = ()
+            observing_run.add_measurement_set(ms)
+        return observing_run
 
     def tclean_wrapper(self,
                        vis, imagename, band_properties, band, telescope='undefined', scales=[0],
@@ -191,13 +206,11 @@ class SelfcalHeuristics(object):
                             phasecenter=phasecenter, spw=spw, wprojplanes=wprojplanes)
 
     def get_sensitivity(self):
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.image_heuristics.representative_target()
 
-        repr_field = list(self.image_heuristics.field_intent_list('TARGET', repr_source))[0][0]
-        gridder = self.image_heuristics.gridder('TARGET', repr_field)
+        gridder = self.image_heuristics.gridder('TARGET', self.field)
 
         sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
-            self.vislist, repr_field, 'TARGET', self.spw_virtual, -1, {},
+            self.vislist, self.field, 'TARGET', self.spw_virtual, -1, {},
             'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
             False)
         return sensitivity[0], sens_bw[0]
