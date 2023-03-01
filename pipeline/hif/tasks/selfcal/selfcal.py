@@ -211,7 +211,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         for idx, target in enumerate(scal_targets):
             scal_library, solints, bands = tq_results[idx]
             if scal_library is None:
-                raise ValueError(f'auto_selfcal heuristics failed for target {0} spw {1} from {2}'.format(
+                raise ValueError('auto_selfcal heuristics failed for target {0} spw {1} from {2}'.format(
                     target['field'], target['spw'], target['sc_workdir']))
             target['sc_band'] = bands[0]
             target['sc_solints'] = solints[bands[0]]
@@ -236,10 +236,13 @@ class Selfcal(basetask.StandardTaskTemplate):
         try:
             os.chdir(scal_target['sc_workdir'])
             LOG.info('')
-            LOG.info(f'Running auto_selfcal heuristics on target {0} spw {1} from {2}'.format(
+            LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}'.format(
                 scal_target['field'], scal_target['spw'], scal_target['sc_workdir']))
             LOG.info('')
             selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, executor=executor)
+            # import pickle
+            # with open('selfcal_heuristics.pickle', 'wb') as handle:
+            #     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
             selfcal_library, solints, bands = selfcal_heuristics()
         except Exception as err:
             LOG.error('Exception from hif.heuristics.auto_selfcal.SelfcalHeuristics:')
@@ -367,6 +370,7 @@ class Selfcal(basetask.StandardTaskTemplate):
     def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
 
+        outputvis_list = []
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
 
         taskqueue_parallel_request = len(scal_targets) > 1 and parallel
@@ -406,6 +410,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         task_args = {'vis': vis, 'outputvis': outputvis, 'field': field, 'spw': real_spwsel,
                                      'chanaverage': True, 'chanbin': chanbin, 'usewtspectrum': True,
                                      'datacolumn': 'data', 'reindex': False, 'keepflags': False}
+                        outputvis_list.append((vis, outputvis))
 
                         tq.add_jobrequest(casa_tasks.mstransform, task_args, executor=self._executor)
                         vislist.append(os.path.basename(outputvis))
@@ -413,8 +418,22 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['sc_workdir'] = sc_workdir
                     target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
+        
+        for outputvis in outputvis_list:
+            # Copy across requisite XML files.
+            self._copy_xml_files(outputvis[0], outputvis[1])
 
         return scal_targets
+
+    @staticmethod
+    def _copy_xml_files(vis, outputvis):
+        for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
+            vis_source = os.path.join(vis, xml_filename)
+            outputvis_targets_contline = os.path.join(outputvis, xml_filename)
+            if os.path.exists(vis_source) and os.path.exists(outputvis):
+                LOG.info('Copying %s from original MS to science targets cont+line MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_targets_contline)
+                shutil.copyfile(vis_source, outputvis_targets_contline)
 
     @staticmethod
     def get_desired_width(meanfreq):

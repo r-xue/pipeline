@@ -93,6 +93,7 @@ class MeasurementSet(object):
         self.reference_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
+        self.exclude_num_chans: Tuple[int] = (1, 4)
 
         # The ALMA Common Software version used to create this MS, if ALMA. Otherwise, None
         # (PIPE-132)
@@ -534,14 +535,14 @@ class MeasurementSet(object):
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
-            return [w for w in spws if w.num_channels not in (1, 4)
+            return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents)]
 
         if self.antenna_array.name == 'VLA' or self.antenna_array.name == 'EVLA':
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
-            return [w for w in spws if w.num_channels not in (1, 4)
+            return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents) and 'POINTING' not in w.intents]
 
         if self.antenna_array.name == 'NRO':
@@ -1125,7 +1126,7 @@ class MeasurementSet(object):
         # now get the science spws, those used for scientific intent
         science_spws = [
             ispw for ispw in spws
-            if ispw.num_channels not in [1, 4]
+            if ispw.num_channels not in self.exclude_num_chans
             and not ispw.intents.isdisjoint(['BANDPASS', 'AMPLITUDE', 'PHASE',
                                              'TARGET'])]
         LOG.debug('science spws are: %s' % [ispw.id for ispw in science_spws])
