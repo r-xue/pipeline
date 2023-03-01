@@ -6,25 +6,25 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
-               refant=None, geometry=None, flagging=None, pipelinemode=None,
+               refant=None, geometry=None, flagging=None, parallel=None, pipelinemode=None,
                dryrun=None, acceptresults=None, refantignore=None):
 
     """
     hif_refant ---- Select the best reference antennas
 
-    
+
     The hif_refant task selects a list of reference antennas and stores them
     in the pipeline context in priority order.
-    
+
     The priority order is determined by a weighted combination of scores derived
     by the antenna selection heuristics. In manual mode the reference antennas
     can be set by hand.
-    
+
     Output:
-    
+
     results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     the results object for the pipeline task is returned.
-    
+
     Issues
 
     --------- parameter descriptions ---------------------------------------------
@@ -57,6 +57,8 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
     flagging      Score antennas by percentage of unflagged data.  This option
                   requires computing flagging statistics.
                   Parameter is available when hm_refant='automatic'.
+    parallel      Execute using CASA HPC functionality, if available.
+                  options: 'automatic', 'true', 'false'
     pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
                   determines the values of all context defined pipeline inputs automatically.
                   In interactive mode the user can set the pipeline context defined parameters
@@ -71,10 +73,10 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
     --------- examples -----------------------------------------------------------
 
-    
-    
+
+
     1. Compute the references antennas to be used for bandpass and gain calibration.
-    
+
     hif_refant()
 
 
