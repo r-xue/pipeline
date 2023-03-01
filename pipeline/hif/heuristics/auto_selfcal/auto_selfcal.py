@@ -4,12 +4,13 @@ see: https://github.com/jjtobin/auto_selfcal
 """
 
 import os
-import pickle
-
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.tablereader as tablereader
 from pipeline.infrastructure.casa_tasks import CasaTasks
+from pipeline.infrastructure.casa_tools import msmd
+from pipeline.infrastructure.casa_tools import table as tb
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
@@ -20,14 +21,11 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               get_solints_simple, get_spw_bandwidth,
                               get_uv_range, importdata, rank_refants,
                               sanitize_string)
-from pipeline.infrastructure.casa_tools import msmd
-from pipeline.infrastructure.casa_tools import table as tb
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class SelfcalHeuristics(object):
-
     """Class to hold the heuristics for selfcal."""
 
     def __init__(self, scaltarget, executor=None):
@@ -47,6 +45,8 @@ class SelfcalHeuristics(object):
         self.vis = self.vislist[-1]
         self.uvtaper = scaltarget['uvtaper']
         self.robust = scaltarget['robust']
+        LOG.info('recreating observing run from per-selfcal-target MS(es)')
+        self.image_heuristics.observing_run = tablereader.ObservingRunReader.get_observing_run(self.vislist)
 
     def tclean_wrapper(self,
                        vis, imagename, band_properties, band, telescope='undefined', scales=[0],
@@ -501,8 +501,8 @@ class SelfcalHeuristics(object):
         ##
         # Save self-cal library
         ##
-        with open('selfcal_library.pickle', 'wb') as handle:
-            pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        # with open('selfcal_library.pickle', 'wb') as handle:
+        #     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         ##
         # Begin Self-cal loops

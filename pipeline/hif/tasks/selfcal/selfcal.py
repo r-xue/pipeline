@@ -235,8 +235,10 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         try:
             os.chdir(scal_target['sc_workdir'])
+            LOG.info('')
             LOG.info(f'Running auto_selfcal heuristics on target {0} spw {1} from {2}'.format(
                 scal_target['field'], scal_target['spw'], scal_target['sc_workdir']))
+            LOG.info('')
             selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, executor=executor)
             selfcal_library, solints, bands = selfcal_heuristics()
         except Exception as err:
@@ -253,26 +255,6 @@ class Selfcal(basetask.StandardTaskTemplate):
                 mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
         return selfcal_library, solints, bands
-
-    def _apply_scal_old(self, sc_targets):
-
-        with open('applycal_to_orig_MSes.py', 'w') as applyCalOut:
-
-            for cleantarget in sc_targets:
-
-                sc_lib = cleantarget['sc_lib']
-                vislist = sc_lib['vislist']
-
-                calapps = []
-                if sc_lib['SC_success']:
-                    for vis in vislist:
-                        solint = sc_lib['final_solint']
-                        iteration = sc_lib[vis][solint]['iteration']
-                        line = 'applycal(vis="' + vis.replace('.selfcal', '') + '",gaintable=' + str(
-                            sc_lib[vis]['gaintable_final']) + ',interp=' + str(
-                            sc_lib[vis]['applycal_interpolate_final']) + ', calwt=True,spwmap=' + str(
-                            sc_lib[vis]['spwmap_final']) + ', applymode="' + sc_lib[vis]['applycal_mode_final'] + '",field="' + cleantarget['field'] + '",spw="' + cleantarget['spw_real'][vis] + '")\n'
-                        applyCalOut.writelines(line)
 
     def _apply_scal(self, sc_targets, mses):
 
