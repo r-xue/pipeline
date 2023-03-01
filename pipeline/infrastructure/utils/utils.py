@@ -629,9 +629,10 @@ def ignore_pointing(vis):
             if os.path.isdir(ms+'/POINTING'):
                 shutil.rmtree(ms+'/POINTING')
             LOG.info(f'empty the pointing table for {ms}')
-            tb = casa_tools._logging_table_cls()
+            tb = casa_tools.table
             tb.create(ms+'/POINTING', tabdesc, dminfo=dminfo)
-            tb.close
+            tb.flush()
+            tb.close()
         yield
     finally:
         for ms in vis_list_ignore:
