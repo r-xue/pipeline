@@ -435,7 +435,6 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
-import copy
 
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool
@@ -1193,11 +1192,7 @@ class ACreNorm(object):
 
 
     # LM added / edited lots
-    def renormalize(self, spws=[], targscans=[], nfit=5, bwthresh=120e6, bwthreshspw={}, bwdiv='odd', docorr=False,
-                    excludespws=[], excludeants=[], excludechan={}, fthresh=0.01, datacolumn='CORRECTED_DATA',
-                    fixOutliers=True, mededge=0.01, excflagged=True, diagSpectra=True, antHeuristicsSpectra=True,
-                    verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85,
-                    checkFalsePositives=True, atmAutoExclude=False, docorrThresh=None):
+    def renormalize(self,spws=[],targscans=[],nfit=5,bwthresh=120e6,bwthreshspw={},bwdiv='odd',docorr=False, excludespws=[],excludeants=[],excludechan={},fthresh=0.01,datacolumn='CORRECTED_DATA',fixOutliers=True,mededge=0.01,excflagged=True, diagSpectra=True, antHeuristicsSpectra=True, verbose=False, usePhaseAC=False, plotATM=True, correctATM=False, limATM=0.85, checkFalsePositives=True, atmAutoExclude=False, docorrThresh=None):
         """
         spws=[]  - to manually set only certain SPW to be analysed and/or corrected
         targscans=[]  - to manually set only certain scans to be analysed and/or corrected
@@ -1501,12 +1496,12 @@ class ACreNorm(object):
 
         if atmAutoExclude:
             if excludechan:
-                print('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExclude option.')
-                self.logReNorm.write('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExclude option.\n')
+                print('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExlude option.')
+                self.logReNorm.write('WARNING: You have set both atmAutoExclude and excludechan parameters! Ignoring the atmAutoExlude option.\n')
                 atmAutoExclude = False
             else:
-                print('Regions of the spectrum where atmospheric lines are found will be excluded.')
-                self.logReNorm.write('Regions of the spectrum where atmospheric lines are found will be excluded.\n')
+                print('Regions of the spectrum where atmospheric lines are found will be exluded.')
+                self.logReNorm.write('Regions of the spectrum where atmospheric lines are found will be exluded.\n')
                 checkFalsePositives = True
 
         if excludechan:
@@ -1523,10 +1518,9 @@ class ACreNorm(object):
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise TypeError('excludechan parameter requires a string dict input')
                 if int(excch) not in spws:
-                    errormsg = ' excludechan specified SPW {0} is not among SPWs of this dataset {1}'.format(excch, spws)
-                    print(errormsg)
+                    print(' excludechan specified SPW '+excch+' is not a SPW of this dataset')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                    raise SyntaxError(errormsg)
+                    raise SyntaxError('Inconsistent input parameters: excludechan contains spws not in spw parameter')
                 if type(excludechan[excch]) is not str:
                     print(' excludechan requires a string dict input for channels')
                     print(' e.g. {"22":"100~150"}')
@@ -1541,9 +1535,7 @@ class ACreNorm(object):
             excludechan={}
         elif type(excludechan) is str:
             excludechan={}
-
-        # PIPE-1612: make a copy of the excludechan input so that it's not modified in the upstream code
-        self.rnstats['inputs']['excludechan'] = copy.deepcopy(excludechan)
+        self.rnstats['inputs']['excludechan'] = excludechan
 
         # LM added - bwthreshspw (dictionary)
         if bwthreshspw:
@@ -1560,10 +1552,9 @@ class ACreNorm(object):
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise TypeError('bwthreshspw requires the spw as a string input')
                 if int(spwth) not in spws:
-                    errormsg = ' bwthreshspw specified SPW {0} is not among SPWs of this dataset {1}'.format(spwth, spws)
-                    print(errormsg)
-                    casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')
-                    raise SyntaxError(errormsg)
+                    print(' bwthreshspw SPW specified is not a SPW of this dataset')
+                    casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
+                    raise SyntaxError('bwthreshspw SPW specified is not a SPW of this dataset')
                 if type(bwthreshspw[spwth]) is not float:
                     print(' bwthreshspw requires a float for the bw-threshold')
                     print(' e.g. {"22":120e6}')
@@ -1984,7 +1975,7 @@ class ACreNorm(object):
                                     if checkFalsePositives:
                                         # Check and make sure there actually is an ATM line, otherwise ignore.
                                         if atm_mask.any():
-                                            # If we automatically excluded ATM lines then everything is set to 1.0
+                                            # If we automatically exluded ATM lines then everything is set to 1.0
                                             # in the range, therefore we need to check the N_atm array rather than
                                             # the N array.
                                             if atmAutoExclude:
@@ -2233,8 +2224,8 @@ class ACreNorm(object):
                         if self.atmWarning[str(fldname)][str(ispw)]:
                             exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
                             if atmAutoExclude:
-                                print('Atmospheric features above the threshold have been mitigated by atmAutoExclude.')
-                                self.logReNorm.write('Atmospheric features above the threshold have been mitigated by atmAutoExclude.\n')
+                                print('Atmospheric features above the threshold have been mitigated by atmAutoExlude.')
+                                self.logReNorm.write('Atmospheric features above the threshold have been mitigated by atmAutoExlude.\n')
 
                                 print('Equivalent manual call: '+exclude_cmd)
                                 self.logReNorm.write('Equivalent manual call: '+exclude_cmd+'\n')
@@ -4386,7 +4377,7 @@ class ACreNorm(object):
             if len(ranges) == 0:
                 return 'No flagging suggested.'
             elif len(ranges) > 1:
-                cmd = 'excludechan={"'+str(spw)+'":"'
+                cmd = 'exludechan={"'+str(spw)+'":"'
                 for rng in ranges:
                     cmd += str(rng[0])+'~'+str(rng[1])+';'
                 cmd = cmd[:-1] + '"}'
