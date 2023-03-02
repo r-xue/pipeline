@@ -19,6 +19,7 @@ from . import measures
 from . import spectralwindow
 from .antennaarray import AntennaArray
 from .datatype import DataType
+from pipeline.infrastructure.utils import range_to_list
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -1271,7 +1272,7 @@ class MeasurementSet(object):
             spw_ids = spw
 
         for source_name in source_names.split(','):
-            for spw_id in map(int, spw_ids.split(',')):
+            for spw_id in map(int, range_to_list(spw_ids)):
                 key = (source_name, spw_id)
                 if key in self.data_types_per_source_and_spw:
                     if dtype not in self.data_types_per_source_and_spw[key]:
