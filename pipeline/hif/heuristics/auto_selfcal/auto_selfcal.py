@@ -38,8 +38,8 @@ class SelfcalHeuristics(object):
         self.cellsize = scaltarget['cell']
         self.imsize = scaltarget['imsize']
         # avoid explictly set phasecenter for now
-        # self.phasecenter = scaltarget['phasecenter']
-        self.phasecenter = ''
+        self.phasecenter = scaltarget['phasecenter']
+        # self.phasecenter = ''
         self.spw_virtual = scaltarget['spw']
 
         self.vislist = scaltarget['sc_vislist']
@@ -207,7 +207,7 @@ class SelfcalHeuristics(object):
                             nterms=nterms,
                             uvrange=uvrange,
                             threshold=threshold,
-                            parallel=parallel,
+                            parallel=False,
                             phasecenter=phasecenter, spw=spw, wprojplanes=wprojplanes)
 
     def get_sensitivity(self):
