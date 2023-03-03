@@ -574,13 +574,14 @@ class SelfcalHeuristics(object):
                             field=target, spw=selfcal_library[target][band]['spws_per_vis'],
                             uvrange=selfcal_library[target][band]['uvrange'],
                             obstype=selfcal_library[target][band]['obstype'])
-                        LOG.info('Pre selfcal assessemnt: '+target)
-                        SNR, RMS = estimate_SNR(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
-                        if self.telescope != 'ACA':
-                            SNR_NF, RMS_NF = estimate_near_field_SNR(
-                                sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
-                        else:
-                            SNR_NF, RMS_NF = SNR, RMS
+
+                        if not full_tclean_post:
+                            LOG.info('Pre selfcal assessemnt: '+target)
+                            SNR, RMS = estimate_SNR(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
+                            if self.telescope != 'ACA':
+                                SNR_NF, RMS_NF = estimate_near_field_SNR(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
+                            else:
+                                SNR_NF, RMS_NF = SNR, RMS
 
                         header = self.cts.imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
 
@@ -773,35 +774,7 @@ class SelfcalHeuristics(object):
                                 calwt=True, spwmap=applycal_spwmap[vis],
                                 applymode=applycal_mode[band][iteration],
                                 field=target, spw=selfcal_library[target][band][vis]['spws'])
-                        for vis in vislist:
-                            ##
-                            # record self cal results/details for this solint
-                            ##
-                            selfcal_library[target][band][vis][solint] = {}
-                            selfcal_library[target][band][vis][solint]['SNR_pre'] = SNR.copy()
-                            selfcal_library[target][band][vis][solint]['RMS_pre'] = RMS.copy()
-                            selfcal_library[target][band][vis][solint]['SNR_NF_pre'] = SNR_NF.copy()
-                            selfcal_library[target][band][vis][solint]['RMS_NF_pre'] = RMS_NF.copy()
-                            selfcal_library[target][band][vis][solint]['Beam_major_pre'] = header['restoringbeam'][
-                                'major']['value']
-                            selfcal_library[target][band][vis][solint]['Beam_minor_pre'] = header['restoringbeam'][
-                                'minor']['value']
-                            selfcal_library[target][band][vis][solint]['Beam_PA_pre'] = header['restoringbeam'][
-                                'positionangle']['value']
-                            selfcal_library[target][band][vis][solint]['gaintable'] = applycal_gaintable[vis]
-                            selfcal_library[target][band][vis][solint]['iteration'] = iteration+0
-                            selfcal_library[target][band][vis][solint]['spwmap'] = applycal_spwmap[vis]
-                            selfcal_library[target][band][vis][solint]['applycal_mode'] = applycal_mode[band][iteration]+''
-                            selfcal_library[target][band][vis][solint]['applycal_interpolate'] = applycal_interpolate[vis]
-                            selfcal_library[target][band][vis][solint]['gaincal_combine'] = gaincal_combine[band][
-                                iteration] + ''
-                            selfcal_library[target][band][vis][solint]['clean_threshold'] = selfcal_library[target][band][
-                                'nsigma'][iteration] * selfcal_library[target][band]['RMS_curr']
-                            selfcal_library[target][band][vis][solint]['intflux_pre'], selfcal_library[target][band][
-                                vis][solint]['e_intflux_pre'] = get_intflux(
-                                sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.image.tt0', RMS)
-                            selfcal_library[target][band][vis][solint]['fallback'] = fallback[vis]+''
-                            selfcal_library[target][band][vis][solint]['solmode'] = solmode[band][iteration]+''
+
                         # Create post self-cal image using the model as a startmodel to evaluate how much selfcal helped
                         ##
                         if selfcal_library[target][band]['nterms'] == 1:
@@ -833,6 +806,21 @@ class SelfcalHeuristics(object):
                                 niter=0, startmodel=startmodel, field=target, spw=selfcal_library[target][band]['spws_per_vis'],
                                 uvrange=selfcal_library[target][band]['uvrange'],
                                 obstype=selfcal_library[target][band]['obstype'])
+
+                        ##
+                        ## Do the assessment of the post- (and pre-) selfcal images.
+                        ##
+                        if full_tclean_post:
+                            LOG.info('Pre selfcal assessemnt: '+target)
+                            SNR, RMS = estimate_SNR(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0',
+                                                    maskname=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.mask')
+                            if self.telescope != 'ACA':
+                                SNR_NF, RMS_NF = estimate_near_field_SNR(
+                                    sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.image.tt0', maskname=sani_target + '_' + band +
+                                    '_' + solint + '_' + str(iteration) + '_post.mask')
+                            else:
+                                SNR_NF, RMS_NF = SNR, RMS
+
                         LOG.info('Post selfcal assessemnt: '+target)
                         # copy mask for use in post-selfcal SNR measurement
                         if not full_tclean_post:
@@ -842,14 +830,40 @@ class SelfcalHeuristics(object):
 
                         post_SNR, post_RMS = estimate_SNR(
                             sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
-                        if post_SNR > 500.0:  # if S/N > 500, change nterms to 2 for best performance
-                            selfcal_library[target][band]['nterms'] = 2
+
                         if self.telescope != 'ACA':
                             post_SNR_NF, post_RMS_NF = estimate_near_field_SNR(
                                 sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
                         else:
                             post_SNR_NF, post_RMS_NF = post_SNR, post_RMS
+                        if post_SNR > 500.0:  # if S/N > 500, change nterms to 2 for best performance
+                            selfcal_library[target][band]['nterms'] = 2
+
                         for vis in vislist:
+
+                            ##
+                            ## record self cal results/details for this solint
+                            ##
+                            selfcal_library[target][band][vis][solint] = {}
+                            selfcal_library[target][band][vis][solint]['SNR_pre'] = SNR.copy()
+                            selfcal_library[target][band][vis][solint]['RMS_pre'] = RMS.copy()
+                            selfcal_library[target][band][vis][solint]['SNR_NF_pre'] = SNR_NF.copy()
+                            selfcal_library[target][band][vis][solint]['RMS_NF_pre'] = RMS_NF.copy()
+                            selfcal_library[target][band][vis][solint]['Beam_major_pre'] = header['restoringbeam']['major']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_minor_pre'] = header['restoringbeam']['minor']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_PA_pre'] = header['restoringbeam']['positionangle']['value']
+                            selfcal_library[target][band][vis][solint]['gaintable'] = applycal_gaintable[vis]
+                            selfcal_library[target][band][vis][solint]['iteration'] = iteration+0
+                            selfcal_library[target][band][vis][solint]['spwmap'] = applycal_spwmap[vis]
+                            selfcal_library[target][band][vis][solint]['applycal_mode'] = applycal_mode[band][iteration]+''
+                            selfcal_library[target][band][vis][solint]['applycal_interpolate'] = applycal_interpolate[vis]
+                            selfcal_library[target][band][vis][solint]['gaincal_combine'] = gaincal_combine[band][iteration]+''
+                            selfcal_library[target][band][vis][solint]['clean_threshold'] = selfcal_library[target][band]['nsigma'][
+                                iteration] * selfcal_library[target][band]['RMS_curr']
+                            selfcal_library[target][band][vis][solint]['intflux_pre'], selfcal_library[target][band][vis][solint][
+                                'e_intflux_pre'] = get_intflux(sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.image.tt0', RMS)
+                            selfcal_library[target][band][vis][solint]['fallback'] = fallback[vis]+''
+                            selfcal_library[target][band][vis][solint]['solmode'] = solmode[band][iteration]+''
                             selfcal_library[target][band][vis][solint]['SNR_post'] = post_SNR.copy()
                             selfcal_library[target][band][vis][solint]['RMS_post'] = post_RMS.copy()
                             selfcal_library[target][band][vis][solint]['SNR_NF_post'] = post_SNR_NF.copy()
