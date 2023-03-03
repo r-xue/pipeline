@@ -37,9 +37,8 @@ class SelfcalHeuristics(object):
         self.image_heuristics = scaltarget['heuristics']
         self.cellsize = scaltarget['cell']
         self.imsize = scaltarget['imsize']
-        # avoid explictly set phasecenter for now
+        # explictly set phasecenter for now
         self.phasecenter = scaltarget['phasecenter']
-        # self.phasecenter = ''
         self.spw_virtual = scaltarget['spw']
 
         self.vislist = scaltarget['sc_vislist']
@@ -139,76 +138,82 @@ class SelfcalHeuristics(object):
             if not resume:
                 for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
                     os.system('rm -rf ' + imagename + ext)
-            self.cts.tclean(vis=vis,
-                            imagename=imagename,
-                            field=field,
-                            specmode='mfs',
-                            deconvolver='mtmfs',
-                            scales=scales,
-                            gridder=gridder,
-                            weighting='briggs',
-                            robust=robust,
-                            gain=gain,
-                            imsize=imsize,
-                            cell=cellsize,
-                            smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-                            niter=niter,  # we want to end on the threshold
-                            interactive=interactive,
-                            nsigma=nsigma,
-                            cycleniter=cycleniter,
-                            cyclefactor=cyclefactor,
-                            uvtaper=uvtaper,
-                            savemodel='none',
-                            mask=mask,
-                            usemask=usemask,
-                            sidelobethreshold=sidelobethreshold,
-                            smoothfactor=smoothfactor,
-                            pbmask=pbmask,
-                            pblimit=pblimit,
-                            nterms=nterms,
-                            uvrange=uvrange,
-                            threshold=threshold,
-                            parallel=parallel,
-                            phasecenter=phasecenter,
-                            startmodel=startmodel,
-                            datacolumn=datacolumn, spw=spw, wprojplanes=wprojplanes)
+            tc_ret = self.cts.tclean(vis=vis,
+                                     imagename=imagename,
+                                     field=field,
+                                     specmode='mfs',
+                                     deconvolver='mtmfs',
+                                     scales=scales,
+                                     gridder=gridder,
+                                     weighting='briggs',
+                                     robust=robust,
+                                     gain=gain,
+                                     imsize=imsize,
+                                     cell=cellsize,
+                                     smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
+                                     niter=niter,  # we want to end on the threshold
+                                     interactive=interactive,
+                                     nsigma=nsigma,
+                                     cycleniter=cycleniter,
+                                     cyclefactor=cyclefactor,
+                                     uvtaper=uvtaper,
+                                     savemodel='none',
+                                     mask=mask,
+                                     usemask=usemask,
+                                     sidelobethreshold=sidelobethreshold,
+                                     smoothfactor=smoothfactor,
+                                     pbmask=pbmask,
+                                     pblimit=pblimit,
+                                     nterms=nterms,
+                                     uvrange=uvrange,
+                                     threshold=threshold,
+                                     parallel=parallel,
+                                     phasecenter=phasecenter,
+                                     startmodel=startmodel,
+                                     datacolumn=datacolumn,
+                                     spw=spw, wprojplanes=wprojplanes,
+                                     fullsummary=True)
         # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
         if savemodel == 'modelcolumn':
             LOG.info("")
             LOG.info("Running tclean a second time to save the model...")
-            self.cts.tclean(vis=vis,
-                            imagename=imagename,
-                            field=field,
-                            specmode='mfs',
-                            deconvolver='mtmfs',
-                            scales=scales,
-                            gridder=gridder,
-                            weighting='briggs',
-                            robust=robust,
-                            gain=gain,
-                            imsize=imsize,
-                            cell=cellsize,
-                            smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-                            niter=0,
-                            interactive=False,
-                            nsigma=0.0,
-                            cycleniter=cycleniter,
-                            cyclefactor=cyclefactor,
-                            uvtaper=uvtaper,
-                            usemask='user',
-                            savemodel=savemodel,
-                            sidelobethreshold=sidelobethreshold,
-                            smoothfactor=smoothfactor,
-                            pbmask=pbmask,
-                            pblimit=pblimit,
-                            calcres=False,
-                            calcpsf=False,
-                            restoration=False,
-                            nterms=nterms,
-                            uvrange=uvrange,
-                            threshold=threshold,
-                            parallel=False,
-                            phasecenter=phasecenter, spw=spw, wprojplanes=wprojplanes)
+            tc_ret = self.cts.tclean(vis=vis,
+                                     imagename=imagename,
+                                     field=field,
+                                     specmode='mfs',
+                                     deconvolver='mtmfs',
+                                     scales=scales,
+                                     gridder=gridder,
+                                     weighting='briggs',
+                                     robust=robust,
+                                     gain=gain,
+                                     imsize=imsize,
+                                     cell=cellsize,
+                                     smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
+                                     niter=0,
+                                     interactive=False,
+                                     nsigma=0.0,
+                                     cycleniter=cycleniter,
+                                     cyclefactor=cyclefactor,
+                                     uvtaper=uvtaper,
+                                     mask='',
+                                     usemask='user',
+                                     savemodel=savemodel,
+                                     sidelobethreshold=sidelobethreshold,
+                                     smoothfactor=smoothfactor,
+                                     pbmask=pbmask,
+                                     pblimit=pblimit,
+                                     calcres=False,
+                                     calcpsf=False,
+                                     restoration=False,
+                                     nterms=nterms,
+                                     uvrange=uvrange,
+                                     threshold='0.0mJy',
+                                     parallel=False,
+                                     phasecenter=phasecenter,
+                                     startmodel=startmodel,
+                                     spw=spw, wprojplanes=wprojplanes,
+                                     fullsummary=True)
 
     def get_sensitivity(self):
 
