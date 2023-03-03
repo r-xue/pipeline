@@ -237,7 +237,7 @@ class SelfcalHeuristics(object):
         parallel = self.parallel
 
         vis = vislist[-1]
-        full_tclean_post = True
+        full_tclean_post = False
         ##
         # create initial images for each target to evaluate SNR and beam
         # replicates what a preceding hif_makeimages would do
