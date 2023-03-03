@@ -917,6 +917,7 @@ class SelfcalHeuristics(object):
                                 selfcal_library[target][band][vis]['gaincal_combine_final'] = selfcal_library[target][
                                     band][vis][solint]['gaincal_combine']
                                 selfcal_library[target][band][vis][solint]['Pass'] = True
+                                selfcal_library[target][band][vis][solint]['Fail_Reason'] = 'None'
                             if solmode[band][iteration] == 'p':
                                 selfcal_library[target][band]['final_phase_solint'] = solint
                             selfcal_library[target][band]['final_solint'] = solint
@@ -939,8 +940,7 @@ class SelfcalHeuristics(object):
                         ##
 
                         else:
-                            for vis in vislist:
-                                selfcal_library[target][band][vis][solint]['Pass'] = False
+
                             reason = ''
                             if (post_SNR <= SNR):
                                 reason = reason+' S/N decrease'
@@ -949,6 +949,9 @@ class SelfcalHeuristics(object):
                                     reason = reason+'; '
                                 reason = reason+'Beam change beyond '+str(delta_beam_thresh)
                             selfcal_library[target][band]['Stop_Reason'] = reason
+                            for vis in vislist:
+                                selfcal_library[target][band][vis][solint]['Pass'] = False
+                                selfcal_library[target][band][vis][solint]['Fail_Reason'] = reason
                             LOG.info('****************Selfcal failed*************')
                             LOG.info('REASON: '+reason)
                             if iteration > 0:  # reapply only the previous gain tables, to get rid of solutions from this selfcal round
