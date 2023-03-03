@@ -237,7 +237,7 @@ class SelfcalHeuristics(object):
         parallel = self.parallel
 
         vis = vislist[-1]
-
+        full_tclean_post = True
         ##
         # create initial images for each target to evaluate SNR and beam
         # replicates what a preceding hif_makeimages would do
@@ -810,20 +810,36 @@ class SelfcalHeuristics(object):
                             startmodel = [
                                 sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.model.tt0', sani_target + '_' +
                                 band + '_' + solint + '_' + str(iteration) + '.model.tt1']
-                        self.tclean_wrapper(vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post',
-                                            band_properties, band, telescope=self.telescope, scales=[0],
-                                            nsigma=0.0, savemodel='none', parallel=parallel, cellsize=cellsize,
-                                            imsize=imsize,
-                                            nterms=selfcal_library[target][band]['nterms'],
-                                            niter=0, startmodel=startmodel, field=target,
-                                            spw=selfcal_library[target][band]['spws_per_vis'],
-                                            uvrange=selfcal_library[target][band]['uvrange'],
-                                            obstype=selfcal_library[target][band]['obstype'])
+
+                        if full_tclean_post:
+                            self.tclean_wrapper(
+                                vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post', band_properties, band,
+                                telescope=self.telescope, nsigma=selfcal_library[target][band]['nsigma'][iteration],
+                                scales=[0],
+                                threshold=str(
+                                    selfcal_library[target][band]['nsigma'][iteration] * selfcal_library[target][band]['RMS_curr']) +
+                                'Jy', savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize,
+                                nterms=selfcal_library[target][band]['nterms'],
+                                field=target, spw=selfcal_library[target][band]['spws_per_vis'],
+                                uvrange=selfcal_library[target][band]['uvrange'],
+                                obstype=selfcal_library[target][band]['obstype'])
+                        else:
+                            self.tclean_wrapper(
+                                vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post', band_properties, band,
+                                telescope=self.telescope, scales=[0],
+                                nsigma=0.0, savemodel='none', parallel=parallel, cellsize=cellsize[band],
+                                imsize=imsize[band],
+                                nterms=selfcal_library[target][band]['nterms'],
+                                niter=0, startmodel=startmodel, field=target, spw=selfcal_library[target][band]['spws_per_vis'],
+                                uvrange=selfcal_library[target][band]['uvrange'],
+                                obstype=selfcal_library[target][band]['obstype'])
                         LOG.info('Post selfcal assessemnt: '+target)
                         # copy mask for use in post-selfcal SNR measurement
-                        os.system(
-                            'cp -r ' + sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.mask ' + sani_target + '_' +
-                            band + '_' + solint + '_' + str(iteration) + '_post.mask')
+                        if not full_tclean_post:
+                            os.system(
+                                'cp -r ' + sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.mask ' + sani_target + '_' + band + '_' +
+                                solint + '_' + str(iteration) + '_post.mask')
+
                         post_SNR, post_RMS = estimate_SNR(
                             sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
                         if post_SNR > 500.0:  # if S/N > 500, change nterms to 2 for best performance
@@ -1185,6 +1201,7 @@ class SelfcalHeuristics(object):
         n_ants = get_n_ants(vislist)
 
         apply_cal_mode_default = 'calflag'
+        
         rel_thresh_scaling = 'log10'  # can set to linear, log10, or loge (natural log)
         dividing_factor = -99.0  # number that the peak SNR is divided by to determine first clean threshold -99.0 uses default
         # default is 40 for <8ghz and 15.0 for all other frequencies
