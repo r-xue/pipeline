@@ -328,9 +328,21 @@ class SelfcalHeuristics(object):
             for band in selfcal_library[target].keys():
                 selfcal_library[target][band]['per_spw_stats'] = {}
                 vislist = selfcal_library[target][band]['vislist'].copy()
-                spwlist = selfcal_library[target][band][vislist[0]]['spws'].split(',')
+
+                #code to work around some VLA data not having the same number of spws due to missing BlBPs
+                #selects spwlist from the visibilities with the greates number of spws
+                maxspws = 0
+                maxspwvis = ''
+                for vis in vislist:
+                    if selfcal_library[target][band][vis]['n_spws'] >= maxspws:
+                        maxspws = selfcal_library[target][band][vis]['n_spws']
+                        maxspwvis = vis+''
+                    selfcal_library[target][band][vis]['spwlist'] = selfcal_library[target][band][vis]['spws'].split(',')
+                spwlist = selfcal_library[target][band][maxspwvis]['spwlist']
+
                 spw_bandwidths, spw_effective_bandwidths = get_spw_bandwidth(
-                    vis, selfcal_library[target][band][vis]['spwsarray'], target)
+                    vis, selfcal_library[target][band][maxspwvis]['spwsarray'], target)
+
                 selfcal_library[target][band]['total_bandwidth'] = 0.0
                 selfcal_library[target][band]['total_effective_bandwidth'] = 0.0
                 if len(spw_effective_bandwidths.keys()) != len(spw_bandwidths.keys()):
@@ -352,7 +364,8 @@ class SelfcalHeuristics(object):
                 sani_target = sanitize_string(target)
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
-                    spwlist = selfcal_library[target][band][vislist[0]]['spws'].split(',')
+                    # potential place where diff spws for different VLA EBs could cause problems
+                    spwlist = selfcal_library[target][band][vis]['spws'].split(',')
                     for spw in spwlist:
                         keylist = selfcal_library[target][band]['per_spw_stats'].keys()
                         if spw not in keylist:
@@ -787,7 +800,7 @@ class SelfcalHeuristics(object):
 
                         # Create post self-cal image using the model as a startmodel to evaluate how much selfcal helped
                         ##
-
+                        os.system('rm -rf '+sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post*')
                         self.tclean_wrapper(
                             vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post', band_properties, band,
                             telescope=self.telescope, nsigma=selfcal_library[target][band]['nsigma'][iteration],
@@ -1313,7 +1326,7 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band][vis]['Median_scan_time'] = np.median(scantimesdict[band][vis][target])
                     allscantimes = np.append(allscantimes, scantimesdict[band][vis][target])
                     selfcal_library[target][band][vis]['refant'] = rank_refants(vis)
-                    n_spws, minspw, spwsarray = fetch_spws([vis], [target], listdict)
+                    n_spws, minspw, spwsarray = fetch_spws([vis], [target])
                     spwslist = spwsarray.tolist()
                     spwstring = ','.join(str(spw) for spw in spwslist)
                     selfcal_library[target][band][vis]['spws'] = band_properties[vis][band]['spwstring']

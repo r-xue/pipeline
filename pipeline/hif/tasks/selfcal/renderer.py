@@ -233,7 +233,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     if row_name == 'Pass':
                         result_desc = '-'
                         if not slib[vislist[-1]][solint]['Pass']:
-                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib['Stop_Reason'])
+                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib['Fail_Reason'])
                         else:
                             result_desc = '<font color="blue">{}</font>'.format('Pass')
 
@@ -284,9 +284,9 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     if row_name == 'Beam_Ratio':
                         row.append('{:0.2f}'.format(
                             (slib[vislist[-1]][solint]['Beam_major_post'] *
-                             slib[vislist[-1]][solint]['Beam_major_post']) /
+                             slib[vislist[-1]][solint]['Beam_minor_post']) /
                             (slib[vislist[-1]][solint]['Beam_major_pre'] *
-                             slib[vislist[-1]][solint]['Beam_major_pre'])))
+                             slib[vislist[-1]][solint]['Beam_minor_pre'])))
                     if row_name == 'clean_threshold':
                         if row_name in vis_solint_keys:
                             row.append('{:0.2f} mJy/bm'.format(
