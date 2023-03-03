@@ -12,7 +12,7 @@ from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.tablereader import MeasurementSetReader
-
+import glob
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
                               estimate_SNR, fetch_spws, fetch_targets,
@@ -71,7 +71,7 @@ class SelfcalHeuristics(object):
             cycleniter=300, uvtaper=[],
             savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0, noisethreshold=5.0, lownoisethreshold=1.5,
             parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', startmodel='', pblimit=0.1, pbmask=0.1, field='',
-            datacolumn='', spw='', obstype='single-point', savemodel_only=False):
+            datacolumn='', spw='', obstype='single-point', savemodel_only=False, resume=False):
         """
         Wrapper for tclean with keywords set to values desired for the Large Program imaging
         See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters
@@ -136,8 +136,9 @@ class SelfcalHeuristics(object):
         if gridder == 'mosaic' and startmodel != '':
             parallel = False
         if not savemodel_only:
-            for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
-                os.system('rm -rf ' + imagename + ext)
+            if not resume:
+                for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
+                    os.system('rm -rf ' + imagename + ext)
             self.cts.tclean(vis=vis,
                             imagename=imagename,
                             field=field,
@@ -560,6 +561,24 @@ class SelfcalHeuristics(object):
                         # set threshold based on RMS of initial image and lower if value becomes lower
                         # during selfcal by resetting 'RMS_curr' after the post-applycal evaluation
                         ##
+
+                        if full_tclean_post and selfcal_library[target][band]['final_solint'] != 'None':
+                            prev_solint = selfcal_library[target][band]['final_solint']
+                            prev_iteration = selfcal_library[target][band][vislist[0]][prev_solint]['iteration']
+
+                            nterms_changed = len(glob.glob(
+                                sani_target+'_'+band+'_'+prev_solint+'_'+str(prev_iteration)+"_post.model.tt*")) < selfcal_library[target][band]['nterms']
+
+                            if nterms_changed:
+                                resume = False
+                            else:
+                                resume = True
+                                files = glob.glob(sani_target+'_'+band+'_'+prev_solint+'_'+str(prev_iteration)+"_post.*")
+                                for f in files:
+                                    os.system("cp -r "+f+" "+f.replace(prev_solint+"_"+str(prev_iteration)+"_post", solint+'_'+str(iteration)))
+                        else:
+                            resume = False   
+
                         self.tclean_wrapper(
                             vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration),
                             band_properties, band, telescope=self.telescope,
@@ -573,7 +592,7 @@ class SelfcalHeuristics(object):
                             nterms=selfcal_library[target][band]['nterms'],
                             field=target, spw=selfcal_library[target][band]['spws_per_vis'],
                             uvrange=selfcal_library[target][band]['uvrange'],
-                            obstype=selfcal_library[target][band]['obstype'])
+                            obstype=selfcal_library[target][band]['obstype'], resume=resume)
 
                         if not full_tclean_post:
                             LOG.info('Pre selfcal assessemnt: '+target)
