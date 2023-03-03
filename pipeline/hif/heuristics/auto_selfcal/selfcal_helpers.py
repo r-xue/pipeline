@@ -6,11 +6,12 @@ see: https://github.com/jjtobin/auto_selfcal
 import logging
 import os
 import time
+import numpy as np
 
 import casatools
-import numpy as np
-import pipeline.infrastructure as infrastructure
 from casatasks import casalog
+
+import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure.casa_tasks import casa_tasks as cts
 from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
@@ -53,13 +54,6 @@ def get_selfcal_logger(loggername='auto_selfcal', loglevel='DEBUG', logfile=None
     logger.addHandler(logfile_handler)
 
     return logger
-
-
-def collect_listobs_per_vis(vislist):
-    listdict = {}
-    for vis in vislist:
-        listdict[vis] = cts.listobs(vis)
-    return listdict
 
 
 def fetch_scan_times(vislist, targets):
@@ -400,32 +394,6 @@ def test_truncated_scans(ints_per_solint, allscantimes, integration_time):
     return delta_ints_per_solint[min_index]
 
 
-def fetch_targets_old(vis):
-    fields = []
-    listdict = cts.listobs(vis)
-    listobskeylist = listdict.keys()
-    for listobskey in listobskeylist:
-        if 'field_' in listobskey:
-            fields.append(listdict[listobskey]['name'])
-    fields = list(set(fields))  # convert to set to only get unique items
-    return fields
-
-
-def fetch_targets_previous(vis):
-    fields = []
-    tb.open(vis+'/FIELD')
-    names = list(tb.getcol('NAME'))
-    tb.close()
-    listdict = cts.listobs(vis)
-    listobskeylist = listdict.keys()
-    for listobskey in listobskeylist:
-        if 'field_' in listobskey:
-            fieldnum = int(listobskey.split('_')[1])
-            fields.append(names[fieldnum])
-    fields = list(set(fields))  # convert to set to only get unique items
-    return fields
-
-
 def fetch_targets(vis):
     fields = []
     msmd.open(vis)
@@ -433,7 +401,7 @@ def fetch_targets(vis):
     for fieldname in fieldnames:
         scans = msmd.scansforfield(fieldname)
         if len(scans) > 0:
-        fields.append(fieldname)
+            fields.append(fieldname)
     msmd.close()
     return fields
 
@@ -665,8 +633,8 @@ def get_SNR_self(
                 maxspwvis = ''
                 for vis in vislist:
                     if selfcal_library[target][band][vis]['n_spws'] >= maxspws:
-                    maxspws = selfcal_library[target][band][vis]['n_spws']
-                    maxspwvis = vis+''
+                        maxspws = selfcal_library[target][band][vis]['n_spws']
+                        maxspwvis = vis+''
                 solint_snr[target][band][solint] = 0.0
                 solint_snr_per_spw[target][band][solint] = {}
                 if solint == 'inf_EB':
@@ -1222,9 +1190,9 @@ def gaussian_norm(x, mean, sigma):
 
 
 def importdata(vislist, all_targets, telescope):
-    listdict = collect_listobs_per_vis(vislist)
+
     scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, n_spws, minspw, spwsarray = fetch_scan_times(
-        vislist, all_targets, listdict)
+        vislist, all_targets)
     spwslist = spwsarray.tolist()
     spwstring = ','.join(str(spw) for spw in spwslist)
 
@@ -1274,7 +1242,7 @@ def importdata(vislist, all_targets, telescope):
         for delband in bands_to_remove:
             bands.remove(delband)
 
-    return listdict, bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, spwslist, spwstring, spwsarray, mosaic_field_dict
+    return bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationtimesdict, spwslist, spwsarray, mosaic_field_dict
 
 
 def get_flagged_solns_per_spw(spwlist, gaintable):

@@ -233,7 +233,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     if row_name == 'Pass':
                         result_desc = '-'
                         if not slib[vislist[-1]][solint]['Pass']:
-                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib['Fail_Reason'])
+                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib[vislist[-1]][solint]['Fail_Reason'])
                         else:
                             result_desc = '<font color="blue">{}</font>'.format('Pass')
 

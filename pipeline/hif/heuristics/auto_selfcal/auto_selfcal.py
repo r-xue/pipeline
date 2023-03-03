@@ -1230,8 +1230,8 @@ class SelfcalHeuristics(object):
             check_all_spws = False
             # inf_EB_gaincal_combine='spw,scan'
 
-        listdict, bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationsdict,\
-            integrationtimesdict, spwslist, spwstring, spwsarray, mosaic_field = importdata(vislist, all_targets, telescope)
+        bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, \
+            integrationtimesdict, spwslist, spwsarray, mosaic_field = importdata(vislist, all_targets, telescope)
 
         ##
         # Save/restore starting flags
