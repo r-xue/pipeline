@@ -567,7 +567,7 @@ class SelfcalHeuristics(object):
                             scales=[0],
                             threshold=str(
                                 selfcal_library[target][band]['nsigma'][iteration] *
-                                selfcal_library[target][band]['RMS_curr']) + 'Jy', savemodel='modelcolumn',
+                                selfcal_library[target][band]['RMS_curr']) + 'Jy', savemodel='none',
                             parallel=parallel, cellsize=cellsize,
                             imsize=imsize,
                             nterms=selfcal_library[target][band]['nterms'],
