@@ -667,7 +667,11 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux, row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
+        # PIPE-1723: display a message in the weblog depending on the observatory
+        imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
+
         ctx.update({
+            'imaging_mode': imaging_mode,
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
