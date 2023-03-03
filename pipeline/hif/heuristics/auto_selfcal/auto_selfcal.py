@@ -37,7 +37,9 @@ class SelfcalHeuristics(object):
         self.image_heuristics = scaltarget['heuristics']
         self.cellsize = scaltarget['cell']
         self.imsize = scaltarget['imsize']
-        self.phasecenter = scaltarget['phasecenter']
+        # avoid explictly set phasecenter for now
+        # self.phasecenter = scaltarget['phasecenter']
+        self.phasecenter = ''
         self.spw_virtual = scaltarget['spw']
 
         self.vislist = scaltarget['sc_vislist']
@@ -63,13 +65,13 @@ class SelfcalHeuristics(object):
             observing_run.add_measurement_set(ms)
         return observing_run
 
-    def tclean_wrapper(self,
-                       vis, imagename, band_properties, band, telescope='undefined', scales=[0],
-                       smallscalebias=0.6, mask='', nsigma=5.0, imsize=None, cellsize=None, interactive=False, robust=0.5, gain=0.1,
-                       niter=50000, cycleniter=300, uvtaper=[],
-                       savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0, noisethreshold=5.0,
-                       lownoisethreshold=1.5, parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy',
-                       startmodel='', pblimit=0.1, pbmask=0.1, field='', datacolumn='', spw='', obstype='single-point',):
+    def tclean_wrapper(
+            self, vis, imagename, band_properties, band, telescope='undefined', scales=[0],
+            smallscalebias=0.6, mask='', nsigma=5.0, imsize=None, cellsize=None, interactive=False, robust=0.5, gain=0.1, niter=50000,
+            cycleniter=300, uvtaper=[],
+            savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0, noisethreshold=5.0, lownoisethreshold=1.5,
+            parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', startmodel='', pblimit=0.1, pbmask=0.1, field='',
+            datacolumn='', spw='', obstype='single-point', savemodel_only=False):
         """
         Wrapper for tclean with keywords set to values desired for the Large Program imaging
         See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters
@@ -133,41 +135,42 @@ class SelfcalHeuristics(object):
 
         if gridder == 'mosaic' and startmodel != '':
             parallel = False
-        for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
-            os.system('rm -rf ' + imagename + ext)
-        self.cts.tclean(vis=vis,
-                        imagename=imagename,
-                        field=field,
-                        specmode='mfs',
-                        deconvolver='mtmfs',
-                        scales=scales,
-                        gridder=gridder,
-                        weighting='briggs',
-                        robust=robust,
-                        gain=gain,
-                        imsize=imsize,
-                        cell=cellsize,
-                        smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-                        niter=niter,  # we want to end on the threshold
-                        interactive=interactive,
-                        nsigma=nsigma,
-                        cycleniter=cycleniter,
-                        cyclefactor=cyclefactor,
-                        uvtaper=uvtaper,
-                        savemodel='none',
-                        mask=mask,
-                        usemask=usemask,
-                        sidelobethreshold=sidelobethreshold,
-                        smoothfactor=smoothfactor,
-                        pbmask=pbmask,
-                        pblimit=pblimit,
-                        nterms=nterms,
-                        uvrange=uvrange,
-                        threshold=threshold,
-                        parallel=parallel,
-                        phasecenter=phasecenter,
-                        startmodel=startmodel,
-                        datacolumn=datacolumn, spw=spw, wprojplanes=wprojplanes)
+        if not savemodel_only:
+            for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
+                os.system('rm -rf ' + imagename + ext)
+            self.cts.tclean(vis=vis,
+                            imagename=imagename,
+                            field=field,
+                            specmode='mfs',
+                            deconvolver='mtmfs',
+                            scales=scales,
+                            gridder=gridder,
+                            weighting='briggs',
+                            robust=robust,
+                            gain=gain,
+                            imsize=imsize,
+                            cell=cellsize,
+                            smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
+                            niter=niter,  # we want to end on the threshold
+                            interactive=interactive,
+                            nsigma=nsigma,
+                            cycleniter=cycleniter,
+                            cyclefactor=cyclefactor,
+                            uvtaper=uvtaper,
+                            savemodel='none',
+                            mask=mask,
+                            usemask=usemask,
+                            sidelobethreshold=sidelobethreshold,
+                            smoothfactor=smoothfactor,
+                            pbmask=pbmask,
+                            pblimit=pblimit,
+                            nterms=nterms,
+                            uvrange=uvrange,
+                            threshold=threshold,
+                            parallel=parallel,
+                            phasecenter=phasecenter,
+                            startmodel=startmodel,
+                            datacolumn=datacolumn, spw=spw, wprojplanes=wprojplanes)
         # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
         if savemodel == 'modelcolumn':
             LOG.info("")
@@ -199,10 +202,11 @@ class SelfcalHeuristics(object):
                             pblimit=pblimit,
                             calcres=False,
                             calcpsf=False,
+                            restoration=False,
                             nterms=nterms,
                             uvrange=uvrange,
                             threshold=threshold,
-                            parallel=False,
+                            parallel=parallel,
                             phasecenter=phasecenter, spw=spw, wprojplanes=wprojplanes)
 
     def get_sensitivity(self):
@@ -588,6 +592,7 @@ class SelfcalHeuristics(object):
                             applycal_spwmap = {}
                             fallback = {}
                             applycal_interpolate = {}
+                        
                         for vis in vislist:
                             ##
                             # Restore original flagging state each time before applying a new gaintable
@@ -598,6 +603,25 @@ class SelfcalHeuristics(object):
                                     comment='Flag states at start of reduction')
                             else:
                                 self.cts.flagmanager(vis=vis, mode='save', versionname='selfcal_starting_flags_'+sani_target)
+
+                        # We need to redo saving the model now that we have potentially unflagged some data.
+                        self.tclean_wrapper(
+                            vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration),
+                            band_properties, band, telescope=self.telescope,
+                            nsigma=selfcal_library[target][band]['nsigma'][iteration],
+                            scales=[0],
+                            threshold=str(
+                                selfcal_library[target][band]['nsigma'][iteration] *
+                                selfcal_library[target][band]['RMS_curr']) + 'Jy', savemodel='modelcolumn',
+                            parallel=parallel, cellsize=cellsize,
+                            imsize=imsize,
+                            nterms=selfcal_library[target][band]['nterms'],
+                            field=target, spw=selfcal_library[target][band]['spws_per_vis'],
+                            uvrange=selfcal_library[target][band]['uvrange'],
+                            obstype=selfcal_library[target][band]['obstype'],
+                            savemodel_only=True)
+
+                        for vis in vislist:
                             applycal_gaintable[vis] = []
                             applycal_spwmap[vis] = []
                             applycal_interpolate[vis] = []
