@@ -68,7 +68,7 @@ class SelfcalResults(basetask.Results):
                     continue
                 LOG.info(f'Register the CORRECTED_DATA column as {dtype} for {vis} {field_sel} {spw_sel}')
                 ms = context.observing_run.get_ms(vis)
-                ms.set_data_column(DataType.SELFCAL_CONTLINE_SCIENCE, 'CORRECTED_DATA', source=field_sel, spw=spw_sel)
+                ms.set_data_column(dtype, 'CORRECTED_DATA', source=field_sel, spw=spw_sel)
 
     def __repr__(self):
         return 'SelfcalResults:'
