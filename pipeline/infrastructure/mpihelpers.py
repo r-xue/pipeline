@@ -437,7 +437,7 @@ class TaskQueue:
         self.__is_mpi_ready = is_mpi_ready()
         self.__async = parallel and self.__is_mpi_ready
 
-        LOG.info('Initialize TaskQueue with MPI server list: %s', self.__mpi_server_list)
+        LOG.info('TaskQueue initialized; MPI server list: %s', self.__mpi_server_list)
 
     def __enter__(self):
         return self

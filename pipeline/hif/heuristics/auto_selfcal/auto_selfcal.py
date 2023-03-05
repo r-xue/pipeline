@@ -29,25 +29,26 @@ LOG = infrastructure.get_logger(__name__)
 class SelfcalHeuristics(object):
     """Class to hold the heuristics for selfcal."""
 
-    def __init__(self, scaltarget, executor=None):
+    def __init__(self, scal_target, executor=None):
         """Initialize the class."""
         self.executor = executor
         self.cts = CasaTasks(executor=self.executor)
-        self.scaltarget = scaltarget
-        self.image_heuristics = scaltarget['heuristics']
-        self.cellsize = scaltarget['cell']
-        self.imsize = scaltarget['imsize']
+        self.scaltarget = scal_target
+        self.image_heuristics = scal_target['heuristics']
+        self.cellsize = scal_target['cell']
+        self.imsize = scal_target['imsize']
         # explictly set phasecenter for now
-        self.phasecenter = scaltarget['phasecenter']
-        self.spw_virtual = scaltarget['spw']
+        self.phasecenter = scal_target['phasecenter']
+        self.spw_virtual = scal_target['spw']
 
-        self.vislist = scaltarget['sc_vislist']
-        self.parallel = scaltarget['sc_parallel']
-        self.telescope = scaltarget['sc_telescope']
+        self.vislist = scal_target['sc_vislist']
+        self.parallel = scal_target['sc_parallel']
+        self.telescope = scal_target['sc_telescope']
         self.vis = self.vislist[-1]
-        self.uvtaper = scaltarget['uvtaper']
-        self.robust = scaltarget['robust']
-        self.field = scaltarget['field']
+        self.uvtaper = scal_target['uvtaper']
+        self.robust = scal_target['robust']
+        self.field = scal_target['field']
+        self.uvrange = scal_target['uvrange']
 
         LOG.info('recreating observing run from per-selfcal-target MS(es)')
         self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
@@ -236,6 +237,10 @@ class SelfcalHeuristics(object):
 
         all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, rel_thresh_scaling, dividing_factor, check_all_spws, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = self._prep_selfcal()
 
+        # Currently, we are still using a modified version of the prototype selfcal preparation scheme to prepare "selfcal_library".
+        # Then we override a subset of selfcal input parameters using PL-heuristics-based values.
+        # Eventually, we will retire the prototype selfcal preparation function entirely.
+        
         cellsize = self.cellsize
         imsize = self.imsize
 
@@ -1346,9 +1351,11 @@ class SelfcalHeuristics(object):
                         selfcal_library[target][band]['Total_TOS']
                     selfcal_library[target][band]['spws_per_vis'].append(band_properties[vis][band]['spwstring'])
                 selfcal_library[target][band]['Median_scan_time'] = np.median(allscantimes)
-                selfcal_library[target][band]['uvrange'] = get_uv_range(band, band_properties, vislist)
+                prototype_uvrange = get_uv_range(band, band_properties, vislist)
+                selfcal_library[target][band]['uvrange'] = self.uvrange
+                LOG.info(
+                    f'using the Pipeline standard heuristics uvrange: {self.uvrange}, instead of the prototype uvrange: {prototype_uvrange}')
                 selfcal_library[target][band]['75thpct_uv'] = band_properties[vislist[0]][band]['75thpct_uv']
-                LOG.info(selfcal_library[target][band]['uvrange'])
 
         for target in all_targets:
             for band in selfcal_library[target].keys():

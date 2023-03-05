@@ -389,9 +389,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                     os.mkdir(sc_workdir)
 
                     spw_real = {}
+                    field = target['field']
+                    uvrange = target['uvrange']
                     for vis in target['vis']:
 
-                        field = target['field']
                         # we use virtualspw here for the naming convention (similar to the imaging naming convention).
                         real_spwsel = self.inputs.context.observing_run.get_real_spwsel([target['spw']], [vis])[0]
                         spw_real[vis] = real_spwsel
@@ -407,7 +408,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         chanwidth_desired_hz = self.get_desired_width(mean_freq)
                         chanbin = self.get_spw_chanbin(bwarray, chanarray, chanwidth_desired_hz)
 
-                        task_args = {'vis': vis, 'outputvis': outputvis, 'field': field, 'spw': real_spwsel,
+                        task_args = {'vis': vis, 'outputvis': outputvis, 'field': field, 'spw': real_spwsel, 'uvrange': uvrange,
                                      'chanaverage': True, 'chanbin': chanbin, 'usewtspectrum': True,
                                      'datacolumn': 'data', 'reindex': False, 'keepflags': False}
                         outputvis_list.append((vis, outputvis))
@@ -418,7 +419,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['sc_workdir'] = sc_workdir
                     target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
-        
+
         for outputvis in outputvis_list:
             # Copy across requisite XML files.
             self._copy_xml_files(outputvis[0], outputvis[1])
