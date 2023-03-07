@@ -85,7 +85,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         for vis in vislist:
             nsol_stats = antpos_plots[vis].parameters
 
-            antpos_html = plots_to_html([antpos_plots[vis]], report_dir=context.report_dir, title='Frac. Flagged Sol. Per Antenna')[0]
+            antpos_html = plots_to_html([antpos_plots[vis]], report_dir=context.report_dir)[0]
 
             vis_desc = ('<a class="anchor" id="{0}_summary"></a>'
                         '<a href="#{0}_byant">'
@@ -149,8 +149,6 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         targets_summary_table = self.make_targets_summary_table(cleantargets)
 
-        summary_plots = {}
-        noisehist_plots = {}
         summary_tabs = collections.OrderedDict()
         solint_tabs = collections.OrderedDict()
         spw_tabs = collections.OrderedDict()
@@ -159,14 +157,10 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for target in cleantargets:
 
             key = (target['field_name'], target['sc_band'])
-            summary_plots[key], noisehist_plots[key] = display.SelfcalSummary(context, r, target).plot()
-
             slib = target['sc_lib']
 
             summary_tab = self.make_summary_table(context, r, target)
-            #summary_tab['Image'] = self.make_plot_thumbnail_html(summary_plots[key], report_dir=context.report_dir)
-            # this create a html table code snippet
-            #summary_tabs[key] = table_to_html(summary_tab, rotate=True)
+
             summary_tabs[key] = summary_tab
 
             solint_tabs[key] = self.make_solint_summary_table(target, context, results)

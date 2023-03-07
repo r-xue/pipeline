@@ -300,7 +300,8 @@ def table_to_html(table, tableclass='table table-bordered table-striped table-co
     return table_html
 
 
-def plots_to_html(plots, title='', align='middle', caption=None, width='auto', height='auto', report_dir='./'):
+def plots_to_html(plots, title=None, alt=None, caption=None, group=None,
+                  align='middle', width='auto', height='auto', report_dir='./'):
     """Convert a list of plots to HTML snippets.
     
     examples:
@@ -309,6 +310,23 @@ def plots_to_html(plots, title='', align='middle', caption=None, width='auto', h
     notes:
         the generated snippet requires lazyload.
     """
+
+    def desc_lookup(plot, key, value=None):
+        """Get a plot description value from the plot object attribute or parameters dictionary.
+        
+        The order of precedence: 
+            non-None input > 
+            matching plot parameters dict key > 
+            attribute with the same name
+        """
+        ret_value = ''
+        if hasattr(plot, key):
+            ret_value = getattr(plot, key)
+        if hasattr(plot, 'parameters') and key in plot.parameters:
+            ret_value = plot.parameters[key]
+        if value is not None:
+            ret_value = value
+        return ret_value
 
     plots_html = []
 
@@ -319,17 +337,18 @@ def plots_to_html(plots, title='', align='middle', caption=None, width='auto', h
         html_args = {
             'fullsize': fullsize_relpath,
             'thumbnail': thumbnail_relpath,
-            'title': title,
-            'alt': title,
-            'rel': '',
+            'title': desc_lookup(plot, 'title', title),
+            'caption': desc_lookup(plot, 'caption', caption),
+            'alt': desc_lookup(plot, 'alt', alt),
+            'group': desc_lookup(plot, 'group', group),
             'width': width,
             'height': height,
             'align': align,
         }
         html = ('<a href="{fullsize}"'
                 '   title="{title}"'
-                '   data-fancybox="{rel}"'
-                '   data-caption="{title}">'
+                '   data-fancybox="{group}"'
+                '   data-caption="{caption}">'
                 '    <img data-src="{thumbnail}"'
                 '         style="width:{width};height:{height}"'
                 '         title="{title}"'

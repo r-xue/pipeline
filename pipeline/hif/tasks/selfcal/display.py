@@ -80,11 +80,17 @@ class SelfcalSummary(object):
         im_post = self._im_solname(solint)+'_post.image.tt0'
         im_pre = self._im_solname(solint)+'.image.tt0'
 
-        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6)).plot_per_stokes(
-            self.context, im_pre, reportdir=self.stage_dir, intent='', stokes_list=None, collapseFunction='mean'))
+        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6), dpi=900).plot_per_stokes(
+            self.context, im_pre, reportdir=self.stage_dir, intent='', collapseFunction='mean'))
+        image_plots[-1].parameters['title'] = 'Pre-Selfcal Image'
+        image_plots[-1].parameters['caption'] = f'Pre-Selfcal Image<br>Solint: {solint}'
+        image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
 
-        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6)).plot_per_stokes(
-            self.context, im_post, reportdir=self.stage_dir, intent='', stokes_list=None, collapseFunction='mean'))
+        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6), dpi=900).plot_per_stokes(
+            self.context, im_post, reportdir=self.stage_dir, intent='', collapseFunction='mean'))
+        image_plots[-1].parameters['title'] = 'Post-Selfcal Image'
+        image_plots[-1].parameters['caption'] = f'Post-Selfcal Image<br>Solint: {solint}'
+        image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
 
         vislist = self.slib['vislist']
         for vis in vislist:
@@ -100,6 +106,9 @@ class SelfcalSummary(object):
             self.plot_ants_flagging_colored(figname, vis_loc, caltb_loc)
             nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc)
             antpos_plots[vis] = logger.Plot(figname, parameters={'nflagged_sols': nflagged_sols, 'nsols': nsols})
+            antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
+            antpos_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint}'
+            antpos_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
 
             vis_desc = ('<a class="anchor" id="{0}_byant"></a>'
                         '{0}'
@@ -270,14 +279,17 @@ class SelfcalSummary(object):
 
         for tb, ims in self.result.ims_dict.items():
             plot_wrappers = []
-            image_types = ['initial', 'final', 'diff_frac']
-            for image_type in image_types:
-                plot_wrappers.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False).plot_per_stokes(
-                    self.context, ims[image_type], reportdir=self.stage_dir, intent='', stokes_list=None, collapseFunction='mean'))
+            image_types = [('initial', 'Initial Image'), ('final', 'Final Image'), ('diff_frac', 'Fractional Difference Image')]
+            for image_type, image_desc in image_types:
+                plot_wrappers.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, dpi=900).plot_per_stokes(
+                    self.context, ims[image_type], reportdir=self.stage_dir, intent='', collapseFunction='mean'))
+                plot_wrappers[-1].parameters['title'] = image_desc
+                plot_wrappers[-1].parameters['caption'] = image_desc
+                plot_wrappers[-1].parameters['group'] = 'Initial/Final Comparisons'
             summary_plots = plot_wrappers
 
-            N_initial, intensity_initial, rms_inital = self.create_noise_histogram(ims['initial'])
-            N_final, intensity_final, rms_final = self.create_noise_histogram(ims['final'])
+            n_initial, intensity_initial, rms_inital = self.create_noise_histogram(ims['initial'])
+            n_final, intensity_final, rms_final = self.create_noise_histogram(ims['final'])
             if 'theoretical_sensitivity' in self.slib:
                 rms_theory = self.slib['theoretical_sensitivity']
                 if rms_theory != -99.0:
@@ -290,9 +302,12 @@ class SelfcalSummary(object):
             noise_histogram_plots_path = os.path.join(self.stage_dir, sanitize_string(tb[0])+'_'+tb[1]+'_noise_plot.png')
 
             self.create_noise_histogram_plots(
-                N_initial, N_final, intensity_initial, intensity_final, rms_inital, rms_final,
+                n_initial, n_final, intensity_initial, intensity_final, rms_inital, rms_final,
                 noise_histogram_plots_path, rms_theory)
             noisehist_plot = logger.Plot(noise_histogram_plots_path)
+            noisehist_plot.parameters['title'] = 'Noise Histogram'
+            noisehist_plot.parameters['caption'] = 'Noise Histogram'
+            noisehist_plot.parameters['group'] = 'Initial/Final Comparisons'
 
         return summary_plots, noisehist_plot
 

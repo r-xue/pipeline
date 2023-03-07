@@ -73,10 +73,11 @@ def plotfilename(image, reportdir, collapseFunction=None):
 class SkyDisplay(object):
     """Class to plot sky images."""
 
-    def __init__(self, exclude_desc=False, overwrite=False, figsize=(6.4, 4.8)):
+    def __init__(self, exclude_desc=False, overwrite=False, figsize=(6.4, 4.8), dpi=None):
         self.exclude_desc = exclude_desc    # exclude the text descriptions from image metadata.
         self.overwrite = overwrite          # decide whether to overwrite existing figures or not.
         self.figsize = figsize
+        self.dpi = dpi
 
     def plot_per_stokes(self, *args, stokes_list: Optional[list] = None, **kwargs):
         """Plot sky images from a image file with multiple Stokes planes (one image per Stokes).
@@ -95,8 +96,11 @@ class SkyDisplay(object):
 
     def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
              dpi=None, **imshow_args):
+        """Plot sky images from a image file."""
 
-        self.dpi = dpi
+        if dpi is not None:
+            self.dpi = dpi
+
         if not result:
             return []
 
