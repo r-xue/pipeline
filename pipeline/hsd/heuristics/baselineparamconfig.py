@@ -341,7 +341,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return outdata
 
-    def _dummy_baseline_param( self, row: int, pol: int ):
+    def _dummy_baseline_param( self, row: int, pol: int ) -> Dict:
         """
         Create a dummy parameter dict for baseline parameters
 
