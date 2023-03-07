@@ -1733,7 +1733,7 @@ class ImageParamsHeuristics(object):
                         # digits cause confusion in the mosaic overlap factor
                         # calculation. Adopting the "solution" of enquoting
                         # such names.
-                        if source_name.is_digit():
+                        if source_name.isdigit():
                             source_name = '"{}"'.format(source_name)
                         diameter = np.median([a.diameter for a in ms.antennas])
                         overlap_factor = mosaicoverlap.mosaicOverlapFactorMS(ms, source_name, intSpw, diameter)
