@@ -17,11 +17,11 @@ After downloading a CASA build, follow the instructions on the [CASA Installatio
 
 ### Dependency Requirements
 
-Following the change from [PIPE-1699](https://open-jira.nrao.edu/browse/PIPE-1699), Pipeline now specifies the required standard Python dependencies in a [requirements.txt](requirements.txt) file, and recommends to use `pip` to install them directly from the Python Package Index ([PyPI](https://pypi.org/)).
-The [`pipeline/extern`](pipeline/extern) directory now only contains the non-standard Python packages/modules contributed by the developers and heuristics development team.
+Following the change from [PIPE-1699](https://open-jira.nrao.edu/browse/PIPE-1699), Pipeline now specifies the required standard Python dependencies in a [requirements.txt](../requirements.txt) file, and recommends using `pip` to install them directly from the Python Package Index ([PyPI](https://pypi.org/)).
+The [`pipeline/extern`](../pipeline/extern) directory now only contains the non-standard Python packages/modules contributed by the developers and heuristics development team.
 
-Note that this file is *not* currently used by [`setup.py`](setup.py) to auto-install dependencies, and only serves as a reference for development and packaging purposes.
-In addition, the list only includes Pipeline dependencies that are *not* bundled in the monolith CASA release designated for the next Pipeline release, and the dependency versions are continuously examined against potential compatibility issues with other Python packages already shipped in CASA.
+Note that this file is currently *not* used by [`setup.py`](../setup.py) to auto-install dependencies, and only serves as a reference for development and packaging purposes.
+In addition, the list only includes dependencies that are *not* bundled in the monolith CASA release designated for the next Pipeline release, and their version specifications are continuously examined against potential compatibility issues with other Python packages already shipped in CASA.
 The developer team will maintain the file to reflect the current state of the dependency requirements across the development cycle.
 
 To use this file manually, you can type the following command:
@@ -34,7 +34,7 @@ PYTHONNOUSERSITE=1 ${casa_bin}/pip3 install --disable-pip-version-check \
 Note that here `casa_bin` is the path to the CASA `bin` directory.
 On macOS, this is typically `/Applications/CASA.app/Contents/MacOS`; on Linux, it is the `bin/` directory inside the unpacked CASA tarball, e.g. `casa-6.5.3-28-py3.8/bin`. `PYTHONNOUSERSITE=1` is used to prevent the `pip` command from checking dependencies from the user's site-packages directory. This is necessary to isolate the user's site-packages directory from your CASA development environment, which is generally confined to the unpacked CASA tarball directory.
 
-The `pip` command should install the dependencies in the CASA site-packages directory, which can be verified with this:
+The `pip` command above should install the dependencies in the CASA site-packages directory, which can be verified with this:
 
 ```python
 CASA <1>: import astropy
