@@ -538,6 +538,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         if field:
             calapp_overrides['field'] = field
 
+        # Adjust the intent if provided.
+        if intent:
+            calapp_overrides['intent'] = intent
+
         # Adjust the interp if provided.
         if interp:
             calapp_overrides['interp'] = interp
@@ -546,9 +550,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         if spwmap:
             calapp_overrides['spwmap'] = spwmap
 
-        # If any overrides are necessary, then create a modified
-        # CalApplication and replace CalApp in result with this new one.
-        if calapp_overrides:
+        # If a caltable was created and any overrides are necessary, then
+        # create a modified CalApplication and replace CalApp in result with
+        # this new one.
+        if result.pool and calapp_overrides:
             original_calapp = result.pool[0]
             modified_calapp = callibrary.copy_calapplication(original_calapp, **calapp_overrides)
             result.pool[0] = modified_calapp
