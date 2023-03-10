@@ -74,9 +74,6 @@ This task had an error!
     %endif
 %else:
     <p>${get_message(result)}
-    <%
-    target = result[0].targets[0]
-    %>
 
     <table class="table table-bordered table-striped">
                 <caption>Clean Targets Summary</caption>
