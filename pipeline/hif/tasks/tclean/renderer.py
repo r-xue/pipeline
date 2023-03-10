@@ -272,38 +272,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row_model_neg_flux = None
                 row_model_flux_inner_deg = None
 
-            #
-            # Major cycle statistics for VLASS
-            #
-            if 'VLASS-SE-CONT' in r.imaging_mode:
-                row_nmajordone_per_iter = {}
-                for iteration, iterdata in r.iterations.items():
-                    iter_dict = {'cleanmask': iterdata['cleanmask'] if 'cleanmask' in iterdata.keys() else '',
-                                 'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata.keys() else 0,
-                                 'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array'
-                                                                                     in iterdata.keys() else None,
-                                 'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array'
-                                                                               in iterdata.keys() else None,
-                                 'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array'
-                                                                                   in iterdata.keys() else None,
-                                 'planeid_array': iterdata['planeid_array'] if 'planeid_array' in iterdata.keys() else None}
-                    row_nmajordone_per_iter[iteration] = iter_dict
-                row_nmajordone_total = numpy.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
-                # Major cycle stats figure
-                plotter = display.TcleanMajorCycleSummaryFigure(context, makeimages_result, row_nmajordone_per_iter)
-                majorcycle_stat_plot = plotter.plot()
-                tab_dict = {0: {'cols': ['iteration', 'cleanmask', 'nmajordone'],
-                                  'nrow': len(row_nmajordone_per_iter.keys()),
-                                  'iteration': [k for k in row_nmajordone_per_iter.keys()],
-                                  'cleanmask': [item['cleanmask'] for iter, item in row_nmajordone_per_iter.items()],
-                                  'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]
-                                  }
-                              }
-            else:
-                row_nmajordone_per_iter = None
-                row_nmajordone_total = None
-                majorcycle_stat_plot = None
-                tab_dict = None
+            row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                context, makeimages_result, r)
 
             #
             # Amount of flux inside and outside QL for VLASS-SE-CONT, PIPE-1081
@@ -686,14 +656,24 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # Probably some detail page rendering exception.
                 LOG.error(e)
                 final_rows.append(row)
-
+        
+        # PIPE-1595: sort targets by field/spw/pol for VLA, so multiple bands of the same objects will 
+        # stay in the same weblog table row. Note that this additional VLA-only sorting might introduce 
+        # a difference between the target sequences of hif_makeimages and hif_makeimlist (see PIPE-1302).
+        if final_rows and 'VLA' in final_rows[0].result.imaging_mode:
+            final_rows.sort(key=lambda row: (row.vis, row.field, utils.natural_sort_key(row.spw), row.pol))
+        
         chk_fit_rows = []
         for row in final_rows:
             if row.frequency is not None:
                 chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux, row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
+        # PIPE-1723: display a message in the weblog depending on the observatory
+        imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
+
         ctx.update({
+            'imaging_mode': imaging_mode,
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
@@ -1107,37 +1087,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     row_model_neg_flux = None
                     row_model_flux_inner_deg = None
 
-                #
-                # Major cycle statistics for VLASS
-                #
-                if 'VLASS-SE-CUBE' in r.imaging_mode:
-                    row_nmajordone_per_iter = {}
-                    for iteration, iterdata in r.iterations.items():
-                        iter_dict = {'cleanmask': iterdata['cleanmask'] if 'cleanmask' in iterdata.keys() else '',
-                                     'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata.keys() else 0,
-                                     'nminordone_array': iterdata['nminordone_array'] if 'nminordone_array' in iterdata.keys() else None,
-                                     'peakresidual_array': iterdata['peakresidual_array'] if 'peakresidual_array' in iterdata.keys() else None,
-                                     'totalflux_array': iterdata['totalflux_array'] if 'totalflux_array' in iterdata.keys() else None,
-                                     'planeid_array': iterdata['planeid_array'] if 'planeid_array' in iterdata.keys() else None}
-                        row_nmajordone_per_iter[iteration] = iter_dict
-                    row_nmajordone_total = numpy.sum([item['nmajordone']
-                                                     for key, item in row_nmajordone_per_iter.items()])
-                    # Major cycle stats figure
-                    plotter = display.TcleanMajorCycleSummaryFigure(
-                        context, makeimages_result, row_nmajordone_per_iter, figname=r.psf.replace('.psf', ''))
-                    majorcycle_stat_plot = plotter.plot()
-                    tab_dict = {0: {'cols': ['iteration', 'cleanmask', 'nmajordone'],
-                                    'nrow': len(row_nmajordone_per_iter.keys()),
-                                    'iteration': [k for k in row_nmajordone_per_iter.keys()],
-                                    'cleanmask': [item['cleanmask'] for iter, item in row_nmajordone_per_iter.items()],
-                                    'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]
-                                    }
-                                }
-                else:
-                    row_nmajordone_per_iter = None
-                    row_nmajordone_total = None
-                    majorcycle_stat_plot = None
-                    tab_dict = None
+                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                    context, makeimages_result, r)
 
                 #
                 # Amount of flux inside and outside QL for VLASS-SE-CONT, PIPE-1081
@@ -1557,6 +1508,61 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             'dirname': weblog_dir,
             'chk_fit_info': chk_fit_rows
         })
+
+
+def get_cycle_stats_vlass(context, makeimages_result, r):
+    """Get the major cycle statistics for VLASS."""
+
+    row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = None, None, None, None
+
+    if 'VLASS-SE-CUBE' in r.imaging_mode or 'VLASS-SE-CONT' in r.imaging_mode:
+
+        # collect the major/minor cycle stats for each CASA/tclean call (i.e. each 'iter' of Tclean)
+        row_nmajordone_per_iter = {}
+        for iteration, iterdata in r.iterations.items():
+            iter_dict = {'cleanmask': iterdata['cleanmask'] if 'cleanmask' in iterdata else '',
+                         'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata else 0,
+                         'nminordone_array': None,
+                         'peakresidual_array': None,
+                         'totalflux_array': None,
+                         'planeid_array': None}
+            if 'summaryminor' in iterdata:
+                # after CAS-6692
+                # note: For MPI runs, one must set the env variable "USE_SMALL_SUMMARYMINOR" to True (see CAS-6692),
+                # or use the proposed new CASA/tclean parameter summary='full' (see CAS-13924).
+                field_id, channel_id = 0, 0  # explictly assume one imaging field & one channel (valid for VLASS)
+                summaryminor = iterdata['summaryminor'][field_id][channel_id]
+                iter_dict['nminordone_array'] = numpy.asarray([ss for s in summaryminor.values()
+                                                              for sn in zip(s['startIterDone'], s['iterDone']) for ss in [sn[0], sn[0] + sn[1]]])
+                iter_dict['peakresidual_array'] = numpy.asarray([ss
+                                                                 for s in summaryminor.values() for sn in zip(s['startPeakRes'],
+                                                                                                              s['peakRes']) for ss in sn])
+                iter_dict['totalflux_array'] = numpy.asarray([ss for s in summaryminor.values()
+                                                             for sn in zip(s['startModelFlux'], s['modelFlux']) for ss in sn])
+                iter_dict['planeid_array'] = numpy.asarray([pp for p in summaryminor for pp in [p]*len(summaryminor[p]['iterDone'])*2])
+            else:
+                # before CAS-6692
+                iter_dict['nminordone_array'] = iterdata['nminordone_array'] if 'nminordone_array' in iterdata else None
+                iter_dict['peakresidual_array'] = iterdata['peakresidual_array'] if 'peakresidual_array' in iterdata else None
+                iter_dict['totalflux_array'] = iterdata['totalflux_array'] if 'totalflux_array' in iterdata else None
+                iter_dict['planeid_array'] = iterdata['planeid_array'] if 'planeid_array' in iterdata else None
+            row_nmajordone_per_iter[iteration] = iter_dict
+
+        # sum the major cycle done over all 'iter's of Tclean
+        row_nmajordone_total = numpy.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
+
+        # generate the major cycle stats summary plot
+        majorcycle_stat_plot = display.TcleanMajorCycleSummaryFigure(
+            context, makeimages_result, row_nmajordone_per_iter, figname=r.psf.replace('.psf', '')).plot()
+
+        # collect info for the major cycle stats summary table
+        tab_dict = {0: {'cols': ['iteration', 'cleanmask', 'nmajordone'],
+                        'nrow': len(row_nmajordone_per_iter),
+                        'iteration': [k for k in row_nmajordone_per_iter],
+                        'cleanmask': [item['cleanmask'] for iter, item in row_nmajordone_per_iter.items()],
+                        'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]}}
+
+    return row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict
 
 
 def make_plot_dict_stokes(plots):
