@@ -37,6 +37,7 @@ class MakeImListInputs(vdp.StandardInputs):
     clearlist = vdp.VisDependentProperty(default=True)
     per_eb = vdp.VisDependentProperty(default=False)
     calcsb = vdp.VisDependentProperty(default=False)
+    datatype = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     parallel = vdp.VisDependentProperty(default='automatic')
     robust = vdp.VisDependentProperty(default=None)
@@ -171,8 +172,8 @@ class MakeImListInputs(vdp.StandardInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
-                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, datacolumn=None, parallel=None,
-                 known_synthesized_beams=None):
+                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, datatype= None,
+                 datacolumn=None, parallel=None, known_synthesized_beams=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -199,6 +200,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.clearlist = clearlist
         self.per_eb = per_eb
         self.calcsb = calcsb
+        self.datatype = datatype
         self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
@@ -260,6 +262,15 @@ class MakeImList(basetask.StandardTaskTemplate):
             datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
         # Select the correct vis list
+        available_datatypes = [str(v).replace('DataType.', '') for v in DataType]
+        datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
+        datatype_checklist = [datatype not in available_datatypes + ['REGCAL', 'SELFCAL'] for datatype in datatypes]
+        if any(datatype_checklist):
+            msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(datatypes, datatype_checklist) if c))
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
         datacolumn = inputs.datacolumn
         selected_datatype = None
         selected_datatype_info = 'N/A'
