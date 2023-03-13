@@ -200,7 +200,10 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
                      'NRORestoreData')
 
     # Loop over the commands
+    errstr = ''
     foundbp = False
+    tracebacks = []
+    results = None
     for command in commandsList:
 
         # Get task name and arguments lists.
@@ -275,22 +278,24 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
-            break
 
-        # Stop execution if result is a failed task result or a list
-        # containing a failed task result.
-        tracebacks = utils.get_tracebacks(results)
+        # Check whether any exceptions were raised either during the task
+        # (shown as traceback in task results) or after the task during results
+        # acceptance.
+        if results:
+            tracebacks.extend(utils.get_tracebacks(results))
+        if errstr:
+            tracebacks.append(errstr)
+        # If we have a traceback from an exception, then create local error
+        # exit file, and export both error file and weblog to the products
+        # directory.
         if len(tracebacks) > 0:
-            # If we have a traceback from an exception that occurred during
-            # the pipeline stage, then create local error exit file and export
-            # error file and weblog to products.
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
             export_on_exception(context, errorfile)
 
             # Save the context
-            casa_tools.post_to_log('Saving context...')
             context.save()
-
+            casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
             casa_tools.set_log_origin(fromwhere='')
 
             previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
@@ -298,9 +303,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
 
     # Save the context
     context.save()
-
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
-
     casa_tools.set_log_origin(fromwhere='')
 
     return
