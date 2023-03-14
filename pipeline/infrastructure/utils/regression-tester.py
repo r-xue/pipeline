@@ -403,7 +403,7 @@ def test_13A_537__procedure_hifv__regression():
 
     Recipe name:                procedure_hifv
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
-    Expected results version:   casa-6.5.3-26-pipeline-2023.0.0.17
+    Expected results version:   casa-6.5.4-2-pipeline-2023.0.0.22
     """
 
     input_dir = 'pl-regressiontest/13A-537'
@@ -412,7 +412,7 @@ def test_13A_537__procedure_hifv__regression():
                             input_dir=input_dir,
                             visname='13A-537.sb24066356.eb24324502.56514.05971091435',
                             expectedoutput=(f'{input_dir}/' +
-                                            '13A-537.casa-6.5.3-26-pipeline-2023.0.0.17.results.txt'),
+                                            '13A-537.casa-6.5.4-2-pipeline-2023.0.0.22.results.txt'),
                             output_dir='13A_537__procedure_hifv__regression')
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -423,7 +423,7 @@ def test_13A_537__calibration__PPR__regression():
 
     PPR name:                   PPR_13A-537.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
-    Expected results version:   casa-6.5.3-26-pipeline-2023.0.0.17
+    Expected results version:   casa-6.5.4-2-pipeline-2023.0.0.22
     """
 
     input_dir = 'pl-regressiontest/13A-537'
@@ -431,7 +431,7 @@ def test_13A_537__calibration__PPR__regression():
     pr = PipelineRegression(input_dir=input_dir,
                             visname='13A-537.sb24066356.eb24324502.56514.05971091435',
                             expectedoutput=(f'{input_dir}/' +
-                                            '13A-537.casa-6.5.3-26-pipeline-2023.0.0.17.results.txt'),
+                                            '13A-537.casa-6.5.4-2-pipeline-2023.0.0.22.results.txt'),
                             output_dir='13A_537__calibration__PPR__regression')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla', omp_num_threads=1)
