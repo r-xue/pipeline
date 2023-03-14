@@ -779,19 +779,17 @@ class Tclean(cleanbase.CleanBase):
             del result_psf  # Not needed in further steps
 
         if restore_imagename is not None:
-            # only run this block for the selfcal modelcolumn restoration
-            # for now we make a copy of models under the tclean-predict imagename
-            # the use of startmodel introduces a side effect from CAS-13338 when the original model was made with mpicasa, which causes the model images to be regridded.
-            # One will see a model image regridding warning as below:
+            # PIPE-1354: this block will only be executed for the VLASS selfcal modelcolumn restoration (from hifv_restorepims)
             #
+            # As of CASA 6.4.1, if selfcal model images are made with mpicasa and later fed to a predict-only serial tclean call 
+            # using "startmodel", the csys latpoles mismatch from CAS-13338 will cause the input model images to be regridded 
+            # in-flight: a side effect not desired in the VLASS-SE-CUBE case.
+            # for now we make a copy of models under the tclean-predict imagename, and 
+            # you should see a resetting warning instead:
             #           WARN    SIImageStore::Open existing Images (file src/code/synthesis/ImagerObjects/SIImageStore.cc, line 568)     
             #           Mismatch in Csys latpoles between existing image on disk ([350.792, 50.4044, 180, 50.4044]) 
-            #           The DirectionCoordinates have differing latpoles -- Resetting to match image on disk
-            #
-            # if copying models under imagename.model.**, you should see a resetting warning instead            
-            # regridding is not desired in the VLASS-SE-CUBE case.
-            # we assume that restore_imagename and new_pname are different.
-            
+            #           The DirectionCoordinates have differing latpoles -- Resetting to match image on disk           
+            # note: we preassume that restore_imagename and new_pname are different.              
             rootname, _ = os.path.splitext(result.psf)
             rootname, _ = os.path.splitext(rootname)
             LOG.info('Copying model images for the modelcolumn prediction tclean call.')
