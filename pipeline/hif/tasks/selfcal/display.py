@@ -48,19 +48,9 @@ class SelfcalSummary(object):
         im_rootname = self._im_rootname()
         im_initial = im_rootname+'_initial.image.tt0'
         im_final = im_rootname+'_final.image.tt0'
-        im_div = im_rootname+'_final_initial_div_final.image.tt0'
         im_mask = im_rootname+'_final.mask'
 
-        if os.path.exists(im_rootname+'_final_initial_div_final.temp.image.tt0'):
-            shutil.rmtree(im_rootname+'_final_initial_div_final.temp.image.tt0')
-        if os.path.exists(im_rootname+'_final_initial_div_final.image.tt0'):
-            shutil.rmtree(im_rootname+'_final_initial_div_final.image.tt0')
-        ct.immath(imagename=[im_final, im_initial, im_rootname + '_final.mask'],
-                  mode='evalexpr', expr='((IM0-IM1)/IM0)*IM2', outfile=im_rootname+'_final_initial_div_final.temp.image.tt0')
-        ct.immath(imagename=[im_rootname + '_final_initial_div_final.temp.image.tt0'], mode='evalexpr',
-                  expr='iif(IM0==0.0,-99.0,IM0)', outfile=im_div)
-
-        return im_initial, im_final, im_div, im_mask
+        return im_initial, im_final, im_mask
 
     def _im_rootname(self):
         return os.path.join(self.scal_dir, sanitize_string(self.field)+'_'+self.band)
@@ -283,16 +273,16 @@ class SelfcalSummary(object):
 
         sc_imagenames = collections.OrderedDict()
 
-        im_initial, im_final, im_div, im_mask = self._get_ims()
+        im_initial, im_final, im_mask = self._get_ims()
+
         sc_imagenames[(self.field, self.band)] = {'initial': im_initial,
                                                   'final': im_final,
-                                                  'mask': im_mask,
-                                                  'diff_frac': im_div}
+                                                  'mask': im_mask}
         self.result.ims_dict = sc_imagenames
 
         for tb, ims in self.result.ims_dict.items():
             plot_wrappers = []
-            image_types = [('initial', 'Initial Image'), ('final', 'Final Image'), ('diff_frac', 'Fractional Difference Image')]
+            image_types = [('initial', 'Initial Image'), ('final', 'Final Image')]
             for image_type, image_desc in image_types:
                 plot_wrappers.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, dpi=900).plot_per_stokes(
                     self.context, ims[image_type], reportdir=self.stage_dir, intent='', collapseFunction='mean', result_mask=ims['mask']))

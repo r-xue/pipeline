@@ -127,6 +127,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                          description=description, always_rerender=always_rerender)
 
     def make_targets_summary_table(self, targets):
+        """Make the selfcal targets summary list table."""
         rows = []
         for target in targets:
             row = []
@@ -352,10 +353,11 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return utils.merge_td_columns(rows, vertical_align=True), warning_msg
 
     def make_summary_table(self, context, r, cleantarget):
+        """Make a per-target summary table."""
 
         slib = cleantarget['sc_lib']
         rows = []
-        row_names = ['Data Type', 'Image', 'Integrated Flux', 'SNR', 'SNR (N.F.)', 'RMS', 'RMS (N.F.)', 'Beam']
+        row_names = ['Image Type', 'Image', 'Integrated Flux', 'SNR', 'SNR (N.F.)', 'RMS', 'RMS (N.F.)', 'Beam']
 
         def fm_sc_success(success):
             if success:
@@ -381,37 +383,32 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         summary_desc = f'<div style="text-align:left">{summary_desc}</div>'
 
         for row_name in row_names:
-            if row_name == 'Data Type':
-                row_values = ['Initial', 'Final', 'Comparison', 'Noise Hist.']
+            if row_name == 'Image Type':
+                row_values = ['Initial', 'Final', 'Noise Hist.']
             if row_name == 'Image':
                 summary_plots, noisehist_plot = display.SelfcalSummary(context, r, cleantarget).plot()
                 row_values = plots_to_html(
-                    summary_plots + [noisehist_plot],
+                    summary_plots[0:2] + [noisehist_plot],
                     report_dir=context.report_dir, title='Initial/Final Image Comparison')
             if row_name == 'Integrated Flux':
                 row_values = ['{:0.2f} +/- {:0.2f} mJy'.format(slib['intflux_orig']*1000.0, slib['e_intflux_orig']*1000.0),
-                              '{:0.2f} +/- {:0.2f} mJy'.format(slib['intflux_final']*1000.0, slib['e_intflux_final']*1000.0),
-                              '{:0.2f}'.format(slib['intflux_final']/slib['intflux_orig'])]+[summary_desc]
+                              '{:0.2f} +/- {:0.2f} mJy'.format(slib['intflux_final']*1000.0, slib['e_intflux_final']*1000.0)]+[summary_desc]
 
             if row_name == 'SNR':
                 row_values = ['{:0.2f}'.format(slib['SNR_orig']),
-                              '{:0.2f}'.format(slib['SNR_final']),
-                              '{:0.2f}'.format(slib['SNR_final']/slib['SNR_orig'])]+[summary_desc]
+                              '{:0.2f}'.format(slib['SNR_final'])]+[summary_desc]
 
             if row_name == 'SNR (N.F.)':
                 row_values = ['{:0.2f}'.format(slib['SNR_NF_orig']),
-                              '{:0.2f}'.format(slib['SNR_NF_final']),
-                              '{:0.2f}'.format(slib['SNR_NF_final']/slib['SNR_NF_orig'])]+[summary_desc]
+                              '{:0.2f}'.format(slib['SNR_NF_final'])]+[summary_desc]
 
             if row_name == 'RMS':
                 row_values = ['{:0.2f} mJy/beam'.format(slib['RMS_orig']*1e3),
-                              '{:0.2f} mJy/beam'.format(slib['RMS_final']*1e3),
-                              '{:0.2f}'.format(slib['RMS_final']/slib['RMS_orig'])]+[summary_desc]
+                              '{:0.2f} mJy/beam'.format(slib['RMS_final']*1e3)]+[summary_desc]
 
             if row_name == 'RMS (N.F.)':
                 row_values = ['{:0.2f} mJy/beam'.format(slib['RMS_NF_orig']*1e3),
-                              '{:0.2f} mJy/beam'.format(slib['RMS_NF_final']*1e3),
-                              '{:0.2f}'.format(slib['RMS_NF_final']/slib['RMS_NF_orig'])]+[summary_desc]
+                              '{:0.2f} mJy/beam'.format(slib['RMS_NF_final']*1e3)]+[summary_desc]
             if row_name == 'Beam':
                 row_values = ['{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
                     slib['Beam_major_orig'],
@@ -420,21 +417,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     '{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
                     slib['Beam_major_final'],
                     slib['Beam_minor_final'],
-                    slib['Beam_PA_final']),
-                    '{:0.2f}'.format(
-                    slib['Beam_major_final'] * slib['Beam_minor_final'] / slib['Beam_major_orig'] / slib['Beam_minor_orig'])] + [
+                    slib['Beam_PA_final'])] + [
                     summary_desc]
             rows.append([row_name]+row_values)
 
         return utils.merge_td_columns(rows, vertical_align=True)
-
-    def read_selfcal_library(self):
-
-        with open('selfcal_library.pickle', 'rb') as f:
-            selfcal_library = pickle.load(f)
-        with open('solints.pickle', 'rb') as f:
-            solints = pickle.load(f)
-        with open('bands.pickle', 'rb') as f:
-            bands = pickle.load(f)
-
-        return selfcal_library, solints, bands
