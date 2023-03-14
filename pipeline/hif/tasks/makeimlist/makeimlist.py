@@ -255,27 +255,48 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         if inputs.intent == 'TARGET':
             if inputs.specmode in ('mfs', 'cont'):
-                datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
             else:
-                datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
-            datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        specmode_datatypes_strings = [str(datatype).split(".")[-1] for datatype in specmode_datatypes]
 
-        # Select the correct vis list
         available_datatypes = [str(v).replace('DataType.', '') for v in DataType]
-        datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
-        datatype_checklist = [datatype not in available_datatypes + ['REGCAL', 'SELFCAL'] for datatype in datatypes]
-        if any(datatype_checklist):
-            msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(datatypes, datatype_checklist) if c))
-            LOG.error(msg)
-            result.error = True
-            result.error_msg = msg
-            return result
-        datacolumn = inputs.datacolumn
+        if inputs.datatype not in ('', None):
+            if inputs.datatype.strip().upper() == 'BEST':
+                # Automatic choice
+                user_datatypes = []
+            elif inputs.datatype.strip().upper() == 'ALL':
+                user_datatypes = [datatype for datatype in specmode_datatypes_strings if 'SELFCAL' in datatype or 'REGCAL' in datatype]
+            else:
+                user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
+                if 'REGCAL' in user_datatypes or 'SELFCAL' in user_datatypes:
+                    if any(datatype in specmode_datatypes for datatype in specmode_datatypes):
+                        msg = 'REGCAL/SELFCAL and explicit data types are mutually exclusive'
+                        LOG.error(msg)
+                        result.error = True
+                        result.error_msg = msg
+                        return result
+                else:
+                    datatype_checklist = [datatype not in available_datatypes for datatype in user_datatypes]
+                    if any(datatype_checklist):
+                        msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(datatypes, datatype_checklist) if c))
+                        LOG.error(msg)
+                        result.error = True
+                        result.error_msg = msg
+                        return result
+        else:
+            user_datatypes = []
+
         selected_datatype = None
         selected_datatype_info = 'N/A'
+
+        datacolumn = inputs.datacolumn
+
+        # Select the correct vis list
         if inputs.vis in ('', [''], [], None):
-            ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
+            ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
             global_datatype_info = f'{str(selected_datatype).split(".")[-1]}'
             selected_datatype_info = global_datatype_info
 
@@ -404,7 +425,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             image_repr_target = False
 
         if (not repr_target_mode) or (repr_target_mode and image_repr_target):
-            # read the spw, if none then set default 
+            # read the spw, if none then set default
             spw = inputs.spw
 
             if spw == '':
@@ -863,7 +884,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         # If not, fall back to next available data type.
                         if selected_datatype is not None:
                             # TODO: Filter out spws without requested data type for cont mode?
-                            local_ms_objects_and_columns, local_selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                            (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
                             if local_selected_datatype != selected_datatype:
                                 LOG.warn(f'Data type {str(selected_datatype).split(".")[-1]} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {str(local_selected_datatype).split(".")[-1]}.')
                                 selected_datatype_info = f'{str(local_selected_datatype).split(".")[-1]} instead of {str(selected_datatype).split(".")[-1]}'

@@ -126,8 +126,8 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     clearlist     Clear any existing target list
     per_eb        Make an image target per EB
     calcsb        Force (re-)calculation of sensitivities and beams
-    datatype      Data type(s) to image. The default '' is to select the best
-                  available data type (e.g. selfcal instead of regcal) with
+    datatype      Data type(s) to image. The default '' selects the best
+                  available data type (e.g. selfcal over regcal) with
                   an automatic fallback to the next available data type.
                   With the data type parameter one can force the use of only
                   given data type(s) without a fallback. The data type(s) are
@@ -135,10 +135,13 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                   values are the standard data types such as
                   'REGCAL_CONTLINE_ALL', 'REGCAL_CONTLINE_SCIENCE',
                   'SELFCAL_CONTLINE_SCIENCE', 'REGCAL_LINE_SCIENCE',
-                  'SELFCAL_LINE_SCIENCE'. Shortcuts like 'regcal' or 'selfcal'
+                  'SELFCAL_LINE_SCIENCE'. The shortcuts 'regcal' and 'selfcal'
                   are also accepted. They are expanded into the full data types
                   using the specmode parameter and the available data types for
-                  the given MSes. The data type strings are case insensitive.
+                  the given MSes. In addition the strings 'best' and 'all' are
+                  accepted, where 'best' means the above mentioned automatic
+                  mode and 'all' means all available data types for a given
+                  specmode. The data type strings are case insensitive.
 
                   Examples: 'selfcal', 'regcal, 'selfcal,regcal',
                             'REGCAL_LINE_SCIENCE,selfcal_line_science'
