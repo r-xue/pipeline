@@ -52,7 +52,7 @@ except:
             % for row in image_info:
 
                 <%
-                rowspan = 14
+                rowspan = 15
                 if row.model_pos_flux is not None: rowspan += 1
                 if row.model_neg_flux is not None: rowspan += 1
                 if row.model_flux_inner_deg is not None: rowspan += 1
