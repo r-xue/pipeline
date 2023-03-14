@@ -408,7 +408,10 @@ else:
 class TaskQueue:
     """A interface class that manages/executes tier0 PipelineTask, JobRquests, or FunctionaCalls in parallel.
 
-    TaskQueue provide a API simialr to multirocessing.Pool, but use the casampi FIFO queue underneath (if MPI is enabled)
+    TaskQueue provides an API similar to multiprocessing.Pool, but use the casampi FIFO queue underneath.
+    Note that the AsynTask-based queue (tier0) will only happen when the instance is run from the
+    client node of an MPI cluster. Otherwise, the queue will just be executed in synchronous mode, essentially 
+    a loop over an iterator.
 
     Example 1: 
 
