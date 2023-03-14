@@ -115,7 +115,7 @@ class SelfcalSummary(object):
                         '<a href="#{0}_summary" class="btn btn-link btn-sm">'
                         '  <span class="glyphicon glyphicon-th-list"></span>'
                         '</a>'.format(vis))
-            phasefreq_plots[vis_desc] = self._plot_phasefreq(vis, gaintable, solint)
+            phasefreq_plots[vis_desc] = self._plot_gain(vis, gaintable, solint)
 
         return image_plots, antpos_plots, phasefreq_plots
 
@@ -218,7 +218,7 @@ class SelfcalSummary(object):
         msmd.close()
         return names
 
-    def _plot_phasefreq(self, vis, gaintable, solint):
+    def _plot_gain(self, vis, gaintable, solint):
 
         vis_loc = os.path.join(self.scal_dir, vis)
         caltb_loc = os.path.join(self.scal_dir, gaintable)
@@ -231,36 +231,46 @@ class SelfcalSummary(object):
             for ant in ant_list:
                 if solint == 'inf_EB':
                     xaxis = 'frequency'
+                    xtitle = 'Freq.'
                 else:
                     xaxis = 'time'
+                    xtitle = 'Time'
                 if 'ap' in solint:
                     yaxis = 'amp'
+                    ytitle = 'Amp'
                     plotrange = [0, 0, 0, 2.0]
                 else:
                     yaxis = 'phase'
+                    ytitle = 'Phase'
                     plotrange = [0, 0, -180, 180]
                 try:
                     figname = os.path.join(self.stage_dir, 'plot_' + ant + '_' + gaintable.replace('.g', '.png'))
-                    tq.add_functioncall(self._plot_phasefreq_perant, caltb_loc, xaxis, yaxis, plotrange, ant, figname)
-                    phasefreq_plots.append(logger.Plot(figname, x_axis=f'Freq. ({ant})', y_axis='Phase/SNR'))
+                    tq.add_functioncall(self._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant, figname)
+                    phasefreq_plots.append(logger.Plot(figname, x_axis=f'{xtitle} ({ant})', y_axis=f'{ytitle}'))
                 except Exception as e:
                     continue
 
         return phasefreq_plots
 
     @staticmethod
-    def _plot_phasefreq_perant(caltb_loc, xaxis, yaxis, plotrange, ant, figname):
-        """Plot phase vs frequency for a given antenna."""
+    def _plot_gain_perant(caltb_loc, xaxis, yaxis, plotrange, ant, figname):
+        """Plot gain for a given antenna."""
         if os.path.exists(figname):
             LOG.info(f'plotfile already exists: {figname}; skip plotting')
         else:
-            ct.plotms(gridrows=2, plotindex=0, rowindex=0, vis=caltb_loc, xaxis=xaxis, yaxis=yaxis,
-                      showgui=False, xselfscale=True, plotrange=plotrange, antenna=ant,
-                      customflaggedsymbol=True, title=ant + ' phase', plotfile=figname,
-                      overwrite=True, clearplots=True)
-            ct.plotms(gridrows=2, rowindex=1, plotindex=1, vis=caltb_loc, xaxis=xaxis, yaxis='SNR',
-                      showgui=False, xselfscale=True, antenna=ant, customflaggedsymbol=True, title=ant+'SNR', plotfile=figname,
-                      overwrite=True, clearplots=False)
+            title = os.path.basename(caltb_loc).replace('Target_', '')
+            ct.plotms(gridrows=2, gridcols=1, plotindex=0, rowindex=0, vis=caltb_loc, xaxis=xaxis, yaxis=yaxis,
+                      showgui=False, xselfscale=True, antenna=ant, plotrange=plotrange,
+                      customflaggedsymbol=True, plotfile=figname,
+                      title=f'{title} {ant}', xlabel=' ',
+                      overwrite=True, clearplots=True,
+                      titlefont=10, xaxisfont=10, yaxisfont=10)
+            ct.plotms(gridrows=2, gridcols=1, rowindex=1, plotindex=1, vis=caltb_loc, xaxis=xaxis, yaxis='SNR',
+                      showgui=False, xselfscale=True, antenna=ant,
+                      customflaggedsymbol=True, plotfile=figname,
+                      title=' ',
+                      overwrite=True, clearplots=False,
+                      titlefont=10, xaxisfont=10, yaxisfont=10)
         return
 
     @matplotlibrc_formal
