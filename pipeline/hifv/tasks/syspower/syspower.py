@@ -135,22 +135,23 @@ class SyspowerResults(basetask.Results):
 
 
 class SyspowerInputs(vdp.StandardInputs):
-    antexclude = vdp.VisDependentProperty(default='')
-    usemedian = vdp.VisDependentProperty(default=True)
+    antexclude = vdp.VisDependentProperty(default={})
     apply = vdp.VisDependentProperty(default=False)
+    do_not_apply = vdp.VisDependentProperty(default='')
 
     @vdp.VisDependentProperty
     def clip_sp_template(self):
         return [0.7, 1.2]
 
+
     def __init__(self, context, vis=None, clip_sp_template=None, antexclude=None,
-                 usemedian=None, apply=None):
+                 apply=None, do_not_apply=None):
         self.context = context
         self.vis = vis
         self.clip_sp_template = clip_sp_template
         self.antexclude = antexclude
-        self.usemedian = usemedian
         self.apply = apply
+        self.do_not_apply = do_not_apply
 
 
 @task_registry.set_equivalent_casa_task('hifv_syspower')
@@ -165,6 +166,11 @@ class Syspower(basetask.StandardTaskTemplate):
         clip_sp_template = self.inputs.clip_sp_template
         if isinstance(self.inputs.clip_sp_template, str):
             clip_sp_template = ast.literal_eval(self.inputs.clip_sp_template)
+
+        if isinstance(self.inputs.antexclude, str):
+            antexclude_dict = ast.literal_eval(self.inputs.antexclude)
+        elif isinstance(self.inputs.antexclude, dict):
+            antexclude_dict = self.inputs.antexclude
 
         # Assumes hifv_priorcals was executed as the previous stage
         try:
@@ -204,7 +210,13 @@ class Syspower(basetask.StandardTaskTemplate):
         # IF pair A0/C0   IF pair B0/D0           IF pair A1C1    IF pair A2C2    IF pair B1D1    IF pair B2D2
 
         allowedbasebands = ('A0C0', 'B0D0', 'A1C1', 'A2C2', 'B1D1', 'B2D2')
-        allowed_rcvr_bands = ('L', 'S', 'C', 'X', 'KU')
+        allowed_rcvr_bands = ['L', 'S', 'C', 'X', 'KU', 'K', 'KA', 'Q']
+
+        if self.inputs.do_not_apply:
+            do_not_apply_list = self.inputs.do_not_apply.split(',')
+            for no_band in do_not_apply_list:
+                allowed_rcvr_bands.remove(no_band)
+                LOG.warn("Keyword override - will not apply {!s}-band".format(no_band))
 
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         allprocessedspws = []
@@ -246,7 +258,22 @@ class Syspower(basetask.StandardTaskTemplate):
 
         for band in band_baseband_spw:
             LOG.info('-----------------------------------')
-            LOG.info('Processing {!s}-band...'.format(band))
+            LOG.info('Processing syspower {!s}-band...'.format(band))
+
+            '''
+            # Example dictionary format of the task keyword antexclude
+            {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+             'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+             'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+            '''
+
+            if self.inputs.antexclude:
+                antexclude_list = list(antexclude_dict[band].keys())
+                antexclude = ','.join(antexclude_list)
+                usemedian_perant = [i['usemedian'] for i in list(antexclude_dict[band].values())]
+                # usemedian_perant = antband_exclude[band]['usemedian']
+                usemedian_perant_dict = dict(zip(antexclude_list, usemedian_perant))
+
             spws = []
             for baseband in band_baseband_spw[band]:
                 spws.extend(band_baseband_spw[band][baseband])
@@ -430,11 +457,11 @@ class Syspower(basetask.StandardTaskTemplate):
             final_template.mask[final_template > clip_sp_template[1]] = True
 
             antids = list(antenna_ids)
-            if self.inputs.usemedian and self.inputs.antexclude != '':
+            if usemedian_perant and antexclude != '':
                 for i, this_ant in enumerate(antenna_ids):
                     antindex = antids.index(i)
                     antname = antenna_names[antindex]
-                    if antname in self.inputs.antexclude:
+                    if antname in antexclude:
                         LOG.info("Antenna " + antname + " to be excluded.")
                         final_template.mask[i, :, :, :] = np.ma.masked  # Change mask values to True for that antenna
                 median_final_template = np.ma.median(final_template, axis=0)
@@ -442,8 +469,9 @@ class Syspower(basetask.StandardTaskTemplate):
             for i, this_ant in enumerate(antenna_ids):
                 antindex = antids.index(i)
                 antname = antenna_names[antindex]
-                if antname in self.inputs.antexclude:
-                    if self.inputs.usemedian:
+                if antname in antexclude:
+                    usemedian = usemedian_perant_dict[antname]
+                    if usemedian:
                         LOG.info("Using median value in template for antenna " + antname + ".")
                         final_template.data[i, :, :, :] = median_final_template.data
                         final_template.mask[i, :, :, :] = median_final_template.mask
