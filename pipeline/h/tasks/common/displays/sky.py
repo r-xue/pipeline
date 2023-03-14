@@ -94,8 +94,9 @@ class SkyDisplay(object):
 
         return plots
 
-    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
-             dpi=None, **imshow_args):
+    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean',
+             stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
+             result_mask=None, dpi=None, **imshow_args):
         """Plot sky images from a image file."""
 
         if dpi is not None:
@@ -116,8 +117,10 @@ class SkyDisplay(object):
         else:
             ms = None
 
-        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, stokes=stokes, ms=ms,
-                                                              mom8_fc_peak_snr=mom8_fc_peak_snr, **imshow_args)
+        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction,
+                                                              stokes=stokes, ms=ms,
+                                                              mom8_fc_peak_snr=mom8_fc_peak_snr,
+                                                              result_mask=result_mask, **imshow_args)
 
         # field names may not be unique, which leads to incorrectly merged
         # plots in the weblog output. As a temporary fix, change to field +
@@ -147,7 +150,26 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', stokes: Optional[str] = None, ms=None, mom8_fc_peak_snr=None, **imshow_args):
+    def _collapse_image(self, imagename, collapseFunction='mean', stokes: Optional[str] = None):
+        """Collapse an image along the spectral axis."""
+
+        stokes_present = get_stokes(imagename)
+        if stokes not in stokes_present:
+            stokes_select = stokes_present[0]
+        else:
+            stokes_select = stokes
+
+        with casa_tools.ImageReader(imagename) as image:
+            collapsed = image.collapse(function=collapseFunction, axes=2, stokes=stokes_select)
+            data = collapsed.getchunk(dropdeg=True)
+            mask = np.invert(collapsed.getchunk(getmask=True, dropdeg=True))
+            mdata = np.ma.array(data, mask=mask)
+            collapsed.done()
+        return mdata
+
+    def _plot_panel(self, context, reportdir, result, collapseFunction='mean',
+                    stokes: Optional[str] = None, ms=None, mom8_fc_peak_snr=None,
+                    result_mask=None, **imshow_args):
         """Method to plot a map."""
 
         if isinstance(stokes, str):
@@ -281,6 +303,11 @@ class SkyDisplay(object):
             imshow_args['cmap'].set_bad('k', 1.0)
             im = ax.imshow(mdata.T, interpolation='nearest', origin='lower', aspect='equal',
                            extent=[blc[0], trc[0], blc[1], trc[1]], **imshow_args)
+
+            if result_mask is not None and os.path.exists(result_mask):
+                mdata_mask = self._collapse_image(result_mask)
+                ax.contour(mdata_mask.T, [0.99], origin='lower', colors='white',
+                           extent=[blc[0], trc[0], blc[1], trc[1]])
 
             ax.axis('image')
             lims = ax.axis()
