@@ -721,7 +721,7 @@ class BaselineSubtractionPlotManager(object):
         if edge is not None:
             (ch1, ch2) = edge
             masked_data.mask[0:ch1] = True
-            masked_data.mask[len(masked_data)-ch2-1:] = True
+            masked_data.mask[len(masked_data)-ch2:] = True
         if line_range is not None:
             for chmin, chmax in line_range:
                 masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
@@ -758,7 +758,7 @@ class BaselineSubtractionPlotManager(object):
             (ch1, ch2) = edge
             fedge0 = ch_to_freq(0, frequency)
             fedge1 = ch_to_freq(ch1-1, frequency)
-            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
+            fedge2 = ch_to_freq(len(frequency)-ch2, frequency)
             fedge3 = ch_to_freq(len(frequency)-1, frequency)
             plt.axvspan(fedge0, fedge1, color='lightgray')
             plt.axvspan(fedge2, fedge3, color='lightgray')
