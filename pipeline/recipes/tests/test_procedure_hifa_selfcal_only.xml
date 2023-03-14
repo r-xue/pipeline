@@ -21,7 +21,11 @@
             <Parameter>
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns=""></Value>
-            </Parameter>            
+            </Parameter>     
+            <Parameter>
+                <Keyword xmlns="">amplitude_selfcal</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>                   
         </ParameterSet>
     </ProcessingCommand>
 

@@ -30,8 +30,8 @@
                 <Value xmlns=""></Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns=""></Value>
+                <Keyword xmlns="">amplitude_selfcal</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>                     
         </ParameterSet>
     </ProcessingCommand>

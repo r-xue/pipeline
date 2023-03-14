@@ -4,6 +4,7 @@ see: https://github.com/jjtobin/auto_selfcal
 """
 
 import os
+import glob
 
 import numpy as np
 import pipeline.infrastructure as infrastructure
@@ -12,7 +13,8 @@ from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.tablereader import MeasurementSetReader
-import glob
+#from pipeline.infrastructure.utils import request_omp_threading
+
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
                               estimate_SNR, fetch_spws, fetch_targets,
@@ -29,7 +31,16 @@ LOG = infrastructure.get_logger(__name__)
 class SelfcalHeuristics(object):
     """Class to hold the heuristics for selfcal."""
 
-    def __init__(self, scal_target, executor=None):
+    def __init__(self, scal_target,
+                 gaincal_minsnr=2.0,
+                 minsnr_to_proceed=3.0,
+                 delta_beam_thresh=0.05,
+                 apply_cal_mode_default='calflag',
+                 rel_thresh_scaling='log10',
+                 dividing_factor=None,
+                 check_all_spws=False,
+                 do_amp_selfcal=False,
+                 executor=None):
         """Initialize the class."""
         self.executor = executor
         self.cts = CasaTasks(executor=self.executor)
@@ -37,18 +48,28 @@ class SelfcalHeuristics(object):
         self.image_heuristics = scal_target['heuristics']
         self.cellsize = scal_target['cell']
         self.imsize = scal_target['imsize']
-        # explictly set phasecenter for now
-        self.phasecenter = scal_target['phasecenter']
+        self.phasecenter = scal_target['phasecenter']  # explictly set phasecenter for now
         self.spw_virtual = scal_target['spw']
-
         self.vislist = scal_target['sc_vislist']
         self.parallel = scal_target['sc_parallel']
         self.telescope = scal_target['sc_telescope']
+
         self.vis = self.vislist[-1]
         self.uvtaper = scal_target['uvtaper']
         self.robust = scal_target['robust']
         self.field = scal_target['field']
         self.uvrange = scal_target['uvrange']
+
+        self.do_amp_selfcal = do_amp_selfcal
+        self.gaincal_minsnr = gaincal_minsnr
+        self.minsnr_to_proceed = minsnr_to_proceed
+        self.delta_beam_thresh = delta_beam_thresh
+        self.apply_cal_mode_default = apply_cal_mode_default
+        self.rel_thresh_scaling = rel_thresh_scaling
+        self.dividing_factor = dividing_factor
+        self.check_all_spws = check_all_spws
+        self.inf_EB_gaincal_combine = 'scan'    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
+        self.inf_EB_gaintype = 'G'              # Options: 'G' or 'T' or 'G,T'
 
         LOG.info('recreating observing run from per-selfcal-target MS(es)')
         self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
@@ -135,86 +156,67 @@ class SelfcalHeuristics(object):
 
         if gridder == 'mosaic' and startmodel != '':
             parallel = False
+
+        tclean_args = {'vis': vis,
+                       'imagename': imagename,
+                       'field': field,
+                       'specmode': 'mfs',
+                       'deconvolver': 'mtmfs',
+                       'scales': scales,
+                       'gridder': gridder,
+                       'weighting': 'briggs',
+                       'robust': robust,
+                       'gain': gain,
+                       'imsize': imsize,
+                       'cell': cellsize,
+                       'smallscalebias': smallscalebias,  # set to CASA's default of 0.6 unless manually changed
+                       'niter': niter,  # we want to end on the threshold
+                       'interactive': interactive,
+                       'nsigma': nsigma,
+                       'cycleniter': cycleniter,
+                       'cyclefactor': cyclefactor,
+                       'uvtaper': uvtaper,
+                       'mask': mask,
+                       'usemask': usemask,
+                       'savemodel': 'none',
+                       'sidelobethreshold': sidelobethreshold,
+                       'smoothfactor': smoothfactor,
+                       'pbmask': pbmask,
+                       'pblimit': pblimit,
+                       'nterms': nterms,
+                       'uvrange': uvrange,
+                       'threshold': threshold,
+                       'parallel': parallel,
+                       'phasecenter': phasecenter,
+                       'startmodel': startmodel,
+                       'datacolumn': datacolumn,
+                       'spw': spw,
+                       'wprojplanes': wprojplanes,
+                       'fullsummary': False}
+
         if not savemodel_only:
             if not resume:
                 for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
                     os.system('rm -rf ' + imagename + ext)
-            tc_ret = self.cts.tclean(vis=vis,
-                                     imagename=imagename,
-                                     field=field,
-                                     specmode='mfs',
-                                     deconvolver='mtmfs',
-                                     scales=scales,
-                                     gridder=gridder,
-                                     weighting='briggs',
-                                     robust=robust,
-                                     gain=gain,
-                                     imsize=imsize,
-                                     cell=cellsize,
-                                     smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-                                     niter=niter,  # we want to end on the threshold
-                                     interactive=interactive,
-                                     nsigma=nsigma,
-                                     cycleniter=cycleniter,
-                                     cyclefactor=cyclefactor,
-                                     uvtaper=uvtaper,
-                                     savemodel='none',
-                                     mask=mask,
-                                     usemask=usemask,
-                                     sidelobethreshold=sidelobethreshold,
-                                     smoothfactor=smoothfactor,
-                                     pbmask=pbmask,
-                                     pblimit=pblimit,
-                                     nterms=nterms,
-                                     uvrange=uvrange,
-                                     threshold=threshold,
-                                     parallel=parallel,
-                                     phasecenter=phasecenter,
-                                     startmodel=startmodel,
-                                     datacolumn=datacolumn,
-                                     spw=spw, wprojplanes=wprojplanes,
-                                     fullsummary=True)
+            tc_ret = self.cts.tclean(**tclean_args)
+
         # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
         if savemodel == 'modelcolumn':
             LOG.info("")
-            LOG.info("Running tclean a second time to save the model...")
-            tc_ret = self.cts.tclean(vis=vis,
-                                     imagename=imagename,
-                                     field=field,
-                                     specmode='mfs',
-                                     deconvolver='mtmfs',
-                                     scales=scales,
-                                     gridder=gridder,
-                                     weighting='briggs',
-                                     robust=robust,
-                                     gain=gain,
-                                     imsize=imsize,
-                                     cell=cellsize,
-                                     smallscalebias=smallscalebias,  # set to CASA's default of 0.6 unless manually changed
-                                     niter=0,
-                                     interactive=False,
-                                     nsigma=0.0,
-                                     cycleniter=cycleniter,
-                                     cyclefactor=cyclefactor,
-                                     uvtaper=uvtaper,
-                                     mask='',
-                                     usemask='user',
-                                     savemodel=savemodel,
-                                     sidelobethreshold=sidelobethreshold,
-                                     smoothfactor=smoothfactor,
-                                     pbmask=pbmask,
-                                     pblimit=pblimit,
-                                     calcres=False,
-                                     calcpsf=False,
-                                     restoration=False,
-                                     nterms=nterms,
-                                     uvrange=uvrange,
-                                     threshold='0.0mJy',
-                                     parallel=False,
-                                     phasecenter=phasecenter,
-                                     startmodel=startmodel,
-                                     spw=spw, wprojplanes=wprojplanes,
-                                     fullsummary=True)
+            LOG.info("Running tclean in the prediction-only setting to save the model in serial.")
+            tclean_args.update({'niter': 0,
+                                'interactive': False,
+                                'nsigma': 0.0,
+                                'mask': '',
+                                'usemask': 'user',
+                                'savemodel': 'modelcolumn',
+                                'calcres': False,
+                                'calcpsf': False,
+                                'restoration': False,
+                                'threshold': '0.0mJy',
+                                'parallel': False,
+                                'startmodel': ''})
+            tc_ret = self.cts.tclean(**tclean_args)
 
     def get_sensitivity(self):
 
@@ -235,12 +237,12 @@ class SelfcalHeuristics(object):
         cleantarget: a list of CleanTarget objects.
         """
 
-        all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, rel_thresh_scaling, dividing_factor, check_all_spws, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = self._prep_selfcal()
+        all_targets, n_ants, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = self._prep_selfcal()
 
         # Currently, we are still using a modified version of the prototype selfcal preparation scheme to prepare "selfcal_library".
         # Then we override a subset of selfcal input parameters using PL-heuristics-based values.
         # Eventually, we will retire the prototype selfcal preparation function entirely.
-        
+
         cellsize = self.cellsize
         imsize = self.imsize
 
@@ -369,7 +371,7 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band]['total_bandwidth'] += spw_bandwidths[spw]
                     selfcal_library[target][band]['total_effective_bandwidth'] += spw_effective_bandwidths[spw]
 
-        if check_all_spws:
+        if self.check_all_spws:
             for target in all_targets:
                 sani_target = sanitize_string(target)
                 for band in selfcal_library[target].keys():
@@ -445,8 +447,8 @@ class SelfcalHeuristics(object):
         inf_EB_fallback_mode_dict = {}  # 'scan'
 
         solint_snr, solint_snr_per_spw = get_SNR_self(
-            all_targets, bands, vislist, selfcal_library, n_ants, solints, integration_time, inf_EB_gaincal_combine,
-            inf_EB_gaintype)
+            all_targets, bands, vislist, selfcal_library, n_ants, solints, integration_time, self.inf_EB_gaincal_combine,
+            self.inf_EB_gaintype)
         minsolint_spw = 100.0
         for target in all_targets:
             inf_EB_gaincal_combine_dict[target] = {}  # 'scan'
@@ -457,28 +459,16 @@ class SelfcalHeuristics(object):
                 inf_EB_gaintype_dict[target][band] = {}
                 inf_EB_fallback_mode_dict[target][band] = {}
                 for vis in vislist:
-                    inf_EB_gaincal_combine_dict[target][band][vis] = inf_EB_gaincal_combine  # 'scan'
+                    inf_EB_gaincal_combine_dict[target][band][vis] = self.inf_EB_gaincal_combine  # 'scan'
                     if selfcal_library[target][band]['obstype'] == 'mosaic':
                         inf_EB_gaincal_combine_dict[target][band][vis] += ',field'
-                    inf_EB_gaintype_dict[target][band][vis] = inf_EB_gaintype  # G
+                    inf_EB_gaintype_dict[target][band][vis] = self.inf_EB_gaintype  # G
                     inf_EB_fallback_mode_dict[target][band][vis] = ''  # 'scan'
                     LOG.info('Estimated SNR per solint:')
                     LOG.info(f'{target} {band}')
                     for solint in solints[band]:
                         if solint == 'inf_EB':
                             LOG.info('{}: {:0.2f}'.format(solint, solint_snr[target][band][solint]))
-                            """ 
-                            for spw in solint_snr_per_spw[target][band][solint].keys():
-                                LOG.info('{}: spw: {}: {:0.2f}, BW: {} GHz'.format(solint,spw,solint_snr_per_spw[target][band][solint][spw],selfcal_library[target][band]['per_spw_stats'][str(spw)]['effective_bandwidth']))
-                                if solint_snr_per_spw[target][band][solint][spw] < minsolint_spw:
-                                minsolint_spw=solint_snr_per_spw[target][band][solint][spw]
-                            if minsolint_spw < 3.5 and minsolint_spw > 2.5 and inf_EB_override==False:  # if below 3.5 but above 2.5 switch to gaintype T, but leave combine=scan
-                                LOG.info('Switching Gaintype to T for: '+target)
-                                inf_EB_gaintype_dict[target][band]='T'
-                            elif minsolint_spw < 2.5 and inf_EB_override==False:
-                                LOG.info('Switching Gaincal combine to spw,scan for: '+target)
-                                inf_EB_gaincal_combine_dict[target][band]='scan,spw' # if below 2.5 switch to combine=spw to avoid losing spws
-                            """
                         else:
                             LOG.info('{}: {:0.2f}'.format(solint, solint_snr[target][band][solint]))
 
@@ -494,23 +484,25 @@ class SelfcalHeuristics(object):
 
         for target in all_targets:
             for band in selfcal_library[target].keys():
-                if band_properties[selfcal_library[target][band]['vislist'][0]][band]['meanfreq'] < 8.0e9 and (
-                        dividing_factor == -99.0):
-                    dividing_factor = 40.0
-                elif (dividing_factor == -99.0):
-                    dividing_factor = 15.0
+                if self.dividing_factor is None:
+                    if band_properties[selfcal_library[target][band]['vislist'][0]][band]['meanfreq'] < 8.0e9:
+                        dividing_factor = 40.0
+                    else:
+                        dividing_factor = 15.0
+                else:
+                    dividing_factor = self.dividing_factor
                 nsigma_init = np.max([selfcal_library[target][band]['SNR_orig']/dividing_factor, 5.0]
                                      )  # restricts initial nsigma to be at least 5
 
                 # count number of amplitude selfcal solints, repeat final clean depth of phase-only for amplitude selfcal
                 n_ap_solints = sum(1 for solint in solints[band] if 'ap' in solint)
-                if rel_thresh_scaling == 'loge':
+                if self.rel_thresh_scaling == 'loge':
                     selfcal_library[target][band]['nsigma'] = np.append(
                         np.exp(np.linspace(np.log(nsigma_init),
                                            np.log(3.0),
                                            len(solints[band]) - n_ap_solints)),
                         np.array([np.exp(np.log(3.0))] * n_ap_solints))
-                elif rel_thresh_scaling == 'linear':
+                elif self.rel_thresh_scaling == 'linear':
                     selfcal_library[target][band]['nsigma'] = np.append(
                         np.linspace(nsigma_init, 3.0, len(solints[band]) - n_ap_solints),
                         np.array([3.0] * n_ap_solints))
@@ -558,13 +550,13 @@ class SelfcalHeuristics(object):
                         continue
                     elif iteration == iterjump:
                         iterjump = -1
-                    if solint_snr[target][band][solints[band][iteration]] < minsnr_to_proceed:
+                    if solint_snr[target][band][solints[band][iteration]] < self.minsnr_to_proceed:
                         LOG.info(
                             '*********** estimated SNR for solint=' + solints[band][iteration] + ' too low, measured: ' +
                             str(solint_snr[target][band][solints[band][iteration]]) + ', Min SNR Required: ' +
-                            str(minsnr_to_proceed) + ' **************')
+                            str(self.minsnr_to_proceed) + ' **************')
                         # if a solution interval shorter than inf for phase-only SC has passed, attempt amplitude selfcal
-                        if iteration > 1 and solmode[band][iteration] != 'ap' and do_amp_selfcal:
+                        if iteration > 1 and solmode[band][iteration] != 'ap' and self.do_amp_selfcal:
                             iterjump = solmode[band].index('ap')
                             LOG.info('****************Attempting amplitude selfcal*************')
                             continue
@@ -749,7 +741,7 @@ class SelfcalHeuristics(object):
                                 refant=selfcal_library[target][band][vis]['refant'],
                                 calmode=solmode[band][iteration],
                                 solnorm=solnorm, solint=solint.replace('_EB', '').replace('_ap', ''),
-                                minsnr=gaincal_minsnr, minblperant=4, combine=gaincal_combine[band][iteration],
+                                minsnr=self.gaincal_minsnr, minblperant=4, combine=gaincal_combine[band][iteration],
                                 field=target, gaintable=gaincal_preapply_gaintable[vis],
                                 spwmap=gaincal_spwmap[vis],
                                 uvrange=selfcal_library[target][band]['uvrange'],
@@ -768,7 +760,7 @@ class SelfcalHeuristics(object):
                                     spw=selfcal_library[target][band][vis]['spws'],
                                     refant=selfcal_library[target][band][vis]['refant'],
                                     calmode='p', solint=solint.replace('_EB', '').replace('_ap', ''),
-                                    minsnr=gaincal_minsnr, minblperant=4, combine=test_gaincal_combine, field=target,
+                                    minsnr=self.gaincal_minsnr, minblperant=4, combine=test_gaincal_combine, field=target,
                                     gaintable='', spwmap=[],
                                     uvrange=selfcal_library[target][band]['uvrange'])
                                 spwlist = selfcal_library[target][band][vislist[0]]['spws'].split(',')
@@ -914,7 +906,7 @@ class SelfcalHeuristics(object):
                         # if S/N improvement, and beamarea is changing by < delta_beam_thresh, accept solutions to main calibration dictionary
                         # allow to proceed if solint was inf_EB and SNR decrease was less than 2%
                         ##
-                        if ((post_SNR >= SNR) and (delta_beamarea < delta_beam_thresh)) or ((solint == 'inf_EB') and ((post_SNR-SNR)/SNR > -0.02) and (delta_beamarea < delta_beam_thresh)):
+                        if ((post_SNR >= SNR) and (delta_beamarea < self.delta_beam_thresh)) or ((solint == 'inf_EB') and ((post_SNR-SNR)/SNR > -0.02) and (delta_beamarea < self.delta_beam_thresh)):
                             selfcal_library[target][band]['SC_success'] = True
                             selfcal_library[target][band]['Stop_Reason'] = 'None'
                             for vis in vislist:
@@ -956,10 +948,10 @@ class SelfcalHeuristics(object):
                             reason = ''
                             if (post_SNR <= SNR):
                                 reason = reason+' S/N decrease'
-                            if (delta_beamarea > delta_beam_thresh):
+                            if (delta_beamarea > self.delta_beam_thresh):
                                 if reason != '':
                                     reason = reason+'; '
-                                reason = reason+'Beam change beyond '+str(delta_beam_thresh)
+                                reason = reason+'Beam change beyond '+str(self.delta_beam_thresh)
                             selfcal_library[target][band]['Stop_Reason'] = reason
                             for vis in vislist:
                                 selfcal_library[target][band][vis][solint]['Pass'] = False
@@ -991,7 +983,7 @@ class SelfcalHeuristics(object):
                                         'RMS_orig'].copy()
 
                             # if a solution interval shorter than inf for phase-only SC has passed, attempt amplitude selfcal
-                            if iteration > 1 and solmode[band][iteration] != 'ap' and do_amp_selfcal:
+                            if iteration > 1 and solmode[band][iteration] != 'ap' and self.do_amp_selfcal:
                                 iterjump = solmode[band].index('ap')
                                 LOG.info('****************Selfcal halted for phase, attempting amplitude*************')
                                 continue
@@ -1080,7 +1072,7 @@ class SelfcalHeuristics(object):
         ##
         # Make a final image per spw images to assess overall improvement
         ##
-        if check_all_spws:
+        if self.check_all_spws:
             for target in all_targets:
                 sani_target = sanitize_string(target)
                 for band in selfcal_library[target].keys():
@@ -1175,7 +1167,7 @@ class SelfcalHeuristics(object):
         #
         # Perform a check on the per-spw images to ensure they didn't lose quality in self-calibration
         #
-        if check_all_spws:
+        if self.check_all_spws:
             for target in all_targets:
                 sani_target = sanitize_string(target)
                 for band in selfcal_library[target].keys():
@@ -1221,24 +1213,8 @@ class SelfcalHeuristics(object):
         ##
         # Global environment variables for control of selfcal
         ##
-        do_amp_selfcal = True
-        inf_EB_gaincal_combine = 'scan'
-        inf_EB_gaintype = 'G'
-        gaincal_minsnr = 2.0
-        minsnr_to_proceed = 3.0
-        delta_beam_thresh = 0.05
+
         n_ants = get_n_ants(vislist)
-
-        apply_cal_mode_default = 'calflag'
-
-        rel_thresh_scaling = 'log10'  # can set to linear, log10, or loge (natural log)
-        dividing_factor = -99.0  # number that the peak SNR is divided by to determine first clean threshold -99.0 uses default
-        # default is 40 for <8ghz and 15.0 for all other frequencies
-        check_all_spws = False   # generate per-spw images to check phase transfer did not go poorly for narrow windows
-
-        if 'VLA' in telescope:
-            check_all_spws = False
-            # inf_EB_gaincal_combine='spw,scan'
 
         bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, \
             integrationtimesdict, spwslist, spwsarray, mosaic_field = importdata(vislist, all_targets, telescope)
@@ -1266,14 +1242,6 @@ class SelfcalHeuristics(object):
                 applycal_interp[band] = 'linearPD'
             else:
                 applycal_interp[band] = 'linear'
-
-        ###################################################################################################
-        ################################# End Metadata gathering for Selfcal ##############################
-        ###################################################################################################
-
-        ###################################################################################################
-        ############################# Start Actual important stuff for selfcal ############################
-        ###################################################################################################
 
         ##
         # begin setting up a selfcal_library with all relevant metadata to keep track of during selfcal
@@ -1306,9 +1274,9 @@ class SelfcalHeuristics(object):
                 scanstartsdict[band],
                 scanendsdict[band],
                 integrationtimesdict[band],
-                inf_EB_gaincal_combine, do_amp_selfcal=do_amp_selfcal)
+                self.inf_EB_gaincal_combine, do_amp_selfcal=self.do_amp_selfcal)
             LOG.info(f'{band} {solints[band]}')
-            applycal_mode[band] = [apply_cal_mode_default]*len(solints[band])
+            applycal_mode[band] = [self.apply_cal_mode_default]*len(solints[band])
 
         ##
         # puts stuff in right place from other MS metadata to perform proper data selections
@@ -1361,4 +1329,4 @@ class SelfcalHeuristics(object):
             for band in selfcal_library[target].keys():
                 if selfcal_library[target][band]['Total_TOS'] == 0.0:
                     selfcal_library[target].pop(band)
-        return all_targets, do_amp_selfcal, inf_EB_gaincal_combine, inf_EB_gaintype, gaincal_minsnr, minsnr_to_proceed, delta_beam_thresh, n_ants, rel_thresh_scaling, dividing_factor, check_all_spws, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time
+        return all_targets, n_ants, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time

@@ -86,11 +86,24 @@ class SelfcalInputs(vdp.StandardInputs):
     field = vdp.VisDependentProperty(default='')
     spw = vdp.VisDependentProperty(default='')
     contfile = vdp.VisDependentProperty(default='cont.dat')
-    apply = vdp.VisDependentProperty(default=False)
+    apply = vdp.VisDependentProperty(default=True)
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, apply=None, parallel=None, recal=None):
+    amplitude_selfcal = vdp.VisDependentProperty(default=False)
+    gaincal_minsnr = vdp.VisDependentProperty(default=2.0)
+    minsnr_to_proceed = vdp.VisDependentProperty(default=3.0)
+    delta_beam_thresh = vdp.VisDependentProperty(default=0.05)
+    apply_cal_mode_default = vdp.VisDependentProperty(default='calflag')
+    rel_thresh_scaling = vdp.VisDependentProperty(default='log10')
+    dividing_factor = vdp.VisDependentProperty(default=None)
+    check_all_spws = vdp.VisDependentProperty(default=False)
+
+    def __init__(self, context, vis=None, field=None, spw=None, contfile=None,
+                 amplitude_selfcal=None, gaincal_minsnr=None,
+                 minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
+                 rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None,
+                 apply=None, parallel=None, recal=None):
         super().__init__()
         self.context = context
         self.vis = vis
@@ -101,6 +114,15 @@ class SelfcalInputs(vdp.StandardInputs):
         self.parallel = parallel
         self.recal = recal
 
+        self.amplitude_selfcal = amplitude_selfcal
+        self.gaincal_minsnr = gaincal_minsnr
+        self.minsnr_to_proceed = minsnr_to_proceed
+        self.delta_beam_thresh = delta_beam_thresh
+        self.apply_cal_mode_default = apply_cal_mode_default
+        self.rel_thresh_scaling = rel_thresh_scaling
+        self.dividing_factor = dividing_factor
+        self.check_all_spws = check_all_spws
+
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
 @task_registry.set_casa_commands_comment('Run self-calibration using the science target visibilities.')
@@ -110,25 +132,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def __init__(self, inputs):
         super().__init__(inputs)
-
-        self.spectral_average = True
-        self.do_amp_selfcal = True
-        self.inf_EB_gaincal_combine = 'scan'
-        self.inf_EB_gaintype = 'G'
-        self.inf_EB_override = False
-        self.gaincal_minsnr = 2.0
-        self.minsnr_to_proceed = 3.0
-        self.delta_beam_thresh = 0.05
-
-        self.apply_cal_mode_default = 'calflag'
-        self.rel_thresh_scaling = 'log10'  # can set to linear, log10, or loge (natural log)
-        self.dividing_factor = -99.0    # number that the peak SNR is divided by to determine first clean threshold -99.0 uses default
-        # default is 40 for <8ghz and 15.0 for all other frequencies
-        self.check_all_spws = False   # generate per-spw images to check phase transfer did not go poorly for narrow windows
-        self.apply_to_target_ms = False  # apply final selfcal solutions back to the input _target.ms files
-
-        # if 'VLA' in self.telescope:
-        #    self.check_all_spws = False
 
     def prepare(self):
 
@@ -150,38 +153,41 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         obs_run = self.inputs.context.observing_run
 
-        mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
-        mses_selfcal_contline = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_CONTLINE_SCIENCE], msonly=True)
-
         applycal_result_contline = applycal_result_line = None
-        if mses_regcal_contline:
-            if not mses_selfcal_contline:
-                LOG.info('No DataType:SELFCAL_CONTLINE_SCIENCE found.')
-                LOG.info('Attempt to apply any selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es):')
-                for ms in mses_regcal_contline:
-                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
-            else:
-                LOG.info('Found DataType:SELFCAL_CONTLINE_SCIENCE.')
-                for ms in mses_selfcal_contline:
-                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                LOG.info('Skip applying selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es).')
 
-        mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
-        mses_selfcal_line = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_LINE_SCIENCE], msonly=True)
+        if self.inputs.apply:
 
-        if mses_regcal_line:
-            if not mses_selfcal_line:
-                LOG.info('No DataType:SELFCAL_LINE_SCIENCE found.')
-                LOG.info('Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
-                for ms in mses_regcal_line:
-                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                applycal_result_line = self._apply_scal(scal_targets,  mses_regcal_line)
-            else:
-                LOG.info('Found DataType:SELFCAL_LINE_SCIENCE.')
-                for ms in mses_selfcal_line:
-                    LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+            mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
+            mses_selfcal_contline = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_CONTLINE_SCIENCE], msonly=True)
+
+            if mses_regcal_contline:
+                if not mses_selfcal_contline:
+                    LOG.info('No DataType:SELFCAL_CONTLINE_SCIENCE found.')
+                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es):')
+                    for ms in mses_regcal_contline:
+                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                    applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
+                else:
+                    LOG.info('Found DataType:SELFCAL_CONTLINE_SCIENCE.')
+                    for ms in mses_selfcal_contline:
+                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                    LOG.info('Skip applying selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es).')
+
+            mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
+            mses_selfcal_line = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_LINE_SCIENCE], msonly=True)
+
+            if mses_regcal_line:
+                if not mses_selfcal_line:
+                    LOG.info('No DataType:SELFCAL_LINE_SCIENCE found.')
+                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+                    for ms in mses_regcal_line:
+                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                    applycal_result_line = self._apply_scal(scal_targets,  mses_regcal_line)
+                else:
+                    LOG.info('Found DataType:SELFCAL_LINE_SCIENCE.')
+                    for ms in mses_selfcal_line:
+                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
+                    LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
 
         return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line)
 
@@ -205,7 +211,16 @@ class Selfcal(basetask.StandardTaskTemplate):
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
             for target in scal_targets:
                 target['sc_parallel'] = (tclean_parallel_request and not tq.is_async())
-                tq.add_functioncall(self._run_selfcal_sequence, target, self._executor.copy(exclude_context=True))
+                tq.add_functioncall(self._run_selfcal_sequence, target,
+                                    gaincal_minsnr=self.inputs.gaincal_minsnr,
+                                    minsnr_to_proceed=self.inputs.minsnr_to_proceed,
+                                    delta_beam_thresh=self.inputs.delta_beam_thresh,
+                                    apply_cal_mode_default=self.inputs.apply_cal_mode_default,
+                                    rel_thresh_scaling=self.inputs.rel_thresh_scaling,
+                                    dividing_factor=self.inputs.dividing_factor,
+                                    check_all_spws=self.inputs.check_all_spws,
+                                    do_amp_selfcal=self.inputs.amplitude_selfcal,
+                                    executor=self._executor.copy(exclude_context=True))
         tq_results = tq.get_results()
 
         for idx, target in enumerate(scal_targets):
@@ -228,7 +243,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         return scal_targets
 
     @staticmethod
-    def _run_selfcal_sequence(scal_target, executor):
+    def _run_selfcal_sequence(scal_target, **kwargs):
 
         workdir = os.path.abspath('./')
         selfcal_library, solints, bands = None, None, None
@@ -239,7 +254,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}'.format(
                 scal_target['field'], scal_target['spw'], scal_target['sc_workdir']))
             LOG.info('')
-            selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, executor=executor)
+            selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, **kwargs)
             # import pickle
             # with open('selfcal_heuristics.pickle', 'wb') as handle:
             #     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -299,7 +314,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         taskqueue_parallel_request = len(vislist) > 1
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
             for vis in vislist:
-                task_args = {'vis': vis, 'applymode': 'calflag'}
+                task_args = {'vis': vis, 'applymode': 'calflag', 'intent': 'TARGET'}
                 tq.add_pipelinetask(IFApplycal, task_args, self.inputs.context)
 
         tq_results = tq.get_results()
