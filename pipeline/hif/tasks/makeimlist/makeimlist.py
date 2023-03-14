@@ -261,16 +261,17 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             datacolumn = ''
 
-        # Select the correct vis list
-        if inputs.vis in ('', [''], [], None):
-            if inputs.intent == 'TARGET':
-                if inputs.specmode in ('mfs', 'cont'):
-                    datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-                else:
-                    datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        if inputs.intent == 'TARGET':
+            if inputs.specmode in ('mfs', 'cont'):
+                datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
             else:
-                datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        else:
+            datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
+        # Select the correct vis list
+        selected_datatype = None   # will be used to add a "regcal" or "selfcal" suffix to the file name
+        if inputs.vis in ('', [''], [], None):
             ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
 
             if ms_objects_and_columns == collections.OrderedDict():
@@ -904,9 +905,20 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                         # construct imagename
                         if inputs.imagename == '':
+                            if selected_datatype in (
+                                    DataType.REGCAL_CONTLINE_ALL,
+                                    DataType.REGCAL_CONTLINE_SCIENCE,
+                                    DataType.REGCAL_LINE_SCIENCE):
+                                modifier = 'regcal'
+                            elif selected_datatype in (
+                                    DataType.SELFCAL_CONTLINE_SCIENCE,
+                                    DataType.SELFCAL_LINE_SCIENCE):
+                                modifier = 'selfcal'
+                            else:
+                                modifier = None
                             imagename = target_heuristics.imagename(output_dir=inputs.output_dir, intent=field_intent[1],
                                                                     field=field_intent[0], spwspec=actual_spwspec,
-                                                                    specmode=specmode, band=band)
+                                                                    specmode=specmode, band=band, modifier=modifier)
                         else:
                             imagename = inputs.imagename
 
