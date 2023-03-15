@@ -1061,7 +1061,7 @@ class ImageParamsHeuristics(object):
 
         return [nxpix, nypix]
 
-    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, modifier=None):
+    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype=None):
         try:
             nameroot = self.imagename_prefix
             if nameroot == 'unknown':
@@ -1091,8 +1091,8 @@ class ImageParamsHeuristics(object):
             namer.spectral_window(spw)
         if specmode:
             namer.specmode(specmode)
-        if modifier:
-            namer.modifier(modifier)
+        if datatype:
+            namer.datatype(datatype)
 
         # filenamer returns a sanitized filename (i.e. one with
         # illegal characters replace by '_'), no need to check

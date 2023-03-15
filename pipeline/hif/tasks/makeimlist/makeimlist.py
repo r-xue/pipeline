@@ -261,7 +261,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         # Select the correct vis list
         datacolumn = inputs.datacolumn
-        selected_datatype = None   # will be used to add a "regcal" or "selfcal" suffix to the file name
+        selected_datatype = None
         selected_datatype_info = 'N/A'
         if inputs.vis in ('', [''], [], None):
             ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=datatypes, msonly=False)
@@ -943,20 +943,15 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                         # construct imagename
                         if inputs.imagename == '':
-                            if selected_datatype in (
-                                    DataType.REGCAL_CONTLINE_ALL,
-                                    DataType.REGCAL_CONTLINE_SCIENCE,
-                                    DataType.REGCAL_LINE_SCIENCE):
-                                modifier = 'regcal'
-                            elif selected_datatype in (
-                                    DataType.SELFCAL_CONTLINE_SCIENCE,
-                                    DataType.SELFCAL_LINE_SCIENCE):
-                                modifier = 'selfcal'
+                            if selected_datatype_info.startswith('REGCAL'):
+                                datatype_suffix = 'regcal'
+                            elif selected_datatype_info.startswith('SELFCAL'):
+                                datatype_suffix = 'selfcal'
                             else:
-                                modifier = None
+                                datatype_suffix = None
                             imagename = target_heuristics.imagename(output_dir=inputs.output_dir, intent=field_intent[1],
                                                                     field=field_intent[0], spwspec=actual_spwspec,
-                                                                    specmode=specmode, band=band, modifier=modifier)
+                                                                    specmode=specmode, band=band, datatype=datatype_suffix)
                         else:
                             imagename = inputs.imagename
 
