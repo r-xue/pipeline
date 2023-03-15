@@ -881,6 +881,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if original_vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
                                     LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {str(local_selected_datatype).split(".")[-1]}.''')
                                 vislist_field_spw_combinations[field_intent[0]]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
+                        else:
+                            local_selected_datatype = None
 
                         # Save the specific vislist in a copy of the heuristics object tailored to the
                         # current imaging target
