@@ -2,7 +2,7 @@ import os
 import numpy
 import collections
 import abc
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
