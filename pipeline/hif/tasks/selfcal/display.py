@@ -331,7 +331,7 @@ class SelfcalSummary(object):
             norm_gauss_dist = gauss_dist/np.max(gauss_dist)
             return norm_gauss_dist
 
-        fig, ax = plt.subplots(figsize=(8, 8))
+        fig, ax = plt.subplots(figsize=(9.6, 7.2))
         ax.set_yscale('log')
         plt.ylim([0.0001, 2.0])
         ax.step(intensity_1, N_1/np.max(N_1), label='Initial Data')

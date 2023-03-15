@@ -8,7 +8,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <%block name="title">Self-Calibration</%block>
 
 <script type="text/javascript">
-  $("td:contains('Selfcal Success')").addClass('desc-summary');
+  $("td:contains('not implemented')").addClass('desc-summary');
 </script>
 
 
@@ -35,7 +35,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
   vertical-align: middle;
   text-align: center;
   background-clip: padding-box;
-  min-width: 60px;     
+  min-width: 80px;     
 }
 
 .table th {

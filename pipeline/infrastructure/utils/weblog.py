@@ -15,7 +15,7 @@ from astropy.table import QTable
 from .. import casa_tools, logging
 from .conversion import flatten, spw_arg_to_id, to_pipeline_intent
 
-__all__ = ['OrderedDefaultdict', 'merge_td_columns', 'get_vis_from_plots', 'total_time_on_source',
+__all__ = ['OrderedDefaultdict', 'merge_td_columns', 'merge_td_rows', 'get_vis_from_plots', 'total_time_on_source',
            'total_time_on_target_on_source', 'get_logrecords', 'get_intervals', 'table_to_html', 'plots_to_html']
 
 LOG = logging.get_logger(__name__)
@@ -105,6 +105,41 @@ def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
         new_cols.append(merged)
 
     return list(zip(*new_cols))
+
+
+def merge_td_rows(table):
+    """
+    Merge HTML TD rows with identical values using colspan.
+
+    Arguments:
+    table -- a list of tuples, one tuple per row, containing n elements for the n columns.
+
+    Output:
+    A list of tuples with adjusted idential values merged with colspan.
+    """
+    new_table = []
+    for row in table:
+        row_list = list(row)
+        start = 0
+        while start < len(row):
+            start_cell = row[start]
+            merge_count = 0
+            end = start+1
+
+            while end < len(row):
+                if start_cell == row[end]:
+                    row_list[end] = ''
+                    merge_count += 1
+                    end += 1
+                else:
+                    break
+            if merge_count > 0:
+                row_list[start] = row_list[start].replace('<td', fr'<td colspan="{merge_count+1}"')
+            start += 1
+
+        new_table.append(tuple(row_list))
+
+    return new_table
 
 
 def get_vis_from_plots(plots):

@@ -290,7 +290,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for vis in vislist:
 
-            rows.append([vis]+['']*len(solints))
+            rows.append(['Measurement Set']+[vis]*len(solints))
 
             for row_name in ['Flagged Frac.<br>by antenna', 'N.Sols', 'N.Sols Flagged', 'Flagged Frac.']:
                 row = [row_name]
@@ -313,14 +313,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 rows.append(row)
 
         if check_solint:
-            # merge cell for MS name rows
-            rows = utils.merge_td_columns(rows, vertical_align=True)
-            new_rows = []
-            for row in rows:
-                if row.count('<td></td>') == len(row)-1:
-                    new_rows.append((row[0].replace('<td>', fr'<td colspan="{len(row)}">'),))
-                else:
-                    new_rows.append(row)
+            new_rows = utils.merge_td_rows(utils.merge_td_columns(rows, vertical_align=True))
         else:
             new_rows = None
 
@@ -371,7 +364,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         slib = cleantarget['sc_lib']
         rows = []
-        row_names = ['Image Type', 'Image', 'Integrated Flux', 'SNR', 'SNR (N.F.)', 'RMS', 'RMS (N.F.)', 'Beam']
+        row_names = ['Data Type', 'Image', 'Integrated Flux', 'SNR', 'SNR (N.F.)', 'RMS', 'RMS (N.F.)', 'Beam']
 
         def fm_sc_success(success):
             if success:
@@ -397,8 +390,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         summary_desc = f'<div style="text-align:left">{summary_desc}</div>'
 
         for row_name in row_names:
-            if row_name == 'Image Type':
-                row_values = ['Initial', 'Final', 'Noise Hist.']
+            if row_name == 'Data Type':
+                row_values = ['Initial', 'Final', 'Dist. / Ratio']
             if row_name == 'Image':
                 summary_plots, noisehist_plot = display.SelfcalSummary(context, r, cleantarget).plot()
                 row_values = plots_to_html(
@@ -407,23 +400,28 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if row_name == 'Integrated Flux':
                 row_values = [
                     '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_orig'] * 1e3, slib['e_intflux_orig'] * 1e3),
-                    '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_final'] * 1e3, slib['e_intflux_final'] * 1e3)] + [summary_desc]
+                    '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_final'] * 1e3, slib['e_intflux_final'] * 1e3)] + \
+                    ['{:0.2f}'.format(slib['intflux_final']/slib['intflux_orig'])]
 
             if row_name == 'SNR':
                 row_values = ['{:0.2f}'.format(slib['SNR_orig']),
-                              '{:0.2f}'.format(slib['SNR_final'])]+[summary_desc]
+                              '{:0.2f}'.format(slib['SNR_final'])] +\
+                    ['{:0.2f}'.format(slib['SNR_final']/slib['SNR_orig'])]
 
             if row_name == 'SNR (N.F.)':
                 row_values = ['{:0.2f}'.format(slib['SNR_NF_orig']),
-                              '{:0.2f}'.format(slib['SNR_NF_final'])]+[summary_desc]
+                              '{:0.2f}'.format(slib['SNR_NF_final'])] +\
+                    ['{:0.2f}'.format(slib['SNR_NF_final']/slib['SNR_NF_orig'])]
 
             if row_name == 'RMS':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_orig']*1e3),
-                              '{:0.3f} mJy/bm'.format(slib['RMS_final']*1e3)]+[summary_desc]
+                              '{:0.3f} mJy/bm'.format(slib['RMS_final']*1e3)] +\
+                    ['{:0.2f}'.format(slib['RMS_final']/slib['RMS_orig'])]
 
             if row_name == 'RMS (N.F.)':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_NF_orig']*1e3),
-                              '{:0.3f} mJy/bm'.format(slib['RMS_NF_final']*1e3)]+[summary_desc]
+                              '{:0.3f} mJy/bm'.format(slib['RMS_NF_final']*1e3)] +\
+                    ['{:0.2f}'.format(slib['RMS_NF_final']/slib['RMS_NF_orig'])]
             if row_name == 'Beam':
                 row_values = ['{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
                     slib['Beam_major_orig'],
@@ -432,8 +430,12 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     '{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
                     slib['Beam_major_final'],
                     slib['Beam_minor_final'],
-                    slib['Beam_PA_final'])] + [
-                    summary_desc]
+                    slib['Beam_PA_final'])] + ['{:0.2f}'.format(
+                        slib['Beam_major_final'] * slib['Beam_minor_final'] / slib['Beam_major_orig'] / slib['Beam_minor_orig'])]
+
             rows.append([row_name]+row_values)
 
-        return utils.merge_td_columns(rows, vertical_align=True)
+        rows.append(['Success / Final Solint']+[desc_args['success']+' / '+desc_args['finalsolint']]*3)
+        rows.append(['Stop Reason']+[desc_args['reason']]*3)
+
+        return utils.merge_td_rows(utils.merge_td_columns(rows, vertical_align=True))
