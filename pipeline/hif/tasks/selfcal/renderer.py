@@ -9,6 +9,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.utils.weblog import plots_to_html
+import pipeline.infrastructure.filenamer as filenamer
 
 from . import display
 
@@ -138,8 +139,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for target in targets:
             row = []
-            id_name = target['field_name']+'_'+target['sc_band']
-            id_name = id_name.replace('+', '_')
+            valid_chars = "%s%s" % (string.ascii_letters, string.digits)
+            id_name = filenamer.sanitize(target['field_name']+'_'+target['sc_band'],valid_chars)
             row.append(f' <a href="#{id_name}">{target["field"]}</a> ')
             row.append(target['sc_band'].replace('_', ' '))
             row.append(target['spw'])

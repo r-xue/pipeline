@@ -2,6 +2,8 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+import pipeline.infrastructure.filenamer as filenamer
+import string
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -144,8 +146,8 @@ def fm_reason(slib):
     key=(target['field_name'],target['sc_band'])
     show_spw_summary= slib['SC_success'] and spw_tabs[key] is not None
     show_sol_summary= solint_tabs[key] is not None
-    id_name=target['field_name']+'_'+target['sc_band']
-    id_name=id_name.replace('+','_')
+    valid_chars = "%s%s" % (string.ascii_letters, string.digits)
+    id_name=filenamer.sanitize(target['field_name']+'_'+target['sc_band'],valid_chars)
     %>
 
     <a class="anchor" id="${id_name}"></a>
