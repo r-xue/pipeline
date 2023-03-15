@@ -260,43 +260,17 @@ class MakeImList(basetask.StandardTaskTemplate):
                 specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-        specmode_datatypes_strings = [str(datatype).split(".")[-1] for datatype in specmode_datatypes]
-
-        available_datatypes = [str(v).replace('DataType.', '') for v in DataType]
-        if inputs.datatype not in ('', None):
-            if inputs.datatype.strip().upper() == 'BEST':
-                # Automatic choice
-                user_datatypes = []
-            elif inputs.datatype.strip().upper() == 'ALL':
-                user_datatypes = [datatype for datatype in specmode_datatypes_strings if 'SELFCAL' in datatype or 'REGCAL' in datatype]
-            else:
-                user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
-                if 'REGCAL' in user_datatypes or 'SELFCAL' in user_datatypes:
-                    if any(datatype in specmode_datatypes for datatype in specmode_datatypes):
-                        msg = 'REGCAL/SELFCAL and explicit data types are mutually exclusive'
-                        LOG.error(msg)
-                        result.error = True
-                        result.error_msg = msg
-                        return result
-                else:
-                    datatype_checklist = [datatype not in available_datatypes for datatype in user_datatypes]
-                    if any(datatype_checklist):
-                        msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(datatypes, datatype_checklist) if c))
-                        LOG.error(msg)
-                        result.error = True
-                        result.error_msg = msg
-                        return result
-        else:
-            user_datatypes = []
-
-        selected_datatype = None
-        selected_datatype_info = 'N/A'
+        specmode_datatypes_str = [str(datatype).split(".")[-1] for datatype in specmode_datatypes]
 
         datacolumn = inputs.datacolumn
 
+        selected_datatype = None
+        selected_datatype_info = 'N/A'
+        automatic_datatype_choice = True
+
         # Select the correct vis list
         if inputs.vis in ('', [''], [], None):
-            ms_objects_and_columns, selected_datatype = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
+            (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
             global_datatype_info = f'{str(selected_datatype).split(".")[-1]}'
             selected_datatype_info = global_datatype_info
 
@@ -330,6 +304,57 @@ class MakeImList(basetask.StandardTaskTemplate):
 
             datacolumn = global_datacolumn
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
+
+        # Handle user supplied data type requests
+        if inputs.datatype not in ('', None):
+            # Extract all available data types for the vis list
+            vislist_datatypes_str = []
+            for vis in inputs.vis:
+                ms_object = inputs.context.observing_run.get_ms(vis)
+                vislist_datatypes_str = vislist_datatypes_str + [str(datatype).split('.')[-1] for datatype in ms_object.data_column]
+            # Intersection of specmode based and vis based datatypes gives
+            # list of actually available data types for this call.
+            available_datatypes_str = specmode_datatypes_str and vislist_datatypes_str
+
+            if inputs.datatype.strip().upper() == 'BEST':
+                # Automatic choice with fallback per source/spw selection
+                user_datatypes = []
+            elif inputs.datatype.strip().upper() == 'ALL':
+                # All selfcal and regcal choices available for this vis list
+                user_datatypes = [datatype for datatype in available_datatypes_str if 'SELFCAL' in datatype or 'REGCAL' in datatype]
+                automatic_datatype_choice = False
+            else:
+                user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
+                if 'REGCAL' in user_datatypes or 'SELFCAL' in user_datatypes:
+                    # Check if any explicit data types are given
+                    if any(datatype in specmode_datatypes for datatype in user_datatypes):
+                        msg = 'REGCAL/SELFCAL and explicit data types are mutually exclusive'
+                        LOG.error(msg)
+                        result.error = True
+                        result.error_msg = msg
+                        return result
+
+                    # Expand REGCAL and SELFCAL to explicit data types
+                    expanded_user_datatypes = []
+                    if 'REGCAL' in user_datatypes:
+                        expanded_user_datatypes = expanded_user_datatypes + [datatype for datatype in available_datatypes_str if 'REGCAL' in datatype]
+                    if 'SELFCAL' in user_datatypes:
+                        expanded_user_datatypes = expanded_user_datatypes + [datatype for datatype in available_datatypes_str if 'SELFCAL' in datatype]
+                    user_datatypes = expanded_user_datatypes
+                    automatic_datatype_choice = False
+                else:
+                    # Explicit individual data types
+                    known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
+                    datatype_checklist = [datatype not in known_datatypes_str for datatype in user_datatypes]
+                    if any(datatype_checklist):
+                        msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(datatypes, datatype_checklist) if c))
+                        LOG.error(msg)
+                        result.error = True
+                        result.error_msg = msg
+                        return result
+                    automatic_datatype_choice = False
+        else:
+            user_datatypes = []
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
