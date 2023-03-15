@@ -58,6 +58,22 @@ img {
     margin-right: auto;
 }
 
+.rotate {
+    /* FF3.5+ */
+    -moz-transform: rotate(-90.0deg);
+    /* Opera 10.5 */
+    -o-transform: rotate(-90.0deg);
+    /* Saf3.1+, Chrome */
+    -webkit-transform: rotate(-90.0deg);
+    /* IE6,IE7 */
+    filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.083);
+    /* IE8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)";
+    /* Standard */
+    transform: rotate(-90.0deg);
+}
+
+
 </style>
 
 <%
@@ -158,7 +174,7 @@ def fm_reason(slib):
       <caption>Per solint stats</caption>
       <thead>
           <tr>
-              <th>Solints</th>
+              <th>Solint</th>
               % for solint in target['sc_solints']:
                 <th>${solint}</th>
               % endfor
@@ -177,7 +193,7 @@ def fm_reason(slib):
     </div>
     % endif
 
-    % if slib['SC_success']:
+    % if slib['SC_success'] and spw_tabs[key] is not None :
     <div class="table-responsive row">
     <table class="table table-bordered">
       <caption>Per Spectral-window Summary</caption>

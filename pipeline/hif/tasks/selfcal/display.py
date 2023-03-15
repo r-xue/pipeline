@@ -76,7 +76,7 @@ class SelfcalSummary(object):
             vmin = stats['min'][0]
             vmax = stats['max'][0]
 
-        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6), dpi=900).plot_per_stokes(
+        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, figsize=(8, 6), dpi=900).plot_per_stokes(
             self.context, im_pre, reportdir=self.stage_dir, intent='', collapseFunction='mean',
             vmin=vmin, vmax=vmax,
             result_mask=im_pre_mask))
@@ -84,7 +84,7 @@ class SelfcalSummary(object):
         image_plots[-1].parameters['caption'] = f'Pre-Selfcal Image<br>Solint: {solint}'
         image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
 
-        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6), dpi=900).plot_per_stokes(
+        image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, figsize=(8, 6), dpi=900).plot_per_stokes(
             self.context, im_post, reportdir=self.stage_dir, intent='', collapseFunction='mean',
             vmin=vmin, vmax=vmax,
             result_mask=im_post_mask))
