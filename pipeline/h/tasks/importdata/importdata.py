@@ -305,6 +305,10 @@ class ImportData(basetask.StandardTaskTemplate):
                 if field._mdirection['refer'] in ['J2000', 'j2000']:
                     LOG.info(f'{ms.basename}: changing coords from J2000 to ICRS for field {field.name}')
                     field._mdirection['refer'] = 'ICRS'
+            for source in ms.sources:
+                if source._direction['refer'] in ['J2000', 'j2000']:
+                    LOG.info(f'{ms.basename}: changing coords from J2000 to ICRS for source {source.name}')
+                    source._direction['refer'] = 'ICRS'
 
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
