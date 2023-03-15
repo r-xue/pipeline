@@ -1,6 +1,5 @@
 import collections
 import os
-import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,8 +10,8 @@ from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 from pipeline.infrastructure.mpihelpers import TaskQueue
 from pipeline.infrastructure.renderer import logger
+from pipeline.infrastructure import casa_tools
 
-from . import display as selfcal
 
 LOG = logging.get_logger(__name__)
 
@@ -48,9 +47,8 @@ class SelfcalSummary(object):
         im_rootname = self._im_rootname()
         im_initial = im_rootname+'_initial.image.tt0'
         im_final = im_rootname+'_final.image.tt0'
-        im_mask = im_rootname+'_final.mask'
 
-        return im_initial, im_final, im_mask
+        return im_initial, im_final
 
     def _im_rootname(self):
         return os.path.join(self.scal_dir, sanitize_string(self.field)+'_'+self.band)
@@ -70,26 +68,32 @@ class SelfcalSummary(object):
 
         im_post = self._im_solname(solint)+'_post.image.tt0'
         im_pre = self._im_solname(solint)+'.image.tt0'
-        im_mask = self._im_solname(solint)+'.mask'
+        im_post_mask = self._im_solname(solint)+'_post.mask'
+        im_pre_mask = self._im_solname(solint)+'.mask'
+
+        with casa_tools.ImageReader(im_post) as image:
+            stats = image.statistics(robust=False)
+            vmin = stats['min'][0]
+            vmax = stats['max'][0]
 
         image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6), dpi=900).plot_per_stokes(
-            self.context, im_pre, reportdir=self.stage_dir, intent='', collapseFunction='mean', result_mask=im_mask))
+            self.context, im_pre, reportdir=self.stage_dir, intent='', collapseFunction='mean',
+            vmin=vmin, vmax=vmax,
+            result_mask=im_pre_mask))
         image_plots[-1].parameters['title'] = 'Pre-Selfcal Image'
         image_plots[-1].parameters['caption'] = f'Pre-Selfcal Image<br>Solint: {solint}'
         image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
 
         image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=True, figsize=(8, 6), dpi=900).plot_per_stokes(
-            self.context, im_post, reportdir=self.stage_dir, intent='', collapseFunction='mean', result_mask=im_mask))
+            self.context, im_post, reportdir=self.stage_dir, intent='', collapseFunction='mean',
+            vmin=vmin, vmax=vmax,
+            result_mask=im_post_mask))
         image_plots[-1].parameters['title'] = 'Post-Selfcal Image'
         image_plots[-1].parameters['caption'] = f'Post-Selfcal Image<br>Solint: {solint}'
         image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
 
         vislist = self.slib['vislist']
         for vis in vislist:
-            #import pprint as pp
-            #pp.pprint(slib)
-            #if solint not in slib:
-            #    continue
             # only evaluate last gaintable not the pre-apply table
             gaintable = self.slib[vis][solint]['gaintable'][-1]
             figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable+'.png')
@@ -273,19 +277,23 @@ class SelfcalSummary(object):
 
         sc_imagenames = collections.OrderedDict()
 
-        im_initial, im_final, im_mask = self._get_ims()
-
+        im_initial, im_final = self._get_ims()
         sc_imagenames[(self.field, self.band)] = {'initial': im_initial,
-                                                  'final': im_final,
-                                                  'mask': im_mask}
+                                                  'final': im_final}
         self.result.ims_dict = sc_imagenames
 
         for tb, ims in self.result.ims_dict.items():
             plot_wrappers = []
             image_types = [('initial', 'Initial Image'), ('final', 'Final Image')]
+            with casa_tools.ImageReader(ims['final']) as image:
+                stats = image.statistics(robust=False)
+                vmin = stats['min'][0]
+                vmax = stats['max'][0]
             for image_type, image_desc in image_types:
                 plot_wrappers.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, dpi=900).plot_per_stokes(
-                    self.context, ims[image_type], reportdir=self.stage_dir, intent='', collapseFunction='mean', result_mask=ims['mask']))
+                    self.context, ims[image_type], reportdir=self.stage_dir, intent='', collapseFunction='mean',
+                    vmin=vmin, vmax=vmax,
+                    result_mask=ims[image_type].replace('.image.tt0', '.mask')))
                 plot_wrappers[-1].parameters['title'] = image_desc
                 plot_wrappers[-1].parameters['caption'] = image_desc
                 plot_wrappers[-1].parameters['group'] = 'Initial/Final Comparisons'
