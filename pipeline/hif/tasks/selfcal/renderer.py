@@ -174,8 +174,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         solints, target, band = cleantarget['sc_solints'], cleantarget['field_name'], cleantarget['sc_band']
         slib = cleantarget['sc_lib']
-        if not slib['SC_success']:
-            return None
+        check_solint = False
 
         rows = []
         vislist = slib['vislist']
@@ -221,6 +220,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 if solint not in vis_keys:
                     row.append('-')
                 else:
+                    check_solint = True
                     vis_solint_keys = slib[vislist[-1]][solint].keys()
                     if row_name == 'Pass':
                         result_desc = '-'
@@ -312,13 +312,17 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         row.append('-')
                 rows.append(row)
 
-        rows = utils.merge_td_columns(rows, vertical_align=True)
-        new_rows = []
-        for row in rows:
-            if row.count('<td></td>') == len(row)-1:
-                new_rows.append((row[0].replace('<td>', fr'<td colspan="{len(row)}">'),))
-            else:
-                new_rows.append(row)
+        if check_solint:
+            # merge cell for MS name rows
+            rows = utils.merge_td_columns(rows, vertical_align=True)
+            new_rows = []
+            for row in rows:
+                if row.count('<td></td>') == len(row)-1:
+                    new_rows.append((row[0].replace('<td>', fr'<td colspan="{len(row)}">'),))
+                else:
+                    new_rows.append(row)
+        else:
+            new_rows = None
 
         return new_rows
 

@@ -132,25 +132,48 @@ def fm_reason(slib):
 </table> 
 </div>
 
-<h3>Per-Target Details</h3>
+<h3>Self-cal Target Details</h3>
 
 % for target in cleantargets:
 
-    <a class="anchor" id="${target['field_name']}${target['sc_band']}"></a>
-    <h4>
-      ${fm_target(target['field'])}&nbsp;${fm_band(target['sc_band'])}
-      <a href="#targetlist" class="btn btn-link btn-sm">
-        <span class="glyphicon glyphicon-th-list"></span>
-      </a>
-    </h4>
-    
     <%
     slib=target['sc_lib']
     key=(target['field_name'],target['sc_band'])
+    show_spw_summary= slib['SC_success'] and spw_tabs[key] is not None
+    show_sol_summary= solint_tabs[key] is not None
+    id_name=target['field_name']+'_'+target['sc_band']
+    id_name=id_name.replace('+','_')
     %>
 
-            
-    <div class="table-responsive">
+    <a class="anchor" id="${id_name}"></a>
+    <h4>
+      <a href="#targetlist" class="btn btn-link btn-sm">
+        <span class="glyphicon glyphicon-th-list"></span>
+      </a>
+      ${fm_target(target['field'])}&nbsp;${fm_band(target['sc_band'])}
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a class="btn btn-sm btn-light" data-toggle="collapse" 
+          href="#${id_name}_summary" 
+          role="button" aria-expanded="false" aria-controls="${id_name}_summary">
+          Summary
+      </a>
+      % if show_sol_summary:
+      <a class="btn btn-sm btn-light" data-toggle="collapse"
+          href="#${id_name}_persol"
+          role="button" aria-expanded="false" aria-controls="${id_name}_persol">
+          Per-Solint Details
+      </a>
+      % endif
+      % if show_spw_summary:
+      <a class="btn btn-sm btn-light" data-toggle="collapse"
+          href="#${id_name}_perspw"
+          role="button" aria-expanded="false" aria-controls="${id_name}_perspw">
+          Per-Spw Details
+      </a>
+      % endif      
+    </h4>
+    
+    <div class="table-responsive collapse multi-collapse in" id="${id_name}_summary">
     <table class="table table-bordered">
       <!-- <caption style="caption-side:top">Initial/Final Image Comparisons</caption> -->
       <caption>Initial/Final Image Comparisons</caption>
@@ -166,9 +189,8 @@ def fm_reason(slib):
     </table>      
     </div>      
     
-
-    % if slib['SC_success']:
-    <div class="table-responsive">
+    % if show_sol_summary :
+    <div class="table-responsive collapse multi-collapse" id="${id_name}_persol">
     <table class="table table-bordered">
       <!-- <caption style="caption-side:top">Per solint stats</caption> -->
       <caption>Per solint stats</caption>
@@ -193,8 +215,8 @@ def fm_reason(slib):
     </div>
     % endif
 
-    % if slib['SC_success'] and spw_tabs[key] is not None :
-    <div class="table-responsive row">
+    % if show_spw_summary :
+    <div class="table-responsive row" id="${id_name}_perspw">
     <table class="table table-bordered">
       <caption>Per Spectral-window Summary</caption>
       <tbody>

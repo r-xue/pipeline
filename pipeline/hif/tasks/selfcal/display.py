@@ -107,10 +107,10 @@ class SelfcalSummary(object):
             antpos_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
 
             vis_desc = ('<a class="anchor" id="{0}_byant"></a>'
-                        '{0}'
                         '<a href="#{0}_summary" class="btn btn-link btn-sm">'
                         '  <span class="glyphicon glyphicon-th-list"></span>'
-                        '</a>'.format(vis))
+                        '</a>'
+                        '{0}'.format(vis))
             phasefreq_plots[vis_desc] = self._plot_gain(vis, gaintable, solint)
 
         return image_plots, antpos_plots, phasefreq_plots
