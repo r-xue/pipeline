@@ -333,6 +333,16 @@ except:
                         </td>
                     %endfor
                 </tr>
+                <tr>
+                    <th>data type</th>
+                    %for k in range(j, min(j+4, field_block_indices[i+1])):
+                        <td style="width:250px;">
+                            <div style="word-wrap:break-word;width:250px;">
+                                ${image_info[k].datatype_info}
+                            </div>
+                        </td>
+                    %endfor
+                </tr>
             %endfor
         %endfor
         </tbody>
