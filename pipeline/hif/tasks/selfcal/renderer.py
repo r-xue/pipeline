@@ -126,18 +126,30 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super().__init__(uri=uri,
                          description=description, always_rerender=always_rerender)
 
-    def make_targets_summary_table(self, targets):
+    def make_targets_summary_table(self, r, targets):
         """Make the selfcal targets summary list table."""
         rows = []
+
+        def bool2icon(value):
+            if value:
+                return '<span class="glyphicon glyphicon-ok"></span>'
+            else:
+                return '<span class="glyphicon glyphicon-remove"></span>'
+
         for target in targets:
             row = []
-            row.append(f' <a href="#{target["field"]}{target["sc_band"]}">{target["field"]}</a> ')
+            id_name = target['field_name']+'_'+target['sc_band']
+            id_name = id_name.replace('+', '_')
+            row.append(f' <a href="#{id_name}">{target["field"]}</a> ')
             row.append(target['sc_band'].replace('_', ' '))
             row.append(target['spw'])
             row.append(target['phasecenter'])
             row.append(target['cell'])
             row.append(target['imsize'])
             row.append(', '.join(target['sc_solints']))
+            row.append(bool2icon(target['sc_lib']['SC_success']))
+            row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_contline is not None))
+            row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_line is not None))
             rows.append(row)
 
         return utils.merge_td_columns(rows, vertical_align=True)
@@ -148,7 +160,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         r = results[0]
         cleantargets = results[0].targets
 
-        targets_summary_table = self.make_targets_summary_table(cleantargets)
+        targets_summary_table = self.make_targets_summary_table(r, cleantargets)
 
         summary_tabs = collections.OrderedDict()
         solint_tabs = collections.OrderedDict()

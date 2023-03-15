@@ -117,6 +117,9 @@ def fm_reason(slib):
             <th>cell</th>
             <th>imsize</th>
             <th>Solints to Attempt</th>
+            <th>Success</th>
+            <th>Apply<br>Contline</th>
+            <th>Apply<br>Line</th>
         <tr>
   </thead>
   <caption>Self-calibration Target(s) Summary</caption>
