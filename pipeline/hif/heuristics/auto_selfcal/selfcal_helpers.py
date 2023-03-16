@@ -7,6 +7,7 @@ import logging
 import os
 import time
 import numpy as np
+import shutil
 
 import casatools
 from casatasks import casalog
@@ -17,6 +18,7 @@ from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.casa_tools import msmd
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -408,7 +410,8 @@ def fetch_targets(vis):
 
 def checkmask(imagename):
     maskImage = imagename.replace('image', 'mask').replace('.tt0', '')
-    image_stats = cts.imstat(maskImage)
+    with casa_tools.ImageReader(maskImage) as image:
+        image_stats = image.statistics()
     if image_stats['max'][0] == 0:
         return False
     else:
@@ -417,11 +420,14 @@ def checkmask(imagename):
 
 def estimate_SNR(imagename, maskname=None, verbose=True):
     MADtoRMS = 1.4826
-    headerlist = cts.imhead(imagename, mode='list')
-    beammajor = headerlist['beammajor']['value']
-    beamminor = headerlist['beamminor']['value']
-    beampa = headerlist['beampa']['value']
-    image_stats = cts.imstat(imagename=imagename)
+
+    with casa_tools.ImageReader(imagename) as image:
+        bm = image.restoringbeam(polarization=0)
+        image_stats = image.statistics(robust=False)
+    beammajor = bm['major']['value']
+    beamminor = bm['minor']['value']
+    beampa = bm['positionangle']['value']
+
     if maskname is None:
         maskImage = imagename.replace('image', 'mask').replace('.tt0', '')
     else:
@@ -438,18 +444,15 @@ def estimate_SNR(imagename, maskname=None, verbose=True):
     else:
         goodMask = False
     if os.path.exists(maskImage) and goodMask:
-        ia.close()
-        ia.done()
-        ia.open(residualImage)
-        #ia.calcmask(maskImage+" <0.5"+"&& mask("+residualImage+")",name='madpbmask0')
-        ia.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
-        mask0Stats = ia.statistics(robust=True, axes=[0, 1])
-        ia.maskhandler(op='set', name='madpbmask0')
+        with casa_tools.ImageReader(residualImage) as image:
+            image.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
+            mask0Stats = image.statistics(robust=True, axes=[0, 1])
+            image.maskhandler(op='set', name='madpbmask0')
         rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
-        residualMean = mask0Stats['median'][0]
     else:
-        residual_stats = cts.imstat(imagename=imagename.replace('image', 'residual'), algorithm='chauvenet')
-        rms = residual_stats['rms'][0]
+        with casa_tools.ImageReader(imagename.replace('image', 'residual')) as image:
+            rms = image.statistics(algorithm='chauvenet')['rms'][0]
+
     peak_intensity = image_stats['max'][0]
     SNR = peak_intensity/rms
     if verbose:
@@ -458,19 +461,24 @@ def estimate_SNR(imagename, maskname=None, verbose=True):
         LOG.info("#Peak intensity of source: %.2f mJy/beam" % (peak_intensity*1000,))
         LOG.info("#rms: %.2e mJy/beam" % (rms*1000,))
         LOG.info("#Peak SNR: %.2f" % (SNR,))
-    ia.close()
-    ia.done()
-    os.system('rm -rf temp.mask temp.residual')
+    shutil.rmtree('temp.mask', ignore_errors=True)
+    shutil.rmtree('temp.residual', ignore_errors=True)
     return SNR, rms
 
 
 def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
     MADtoRMS = 1.4826
-    headerlist = cts.imhead(imagename, mode='list')
-    beammajor = headerlist['beammajor']['value']
-    beamminor = headerlist['beamminor']['value']
-    beampa = headerlist['beampa']['value']
-    image_stats = cts.imstat(imagename=imagename)
+
+    temp_list = ['temp.mask', 'temp.residual', 'temp.border.mask', 'temp.smooth.ceiling.mask',
+                 'temp.smooth.mask', 'temp.nearfield.mask', 'temp.big.smooth.ceiling.mask', 'temp.big.smooth.mask']
+
+    with casa_tools.ImageReader(imagename) as image:
+        bm = image.restoringbeam(polarization=0)
+        image_stats = image.statistics(robust=False)
+    beammajor = bm['major']['value']
+    beamminor = bm['minor']['value']
+    beampa = bm['positionangle']['value']
+
     if maskname is None:
         maskImage = imagename.replace('image', 'mask').replace('.tt0', '')
     else:
@@ -483,11 +491,14 @@ def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
         LOG.info('checkmask')
         return np.float64(-99.0), np.float64(-99.0)
     residualImage = imagename.replace('image', 'residual')
-    os.system('rm -rf temp.mask temp.residual temp.border.mask temp.smooth.ceiling.mask temp.smooth.mask temp.nearfield.mask temp.big.smooth.ceiling.mask temp.big.smooth.mask')
+
+    for temp in temp_list:
+        shutil.rmtree(temp, ignore_errors=True)
+
     os.system('cp -r '+maskImage + ' temp.mask')
     os.system('cp -r '+residualImage + ' temp.residual')
     residualImage = 'temp.residual'
-    maskStats = cts.imstat(imagename='temp.mask')
+
     cts.imsmooth(imagename='temp.mask', kernel='gauss', major=str(beammajor*3.0)+'arcsec',
                  minor=str(beammajor*3.0)+'arcsec', pa='0deg', outfile='temp.smooth.mask')
     cts.immath(imagename=['temp.smooth.mask'], expr='iif(IM0 > 0.1,1.0,0.0)', outfile='temp.smooth.ceiling.mask')
@@ -498,15 +509,13 @@ def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
     cts.immath(imagename=['temp.big.smooth.ceiling.mask', 'temp.smooth.ceiling.mask'],
                expr='((IM0-IM1)-1.0)*-1.0', outfile='temp.nearfield.mask')
     maskImage = 'temp.nearfield.mask'
-    ia.close()
-    ia.done()
-    ia.open(residualImage)
-    #ia.calcmask(maskImage+" <0.5"+"&& mask("+residualImage+")",name='madpbmask0')
-    ia.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
-    mask0Stats = ia.statistics(robust=True, axes=[0, 1])
-    ia.maskhandler(op='set', name='madpbmask0')
+
+    with casa_tools.ImageReader(residualImage) as image:
+        image.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
+        mask0Stats = image.statistics(robust=True, axes=[0, 1])
+        image.maskhandler(op='set', name='madpbmask0')
+
     rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
-    residualMean = mask0Stats['median'][0]
     peak_intensity = image_stats['max'][0]
     SNR = peak_intensity/rms
     if verbose:
@@ -515,23 +524,29 @@ def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
         LOG.info("#Peak intensity of source: %.2f mJy/beam" % (peak_intensity*1000,))
         LOG.info("#Near Field rms: %.2e mJy/beam" % (rms*1000,))
         LOG.info("#Peak Near Field SNR: %.2f" % (SNR,))
-    ia.close()
-    ia.done()
-    os.system('rm -rf temp.mask temp.residual temp.border.mask temp.smooth.ceiling.mask temp.smooth.mask temp.nearfield.mask temp.big.smooth.ceiling.mask temp.big.smooth.mask')
+
+    for temp in temp_list:
+        shutil.rmtree(temp, ignore_errors=True)
+
     return SNR, rms
 
 
 def get_intflux(imagename, rms, maskname=None):
-    headerlist = cts.imhead(imagename, mode='list')
-    beammajor = headerlist['beammajor']['value']
-    beamminor = headerlist['beamminor']['value']
-    beampa = headerlist['beampa']['value']
-    cell = headerlist['cdelt2']*180.0/3.14159*3600.0
-    beamarea = 3.14159*beammajor*beamminor/(4.0*np.log(2.0))
-    pix_per_beam = beamarea/(cell**2)
-    if maskname is None:
-        maskname = imagename.replace('image.tt0', 'mask')
-    imagestats = cts.imstat(imagename=imagename, mask=maskname)
+
+    cqa = casa_tools.quanta
+    with casa_tools.ImageReader(imagename) as image:
+        bm = image.restoringbeam(polarization=0)
+        bmaj_arcsec = cqa.convert(bm['major'], 'arcsec')['value']
+        bmin_arcsec = cqa.convert(bm['minor'], 'arcsec')['value']
+        cdelt12_arcsec = np.degrees(np.abs(image.coordsys().increment()['numeric'][0:2]))*3600.0
+        beamarea = np.pi*bmaj_arcsec*bmin_arcsec/(4.0*np.log(2.0))
+        cellarea = cdelt12_arcsec[0]*cdelt12_arcsec[1]
+        pix_per_beam = beamarea/cellarea
+
+        if maskname is None:
+            maskname = imagename.replace('image.tt0', 'mask')
+        imagestats = image.statistics(mask=maskname)
+
     flux = imagestats['flux'][0]
     n_beams = imagestats['npts'][0]/pix_per_beam
     e_flux = (n_beams)**0.5*rms
@@ -541,7 +556,7 @@ def get_intflux(imagename, rms, maskname=None):
 def get_n_ants(vislist):
     # Examines number of antennas in each ms file and returns the minimum number of antennas
     msmd = casatools.msmetadata()
-    tb = casatools.table()
+
     n_ants = 50.0
     for vis in vislist:
         msmd.open(vis)
@@ -556,7 +571,6 @@ def get_n_ants(vislist):
 def get_ant_list(vis):
     # Examines number of antennas in each ms file and returns the minimum number of antennas
     msmd = casatools.msmetadata()
-    tb = casatools.table()
     n_ants = 50.0
     msmd.open(vis)
     names = msmd.antennanames()
@@ -568,7 +582,7 @@ def rank_refants(vis):
     # Get the antenna names and offsets.
 
     msmd = casatools.msmetadata()
-    tb = casatools.table()
+    tb = casa_tools.table
 
     msmd.open(vis)
     names = msmd.antennanames()
@@ -1161,13 +1175,18 @@ def sanitize_string(string):
 
 
 def compare_beams(image1, image2):
-    header_1 = cts.imhead(image1, mode='list')
-    beammajor_1 = header_1['beammajor']['value']
-    beamminor_1 = header_1['beamminor']['value']
 
-    header_2 = cts.imhead(image2, mode='list')
-    beammajor_2 = header_2['beammajor']['value']
-    beamminor_2 = header_2['beamminor']['value']
+    with casa_tools.ImageReader(image1) as image:
+        bm1 = image.restoringbeam(polarization=0)
+    with casa_tools.ImageReader(image2) as image:
+        bm2 = image.restoringbeam(polarization=0)
+
+    beammajor_1 = bm1['major']['value']
+    beamminor_1 = bm1['minor']['value']
+
+    beammajor_2 = bm2['major']['value']
+    beamminor_2 = bm2['minor']['value']
+
     beamarea_1 = beammajor_1*beamminor_1
     beamarea_2 = beammajor_2*beamminor_2
     delta_beamarea = (beamarea_2-beamarea_1)/beamarea_1
@@ -1247,8 +1266,8 @@ def importdata(vislist, all_targets, telescope):
 
 def get_flagged_solns_per_spw(spwlist, gaintable):
     # Get the antenna names and offsets.
-    msmd = casatools.msmetadata()
-    tb = casatools.table()
+
+    tb = casa_tools.table
 
     # Calculate the number of flags for each spw.
     # gaintable='"'+gaintable+'"'
