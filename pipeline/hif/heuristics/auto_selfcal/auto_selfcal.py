@@ -13,7 +13,8 @@ from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.tablereader import MeasurementSetReader
-#from pipeline.infrastructure.utils import request_omp_threading
+from pipeline.infrastructure import casa_tools
+# from pipeline.infrastructure.utils import request_omp_threading
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
@@ -307,7 +308,8 @@ class SelfcalHeuristics(object):
                     initial_NF_SNR, initial_NF_RMS = estimate_near_field_SNR(sani_target+'_'+band+'_initial.image.tt0')
                 else:
                     initial_NF_SNR, initial_NF_RMS = initial_SNR, initial_RMS
-                header = self.cts.imhead(imagename=sani_target+'_'+band+'_initial.image.tt0')
+                with casa_tools.ImageReader(sani_target+'_'+band+'_initial.image.tt0') as image:
+                    bm = image.restoringbeam(polarization=0)
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
                     selfcal_library[target][band]['theoretical_sensitivity'] = sensitivity_nomod
                 if 'VLA' in self.telescope:
@@ -321,9 +323,9 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['RMS_curr'] = initial_RMS
                 selfcal_library[target][band]['SNR_dirty'] = dirty_SNR
                 selfcal_library[target][band]['RMS_dirty'] = dirty_RMS
-                selfcal_library[target][band]['Beam_major_orig'] = header['restoringbeam']['major']['value']
-                selfcal_library[target][band]['Beam_minor_orig'] = header['restoringbeam']['minor']['value']
-                selfcal_library[target][band]['Beam_PA_orig'] = header['restoringbeam']['positionangle']['value']
+                selfcal_library[target][band]['Beam_major_orig'] = bm['major']['value']
+                selfcal_library[target][band]['Beam_minor_orig'] = bm['minor']['value']
+                selfcal_library[target][band]['Beam_PA_orig'] = bm['positionangle']['value']
                 goodMask = checkmask(imagename=sani_target+'_'+band+'_initial.image.tt0')
                 if goodMask:
                     selfcal_library[target][band]['intflux_orig'], selfcal_library[target][band]['e_intflux_orig'] = get_intflux(
@@ -608,7 +610,8 @@ class SelfcalHeuristics(object):
                             uvrange=selfcal_library[target][band]['uvrange'],
                             obstype=selfcal_library[target][band]['obstype'], resume=resume)
 
-                        header = self.cts.imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0')
+                        with casa_tools.ImageReader(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0') as image:
+                            bm = image.restoringbeam(polarization=0)
 
                         if iteration == 0:
                             gaincal_preapply_gaintable = {}
@@ -853,9 +856,9 @@ class SelfcalHeuristics(object):
                             selfcal_library[target][band][vis][solint]['RMS_pre'] = RMS.copy()
                             selfcal_library[target][band][vis][solint]['SNR_NF_pre'] = SNR_NF.copy()
                             selfcal_library[target][band][vis][solint]['RMS_NF_pre'] = RMS_NF.copy()
-                            selfcal_library[target][band][vis][solint]['Beam_major_pre'] = header['restoringbeam']['major']['value']
-                            selfcal_library[target][band][vis][solint]['Beam_minor_pre'] = header['restoringbeam']['minor']['value']
-                            selfcal_library[target][band][vis][solint]['Beam_PA_pre'] = header['restoringbeam']['positionangle']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_major_pre'] = bm['major']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_minor_pre'] = bm['minor']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_PA_pre'] = bm['positionangle']['value']
                             selfcal_library[target][band][vis][solint]['gaintable'] = applycal_gaintable[vis]
                             selfcal_library[target][band][vis][solint]['iteration'] = iteration+0
                             selfcal_library[target][band][vis][solint]['spwmap'] = applycal_spwmap[vis]
@@ -877,13 +880,12 @@ class SelfcalHeuristics(object):
                                     'RMS_curr']:
                                 selfcal_library[target][band]['RMS_curr'] = selfcal_library[target][band][vis][solint][
                                     'RMS_post'].copy()
-                            header = self.cts.imhead(imagename=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
-                            selfcal_library[target][band][vis][solint]['Beam_major_post'] = header['restoringbeam'][
-                                'major']['value']
-                            selfcal_library[target][band][vis][solint]['Beam_minor_post'] = header['restoringbeam'][
-                                'minor']['value']
-                            selfcal_library[target][band][vis][solint]['Beam_PA_post'] = header['restoringbeam'][
-                                'positionangle']['value']
+                            with casa_tools.ImageReader(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0') as image:
+                                bm = image.restoringbeam(polarization=0)
+
+                            selfcal_library[target][band][vis][solint]['Beam_major_post'] = bm['major']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_minor_post'] = bm['minor']['value']
+                            selfcal_library[target][band][vis][solint]['Beam_PA_post'] = bm['positionangle']['value']
                             selfcal_library[target][band][vis][solint]['intflux_post'], selfcal_library[target][band][
                                 vis][solint]['e_intflux_post'] = get_intflux(
                                 sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post.image.tt0', post_RMS)
@@ -1044,10 +1046,11 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['RMS_final'] = final_RMS
                 selfcal_library[target][band]['SNR_NF_final'] = final_NF_SNR
                 selfcal_library[target][band]['RMS_NF_final'] = final_NF_RMS
-                header = self.cts.imhead(imagename=sani_target+'_'+band+'_final.image.tt0')
-                selfcal_library[target][band]['Beam_major_final'] = header['restoringbeam']['major']['value']
-                selfcal_library[target][band]['Beam_minor_final'] = header['restoringbeam']['minor']['value']
-                selfcal_library[target][band]['Beam_PA_final'] = header['restoringbeam']['positionangle']['value']
+                with casa_tools.image(image=sani_target+'_'+band+'_final.image.tt0') as image:
+                    bm = image.restoringbeam(polarization=0)
+                selfcal_library[target][band]['Beam_major_final'] = bm['major']['value']
+                selfcal_library[target][band]['Beam_minor_final'] = bm['minor']['value']
+                selfcal_library[target][band]['Beam_PA_final'] = bm['positionangle']['value']
                 # recalc inital stats using final mask
                 final_SNR, final_RMS = estimate_SNR(sani_target+'_'+band+'_initial.image.tt0',
                                                     maskname=sani_target+'_'+band+'_final.mask')
