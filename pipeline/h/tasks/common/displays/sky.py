@@ -306,7 +306,7 @@ class SkyDisplay(object):
 
             if result_mask is not None and os.path.exists(result_mask):
                 mdata_mask = self._collapse_image(result_mask)
-                ax.contour(mdata_mask.T, [0.99], origin='lower', colors='white',
+                ax.contour(mdata_mask.T, [0.99], origin='lower', colors='white', linewidths=0.7,
                            extent=[blc[0], trc[0], blc[1], trc[1]])
 
             ax.axis('image')
