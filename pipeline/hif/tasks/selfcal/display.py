@@ -3,6 +3,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import shutil
 
 import pipeline.infrastructure.logging as logging
 from pipeline.h.tasks.common.displays import sky as sky
@@ -117,13 +118,13 @@ class SelfcalSummary(object):
 
     @staticmethod
     def get_sols_flagged_solns(gaintable):
-        import casatools
-        tb = casatools.table()
-        tb.open(gaintable)
-        flags = tb.getcol('FLAG').squeeze()
-        nsols = flags.size
-        flagged_sols = np.where(flags == True)
-        nflagged_sols = flagged_sols[0].size
+
+        with casa_tools.TableReader(gaintable) as tb:
+            flags = tb.getcol('FLAG').squeeze()
+            nsols = flags.size
+            flagged_sols = np.where(flags == True)
+            nflagged_sols = flagged_sols[0].size
+
         return nflagged_sols, nsols
 
     @staticmethod
@@ -163,14 +164,12 @@ class SelfcalSummary(object):
     @staticmethod
     def get_flagged_solns_per_ant(gaintable, vis):
         # Get the antenna names and offsets.
-        import casatools
-        msmd = casatools.msmetadata()
-        tb = casatools.table()
 
-        msmd.open(vis)
-        names = msmd.antennanames()
-        offset = [msmd.antennaoffset(name) for name in names]
-        msmd.close()
+        tb = casa_tools.table
+
+        with casa_tools.MSMDReader(vis) as msmd:
+            names = msmd.antennanames()
+            offset = [msmd.antennaoffset(name) for name in names]
 
         # Calculate the mean longitude and latitude.
 
@@ -191,7 +190,8 @@ class SelfcalSummary(object):
                     range(len(names))]
         # Calculate the number of flags for each antenna.
         # gaintable='"'+gaintable+'"'
-        os.system('cp -r '+gaintable.replace(' ', '\ ')+' tempgaintable.g')
+        shutil.rmtree('tempgaintable.g', ignore_errors=True)
+        shutil.copytree(gaintable, 'tempgaintable.g')
         gaintable = 'tempgaintable.g'
         nflags = [tb.calc('[select from '+gaintable+' where ANTENNA1==' +
                           str(i)+' giving  [ntrue(FLAG)]]')['0'].sum() for i in
@@ -199,7 +199,8 @@ class SelfcalSummary(object):
         nunflagged = [tb.calc('[select from '+gaintable+' where ANTENNA1==' +
                               str(i)+' giving  [nfalse(FLAG)]]')['0'].sum() for i in
                       range(len(names))]
-        os.system('rm -rf tempgaintable.g')
+
+        shutil.rmtree('tempgaintable.g', ignore_errors=True)
         fracflagged = np.array(nflags)/(np.array(nflags)+np.array(nunflagged))
         # Calculate a score based on those two.
         return names, np.array(offset_x), np.array(offset_y), offsets, nflags, nunflagged, fracflagged
@@ -207,11 +208,9 @@ class SelfcalSummary(object):
     @staticmethod
     def _get_ant_list(vis):
         # Examines number of antennas in each ms file and returns the minimum number of antennas
-        import casatools
-        msmd = casatools.msmetadata()
-        msmd.open(vis)
-        names = msmd.antennanames()
-        msmd.close()
+
+        with casa_tools.MSMDReader(vis) as msmd:
+            names = msmd.antennanames()
         return names
 
     def _plot_gain(self, vis, gaintable, solint):
@@ -350,71 +349,61 @@ class SelfcalSummary(object):
     @staticmethod
     def create_noise_histogram(imagename):
 
-        import casatools
-        ia = casatools.image()
-
         MADtoRMS = 1.4826
-        headerlist = ct.imhead(imagename, mode='list')
-        telescope = headerlist['telescope']
+
+        with casa_tools.ImageReader(imagename) as image:
+            telescope = image.coordsys().telescope()
+
         maskImage = imagename.replace('image', 'mask').replace('.tt0', '')
         residualImage = imagename.replace('image', 'residual')
-        os.system('rm -rf temp.mask temp.residual')
+
+        shutil.rmtree('temp.mask', ignore_errors=True)
+        shutil.rmtree('temp.residual', ignore_errors=True)
+
         if os.path.exists(maskImage):
-            os.system('cp -r '+maskImage + ' temp.mask')
+            shutil.copytree(maskImage, 'temp.mask')
             maskImage = 'temp.mask'
-        os.system('cp -r '+residualImage + ' temp.residual')
+        shutil.copytree(residualImage, 'temp.residual')
+
         residualImage = 'temp.residual'
         if os.path.exists(maskImage):
-            ia.close()
-            ia.done()
-            ia.open(residualImage)
-            #ia.calcmask(maskImage+" <0.5"+"&& mask("+residualImage+")",name='madpbmask0')
-            ia.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
-            mask0Stats = ia.statistics(robust=True, axes=[0, 1])
-            ia.maskhandler(op='set', name='madpbmask0')
-            rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
-            residualMean = mask0Stats['median'][0]
-            pix = np.squeeze(ia.getchunk())
-            mask = np.squeeze(ia.getchunk(getmask=True))
-            dimensions = mask.ndim
-            if dimensions == 4:
-                mask = mask[:, :, 0, 0]
-            if dimensions == 3:
-                mask = mask[:, :, 0]
-            unmasked = (mask == True).nonzero()
-            pix_unmasked = pix[unmasked]
-            N, intensity = np.histogram(pix_unmasked, bins=50)
-            ia.close()
-            ia.done()
+            with casa_tools.ImageReader(residualImage) as image:
+                image.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
+                mask0Stats = image.statistics(robust=True, axes=[0, 1])
+                image.maskhandler(op='set', name='madpbmask0')
+                rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
+                pix = np.squeeze(image.getchunk())
+                mask = np.squeeze(image.getchunk(getmask=True))
+                dimensions = mask.ndim
+                if dimensions == 4:
+                    mask = mask[:, :, 0, 0]
+                if dimensions == 3:
+                    mask = mask[:, :, 0]
+                unmasked = (mask == True).nonzero()
+                pix_unmasked = pix[unmasked]
+                N, intensity = np.histogram(pix_unmasked, bins=50)
+
         elif telescope == 'ALMA':
-            ia.close()
-            ia.done()
-            ia.open(residualImage)
-            #ia.calcmask(maskImage+" <0.5"+"&& mask("+residualImage+")",name='madpbmask0')
-            ia.calcmask("mask("+residualImage+")", name='madpbmask0')
-            mask0Stats = ia.statistics(robust=True, axes=[0, 1])
-            ia.maskhandler(op='set', name='madpbmask0')
-            rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
-            residualMean = mask0Stats['median'][0]
-            pix = np.squeeze(ia.getchunk())
-            mask = np.squeeze(ia.getchunk(getmask=True))
-            mask = mask[:, :, 0, 0]
-            unmasked = (mask == True).nonzero()
-            pix_unmasked = pix[unmasked]
-            ia.close()
-            ia.done()
+            with casa_tools.ImageReader(residualImage) as image:
+                image.calcmask("mask("+residualImage+")", name='madpbmask0')
+                mask0Stats = image.statistics(robust=True, axes=[0, 1])
+                image.maskhandler(op='set', name='madpbmask0')
+                rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
+                pix = np.squeeze(image.getchunk())
+                mask = np.squeeze(image.getchunk(getmask=True))
+                mask = mask[:, :, 0, 0]
+                unmasked = (mask == True).nonzero()
+                pix_unmasked = pix[unmasked]
         elif telescope == 'VLA':
-            residual_stats = ct.imstat(imagename=imagename.replace('image', 'residual'), algorithm='chauvenet')
-            rms = residual_stats['rms'][0]
-            ia.open(residualImage)
-            pix_unmasked = np.squeeze(ia.getchunk())
-            ia.close()
-            ia.done()
+            with casa_tools.ImageReader(imagename.replace('image', 'residual')) as image:
+                rms = image.statistics(algorithm='chauvenet')['rms'][0]
+            with casa_tools.ImageReader(residualImage) as image:
+                pix_unmasked = np.squeeze(image.getchunk())
 
         N, intensity = np.histogram(pix_unmasked, bins=100)
         intensity = np.diff(intensity)+intensity[:-1]
-        ia.close()
-        ia.done()
-        os.system('rm -rf temp.mask temp.residual')
+
+        shutil.rmtree('temp.mask', ignore_errors=True)
+        shutil.rmtree('temp.residual', ignore_errors=True)
 
         return N, intensity, rms
