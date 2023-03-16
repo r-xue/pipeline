@@ -49,11 +49,6 @@ class SelfcalResults(basetask.Results):
             for calapp in r.applied:
                 calto_list.append(calapp.calto)
 
-        vislist = []
-        for target in self.targets:
-            vislist.extend(target['sc_vislist'])
-        vislist = list(set(vislist))
-
         # register the selfcal results to the observing run
         for calto in calto_list:
 
