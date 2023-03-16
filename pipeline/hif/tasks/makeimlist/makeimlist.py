@@ -945,7 +945,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 else:
                                     if local_columns[0] == 'DATA':
                                         local_datacolumn = 'data'
-                                    elif columns[0] == 'CORRECTED_DATA':
+                                    elif local_columns[0] == 'CORRECTED_DATA':
                                         local_datacolumn = 'corrected'
                                     else:
                                         LOG.warn(f'Unknown column name {local_columns[0]}')
