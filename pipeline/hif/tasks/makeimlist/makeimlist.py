@@ -260,19 +260,24 @@ class MakeImList(basetask.StandardTaskTemplate):
                 specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-        specmode_datatypes_str = [str(datatype).split(".")[-1] for datatype in specmode_datatypes]
+        specmode_datatypes_str = [str(datatype).replace('DataType.', '') for datatype in specmode_datatypes]
 
         datacolumn = inputs.datacolumn
 
-        selected_datatype = None
-        selected_datatype_info = 'N/A'
-        automatic_datatype_choice = True
+        global_datatype = None
+        global_datatype_info = 'N/A'
+        selected_datatypes = [global_datatype]
+        selected_datatypes_info = [global_datatype_info]
+        automatic_datatype_choice = False
 
         # Select the correct vis list
         if inputs.vis in ('', [''], [], None):
             (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
-            global_datatype_info = f'{str(selected_datatype).split(".")[-1]}'
-            selected_datatype_info = global_datatype_info
+            global_datatype = f'{str(selected_datatype).replace("DataType.", "")}'
+            global_datatype_info = global_datatype
+            selected_datatypes = [selected_datatype]
+            selected_datatypes_info = [global_datatype_info]
+            automatic_datatype_choice = True
 
             if ms_objects_and_columns == collections.OrderedDict():
                 result.set_info({'msg': 'No data found. No imaging targets were created.',
@@ -282,7 +287,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.linesfile = None
                 return result
 
-            LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for imaging.')
+            LOG.info(f'Using data type {str(selected_datatype).replace("DataType.", "")} for imaging.')
             if selected_datatype == DataType.RAW:
                 LOG.warn('Falling back to raw data for imaging.')
 
@@ -311,17 +316,23 @@ class MakeImList(basetask.StandardTaskTemplate):
             vislist_datatypes_str = []
             for vis in inputs.vis:
                 ms_object = inputs.context.observing_run.get_ms(vis)
-                vislist_datatypes_str = vislist_datatypes_str + [str(datatype).split('.')[-1] for datatype in ms_object.data_column]
+                # Collect the intersection of data types across the vis list
+                vislist_datatypes_str = vislist_datatypes_str and [str(datatype).replace('DataType.', '') for datatype in ms_object.data_column]
             # Intersection of specmode based and vis based datatypes gives
             # list of actually available data types for this call.
             available_datatypes_str = specmode_datatypes_str and vislist_datatypes_str
 
             if inputs.datatype.strip().upper() == 'BEST':
                 # Automatic choice with fallback per source/spw selection
-                user_datatypes = []
+                user_datatypes = [global_datatype]
+                user_datatypes_info = [global_datatype_info]
+                automatic_datatype_choice = global_datatype is not None
             elif inputs.datatype.strip().upper() == 'ALL':
-                # All selfcal and regcal choices available for this vis list
-                user_datatypes = [datatype for datatype in available_datatypes_str if 'SELFCAL' in datatype or 'REGCAL' in datatype]
+                # All SELFCAL and REGCAL choices available for this vis list
+                # List selfcal first, then regcal
+                user_datatypes = [datatype for datatype in available_datatypes_str if 'SELFCAL' in datatype]
+                user_datatypes = user_datatypes + [datatype for datatype in available_datatypes_str if 'REGCAL' in datatype]
+                user_datatypes_info = [datatype for datatype in user_datatypes]
                 automatic_datatype_choice = False
             else:
                 user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
@@ -334,12 +345,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result.error_msg = msg
                         return result
 
-                    # Expand REGCAL and SELFCAL to explicit data types
+                    # Expand SELFCAL and REGCAL to explicit data types for this vis list
                     expanded_user_datatypes = []
-                    if 'REGCAL' in user_datatypes:
-                        expanded_user_datatypes = expanded_user_datatypes + [datatype for datatype in available_datatypes_str if 'REGCAL' in datatype]
+                    # List selfcal first, then regcal
                     if 'SELFCAL' in user_datatypes:
                         expanded_user_datatypes = expanded_user_datatypes + [datatype for datatype in available_datatypes_str if 'SELFCAL' in datatype]
+                    if 'REGCAL' in user_datatypes:
+                        expanded_user_datatypes = expanded_user_datatypes + [datatype for datatype in available_datatypes_str if 'REGCAL' in datatype]
                     user_datatypes = expanded_user_datatypes
                     automatic_datatype_choice = False
                 else:
@@ -353,8 +365,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result.error_msg = msg
                         return result
                     automatic_datatype_choice = False
-        else:
-            user_datatypes = []
+                user_datatypes_info = [datatype for datatype in user_datatypes]
+
+            selected_datatypes = user_datatypes
+            selected_datatypes_info = user_datatypes_info
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
@@ -487,7 +501,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         max_num_targets = 0
 
-        for band in band_spws:
+        for selected_datatype, selected_datatype_info in zip(selected_datatypes, selected_datatypes_info):
+          for band in band_spws:
             if band != None:
                 spw = band_spws[band].__repr__()
                 spwlist = band_spws[band]
@@ -909,10 +924,17 @@ class MakeImList(basetask.StandardTaskTemplate):
                         # If not, fall back to next available data type.
                         if selected_datatype is not None:
                             # TODO: Filter out spws without requested data type for cont mode?
-                            (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
-                            if local_selected_datatype != selected_datatype:
-                                LOG.warn(f'Data type {str(selected_datatype).split(".")[-1]} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {str(local_selected_datatype).split(".")[-1]}.')
-                                selected_datatype_info = f'{str(local_selected_datatype).split(".")[-1]} instead of {str(selected_datatype).split(".")[-1]}'
+                            if automatic_datatype_choice:
+                                (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                            else:
+                                (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval('DataType.{}'.format(selected_datatype))], msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                            local_selected_datatype_str = str(local_selected_datatype).replace('DataType.', '')
+
+                            if local_selected_datatype_str != selected_datatype:
+                                if automatic_datatype_choice:
+                                    LOG.warn(f'Data type {selected_datatype} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
+
+                                selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype}'
 
                                 local_columns = list(local_ms_objects_and_columns.values())
                                 if not all(local_column == local_columns[0] for local_column in local_columns):
@@ -936,7 +958,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             if vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
                                 if original_vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
-                                    LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {str(local_selected_datatype).split(".")[-1]}.''')
+                                    LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {local_selected_datatype_str}.''')
                                 vislist_field_spw_combinations[field_intent[0]]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
                         else:
                             local_selected_datatype = None
