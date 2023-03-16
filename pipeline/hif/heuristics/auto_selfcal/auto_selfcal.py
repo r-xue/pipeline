@@ -1046,7 +1046,7 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['RMS_final'] = final_RMS
                 selfcal_library[target][band]['SNR_NF_final'] = final_NF_SNR
                 selfcal_library[target][band]['RMS_NF_final'] = final_NF_RMS
-                with casa_tools.ImageReader(image=sani_target+'_'+band+'_final.image.tt0') as image:
+                with casa_tools.ImageReader(sani_target+'_'+band+'_final.image.tt0') as image:
                     bm = image.restoringbeam(polarization=0)
                 selfcal_library[target][band]['Beam_major_final'] = bm['major']['value']
                 selfcal_library[target][band]['Beam_minor_final'] = bm['minor']['value']
