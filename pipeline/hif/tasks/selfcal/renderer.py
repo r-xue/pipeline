@@ -392,9 +392,15 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 return slib[rkey]
 
+        def fm_solint(slib):
+            if slib['final_solint'] in [None, 'None']:
+                return '-'
+            else:
+                return slib['final_solint']
+
         desc_args = {'success': fm_sc_success(slib['SC_success']),
                      'reason': fm_reason(slib),
-                     'finalsolint': slib['final_solint']}
+                     'finalsolint': fm_solint(slib)}
         summary_desc = ('<ul style="list-style-type:none;">'
                         '<li>Selfcal Success: {success}</li>'
                         '<li>Stop Reason: {reason}</li>'
