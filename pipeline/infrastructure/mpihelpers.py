@@ -119,6 +119,7 @@ class AsyncTask(object):
         else:
             LOG.debug('Cannot find Tier0 casa_commands.log for command_request_id={id}; no merge needed'.format(**response))
 
+
 class SyncTask(object):
     def __init__(self, task, executor=None):
         """
@@ -248,7 +249,7 @@ class Tier0JobRequest(Executable):
         :param creator_fn: the class of the CASA task to execute
         :param job_args: any arguments to passed to the task Inputs
         """
-        super().__init__()        
+        super().__init__()
         self.__creator_fn = creator_fn
         self.__job_args = job_args
         if executor is None:
@@ -281,7 +282,7 @@ class Tier0JobRequest(Executable):
 
 
 class Tier0FunctionCall(Executable):
-    def __init__(self, fn, *args, **kwargs):
+    def __init__(self, fn, *args, executor=None, **kwargs):
         """
         Create a new Tier0FunctionCall for a function to be executed on an MPI
         server.
@@ -290,6 +291,13 @@ class Tier0FunctionCall(Executable):
         self.__fn = fn
         self.__args = args
         self.__kwargs = kwargs
+        if executor is None:
+            self.__executor = None
+        else:
+            # Exclude the context reference inside the executor shallow copy before pushing from the client
+            # to reduce the risk of reaching the MPI buffer size limit (150MiB as of CASA ver6.4.1,
+            # see PIPE-13656/PIPE-1337).
+            self.__executor = executor.copy(exclude_context=True)
 
         # the following code is used to get a nice repr format
         arg_names = list(signature(fn).parameters)
@@ -304,7 +312,15 @@ class Tier0FunctionCall(Executable):
         self.__keyword = list(map(format_arg_value, kwargs.items()))
 
     def get_executable(self):
-        return lambda: self.__fn(*self.__args, **self.__kwargs)
+        if self.__executor is None:
+            return lambda: self.__fn(*self.__args, **self.__kwargs)
+        else:
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.casa_commands.log', dir='', delete=True)
+            tmpfile.close()
+            self.logs['casa_commands_tier0'] = tmpfile.name
+            self.logs['casa_commands'] = self.__executor.cmdfile
+            self.__executor.cmdfile = self.logs['casa_commands_tier0']
+            return lambda: self.__fn(*self.__args, executor=self.__executor, **self.__kwargs)
 
     def __repr__(self):
         args = self.__positional + self.__nameless + self.__keyword

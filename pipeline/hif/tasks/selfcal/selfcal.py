@@ -215,7 +215,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                     dividing_factor=self.inputs.dividing_factor,
                                     check_all_spws=self.inputs.check_all_spws,
                                     do_amp_selfcal=self.inputs.amplitude_selfcal,
-                                    executor=self._executor.copy(exclude_context=True))
+                                    executor=self._executor)
         tq_results = tq.get_results()
 
         for idx, target in enumerate(scal_targets):
