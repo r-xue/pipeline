@@ -272,17 +272,18 @@ class MakeImList(basetask.StandardTaskTemplate):
         # Check against any user input to make sure that the correct starting
         # vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
         if inputs.datatype not in ('', None):
-            known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
             user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
-            datatype_checklist = [datatype not in known_datatypes_str for datatype in user_datatypes]
-            if any(datatype_checklist):
-                msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(user_datatypes, datatype_checklist) if c))
-                LOG.error(msg)
-                result.error = True
-                result.error_msg = msg
-                return result
-            # Use only intersection of specmode and user data types
-            specmode_datatypes = specmode_datatypes and [eval(f'DataType.{datatype}') for datatype in user_datatypes]
+            if all(datatype not in ('BEST', 'ALL', 'SELFCAL', 'REGCAL') for datatype in user_datatypes):
+                known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
+                datatype_checklist = [datatype not in known_datatypes_str for datatype in user_datatypes]
+                if any(datatype_checklist):
+                    msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(user_datatypes, datatype_checklist) if c))
+                    LOG.error(msg)
+                    result.error = True
+                    result.error_msg = msg
+                    return result
+                # Use only intersection of specmode and user data types
+                specmode_datatypes = specmode_datatypes and [eval(f'DataType.{datatype}') for datatype in user_datatypes]
 
         specmode_datatypes_str = [str(datatype).replace('DataType.', '') for datatype in specmode_datatypes]
 
