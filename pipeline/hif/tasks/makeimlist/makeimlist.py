@@ -286,7 +286,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
             if inputs.datacolumn not in (None, ''):
                 global_datacolumn = inputs.datacolumn
-                LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if global_columns[0] == "DATA" else "corrected"}".')
             else:
                 if global_columns[0] == 'DATA':
                     global_datacolumn = 'data'
