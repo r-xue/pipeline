@@ -862,7 +862,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
 
                                 if inputs.datacolumn not in (None, ''):
-                                    LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                                    LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
                                 else:
                                     if local_columns[0] == 'DATA':
                                         local_datacolumn = 'data'
