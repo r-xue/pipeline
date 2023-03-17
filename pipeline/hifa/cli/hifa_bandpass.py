@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, hm_phaseup=None,
                   phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
                   maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, combine=None, refant=None,
-                  solnorm=None, minblperant=None, minsnr=None, unregister_existing=None, pipelinemode=None, dryrun=None, 
+                  solnorm=None, minblperant=None, minsnr=None, unregister_existing=None, dryrun=None,
                   acceptresults=None):
 
     """
@@ -20,8 +20,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
     The hif_refant task may be used to pre-compute a prioritized list of
     reference antennas.
     
-    If pipeline mode is 'getinputs' then None is returned. Otherwise,
-    the results object for the pipeline task is returned.
+    The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -117,11 +116,6 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
     minsnr              Solutions below this SNR are rejected in the phaseup and bandpass solves
     unregister_existing Unregister all bandpass calibrations from the pipeline context
                         before registering the new bandpass calibrations from this task.
-    pipelinemode        The pipeline operating mode. In 'automatic' mode the pipeline
-                        determines the values of all context defined pipeline inputs automatically.
-                        In interactive mode the user can set the pipeline context defined parameters
-                        manually. In 'getinputs' mode the user can check the settings of
-                        all pipeline parameters without running the task.
     dryrun              Run the commands (True) or generate the commands to be run but
                         do not execute (False).
     acceptresults       Automatically accept the results of the task into the pipeline context (True)

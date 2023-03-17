@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, spw=None,
-                excludechan=None, atm_auto_exclude=None, pipelinemode=None, dryrun=None,
+                excludechan=None, atm_auto_exclude=None, dryrun=None,
                 acceptresults=None):
 
     """
@@ -29,7 +29,6 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, spw=None
                                excludechan={'22':'230.1GHz~230.2GHz'}
     atm_auto_exclude Automatically find and exclude regions with atmospheric features.
                      Default is False
-    pipelinemode     The pipeline operating mode
     dryrun           Run the task (False) or display task command (True)
     acceptresults    Add the results into the pipeline context
     [1;42mRETURNS[1;m             void
