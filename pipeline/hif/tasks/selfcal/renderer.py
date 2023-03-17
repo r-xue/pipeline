@@ -140,7 +140,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for target in targets:
             row = []
             valid_chars = "%s%s" % (string.ascii_letters, string.digits)
-            id_name = filenamer.sanitize(target['field_name']+'_'+target['sc_band'],valid_chars)
+            id_name = filenamer.sanitize(target['field_name']+'_'+target['sc_band'], valid_chars)
             row.append(f' <a href="#{id_name}">{target["field"]}</a> ')
             row.append(target['sc_band'].replace('_', ' '))
             row.append(target['spw'])
@@ -398,6 +398,15 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 return slib['final_solint']
 
+        def fm_values(row_values, v1, v2):
+            if v1 == -99.:
+                row_values[0] = '-'
+                row_values[2] = '-'
+            if v2 == -99.:
+                row_values[1] = '-'
+                row_values[2] = '-'
+            return row_values
+
         desc_args = {'success': fm_sc_success(slib['SC_success']),
                      'reason': fm_reason(slib),
                      'finalsolint': fm_solint(slib)}
@@ -410,7 +419,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for row_name in row_names:
             if row_name == 'Data Type':
-                row_values = ['Initial', 'Final', 'Dist. / Ratio']
+                row_values = ['Initial', 'Final', 'Brightness Dist. / Ratio']
             if row_name == 'Image':
                 summary_plots, noisehist_plot = display.SelfcalSummary(context, r, cleantarget).plot()
                 row_values = plots_to_html(
@@ -421,26 +430,32 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_orig'] * 1e3, slib['e_intflux_orig'] * 1e3),
                     '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_final'] * 1e3, slib['e_intflux_final'] * 1e3)] + \
                     ['{:0.2f}'.format(slib['intflux_final']/slib['intflux_orig'])]
+                row_values = fm_values(row_values, slib['intflux_orig'], slib['intflux_final'])
 
             if row_name == 'SNR':
                 row_values = ['{:0.2f}'.format(slib['SNR_orig']),
                               '{:0.2f}'.format(slib['SNR_final'])] +\
                     ['{:0.2f}'.format(slib['SNR_final']/slib['SNR_orig'])]
+                row_values = fm_values(row_values, slib['SNR_orig'], slib['SNR_final'])
 
             if row_name == 'SNR (N.F.)':
                 row_values = ['{:0.2f}'.format(slib['SNR_NF_orig']),
                               '{:0.2f}'.format(slib['SNR_NF_final'])] +\
                     ['{:0.2f}'.format(slib['SNR_NF_final']/slib['SNR_NF_orig'])]
+                row_values = fm_values(row_values, slib['SNR_NF_orig'], slib['SNR_NF_final'])
 
             if row_name == 'RMS':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_orig']*1e3),
                               '{:0.3f} mJy/bm'.format(slib['RMS_final']*1e3)] +\
                     ['{:0.2f}'.format(slib['RMS_final']/slib['RMS_orig'])]
+                row_values = fm_values(row_values, slib['RMS_orig'], slib['RMS_final'])
 
             if row_name == 'RMS (N.F.)':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_NF_orig']*1e3),
                               '{:0.3f} mJy/bm'.format(slib['RMS_NF_final']*1e3)] +\
                     ['{:0.2f}'.format(slib['RMS_NF_final']/slib['RMS_NF_orig'])]
+                row_values = fm_values(row_values, slib['RMS_NF_orig'], slib['RMS_NF_final'])
+
             if row_name == 'Beam':
                 row_values = ['{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
                     slib['Beam_major_orig'],
