@@ -973,7 +973,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     if inputs.datacolumn not in (None, ''):
                                         local_datacolumn = global_datacolumn
                                         local_selected_datatype_info = global_datatype_info
-                                        LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                                        LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
                                     else:
                                         if local_columns[0] == 'DATA':
                                             local_datacolumn = 'data'
@@ -992,7 +992,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     if inputs.datacolumn not in (None, ''):
                                         local_datacolumn = global_datacolumn
                                         local_selected_datatype_info = global_datatype_info
-                                        LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                                        LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
                                     else:
                                         if local_columns[0] == 'DATA':
                                             local_datacolumn = 'data'
