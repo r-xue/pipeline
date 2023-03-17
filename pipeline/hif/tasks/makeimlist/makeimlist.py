@@ -958,6 +958,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 else:
                                     (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{selected_datatype}')], msonly=False, source=field_intent[0], spw=adjusted_spwspec)
                                 local_selected_datatype_str = str(local_selected_datatype).replace('DataType.', '')
+                                local_selected_datatype_info = local_selected_datatype_str
 
                                 if local_selected_datatype_str != selected_datatype:
                                     if automatic_datatype_choice:
