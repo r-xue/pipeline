@@ -28,6 +28,7 @@ class CleanBaseInputs(vdp.StandardInputs):
 
     antenna = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
+    datatype_info = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
     cycleniter = vdp.VisDependentProperty(default=-999)
     cyclefactor = vdp.VisDependentProperty(default=-999.0)
@@ -120,7 +121,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     def spwsel(self):
         return []
 
-    def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, intent=None, field=None,
+    def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, datatype_info=None, intent=None, field=None,
                  spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
                  uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
@@ -139,6 +140,7 @@ class CleanBaseInputs(vdp.StandardInputs):
 
         self.imagename = imagename
         self.datacolumn = datacolumn
+        self.datatype_info = datatype_info
         self.intent = intent
         self.field = field
         self.spw = spw
@@ -234,6 +236,8 @@ class CleanBase(basetask.StandardTaskTemplate):
                                    'stage%s' % inputs.context.stage.split('_')[0])
             field_ids = inputs.heuristics.field(inputs.intent, inputs.field)
             result = TcleanResult(vis=inputs.vis,
+                                  datacolumn=inputs.datacolumn,
+                                  datatype_info=inputs.datatype_info,
                                   sourcename=inputs.field,
                                   field_ids=field_ids,
                                   intent=inputs.intent,
