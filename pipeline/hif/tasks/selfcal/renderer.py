@@ -290,8 +290,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         row.append('{:0.2f}'.format(
                             (slib[vislist[-1]][solint]['Beam_major_post'] *
                              slib[vislist[-1]][solint]['Beam_minor_post']) /
-                            (slib[vislist[-1]][solint]['Beam_major_orig'] *
-                             slib[vislist[-1]][solint]['Beam_minor_orig'])))
+                            (slib['Beam_major_orig'] *
+                             slib['Beam_minor_orig'])))
                     if row_name == 'clean_threshold':
                         if row_name in vis_solint_keys:
                             row.append('{:0.3f} mJy/bm'.format(
