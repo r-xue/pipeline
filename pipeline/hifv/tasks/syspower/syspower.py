@@ -167,6 +167,8 @@ class Syspower(basetask.StandardTaskTemplate):
         if isinstance(self.inputs.clip_sp_template, str):
             clip_sp_template = ast.literal_eval(self.inputs.clip_sp_template)
 
+        antexclude_dict = {}
+
         if isinstance(self.inputs.antexclude, str):
             antexclude_dict = ast.literal_eval(self.inputs.antexclude)
         elif isinstance(self.inputs.antexclude, dict):
@@ -268,11 +270,12 @@ class Syspower(basetask.StandardTaskTemplate):
             '''
 
             if self.inputs.antexclude:
-                antexclude_list = list(antexclude_dict[band].keys())
-                antexclude = ','.join(antexclude_list)
-                usemedian_perant = [i['usemedian'] for i in list(antexclude_dict[band].values())]
-                # usemedian_perant = antband_exclude[band]['usemedian']
-                usemedian_perant_dict = dict(zip(antexclude_list, usemedian_perant))
+                if band in antexclude_dict.keys():
+                    antexclude_list = list(antexclude_dict[band].keys())
+                    antexclude = ','.join(antexclude_list)
+                    usemedian_perant = [i['usemedian'] for i in list(antexclude_dict[band].values())]
+                    # usemedian_perant = antband_exclude[band]['usemedian']
+                    usemedian_perant_dict = dict(zip(antexclude_list, usemedian_perant))
 
             spws = []
             for baseband in band_baseband_spw[band]:
