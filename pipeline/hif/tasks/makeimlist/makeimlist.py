@@ -269,12 +269,12 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
-        # Check against any user input to make sure that the correct starting
-        # vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
+        # Check against any user input for datatype to make sure that the
+        # correct initial vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
+        known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
         if inputs.datatype not in ('', None):
             user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
             if all(datatype not in ('BEST', 'ALL', 'SELFCAL', 'REGCAL') for datatype in user_datatypes):
-                known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
                 datatype_checklist = [datatype not in known_datatypes_str for datatype in user_datatypes]
                 if any(datatype_checklist):
                     msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(user_datatypes, datatype_checklist) if c))
@@ -284,6 +284,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     return result
                 # Use only intersection of specmode and user data types
                 specmode_datatypes = specmode_datatypes and [eval(f'DataType.{datatype}') for datatype in user_datatypes]
+        else:
+            user_datatypes = []
 
         specmode_datatypes_str = [str(datatype).replace('DataType.', '') for datatype in specmode_datatypes]
 
@@ -298,6 +300,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         # Select the correct vis list
         if inputs.vis in ('', [''], [], None):
             (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
+            # Check for changing vis lists.
+            for user_datatype in user_datatypes:
+                (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{user_datatype}')], msonly=False)
+                if set(ms_objects_and_columns) != set(sub_ms_objects_and_columns):
+                    msg = 'Requested data types lead to multiple vis lists.  Please run hif_makeimlist with data type selections per kind of MS (targets, targets_line, etc.)'
+                    LOG.error(msg)
+                    result.error = True
+                    result.error_msg = msg
+                    return result
             global_datatype = f'{str(selected_datatype).replace("DataType.", "")}'
             global_datatype_info = global_datatype
             selected_datatypes = [global_datatype]
@@ -357,6 +368,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 user_datatypes = [global_datatype]
                 user_datatypes_info = [global_datatype_info]
                 automatic_datatype_choice = global_datatype is not None
+                LOG.info(f'Using data type {global_datatype} for imaging.')
             elif inputs.datatype.strip().upper() == 'ALL':
                 # All SELFCAL and REGCAL choices available for this vis list
                 # List selfcal first, then regcal
@@ -386,7 +398,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                     automatic_datatype_choice = False
                 else:
                     # Explicit individual data types
-                    known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
                     datatype_checklist = [datatype not in known_datatypes_str for datatype in user_datatypes]
                     if any(datatype_checklist):
                         msg = 'Undefined data type(s): {}'.format(','.join(d for d, c in zip(user_datatypes, datatype_checklist) if c))
@@ -967,49 +978,32 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     else:
                                         LOG.warn(f'Data type {selected_datatype} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list.')
                                         continue
-
                                     local_columns = list(local_ms_objects_and_columns.values())
-                                    if not all(local_column == local_columns[0] for local_column in local_columns):
-                                        LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
-
-                                    if inputs.datacolumn not in (None, ''):
-                                        local_datacolumn = global_datacolumn
-                                        local_selected_datatype_info = global_datatype_info
-                                        LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
-                                    else:
-                                        if local_columns[0] == 'DATA':
-                                            local_datacolumn = 'data'
-                                        elif local_columns[0] == 'CORRECTED_DATA':
-                                            local_datacolumn = 'corrected'
-                                        else:
-                                            LOG.warn(f'Unknown column name {local_columns[0]}')
-                                            local_datacolumn = ''
-
                                 elif not automatic_datatype_choice:
                                     local_selected_datatype_info = f'{selected_datatype}'
                                     local_columns = list(local_ms_objects_and_columns.values())
-                                    if not all(local_column == local_columns[0] for local_column in local_columns):
-                                        LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
 
-                                    if inputs.datacolumn not in (None, ''):
-                                        local_datacolumn = global_datacolumn
-                                        local_selected_datatype_info = global_datatype_info
-                                        LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
+                                if not all(local_column == local_columns[0] for local_column in local_columns):
+                                    LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
+
+                                if inputs.datacolumn not in (None, ''):
+                                    local_datacolumn = global_datacolumn
+                                    local_selected_datatype_info = global_datatype_info
+                                    LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
+                                else:
+                                    if local_columns[0] == 'DATA':
+                                        local_datacolumn = 'data'
+                                    elif local_columns[0] == 'CORRECTED_DATA':
+                                        local_datacolumn = 'corrected'
                                     else:
-                                        if local_columns[0] == 'DATA':
-                                            local_datacolumn = 'data'
-                                        elif local_columns[0] == 'CORRECTED_DATA':
-                                            local_datacolumn = 'corrected'
-                                        else:
-                                            LOG.warn(f'Unknown column name {local_columns[0]}')
-                                            local_datacolumn = ''
+                                        LOG.warn(f'Unknown column name {local_columns[0]}')
+                                        local_datacolumn = ''
 
                                 datacolumn = local_datacolumn
 
-
                                 if vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
                                     if original_vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
-                                        if automatic_datatype_choice:
+                                        if automatic_datatype_choice and local_selected_datatype_str != selected_datatype:
                                             LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for fallback data type {local_selected_datatype_str}.''')
                                         else:
                                             LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {[k.basename for k in local_ms_objects_and_columns.keys()]} for data type {local_selected_datatype_str}.''')
