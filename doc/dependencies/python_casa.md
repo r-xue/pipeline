@@ -1,8 +1,10 @@
-# PIPE-938
+# CASA-Python Dependency List
 
-note: this is a work in progress, just a copy of pipeline_imports.txt posted in the ticket for now.
-```
-# python built-in
+Note: this is a work in progress, started from a copy of `pipeline_imports.txt` posted on PIPE-938 and has been updated to reflect the current state of the code.
+
+## Python built-in
+
+```python
 from __future__ import print_function  # prevents adding old-style print statements
 import abc
 import array
@@ -93,39 +95,15 @@ import uuid
 import warnings
 import weakref
 import webbrowser
+from importlib import import_module
+```
 
-# setup.py
-import csscompressor
+## casatasks/casatools
 
-# /pipeline/extern/
-import mako
-import cachetools
-import intervaltree
-import sortedcontainers
-import XmlObjectifier
-	import interactive
-import md5  # ps_mem.py
-
-# /pipeline/extern/logutils/
-import redis
-import Queue
-import cPickle as pickle
-
-# 3rd party CASA /site-packages/
-import matplotlib
-import numpy
-import scipy
-import pyfits
-import pyparsing
-
-# findcontinuum
-import taskinit
-
-# CASA
+```python
 from casampi.MPICommandClient import MPICommandClient
 from casampi.MPIEnvironment import MPIEnvironment
-from casarecipes import tec_maps
-from casashell.private.stack_manip import find_frame
+
 from casatasks import casalog
 from casatasks import imcollapse
 from casatasks import imhead
@@ -136,6 +114,7 @@ from casatasks import imsmooth
 from casatasks import imstat
 from casatasks import imsubimage
 from casatasks import makemask
+
 from casatasks.private import flaghelper
 from casatasks.private import simutil
 from casatasks.private import solar_system_setjy as ss_setjy
@@ -144,6 +123,14 @@ from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
 from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 import casatasks.private.sdbeamutil as sdbeamutil
+from casatasks.private import tec_maps
+from casashell.private.stack_manip import find_frame
+
+from casaplotms import plotms
+import casaplotms.private.plotmstool as plotmstool
+
+from almatask import wvrgcal
+
 from casatools import atmosphere as attool
 from casatools import calibrater, ms, table
 from casatools import image as iatool
@@ -153,17 +140,45 @@ from casatools import msmetadata as msmdtool
 from casatools import quanta as qatool
 from casatools import synthesismaskhandler
 from casatools import table as tbtool
-import casa as mycasa
-import casadef
-from imcollapse_cli import imcollapse_cli as imcollapse
-from imhead_cli import imhead_cli as imhead
-from immath_cli import immath_cli as immath # only used if pbcube is not passed and no emission is found
-from immoments_cli import immoments_cli as immoments
-from importlib import import_module
-from imregrid_cli import imregrid_cli as imregrid
-from imsmooth_cli import imsmooth_cli as imsmooth
-from imstat_cli import imstat_cli as imstat  # used by computeMadSpectrum
-from imsubimage_cli import imsubimage_cli as imsubimage
-import almatasks
-import makemask_cli
+
+```
+
+## 3rd-party Packages from CASA (site-packages/)
+
+```python
+import matplotlib
+import numpy
+import scipy
+import pyfits
+import pyparsing
+```
+
+## 3rd-party Packages not included in the monolithic CASA
+
+```python
+import cachetools
+import mako
+import pypubsub
+import intervaltree
+import logutils
+import ps_mem
+import astropy
+import bdsf
+import csscompressor # (setup.py)
+```
+
+## Shell Environment Variables
+
+```console
+FLUX_SERVICE_URL
+FLUX_SERVICE_URL_BACKUP
+SCIPIPE_HEURISTICS
+SCIPIPE_ROOTDIR
+WEBLOG_RERENDER_STAGES
+PIPE356_QA_MODE
+
+ENABLE_TIER0_PLOTMS # infrastructure.mpihelpers.ENABLE_TIER0_PLOTMS
+DISABLE_CASA_CALLIBRARY # mpihelpers.ENABLE_TIER0_PLOTMS 
+DISABLE_CASA_CALLIBRARY # diable the usage of CASA callibrary and revert to non-callibrary applycal call.
+WEBLOG_RERENDER_STAGES # the weblog stages to be rerendered.
 ```
