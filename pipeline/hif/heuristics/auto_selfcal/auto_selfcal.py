@@ -898,11 +898,6 @@ class SelfcalHeuristics(object):
                         beamarea_post = selfcal_library[target][band][
                             vislist[0]][solint]['Beam_major_post'] * selfcal_library[target][band][
                             vislist[0]][solint]['Beam_minor_post']
-                        """
-                        frac_delta_b_maj=np.abs((b_maj_post-selfcal_library[target]['Beam_major_orig'])/selfcal_library[target]['Beam_major_orig'])
-                        frac_delta_b_min=np.abs((b_min_post-selfcal_library[target]['Beam_minor_orig'])/selfcal_library[target]['Beam_minor_orig'])
-                        delta_b_pa=np.abs((b_pa_post-selfcal_library[target]['Beam_PA_orig']))
-                        """
                         delta_beamarea = (beamarea_post-beamarea_orig)/beamarea_orig
                         ##
                         # if S/N improvement, and beamarea is changing by < delta_beam_thresh, accept solutions to main calibration dictionary
