@@ -10,6 +10,8 @@ import subprocess
 import sys
 
 import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
+from importlib import resources
 
 from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
@@ -17,7 +19,7 @@ from .infrastructure import utils
 from .infrastructure import casa_tools
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores',
-           'memory_size', 'pipeline_revision', 'role', 'cluster_details']
+           'memory_size', 'pipeline_revision', 'role', 'cluster_details', 'dependency_details']
 
 
 def _cpu_type():
@@ -231,6 +233,30 @@ def _cluster_details():
 casa_version = casa_tools.utils.version()
 casa_version_string = casa_tools.utils.version_string()
 compare_casa_version = casa_tools.utils.compare_version
+
+def _get_dependency_details(package_list=None):
+    """Get dependency package version/path.
+
+    ref: https://docs.python.org/3.8/library/importlib.metadata.html#metadata
+    """
+    if package_list is None:
+        package_list = ['numpy', 'scipy', 'matplotlib',
+                        'astropy', 'bdsf', 'pympler',
+                        'csscompressor',
+                        'casatools', 'casatasks', 'almatasks', 'casadata']
+
+    package_details = dict.fromkeys(package_list)
+    for r in package_list:
+        try:
+            package_version = version(r)
+            with resources.path(r, '') as p:
+                package_path = p
+            package_details[r] = {'version': package_version, 'path': package_path}
+        except PackageNotFoundError:
+            # unknown or uninstalled
+            pass
+    return package_details
+
 cpu_type = _cpu_type()
 hostname = _hostname()
 host_distribution = _host_distribution()
@@ -240,6 +266,7 @@ memory_size = _memory_size()
 role = _role()
 pipeline_revision = _pipeline_revision()
 ulimit = _ulimit()
+dependency_details = _get_dependency_details()
 
 node_details = {
     'cpu': cpu_type,
