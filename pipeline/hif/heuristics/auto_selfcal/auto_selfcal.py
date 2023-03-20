@@ -41,6 +41,7 @@ class SelfcalHeuristics(object):
                  dividing_factor=None,
                  check_all_spws=False,
                  do_amp_selfcal=False,
+                 inf_EB_gaincal_combine='scan',
                  executor=None):
         """Initialize the class."""
         self.executor = executor
@@ -69,7 +70,7 @@ class SelfcalHeuristics(object):
         self.rel_thresh_scaling = rel_thresh_scaling
         self.dividing_factor = dividing_factor
         self.check_all_spws = check_all_spws
-        self.inf_EB_gaincal_combine = 'scan'    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
+        self.inf_EB_gaincal_combine = inf_EB_gaincal_combine    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
         self.inf_EB_gaintype = 'G'              # Options: 'G' or 'T' or 'G,T'
 
         LOG.info('recreating observing run from per-selfcal-target MS(es)')

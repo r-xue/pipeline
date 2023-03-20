@@ -10,7 +10,7 @@ def hif_selfcal(vis=None, field=None, spw=None, contflie=None,
                 amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thres=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
-                dividing_factor=None, check_all_spws=None,
+                dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                 pipelinemode=None, dryrun=None, acceptresults=None):
     """hif_selfcal ----- Determine and apply self-calibration with the science target data
     
@@ -58,7 +58,11 @@ def hif_selfcal(vis=None, field=None, spw=None, contflie=None,
                             default = 40 for < 8 GHz; 15 for > 8 GHz
     check_all_spws          If True, the S/N of mfs images created on a per-spectral-window basis will 
                             be compared at the initial stages final self-calibration.
-                            default=False                   
+                            default=False
+    inf_EB_gaincal_combine  change gain solution combination parameters for the inf_EB solution interval. 
+                            if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
+                            the gaincal combine parameter will be set to 'scan'.
+                            default=False                  
     """
 
     #                                                                        #

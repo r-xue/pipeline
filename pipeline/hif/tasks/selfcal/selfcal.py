@@ -93,11 +93,12 @@ class SelfcalInputs(vdp.StandardInputs):
     rel_thresh_scaling = vdp.VisDependentProperty(default='log10')
     dividing_factor = vdp.VisDependentProperty(default=None)
     check_all_spws = vdp.VisDependentProperty(default=False)
+    inf_EB_gaincal_combine = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, vis=None, field=None, spw=None, contfile=None,
                  amplitude_selfcal=None, gaincal_minsnr=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
-                 rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None,
+                 rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                  apply=None, parallel=None, recal=None):
         super().__init__()
         self.context = context
@@ -117,6 +118,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.rel_thresh_scaling = rel_thresh_scaling
         self.dividing_factor = dividing_factor
         self.check_all_spws = check_all_spws
+        self.inf_EB_gaincal_combine = inf_EB_gaincal_combine
 
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
@@ -201,6 +203,11 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         # # start the selfcal sequence.
 
+        if self.inputs.inf_EB_gaincal_combine:
+            inf_EB_gaincal_combine = 'scan,spw'
+        else:
+            inf_EB_gaincal_combine = 'scan'
+
         tclean_parallel_request = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(scal_targets) > 1
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
@@ -215,6 +222,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                     dividing_factor=self.inputs.dividing_factor,
                                     check_all_spws=self.inputs.check_all_spws,
                                     do_amp_selfcal=self.inputs.amplitude_selfcal,
+                                    inf_EB_gaincal_combine=inf_EB_gaincal_combine,
                                     executor=self._executor)
         tq_results = tq.get_results()
 
