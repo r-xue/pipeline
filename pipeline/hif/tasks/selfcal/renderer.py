@@ -62,17 +62,17 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
             if row_name == 'Image':
                 row_values = plots_to_html(image_plots, report_dir=context.report_dir, title='Prior/Post Image Comparison')
             if row_name == 'SNR':
-                row_values = ['{:0.2f}'.format(slib_solint['SNR_pre']),
-                              '{:0.2f}'.format(slib_solint['SNR_post'])]
+                row_values = ['{:0.3f}'.format(slib_solint['SNR_pre']),
+                              '{:0.3f}'.format(slib_solint['SNR_post'])]
             if row_name == 'RMS':
                 row_values = ['{:0.3f} mJy/bm'.format(slib_solint['RMS_pre']*1e3),
                               '{:0.3f} mJy/bm'.format(slib_solint['RMS_post']*1e3)]
             if row_name == 'Beam':
-                row_values = ['{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
+                row_values = ['{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
                     slib_solint['Beam_major_pre'],
                     slib_solint['Beam_minor_pre'],
                     slib_solint['Beam_PA_pre']),
-                    '{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
+                    '{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
                     slib_solint['Beam_major_post'],
                     slib_solint['Beam_minor_post'],
                     slib_solint['Beam_PA_post'])]
@@ -101,7 +101,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
                 if row_name == 'N Flagged Sol.':
                     row_values = [nsol_stats['nflagged_sols']]
                 if row_name == 'Frac. Flagged Sol.':
-                    row_values = ['{:0.2f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.)]
+                    row_values = ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.)]
                 if row_name == 'Fallback Mode':
                     row_value = '-'
                     if solint == 'inf_EB' and 'fallback' in slib[vis][solint]:
@@ -194,7 +194,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         vis_keys = list(slib[vislist[-1]].keys())
         row_names = [
             'Pass', 'intflux_final', 'intflux_improvement', 'SNR_final', 'SNR_Improvement', 'SNR_NF_final',
-            'SNR_NF_Improvement', 'RMS_final', 'RMS_Improvement', 'RMS_NF_final', 'RMS_NF_Improvement', 'Beam_Ratio',
+            'SNR_NF_Improvement', 'RMS_final', 'RMS_Improvement', 'RMS_NF_final', 'RMS_NF_Improvement',
+            'Beam_pre', 'Beam_post', 'Beam_Ratio',
             'clean_threshold']
         qa_extra_data = {}
 
@@ -224,8 +225,12 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row.append('RMS (N.F.)')
             if row_name == 'RMS_NF_Improvement':
                 row.append('RMS Improvement (N.F.)')
+            if row_name == 'Beam_pre':
+                row.append('Beam Pre')
+            if row_name == 'Beam_post':
+                row.append('Beam post')
             if row_name == 'Beam_Ratio':
-                row.append('Ratio of Beam Area')
+                row.append(text_with_tooltip('Ratio of Beam Area', 'The ratio of the beam area before and after self-calibration.'))
             if row_name == 'clean_threshold':
                 row.append('Clean Threshold')
 
@@ -234,11 +239,12 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     row.append('-')
                 else:
                     check_solint = True
-                    vis_solint_keys = slib[vislist[-1]][solint].keys()
+                    slib_solint = slib[vislist[-1]][solint]
+                    vis_solint_keys = slib_solint.keys()
                     if row_name == 'Pass':
                         result_desc = '-'
-                        if not slib[vislist[-1]][solint]['Pass']:
-                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib[vislist[-1]][solint]['Fail_Reason'])
+                        if not slib_solint['Pass']:
+                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib_solint['Fail_Reason'])
                         else:
                             result_desc = '<font color="blue">{}</font>'.format('Pass')
 
@@ -249,53 +255,58 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         result_desc = f'{result_desc}<br><a class="replace" href="{qa_renderer.rel_path}">QA Plots</a>'
                         row.append(result_desc)
                     if row_name == 'intflux_final':
-                        row.append('{:0.2f} &#177 {:0.2f} mJy'.format(
-                            slib
-                            [vislist[-1]][solint]
-                            ['intflux_post'] * 1e3,
-                            slib
-                            [vislist[-1]][solint]
-                            ['e_intflux_post'] * 1e3))
+                        row.append('{:0.3f} &#177 {:0.3f} mJy'.format(
+                            slib_solint['intflux_post'] * 1e3,
+                            slib_solint['e_intflux_post'] * 1e3))
                     if row_name == 'intflux_improvement':
-                        row.append('{:0.2f}'.format(
-                            slib[vislist[-1]][solint]['intflux_post'] /
-                            slib[vislist[-1]][solint]['intflux_pre']))
+                        row.append('{:0.3f}'.format(
+                            slib_solint['intflux_post'] /
+                            slib_solint['intflux_pre']))
                     if row_name == 'SNR_final':
-                        row.append('{:0.2f}'.format(slib[vislist[-1]][solint]['SNR_post']))
+                        row.append('{:0.3f}'.format(slib_solint['SNR_post']))
                     if row_name == 'SNR_Improvement':
-                        row.append('{:0.2f}'.format(
-                            slib[vislist[-1]][solint]['SNR_post'] /
-                            slib[vislist[-1]][solint]['SNR_pre']))
+                        row.append('{:0.3f}'.format(
+                            slib_solint['SNR_post'] /
+                            slib_solint['SNR_pre']))
                     if row_name == 'SNR_NF_final':
-                        row.append('{:0.2f}'.format(slib[vislist[-1]][solint]['SNR_NF_post']))
+                        row.append('{:0.3f}'.format(slib_solint['SNR_NF_post']))
                     if row_name == 'SNR_NF_Improvement':
-                        row.append('{:0.2f}'.format(
-                            slib[vislist[-1]][solint]['SNR_NF_post'] /
-                            slib[vislist[-1]][solint]['SNR_NF_pre']))
+                        row.append('{:0.3f}'.format(
+                            slib_solint['SNR_NF_post'] /
+                            slib_solint['SNR_NF_pre']))
 
                     if row_name == 'RMS_final':
-                        row.append('{:0.3f} mJy/bm'.format(slib[vislist[-1]][solint]['RMS_post']*1e3))
+                        row.append('{:0.3f} mJy/bm'.format(slib_solint['RMS_post']*1e3))
                     if row_name == 'RMS_Improvement':
-                        row.append('{:0.2f}'.format(
-                            slib[vislist[-1]][solint]['RMS_pre'] /
-                            slib[vislist[-1]][solint]['RMS_post']))
+                        row.append('{:0.3f}'.format(
+                            slib_solint['RMS_pre'] /
+                            slib_solint['RMS_post']))
                     if row_name == 'RMS_NF_final':
-                        row.append('{:0.3f} mJy/bm'.format(slib[vislist[-1]][solint]['RMS_NF_post']*1e3))
+                        row.append('{:0.3f} mJy/bm'.format(slib_solint['RMS_NF_post']*1e3))
                     if row_name == 'RMS_NF_Improvement':
-                        row.append('{:0.2f}'.format(
-                            slib[vislist[-1]][solint]['RMS_NF_pre'] /
-                            slib[vislist[-1]][solint]['RMS_NF_post']))
-
+                        row.append('{:0.3f}'.format(
+                            slib_solint['RMS_NF_pre'] /
+                            slib_solint['RMS_NF_post']))
+                    if row_name == 'Beam_pre':
+                        row.append('{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
+                            slib_solint['Beam_major_pre'],
+                            slib_solint['Beam_minor_pre'],
+                            slib_solint['Beam_PA_pre']))
+                    if row_name == 'Beam_post':
+                        row.append('{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
+                            slib_solint['Beam_major_post'],
+                            slib_solint['Beam_minor_post'],
+                            slib_solint['Beam_PA_post']))
                     if row_name == 'Beam_Ratio':
-                        row.append('{:0.2f}'.format(
-                            (slib[vislist[-1]][solint]['Beam_major_post'] *
-                             slib[vislist[-1]][solint]['Beam_minor_post']) /
+                        row.append('{:0.3f}'.format(
+                            (slib_solint['Beam_major_post'] *
+                             slib_solint['Beam_minor_post']) /
                             (slib['Beam_major_orig'] *
                              slib['Beam_minor_orig'])))
                     if row_name == 'clean_threshold':
                         if row_name in vis_solint_keys:
                             row.append('{:0.3f} mJy/bm'.format(
-                                slib[vislist[-1]][solint]['clean_threshold']*1e3))
+                                slib_solint['clean_threshold']*1e3))
                         else:
                             row.append('Not Available')
 
@@ -315,7 +326,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         if row_name == 'N.Sols Flagged':
                             row.append(nsol_stats['nflagged_sols'])
                         if row_name == 'Flagged Frac.':
-                            row.append('{:0.2f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.))
+                            row.append('{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.))
                         if row_name == 'Flagged Frac.<br>by antenna':
                             antpos_html = plots_to_html(
                                 [qa_extra_data[solint]['antpos_plots'][vis]],
@@ -345,7 +356,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for spw in spwlist:
                 spwkeys = slib['per_spw_stats'][spw].keys()
                 if 'SNR' in key and key in spwkeys:
-                    row.append('{:0.2f}'.format(slib['per_spw_stats'][spw][key]))
+                    row.append('{:0.3f}'.format(slib['per_spw_stats'][spw][key]))
                     check_all_spws = True
                     continue
                 if 'RMS' in key and key in spwkeys:
@@ -427,44 +438,44 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     report_dir=context.report_dir, title='Initial/Final Image Comparison')
             if row_name == 'Integrated Flux':
                 row_values = [
-                    '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_orig'] * 1e3, slib['e_intflux_orig'] * 1e3),
-                    '{:0.2f} &#177 {:0.2f} mJy'.format(slib['intflux_final'] * 1e3, slib['e_intflux_final'] * 1e3)] + \
-                    ['{:0.2f}'.format(slib['intflux_final']/slib['intflux_orig'])]
+                    '{:0.3f} &#177 {:0.3f} mJy'.format(slib['intflux_orig'] * 1e3, slib['e_intflux_orig'] * 1e3),
+                    '{:0.3f} &#177 {:0.3f} mJy'.format(slib['intflux_final'] * 1e3, slib['e_intflux_final'] * 1e3)] + \
+                    ['{:0.3f}'.format(slib['intflux_final']/slib['intflux_orig'])]
                 row_values = fm_values(row_values, slib['intflux_orig'], slib['intflux_final'])
 
             if row_name == 'SNR':
-                row_values = ['{:0.2f}'.format(slib['SNR_orig']),
-                              '{:0.2f}'.format(slib['SNR_final'])] +\
-                    ['{:0.2f}'.format(slib['SNR_final']/slib['SNR_orig'])]
+                row_values = ['{:0.3f}'.format(slib['SNR_orig']),
+                              '{:0.3f}'.format(slib['SNR_final'])] +\
+                    ['{:0.3f}'.format(slib['SNR_final']/slib['SNR_orig'])]
                 row_values = fm_values(row_values, slib['SNR_orig'], slib['SNR_final'])
 
             if row_name == 'SNR (N.F.)':
-                row_values = ['{:0.2f}'.format(slib['SNR_NF_orig']),
-                              '{:0.2f}'.format(slib['SNR_NF_final'])] +\
-                    ['{:0.2f}'.format(slib['SNR_NF_final']/slib['SNR_NF_orig'])]
+                row_values = ['{:0.3f}'.format(slib['SNR_NF_orig']),
+                              '{:0.3f}'.format(slib['SNR_NF_final'])] +\
+                    ['{:0.3f}'.format(slib['SNR_NF_final']/slib['SNR_NF_orig'])]
                 row_values = fm_values(row_values, slib['SNR_NF_orig'], slib['SNR_NF_final'])
 
             if row_name == 'RMS':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_orig']*1e3),
                               '{:0.3f} mJy/bm'.format(slib['RMS_final']*1e3)] +\
-                    ['{:0.2f}'.format(slib['RMS_final']/slib['RMS_orig'])]
+                    ['{:0.3f}'.format(slib['RMS_final']/slib['RMS_orig'])]
                 row_values = fm_values(row_values, slib['RMS_orig'], slib['RMS_final'])
 
             if row_name == 'RMS (N.F.)':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_NF_orig']*1e3),
                               '{:0.3f} mJy/bm'.format(slib['RMS_NF_final']*1e3)] +\
-                    ['{:0.2f}'.format(slib['RMS_NF_final']/slib['RMS_NF_orig'])]
+                    ['{:0.3f}'.format(slib['RMS_NF_final']/slib['RMS_NF_orig'])]
                 row_values = fm_values(row_values, slib['RMS_NF_orig'], slib['RMS_NF_final'])
 
             if row_name == 'Beam':
-                row_values = ['{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
+                row_values = ['{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
                     slib['Beam_major_orig'],
                     slib['Beam_minor_orig'],
                     slib['Beam_PA_orig']),
-                    '{:0.2f}"x{:0.2f}" {:0.2f} deg'.format(
+                    '{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
                     slib['Beam_major_final'],
                     slib['Beam_minor_final'],
-                    slib['Beam_PA_final'])] + ['{:0.2f}'.format(
+                    slib['Beam_PA_final'])] + ['{:0.3f}'.format(
                         slib['Beam_major_final'] * slib['Beam_minor_final'] / slib['Beam_major_orig'] / slib['Beam_minor_orig'])]
 
             rows.append([row_name]+row_values)
@@ -473,3 +484,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         rows.append(['Stop Reason']+[desc_args['reason']]*3)
 
         return utils.merge_td_rows(utils.merge_td_columns(rows, vertical_align=True))
+
+
+def text_with_tooltip(text, tooltip):
+    return f'<div data-toggle="tooltip" data-placement="bottom" title="{tooltip}">{text}</div>'

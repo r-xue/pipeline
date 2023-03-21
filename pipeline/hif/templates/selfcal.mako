@@ -10,7 +10,13 @@ import string
 <%block name="title">Self-Calibration</%block>
 
 <script type="text/javascript">
+
   $("td:contains('not implemented')").addClass('desc-summary');
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
 </script>
 
 
