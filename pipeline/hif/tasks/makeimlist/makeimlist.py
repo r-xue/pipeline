@@ -296,6 +296,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         global_datatype = None
         global_datatype_info = 'N/A'
+        global_datacolumn = inputs.datacolumn
         selected_datatypes = [global_datatype]
         selected_datatypes_info = [global_datatype_info]
         automatic_datatype_choice = False
