@@ -272,8 +272,10 @@ class MakeImList(basetask.StandardTaskTemplate):
         # Check against any user input for datatype to make sure that the
         # correct initial vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
         known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
+        explicit_user_datatypes = False
         if inputs.datatype not in ('', None):
-            user_datatypes = [datatype.strip().upper() for datatype in inputs.datatype.split(',')]
+            # Consider every comma separated user value just once
+            user_datatypes = list(set([datatype.strip().upper() for datatype in inputs.datatype.split(',')]))
             if all(datatype not in ('BEST', 'ALL', 'SELFCAL', 'REGCAL') for datatype in user_datatypes):
                 datatype_checklist = [datatype not in known_datatypes_str for datatype in user_datatypes]
                 if any(datatype_checklist):
@@ -282,6 +284,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     result.error = True
                     result.error_msg = msg
                     return result
+                explicit_user_datatypes = True
                 # Use only intersection of specmode and user data types
                 specmode_datatypes = specmode_datatypes and [eval(f'DataType.{datatype}') for datatype in user_datatypes]
         else:
@@ -301,14 +304,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         if inputs.vis in ('', [''], [], None):
             (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
             # Check for changing vis lists.
-            for user_datatype in user_datatypes:
-                (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{user_datatype}')], msonly=False)
-                if set(ms_objects_and_columns) != set(sub_ms_objects_and_columns):
-                    msg = 'Requested data types lead to multiple vis lists.  Please run hif_makeimlist with data type selections per kind of MS (targets, targets_line, etc.)'
-                    LOG.error(msg)
-                    result.error = True
-                    result.error_msg = msg
-                    return result
+            if explicit_user_datatypes:
+                for user_datatype in user_datatypes:
+                    (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{user_datatype}')], msonly=False)
+                    if set(ms_objects_and_columns) != set(sub_ms_objects_and_columns):
+                        msg = 'Requested data types lead to multiple vis lists. Please run hif_makeimlist with data type selections per kind of MS (targets, targets_line, etc.).'
+                        LOG.error(msg)
+                        result.error = True
+                        result.error_msg = msg
+                        return result
             global_datatype = f'{str(selected_datatype).replace("DataType.", "")}'
             global_datatype_info = global_datatype
             selected_datatypes = [global_datatype]
@@ -363,13 +367,27 @@ class MakeImList(basetask.StandardTaskTemplate):
             # list of actually available data types for this call.
             available_datatypes_str = specmode_datatypes_str and vislist_datatypes_str
 
-            if inputs.datatype.strip().upper() == 'BEST':
+            if 'BEST' in user_datatypes:
+                if user_datatypes != ['BEST']:
+                    msg = '"BEST" and all other options are mutually exclusive'
+                    LOG.error(msg)
+                    result.error = True
+                    result.error_msg = msg
+                    return result
+
                 # Automatic choice with fallback per source/spw selection
                 user_datatypes = [global_datatype]
                 user_datatypes_info = [global_datatype_info]
                 automatic_datatype_choice = global_datatype is not None
                 LOG.info(f'Using data type {global_datatype} for imaging.')
-            elif inputs.datatype.strip().upper() == 'ALL':
+            elif 'ALL' in user_datatypes:
+                if user_datatypes != ['BEST']:
+                    msg = '"ALL" and all other options are mutually exclusive'
+                    LOG.error(msg)
+                    result.error = True
+                    result.error_msg = msg
+                    return result
+
                 # All SELFCAL and REGCAL choices available for this vis list
                 # List selfcal first, then regcal
                 user_datatypes = [datatype for datatype in available_datatypes_str if 'SELFCAL' in datatype]
@@ -381,7 +399,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 if 'REGCAL' in user_datatypes or 'SELFCAL' in user_datatypes:
                     # Check if any explicit data types are given
                     if any(datatype in specmode_datatypes for datatype in user_datatypes):
-                        msg = 'REGCAL/SELFCAL and explicit data types are mutually exclusive'
+                        msg = '"REGCAL"/"SELFCAL" and explicit data types are mutually exclusive'
                         LOG.error(msg)
                         result.error = True
                         result.error_msg = msg
@@ -964,24 +982,23 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # Check if the globally selected data type is available for this field/spw combination.
                             if selected_datatype is not None and inputs.datacolumn in ('', None):
                                 if automatic_datatype_choice:
-                                    # If not, fall back to next available data type.
+                                    # In automatic mode check for source/spw specific fall back to next available data type.
                                     (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
                                 else:
+                                    # In manual mode check determine the data column for the current data type.
                                     (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{selected_datatype}')], msonly=False, source=field_intent[0], spw=adjusted_spwspec)
                                 local_selected_datatype_str = str(local_selected_datatype).replace('DataType.', '')
                                 local_selected_datatype_info = local_selected_datatype_str
+                                local_columns = list(local_ms_objects_and_columns.values())
 
                                 if local_selected_datatype_str != selected_datatype:
                                     if automatic_datatype_choice:
                                         LOG.warn(f'Data type {selected_datatype} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
                                         local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype}'
                                     else:
+                                        # Manually selected data type unavailable -> skip making an imaging target
                                         LOG.warn(f'Data type {selected_datatype} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list.')
                                         continue
-                                    local_columns = list(local_ms_objects_and_columns.values())
-                                elif not automatic_datatype_choice:
-                                    local_selected_datatype_info = f'{selected_datatype}'
-                                    local_columns = list(local_ms_objects_and_columns.values())
 
                                 if not all(local_column == local_columns[0] for local_column in local_columns):
                                     LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
