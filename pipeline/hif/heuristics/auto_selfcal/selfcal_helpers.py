@@ -898,6 +898,36 @@ def get_image_parameters(vislist, telescope, band, band_properties):
     return cellsize, npixels, nterms
 
 
+def get_nterms(fracbw, nt1snr=3.0):
+    """Get nterm based on fracbw and nt1snr.
+
+    see PIPE-1772.
+    """
+    def func_cubic(X, A, B, C, D, E, F, G, H):
+        return A*X[0]**3+B*X[1]**3+C*X[0]**2*X[1]+D*X[1]**2*X[0] + E*X[0]*X[1] + F*X[0] + G*X[1] + H
+
+    nterms = 1
+    if fracbw >= 0.1:
+        nterms = 2
+    else:
+        if nt1snr > 10.0:
+            # estimate the gain of going to nterms=2 based on nterms=1 S/N and fracbw
+            A1 = 2336.415
+            B1 = 0.051
+            C1 = -306.590
+            D1 = 5.654
+            E1 = 28.220
+            F1 = -23.598
+            G1 = -0.594
+            H1 = -3.413
+            #note that we fit the log10 of S/N_nt1 and [S/N_nt2 - S/N_nt1]/(S/N_nt1)
+            Z = 10**func_cubic([fracbw, np.log10(nt1snr)], A1, B1, C1, D1, E1, F1, G1, H1)
+            if Z > 0.01:
+                nterms = 2
+    LOG.debug('fracbw = {:0.3f}, nt1snr = {:0.3f}: nterms = {:d} will be used'.format(fracbw, nt1snr, nterms))
+    return nterms
+
+
 def get_mean_freq(vislist, spwsarray):
     tb.open(vislist[0]+'/SPECTRAL_WINDOW')
     freqarray = tb.getcol('REF_FREQUENCY')

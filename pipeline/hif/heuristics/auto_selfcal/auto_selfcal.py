@@ -19,7 +19,7 @@ from pipeline.infrastructure import casa_tools
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
                               estimate_SNR, fetch_spws, fetch_targets,
-                              get_dr_correction, get_image_parameters,
+                              get_dr_correction, get_nterms,
                               get_intflux, get_n_ants, get_sensitivity,
                               get_SNR_self, get_SNR_self_update,
                               get_solints_simple, get_spw_bandwidth,
@@ -239,7 +239,7 @@ class SelfcalHeuristics(object):
         cleantarget: a list of CleanTarget objects.
         """
 
-        all_targets, n_ants, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = self._prep_selfcal()
+        all_targets, n_ants, bands, band_properties, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time = self._prep_selfcal()
 
         # Currently, we are still using a modified version of the prototype selfcal preparation scheme to prepare "selfcal_library".
         # Then we override a subset of selfcal input parameters using PL-heuristics-based values.
@@ -269,7 +269,7 @@ class SelfcalHeuristics(object):
                     scales=[0],
                     threshold='0.0Jy', niter=0, savemodel='none', parallel=parallel, cellsize=cellsize,
                     imsize=imsize,
-                    nterms=nterms,
+                    nterms=selfcal_library[target][band]['nterms'],
                     field=target, spw=selfcal_library[target][band]['spws_per_vis'],
                     uvrange=selfcal_library[target][band]['uvrange'],
                     obstype=selfcal_library[target][band]['obstype'])
@@ -300,7 +300,7 @@ class SelfcalHeuristics(object):
                     scales=[0],
                     threshold=str(sensitivity * 4.0) + 'Jy', savemodel='none', parallel=parallel, cellsize=cellsize,
                     imsize=imsize,
-                    nterms=nterms,
+                    nterms=selfcal_library[target][band]['nterms'],
                     field=target, spw=selfcal_library[target][band]['spws_per_vis'],
                     uvrange=selfcal_library[target][band]['uvrange'],
                     obstype=selfcal_library[target][band]['obstype'])
@@ -316,8 +316,8 @@ class SelfcalHeuristics(object):
                 if 'VLA' in self.telescope:
                     selfcal_library[target][band]['theoretical_sensitivity'] = -99.0
                 selfcal_library[target][band]['SNR_orig'] = initial_SNR
-                if selfcal_library[target][band]['SNR_orig'] > 500.0:
-                    selfcal_library[target][band]['nterms'] = 2
+                if selfcal_library[target][band]['nterms'] < 2:
+                    selfcal_library[target][band]['nterms'] = get_nterms(band_properties[vislist[0]][band]['fracbw'], initial_SNR)
                 selfcal_library[target][band]['RMS_orig'] = initial_RMS
                 selfcal_library[target][band]['SNR_NF_orig'] = initial_NF_SNR
                 selfcal_library[target][band]['RMS_NF_orig'] = initial_NF_RMS
@@ -844,8 +844,8 @@ class SelfcalHeuristics(object):
                                 sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
                         else:
                             post_SNR_NF, post_RMS_NF = post_SNR, post_RMS
-                        if post_SNR > 500.0:  # if S/N > 500, change nterms to 2 for best performance
-                            selfcal_library[target][band]['nterms'] = 2
+                        if selfcal_library[target][band]['nterms'] < 2:
+                            selfcal_library[target][band]['nterms'] = get_nterms(band_properties[vislist[0]][band]['fracbw'], post_SNR)
 
                         for vis in vislist:
 
@@ -1232,11 +1232,10 @@ class SelfcalHeuristics(object):
         # set image parameters based on the visibility data properties and frequency
         ##
 
-        nterms = {}
         applycal_interp = {}
 
         for band in bands:
-            _, _, nterms = get_image_parameters(vislist, telescope, band, band_properties)
+            nterms = get_nterms(band_properties[vislist[0]][band]['fracbw'])
             if band_properties[vislist[0]][band]['meanfreq'] > 12.0e9:
                 applycal_interp[band] = 'linearPD'
             else:
@@ -1328,4 +1327,4 @@ class SelfcalHeuristics(object):
             for band in selfcal_library[target].keys():
                 if selfcal_library[target][band]['Total_TOS'] == 0.0:
                     selfcal_library[target].pop(band)
-        return all_targets, n_ants, bands, band_properties, nterms, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time
+        return all_targets, n_ants, bands, band_properties, applycal_interp, selfcal_library, solints, gaincal_combine, solmode, applycal_mode, integration_time
