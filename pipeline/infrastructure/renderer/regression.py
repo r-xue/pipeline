@@ -333,23 +333,25 @@ class ApplycalRegressionExtractor(RegressionExtractor):
             OrderedDict[str, float]
         """
         prefix = get_prefix(result, self.generating_task)
-        
-        summaries_by_name = {s['name']: s for s in result.summaries}
-
-        num_flags_before = summaries_by_name['before']['flagged']
-        num_flags_after = summaries_by_name['applycal']['flagged']
-
         d = OrderedDict()
-        d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
-        d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
-        flag_summary_before = summaries_by_name['before']
-        for scan_id, v in flag_summary_before['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+        try:
+            summaries_by_name = {s['name']: s for s in result.summaries}
+            num_flags_before = summaries_by_name['before']['flagged']
+            num_flags_after = summaries_by_name['applycal']['flagged']
+            
+            d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
+            d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
-        flag_summary_after = summaries_by_name['applycal']
-        for scan_id, v in flag_summary_after['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+            flag_summary_before = summaries_by_name['before']
+            for scan_id, v in flag_summary_before['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+
+            flag_summary_after = summaries_by_name['applycal']
+            for scan_id, v in flag_summary_after['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+        except: 
+            LOG.info("Some information missing from ApplycalResults. Omitting from resgression comparison.")
 
         qa_entries = extract_qa_score_regression(prefix, result)
         d.update(qa_entries)
@@ -406,20 +408,33 @@ class CheckflagRegressionExtractor(RegressionExtractor):
 
         summaries_by_name = {s['name']: s for s in result.summaries}
 
-        num_flags_before = summaries_by_name['before']['flagged']
-        num_flags_after = summaries_by_name['after']['flagged']
+        try:
+            num_flags_before = summaries_by_name['before']['flagged']
+        except: 
+            num_flags_before = -1 
+
+        try: 
+            num_flags_after = summaries_by_name['after']['flagged']
+        except: 
+            num_flags_after = -1
 
         d = OrderedDict()
         d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
         d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
-        flag_summary_before = summaries_by_name['before']
-        for scan_id, v in flag_summary_before['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+        try:
+            flag_summary_before = summaries_by_name['before']
+            for scan_id, v in flag_summary_before['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+        except: 
+            d['{}.num_rows_flagged.before'.format(prefix)] = -1 
 
-        flag_summary_after = summaries_by_name['after']
-        for scan_id, v in flag_summary_after['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+        try:
+            flag_summary_after = summaries_by_name['after']
+            for scan_id, v in flag_summary_after['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+        except: 
+            d['{}.num_rows_flagged.after'.format(prefix)] = -1
 
         return d
 
@@ -492,7 +507,11 @@ class FluxbootRegressionExtractor(RegressionExtractor):
 
         d = OrderedDict()
         for spw in result.spws:
-            d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[spw][0]
+            if spw < len(flux_densities): 
+                d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[spw][0]
+            else: 
+                d['{}.flux_densities.spw_{}'.format(prefix, spw)] = -1
+
         d['{}.spindex'.format(prefix)] = float(spindex[0]['spix'])
         d['{}.curvature'.format(prefix)] = float(spindex[0]['curvature'])
         d['{}.delta'.format(prefix)] = float(spindex[0]['delta'])
@@ -1001,6 +1020,7 @@ def extract_qa_score_regression(prefix:str, result:Results) -> OrderedDict:
 
         metric_score = qa_score.origin.metric_score
         score_value = qa_score.score
+
         d['{}.qa.metric.{}'.format(prefix, metric_name)] = metric_score
         d['{}.qa.score.{}'.format(prefix, metric_name)] = score_value
     return d
@@ -1022,7 +1042,7 @@ def extract_regression_results(context: Context) -> List[str]:
         unified = union(unified, registry.handle(results))
 
     # return unified
-    return ['{}={}'.format(k, v) for k, v in unified.items()]
+    return ['{}={}'.format(k, v)for k, v in unified.items()]
 
 
 def get_all_subclasses(cls: RegressionExtractor) -> List[RegressionExtractor]:
