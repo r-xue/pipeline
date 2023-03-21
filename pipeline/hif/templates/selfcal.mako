@@ -7,7 +7,10 @@ import string
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Self-Calibration</%block>
+<%block name="title">
+Self-Calibration<br>
+<small>Self-calibration using the science target visibilities</small>
+</%block>
 
 <script type="text/javascript">
 
@@ -107,12 +110,17 @@ def fm_reason(slib):
         return slib[rkey]
 %>
 
-<p> Self-calibration using the science target visibilities.</p>
 
 <!-- Brief Summary -->
 
 <a class="anchor" id="targetlist"></a>
 <h3>List of Self-cal Targets</h3>
+
+% if not cleantargets:
+    <p>No valid selfcal source found.</p>
+    <% return STOP_RENDERING %>
+% endif
+
 
 <div class="table-responsive">
 <table class="table table-bordered">

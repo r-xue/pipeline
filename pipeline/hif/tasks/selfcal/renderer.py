@@ -161,7 +161,10 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         r = results[0]
         cleantargets = results[0].targets
 
-        targets_summary_table = self.make_targets_summary_table(r, cleantargets)
+        if cleantargets:
+            targets_summary_table = self.make_targets_summary_table(r, cleantargets)
+        else:
+            targets_summary_table = None
 
         summary_tabs = collections.OrderedDict()
         solint_tabs = collections.OrderedDict()

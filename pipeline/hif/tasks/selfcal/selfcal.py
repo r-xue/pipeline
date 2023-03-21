@@ -34,7 +34,7 @@ class SelfcalResults(basetask.Results):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
 
         # save selfcal results into the Pipeline context
-        if not hasattr(context, 'scal_targets'):
+        if not hasattr(context, 'scal_targets') and self.targets:
             context.scal_targets = self.targets
 
         if self.applycal_result_contline is not None:
@@ -144,6 +144,9 @@ class Selfcal(basetask.StandardTaskTemplate):
             # skip the "selfcal-solver" executation if the selfcal results are already in the context and recal is False.
             LOG.info('No selfcal results found in the context. Proceed to execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
+            if not scal_targets:
+                LOG.info('No single-pointing science target found. Skip selfcal.')
+                return SelfcalResults(scal_targets)
         else:
             LOG.info('Found selfcal results in the context. Skip the selfcal solver.')
             scal_targets = self.inputs.context.scal_targets
@@ -192,6 +195,9 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         # collect the target list
         scal_targets = self._get_scaltargets(scal=True)
+        scal_targets = self._check_mosaic(scal_targets)
+        if not scal_targets:
+            return scal_targets
 
         # split percleantarget MSes with spectral line flagged
         self._flag_lines()
@@ -343,6 +349,24 @@ class Selfcal(basetask.StandardTaskTemplate):
                 self.inputs.context.observing_run.add_measurement_set(ms)
 
         return
+
+    def _check_mosaic(self, scal_targets):
+        """Check if the mosaic is a mosaic or a single field.
+        
+        This is a workaround for a bug in the selfcal heuristics where it will fail if the mosaic is a single field.
+        """
+
+        final_scal_target = []
+        for scal_target in scal_targets:
+            if scal_target['gridder'] != 'standard':
+                LOG.warning(
+                    'Selfcal heuristics does not support mosaic. Skipping target {} spw {}.'.format(
+                        scal_target['field'],
+                        scal_target['spw']))
+            else:
+                final_scal_target.append(scal_target)
+
+        return final_scal_target
 
     def _get_scaltargets(self, scal=True):
         """Get the cleantarget list from the context.
