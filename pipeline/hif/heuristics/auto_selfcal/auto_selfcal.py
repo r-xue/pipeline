@@ -198,8 +198,8 @@ class SelfcalHeuristics(object):
 
         if not savemodel_only:
             if not resume:
-                for ext in ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']:
-                    os.system('rm -rf ' + imagename + ext)
+                image_exts = ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']
+                self.remove_dirs([imagename+ext for ext in image_exts])
             tc_ret = self.cts.tclean(**tclean_args)
 
         # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
@@ -220,6 +220,36 @@ class SelfcalHeuristics(object):
                                 'startmodel': ''})
             tc_ret = self.cts.tclean(**tclean_args)
 
+    def remove_dirs(self, dir_names):
+        """Remove dirs based on a list of glob pattern."""
+        if isinstance(dir_names, str):
+            dir_name_list = [dir_names]
+        else:
+            dir_name_list = dir_names
+        for dir_name in dir_name_list:
+            for dir_select in glob.glob(dir_name):
+                self.cts.rmtree(dir_select)
+
+    def move_dir(self, old_dirname, new_dirname):
+        """Move a directory to a new location."""
+        if os.path.isdir(new_dirname):
+            LOG.warning(f"WARNING: {new_dirname} already exists. Will remove it first.")
+            self.cts.rmtree(new_dirname)
+        if os.path.isdir(old_dirname):
+            self.cts.move(old_dirname, new_dirname)
+        else:
+            LOG.warning(f"WARNING: {old_dirname} does not exist")
+
+    def copy_dir(self, old_dirname, new_dirname):
+        """Copy a directory to a new location."""
+        if os.path.isdir(new_dirname):
+            LOG.warning(f"WARNING: {new_dirname} already exists. Will remove it first.")
+            self.cts.rmtree(new_dirname)
+        if os.path.isdir(old_dirname):
+            self.cts.copytree(old_dirname, new_dirname)
+        else:
+            LOG.warning(f"WARNING: {old_dirname} does not exist")
+
     def get_sensitivity(self):
 
         gridder = self.image_heuristics.gridder('TARGET', self.field)
@@ -231,7 +261,7 @@ class SelfcalHeuristics(object):
         return sensitivity[0], sens_bw[0]
 
     def get_dr_correction(self):
-        return
+        raise NotImplementedError(f'{self.__class__.__name__}.get_dr_correction() is not implemented yet!')
 
     def __call__(self):
         """Execute auto_selfcal on a set of per-targets MSes.
@@ -572,7 +602,7 @@ class SelfcalHeuristics(object):
                             LOG.info('Starting with solint: '+solint)
                         else:
                             LOG.info('Continuing with solint: '+solint)
-                        os.system('rm -rf '+sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'*')
+                        self.remove_dirs(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'*')
                         ##
                         # make images using the appropriate tclean heuristics for each telescope
                         # set threshold based on RMS of initial image and lower if value becomes lower
@@ -592,7 +622,7 @@ class SelfcalHeuristics(object):
                                 resume = True
                                 files = glob.glob(sani_target+'_'+band+'_'+prev_solint+'_'+str(prev_iteration)+"_post.*")
                                 for f in files:
-                                    os.system("cp -r "+f+" "+f.replace(prev_solint+"_"+str(prev_iteration)+"_post", solint+'_'+str(iteration)))
+                                    self.copy_dir(f, f.replace(prev_solint+"_"+str(prev_iteration)+"_post", solint+'_'+str(iteration)))
                         else:
                             resume = False
 
@@ -661,9 +691,7 @@ class SelfcalHeuristics(object):
                             ##
                             # Solve gain solutions per MS, target, solint, and band
                             ##
-                            os.system(
-                                'rm -rf ' + sani_target + '_' + vis + '_' + band + '_' + solint + '_' + str(iteration) + '_' +
-                                solmode[band][iteration] + '.g')
+                            self.remove_dirs(sani_target+'_'+vis+'_'+band+'_'+solint+'_'+str(iteration)+'_'+solmode[band][iteration] + '.g')
                             ##
                             # Set gaincal parameters depending on which iteration and whether to use combine=spw for inf_EB or not
                             # Defaults should assume combine='scan' and gaintpe='G' will fallback to combine='scan,spw' if too much flagging
@@ -755,7 +783,7 @@ class SelfcalHeuristics(object):
                             # the number of flagged antennas when combine='spw' then determine if it needs spwmapping or to use the gaintable with spwcombine.
                             ##
                             if solint == 'inf_EB' and fallback[vis] == '':
-                                os.system('rm -rf test_inf_EB.g')
+                                self.remove_dirs('test_inf_EB.g')
                                 test_gaincal_combine = 'scan,spw'
                                 if selfcal_library[target][band]['obstype'] == 'mosaic':
                                     test_gaincal_combine += ',field'
@@ -780,18 +808,17 @@ class SelfcalHeuristics(object):
                                         gaincal_combine[band][iteration] = 'scan,spw'
                                         inf_EB_gaincal_combine_dict[target][band][vis] = 'scan,spw'
                                         applycal_spwmap[vis] = [selfcal_library[target][band][vis]['spwmap']]
-                                        os.system(
-                                            'rm -rf           ' + sani_target + '_' + vis + '_' + band + '_' + solint + '_' +
-                                            str(iteration) + '_' + solmode[band][iteration] + '.g')
-                                        os.system(
-                                            'mv test_inf_EB.g ' + sani_target + '_' + vis + '_' + band + '_' + solint + '_' +
-                                            str(iteration) + '_' + solmode[band][iteration] + '.g')
+
+                                        self.move_dir(
+                                            'test_inf_EB.g', sani_target + '_' + vis + '_' + band + '_' + solint + '_' + str(iteration) + '_' +
+                                            solmode[band][iteration] + '.g')
+
                                     if fallback[vis] == 'spwmap':
                                         gaincal_spwmap[vis] = applycal_spwmap_inf_EB
                                         inf_EB_gaincal_combine_dict[target][band][vis] = 'scan'
                                         gaincal_combine[band][iteration] = 'scan'
                                         applycal_spwmap[vis] = applycal_spwmap_inf_EB
-                                os.system('rm -rf test_inf_EB.g')
+                                self.remove_dirs('test_inf_EB.g')
 
                         for vis in vislist:
                             ##
@@ -806,7 +833,7 @@ class SelfcalHeuristics(object):
 
                         # Create post self-cal image using the model as a startmodel to evaluate how much selfcal helped
                         ##
-                        os.system('rm -rf '+sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post*')
+                        self.remove_dirs(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post*')
                         self.tclean_wrapper(
                             vislist, sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post', band_properties, band,
                             telescope=self.telescope, nsigma=selfcal_library[target][band]['nsigma'][iteration],
