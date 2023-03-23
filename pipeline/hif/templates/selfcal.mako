@@ -209,7 +209,7 @@ def fm_reason(slib):
     </div>      
     
     % if show_sol_summary :
-    <div class="table-responsive collapse multi-collapse" id="${id_name}_persol">
+    <div class="table-responsive collapse multi-collapse in" id="${id_name}_persol">
     <table class="table table-bordered">
       <!-- <caption style="caption-side:top">Per solint stats</caption> -->
       <caption>Per solint stats</caption>
