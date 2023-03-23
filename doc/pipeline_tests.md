@@ -125,7 +125,7 @@ There are several custom markers used for the pipeline regression tests. These a
 * vlass: vlass test
 * fast: shorter-running test
 * slow: longer-running test
-* tweleve: 12m ALMA 
+* twelve: 12m ALMA 
 * seven: 7m ALMA
 * sd: single dish
 
