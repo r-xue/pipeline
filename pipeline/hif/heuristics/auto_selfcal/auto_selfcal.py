@@ -198,7 +198,9 @@ class SelfcalHeuristics(object):
 
         if not savemodel_only:
             if not resume:
-                image_exts = ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*', '.sumwt*', '.gridwt*']
+                image_exts = ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*',
+                              '.sumwt*', '.gridwt*', '.weight'
+                              '.alpha', '.alpha.error', '.beta']
                 self.remove_dirs([imagename+ext for ext in image_exts])
             tc_ret = self.cts.tclean(**tclean_args)
 
@@ -216,7 +218,7 @@ class SelfcalHeuristics(object):
                                 'calcpsf': False,
                                 'restoration': False,
                                 'threshold': '0.0mJy',
-                                'parallel': False,
+                                'parallel': parallel,
                                 'startmodel': ''})
             tc_ret = self.cts.tclean(**tclean_args)
 
