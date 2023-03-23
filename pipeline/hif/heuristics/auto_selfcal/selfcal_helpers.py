@@ -165,6 +165,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             #assume each band only has a single integration time
             integrationtimesdict[vis][target] = np.median(integrationtimes)
             integrationsdict[vis][target] = integrations.copy()
+        msmd.close()
     if len(n_spws) > 0:
         if np.mean(n_spws) != np.max(n_spws):
             LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
@@ -195,6 +196,7 @@ def fetch_spws(vislist, targets):
                 n_spws = np.append(len(spws), n_spws)
                 min_spws = np.append(np.min(spws), min_spws)
                 spwslist = np.append(spws, spwslist)
+        msmd.close()
     if len(n_spws) > 1:
         if np.mean(n_spws) != np.max(n_spws):
             LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
@@ -768,6 +770,7 @@ def get_sensitivity(vislist, selfcal_library, specmode='mfs', spwstring='', spw=
         sensitivities[counter] = sens[1]*scalefactor
         TOS[counter] = selfcal_library[vis]['TOS']
         counter += 1
+        im.close()
     # estsens=np.sum(sensitivities)/float(counter)/(float(counter))**0.5
     # LOG.info(estsens)
     estsens = np.sum(sensitivities*TOS)/np.sum(TOS)
@@ -1230,6 +1233,7 @@ def get_sols_flagged_solns(gaintable):
     nsols = flags.size
     flagged_sols = np.where(flags == True)
     nflagged_sols = flagged_sols[0].size
+    tb.close()
     return nflagged_sols, nsols
 
 
