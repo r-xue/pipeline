@@ -423,8 +423,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
                     vislist = []
 
-                    spw_str = target['spw'].replace(',', '_')
-                    sc_workdir = filenamer.sanitize(f'sc_workdir_{target["field"]}_spw{spw_str}')
+                    band_str = self._get_band_name(target).lower().replace(' ', '_')
+                    sc_workdir = filenamer.sanitize(f'sc_workdir_{target["field"]}_{band_str}')
 
                     if os.path.isdir(sc_workdir):
                         shutil.rmtree(sc_workdir)
@@ -467,6 +467,18 @@ class Selfcal(basetask.StandardTaskTemplate):
             self._copy_xml_files(outputvis[0], outputvis[1])
 
         return scal_targets
+
+    def _get_band_name(self, target):
+        """Get the band name for the target."""
+        spw_virtual = target['spw'].split(',')[0]
+        ms = self.inputs.context.observing_run.get_ms(target['vis'][0])
+        spw_real = self.inputs.context.observing_run.virtual2real_spw_id(spw_virtual, ms)
+        if self.inputs.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
+            spw2band = ms.get_vla_spw2band()
+            band_name = spw2band[ms.get_spectral_windows(spw_real)[0].id]+' band'
+        else:
+            band_name = ms.get_spectral_windows(spw_real)[0].band
+        return band_name
 
     @staticmethod
     def _copy_xml_files(vis, outputvis):
