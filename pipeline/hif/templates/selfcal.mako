@@ -166,11 +166,8 @@ def fm_reason(slib):
 
     <a class="anchor" id="${id_name}"></a>
     <h4>
-      <a href="#targetlist" class="btn btn-link btn-sm">
-        <span class="glyphicon glyphicon-th-list"></span>
-      </a>
-      ${fm_target(target['field'])}&nbsp;${fm_band(target['sc_band'])}
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      ${fm_target(target['field'])}&nbsp;${fm_band(target['sc_band'])}&nbsp;
+      <a href="#targetlist"><sup>back to top</sup></a>&nbsp;&nbsp;
       <a class="btn btn-sm btn-light" data-toggle="collapse" 
           href="#${id_name}_summary" 
           role="button" aria-expanded="false" aria-controls="${id_name}_summary">
