@@ -1242,7 +1242,8 @@ class MeasurementSet(object):
 
         Raises:
             ValueError: An error raised when the column does not exist
-                or the type is already associated with a column and would not
+                or the type is already associated with a column or the
+                column is already assigned to a type and would not
                 be overwritten.
         """
         # Check existence of the column
@@ -1254,6 +1255,13 @@ class MeasurementSet(object):
         # Update MS domain object
         if not overwrite and dtype in self.data_column and self.get_data_column(dtype) != column:
             raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+        if not overwrite and column in self.data_column.values():
+            raise ValueError('Column {} is already associated with data type {} in {}'.format(column, [k for k,v in self.data_column.items() if v == column][0], self.basename))
+        # Check for existing column registration and remove it
+        column_keys = [k for k,v in self.data_column.items() if v == column]
+        if column_keys!= []:
+           for k in column_keys:
+               del(self.data_column[k])
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
