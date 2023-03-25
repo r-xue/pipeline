@@ -1108,10 +1108,10 @@ def countbaddelays(m, delaytable, delaymax):
     with casa_tools.TableReader(delaytable) as tb:
         spws = np.unique(tb.getcol('SPECTRAL_WINDOW_ID'))
         for ispw in spws:
-            tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw), name='byspw')
+            tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw))
             ants = np.unique(tbspw.getcol('ANTENNA1'))
             for iant in ants:
-                tbant = tbspw.query(query='ANTENNA1==' + str(iant), name='byant')
+                tbant = tbspw.query(query='ANTENNA1==' + str(iant))
                 absdel = np.absolute(tbant.getcol('FPARAM'))
                 if np.max(absdel) > delaymax:
                     antname = m.get_antenna(iant)[0].name
