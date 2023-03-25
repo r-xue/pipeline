@@ -273,7 +273,7 @@ class SkyDisplay(object):
                 # if the band name is not available, use ref_frequencey (in Hz) as the fallback.
                 if band is None:
                     band = cs.referencevalue(format='n')['numeric'][3]
-
+                cs.done()
                 return plotfile, coord_names, miscinfo.get('field'), band
 
             # otherwise do the plot

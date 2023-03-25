@@ -98,9 +98,9 @@ class SelfcalSummary(object):
             # only evaluate last gaintable not the pre-apply table
             gaintable = self.slib[vis][solint]['gaintable'][-1]
             figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable+'.png')
-            vis_loc = os.path.join(self.scal_dir, vis)
+            ms = self.context.observing_run.get_ms(vis)
             caltb_loc = os.path.join(self.scal_dir, gaintable)
-            self.plot_ants_flagging_colored(figname, vis_loc, caltb_loc)
+            self.plot_ants_flagging_colored(figname, ms, caltb_loc)
             nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc)
             antpos_plots[vis] = logger.Plot(figname, parameters={'nflagged_sols': nflagged_sols, 'nsols': nsols})
             antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
@@ -112,7 +112,7 @@ class SelfcalSummary(object):
                         '  <span class="glyphicon glyphicon-th-list"></span>'
                         '</a>'
                         '{0}'.format(vis))
-            phasefreq_plots[vis_desc] = self._plot_gain(vis, gaintable, solint)
+            phasefreq_plots[vis_desc] = self._plot_gain(ms, gaintable, solint)
 
         return image_plots, antpos_plots, phasefreq_plots
 
@@ -129,8 +129,8 @@ class SelfcalSummary(object):
 
     @staticmethod
     @matplotlibrc_formal
-    def plot_ants_flagging_colored(filename, vis, gaintable):
-        names, offset_x, offset_y, offsets, nflags, nunflagged, fracflagged = SelfcalSummary.get_flagged_solns_per_ant(gaintable, vis)
+    def plot_ants_flagging_colored(filename, ms, gaintable):
+        names, offset_x, offset_y, _, _, _, fracflagged = SelfcalSummary.get_flagged_solns_per_ant(gaintable, ms)
 
         ants_zero_flagging = np.where(fracflagged == 0.0)
         ants_lt10pct_flagging = ((fracflagged <= 0.1) & (fracflagged > 0.0)).nonzero()
@@ -138,6 +138,7 @@ class SelfcalSummary(object):
         ants_lt50pct_flagging = ((fracflagged <= 0.5) & (fracflagged > 0.25)).nonzero()
         ants_lt75pct_flagging = ((fracflagged <= 0.75) & (fracflagged > 0.5)).nonzero()
         ants_gt75pct_flagging = np.where(fracflagged > 0.75)
+        ants_missing = np.isnan(fracflagged).nonzero()
         fig, ax = plt.subplots(1, 1, figsize=(8, 8))
         ax.scatter(offset_x[ants_zero_flagging[0]], offset_y[ants_zero_flagging[0]],
                    marker='o', color='green', label='No Flagging', s=120)
@@ -151,6 +152,9 @@ class SelfcalSummary(object):
                    marker='o', color='cyan', label='<75% Flagging', s=120)
         ax.scatter(offset_x[ants_gt75pct_flagging[0]], offset_y[ants_gt75pct_flagging[0]],
                    marker='o', color='black', label='>75% Flagging', s=120)
+        if ants_missing[0].size > 0:
+            ax.scatter(offset_x[ants_missing[0]], offset_y[ants_missing[0]],
+                       marker='o', color='black', facecolors='none', edgecolors='black', label='Excluded', s=120)
         ax.legend()
         for i in range(len(names)):
             ax.text(offset_x[i], offset_y[i], names[i])
@@ -162,14 +166,17 @@ class SelfcalSummary(object):
         plt.close(fig)
 
     @staticmethod
-    def get_flagged_solns_per_ant(gaintable, vis):
-        # Get the antenna names and offsets.
+    def get_flagged_solns_per_ant(gaintable, ms):
+        """Get the antenna names and offsets."""
 
-        tb = casa_tools.table
-
-        with casa_tools.MSMDReader(vis) as msmd:
-            names = msmd.antennanames()
-            offset = [msmd.antennaoffset(name) for name in names]
+        antennas = ms.antenna_array.antennas
+        names = []
+        ids = []
+        offset = []
+        for ant in antennas:
+            ids.append(ant.id)
+            names.append(ant.name)
+            offset.append(ant.offset)
 
         # Calculate the mean longitude and latitude.
 
@@ -188,42 +195,45 @@ class SelfcalSummary(object):
                     range(len(names))]
         offset_x = [(offset[i]["longitude offset"]['value']) for i in
                     range(len(names))]
-        # Calculate the number of flags for each antenna.
-        # gaintable='"'+gaintable+'"'
-        shutil.rmtree('tempgaintable.g', ignore_errors=True)
-        shutil.copytree(gaintable, 'tempgaintable.g')
-        gaintable = 'tempgaintable.g'
-        nflags = [tb.calc('[select from '+gaintable+' where ANTENNA1==' +
-                          str(i)+' giving  [ntrue(FLAG)]]')['0'].sum() for i in
-                  range(len(names))]
-        nunflagged = [tb.calc('[select from '+gaintable+' where ANTENNA1==' +
-                              str(i)+' giving  [nfalse(FLAG)]]')['0'].sum() for i in
-                      range(len(names))]
 
-        shutil.rmtree('tempgaintable.g', ignore_errors=True)
-        fracflagged = np.array(nflags)/(np.array(nflags)+np.array(nunflagged))
-        # Calculate a score based on those two.
-        return names, np.array(offset_x), np.array(offset_y), offsets, nflags, nunflagged, fracflagged
+        with casa_tools.TableReader(gaintable) as tb:
+            nflags = []
+            nunflagged = []
+            fracflagged = []
+            for idx in range(len(names)):
+                tbant = tb.query(query='ANTENNA1=='+str(ids[idx]))
+                ant_flags = tbant.getcol('FLAG')
+                if ant_flags.size == 0:
+                    nflags.append(0)
+                    nunflagged.append(0)
+                    fracflagged.append(np.nan)
+                    continue
+                nflags.append(ant_flags.sum())
+                nunflagged.append(ant_flags.size - nflags[-1])
+                fracflagged.append(nflags[-1]/ant_flags.size)
+                tbant.close()
+        offset_x = np.array(offset_x)
+        offset_y = np.array(offset_y)
+        nflags = np.array(nflags)
+        nunflagged = np.array(nunflagged)
+        fracflagged = np.array(fracflagged)
 
-    @staticmethod
-    def _get_ant_list(vis):
-        # Examines number of antennas in each ms file and returns the minimum number of antennas
+        return names, offset_x, offset_y, offsets, nflags, nunflagged, fracflagged
 
-        with casa_tools.MSMDReader(vis) as msmd:
-            names = msmd.antennanames()
-        return names
+    def _plot_gain(self, ms, gaintable, solint):
 
-    def _plot_gain(self, vis, gaintable, solint):
-
-        vis_loc = os.path.join(self.scal_dir, vis)
         caltb_loc = os.path.join(self.scal_dir, gaintable)
 
-        ant_list = self._get_ant_list(vis_loc)
+        antennas = ms.antenna_array.antennas
+        ant_names = []
+        for ant_name in antennas:
+            ant_names.append(ant_name.name)
+
         phasefreq_plots = []
 
         with TaskQueue() as tq:
 
-            for ant in ant_list:
+            for ant_name in ant_names:
                 if solint == 'inf_EB':
                     xaxis = 'frequency'
                     xtitle = 'Freq.'
@@ -239,9 +249,9 @@ class SelfcalSummary(object):
                     ytitle = 'Phase'
                     plotrange = [0, 0, -180, 180]
                 try:
-                    figname = os.path.join(self.stage_dir, 'plot_' + ant + '_' + gaintable.replace('.g', '.png'))
-                    tq.add_functioncall(self._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant, figname)
-                    phasefreq_plots.append(logger.Plot(figname, x_axis=f'{xtitle} ({ant})', y_axis=f'{ytitle}'))
+                    figname = os.path.join(self.stage_dir, 'plot_' + ant_name + '_' + gaintable.replace('.g', '.png'))
+                    tq.add_functioncall(self._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant_name, figname)
+                    phasefreq_plots.append(logger.Plot(figname, x_axis=f'{xtitle} ({ant_name})', y_axis=f'{ytitle}'))
                 except Exception as e:
                     continue
 
