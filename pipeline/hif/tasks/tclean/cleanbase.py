@@ -673,7 +673,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                                              type=im_type, iter=iter,
                                              intent=inputs.intent, specmode=inputs.orig_specmode,
                                              robust=inputs.robust, weighting=inputs.weighting,
-                                             is_per_eb=inputs.is_per_eb,
+                                             is_per_eb=inputs.is_per_eb, datatype=inputs.datatype_info,
                                              context=context)
             # Store in TcleanResult
             if im_type == 'model':

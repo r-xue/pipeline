@@ -1361,6 +1361,7 @@ class Tclean(cleanbase.CleanBase):
         imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw, virtspw=virtspw,
                                  field=self.inputs.field, iter=iter, type=mom_type,
                                  intent=self.inputs.intent, specmode=self.inputs.orig_specmode,
+                                 datatype=self.inputs.datatype_info,
                                  context=context)
 
     # Calculate a "mom0_fc", "mom8_fc" and "mom10_fc: images: this is a moment
