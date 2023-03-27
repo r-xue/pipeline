@@ -723,15 +723,26 @@ class BaselineSubtractionPlotManager(object):
             (ch1, ch2) = edge
             masked_data.mask[0:ch1] = True
             masked_data.mask[len(masked_data)-ch2-1:] = True
+        num_masked_1 = sum(numpy.where(masked_data.mask, 1, 0))
+        LOG.info(f'Number of newly masked channels with edge parameter: {num_masked_1}')
         if line_range is not None:
             for chmin, chmax in line_range:
                 masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
+        num_masked_2 = sum(numpy.where(masked_data.mask, 1, 0))
+        LOG.info(f'Number of newly masked channels with line mask: {num_masked_2 - num_masked_1}')
         if deviation_mask is not None:
             for chmin, chmax in deviation_mask:
                 masked_data.mask[chmin:chmax+1] = True
+        num_masked_3 = sum(numpy.where(masked_data.mask, 1, 0))
+        LOG.info(f'Number of newly masked channels with deviation mask: {num_masked_3 - num_masked_2}')
         nbin = 20 if len(frequency) >= 512 else 10
+        if len(line_range) + len(deviation_mask) > 10:
+            LOG.info('Increasing number of bins as so many number of lines/deviation masks are detected.')
+            nbin *= 2
         binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+        LOG.info(f'len(binned_data) = {len(binned_data)} / count = {binned_data.count()}')
         if binned_data.count() <  2: # not enough valid data
+            LOG.info('not enough valid data, returning without binned stat')
             return binned_stat
         stddev = masked_data.std()
         bin_min = numpy.nanmin(binned_data)
@@ -1365,6 +1376,12 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     min_i = 0
     for i in range(nbin):
         max_i = min(int(numpy.floor((i+1)*bin_width)), ndata-1)
+        num_masked = sum(numpy.where(masked_data.mask[min_i:max_i+1], 1, 0))
+        if num_masked == 0:
+            msg = 'valid for flatness QA'
+        else:
+            msg = 'will be excluded from the flatness QA'
+        LOG.info(f'bin {i}: masked channels {num_masked}, {msg}')
         binned_x[i] = numpy.mean(x[min_i:max_i+1])
         if any(masked_data.mask[min_i:max_i+1]):
             binned_data.mask[i] = True
