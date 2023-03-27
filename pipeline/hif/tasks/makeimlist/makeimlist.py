@@ -273,7 +273,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if inputs.intent == 'TARGET':
             if inputs.specmode in ('mfs', 'cont'):
                 specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-            else:
+            else:  # cube, repBW
                 specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]

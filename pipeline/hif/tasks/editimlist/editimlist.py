@@ -50,7 +50,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class EditimlistInputs(vdp.StandardInputs):
-    # Search order of input vis
+    # Search order of input vis TODO: is it actually used?
     processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
@@ -467,13 +467,34 @@ class Editimlist(basetask.StandardTaskTemplate):
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
+        # PIPE-1710: add a suffix to image file name depending on datatype
+        if imlist_entry['intent'] == 'TARGET':
+            if imlist_entry['specmode'] in ('mfs', 'cont'):
+                specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            else:  # cube, repBW
+                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        else:
+            specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
+        datatype_suffix = None
+        if not img_mode.startswith('VLASS'):
+            # loop over datatypes in order of preference and find the first one that appears in the given source+spw combination
+            for datatype in specmode_datatypes:
+                if ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw']):
+                    # append a corresponding suffix to the image file name corresponding to the datatype
+                    if datatype in (DataType.SELFCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE):
+                        datatype_suffix = 'selfcal'
+                    elif datatype in (DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE):
+                        datatype_suffix = 'regcal'
+                    break
+
         imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
-                                                 band=None) if not inpdict['imagename'] else inpdict['imagename']
+                                                 band=None, datatype=datatype_suffix) if not inpdict['imagename'] else inpdict['imagename']
 
         # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
-        # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
+        # prepend the STAGENUMBER string in order to differentiate them. In TcleanInputs class this is replaced by the
         # actual stage number string.
         # Intended to cover VLASS-SE-CONT, VLASS-SE-CONT-AWP-P001, VLASS-SE-CONT-AWP-P032,
         # VLASS-SE-CONT-MOSAIC, and VLASS-SE-CUBE as of 05/03/2022
