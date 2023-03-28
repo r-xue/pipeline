@@ -1056,9 +1056,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 local_selected_datatype_info = 'N/A'
 
                             # PIPE-1710: add a suffix to image file name depending on datatype
-                            if local_selected_datatype_info.lower().startswith('regcal'):
+                            if local_selected_datatype_str.lower().startswith('regcal'):
                                 datatype_suffix = 'regcal'
-                            elif local_selected_datatype_info.lower().startswith('selfcal'):
+                            elif local_selected_datatype_str.lower().startswith('selfcal'):
                                 datatype_suffix = 'selfcal'
                             else:
                                 datatype_suffix = None

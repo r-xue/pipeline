@@ -468,23 +468,27 @@ class Editimlist(basetask.StandardTaskTemplate):
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
         # PIPE-1710: add a suffix to image file name depending on datatype
+        # this fragment for determining the list of datatypes for the given specmode duplicates the code in makeimlist.py
         if imlist_entry['intent'] == 'TARGET':
             if imlist_entry['specmode'] in ('mfs', 'cont'):
-                specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                specmode_datatypes = (DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
             else:  # cube, repBW
-                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                specmode_datatypes = (DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
         else:
-            specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            specmode_datatypes = (DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
 
+        # PIPE-1710, PIPE-1474: the actually used datatype is stored in the eponymous field of CleanTarget
+        # as a string version of the enum without the DataType. prefix, and also duplicated in another field 'datatype_info'
         datatype_suffix = None
-        if not img_mode.startswith('VLASS'):
+        if not img_mode.startswith('VLASS'):   # only add a suffix to ALMA and VLA data, but not VLASS
             # loop over datatypes in order of preference and find the first one that appears in the given source+spw combination
             for datatype in specmode_datatypes:
                 if ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw']):
+                    imlist_entry['datatype'] = imlist_entry['datatype_info'] = f'{str(datatype).replace("DataType.", "")}'
                     # append a corresponding suffix to the image file name corresponding to the datatype
-                    if datatype in (DataType.SELFCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE):
+                    if imlist_entry['datatype'].lower().startswith('selfcal'):
                         datatype_suffix = 'selfcal'
-                    elif datatype in (DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE):
+                    elif imlist_entry['datatype'].lower().startswith('regcal'):
                         datatype_suffix = 'regcal'
                     break
 
