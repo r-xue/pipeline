@@ -1071,18 +1071,25 @@ class MakeImList(basetask.StandardTaskTemplate):
     def _get_drcorrect(self, field, spw_sel, datacolumn):
         """Get the modified drcorrect parameter based on existing selfcal results.
         
-        Note: currently we assume that selfcal'ed data only exist in the 'corrected' column.
+        TODO: currently we assume that selfcal'ed data only exist in the 'corrected' column; this needs to be updated using
+        the datatype implementation from PIPE-1474.
         """
 
         drcorrect = None
         context = self.inputs.context
-        if hasattr(context, 'scal_targets') and datacolumn == 'corrected' and context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):
+
+        if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
+            return drcorrect
+
+        if hasattr(context, 'scal_targets') and datacolumn == 'corrected' and self.inputs.specmode in ('cont', 'mfs'):
             for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
                     drcorrect = sc_target['sc_rms_scale']
-                    LOG.info('Using dr_correct=%s for field %s and spw %s based on previous selfcal results.', drcorrect, field, spw_sel)
+                    LOG.info(
+                        'Using dr_correct=%s for field %s and spw %s based on previous selfcal aggregate continuum imaging results.',
+                        drcorrect, field, spw_sel)
                     break
 
         return drcorrect
