@@ -430,6 +430,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                         shutil.rmtree(sc_workdir)
                     os.mkdir(sc_workdir)
 
+                    sc_workdir_contfile = os.path.join(sc_workdir, 'cont.dat')
+                    if os.path.isfile(self.inputs.contfile) and not os.path.isfile(sc_workdir_contfile):
+                        shutil.copy(self.inputs.contfile, sc_workdir_contfile)
+
                     spw_real = {}
                     field = target['field']
                     uvrange = target['uvrange']
@@ -548,7 +552,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 self._executable.flagmanager(vis=vis, mode='save', versionname='before_hif_selfcal')
 
             # note that contfile_to_chansel will do the virtual2real spw translation automatically.
-            lines_sel_dict = contfile_to_chansel(vis, self.inputs.context, contfile='cont.dat', excludechans=True)
+            lines_sel_dict = contfile_to_chansel(vis, self.inputs.context, contfile=self.inputs.contfile, excludechans=True)
 
             for field, lines_sel in lines_sel_dict.items():
                 LOG.info("Flagging lines in field {} with the spw selection {}".format(field, lines_sel))
