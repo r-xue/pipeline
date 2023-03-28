@@ -1215,7 +1215,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                     usepointing=usepointing,
                                     mosweight=mosweight,
-                                    drcorrect=self._get_drcorrect(field_intent[0], actual_spwspec, datacolumn))
+                                    drcorrect=self._get_drcorrect(field_intent[0], actual_spwspec, local_selected_datatype_str))
 
                                 result.add_target(target)
 
@@ -1246,7 +1246,7 @@ class MakeImList(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _get_drcorrect(self, field, spw_sel, datacolumn):
+    def _get_drcorrect(self, field, spw_sel, datatype):
         """Get the modified drcorrect parameter based on existing selfcal results.
         
         TODO: currently we assume that selfcal'ed data only exist in the 'corrected' column; this needs to be updated using
@@ -1259,7 +1259,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect
 
-        if hasattr(context, 'scal_targets') and datacolumn == 'corrected' and self.inputs.specmode in ('cont', 'mfs'):
+        if hasattr(context, 'scal_targets') and 'SELFCAL_' in datatype and self.inputs.specmode in ('cont', 'mfs'):
             for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
