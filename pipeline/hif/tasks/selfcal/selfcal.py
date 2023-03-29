@@ -67,7 +67,7 @@ class SelfcalResults(basetask.Results):
                     field_sel = None
                 if spw_sel == '':
                     spw_sel = None
-                ms.set_data_column(dtype, 'CORRECTED_DATA', source=field_sel, spw=spw_sel)
+                ms.set_data_column(dtype, 'CORRECTED_DATA', source=field_sel, spw=spw_sel, overwrite=True)
 
     def __repr__(self):
         return 'SelfcalResults:'

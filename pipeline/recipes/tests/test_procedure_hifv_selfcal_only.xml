@@ -11,16 +11,6 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_checkproductsize</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">maximsize</Keyword>
-                <Value xmlns="">16384</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
     
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
