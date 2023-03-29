@@ -48,10 +48,6 @@
                 <Value xmlns="">mfs</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">pipelinemode</Keyword>
-                <Value xmlns="">interactive</Value>
-            </Parameter>
-            <Parameter>
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns="">{{{field_list}}}</Value>
             </Parameter>
@@ -97,10 +93,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">pipelinemode</Keyword>
-                <Value xmlns="">interactive</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">field</Keyword>
@@ -196,10 +188,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">pipelinemode</Keyword>
-                <Value xmlns="">interactive</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">field</Keyword>
