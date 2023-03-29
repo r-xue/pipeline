@@ -1254,16 +1254,21 @@ class MeasurementSet(object):
         if column not in cols:
             raise ValueError('Column {} does not exist in {}'.format(column, self.basename))
 
-        # Update MS domain object
+        # Check if data type is already associated with another column
         if not overwrite and dtype in self.data_column and self.get_data_column(dtype) != column:
             raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
-        if not overwrite and column in self.data_column.values():
+
+        # Check if column is already assigned to another data type
+        if not overwrite and column in self.data_column.values() and self.get_data_column(dtype) != column:
             raise ValueError('Column {} is already associated with data type {} in {}'.format(column, [k for k,v in self.data_column.items() if v == column][0], self.basename))
+
         # Check for existing column registration and remove it
         column_keys = [k for k,v in self.data_column.items() if v == column]
         if column_keys!= []:
            for k in column_keys:
                del(self.data_column[k])
+
+        # Update MS domain object
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
@@ -1272,12 +1277,20 @@ class MeasurementSet(object):
         if source is None:
             source_names = ','.join(utils.dequote(s.name) for s in self.sources)
         else:
-            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+            # Check for empty or blank strings
+            if source.strip():
+                source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+            else:
+                source_names = ','.join(utils.dequote(s.name) for s in self.sources)
 
         if spw is None:
             spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
         else:
-            spw_ids = spw
+            # Check for empty or blank strings
+            if spw.strip():
+                spw_ids = spw
+            else:
+                spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
 
         for source_name in source_names.split(','):
             for spw_id in map(int, range_to_list(spw_ids)):
