@@ -225,6 +225,17 @@ class Context(object):
         instance = m[cls]
         setattr(instance, name, value)
 
+    def get_oussid(self):
+        """
+        Get the parent OUS 'ousstatus' name. This is the sanitized OUS
+        status UID.
+        """
+        ps = self.project_structure
+        if ps is None or ps.ousstatus_entity_id == 'unknown':
+            return 'unknown'
+        else:
+            return ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
+
 
 class Pipeline(object):
     """
