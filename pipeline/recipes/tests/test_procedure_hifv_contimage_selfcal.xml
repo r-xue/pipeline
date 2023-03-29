@@ -42,8 +42,8 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Value xmlns="">cont</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">data</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">regcal</Value>
             </Parameter>              
         </ParameterSet>
     </ProcessingCommand>    
@@ -88,8 +88,8 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Value xmlns="">cont</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">corrected</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
             </Parameter>              
         </ParameterSet>
     </ProcessingCommand>    
