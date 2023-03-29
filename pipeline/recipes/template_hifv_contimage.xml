@@ -98,8 +98,8 @@
                 <Value xmlns="">cont</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">corrected</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
             </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
