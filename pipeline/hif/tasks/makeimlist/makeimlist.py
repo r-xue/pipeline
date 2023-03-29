@@ -258,7 +258,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             return result
 
         # datatype and datacolumn are mutually exclusive
-        if inputs.datatype not in ('', None) and inputs.datacolumn not in (None, ''):
+        if inputs.datatype not in (None, '') and inputs.datacolumn not in (None, ''):
             msg = '"datatype" and "datacolumn" are mutually exclusive'
             LOG.error(msg)
             result.error = True
@@ -282,7 +282,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         # correct initial vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
         known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
         explicit_user_datatypes = False
-        if inputs.datatype not in ('', None):
+        if inputs.datatype not in (None, ''):
             # Consider every comma separated user value just once
             user_datatypes_str = list(set([datatype_str.strip().upper() for datatype_str in inputs.datatype.split(',')]))
             if all(datatype_str not in ('BEST', 'ALL', 'SELFCAL', 'REGCAL') for datatype_str in user_datatypes_str):
@@ -303,16 +303,40 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         datacolumn = inputs.datacolumn
 
+        # Data type handling considers automatic and manual use cases. The automatic
+        # use case tries to choose the best available data type by walking through the
+        # predefined lists of data types per specmode. The first available data type
+        # is used and if a fallback data type must be used, a warning is issued.
+
+        # The manual use case is controlled by the "datatype" task parameter. It can
+        # is a string that can contain comma separated explicit data type strings
+        # (not DataType enums) or the special strings "best", "all", "selfcal",
+        # "regcal" or "selfcal,regcal".
+
+        # The followinf code block checks for any such task parameter input to override
+        # the automatic scheme. Several variables are defined to pass the information
+        # into the actual loop over imaging targets. The naming convention is such that
+        # simple variable names like "global_datatype" or "selected_datatype" refer to
+        # actual DataType enums. To compare these agains the user input, one needs
+        # stringified versions. The corresponding variables have "_str" appended. In
+        # addition there are variables aimed at rendering the data type information in
+        # the weblog. These are not just simple data type strings, but can also be
+        # something like "<actual data type> instead of <desired data type>" or "N/A".
+        # Those variables have the basename as above and then "_info" appended. For
+        # the loops over several user data types, lists are needed. The list names
+        # are using the plurals of the basenames and the corresponding "_str" or "_info"
+        # appendices.
+
         global_datatype = None
         global_datatype_str = 'N/A'
         global_datatype_info = 'N/A'
         global_datacolumn = inputs.datacolumn
-        selected_datatypes = [global_datatype_str]
+        selected_datatypes_str = [global_datatype_str]
         selected_datatypes_info = [global_datatype_info]
         automatic_datatype_choice = False
 
         # Select the correct vis list
-        if inputs.vis in ('', [''], [], None):
+        if inputs.vis in (None, '', [''], []):
             (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
             # Check for changing vis lists.
             if explicit_user_datatypes:
@@ -341,7 +365,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
             global_columns = list(ms_objects_and_columns.values())
 
-            if inputs.datatype in ('', None):
+            if inputs.datatype in (None, ''):
                 # Log these messages only if there is no user data type
                 LOG.info(f'Using data type {str(selected_datatype).replace("DataType.", "")} for imaging.')
 
@@ -367,7 +391,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
         # Handle user supplied data type requests
-        if inputs.datatype not in ('', None):
+        if inputs.datatype not in (None, ''):
             # Extract all available data types for the vis list
             vislist_datatypes_str = []
             for vis in inputs.vis:
@@ -996,7 +1020,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             spwsel_spwid_dict = {}
 
                             # Check if the globally selected data type is available for this field/spw combination.
-                            if selected_datatype_str is not None and inputs.datacolumn in ('', None):
+                            if selected_datatype_str not in (None, '', 'N/A') and inputs.datacolumn in (None, ''):
                                 if automatic_datatype_choice:
                                     # In automatic mode check for source/spw specific fall back to next available data type.
                                     (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
