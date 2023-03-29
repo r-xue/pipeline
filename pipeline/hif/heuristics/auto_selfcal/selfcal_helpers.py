@@ -13,12 +13,15 @@ import casatools
 from casatasks import casalog
 
 import pipeline.infrastructure as infrastructure
+import pipeline.hif.heuristics.findrefant as findrefant
 from pipeline.infrastructure.casa_tasks import casa_tasks as cts
 from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure import casa_tools
+
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -581,7 +584,7 @@ def get_ant_list(vis):
     return names
 
 
-def rank_refants(vis):
+def rank_refants_old(vis):
     # Get the antenna names and offsets.
 
     msmd = casatools.msmetadata()
@@ -626,6 +629,18 @@ def rank_refants(vis):
     # Return the antenna names sorted by score.
 
     return ','.join(np.array(names)[np.argsort(score)])
+
+
+def rank_refants(vis):
+    """Rank the reference antenna for a measurement set."""
+
+    refantobj = findrefant.RefAntHeuristics(vis=vis, field='',
+                                            geometry=True, flagging=True, intent='', spw='',
+                                            refantignore=None)
+    refant_list = refantobj.calculate()
+    LOG.info(f"refant list for {vis} = {refant_list!r}")
+
+    return ','.join(refant_list)
 
 
 def get_SNR_self(
