@@ -1259,7 +1259,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect
 
-        if hasattr(context, 'scal_targets') and 'SELFCAL_' in datatype and self.inputs.specmode in ('cont', 'mfs'):
+        if hasattr(context, 'scal_targets') and 'SELFCAL_' in datatype and self.inputs.specmode == 'cont':
             for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
