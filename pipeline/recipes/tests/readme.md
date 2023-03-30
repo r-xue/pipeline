@@ -2,7 +2,7 @@
 ## Testing Prrocedures
 
 * Examples of SRDP Json files for creating custom recipes
-  * `test_hifa_cubeimage.json`
+  * `test_hifa_cubeimage.json` # uid___A001_X1467_X256
   * `test_hifv_contimage.json`
 
 * SRDP-like procedures:
