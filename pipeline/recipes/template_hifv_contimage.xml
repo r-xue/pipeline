@@ -67,12 +67,6 @@
         </ParameterSet>
     </ProcessingCommand>
 
-    <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
     {{#selfcal}}
     <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
     
@@ -114,14 +108,14 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <!-- end of the selfcal section -->
+    {{/selfcal}}    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_pbcor</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>    
-
-    <!-- end of the selfcal section -->
-    {{/selfcal}}    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

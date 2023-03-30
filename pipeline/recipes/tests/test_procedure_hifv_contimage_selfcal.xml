@@ -58,11 +58,6 @@ You are expected to have the _targets.ms and cont.data as input.
         </ParameterSet>
     </ProcessingCommand>    
 
-    <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
 
     <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
     
