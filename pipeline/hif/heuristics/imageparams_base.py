@@ -897,6 +897,8 @@ class ImageParamsHeuristics(object):
         spw_frequency_ranges = []
         for spwid in local_spwids:
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+            if real_spwid is None:  # could appear when mapping of virtual to real spws failed
+                continue
             spw = ms.get_spectral_window(real_spwid)
             min_frequency_Hz = float(spw.min_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
             max_frequency_Hz = float(spw.max_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)

@@ -1336,10 +1336,11 @@ class MeasurementSet(object):
         # Check all (source,spw) combinations
         data_exists_for_all_source_spw_combinations = True
         for source_name in source_names.split(','):
-            for spw_id in map(int, spw_ids.split(',')):
-                key = (source_name, spw_id)
-                if dtype not in self.data_types_per_source_and_spw.get(key, []):
+            for spw_id_str in spw_ids.split(','):
+                if (spw_id_str == 'None' or   # 'None' could appear when mapping of virtual to real spws failed
+                        dtype not in self.data_types_per_source_and_spw.get((source_name, int(spw_id_str)), [])):
                     data_exists_for_all_source_spw_combinations = False
+                    break
 
         if data_exists_for_all_source_spw_combinations:
             return self.data_column[dtype]
