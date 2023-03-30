@@ -50,7 +50,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class EditimlistInputs(vdp.StandardInputs):
-    # Search order of input vis TODO: is it actually used?
+    # Search order of input vis
+    # TODO: what is the intended use of this list? - later in prepare() we construct a similar list specmode_datatypes
+    # depending on specmode, which also includes SELFCAL_***, but the variable below seems to be never used
     processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
@@ -467,17 +469,33 @@ class Editimlist(basetask.StandardTaskTemplate):
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
+        if not imlist_entry['spw']:   # could be None or an empty string
+            LOG.warning('spw is not specified')   # probably should raise an error rather than warning? - will likely fail later anyway
+            imlist_entry['spw'] = None
+
+        if not imlist_entry['field']:
+            LOG.warning('field is not specified')   # again, should probably raise an error, as it will eventually fail anyway
+            imlist_entry['field'] = None
+
+        # validate specmode (TODO: not sure if this is applicable to VLA**)
+        if imlist_entry['specmode'] not in ('mfs', 'cont', 'cube', 'repBW'):
+            msg = 'specmode must be one of "mfs", "cont", "cube", or "repBW"'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
         # PIPE-1710: add a suffix to image file name depending on datatype
         # this fragment for determining the list of datatypes for the given specmode duplicates the code in makeimlist.py
         if imlist_entry['intent'] == 'TARGET':
             if imlist_entry['specmode'] in ('mfs', 'cont'):
                 specmode_datatypes = (DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
-            else:  # cube, repBW
+            else:  # specmode = cube, repBW
                 specmode_datatypes = (DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
         else:
             specmode_datatypes = (DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
 
-        # PIPE-1710, PIPE-1474: the actually used datatype is stored in the eponymous field of CleanTarget
+        # PIPE-1474: the actually used datatype is stored in the eponymous field of CleanTarget
         # as a string version of the enum without the DataType. prefix, and also duplicated in another field 'datatype_info'
         datatype_suffix = None
         if not img_mode.startswith('VLASS'):   # only add a suffix to ALMA and VLA data, but not VLASS
@@ -485,7 +503,7 @@ class Editimlist(basetask.StandardTaskTemplate):
             for datatype in specmode_datatypes:
                 if ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw']):
                     imlist_entry['datatype'] = imlist_entry['datatype_info'] = f'{str(datatype).replace("DataType.", "")}'
-                    # append a corresponding suffix to the image file name corresponding to the datatype
+                    # PIPE-1710: append a corresponding suffix to the image file name corresponding to the datatype
                     if imlist_entry['datatype'].lower().startswith('selfcal'):
                         datatype_suffix = 'selfcal'
                     elif imlist_entry['datatype'].lower().startswith('regcal'):
