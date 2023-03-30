@@ -268,6 +268,9 @@ class Syspower(basetask.StandardTaskTemplate):
              'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
              'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
             '''
+            antexclude = ''
+            usemedian_perant = []
+            usemedian_perant_dict = {}
 
             if self.inputs.antexclude:
                 if band in antexclude_dict.keys():
