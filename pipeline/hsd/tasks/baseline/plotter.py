@@ -149,7 +149,7 @@ class PlotDataStorage(object):
 class BaselineSubtractionDataManager(object):
     """Class to produce data of baseline subtraction plot and quality statistics."""
 
-    def __init__(self, ms, blvis, context, datatable):
+    def __init__(self, ms: 'MeasurementSet', blvis: str, context: 'Context', datatable: 'DataTable') -> None:
         """Construct BaselineSubtractionDataManager instance.
 
         Args:
@@ -220,6 +220,14 @@ class BaselineSubtractionDataManager(object):
                         after baseline subtraction.
             in_rowmap: Row mapping between original (calibrated) MS and the MS
                        before baseline subtraction.
+
+        Returns:
+            Tuple containing five masked arrays; postfit integrated spectrum data,
+            postfit sparse map data, prefit integrated spectrum data, prefit sparse map
+            data, and prefit averaged sparse map data.
+            Each element of postfit or prefit integrated spectrum data: (npol, nchan).
+            Each element of postfit, prefit sparse map data or prefit averaged sparse map
+            data: (nx, ny, npol, nchan).
         """
 
         dtrows = self.datatable.getcol('ROW')
@@ -227,11 +235,17 @@ class BaselineSubtractionDataManager(object):
         if not basetask.DISABLE_WEBLOG:
             self.get_averaged_data(dtrows, num_ra, num_dec, nchan, npol,
                                    rowlist, rowmap=in_rowmap)
-            self.get_data(dtrows, num_ra, num_dec, nchan, npol,
-                          rowlist, infile=self.prefit_data, rowmap=in_rowmap)
+            self.get_data(self.prefit_data, dtrows, num_ra, num_dec, nchan, npol,
+                          rowlist, rowmap=in_rowmap,
+                          integrated_data_storage=self.prefit_storage.integrated_data,
+                          map_data_storage=self.prefit_storage.map_data,
+                          map_mask_storage=self.prefit_storage.map_mask)
 
-        self.get_data(dtrows, num_ra, num_dec, nchan, npol,
-                      rowlist, infile=self.postfit_data, rowmap=out_rowmap)
+        self.get_data(self.postfit_data, dtrows, num_ra, num_dec, nchan, npol,
+                      rowlist, rowmap=out_rowmap,
+                      integrated_data_storage=self.postfit_storage.integrated_data,
+                      map_data_storage=self.postfit_storage.map_data,
+                      map_mask_storage=self.postfit_storage.map_mask)
 
         return self.postfit_integrated_data, self.postfit_map_data, self.prefit_integrated_data, self.prefit_map_data, self.prefit_averaged_data
 
@@ -320,15 +334,19 @@ class BaselineSubtractionDataManager(object):
 
     def get_data(
         self,
+        infile: str,
         dtrows: numpy.ndarray,
         num_ra: int,
         num_dec: int,
         num_chan: int,
         num_pol: int,
         rowlist: dict,
-        infile: str = None,
-        rowmap: Optional[dict] = None
-    ) -> Tuple[numpy.ma.masked_array, numpy.ma.masked_array]:
+        rowmap: Optional[dict] = None,
+        integrated_data_storage: Optional[numpy.ndarray] = None,
+        integrated_mask_storage: Optional[numpy.ndarray] = None,
+        map_data_storage: Optional[numpy.ndarray] = None,
+        map_mask_storage: Optional[numpy.ndarray] = None
+    ) -> None:
         """Create array data for sparse map.
 
         Computes two masked array data for sparse map. One is the integrated
@@ -339,30 +357,21 @@ class BaselineSubtractionDataManager(object):
         held by rowlist.
 
         Args:
+            infile: Name of the MS
             dtrows: List of datatable rows
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
             num_chan: Number of spectral channels
             num_pol: Number of polarizaionts
             rowlist: List of datatable row ids per sparse map panel with metadata
-            infile: Name of the MS
             rowmap: Row mapping between original (calibrated) MS and the MS
                     specified by infile. It will be EchoDictionary if None is given.
-
-        Returns:
-            Two masked arrays corresponding to integrated spectrum and sparse map data.
-            The former has the shape of (npol, nchan) while tha latter is four-dimensional,
-            (nx, ny, npol, nchan).
+            integrated_data_storage: Storage for integrated spectrum. If None is given,
+                                     new array is created.
+            integrated_mask_storage: Storage for integrated mask (not used).
+            map_data_storage: Storage for sparse map. If None is given, new array is created.
+            map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
         """
-
-        if infile == self.postfit_data:
-            integrated_data_storage = self.postfit_storage.integrated_data
-            map_data_storage = self.postfit_storage.map_data
-            map_mask_storage = self.postfit_storage.map_mask
-        else:
-            integrated_data_storage = self.prefit_storage.integrated_data
-            map_data_storage = self.prefit_storage.map_data
-            map_mask_storage = self.prefit_storage.map_mask
 
         if infile == self.postfit_data and self.postfit_integrated_data is not None:
             pass
@@ -482,7 +491,7 @@ class BaselineSubtractionDataManager(object):
         num_pol: int,
         rowlist: dict,
         rowmap: Optional[dict] = None
-    ) -> numpy.ma.masked_array:
+    ) -> None:
         """Create array data for sparse map.
 
         Computes the spectra for sparse map averaged for each spatial
@@ -498,10 +507,6 @@ class BaselineSubtractionDataManager(object):
             rowlist: List of datatable row ids per sparse map panel with metadata
             rowmap: Row mapping between original (calibrated) MS and the MS
                     specified by infile. Defaults to None.
-
-        Returns:
-            Sparse map data as masked array. Shape of the array is four-dimensional,
-            (nx, ny, npol, nchan).
         """
 
         infile = self.prefit_data
