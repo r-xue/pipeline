@@ -59,6 +59,7 @@ class EditimlistInputs(vdp.StandardInputs):
     cfcache_nowb = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
+    datatype = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
     editmode = vdp.VisDependentProperty(default='')
@@ -137,7 +138,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None,
                  search_radius_arcsec=None, cell=None, cfcache=None, conjbeams=None,
-                 cyclefactor=None, cycleniter=None, datacolumn=None, deconvolver=None,
+                 cyclefactor=None, cycleniter=None, datatype=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
                  mask=None, pbmask=None, nbin=None, nchan=None, niter=None, nterms=None,
@@ -158,6 +159,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.conjbeams = conjbeams
         self.cyclefactor = cyclefactor
         self.cycleniter = cycleniter
+        self.datatype = datatype
         self.datacolumn = datacolumn
         self.deconvolver = deconvolver
         self.editmode = editmode
@@ -193,7 +195,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.clean_no_mask_selfcal_image = clean_no_mask_selfcal_image
         self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
 
-        keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datacolumn', 'deconvolver', 'imsize',
+        keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datatype', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
@@ -477,20 +479,42 @@ class Editimlist(basetask.StandardTaskTemplate):
         else:
             specmode_datatypes = (DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
 
+        # PIPE-1798: filter the list of datatypes to only include the one(s) starting with
+        # the user supplied datatype selection string.
+        if isinstance(inpdict['datatype'], str):
+            specmode_datatypes = [dt for dt in specmode_datatypes if dt.name.startswith(inpdict['datatype'].upper())]
+
         # PIPE-1710, PIPE-1474: the actually used datatype is stored in the eponymous field of CleanTarget
         # as a string version of the enum without the DataType. prefix, and also duplicated in another field 'datatype_info'
         datatype_suffix = None
-        if not img_mode.startswith('VLASS'):   # only add a suffix to ALMA and VLA data, but not VLASS
+
+        # if the datacolumn is not explicitly specified by the user or heuristics, and
+        # we are not imaging VLASS data, then we need to determine the datacolumn from the datatype
+        # add a name suffix to image products, and insert dataype into the image headers.
+        if not img_mode.startswith('VLASS') and imlist_entry['datacolumn'] is None:
             # loop over datatypes in order of preference and find the first one that appears in the given source+spw combination
             for datatype in specmode_datatypes:
-                if ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw']):
+                datacolumn_name = ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw'])
+                if isinstance(datacolumn_name, str):
                     imlist_entry['datatype'] = imlist_entry['datatype_info'] = f'{str(datatype).replace("DataType.", "")}'
+                    if datacolumn_name == 'DATA':
+                        imlist_entry['datacolumn'] = 'data'
+                    elif datacolumn_name == 'CORRECTED_DATA':
+                        imlist_entry['datacolumn'] = 'corrected'
+                    else:
+                        LOG.warning(f'Unknown column name {datacolumn_name}, and no clean target will be added.')
+                        return result
                     # append a corresponding suffix to the image file name corresponding to the datatype
                     if imlist_entry['datatype'].lower().startswith('selfcal'):
                         datatype_suffix = 'selfcal'
                     elif imlist_entry['datatype'].lower().startswith('regcal'):
                         datatype_suffix = 'regcal'
                     break
+            if imlist_entry['datatype'] is None:
+                LOG.warning(
+                    f"Not data found in the searched DataType(s) for {imlist_entry['intent']} {imlist_entry['field']} {imlist_entry['spw']}"
+                    ' and no clean target will be added.')
+                return result
 
         imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],

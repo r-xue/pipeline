@@ -221,6 +221,10 @@
                 <Value xmlns="">ALMA</Value>
             </Parameter>
             <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>            
+            <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
             </Parameter>
