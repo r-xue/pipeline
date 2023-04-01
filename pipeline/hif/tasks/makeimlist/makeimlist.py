@@ -1280,19 +1280,20 @@ class MakeImList(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _get_deconvolver_nterms(self, field, spw_sel, datatype):
+    def _get_deconvolver_nterms(self, field, spw_sel, datatype_str):
         """Get the modified nterms parameter based on existing selfcal results."""
 
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'scal_targets') and 'SELFCAL_' in datatype and self.inputs.specmode == 'cont':
+        if hasattr(context, 'scal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
             for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
-                    if sc_target['nterms'] > 1:
-                        nterms = sc_target['nterms']
+                    nterms_sc = sc_target['sc_lib']['nterms']
+                    if nterms_sc is not None and nterms_sc > 1:
+                        nterms = nterms_sc
                         deconvolver = 'mtmfs'
                         LOG.info(f"Using deconvolver='mtmfs', nterms={nterms} for field {field} and spw {spw_sel} based "
                                  "on previous selfcal aggregate continuum imaging results.")
@@ -1300,7 +1301,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         return deconvolver, nterms
 
-    def _get_drcorrect(self, field, spw_sel, datatype):
+    def _get_drcorrect(self, field, spw_sel, datatype_str):
         """Get the modified drcorrect parameter based on existing selfcal results."""
 
         drcorrect = None
@@ -1309,7 +1310,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect
 
-        if hasattr(context, 'scal_targets') and 'SELFCAL_' in datatype and self.inputs.specmode == 'cont':
+        if hasattr(context, 'scal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
             for sc_target in context.scal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
