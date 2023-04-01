@@ -1246,8 +1246,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     datatype_info=local_selected_datatype_info,
                                     is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                     usepointing=usepointing,
-                                    mosweight=mosweight,
-                                    drcorrect=self._get_drcorrect(field_intent[0], actual_spwspec, local_selected_datatype_str))
+                                    mosweight=mosweight)
+                                target['drcorrect'] = self._get_drcorrect(target['field'], target['spw'], target['datatype'])
+                                target['deconvolver'], target['nterms'] = self._get_deconvolver_nterms(
+                                    target['field'], target['spw'], target['datatype'])
 
                                 result.add_target(target)
 
@@ -1278,12 +1280,28 @@ class MakeImList(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
+    def _get_deconvolver_nterms(self, field, spw_sel, datatype):
+        """Get the modified nterms parameter based on existing selfcal results."""
+
+        deconvolver, nterms = None, None
+        context = self.inputs.context
+
+        if hasattr(context, 'scal_targets') and 'SELFCAL_' in datatype and self.inputs.specmode == 'cont':
+            for sc_target in context.scal_targets:
+                sc_spw = set(sc_target['spw'].split(','))
+                im_spw = set(spw_sel.split(','))
+                if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
+                    if sc_target['nterms'] > 1:
+                        nterms = sc_target['nterms']
+                        deconvolver = 'mtmfs'
+                        LOG.info(f"Using deconvolver='mtmfs', nterms={nterms} for field {field} and spw {spw_sel} based "
+                                 "on previous selfcal aggregate continuum imaging results.")
+                    break
+
+        return deconvolver, nterms
+
     def _get_drcorrect(self, field, spw_sel, datatype):
-        """Get the modified drcorrect parameter based on existing selfcal results.
-        
-        TODO: currently we assume that selfcal'ed data only exist in the 'corrected' column; this needs to be updated using
-        the datatype implementation from PIPE-1474.
-        """
+        """Get the modified drcorrect parameter based on existing selfcal results."""
 
         drcorrect = None
         context = self.inputs.context
@@ -1297,9 +1315,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
                     drcorrect = sc_target['sc_rms_scale']
-                    LOG.info(
-                        'Using dr_correct=%s for field %s and spw %s based on previous selfcal aggregate continuum imaging results.',
-                        drcorrect, field, spw_sel)
+                    LOG.info(f"Using drcorrect={drcorrect} for field {field} and spw {spw_sel} based "
+                             "on previous selfcal aggregate continuum imaging results.")
                     break
 
         return drcorrect
