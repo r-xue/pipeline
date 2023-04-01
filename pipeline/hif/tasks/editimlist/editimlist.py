@@ -512,7 +512,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                     break
             if imlist_entry['datatype'] is None:
                 LOG.warning(
-                    f"Not data found in the searched DataType(s) for {imlist_entry['intent']} {imlist_entry['field']} {imlist_entry['spw']}"
+                    f"No data found in the searched DataType(s) for field={imlist_entry['field']} spw={imlist_entry['spw']}"
                     ' and no clean target will be added.')
                 return result
 
