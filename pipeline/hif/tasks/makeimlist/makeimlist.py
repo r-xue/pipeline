@@ -345,9 +345,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result.error = True
                         result.error_msg = msg
                         return result
-            global_datatype = selected_datatype.name
-            global_datatype_str = global_datatype
-            global_datatype_info = global_datatype
+            global_datatype = selected_datatype
+            global_datatype_str = global_datatype.name
+            global_datatype_info = global_datatype_str
             selected_datatypes_str = [global_datatype_str]
             selected_datatypes_info = [global_datatype_info]
             automatic_datatype_choice = True
@@ -362,7 +362,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
             global_columns = list(ms_objects_and_columns.values())
 
-            if inputs.datatype in (None, ''):
+            if inputs.datatype in (None, '') and inputs.datacolumn in (None, ''):
                 # Log these messages only if there is no user data type
                 LOG.info(f'Using data type {selected_datatype.name} for imaging.')
 
@@ -373,8 +373,21 @@ class MakeImList(basetask.StandardTaskTemplate):
                     LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
 
             if inputs.datacolumn not in (None, ''):
-                global_datacolumn = inputs.datacolumn
-                LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if global_columns[0] == "DATA" else "corrected"}".')
+                ms_object = list(ms_objects_and_columns)[0]
+                if inputs.datacolumn.upper() not in ms_object.data_colnames():
+                    msg = f'Data column {inputs.datacolumn} not available.'
+                    LOG.error(msg)
+                    result.error = True
+                    result.error_msg = msg
+                    return result
+                global_datacolumn = inputs.datacolumn.upper()
+                global_datatype = ms_object.get_data_type(global_datacolumn)
+                global_datatype_str = global_datatype.name
+                global_datatype_info = f'{global_datatype_str} instead of {selected_datatype.name}'
+                selected_datatypes_str = [global_datatype_str]
+                selected_datatypes_info = [global_datatype_info]
+                automatic_datatype_choice = False
+                LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
             else:
                 if global_columns[0] == 'DATA':
                     global_datacolumn = 'data'
@@ -1046,23 +1059,17 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     if not all(local_column == local_columns[0] for local_column in local_columns):
                                         LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
 
-                                if inputs.datacolumn not in (None, ''):
-                                    local_datacolumn = global_datacolumn
-                                    local_selected_datatype_str = global_datatype_str
-                                    local_selected_datatype_info = global_datatype_info
-                                    LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Data type based datacolumn would have been "{"data" if local_columns[0] == "DATA" else "corrected"}".')
-                                else:
-                                    if local_columns != []:
-                                        if local_columns[0] == 'DATA':
-                                            local_datacolumn = 'data'
-                                        elif local_columns[0] == 'CORRECTED_DATA':
-                                            local_datacolumn = 'corrected'
-                                        else:
-                                            LOG.warn(f'Unknown column name {local_columns[0]}')
-                                            local_datacolumn = ''
+                                if local_columns != []:
+                                    if local_columns[0] == 'DATA':
+                                        local_datacolumn = 'data'
+                                    elif local_columns[0] == 'CORRECTED_DATA':
+                                        local_datacolumn = 'corrected'
                                     else:
-                                        LOG.warn(f'Empty list of columns')
+                                        LOG.warn(f'Unknown column name {local_columns[0]}')
                                         local_datacolumn = ''
+                                else:
+                                    LOG.warn(f'Empty list of columns')
+                                    local_datacolumn = ''
 
                                 datacolumn = local_datacolumn
 
@@ -1078,10 +1085,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         continue
                             else:
                                 datacolumn = global_datacolumn
-
-                                local_selected_datatype = None
-                                local_selected_datatype_str = 'N/A'
-                                local_selected_datatype_info = 'N/A'
+                                local_selected_datatype = global_datatype
+                                local_selected_datatype_str = global_datatype_str
+                                local_selected_datatype_info = global_datatype_info
 
                             # Save the specific vislist in a copy of the heuristics object tailored to the
                             # current imaging target

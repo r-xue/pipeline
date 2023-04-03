@@ -1218,6 +1218,20 @@ class MeasurementSet(object):
             value = 'session_1'
         self._session = value
 
+    def all_colnames(self):
+        """
+        Return all available column names for this MS.
+        """
+        with casa_tools.TableReader(self.name) as table:
+            colnames = table.colnames()
+        return colnames
+
+    def data_colnames(self):
+        """
+        Return all data column names for this MS.
+        """
+        return [colname for colname in self.all_colnames() if colname in ('DATA', 'CORRECTED_DATA')]
+
     def set_data_column(self, dtype: DataType, column: str,
                         source: Optional[str]=None,
                         spw: Optional[str]=None,
@@ -1247,9 +1261,8 @@ class MeasurementSet(object):
                 be overwritten.
         """
         # Check existence of the column
-        with casa_tools.TableReader(self.name) as table:
-            cols = table.colnames()
-        if column not in cols:
+        colnames = self.data_colnames()
+        if column not in colnames:
             raise ValueError('Column {} does not exist in {}'.format(column, self.basename))
 
         # Check if data type is already associated with another column
