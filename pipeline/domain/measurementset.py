@@ -1301,7 +1301,7 @@ class MeasurementSet(object):
 
     def get_data_column(self, dtype: DataType, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[str]:
         """
-        Return a column name associated with a DataType in MS domain object.
+        Return the column name associated with a DataType in an MS domain object.
 
         Args:
             dtype: DataType to fetch column name for
@@ -1343,5 +1343,58 @@ class MeasurementSet(object):
 
         if data_exists_for_all_source_spw_combinations:
             return self.data_column[dtype]
+        else:
+            return None
+
+    def get_data_type(self, column: str, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[DataType]:
+        """
+        Return the DataType associated with a column in an MS domain object.
+
+        Args:
+            column: name of column in MS
+            source: Comma separated list of source names to filter for.
+            spw: Comma separated list of real spw IDs to filter for.
+
+            If source and spw are both unset, the method will just look
+            at the MS data type and column information. If one or both
+            parameters are set, it will require all (source,spw)
+            combinations to have data of the requested data type.
+
+        Returns:
+            The DataType associated with the column name. Returns None
+            if dtype is not defined in the MS or in the source/spw
+            selection.
+        """
+        if column not in self.data_column.values():
+            return None
+
+        # Invert dictionary. This should not lead to wrong mappings
+        # because data types and columns have a 1:1 relation.
+        data_type = {v: k for k, v in self.data_column.items()}
+
+        if source is None and spw is None:
+            return data_type[column]
+
+        if source is None:
+            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
+        else:
+            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
+
+        if spw is None:
+            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
+        else:
+            spw_ids = spw
+
+        # Check all (source,spw) combinations
+        data_exists_for_all_source_spw_combinations = True
+        column_dtype = data_type[column]
+        for source_name in source_names.split(','):
+            for spw_id in map(int, spw_ids.split(',')):
+                key = (source_name, spw_id)
+                if column_dtype not in self.data_types_per_source_and_spw.get(key, []):
+                    data_exists_for_all_source_spw_combinations = False
+
+        if data_exists_for_all_source_spw_combinations:
+            return column_dtype
         else:
             return None
