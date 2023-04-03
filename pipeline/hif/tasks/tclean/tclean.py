@@ -4,7 +4,6 @@ import re
 
 import numpy as np
 from scipy.ndimage import label
-import shutil
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure

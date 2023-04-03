@@ -1,11 +1,9 @@
 import copy
 import os
 import operator
-import collections
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
@@ -40,7 +38,6 @@ class MakeImListInputs(vdp.StandardInputs):
     datatype = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     parallel = vdp.VisDependentProperty(default='automatic')
-    robust = vdp.VisDependentProperty(default=None)
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
 
@@ -280,7 +277,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         # Check against any user input for datatype to make sure that the
         # correct initial vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
-        known_datatypes_str = [str(v).replace('DataType.', '') for v in DataType]
+        known_datatypes_str = [v.name for v in DataType]
         explicit_user_datatypes = False
         if inputs.datatype not in (None, ''):
             # Consider every comma separated user value just once
@@ -295,11 +292,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                     return result
                 explicit_user_datatypes = True
                 # Use only intersection of specmode and user data types
-                specmode_datatypes = list(set(specmode_datatypes).intersection(set(eval(f'DataType.{datatype_str}') for datatype_str in user_datatypes_str)))
+                specmode_datatypes = list(set(specmode_datatypes).intersection(set(DataType[datatype_str] for datatype_str in user_datatypes_str)))
         else:
             user_datatypes_str = []
 
-        specmode_datatypes_str = [str(datatype_str).replace('DataType.', '') for datatype_str in specmode_datatypes]
+        specmode_datatypes_str = [specmode_datatype.name for specmode_datatype in specmode_datatypes]
 
         datacolumn = inputs.datacolumn
 
@@ -341,14 +338,14 @@ class MakeImList(basetask.StandardTaskTemplate):
             # Check for changing vis lists.
             if explicit_user_datatypes:
                 for user_datatype_str in user_datatypes_str:
-                    (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{user_datatype_str}')], msonly=False)
+                    (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[user_datatype_str]], msonly=False)
                     if set(ms_objects_and_columns) != set(sub_ms_objects_and_columns):
                         msg = 'Requested data types and specmode lead to multiple vis lists. Please run hif_makeimlist with data type selections per kind of MS (targets, targets_line, etc.).'
                         LOG.error(msg)
                         result.error = True
                         result.error_msg = msg
                         return result
-            global_datatype = f'{str(selected_datatype).replace("DataType.", "")}'
+            global_datatype = selected_datatype.name
             global_datatype_str = global_datatype
             global_datatype_info = global_datatype
             selected_datatypes_str = [global_datatype_str]
@@ -367,7 +364,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
             if inputs.datatype in (None, ''):
                 # Log these messages only if there is no user data type
-                LOG.info(f'Using data type {str(selected_datatype).replace("DataType.", "")} for imaging.')
+                LOG.info(f'Using data type {selected_datatype.name} for imaging.')
 
                 if selected_datatype == DataType.RAW:
                     LOG.warn('Falling back to raw data for imaging.')
@@ -397,7 +394,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             for vis in inputs.vis:
                 ms_object = inputs.context.observing_run.get_ms(vis)
                 # Collect the data types across the vis list
-                vislist_datatypes_str = vislist_datatypes_str + [str(datatype_str).replace('DataType.', '') for datatype_str in ms_object.data_column]
+                vislist_datatypes_str = vislist_datatypes_str + [ms_datatype.name for ms_datatype in ms_object.data_column]
             # Use just a set
             vislist_datatypes_str = list(set(vislist_datatypes_str))
             # Intersection of specmode based and vis based datatypes gives
@@ -1026,20 +1023,20 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
                                 else:
                                     # In manual mode check determine the data column for the current data type.
-                                    (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[eval(f'DataType.{selected_datatype_str}')], msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                                    (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[selected_datatype_str]], msonly=False, source=field_intent[0], spw=adjusted_spwspec)
 
                                 if local_selected_datatype is None:
                                     LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                     continue
 
-                                local_selected_datatype_str = str(local_selected_datatype).replace('DataType.', '')
+                                local_selected_datatype_str = local_selected_datatype.name
                                 local_selected_datatype_info = local_selected_datatype_str
                                 local_columns = list(local_ms_objects_and_columns.values())
 
                                 if local_selected_datatype_str != selected_datatype_str:
                                     if automatic_datatype_choice:
                                         LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
-                                        local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype}'
+                                        local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str}'
                                     else:
                                         # Manually selected data type unavailable -> skip making an imaging target
                                         LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')

@@ -130,7 +130,7 @@ class ObservingRun(object):
             source: Filter for particular source name selection (comma
                 separated list of names).
             spw: Filter for particular virtual spw specification (comma
-                separated list of real virtual IDs).
+                separated list of virtual IDs).
 
         Returns:
             When msonly is True, a list of MeasurementSet domain objects of
