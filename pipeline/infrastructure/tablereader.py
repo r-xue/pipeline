@@ -200,15 +200,15 @@ class MeasurementSetReader(object):
                     EVLA_band = find_EVLA_band(freqHz)
 
                 EVLA_band_dict = {'4': '4m (4)',
-                                'P': '90cm (P)',
-                                'L': '20cm (L)',
-                                'S': '13cm (S)',
-                                'C': '6cm (C)',
-                                'X': '3cm (X)',
-                                'U': '2cm (Ku)',
-                                'K': '1.3cm (K)',
-                                'A': '1cm (Ka)',
-                                'Q': '0.7cm (Q)'}
+                                  'P': '90cm (P)',
+                                  'L': '20cm (L)',
+                                  'S': '13cm (S)',
+                                  'C': '6cm (C)',
+                                  'X': '3cm (X)',
+                                  'U': '2cm (Ku)',
+                                  'K': '1.3cm (K)',
+                                  'A': '1cm (Ka)',
+                                  'Q': '0.7cm (Q)'}
 
                 spw.band = EVLA_band_dict[EVLA_band]
 
@@ -576,10 +576,6 @@ class SpectralWindowTable(object):
                 else:
                     LOG.info("SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {}".format(_get_ms_basename(ms)))
         return sdm_num_bin
-
-    #@staticmethod
-    #def get_receiver_band_info(ms: domain.MeasurementSet): 
-
 
 
     @staticmethod
