@@ -499,10 +499,11 @@ class Editimlist(basetask.StandardTaskTemplate):
         # as a string version of the enum without the DataType. prefix, and also duplicated in another field 'datatype_info'
         datatype_suffix = None
         if not img_mode.startswith('VLASS'):   # only add a suffix to ALMA and VLA data, but not VLASS
-            # loop over datatypes in order of preference and find the first one that appears in the given source+spw combination
+            # loop over datatypes and find the one that appears in the given source+spw combination
             for datatype in specmode_datatypes:
-                if ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw']):
-                    imlist_entry['datatype'] = imlist_entry['datatype_info'] = f'{str(datatype).replace("DataType.", "")}'
+                datacolumn_name = ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw'])
+                if datacolumn_name and ms.get_data_type(datacolumn_name) == datatype:
+                    imlist_entry['datatype'] = imlist_entry['datatype_info'] = datatype.name
                     # PIPE-1710: append a corresponding suffix to the image file name corresponding to the datatype
                     if imlist_entry['datatype'].lower().startswith('selfcal'):
                         datatype_suffix = 'selfcal'

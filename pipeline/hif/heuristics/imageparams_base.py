@@ -53,7 +53,7 @@ class ImageParamsHeuristics(object):
         :param vislist: the list of MS names
         :type vislist: list of strings
         :param spw: the virtual spw specification (list of virtual spw IDs)
-        :type spw_name: string or list
+        :type spw: string or list
         """
         self.imaging_mode = 'BASE'
 
