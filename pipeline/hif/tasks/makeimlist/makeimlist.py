@@ -262,6 +262,14 @@ class MakeImList(basetask.StandardTaskTemplate):
             result.error_msg = msg
             return result
 
+        # validate datacolumn
+        if inputs.datacolumn.upper() not in ('DATA', 'CORRECTED'):
+            msg = '"datacolumn" must be "data" or "corrected"'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
         # make sure inputs.vis is a list, even it is one that contains a
         # single measurement set
         if not isinstance(inputs.vis, list):
@@ -373,15 +381,19 @@ class MakeImList(basetask.StandardTaskTemplate):
                     LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
 
             if inputs.datacolumn not in (None, ''):
+                ms_datacolumn = inputs.datacolumn.upper()
+                # Handle difference in MS and tclean column naming schemes
+                if ms_datacolumn == 'CORRECTED':
+                    ms_datacolumn = 'CORRECTED_DATA'
                 ms_object = list(ms_objects_and_columns)[0]
-                if inputs.datacolumn.upper() not in ms_object.data_colnames():
+                if ms_datacolumn not in ms_object.data_colnames():
                     msg = f'Data column {inputs.datacolumn} not available.'
                     LOG.error(msg)
                     result.error = True
                     result.error_msg = msg
                     return result
                 global_datacolumn = inputs.datacolumn.upper()
-                global_datatype = ms_object.get_data_type(global_datacolumn)
+                global_datatype = ms_object.get_data_type(ms_datacolumn)
                 global_datatype_str = global_datatype.name
                 global_datatype_info = f'{global_datatype_str} instead of {selected_datatype.name}'
                 selected_datatypes_str = [global_datatype_str]
