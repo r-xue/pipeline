@@ -148,45 +148,59 @@ class MeasurementSetReader(object):
         Sets spw.band, which is a string describing a band. 
         """
         for spw in ms.spectral_windows:
-            if spw.band is None: 
-                if spw.type == 'WVR':
-                    spw.band = 'WVR'
-                    continue
+            if spw.type == 'WVR':
+                spw.band = 'WVR'
+                continue
 
-                # Expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
-                m = re.search(r'ALMA_RB_(?P<band>\d+)', spw.name)
-                if m:
-                    band_str = m.groupdict()['band']
+            # Expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
+            alma_band_regex = r'ALMA_RB_(?P<band>\d+)'
+            m = re.search(alma_band_regex, spw.name)
+            if m:
+                band_str = m.groupdict()['band']
+                band_num = int(band_str)
+                spw.band = 'ALMA Band %s' % band_num
+                print("Setting spw band from the SPW name: {}".format(spw.band))
+                continue
+
+            # If the band number can't be found from the spw name, search for it in the ASDM_RECEIVER table information
+            # Will not be executed for VLA due to the regex string
+            if spw.receiver_band: 
+                match_receiver_band = re.search(alma_band_regex, spw.receiver_band)
+                if match_receiver_band:
+                    # Get band information from the ASDM_RECEIVER table
+                    band_str = match_receiver_band.groupdict()['band']
                     band_num = int(band_str)
-                    spw.band = 'ALMA Band %s' % band_num
+                    spw.band = 'ALMA Band %s' % band_num 
+                    print("Setting spw band from the receiver table: {}".format(spw.band))
                     continue
 
-                spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
+            spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
+            print("Setting spw band from the LUT: {}".format(spw.band))
 
-                # Used EVLA band name from spw instead of frequency range
-                observatory = ms.antenna_array.name.upper()
-                if observatory in ('VLA', 'EVLA'):
-                    spw2band = ms.get_vla_spw2band()
+            # Used EVLA band name from spw instead of frequency range
+            observatory = ms.antenna_array.name.upper()
+            if observatory in ('VLA', 'EVLA'):
+                spw2band = ms.get_vla_spw2band()
 
-                    try:
-                        EVLA_band = spw2band[spw.id]
-                    except:
-                        LOG.info('Unable to get band from spw id - using reference frequency instead')
-                        freqHz = float(spw.ref_frequency.value)
-                        EVLA_band = find_EVLA_band(freqHz)
+                try:
+                    EVLA_band = spw2band[spw.id]
+                except:
+                    LOG.info('Unable to get band from spw id - using reference frequency instead')
+                    freqHz = float(spw.ref_frequency.value)
+                    EVLA_band = find_EVLA_band(freqHz)
 
-                    EVLA_band_dict = {'4': '4m (4)',
-                                    'P': '90cm (P)',
-                                    'L': '20cm (L)',
-                                    'S': '13cm (S)',
-                                    'C': '6cm (C)',
-                                    'X': '3cm (X)',
-                                    'U': '2cm (Ku)',
-                                    'K': '1.3cm (K)',
-                                    'A': '1cm (Ka)',
-                                    'Q': '0.7cm (Q)'}
+                EVLA_band_dict = {'4': '4m (4)',
+                                'P': '90cm (P)',
+                                'L': '20cm (L)',
+                                'S': '13cm (S)',
+                                'C': '6cm (C)',
+                                'X': '3cm (X)',
+                                'U': '2cm (Ku)',
+                                'K': '1.3cm (K)',
+                                'A': '1cm (Ka)',
+                                'Q': '0.7cm (Q)'}
 
-                    spw.band = EVLA_band_dict[EVLA_band]
+                spw.band = EVLA_band_dict[EVLA_band]
 
     @staticmethod
     def add_spectralspec_spwmap(ms):
@@ -523,14 +537,9 @@ class SpectralWindowTable(object):
             # Extract band name for current spw: 
             try:
                 band_name = receiver_band_info[i]
-                m = re.search(r'ALMA_RB_(?P<band>\d+)', band_name)
-                if m:
-                    band_str = m.groupdict()['band']
-                    band_num = int(band_str)
-                    band = 'ALMA Band %s' % band_num
             except KeyError:
                 LOG.info("No band info available from the reciever table for MS {} spw id {}".format(_get_ms_basename(ms), i))
-                band = None
+                band_name = None
 
             # If the earlier get_sdm_num_bin_info call returned None, need to set sdm_num_bin value to None for each spw
             if sdm_num_bins is None: 
@@ -540,7 +549,7 @@ class SpectralWindowTable(object):
 
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
-                                        transitions=transitions, sdm_num_bin=sdm_num_bin, band=band)
+                                        transitions=transitions, sdm_num_bin=sdm_num_bin, receiver_band=band_name)
             spws.append(spw)
 
         return spws
@@ -617,12 +626,10 @@ class SpectralWindowTable(object):
                     # Add and return frequency band information stored in receiver table 
                     if ms_spwid not in receiver_band_info:
                         receiver_band_info[ms_spwid] = tb.getcell("frequencyBand", i)
-
-                        
         except:
             LOG.info("Unable to read receiver info for MS {}".format(_get_ms_basename(ms)))
             receiver_info = {}
-
+            receiver_band_info = {}
         return receiver_info, receiver_band_info
 
     @staticmethod
