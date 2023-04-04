@@ -263,7 +263,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             return result
 
         # validate datacolumn
-        if inputs.datacolumn.upper() not in ('DATA', 'CORRECTED'):
+        if inputs.datacolumn.upper() not in (None, '', 'DATA', 'CORRECTED'):
             msg = '"datacolumn" must be "data" or "corrected"'
             LOG.error(msg)
             result.error = True
