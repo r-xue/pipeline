@@ -209,21 +209,21 @@ class SpectralWindow(object):
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
-                 'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin', 'receiver_band')
+                 'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin')
 
     def __getstate__(self):
         """Define what to pickle as a class intance."""
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
                 self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
-                self.spectralspec, self.transitions, self.sdm_num_bin, self.receiver_band)
+                self.spectralspec, self.transitions, self.sdm_num_bin)
 
     def __setstate__(self, state):
         """Define how to unpickle a class instance."""
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
          self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
-         self.sdm_num_bin, self.receiver_band) = state
+         self.sdm_num_bin) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -266,8 +266,7 @@ class SpectralWindow(object):
                  freq_lo: Optional[List[float]], band: str='Unknown',
                  spectralspec: str=None,
                  transitions: Optional[numpy.ndarray]=None,
-                 sdm_num_bin: Optional[int]=None,
-                 receiver_band: Optional[str]=None):
+                 sdm_num_bin: Optional[int]=None):
         """
         Initialize SpectralWindow class.
 
@@ -331,7 +330,6 @@ class SpectralWindow(object):
 
         self.transitions = transitions
         self.sdm_num_bin = sdm_num_bin 
-        self.receiver_band = receiver_band
 
     @property
     def centre_frequency(self):
