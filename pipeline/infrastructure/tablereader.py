@@ -582,17 +582,17 @@ class SpectralWindowTable(object):
     def get_receiver_info(ms, get_band_info=False):
         """
         Extract information about the receiver from the ASDM_RECEIVER table.
-        The following properties are extracted:
+        The following properties are extracted by default:
         * receiver type (e.g.: TSB, DSB, NOSB)
         * local oscillator frequencies
 
+        If get_band_info is set to True, instead, only the frequency 
+        band information is extracted. 
+
         If multiple entries are present for the same ASDM spwid, then keep
 
-        If get_band_info is set to True, instead of the above properties, only
-        the band information is extracted. 
-
         :param ms: measurement set to inspect
-        :return: dict of MS spw: (receiver_type, freq_lo)
+        :return: dict of MS spw: (receiver_type, freq_lo) or MS spw: frequency_band
         """
         # Get mapping of ASDM spectral window id to MS spectral window id.
         asdm_to_ms_spw_map = SpectralWindowTable.get_asdm_to_ms_spw_mapping(ms)
