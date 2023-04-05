@@ -246,9 +246,17 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.linesfile = None
                 return result
 
+        # validate vis
+        if inputs.vis not in (None, '', ['']) and not isinstance(inputs.vis, list):
+            msg = '"vis" must be a list of strings'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
         # validate specmode
         if inputs.specmode not in ('mfs', 'cont', 'cube', 'repBW'):
-            msg = 'specmode must be one of "mfs", "cont", "cube", or "repBW"'
+            msg = '"specmode" must be one of "mfs", "cont", "cube", or "repBW"'
             LOG.error(msg)
             result.error = True
             result.error_msg = msg
@@ -341,76 +349,83 @@ class MakeImList(basetask.StandardTaskTemplate):
         automatic_datatype_choice = False
 
         # Select the correct vis list
-        if inputs.vis in (None, '', [''], []):
+        if inputs.vis in (None, '', ['']):
             (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
-            # Check for changing vis lists.
-            if explicit_user_datatypes:
-                for user_datatype_str in user_datatypes_str:
+        else:
+            (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, vis=inputs.vis)
+
+        if not ms_objects_and_columns:
+            result.set_info({'msg': 'No data found. No imaging targets were created.',
+                             'intent': inputs.intent,
+                             'specmode': inputs.specmode})
+            result.contfile = None
+            result.linesfile = None
+            return result
+
+        # Check for changing vis lists.
+        if explicit_user_datatypes:
+            for user_datatype_str in user_datatypes_str:
+                if inputs.vis in (None, '', ['']):
                     (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[user_datatype_str]], msonly=False)
-                    if set(ms_objects_and_columns) != set(sub_ms_objects_and_columns):
-                        msg = 'Requested data types and specmode lead to multiple vis lists. Please run hif_makeimlist with data type selections per kind of MS (targets, targets_line, etc.).'
-                        LOG.error(msg)
-                        result.error = True
-                        result.error_msg = msg
-                        return result
-            global_datatype = selected_datatype
-            global_datatype_str = global_datatype.name
-            global_datatype_info = global_datatype_str
-            selected_datatypes_str = [global_datatype_str]
-            selected_datatypes_info = [global_datatype_info]
-            automatic_datatype_choice = True
-
-            if not ms_objects_and_columns:
-                result.set_info({'msg': 'No data found. No imaging targets were created.',
-                                 'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
-                result.contfile = None
-                result.linesfile = None
-                return result
-
-            global_columns = list(ms_objects_and_columns.values())
-
-            if inputs.datatype in (None, '') and inputs.datacolumn in (None, ''):
-                # Log these messages only if there is no user data type
-                LOG.info(f'Using data type {selected_datatype.name} for imaging.')
-
-                if selected_datatype == DataType.RAW:
-                    LOG.warn('Falling back to raw data for imaging.')
-
-                if not all(global_column == global_columns[0] for global_column in global_columns):
-                    LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
-
-            if inputs.datacolumn not in (None, ''):
-                ms_datacolumn = inputs.datacolumn.upper()
-                # Handle difference in MS and tclean column naming schemes
-                if ms_datacolumn == 'CORRECTED':
-                    ms_datacolumn = 'CORRECTED_DATA'
-                ms_object = list(ms_objects_and_columns)[0]
-                if ms_datacolumn not in ms_object.data_colnames():
-                    msg = f'Data column {inputs.datacolumn} not available.'
+                else:
+                    (sub_ms_objects_and_columns, sub_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[user_datatype_str]], msonly=False, vis=inputs.vis)
+                if set(ms_objects_and_columns) != set(sub_ms_objects_and_columns):
+                    msg = 'Requested data types and specmode lead to multiple vis lists. Please run hif_makeimlist with data type selections per kind of MS (targets, targets_line, etc.).'
                     LOG.error(msg)
                     result.error = True
                     result.error_msg = msg
                     return result
-                global_datacolumn = inputs.datacolumn.upper()
-                global_datatype = ms_object.get_data_type(ms_datacolumn)
-                global_datatype_str = global_datatype.name
-                global_datatype_info = f'{global_datatype_str} instead of {selected_datatype.name}'
-                selected_datatypes_str = [global_datatype_str]
-                selected_datatypes_info = [global_datatype_info]
-                automatic_datatype_choice = False
-                LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
-            else:
-                if global_columns[0] == 'DATA':
-                    global_datacolumn = 'data'
-                elif global_columns[0] == 'CORRECTED_DATA':
-                    global_datacolumn = 'corrected'
-                else:
-                    LOG.warn(f'Unknown column name {global_columns[0]}')
-                    global_datacolumn = ''
 
-            datacolumn = global_datacolumn
-            inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
+        global_datatype = selected_datatype
+        global_datatype_str = global_datatype.name
+        global_datatype_info = global_datatype_str
+        selected_datatypes_str = [global_datatype_str]
+        selected_datatypes_info = [global_datatype_info]
+        automatic_datatype_choice = True
+
+        global_columns = list(ms_objects_and_columns.values())
+
+        if inputs.datatype in (None, '') and inputs.datacolumn in (None, ''):
+            # Log these messages only if there is no user data type
+            LOG.info(f'Using data type {selected_datatype.name} for imaging.')
+
+            if selected_datatype == DataType.RAW:
+                LOG.warn('Falling back to raw data for imaging.')
+
+            if not all(global_column == global_columns[0] for global_column in global_columns):
+                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+
+        if inputs.datacolumn not in (None, ''):
+            ms_datacolumn = inputs.datacolumn.upper()
+            # Handle difference in MS and tclean column naming schemes
+            if ms_datacolumn == 'CORRECTED':
+                ms_datacolumn = 'CORRECTED_DATA'
+            ms_object = list(ms_objects_and_columns)[0]
+            if ms_datacolumn not in ms_object.data_colnames():
+                msg = f'Data column {inputs.datacolumn} not available.'
+                LOG.error(msg)
+                result.error = True
+                result.error_msg = msg
+                return result
+            global_datacolumn = inputs.datacolumn.upper()
+            global_datatype = ms_object.get_data_type(ms_datacolumn)
+            global_datatype_str = global_datatype.name
+            global_datatype_info = f'{global_datatype_str} instead of {selected_datatype.name}'
+            selected_datatypes_str = [global_datatype_str]
+            selected_datatypes_info = [global_datatype_info]
+            automatic_datatype_choice = False
+            LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
+        else:
+            if global_columns[0] == 'DATA':
+                global_datacolumn = 'data'
+            elif global_columns[0] == 'CORRECTED_DATA':
+                global_datacolumn = 'corrected'
+            else:
+                LOG.warn(f'Unknown column name {global_columns[0]}')
+                global_datacolumn = ''
+
+        datacolumn = global_datacolumn
+        inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
         # Handle user supplied data type requests
         if inputs.datatype not in (None, ''):
@@ -1045,10 +1060,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if selected_datatype_str not in (None, '', 'N/A') and inputs.datacolumn in (None, ''):
                                 if automatic_datatype_choice:
                                     # In automatic mode check for source/spw specific fall back to next available data type.
-                                    (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                                    (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False, source=field_intent[0], spw=adjusted_spwspec, vis=vislist)
                                 else:
                                     # In manual mode check determine the data column for the current data type.
-                                    (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[selected_datatype_str]], msonly=False, source=field_intent[0], spw=adjusted_spwspec)
+                                    (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[selected_datatype_str]], msonly=False, source=field_intent[0], spw=adjusted_spwspec, vis=vislist)
 
                                 if local_selected_datatype is None:
                                     LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
