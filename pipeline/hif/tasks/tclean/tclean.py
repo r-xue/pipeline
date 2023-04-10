@@ -3,9 +3,10 @@ import os
 import re
 
 import numpy as np
+from scipy.ndimage import label
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pipelineqa
@@ -14,7 +15,6 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
-from scipy.ndimage import label
 
 from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
