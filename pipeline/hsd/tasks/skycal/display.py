@@ -204,19 +204,32 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
     """
 
     @staticmethod
-    def get_solution_interval(result: 'SDSkyCalResults') -> float:
+    def get_caltable_from_result(result: 'SDSkyCalResults') -> str:
         assert len(result.final) == 1
         calapp = result.final[0]
-        caltable = calapp.gaintable
+        caltable = calapp.gaintable.rstrip('/')
+        return caltable
+
+    @staticmethod
+    def get_solution_interval(caltable: str) -> float:
         with casa_tools.TableReader(caltable) as tb:
             valid_rows = tb.query('not all(FLAG)')
             intervalcol = valid_rows.getcol('INTERVAL')
             valid_rows.close()
 
-            timecol = tb.getcol('TIME')
+            antennas = numpy.unique(tb.getcol('ANTENNA1'))
+            timecol = []
+            for a in antennas:
+                selected = tb.query(f'ANTENNA1 == {a}')
+                timecol.append(selected.getcol('TIME'))
+                selected.close()
 
         max_interval = int(numpy.ceil(intervalcol.max()))
-        min_time_diff = int(numpy.floor(numpy.diff(numpy.unique(timecol)).min()))
+        min_time_diff_per_antenna = map(
+            lambda x: numpy.diff(numpy.unique(x)).min(),
+            timecol
+        )
+        min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
 
         LOG.info(f'max_interval is {max_interval}, min_time_diff is {min_time_diff}')
 
@@ -238,7 +251,8 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             result: Pipeline task execution result.
             field: Field string. Either field id or field name.
         """
-        solution_interval = self.get_solution_interval(result)
+        caltable = self.get_caltable_from_result(result)
+        solution_interval = self.get_solution_interval(caltable)
         super(SingleDishSkyCalAmpVsFreqDetailChart, self).__init__(
             context, result, xaxis='freq', yaxis='amp',
             showatm=True, overlay='time',
