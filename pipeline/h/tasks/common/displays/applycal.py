@@ -71,13 +71,13 @@ class PlotmsLeaf(object):
         if field != '':
             matching = self._ms.get_fields(field)
 
-            if len(matching) is 1:
+            if len(matching) == 1:
                 field_name = matching[0].name
                 field_id = matching[0].id
                 # in case the arg is an ID, check that returned field doesn't
                 # contain a duplicate name
                 matching_by_name = self._ms.get_fields(field_name)
-                if len(matching_by_name) is 1:
+                if len(matching_by_name) == 1:
                     # if the argument was the field ID but the field name is 
                     # unique. Therefore, we can use the field name.
                     field = field_name
@@ -135,7 +135,31 @@ class PlotmsLeaf(object):
         self._plot_args = plot_args
         self._plotfile = self._get_plotfile()
 
+    def _is_null_select(self):
+        """Attempt to identify a null data selection to prevent CASA/plotms grpc-related exceptions.
+
+        Note: this doesn't guarantee to detect all null-selection conditions, but can rule out several known 
+        scenarios. See PIPE-1596/PIPE-1259/PIPE-1255.
+        """
+        is_null_select = False
+
+        # reject the case that the spw/scan/intent selection leads to zero scan.
+        if not self._ms.get_scans(spw=self._spw, field=self._field, scan_intent=self._intent):
+            is_null_select = True
+
+        # reject the case that the requested correlation(s) is not in any selected spw, only for VLA
+        corrstring = self._correlation
+        if self._ms.antenna_array.name in ('VLA', 'EVLA') and corrstring not in ('', '*', None):
+            vla_corrlist = self._ms.get_vla_corrlist_from_spw(spw=str(self._spw))
+            if not (set(vla_corrlist) & set(corrstring.split(','))):
+                is_null_select = True
+
+        return is_null_select
+
     def plot(self):
+        """Get the jobrequest and its plot wrapper ready, before the plot is generated."""
+        if self._is_null_select():
+            return []
         task = self._get_plot_task()
         return [(task, self._get_plot_wrapper(task))]
 
@@ -285,7 +309,7 @@ class BasebandComposite(common.LeafComposite):
             rx = 'all' if overplot_receivers else spw.band
             receivers[rx][spw.baseband].append(spw.id)
 
-        is_single_receiver = len(receivers) is 1
+        is_single_receiver = len(receivers) == 1
 
         children = []
         if 'spws' in kwargs:

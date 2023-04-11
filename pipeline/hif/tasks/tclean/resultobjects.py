@@ -27,10 +27,12 @@ class BoxResult(basetask.Results):
 
 
 class TcleanResult(basetask.Results):
-    def __init__(self, vis=None, sourcename=None, field_ids=None, intent=None, spw=None, orig_specmode=None,
+    def __init__(self, vis=None, datacolumn=None, datatype_info=None, sourcename=None, field_ids=None, intent=None, spw=None, orig_specmode=None,
                  specmode=None, multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None, is_eph_obj=None):
         super(TcleanResult, self).__init__()
         self.vis = vis
+        self.datacolumn = datacolumn
+        self.datatype_info = datatype_info
         self.sourcename = sourcename
         self.field_ids = field_ids
         self.intent = intent
@@ -660,6 +662,18 @@ class TcleanResult(basetask.Results):
 
     def set_planeid_array(self, iteration, planeid_array):
         self.iterations[iteration]['planeid_array'] = planeid_array
+
+    @property
+    # SummaryMinor dictionary from CASA/tclean return, as a function of minor iteration number
+    def summaryminor(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('summaryminor', None)
+        else:
+            return None
+
+    def set_summaryminor(self, iteration, summaryminor):
+        self.iterations[iteration]['summaryminor'] = summaryminor
 
     @property
     # Total cleaned flux as a function of minor iteration number

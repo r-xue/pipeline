@@ -776,6 +776,23 @@ class MeasurementSet(object):
 
         return corrstring
 
+    def get_vla_corrlist_from_spw(self, spw=None):
+        """Get all VLA correlation labels as a list of string from selected spw(s).
+
+        Args:
+            spw: a spw selection string or None. Defaults to None.
+
+        Returns:
+            list: a list of correlation labels.
+        """
+        ddindex = self.get_vla_datadesc()
+        corrs = set()
+        for dd in ddindex.values():
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd['spw']) in spw.split(',')):
+                corrs = corrs.union(dd['corrdesc'])
+
+        return sorted(corrs)
+
     def get_alma_corrstring(self):
         """Get correlation string for ALMA for the science windows
 
@@ -1279,7 +1296,7 @@ class MeasurementSet(object):
             A name of column of a dtype. Returns None if dtype is not defined
             in the MS.
         """
-        if not (dtype in self.data_column.keys()):
+        if dtype not in self.data_column.keys():
             return None
 
         if source is None and spw is None:
@@ -1302,5 +1319,8 @@ class MeasurementSet(object):
                 key = (source_name, spw_id)
                 if dtype not in self.data_types_per_source_and_spw.get(key, []):
                     data_exists_for_all_source_spw_combinations = False
+
         if data_exists_for_all_source_spw_combinations:
             return self.data_column[dtype]
+        else:
+            return None

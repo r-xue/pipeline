@@ -206,14 +206,14 @@ class ImageParamsHeuristics(object):
             ms = self.observing_run.get_ms(name=vis)
             fields = ms.fields
 
-            if intent.strip() is not '':
+            if intent.strip() != '':
                 for eachintent in intent_list:
                     re_intent = eachintent.replace('*', '.*')
                     field_intent_result.update(
                         [(fld.name, eachintent) for fld in fields if
                          re.search(pattern=re_intent, string=str(fld.intents))])
 
-                if field.strip() is not '':
+                if field.strip() != '':
                     # remove items from field_intent_result that are not
                     # consistent with the fields in field_list
                     temp_result = set()
@@ -223,7 +223,7 @@ class ImageParamsHeuristics(object):
                     field_intent_result = temp_result
 
             else:
-                if field.strip() is not '':
+                if field.strip() != '':
                     for f in field_list:
                         fintents_list = [fld.intents for fld in fields if utils.dequote(fld.name) == utils.dequote(f)]
                         for fintents in fintents_list:
@@ -1729,6 +1729,12 @@ class ImageParamsHeuristics(object):
                     if gridder == 'mosaic':
                         # Correct for mosaic overlap factor
                         source_name = [f.source.name for f in ms.fields if (utils.dequote(f.name) == utils.dequote(field) and intent in f.intents)][0]
+                        # PIPE-1708: "Integer" source names consisting of just
+                        # digits cause confusion in the mosaic overlap factor
+                        # calculation. Adopting the "solution" of enquoting
+                        # such names.
+                        if source_name.isdigit():
+                            source_name = '"{}"'.format(source_name)
                         diameter = np.median([a.diameter for a in ms.antennas])
                         overlap_factor = mosaicoverlap.mosaicOverlapFactorMS(ms, source_name, intSpw, diameter)
                         LOG.info('Dividing by mosaic overlap improvement factor of %s corrects sensitivity for EB %s'

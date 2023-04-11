@@ -459,7 +459,7 @@ class ACreNorm(object):
 
         # Version
 
-        self.RNversion='v1.3-2021/08/05-alipnick'
+        self.RNversion='v1.4-2022/08/12-alipnick'
 
         # LM added 
         # file for logger named per EB and runtime - will make a new file every run
@@ -523,7 +523,7 @@ class ACreNorm(object):
         # useful for ALMA production 
 
         # ALMA Bands        0    1   2    3    4    5    6    7    8    9    10
-        self.bandThresh=[99.0, 1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.50,1.50] 
+        self.bandThresh=[99.0, 1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02] 
         # B9/B10 set high now to now correct
         # set a B0 as its way easier just to then index this array with Band
 
@@ -556,7 +556,8 @@ class ACreNorm(object):
         if len(self.fdmspws) != 0:
             self.tdm_only = False
             bandFreq = spwInfo[str(self.fdmspws[0])]['Chan1Freq']
-            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.fdmspws[0]))
+            # Maybe a better way?
+            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.datadescids(spw=self.fdmspws[0])[0]))
             # AC data will only use the parallel hands, so if 4 correlations are detected in the FDM
             # window, we set the full_pol flag to True and reset num_corrs to 2.
             if self.num_corrs == 4:
@@ -577,7 +578,7 @@ class ACreNorm(object):
             self.logReNorm.write('No FDM windows found! Renormalization unnecessary.')
             self.tdm_only = True
             bandFreq = spwInfo['0']['Chan1Freq']
-            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.tdmspws()[-1]))
+            self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.datadescids(spw=self.msmeta.tdmspws()[-1])[0]))
         
         self.Band = int(self.getband(bandFreq))
 
@@ -1530,6 +1531,10 @@ class ACreNorm(object):
                     print(' e.g. {"22":"100~150"}')
                     casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                     raise SyntaxError('excludechan requires a channel range separator of "~" (tilde)')
+        elif excludechan is None:
+            excludechan={}
+        elif type(excludechan) is str:
+            excludechan={}
         self.rnstats['inputs']['excludechan'] = excludechan
 
         # LM added - bwthreshspw (dictionary)
@@ -2075,17 +2080,34 @@ class ACreNorm(object):
                                                     print('replacing scan with good for '+str(self.AntName[lpAnt]))
                                                     self.rnstats['N'][target][str(ispw)][:,:,lpAnt]= N[:,:,lpAnt] 
                                                 if (self.corrATM and not skipAtmCorr) or excludechan:
-                                                    if lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
-                                                        self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N_atm[:,:,lpAnt]/(ngoodscan+1)
-                                                    elif lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
-                                                        self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]= N_atm[:,:,lpAnt]
+                                                    try: 
+                                                        if lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N_atm[:,:,lpAnt]/(ngoodscan+1)
+                                                        elif lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]= N_atm[:,:,lpAnt]
+                                                    # If we end up here, then the atmAutoExclude algorithm has only just 
+                                                    # started excluding scans. So we need to instantiate the N_atm dict
+                                                    # with everything that is contained in N so far and then we can add
+                                                    # the new data.
+                                                    except KeyError:
+                                                        self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]
+                                                        if lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)!=1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]=self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]*ngoodscan/(ngoodscan+1)  + N_atm[:,:,lpAnt]/(ngoodscan+1)
+                                                        elif lpAnt not in antflagged and np.sum(self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt])/(2.*nCha)==1.0:
+                                                            self.rnstats['N_atm'][target][str(ispw)][:,:,lpAnt]= N_atm[:,:,lpAnt]
                                             # remember to add to the scans assessed
                                             ngoodscan+=1
                                         else:
                                             # if no flagged antennas were passed we do the default cumulative average as normal
                                             self.rnstats['N'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N/(ngoodscan+1)
                                             if (self.corrATM and not skipAtmCorr) or excludechan:
-                                                self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N_atm'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N_atm/(ngoodscan+1)
+                                                try:
+                                                    self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N_atm'][target][str(ispw)]*ngoodscan/(ngoodscan+1)  + N_atm/(ngoodscan+1)
+                                                # If we end up here, then the atmAutoExclude algorithm has only just 
+                                                # started excluding scans. So we need to instantiate the N_atm dict
+                                                # with everything that is contained in N so far plus the new data.
+                                                except KeyError:
+                                                    self.rnstats['N_atm'][target][str(ispw)]=self.rnstats['N'][target][str(ispw)]*ngoodscan/(ngoodscan+1) + N_atm/(ngoodscan+1)
                                             ngoodscan+=1
                                     ## Non flagged antenna cases
                                     else:
@@ -2885,14 +2907,18 @@ class ACreNorm(object):
                     ax_atm.yaxis.set_label_position('right')
                     
                     # Enforce a range of 100
-                    ax_atm.set_ylim(peak-100,peak)
-                    
-                    # Make sure that we don't label values that are less than 0 since that
-                    # has no physical meaning.
-                    fig.canvas.draw()
-                    yticks = [yt for yt in ax_atm.get_yticks()]
-                    ax_atm.set_yticklabels(['' if yt<0 else str(int(yt)) for yt in yticks])
+                    atm_ymax = peak
+                    atm_ymin = peak-100
+                    ax_atm.set_ylim(atm_ymin, atm_ymax)
 
+                    ## Make sure that we don't label values that are less than 0 since that
+                    ## has no physical meaning.
+                    yvals = np.arange(round(atm_ymin), round(atm_ymax))
+                    yvals_mod = yvals%20
+                    ylabels = yvals[list(np.where(yvals_mod==0)[0])]
+                    ylabels_mask = ylabels >= 0 
+                    ax_atm.set_yticks(ylabels[ylabels_mask])
+                    ax_atm.set_yticklabels([str(int(ylbl)) for ylbl in ylabels[ylabels_mask]])
 
                     # Gather stats for pipeline development
                     if 'atmStats' not in self.rnstats.keys():
@@ -3779,14 +3805,23 @@ class ACreNorm(object):
             else:
                 peak = max(ATMprof*100.)+10
                 ax_atm.set_ylabel('ATM Transmission (%)')                
-            ax_atm.set_ylim(peak-100,peak)
             ax_atm.yaxis.set_label_position('right')
             
             # Avoid labelling values less than 0% since they have no physical meaning.
-            fig.canvas.draw()
-            yticks = [yt for yt in ax_atm.get_yticks()]
-            ax_atm.set_yticklabels(['' if yt<0 else str(int(yt)) for yt in yticks])
-        
+            # Enforce a range of 100
+            atm_ymax = peak
+            atm_ymin = peak-100
+            ax_atm.set_ylim(atm_ymin, atm_ymax)
+
+            ## Make sure that we don't label values that are less than 0 since that
+            ## has no physical meaning.
+            yvals = np.arange(round(atm_ymin), round(atm_ymax))
+            yvals_mod = yvals%20
+            ylabels = yvals[list(np.where(yvals_mod==0)[0])]
+            ylabels_mask = ylabels >= 0 
+            ax_atm.set_yticks(ylabels[ylabels_mask])
+            ax_atm.set_yticklabels([str(int(ylbl)) for ylbl in ylabels[ylabels_mask]])
+            
         # Save the plotted figure, setting up the plot directory if it doesn't already exist.
         if not os.path.exists('RN_plots'):
             os.mkdir('RN_plots')
@@ -4196,12 +4231,111 @@ class ACreNorm(object):
             A list of list pairs suggesting ranges for input into the excludechan 
             option of renormalization().
         """
+
+
         def subsets(chans):
             """
             Purpose: Find subset ranges within an array of consecutive values and
                      return the sub-ranges.
             """
-            from more_itertools import consecutive_groups
+            class groupby:
+                # A subset task of the itertools package.
+                # https://docs.python.org/3/library/itertools.html#itertools.groupby
+
+                # [k for k, g in groupby('AAAABBBCCDAABBB')] --> A B C D A B
+                # [list(g) for k, g in groupby('AAAABBBCCD')] --> AAAA BBB CC D
+                def __init__(self, iterable, key=None):
+                    if key is None:
+                        key = lambda x: x
+                    self.keyfunc = key
+                    self.it = iter(iterable)
+                    self.tgtkey = self.currkey = self.currvalue = object()
+
+                def __iter__(self):
+                    return self
+
+                def __next__(self):
+                    self.id = object()
+                    while self.currkey == self.tgtkey:
+                        self.currvalue = next(self.it)    # Exit on StopIteration
+                        self.currkey = self.keyfunc(self.currvalue)
+                    self.tgtkey = self.currkey
+                    return (self.currkey, self._grouper(self.tgtkey, self.id))
+
+                def _grouper(self, tgtkey, id):
+                    while self.id is id and self.currkey == tgtkey:
+                        yield self.currvalue
+                        try:
+                            self.currvalue = next(self.it)
+                        except StopIteration:
+                            return
+                        self.currkey = self.keyfunc(self.currvalue)
+
+            def itemgetter(*items):
+                # A subset task of the operator package.
+                # https://docs.python.org/3/library/operator.html#operator.itemgetter
+                if len(items) == 1:
+                    item = items[0]
+                    def g(obj):
+                        return obj[item]
+                else:
+                    def g(obj):
+                        return tuple(obj[item] for item in items)
+                return g
+
+            def consecutive_groups(iterable, ordering=lambda x: x):
+                """
+                A subset of the more-itertools package.
+                https://more-itertools.readthedocs.io/en/stable
+                        /_modules/more_itertools/more.html#consecutive_groups
+
+                Yield groups of consecutive items using :func:`itertools.groupby`.
+                The *ordering* function determines whether two items are adjacent by
+                returning their position.
+
+                By default, the ordering function is the identity function. This is
+                suitable for finding runs of numbers:
+
+                    >>> iterable = [1, 10, 11, 12, 20, 30, 31, 32, 33, 40]
+                    >>> for group in consecutive_groups(iterable):
+                    ...     print(list(group))
+                    [1]
+                    [10, 11, 12]
+                    [20]
+                    [30, 31, 32, 33]
+                    [40]
+
+                For finding runs of adjacent letters, try using the :meth:`index` method
+                of a string of letters:
+
+                    >>> from string import ascii_lowercase
+                    >>> iterable = 'abcdfgilmnop'
+                    >>> ordering = ascii_lowercase.index
+                    >>> for group in consecutive_groups(iterable, ordering):
+                    ...     print(list(group))
+                    ['a', 'b', 'c', 'd']
+                    ['f', 'g']
+                    ['i']
+                    ['l', 'm', 'n', 'o', 'p']
+
+                Each group of consecutive items is an iterator that shares it source with
+                *iterable*. When an an output group is advanced, the previous group is
+                no longer available unless its elements are copied (e.g., into a ``list``).
+
+                    >>> iterable = [1, 2, 11, 12, 21, 22]
+                    >>> saved_groups = []
+                    >>> for group in consecutive_groups(iterable):
+                    ...     saved_groups.append(list(group))  # Copy group elements
+                    >>> saved_groups
+                    [[1, 2], [11, 12], [21, 22]]
+
+                Borrowed for PL use from https://pypi.org/project/more-itertools/
+                """
+                for k, g in groupby(
+                    enumerate(iterable), key=lambda x: x[0] - ordering(x[1])
+                ):
+                    yield map(itemgetter(1), g)
+
             subsets = [list(group) for group in consecutive_groups(chans)]
             ranges = []
             for ss in subsets:
@@ -4296,10 +4430,14 @@ class ACreNorm(object):
 
 
     def getband(self,freq):
-        ''' Identify the Band for specific frequency (in GHz)
+        ''' 
+        Identify the Band for specific frequency (in GHz)
+
+        Note that the Band 2/3 identification is currently not
+        guaranteed to be correct.
         '''
-        lo=np.array([0,0,84,125,157,211,275,385,602,787])*1e9
-        hi=np.array([0,0,116,163,212,275,373,500,720,950])*1e9
+        lo=np.array([35,67,84,125,157,211,275,385,602,787])*1e9
+        hi=np.array([50,83.999999999,116,163,212,275,373,500,720,950])*1e9
 
         return np.arange(1,len(lo)+1)[(freq>lo)&(freq<hi)][0]
 
