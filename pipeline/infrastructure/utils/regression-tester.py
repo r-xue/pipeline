@@ -56,7 +56,7 @@ class PipelineRegression(object):
                 if list_of_files:
                     # Pick the reference result file with the highest PL version number
                     def pipeline_version_from_refdata(file_name): 
-                        p = re.compile('.*pipeline-(.*\d).*results.txt')
+                        regex_pattern = re.compile('.*pipeline-(.*\d).*results.txt')
                         m = p.match(file_name)
                         if m:
                             version_string = m.group(1)
