@@ -114,7 +114,7 @@ xvfb-run casa --nogui --nologger --log2term --agg -c \
     "import pytest; pytest.main(['-vv', '-m alma and fast', '--compare-only', '<pipeline_dir>/pipeline/infrastructure/utils/regression-tester.py'])"
 ```
 
-The `--longtests` option enables the longer tests to be run. When this option is not specificed, only the quicker set of of tests will be run. 
+The `--longtests` option enables the longer tests to be run. When this option is not specified, only the quicker set of tests will be run. 
 
 ## Custom markers
 
