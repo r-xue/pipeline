@@ -429,8 +429,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         deviationmask_list = self.inputs.deviationmask
         formatted_edge = list(common.parseEdge(self.inputs.edge))
         out_rowmap = utils.make_row_map(origin_ms, outfile)
-        in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name) 
-        status = plot_manager.initialize()
+        in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         plot_list = []
         stats = []
 
@@ -445,60 +444,59 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
             else:
                 deviationmask = None
 
-            if status:
-                fields = ms.get_fields(field_id=field_id)
-                source_name = fields[0].source.name
-                if source_name not in org_directions_dict:
-                    raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
-                                       "".format(source_name, list(org_directions_dict.keys())))
-                org_direction = org_directions_dict[source_name]
-                data_manager = plotter.BaselineSubtractionDataManager(ms, outfile,
-                                                                      self.inputs.context,
-                                                                      self.datatable)
-                num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(ms,
-                                                                                      origin_ms_id,
-                                                                                      antenna_id,
-                                                                                      virtual_spwid,
-                                                                                      polids,
-                                                                                      grid_table,
-                                                                                      org_direction)
-                spw = ms.spectral_windows[spw_id]
-                nchan = spw.num_channels
-                data_desc = ms.get_data_description(spw=spw)
-                npol = data_desc.num_polarizations
-                data_manager.resize_storage(num_ra, num_dec, npol, nchan)
-                frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
-                                           dtype=numpy.float64)  # unit in GHz
-                data = data_manager.store_result_get_data(field_id, antenna_id, spw_id,
-                                                          grid_table, org_direction,
-                                                          num_ra, num_dec, num_plane,
-                                                          rowlist, npol, nchan, frequency,
-                                                          out_rowmap=out_rowmap, in_rowmap=in_rowmap)
-                postfit_integrated_data = data[0]
-                postfit_map_data = data[1]
-                prefit_integrated_data = data[2]
-                prefit_map_data = data[3]
-                prefit_averaged_data = data[4]
-                stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
-                                                                             org_direction,
-                                                                             postfit_integrated_data,
-                                                                             num_ra, num_dec, num_plane,
-                                                                             npol, nchan, frequency,
-                                                                             grid_table, deviationmask,
-                                                                             channelmap_range,
-                                                                             formatted_edge))
-                plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
-                                                                    org_direction,
-                                                                    postfit_integrated_data,
-                                                                    postfit_map_data,
-                                                                    prefit_integrated_data,
-                                                                    prefit_map_data,
-                                                                    prefit_averaged_data,
-                                                                    num_ra, num_dec, num_plane,
-                                                                    rowlist, npol, nchan, frequency,
-                                                                    grid_table, deviationmask,
-                                                                    channelmap_range, formatted_edge,
-                                                                    in_rowmap=in_rowmap))
+            fields = ms.get_fields(field_id=field_id)
+            source_name = fields[0].source.name
+            if source_name not in org_directions_dict:
+                raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
+                                   "".format(source_name, list(org_directions_dict.keys())))
+            org_direction = org_directions_dict[source_name]
+            data_manager = plotter.BaselineSubtractionDataManager(ms, outfile,
+                                                                  self.inputs.context,
+                                                                  self.datatable)
+            num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(ms,
+                                                                                  origin_ms_id,
+                                                                                  antenna_id,
+                                                                                  virtual_spwid,
+                                                                                  polids,
+                                                                                  grid_table,
+                                                                                  org_direction)
+            spw = ms.spectral_windows[spw_id]
+            nchan = spw.num_channels
+            data_desc = ms.get_data_description(spw=spw)
+            npol = data_desc.num_polarizations
+            data_manager.resize_storage(num_ra, num_dec, npol, nchan)
+            frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
+                                       dtype=numpy.float64)  # unit in GHz
+            data = data_manager.store_result_get_data(field_id, antenna_id, spw_id,
+                                                      grid_table, org_direction,
+                                                      num_ra, num_dec, num_plane,
+                                                      rowlist, npol, nchan, frequency,
+                                                      out_rowmap=out_rowmap, in_rowmap=in_rowmap)
+            postfit_integrated_data = data[0]
+            postfit_map_data = data[1]
+            prefit_integrated_data = data[2]
+            prefit_map_data = data[3]
+            prefit_averaged_data = data[4]
+            stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
+                                                                         org_direction,
+                                                                         postfit_integrated_data,
+                                                                         num_ra, num_dec, num_plane,
+                                                                         npol, nchan, frequency,
+                                                                         grid_table, deviationmask,
+                                                                         channelmap_range,
+                                                                         formatted_edge))
+            plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
+                                                                org_direction,
+                                                                postfit_integrated_data,
+                                                                postfit_map_data,
+                                                                prefit_integrated_data,
+                                                                prefit_map_data,
+                                                                prefit_averaged_data,
+                                                                num_ra, num_dec, num_plane,
+                                                                rowlist, npol, nchan, frequency,
+                                                                grid_table, deviationmask,
+                                                                channelmap_range, formatted_edge,
+                                                                in_rowmap=in_rowmap))
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list

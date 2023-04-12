@@ -2,7 +2,7 @@
 import collections
 import itertools
 import os
-from typing import TYPE_CHECKING, Generator, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, Generator, Iterable, List, Optional, Tuple, Union
 
 import matplotlib.figure as figure
 import matplotlib.pyplot as plt
@@ -258,7 +258,7 @@ class BaselineSubtractionDataManager(object):
         polids: List[int],
         grid_table: List[List[Union[int, float, numpy.ndarray]]],
         org_direction: dirutil.Direction
-    ) -> Tuple[int, int, int, List[dict]]:
+    ) -> Tuple[int, int, int, List[Dict[str, Union[int, float, List[int]]]]]:
         """Create and analyze plot table.
 
         Extract datatable row ids that match the selection given by
@@ -604,17 +604,6 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
                 os.makedirs(self.stage_dir, exist_ok=True)   # handle race condition in Tier-0 operation gracefully
             self.pool = PlotterPool()
 
-    def initialize(self) -> bool:
-        """Initialize plot manager.
-
-        Returns:
-            Initialization status
-        """
-        if basetask.DISABLE_WEBLOG:
-            return True
-
-        return True
-
     def finalize(self) -> None:
         """Finalize plot manager.
 
@@ -798,9 +787,9 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             spw_id: Spw id to process. Should be the real spw id.
             org_direction: direction of the origin
             postfit_integrated_data: integrated spectral data after baseline subtraction.
-            postfit_map_data: spectral sparse map spectral data after baseline subtraction.
+            postfit_map_data: sparse map spectral data after baseline subtraction.
             prefit_integrated_data: integrated spectral data before baseline subtraction.
-            prefit_map_data: spectral sparse map spectral data after baseline subtraction.
+            prefit_map_data: sparse map spectral data after baseline subtraction.
             prefit_averaged_data: averaged spectral data with each grid before baseline subtraction.
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
@@ -946,7 +935,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]],
         in_rowmap: Optional[dict] = None
-    ) -> dict:
+    ) -> Dict[str, Dict[int, str]]:
         """Create various type of plots.
 
         This method produces the following plots.
@@ -960,9 +949,9 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             prefit_figfile_prefix: Prefix string for the filename (before baseline subtraction)
             postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
             postfit_integrated_data: integrated spectral data after baseline subtraction.
-            postfit_map_data: spectral sparse map spectral data after baseline subtraction.
+            postfit_map_data: sparse map spectral data after baseline subtraction.
             prefit_integrated_data: integrated spectral data before baseline subtraction.
-            prefit_map_data: spectral sparse map spectral data after baseline subtraction.
+            prefit_map_data: sparse map spectral data after baseline subtraction.
             prefit_averaged_data: averaged spectral data with each grid before baseline subtraction.
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
@@ -1108,7 +1097,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         atm_transmission: Optional[numpy.ndarray],
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]]
-    ) -> dict:
+    ) -> Dict[str, Dict[int, str]]:
         """Create plots of baseline flatness profile of a spectrum (after baseline subtraction).
 
         Args:
@@ -1167,7 +1156,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
                       line_range: Optional[List[Tuple[float, float]]],
                       deviation_mask: Optional[List[Tuple[int, int]]],
                       edge: Tuple[int, int], brightnessunit: str,
-                      figfile: str):
+                      figfile: str) -> None:
         """
         Create a plot of baseline flatness of a spectrum.
 
@@ -1180,13 +1169,18 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             deviation_mask: ID ranges of deviation mask. These ranges are also
                 eliminated from inspection of baseline flatness.
             edge: Number of elements in left and right edges that should be
-                eliminates from inspection of baseline flatness.
+                eliminated from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
             figfile: A file name to save figure.
         """
         masked_data, binned_freq, binned_data = data_flatness(spectrum, frequency, line_range,
                                                               deviation_mask, edge)
         stddev = masked_data.std()
+        if binned_data.count() < 2 \
+           or stddev is numpy.ma.masked \
+           or not numpy.isfinite(stddev):
+            # not enough valid data or stddev is invalid
+            return None
         # create a plot
         xmin = min(frequency[0], frequency[-1])
         xmax = max(frequency[0], frequency[-1])
@@ -1204,7 +1198,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             (ch1, ch2) = edge
             fedge0 = ch_to_freq(0, frequency)
             fedge1 = ch_to_freq(ch1-1, frequency)
-            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
+            fedge2 = ch_to_freq(len(frequency)-ch2, frequency)
             fedge3 = ch_to_freq(len(frequency)-1, frequency)
             plt.axvspan(fedge0, fedge1, color='lightgray')
             plt.axvspan(fedge2, fedge3, color='lightgray')
@@ -1245,7 +1239,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
                                         grid_table: List[List[Union[int, float, numpy.ndarray]]],
                                         deviation_mask: Optional[List[Tuple[int, int]]],
                                         channelmap_range: Optional[List[Tuple[int, int, bool]]],
-                                        edge: Optional[List[int]]) -> List:
+                                        edge: Optional[List[int]]) -> List[QualityStat]:
         """Calculate quality statistics after baseline subtraction.
 
         Args:
@@ -1295,16 +1289,18 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             stat = self.analyze_flatness(postfit_integrated_data[ipol],
                                          frequency, line_range,
                                          deviation_mask, edge, bunit)
-            if len(stat) > 0:
+            if stat:
                 quality_stat = QualityStat(vis=os.path.basename(self.ms.origin_ms), field=source_name, spw=virtual_spw_id, ant=self.ms.antennas[ant_id].name, pol=sd_polmap[ipol], stat=stat)
                 baseline_quality_stat.append(quality_stat)
+
         del postfit_integrated_data
+
         return baseline_quality_stat
 
     def analyze_flatness(self, spectrum: List[float], frequency: List[float],
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
-                         edge: Tuple[int, int], brightnessunit: str) -> List[BinnedStat]:
+                         edge: Tuple[int, int], brightnessunit: str) -> Optional[BinnedStat]:
         """
         Calculate baseline flatness statistics of a spectrum.
 
@@ -1317,7 +1313,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             deviation_mask: ID ranges of deviation mask. These ranges are also
                             eliminated from inspection of baseline flatness.
             edge: Number of elements in left and right edges that should be
-                  eliminates from inspection of baseline flatness.
+                  eliminated from inspection of baseline flatness.
                   brightnessunit: Brightness unit of spectrum.
 
         Returns:
@@ -1326,9 +1322,12 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         binned_stat = []
         masked_data, binned_freq, binned_data = data_flatness(spectrum, frequency, line_range,
                                                               deviation_mask, edge)
-        if binned_data.count() < 2:  # not enough valid data
-            return binned_stat
         stddev = masked_data.std()
+        if binned_data.count() < 2 \
+           or stddev is numpy.ma.masked \
+           or not numpy.isfinite(stddev):
+            # not enough valid data or stddev is invalid
+            return None
         bin_min = numpy.nanmin(binned_data)
         bin_max = numpy.nanmax(binned_data)
         stat = BinnedStat(bin_min_ratio=bin_min/stddev,
@@ -1363,7 +1362,7 @@ def data_flatness(spectrum: List[float], frequency: List[float],
     if edge is not None:
         (ch1, ch2) = edge
         masked_data.mask[0:ch1] = True
-        masked_data.mask[len(masked_data)-ch2-1:] = True
+        masked_data.mask[len(masked_data)-ch2:] = True
     if line_range is not None:
         for chmin, chmax in line_range:
             masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
@@ -1629,4 +1628,8 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
         else:
             binned_data[i] = numpy.nanmean(masked_data[min_i:max_i+1])
         min_i = max_i+1
+
+    # mask NaN or Inf value
+    binned_data.mask |= numpy.logical_not(numpy.isfinite(binned_data.data))
+
     return binned_x, binned_data
