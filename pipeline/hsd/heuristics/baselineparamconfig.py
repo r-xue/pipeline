@@ -2,7 +2,7 @@ import os
 import numpy
 import collections
 import abc
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
@@ -239,13 +239,22 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
                     npol = spectra.shape[1]
                     for pol in range(npol):
+                        # MS rows contain npol spectra
+                        if pol == 0:
+                            index_list_total.extend(idxs)
+
                         # fit order determination
                         averaged_polyorder = self.fitorder_heuristic(
                             spectra[:, pol, :], [list(masklist[i]) + flaglist[i][pol] for i in range(len(idxs))], edge)
-                        # TENTATIVE patch to deal with all masked cases
-                        if averaged_polyorder is None:
-                            averaged_polyorder = 5
                         #del spectra
+
+                        # write dummy baseline parameters and skip the subsequent calculations for fully flagged rows
+                        if averaged_polyorder is None:
+                            for irow in rows:
+                                write_blparam( blparamfileobj, self._dummy_baseline_param( irow, pol ) )
+                            continue
+
+                        # fit order determination (cnt'd)
                         if fit_order == 'automatic' and self.MaxPolynomialOrder != 'none':
                             averaged_polyorder = min(averaged_polyorder, self.MaxPolynomialOrder)
                         #LOG.debug('time group {} pol {}: fitting order={}'.format(
@@ -304,10 +313,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
 
-                        # MS rows contain npol spectra
-                        if pol == 0:
-                            index_list_total.extend(idxs)
-
         return blparam
 
     def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, modification, edge, masklist, win_polyorder,
@@ -343,6 +348,21 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.trace('outdata={}'.format(outdata))
 
         return outdata
+
+    def _dummy_baseline_param( self, row: int, pol: int ) -> Dict[str, Union[int, float, str]]:
+        """
+        Create a dummy parameter dict for baseline parameters
+
+        This replaces _calc_baseline_param() for fully flagged rows
+
+        Args:
+           row : row number
+           pol : polarization index
+        Returns:
+           dummy parameter dict for baseline parameters
+        """
+        return {'clipniter': 1, 'clipthresh': 5.0,
+                'row': row, 'pol': pol, 'mask': '', 'npiece': 1, 'blfunc': 'poly', 'order': 1}
 
     def __convert_flags_to_masklist(self, flags: 'numpy.ndarray[numpy.ndarray[numpy.int64]]') -> List[List[List[int]]]:
         """
