@@ -32,7 +32,7 @@ class PipelineRegression(object):
     """Pipeline regression test class called from pytest."""
 
     def __init__(self, recipe: Optional[str] = None, input_dir: Optional[str] = None, visname: Optional[List[str]] = None,
-                 expectedoutput: Optional[str] = None, output_dir: Optional[str] = None, project_id: Optional[str] = None,
+                 expectedoutput_file: Optional[str] = None, output_dir: Optional[str] = None, project_id: Optional[str] = None,
                  expectedoutput_dir: Optional[str] = None) :
         """Constructor of PilelineRegression.
         
@@ -40,26 +40,29 @@ class PipelineRegression(object):
             recipe: recipe XML file name
             input_dir: path to directory contains input files
             visname: list of names of MeadurementSets
-            expectedoutput: path to a file that defines expected output of a test
+            expectedoutput_file: path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
+                                 also specified. 
+            expectedoutput_dir: path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file
+                                is specified.
             output_dir: path to directory to output. If None, it sets visname
         """
         self.recipe = recipe
         self.input_dir = input_dir
         self.visname = visname
         self.project_id = project_id
-        if expectedoutput: 
-            self.expectedoutput = casa_tools.utils.resolve(expectedoutput)
+        if expectedoutput_file: 
+            self.expectedoutput_file = casa_tools.utils.resolve(expectedoutput_file)
         else:
             # Find the newest reference file in expectedoutput_dir and use that. 
             if expectedoutput_dir: 
-                list_of_files = glob.glob(casa_tools.utils.resolve(expectedoutput_dir)+'/*.results.txt')
-                if list_of_files:
+                reference_data_files = glob.glob(casa_tools.utils.resolve(expectedoutput_dir)+'/*.results.txt')
+                if reference_data_files:
                     # Pick the reference result file with the highest PL version number
                     def pipeline_version_from_refdata(file_name): 
                         regex_pattern = re.compile('.*pipeline-(.*\d).*results.txt')
-                        m = p.match(file_name)
-                        if m:
-                            version_string = m.group(1)
+                        match = regex_pattern.match(file_name)
+                        if match:
+                            version_string = match.group(1)
                             try:
                                 return version.parse(version_string)
                             except:
@@ -68,8 +71,8 @@ class PipelineRegression(object):
                         else: 
                             LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
                             return version.parse("0.0")
-                    self.expectedoutput = max(list_of_files, key=pipeline_version_from_refdata)
-                    LOG.info("Using {} for the reference value file.".format(self.expectedoutput))
+                    self.expectedoutput_file = max(reference_data_files, key=pipeline_version_from_refdata)
+                    LOG.info("Using {} for the reference value file.".format(self.expectedoutput_file))
                 else: 
                     LOG.warning("No reference file found in {}. Test will fail.".format(expectedoutput_dir))
 
@@ -103,18 +106,31 @@ class PipelineRegression(object):
     def __sanitize_regression_string(self, instring: str) -> Tuple:
         """Sanitize to get numeric values, remove newline chars and change to float.
 
+        instring format: "[quantity_name]=[quantity value]:::tolerance"
+        Example: 
+        s2.hifv_statwt.13A-537.sb24066356.eb24324502.56514.05971091435.mean=1.6493377758284253:::0.000001
+        
         Args:
             instring: input string
         Returns:
             tuple(key, value, optional tolerance)
         """
+        # Get string with the quantity name and value (everything but the tolerance)
+        # example: s2.hifv_statwt.13A-537.sb24066356.eb24324502.56514.05971091435.mean=1.6493377758284253
         keyval = instring.split(':::')[0]
 
+        # Get just the quantity name
+        # example: s2.hifv_statwt.13A-537.sb24066356.eb24324502.56514.05971091435.mean
         keystring = keyval.split('=')[0]
+
+        # This exception was added for cases in which the value is non-numeric and cannot
+        # be converted to a float. This is #FIXME finish writing this
         try:
             value = float(keyval.split('=')[-1])
-        except: 
-            value = -1 
+        except ValueError: 
+            value = keyval.split('=')[-1]
+            raise ValueError("For the key: {}, value: {} cannot be converted to a float.".format(keystring, value))
+
         try:
             tolerance = float(instring.split(':::')[-1].replace('\n', ''))
         except ValueError:
@@ -228,7 +244,7 @@ class PipelineRegression(object):
             new_file : file path of new results
             relative_tolerance : relative tolerance of output value
         """
-        with open(self.expectedoutput) as expected_fd, open(new_file) as new_fd:
+        with open(self.expectedoutput_file) as expected_fd, open(new_file) as new_fd:
             expected_results = expected_fd.readlines()
             new_results = new_fd.readlines()
             errors = []
@@ -236,7 +252,13 @@ class PipelineRegression(object):
             worst_percent_diff = (0, 0)
             for old, new in zip(expected_results, new_results):
                 oldkey, oldval, tol = self.__sanitize_regression_string(old)
-                newkey, newval, _ = self.__sanitize_regression_string(new)
+                try:
+                    newkey, newval, _ = self.__sanitize_regression_string(new)
+                except ValueError as e: 
+                    errorstr = "The new results: {0} could not be parsed. Error: {1}".format(new, str(e))
+                    errors.append(errorstr)
+                    continue
+
                 assert oldkey == newkey
                 tolerance = tol if tol else relative_tolerance
                 LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
@@ -381,7 +403,7 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
     pr = PipelineRegression(recipe='procedure_hsd_calimage.xml',
                             input_dir='pl-regressiontest/uid___A002_X85c183_X36f',
                             visname=['uid___A002_X85c183_X36f'],
-                            expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f/' +
+                            expectedoutput_file=('pl-regressiontest/uid___A002_X85c183_X36f/' +
                                             'uid___A002_X85c183_X36f.casa-6.2.1-2-pipeline-2021.2.0.94-PIPE-1235.results.txt'))
 
     pr.run()
@@ -397,7 +419,7 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['uid___A002_X85c183_X36f_SPW15_23.ms'],
-                            expectedoutput=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
+                            expectedoutput_file=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23/' +
                                             'uid___A002_X85c183_X36f_SPW15_23.casa-6.2.1-2-pipeline-2021.2.0.94-PIPE-1235.results.txt'))
 
     # copy files use restore task into products folder
@@ -418,7 +440,7 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
     pr = PipelineRegression(recipe='procedure_hsdn_calimage.xml',
                             input_dir='pl-regressiontest/mg2-20170525142607-180419',
                             visname=['mg2-20170525142607-180419.ms'],
-                            expectedoutput=('pl-regressiontest/mg2-20170525142607-180419/' +
+                            expectedoutput_file=('pl-regressiontest/mg2-20170525142607-180419/' +
                                             'mg2-20170525142607-180419.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'))
     pr.run()
 
@@ -435,7 +457,7 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
 
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['mg2-20170525142607-180419.ms'],
-                            expectedoutput=(f'{input_dir}/' +
+                            expectedoutput_file=(f'{input_dir}/' +
                                             'mg2-20170525142607-180419_PPR.casa-6.2.0-119-pipeline-2021.2.0.23.results.txt'),
                             output_dir='mg2-20170525142607-180419_PPR')
 
@@ -458,8 +480,8 @@ def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression
     input_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey/'
     pr = PipelineRegression(recipe='procedure_hifa_calsurvey.xml',
                             input_dir=input_directory,
-                            visname='uid___A002_Xee1eb6_Xc58d_original.ms',
-                            expectedoutput=(input_directory +
+                            visname=['uid___A002_Xee1eb6_Xc58d_original.ms'],
+                            expectedoutput_file=(input_directory +
                                             'uid___A002_Xee1eb6_Xc58d.casa-6.3.0-482-pipeline-2021.3.0.5.results.txt'),
                             output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output')
 
@@ -516,7 +538,7 @@ def test_13A_537__restore__PPR__regression():
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput=(f'{input_dir}/' +
+                            expectedoutput_file=(f'{input_dir}/' +
                                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'),
                             output_dir='13A_537__restore__PPR__regression')
 
@@ -731,7 +753,7 @@ class TestSlowerRegression:
         pr = PipelineRegression(input_dir = test_directory,
                                 visname=['uid___A002_Xe1f219_X6d0b', ' uid___A002_Xe1f219_X7ee8'], 
                                 project_id="2019_1_01056_S",
-                                expectedoutput=(f'{ref_directory}' + 
+                                expectedoutput_file=(f'{ref_directory}' + 
                                                 'uid___A002_Xe1f219_X6d0b.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt'))
         
         pr.run(ppr=(test_directory + 'PPR.xml'))
@@ -772,7 +794,7 @@ class TestSlowerRegression:
                                 input_dir = test_directory,
                                 visname=['uid___A002_Xe1d2cb_X110f1', 'uid___A002_Xe1d2cb_X11d0a', 'uid___A002_Xe1f219_X6eeb'], 
                                 project_id="2019_1_01056_S",
-                                expectedoutput=f'{ref_directory}uid___A002_Xe1d2cb_X110f1.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt')
+                                expectedoutput_file=f'{ref_directory}uid___A002_Xe1d2cb_X110f1.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt')
         pr.run()
 
 
