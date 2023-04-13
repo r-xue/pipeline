@@ -527,6 +527,33 @@ def test_13A_537__restore__PPR__regression():
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
 
 
+@pytest.mark.vlass
+@pytest.mark.fast
+def test_vlass_quicklook(self):
+    """Run VLASS quicklook regression
+
+    Recipe name: procedure_vlassQLIP.xml
+    Dataset: TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms
+    """
+    dataset_name = 'TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms'
+    input_dir = f'{self.regression_directory}/vlass/quicklook'
+    ref_directory =  'pl-regressiontest/vlass_quicklook/'
+
+    pr = PipelineRegression(recipe='procedure_vlassQLIP.xml',
+                            input_dir=input_dir,
+                            visname=[dataset_name],
+                            expectedoutput_dir=ref_directory)
+
+    # Copy parameter list file into the working directory
+    parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')
+    try:
+        os.mkdir(f'{pr.output_dir}/working/')
+    except FileExistsError: 
+        pass
+    shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/QLIP_parameter.list'))
+    pr.run(telescope='vla')
+
+
 # Section of longer-running tests
 @pytest.mark.slow
 class TestSlowerRegression:
@@ -534,7 +561,7 @@ class TestSlowerRegression:
 
     # ALMA-section
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_2019_1_01094_S__uid___A002_Xecbc07_X6b0e_PPR__regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -551,7 +578,7 @@ class TestSlowerRegression:
 
 
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_E2E9_1_00061_S__uid___A002_Xfd764e_X5843_regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -569,7 +596,7 @@ class TestSlowerRegression:
 
 
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_2018_1_01255_S__uid___A002_Xe0e4ca_Xb18_regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -587,7 +614,7 @@ class TestSlowerRegression:
 
 
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_2017_1_00912_S__uid___A002_Xc74b5b_X316a_regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -605,7 +632,7 @@ class TestSlowerRegression:
 
 
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_2019_1_01184_S__uid___A002_Xe1d2cb_X12782_regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -622,7 +649,7 @@ class TestSlowerRegression:
 
 
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_2019_1_00678_S__uid___A002_Xe6a684_X7c41__PPR__regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -638,7 +665,7 @@ class TestSlowerRegression:
 
 
     @pytest.mark.alma
-    @pytest.mark.tweleve
+    @pytest.mark.twelve
     def test_2017_1_00670_S__uid___A002_Xca8fbf_X5733__PPR__regression(self):
         """Run longer regression test on this ALMA if dataset 
         
@@ -884,32 +911,6 @@ class TestSlowerRegression:
 
 
     ### VLASS section
-    @pytest.mark.vlass
-    def test_vlass_quicklook(self):
-        """Run VLASS quicklook regression
-
-        Recipe name: procedure_vlassQLIP.xml
-        Dataset: TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms
-        """
-        dataset_name = 'TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms'
-        input_dir = f'{self.regression_directory}/vlass/quicklook'
-        ref_directory =  'pl-regressiontest/vlass_quicklook/'
-
-        pr = PipelineRegression(recipe='procedure_vlassQLIP.xml',
-                                input_dir=input_dir,
-                                visname=[dataset_name],
-                                expectedoutput_dir=ref_directory)
-
-        # Copy parameter list file into the working directory
-        parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError: 
-            pass
-        shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/QLIP_parameter.list'))
-        pr.run(telescope='vla')
-
-
     @pytest.mark.vlass
     def test_vlass_se_cont_mosaic(self):
         """Run VLASS regression
