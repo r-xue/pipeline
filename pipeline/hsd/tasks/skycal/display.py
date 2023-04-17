@@ -262,6 +262,11 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         if max_interval < min_time_diff:
             solution_interval = max_interval
         else:
+            # The solution_interval should be shorter than min_time_diff.
+            # Multiply by 0.5 to show this relation explicitly.
+            # You can change numerical factor (0.5) if you want, but
+            # keep in mind that the factor should be positive and should
+            # not exceed 1.0.
             solution_interval = min_time_diff * 0.5
 
         LOG.info(f'caltable "{os.path.basename(caltable)}": '
