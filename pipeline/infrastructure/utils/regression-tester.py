@@ -123,8 +123,6 @@ class PipelineRegression(object):
         # example: s2.hifv_statwt.13A-537.sb24066356.eb24324502.56514.05971091435.mean
         keystring = keyval.split('=')[0]
 
-        # This exception was added for cases in which the value is non-numeric and cannot
-        # be converted to a float. This is #FIXME finish writing this
         try:
             value = float(keyval.split('=')[-1])
         except ValueError: 
@@ -424,7 +422,7 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, 'uid___A002_X85c183_X36f_SPW15_23.ms/products')
+    shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
@@ -463,7 +461,7 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, 'mg2-20170525142607-180419_PPR/products')
+    shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
@@ -544,7 +542,7 @@ def test_13A_537__restore__PPR__regression():
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, '13A_537__restore__PPR__regression/products')
+    shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
 
