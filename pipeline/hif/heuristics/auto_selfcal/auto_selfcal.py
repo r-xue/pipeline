@@ -547,8 +547,6 @@ class SelfcalHeuristics(object):
                                           np.log10(3.0),
                                           len(solints[band]) - n_ap_solints),
                         np.array([10 ** (np.log10(3.0))] * n_ap_solints))
-                if n_ap_solints > 0:
-                    selfcal_library[target][band]['nsigma']
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':  # or ('VLA' in telescope)
                     sensitivity = get_sensitivity(
                         vislist, selfcal_library[target][band],

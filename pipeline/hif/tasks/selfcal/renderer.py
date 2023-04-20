@@ -1,7 +1,6 @@
 
 import collections
 import os
-import pickle
 import string
 
 import pipeline.infrastructure.filenamer as filenamer
@@ -9,7 +8,6 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.utils.weblog import plots_to_html
-import pipeline.infrastructure.filenamer as filenamer
 
 from . import display
 

@@ -1005,7 +1005,6 @@ class Tclean(cleanbase.CleanBase):
         """
 
         raise NotImplementedError("The self-calibration imaging/gaincal loop is not implemented yet!")
-        return
 
     def _do_iterative_imaging(self, sequence_manager):
 
