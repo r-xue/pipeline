@@ -285,10 +285,18 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         if inputs.intent == 'TARGET':
             if inputs.specmode in ('mfs', 'cont'):
+                # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
+                # The remaining fallback values are just there to support experimental usage of
+                # The first set of MSes.
                 specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-            else:  # cube, repBW
-                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            else:
+                # The preferred data types for cube and repBW specmodes are SELFCAL_LINE_SCIENCE and
+                # REGCAL_LINE_SCIENCE. The remaining fallback values are just there to support
+                # experimental usage of The first and second sets of MSes.
+                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
+            # Calibrators are only present in the first set of MSes. Thus
+            # listing only their possible data types.
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
         # Check against any user input for datatype to make sure that the
@@ -410,7 +418,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             global_datacolumn = inputs.datacolumn.upper()
             global_datatype = ms_object.get_data_type(ms_datacolumn)
             global_datatype_str = global_datatype.name
-            global_datatype_info = f'{global_datatype_str} instead of {selected_datatype.name}'
+            global_datatype_info = f'{global_datatype_str} instead of {selected_datatype.name} due to user datacolumn'
             selected_datatypes_str = [global_datatype_str]
             selected_datatypes_info = [global_datatype_info]
             automatic_datatype_choice = False
@@ -1076,7 +1084,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if local_selected_datatype_str != selected_datatype_str:
                                     if automatic_datatype_choice:
                                         LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
-                                        local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str}'
+                                        local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str} due to source/spw selection'
                                     else:
                                         # Manually selected data type unavailable -> skip making an imaging target
                                         LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
