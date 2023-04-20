@@ -5,12 +5,11 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
-from . import uvcontfit
 from . import uvcontsub
 
 LOG = logging.get_logger(__name__)
 
-
+'''
 class UVcontFitQAHandler(pqa.QAPlugin):
     result_cls = uvcontfit.UVcontFitResults
     child_cls = None
@@ -54,7 +53,7 @@ class UVcontFitListQAHandler(pqa.QAPlugin):
         mses = [r.inputs['vis'] for r in result]
         longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
-
+'''
 
 class UVcontSubQAHandler(pqa.QAPlugin):
     result_cls = uvcontsub.UVcontSubResults
