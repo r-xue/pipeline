@@ -453,8 +453,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
             data_manager = plotter.BaselineSubtractionDataManager(ms, outfile,
                                                                   self.inputs.context,
                                                                   self.datatable)
-            num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(ms,
-                                                                                  origin_ms_id,
+            num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(origin_ms_id,
                                                                                   antenna_id,
                                                                                   virtual_spwid,
                                                                                   polids,
@@ -467,10 +466,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
             data_manager.resize_storage(num_ra, num_dec, npol, nchan)
             frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
                                        dtype=numpy.float64)  # unit in GHz
-            data = data_manager.store_result_get_data(field_id, antenna_id, spw_id,
-                                                      grid_table, org_direction,
-                                                      num_ra, num_dec, num_plane,
-                                                      rowlist, npol, nchan, frequency,
+            data = data_manager.store_result_get_data(num_ra, num_dec, rowlist, npol, nchan,
                                                       out_rowmap=out_rowmap, in_rowmap=in_rowmap)
             postfit_integrated_data = data[0]
             postfit_map_data = data[1]
@@ -478,22 +474,19 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
             prefit_map_data = data[3]
             prefit_averaged_data = data[4]
             stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
-                                                                         org_direction,
                                                                          postfit_integrated_data,
-                                                                         num_ra, num_dec, num_plane,
-                                                                         npol, nchan, frequency,
-                                                                         grid_table, deviationmask,
+                                                                         npol, frequency,
+                                                                         deviationmask,
                                                                          channelmap_range,
                                                                          formatted_edge))
             plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
-                                                                org_direction,
                                                                 postfit_integrated_data,
                                                                 postfit_map_data,
                                                                 prefit_integrated_data,
                                                                 prefit_map_data,
                                                                 prefit_averaged_data,
                                                                 num_ra, num_dec, num_plane,
-                                                                rowlist, npol, nchan, frequency,
+                                                                rowlist, npol, frequency,
                                                                 grid_table, deviationmask,
                                                                 channelmap_range, formatted_edge,
                                                                 in_rowmap=in_rowmap))
