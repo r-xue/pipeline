@@ -51,8 +51,6 @@ LOG = infrastructure.get_logger(__name__)
 
 class EditimlistInputs(vdp.StandardInputs):
     # Search order of input vis
-    # TODO: what is the intended use of this list? - later in prepare() we construct a similar list specmode_datatypes
-    # depending on specmode, which also includes SELFCAL_***, but the variable below seems to be never used
     processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
@@ -450,7 +448,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         if fieldnames:
             imlist_entry['field'] = fieldnames[0]
         else:
-            if not isinstance(imlist_entry['phasecenter'], type(None)):
+            if imlist_entry['phasecenter'] not in ['', None]:
                 # TODO: remove the dependency on cell size being in arcsec
 
                 # remove brackets and begin/end string characters
@@ -465,9 +463,9 @@ class Editimlist(basetask.StandardTaskTemplate):
                 dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
                 dist_arcsec = str(dist) + 'arcsec'
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
-                found_fields = imlist_entry['heuristics'].find_fields(distance=dist_arcsec,
-                                                                      phase_center=imlist_entry['phasecenter'],
-                                                                      matchregex=['^0', '^1', '^2'])
+                found_fields = th.find_fields(distance=dist_arcsec,
+                                              phase_center=imlist_entry['phasecenter'],
+                                              matchregex=['^0', '^1', '^2'])
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
