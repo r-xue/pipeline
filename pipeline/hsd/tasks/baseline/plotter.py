@@ -49,7 +49,6 @@ class PlotterPool(object):
     def create_plotter(self,
                        num_ra: int,
                        num_dec: int,
-                       num_plane: int,
                        ralist: List[float],
                        declist: List[float],
                        direction_reference: Optional[str] = None,
@@ -59,7 +58,6 @@ class PlotterPool(object):
         Args:
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
-            num_plane: Not used
             ralist: List of RA values for labeling
             declist: List of Dec values for labeling
             direction_reference: Directon reference string. Defaults to None.
@@ -185,18 +183,11 @@ class BaselineSubtractionDataManager(object):
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
     def store_result_get_data(self,
-                              field_id: int,
-                              antenna_id: int,
-                              spw_id: int,
-                              grid_table: Optional[List[List[Union[int, float, numpy.ndarray]]]],
-                              org_direction: dirutil.Direction,
                               num_ra: int,
                               num_dec: int,
-                              num_plane: int,
                               rowlist: List,
                               npol: int,
                               nchan: int,
-                              frequency: int,
                               out_rowmap: Optional[dict] = None,
                               in_rowmap: Optional[dict] = None
                               ) -> Tuple[numpy.ma.masked_array,
@@ -206,16 +197,11 @@ class BaselineSubtractionDataManager(object):
                                          Optional[numpy.ma.masked_array]]:
         """
         Args:
-            field_id: Field id to process
-            antenna_id: Antnena id to process
-            spw_id: Spw id to process. Should be the real spw id.
-            grid_table: grid_table created by simplegrid module
-            org_direction: direction of the origin
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
-            num_pol: Number of polarizations
-            num_chan: Number of spectral channels
-            frequency: Frequency values of each element in spectrum
+            rowlist: List of datatable row ids per sparse map panel with metadata
+            npol: Number of polarizations
+            nchan: Number of spectral channels
             out_rowmap: Row mapping between original (calibrated) MS and the MS
                         after baseline subtraction.
             in_rowmap: Row mapping between original (calibrated) MS and the MS
@@ -251,7 +237,6 @@ class BaselineSubtractionDataManager(object):
 
     def analyze_plot_table(
         self,
-        ms: 'MeasurementSet',
         origin_ms_id: int,
         antid: int,
         virtual_spwid: int,
@@ -266,7 +251,6 @@ class BaselineSubtractionDataManager(object):
         associate them with the sparse map panels.
 
         Args:
-            ms: Domain object for the MS (not used)
             origin_ms_id: MS id for selection
             antid: Antenna id for selection
             virtual_spwid: Virtual spw id for selection
@@ -303,7 +287,7 @@ class BaselineSubtractionDataManager(object):
         xpanel, ypanel = configure_1d_panel(num_grid_ra, num_grid_dec)
         num_ra = len(xpanel)
         num_dec = len(ypanel)
-        each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_grid_dec, num_plane)
+        each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_plane)
         rowlist = [{} for i in range(num_dec * num_ra)]
 
         for row_index, each_plane in enumerate(each_grid):
@@ -343,7 +327,6 @@ class BaselineSubtractionDataManager(object):
         rowlist: dict,
         rowmap: Optional[dict] = None,
         integrated_data_storage: Optional[numpy.ndarray] = None,
-        integrated_mask_storage: Optional[numpy.ndarray] = None,
         map_data_storage: Optional[numpy.ndarray] = None,
         map_mask_storage: Optional[numpy.ndarray] = None
     ) -> None:
@@ -368,7 +351,6 @@ class BaselineSubtractionDataManager(object):
                     specified by infile. It will be EchoDictionary if None is given.
             integrated_data_storage: Storage for integrated spectrum. If None is given,
                                      new array is created.
-            integrated_mask_storage: Storage for integrated mask (not used).
             map_data_storage: Storage for sparse map. If None is given, new array is created.
             map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
         """
@@ -437,9 +419,9 @@ class BaselineSubtractionDataManager(object):
                             LOG.trace('this_mask.shape=%s', this_mask.shape)
                             for ipol in range(num_pol):
                                 pmask = this_mask[ipol]
-                                allflagged = numpy.all(pmask == True)
+                                allflagged = numpy.all(pmask is True)
                                 LOG.trace('all(this_mask==True) = %s', allflagged)
-                                if allflagged == False:
+                                if allflagged is False:
                                     idxperpol[ipol].append(idxs[isort])
                                 else:
                                     LOG.debug('spectrum for pol %s is completely flagged at %s, %s (row %s)',
@@ -750,7 +732,6 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         field_id: int,
         antenna_id: int,
         spw_id: int,
-        org_direction: dirutil.Direction,
         postfit_integrated_data: numpy.ma.masked_array,
         postfit_map_data: numpy.ma.masked_array,
         prefit_integrated_data: numpy.ma.masked_array,
@@ -761,7 +742,6 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         num_plane: int,
         rowlist: List,
         npol: int,
-        nchan: int,
         frequency: int,
         grid_table: Optional[List[List[Union[int, float, numpy.ndarray]]]] = None,
         deviation_mask: Optional[List[Tuple[int, int]]] = None,
@@ -785,7 +765,6 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             field_id: Field id to process
             antenna_id: Antenna id to process
             spw_id: Spw id to process. Should be the real spw id.
-            org_direction: direction of the origin
             postfit_integrated_data: integrated spectral data after baseline subtraction.
             postfit_map_data: sparse map spectral data after baseline subtraction.
             prefit_integrated_data: integrated spectral data before baseline subtraction.
@@ -793,8 +772,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             prefit_averaged_data: averaged spectral data with each grid before baseline subtraction.
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
-            num_pol: Number of polarizations
-            num_chan: Number of spectral channels
+            npol: Number of polarizations
             frequency: Frequency values of each element in spectrum.
             grid_table: grid_table generated by simplegrid module
             deviation_mask: List of channel ranges identified as "deviation mask". Each range
@@ -864,17 +842,12 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
                                                    prefit_integrated_data, prefit_map_data,
                                                    prefit_averaged_data,
                                                    num_ra, num_dec, num_plane, rowlist,
-                                                   npol, nchan, frequency,
-                                                   grid_table, deviation_mask, line_range,
-                                                   org_direction, atm_transmission, atm_freq,
+                                                   npol, frequency, deviation_mask, line_range,
+                                                   atm_transmission, atm_freq,
                                                    edge, in_rowmap=in_rowmap)
-        plot_flatness = self.plot_flatness_profile(postfit_prefix,
-                                                   postfit_integrated_data,
-                                                   num_ra, num_dec, num_plane, rowlist,
-                                                   npol, nchan, frequency,
-                                                   grid_table, deviation_mask, line_range,
-                                                   org_direction, atm_transmission, atm_freq,
-                                                   edge)
+        plot_flatness = self.plot_flatness_profile(postfit_prefix, postfit_integrated_data,
+                                                   npol, frequency, deviation_mask,
+                                                   line_range, edge)
         plot_list.update(plot_flatness)
 
         ret = []
@@ -925,12 +898,9 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         num_plane: int,
         rowlist: List,
         npol: int,
-        nchan: int,
         frequency: int,
-        grid_table: List[List[Union[int, float, numpy.ndarray]]],
         deviation_mask: Optional[List[Tuple[int, int]]],
         line_range: Optional[List[Tuple[int, int]]],
-        org_direction: dirutil.Direction,
         atm_transmission: Optional[numpy.ndarray],
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]],
@@ -956,12 +926,9 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             num_ra: Number of panels along horizontal axis
             num_dec: Number of panels along vertical axis
             num_pol: Number of polarizations
-            num_chan: Number of spectral channels
             frequency: Frequency values of each element in spectrum
-            grid_table: grid_table generated by simplegrid module
             deviation_mask: List of channel ranges identified as the "deviation mask"
             line_range: List of channel ranges identified as astronomical line
-            org_direction: direction of the origin
             atm_transmission: ATM transmission data
             atm_frequency: frequency label associated with ATM transmission
             edge: Edge channels excluded from the baseline fitting
@@ -986,7 +953,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         ralist = [r.get('RA') for r in rowlist if r['DECID'] == 0]
         declist = [r.get('DEC') for r in rowlist if r['RAID'] == 0]
 
-        plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
+        plotter = self.pool.create_plotter(num_ra, num_dec, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
                                            brightnessunit=bunit)
 
@@ -1083,19 +1050,10 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         self,
         postfit_figfile_prefix: str,
         postfit_integrated_data: numpy.ma.masked_array,
-        num_ra: int,
-        num_dec: int,
-        num_plane: int,
-        rowlist: List,
         npol: int,
-        nchan: int,
         frequency: int,
-        grid_table: List[List[Union[int, float, numpy.ndarray]]],
         deviation_mask: Optional[List[Tuple[int, int]]],
         line_range: Optional[List[Tuple[int, int]]],
-        org_direction: dirutil.Direction,
-        atm_transmission: Optional[numpy.ndarray],
-        atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]]
     ) -> Dict[str, Dict[int, str]]:
         """Create plots of baseline flatness profile of a spectrum (after baseline subtraction).
@@ -1103,17 +1061,10 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         Args:
             postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
             postfit_integrated_data: integrated spectral data after baseline subtraction.
-            num_ra: Number of panels along horizontal axis
-            num_dec: Number of panels along vertical axis
-            num_pol: Number of polarizations
-            num_chan: Number of spectral channels
+            npol: Number of polarizations
             frequency: Frequency values of each element in spectrum
-            grid_table: grid_table generated by simplegrid module
             deviation_mask: List of channel ranges identified as the "deviation mask"
             line_range: List of channel ranges identified as astronomical line
-            org_direction: direction of the origin
-            atm_transmission: ATM transmission data
-            atm_frequency: frequency label associated with ATM transmission
             edge: Edge channels excluded from the baseline fitting
 
         Returns:
@@ -1122,21 +1073,11 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
 
                 plot_list[plot_type][polarization_id] = figfile
         """
-
         # get brightnessunit from MS
         # default is Jy/beam
         bunit = utils.get_brightness_unit(self.ms.name, defaultunit='Jy/beam')
 
-        # ralist/declist holds coordinates for axis labels (center of each panel)
-        ralist = [r.get('RA') for r in rowlist if r['DECID'] == 0]
-        declist = [r.get('DEC') for r in rowlist if r['RAID'] == 0]
-
-        plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
-                                           direction_reference=self.datatable.direction_ref,
-                                           brightnessunit=bunit)
-
         plot_list = {}
-
         # baseline flatness plots
         plot_list['post_fit_flatness'] = {}
         for ipol in range(npol):
@@ -1147,8 +1088,6 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
                 plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
 
         del postfit_integrated_data
-
-        plotter.done()
 
         return plot_list
 
@@ -1164,12 +1103,12 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             spectrum: A spectrum to analyze baseline flatness and plot.
             frequency: Frequency values of each element in spectrum.
             line_range: ID ranges in spectrum array that should be considered
-                as spectral lines and eliminated from inspection of baseline
-                flatness.
+                        as spectral lines and eliminated from inspection of baseline
+                        flatness.
             deviation_mask: ID ranges of deviation mask. These ranges are also
-                eliminated from inspection of baseline flatness.
+                            eliminated from inspection of baseline flatness.
             edge: Number of elements in left and right edges that should be
-                eliminated from inspection of baseline flatness.
+                  eliminated from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
             figfile: A file name to save figure.
         """
@@ -1232,11 +1171,8 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         super().__init__(ms, blvis, context, datatable)
 
     def calculate_baseline_quality_stat(self, field_id: int, ant_id: int, spw_id: int,
-                                        org_direction: dirutil.Direction,
                                         postfit_integrated_data: numpy.ma.masked_array,
-                                        num_ra: int, num_dec: int, num_plane: int,
-                                        npol: int, nchan: int, frequency: int,
-                                        grid_table: List[List[Union[int, float, numpy.ndarray]]],
+                                        npol: int, frequency: int,
                                         deviation_mask: Optional[List[Tuple[int, int]]],
                                         channelmap_range: Optional[List[Tuple[int, int, bool]]],
                                         edge: Optional[List[int]]) -> List[QualityStat]:
@@ -1247,14 +1183,9 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             ant_id: Antnena id to process
             spw_id: Spw id to process. Should be the real spw id.
             postfit_figfile_prefix: Prefix for the filename (after baseline subtraction)
-            org_direction: direction of the origin
             postfit_integrated_data: integrated spectral data after baseline subtraction.
-            num_ra: Number of panels along horizontal axis
-            num_dec: Number of panels along vertical axis
-            num_pol: Number of polarizations
-            num_chan: Number of spectral channels
+            npol: Number of polarizations
             frequency: Frequency values of each element in spectrum
-            grid_table: grid_table generated by simplegrid module
             deviation_mask: List of channel ranges identified as the "deviation mask"
             channelmap_range: List of channel ranges identified as astronomical lines by
                               line detection and validation process. Channel range is represented
@@ -1288,7 +1219,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         for ipol in range(npol):
             stat = self.analyze_flatness(postfit_integrated_data[ipol],
                                          frequency, line_range,
-                                         deviation_mask, edge, bunit)
+                                         deviation_mask, edge)
             if stat:
                 quality_stat = QualityStat(vis=os.path.basename(self.ms.origin_ms), field=source_name, spw=virtual_spw_id, ant=self.ms.antennas[ant_id].name, pol=sd_polmap[ipol], stat=stat)
                 baseline_quality_stat.append(quality_stat)
@@ -1300,7 +1231,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
     def analyze_flatness(self, spectrum: List[float], frequency: List[float],
                          line_range: Optional[List[Tuple[float, float]]],
                          deviation_mask: Optional[List[Tuple[int, int]]],
-                         edge: Tuple[int, int], brightnessunit: str) -> Optional[BinnedStat]:
+                         edge: Tuple[int, int]) -> Optional[BinnedStat]:
         """
         Calculate baseline flatness statistics of a spectrum.
 
@@ -1348,12 +1279,12 @@ def data_flatness(spectrum: List[float], frequency: List[float],
         spectrum: A spectrum to analyze baseline flatness and plot.
         frequency: Frequency values of each element in spectrum.
         line_range: ID ranges in spectrum array that should be considered
-            as spectral lines and eliminated from inspection of baseline
-            flatness.
+                    as spectral lines and eliminated from inspection of baseline
+                    flatness.
         deviation_mask: ID ranges of deviation mask. These ranges are also
-            eliminated from inspection of baseline flatness.
+                        eliminated from inspection of baseline flatness.
         edge: Number of elements in left and right edges that should be
-            eliminates from inspection of baseline flatness.
+              eliminates from inspection of baseline flatness.
 
     Return:
         Arrays of binned abcissa, binned data and masked data
@@ -1445,7 +1376,6 @@ def configure_2d_panel(
     xpanel: List[List[int]],
     ypanel: List[List[int]],
     ngridx: int,
-    ngridy: int,
     num_plane: int = 3
 ) -> List[List[int]]:
     """Confure two-dimensional mapping between grid table and sparse map panel.
@@ -1454,7 +1384,6 @@ def configure_2d_panel(
         xpanel: Linear mapping result returned by configure_1d_panel
         ypanel: Linear mapping result returned by configure_1d_panel
         ngridx: Number of grid positions along horizontal axis
-        ngridy: Number of grid positions along vertical axis
         num_plane: Number of planes per grid position. Defaults to 3.
 
     Returns:
@@ -1558,7 +1487,7 @@ def get_lines2(
                 dec = datatable.getcell('OFS_DEC', dt_id)
                 sqdist = (ra - ref_ra) * (ra - ref_ra) + (dec - ref_dec) * (dec - ref_dec)
                 for ipol in range(num_pol):
-                    if numpy.all(flag[ipol] == True):
+                    if numpy.all(flag[ipol] is True):
                         # LOG.info('TN: ({}, {}) row {} pol {} is all flagged'.format(ix, iy, row, ipol))
                         continue
 
