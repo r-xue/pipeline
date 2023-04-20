@@ -285,10 +285,18 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         if inputs.intent == 'TARGET':
             if inputs.specmode in ('mfs', 'cont'):
+                # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
+                # The remaining fallback values are just there to support experimental usage of
+                # The first set of MSes.
                 specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
             else:
-                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+                # The preferred data types for cueb and repBW specmodes are SELFCAL_LINE_SCIENCE and
+                # REGCAL_LINE_SCIENCE. The remaining fallback values are just there to support
+                # experimental usage of The first and second sets of MSes.
+                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
+            # Calibrators are only present in the first set of MSes. Thus
+            # listing only their possible data types.
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
         # Check against any user input for datatype to make sure that the
