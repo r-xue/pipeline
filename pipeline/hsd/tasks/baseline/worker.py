@@ -453,7 +453,8 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
             data_manager = plotter.BaselineSubtractionDataManager(ms, outfile,
                                                                   self.inputs.context,
                                                                   self.datatable)
-            num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(origin_ms_id,
+            num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(ms,
+                                                                                  origin_ms_id,
                                                                                   antenna_id,
                                                                                   virtual_spwid,
                                                                                   polids,
@@ -480,13 +481,14 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                          channelmap_range,
                                                                          formatted_edge))
             plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
+                                                                org_direction,
                                                                 postfit_integrated_data,
                                                                 postfit_map_data,
                                                                 prefit_integrated_data,
                                                                 prefit_map_data,
                                                                 prefit_averaged_data,
                                                                 num_ra, num_dec, num_plane,
-                                                                rowlist, npol, frequency,
+                                                                rowlist, npol, nchan, frequency,
                                                                 grid_table, deviationmask,
                                                                 channelmap_range, formatted_edge,
                                                                 in_rowmap=in_rowmap))
