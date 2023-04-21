@@ -348,14 +348,6 @@ class MakeImList(basetask.StandardTaskTemplate):
         # are using the plurals of the basenames and the corresponding "_str" or "_info"
         # appendices.
 
-        global_datatype = None
-        global_datatype_str = 'N/A'
-        global_datatype_info = 'N/A'
-        global_datacolumn = inputs.datacolumn
-        selected_datatypes_str = [global_datatype_str]
-        selected_datatypes_info = [global_datatype_info]
-        automatic_datatype_choice = False
-
         # Select the correct vis list
         if inputs.vis in (None, '', ['']):
             (ms_objects_and_columns, selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=specmode_datatypes, msonly=False)
