@@ -283,21 +283,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
 
-        if inputs.intent == 'TARGET':
-            if inputs.specmode in ('mfs', 'cont'):
-                # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
-                # The remaining fallback values are just there to support experimental usage of
-                # The first set of MSes.
-                specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-            else:
-                # The preferred data types for cube and repBW specmodes are SELFCAL_LINE_SCIENCE and
-                # REGCAL_LINE_SCIENCE. The remaining fallback values are just there to support
-                # experimental usage of The first and second sets of MSes.
-                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-        else:
-            # Calibrators are only present in the first set of MSes. Thus
-            # listing only their possible data types.
-            specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        # obtain the list of datatypes to consider in case that no datatype was explicitly requested
+        specmode_datatypes = get_specmode_datatypes(inputs.intent, inputs.specmode)
 
         # Check against any user input for datatype to make sure that the
         # correct initial vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
@@ -334,13 +321,13 @@ class MakeImList(basetask.StandardTaskTemplate):
         # (not DataType enums) or the special strings "best", "all", "selfcal",
         # "regcal" or "selfcal,regcal".
 
-        # The followinf code block checks for any such task parameter input to override
+        # The following code block checks for any such task parameter input to override
         # the automatic scheme. Several variables are defined to pass the information
         # into the actual loop over imaging targets. The naming convention is such that
         # simple variable names like "global_datatype" or "selected_datatype" refer to
-        # actual DataType enums. To compare these agains the user input, one needs
+        # actual DataType enums. To compare these against the user input, one needs
         # stringified versions. The corresponding variables have "_str" appended. In
-        # addition there are variables aimed at rendering the data type information in
+        # addition, there are variables aimed at rendering the data type information in
         # the weblog. These are not just simple data type strings, but can also be
         # something like "<actual data type> instead of <desired data type>" or "N/A".
         # Those variables have the basename as above and then "_info" appended. For
@@ -1307,6 +1294,32 @@ class MakeImList(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+
+def get_specmode_datatypes(intent, specmode):
+    """
+    Return the list of valid datatypes depending on the intent and specmode,
+    in order of preference for the automatic choice of datatype (if not manually overridden).
+    """
+    if intent == 'TARGET':
+        if specmode in ('mfs', 'cont'):
+            # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
+            # The remaining fallback values are just there to support experimental usage of
+            # the first set of MSes.
+            specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
+                                  DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+        else:
+            # The preferred data types for cube and repBW specmodes are SELFCAL_LINE_SCIENCE and
+            # REGCAL_LINE_SCIENCE. The remaining fallback values are just there to support
+            # experimental usage of the first and second sets of MSes.
+            specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE,
+                                  DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
+                                  DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    else:
+        # Calibrators are only present in the first set of MSes.
+        # Thus listing only their possible data types.
+        specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    return specmode_datatypes
 
 
 # maps intent and specmode Inputs parameters to textual description of execution context.

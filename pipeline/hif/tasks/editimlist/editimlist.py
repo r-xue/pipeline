@@ -37,12 +37,12 @@ import copy
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 from pipeline.domain import DataType
 from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
+from pipeline.hif.tasks.makeimlist.makeimlist import get_specmode_datatypes
 from pipeline.infrastructure import task_registry
 from .resultobjects import EditimlistResult
 
@@ -475,7 +475,7 @@ class Editimlist(basetask.StandardTaskTemplate):
             LOG.warning('field is not specified')   # again, should probably raise an error, as it will eventually fail anyway
             imlist_entry['field'] = None
 
-        # validate specmode (TODO: not sure if this is applicable to VLA**)
+        # validate specmode
         if imlist_entry['specmode'] not in ('mfs', 'cont', 'cube', 'repBW'):
             msg = 'specmode must be one of "mfs", "cont", "cube", or "repBW"'
             LOG.error(msg)
@@ -483,31 +483,33 @@ class Editimlist(basetask.StandardTaskTemplate):
             result.error_msg = msg
             return result
 
-        # PIPE-1710: add a suffix to image file name depending on datatype
-        # this fragment for determining the list of datatypes for the given specmode duplicates the code in makeimlist.py
-        if imlist_entry['intent'] == 'TARGET':
-            if imlist_entry['specmode'] in ('mfs', 'cont'):
-                specmode_datatypes = (DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
-            else:  # specmode = cube, repBW
-                specmode_datatypes = (DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
-        else:
-            specmode_datatypes = (DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
-
         # PIPE-1474: the actually used datatype is stored in the eponymous field of CleanTarget
         # as a string version of the enum without the DataType. prefix, and also duplicated in another field 'datatype_info'
         datatype_suffix = None
         if not img_mode.startswith('VLASS'):   # only add a suffix to ALMA and VLA data, but not VLASS
-            # loop over datatypes and find the one that appears in the given source+spw combination
-            for datatype in specmode_datatypes:
-                datacolumn_name = ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw'])
-                if datacolumn_name:
-                    imlist_entry['datatype'] = imlist_entry['datatype_info'] = datatype.name
-                    # PIPE-1710: append a corresponding suffix to the image file name corresponding to the datatype
-                    if imlist_entry['datatype'].lower().startswith('selfcal'):
-                        datatype_suffix = 'selfcal'
-                    elif imlist_entry['datatype'].lower().startswith('regcal'):
-                        datatype_suffix = 'regcal'
-                    break
+            if imlist_entry['datacolumn']:
+                # if datacolumn is provided explicitly, use the corresponding datatype
+                datatype = ms.get_data_type(imlist_entry['datacolumn'], imlist_entry['field'], imlist_entry['spw'])
+                if not datatype:
+                    LOG.warning(f'Datacolumn {imlist_entry["datacolumn"]} does not have associated datatype')
+            else:
+                # otherwise loop over datatypes and find the first one that appears in the given source+spw combination
+                # among the list of available datatypes depending on intent and specmode
+                specmode_datatypes = get_specmode_datatypes(imlist_entry['intent'], imlist_entry['specmode'])
+                datatype = None
+                for allowed_datatype in specmode_datatypes:
+                    if ms.get_data_column(allowed_datatype, imlist_entry['field'], imlist_entry['spw']):
+                        datatype = allowed_datatype
+                        break
+                if not datatype:
+                    LOG.warning('None of the allowed datatypes {} is found in the given source/spw combination'.
+                                format([allowed_datatype.name for allowed_datatype in specmode_datatypes]))
+            # PIPE-1710: append a corresponding suffix to the image file name corresponding to the datatype
+            imlist_entry['datatype'] = imlist_entry['datatype_info'] = datatype.name if datatype else 'N/A'
+            if imlist_entry['datatype'].lower().startswith('selfcal'):
+                datatype_suffix = 'selfcal'
+            elif imlist_entry['datatype'].lower().startswith('regcal'):
+                datatype_suffix = 'regcal'
 
         imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
