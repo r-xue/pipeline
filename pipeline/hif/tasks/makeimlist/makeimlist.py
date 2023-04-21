@@ -293,10 +293,18 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         if inputs.intent == 'TARGET':
             if inputs.specmode in ('mfs', 'cont'):
+                # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
+                # The remaining fallback values are just there to support experimental usage of
+                # The first set of MSes.
                 specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-            else:  # cube, repBW
-                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            else:
+                # The preferred data types for cube and repBW specmodes are SELFCAL_LINE_SCIENCE and
+                # REGCAL_LINE_SCIENCE. The remaining fallback values are just there to support
+                # experimental usage of The first and second sets of MSes.
+                specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         else:
+            # Calibrators are only present in the first set of MSes. Thus
+            # listing only their possible data types.
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
         # Check against any user input for datatype to make sure that the
@@ -347,14 +355,6 @@ class MakeImList(basetask.StandardTaskTemplate):
         # the loops over several user data types, lists are needed. The list names
         # are using the plurals of the basenames and the corresponding "_str" or "_info"
         # appendices.
-
-        global_datatype = None
-        global_datatype_str = 'N/A'
-        global_datatype_info = 'N/A'
-        global_datacolumn = inputs.datacolumn
-        selected_datatypes_str = [global_datatype_str]
-        selected_datatypes_info = [global_datatype_info]
-        automatic_datatype_choice = False
 
         # Select the correct vis list
         if inputs.vis in (None, '', ['']):

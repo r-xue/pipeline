@@ -221,7 +221,7 @@ class ObservingRun(object):
         Translate a virtual (science) spw ID to the real one for a given MS.
 
         :param spw_id: the spw id to convert
-        :type spw_id: integer
+        :type spw_id: integer or str
         :param target_ms: the MS to map spw_id to
         :type target_ms: domain.MeasurementSet
         """
@@ -232,7 +232,7 @@ class ObservingRun(object):
         Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
 
         :param spw_id: the spw id to convert
-        :type spw_id: integer
+        :type spw_id: integer or str
         :param target_ms: the MS to map spw_id to
         :type target_ms: domain.MeasurementSet
         """
