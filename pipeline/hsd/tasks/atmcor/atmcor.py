@@ -657,6 +657,9 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             LOG.info(f'ATM heuristics failed. Falling back to default model {default_model}.')
             LOG.info('Original error:')
             LOG.info(str(e))
+            if LOG.isEnabledFor(logging.DEBUG):
+                import traceback
+                LOG.debug(traceback.format_exc())
 
         # construct argument list for sdatmcor
         inputs_local = utils.pickle_copy(self.inputs)
