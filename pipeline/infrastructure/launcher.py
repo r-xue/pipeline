@@ -263,7 +263,6 @@ class Pipeline(object):
         :type loglevel: string
         :param casa_version_check: enable (True) or bypass (False) the CASA
             version check. Default is True.
-        :type ignore_casa_version: boolean
         """        
         # configure logging with the preferred log level
         logging.set_logging_level(level=loglevel)
