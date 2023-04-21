@@ -124,7 +124,11 @@ class PipelineRegression(object):
         keystring = keyval.split('=')[0]
 
         try:
-            value = float(keyval.split('=')[-1])
+            value = keyval.split('=')[-1]
+            if "None" in value: 
+                value = None
+            else:
+                value = float(keyval.split('=')[-1])
         except ValueError: 
             value = keyval.split('=')[-1]
             raise ValueError("For the key: {}, value: {} cannot be converted to a float.".format(keystring, value))
@@ -249,26 +253,35 @@ class PipelineRegression(object):
             worst_diff = (0, 0)
             worst_percent_diff = (0, 0)
             for old, new in zip(expected_results, new_results):
-                oldkey, oldval, tol = self.__sanitize_regression_string(old)
                 try:
+                    oldkey, oldval, tol = self.__sanitize_regression_string(old)
                     newkey, newval, _ = self.__sanitize_regression_string(new)
                 except ValueError as e: 
-                    errorstr = "The new results: {0} could not be parsed. Error: {1}".format(new, str(e))
+                    errorstr = "The results: {0} could not be parsed. Error: {1}".format(new, str(e))
                     errors.append(errorstr)
                     continue
 
                 assert oldkey == newkey
                 tolerance = tol if tol else relative_tolerance
-                LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
-                if oldval != pytest.approx(newval, rel=tolerance):
-                    diff = oldval-newval
-                    percent_diff = (oldval-newval)/oldval * 100 
-                    if abs(diff) > abs(worst_diff[0]):
-                        worst_diff = diff, oldkey
-                    if abs(percent_diff) > abs(worst_percent_diff[0]):
-                        worst_percent_diff = percent_diff, oldkey 
-                    errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {tolerance}\n\texpected: {oldval}\n\tnew:      {newval}\n\tdiff: {diff}\n\tpercent_diff: {percent_diff}%"
-                    errors.append(errorstr)
+                if newval: 
+                    LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
+                    if oldval != pytest.approx(newval, rel=tolerance):
+                        diff = oldval-newval
+                        percent_diff = (oldval-newval)/oldval * 100 
+                        if abs(diff) > abs(worst_diff[0]):
+                            worst_diff = diff, oldkey
+                        if abs(percent_diff) > abs(worst_percent_diff[0]):
+                            worst_percent_diff = percent_diff, oldkey 
+                        errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {tolerance}\n\texpected: {oldval}\n\tnew:      {newval}\n\tdiff: {diff}\n\tpercent_diff: {percent_diff}%"
+                        errors.append(errorstr)
+                else: 
+                    if oldval:
+                        # If only the new value is None, fail
+                        errorstr = f"{oldkey}\n\tvalue is None\n\texpected: {oldval}\n\tnew:      {newval}"
+                        errors.append(errorstr)
+                    else: 
+                        # If old and new values are both None, this is expected, so pass
+                        LOG.info(f'Comparing {oldval} and {newval}... both values are None.')
 
             [LOG.warning(x) for x in errors]
             n_errors = len(errors)

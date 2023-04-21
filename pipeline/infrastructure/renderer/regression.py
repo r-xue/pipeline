@@ -350,11 +350,13 @@ class ApplycalRegressionExtractor(RegressionExtractor):
             flag_summary_after = summaries_by_name['applycal']
             for scan_id, v in flag_summary_after['scan'].items():
                 d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
-        except: 
-            LOG.info("Some information missing from ApplycalResults. Omitting from resgression comparison.")
 
-        qa_entries = extract_qa_score_regression(prefix, result)
-        d.update(qa_entries)
+            qa_entries = extract_qa_score_regression(prefix, result)
+            d.update(qa_entries)
+
+        except: 
+            d['{}.results'.format(prefix)] = None
+            LOG.info("Some information missing from ApplycalResults. Omitting from resgression comparison.")
 
         return d
 
@@ -404,37 +406,35 @@ class CheckflagRegressionExtractor(RegressionExtractor):
         Returns:
             OrderedDict[str, float]
         """
+        d = OrderedDict()
         prefix = get_prefix(result, self.generating_task)
-
         summaries_by_name = {s['name']: s for s in result.summaries}
 
         try:
             num_flags_before = summaries_by_name['before']['flagged']
+            d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
+
         except: 
-            num_flags_before = -1 
+            d['{}.num_rows_flagged.before'.format(prefix)] = None
 
         try: 
             num_flags_after = summaries_by_name['after']['flagged']
+            d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
         except: 
-            num_flags_after = -1
+            d['{}.num_rows_flagged.after'.format(prefix)] = None
 
-        d = OrderedDict()
-        d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
-        d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
-        try:
+        if 'before' in summaries_by_name:
             flag_summary_before = summaries_by_name['before']
+
             for scan_id, v in flag_summary_before['scan'].items():
                 d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
-        except: 
-            d['{}.num_rows_flagged.before'.format(prefix)] = -1 
-
-        try:
+        
+        if 'after' in summaries_by_name:
             flag_summary_after = summaries_by_name['after']
+
             for scan_id, v in flag_summary_after['scan'].items():
                 d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
-        except: 
-            d['{}.num_rows_flagged.after'.format(prefix)] = -1
 
         return d
 
@@ -506,11 +506,10 @@ class FluxbootRegressionExtractor(RegressionExtractor):
         spindex = result.spindex_results
 
         d = OrderedDict()
-        for spw in result.spws:
-            if spw < len(flux_densities): 
-                d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[spw][0]
-            else: 
-                d['{}.flux_densities.spw_{}'.format(prefix, spw)] = -1
+
+        for i, spw in enumerate(sorted(result.spws)): 
+            # There may be spws without a solution, which aren't included here, so don't index by spw
+            d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[i][0]
 
         d['{}.spindex'.format(prefix)] = float(spindex[0]['spix'])
         d['{}.curvature'.format(prefix)] = float(spindex[0]['curvature'])
