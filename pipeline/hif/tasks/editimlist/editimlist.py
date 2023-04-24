@@ -37,12 +37,12 @@ import copy
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 from pipeline.domain import DataType
 from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
+from pipeline.hif.tasks.makeimlist.makeimlist import get_specmode_datatypes
 from pipeline.infrastructure import task_registry
 from .resultobjects import EditimlistResult
 
@@ -403,6 +403,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         LOG.info("{k} = {v}".format(k='search_radius', v=buffer_arcsec))
         result.capture_buffer_size(buffer_arcsec)
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
+        
+        # imlist_entry['datacolumn'] is either None or an non-empty string here.
         imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms(imlist_entry['spw']) if not inpdict['nterms'] else inpdict['nterms']
         if 'ALMA' not in img_mode:
@@ -477,7 +479,7 @@ class Editimlist(basetask.StandardTaskTemplate):
             LOG.warning('field is not specified')   # again, should probably raise an error, as it will eventually fail anyway
             imlist_entry['field'] = None
 
-        # validate specmode (TODO: not sure if this is applicable to VLA**)
+        # validate specmode
         if imlist_entry['specmode'] not in ('mfs', 'cont', 'cube', 'repBW'):
             msg = 'specmode must be one of "mfs", "cont", "cube", or "repBW"'
             LOG.error(msg)
@@ -485,15 +487,8 @@ class Editimlist(basetask.StandardTaskTemplate):
             result.error_msg = msg
             return result
 
-        # PIPE-1710: add a suffix to image file name depending on datatype
-        # this fragment for determining the list of datatypes for the given specmode duplicates the code in makeimlist.py
-        if imlist_entry['intent'] == 'TARGET':
-            if imlist_entry['specmode'] in ('mfs', 'cont'):
-                specmode_datatypes = (DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
-            else:  # specmode = cube, repBW
-                specmode_datatypes = (DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
-        else:
-            specmode_datatypes = (DataType.REGCAL_CONTLINE_ALL, DataType.RAW)
+        # obtain the list of datatypes to consider in the order of preference.
+        specmode_datatypes = get_specmode_datatypes(imlist_entry['intent'], imlist_entry['specmode'])
 
         # PIPE-1798: filter the list of datatypes to only include the one(s) starting with
         # the user supplied datatype selection string.

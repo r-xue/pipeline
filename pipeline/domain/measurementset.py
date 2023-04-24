@@ -1275,17 +1275,6 @@ class MeasurementSet(object):
         if not overwrite and column in self.data_column.values() and self.get_data_column(dtype) != column:
             raise ValueError('Column {} is already associated with data type {} in {}'.format(column, [k for k,v in self.data_column.items() if v == column][0], self.basename))
 
-        # Check for existing column registration and remove it
-        column_keys = [k for k,v in self.data_column.items() if v == column]
-        if column_keys!= []:
-           for k in column_keys:
-               del(self.data_column[k])
-
-        # Update MS domain object
-        if dtype not in self.data_column:
-            self.data_column[dtype] = column
-            LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
-
         # Update data types per (source,spw) selection
         if source is None:
             source_names = ','.join(utils.dequote(s.name) for s in self.sources)
@@ -1313,6 +1302,17 @@ class MeasurementSet(object):
                         self.data_types_per_source_and_spw[key].append(dtype)
                 else:
                     self.data_types_per_source_and_spw[key] = [dtype]
+
+        # Check for existing column registration and remove it
+        column_keys = [k for k,v in self.data_column.items() if v == column]
+        if column_keys!= []:
+           for k in column_keys:
+               del(self.data_column[k])
+
+        # Update MS domain object
+        if dtype not in self.data_column:
+            self.data_column[dtype] = column
+            LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
 
     def get_data_column(self, dtype: DataType, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[str]:
         """
