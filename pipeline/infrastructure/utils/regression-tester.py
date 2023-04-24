@@ -263,7 +263,7 @@ class PipelineRegression(object):
 
                 assert oldkey == newkey
                 tolerance = tol if tol else relative_tolerance
-                if newval: 
+                if newval is not None: 
                     LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
                     if oldval != pytest.approx(newval, rel=tolerance):
                         diff = oldval-newval
@@ -274,14 +274,13 @@ class PipelineRegression(object):
                             worst_percent_diff = percent_diff, oldkey 
                         errorstr = f"{oldkey}\n\tvalues differ by > a relative difference of {tolerance}\n\texpected: {oldval}\n\tnew:      {newval}\n\tdiff: {diff}\n\tpercent_diff: {percent_diff}%"
                         errors.append(errorstr)
+                elif oldval is not None:
+                    # If only the new value is None, fail
+                    errorstr = f"{oldkey}\n\tvalue is None\n\texpected: {oldval}\n\tnew:      {newval}"
+                    errors.append(errorstr)
                 else: 
-                    if oldval:
-                        # If only the new value is None, fail
-                        errorstr = f"{oldkey}\n\tvalue is None\n\texpected: {oldval}\n\tnew:      {newval}"
-                        errors.append(errorstr)
-                    else: 
-                        # If old and new values are both None, this is expected, so pass
-                        LOG.info(f'Comparing {oldval} and {newval}... both values are None.')
+                    # If old and new values are both None, this is expected, so pass
+                    LOG.info(f'Comparing {oldval} and {newval}... both values are None.')
 
             [LOG.warning(x) for x in errors]
             n_errors = len(errors)

@@ -413,7 +413,6 @@ class CheckflagRegressionExtractor(RegressionExtractor):
         try:
             num_flags_before = summaries_by_name['before']['flagged']
             d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
-
         except: 
             d['{}.num_rows_flagged.before'.format(prefix)] = None
 
