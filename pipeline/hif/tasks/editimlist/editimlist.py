@@ -403,7 +403,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         result.capture_buffer_size(buffer_arcsec)
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
         
-        # imlist_entry['datacolumn'] is either None or an non-empty string here.
+        # imlist_entry['datacolumn'] is either None or an non-empty string here based on the current heuristics implementation.
         imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms(imlist_entry['spw']) if not inpdict['nterms'] else inpdict['nterms']
         if 'ALMA' not in img_mode:
@@ -486,45 +486,57 @@ class Editimlist(basetask.StandardTaskTemplate):
             result.error_msg = msg
             return result
 
-        # obtain the list of datatypes to consider in the order of preference.
-        specmode_datatypes = DataType.get_specmode_datatypes(imlist_entry['intent'], imlist_entry['specmode'])
-
-        # PIPE-1798: filter the list of datatypes to only include the one(s) starting with
-        # the user supplied datatype selection string.
-        if isinstance(inpdict['datatype'], str):
-            specmode_datatypes = [dt for dt in specmode_datatypes if dt.name.startswith(inpdict['datatype'].upper())]
-
-        # PIPE-1710, PIPE-1474: the actually used datatype is stored in the eponymous field of CleanTarget
-        # as a string version of the enum without the DataType. prefix, and also duplicated in another field 'datatype_info'
-        datatype_suffix = None
-
-        # if the datacolumn is not explicitly specified by the user or heuristics, and
-        # we are not imaging VLASS data, then we need to determine the datacolumn from the datatype
-        # add a name suffix to image products, and insert datatype into the image headers.
-        if not img_mode.startswith('VLASS') and imlist_entry['datacolumn'] is None:
-            # loop over datatypes in order of preference and find the first one that appears in the given source+spw combination
-            for datatype in specmode_datatypes:
-                datacolumn_name = ms.get_data_column(datatype, imlist_entry['field'], imlist_entry['spw'])
-                if isinstance(datacolumn_name, str):
-                    imlist_entry['datatype'] = imlist_entry['datatype_info'] = datatype.name
-                    if datacolumn_name == 'DATA':
-                        imlist_entry['datacolumn'] = 'data'
-                    elif datacolumn_name == 'CORRECTED_DATA':
-                        imlist_entry['datacolumn'] = 'corrected'
+        if not img_mode.startswith('VLASS'):
+            # this block is only executed for non-VLASS data
+            if imlist_entry['datacolumn'] in (None, ''):
+                # if datacolumn is not specified by the user input or heuristics, we need to determine the datacolumn
+                # from the list of datatypes to consider in the order of preference.
+                specmode_datatypes = DataType.get_specmode_datatypes(imlist_entry['intent'], imlist_entry['specmode'])
+                # PIPE-1798: filter the list to only include the one(s) starting with the user supplied restriction str, i.e., inputs.datatype.
+                if isinstance(inpdict['datatype'], str):
+                    specmode_datatypes = [dt for dt in specmode_datatypes if dt.name.startswith(inpdict['datatype'].upper())]
+                # loop over the datatype candidate list find the first one that appears in the given (source,spw) combinations.
+                for dtype in specmode_datatypes:
+                    datacolumn_name = ms.get_data_column(dtype, imlist_entry['field'], imlist_entry['spw'])
+                    if datacolumn_name in ('DATA', 'CORRECTED_DATA'):
+                        imlist_entry['datatype'] = imlist_entry['datatype_info'] = dtype.name
+                        if datacolumn_name == 'DATA':
+                            imlist_entry['datacolumn'] = 'data'
+                        if datacolumn_name == 'CORRECTED_DATA':
+                            imlist_entry['datacolumn'] = 'corrected'
+                        break
                     else:
-                        LOG.warning(f'Unknown column name {datacolumn_name}, and no clean target will be added.')
-                        return result
-                    # append a corresponding suffix to the image file name corresponding to the datatype
-                    if imlist_entry['datatype'].lower().startswith('selfcal'):
-                        datatype_suffix = 'selfcal'
-                    elif imlist_entry['datatype'].lower().startswith('regcal'):
-                        datatype_suffix = 'regcal'
-                    break
-            if imlist_entry['datatype'] is None:
+                        LOG.debug(f'No valid datacolumn is associated with the  data selection: '
+                                  f"datatype={dtype!r}, field={imlist_entry['field']!r}, spw={imlist_entry['spw']!r}")
+                # bail out if no data is found with the  is found
+                specmode_datatypes_str = ', '.join([dt.name for dt in specmode_datatypes])
+                if imlist_entry['datatype'] is None:
+                    LOG.warning(
+                        f"No data from field={imlist_entry['field']!r} / spw={imlist_entry['spw']!r} is "
+                        f'in the allowed datatype(s): {specmode_datatypes_str}.'
+                        ' No clean target will be added.')
+                    return result
+            else:
+                # if datacolumn is specified, pick it and label cleantarget with the corresponding datatype (when available).
+                ms_datacolumn = imlist_entry['datacolumn'].upper()
+                if ms_datacolumn == 'CORRECTED':
+                    ms_datacolumn = 'CORRECTED_DATA'
+                dtype = ms.get_data_type(ms_datacolumn, imlist_entry['field'], imlist_entry['spw'])
                 LOG.warning(
-                    f"No data found in the searched DataType(s) for field={imlist_entry['field']} spw={imlist_entry['spw']}"
-                    ' and no clean target will be added.')
-                return result
+                    f'datacolumn={imlist_entry["datacolumn"]!r} is selected based on user or heuristic input, which overrides the datatype-based selection.')
+                if dtype is None:
+                    LOG.warning(f'No valid datatype is associated with the data selection: '
+                                f"datacolumn={imlist_entry['datacolumn']!r}, field={imlist_entry['field']!r}, spw={imlist_entry['spw']!r}")
+                else:
+                    imlist_entry['datatype'] = imlist_entry['datatype_info'] = dtype.name
+
+        # PIPE-1710/PIPE-1474: append a corresponding suffix to the image file name according to the datatype of selected visibilities.
+        datatype_suffix = None
+        if isinstance(imlist_entry['datatype'], str):
+            if imlist_entry['datatype'].lower().startswith('selfcal'):
+                datatype_suffix = 'selfcal'
+            if imlist_entry['datatype'].lower().startswith('regcal'):
+                datatype_suffix = 'regcal'
 
         imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],

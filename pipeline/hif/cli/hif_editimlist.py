@@ -79,7 +79,7 @@ def hif_editimlist(imagename=None,
                          can force the use of only given data type(s).
                          Note that this parameter is only for non-VLASS data when the datacolumn 
                          is not explictly set by user or imaging heuristics.  
-    datacolumn           Data column to image
+    datacolumn           Data column to image; this will take precedence over the datatype parameter.
     deconvolver          Minor cycle algorithm (multiscale or mtmfs)
     editmode             The edit mode of the task ('add' or 'replace'). Defaults to 'add'.
     field                Set of data selection field names or ids.
