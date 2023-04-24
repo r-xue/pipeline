@@ -292,7 +292,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             inputs.vis = [inputs.vis]
 
         # obtain the list of datatypes to consider in case that no datatype was explicitly requested
-        specmode_datatypes = get_specmode_datatypes(inputs.intent, inputs.specmode)
+        specmode_datatypes = DataType.get_specmode_datatypes(inputs.intent, inputs.specmode)
 
         # Check against any user input for datatype to make sure that the
         # correct initial vis list is chosen (e.g. for REGCAL_CONTLINE_ALL and RAW).
@@ -1338,32 +1338,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                     break
 
         return drcorrect
-
-
-def get_specmode_datatypes(intent, specmode):
-    """
-    Return the list of valid datatypes depending on the intent and specmode,
-    in order of preference for the automatic choice of datatype (if not manually overridden).
-    """
-    if intent == 'TARGET':
-        if specmode in ('mfs', 'cont'):
-            # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
-            # The remaining fallback values are just there to support experimental usage of
-            # the first set of MSes.
-            specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
-                                  DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-        else:
-            # The preferred data types for cube and repBW specmodes are SELFCAL_LINE_SCIENCE and
-            # REGCAL_LINE_SCIENCE. The remaining fallback values are just there to support
-            # experimental usage of the first and second sets of MSes.
-            specmode_datatypes = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE,
-                                  DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
-                                  DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-    else:
-        # Calibrators are only present in the first set of MSes.
-        # Thus listing only their possible data types.
-        specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
-    return specmode_datatypes
 
 
 # maps intent and specmode Inputs parameters to textual description of execution context.

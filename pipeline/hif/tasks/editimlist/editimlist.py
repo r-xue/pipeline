@@ -42,7 +42,6 @@ from pipeline.domain import DataType
 from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
-from pipeline.hif.tasks.makeimlist.makeimlist import get_specmode_datatypes
 from pipeline.infrastructure import task_registry
 from .resultobjects import EditimlistResult
 
@@ -488,7 +487,7 @@ class Editimlist(basetask.StandardTaskTemplate):
             return result
 
         # obtain the list of datatypes to consider in the order of preference.
-        specmode_datatypes = get_specmode_datatypes(imlist_entry['intent'], imlist_entry['specmode'])
+        specmode_datatypes = DataType.get_specmode_datatypes(imlist_entry['intent'], imlist_entry['specmode'])
 
         # PIPE-1798: filter the list of datatypes to only include the one(s) starting with
         # the user supplied datatype selection string.
