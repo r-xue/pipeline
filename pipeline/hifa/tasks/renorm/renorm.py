@@ -124,7 +124,6 @@ class Renorm(basetask.StandardTaskTemplate):
 
             if not alltdm:
                 # Make a copy of the excludechan input so it isn't modified by almarenorm.py, see: PIPE-1612
-                # (may not be necessary if the copy is made inside almarenorm)
                 excludechan_copy = deepcopy(inp.excludechan)
 
                 rn.renormalize(docorr=inp.apply, docorrThresh=inp.threshold, correctATM=inp.correctATM,
