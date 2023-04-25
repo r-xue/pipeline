@@ -40,7 +40,7 @@ CASA <3>: vis = 'myvis.ms'
 CASA <4>: m = context.observing_run.get_ms(vis)
 ```
 
-and then use the domain object to get an Spectral Window object
+and then use the domain object to get a Spectral Window object
 
 ```python
 CASA <5>: spws=m.get_spectral_windows()
