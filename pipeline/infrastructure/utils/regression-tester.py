@@ -561,14 +561,14 @@ def test_13A_537__restore__PPR__regression():
 
 @pytest.mark.vlass
 @pytest.mark.fast
-def test_vlass_quicklook(self):
+def test_vlass_quicklook():
     """Run VLASS quicklook regression
 
     Recipe name: procedure_vlassQLIP.xml
     Dataset: TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms
     """
     dataset_name = 'TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms'
-    input_dir = f'{self.regression_directory}/vlass/quicklook'
+    input_dir = f'{TestSlowerRegression.regression_directory}/vlass/quicklook'
     ref_directory =  'pl-regressiontest/vlass_quicklook/'
 
     pr = PipelineRegression(recipe='procedure_vlassQLIP.xml',
@@ -691,6 +691,7 @@ class TestSlowerRegression:
         ref_directory =  'pl-regressiontest/2019.1.00678.S/'
 
         pr = PipelineRegression(input_dir = test_directory,
+                                project_id = "2019_1_00678_S",
                                 visname=['uid___A002_Xe6a684_X7c41'],
                                 expectedoutput_dir=ref_directory)
         pr.run(ppr=(test_directory + 'PPR.xml'))
@@ -707,6 +708,7 @@ class TestSlowerRegression:
         ref_directory =  'pl-regressiontest/2017.1.00670.S/'
 
         pr = PipelineRegression(input_dir = test_directory,
+                                project_id='2017_1_00670_S',
                                 visname=['uid___A002_Xca8fbf_X5733'],
                                 expectedoutput_dir=ref_directory)
         
@@ -725,6 +727,7 @@ class TestSlowerRegression:
         ref_directory =  'pl-regressiontest/2019.1.00847.S/'
 
         pr = PipelineRegression(input_dir = test_directory,
+                                project_id= "2019_1_00847_S",
                                 visname=['uid___A002_Xe1f219_X1457', 'uid___A002_Xe1f219_X9dbf', 'uid___A002_Xe27761_X74f8'],
                                 expectedoutput_dir=ref_directory)
         pr.run(ppr=(test_directory + 'PPR.xml'))
@@ -743,6 +746,7 @@ class TestSlowerRegression:
         ref_directory =  'pl-regressiontest/2019.1.00994.S/'
 
         pr = PipelineRegression(input_dir = test_directory,
+                                project_id="2019_1_00994_S",
                                 visname=['uid___A002_Xe44309_X7d94', 'uid___A002_Xe45e29_X59ee', 'uid___A002_Xe45e29_X6666', 'uid___A002_Xe48598_X8697'],
                                 expectedoutput_dir=ref_directory)
         pr.run(ppr=(test_directory + 'PPR.xml'))
