@@ -63,7 +63,7 @@ per clean_target (i.e. a target/band combination)
         * ms per clean_target
         * pointing table hardlinked to the original MS
         
-Creat copies of temporary context and start using per_clean_target MSs
+Create copies of temporary context and start using per_clean_target MSs
 
 MakeImList+MakeImages (per clean_target per spw, data, dirty/initial, tier0, optional)
 

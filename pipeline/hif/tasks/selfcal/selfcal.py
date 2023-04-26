@@ -133,7 +133,7 @@ class Selfcal(basetask.StandardTaskTemplate):
     def prepare(self):
 
         inputs = self.inputs
-        if inputs.vis is None or inputs.vis == [] or inputs.vis == '':
+        if inputs.vis in (None, [], ''):
             raise ValueError(
                 f'No input visibilities specified matching required DataType {inputs.processing_data_type}, please review in the DataType information in Imported MS(es).')
 
@@ -141,7 +141,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             inputs.vis = [inputs.vis]
 
         if not hasattr(self.inputs.context, 'scal_targets') or self.inputs.recal:
-            # skip the "selfcal-solver" executation if the selfcal results are already in the context and recal is False.
+            # skip the "selfcal-solver" execution if the selfcal results are already in the context and recal is False.
             LOG.info('No selfcal results found in the context. Proceed to execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
             if not scal_targets:
@@ -204,10 +204,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         self._split_scaltargets(scal_targets)
         self._restore_flags()
 
-        # # register the percleantarget MSes
-        # self._register_percleantarget_ms(vislist)
-
-        # # start the selfcal sequence.
+        # start the selfcal sequence.
 
         if self.inputs.inf_EB_gaincal_combine:
             inf_EB_gaincal_combine = 'scan,spw'
@@ -332,23 +329,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
-
-    def _register_percleantarget_ms(self, vislist):
-        """Register the per cleantarget MSes in the context and add the selfcal heuristics to the targets.
-        
-        note: not used in the current implementation.
-        """
-
-        # modify context and target_list to include the new measurement sets and selfcal heuristics.
-        for vis in vislist:
-
-            # add tmp ms to tmp context
-            observing_run = tablereader.ObservingRunReader.get_observing_run(vis)
-            for ms in observing_run.measurement_sets:
-                ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
-                self.inputs.context.observing_run.add_measurement_set(ms)
-
-        return
 
     def _check_mosaic(self, scal_targets):
         """Check if the mosaic is a mosaic or a single field.
