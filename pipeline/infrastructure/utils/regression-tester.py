@@ -76,14 +76,14 @@ class PipelineRegression(object):
                 else: 
                     LOG.warning("No reference file found in {}. Test will fail.".format(expectedoutput_dir))
 
-        self.testinput = [f'{input_dir}/{vis}' for vis in visname] 
+        self.testinput = [f'{input_dir}/{vis}' for vis in self.visname] 
         self.current_path = os.getcwd()
         if output_dir:
             self.output_dir = output_dir
         elif self.project_id: 
-            self.output_dir = f'{self.project_id}__{visname[0]}_test_output' 
+            self.output_dir = f'{self.project_id}__{self.visname[0]}_test_output' 
         else: 
-            self.output_dir = f'{visname[0]}_test_output' 
+            self.output_dir = f'{self.visname[0]}_test_output' 
 
         if hasattr(pytest, 'pytestconfig'):
             self.remove_workdir = pytest.pytestconfig.getoption('--remove-workdir')
@@ -656,7 +656,7 @@ class TestSlowerRegression:
         ref_directory =  'pl-regressiontest/2017.1.00912.S/'
 
         pr = PipelineRegression(input_dir = test_directory,
-                                visname=['uid___A002_Xe6a684_X7c41'], 
+                                visname=['uid___A002_Xc74b5b_X316a'], 
                                 project_id="2017_1_00912_S",
                                 expectedoutput_dir=ref_directory) 
         
