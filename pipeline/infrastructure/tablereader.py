@@ -155,7 +155,7 @@ class MeasurementSetReader(object):
         for spw in ms.spectral_windows:
             if spw.type == 'WVR':
                 spw.band = 'WVR'
-                LOG.debug("Setting spw {} band to WVR".format(spw.id))
+                LOG.debug("For MS {}, SpW {}, setting band to WVR.".format(ms.name, spw.id))
                 continue
 
             # Determining the band number for ALMA data 
@@ -173,25 +173,25 @@ class MeasurementSetReader(object):
                 band_str = match_found.groupdict()['band']
                 band_num = int(band_str)
                 spw.band = 'ALMA Band %s' % band_num
-                LOG.debug("Setting spw {} band from the SPW name: {}".format(spw.id, spw.band))
+                LOG.debug("For MS {}, SpW {}, setting band to {}, based on the SPW name.".format(ms.name, spw.id, spw.band))
                 continue
             elif observatory == 'ALMA': 
                 if not alma_receiver_band:
                     alma_receiver_band = SpectralWindowTable.get_receiver_info(ms, get_band_info=True)
-                try:
+                if spw.id in alma_receiver_band:
                     match_receiver_band = re.search(alma_band_regex, alma_receiver_band[spw.id])
                     if match_receiver_band:
                         band_str = match_receiver_band.groupdict()['band']
                         band_num = int(band_str)
                         spw.band = 'ALMA Band %s' % band_num 
-                        LOG.debug("Setting spw id: {} band name from the ASDM_RECEIVER table to: {}".format(spw.id, spw.band))
+                        LOG.debug("For MS {}, SpW {}, setting band to {}, based on ASDM_RECEIVER table.".format(ms.name, spw.id, spw.band))
                         continue
-                except: 
-                    LOG.debug("Could not find band number information in ALMA_RECEIVER table for spw id: {}".format(spw.id))
+                else:
+                    LOG.debug("For MS {}, SpW {}, could not find band number information in ALMA_RECEIVER table.".format(ms.name, spw.id))
 
             # If both fail for ALMA, set the band number as follows: 
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
-            LOG.debug("Setting spw {} band from the look-up-table: {}".format(spw.id, spw.band))
+            LOG.debug("For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.".format(ms.name, spw.id, spw.band))
 
             # Used EVLA band name from spw instead of frequency range
 
