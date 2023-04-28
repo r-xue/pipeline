@@ -53,7 +53,7 @@ class ImageParamsHeuristics(object):
         :param vislist: the list of MS names
         :type vislist: list of strings
         :param spw: the virtual spw specification (list of virtual spw IDs)
-        :type spw_name: string or list
+        :type spw: string or list
         """
         self.imaging_mode = 'BASE'
 
@@ -1061,7 +1061,7 @@ class ImageParamsHeuristics(object):
 
         return [nxpix, nypix]
 
-    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None):
+    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype=None):
         try:
             nameroot = self.imagename_prefix
             if nameroot == 'unknown':
@@ -1091,6 +1091,8 @@ class ImageParamsHeuristics(object):
             namer.spectral_window(spw)
         if specmode:
             namer.specmode(specmode)
+        if datatype:
+            namer.datatype(datatype)
 
         # filenamer returns a sanitized filename (i.e. one with
         # illegal characters replace by '_'), no need to check
@@ -1255,8 +1257,10 @@ class ImageParamsHeuristics(object):
         return ref_field_ids
 
     def calc_topo_ranges(self, inputs):
-
-        """Calculate TOPO ranges for hif_tclean inputs."""
+        """Calculate TOPO ranges for hif_tclean inputs.
+        
+        Note: we might consider consolidating this with the similar code in contfilehelper.
+        """
 
         spw_topo_freq_param_lists = []
         spw_topo_chan_param_lists = []
@@ -1847,8 +1851,7 @@ class ImageParamsHeuristics(object):
         else:
             return 0.0, effectiveBW_of_1chan, sens_bw
 
-    def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit):
-
+    def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit, drcorrect):
         """Adjustment of cleaning threshold due to dynamic range limitations."""
 
         DR_correction_factor = 1.0

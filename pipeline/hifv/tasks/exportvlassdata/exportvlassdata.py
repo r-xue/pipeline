@@ -304,7 +304,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         with casa_tools.ImageReader(imagename) as image:
 
             # We checked the kernel size and position correction offeset again the below tolerenaces but
-            # the results won't affect the smooth/regrid executation.
+            # the results won't affect the smooth/regrid execution.
             pstol = pixdiag_arcsec*0.2  # the tolerance for considering the convolution kernel as a point-source
             sptol = pixdiag_arcsec*0.1  # the tolerance to consider regridding less meaningful
 
