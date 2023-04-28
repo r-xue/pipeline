@@ -40,7 +40,7 @@ class MeasurementSet(object):
         representative_window: A representative spectral window name
         science_goals: A science goal information consists of min/max
             acceptable angular resolution, max allowed beam ratio, sensitivity,
-            dynamic range and SB name.
+            dynamic range, spectral dynamic range bandwidth (Cycle 10+), and SB name.
         data_descriptions: A list of DataDescription objects associated with MS
         spectral_windows: A list of SpectralWindow objects associated with MS
         phasecal_mapping: A dictionary mapping phase calibrator fields to
@@ -1296,7 +1296,7 @@ class MeasurementSet(object):
             A name of column of a dtype. Returns None if dtype is not defined
             in the MS.
         """
-        if not (dtype in self.data_column.keys()):
+        if dtype not in self.data_column.keys():
             return None
 
         if source is None and spw is None:
@@ -1319,5 +1319,8 @@ class MeasurementSet(object):
                 key = (source_name, spw_id)
                 if dtype not in self.data_types_per_source_and_spw.get(key, []):
                     data_exists_for_all_source_spw_combinations = False
+
         if data_exists_for_all_source_spw_combinations:
             return self.data_column[dtype]
+        else:
+            return None
