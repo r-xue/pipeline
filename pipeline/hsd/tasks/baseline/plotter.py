@@ -250,7 +250,6 @@ class BaselineSubtractionDataManager(object):
         associate them with the sparse map panels.
 
         Args:
-#            ms: Domain object for the MS (not used)
             origin_ms_id: MS id for selection
             antid: Antenna id for selection
             virtual_spwid: Virtual spw id for selection
