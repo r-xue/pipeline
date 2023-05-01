@@ -1,6 +1,7 @@
 import collections
 import os
 import shutil
+import tarfile
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 from pipeline.h.tasks.common import manifest
@@ -75,7 +76,8 @@ class ALMAExportData(exportdata.ExportData):
                                                    self.inputs.imaging_products_only)
 
         # Export the AQUA report
-        pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, prefix, self.inputs.products_dir)
+        pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, prefix, self.inputs.products_dir,
+                                                        results.weblog)
 
         # Update the manifest
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
@@ -162,7 +164,7 @@ finally:
 
         return os.path.basename(out_script_file)
 
-    def _export_aqua_report(self, context, oussid, products_dir):
+    def _export_aqua_report(self, context, oussid, products_dir, weblog_filename):
         """
         Save the AQUA report.
         """
@@ -189,6 +191,38 @@ finally:
         # put aqua report into html directory, so it can be linked to the weblog
         LOG.info('Copying AQUA report %s to %s', aqua_file, context.report_dir)
         shutil.copy(aqua_file, context.report_dir)
+
+        old_tarball = os.path.join(context.products_dir, weblog_filename)
+        new_tarball = "updated_weblog.tgz"
+        new_file = aqua_file
+
+        aqua_in_tarball = None
+
+        with tarfile.open(old_tarball, "r:gz") as tar:
+            # Extract all the files from the old tarball except the file to be replaced
+            files_to_keep = []
+            for member in tar.getmembers():
+                if new_file in member.name:
+                    aqua_in_tarball = member
+                else:
+                    files_to_keep.append(member)
+
+            # Create a new tarball with the updated file
+            with tarfile.open(new_tarball, "w:gz") as new_tar:
+                for member in files_to_keep:
+                    # Add all the existing files from the old tarball to the new tarball
+                    new_tar.addfile(member, tar.extractfile(member))
+
+                # Add the updated file to the new tarball
+                if aqua_in_tarball:
+                    new_tar.add(new_file, arcname=aqua_in_tarball.name)
+
+        # Rename the existing tarball
+        LOG.info(f'Replacing {old_tarball} with {new_tarball}')
+        DEBUG = True
+        if DEBUG:
+            shutil.copy(old_tarball, 'old_weblog.tgz')
+        shutil.copy(new_tarball, old_tarball)
 
         return os.path.basename(out_aqua_file)
 
