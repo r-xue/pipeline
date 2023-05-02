@@ -360,7 +360,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
                               centreonly=centreonly, vislist=vislist)
 
-    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype=None) -> str:
+    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype: str = None) -> str:
         try:
             nameroot = self.imagename_prefix
             if nameroot == 'unknown':
