@@ -1230,7 +1230,7 @@ class MeasurementSet(object):
         """
         Return all data column names for this MS.
         """
-        return [colname for colname in self.all_colnames() if colname in ('DATA', 'CORRECTED_DATA')]
+        return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
     def set_data_column(self, dtype: DataType, column: str,
                         source: Optional[str]=None,
