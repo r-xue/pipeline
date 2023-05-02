@@ -436,7 +436,6 @@ class SelfcalHeuristics(object):
                                     imsize=imsize[0],
                                     cellsize=cellsize[0])
                                 sensitivity, sens_bw = self.get_sensitivity()
-                                dr_mod = 1.0
                                 dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
                                 LOG.info(f'DR modifier: {dr_mod}  SPW: {spw}')
                                 sensitivity = sensitivity*dr_mod
@@ -484,7 +483,7 @@ class SelfcalHeuristics(object):
         solint_snr, solint_snr_per_spw = get_SNR_self(
             all_targets, bands, vislist, selfcal_library, n_ants, solints, integration_time, self.inf_EB_gaincal_combine,
             self.inf_EB_gaintype)
-        minsolint_spw = 100.0
+
         for target in all_targets:
             inf_EB_gaincal_combine_dict[target] = {}  # 'scan'
             inf_EB_fallback_mode_dict[target] = {}  # 'scan'
@@ -1198,7 +1197,6 @@ class SelfcalHeuristics(object):
                 sani_target = sanitize_string(target)
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
-
                     spwlist = selfcal_library[target][band][vis]['spws'].split(',')
                     for spw in spwlist:
                         delta_beamarea = compare_beams(sani_target+'_'+band+'_'+spw+'_initial.image.tt0',
@@ -1329,9 +1327,6 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band][vis]['Median_scan_time'] = np.median(scantimesdict[band][vis][target])
                     allscantimes = np.append(allscantimes, scantimesdict[band][vis][target])
                     selfcal_library[target][band][vis]['refant'] = rank_refants(vis)
-                    n_spws, minspw, spwsarray = fetch_spws([vis], [target])
-                    spwslist = spwsarray.tolist()
-                    spwstring = ','.join(str(spw) for spw in spwslist)
                     selfcal_library[target][band][vis]['spws'] = band_properties[vis][band]['spwstring']
                     selfcal_library[target][band][vis]['spwsarray'] = band_properties[vis][band]['spwarray']
                     selfcal_library[target][band][vis]['spwlist'] = band_properties[vis][band]['spwarray'].tolist()

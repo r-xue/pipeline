@@ -182,7 +182,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
 
 
 def fetch_spws(vislist, targets):
-    scantimesdict = {}
+
     n_spws = np.array([])
     min_spws = np.array([])
     spwslist = np.array([])
@@ -247,7 +247,6 @@ def get_solints_simple(
                 all_integrations = np.append(all_integrations, integrationtimes[vis][target])
             all_nscans_per_obs = np.append(all_nscans_per_obs, nscans_per_obs[vis][target])
             # determine time between scans
-            delta_scan = np.zeros(len(scanstartsdict[vis][target])-1)
             # scan list isn't sorted, so sort these so they're in order and we can subtract them from each other
             sortedstarts = np.sort(scanstartsdict[vis][target])
             sortedends = np.sort(scanstartsdict[vis][target])
@@ -262,7 +261,6 @@ def get_solints_simple(
 
     max_scantime = np.median(allscantimes)
     median_scantime = np.max(allscantimes)
-    min_scantime = np.min(allscantimes)
     median_scans_per_obs = np.median(all_nscans_per_obs)
     median_time_per_obs = np.median(all_times_per_obs)
     median_time_between_scans = np.median(all_time_between_scans)
@@ -303,9 +301,7 @@ def get_solints_simple(
     # 1.1*integration_time will ensure that a single int will not be returned such that solint='int' can be appended to the final list.
     while solint > 1.90*integration_time:
         ints_per_solint = solint/integration_time
-        if ints_per_solint.is_integer():
-            solint = solint
-        else:
+        if not ints_per_solint.is_integer():
             # calculate delta_T greater than an a fixed multile of integrations
             remainder = ints_per_solint-float(int(ints_per_solint))
             solint = solint-remainder*integration_time  # add remainder to make solint a fixed number of integrations
@@ -577,7 +573,6 @@ def get_n_ants(vislist):
 def get_ant_list(vis):
     # Examines number of antennas in each ms file and returns the minimum number of antennas
     msmd = casatools.msmetadata()
-    n_ants = 50.0
     msmd.open(vis)
     names = msmd.antennanames()
     msmd.close()
@@ -671,8 +666,6 @@ def get_SNR_self(
                 solint_snr_per_spw[target][band][solint] = {}
                 if solint == 'inf_EB':
                     SNR_self_EB = np.zeros(len(vislist))
-                    SNR_self_EB_spw = np.zeros([len(vislist), len(selfcal_library[target][band][maxspwvis]['spwsarray'])])
-                    SNR_self_EB_spw_mean = np.zeros([len(selfcal_library[target][band][maxspwvis]['spwsarray'])])
                     SNR_self_EB_spw = {}
                     for i in range(len(vislist)):
                         SNR_self_EB[i] = selfcal_library[target][band]['SNR_orig']/((n_ant)**0.5*(
@@ -987,7 +980,7 @@ def get_desired_width(meanfreq):
         desiredWidth = 4.0e6
     elif (meanfreq < 4.0e9) and (meanfreq >= 2.0e9):
         desiredWidth = 4.0e6
-    elif (meanfreq < 4.0e9):
+    elif (meanfreq < 2.0e9):
         desiredWidth = 2.0e6
     return desiredWidth
 
@@ -1015,6 +1008,8 @@ def get_ALMA_bands(vislist, spwstring, spwarray):
         band = 'Band_2'
     elif (meanfreq < 50.0e9) and (meanfreq >= 30.0e9):
         band = 'Band_1'
+    else:
+        raise RuntimeError('meanfreq is ouside the allowed range in get_ALMA_bands()')
     bands = [band]
     for vis in vislist:
         observed_bands[vis] = {}

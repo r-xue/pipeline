@@ -1061,7 +1061,7 @@ class ImageParamsHeuristics(object):
 
         return [nxpix, nypix]
 
-    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype=None):
+    def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype: str = None) -> str:
         try:
             nameroot = self.imagename_prefix
             if nameroot == 'unknown':

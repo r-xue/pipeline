@@ -606,7 +606,7 @@ def ignore_pointing(vis):
         shutil.rmtree('test_small.ms/POINTING')
         shutil.copytree('test.ms/POINTING', 'test_output.ms/POINTING', copy_function=os.link)
     
-    One can verify the indoes of the pointing table files, which should be the same:
+    One can verify the inodes of the pointing table files, which should be the same:
 
         ls -lih test.ms/POINTING
         ls -lih test_small.ms/POINTING
