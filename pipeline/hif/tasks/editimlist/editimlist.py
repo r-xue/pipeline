@@ -508,7 +508,6 @@ class Editimlist(basetask.StandardTaskTemplate):
                     else:
                         LOG.debug(f'No valid datacolumn is associated with the  data selection: '
                                   f"datatype={dtype!r}, field={imlist_entry['field']!r}, spw={imlist_entry['spw']!r}")
-                # bail out if no data is found with the  is found
                 specmode_datatypes_str = ', '.join([dt.name for dt in specmode_datatypes])
                 if imlist_entry['datatype'] is None:
                     LOG.warning(
