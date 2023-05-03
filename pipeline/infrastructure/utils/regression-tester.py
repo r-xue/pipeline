@@ -567,20 +567,21 @@ def test_vlass_quicklook():
     Recipe name: procedure_vlassQLIP.xml
     Dataset: TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms
     """
-    dataset_name = 'TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms'
-    input_dir = f'{TestSlowerRegression.regression_directory}/vlass/quicklook'
-    ref_directory =  'pl-regressiontest/vlass_quicklook/'
+
+    input_dir = 'pl-regressiontest/vlass_quicklook'
+    ref_directory = 'pl-regressiontest/vlass_quicklook'
 
     pr = PipelineRegression(recipe='procedure_vlassQLIP.xml',
                             input_dir=input_dir,
-                            visname=[dataset_name],
+                            visname=['TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms'],
                             expectedoutput_dir=ref_directory)
 
     # Copy parameter list file into the working directory
-    parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')
+    parameter_list_file = casa_tools.utils.resolve(
+        f'{input_dir}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')
     try:
         os.mkdir(f'{pr.output_dir}/working/')
-    except FileExistsError: 
+    except FileExistsError:
         pass
     shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/QLIP_parameter.list'))
     pr.run(telescope='vla')
