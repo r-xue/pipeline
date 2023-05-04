@@ -669,10 +669,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             for name in name_list:
                 if os.path.exists(name):
                     imageheader.set_miscinfo(name=name, spw=inputs.spw, virtspw=virtspw, field=inputs.field,
-                                             type=im_type, iter=iter,
+                                             datatype=inputs.datatype, type=im_type, iter=iter,
                                              intent=inputs.intent, specmode=inputs.orig_specmode,
                                              robust=inputs.robust, weighting=inputs.weighting,
-                                             is_per_eb=inputs.is_per_eb, datatype=inputs.datatype,
+                                             is_per_eb=inputs.is_per_eb,
                                              context=context)
             # Store in TcleanResult
             if im_type == 'model':
@@ -704,7 +704,7 @@ class CleanBase(basetask.StandardTaskTemplate):
 
     def _copy_restoringbeam_from_psf(self, imagename):
         """Copy the per-plane beam set from .psf image to .image/.residual.
-        
+
         Note: this is a short-term workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
               the per-plane restoring beam information into the residual and restored images.
         """
