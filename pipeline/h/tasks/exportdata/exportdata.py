@@ -1037,7 +1037,7 @@ class ExportData(basetask.StandardTaskTemplate):
         tarfilename = self.NameBuilder.weblog(project_structure=ps,
                                               ousstatus_entity_id=oussid)
 
-        LOG.info('Saving final weblog in %s', tarfilename)
+        LOG.info('Saving weblog in %s', tarfilename)
 
         # Create the tar file
         if not self._executor._dry_run:

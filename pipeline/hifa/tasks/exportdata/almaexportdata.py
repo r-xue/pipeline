@@ -2,6 +2,7 @@ import collections
 import os
 import shutil
 import tarfile
+import tempfile
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 from pipeline.h.tasks.common import manifest
@@ -192,13 +193,14 @@ finally:
         LOG.info('Copying AQUA report %s to %s', aqua_file, context.report_dir)
         shutil.copy(aqua_file, context.report_dir)
 
-        old_tarball = os.path.join(context.products_dir, weblog_filename)
-        new_tarball = "updated_weblog.tgz"
+        products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
+        temp_weblog_tarball = tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False).name
+        LOG.debug(f'Created {temp_weblog_tarball}')
         new_file = aqua_file
 
         aqua_in_tarball = None
 
-        with tarfile.open(old_tarball, "r:gz") as tar:
+        with tarfile.open(products_weblog_tarball, "r:gz") as tar:
             # Extract all the files from the old tarball except the file to be replaced
             files_to_keep = []
             for member in tar.getmembers():
@@ -208,7 +210,7 @@ finally:
                     files_to_keep.append(member)
 
             # Create a new tarball with the updated file
-            with tarfile.open(new_tarball, "w:gz") as new_tar:
+            with tarfile.open(temp_weblog_tarball, "w:gz") as new_tar:
                 for member in files_to_keep:
                     # Add all the existing files from the old tarball to the new tarball
                     new_tar.addfile(member, tar.extractfile(member))
@@ -217,12 +219,12 @@ finally:
                 if aqua_in_tarball:
                     new_tar.add(new_file, arcname=aqua_in_tarball.name)
 
-        # Rename the existing tarball
-        LOG.info(f'Replacing {old_tarball} with {new_tarball}')
-        DEBUG = True
-        if DEBUG:
-            shutil.copy(old_tarball, 'old_weblog.tgz')
-        shutil.copy(new_tarball, old_tarball)
+        LOG.info(f'Updating {products_weblog_tarball}')
+        LOG.debug(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball}')
+        shutil.copy(temp_weblog_tarball, products_weblog_tarball)
+        if os.path.exists(temp_weblog_tarball):
+            LOG.debug(f'Removing {temp_weblog_tarball}')
+            os.remove(temp_weblog_tarball)
 
         return os.path.basename(out_aqua_file)
 
