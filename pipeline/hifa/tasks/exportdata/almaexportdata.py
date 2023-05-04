@@ -186,45 +186,42 @@ finally:
                                                      ousstatus_entity_id=oussid,
                                                      output_dir=products_dir)
 
-        LOG.info('Copying AQUA report %s to %s', aqua_file, out_aqua_file)
+        LOG.info(f'Copying AQUA report {aqua_file} to {out_aqua_file}')
         shutil.copy(aqua_file, out_aqua_file)
 
         # put aqua report into html directory, so it can be linked to the weblog
-        LOG.info('Copying AQUA report %s to %s', aqua_file, context.report_dir)
+        LOG.info(f'Copying AQUA report {aqua_file} to {context.report_dir}/{aqua_file}')
         shutil.copy(aqua_file, context.report_dir)
 
         products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
-        temp_weblog_tarball = tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False).name
-        LOG.debug(f'Created {temp_weblog_tarball}')
-        new_file = aqua_file
-
-        aqua_in_tarball = None
 
         with tarfile.open(products_weblog_tarball, "r:gz") as tar:
+
             # Extract all the files from the old tarball except the file to be replaced
             files_to_keep = []
+            aqua_file_in_tarball = None
             for member in tar.getmembers():
-                if new_file in member.name:
-                    aqua_in_tarball = member
+                if aqua_file in member.name:
+                    aqua_file_in_tarball = member
                 else:
                     files_to_keep.append(member)
 
-            # Create a new tarball with the updated file
-            with tarfile.open(temp_weblog_tarball, "w:gz") as new_tar:
-                for member in files_to_keep:
-                    # Add all the existing files from the old tarball to the new tarball
-                    new_tar.addfile(member, tar.extractfile(member))
+            with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False) as temp_weblog_tarball:
+                LOG.debug(f'Created {temp_weblog_tarball.name}')
+                # Create a new tarball with the updated aqua file, keeping all others the same
 
-                # Add the updated file to the new tarball
-                if aqua_in_tarball:
-                    new_tar.add(new_file, arcname=aqua_in_tarball.name)
+                with tarfile.open(temp_weblog_tarball.name, "w:gz") as new_tar:
+                    for member in files_to_keep:
+                        # Add all the existing files from the old tarball to the new tarball
+                        new_tar.addfile(member, tar.extractfile(member))
 
-        LOG.info(f'Updating {products_weblog_tarball}')
-        LOG.debug(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball}')
-        shutil.copy(temp_weblog_tarball, products_weblog_tarball)
-        if os.path.exists(temp_weblog_tarball):
-            LOG.debug(f'Removing {temp_weblog_tarball}')
-            os.remove(temp_weblog_tarball)
+                    # Add the updated aqua file to the new tarball
+                    if aqua_file_in_tarball:
+                        new_tar.add(aqua_file, arcname=aqua_file_in_tarball.name)
+
+            LOG.info(f'Updating {products_weblog_tarball}')
+            LOG.debug(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
+            shutil.move(temp_weblog_tarball.name, products_weblog_tarball)
 
         return os.path.basename(out_aqua_file)
 
