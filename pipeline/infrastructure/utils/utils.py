@@ -22,7 +22,7 @@ from .conversion import range_to_list, dequote
 from .. import casa_tools
 from .. import logging
 
-import casaplotms.private.plotmstool as plotmstool
+import casaplotms
 
 LOG = logging.get_logger(__name__)
 
@@ -487,9 +487,11 @@ def shutdown_plotms():
 
     Note: This function follows the practice illustrated inside casaplotms.private.plotmstool.__stub_check()
     """
+    plotmstool = casaplotms.plotmstool
+
     if plotmstool.__proc is not None:
         plotmstool.__proc.kill()
-        outs, errs = plotmstool.__proc.communicate()
+        _, _ = plotmstool.__proc.communicate()
         plotmstool.__proc = None
         plotmstool.__stub = None
         plotmstool.__uri = None
