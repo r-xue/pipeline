@@ -1361,7 +1361,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Update the metadata in the MOM8_FC image.
         imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw, virtspw=virtspw,
-                                 field=self.inputs.field, iter=iter, type=mom_type,
+                                 field=self.inputs.field, iter=iter, datatype=self.inputs.datatype, type=mom_type,
                                  intent=self.inputs.intent, specmode=self.inputs.orig_specmode,
                                  context=context)
 

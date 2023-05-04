@@ -75,7 +75,7 @@ class SkyDisplay(object):
 
     def plot_per_stokes(self, *args, stokes_list: Optional[list] = None, **kwargs):
         """Plot sky images from a image file with multiple Stokes planes (one image per Stokes).
-        
+
         PIPE-1401: a new keyword argument 'stokes' is added into SkyDisplay.plot(), SkyDisplay._plot_panel(), etc.
         By design, the default stokes=None will preserve the behavior before PIPE-1401: it won't add
         additional stokes-related suffix in .png or attach the 'stokes' key in the plot wrapper object.
@@ -119,7 +119,7 @@ class SkyDisplay(object):
         with casa_tools.ImageReader(result) as image:
             miscinfo = image.miscinfo()
 
-        parameters = {k: miscinfo[k] for k in ['virtspw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
+        parameters = {k: miscinfo[k] for k in ['virtspw', 'pol', 'field', 'datatype', 'type', 'iter'] if k in miscinfo}
         parameters['ant'] = None
         parameters['band'] = band
         parameters['moment'] = collapseFunction
