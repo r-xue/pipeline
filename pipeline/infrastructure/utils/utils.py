@@ -6,6 +6,7 @@ import ast
 import collections
 import copy
 import errno
+import glob
 import itertools
 import operator
 import os
@@ -28,7 +29,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage',
+           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists']
@@ -582,6 +583,19 @@ def get_obj_size(obj, serialize=True):
             raise Exception(
                 "Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).")
         return asizeof(obj)
+
+
+def glob_ordered(pattern, *args, order=None, **kwargs):
+    """Return a sorted list of paths matching a pathname pattern."""
+
+    path_list = glob.glob(pattern, *args, **kwargs)
+    path_list = sorted(path_list)
+    if order == 'mtime':
+        path_list.sort(key=os.path.getmtime)
+    if order == 'ctime':
+        path_list.sort(key=os.path.getctime)
+
+    return path_list
 
 
 def ensure_products_dir_exists(products_dir):
