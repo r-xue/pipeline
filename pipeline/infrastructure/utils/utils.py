@@ -29,7 +29,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered',
+           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered', 'deduplicate',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists']
@@ -596,6 +596,19 @@ def glob_ordered(pattern, *args, order=None, **kwargs):
         path_list.sort(key=os.path.getctime)
 
     return path_list
+
+
+def deduplicate(items):
+    """Remove duplicate entries from a list, but preserve the order.
+    
+    Note that the use of list(set(x)) can cause random order in the output.
+    The return of this function is guaranteed to be in the order that unique items show up in the input, unlike a deduplicate-resorting solution like sorted(set(x).
+    ref: https://stackoverflow.com/questions/480214/how-do-i-remove-duplicates-from-a-list-while-preserving-order
+    This solution only works for Python 3.7+.
+    """
+    deduplicated_items = list(dict.fromkeys(items))
+    
+    return deduplicated_items
 
 
 def ensure_products_dir_exists(products_dir):
