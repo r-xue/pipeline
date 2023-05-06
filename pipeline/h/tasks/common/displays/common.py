@@ -885,10 +885,9 @@ class PhaseVsBaselineData(object):
         Get the baselines for the antenna in this data selection in metres.
         """
         antenna_ids = set(self.data.antenna)
-        baselines = [float(b.length.to_units(measures.DistanceUnits.METRE))
-                     for b in self.ms.antenna_array.baselines
-                     if b.antenna1.id in antenna_ids
-                     or b.antenna2.id in antenna_ids]
+        baselines = [b[0] for b in bldist_antids(self.ms.antenna_array)
+                     if b[1] in antenna_ids
+                     or b[2] in antenna_ids]
         return baselines
 
     @property
@@ -903,8 +902,13 @@ class PhaseVsBaselineData(object):
         if antenna_id == self.refant:
             return 0.0
 
-        baseline = self.ms.antenna_array.get_baseline(self.refant, antenna_id)
-        return float(baseline.length.to_units(measures.DistanceUnits.METRE))
+        matching = [b[0] for b in bldist_antids(self.ms.antenna_array)
+                    if b[1] in (self.refant, antenna_id)
+                    and b[2] in (self.refant, antenna_id)]
+        if matching:
+            return matching[0]
+
+        return None
 
     @property
     @cachetools.cachedmethod(operator.attrgetter('_cache'),
@@ -1120,3 +1124,11 @@ class NullScoreFinder(object):
     def get_score(self, *args, **kwargs):
         return None
 
+
+@cachetools.cached(cache=cachetools.LRUCache(maxsize=100))
+def bldist_antids(antenna_array):
+    """Get the baselines lengths for the antenna in this data selection in metres."""
+    bldist_antids = [(float(b.length.to_units(measures.DistanceUnits.METRE)), b.antenna1.id, b.antenna2.id)
+                     for b in antenna_array.baselines]
+
+    return bldist_antids
