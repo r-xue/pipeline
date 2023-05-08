@@ -131,7 +131,11 @@ class TaskTimeTracker(object):
                     result_state = db['results'][stage_number]
                 except KeyError:
                     continue
-                duration = result_state.end - task_state.start
+                # Avoid TypeError (PIPE-1321)
+                if result_state.end is not None:
+                    duration = result_state.end - task_state.start
+                else:
+                    duration = datetime.timedelta(0)
                 duration_secs = duration.total_seconds()
                 duration_hms = utils.format_timedelta(duration)
                 r['total'][result_state.stage] = {'seconds': duration_secs, 'hms': duration_hms}
