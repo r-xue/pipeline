@@ -1,8 +1,6 @@
 import collections
 import os
 import shutil
-import tarfile
-import tempfile
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 from pipeline.h.tasks.common import manifest
@@ -77,8 +75,11 @@ class ALMAExportData(exportdata.ExportData):
                                                    self.inputs.imaging_products_only)
 
         # Export the AQUA report
-        pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, prefix, self.inputs.products_dir,
-                                                        results.weblog)
+        pipe_aqua_reportfile = self._export_aqua_report(context=self.inputs.context,
+                                                        oussid=prefix,
+                                                        products_dir=self.inputs.products_dir,
+                                                        report_generator=almaifaqua.AlmaAquaXmlGenerator(),
+                                                        weblog_filename=results.weblog)
 
         # Update the manifest
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
@@ -164,66 +165,6 @@ finally:
             shutil.copy(script_file, out_script_file)
 
         return os.path.basename(out_script_file)
-
-    def _export_aqua_report(self, context, oussid, products_dir, weblog_filename):
-        """
-        Save the AQUA report.
-        """
-        aqua_file = os.path.join(context.output_dir, context.logs['aqua_report'])
-
-        report_generator = almaifaqua.AlmaAquaXmlGenerator()
-        LOG.info('Generating pipeline AQUA report')
-        try:
-            report_xml = report_generator.get_report_xml(context)
-            almaifaqua.export_to_disk(report_xml, aqua_file)
-        except Exception as e:
-            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
-            return 'Undefined'
-
-        ps = context.project_structure
-        out_aqua_file = self.NameBuilder.aqua_report(context.logs['aqua_report'],
-                                                     project_structure=ps,
-                                                     ousstatus_entity_id=oussid,
-                                                     output_dir=products_dir)
-
-        LOG.info(f'Copying AQUA report {aqua_file} to {out_aqua_file}')
-        shutil.copy(aqua_file, out_aqua_file)
-
-        # put aqua report into html directory, so it can be linked to the weblog
-        LOG.info(f'Copying AQUA report {aqua_file} to {context.report_dir}/{aqua_file}')
-        shutil.copy(aqua_file, context.report_dir)
-
-        products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
-
-        with tarfile.open(products_weblog_tarball, "r:gz") as tar:
-
-            # Extract all the files from the old tarball except the file to be replaced
-            files_to_keep = []
-            aqua_file_in_tarball = None
-            for member in tar.getmembers():
-                if aqua_file in member.name:
-                    aqua_file_in_tarball = member
-                else:
-                    files_to_keep.append(member)
-
-            with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False) as temp_weblog_tarball:
-                LOG.debug(f'Created {temp_weblog_tarball.name}')
-                # Create a new tarball with the updated aqua file, keeping all others the same
-
-                with tarfile.open(temp_weblog_tarball.name, "w:gz") as new_tar:
-                    for member in files_to_keep:
-                        # Add all the existing files from the old tarball to the new tarball
-                        new_tar.addfile(member, tar.extractfile(member))
-
-                    # Add the updated aqua file to the new tarball
-                    if aqua_file_in_tarball:
-                        new_tar.add(aqua_file, arcname=aqua_file_in_tarball.name)
-
-            LOG.info(f'Updating {products_weblog_tarball}')
-            LOG.debug(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
-            shutil.move(temp_weblog_tarball.name, products_weblog_tarball)
-
-        return os.path.basename(out_aqua_file)
 
     def _export_renorm_to_manifest(self, manifest_name):
         # look for hifa_renorm in the results (PIPE-1185)
