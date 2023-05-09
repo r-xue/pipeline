@@ -13,7 +13,7 @@ from ..common import utils as sdutils
 
 LOG = logging.get_logger(__name__)
 
-ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name estimate range width theoretical_rms observed_rms')
+ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name range width effective_width theoretical_rms observed_rms')
 
 
 class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -57,9 +57,9 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     irms = cqa.tos(sensitivity['sensitivity']) if cqa.getvalue(sensitivity['sensitivity'])>=0 else 'n/a'
                     theoretical_rms = r.theoretical_rms['sensitivity']
                     trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
-                    icon = '<span class="glyphicon glyphicon-ok"></span>' if rms_info.representative else ''
-                    tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
+                    tr = ImageRMSTR(image_item.imagename, rms_info.frequency_range,
                                     cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
+                                    cqa.getvalue(cqa.convert(sensitivity['effective_bw'], 'kHz'))[0],
                                     trms, irms)
                     if image_item.sourcename == ref_ms.representative_target[0]:
                         image_rms.append(tr)
