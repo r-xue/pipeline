@@ -13,7 +13,7 @@ VLA
 ---
 
 * `Calibration Pipeline <https://science.nrao.edu/facilities/vla/data-processing/pipeline/>`_
-* `Imaging Pipeline v6.1.2 <https://science.nrao.edu/facilities/vla/data-processing/pipeline/VIPL_612>`_
+* `Imaging Pipeline v6.4.1 <https://science.nrao.edu/facilities/vla/data-processing/pipeline/VIPL_641>`_
 
 -----
 VLASS
