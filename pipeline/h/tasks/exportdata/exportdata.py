@@ -1282,7 +1282,7 @@ finally:
                     if aqua_file_in_tarball:
                         new_tar.add(aqua_file, arcname=aqua_file_in_tarball.name)
 
-            LOG.info(f'Updating {products_weblog_tarball}')
+            LOG.info(f'Updating aqua report in {products_weblog_tarball}')
             LOG.debug(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
             shutil.move(temp_weblog_tarball.name, products_weblog_tarball)
 
