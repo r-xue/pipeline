@@ -112,9 +112,8 @@ Contributing
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
 
-   tasks
+   Home <self>
    userguide
    publications
    knownissues
