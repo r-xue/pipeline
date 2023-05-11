@@ -185,7 +185,7 @@ class BaselineSubtractionDataManager(object):
     def store_result_get_data(self,
                               num_ra: int,
                               num_dec: int,
-                              rowlist: List[dict],
+                              rowlist: List[Dict[str, Union[int, float, List[int]]]],
                               npol: int,
                               nchan: int,
                               out_rowmap: Optional[dict] = None,
@@ -324,7 +324,7 @@ class BaselineSubtractionDataManager(object):
         num_dec: int,
         num_chan: int,
         num_pol: int,
-        rowlist: List[dict],
+        rowlist: List[Dict[str, Union[int, float, List[int]]]],
         rowmap: Optional[dict] = None,
         integrated_data_storage: Optional[numpy.ndarray] = None,
         map_data_storage: Optional[numpy.ndarray] = None,
@@ -471,7 +471,7 @@ class BaselineSubtractionDataManager(object):
         num_dec: int,
         num_chan: int,
         num_pol: int,
-        rowlist: List[dict],
+        rowlist: List[Dict[str, Union[int, float, List[int]]]],
         rowmap: Optional[dict] = None
     ) -> None:
         """Create array data for sparse map.
@@ -739,7 +739,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         prefit_averaged_data: numpy.ma.masked_array,
         num_ra: int,
         num_dec: int,
-        rowlist: List[dict],
+        rowlist: List[Dict[str, Union[int, float, List[int]]]],
         npol: int,
         frequency: List[float],
         grid_table: Optional[List[List[Union[int, float, numpy.ndarray]]]] = None,
@@ -896,7 +896,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         prefit_averaged_data: numpy.ma.masked_array,
         num_ra: int,
         num_dec: int,
-        rowlist: List[dict],
+        rowlist: List[Dict[str, Union[int, float, List[int]]]],
         npol: int,
         frequency: List[float],
         deviation_mask: Optional[List[Tuple[int, int]]],
@@ -1388,7 +1388,7 @@ def get_lines(
     datatable: 'DataTable',
     num_ra: int,
     num_pol: int,
-    rowlist: List[dict]
+    rowlist: List[Dict[str, Union[int, float, List[int]]]]
 ) -> List[collections.defaultdict]:
     """Get detected line ranges per sparse map panel.
 
@@ -1427,7 +1427,7 @@ def get_lines2(
     infile: str,
     datatable: 'DataTable',
     num_ra: int,
-    rowlist: List[dict],
+    rowlist: List[Dict[str, Union[int, float, List[int]]]],
     polids: List[int],
     rowmap: Optional[dict] = None
 ) -> List[collections.defaultdict]:
