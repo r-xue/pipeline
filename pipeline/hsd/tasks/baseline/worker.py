@@ -485,12 +485,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                 prefit_integrated_data,
                                                                 prefit_map_data,
                                                                 prefit_averaged_data,
-                                                                num_ra, num_dec, num_plane,
+                                                                num_ra, num_dec,
                                                                 rowlist, npol, frequency,
                                                                 grid_table, deviationmask,
                                                                 channelmap_range, formatted_edge,
                                                                 in_rowmap=in_rowmap))
-            LOG.info("plot_list in worker.py = {}".format(plot_list))
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list
