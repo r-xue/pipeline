@@ -112,15 +112,7 @@ class TaskTimeTracker(object):
             for k, stages in db.items():
                 r[k] = {}
                 for e in stages.values():
-                    # Avoid TypeError (PIPE-1321)
-                    # Assumption here is that e.start always holds valid
-                    # datetime while e.end can be None if task execution
-                    # is interrupted/failed (cf. on_lifecycle_event method).
-                    if e.end is not None:
-                        duration = e.end - e.start
-                    else:
-                        # set zero as a sign of unreliable value
-                        duration = datetime.timedelta(0)
+                    duration = e.end - e.start
                     duration_secs = duration.total_seconds()
                     duration_hms = utils.format_timedelta(duration)
                     r[k][e.stage] = {'seconds': duration_secs, 'hms': duration_hms}
