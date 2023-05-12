@@ -38,7 +38,8 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, pi
                              time-domain analysis ('time') and direction analysis ('direction'), are available.
                              Default is 'time'.
     parallel                 Execute using CASA HPC functionality, if available.
-                             options: 'automatic', 'true', 'false'
+                             options: 'automatic', 'true', 'false', True, False
+                             default: None (equivalent to 'automatic')
     pipelinemode             The pipeline operating mode. In 'automatic' mode the pipeline
                              determines the values of all context defined pipeline inputs
                              automatically.  In 'interactive' mode the user can set the pipeline
