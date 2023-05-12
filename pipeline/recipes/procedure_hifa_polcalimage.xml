@@ -165,6 +165,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_applycal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parang</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
