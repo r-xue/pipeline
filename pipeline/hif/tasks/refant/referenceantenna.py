@@ -19,7 +19,21 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RefAntInputs(vdp.StandardInputs):
-    parallel = sessionutils.parallel_inputs_impl()
+    # parallel = sessionutils.parallel_inputs_impl()
+    @property
+    def parallel(self):
+        return self._parallel
+
+    @parallel.setter
+    def parallel(self, value):
+        if value is None:
+            value = False
+        else:
+            allowed = ('true', 'false', 'automatic', True, False)
+            if value not in allowed:
+                m = ', '.join(('{!r}'.format(i) for i in allowed))
+                raise ValueError('Value not in allowed value set ({!s}): {!r}'.format(m, value))
+        self._parallel = value
 
     @vdp.VisDependentProperty
     def field(self):
