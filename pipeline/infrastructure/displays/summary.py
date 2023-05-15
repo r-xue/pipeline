@@ -3,7 +3,6 @@ import math
 import operator
 import os
 from typing import Tuple
-from collections import OrderedDict
 
 import matplotlib.dates as dates
 import matplotlib.pyplot as plt
