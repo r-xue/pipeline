@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 import pipeline.infrastructure as infrastructure
@@ -5,6 +6,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks import applycal
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import sessionutils
 from pipeline.infrastructure import task_registry
 
@@ -77,7 +79,7 @@ class Polcal(basetask.StandardTaskTemplate):
         self._run_applycal(vislist)
 
         # Extract polarisation data and concatenate in session MS.
-        session_msname = self._create_session_ms(vislist)
+        session_msname = self._create_session_ms(session_name, vislist)
 
         # Compute duration of polarisation scans.
         scan_duration = self._compute_session_scan_duration(session_msname)
@@ -141,8 +143,34 @@ class Polcal(basetask.StandardTaskTemplate):
             actask = applycal.IFApplycal(acinputs)
             self._executor.execute(actask)
 
-    def _create_session_ms(self, vislist):
-        session_msname = ''
+    def _create_session_ms(self, session_name: str, vislist: List[str]) -> str:
+        LOG.info(f"Creating polarisation data MS for session {session_name}.")
+
+        # Extract polarisation data for each vis, and capture name of new MS.
+        pol_vislist = []
+        for vis in vislist:
+            LOG.info(f"Extracting corrected polarisation data for MS {vis}")
+            # Set name of output vis.
+            outputvis = os.path.splitext(vis)[0] + '.polcalib.ms'
+
+            # Retrieve science SpW(s) for current MS.
+            ms = self.inputs.context.observing_run.get_ms(vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Run mstransform to create new polarisation MS.
+            mstransform_job = casa_tasks.mstransform(vis=vis, outputvis=outputvis, spw=sci_spws,
+                                                     intent=self.inputs.intent, datacolumn='corrected')
+            self._executor.execute(mstransform_job)
+
+            pol_vislist.append(outputvis)
+
+        # Concatenate the new polarisation MSes into a single one.
+        session_msname = session_name + '_concat_polcalib.ms'
+        LOG.info(f"Creating concatenated polarisation data MS {session_msname} from input measurement set(s):"
+                 f" {utils.commafy(pol_vislist, quotes=False)}.")
+        concat_job = casa_tasks.concat(vis=pol_vislist, concatvis=session_msname)
+        self._executor.execute(concat_job)
+
         return session_msname
 
     def _compute_session_scan_duration(self, msname):
