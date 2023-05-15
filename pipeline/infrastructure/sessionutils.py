@@ -361,7 +361,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         Return:
             a results object with exception raised
         """
-        LOG.error('Error importing {!s}'.format(os.path.basename(vis)))
+        LOG.error('Error processing {!s}'.format(os.path.basename(vis)))
         LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
         tb = traceback.format_exc()
         if tb.startswith('None'):
