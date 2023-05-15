@@ -624,7 +624,7 @@ class MeasurementSet(object):
                 return 'B2B'
             elif refwidth/sciwidth > 1.5:
                 return 'BWSW'
-            raise ValueError('DIFFGAIN intent with an unsupported spectral setup')
+            raise ValueError(f'DIFFGAIN intent with an unsupported spectral setup for dataset {self.basename}')
         return None
 
     def get_original_intent(self, intent=None):
