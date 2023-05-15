@@ -1,7 +1,10 @@
+from typing import List
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.hif.tasks import applycal
 from pipeline.infrastructure import sessionutils
 from pipeline.infrastructure import task_registry
 
@@ -31,9 +34,13 @@ class PolcalResults(basetask.Results):
 
 
 class PolcalInputs(vdp.StandardInputs):
-    def __init__(self, context, vis=None):
+
+    polintent = vdp.VisDependentProperty(default='POLARIZATION,POLANGLE,POLLEAKAGE')
+
+    def __init__(self, context, vis=None, polintent=None):
         self.context = context
         self.vis = vis
+        self.polintent = polintent
 
 
 @task_registry.set_equivalent_casa_task('hifa_polcal')
@@ -61,7 +68,7 @@ class Polcal(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _polcal_for_session(self, session_name, vislist):
+    def _polcal_for_session(self, session_name: str, vislist: List[str]):
         LOG.info(f"Deriving polarisation calibration for session {session_name} with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
@@ -123,8 +130,16 @@ class Polcal(basetask.StandardTaskTemplate):
         result = None
         return result
 
-    def _run_applycal(self, vislist):
-        pass
+    def _run_applycal(self, vislist: List[str]):
+        inputs = self.inputs
+
+        # Run applycal for each vis.
+        for vis in vislist:
+            LOG.info(f'Applying pre-existing caltables to polarisation calibrator intent for MS {vis}.')
+            acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=vis, intent=inputs.intent,
+                                                 flagsum=False, flagbackup=False, flagdetailedsum=False)
+            actask = applycal.IFApplycal(acinputs)
+            self._executor.execute(actask)
 
     def _create_session_ms(self, vislist):
         session_msname = ''
