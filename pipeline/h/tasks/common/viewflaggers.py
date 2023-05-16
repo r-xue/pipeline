@@ -543,12 +543,30 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 if not np.any(ind2flag):
                     continue
 
-                # If the view is for a specific set of antennas, then
-                # include these in the warning
+                # PIPE-344: If the flagged channels fall within ozone lines, then ignore these outliers
+                # (but still display a warning message that no action was taken)
+                ozone_channels = ozone.get_ozone_channels_for_spw(self.inputs.ms, spw)
+                rejected_flagging = []
+                for chan in np.where(ozone_channels)[0]:
+                    if np.any(ind2flag[chan]):
+                        rejected_flagging.append(chan)
+                    ind2flag[chan] = False
+
+                # If the view is for a specific set of antennas, then include these in the warning
                 if antenna:
                     ants_as_str = ", ant {}".format(antenna)
                 else:
                     ants_as_str = ""
+
+                if rejected_flagging:
+                    msg = ("Outliers provisionally found with flagging rule '{}' for {}, spw {}, pol {}{}, "
+                           "channel {}, were not flagged because they overlap with known atmospheric ozone lines".
+                           format(rulename, os.path.basename(table), spw, pol, ants_as_str, rejected_flagging))
+                    _log_outlier(msg)
+
+                # check again if any outliers remained after excluding those within ozone lines
+                if not np.any(ind2flag):
+                    continue
 
                 # Log a debug message with outliers.
                 outliers_as_str = ", ".join(sorted([str(ol) for ol in data_masked[ind2flag].data], reverse=True))
@@ -562,8 +580,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 i2flag = i[ind2flag]
                 j2flag = j[ind2flag]
 
-                # Add new flag command to flag data underlying the
-                # view.
+                # Add new flag command to flag data underlying the view.
                 for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                     newflags.append(arrayflaggerbase.FlagCmd(
                         reason='outlier', filename=table, rulename=rulename, spw=spw, antenna=antenna,
@@ -1177,12 +1194,30 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 if not np.any(ind2flag):
                     continue
 
+                # PIPE-344: If the flagged channels fall within ozone lines, then ignore these outliers
+                ozone_channels = ozone.get_ozone_channels_for_spw(self.inputs.ms, spw)
+                rejected_flagging = []
+                for chan in np.where(ozone_channels)[0]:
+                    if np.any(ind2flag[chan]):
+                        rejected_flagging.append(chan)
+                    ind2flag[chan] = False
+
+                if rejected_flagging:
+                    msg = ("Outliers provisionally found with flagging rule '{}' for {}, spw {}, pol {}, "
+                           "channel {}, were not flagged because they overlap with known atmospheric ozone lines".
+                           format(rulename, os.path.basename(table), spw, pol, rejected_flagging))
+                    _log_outlier(msg)
+
+                # check again if any outliers remained after excluding those within ozone lines
+                if not np.any(ind2flag):
+                    continue
+
                 i2flag = i[ind2flag]
                 j2flag = j[ind2flag]
 
                 # have to be careful here not to corrupt the data view
                 # as we go through it testing for bad quadrant/antenna.
-                # Make a copy of the view flags and go though these
+                # Make a copy of the view flags and go through these
                 # one antenna at a time testing for bad quadrant.
                 # If bad, copy 'outlier' and 'bad quadrant' flags to
                 # original view. 'unflagged_flag_copy' is a copy
