@@ -533,7 +533,7 @@ class MeasurementSet(object):
         if self.antenna_array.name == 'ALMA':
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
-                               'CHECK'}
+                               'CHECK', 'DIFFGAIN'}
             return [w for w in spws if w.num_channels not in (1, 4)
                     and not science_intents.isdisjoint(w.intents)]
 
@@ -574,10 +574,58 @@ class MeasurementSet(object):
         spws = []
         for spw_id, channels in selected.items():
             spw_obj = self.get_spectral_window(spw_id)
-            proxy = spectralwindow.SpectralWindowWithChannelSelection(spw_obj, 
-                                                                      channels)
+            proxy = spectralwindow.SpectralWindowWithChannelSelection(spw_obj, channels)
             spws.append(proxy)
         return spws
+
+    def get_diffgain_spectral_windows(self):
+        """
+        Determine the correspondence between spws used for phase calibration and for science target
+        in the DIFFGAIN observing mode (only for ALMA).
+        Returns:
+            a dict with two lists (not necessarily of the same length):
+            REFERENCE contains the spws used for phase calibration in the DIFFGAIN mode;
+            SCIENCE contains the spws used for science target observing in the DIFFGAIN mode.
+            If DIFFGAIN is not used or the observatory is not ALMA, both lists are empty.
+        """
+        spws = self.get_all_spectral_windows()
+        if self.antenna_array.name == 'ALMA':
+            phasecalspws = []
+            sciencespws = []
+            for w in spws:
+                if w.num_channels not in (1,4) and 'DIFFGAIN' in w.intents:
+                    if 'PHASE' in w.intents:
+                        phasecalspws.append(w)
+                    elif 'TARGET' in w.intents:
+                        sciencespws.append(w)
+            return dict(REFERENCE=phasecalspws, SCIENCE=sciencespws)
+        else:
+            return dict(REFERENCE=[], SCIENCE=[])
+
+    def get_diffgain_mode(self):
+        """
+        Determine if the dataset has bandwidth switching for any spws
+        Returns:
+            'B2B' if the ratio of frequencies between science target and reference spws is above 1.661;
+            'BWSW' if the ratio of bandwidths between reference and science target is above 1.5;
+            None  otherwise (including the normal case with no DIFFGAIN intent)
+        Raises:
+            ValueError if the DIFFGAIN intent is present but neither of the above conditions are satisfied
+        """
+        if 'DIFFGAIN' in self.intents:
+            # examine only the first spw, the setup is expected to be the same for all spws
+            diffspw = self.get_diffgain_spectral_windows()
+            refcent = diffspw['REFERENCE'][0].centre_frequency.value
+            scicent = diffspw['SCIENCE'][0].centre_frequency.value
+            refwidth = diffspw['REFERENCE'][0].bandwidth.value
+            sciwidth = diffspw['SCIENCE'][0].bandwidth.value
+            # [at least] one of the above conditions has to be satisfied
+            if scicent/refcent > 1.661 :  # simple ratio to be out of band Cycle 10
+                return 'B2B'
+            elif refwidth/sciwidth > 1.5:
+                return 'BWSW'
+            raise ValueError(f'DIFFGAIN intent with an unsupported spectral setup for dataset {self.basename}')
+        return None
 
     def get_original_intent(self, intent=None):
         """
@@ -588,10 +636,9 @@ class MeasurementSet(object):
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
 
-
     def get_alma_cycle_number(self) -> Optional[int]:
         """"
-        Get the ALMA cycle number from the ALMA control softare version that this MeasurementSet was acquired with. 
+        Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.
 
         Returns: 
             int cycle_number or None if not found
@@ -1256,7 +1303,7 @@ class MeasurementSet(object):
             raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
         if dtype not in self.data_column:
             self.data_column[dtype] = column
-            LOG.info('Updated data column information of {}. Set {} to column, {}'.format(self.basename, dtype, column))
+            LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
 
         # Update data types per (source,spw) selection
         if source is None:
