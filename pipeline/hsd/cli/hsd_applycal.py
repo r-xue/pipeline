@@ -4,8 +4,8 @@ import pipeline.h.cli.utils as utils
 
 
 def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
-    applymode=None, calwt=None, flagbackup=None, pipelinemode=None, dryrun=None,
-    acceptresults=None):
+    applymode=None, calwt=None, flagbackup=None, parallel=None,
+    pipelinemode=None, dryrun=None, acceptresults=None):
 
     """
     hsd_applycal ---- Apply the calibration(s) to the data
@@ -58,6 +58,9 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
                   Parameter not available in pipelinemode='automatic'.
     flagbackup    Backup the flags before the applyBackup the flags before the apply.
                   Parameter not available in pipelinemode='automatic'.
+    parallel      Execute using CASA HPC functionality, if available.
+                  options: 'automatic', 'true', 'false', True, False
+                  default: None (equivalent to 'automatic')
     pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
                   determines the values of all context defined pipeline inputs automatically.
                   In interactive mode the user can set the pipeline context defined parameters

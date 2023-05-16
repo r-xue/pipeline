@@ -6,7 +6,7 @@ from . import utils
 
 
 def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None, flagsum=None,
-               flagdetailedsum=None, pipelinemode=None, dryrun=None, acceptresults=None):
+               flagdetailedsum=None, parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     """
     h_applycal ---- Apply the calibration(s) to the data
@@ -69,6 +69,9 @@ def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applym
     flagsum         Compute before and after flagging summary statistics
     flagdetailedsum Compute detailed before and after flagging statistics summaries.
                     Parameter available only when if flagsum is True.
+    parallel      Execute using CASA HPC functionality, if available.
+                  options: 'automatic', 'true', 'false', True, False
+                  default: None (equivalent to False)
     pipelinemode    The pipeline operating mode. In 'automatic' mode the pipeline
                     determines the values of all context defined pipeline inputs automatically.
                     In interactive mode the user can set the pipeline context defined parameters

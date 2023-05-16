@@ -32,7 +32,7 @@ class UVcontSubInputs(applycal.ApplycalInputs):
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
-class UVcontSub(applycal.Applycal):
+class UVcontSub(applycal.SerialApplycal):
     Inputs = UVcontSubInputs
 
     # Override prepare method with one which sets and unsets the VI1CAL

@@ -9,7 +9,7 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain import DataType
-from pipeline.h.tasks.applycal.applycal import Applycal, ApplycalInputs, ApplycalResults
+from pipeline.h.tasks.applycal.applycal import SerialApplycal, ApplycalInputs, ApplycalResults
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
@@ -20,24 +20,26 @@ class SDApplycalInputs(ApplycalInputs):
     """
     ApplycalInputs defines the inputs for the Applycal pipeline task.
     """
+    # use common implementation for parallel inputs argument
+    parallel = sessionutils.parallel_inputs_impl()
+
     flagdetailedsum = vdp.VisDependentProperty(default=True)
     intent = vdp.VisDependentProperty(default='TARGET')
 
     def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
-                 applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None):
-        super(SDApplycalInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
-                                               antenna=antenna, intent=intent, parang=parang, applymode=applymode,
-                                               flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
+                 applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None, parallel=None):
+        super().__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
+                         antenna=antenna, intent=intent, parang=parang, applymode=applymode,
+                         flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum,
+                         parallel=parallel)
 
 
 class SDApplycalResults(ApplycalResults):
     def __init__(self, applied=None, data_type: Optional[DataType]=None):
-        super(SDApplycalResults, self).__init__(applied, data_type=data_type)
+        super().__init__(applied, data_type=data_type)
 
 
-#@task_registry.set_equivalent_casa_task('hsd_applycal')
-#@task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
-class SDApplycal(Applycal):
+class SerialSDApplycal(SerialApplycal):
     """
     Applycal executes CASA applycal tasks for the current context state,
     applying calibrations registered with the pipeline context to the target
@@ -57,7 +59,7 @@ class SDApplycal(Applycal):
 
     def _get_flagsum_arg(self, args):
         # CAS-8813 flag fraction should be based on target instead of total
-        task_args = super(SDApplycal, self)._get_flagsum_arg(args)
+        task_args = super()._get_flagsum_arg(args)
         task_args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
         return task_args
 
@@ -68,7 +70,7 @@ class SDApplycal(Applycal):
 
     def prepare(self):
         # execute Applycal
-        results = super(SDApplycal, self).prepare()
+        results = super().prepare()
 
         # Update Tsys in datatable
         context = self.inputs.context
@@ -149,30 +151,8 @@ def set_unit(ms, calapp):
 
 
 # Tier-0 parallelization
-class HpcSDApplycalInputs(SDApplycalInputs):
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
-                 applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None, parallel=None):
-        super(HpcSDApplycalInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
-                                               antenna=antenna, intent=intent, parang=parang, applymode=applymode,
-                                               flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
-        self.parallel = parallel
-
-
 @task_registry.set_equivalent_casa_task('hsd_applycal')
 @task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
-class HpcSDApplycal(sessionutils.ParallelTemplate):
-    Inputs = HpcSDApplycalInputs
-    Task = SDApplycal
-
-    @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating apply calibration for {!s}'.format(os.path.basename(vis)))
-        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
-        import traceback
-        tb = traceback.format_exc()
-        if tb.startswith('None'):
-            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
-        return basetask.FailedTaskResults(self.__class__, exception, tb)
+class SDApplycal(sessionutils.ParallelTemplate):
+    Inputs = SDApplycalInputs
+    Task = SerialSDApplycal

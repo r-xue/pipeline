@@ -59,7 +59,7 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
                   Parameter is available when hm_refant='automatic'.
     parallel      Execute using CASA HPC functionality, if available.
                   options: 'automatic', 'true', 'false', True, False
-                  default: False
+                  default: None (equivalent to False)
     pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
                   determines the values of all context defined pipeline inputs automatically.
                   In interactive mode the user can set the pipeline context defined parameters

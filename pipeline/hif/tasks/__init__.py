@@ -1,5 +1,5 @@
 from .antpos import Antpos
-from .applycal import IFApplycal, HpcIFApplycal
+from .applycal import IFApplycal, SerialIFApplycal
 from .bandpass import BandpassMode, ChannelBandpass, PhcorBandpass
 from .correctedampflag import Correctedampflag
 from .checkproductsize import CheckProductSize

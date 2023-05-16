@@ -397,7 +397,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.info('Applying pre-existing caltables and preliminary phase-up and amplitude caltables.')
             acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.transfer,
                                                  intent=inputs.transintent, flagsum=False, flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
+            actask = applycal.SerialIFApplycal(acinputs)
             self._executor.execute(actask)
 
             # Initialize result.
