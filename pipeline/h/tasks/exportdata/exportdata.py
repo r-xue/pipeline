@@ -1253,7 +1253,8 @@ finally:
         shutil.copy(aqua_file, out_aqua_file)
 
         # put aqua report into html directory, so it can be linked to the weblog
-        LOG.info(f'Copying AQUA report {aqua_file} to {context.report_dir}/{aqua_file}')
+        aqua_html_path = f'{context.report_dir}/{aqua_file}'
+        LOG.info(f'Copying AQUA report {aqua_file} to {aqua_html_path}')
         shutil.copy(aqua_file, context.report_dir)
 
         products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
@@ -1262,10 +1263,10 @@ finally:
 
             # Extract all the files from the old tarball except the file to be replaced
             files_to_keep = []
-            aqua_file_in_tarball = None
+            aqua_html_path_in_tarball = None
             for member in tar.getmembers():
                 if aqua_file in member.name:
-                    aqua_file_in_tarball = member
+                    aqua_html_path_in_tarball = member
                 else:
                     files_to_keep.append(member)
 
@@ -1279,11 +1280,16 @@ finally:
                         new_tar.addfile(member, tar.extractfile(member))
 
                     # Add the updated aqua file to the new tarball
-                    if aqua_file_in_tarball:
-                        new_tar.add(aqua_file, arcname=aqua_file_in_tarball.name)
+                    if aqua_html_path_in_tarball:
+                        LOG.info(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
+                        new_tar.add(aqua_file, arcname=aqua_html_path_in_tarball.name)
+                    else:
+                        LOG.info(f'Adding {aqua_html_path} to contents of weblog tarball')
+                        LOG.debug(f'Adding {aqua_html_path} to contents of {temp_weblog_tarball.name}')
+                        new_tar.add(f'{aqua_html_path}')
 
-            LOG.info(f'Updating aqua report in {products_weblog_tarball}')
-            LOG.debug(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
+            LOG.info(f'Adding/updating aqua report in {products_weblog_tarball}')
+            LOG.debug(f'Moving {temp_weblog_tarball.name} to {products_weblog_tarball}')
             shutil.move(temp_weblog_tarball.name, products_weblog_tarball)
 
         return os.path.basename(out_aqua_file)
