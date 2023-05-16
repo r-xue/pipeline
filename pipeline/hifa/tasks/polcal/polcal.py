@@ -81,6 +81,9 @@ class Polcal(basetask.StandardTaskTemplate):
         # by field name.
         self._check_matching_pol_field(session_name, vislist)
 
+        # Retrieve reference antenna for this session.
+        refant = self._get_refant(session_name, vislist)
+
         # Run applycal to apply the registered total intensity caltables to the
         # polarisation calibrator.
         self._run_applycal(vislist)
@@ -139,11 +142,20 @@ class Polcal(basetask.StandardTaskTemplate):
         result = None
         return result
 
+    def _get_refant(self, session_name: str, vislist: List[str]) -> str:
+        # In the polarisation recipes, a best reference antenna should have
+        # been determined for the entire session by hifa_session_refant, and
+        # stored in each MS of the session. Retrieve this refant from the first
+        # MS in the MS list.
+        ms = self.inputs.context.observing_run.get_ms(name=vislist[0])
+        LOG.info(f"Session {session_name}: using reference antenna {ms.reference_antenna}.")
+        return ms.reference_antenna
+
     def _check_matching_pol_field(self, session_name: str, vislist: List[str]):
         # Retrieve polarisation calibrator fields for each MS in session.
         pol_fields = {}
         for vis in vislist:
-            ms = self.inputs.context.observing_run.get_ms(vis)
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
             pol_fields['vis'] = ms.get_fields(intent=self.inputs.polintent)
 
         # Check if each MS has same number of polarisation fields.
@@ -183,7 +195,7 @@ class Polcal(basetask.StandardTaskTemplate):
             outputvis = os.path.splitext(vis)[0] + '.polcalib.ms'
 
             # Retrieve science SpW(s) for current MS.
-            ms = self.inputs.context.observing_run.get_ms(vis)
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Run mstransform to create new polarisation MS.
@@ -200,15 +212,19 @@ class Polcal(basetask.StandardTaskTemplate):
         concat_job = casa_tasks.concat(vis=pol_vislist, concatvis=session_msname)
         self._executor.execute(concat_job)
 
-        # Add session MS to local context.
+        # Initialize MS object and set its reference antenna to locked, to
+        # enforce strict refantmode.
         ms = tablereader.MeasurementSetReader.get_measurement_set(session_msname)
+        ms.reference_antenna_locked = True
+
+        # Add session MS to local context.
         self.inputs.context.observing_run.add_measurement_set(ms)
 
         return session_msname
 
     def _compute_pol_scan_duration(self, msname: str) -> int:
         # Get polarisation scans for session MS.
-        ms = self.inputs.context.observing_run.get_ms(msname)
+        ms = self.inputs.context.observing_run.get_ms(name=msname)
         pol_scans = ms.get_scans(scan_intent=self.inputs.polintent)
 
         # Compute median duration of polarisation scans.
