@@ -1272,14 +1272,15 @@ finally:
 
             with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False) as temp_weblog_tarball:
                 LOG.debug(f'Created {temp_weblog_tarball.name}')
-                # Create a new tarball with the updated aqua file, keeping all others the same
 
+                # Create a new tarball with the updated aqua file, keeping all others the same
                 with tarfile.open(temp_weblog_tarball.name, "w:gz") as new_tar:
                     for member in files_to_keep:
                         # Add all the existing files from the old tarball to the new tarball
                         new_tar.addfile(member, tar.extractfile(member))
 
-                    # Add the updated aqua file to the new tarball
+                    # If an aqua file was already in the weblog tarball, then update it.
+                    # Else, add it into the weblog tarball.
                     if aqua_html_path_in_tarball:
                         LOG.info(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
                         new_tar.add(aqua_file, arcname=aqua_html_path_in_tarball.name)
