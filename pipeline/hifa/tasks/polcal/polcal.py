@@ -5,10 +5,12 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks import applycal
+from pipeline.hif.tasks import gaincal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import sessionutils
 from pipeline.infrastructure import task_registry
@@ -95,7 +97,7 @@ class Polcal(basetask.StandardTaskTemplate):
         scan_duration = self._compute_pol_scan_duration(session_msname)
 
         # Initial gain calibration for polarisation calibrator.
-        gcal_result = self._initial_gaincal(session_msname)
+        gcal_result = self._initial_gaincal(session_msname, vislist, refant)
 
         # Compute (uncalibrated) estimate of polarisation of the polarisation
         # calibrator.
@@ -232,9 +234,42 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"Session MS {msname}: median scan duration = {scan_duration}.")
         return scan_duration
 
-    def _initial_gaincal(self, msname):
-        gcal_result = None
-        return gcal_result
+    def _initial_gaincal(self, msname: str, vislist: List[str], refant: str) -> gaincal.common.GaincalResults:
+        inputs = self.inputs
+        LOG.info(f"{msname}: compute initial gain calibration for polarisation calibrator.")
+
+        # Initialize gaincal task inputs.
+        task_args = {
+            'output_dir': inputs.output_dir,
+            'vis': msname,
+            'caltable': None,
+            'intent': inputs.polintent,
+            'solint': 'int',
+            'gaintype': 'G',
+            'refant': refant,
+        }
+        task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute gaincal task.
+        task = gaincal.GTypeGaincal(task_inputs)
+        result = self._executor.execute(task)
+
+        # Create new CalApplications to correctly register caltable.
+        new_calapps = []
+
+        # Create a modified CalApplication to register this caltable against
+        # the session MS itself.
+        new_calapps.append(callibrary.copy_calapplication(result.final[0], intent=self.inputs.polintent))
+
+        # Create a modified CalApplication to register this caltable against
+        # each MS in this session.
+        for vis in vislist:
+            new_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent=''))
+
+        # Replace CalApps in gaincal result.
+        result.final = new_calapps
+
+        return result
 
     def _compute_polfromgain(self, msname, gcal_result):
         polfromgain_result = None
