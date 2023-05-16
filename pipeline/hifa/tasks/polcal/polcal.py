@@ -74,6 +74,10 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"Deriving polarisation calibration for session {session_name} with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
+        # Check that each MS in session shares the same polarisation calibrator
+        # by field name.
+        self._check_matching_pol_field(session_name, vislist)
+
         # Run applycal to apply the registered total intensity caltables to the
         # polarisation calibrator.
         self._run_applycal(vislist)
@@ -131,6 +135,28 @@ class Polcal(basetask.StandardTaskTemplate):
 
         result = None
         return result
+
+    def _check_matching_pol_field(self, session_name: str, vislist: List[str]):
+        # Retrieve polarisation calibrator fields for each MS in session.
+        pol_fields = {}
+        for vis in vislist:
+            ms = self.inputs.context.observing_run.get_ms(vis)
+            pol_fields['vis'] = ms.get_fields(intent=self.inputs.polintent)
+
+        # Check if each MS has same number of polarisation fields.
+        if len({len(f) for f in pol_fields.values()}) != 1:
+            LOG.warning(f"For session {session_name}, the measurement sets do not have equal number of polarisation"
+                        f" calibrator fields:")
+            for vis, fields in pol_fields:
+                LOG.warning(f" {vis}: {utils.commafy([f.name for f in fields])}")
+        # If the MSes have matching number of polarisation fields, check if
+        # the fields are matching by name.
+        else:
+            if len({sorted(f.name) for f in pol_fields.values()}) != 1:
+                LOG.warning(f"For session {session_name}, the measurement sets do not have the same polarisation"
+                            f" calibrator fields, by name:")
+            for vis, fields in pol_fields:
+                LOG.warning(f" {vis}: {utils.commafy(sorted(f.name for f in fields))}")
 
     def _run_applycal(self, vislist: List[str]):
         inputs = self.inputs
