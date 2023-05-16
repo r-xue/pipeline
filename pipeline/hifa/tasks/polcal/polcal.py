@@ -1,8 +1,11 @@
 import os
 from typing import List
 
+import numpy as np
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks import applycal
@@ -86,7 +89,7 @@ class Polcal(basetask.StandardTaskTemplate):
         session_msname = self._create_session_ms(session_name, vislist)
 
         # Compute duration of polarisation scans.
-        scan_duration = self._compute_session_scan_duration(session_msname)
+        scan_duration = self._compute_pol_scan_duration(session_msname)
 
         # Initial gain calibration for polarisation calibrator.
         gcal_result = self._initial_gaincal(session_msname)
@@ -190,17 +193,27 @@ class Polcal(basetask.StandardTaskTemplate):
 
             pol_vislist.append(outputvis)
 
-        # Concatenate the new polarisation MSes into a single one.
+        # Concatenate the new polarisation MSes into a single session MS.
         session_msname = session_name + '_concat_polcalib.ms'
         LOG.info(f"Creating concatenated polarisation data MS {session_msname} from input measurement set(s):"
                  f" {utils.commafy(pol_vislist, quotes=False)}.")
         concat_job = casa_tasks.concat(vis=pol_vislist, concatvis=session_msname)
         self._executor.execute(concat_job)
 
+        # Add session MS to local context.
+        ms = tablereader.MeasurementSetReader.get_measurement_set(session_msname)
+        self.inputs.context.observing_run.add_measurement_set(ms)
+
         return session_msname
 
-    def _compute_session_scan_duration(self, msname):
-        scan_duration = 0
+    def _compute_pol_scan_duration(self, msname: str) -> int:
+        # Get polarisation scans for session MS.
+        ms = self.inputs.context.observing_run.get_ms(msname)
+        pol_scans = ms.get_scans(scan_intent=self.inputs.polintent)
+
+        # Compute median duration of polarisation scans.
+        scan_duration = int(np.median([scan.time_on_source() for scan in pol_scans]))
+        LOG.info(f"Session MS {msname}: median scan duration = {scan_duration}.")
         return scan_duration
 
     def _initial_gaincal(self, msname):
