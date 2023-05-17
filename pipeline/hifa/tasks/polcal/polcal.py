@@ -12,6 +12,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import gaincal
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import sessionutils
 from pipeline.infrastructure import task_registry
 
@@ -101,7 +102,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Compute (uncalibrated) estimate of polarisation of the polarisation
         # calibrator.
-        uncal_polfromgain_result = self._compute_polfromgain(session_msname, gcal_result)
+        uncal_pfg_result = self._compute_polfromgain(session_msname, gcal_result)
 
         # Identify scan with highest X-Y signal.
         best_scan = self._identify_scan_highest_xy(gcal_result)
@@ -110,8 +111,8 @@ class Polcal(basetask.StandardTaskTemplate):
         kcross_result = self._compute_xy_delay(session_msname, gcal_result, best_scan)
 
         # Calibrate X-Y phase.
-        polcal_phase_result = self._calibrate_xy_phase(session_msname, gcal_result, uncal_polfromgain_result,
-                                                       kcross_result, scan_duration)
+        polcal_phase_result = self._calibrate_xy_phase(session_msname, gcal_result, uncal_pfg_result, kcross_result,
+                                                       scan_duration)
 
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
@@ -271,9 +272,18 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _compute_polfromgain(self, msname, gcal_result):
-        polfromgain_result = None
-        return polfromgain_result
+    def _compute_polfromgain(self, msname: str, gcal_result: gaincal.common.GaincalResults) -> dict:
+        LOG.info(f"{msname}: compute estimate of polarisation.")
+
+        # Get caltable to analyse, and set name of output caltable.
+        intable = gcal_result.final[0].caltable
+        caltable = os.path.splitext(intable)[0] + '_polfromgain.tbl'
+
+        # Create and run polfromgain CASA task.
+        pfg_job = casa_tasks.polfromgain(vis=msname, tablein=intable, caltable=caltable)
+        pfg_result = self._executor.execute(pfg_job)
+
+        return pfg_result
 
     def _identify_scan_highest_xy(self, gcal_result):
         best_scan = None
