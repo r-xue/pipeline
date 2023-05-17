@@ -5,9 +5,10 @@ import pipeline.h.cli.utils as utils
 
 def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None,
-                 clusteringalgorithm=None, deviationmask=None, pipelinemode=None,
+                 clusteringalgorithm=None, deviationmask=None,
+                 parallel=None, pipelinemode=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None, parallel=None):
+                 dryrun=None, acceptresults=None):
 
     """
     hsd_baseline ---- Detect and validate spectral lines, subtract baseline by masking detected lines
@@ -173,6 +174,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     deviationmask       Apply deviation mask in addition to masks determined by
                         the automatic line detection.
 
+    parallel            Execute using CASA HPC functionality, if available.
+                        options: 'automatic', 'true', 'false', True, False
+                        default: None (equivalent to 'automatic')
+
     pipelinemode        The pipeline operating mode. In 'automatic' mode the
                         pipeline determines the values of all context defined
                         pipeline inputs  automatically.  In 'interactive' mode
@@ -211,8 +216,6 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
 
     acceptresults       Add the results of the task to the pipeline context (True)
                         or reject them (False).
-
-    parallel            Execute using CASA HPC functionality, if available.
 
     --------- examples -----------------------------------------------------------
 

@@ -149,6 +149,8 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
+    parallel = sessionutils.parallel_inputs_impl()
+
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
@@ -256,7 +258,8 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         deviationmask: Optional[Union[dict, List[dict]]] = None,
         blparam: Optional[Union[str, List[str]]] = None,
         bloutput: Optional[Union[str, List[str]]] = None,
-        org_directions_dict: Optional[dict] = None
+        org_directions_dict: Optional[dict] = None,
+        parallel: Optional[Union[bool, str]] = None
     ) -> None:
         """Construct BaselineSubtractionWorkerInputs instance.
 
@@ -285,6 +288,9 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
                                  correction. Defaults to None. This is
                                  required only when target source is
                                  ephemeris object.
+            parallel: Execute using CASA HPC functionality, if available.
+                      Default is None, which intends to turn on parallel
+                      processing if possible.
         """
         super(BaselineSubtractionWorkerInputs, self).__init__()
 
@@ -298,9 +304,10 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         self.blparam = blparam
         self.bloutput = bloutput
         self.org_directions_dict = org_directions_dict
+        self.parallel = parallel
 
 # Base class for workers
-class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
+class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     """Abstract worker class for baseline subtraction."""
 
     Inputs = BaselineSubtractionWorkerInputs
@@ -324,7 +331,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Args:
             inputs: BaselineSubtractionWorkerInputs instance
         """
-        super(BaselineSubtractionWorker, self).__init__(inputs)
+        super().__init__(inputs)
 
         # initialize plotter
         self.datatable = DataTable(sdutils.get_data_table_path(self.inputs.context,
@@ -454,7 +461,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
 
 # Worker class for cubic spline fit
-class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
+class SerialCubicSplineBaselineSubtractionWorker(SerialBaselineSubtractionWorker):
     """Worker class of cspline baseline subtraction.
 
     This is an implementation of BaselineSubtractionWorker class based on
@@ -466,68 +473,8 @@ class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
     Heuristics = CubicSplineFitParamConfig
 
 
-# Tier-0 Parallelization
-class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
-    """Variant of BaselineSubtractionWorkerInputs for parallel processing."""
-
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(
-        self,
-        context: 'Context',
-        vis: Optional[Union[str, List[str]]] = None,
-        plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
-        fit_order: Optional[int] = None,
-        switchpoly: Optional[bool] = None,
-        edge: Optional[List[int]] = None,
-        deviationmask: Optional[Union[dict, List[dict]]] = None,
-        blparam: Optional[Union[str, List[str]]] = None,
-        bloutput: Optional[Union[str, List[str]]] = None,
-        org_directions_dict: Optional[dict] = None,
-        parallel: Optional[bool] = None
-    ) -> None:
-        """Construct HPCBaselineSubtractionWorkerInputs instance.
-
-        Args:
-            context: Pipeline context
-            vis: Name of the MS or list of MSs. Defaults to None,
-                 which is to process all MSs registered to the context.
-            plan: Set of metadata for baseline subtraction, or List of
-                  the set. Defaults to None. The task may fail if None
-                  is given.
-            fit_order: Baseline fitting order. Defaults to None, which
-                       is to perform heuristics for fitting order.
-            switchpoly: Whther or not fall back to low order polynomial
-                        fit when large mask exist at the edge of spw.
-                        Defaults to True if None is given.
-            edge: Edge channels to exclude. Defaults to None, which means
-                  that all channels are processed.
-            deviationmask: List of deviation masks. Defaults to empty list
-                           if None is given.
-            blparam: Name of the blparam file name. Defaults to
-                     '{name_of_ms}_blparam.txt' if None is given.
-            bloutput: Name of the bloutput name. Defaults to the name
-                      following pipeline product naming convention
-                      (see to_casa_args method) if None is given.
-            org_directions_dict: Original source direction for ephemeris
-                                 correction. Defaults to None. This is
-                                 required only when target source is
-                                 ephemeris object.
-            parallel: Turn on/off parallal processing. Defaults to None.
-                      If None is given, do parallel processing only when
-                      pipeline runs on mpicasa environment.
-        """
-        super(HpcBaselineSubtractionWorkerInputs, self).__init__(context, vis=vis, plan=plan,
-                                                                 fit_order=fit_order, switchpoly=switchpoly,
-                                                                 edge=edge, deviationmask=deviationmask,
-                                                                 blparam=blparam, bloutput=bloutput,
-                                                                 org_directions_dict=org_directions_dict)
-        self.parallel = parallel
-
-
 # This is abstract class since Task is not specified yet
-class HpcBaselineSubtractionWorker(sessionutils.ParallelTemplate):
+class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     """Template class for parallel baseline subtraction task.
 
     This class is a template for parallel processing that executes
@@ -539,48 +486,13 @@ class HpcBaselineSubtractionWorker(sessionutils.ParallelTemplate):
     in each subclass.
     """
 
-    Inputs = HpcBaselineSubtractionWorkerInputs
-
-    def __init__(self, inputs: HpcBaselineSubtractionWorkerInputs) -> None:
-        """Construct HpcBaselineSubtractionWorker instance.
-
-        Args:
-            inputs: HpcBaselineSubtractionWorkerInputs instance
-        """
-        super(HpcBaselineSubtractionWorker, self).__init__(inputs)
-
-    @basetask.result_finaliser
-    def get_result_for_exception(self, vis: str, exception: Type[Exception]) -> basetask.FailedTaskResults:
-        """Return FailedTaskResults instance on failure.
-
-        Args:
-            vis: Name of the MS
-            exception: Exception type
-
-        Returns:
-            FailedTaskResults instance
-        """
-        LOG.error('Error operating baseline subtraction for {!s}'.format(os.path.basename(vis)))
-        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
-        import traceback
-        tb = traceback.format_exc()
-        if tb.startswith('None'):
-            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
-        return basetask.FailedTaskResults(self.__class__, exception, tb)
+    Inputs = BaselineSubtractionWorkerInputs
 
 
-class HpcCubicSplineBaselineSubtractionWorker(HpcBaselineSubtractionWorker):
+class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
     """Parallel processing task for cspline baseline subtraction.
 
     This executes CubicSplineBaselineSubtractionWorker in parallel.
     """
 
-    Task = CubicSplineBaselineSubtractionWorker
-
-    def __init__(self, inputs: HpcBaselineSubtractionWorkerInputs) -> None:
-        """Construct HpcBaselineSubtractionWorkerInputs instance.
-
-        Args:
-            inputs: HpcBaselineSubtractionWorkerInputs instance
-        """
-        super(HpcCubicSplineBaselineSubtractionWorker, self).__init__(inputs)
+    Task = SerialCubicSplineBaselineSubtractionWorker

@@ -477,7 +477,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
         # 21/05/2018 TN temporal workaround
         # I don't know how to use vdp.ModeInputs so directly specify worker task class here
-        worker_cls = worker.HpcCubicSplineBaselineSubtractionWorker
+        worker_cls = worker.CubicSplineBaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
                                             fit_order=fitorder, switchpoly=switchpoly,

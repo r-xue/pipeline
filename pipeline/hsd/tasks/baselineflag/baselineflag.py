@@ -38,6 +38,8 @@ class SDBLFlagInputs(vdp.StandardInputs):
     processing_data_type = [DataType.ATMCORR,
                             DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
 
+    parallel = sessionutils.parallel_inputs_impl()
+
     spw = vdp.VisDependentProperty(default='')
     intent = vdp.VisDependentProperty(default='TARGET')
     iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
@@ -125,8 +127,9 @@ class SDBLFlagInputs(vdp.StandardInputs):
                  flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
                  plotflag=None,
                  infiles=None, antenna=None, field=None,
-                 spw=None, pol=None):
-        super(SDBLFlagInputs, self).__init__()
+                 spw=None, pol=None,
+                 parallel=None):
+        super().__init__()
 
         # context and vis/infiles must be set first so that properties that require
         # domain objects can be function
@@ -157,6 +160,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.pol = pol
+        self.parallel = parallel
 
         ### Default Flag rule
         from . import SDFlagRule
@@ -448,56 +452,11 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         return out_stat
 
 
-### Tier-0 parallelization
-class HpcSDBLFlagInputs(SDBLFlagInputs):
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self, context, output_dir=None,
-                 iteration=None, edge=None,
-                 flag_tsys=None, tsys_thresh=None,
-                 flag_prfre=None, prfre_thresh=None,
-                 flag_pofre=None, pofre_thresh=None,
-                 flag_prfr=None, prfr_thresh=None,
-                 flag_pofr=None, pofr_thresh=None,
-                 flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
-                 flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 plotflag=None,
-                 infiles=None, antenna=None, field=None,
-                 spw=None, pol=None, parallel=None):
-        super(HpcSDBLFlagInputs, self).__init__(
-            context, output_dir=output_dir,
-            iteration=iteration, edge=edge,
-            flag_tsys=flag_tsys, tsys_thresh=tsys_thresh,
-            flag_prfre=flag_prfre, prfre_thresh=prfre_thresh,
-            flag_pofre=flag_pofre, pofre_thresh=pofre_thresh,
-            flag_prfr=flag_prfr, prfr_thresh=prfr_thresh,
-            flag_pofr=flag_pofr, pofr_thresh=pofr_thresh,
-            flag_prfrm=flag_prfrm, prfrm_thresh=prfrm_thresh, prfrm_nmean=prfrm_nmean,
-            flag_pofrm=flag_pofrm, pofrm_thresh=pofrm_thresh, pofrm_nmean=pofrm_nmean,
-            plotflag=plotflag,
-            infiles=infiles, antenna=antenna, field=field, spw=spw, pol=pol)
-        self.parallel = parallel
-
-
 @task_registry.set_equivalent_casa_task('hsd_blflag')
 @task_registry.set_casa_commands_comment(
     'Perform row-based flagging based on noise level and quality of spectral baseline subtraction.\n'
     'This stage performs a pipeline calculation without running any CASA commands to be put in this file.'
 )
-class HpcSDBLFlag(sessionutils.ParallelTemplate):
-    Inputs = HpcSDBLFlagInputs
+class SDBLFlag(sessionutils.ParallelTemplate):
+    Inputs = SDBLFlagInputs
     Task = SerialSDBLFlag
-
-    def __init__(self, inputs):
-        super(HpcSDBLFlag, self).__init__(inputs)
-
-    @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
-        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
-        import traceback
-        tb = traceback.format_exc()
-        if tb.startswith('None'):
-            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
-        return basetask.FailedTaskResults(self.__class__, exception, tb)
