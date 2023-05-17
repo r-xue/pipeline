@@ -198,6 +198,11 @@ def polcal(*v, **k) -> JobRequest:
 
 
 @register_task
+def polfromgain(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.polfromgain, *v, **k)
+
+
+@register_task
 def setjy(*v, **k) -> JobRequest:
     return JobRequest(casatasks.setjy, *v, **k)
 
