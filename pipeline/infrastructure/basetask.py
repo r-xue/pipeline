@@ -343,8 +343,19 @@ class Results(api.Results):
                 with open(path, 'wb') as outfile:
                     pickle.dump(context, outfile, -1)
 
-        event = ResultAcceptedEvent(context_name=context.name, stage_number=self.stage_number)
-        eventbus.send_message(event)
+            # event object must be sent inside finally block
+            if isinstance(result_to_append, FailedTaskResults):
+                # result acceptance failed, so we need to send ResultAcceptErrorEvent
+                event = ResultAcceptErrorEvent(context_name=context.name, stage_number=self.stage_number)
+            else:
+                # result acceptance went well, results object must be self
+                assert result_to_append is self
+                event = ResultAcceptedEvent(context_name=context.name, stage_number=self.stage_number)
+
+            eventbus.send_message(event)
+
+            # return immediately after sending ResultAccept event
+            return
 
     def _check_for_remerge(self, context):
         """
