@@ -891,7 +891,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.warning('Could not get valid region of interest to calculate image statistics.')
             _pp.image_rms = -1.0
         else:
-            __statval = calc_image_statistics(_pp.imagename, _pp.stat_chans, _pp.region) ##ここでimage_rmsの状態を見る
+            __statval = calc_image_statistics(_pp.imagename, _pp.stat_chans, _pp.region)
             if len(__statval['rms']):
                 _pp.image_rms = __statval['rms'][0]
                 LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, "
