@@ -2658,7 +2658,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         fitflux = None
         fitflux_err = None
         fitpeak = None
-        score = 0.0
+        score = 0.34
         longmsg = 'Check source fit failed for %s field %s spwid %d' % (msnames, fieldname, spwid)
         shortmsg = 'Check source fit failed'
         metric_score = 'N/A'
@@ -2676,6 +2676,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
 
         warnings = []
 
+        #FIXME: dead code? 
         if refflux is not None:
             coherence = fitdict['fluxloss']['value'] * 100.0
             flux_score = max(0.0, 1.0 - fitdict['fluxloss']['value'])

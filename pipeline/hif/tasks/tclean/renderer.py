@@ -34,7 +34,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
-    'tab_dict tab_url outmaskratio outmaskratio_label'))
+    'tab_dict tab_url outmaskratio outmaskratio_label peak_snr'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -96,6 +96,57 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # While the image tool is open, read and cache the image
                 # stats for use in the plot generation classes.
                 stats = image.statistics(robust=False)
+
+                try:
+                    # Get the scaled MAD from the non-pbcor image outside of the central radius (PIPE-1296)
+                    LOG.debug("Calculating peakSNR step one: scaled MAD. Image name: {}".format(image_name))
+                    imshape = image.shape()
+                    central_radius = min(20, imshape[0]//5) 
+                    central_circle = 'circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+                    box = 'box[[%dpix, %dpix], [%dpix, %dpix]]' % (0, 0, imshape[0], imshape[1])
+                    everything_but_central_circle = box + "\n - " + central_circle
+                    outside_circle_imstat = image.statistics(region=everything_but_central_circle, robust=True) 
+                    scaled_mad = outside_circle_imstat['medabsdevmed'][0] #FIXME: is this actually the correct (1) region and (2) value? 
+                except Exception as e: 
+                    print("FAILED in MAD: ")
+                    print(repr(e))
+                    scaled_mad = 1
+
+            peak_snr = None
+
+            try:
+                #FIXME: need to update this to get the pbcor image 
+                with casa_tools.ImageReader(image_path) as image:
+                    image_name = str(image.name(strippath=True))
+                    info = image.miscinfo()
+                    coordsys = image.coordsys()
+                    brightness_unit = image.brightnessunit()
+                    summary = image.summary()
+                    beam = image.restoringbeam()
+
+                    # While the image tool is open, read and cache the image
+                    # stats for use in the plot generation classes.
+                    stats = image.statistics(robust=False)
+
+                    LOG.debug("Calculating peakSNR. Image name: {}".format(image_name))
+
+                    # Construct the regions string
+                    #    This is a circle centered at the center of the image with a radius of n pixels
+                    imshape=image.shape()
+                    central_radius = min(20, imshape[0]//5) # FIXME: Are all images square? otherwise min(imshape[0], imshape[1])//5?
+                    region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+                    
+                    LOG.debug("Creating a circle of radius {}".format(central_radius))
+                    
+                    # Get the peak within the radius: 
+                    imstats_within_region = image.statistics(region=region)
+                    imagepeak = imstats_within_region['max'][0]
+
+                    peak_snr = imagepeak/scaled_mad
+            except Exception as e: 
+                print("FAILED in peakSNR: ")
+                print(repr(e))
+                peak_snr = 1
 
             # cache image statistics while we have them in scope.
             image_rms = stats.get('rms')[0]
@@ -597,7 +648,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
                 cube_all_cont=cube_all_cont,
                 tclean_command=tclean_command,
-                result=r
+                result=r,
+                peak_snr=peak_snr
             )
             image_rows.append(row)
 
@@ -1368,7 +1420,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 LOG.info('n-sigma * final scaled MAD of residual: %s %s' % (("%.12f" % final_nsigma_mad, brightness_unit)
                                                                             if row_final_nsigma_mad != '-'
                                                                             else (row_final_nsigma_mad, "")))
-
+                
                 row = ImageRow(
                     vis=vis,
                     datatype_info=datatype_info,
