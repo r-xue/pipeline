@@ -5,10 +5,10 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hif_selfcal(vis=None, field=None, spw=None, contflie=None,
+def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 apply=None, parallel=None, recal=None,
                 amplitude_selfcal=None, gaincal_minsnr=None,
-                minsnr_to_proceed=None, delta_beam_thres=None,
+                minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                 pipelinemode=None, dryrun=None, acceptresults=None):
@@ -28,6 +28,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contflie=None,
                             default= "" Fields matching intent, one image per target source.  
     spw                     Select spectral windows to image.
                             "": Images will be computed for all science spectral windows.
+    contfile                Name of file to specify line-free frequency ranges for selfcal continuum imaging.
+                            default="cont.dat"
     apply                   Apply final selfcal solutions back to the input MeasurementSets.
                             default = True     
     amplitude_selfcal       Attempt amplitude self-calibration following phase-only self-calibration; 

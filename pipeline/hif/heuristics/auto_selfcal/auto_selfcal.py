@@ -207,7 +207,7 @@ class SelfcalHeuristics(object):
         # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
         if savemodel == 'modelcolumn':
             LOG.info("")
-            LOG.info("Running tclean in the prediction-only setting to save the model in serial.")
+            LOG.info("Running tclean in the prediction-only setting to fill the MS model column.")
             tclean_args.update({'niter': 0,
                                 'interactive': False,
                                 'nsigma': 0.0,
