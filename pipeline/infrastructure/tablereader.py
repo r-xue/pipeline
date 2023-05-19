@@ -143,24 +143,58 @@ class MeasurementSetReader(object):
             return scans
 
     @staticmethod
-    def add_band_to_spws(ms):
+    def add_band_to_spws(ms: domain.MeasurementSet) -> None:
+        """
+        Sets spw.band, which is a string describing a band. 
+        """
+        observatory = ms.antenna_array.name.upper()
+        
+        # This dict is only populated if the spw's band number cannot be determined from its name for ALMA.
+        alma_receiver_band = {}
+
         for spw in ms.spectral_windows:
             if spw.type == 'WVR':
                 spw.band = 'WVR'
+                LOG.debug("For MS {}, SpW {}, setting band to WVR.".format(ms.name, spw.id))
                 continue
 
-            # Expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
-            m = re.search(r'ALMA_RB_(?P<band>\d+)', spw.name)
-            if m:
-                band_str = m.groupdict()['band']
+            # Determining the band number for ALMA data 
+            #
+            # First, try to determine the band number from the spw name
+            # The expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
+            # If this doesn't work and this is ALMA data, try to get the band number from the ASDM_RECEIVER table
+            # If this also fails, then set the band number using a look-up-table. 
+            #
+            # See: PIPE-140 or PIPE-1078
+            #
+            alma_band_regex = r'ALMA_RB_(?P<band>\d+)'
+            match_found = re.search(alma_band_regex, spw.name)
+            if match_found:
+                band_str = match_found.groupdict()['band']
                 band_num = int(band_str)
                 spw.band = 'ALMA Band %s' % band_num
+                LOG.debug("For MS {}, SpW {}, setting band to {}, based on the SPW name.".format(ms.name, spw.id, spw.band))
                 continue
+            elif observatory == 'ALMA': 
+                if not alma_receiver_band:
+                    alma_receiver_band = SpectralWindowTable.get_receiver_info(ms, get_band_info=True)
+                if spw.id in alma_receiver_band:
+                    match_receiver_band = re.search(alma_band_regex, alma_receiver_band[spw.id])
+                    if match_receiver_band:
+                        band_str = match_receiver_band.groupdict()['band']
+                        band_num = int(band_str)
+                        spw.band = 'ALMA Band %s' % band_num 
+                        LOG.debug("For MS {}, SpW {}, setting band to {}, based on ASDM_RECEIVER table.".format(ms.name, spw.id, spw.band))
+                        continue
+                else:
+                    LOG.debug("For MS {}, SpW {}, could not find band number information in ALMA_RECEIVER table.".format(ms.name, spw.id))
 
+            # If both fail for ALMA, set the band number as follows: 
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
+            LOG.debug("For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.".format(ms.name, spw.id, spw.band))
 
             # Used EVLA band name from spw instead of frequency range
-            observatory = ms.antenna_array.name.upper()
+
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
 
@@ -556,17 +590,20 @@ class SpectralWindowTable(object):
 
 
     @staticmethod
-    def get_receiver_info(ms):
+    def get_receiver_info(ms, get_band_info=False):
         """
         Extract information about the receiver from the ASDM_RECEIVER table.
-        The following properties are extracted:
+        The following properties are extracted by default:
         * receiver type (e.g.: TSB, DSB, NOSB)
         * local oscillator frequencies
+
+        If get_band_info is set to True, instead, only the frequency 
+        band information is extracted. 
 
         If multiple entries are present for the same ASDM spwid, then keep
 
         :param ms: measurement set to inspect
-        :return: dict of MS spw: (receiver_type, freq_lo)
+        :return: dict of MS spw: (receiver_type, freq_lo) or MS spw: frequency_band
         """
         # Get mapping of ASDM spectral window id to MS spectral window id.
         asdm_to_ms_spw_map = SpectralWindowTable.get_asdm_to_ms_spw_mapping(ms)
@@ -592,16 +629,21 @@ class SpectralWindowTable(object):
                     # Get MS spwid corresponding to the current ASDM spwid.
                     ms_spwid = asdm_to_ms_spw_map[int(asdm_spwid)]
 
-                    # Add the information from the current row if either:
-                    #  a.) no info for the current spwid was stored yet.
-                    #  b.) info was already stored for the current spwid, but
-                    #      this info was not for receiver type of "TSB" or "DSB".
-                    # This will store one entry for each ASDM spwid encountered,
-                    # preferentially the first TSB/DSB row in the table
-                    # corresponding to the spwid, but otherwise the first
-                    # non-TSB/DSB row corresponding to the spwid.
-                    if ms_spwid not in receiver_info or receiver_info[ms_spwid][0] not in ["TSB", "DSB"]:
-                        receiver_info[ms_spwid] = (tb.getcell("receiverSideband", i), tb.getcell("freqLO", i))
+                    if get_band_info: 
+                        # Add and return frequency band information stored in receiver table 
+                        if ms_spwid not in receiver_info:
+                            receiver_info[ms_spwid] = tb.getcell("frequencyBand", i)
+                    else:
+                        # Add the information from the current row if either:
+                        #  a.) no info for the current spwid was stored yet.
+                        #  b.) info was already stored for the current spwid, but
+                        #      this info was not for receiver type of "TSB" or "DSB".
+                        # This will store one entry for each ASDM spwid encountered,
+                        # preferentially the first TSB/DSB row in the table
+                        # corresponding to the spwid, but otherwise the first
+                        # non-TSB/DSB row corresponding to the spwid.
+                        if ms_spwid not in receiver_info or receiver_info[ms_spwid][0] not in ["TSB", "DSB"]:
+                            receiver_info[ms_spwid] = (tb.getcell("receiverSideband", i), tb.getcell("freqLO", i))
         except:
             LOG.info("Unable to read receiver info for MS {}".format(_get_ms_basename(ms)))
             receiver_info = {}
@@ -1207,7 +1249,7 @@ def _make_range(f_min, f_max):
 
 
 class BandDescriber(object):
-    alma_bands = {'ALMA Band 1': _make_range(31.3, 45),
+    alma_bands = {'ALMA Band 1': _make_range(35, 50),
                   'ALMA Band 2': _make_range(67, 90),
                   'ALMA Band 3': _make_range(84, 116),
                   'ALMA Band 4': _make_range(125, 163),
