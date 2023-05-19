@@ -45,15 +45,15 @@ def _get_ant_id_to_name_dict(ms):
     return antenna_id_to_name
 
 
-def _log_outlier(msg):
+def _log_outlier(msg, level=logging.DEBUG):
     """
     Pipeline DEBUG messages are only logged to the terminal unless the
     CASA logging priority level is also lowered. This method will log
     the outlier message as well as record it in the CASA log, so it can
     be referenced afterwards.
     """
-    if LOG.isEnabledFor(logging.DEBUG):
-        LOG.debug(msg)
+    if LOG.isEnabledFor(level):
+        LOG.log(level, msg)
         # Log outliers directly to CASA log (CAS-11313)
         casa_tools.post_to_log(msg)
 
@@ -562,7 +562,8 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     msg = ("Outliers provisionally found with flagging rule '{}' for {}, spw {}, pol {}{}, "
                            "channel {}, were not flagged because they overlap with known atmospheric ozone lines".
                            format(rulename, os.path.basename(table), spw, pol, ants_as_str, rejected_flagging))
-                    _log_outlier(msg)
+                    # add a message at the "attention" level, creating a notification banner in the weblog
+                    _log_outlier(msg, logging.ATTENTION)
 
                 # check again if any outliers remained after excluding those within ozone lines
                 if not np.any(ind2flag):
@@ -1206,7 +1207,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     msg = ("Outliers provisionally found with flagging rule '{}' for {}, spw {}, pol {}, "
                            "channel {}, were not flagged because they overlap with known atmospheric ozone lines".
                            format(rulename, os.path.basename(table), spw, pol, rejected_flagging))
-                    _log_outlier(msg)
+                    _log_outlier(msg, logging.ATTENTION)
 
                 # check again if any outliers remained after excluding those within ozone lines
                 if not np.any(ind2flag):
