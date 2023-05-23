@@ -238,7 +238,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         # describe the function of this task by interpreting the inputs
         # parameters to give an execution context
         long_descriptions = [_DESCRIPTIONS.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')]
-        result.metadata['long description'] = 'Set-up parameters for %s imaging' % ' & '.join(set(long_descriptions))
+        result.metadata['long description'] = 'Set-up parameters for %s imaging' % ' & '.join(utils.deduplicate(long_descriptions))
 
         sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
