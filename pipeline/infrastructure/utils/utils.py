@@ -585,15 +585,20 @@ def get_obj_size(obj, serialize=True):
         return asizeof(obj)
 
 
-def glob_ordered(pattern, *args, order=None, **kwargs):
+def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
     """Return a sorted list of paths matching a pathname pattern."""
 
     path_list = glob.glob(pattern, *args, **kwargs)
-    path_list = sorted(path_list)
+
     if order == 'mtime':
         path_list.sort(key=os.path.getmtime)
-    if order == 'ctime':
+    elif order == 'ctime':
         path_list.sort(key=os.path.getctime)
+    else:
+        if order is not None:
+            LOG.warning("Unknown sorting order requested: order=%r. Only 'mtime', 'ctime', or None is allowed.", order)
+            LOG.warning("We will use the default alphabetically/numerically ascending order (order=None) instead.")
+        path_list = sorted(path_list)
 
     return path_list
 
@@ -602,12 +607,13 @@ def deduplicate(items):
     """Remove duplicate entries from a list, but preserve the order.
     
     Note that the use of list(set(x)) can cause random order in the output.
-    The return of this function is guaranteed to be in the order that unique items show up in the input, unlike a deduplicate-resorting solution like sorted(set(x).
-    ref: https://stackoverflow.com/questions/480214/how-do-i-remove-duplicates-from-a-list-while-preserving-order
+    The return of this function is guaranteed to be in the order that unique items show up in the input, unlike 
+    a deduplicate-resorting solution like sorted(set(x).
+    Ref: https://stackoverflow.com/questions/480214/how-do-i-remove-duplicates-from-a-list-while-preserving-order
     This solution only works for Python 3.7+.
     """
     deduplicated_items = list(dict.fromkeys(items))
-    
+
     return deduplicated_items
 
 
