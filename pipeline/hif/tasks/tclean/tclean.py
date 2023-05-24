@@ -203,7 +203,7 @@ class Tclean(cleanbase.CleanBase):
     is_multi_vis_task = True
 
     def rm_stage_files(self, imagename, stokes=''):
-        filenames = glob.glob('%s*.%s.iter*' % (imagename, stokes))
+        filenames = utils.glob_ordered('%s*.%s.iter*' % (imagename, stokes))
         for filename in filenames:
             try:
                 if os.path.isfile(filename):
@@ -218,7 +218,7 @@ class Tclean(cleanbase.CleanBase):
 
     def rm_iter_files(self, rootname, iteration):
         # Delete any old files with this naming root
-        filenames = glob.glob('%s.iter%s*' % (rootname, iteration))
+        filenames = utils.glob_ordered('%s.iter%s*' % (rootname, iteration))
         for filename in filenames:
             try:
                 rmtree_job = casa_tasks.rmtree(filename)
@@ -227,7 +227,7 @@ class Tclean(cleanbase.CleanBase):
                 LOG.warning('Exception while deleting %s: %s' % (filename, e))
 
     def copy_products(self, old_pname, new_pname, ignore=None):
-        imlist = glob.glob('%s.*' % (old_pname))
+        imlist = utils.glob_ordered('%s.*' % (old_pname))
         imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
         for image_name in imlist:
             newname = image_name.replace(old_pname, new_pname)
@@ -243,7 +243,7 @@ class Tclean(cleanbase.CleanBase):
             remove_list:    remove without 'move' or 'copy', if any string from the list in the image name.
             copy_list:      copy instead move, if any string from the list is in the image name.
         """
-        imlist = glob.glob('%s.*' % (old_pname))
+        imlist = utils.glob_ordered('%s.*' % (old_pname))
         for image_name in imlist:
             newname = image_name.replace(old_pname, new_pname)
             if isinstance(ignore_list, (list, tuple)):

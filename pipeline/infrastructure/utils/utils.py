@@ -6,6 +6,7 @@ import ast
 import collections
 import copy
 import errno
+import glob
 import itertools
 import operator
 import os
@@ -31,7 +32,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage',
+           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered', 'deduplicate',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading']
@@ -585,6 +586,38 @@ def get_obj_size(obj, serialize=True):
             raise Exception(
                 "Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).")
         return asizeof(obj)
+
+
+def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
+    """Return a sorted list of paths matching a pathname pattern."""
+
+    path_list = glob.glob(pattern, *args, **kwargs)
+
+    if order == 'mtime':
+        path_list.sort(key=os.path.getmtime)
+    elif order == 'ctime':
+        path_list.sort(key=os.path.getctime)
+    else:
+        if order is not None:
+            LOG.warning("Unknown sorting order requested: order=%r. Only 'mtime', 'ctime', or None is allowed.", order)
+            LOG.warning("We will use the default alphabetically/numerically ascending order (order=None) instead.")
+        path_list = sorted(path_list)
+
+    return path_list
+
+
+def deduplicate(items):
+    """Remove duplicate entries from a list, but preserve the order.
+    
+    Note that the use of list(set(x)) can cause random order in the output.
+    The return of this function is guaranteed to be in the order that unique items show up in the input, unlike 
+    a deduplicate-resorting solution like sorted(set(x).
+    Ref: https://stackoverflow.com/questions/480214/how-do-i-remove-duplicates-from-a-list-while-preserving-order
+    This solution only works for Python 3.7+.
+    """
+    deduplicated_items = list(dict.fromkeys(items))
+
+    return deduplicated_items
 
 
 @contextlib.contextmanager

@@ -1,6 +1,5 @@
 import collections
 import copy
-import glob
 import math
 import operator
 import os.path
@@ -536,7 +535,7 @@ class ImageParamsHeuristics(object):
                                                       (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
                                                       'invalid')
 
-                        tmp_psf_images = glob.glob('%s.*' % tmp_psf_filename)
+                        tmp_psf_images = utils.glob_ordered('%s.*' % tmp_psf_filename)
                         for tmp_psf_image in tmp_psf_images:
                             shutil.rmtree(tmp_psf_image)
         finally:
