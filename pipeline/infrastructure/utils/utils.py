@@ -11,6 +11,8 @@ import re
 import string
 import ast
 import pickle
+import contextlib
+import shutil
 from typing import Collection, Dict, List, Tuple, Optional, Sequence, Union
 
 import bisect
@@ -19,6 +21,7 @@ import numpy as np
 from .conversion import range_to_list, dequote
 from .. import casa_tools
 from .. import logging
+from .. import mpihelpers
 
 import casaplotms.private.plotmstool as plotmstool
 
@@ -26,9 +29,10 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes','get_taskhistory_fromimage',
+           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size']
+           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'ignore_pointing',
+           'request_omp_threading']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -577,3 +581,137 @@ def get_obj_size(obj, serialize=True):
             raise Exception(
                 "Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).")
         return asizeof(obj)
+
+
+@contextlib.contextmanager
+def ignore_pointing(vis):
+    """A context manager to ignore pointing tables of MSes during I/O operations.
+
+    The original pointing table will be temperarily renamed to POINTING_ORIGIN, and a new empty pointing table 
+    is created. When the context manager exits, the original table is restored.
+
+    For example, to ignore the pointing table of a MS during mstransform() calls, use:
+    
+        with ignore_pointing('test.ms'):
+            casatasks.mstransform(vis='test.ms',outputvis='test_output.ms',scan='16',datacolumn='data')
+
+    The pointing table of the output MS should be empty.    
+    
+    On the other hand, if the pointing table is needed in the output vis, e.g. for imaging with tclean(usepointing=True),
+    we can manually create hardlinks of pointing table afterwards while minimizing the disk space usage:
+    
+        import shutil, os
+        shutil.rmtree('test_small.ms/POINTING')
+        shutil.copytree('test.ms/POINTING', 'test_output.ms/POINTING', copy_function=os.link)
+    
+    One can verify the inodes of the pointing table files, which should be the same:
+
+        ls -lih test.ms/POINTING
+        ls -lih test_small.ms/POINTING
+
+    """
+    if isinstance(vis, list):
+        vis_list = vis
+    else:
+        vis_list = [vis]
+
+    vis_list_ignore = []
+    try:
+        for ms in vis_list:
+            if not os.path.isdir(ms+'/POINTING') and not os.path.isdir(ms+'/POINTING_ORIGIN'):
+                LOG.warning(f'No pointing table found in {ms}.')
+                continue
+            vis_list_ignore.append(ms)
+            if not os.path.isdir(ms+'/POINTING_ORIGIN'):
+                LOG.info(f'backup the pointing table for {ms}')
+                shutil.move(ms+'/POINTING', ms+'/POINTING_ORIGIN')
+            with casa_tools.TableReader(ms+'/POINTING_ORIGIN', nomodify=True) as table:
+                tabdesc = table.getdesc()
+                dminfo = table.getdminfo()
+            if os.path.isdir(ms+'/POINTING'):
+                shutil.rmtree(ms+'/POINTING')
+            LOG.info(f'empty the pointing table for {ms}')
+            tb = casa_tools.table
+            tb.create(ms+'/POINTING', tabdesc, dminfo=dminfo)
+            tb.close()
+        yield
+    finally:
+        for ms in vis_list_ignore:
+            if os.path.isdir(ms+'/POINTING_ORIGIN'):
+                if os.path.isdir(ms+'/POINTING'):
+                    shutil.rmtree(ms+'/POINTING')
+                LOG.info(f'restore the pointing table for {ms}')
+                shutil.move(ms+'/POINTING_ORIGIN', ms+'/POINTING')
+
+
+@contextlib.contextmanager
+def request_omp_threading(num_threads=None):
+    """A context manager to override the session-wise OMP threading setting on CASA MPI client.
+    
+    This function is intended to improve certain CASAtask/tool call performance on the MPI client by 
+    temporarily turning on OpenMP threading while the MPI servers are idle. This feature will only
+    take effect under restricted circumstances to avoid competing with the MPI server processes from
+    the tier0 or tier1 parallelization.
+
+    This function can be used as both a decorator and context manager. For example:
+        
+        @request_omp_threading(4)
+        def do_something():
+            ...
+        or,
+        with request_omp_threading(4):
+            immoments(..)
+            
+    Note: please use it with caution and examine the computing resource allocation circumstance 
+    carefully at the execution point.
+    """
+
+    session_num_threads = casa_tools.casalog.ompGetNumThreads()
+    LOG.debug('session_num_threads = {!s}'.format(session_num_threads))
+    is_mpi_ready = mpihelpers.is_mpi_ready()  # return True if MPI is ready and we are on the MPI client.
+
+    num_threads_limits = []
+
+    # this is generally inherited from cgroup, but might be sub-optimal (too large) for high core-count
+    # workstations when cgroup limit is not applied.
+    casa_num_cpus = casa_tools.casalog.getNumCPUs()
+    LOG.info('casalog.getNumCPUs() = {!s}'.format(casa_num_cpus))
+    num_threads_limits.append(casa_num_cpus)
+
+    # check against MPI.UNIVERSE_SIZE, which is another way to limit the number of threads.
+    # see https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf (Sec. 11.10.1, Universe Size)
+    try:
+        from mpi4py import MPI
+        if MPI.UNIVERSE_SIZE != MPI.KEYVAL_INVALID:
+            universe_size = MPI.COMM_WORLD.Get_attr(MPI.UNIVERSE_SIZE)
+            LOG.info('MPI.UNIVERSE_SIZE = {!s}'.format(universe_size))
+            if isinstance(universe_size, int) and universe_size > 1:
+                num_threads_limits.append(universe_size)
+            world_size = MPI.COMM_WORLD.Get_size()
+            LOG.info('MPI.COMM_WORLD.Get_size() = {!s}'.format(world_size))
+            if isinstance(world_size, int) and world_size > 1:
+                num_threads_limits.append(world_size)
+    except ImportError as ex:
+        pass
+
+    max_num_threads = min(num_threads_limits)
+
+    context_num_threads = None
+    if is_mpi_ready and session_num_threads == 1 and max_num_threads > 1:
+        if num_threads is not None:
+            if 0 < num_threads <= max_num_threads:
+                max_num_threads = num_threads
+            else:
+                LOG.warning(
+                    f'The requested num_threads ({num_threads}) is larger than the optimal number of logical CPUs ({max_num_threads}) assigned for this CASA session. ')
+
+        context_num_threads = max_num_threads
+    try:
+        if context_num_threads is not None:
+            casa_tools.casalog.ompSetNumThreads(context_num_threads)
+            LOG.info('adjust openmp threads to {}'.format(context_num_threads))
+        yield
+    finally:
+        if context_num_threads is not None:
+            casa_tools.casalog.ompSetNumThreads(session_num_threads)
+            LOG.info('restore openmp threads to {}'.format(session_num_threads))
