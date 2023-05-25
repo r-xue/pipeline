@@ -30,7 +30,6 @@ task = pipeline.tasks.exportdata.ExportData(inputs)
 import collections
 import copy
 import fnmatch
-import glob
 import io
 import os
 import shutil
@@ -543,12 +542,12 @@ class ExportData(basetask.StandardTaskTemplate):
 
         targetflags_filelist = []
         if self.inputs.imaging_products_only:
-            flags_file_list = glob.glob('*.flagtargetstemplate.txt')
+            flags_file_list = utils.glob_ordered('*.flagtargetstemplate.txt')
         elif not vislist:
-            flags_file_list = glob.glob('*.flagtemplate.txt')
-            flags_file_list.extend(glob.glob('*.flagtsystemplate.txt'))
+            flags_file_list = utils.glob_ordered('*.flagtemplate.txt')
+            flags_file_list.extend(utils.glob_ordered('*.flagtsystemplate.txt'))
         else:
-            flags_file_list = glob.glob('*.flag*template.txt')
+            flags_file_list = utils.glob_ordered('*.flag*template.txt')
         for file_name in flags_file_list:
             flags_file = os.path.join(output_dir, file_name)
             if os.path.exists(flags_file):
