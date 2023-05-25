@@ -78,7 +78,11 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             longmsg = 'Unable to assess the Phase RMS decoherence, for {}.'.format(ms.name)
 
         # Add decoherence assessment score to list of scores
-        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename))
+        phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
+                                        metric_score=result.phaserms_results['phasermscycleP80'], 
+                                        metric_units='Degrees')
+
+        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin))
 
         # Add all scores to the QA pool
         result.qa.pool.extend(scores)

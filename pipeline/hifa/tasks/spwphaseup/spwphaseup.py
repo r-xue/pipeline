@@ -754,7 +754,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # keys are: 'basescore', 'basecolor', 'shortmsg', 'longmsg'
             phaserms_qa = pipe692.score()
 
-            LOG.info('The Phase RMS assessment score is: '+str(phaserms_qa['basescore']))
+            LOG.info('The Phase RMS assessment score is: ' + str(phaserms_qa['basescore']))
 
             # Create the SSF plot(s) to include in the weblog
             pipe692.plotSSF()
