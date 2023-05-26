@@ -1,5 +1,6 @@
 import os
 import shutil
+from collections import namedtuple
 
 import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure as infrastructure
@@ -12,33 +13,42 @@ from pipeline.infrastructure import casa_tools
 from pipeline.domain import DataType
 from pipeline.infrastructure import task_registry
 
+from pipeline.hif.tasks.makeimlist import makeimlist
+
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class UVcontSubInputs(applycal.ApplycalInputs):
+class UVcontSubInputs(vdp.StandardInputs):
     # Search order of input vis
     processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
-    applymode = vdp.VisDependentProperty(default='calflag')
-    flagsum = vdp.VisDependentProperty(default=False)
+    fitorder = vdp.VisDependentProperty(default={})
     intent = vdp.VisDependentProperty(default='TARGET')
 
-    def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
-                 applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None):
-        super(UVcontSubInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
-                                              antenna=antenna, intent=intent, parang=parang, applymode=applymode,
-                                              flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
+    def __init__(self, context, output_dir=None, vis=None, field=None,
+                 spw=None, intent=None, fitorder=None):
+        self.context = context
+        self.output_dir = output_dir
+        self.vis = vis
+
+        self.field = field
+        self.spw = spw
+        self.intent = intent
+        self.fitorder = fitorder
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
 class UVcontSub(applycal.Applycal):
     Inputs = UVcontSubInputs
 
-    # Override prepare method with one which sets and unsets the VI1CAL
-    # environment variable.
     def prepare(self):
         inputs = self.inputs
+
+        # Define minimal entity object to be able to use some
+        # of the imaging heuristics methods to convert
+        # frequency ranges to TOPO.
+        MinimalTcleanHeuristicsInputsGenerator = namedtuple('MinimalTcleanHeuristicsInputs', 'vis field intent phasecenter spw spwsel_lsrk specmode')
 
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
@@ -47,33 +57,68 @@ class UVcontSub(applycal.Applycal):
                 result.mitigation_error = True
                 return result
 
-        applycal_result = super(UVcontSub, self).prepare()
-        result = UVcontSubResults(applycal_result.applied)
-        result.applycal_result = applycal_result
+        # If no field and no spw is specified, use all TARGET intents except
+        # mitigated sources.
+        # If field or spw is specified, work on that selection
 
-        # Create line MS using subtracted data from the corrected column
+        # Determine intent(s) to work on
+        allowed_intents = ('TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE')
+        if inputs.intent not in (None, ''):
+            if all(i.strip() in allowed_intents for i in inputs.intent.split(',')):
+                intent = inputs.intent.replace(' ', '')
+            else:
+                result = UVcontSubResults()
+                result.error = True
+                result.error_msg = f'"intent" must be in {allowed_intents}'
+                LOG.error(result.error_msg)
+                return result
+        else:
+            intent = 'TARGET'
+
+        # Determine field IDs to work on
+        if inputs.field not in (None, ''):
+            field = inputs.field
+        else:
+            # TODO: handle multiple intents case
+            field = [s.name for s in inputs.ms.sources if intent in s.intents]
+
+        # Determine spw IDs to work on
+        # TODO
+
+        known_synthesized_beams = inputs.context.synthesized_beams
+
+        # Get list of fields and spw to work on from makeimlist call
+        # which automatically handles mitigated sources. spw mitigation
+        # shall not be considered, hence the specmode is mfs.
+
+        # Create makeimlist inputs
+        makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=inputs.vis)
+        # TODO: Set field, intent and spw based on input if given
+        makeimlist_inputs.intent = 'TARGET'
+        makeimlist_inputs.specmode = 'mfs'
+        makeimlist_inputs.clearlist = True
+
+        # Create makeimlist task for size calculations
+        makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
+
+        # Get default target setup
+        makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+        makeimlist_result = makeimlist_task.prepare()
+        known_synthesized_beams = makeimlist_result.synthesized_beams
+        imlist = makeimlist_result.targets
+
+        contfile = inputs.context.contfile if inputs.context.contfile is not None else 'cont.dat'
+
+        result = UVcontSubResults()
+
         outputvis = inputs.vis.replace('_targets', '_targets_line')
         # Check if it already exists and remove it
         if os.path.exists(outputvis):
             LOG.info('Removing {} from disk'.format(outputvis))
             shutil.rmtree(outputvis)
-        # Run mstransform to create new line MS.
-        mstransform_args = {'vis': inputs.vis, 'outputvis': outputvis, 'datacolumn': 'corrected'}
-        mstransform_job = casa_tasks.mstransform(**mstransform_args)
-        try:
-            self._executor.execute(mstransform_job)
-        except OSError as ee:
-            LOG.warning(f"Caught mstransform exception: {ee}")
 
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, outputvis)
-
-        # Delete temporary corrected data column in science targets MS
-        LOG.info(f'Removing temporary corrected data column in science targets MS {inputs.vis}')
-        tbTool = casa_tools.table
-        tbTool.open(inputs.vis, nomodify=False)
-        tbTool.removecols('CORRECTED_DATA')
-        tbTool.done()
 
         result.vis = inputs.vis
         result.outputvis = outputvis
@@ -83,7 +128,7 @@ class UVcontSub(applycal.Applycal):
     def analyse(self, result):
 
         if not result.mitigation_error:
-            # Check for existence of the output vis. 
+            # Check for existence of the output vis.
             if not os.path.exists(result.outputvis):
                 LOG.debug('Error creating science targets line MS %s' % (os.path.basename(result.outputvis)))
                 return result
@@ -120,25 +165,20 @@ class UVcontSubResults(basetask.Results):
     def __init__(self, applied=[]):
         super(UVcontSubResults, self).__init__()
         self.mitigation_error = False
-        self.applycal_result = None
         self.vis = None
+        # TODO: outputvis needed?
         self.outputvis = None
         self.line_mses = []
-        self.applied = set()
-        self.applied.update(applied)
+        self.error = False
+        self.error_msg = ''
 
     def merge_with_context(self, context):
         # Check for an output vis
         if not self.line_mses:
-            LOG.error('No hif_mstransform results to merge')
+            LOG.error('No hif_uvcontsub results to merge')
             return
 
         target = context.observing_run
-
-        # Register applied calibrations
-        for calapp in self.applycal_result.applied:
-            LOG.trace('Marking %s as applied' % calapp.as_applycal())
-            context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
 
         # Adding line mses to context
         for ms in self.line_mses:
@@ -176,18 +216,7 @@ class UVcontSubResults(basetask.Results):
                 f.writelines(template_text)
 
     def __repr__(self):
-        s = ''
-        for caltable in self.applied:
-            s = 'UVcontSubResults:\n'
-            if isinstance(caltable.gaintable, list):
-                basenames = [os.path.basename(x) for x in caltable.gaintable]
-                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
-                    spw=caltable.spw, vis=os.path.basename(caltable.vis),
-                    name=','.join(basenames))
-            else:
-                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
-                    name=caltable.gaintable, spw=caltable.spw,
-                    vis=os.path.basename(caltable.vis))
+        s = 'UVcontSubResults:\n'
         return s
 
 FLAGGING_TEMPLATE_HEADER = '''#
