@@ -1,6 +1,14 @@
 <%!
 import os
 from functools import reduce
+
+def singledish_result(results_list):
+    result_repr = ''
+    if len(results_list) > 0:
+        importdata_result = results_list[0]
+        result_repr = str(importdata_result)
+
+    return result_repr.find('SDImportDataResults') != -1
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -18,7 +26,7 @@ from functools import reduce
 -->
 
 <p>Data from ${num_mses} measurement set${'s were' if num_mses != 1 else ' was'}
- registered with the pipeline. The imported data 
+ registered with the pipeline. The imported data
 ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 
 <table class="table table-bordered table-striped table-condensed"
@@ -94,7 +102,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 	%endfor
 	</tbody>
 </table>
-% else:
+% elif not singledish_result(result):
 <p>No flux densities were imported.</p>
 % endif
 
