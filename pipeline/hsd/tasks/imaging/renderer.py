@@ -57,10 +57,11 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     irms = cqa.tos(sensitivity['sensitivity']) if cqa.getvalue(sensitivity['sensitivity'])>=0 else 'n/a'
                     theoretical_rms = r.theoretical_rms['sensitivity']
                     trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
+                    effectivebw = cqa.getvalue(cqa.convert(sensitivity['effective_bw'], 'kHz'))[0] \
+                        if sensitivity['effective_bw'] is not None else 'n/a'
                     tr = ImageRMSTR(image_item.imagename, rms_info.frequency_range,
                                     cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
-                                    cqa.getvalue(cqa.convert(sensitivity['effective_bw'], 'kHz'))[0],
-                                    trms, irms)
+                                    effectivebw, trms, irms)
                     if image_item.sourcename == ref_ms.representative_target[0]:
                         image_rms.append(tr)
                     else:
