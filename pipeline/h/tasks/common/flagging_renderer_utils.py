@@ -150,17 +150,27 @@ def adjust_non_science_totals(flagtotals, non_science_agents=None):
     return adjusted_results
 
 
-def intents_to_summarise(context: Context) -> List[str]:
-    # Find out which intents to list in the flagging table
+def intents_to_summarise(context: Context,
+                         all_flag_summary_intents: Optional[List[str]] = None) -> List[str]:
+    """
+    Find out which intents to list in the flagging table.
+    Arguments:
+        context: Pipeline context.
+        all_flag_summary_intents: a list of intents to summarise; if None, the default list is used.
+    Returns:
+        the subset of intents from the input list all_flag_summary_intents that are actually present in at least one MS
+        (a list of strings in the same order as input, but omitting missing ones).
+    """
+
     # First get all intents across all MSes in context
     context_intents = functools.reduce(lambda x, m: x.union(m.intents),
                                        context.observing_run.measurement_sets,
                                        set())
     # then match intents against those we want in the table, removing those not
     # present. List order is preserved in the table.
-    all_flag_summary_intents = [
-        'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
-    ]
+    if all_flag_summary_intents is None:
+        all_flag_summary_intents = [
+            'AMPLITUDE', 'BANDPASS', 'CHECK', 'DIFFGAIN', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET']
     intents_to_summarise = [i for i in all_flag_summary_intents
                             if i in context_intents.intersection(set(all_flag_summary_intents))]
     return intents_to_summarise

@@ -9,15 +9,6 @@ agent_description = {
 	'applycal' : 'After',
 }
 
-total_keys = {
-	'TOTAL'        : 'All Data',
-	'SCIENCE SPWS' : 'Science Spectral Windows',
-	'BANDPASS'     : 'Bandpass',
-	'AMPLITUDE'    : 'Flux',
-	'PHASE'        : 'Phase',
-	'TARGET'       : 'Target'
-}
-
 def template_agent_header1(agent):
 	span = 'col' if agent in ('online','template') else 'row'
 	return '<th %sspan=2>%s</th>' % (span, agent_description[agent])
