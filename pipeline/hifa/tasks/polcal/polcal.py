@@ -98,12 +98,12 @@ class Polcal(basetask.StandardTaskTemplate):
         scan_duration = self._compute_pol_scan_duration(session_msname)
 
         # Initial gain calibration for polarisation calibrator.
-        gcal_result = self._initial_gaincal(session_msname, vislist, refant)
+        init_gcal_result = self._initial_gaincal(session_msname, refant)
 
         # Compute (uncalibrated) estimate of polarisation of the polarisation
         # calibrator.
         LOG.info(f"{session_msname}: compute estimate of polarisation.")
-        uncal_pfg_result = self._compute_polfromgain(session_msname, gcal_result)
+        uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result)
 
         # Identify scan with highest X-Y signal.
         best_scan = self._identify_scan_highest_xy(gcal_result)
@@ -112,8 +112,8 @@ class Polcal(basetask.StandardTaskTemplate):
         kcross_result = self._compute_xy_delay(session_msname, gcal_result, best_scan)
 
         # Calibrate X-Y phase.
-        polcal_phase_result = self._calibrate_xy_phase(session_msname, gcal_result, uncal_pfg_result, kcross_result,
-                                                       scan_duration)
+        polcal_phase_result = self._calibrate_xy_phase(session_msname, vislist, init_gcal_result, uncal_pfg_result,
+                                                       kcross_result, scan_duration)
 
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
@@ -241,11 +241,11 @@ class Polcal(basetask.StandardTaskTemplate):
         pol_scans = ms.get_scans(scan_intent=self.inputs.intent)
 
         # Compute median duration of polarisation scans.
-        scan_duration = int(np.median([scan.time_on_source for scan in pol_scans]))
-        LOG.info(f"Session MS {msname}: median scan duration = {scan_duration}.")
+        scan_duration = int(np.median([scan.time_on_source.total_seconds() for scan in pol_scans]))
+        LOG.info(f"Session MS {msname}: median scan duration = {scan_duration} seconds.")
         return scan_duration
 
-    def _initial_gaincal(self, msname: str, vislist: List[str], refant: str) -> gaincal.common.GaincalResults:
+    def _initial_gaincal(self, msname: str, refant: str) -> gaincal.common.GaincalResults:
         inputs = self.inputs
         LOG.info(f"{msname}: compute initial gain calibration for polarisation calibrator.")
 
@@ -256,8 +256,7 @@ class Polcal(basetask.StandardTaskTemplate):
             'caltable': None,
             'calmode': 'ap',
             'intent': inputs.intent,
-            'solint': 'int,5MHz',
-            'gaintype': 'G',
+            'solint': 'int',
             'refant': refant,
         }
         task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
@@ -266,26 +265,11 @@ class Polcal(basetask.StandardTaskTemplate):
         task = gaincal.GTypeGaincal(task_inputs)
         result = self._executor.execute(task)
 
-        # Create new CalApplications to correctly register caltable.
-        new_calapps = []
-
-        # Create a modified CalApplication to register this caltable against
-        # each MS in this session.
-        for vis in vislist:
-            new_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent=''))
-
-        # Create a modified CalApplication to register this caltable against
-        # the session MS itself.
-        new_calapps.append(callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='linear'))
-
-        # Replace CalApps in gaincal result.
-        result.final = new_calapps
-
         return result
 
     def _compute_polfromgain(self, msname: str, gcal_result: gaincal.common.GaincalResults) -> dict:
         # Get caltable to analyse, and set name of output caltable.
-        intable = gcal_result.final[0].caltable
+        intable = gcal_result.final[0].gaintable
         caltable = os.path.splitext(intable)[0] + '_polfromgain.tbl'
 
         # Create and run polfromgain CASA task.
