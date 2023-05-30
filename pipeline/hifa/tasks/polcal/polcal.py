@@ -106,7 +106,7 @@ class Polcal(basetask.StandardTaskTemplate):
         uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result)
 
         # Identify scan with highest X-Y signal.
-        best_scan = self._identify_scan_highest_xy(gcal_result)
+        best_scan_id = self._identify_scan_highest_xy(session_name, init_gcal_result)
 
         # Compute X-Y delay.
         kcross_result = self._compute_xy_delay(session_msname, gcal_result, best_scan)
@@ -278,9 +278,30 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return pfg_result
 
-    def _identify_scan_highest_xy(self, gcal_result):
-        best_scan = None
-        return best_scan
+    @staticmethod
+    def _identify_scan_highest_xy(session_name: str, gcal_result: gaincal.common.GaincalResults) -> int:
+        # Get caltable to analyse.
+        caltable = gcal_result.final[0].gaintable
+
+        # Retrieve scan nr. and gains from initial polarisation caltable.
+        with casa_tools.TableReader(caltable) as table:
+            scan_ids = table.getcol('SCAN_NUMBER')
+            gains = np.squeeze(table.getcol('CPARAM'))
+
+        # For each scan, derive the average X-Y signal ratio.
+        uniq_scan_ids = sorted(set(scan_ids))
+        ratios = []
+        for scan_id in uniq_scan_ids:
+            scan_idx = scan_ids == scan_id
+            ratios.append(
+                np.sqrt(np.average(np.power(np.abs(gains[0, scan_idx]) / np.abs(gains[1, scan_idx]) - 1.0, 2.))))
+
+        # Identify the scan with the best X-Y signal ratio.
+        best_ratio_idx = np.argmin(ratios)
+        best_scan_id = uniq_scan_ids[best_ratio_idx]
+        LOG.info(f"Session {session_name} - scan with highest expected X-Y signal: {best_scan_id}.")
+
+        return best_scan_id
 
     def _compute_xy_delay(self, msname, gcal_result, best_scan):
         kcross_result = None
