@@ -478,9 +478,14 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             step = 1
             nchan = 1
         else:
-            start = edge[0]
-            step = 1
             nchan = total_nchan - sum(edge)
+            # to make frequency order ascending in all fits, it sets start and step value reverse
+            if ref_spwobj.channels.chan_freqs.delta < 0:
+                step = -1
+                start = nchan - edge[1] - 1
+            else:
+                step = 1
+                start = edge[0]
         # ampcal
         if imagemode == 'AMPCAL':
             step = nchan
