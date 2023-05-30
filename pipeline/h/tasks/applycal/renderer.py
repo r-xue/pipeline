@@ -31,8 +31,6 @@ from ..common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
 
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
-
 
 class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='applycal.mako', 

@@ -21,13 +21,15 @@ from pipeline.h.tasks.common.displays import image as image
 from pipeline.h.tasks.common.displays import slice as slice_display
 from pipeline.h.tasks.common.displays import tsys as tsys
 from pipeline.h.tasks.tsyscal import renderer as tsyscalrenderer
+from pipeline.h.tasks.common.flagging_renderer_utils import FlagTotal
 
 LOG = logging.get_logger(__name__)
 
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
-
 
 class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
+    # list of intents to consider for the summary table (only the ones that actually exist will be shown)
+    task_intents = ('AMPLITUDE', 'BANDPASS', 'DIFFGAIN', 'PHASE', 'TARGET')
+
     """
     Renders detailed HTML output for the Tsysflag task.
     """
@@ -143,7 +145,8 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # PIPE-1806: add DIFFGAIN intent to the results table
         # and use a common infrastructure to retrieve the existing intents
         flag_table_intents = ['TOTAL']
-        flag_table_intents.extend(flagutils.intents_to_summarise(pipeline_context))
+        flag_table_intents.extend(
+            flagutils.intents_to_summarise(pipeline_context, T2_4MDetailsTsysflagRenderer.task_intents))
 
         # Retrieve the metric_order from the result.
         # NOTE: metric_order is assumed to be the same
@@ -245,7 +248,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def _flags_by_intent(ms, summaries):
         # create a dictionary of fields per observing intent, eg. 'PHASE':['3C273']
         intent_fields = {}
-        for intent in ('AMPLITUDE', 'BANDPASS', 'DIFFGAIN', 'PHASE', 'TARGET'):
+        for intent in T2_4MDetailsTsysflagRenderer.task_intents:
             # use _name from field as we do want the raw name here as used
             # in the summaries dict (not sometimes enclosed in "..."). Better
             # perhaps to fix the summaries dict.
