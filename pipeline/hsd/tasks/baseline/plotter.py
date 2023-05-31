@@ -741,17 +741,17 @@ class BaselineSubtractionPlotManager(object):
             masked_data.mask[0:ch1] = True
             masked_data.mask[len(masked_data)-ch2:] = True
         num_masked_1 = sum(numpy.where(masked_data.mask, 1, 0))
-        LOG.info(f'Number of newly masked channels with edge parameter: {num_masked_1}')
+        LOG.debug(f'Number of newly masked channels with edge parameter: {num_masked_1}')
         if line_range is not None:
             for chmin, chmax in line_range:
                 masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
         num_masked_2 = sum(numpy.where(masked_data.mask, 1, 0))
-        LOG.info(f'Number of newly masked channels with line mask: {num_masked_2 - num_masked_1}')
+        LOG.debug(f'Number of newly masked channels with line mask: {num_masked_2 - num_masked_1}')
         if deviation_mask is not None:
             for chmin, chmax in deviation_mask:
                 masked_data.mask[chmin:chmax+1] = True
         num_masked_3 = sum(numpy.where(masked_data.mask, 1, 0))
-        LOG.info(f'Number of newly masked channels with deviation mask: {num_masked_3 - num_masked_2}')
+        LOG.debug(f'Number of newly masked channels with deviation mask: {num_masked_3 - num_masked_2}')
         nbin = 20 if len(frequency) >= 512 else 10
 
         stddev = masked_data.std()
@@ -760,7 +760,7 @@ class BaselineSubtractionPlotManager(object):
         create_plot = True
 
         binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
-        LOG.info(
+        LOG.debug(
             f'nbin {nbin}: len(binned_data) = {len(binned_data)}'
             f' count = {binned_data.count()}'
         )
@@ -779,7 +779,7 @@ class BaselineSubtractionPlotManager(object):
                 f'Increase nbin to {nbin} '
             )
             binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
-            LOG.info(
+            LOG.debug(
                 f'nbin {nbin}: len(binned_data) = {len(binned_data)}'
                 f' count = {binned_data.count()}'
             )
@@ -1456,7 +1456,7 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
             msg = 'valid for flatness QA'
         else:
             msg = 'will be excluded from the flatness QA'
-        LOG.info(f'bin {i}: masked channels {num_masked}, {msg}')
+        LOG.trace(f'bin {i}: masked channels {num_masked}, {msg}')
         binned_x[i] = numpy.mean(x[min_i:max_i+1])
         if any(masked_data.mask[min_i:max_i+1]):
             binned_data.mask[i] = True
