@@ -842,15 +842,23 @@ class BaselineSubtractionPlotManager(object):
         plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
         if stat.valid:
             plt.plot(binned_freq, binned_data, 'ro')
+
+            if stat.nbin_factor == 1:
+                note_nbin = f'applied default number of bins ({stat.nbin})'
+            else:
+                note_nbin = f'applied {stat.nbin_factor} times default number of bins ({stat.nbin})'
+            facecolor = 'white'
         else:
-            plt.text(
-                0.98, 0.98, 'NO BINNED SPECTRUM AVAILABLE',
-                transform=plt.gca().transAxes,
-                verticalalignment='top',
-                horizontalalignment='right',
-                color='black',
-                backgroundcolor='yellow'
-            )
+            note_nbin = 'NO BINNED SPECTRUM AVAILABLE'
+            facecolor = 'yellow'
+
+        plt.text(
+            0.98, 0.02, note_nbin,
+            transform=plt.gca().transAxes,
+            verticalalignment='bottom',
+            horizontalalignment='right',
+            bbox={'boxstyle': 'round', 'facecolor': facecolor, 'edgecolor': 'black'}
+        )
         plt.savefig(figfile, dpi=DPIDetail)
         return stat
 
