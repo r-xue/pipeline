@@ -2,10 +2,6 @@
 
 ## Prerequisites
 
-The pipeline build procedure depends on Python 3, CASA buildmytasks, and Java,
-which is used by buildmytasks to process the task XML and to minify the
-Pipeline Javascript.
-
 It is recommended to put the CASA `bin` directory first on your path for the
 duration of the installation procedure.
 
@@ -162,21 +158,6 @@ To uninstall the developer installation, execute
 ```console
 python3 setup.py develop -u
 ```
-
-### Optional: CASA CLI bindings
-
-The CASA CLI bindings are always generated and included in a standard install.
-To make the CASA CLI bindings available for a developer install, the CLI
-bindings need to be written to the src directory. This can be done using the
-`buildmytasks` command, using the *-i* option to generate the bindings
-in-place, i.e.,
-
-```console
-python3 setup.py buildmytasks -i
-```
-
-The bindings should be rebuilt whenever you change the interface XML definitions.
-To speed up the build process, one can also add the parallel build option (`-j n`).
 
 ### Optional: removing legacy pipeline installation from CASA
 
