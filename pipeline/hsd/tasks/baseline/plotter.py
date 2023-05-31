@@ -32,7 +32,10 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 # A named tuple to store statistics of baseline quality
-BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
+BinnedStat = collections.namedtuple(
+    'BinnedStat',
+    'bin_min_ratio bin_max_ratio bin_diff_ratio nbin nbin_factor valid'
+)
 
 
 class PlotterPool(object):
@@ -686,8 +689,23 @@ class BaselineSubtractionPlotManager(object):
                                                   postfit_qa_figfile)
             if os.path.exists(postfit_qa_figfile):
                 plot_list['post_fit_flatness'][ipol] = postfit_qa_figfile
-                if stat:
+                if stat.valid:
+                    if stat.nbin_factor > 1:
+                        LOG.warning(
+                            'Default number of bins for baseline flatness QA '
+                            'metrics did not work for vis %s ant %s spw %s. '
+                            'Applied %s times larger number of bins instead.',
+                            ms.basename, antid, spwid, stat.nbin_factor
+                        )
+
                     self.baseline_quality_stat[postfit_qa_figfile] = [stat]
+                else:
+                    LOG.warning(
+                        'Failed to evaluate baseline flatness QA metrics for '
+                        'vis %s ant %s spw %s. Plot might be created but it '
+                        'will not contain any insight about flatness QA.',
+                        ms.basename, antid, spwid
+                    )
 
         del postfit_integrated_data
 
@@ -735,22 +753,61 @@ class BaselineSubtractionPlotManager(object):
         num_masked_3 = sum(numpy.where(masked_data.mask, 1, 0))
         LOG.info(f'Number of newly masked channels with deviation mask: {num_masked_3 - num_masked_2}')
         nbin = 20 if len(frequency) >= 512 else 10
-        if len(line_range) + len(deviation_mask) > 10:
-            LOG.info('Increasing number of bins as so many number of lines/deviation masks are detected.')
-            nbin *= 2
-        binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
-        LOG.info(f'len(binned_data) = {len(binned_data)} / count = {binned_data.count()}')
+
         stddev = masked_data.std()
-        if binned_data.count() < 2 \
-           or stddev is numpy.ma.masked \
-           or not numpy.isfinite(stddev):
-            # not enough valid data or stddev is invalid
-            return None
-        bin_min = numpy.nanmin(binned_data)
-        bin_max = numpy.nanmax(binned_data)
-        stat = BinnedStat(bin_min_ratio=bin_min/stddev,
-                          bin_max_ratio=bin_max/stddev,
-                          bin_diff_ratio=(bin_max-bin_min)/stddev)
+        stat_valid = True
+        nbin_factor = 1
+        create_plot = True
+
+        binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+        LOG.info(
+            f'nbin {nbin}: len(binned_data) = {len(binned_data)}'
+            f' count = {binned_data.count()}'
+        )
+        if stddev is numpy.ma.masked or not numpy.isfinite(stddev):
+            # stddev is invalid, i.e., masked_data doesn't contain valid data
+            stat_valid = False
+            create_plot = False
+
+        elif binned_data.count() < 2:
+            # not enough valid data, increase nbin and try again
+            nbin_org = nbin
+            nbin_factor = 2
+            nbin *= nbin_factor
+            LOG.info(
+                f'Calculation of baseline flatness QA metrics with nbin={nbin_org} was failed.'
+                f'Increase nbin to {nbin} '
+            )
+            binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
+            LOG.info(
+                f'nbin {nbin}: len(binned_data) = {len(binned_data)}'
+                f' count = {binned_data.count()}'
+            )
+
+            if binned_data.count() < 2:
+                # not enough valid data even for larger number of bins
+                stat_valid = False
+
+        if stat_valid:
+            bin_min = numpy.nanmin(binned_data)
+            bin_max = numpy.nanmax(binned_data)
+            stat = BinnedStat(bin_min_ratio=bin_min/stddev,
+                              bin_max_ratio=bin_max/stddev,
+                              bin_diff_ratio=(bin_max-bin_min)/stddev,
+                              nbin=nbin,
+                              nbin_factor=nbin_factor,
+                              valid=True)
+        else:
+            stat = BinnedStat(bin_min_ratio=None,
+                              bin_max_ratio=None,
+                              bin_diff_ratio=None,
+                              nbin=nbin,
+                              nbin_factor=nbin_factor,
+                              valid=False)
+
+        if not create_plot:
+            return stat
+
         # create a plot
         xmin = min(frequency[0], frequency[-1])
         xmax = max(frequency[0], frequency[-1])
@@ -783,7 +840,17 @@ class BaselineSubtractionPlotManager(object):
                 fmax = ch_to_freq(chmax, frequency)
                 plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
         plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
-        plt.plot(binned_freq, binned_data, 'ro')
+        if stat.valid:
+            plt.plot(binned_freq, binned_data, 'ro')
+        else:
+            plt.text(
+                0.98, 0.98, 'NO BINNED SPECTRUM AVAILABLE',
+                transform=plt.gca().transAxes,
+                verticalalignment='top',
+                horizontalalignment='right',
+                color='black',
+                backgroundcolor='yellow'
+            )
         plt.savefig(figfile, dpi=DPIDetail)
         return stat
 
