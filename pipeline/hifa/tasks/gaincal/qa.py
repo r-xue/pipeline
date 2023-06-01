@@ -104,8 +104,9 @@ class TimegaincalQAPool(pqa.QAScorePool):
                         noisy_spw_ids.append(spw_id)
                         for ant_id in sorted(set(ant_ids)-{refant_id}):
                             subscores[gaintable][spw_id][ant_id] = {}
-                            # PIPE-1628: in case when the given spw has only a single polarization,
-                            # the phase_offsets table still has two columns, but one of them is empty and should be ignored
+                            # PIPE-1628: in case when the given spw has only a single polarization
+                            # (this always means 'X' in the current workflow), the phase_offsets table
+                            # still has two columns, but one of them is empty and should be ignored.
                             for pol_id, pol_name in enumerate(corr_type):
                                 subscores[gaintable][spw_id][ant_id][pol_id] = {}
                                 for scorekey in ['QA1', 'QA2', 'QA3']:
