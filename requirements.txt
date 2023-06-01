@@ -19,6 +19,8 @@
 
 ### PL production dependencies 
 
+wheel                       # required for installing older packages
+csscompressor == 0.9.5      # for minifying CSS files
 cachetools == 5.2.0         # https://pypi.org/project/cachetools
                             # replaced: pipeline/external/cachetools-3.1.1-py3.6.egg
 mako == 1.2.4               # https://github.com/sqlalchemy/mako
