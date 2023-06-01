@@ -693,19 +693,26 @@ class BaselineSubtractionPlotManager(object):
                     if stat.nbin_factor > 1:
                         LOG.warning(
                             'Default number of bins for baseline flatness QA '
-                            'metrics did not work for vis %s ant %s spw %s. '
+                            'metrics did not work for vis %s ant %s spw %s pol %s. '
                             'Applied %s times larger number of bins instead.',
-                            ms.basename, antid, spwid, stat.nbin_factor
+                            ms.basename, antid, spwid, ipol, stat.nbin_factor
                         )
 
                     self.baseline_quality_stat[postfit_qa_figfile] = [stat]
                 else:
                     LOG.warning(
                         'Failed to evaluate baseline flatness QA metrics for '
-                        'vis %s ant %s spw %s. Plot might be created but it '
-                        'will not contain any insight about flatness QA.',
-                        ms.basename, antid, spwid
+                        'vis %s ant %s spw %s pol %s. '
+                        'Baseline flatness plot will be incomplete.',
+                        ms.basename, antid, spwid, ipol
                     )
+            else:
+                LOG.warning(
+                    'No valid spectra in vis %s ant %s spw %s pol %s. '
+                    'Neither baseline flatness QA metrics nor baseline '
+                    'flatness plot are available.',
+                    ms.basename, antid, spwid, ipol
+                )
 
         del postfit_integrated_data
 
