@@ -79,11 +79,13 @@ class UVcontSub(applycal.Applycal):
         if inputs.field not in (None, ''):
             field = inputs.field
         else:
-            # TODO: handle multiple intents case
-            field = [s.name for s in inputs.ms.sources if intent in s.intents]
+            field = ''
 
         # Determine spw IDs to work on
-        # TODO
+        if inputs.spw not in (None, ''):
+            spw = inputs.spw
+        else:
+            spw = ''
 
         known_synthesized_beams = inputs.context.synthesized_beams
 
@@ -92,9 +94,11 @@ class UVcontSub(applycal.Applycal):
         # shall not be considered, hence the specmode is mfs.
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=[inputs.vis])
         # TODO: Set field, intent and spw based on input if given
-        makeimlist_inputs.intent = 'TARGET'
+        makeimlist_inputs.field = field
+        makeimlist_inputs.intent = intent
+        makeimlist_inputs.spw = spw
         makeimlist_inputs.specmode = 'mfs'
         makeimlist_inputs.clearlist = True
 
@@ -106,8 +110,25 @@ class UVcontSub(applycal.Applycal):
         makeimlist_result = makeimlist_task.prepare()
         known_synthesized_beams = makeimlist_result.synthesized_beams
         imlist = makeimlist_result.targets
+        fitspec = {}
+        for imaging_target in imlist:
+            minimal_tclean_inputs = MinimalTcleanHeuristicsInputsGenerator(imaging_target['vis'],
+                                                                           imaging_target['field'],
+                                                                           imaging_target['intent'],
+                                                                           imaging_target['phasecenter'],
+                                                                           imaging_target['spw'],
+                                                                           imaging_target['spwsel_lsrk'],
+                                                                           imaging_target['specmode'])
+            (_, _, _, spw_topo_chan_param_dict, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
+            field_ids = imaging_target['heuristics'].field(imaging_target['intent'], imaging_target['field'])[0]
+            # TODO: Use automatics dict hierarchy
+            if field_ids not in fitspec:
+                fitspec[field_ids] = {}
+            if minimal_tclean_inputs.spw not in fitspec[field_ids]:
+                fitspec[field_ids][minimal_tclean_inputs.spw] = {}
+            fitspec[field_ids][minimal_tclean_inputs.spw]['chan'] = spw_topo_chan_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
 
-        contfile = inputs.context.contfile if inputs.context.contfile is not None else 'cont.dat'
+        #contfile = inputs.context.contfile if inputs.context.contfile is not None else 'cont.dat'
 
         result = UVcontSubResults()
 
