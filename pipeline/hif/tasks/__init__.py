@@ -10,6 +10,7 @@ from .lowgainflag import Lowgainflag
 from .makeimages import MakeImages
 from .makeimlist import MakeImList
 from .mstransform import Mstransform
+from .polcal import PolcalWorker
 from .rawflagchans import Rawflagchans
 from .refant import RefAnt, HpcRefAnt
 from .setmodel import Setjy
