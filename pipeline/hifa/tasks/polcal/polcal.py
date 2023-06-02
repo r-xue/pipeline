@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 
@@ -92,7 +92,7 @@ class Polcal(basetask.StandardTaskTemplate):
         self._run_applycal(vislist)
 
         # Extract polarisation data and concatenate in session MS.
-        session_msname = self._create_session_ms(session_name, vislist)
+        session_msname, spwmaps = self._create_session_ms(session_name, vislist)
 
         # Compute duration of polarisation scans.
         scan_duration = self._compute_pol_scan_duration(session_msname)
@@ -189,7 +189,7 @@ class Polcal(basetask.StandardTaskTemplate):
             actask = applycal.IFApplycal(acinputs)
             self._executor.execute(actask)
 
-    def _create_session_ms(self, session_name: str, vislist: List[str]) -> str:
+    def _create_session_ms(self, session_name: str, vislist: List[str]) -> Tuple[str, dict]:
         """This method uses mstransform to create a new MS that contains only
         the polarisation calibrator data."""
         LOG.info(f"Creating polarisation data MS for session '{session_name}'.")
@@ -227,13 +227,22 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Initialize MS object and set its reference antenna to locked, to
         # enforce strict refantmode.
-        ms = tablereader.MeasurementSetReader.get_measurement_set(session_msname)
-        ms.reference_antenna_locked = True
+        session_ms = tablereader.MeasurementSetReader.get_measurement_set(session_msname)
+        session_ms.reference_antenna_locked = True
 
         # Add session MS to local context.
-        self.inputs.context.observing_run.add_measurement_set(ms)
+        self.inputs.context.observing_run.add_measurement_set(session_ms)
 
-        return session_msname
+        # Create SpW mapping from session MS to original input MSes.
+        spwmaps = {}
+        for vis in vislist:
+            target_ms = self.inputs.context.observing_run.get_ms(name=vis)
+            mapped = sessionutils.get_spwmap(session_ms, target_ms)
+            spwmaps[vis] = list(range(max(mapped.values())+1))
+            for k, v in mapped.items():
+                spwmaps[vis][v] = k
+
+        return session_msname, spwmaps
 
     def _compute_pol_scan_duration(self, msname: str) -> int:
         # Get polarisation scans for session MS.
