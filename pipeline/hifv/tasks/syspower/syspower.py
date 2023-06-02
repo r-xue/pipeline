@@ -13,6 +13,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.hifv.heuristics import removeRows
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -214,14 +215,17 @@ class Syspower(basetask.StandardTaskTemplate):
         allowedbasebands = ('A0C0', 'B0D0', 'A1C1', 'A2C2', 'B1D1', 'B2D2')
         allowed_rcvr_bands = ['L', 'S', 'C', 'X', 'KU', 'K', 'KA', 'Q']
 
+        # create a band exclusion list
         if self.inputs.do_not_apply:
             do_not_apply_list = self.inputs.do_not_apply.split(',')
-            for no_band in do_not_apply_list:
-                allowed_rcvr_bands.remove(no_band)
-                LOG.warn("Keyword override - will not apply {!s}-band".format(no_band))
+        else:
+            do_not_apply_list = []
+        for no_band in do_not_apply_list:
+            LOG.warning("Keyword override - will not apply {!s}-band".format(no_band))
 
         banddict = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
         allprocessedspws = []
+        do_not_apply_spws = []
 
         for band in banddict:
             baseband2spw = {}
@@ -232,6 +236,8 @@ class Syspower(basetask.StandardTaskTemplate):
                         for spw, value in spwdict.items():
                             spwsperbaseband.append(spw)
                     allprocessedspws.extend(spwsperbaseband)
+                    if band in do_not_apply_list:
+                        do_not_apply_spws.extend(spwsperbaseband)
                     baseband2spw[baseband] = spwsperbaseband
                     band_baseband_spw[band] = baseband2spw
 
@@ -561,15 +567,27 @@ class Syspower(basetask.StandardTaskTemplate):
             dat_common_final[band] = dat_common
             template_table[band] = template_table_band
 
+        # for weblog, default to the to-be-applied RQ table
+        rq_table_weblog = rq_table
+
         # If requested to apply results, copy the now modified temp table over to the original
         if self.inputs.apply:
             LOG.info("Results applied to the RQ table.")
             if os.path.isdir(rq_table):
-                # Making table backup of the original
+                # make a table backup from the original, and remove original to be replaced by temprq
                 shutil.copytree(rq_table, rq_table + '.backup')
-                # Remove original
                 shutil.rmtree(rq_table)
             shutil.copytree(temprq, rq_table)
+            if do_not_apply_spws:
+                rq_table_weblog = rq_table + '.weblog'
+                if os.path.isdir(rq_table_weblog):
+                    shutil.rmtree(rq_table_weblog)
+                shutil.copytree(rq_table, rq_table_weblog)
+                LOG.warning(
+                    "Attempting to remove spws=%r from the RQ table, within the band(s) specified by the 'do_not_apply' keyword.",
+                    do_not_apply_spws)
+                removeRows(rq_table, do_not_apply_spws)
+
         else:
             LOG.info("Results not applied to the RQ table.")
 
@@ -577,7 +595,7 @@ class Syspower(basetask.StandardTaskTemplate):
         # if os.path.isdir(temprq):
         #     shutil.rmtree(temprq)
 
-        return SyspowerResults(gaintable=rq_table, spowerdict=spowerdict, dat_common=dat_common_final,
+        return SyspowerResults(gaintable=rq_table_weblog, spowerdict=spowerdict, dat_common=dat_common_final,
                                clip_sp_template=clip_sp_template, template_table=template_table,
                                band_baseband_spw=band_baseband_spw, plotrq=temprq)
 
