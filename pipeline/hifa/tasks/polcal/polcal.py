@@ -97,8 +97,10 @@ class Polcal(basetask.StandardTaskTemplate):
         # Compute duration of polarisation scans.
         scan_duration = self._compute_pol_scan_duration(session_msname)
 
-        # Initial gain calibration for polarisation calibrator.
+        # Compute initial gain calibration for polarisation calibrator, and
+        # merge into local context.
         init_gcal_result = self._initial_gaincal(session_msname, refant)
+        init_gcal_result.accept(self.inputs.context)
 
         # Compute (uncalibrated) estimate of polarisation of the polarisation
         # calibrator.
@@ -273,6 +275,11 @@ class Polcal(basetask.StandardTaskTemplate):
         # Initialize and execute gaincal task.
         task = gaincal.GTypeGaincal(task_inputs)
         result = self._executor.execute(task)
+
+        # Replace the CalApp in the result with a modified CalApplication to
+        # register this caltable against the session MS.
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='linear')
+        result.final = [new_calapp]
 
         return result
 
