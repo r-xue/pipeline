@@ -111,7 +111,8 @@ class Polcal(basetask.StandardTaskTemplate):
         best_scan_id = self._identify_scan_highest_xy(session_name, init_gcal_result)
 
         # Compute X-Y delay.
-        kcross_result = self._compute_xy_delay(session_msname, gcal_result, best_scan)
+        kcross_result, kcross_calapps = self._compute_xy_delay(session_msname, vislist, refant, best_scan_id, spwmaps)
+        kcross_result.accept(self.inputs.context)
 
         # Calibrate X-Y phase.
         polcal_phase_result = self._calibrate_xy_phase(session_msname, vislist, init_gcal_result, uncal_pfg_result,
@@ -319,9 +320,44 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return best_scan_id
 
-    def _compute_xy_delay(self, msname, gcal_result, best_scan):
-        kcross_result = None
-        return kcross_result
+    def _compute_xy_delay(self, msname: str, vislist: List[str], refant: str, best_scan: int, spwmaps: dict) \
+            -> Tuple[gaincal.common.GaincalResults, List]:
+        inputs = self.inputs
+        LOG.info(f"{msname}: compute X-Y delay (Kcross) for polarisation calibrator.")
+
+        # Initialize gaincal task inputs.
+        task_args = {
+            'output_dir': inputs.output_dir,
+            'vis': msname,
+            'caltable': None,
+            'calmode': 'ap',
+            'intent': inputs.intent,
+            'scan': str(best_scan),
+            'selectdata': True,  # needed when selecting on scan.
+            'solint': 'inf,5MHz',
+            'smodel': [1, 0, 1, 0],
+            'gaintype': 'KCROSS',
+            'refant': refant,
+        }
+        task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute gaincal task.
+        task = gaincal.GTypeGaincal(task_inputs)
+        result = self._executor.execute(task)
+
+        # Replace the CalApp in the result with a modified CalApplication to
+        # register this caltable against the session MS.
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest')
+        result.final = [new_calapp]
+
+        # For each MS in this session, create a modified CalApplication to
+        # register this caltable against it.
+        final_calapps = []
+        for vis in vislist:
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
+                                                                spwmap=spwmaps[vis]))
+
+        return result, final_calapps
 
     def _calibrate_xy_phase(self, msname, gcal_result, uncal_polfromgain_result, kcross_result, scan_duration):
         polcal_result = None
