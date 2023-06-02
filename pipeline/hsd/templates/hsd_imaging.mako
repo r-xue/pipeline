@@ -181,7 +181,7 @@ It generates an image combined spectral data from whole antenna as well as image
 		<caption>RMS of line-free channels</caption>
     	<thead>
 	    	<tr>
-	        	<th>Name</th><th>Frequency Ranges</th><th>Channel width [kHz]</th><th>Effective Channel width [kHz]</th><th>Theoretical RMS</th><th>Observed RMS</th>
+	        	<th>Name</th><th>Frequency Ranges</th><th>Channel width [kHz]</th><th>Theoretical RMS</th><th>Observed RMS</th>
 	    	</tr>
 
   		</thead>
