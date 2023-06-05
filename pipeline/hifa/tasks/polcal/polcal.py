@@ -108,6 +108,11 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"{session_msname}: compute estimate of polarisation.")
         uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result)
 
+        # TODO: what if there are multiple polarisation calibrator fields?
+        # Retrieve fractional Stokes results for averaged SpW for first
+        # polarisation calibrator field.
+        smodel = list(uncal_pfg_result.values())[0]['SpwAve']
+
         # Identify scan with highest X-Y signal.
         best_scan_id = self._identify_scan_highest_xy(session_name, init_gcal_result)
 
@@ -116,8 +121,13 @@ class Polcal(basetask.StandardTaskTemplate):
         kcross_result.accept(self.inputs.context)
 
         # Calibrate X-Y phase.
-        polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, uncal_pfg_result,
+        polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, smodel,
                                                                           scan_duration, spwmaps)
+
+        # TODO: what if polcal ran as multiple steps?
+        # Retrieve fractional Stokes results for averaged SpW for first
+        # polarisation calibrator field.
+        smodel = list(polcal_phase_result.polcal_returns[0].values())[0]['SpwAve']
 
         # Unregister caltables that have been created for the session MS so
         # far, prior to re-computing the gain calibration for polarisation
@@ -367,15 +377,10 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result, final_calapps
 
-    def _calibrate_xy_phase(self, msname: str, vislist: List[str], uncal_pfg_result: dict, scan_duration: int,
+    def _calibrate_xy_phase(self, msname: str, vislist: List[str], smodel: List[float], scan_duration: int,
                             spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
         inputs = self.inputs
         LOG.info(f"{msname}: compute X-Y phase for polarisation calibrator.")
-
-        # Retrieve smodel from polfromgain result.
-        # TODO: what should the workflow be if there are multiple polarisation
-        #  calibrator fields?
-        smodel = sorted(uncal_pfg_result.values())[0]['SpwAve']
 
         # Initialize polcal task inputs.
         task_args = {
