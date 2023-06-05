@@ -199,6 +199,27 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
 
     Inputs = SDK2JyCalInputs
 
+    def execute( self, dry_run: bool = True, **parameters) -> SDK2JyCalResults:
+        """
+        remove existing QUERIED_FACTOR_FILE before the first run
+
+        Args:
+            dry_run: True if dry_run
+            parameters: parameters
+        Returns
+            SDK2JyCalResults
+        """
+        filename = QUERIED_FACTOR_FILE
+        if self.inputs.context.subtask_counter == 0:
+            if os.path.isfile(filename):
+                LOG.info( "File {} exists, will rename to {}_orig".format(filename, filename) )
+                if os.path.isfile(filename+"_orig"):
+                    LOG.info( "Existing {}_orig will be overwritten".format(filename) )
+                os.rename( filename, "{}_orig".format(filename) )
+
+        results = super().execute( dry_run=dry_run, **parameters )
+        return results
+
     def prepare(self) -> SDK2JyCalResults:
         """
         Retrieve Jy/K facors from the DB and save them in QUERIED_FACTOR_FILE if dbaccess is True
