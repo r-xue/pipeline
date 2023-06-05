@@ -118,7 +118,11 @@ class Polcal(basetask.StandardTaskTemplate):
         # Calibrate X-Y phase.
         polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, uncal_pfg_result,
                                                                           scan_duration, spwmaps)
-        polcal_phase_result.accept(self.inputs.context)
+
+        # Unregister caltables that have been created for the session MS so
+        # far, prior to re-computing the gain calibration for polarisation
+        # calibrator.
+        self._unregister_caltables(session_msname)
 
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
@@ -127,7 +131,11 @@ class Polcal(basetask.StandardTaskTemplate):
         # Recompute polarisation of the polarisation calibrator after
         # calibration.
         LOG.info(f"{session_msname}: recompute polarisation of polarisation calibrator after calibration.")
-        polfromgain_result = self._compute_polfromgain(session_msname, final_gcal_result)
+        cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result)
+
+        # Re-register the X-Y delay and register the X-Y phase caltable.
+        kcross_result.accept(self.inputs.context)
+        polcal_phase_result.accept(self.inputs.context)
 
         # Compute leakage terms.
         leak_polcal_result = self._compute_leakage_terms(session_msname, final_gcal_result, kcross_result,
@@ -398,6 +406,23 @@ class Polcal(basetask.StandardTaskTemplate):
                                                                 spwmap=spwmaps[vis]))
 
         return result, final_calapps
+
+    def _unregister_caltables(self, msname: str):
+        """
+        This method will unregister from the callibrary in the local context
+        (stored in inputs) any CalApplication that is registered for caltable
+        produced so far during this hifa_polcal task.
+        """
+        # Define predicate function that matches the kind of caltable that
+        # needs to be removed from the CalLibrary.
+        def hifa_polcal_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+            calto_vis = {os.path.basename(v) for v in calto.vis}
+            do_delete = 'hifa_polcal' in calfrom.gaintable and msname in calto_vis
+            if do_delete:
+                LOG.debug(f'Unregistering caltable {calfrom.gaintable} from task-specific context.')
+            return do_delete
+
+        self.inputs.context.callibrary.unregister_calibrations(hifa_polcal_matcher)
 
     def _final_gaincal(self, msname, polcal_phase_result):
         final_gcal_result = None
