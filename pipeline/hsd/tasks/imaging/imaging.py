@@ -40,7 +40,6 @@ LOG = infrastructure.get_logger(__name__)
 
 # SensitivityInfo:
 #     sensitivity: Sensitivity of an image
-#     representative: True if the image is of the representative SpW (regardless of source)
 #     frequency_range: frequency ranges from which the sensitivity is calculated
 #     to_export: True if the sensitivity shall be exported to aqua report. (to avoid exporting NRO sensitivity in K)
 SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity frequency_range to_export')
@@ -222,7 +221,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 try:
                     self.__generate_parameters_for_calculate_sensitivity(_cp, _rgp, _pp)
 
-                    self.__set_representative_source_spw_flag(_rgp, _pp)
+                    self.__set_representative_flag(_rgp, _pp)
 
                     self.__calculate_sensitivity(_cp, _rgp, _pp)
                 finally:
@@ -920,18 +919,20 @@ class SDImaging(basetask.StandardTaskTemplate):
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
         _rgp.imager_result = self._executor.execute(__combine_task)
 
-    def __set_representative_source_spw_flag(self,
+    def __set_representative_flag(self,
                                _rgp: imaging_params.ReductionGroupParameters,
                                _pp: imaging_params.PostProcessParameters):
-        """Set is_representative_source_spw flag.
+        """Set is_representative flag.
 
         Args:
             _rgp : Reduction group parameter object of prepare()
             _pp : Imaging post process parameters of prepare()
         """
         __rep_source_name, __rep_spwid = _rgp.ref_ms.get_representative_source_spw()
-        _pp.is_representative_source_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_source_name == \
-            utils.dequote(_rgp.source_name)
+        _pp.is_representative = \
+            _rgp.ref_ms.representative_target[2] is not None and \
+            __rep_spwid == _rgp.combined.spws[REF_MS_ID] and \
+            __rep_source_name == utils.dequote(_rgp.source_name)
 
     def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                 _rgp: imaging_params.ReductionGroupParameters,
@@ -957,17 +958,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                                         for __iseg in range(0, len(__freqs), 2)])
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
         __effective_bw = __cqa.quantity(_rgp.ref_ms.representative_target[2], 'Hz') \
-            if _pp.is_representative_source_spw else None
+            if _pp.is_representative else None
         __sensitivity = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                     spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                    is_representative=_pp.is_representative_source_spw,
+                                    is_representative=_pp.is_representative,
                                     bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                     bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
                                     sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
                                     effective_bw=__effective_bw)
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                           spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                          is_representative=_pp.is_representative_source_spw,
+                                          is_representative=_pp.is_representative,
                                           bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                           bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
