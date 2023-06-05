@@ -225,7 +225,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """Tclean gridder parameter heuristics for VLA."""
 
         self.field(intent, field)
-        gridder_select = 'standad'
+        gridder_select = 'standard'
 
         # not really necessary for VLA, but as a placeholder for PIPE-684.
         if self._mosaic or (len(self.antenna_diameters()) > 1):
