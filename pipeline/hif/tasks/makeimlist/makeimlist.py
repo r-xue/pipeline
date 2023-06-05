@@ -898,7 +898,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if phasecenter == '':
                         for field_intent in field_intent_list:
                             try:
-                                gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                                 phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                             except Exception as e:
@@ -933,7 +932,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             for spwspec in min_freq_spwlist:
 
                                 try:
-                                    gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
                                     field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                                     # Image size (FOV) may be determined depending on the fractional bandwidth of the
                                     # selected spectral windows. In continuum spectral mode pass the spw list string
@@ -1245,7 +1243,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     imsize=imsizes[(field_intent[0], spwspec)],
                                     phasecenter=phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
-                                    gridder=target_heuristics.gridder(field_intent[1], field_intent[0]),
+                                    gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],

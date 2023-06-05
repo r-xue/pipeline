@@ -457,7 +457,7 @@ class ImageParamsHeuristics(object):
                         # Now get better estimate from makePSF
                         tmp_psf_filename = str(uuid.uuid4())
 
-                        gridder = self.gridder(intent, field)
+                        gridder = self.gridder(intent, field, spwspec=spwspec)
                         mosweight = self.mosweight(intent, field)
                         field_ids = self.field(intent, field, vislist=valid_vis_list)
                         # Get single field imsize
@@ -650,7 +650,7 @@ class ImageParamsHeuristics(object):
 
         return valid_data
 
-    def gridder(self, intent, field):
+    def gridder(self, intent, field, spwspec=None):
         # the field heuristic which decides whether this is a mosaic or not
         # and sets self._mosaic (a bit convoluted...)
         self.field(intent, field)
@@ -1912,6 +1912,20 @@ class ImageParamsHeuristics(object):
 
         return new_niter
 
+    def calc_percentile_baseline_length(self, percentile):
+        """Calculate percentile baseline length for the vis list used in this heuristics instance."""
+
+        min_diameter = 1.e9
+        percentileBaselineLengths = []
+        for msname in self.vislist:
+            ms_do = self.observing_run.get_ms(msname)
+            min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
+            percentileBaselineLengths.append(
+                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
+                               for baseline in ms_do.antenna_array.baselines], percentile))
+
+        return np.median(percentileBaselineLengths), min_diameter
+
     def niter_by_iteration(self, iteration, hm_masking, niter):
         """Tclean niter heuristic at each iteration."""
         return niter
@@ -2106,7 +2120,7 @@ class ImageParamsHeuristics(object):
     def datacolumn(self):
         return None
 
-    def wprojplanes(self):
+    def wprojplanes(self, gridder=None, spwspec=None):
         return None
 
     def rotatepastep(self):
