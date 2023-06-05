@@ -90,7 +90,9 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Run applycal to apply the registered total intensity caltables to the
         # polarisation calibrator.
-        self._run_applycal(vislist)
+        for vis in vislist:
+            LOG.info(f'Session {session_name}: apply pre-existing caltables to polarisation calibrator for MS {vis}.')
+            self._run_applycal(vis)
 
         # Extract polarisation data and concatenate in session MS.
         session_msname, spwmaps = self._create_session_ms(session_name, vislist)
@@ -164,8 +166,12 @@ class Polcal(basetask.StandardTaskTemplate):
         # TODO: what is this operating on?
         self._setjy_for_polcal()
 
+        # Prior to applycal, re-register the final gain caltable.
+        self._register_calapps_from_results([final_gcal_result])
+
         # Apply the polarisation calibration to the polarisation calibrator.
-        self._apply_polcal()
+        LOG.info(f'{session_msname}: apply polarisation calibrations to the polarisation calibrator.")')
+        self._run_applycal(session_msname)
 
         # TODO: add visstat step to derive stats for comparison later on.
 
@@ -206,16 +212,11 @@ class Polcal(basetask.StandardTaskTemplate):
                 LOG.warning(f" {vis} has polarisation calibrator field(s):"
                             f" {utils.commafy(sorted(f.name for f in visf))}")
 
-    def _run_applycal(self, vislist: List[str]):
-        inputs = self.inputs
-
-        # Run applycal for each vis.
-        for vis in vislist:
-            LOG.info(f'Applying pre-existing caltables to polarisation calibrator intent for MS {vis}.')
-            acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=vis, intent=inputs.intent,
-                                                 flagsum=False, flagbackup=False, flagdetailedsum=False)
-            actask = applycal.IFApplycal(acinputs)
-            self._executor.execute(actask)
+    def _run_applycal(self, vis: str):
+        acinputs = applycal.IFApplycalInputs(context=self.inputs.context, vis=vis, intent=self.inputs.intent,
+                                             flagsum=False, flagbackup=False, flagdetailedsum=False)
+        actask = applycal.IFApplycal(acinputs)
+        self._executor.execute(actask)
 
     def _create_session_ms(self, session_name: str, vislist: List[str]) -> Tuple[str, dict]:
         """This method uses mstransform to create a new MS that contains only
@@ -557,9 +558,6 @@ class Polcal(basetask.StandardTaskTemplate):
         return result, final_calapps
 
     def _setjy_for_polcal(self):
-        pass
-
-    def _apply_polcal(self, msname, final_gcal_result, kcross_result, polcal_phase_result, leak_polcal_result):
         pass
 
     def _image_polcal(self):
