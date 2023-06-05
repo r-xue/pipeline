@@ -2676,17 +2676,6 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
 
         warnings = []
 
-        #FIXME: dead code? 
-        if refflux is not None:
-            coherence = fitdict['fluxloss']['value'] * 100.0
-            flux_score = max(0.0, 1.0 - fitdict['fluxloss']['value'])
-            flux_metric = fitdict['fluxloss']['value']
-            flux_unit = 'flux loss'
-        else:
-            flux_score = 0.0
-            flux_metric = 'N/A'
-            flux_unit = 'flux loss'
-
         offset_score = 0.0
         offset_metric = 'N/A'
         offset_unit = 'beams'

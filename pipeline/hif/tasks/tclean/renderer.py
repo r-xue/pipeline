@@ -82,6 +82,30 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             fieldname = None
             intent = None
 
+            # Get the scaled MAD from the non-pbcor image outside of a central radius to caculate the peakSNR for CHECK sources (PIPE-1296)
+            if r.intent == 'CHECK': 
+                try:
+                    LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog'% image_path_non_pbcor)
+                    image_path_non_pbcor = r.iterations[maxiter]['image']
+
+                    with casa_tools.ImageReader(image_path_non_pbcor) as image:
+                        non_pbcor_image_name = str(image.name(strippath=True))
+                        
+                        # Construct the region for "the image outside of a central radius"
+                        imshape = image.shape()
+                        central_radius = min(20, imshape[0]//5) 
+                        central_circle = 'circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+                        box = 'box[[%dpix, %dpix], [%dpix, %dpix]]' % (0, 0, imshape[0], imshape[1])
+                        everything_but_central_circle = box + "\n - " + central_circle
+
+                        # Calculate image statistics for this region 
+                        outside_circle_imstat = image.statistics(region=everything_but_central_circle, robust=True) 
+                        scaled_mad = outside_circle_imstat['medabsdevmed'][0]
+                except Exception as e: 
+                    msg = "For {}, peakSNR calculation for the tclean weblog failed. Failed to calculate the MAD outside of a central radius. Error: {}".format(non_pbcor_image_name, str(e))
+                    LOG.warning(msg)
+                    scaled_mad = None
+
             image_path = r.iterations[maxiter]['image'].replace('.image', '.image%s' % extension)
 
             LOG.info('Getting properties of %s for the weblog' % image_path)
@@ -97,56 +121,27 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # stats for use in the plot generation classes.
                 stats = image.statistics(robust=False)
 
-                try:
-                    # Get the scaled MAD from the non-pbcor image outside of the central radius (PIPE-1296)
-                    LOG.debug("Calculating peakSNR step one: scaled MAD. Image name: {}".format(image_name))
-                    imshape = image.shape()
-                    central_radius = min(20, imshape[0]//5) 
-                    central_circle = 'circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
-                    box = 'box[[%dpix, %dpix], [%dpix, %dpix]]' % (0, 0, imshape[0], imshape[1])
-                    everything_but_central_circle = box + "\n - " + central_circle
-                    outside_circle_imstat = image.statistics(region=everything_but_central_circle, robust=True) 
-                    scaled_mad = outside_circle_imstat['medabsdevmed'][0] #FIXME: is this actually the correct (1) region and (2) value? 
-                except Exception as e: 
-                    print("FAILED in MAD: ")
-                    print(repr(e))
-                    scaled_mad = 1
+                # Get the peak of the image outside of a central radius to caculate the peakSNR for CHECK sources (PIPE-1296)
+                if (r.intent == 'CHECK') and (scaled_mad is not None): 
+                    try:
+                        LOG.info("Using {} to calculate the peak value for peakSNR for the weblog".format(image_name))
 
-            peak_snr = None
+                        # Get the peak value whithin a central radius to calculate the peakSNR. 
+                        imshape = image.shape()
+                        central_radius = min(20, imshape[0]//5)
+                        region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+                            
+                        imstats_within_region = image.statistics(region=region)
+                        imagepeak = imstats_within_region['max'][0]
 
-            try:
-                #FIXME: need to update this to get the pbcor image 
-                with casa_tools.ImageReader(image_path) as image:
-                    image_name = str(image.name(strippath=True))
-                    info = image.miscinfo()
-                    coordsys = image.coordsys()
-                    brightness_unit = image.brightnessunit()
-                    summary = image.summary()
-                    beam = image.restoringbeam()
+                        peak_snr = imagepeak/scaled_mad
+                    except Exception as e:
+                        msg = "For {}, peakSNR calculation for the tclean weblog failed. Failed to find the peak value within a central radius. Error: {}".format(image_name, str(e))
+                        LOG.warning(msg)
+                        peak_snr = None
+                else: 
+                    peak_snr = None
 
-                    # While the image tool is open, read and cache the image
-                    # stats for use in the plot generation classes.
-                    stats = image.statistics(robust=False)
-
-                    LOG.debug("Calculating peakSNR. Image name: {}".format(image_name))
-
-                    # Construct the regions string
-                    #    This is a circle centered at the center of the image with a radius of n pixels
-                    imshape=image.shape()
-                    central_radius = min(20, imshape[0]//5) # FIXME: Are all images square? otherwise min(imshape[0], imshape[1])//5?
-                    region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
-                    
-                    LOG.debug("Creating a circle of radius {}".format(central_radius))
-                    
-                    # Get the peak within the radius: 
-                    imstats_within_region = image.statistics(region=region)
-                    imagepeak = imstats_within_region['max'][0]
-
-                    peak_snr = imagepeak/scaled_mad
-            except Exception as e: 
-                print("FAILED in peakSNR: ")
-                print(repr(e))
-                peak_snr = 1
 
             # cache image statistics while we have them in scope.
             image_rms = stats.get('rms')[0]
