@@ -11,6 +11,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import gaincal
+from pipeline.hif.tasks import polcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import sessionutils
@@ -115,8 +116,9 @@ class Polcal(basetask.StandardTaskTemplate):
         kcross_result.accept(self.inputs.context)
 
         # Calibrate X-Y phase.
-        polcal_phase_result = self._calibrate_xy_phase(session_msname, vislist, init_gcal_result, uncal_pfg_result,
-                                                       kcross_result, scan_duration)
+        polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, uncal_pfg_result,
+                                                                          scan_duration, spwmaps)
+        polcal_phase_result.accept(self.inputs.context)
 
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
@@ -265,7 +267,6 @@ class Polcal(basetask.StandardTaskTemplate):
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': msname,
-            'caltable': None,
             'calmode': 'ap',
             'intent': inputs.intent,
             'solint': 'int',
@@ -329,7 +330,6 @@ class Polcal(basetask.StandardTaskTemplate):
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': msname,
-            'caltable': None,
             'calmode': 'ap',
             'intent': inputs.intent,
             'scan': str(best_scan),
@@ -359,9 +359,45 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result, final_calapps
 
-    def _calibrate_xy_phase(self, msname, gcal_result, uncal_polfromgain_result, kcross_result, scan_duration):
-        polcal_result = None
-        return polcal_result
+    def _calibrate_xy_phase(self, msname: str, vislist: List[str], uncal_pfg_result: dict, scan_duration: int,
+                            spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
+        inputs = self.inputs
+        LOG.info(f"{msname}: compute X-Y phase for polarisation calibrator.")
+
+        # Retrieve smodel from polfromgain result.
+        # TODO: what should the workflow be if there are multiple polarisation
+        #  calibrator fields?
+        smodel = sorted(uncal_pfg_result.values())[0]['SpwAve']
+
+        # Initialize polcal task inputs.
+        task_args = {
+            'vis': msname,
+            'intent': inputs.intent,
+            'solint': 'inf,5MHz',
+            'smodel': smodel,
+            'combine': 'scan,obs',
+            'poltype': 'Xfparang+QU',
+            'preavg': scan_duration,
+        }
+        task_inputs = polcal.PolcalWorker.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute polcal task.
+        task = polcal.PolcalWorker(task_inputs)
+        result = self._executor.execute(task)
+
+        # Replace the CalApp in the result with a modified CalApplication to
+        # register this caltable against the session MS.
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest')
+        result.final = [new_calapp]
+
+        # For each MS in this session, create a modified CalApplication to
+        # register this caltable against it.
+        final_calapps = []
+        for vis in vislist:
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
+                                                                spwmap=spwmaps[vis]))
+
+        return result, final_calapps
 
     def _final_gaincal(self, msname, polcal_phase_result):
         final_gcal_result = None
