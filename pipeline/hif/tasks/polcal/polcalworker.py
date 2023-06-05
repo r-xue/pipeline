@@ -187,7 +187,7 @@ class PolcalWorker(basetask.StandardTaskTemplate):
         # from this caltable when applied to other data. Set the table name
         # (mandatory) and gainfield (to conform to suggested script
         # standard), leaving spwmap, interp, etc. at their default values.
-        calfrom = callibrary.CalFrom(inputs.caltable, caltype='polcal', gainfield='nearest')
+        calfrom = callibrary.CalFrom(inputs.caltable, caltype='polarization', gainfield='nearest')
         calapp = callibrary.CalApplication(calto, calfrom, origin)
 
         result = PolcalResults(pool=[calapp], polcal_returns=polcal_returns)
