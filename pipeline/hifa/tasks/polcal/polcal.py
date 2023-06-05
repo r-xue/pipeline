@@ -95,6 +95,7 @@ class Polcal(basetask.StandardTaskTemplate):
             self._run_applycal(vis)
 
         # Extract polarisation data and concatenate in session MS.
+        LOG.info(f"Creating polarisation data MS for session '{session_name}'.")
         session_msname, spwmaps = self._create_session_ms(session_name, vislist)
 
         # Compute duration of polarisation scans.
@@ -102,6 +103,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Compute initial gain calibration for polarisation calibrator, and
         # merge into local context.
+        LOG.info(f"{session_msname}: compute initial gain calibration for polarisation calibrator.")
         init_gcal_result = self._initial_gaincal(session_msname, refant)
         self._register_calapps_from_results([init_gcal_result])
 
@@ -119,10 +121,12 @@ class Polcal(basetask.StandardTaskTemplate):
         best_scan_id = self._identify_scan_highest_xy(session_name, init_gcal_result)
 
         # Compute X-Y delay.
+        LOG.info(f"{session_msname}: compute X-Y delay (Kcross) for polarisation calibrator.")
         kcross_result, kcross_calapps = self._compute_xy_delay(session_msname, vislist, refant, best_scan_id, spwmaps)
         self._register_calapps_from_results([kcross_result])
 
         # Calibrate X-Y phase.
+        LOG.info(f"{session_msname}: compute X-Y phase for polarisation calibrator.")
         polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, smodel,
                                                                           scan_duration, spwmaps)
 
@@ -138,6 +142,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
+        LOG.info(f"{session_msname}: compute final gain calibration for polarisation calibrator.")
         final_gcal_result, final_gcal_calapps = self._final_gaincal(session_msname, vislist, refant, smodel, spwmaps)
 
         # Recompute polarisation of the polarisation calibrator after
@@ -149,6 +154,7 @@ class Polcal(basetask.StandardTaskTemplate):
         self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
 
         # Compute leakage terms.
+        LOG.info(f"{session_msname}: estimate leakage terms for polarisation calibrator.")
         leak_polcal_result, leak_pcal_calapps = self._compute_leakage_terms(session_msname, vislist, smodel,
                                                                             scan_duration, spwmaps)
 
@@ -221,8 +227,6 @@ class Polcal(basetask.StandardTaskTemplate):
     def _create_session_ms(self, session_name: str, vislist: List[str]) -> Tuple[str, dict]:
         """This method uses mstransform to create a new MS that contains only
         the polarisation calibrator data."""
-        LOG.info(f"Creating polarisation data MS for session '{session_name}'.")
-
         # Extract polarisation data for each vis, and capture name of new MS.
         pol_vislist = []
         for vis in vislist:
@@ -285,7 +289,6 @@ class Polcal(basetask.StandardTaskTemplate):
 
     def _initial_gaincal(self, msname: str, refant: str) -> gaincal.common.GaincalResults:
         inputs = self.inputs
-        LOG.info(f"{msname}: compute initial gain calibration for polarisation calibrator.")
 
         # Initialize gaincal task inputs.
         task_args = {
@@ -364,7 +367,6 @@ class Polcal(basetask.StandardTaskTemplate):
     def _compute_xy_delay(self, msname: str, vislist: List[str], refant: str, best_scan: int, spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
         inputs = self.inputs
-        LOG.info(f"{msname}: compute X-Y delay (Kcross) for polarisation calibrator.")
 
         # Initialize gaincal task inputs.
         task_args = {
@@ -402,7 +404,6 @@ class Polcal(basetask.StandardTaskTemplate):
     def _calibrate_xy_phase(self, msname: str, vislist: List[str], smodel: List[float], scan_duration: int,
                             spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
         inputs = self.inputs
-        LOG.info(f"{msname}: compute X-Y phase for polarisation calibrator.")
 
         # Initialize polcal task inputs.
         task_args = {
@@ -454,7 +455,6 @@ class Polcal(basetask.StandardTaskTemplate):
     def _final_gaincal(self, msname: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
         inputs = self.inputs
-        LOG.info(f"{msname}: compute final gain calibration for polarisation calibrator.")
 
         # Initialize gaincal task inputs.
         task_args = {
@@ -491,7 +491,6 @@ class Polcal(basetask.StandardTaskTemplate):
     def _compute_leakage_terms(self, msname: str, vislist: List[str], smodel: List[float], scan_duration: int,
                                spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
         inputs = self.inputs
-        LOG.info(f"{msname}: estimate leakage terms for polarisation calibrator.")
 
         # Initialize polcal task inputs.
         task_args = {
