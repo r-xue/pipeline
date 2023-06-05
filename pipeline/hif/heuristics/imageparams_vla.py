@@ -224,12 +224,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def gridder(self, intent, field, spwspec=None) -> str:
         """Tclean gridder parameter heuristics for VLA."""
 
-        self.field(intent, field)
+        # the field heuristic which decides whether this is a mosaic or not
+        field_str_list = self.field(intent, field)
+        is_mosaic = self._is_mosaic(field_str_list)
+
         gridder_select = 'standard'
 
         # not really necessary for VLA, but as a placeholder for PIPE-684.
-        if self._mosaic or (len(self.antenna_diameters()) > 1):
-            self._mosaic = True
+        if is_mosaic or (len(self.antenna_diameters()) > 1):
             gridder_select = 'mosaic'
 
         # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging

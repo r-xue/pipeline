@@ -651,17 +651,13 @@ class ImageParamsHeuristics(object):
         return valid_data
 
     def gridder(self, intent, field, spwspec=None):
-        # the field heuristic which decides whether this is a mosaic or not
-        # and sets self._mosaic (a bit convoluted...)
-        self.field(intent, field)
+        """Determine the gridder to use for the given intent and field."""
 
-        # also need to use mosaic gridder when gridding antennas with different
-        # diameters
-        if self._mosaic or (len(self.antenna_diameters()) > 1):
-            # Setting this here because it is used in other places in the heuristics
-            # TODO: this is flaky since it requires "gridder" to be called before
-            #       other methods using self._mosaic
-            self._mosaic = True
+        field_str_list = self.field(intent, field)
+        is_mosaic = self._is_mosaic(field_str_list)
+
+        # use mosaic gridder for mosaic imaging and/or het.array data
+        if is_mosaic or (len(self.antenna_diameters()) > 1):
             return 'mosaic'
         else:
             return 'standard'
@@ -728,13 +724,14 @@ class ImageParamsHeuristics(object):
         # Set the maximum separation to 200 microarcsec and test via
         # a tolerance rather than an equality.
         max_separation = cqa.quantity('200uarcsec')
-        if not self._mosaic:
-            max_separation_uarcsec =  cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0] # in micro arcsec
+        if not self._is_mosaic(fields):
+            max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0]  # in micro arcsec
             for mdirection in mdirections:
                 separation = cme.separation(mdirection, mdirections[0])
                 if cqa.gt(separation, max_separation):
                     separation_arcsec = cqa.getvalue(cqa.convert(separation, 'arcsec'))[0]
-                    LOG.warning('The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). This is only normal for an ephemeris source or a source with a large proper motion or parallax.' % (field_names[0], separation_arcsec, max_separation_uarcsec))
+                    LOG.warning('The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). This is only normal for an ephemeris source or a source with a large proper motion or parallax.' % (
+                        field_names[0], separation_arcsec, max_separation_uarcsec))
             mdirections = [mdirections[0]]
 
         # it should be easy to calculate some 'average' direction
@@ -823,8 +820,7 @@ class ImageParamsHeuristics(object):
         if vislist is None:
             vislist = self.vislist
 
-        result = []
-        nfields_list = []
+        field_str_list = []
 
         for vis in vislist:
             ms = self.observing_run.get_ms(name=vis)
@@ -854,16 +850,21 @@ class ImageParamsHeuristics(object):
                     field_list = [fld.id for fld in fields if
                                   fld.id in field_list and re_intent in fld.intents]
 
-            nfields_list.append(len([fld.id for fld in fields if fld.id in field_list and re_intent in fld.intents]))
-
             field_string = ','.join(str(fld_id) for fld_id in field_list)
-            result.append(field_string)
+            field_str_list.append(field_string)
 
-        # this will be a mosaic if there is more than 1 field_id for any
-        # measurement set
-        self._mosaic = (np.array(nfields_list) > 1).any()
-
-        return result
+        return field_str_list
+    
+    def _is_mosaic(self, field_str_list):
+        """Determin is it's a mosaic or not.
+        
+        We consider imaging to be a mosaic if there is more than 1 field_id for any ms.
+        """
+        is_mosaic = False
+        for field_str in field_str_list:
+            if ',' in field_str:
+                is_mosaic = True
+        return is_mosaic
 
     def is_eph_obj(self, field):
 
@@ -1036,7 +1037,9 @@ class ImageParamsHeuristics(object):
         # border of 0.75 (0.825) * beam radius (radius is to
         # first null) wide
         nfields = int(np.median([len(field_ids.split(',')) for field_ids in fields]))
-        if self._mosaic and nfields <= 3:
+        is_mosaic = self._is_mosaic(fields)
+
+        if is_mosaic and nfields <= 3:
             # PIPE-209 asks for a slightly larger size for small (2-3 field) mosaics.
             nxpix = int((1.65 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.65 * beam_radius_v + yspread) / celly_v)
@@ -1044,7 +1047,7 @@ class ImageParamsHeuristics(object):
             nxpix = int((1.5 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.5 * beam_radius_v + yspread) / celly_v)
 
-        if (not self._mosaic) and (sfpblimit is not None):
+        if (not is_mosaic) and (sfpblimit is not None):
             beam_fwhp = 1.12 / 1.22 * beam_radius_v
             nxpix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / cellx_v))
             nypix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / celly_v))
