@@ -136,7 +136,8 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
-        final_gcal_result = self._final_gaincal(session_msname, polcal_phase_result)
+        final_gcal_result, final_gcal_calapps = self._final_gaincal(session_msname, vislist, refant, smodel, spwmaps)
+        final_gcal_result.accept(self.inputs.context)
 
         # Recompute polarisation of the polarisation calibrator after
         # calibration.
@@ -429,9 +430,42 @@ class Polcal(basetask.StandardTaskTemplate):
 
         self.inputs.context.callibrary.unregister_calibrations(hifa_polcal_matcher)
 
-    def _final_gaincal(self, msname, polcal_phase_result):
-        final_gcal_result = None
-        return final_gcal_result
+    def _final_gaincal(self, msname: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
+            -> Tuple[gaincal.common.GaincalResults, List]:
+        inputs = self.inputs
+        LOG.info(f"{msname}: compute final gain calibration for polarisation calibrator.")
+
+        # Initialize gaincal task inputs.
+        task_args = {
+            'output_dir': inputs.output_dir,
+            'vis': msname,
+            'calmode': 'ap',
+            'intent': inputs.intent,
+            'solint': 'int',
+            'gaintype': 'G',
+            'smodel': smodel,
+            'refant': refant,
+            'parang': True,
+        }
+        task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute gaincal task.
+        task = gaincal.GTypeGaincal(task_inputs)
+        result = self._executor.execute(task)
+
+        # Replace the CalApp in the result with a modified CalApplication to
+        # register this caltable against the session MS.
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='linear')
+        result.final = [new_calapp]
+
+        # For each MS in this session, create a modified CalApplication to
+        # register this caltable against it.
+        final_calapps = []
+        for vis in vislist:
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
+                                                                spwmap=spwmaps[vis]))
+
+        return result, final_calapps
 
     def _compute_leakage_terms(self, msname, final_gcal_result, kcross_result, polcal_phase_result, scan_duration):
         leak_polcal_result = None
