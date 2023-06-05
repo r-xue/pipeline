@@ -147,8 +147,8 @@ class Polcal(basetask.StandardTaskTemplate):
         self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
 
         # Compute leakage terms.
-        leak_polcal_result = self._compute_leakage_terms(session_msname, final_gcal_result, kcross_result,
-                                                         polcal_phase_result, scan_duration)
+        leak_polcal_result, leak_pcal_calapps = self._compute_leakage_terms(session_msname, vislist, smodel,
+                                                                            scan_duration, spwmaps)
 
         # Compute X-Y ratio.
         xyratio_gcal_result = self._compute_xy_ratio(session_msname, kcross_result, polcal_phase_result,
@@ -481,9 +481,41 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result, final_calapps
 
-    def _compute_leakage_terms(self, msname, final_gcal_result, kcross_result, polcal_phase_result, scan_duration):
-        leak_polcal_result = None
-        return leak_polcal_result
+    def _compute_leakage_terms(self, msname: str, vislist: List[str], smodel: List[float], scan_duration: int,
+                               spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
+        inputs = self.inputs
+        LOG.info(f"{msname}: estimate leakage terms for polarisation calibrator.")
+
+        # Initialize polcal task inputs.
+        task_args = {
+            'vis': msname,
+            'intent': inputs.intent,
+            'solint': 'inf,5MHz',
+            'smodel': smodel,
+            'combine': 'obs,scan',
+            'poltype': 'Dflls',
+            'preavg': scan_duration,
+            'refant': '',
+        }
+        task_inputs = polcal.PolcalWorker.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute polcal task.
+        task = polcal.PolcalWorker(task_inputs)
+        result = self._executor.execute(task)
+
+        # Replace the CalApp in the result with a modified CalApplication to
+        # register this caltable against the session MS.
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest')
+        result.final = [new_calapp]
+
+        # For each MS in this session, create a modified CalApplication to
+        # register this caltable against it.
+        final_calapps = []
+        for vis in vislist:
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
+                                                                spwmap=spwmaps[vis]))
+
+        return result, final_calapps
 
     def _compute_xy_ratio(self, msname, kcross_result, polcal_phase_result, leak_polcal_result):
         xyratio_gcal_result = None
