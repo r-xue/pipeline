@@ -150,9 +150,15 @@ class Polcal(basetask.StandardTaskTemplate):
         leak_polcal_result, leak_pcal_calapps = self._compute_leakage_terms(session_msname, vislist, smodel,
                                                                             scan_duration, spwmaps)
 
+        # Unregister caltables created so far, and re-register just the X-Y
+        # delay, X-Y phase, and leakage term caltables, prior to computing the
+        # X-Y ratio.
+        self._unregister_caltables(session_msname)
+        self._register_calapps_from_results([kcross_result, polcal_phase_result, leak_polcal_result])
+
         # Compute X-Y ratio.
-        xyratio_gcal_result = self._compute_xy_ratio(session_msname, kcross_result, polcal_phase_result,
-                                                     leak_polcal_result)
+        LOG.info(f"{session_msname}: compute X-Y ratio for polarisation calibrator.")
+        xyratio_gcal_result, xyratio_calapps = self._compute_xy_ratio(session_msname, vislist, refant, smodel, spwmaps)
 
         # Set flux density for polarisation calibrator.
         # TODO: what is this operating on?
@@ -517,9 +523,38 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result, final_calapps
 
-    def _compute_xy_ratio(self, msname, kcross_result, polcal_phase_result, leak_polcal_result):
-        xyratio_gcal_result = None
-        return xyratio_gcal_result
+    def _compute_xy_ratio(self, msname: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
+            -> Tuple[gaincal.common.GaincalResults, List]:
+        inputs = self.inputs
+
+        # Initialize gaincal task inputs.
+        task_args = {
+            'output_dir': inputs.output_dir,
+            'vis': msname,
+            'calmode': 'a',
+            'intent': inputs.intent,
+            'solint': 'inf',
+            'gaintype': 'G',
+            'smodel': smodel,
+            'refant': refant,
+            'solnorm': True,
+            'parang': True,
+        }
+        task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute gaincal task.
+        task = gaincal.GTypeGaincal(task_inputs)
+        result = self._executor.execute(task)
+
+        # For each MS in this session, create a modified CalApplication to
+        # register this caltable against the non-polarisation intents.
+        final_calapps = []
+        for vis in vislist:
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis,
+                                                                intent='AMPLITUDE,BANDPASS,CHECK,PHASE,TARGET',
+                                                                interp='nearest', spwmap=spwmaps[vis]))
+
+        return result, final_calapps
 
     def _setjy_for_polcal(self):
         pass
