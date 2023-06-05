@@ -77,7 +77,7 @@ class Polcal(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _polcal_for_session(self, session_name: str, vislist: List[str]):
+    def _polcal_for_session(self, session_name: str, vislist: List[str]) -> dict:
         LOG.info(f"Deriving polarisation calibration for session '{session_name}' with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
@@ -184,7 +184,20 @@ class Polcal(basetask.StandardTaskTemplate):
         # Image the polarisation calibrator in session MS.
         self._image_polcal()
 
-        result = None
+        # Collect results.
+        final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + xyratio_calapps
+        result = {
+            'calapps': final_calapps,
+            'init_gcal_result': init_gcal_result,
+            'uncal_pfg_result': uncal_pfg_result,
+            'kcross_result': kcross_result,
+            'polcal_phase_result': polcal_phase_result,
+            'final_gcal_result': final_gcal_result,
+            'cal_pfg_result': cal_pfg_result,
+            'leak_polcal_result': leak_polcal_result,
+            'xyratio_gcal_result': xyratio_gcal_result,
+        }
+
         return result
 
     def _get_refant(self, session_name: str, vislist: List[str]) -> str:
