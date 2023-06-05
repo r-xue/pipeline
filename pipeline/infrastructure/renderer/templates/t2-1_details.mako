@@ -144,6 +144,27 @@ import os
 			</tbody>
 		</table>
 	</div>
+
+        <div class="col-md-6">
+	         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}" data-fancybox>
+		         <h3>SpW ID vs Frequency</h3>
+        	 </a>
+	         <div class="col-md-6">
+		         <div class="thumbnail">
+			         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}"
+			            data-fancybox>
+			        	 <img class="lazyload"
+		          data-src="${os.path.relpath(spwid_vs_freq.thumbnail, pcontext.report_dir)}"
+			        		  title="SpW ID vs Frequency Details for ${ms.basename}"
+				        	  alt="SpW ID vs Frequency Details for ${ms.basename}" />
+        		     </a>
+	        	     <div class="caption">
+		        		 <h4>SpW ID vs Frequency plot</h4>
+			         </div>
+        		 </div>
+	         </div>
+        </div>
+
 	<div class="col-md-6">
 		<a class="replace" href='${os.path.join(dirname, "t2-2-4.html")}'><h3>Sky Setup</h3></a>
 		<table class="table table-condensed" summary="Sky Setup Summary">
@@ -160,8 +181,6 @@ import os
 		</table>
 	</div>
 </div>
-
-
 
 <div class="row">        
 	<div class="col-md-6">
