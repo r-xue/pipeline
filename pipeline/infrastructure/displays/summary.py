@@ -4,6 +4,7 @@ import operator
 import os
 from typing import Tuple
 
+from math import floor, ceil ###
 import matplotlib.dates as dates
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -14,6 +15,7 @@ import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measures import FrequencyUnits, DistanceUnits
+from pipeline.h.tasks.common import atmutil ###
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
@@ -1068,6 +1070,139 @@ class UVChart(object):
             staql = {'field': self.field, 'spw': self.spw_id, 'scanintent': casa_intent}
             select_valid = msfile.msselect(staql, onlyparse=False)
             return select_valid
+
+
+class SpwIdVsFreqChartInputs(vdp.StandardInputs):
+    """Class to input parameters of SpwIdVsFreqChart."""
+
+    @vdp.VisDependentProperty
+    def output(self):
+        session_part = self.ms.session
+        ms_part = self.ms.basename
+        output = os.path.join(self.context.report_dir,
+                              'session%s' % session_part,
+                              ms_part, 'spwid_vs_freq.png')
+        return output
+
+    def __init__(self, context, vis=None, output=None):
+        super().__init__()
+
+        self.context = context
+        self.vis = vis
+        self.output = output
+
+
+class SpwIdVsFreqChart(object):
+    """Class to produce a plot of SPW ID Versus Frequency coverage."""
+
+    Inputs = SpwIdVsFreqChartInputs
+
+    def __init__(self, inputs, context):
+        self.inputs = inputs
+        self.context = context
+        self.figfile = self._get_figfile()
+
+    def plot(self):
+        filename = self.inputs.output
+        if os.path.exists(filename):
+            return self._get_plot_object()
+
+        fig = plt.figure(figsize=(9.6, 7.2))
+        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        ms = self.inputs.ms
+        request_spws = ms.get_spectral_windows()
+        targeted_scans = ms.get_scans(scan_intent='TARGET')
+        scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
+        list_tuning_spwids = []
+        for tuning_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
+             list_tuning_spwids.append(tuning_spwids)
+        spw_width = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]
+        spw_minfs = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]
+        spw_maxfs = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]
+        index = 0
+        list_all_spwids = []
+        for tuning_spwids in list_tuning_spwids:
+            len_n = len(tuning_spwids)
+            start = len_n*index
+            end = len_n*(index+1)
+            fmin = spw_minfs[start : end]
+            w = spw_width[start : end]
+            fmax = spw_maxfs[start : end]
+            list_all_spwids.extend(tuning_spwids)
+            ax.barh(list_tuning_spwids[index], w, left=fmin)
+            index += 1
+        ax.set_xlabel("Frequency (GHz)", fontsize=14)
+        ax.set_ylabel("spw ID", fontsize=14)
+        ax.invert_yaxis()
+        x_min_start = min(spw_minfs)
+        x_min_end = max(spw_minfs)
+        x_max_start = min(spw_maxfs)
+        x_max_end = max(spw_maxfs)
+        y_start = min(list_all_spwids)
+        y_end = max(list_all_spwids)
+        x_majorticks = []
+        x_minorticks = []
+        y_ticks = []
+        xstep = 1
+        xmargin = 1
+        ystep = 2
+        ymargin = 2
+        if x_min_start < x_max_end:
+            x_majorticks = list(range(floor(x_min_start), ceil(x_max_end)+5*(xstep+xmargin), 5*xstep))
+            x_minorticks = list(range(floor(x_min_start), ceil(x_max_end)+(xstep+xmargin), xstep))
+        else:
+            x_majorticks = list(range(floor(x_max_end), ceil(x_min_start)+5*(xstep+xmargin), 5*xstep))
+            x_minorticks = list(range(floor(x_max_end), ceil(x_min_start)+(xstep+xmargin), xstep))
+        if y_start < y_end:
+            y_ticks = list(range(y_start-ystep, y_end+ystep+ymargin, ystep))
+        else:
+            y_ticks = list(range(y_end+ystep, y_start-ystep-ymargin, ystep))
+        ax.grid(which="major", alpha=0.9)
+        ax.grid(which="minor", alpha=0.5)
+        ax.tick_params(labelsize=13)
+        ax.set_xticks(x_majorticks, fontsize=14)
+        ax.set_xticks(x_minorticks, minor=True)
+        ax.set_yticks(y_ticks, fontsize=14)
+        factor = 1.0
+        yspace = len(y_ticks) / (factor*(max(y_ticks) - min(y_ticks)))
+        for f, w, spwid in zip(spw_minfs, spw_width, list_all_spwids):
+            ax.annotate('%s' % spwid, (f+w/2, spwid-yspace), fontsize=14)
+
+        atm_color = 'm'
+        axes_atm = ax.twinx()
+        axes_atm.set_xlim(min(x_minorticks)-xmargin, max(x_minorticks)+xmargin)
+        axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
+        axes_atm.set_ylim(0, 1.05)
+        axes_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
+        axes_atm.yaxis.set_major_formatter(plt.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+        axes_atm.yaxis.tick_right()
+        antid = 0
+        if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
+            antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
+        for spwid in list_all_spwids:
+            atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
+            axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-')
+
+        fig.tight_layout()
+        fig.savefig(filename)
+        plt.clf()
+        plt.close()
+        return self._get_plot_object()
+
+    def _get_figfile(self):
+        session_part = self.inputs.ms.session
+        ms_part = self.inputs.ms.basename
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
+                            ms_part, 'spwid_vs_freq.png')
+
+    def _get_plot_object(self):
+        filename = self.inputs.output
+        return logger.Plot(filename,
+                           x_axis='Frequency',
+                           y_axis='spw ID',
+                           parameters={'vis': self.inputs.ms.basename})
+
 
 def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
     """
