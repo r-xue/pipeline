@@ -101,7 +101,7 @@ class Polcal(basetask.StandardTaskTemplate):
         # Compute initial gain calibration for polarisation calibrator, and
         # merge into local context.
         init_gcal_result = self._initial_gaincal(session_msname, refant)
-        init_gcal_result.accept(self.inputs.context)
+        self._register_calapps_from_results([init_gcal_result])
 
         # Compute (uncalibrated) estimate of polarisation of the polarisation
         # calibrator.
@@ -118,7 +118,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Compute X-Y delay.
         kcross_result, kcross_calapps = self._compute_xy_delay(session_msname, vislist, refant, best_scan_id, spwmaps)
-        kcross_result.accept(self.inputs.context)
+        self._register_calapps_from_results([kcross_result])
 
         # Calibrate X-Y phase.
         polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, smodel,
@@ -137,16 +137,14 @@ class Polcal(basetask.StandardTaskTemplate):
         # Final gain calibration for polarisation calibrator, using the actual
         # polarisation model.
         final_gcal_result, final_gcal_calapps = self._final_gaincal(session_msname, vislist, refant, smodel, spwmaps)
-        final_gcal_result.accept(self.inputs.context)
 
         # Recompute polarisation of the polarisation calibrator after
         # calibration.
         LOG.info(f"{session_msname}: recompute polarisation of polarisation calibrator after calibration.")
         cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result)
 
-        # Re-register the X-Y delay and register the X-Y phase caltable.
-        kcross_result.accept(self.inputs.context)
-        polcal_phase_result.accept(self.inputs.context)
+        # (Re-)register the final gain, X-Y delay, and X-Y phase caltables.
+        self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
 
         # Compute leakage terms.
         leak_polcal_result = self._compute_leakage_terms(session_msname, final_gcal_result, kcross_result,
@@ -303,6 +301,22 @@ class Polcal(basetask.StandardTaskTemplate):
         result.final = [new_calapp]
 
         return result
+
+    def _register_calapps_from_results(self, results: List):
+        """This method will register any "final" CalApplication present in any
+        of the input Results to the callibrary in the local context (stored in
+        inputs).
+
+        Note: this is typically done through accepting the result into the
+        relevant context. However, the framework does not allow merging a
+        Results object into the same context multiple times. In this
+        hifa_polcal task, the workflow requires unregistering / re-registering
+        certain caltables, hence we use this worker method to do so.
+        """
+        for result in results:
+            for calapp in result.final:
+                LOG.debug(f'Adding calibration to from task-specific context:\n{calapp.calto}\n{calapp.calfrom}')
+                self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
     def _compute_polfromgain(self, msname: str, gcal_result: gaincal.common.GaincalResults) -> dict:
         # Get caltable to analyse, and set name of output caltable.
