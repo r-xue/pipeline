@@ -232,9 +232,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             self._mosaic = True
             gridder_select = 'mosaic'
 
-        # PIPE-1641: switch to gridder='wproject' for L and S band imaging
+        # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging
         vla_band = self._get_vla_band(spwspec)
-        if vla_band in ['L', 'S']:
+        if vla_band in ['L', 'S'] and 'TARGET' in intent:
             gridder_select = 'wproject'
 
         return gridder_select
