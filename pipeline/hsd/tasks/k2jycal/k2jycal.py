@@ -429,7 +429,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             Updated SDK2JyCalResults instance
         """
         vis = result.vis
-        if len(result.factors[vis]) == 0:
+        if vis not in result.factors.keys() or len(result.factors[vis]) == 0:
             result.all_ok = False
             LOG.warning( "No Jy/K factor is given for MS '{}'".format(vis) )
             return result
