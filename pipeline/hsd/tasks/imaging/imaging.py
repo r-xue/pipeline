@@ -922,15 +922,14 @@ class SDImaging(basetask.StandardTaskTemplate):
     def __set_representative_flag(self,
                                _rgp: imaging_params.ReductionGroupParameters,
                                _pp: imaging_params.PostProcessParameters):
-        """Set is_representative flag.
+        """Set is_representative_source_and_spw flag.
 
         Args:
             _rgp : Reduction group parameter object of prepare()
             _pp : Imaging post process parameters of prepare()
         """
         __rep_source_name, __rep_spwid = _rgp.ref_ms.get_representative_source_spw()
-        _pp.is_representative = \
-            _rgp.ref_ms.representative_target[2] is not None and \
+        _pp.is_representative_source_and_spw = \
             __rep_spwid == _rgp.combined.spws[REF_MS_ID] and \
             __rep_source_name == utils.dequote(_rgp.source_name)
 
@@ -958,17 +957,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                                         for __iseg in range(0, len(__freqs), 2)])
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
         __effective_bw = __cqa.quantity(_rgp.ref_ms.representative_target[2], 'Hz') \
-            if _pp.is_representative else None
+            if _pp.is_representative_source_and_spw else None
         __sensitivity = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                     spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                    is_representative=_pp.is_representative,
+                                    is_representative=_pp.is_representative_source_and_spw,
                                     bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                     bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
                                     sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
                                     effective_bw=__effective_bw)
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                           spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                          is_representative=_pp.is_representative,
+                                          is_representative=_pp.is_representative_source_and_spw,
                                           bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                           bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
