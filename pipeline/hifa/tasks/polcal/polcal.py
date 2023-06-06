@@ -36,6 +36,12 @@ class PolcalResults(basetask.Results):
         """
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
+        # Register all CalApplications from each session.
+        for sresults in self.session.values():
+            for calapp in sresults['calapps']:
+                LOG.debug(f'Adding calibration to callibrary:\n{calapp.calto}\n'
+                          f'{calapp.calfrom}')
+                context.callibrary.add(calapp.calto, calapp.calfrom)
         return
 
     def __repr__(self):
@@ -344,7 +350,7 @@ class Polcal(basetask.StandardTaskTemplate):
                 else:
                     ca_to_merge = calapp
 
-                LOG.debug(f'Adding calibration to from task-specific context:\n{ca_to_merge.calto}\n'
+                LOG.debug(f'Adding calibration to callibrary in task-specific context:\n{ca_to_merge.calto}\n'
                           f'{ca_to_merge.calfrom}')
                 self.inputs.context.callibrary.add(ca_to_merge.calto, ca_to_merge.calfrom)
 
