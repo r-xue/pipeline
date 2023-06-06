@@ -172,12 +172,12 @@ class Polcal(basetask.StandardTaskTemplate):
         # TODO: what is this operating on?
         self._setjy_for_polcal()
 
-        # Prior to applycal, re-register the final gain caltable.
-        self._register_calapps_from_results([final_gcal_result])
+        # Prior to applycal, re-register the final gain caltable but now with calwt=False.
+        self._register_calapps_from_results([final_gcal_result], calwt=False)
 
         # Apply the polarisation calibration to the polarisation calibrator.
         LOG.info(f'{session_msname}: apply polarisation calibrations to the polarisation calibrator.")')
-        self._run_applycal(session_msname)
+        self._run_applycal(session_msname, parang=True)
 
         # TODO: add visstat step to derive stats for comparison later on.
 
@@ -231,9 +231,9 @@ class Polcal(basetask.StandardTaskTemplate):
                 LOG.warning(f" {vis} has polarisation calibrator field(s):"
                             f" {utils.commafy(sorted(f.name for f in visf))}")
 
-    def _run_applycal(self, vis: str):
+    def _run_applycal(self, vis: str, parang: bool = False):
         acinputs = applycal.IFApplycalInputs(context=self.inputs.context, vis=vis, intent=self.inputs.intent,
-                                             flagsum=False, flagbackup=False, flagdetailedsum=False)
+                                             parang=parang, flagsum=False, flagbackup=False, flagdetailedsum=False)
         actask = applycal.IFApplycal(acinputs)
         self._executor.execute(actask)
 
@@ -325,7 +325,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _register_calapps_from_results(self, results: List):
+    def _register_calapps_from_results(self, results: List, calwt=None):
         """This method will register any "final" CalApplication present in any
         of the input Results to the callibrary in the local context (stored in
         inputs).
@@ -338,8 +338,15 @@ class Polcal(basetask.StandardTaskTemplate):
         """
         for result in results:
             for calapp in result.final:
-                LOG.debug(f'Adding calibration to from task-specific context:\n{calapp.calto}\n{calapp.calfrom}')
-                self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
+                # If requested to override calwt, create a modified CalApplication.
+                if calwt is not None:
+                    ca_to_merge = callibrary.copy_calapplication(calapp, calwt=calwt)
+                else:
+                    ca_to_merge = calapp
+
+                LOG.debug(f'Adding calibration to from task-specific context:\n{ca_to_merge.calto}\n'
+                          f'{ca_to_merge.calfrom}')
+                self.inputs.context.callibrary.add(ca_to_merge.calto, ca_to_merge.calfrom)
 
     def _compute_polfromgain(self, msname: str, gcal_result: gaincal.common.GaincalResults) -> dict:
         # Get caltable to analyse, and set name of output caltable.
@@ -402,7 +409,8 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest')
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest',
+                                                    calwt=False)
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
@@ -410,7 +418,7 @@ class Polcal(basetask.StandardTaskTemplate):
         final_calapps = []
         for vis in vislist:
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                spwmap=spwmaps[vis]))
+                                                                calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -436,7 +444,8 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest')
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest',
+                                                    calwt=False)
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
@@ -444,7 +453,7 @@ class Polcal(basetask.StandardTaskTemplate):
         final_calapps = []
         for vis in vislist:
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                spwmap=spwmaps[vis]))
+                                                                calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -476,7 +485,6 @@ class Polcal(basetask.StandardTaskTemplate):
             'calmode': 'ap',
             'intent': inputs.intent,
             'solint': 'int',
-            'gaintype': 'G',
             'smodel': smodel,
             'refant': refant,
             'parang': True,
@@ -497,7 +505,7 @@ class Polcal(basetask.StandardTaskTemplate):
         final_calapps = []
         for vis in vislist:
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                spwmap=spwmaps[vis]))
+                                                                calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -524,7 +532,8 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest')
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest',
+                                                    calwt=False)
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
@@ -532,7 +541,7 @@ class Polcal(basetask.StandardTaskTemplate):
         final_calapps = []
         for vis in vislist:
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                spwmap=spwmaps[vis]))
+                                                                calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -547,7 +556,6 @@ class Polcal(basetask.StandardTaskTemplate):
             'calmode': 'a',
             'intent': inputs.intent,
             'solint': 'inf',
-            'gaintype': 'G',
             'smodel': smodel,
             'refant': refant,
             'solnorm': True,
