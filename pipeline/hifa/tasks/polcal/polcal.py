@@ -423,8 +423,13 @@ class Polcal(basetask.StandardTaskTemplate):
         # register this caltable against it.
         final_calapps = []
         for vis in vislist:
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                calwt=False, spwmap=spwmaps[vis]))
+            # Retrieve science SpW(s) for vis.
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Create and append modified CalApplication.
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -458,8 +463,13 @@ class Polcal(basetask.StandardTaskTemplate):
         # register this caltable against it.
         final_calapps = []
         for vis in vislist:
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                calwt=False, spwmap=spwmaps[vis]))
+            # Retrieve science SpW(s) for vis.
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Create and append modified CalApplication.
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -510,8 +520,13 @@ class Polcal(basetask.StandardTaskTemplate):
         # register this caltable against it.
         final_calapps = []
         for vis in vislist:
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                calwt=False, spwmap=spwmaps[vis]))
+            # Retrieve science SpW(s) for vis.
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Create and append modified CalApplication.
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -546,8 +561,13 @@ class Polcal(basetask.StandardTaskTemplate):
         # register this caltable against it.
         final_calapps = []
         for vis in vislist:
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent='', interp='nearest',
-                                                                calwt=False, spwmap=spwmaps[vis]))
+            # Retrieve science SpW(s) for vis.
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Create and append modified CalApplication.
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -577,7 +597,12 @@ class Polcal(basetask.StandardTaskTemplate):
         # register this caltable against the non-polarisation intents.
         final_calapps = []
         for vis in vislist:
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis,
+            # Retrieve science SpW(s) for vis.
+            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Create and append modified CalApplication.
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws,
                                                                 intent='AMPLITUDE,BANDPASS,CHECK,PHASE,TARGET',
                                                                 interp='nearest', spwmap=spwmaps[vis]))
 
