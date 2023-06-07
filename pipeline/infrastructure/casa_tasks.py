@@ -213,6 +213,11 @@ def tclean(*v, **k) -> JobRequest:
 
 
 @register_task
+def uvcontsub(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.uvcontsub, *v, **k)
+
+
+@register_task
 def wvrgcal(*v, **k) -> JobRequest:
     return JobRequest(almatasks.wvrgcal, *v, **k)
 
@@ -285,7 +290,7 @@ def move(*v, **k) -> JobRequest:
 
 class CasaTasks:
     """A class to represent a collection of JobRequest-wrapped callables from CASA or Python modules.
-    
+
     CasaTasks wraps frequently-used CASA tasks and Python functions into individual class methods that
     can create and execute JobRequests on-the-fly. Then their calls will be properly
     logged and recorded by the Pipeline logging framework:
@@ -296,16 +301,16 @@ class CasaTasks:
     scripts/module into Pipeline with minimal changes.
 
     Example 1):
-        
+
         from casatasks import tclean
-        
+
             can be replaced by:
-        
+
         from pipeline.infrastructure.casa_tasks import casa_tasks
         tclean=casa_tasks.tclean
 
     Example 2):
-    
+
         from pipeline.infrastructure.casa_tasks import CasaTasks
         ct = CasaTasks()
         ct.listobs(vis='my.ms')

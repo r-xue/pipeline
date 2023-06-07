@@ -8,6 +8,8 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import nested_dict
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.domain import DataType
@@ -87,7 +89,19 @@ class UVcontSub(applycal.Applycal):
         else:
             spw = ''
 
+        # Set fitorder lookup dictionary
+        if inputs.fitorder not in (None, ''):
+            fitorder = inputs.fitorder
+        else:
+            fitorder = nested_dict()
+
         known_synthesized_beams = inputs.context.synthesized_beams
+
+        datatype = None
+        for possible_datatype in inputs.processing_data_type:
+            if possible_datatype in inputs.ms.data_column:
+                datatype = possible_datatype.name
+                break
 
         # Get list of fields and spw to work on from makeimlist call
         # which automatically handles mitigated sources. spw mitigation
@@ -95,23 +109,27 @@ class UVcontSub(applycal.Applycal):
 
         # Create makeimlist inputs
         makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=[inputs.vis])
-        # TODO: Set field, intent and spw based on input if given
+        makeimlist_inputs.datatype = datatype
         makeimlist_inputs.field = field
         makeimlist_inputs.intent = intent
         makeimlist_inputs.spw = spw
         makeimlist_inputs.specmode = 'mfs'
         makeimlist_inputs.clearlist = True
-
-        # Create makeimlist task for size calculations
-        makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
-
-        # Get default target setup
         makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+
+        # Create imlist
+        makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
         makeimlist_result = makeimlist_task.prepare()
-        known_synthesized_beams = makeimlist_result.synthesized_beams
         imlist = makeimlist_result.targets
-        fitspec = {}
+
+        # Collect datacolumn, fields, spws and fit specifications
+        fields = dict()
+        spws = dict()
+        fitspec = nested_dict()
+        topo_freq_fitorder_dict = nested_dict()
         for imaging_target in imlist:
+            datacolumn = imaging_target['datacolumn']
+
             minimal_tclean_inputs = MinimalTcleanHeuristicsInputsGenerator(imaging_target['vis'],
                                                                            imaging_target['field'],
                                                                            imaging_target['intent'],
@@ -119,18 +137,32 @@ class UVcontSub(applycal.Applycal):
                                                                            imaging_target['spw'],
                                                                            imaging_target['spwsel_lsrk'],
                                                                            imaging_target['specmode'])
-            (_, _, _, spw_topo_chan_param_dict, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
-            field_ids = imaging_target['heuristics'].field(imaging_target['intent'], imaging_target['field'])[0]
-            # TODO: Use automatics dict hierarchy
-            if field_ids not in fitspec:
-                fitspec[field_ids] = {}
-            if minimal_tclean_inputs.spw not in fitspec[field_ids]:
-                fitspec[field_ids][minimal_tclean_inputs.spw] = {}
+
+            fields[minimal_tclean_inputs.field] = True
+            spws[minimal_tclean_inputs.spw] = True
+
+            (_, _, spw_topo_freq_param_dict, spw_topo_chan_param_dict, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
+
+            field_ids = imaging_target['heuristics'].field(minimal_tclean_inputs.intent, minimal_tclean_inputs.field)[0]
+
             fitspec[field_ids][minimal_tclean_inputs.spw]['chan'] = spw_topo_chan_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
 
-        #contfile = inputs.context.contfile if inputs.context.contfile is not None else 'cont.dat'
+            # Collect frequency ranges for weblog
+            topo_freq_fitorder_dict[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]['freq'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
+
+            # Default fit order
+            fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder'] = 1
+
+            # Check for any user specified fit order.
+            if minimal_tclean_inputs.field in fitorder:
+                if minimal_tclean_inputs.spw in fitorder[minimal_tclean_inputs.field]:
+                    fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder'] = fitorder[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]
+
+            # Collect fit order for weblog
+            topo_freq_fitorder_dict[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]['fitorder'] = fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder']
 
         result = UVcontSubResults()
+        result.topo_freq_fitorder_dict = topo_freq_fitorder_dict
 
         outputvis = inputs.vis.replace('_targets', '_targets_line')
         # Check if it already exists and remove it
@@ -138,11 +170,26 @@ class UVcontSub(applycal.Applycal):
             LOG.info('Removing {} from disk'.format(outputvis))
             shutil.rmtree(outputvis)
 
+        # Run uvcontsub task
+        uvcontsub_args = {'vis': inputs.vis,
+                          'datacolumn': datacolumn,
+                          'outputvis': outputvis,
+                          'intent': utils.to_CASA_intent(inputs.ms, intent),
+                          'fitspec': fitspec.as_plain_dict(),
+                          'field': ','.join(fields.keys()),
+                          'spw': ','.join(spws.keys())}
+        uvcontsub_job = casa_tasks.uvcontsub(**uvcontsub_args)
+        try:
+            casa_uvcontsub_result = self._executor.execute(uvcontsub_job)
+        except OSError as e:
+            LOG.warning(f'Caught uvcontsub exception: {e}')
+
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, outputvis)
 
         result.vis = inputs.vis
         result.outputvis = outputvis
+        result.casa_uvcontsub_result = casa_uvcontsub_result
 
         return result
 
@@ -189,7 +236,9 @@ class UVcontSubResults(basetask.Results):
         self.vis = None
         # TODO: outputvis needed?
         self.outputvis = None
+        self.topo_freq_fitorder_dict = None
         self.line_mses = []
+        self.casa_uvcontsub_result = None
         self.error = False
         self.error_msg = ''
 
