@@ -40,7 +40,9 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<th scope="col" rowspan="2">Dst Type</th>
 			<th scope="col" colspan="3">Number Imported</th>
 			<th scope="col" rowspan="2">Size</th>
+			% if not singledish_result(result):
 			<th scope="col" rowspan="2">flux.csv</th>
+			% endif
 		</tr>
 		<tr>
 			<th>Scans</th>
@@ -62,7 +64,9 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<td>${len(ms.fields)}</td>
 			<td>${len({source.name for source in ms.sources if 'TARGET' in source.intents})}</td>
 			<td>${str(ms.filesize)}</td>
+			% if not singledish_result(result):
 			<td><a href="${fluxcsv_files[ms.basename]}" class="replace-pre" data-title="flux.csv">View</a> or <a href="${fluxcsv_files[ms.basename]}" download="${fluxcsv_files[ms.basename]}">download</a></td>
+			% endif
 		</tr>
 	% endfor
 % endfor

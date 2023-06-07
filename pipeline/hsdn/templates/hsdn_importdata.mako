@@ -1,6 +1,14 @@
 <%!
 import os
 from functools import reduce
+
+def singledish_result(results_list):
+    result_repr = ''
+    if len(results_list) > 0:
+        importdata_result = results_list[0]
+        result_repr = str(importdata_result)
+
+    return result_repr.find('SDImportDataResults') != -1
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 <%namespace name="importdata" file="importdata.mako"/>
@@ -33,16 +41,16 @@ def get_spwmap(ms):
         for spw in ms.get_spectral_windows(science_windows_only=True):
             spwmap[spw.id] = [spw.id]
     return spwmap
-  
+
 spwmap = {}
 for ms in get_imported_ms():
     spwmap[ms.basename] = get_spwmap(ms)
-    
+
 fieldmap = {}
 for ms in get_imported_ms():
     map_as_name = dict([(ms.fields[i].name, ms.fields[j].name) for i, j in ms.calibration_strategy['field_strategy'].items()])
     fieldmap[ms.basename] = map_as_name
-    
+
 contents = {}
 for vis, _spwmap in spwmap.items():
     _fieldmap = fieldmap[vis]
@@ -76,7 +84,7 @@ for vis, _spwmap in spwmap.items():
 -->
 
 <p>Data from ${num_mses} measurement set${'s were' if num_mses != 1 else ' was'}
- registered with the pipeline. The imported data 
+ registered with the pipeline. The imported data
 ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 
 <table class="table table-bordered table-striped table-condensed"
@@ -90,7 +98,9 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<th scope="col" rowspan="2">Dst Type</th>
 			<th scope="col" colspan="3">Number Imported</th>
 			<th scope="col" rowspan="2">Size</th>
+			% if not singledish_result(result):
 			<th scope="col" rowspan="2">flux.csv</th>
+			% endif
 		</tr>
 		<tr>
 			<th>Scans</th>
@@ -112,7 +122,9 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<td>${len(ms.fields)}</td>
 			<td>${len({source.name for source in ms.sources if 'TARGET' in source.intents})}</td>
 			<td>${str(ms.filesize)}</td>
+			% if not singledish_result(result):
 			<td><a href="${fluxcsv_files[ms.basename]}" class="replace-pre" data-title="flux.csv">View</a> or <a href="${fluxcsv_files[ms.basename]}" download="${fluxcsv_files[ms.basename]}">download</a></td>
+			% endif:
 		</tr>
 	% endfor
 % endfor
@@ -151,7 +163,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 	%endfor
 	</tbody>
 </table>
-% else:
+% elif not singledish_result(result):
 <p>No flux densities were imported.</p>
 % endif
 
@@ -191,8 +203,8 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 % endif
 
 <h4>Summary of Reduction Group</h4>
-<p>Reduction group is a set of data that will be processed together at the following stages such as 
-baseline subtraction and imaging. Grouping is performed based on field and spectral window properties 
+<p>Reduction group is a set of data that will be processed together at the following stages such as
+baseline subtraction and imaging. Grouping is performed based on field and spectral window properties
 (frequency coverage and number of channels).</p>
 
 <table class="table table-bordered table-striped table-condensed"
@@ -225,7 +237,7 @@ baseline subtraction and imaging. Grouping is performed based on field and spect
 </table>
 
 <h4>Calibration Strategy</h4>
-<p>Summary of sky calibration mode, spectral window mapping for T<sub>sys</sub> calibration, 
+<p>Summary of sky calibration mode, spectral window mapping for T<sub>sys</sub> calibration,
 and mapping information on reference and target fields.</p>
 <table class="table table-bordered table-striped table-condensed"
        summary="Summary of Calibration Strategy">
