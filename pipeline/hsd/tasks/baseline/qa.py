@@ -57,10 +57,10 @@ class SDBaselineQAHandler(pqa.QAPlugin):
             group_id_list.append(reduction_group_id)
             spw_id_list.append(spw_id)
             field_id_list.append(field_id)
-        scores.append(qacalc.score_sd_line_detection_for_ms(group_id_list,
-                                                            field_id_list,
-                                                            spw_id_list,
-                                                            lines_list))
+        qacalc.score_sd_line_detection_for_ms(group_id_list,
+                                              field_id_list,
+                                              spw_id_list,
+                                              lines_list)
         for figfile, stat in result.outcome['baseline_quality_stat'].items():
             plot = _get_plot(result.outcome['plots'], figfile)
             if plot is None:
