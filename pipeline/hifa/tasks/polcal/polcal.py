@@ -264,6 +264,7 @@ class Polcal(basetask.StandardTaskTemplate):
                 'outputvis': outputvis,
                 'spw': sci_spws,
                 'datacolumn': 'corrected',
+                'reindex': False,
             }
             mstransform_job = casa_tasks.mstransform(**task_args)
             self._executor.execute(mstransform_job)
