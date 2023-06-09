@@ -87,9 +87,10 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"Deriving polarisation calibration for session '{session_name}' with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
-        # Check that each MS in session shares the same polarisation calibrator
-        # by field name.
-        self._check_matching_pol_field(session_name, vislist)
+        # Check that each MS in session shares the same one polarisation
+        # calibrator by field name; stop processing session if not.
+        if not self._check_matching_pol_field(session_name, vislist):
+            return {}
 
         # Retrieve reference antenna for this session.
         refant = self._get_refant(session_name, vislist)
@@ -118,8 +119,7 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"{session_msname}: compute estimate of polarisation.")
         uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result)
 
-        # TODO: what if there are multiple polarisation calibrator fields?
-        # Retrieve fractional Stokes results for averaged SpW for first
+        # Retrieve fractional Stokes results for averaged SpW for the
         # polarisation calibrator field.
         smodel = list(uncal_pfg_result.values())[0]['SpwAve']
 
@@ -136,8 +136,7 @@ class Polcal(basetask.StandardTaskTemplate):
         polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, smodel,
                                                                           scan_duration, spwmaps)
 
-        # TODO: what if polcal ran as multiple steps?
-        # Retrieve fractional Stokes results for averaged SpW for first
+        # Retrieve fractional Stokes results for averaged SpW for the
         # polarisation calibrator field.
         smodel = list(polcal_phase_result.polcal_returns[0].values())[0]['SpwAve']
 
@@ -215,27 +214,32 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"Session '{session_name}' is using reference antenna: {ms.reference_antenna}.")
         return ms.reference_antenna
 
-    def _check_matching_pol_field(self, session_name: str, vislist: List[str]):
-        # Retrieve polarisation calibrator fields for each MS in session.
+    def _check_matching_pol_field(self, session_name: str, vislist: List[str]) -> bool:
+        # Retrieve polarisation calibrator field name for each MS in session.
         pol_fields = {}
         for vis in vislist:
             ms = self.inputs.context.observing_run.get_ms(name=vis)
-            pol_fields[vis] = ms.get_fields(intent=self.inputs.intent)
+            pol_fields[vis] = [field.name for field in ms.get_fields(intent=self.inputs.intent)]
 
-        # Check if each MS has same number of polarisation fields.
-        if len({len(f) for f in pol_fields.values()}) != 1:
-            LOG.warning(f"For session '{session_name}' the measurement sets do not have equal number of polarisation"
-                        f" calibrator fields:")
+        check_ok = True
+        # Check that each MS has one and only one polarisation calibrator.
+        if not all(len(f) == 1 for f in pol_fields.values()):
+            msg = f"Cannot process session '{session_name}': one or more measurement sets do not have exactly 1" \
+                  f" polarisation calibrator field."
             for vis, fields in pol_fields.items():
-                LOG.warning(f" {vis} has polarisation calibrator field(s): {utils.commafy([f.name for f in fields])}")
-        # If the MSes have matching number of polarisation fields, check if
-        # the fields are matching by name.
-        elif len(sorted({f.name for visf in pol_fields.values() for f in visf})) != 1:
-            LOG.warning(f"For session {session_name}, the measurement sets do not have matching polarisation"
-                        f" calibrator field(s) (do not match by name):")
-            for vis, visf in pol_fields.items():
-                LOG.warning(f" {vis} has polarisation calibrator field(s):"
-                            f" {utils.commafy(sorted(f.name for f in visf))}")
+                msg += f"\n  {vis} has polarisation calibrator field(s): {utils.commafy(fields)}"
+            LOG.warning(msg)
+            check_ok = False
+        # Check that the polarisation field for each MS matches by name.
+        elif len({field for visfields in pol_fields.values() for field in visfields}) != 1:
+            msg = f"Cannot process session '{session_name}': the measurement sets do not have the same polarisation" \
+                  f" calibrator (fields do not match by name)."
+            for vis, fields in pol_fields.items():
+                msg += f"\n  {vis} has polarisation calibrator field: {fields}"
+            LOG.warning(msg)
+            check_ok = False
+
+        return check_ok
 
     def _run_applycal(self, vis: str, parang: bool = False):
         acinputs = applycal.IFApplycalInputs(context=self.inputs.context, vis=vis, intent=self.inputs.intent,
