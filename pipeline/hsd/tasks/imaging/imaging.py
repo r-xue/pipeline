@@ -1815,8 +1815,6 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except Exception:
-        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. '
-                    'Result might not be correct.')
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
