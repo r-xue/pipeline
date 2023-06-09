@@ -389,10 +389,8 @@ class MetaDataReader(object):
             collections.defaultdict: dictionary of invalid pointing data
         """
         if len(self.invalid_pointing_data) > 0:
-            LOG.warning('There are rows without corresponding POINTING data. Affected rows are identified and will be flagged in hsd_flagdata stage.')
-            LOG.warning('Affected antennas are: {} in {}'.format(
-                ' '.join([self.ms.antennas[k].name for k in self.invalid_pointing_data]),
-                self.ms.basename))
+
+            LOG.attention('There are rows without corresponding POINTING data. Affected rows are identified and will be flagged in hsd_flagdata stage. Affected antennas are: {} in {}'.format(' '.join([self.ms.antennas[k].name for k in self.invalid_pointing_data]), self.ms.basename))
 
         return self.invalid_pointing_data
 
