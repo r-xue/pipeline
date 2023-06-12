@@ -229,7 +229,7 @@ class RestoreData(basetask.StandardTaskTemplate):
 
         # Copy the required calibration products from "someplace" on disk
         #   (default ../products) to ../rawdata. The pipeline manifest file
-        #   if present is used to determine which files to copy. Otherwise   
+        #   if present is used to determine which files to copy. Otherwise
         #   a file naming scheme is used. The latter is deprecated as it
         #   requires the exportdata / restoredata tasks to be synchronized
         #   but it is maintained for testing purposes.
@@ -580,8 +580,8 @@ class RestoreData(basetask.StandardTaskTemplate):
                             tar.extractall(path=inputs.output_dir, members=extractlist)
 
     def _do_applycal(self):
-        container = vdp.InputsContainer(applycal.Applycal, self.inputs.context)
-        applycal_task = applycal.Applycal(container)
+        container = vdp.InputsContainer(applycal.SerialApplycal, self.inputs.context)
+        applycal_task = applycal.SerialApplycal(container)
         return self._executor.execute(applycal_task, merge=True)
 
     def _get_sessions(self, sessions=None, vis=None):
