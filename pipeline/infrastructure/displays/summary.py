@@ -2,9 +2,9 @@ import datetime
 import math
 import operator
 import os
-from typing import Tuple
+from typing import TYPE_CHECKING, Tuple
 
-from math import floor, ceil ###
+from math import floor, ceil
 import matplotlib.dates as dates
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -15,7 +15,7 @@ import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measures import FrequencyUnits, DistanceUnits
-from pipeline.h.tasks.common import atmutil ###
+from pipeline.h.tasks.common import atmutil
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
@@ -23,6 +23,9 @@ from . import plotmosaic
 from . import plotpwv
 from . import plotweather
 from . import plotsuntrack
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 DISABLE_PLOTMS = False
@@ -171,7 +174,6 @@ class WeatherChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-
 class ElVsTimeChart(object):
     def __init__(self, context, ms):
         self.context = context
@@ -316,7 +318,7 @@ class FieldVsTimeChart(object):
                     if intent in FieldVsTimeChart._subscan_intents and \
                             len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
                         time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
-                                       for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
+                                       for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id)]
                     else:
                         # all 'datetime' objects are in UTC.
                         start = utils.get_epoch_as_datetime(scan.start_time)
@@ -372,7 +374,7 @@ class FieldVsTimeChart(object):
         for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0)):
             if (intent in self.inputs.ms.intents) or 'UNKNOWN' in intent:
                 plt.gca().fill([x, x+0.05, x+0.05, x], size, facecolor=colour,
-                                 edgecolor=colour)
+                               edgecolor=colour)
                 plt.text(x+0.06, 0.4, intent, size=9, va='bottom', rotation=45)
                 x += 0.12
 
@@ -497,7 +499,7 @@ class IntentVsTimeChart(object):
                 if intent in IntentVsTimeChart._subscan_intents and \
                         len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
                     time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
-                                   for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
+                                   for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id)]
                 else:
                     time_ranges = ((scan_start, scan_end),)
                 for (time_start, time_end) in time_ranges:
@@ -889,7 +891,7 @@ class UVChart(object):
 
         # Don't plot if no spw was found for the field/source/intent or if the set of plotting parameters doesn't
         # exist in the MS. See PIPE-1225.
-        if (self.spw_id is None) or (not self._is_valid()): 
+        if (self.spw_id is None) or (not self._is_valid()):
             LOG.debug('Disabling UV coverage plot due to being unable to find a set of parameters to plot.')
             return None
 
@@ -952,11 +954,11 @@ class UVChart(object):
         if not target_sources:
             repr_src = None
 
-        if repr_src: 
+        if repr_src:
             field, field_name, intent = self._get_field_for_source(repr_src)
             if repr_spw:
                 # If both are defined, return representative src and spw.
-                return str(repr_spw), field, field_name, intent 
+                return str(repr_spw), field, field_name, intent
             else:
                 # If only the repr_src is defined, get the field, then find the first valid spw
                 spw = self._get_first_available_science_spw(field, intent)
@@ -1026,7 +1028,7 @@ class UVChart(object):
         field, field_name, intent = self._get_field_for_source(src.name)
         spw = self._get_first_available_science_spw(field, intent)
 
-        return spw, field, field_name, intent 
+        return spw, field, field_name, intent
 
     def _get_field_for_source(self, src_name: str) -> Tuple[str, str, str]:
         sources_with_name = [s for s in self.ms.sources if s.name == src_name]
@@ -1037,7 +1039,7 @@ class UVChart(object):
             LOG.warning('More than one source called {} in {}. Taking first source'.format(src_name, self.ms.basename))
         src = sources_with_name[0]
 
-        # Identify fields covered by an intent in preferred_intent_order, in order 
+        # Identify fields covered by an intent in preferred_intent_order, in order
         for intent in self.preferred_intent_order:
             fields_with_intent = [f for f in src.fields if intent in f.intents]
             if fields_with_intent:
@@ -1073,10 +1075,15 @@ class UVChart(object):
 
 
 class SpwIdVsFreqChartInputs(vdp.StandardInputs):
-    """Class to input parameters of SpwIdVsFreqChart."""
+    """Inputs class for SpwIdVsFreqChart."""
 
     @vdp.VisDependentProperty
-    def output(self):
+    def output(self) -> str:
+        """Set filepath of output PNG file.
+
+        Returns:
+            output: Filepath of output PNG file
+        """
         session_part = self.ms.session
         ms_part = self.ms.basename
         output = os.path.join(self.context.report_dir,
@@ -1084,7 +1091,14 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
                               ms_part, 'spwid_vs_freq.png')
         return output
 
-    def __init__(self, context, vis=None, output=None):
+    def __init__(self, context: 'Context', vis: str = None, output: str = None) -> None:
+        """Construct SpwIdVsFreqChartInputs instance.
+
+        Args:
+            context: Pipeline context
+            vis: Name of MS
+            output: Filepath of output PNG file
+        """
         super().__init__()
 
         self.context = context
@@ -1093,56 +1107,60 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
 
 
 class SpwIdVsFreqChart(object):
-    """Class to produce a plot of SPW ID Versus Frequency coverage."""
+    """Generate a plot of SPW ID Versus Frequency coverage."""
 
     Inputs = SpwIdVsFreqChartInputs
 
-    def __init__(self, inputs, context):
+    def __init__(self, inputs, context) -> None:
+        """Construct SpwIdVsFreqChart instance.
+
+        Args:
+            inputs: SpwIdVsFreqChartInputs instance
+            context: Pipeline context
+        """
         self.inputs = inputs
         self.context = context
         self.figfile = self._get_figfile()
 
-    def plot(self):
+    def plot(self) -> logger.Plot:
+        """Create the plot.
+
+        Returns:
+            Plot object
+        """
         filename = self.inputs.output
         if os.path.exists(filename):
             return self._get_plot_object()
 
         fig = plt.figure(figsize=(9.6, 7.2))
         ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+
+        # Make a plot of frequency vs. spwid
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
-        list_tuning_spwids = []
-        for tuning_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
-             list_tuning_spwids.append(tuning_spwids)
-        spw_width = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]
-        spw_minfs = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]
-        spw_maxfs = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]
-        index = 0
+        list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]  # GHz
+        list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]  # GHz
+        list_fmax = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]  # GHz
         list_all_spwids = []
-        for tuning_spwids in list_tuning_spwids:
-            len_n = len(tuning_spwids)
-            start = len_n*index
-            end = len_n*(index+1)
-            fmin = spw_minfs[start : end]
-            w = spw_width[start : end]
-            fmax = spw_maxfs[start : end]
-            list_all_spwids.extend(tuning_spwids)
-            ax.barh(list_tuning_spwids[index], w, left=fmin)
+        index = 0
+        for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
+            len_spwids = len(list_spwids)
+            start = len_spwids*index
+            end = len_spwids*(index+1)
+            fmins = list_fmin[start:end]
+            bws = list_bw[start:end]
+            ax.barh(list_spwids, bws, left=fmins)
+            list_all_spwids.extend(list_spwids)
             index += 1
         ax.set_xlabel("Frequency (GHz)", fontsize=14)
         ax.set_ylabel("spw ID", fontsize=14)
         ax.invert_yaxis()
-        x_min_start = min(spw_minfs)
-        x_min_end = max(spw_minfs)
-        x_max_start = min(spw_maxfs)
-        x_max_end = max(spw_maxfs)
+        x_min_start = min(list_fmin)
+        x_max_end = max(list_fmax)
         y_start = min(list_all_spwids)
         y_end = max(list_all_spwids)
-        x_majorticks = []
-        x_minorticks = []
-        y_ticks = []
         xstep = 1
         xmargin = 1
         ystep = 2
@@ -1163,11 +1181,11 @@ class SpwIdVsFreqChart(object):
         ax.set_xticks(x_majorticks, fontsize=14)
         ax.set_xticks(x_minorticks, minor=True)
         ax.set_yticks(y_ticks, fontsize=14)
-        factor = 1.0
-        yspace = len(y_ticks) / (factor*(max(y_ticks) - min(y_ticks)))
-        for f, w, spwid in zip(spw_minfs, spw_width, list_all_spwids):
+        yspace = len(y_ticks) / (max(y_ticks) - min(y_ticks))
+        for f, w, spwid in zip(list_fmin, list_bw, list_all_spwids):
             ax.annotate('%s' % spwid, (f+w/2, spwid-yspace), fontsize=14)
 
+        # Make a plot of frequency vs. atm transmission (right y-axis)
         atm_color = 'm'
         axes_atm = ax.twinx()
         axes_atm.set_xlim(min(x_minorticks)-xmargin, max(x_minorticks)+xmargin)
@@ -1189,14 +1207,24 @@ class SpwIdVsFreqChart(object):
         plt.close()
         return self._get_plot_object()
 
-    def _get_figfile(self):
+    def _get_figfile(self) -> str:
+        """Get filepath of output PNG file.
+
+        Returns:
+            Filepath of output PNG file
+        """
         session_part = self.inputs.ms.session
         ms_part = self.inputs.ms.basename
         return os.path.join(self.context.report_dir,
                             'session%s' % session_part,
                             ms_part, 'spwid_vs_freq.png')
 
-    def _get_plot_object(self):
+    def _get_plot_object(self) -> logger.Plot:
+        """Get plot object.
+
+        Returns:
+            Plot object
+        """
         filename = self.inputs.output
         return logger.Plot(filename,
                            x_axis='Frequency',
@@ -1206,8 +1234,8 @@ class SpwIdVsFreqChart(object):
 
 def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
     """
-    This function returns a list of start/end epoch pair of 
-    consequtive integrations (a subscan) with a selected intent 
+    This function returns a list of start/end epoch pair of
+    consequtive integrations (a subscan) with a selected intent
     in a selected scan. It can be used to filter subscans with
     an intent in a mixed intents scans, e.g., an ALMA TP
     scan that has both 'TARGET' and 'REFERENCE' subscans.
@@ -1215,7 +1243,7 @@ def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
     Parameters
         msname: (string) the name of MeasurementSet
         casa_intent: (string) CASA intent to filter
-        scanid: (int) a Scan ID to search. Must be 
+        scanid: (int) a Scan ID to search. Must be
     Returns
         a list of start/end epoch tuple, e.g.,
         [(start_epoch, end_epoch), (start_epoch, end_epoch), ....]
@@ -1231,7 +1259,7 @@ def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
         # Define a reference SpW ID that matches a selected scan and intent
         # the first spw tend to be WVR in ALMA. Pick the last one instead.
         intent_scan_spw = np.intersect1d(msmd.spwsforintent(intent=casa_intent),
-                                            msmd.spwsforscan(scan=scanid))
+                                         msmd.spwsforscan(scan=scanid))
         if len(intent_scan_spw) == 0:
             raise ValueError('No Spw match for a selected scan and intent')
         ref_spw = intent_scan_spw[-1]
@@ -1250,14 +1278,14 @@ def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
     scan_times.sort()
     # obtain indices in scan_times array that has the selected intent
     scan_intent_idx = np.intersect1d(scan_times, intent_times, return_indices=True)[1]
-    if len(scan_intent_idx) == 0: # No integration with the intent
+    if len(scan_intent_idx) == 0:  # No integration with the intent
         LOG.info('No match found for scan {} and intent {}'.format(scanid, casa_intent))
         return ()
-    
+
     # obtain subscan start/end indices
-    if len(scan_intent_idx) == 1: # only one integration matches
+    if len(scan_intent_idx) == 1:  # only one integration matches
         split_scan_intent_idx = np.array([scan_intent_idx])
-    else: #split an array by consecutive idx
+    else:  # split an array by consecutive idx
         split_scan_intent_idx = np.split(scan_intent_idx, np.where(np.diff(scan_intent_idx) != 1)[0]+1)
 
     LOG.info('Identified {} subscans'.format(len(split_scan_intent_idx)))
