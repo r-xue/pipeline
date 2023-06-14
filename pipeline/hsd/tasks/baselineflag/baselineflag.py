@@ -1,5 +1,6 @@
-import os
 import collections
+import os
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -18,6 +19,11 @@ from .flagsummary import SDBLFlagSummary
 from .. import common
 from ..common import utils as sdutils
 
+if TYPE_CHECKING:
+    from numbers import Integral
+
+    from pipeline.infrastructure import Context
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -25,14 +31,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
     """
     Inputs for single dish flagging
     """
-    def __to_numeric(self, val):
-        return sdutils.to_numeric(val)
-
-    def __to_bool(self, val):
-        return sdutils.to_bool(val)
-
-    def __to_int(self, val):
-        return int(val)
 
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR,
@@ -42,50 +40,65 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     spw = vdp.VisDependentProperty(default='')
     intent = vdp.VisDependentProperty(default='TARGET')
-    iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
-    flag_tsys = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    tsys_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
-    flag_prfre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    prfre_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
-    flag_pofre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    pofre_thresh = vdp.VisDependentProperty(default=1.3333, fconvert=__to_numeric)
-    flag_prfr = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    prfr_thresh = vdp.VisDependentProperty(default=4.5, fconvert=__to_numeric)
-    flag_pofr = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    pofr_thresh = vdp.VisDependentProperty(default=4.0, fconvert=__to_numeric)
-    flag_prfrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    prfrm_thresh = vdp.VisDependentProperty(default=5.5, fconvert=__to_numeric)
-    prfrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
-    flag_pofrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    pofrm_thresh = vdp.VisDependentProperty(default=5.0, fconvert=__to_numeric)
-    pofrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
-    plotflag = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    iteration = vdp.VisDependentProperty(default=5, fconvert=int)
+    edge = vdp.VisDependentProperty(default=[0, 0], fconvert=sdutils.to_list)
+    flag_tsys = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    tsys_thresh = vdp.VisDependentProperty(default=3.0, fconvert=sdutils.to_numeric)
+    flag_prfre = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    prfre_thresh = vdp.VisDependentProperty(default=3.0, fconvert=sdutils.to_numeric)
+    flag_pofre = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    pofre_thresh = vdp.VisDependentProperty(default=1.3333, fconvert=sdutils.to_numeric)
+    flag_prfr = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    prfr_thresh = vdp.VisDependentProperty(default=4.5, fconvert=sdutils.to_numeric)
+    flag_pofr = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    pofr_thresh = vdp.VisDependentProperty(default=4.0, fconvert=sdutils.to_numeric)
+    flag_prfrm = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    prfrm_thresh = vdp.VisDependentProperty(default=5.5, fconvert=sdutils.to_numeric)
+    prfrm_nmean = vdp.VisDependentProperty(default=5, fconvert=int)
+    flag_pofrm = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    pofrm_thresh = vdp.VisDependentProperty(default=5.0, fconvert=sdutils.to_numeric)
+    pofrm_nmean = vdp.VisDependentProperty(default=5, fconvert=int)
+    plotflag = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
 
     @vdp.VisDependentProperty
-    def infiles(self):
+    def infiles(self) -> Optional[Union[str, List[str]]]:
+        """Name of input MS.
+
+        This is just an alias of vis.
+
+        Returns:
+            MS name or list of MS names.
+        """
         return self.vis
 
     @infiles.convert
-    def infiles(self, value):
+    def infiles(self, value: Optional[Union[str, List[str]]]) -> Optional[Union[str, List[str]]]:
+        """Additional conversion operation on infiles.
+
+        It doesn't apply any conversion. Instead, this ensures
+        synchronization of infiles with vis.
+
+        Args:
+            value: Original value.
+
+        Returns:
+            Converted value.
+        """
         self.vis = value
         return value
 
-    @iteration.convert
-    def iteration(self, value):
-        return int(value)
-
-    edge = vdp.VisDependentProperty(default=[0, 0])
-
-    @edge.convert
-    def edge(self, value):
-        return sdutils.to_list(value)
-
-    @vdp.VisDependentProperty
-    def antenna(self):
-        return ''
+    antenna = vdp.VisDependentProperty(default='')
 
     @antenna.convert
-    def antenna(self, value):
+    def antenna(self, value: Optional[str]) -> str:
+        """Make antenna selection consistent with vis.
+
+        Args:
+            value: Original antenna selection.
+
+        Returns:
+            Updated antenna selection.
+        """
         antennas = self.ms.get_antenna(value)
         # if all antennas are selected, return ''
         if len(antennas) == len(self.ms.antennas):
@@ -95,6 +108,14 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def field(self):
+        """Define default field selection.
+
+        Default field selection is constructed from vis
+        and observing intent.
+
+        Returns:
+            Default field selection.
+        """
         # this will give something like '0542+3243,0343+242'
         field_finder = fieldnames.IntentFieldnames()
         intent_fields = field_finder.calculate(self.ms, self.intent)
@@ -107,7 +128,14 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def pol(self):
-        # filters polarization by spw
+        """Define default polarization selection.
+
+        Default polarization selection is constructed
+        from vis and spw.
+
+        Returns:
+            Default polarization selection.
+        """
         # need to convert input (virtual) spw into real spw
         real_spw = sdutils.convert_spw_virtual2real(self.context, self.spw, [self.ms])[self.vis]
         selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(real_spw, with_channels=True)]
@@ -117,18 +145,85 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
         return ','.join(pols)
 
-    def __init__(self, context, output_dir=None,
-                 iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
-                 flag_prfre=None, prfre_thresh=None,
-                 flag_pofre=None, pofre_thresh=None,
-                 flag_prfr=None, prfr_thresh=None,
-                 flag_pofr=None, pofr_thresh=None,
-                 flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
-                 flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 plotflag=None,
-                 infiles=None, antenna=None, field=None,
-                 spw=None, pol=None,
-                 parallel=None):
+    def __init__(self,
+                 context: 'Context',
+                 output_dir: Optional[str] = None,
+                 iteration: Optional[Union[str, int]] = None,
+                 edge: Optional[Union[str, int, List[int]]] = None,
+                 flag_tsys: Optional[Union[str, bool]] = None,
+                 tsys_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_prfre: Optional[Union[str, bool]] = None,
+                 prfre_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_pofre: Optional[Union[str, bool]] = None,
+                 pofre_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_prfr: Optional[Union[str, bool]] = None,
+                 prfr_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_pofr: Optional[Union[str, bool]] = None,
+                 pofr_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_prfrm: Optional[Union[str, bool]] = None,
+                 prfrm_thresh: Optional[Union[str, 'Integral']] = None,
+                 prfrm_nmean: Optional[Union[str, 'Integral']] = None,
+                 flag_pofrm: Optional[Union[str, bool]] = None,
+                 pofrm_thresh: Optional[Union[str, 'Integral']] = None,
+                 pofrm_nmean: Optional[Union[str, 'Integral']] = None,
+                 plotflag: Optional[Union[str, bool]] = None,
+                 infiles: Optional[Union[str, List[str]]] = None,
+                 antenna: Optional[Union[str, List[str]]] = None,
+                 field: Optional[Union[str, List[str]]] = None,
+                 spw: Optional[Union[str, List[str]]] = None,
+                 pol: Optional[Union[str, List[str]]] = None,
+                 parallel: Optional[Union[bool, str]] = None):
+        """Construct SDBLFlagInputs instance.
+
+        Args:
+            context: Pipeline context.
+            output_dir: Output directory.
+            iteration: Number of iterations to perform sigma clipping to
+                       calculate threshold value of flagging. Defaults to 5.
+            edge: Number of channels to be dropped from the edge.
+                  Defaults to [0, 0], which means that all channels
+                  are processed.
+            flag_tsys: Activate (True) or deactivate (False) Tsys flag.
+                       Defaults to True.
+            tsys_thresh: Threshold value for Tsys flag. Defaults to 3.0.
+            flag_prfre: Activate (True) or deactivate (False) flag by expected
+                        rms of pre-fit spectra. Defaults to True.
+            prfre_thresh: Threshold value for flag by expected rms of pre-fit
+                          spectra. Defaults to 3.0.
+            flag_pofre: Activate (True) or deactivate (False) flag by expected
+                        rms of post-fit spectra. Defualts to True.
+            pofre_thresh: Threshold value for flag by expected rms of post-fit
+                          spectra. Defaults to 1.333.
+            flag_prfr: Activate (True) or deactivate (False) flag by rms of
+                       pre-fit spectra. Defaults to True.
+            prfr_thresh: Threshold value for flag by rms of pre-fit spectra.
+                         Defaults to 4.5.
+            flag_pofr: Activate (True) or deactivate (False) flag by rms of
+                       post-fit spectra. Defaults to True.
+            pofr_thresh: Threshold value for flag by rms of post-fit spectra.
+                         Defaults to 4.0.
+            flag_prfrm: Activate (True) or deactivate (False) flag by running
+                        mean of pre-fit spectra. Defaults to True.
+            prfrm_thresh: Threshold value for flag by running mean of pre-fit
+                          spectra. Defaults to 5.5.
+            prfrm_nmean: Number of channels for running mean of pre-fit spectra.
+                         Defaults to 5.
+            flag_pofrm: Activate (True) or deactivate (False) flag by running
+                        mean of post-fit spectra. Defaults to True.
+            pofrm_thresh: Threshold value for flag by running mean of post-fit
+                          spectra. Defaults to 5.0.
+            pofrm_nmean: Number of channels for running mean of post-fit spectra.
+                         Defaults to 5.
+            plotflag: Create summary plots if True. Defaults to True.
+            infiles: MS selection.
+            antenna: Antenna selection.
+            field: Field selection.
+            spw: Spectral window (spw) selection.
+            pol: Polarization selection.
+            parallel: Execute using CASA HPC functionality, if available.
+                      Default is None, which intends to turn on parallel
+                      processing if possible.
+        """
         super().__init__()
 
         # context and vis/infiles must be set first so that properties that require
