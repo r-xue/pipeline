@@ -224,6 +224,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     self.__set_representative_flag(_rgp, _pp)
 
                     self.__warning_if_cycle2(_rgp)
+                    self.__warning_if_effective_bw_eq_chanwidth(_rgp)
 
                     self.__calculate_sensitivity(_cp, _rgp, _pp)
                 finally:
@@ -930,10 +931,14 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
             _pp : Imaging post process parameters of prepare()
         """
-        __rep_source_name, __rep_spwid = _rgp.ref_ms.get_representative_source_spw()
+        _rgp.rep_source_name, _rgp.rep_spw_id = _rgp.ref_ms.get_representative_source_spw()
         _pp.is_representative_source_and_spw = \
-            __rep_spwid == _rgp.combined.spws[REF_MS_ID] and \
-            __rep_source_name == utils.dequote(_rgp.source_name)
+            _rgp.rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
+            _rgp.rep_source_name == utils.dequote(_rgp.source_name)
+
+        __spwobj = _rgp.ref_ms.get_spectral_window(_rgp.rep_spw_id)
+        if __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
+            LOG.warning("Effective band width is nominal.")
 
     def __warning_if_cycle2(self, _rgp: imaging_params.ReductionGroupParameters):
         """If it processes MS before Cycle2, logs warning.
@@ -943,7 +948,17 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         __cqa = casa_tools.quanta
         if __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
-            LOG.warning("Cycle 2 and earlier project with nominal effective band width. ")
+            LOG.warning("Cycle 2 and earlier project with nominal effective band width.")
+
+    def __warning_if_effective_bw_eq_chanwidth(self, _rgp: imaging_params.ReductionGroupParameters):
+        """If the value of Effective BandWidth is equal to Channel Width, logs warning.
+
+        Args:
+            _rgp (imaging_params.ReductionGroupParameters): _description_
+        """
+        __spwobj = _rgp.ref_ms.get_spectral_window(_rgp.rep_spw_id)
+        if __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
+            LOG.warning("Effective band width is equal to Channel Width.")
 
     def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                 _rgp: imaging_params.ReductionGroupParameters,
