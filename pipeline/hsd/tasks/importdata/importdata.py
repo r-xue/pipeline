@@ -43,21 +43,21 @@ class SDImportDataInputs(importdata.ImportDataInputs):
 
     def __init__(self,
                  context: Context,
-                 vis: Optional[List[str]]=None,
-                 output_dir: Optional[str]=None,
-                 asis: Optional[str]=None,
-                 process_caldevice: Optional[bool]=None,
-                 session: Optional[List[str]]=None,
-                 overwrite: Optional[bool]=None,
-                 nocopy: Optional[bool]=None,
-                 bdfflags: Optional[bool]=None,
-                 datacolumns: Optional[Dict]=None,
-                 save_flagonline: Optional[bool]=None,
-                 lazy: Optional[bool]=None,
-                 with_pointing_correction: Optional[bool]=None,
-                 createmms: Optional[str]=None,
-                 ocorr_mode: Optional[str]=None,
-                 hm_rasterscan: Optional[str]=None,
+                 vis: Optional[List[str]] = None,
+                 output_dir: Optional[str] = None,
+                 asis: Optional[str] = None,
+                 process_caldevice: Optional[bool] = None,
+                 session: Optional[List[str]] = None,
+                 overwrite: Optional[bool] = None,
+                 nocopy: Optional[bool] = None,
+                 bdfflags: Optional[bool] = None,
+                 datacolumns: Optional[Dict] = None,
+                 save_flagonline: Optional[bool] = None,
+                 lazy: Optional[bool] = None,
+                 with_pointing_correction: Optional[bool] = None,
+                 createmms: Optional[str] = None,
+                 ocorr_mode: Optional[str] = None,
+                 hm_rasterscan: Optional[str] = None,
                  parallel: Optional[Union[str, bool]] = None):
         """Initialise SDImportDataInputs class.
 
@@ -105,11 +105,11 @@ class SDImportDataResults(basetask.Results):
     """
 
     def __init__(self,
-                 mses: Optional[List[MeasurementSet]]=None,
-                 reduction_group_list: Optional[List[Dict[int, MSReductionGroupDesc]]]=None,
-                 datatable_prefix: Optional[str]=None,
-                 setjy_results: Optional[List[FluxCalibrationResults]]=None,
-                 org_directions: Optional[Dict[str, Union[str, Dict[str, Union[str, float]]]]]=None):
+                 mses: Optional[List[MeasurementSet]] = None,
+                 reduction_group_list: Optional[List[Dict[int, MSReductionGroupDesc]]] = None,
+                 datatable_prefix: Optional[str] = None,
+                 setjy_results: Optional[List[FluxCalibrationResults]] = None,
+                 org_directions: Optional[Dict[str, Union[str, Dict[str, Union[str, float]]]]] = None):
         """Initialise SDImportDataResults class.
 
         Args:
