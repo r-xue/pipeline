@@ -1,10 +1,14 @@
-import os
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.infrastructure import task_registry
+
+if TYPE_CHECKING:
+    from numbers import Integral
+
+    from pipeline.infrastructure import Context
 
 __all__ = [
     'Tsysflag',
@@ -20,15 +24,95 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
     """
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, output_dir=None, vis=None, caltable=None,
-                 flag_nmedian=None, fnm_limit=None, fnm_byfield=None,
-                 flag_derivative=None, fd_max_limit=None,
-                 flag_edgechans=None, fe_edge_limit=None,
-                 flag_fieldshape=None, ff_refintent=None, ff_max_limit=None,
-                 flag_birdies=None, fb_sharps_limit=None,
-                 flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
-                 metric_order=None, normalize_tsys=None, filetemplate=None,
-                 parallel=None):
+    def __init__(self,
+                 context: 'Context',
+                 output_dir: Optional[str] = None,
+                 vis: Optional[List[str]] = None,
+                 caltable: Optional[List[str]] = None,
+                 flag_nmedian: Optional[Union[bool, str]] = None,
+                 fnm_limit: Optional[Union['Integral', str]] = None,
+                 fnm_byfield: Optional[Union[bool, str]] = None,
+                 flag_derivative: Optional[Union[bool, str]] = None,
+                 fd_max_limit: Optional[Union['Integral', str]] = None,
+                 flag_edgechans: Optional[Union[bool, str]] = None,
+                 fe_edge_limit: Optional[Union['Integral', str]] = None,
+                 flag_fieldshape: Optional[Union[bool, str]] = None,
+                 ff_refintent: Optional[str] = None,
+                 ff_max_limit: Optional[Union['Integral', str]] = None,
+                 flag_birdies: Optional[Union[bool, str]] = None,
+                 fb_sharps_limit: Optional[Union['Integral', str]] = None,
+                 flag_toomany: Optional[Union[bool, str]] = None,
+                 tmf1_limit: Optional[Union['Integral', str]] = None,
+                 tmef1_limit: Optional[Union['Integral', str]] = None,
+                 metric_order: Optional[str] = None,
+                 normalize_tsys: Optional[Union[bool, str]] = None,
+                 filetemplate: Optional[str] = None,
+                 parallel: Optional[Union[str, bool]] = None):
+        """Construct TsysflagInputs instance for SD Tsysflag task.
+
+        Args:
+            context: Pipeline context.
+            output_dir: Output directory.
+            vis: List of MeasurementSets (not used).
+            caltable: List of input Tsys calibration tables.
+            flag_nmedian: True to flag Tsys spectra with high median value.
+                          Defaults to True.
+            fnm_limit: Flag spectra with median value higher than
+                       fnm_limit * median of this measure over all spectra.
+                       Defaults to 2.0.
+            fnm_byfield: Evaluate the nmedian metric separately for each field.
+                         Defaults to True.
+            flag_derivative: True to flag Tsys spectra with high median
+                             derivative. Defaults to True.
+            fd_max_limit: Flag spectra with median derivative higher than
+                          fd_max_limit * median of this measure over all
+                          spectra. Defaults to 5.0.
+            flag_edgechans: True to flag edges of Tsys spectra.
+                            Defaults to True.
+            fe_edge_limit: Flag channels whose channel to channel difference >
+                           fe_edge_limit * median across spectrum.
+                           Defaults to 3.0.
+            flag_fieldshape: True to flag Tsys spectra with a radically
+                             different shape to those of the ff_refintent.
+                             Defaults to True.
+            ff_refintent: Data intent that provides the reference shape
+                          for 'flag_fieldshape'. Defaults to 'BANDPASS'.
+            ff_max_limit: Flag Tsys spectra with 'fieldshape' metric values >
+                          ff_max_limit. Defaults to 13.
+            flag_birdies: True to flag channels covering sharp spectral features.
+                          Defaults to True.
+            fb_sharps_limit: Flag channels bracketing a channel to channel
+                             difference > fb_sharps_limit. Defualts to 0.15.
+            flag_toomany: True to flag Tsys spectra for which a proportion of
+                          antennas for given timestamp and/or proportion of
+                          antennas that are entirely flagged in all timestamps
+                          exceeds their respective thresholds.
+                          Defaults to True.
+            tmf1_limit: Flag Tsys spectra for all antennas in a timestamp
+                        and spw if proportion of antennas already flagged
+                        in this timestamp and spw exceeds tmf1_limit.
+                        Defaults to 0.666.
+            tmef1_limit: Flag Tsys spectra for all antennas and all timestamps
+                         in a spw, if proportion of antennas that are already
+                         entirely flagged in all timestamps exceeds tmef1_limit.
+                         Defaults to 0.666.
+            metric_order: Order in which to evaluate the flagging metrics
+                          that are enables. Disabled metrics are skipped.
+                          Default order is as follows:
+                          nmedian derivative edgechans fieldshape birdies toomany
+            normalize_tsys: True to create a normalized Tsys table that is used to
+                            evaluate the Tsys flagging metrics. All newly found
+                            flags are also applied to the original Tsys caltable
+                            that continues to be used for subsequent calibration.
+                            Defaults to False.
+            filetemplate: The name of a text file that contains the manual Tsys
+                          flagging template. If the template flags file is
+                          undefined, a name of the form 'msname.flagtsystemplate.txt'
+                          is assumed.
+            parallel: Execute using CASA HPC functionality, if available.
+                      Default is None, which intends to turn on parallel
+                      processing if possible.
+        """
         super().__init__(
             context=context, output_dir=output_dir, vis=vis, caltable=caltable,
             flag_nmedian=flag_nmedian, fnm_limit=fnm_limit, fnm_byfield=fnm_byfield,
@@ -53,13 +137,3 @@ class SerialTsysflag(tsysflag.Tsysflag):
 class Tsysflag(sessionutils.ParallelTemplate):
     Inputs = TsysflagInputs
     Task = SerialTsysflag
-
-    @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating Tsys flag for {!s}'.format(os.path.basename(vis)))
-        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
-        import traceback
-        tb = traceback.format_exc()
-        if tb.startswith('None'):
-            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
-        return basetask.FailedTaskResults(self.__class__, exception, tb)
