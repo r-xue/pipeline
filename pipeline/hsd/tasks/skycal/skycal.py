@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class SDSkyCalInputs(vdp.StandardInputs):
     """Inputs class for SDSkyCal task."""
     parallel = sessionutils.parallel_inputs_impl()
