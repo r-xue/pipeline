@@ -264,15 +264,15 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
     def __init__(self,
                  context: Context,
-                 atmtype: Optional[Union[int, str, List[int], List[str]]] =None,
-                 dtem_dh: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
-                 h0: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
-                 maxalt: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] =None,
-                 infiles: Optional[Union[str, List[str]]] =None,
-                 antenna: Optional[Union[str, List[str]]] =None,
-                 field: Optional[Union[str, List[str]]] =None,
-                 spw: Optional[Union[str, List[str]]] =None,
-                 pol: Optional[Union[str, List[str]]] =None,
+                 atmtype: Optional[Union[int, str, List[int], List[str]]] = None,
+                 dtem_dh: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] = None,
+                 h0: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] = None,
+                 maxalt: Optional[Union[float, str, dict, List[float], List[str], List[dict]]] = None,
+                 infiles: Optional[Union[str, List[str]]] = None,
+                 antenna: Optional[Union[str, List[str]]] = None,
+                 field: Optional[Union[str, List[str]]] = None,
+                 spw: Optional[Union[str, List[str]]] = None,
+                 pol: Optional[Union[str, List[str]]] = None,
                  parallel: Optional[Union[bool, str]] = None):
         """Initialize Inputs instance for hsd_atmcor.
 
@@ -583,7 +583,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
     def analyse(self, result: SDATMCorrectionResults) -> SDATMCorrectionResults:
         """Analyse results produced by prepare method.
 
-        Do nothing at this moment.
+        Generate domain object of MS with offline ATM correction.
 
         Args:
             result: results instance
@@ -591,7 +591,6 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         Returns:
             input results instance
         """
-        # Generate domain object of baselined MS
         in_ms = self.inputs.ms
         new_ms = generate_ms(result.atmcor_ms_name, in_ms)
         new_ms.set_data_column(DataType.ATMCORR, 'DATA')
