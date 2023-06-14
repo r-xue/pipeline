@@ -1,6 +1,6 @@
 import collections
 import os
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -31,6 +31,57 @@ class SDBLFlagInputs(vdp.StandardInputs):
     """
     Inputs for single dish flagging
     """
+    def __to_numeric(self, val: Any) -> 'Integral':
+        """Convert any value into numeric.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Numeric value
+        """
+        return sdutils.to_numeric(val)
+
+    def __to_bool(self, val: Any) -> bool:
+        """Convert any value into boolean.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Boolean value
+        """
+        return sdutils.to_bool(val)
+
+    def __to_int(self, val: Any) -> int:
+        """Convert any value into integer.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Integer value
+        """
+        return int(val)
+
+    def __to_list(self, val: Any) -> List[int]:
+        """Convert any value into integer list.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Integer list
+        """
+        return sdutils.to_list(val)
 
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR,
@@ -40,25 +91,25 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     spw = vdp.VisDependentProperty(default='')
     intent = vdp.VisDependentProperty(default='TARGET')
-    iteration = vdp.VisDependentProperty(default=5, fconvert=int)
-    edge = vdp.VisDependentProperty(default=[0, 0], fconvert=sdutils.to_list)
-    flag_tsys = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    tsys_thresh = vdp.VisDependentProperty(default=3.0, fconvert=sdutils.to_numeric)
-    flag_prfre = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    prfre_thresh = vdp.VisDependentProperty(default=3.0, fconvert=sdutils.to_numeric)
-    flag_pofre = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    pofre_thresh = vdp.VisDependentProperty(default=1.3333, fconvert=sdutils.to_numeric)
-    flag_prfr = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    prfr_thresh = vdp.VisDependentProperty(default=4.5, fconvert=sdutils.to_numeric)
-    flag_pofr = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    pofr_thresh = vdp.VisDependentProperty(default=4.0, fconvert=sdutils.to_numeric)
-    flag_prfrm = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    prfrm_thresh = vdp.VisDependentProperty(default=5.5, fconvert=sdutils.to_numeric)
-    prfrm_nmean = vdp.VisDependentProperty(default=5, fconvert=int)
-    flag_pofrm = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
-    pofrm_thresh = vdp.VisDependentProperty(default=5.0, fconvert=sdutils.to_numeric)
-    pofrm_nmean = vdp.VisDependentProperty(default=5, fconvert=int)
-    plotflag = vdp.VisDependentProperty(default=True, fconvert=sdutils.to_bool)
+    iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
+    edge = vdp.VisDependentProperty(default=[0, 0], fconvert=__to_list)
+    flag_tsys = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    tsys_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
+    flag_prfre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    prfre_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
+    flag_pofre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    pofre_thresh = vdp.VisDependentProperty(default=1.3333, fconvert=__to_numeric)
+    flag_prfr = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    prfr_thresh = vdp.VisDependentProperty(default=4.5, fconvert=__to_numeric)
+    flag_pofr = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    pofr_thresh = vdp.VisDependentProperty(default=4.0, fconvert=__to_numeric)
+    flag_prfrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    prfrm_thresh = vdp.VisDependentProperty(default=5.5, fconvert=__to_numeric)
+    prfrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
+    flag_pofrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
+    pofrm_thresh = vdp.VisDependentProperty(default=5.0, fconvert=__to_numeric)
+    pofrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
+    plotflag = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
 
     @vdp.VisDependentProperty
     def infiles(self) -> Optional[Union[str, List[str]]]:
