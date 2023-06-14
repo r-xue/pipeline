@@ -34,7 +34,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                      defined in the pipeline context.
     autocorr         Flag autocorrelation data.
     shadow           Flag shadowed antennas.
-    scan             Flag a list of specified scans.
+    scan             Flag a list of scans and intents specified by scannumber and intents.
     scannumber       A string containing a comma delimited list of scans to be
                      flagged.
     intents          A string containing a comma delimited list of intents against
