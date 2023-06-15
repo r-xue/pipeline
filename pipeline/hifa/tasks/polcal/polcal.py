@@ -225,7 +225,7 @@ class Polcal(basetask.StandardTaskTemplate):
         return result
 
     def _get_refant(self, session_name: str, vislist: List[str]) -> str:
-        # In the polarisation recipes, a best reference antenna should have
+        # In the polarisation recipes, the best reference antenna should have
         # been determined for the entire session by hifa_session_refant, and
         # stored in each MS of the session. Retrieve this refant from the first
         # MS in the MS list.
@@ -280,7 +280,8 @@ class Polcal(basetask.StandardTaskTemplate):
             ms = self.inputs.context.observing_run.get_ms(name=vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
-            # Initialize mstransform task inputs.
+            # Create and execute mstransform job to split off the corrected
+            # column for polarisation intent.
             task_args = {
                 'vis': vis,
                 'intent': utils.to_CASA_intent(ms, self.inputs.intent),
@@ -320,23 +321,23 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return session_msname, spwmaps
 
-    def _compute_pol_scan_duration(self, msname: str) -> int:
+    def _compute_pol_scan_duration(self, vis: str) -> int:
         # Get polarisation scans for session MS.
-        ms = self.inputs.context.observing_run.get_ms(name=msname)
+        ms = self.inputs.context.observing_run.get_ms(name=vis)
         pol_scans = ms.get_scans(scan_intent=self.inputs.intent)
 
         # Compute median duration of polarisation scans.
         scan_duration = int(np.median([scan.time_on_source.total_seconds() for scan in pol_scans]))
-        LOG.info(f"Session MS {msname}: median scan duration = {scan_duration} seconds.")
+        LOG.info(f"Session MS {vis}: median scan duration = {scan_duration} seconds.")
         return scan_duration
 
-    def _initial_gaincal(self, msname: str, refant: str) -> gaincal.common.GaincalResults:
+    def _initial_gaincal(self, vis: str, refant: str) -> gaincal.common.GaincalResults:
         inputs = self.inputs
 
         # Initialize gaincal task inputs.
         task_args = {
             'output_dir': inputs.output_dir,
-            'vis': msname,
+            'vis': vis,
             'calmode': 'ap',
             'intent': inputs.intent,
             'solint': 'int',
@@ -384,13 +385,13 @@ class Polcal(basetask.StandardTaskTemplate):
             LOG.debug(f'Adding calibration to callibrary in task-specific context:\n{calapp.calto}\n{calapp.calfrom}')
             self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
-    def _compute_polfromgain(self, msname: str, gcal_result: gaincal.common.GaincalResults) -> dict:
+    def _compute_polfromgain(self, vis: str, gcal_result: gaincal.common.GaincalResults) -> dict:
         # Get caltable to analyse, and set name of output caltable.
         intable = gcal_result.final[0].gaintable
         caltable = os.path.splitext(intable)[0] + '_polfromgain.tbl'
 
         # Create and run polfromgain CASA task.
-        pfg_job = casa_tasks.polfromgain(vis=msname, tablein=intable, caltable=caltable)
+        pfg_job = casa_tasks.polfromgain(vis=vis, tablein=intable, caltable=caltable)
         pfg_result = self._executor.execute(pfg_job)
 
         return pfg_result
@@ -420,14 +421,14 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return best_scan_id
 
-    def _compute_xy_delay(self, msname: str, vislist: List[str], refant: str, best_scan: int, spwmaps: dict) \
+    def _compute_xy_delay(self, vis: str, vislist: List[str], refant: str, best_scan: int, spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
         inputs = self.inputs
 
         # Initialize gaincal task inputs.
         task_args = {
             'output_dir': inputs.output_dir,
-            'vis': msname,
+            'vis': vis,
             'calmode': 'ap',
             'intent': inputs.intent,
             'scan': str(best_scan),
@@ -445,35 +446,35 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest',
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=inputs.intent, interp='nearest',
                                                     calwt=False)
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
         # register this caltable against it.
         final_calapps = []
-        for vis in vislist:
+        for inp_vis in vislist:
             # Retrieve science SpW(s) for vis.
-            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            ms = inputs.context.observing_run.get_ms(name=inp_vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and append modified CalApplication.
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
-                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
 
-    def _calibrate_xy_phase(self, msname: str, vislist: List[str], smodel: List[float], scan_duration: int,
+    def _calibrate_xy_phase(self, vis: str, vislist: List[str], smodel: List[float], scan_duration: int,
                             spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
         inputs = self.inputs
 
         # Initialize polcal task inputs.
         task_args = {
-            'vis': msname,
+            'vis': vis,
             'intent': inputs.intent,
             'solint': 'inf,5MHz',
             'smodel': smodel,
-            'combine': 'scan,obs',
+            'combine': 'obs,scan',
             'poltype': 'Xfparang+QU',
             'preavg': scan_duration,
         }
@@ -485,25 +486,25 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest',
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=inputs.intent, interp='nearest',
                                                     calwt=False)
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
         # register this caltable against it.
         final_calapps = []
-        for vis in vislist:
+        for inp_vis in vislist:
             # Retrieve science SpW(s) for vis.
-            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            ms = inputs.context.observing_run.get_ms(name=inp_vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and append modified CalApplication.
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
-                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
 
-    def _unregister_caltables(self, msname: str):
+    def _unregister_caltables(self, vis: str):
         """
         This method will unregister from the callibrary in the local context
         (stored in inputs) any CalApplication that is registered for caltable
@@ -513,21 +514,21 @@ class Polcal(basetask.StandardTaskTemplate):
         # needs to be removed from the CalLibrary.
         def hifa_polcal_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
             calto_vis = {os.path.basename(v) for v in calto.vis}
-            do_delete = 'hifa_polcal' in calfrom.gaintable and msname in calto_vis
+            do_delete = 'hifa_polcal' in calfrom.gaintable and vis in calto_vis
             if do_delete:
                 LOG.debug(f'Unregistering caltable {calfrom.gaintable} from task-specific context.')
             return do_delete
 
         self.inputs.context.callibrary.unregister_calibrations(hifa_polcal_matcher)
 
-    def _final_gaincal(self, msname: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
+    def _final_gaincal(self, vis: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
         inputs = self.inputs
 
         # Initialize gaincal task inputs.
         task_args = {
             'output_dir': inputs.output_dir,
-            'vis': msname,
+            'vis': vis,
             'calmode': 'ap',
             'intent': inputs.intent,
             'solint': 'int',
@@ -543,31 +544,31 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='linear')
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=inputs.intent, interp='linear')
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
         # register this caltable against it.
         final_calapps = []
-        for vis in vislist:
+        for inp_vis in vislist:
             # Retrieve science SpW(s) for vis.
-            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            ms = inputs.context.observing_run.get_ms(name=inp_vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and append modified CalApplication.
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws,
-                                                                intent=self.inputs.intent, interp='nearest',
-                                                                calwt=False, spwmap=spwmaps[vis]))
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws,
+                                                                intent=inputs.intent, interp='nearest',
+                                                                calwt=False, spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
 
-    def _compute_leakage_terms(self, msname: str, vislist: List[str], smodel: List[float], scan_duration: int,
+    def _compute_leakage_terms(self, vis: str, vislist: List[str], smodel: List[float], scan_duration: int,
                                spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
         inputs = self.inputs
 
         # Initialize polcal task inputs.
         task_args = {
-            'vis': msname,
+            'vis': vis,
             'intent': inputs.intent,
             'solint': 'inf,5MHz',
             'smodel': smodel,
@@ -584,32 +585,32 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Replace the CalApp in the result with a modified CalApplication to
         # register this caltable against the session MS.
-        new_calapp = callibrary.copy_calapplication(result.final[0], intent=self.inputs.intent, interp='nearest',
+        new_calapp = callibrary.copy_calapplication(result.final[0], intent=inputs.intent, interp='nearest',
                                                     calwt=False)
         result.final = [new_calapp]
 
         # For each MS in this session, create a modified CalApplication to
         # register this caltable against it.
         final_calapps = []
-        for vis in vislist:
+        for inp_vis in vislist:
             # Retrieve science SpW(s) for vis.
-            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            ms = inputs.context.observing_run.get_ms(name=inp_vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and append modified CalApplication.
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
-                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws, intent='',
+                                                                interp='nearest', calwt=False, spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
 
-    def _compute_xy_ratio(self, msname: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
+    def _compute_xy_ratio(self, vis: str, vislist: List[str], refant: str, smodel: List[float], spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
         inputs = self.inputs
 
         # Initialize gaincal task inputs.
         task_args = {
             'output_dir': inputs.output_dir,
-            'vis': msname,
+            'vis': vis,
             'calmode': 'a',
             'intent': inputs.intent,
             'solint': 'inf',
@@ -628,15 +629,15 @@ class Polcal(basetask.StandardTaskTemplate):
         # For each MS in this session, create a modified CalApplication to
         # register this caltable against the non-polarisation intents.
         final_calapps = []
-        for vis in vislist:
+        for inp_vis in vislist:
             # Retrieve science SpW(s) for vis.
-            ms = self.inputs.context.observing_run.get_ms(name=vis)
+            ms = inputs.context.observing_run.get_ms(name=inp_vis)
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and append modified CalApplication.
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws,
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws,
                                                                 intent='AMPLITUDE,BANDPASS,CHECK,PHASE,TARGET',
-                                                                interp='nearest', spwmap=spwmaps[vis]))
+                                                                interp='nearest', spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
 
