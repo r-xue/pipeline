@@ -208,9 +208,6 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f'{session_msname}: comparison of visstat results.")')
         self._compare_visstat_results(session_vs_result, vis_vs_results)
 
-        # Image the polarisation calibrator in session MS.
-        self._image_polcal()
-
         # Collect results.
         final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + xyratio_calapps
         result = {
@@ -667,7 +664,4 @@ class Polcal(basetask.StandardTaskTemplate):
         pass
 
     def _setjy_for_polcal(self):
-        pass
-
-    def _image_polcal(self):
         pass
