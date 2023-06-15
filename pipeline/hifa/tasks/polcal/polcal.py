@@ -173,10 +173,6 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"{session_msname}: compute X-Y ratio for polarisation calibrator.")
         xyratio_gcal_result, xyratio_calapps = self._compute_xy_ratio(session_msname, vislist, refant, smodel, spwmaps)
 
-        # Set flux density for polarisation calibrator.
-        # TODO: what is this operating on?
-        self._setjy_for_polcal()
-
         # Prior to applycal, re-register the final gain caltable but now with calwt=False.
         self._register_calapps_from_results([final_gcal_result], calwt=False)
 
@@ -207,6 +203,12 @@ class Polcal(basetask.StandardTaskTemplate):
         # Compare results from visstat.
         LOG.info(f'{session_msname}: comparison of visstat results.")')
         self._compare_visstat_results(session_vs_result, vis_vs_results)
+
+        # Set flux density for polarisation calibrator in each MS in this
+        # session.
+        for vis in vislist:
+            LOG.info(f'{session_msname}: run setjy for MS {vis}.")')
+            self._setjy_for_polcal(vis)
 
         # Collect results.
         final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + xyratio_calapps
@@ -664,5 +666,5 @@ class Polcal(basetask.StandardTaskTemplate):
     def _compare_visstat_results(self, session_vs_result: dict, vis_vs_results: dict):
         pass
 
-    def _setjy_for_polcal(self):
+    def _setjy_for_polcal(self, vis: str):
         pass
