@@ -363,11 +363,6 @@ class SDBLFlagResults(common.SingleDishResults):
         return 'none'
 
 
-# @task_registry.set_equivalent_casa_task('hsd_blflag')
-# @task_registry.set_casa_commands_comment(
-#     'Perform row-based flagging based on noise level and quality of spectral baseline subtraction.\n'
-#     'This stage performs a pipeline calculation without running any CASA commands to be put in this file.'
-# )
 class SerialSDBLFlag(basetask.StandardTaskTemplate):
     """
     Single dish flagging class.

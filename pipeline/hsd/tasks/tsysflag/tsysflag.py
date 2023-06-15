@@ -132,8 +132,6 @@ class SerialTsysflag(tsysflag.Tsysflag):
     Inputs = TsysflagInputs
 
 
-#@task_registry.set_equivalent_casa_task('hsd_tsysflag')
-#@task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
 class Tsysflag(sessionutils.ParallelTemplate):
     Inputs = TsysflagInputs
     Task = SerialTsysflag
