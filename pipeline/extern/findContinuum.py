@@ -154,7 +154,9 @@ import os
 import warnings
 import decimal
 import numpy as np
-import matplotlib.pyplot as pl
+# np.set_printoptions(threshold=sys.maxsize)   # for debugging large arrays
+#import matplotlib.pyplot as pl  # used through Cycle 7 but avoided with python3 starting in PL2020
+import pylab as pl
 import matplotlib.ticker
 import time as timeUtilities
 import pickle
@@ -245,6 +247,7 @@ else:
 
 import warnings
 import subprocess
+import sys
 import scipy
 import glob
 import shutil
@@ -4045,7 +4048,7 @@ def getFieldnameFromPipelineImageName(img, verbose=False):
         if basename.find('_'+style) > 0:
             fieldname = basename.split('_'+style)[0]
     if fieldname == '': 
-        print("No image found of these styles: ", styles)
+        print("No image found of these styles: ", styels)
         return fieldname
     # this will now be: a_Xb.s35_0.NGC300
     fieldname = fieldname.split('_0.')[1]
@@ -7343,7 +7346,7 @@ def imagePercentileNoMask(img, percentiles):
     pixels = myia.getregion(getmask=False)
     myia.close()
     if type(percentiles) != list and type(percentiles) != np.ndarray:
-        value = scoreatpercentile(pixels[np.where(mymask > 0.5)], percentiles)
+        value = scoreatpercentile(pixels[np.where(mymask > 0.5)], percentile)
         return value
     value = []
     for percentile in percentiles:
@@ -11012,7 +11015,7 @@ def transitions(vis, spw, source='', intent='OBSERVE_TARGET',
         sourcerows = np.where(names==source)[0]
         if (len(sourcerows) == 0):
             # look for characters ()/ and replace with underscore
-            names = np.array([s.translate(str.maketrans('()/', '___')) for s in names])
+            names = np.array(sanitizeNames(names))
             sourcerows = np.where(source==names)[0]
     else:
         sourcerows = np.where(sourceIDs==source)[0]
