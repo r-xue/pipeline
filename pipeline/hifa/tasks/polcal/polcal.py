@@ -210,8 +210,12 @@ class Polcal(basetask.StandardTaskTemplate):
             LOG.info(f'{session_msname}: run setjy for MS {vis}.")')
             self._setjy_for_polcal(vis)
 
+        # Compute amplitude calibration for polarisation calibrator.
+        polcal_amp_result, amp_calapps = self._compute_amp_gaincal_for_polcal(session_msname)
+
         # Collect results.
-        final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + xyratio_calapps
+        final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + \
+            xyratio_calapps + amp_calapps
         result = {
             'calapps': final_calapps,
             'init_gcal_result': init_gcal_result,
@@ -222,6 +226,7 @@ class Polcal(basetask.StandardTaskTemplate):
             'cal_pfg_result': cal_pfg_result,
             'leak_polcal_result': leak_polcal_result,
             'xyratio_gcal_result': xyratio_gcal_result,
+            'polcal_amp_result': polcal_amp_result,
         }
 
         return result
@@ -668,3 +673,39 @@ class Polcal(basetask.StandardTaskTemplate):
 
     def _setjy_for_polcal(self, vis: str):
         pass
+
+    def _run__compute_amp_gaincal_for_polcal(self, vis: str, vislist: List[str], refant: str, spwmaps: dict) \
+            -> Tuple[gaincal.common.GaincalResults, List]:
+        inputs = self.inputs
+
+        # Initialize gaincal task inputs.
+        task_args = {
+            'output_dir': inputs.output_dir,
+            'vis': vis,
+            'calmode': 'a',
+            'intent': inputs.intent,
+            'solint': 'inf',
+            'gaintype': 'T',
+            'refant': refant,  # TODO: confirm if this needs to be set.
+            # 'parang': True,  # TODO: confirm if this needs to be set.
+        }
+        task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
+
+        # Initialize and execute gaincal task.
+        task = gaincal.GTypeGaincal(task_inputs)
+        result = self._executor.execute(task)
+
+        # For each MS in this session, create a modified CalApplication to
+        # register this caltable against the polarisation intents.
+        final_calapps = []
+        for inp_vis in vislist:
+            # Retrieve science SpW(s) for vis.
+            ms = inputs.context.observing_run.get_ms(name=inp_vis)
+            sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
+
+            # Create and append modified CalApplication.
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws,
+                                                                intent=inputs.intent, interp='nearest',
+                                                                spwmap=spwmaps[inp_vis]))
+
+        return result, final_calapps
