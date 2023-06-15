@@ -173,8 +173,8 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"{session_msname}: compute X-Y ratio for polarisation calibrator.")
         xyratio_gcal_result, xyratio_calapps = self._compute_xy_ratio(session_msname, vislist, refant, smodel, spwmaps)
 
-        # Prior to applycal, re-register the final gain caltable but now with calwt=False.
-        self._register_calapps_from_results([final_gcal_result], calwt=False)
+        # Prior to applycal, re-register the final gain caltable.
+        self._register_calapps_from_results([final_gcal_result])
 
         # Apply the polarisation calibration to the polarisation calibrator.
         LOG.info(f'{session_msname}: apply polarisation calibrations to the polarisation calibrator.")')
@@ -363,7 +363,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _register_calapps_from_results(self, results: List, calwt=None):
+    def _register_calapps_from_results(self, results: List):
         """This method will register any "final" CalApplication present in any
         of the input Results to the callibrary in the local context (stored in
         inputs).
@@ -375,14 +375,7 @@ class Polcal(basetask.StandardTaskTemplate):
         certain caltables, hence we use this worker method to do so.
         """
         # Collect CalApps to merge.
-        calapps_to_merge = []
-        for result in results:
-            for calapp in result.final:
-                # If requested to override calwt, create a modified CalApplication.
-                if calwt is not None:
-                    calapps_to_merge.append(callibrary.copy_calapplication(calapp, calwt=calwt))
-                else:
-                    calapps_to_merge.append(calapp)
+        calapps_to_merge = [calapp for result in results for calapp in result.final]
         self._register_calapps(calapps_to_merge)
 
     def _register_calapps(self, calapps: List):
@@ -565,7 +558,7 @@ class Polcal(basetask.StandardTaskTemplate):
             # Create and append modified CalApplication.
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws,
                                                                 intent=inputs.intent, interp='nearest',
-                                                                calwt=False, spwmap=spwmaps[inp_vis]))
+                                                                spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
 
