@@ -203,16 +203,16 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Compare results from visstat.
         LOG.info(f'{session_msname}: comparison of visstat results.")')
-        self._compare_visstat_results(session_vs_result, vis_vs_results)
+        self._compare_visstat_results(session_vs_result, vis_vs_results, spwmaps)
 
         # Set flux density for polarisation calibrator in each MS in this
         # session.
         for vis in vislist:
             LOG.info(f'{session_msname}: run setjy for MS {vis}.")')
-            self._setjy_for_polcal(vis)
+            self._setjy_for_polcal(vis, smodel)
 
         # Compute amplitude calibration for polarisation calibrator.
-        polcal_amp_result, amp_calapps = self._compute_amp_gaincal_for_polcal(session_msname)
+        polcal_amp_result, amp_calapps = self._compute_ampcal_for_polcal(session_msname, vislist, refant, spwmaps)
 
         # Collect results.
         final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + \
@@ -664,13 +664,13 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return vs_result
 
-    def _compare_visstat_results(self, session_vs_result: dict, vis_vs_results: dict):
+    def _compare_visstat_results(self, session_vs_result: dict, vis_vs_results: dict, spwmaps: dict):
         pass
 
-    def _setjy_for_polcal(self, vis: str):
+    def _setjy_for_polcal(self, vis: str, smodel: List[float]):
         pass
 
-    def _run__compute_amp_gaincal_for_polcal(self, vis: str, vislist: List[str], refant: str, spwmaps: dict) \
+    def _compute_ampcal_for_polcal(self, vis: str, vislist: List[str], refant: str, spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
         inputs = self.inputs
 
