@@ -184,7 +184,29 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f'{session_msname}: apply polarisation calibrations to the polarisation calibrator.")')
         self._run_applycal(session_msname, parang=True)
 
-        # TODO: add visstat step to derive stats for comparison later on.
+        # Run visstat on session MS.
+        LOG.info(f'{session_msname}: run visstat for session MS.")')
+        session_vs_result = self._run_visstat(session_msname)
+
+        # Register the relevant CalApps for polarisation calibrator in
+        # each MS MSes in this session.
+        self._register_calapps(final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps)
+
+        # Run applycal to apply the newly derived polarisation caltables to the
+        # polarisation calibrator in each MS in this session.
+        for vis in vislist:
+            LOG.info(f'Session {session_name}: apply polarisation caltables to polarisation calibrator for MS {vis}.')
+            self._run_applycal(vis)
+
+        # Run visstat on each MS in this session.
+        vis_vs_results = {}
+        for vis in vislist:
+            LOG.info(f'{session_msname}: run visstat for MS {vis}.")')
+            vis_vs_results[vis] = self._run_visstat(vis)
+
+        # Compare results from visstat.
+        LOG.info(f'{session_msname}: comparison of visstat results.")')
+        self._compare_visstat_results(session_vs_result, vis_vs_results)
 
         # Image the polarisation calibrator in session MS.
         self._image_polcal()
@@ -347,17 +369,23 @@ class Polcal(basetask.StandardTaskTemplate):
         hifa_polcal task, the workflow requires unregistering / re-registering
         certain caltables, hence we use this worker method to do so.
         """
+        # Collect CalApps to merge.
+        calapps_to_merge = []
         for result in results:
             for calapp in result.final:
                 # If requested to override calwt, create a modified CalApplication.
                 if calwt is not None:
-                    ca_to_merge = callibrary.copy_calapplication(calapp, calwt=calwt)
+                    calapps_to_merge.append(callibrary.copy_calapplication(calapp, calwt=calwt))
                 else:
-                    ca_to_merge = calapp
+                    calapps_to_merge.append(calapp)
+        self._register_calapps(calapps_to_merge)
 
-                LOG.debug(f'Adding calibration to callibrary in task-specific context:\n{ca_to_merge.calto}\n'
-                          f'{ca_to_merge.calfrom}')
-                self.inputs.context.callibrary.add(ca_to_merge.calto, ca_to_merge.calfrom)
+    def _register_calapps(self, calapps: List):
+        """This method will register a list of CalApplications to the
+        callibrary in the local context (stored in inputs)."""
+        for calapp in calapps:
+            LOG.debug(f'Adding calibration to callibrary in task-specific context:\n{calapp.calto}\n{calapp.calfrom}')
+            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
     def _compute_polfromgain(self, msname: str, gcal_result: gaincal.common.GaincalResults) -> dict:
         # Get caltable to analyse, and set name of output caltable.
@@ -614,6 +642,29 @@ class Polcal(basetask.StandardTaskTemplate):
                                                                 interp='nearest', spwmap=spwmaps[vis]))
 
         return result, final_calapps
+
+    def _run_visstat(self, vis: str) -> dict:
+        # Retrieve science SpW(s) for vis.
+        ms = self.inputs.context.observing_run.get_ms(name=vis)
+        sci_spws = [str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True)]
+
+        # Collect visstat results for each SpW in MS.
+        vs_result = {}
+        for sci_spw in sci_spws:
+            # Create and run CASA visstat job.
+            task_args = {
+                'vis': vis,
+                'intent': utils.to_CASA_intent(ms, self.inputs.intent),
+                'spw': sci_spw,
+                'datacolumn': 'corrected',
+            }
+            visstat_job = casa_tasks.visstat(**task_args)
+            vs_result[sci_spw] = self._executor.execute(visstat_job)
+
+        return vs_result
+
+    def _compare_visstat_results(self, session_vs_result: dict, vis_vs_results: dict):
+        pass
 
     def _setjy_for_polcal(self):
         pass
