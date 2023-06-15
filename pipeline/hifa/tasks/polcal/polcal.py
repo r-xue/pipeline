@@ -89,7 +89,8 @@ class Polcal(basetask.StandardTaskTemplate):
 
         # Check that each MS in session shares the same one polarisation
         # calibrator by field name; stop processing session if not.
-        if not self._check_matching_pol_field(session_name, vislist):
+        polcal_field_name = self._check_matching_pol_field(session_name, vislist)
+        if not polcal_field_name:
             return {}
 
         # Retrieve reference antenna for this session.
@@ -240,22 +241,21 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"Session '{session_name}' is using reference antenna: {ms.reference_antenna}.")
         return ms.reference_antenna
 
-    def _check_matching_pol_field(self, session_name: str, vislist: List[str]) -> bool:
+    def _check_matching_pol_field(self, session_name: str, vislist: List[str]) -> str:
         # Retrieve polarisation calibrator field name for each MS in session.
         pol_fields = {}
         for vis in vislist:
             ms = self.inputs.context.observing_run.get_ms(name=vis)
             pol_fields[vis] = [field.name for field in ms.get_fields(intent=self.inputs.intent)]
 
-        check_ok = True
         # Check that each MS has one and only one polarisation calibrator.
+        pol_field_name = ''
         if not all(len(f) == 1 for f in pol_fields.values()):
             msg = f"Cannot process session '{session_name}': one or more measurement sets do not have exactly 1" \
                   f" polarisation calibrator field."
             for vis, fields in pol_fields.items():
                 msg += f"\n  {vis} has polarisation calibrator field(s): {utils.commafy(fields)}"
             LOG.warning(msg)
-            check_ok = False
         # Check that the polarisation field for each MS matches by name.
         elif len({field for visfields in pol_fields.values() for field in visfields}) != 1:
             msg = f"Cannot process session '{session_name}': the measurement sets do not have the same polarisation" \
@@ -263,9 +263,12 @@ class Polcal(basetask.StandardTaskTemplate):
             for vis, fields in pol_fields.items():
                 msg += f"\n  {vis} has polarisation calibrator field: {fields}"
             LOG.warning(msg)
-            check_ok = False
+        # If no mismatch was found, then return the name of the single
+        # polarisation calibrator field.
+        else:
+            pol_field_name = pol_fields[vislist[0]][0]
 
-        return check_ok
+        return pol_field_name
 
     def _run_applycal(self, vis: str, parang: bool = False):
         acinputs = applycal.IFApplycalInputs(context=self.inputs.context, vis=vis, intent=self.inputs.intent,
