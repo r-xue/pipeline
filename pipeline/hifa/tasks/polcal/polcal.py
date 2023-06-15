@@ -530,8 +530,9 @@ class Polcal(basetask.StandardTaskTemplate):
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and append modified CalApplication.
-            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws, intent='',
-                                                                interp='nearest', calwt=False, spwmap=spwmaps[vis]))
+            final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, spw=sci_spws,
+                                                                intent=self.inputs.intent, interp='nearest',
+                                                                calwt=False, spwmap=spwmaps[vis]))
 
         return result, final_calapps
 
@@ -588,6 +589,7 @@ class Polcal(basetask.StandardTaskTemplate):
             'intent': inputs.intent,
             'solint': 'inf',
             'smodel': smodel,
+            'combine': 'obs,scan',
             'refant': refant,
             'solnorm': True,
             'parang': True,
