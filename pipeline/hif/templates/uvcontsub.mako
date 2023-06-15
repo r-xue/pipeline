@@ -17,13 +17,11 @@ science target data. The result is stored in the DATA column of a new set of MSe
     <thead>
         <tr>
             <th scope="col" rowspan="2">Measurement Set</th>
-                        <th scope="col" colspan="3">Solution Parameters</th>
+                        <th scope="col" colspan="2">Solution Parameters</th>
                         <th scope="col" colspan="2">Applied To</th>
-            <th scope="col" rowspan="2">Calibration Table</th>
         </tr>
         <tr>
                         <th>Frequency Ranges (TOPO)</th>
-                        <th>Interval</th>
                         <th>Fit Order</th>
                         <th>Source Intent</th>
                         <th>Spectral Window</th>

@@ -8,11 +8,7 @@ import pipeline.infrastructure.utils as utils
 
 #LOG = logging.get_logger(__name__)
 
-# Reuse this definition
-UVcontFitApplication = collections.namedtuple('UVcontFitApplication', 
-                                            #'ms scispw freqrange solint fitorder source scispws gaintable') 
-                                            'ms freqrange solint fitorder source scispw gaintable') 
-
+UVcontSubParams = collections.namedtuple('UVcontSubParams', 'ms freqrange fitorder source scispw')
 
 class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='uvcontfit.mako',
@@ -46,12 +42,12 @@ class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if solint == 'inf':
                 solint = 'Infinite'
 
-            # Convert solint=int to a real integration time. 
+            # Convert solint=int to a real integration time.
             # solint is spw dependent; science windows usually have the same
             # integration time, though that's not guaranteed.
             #    Leave out this for now
             #if solint == 'int':
-                #in_secs = ['%0.2fs' % (dt.seconds + dt.microseconds * 1e-6) 
+                #in_secs = ['%0.2fs' % (dt.seconds + dt.microseconds * 1e-6)
                            #for dt in utils.get_intervals(context, calapp)]
                 #solint = 'Per integration (%s)' % utils.commafy(in_secs, quotes=False, conjunction='or')
 
@@ -105,10 +101,33 @@ class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 class T2_4MDetailsUVcontSubRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='uvcontsub.mako',
-                 description='UV continuum subtraction',
+                 description='UV continuum fit and subtraction',
                  always_rerender=False):
         super(T2_4MDetailsUVcontSubRenderer, self).__init__(uri=uri,
                 description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
-        ctx.update({})
+        rows = []
+
+        for result in results:
+            vis = os.path.basename(result.inputs['vis'])
+            ms = context.observing_run.get_ms(vis)
+
+            rows.extend(self.get_table_rows(context, result, ms))
+
+        table_rows = utils.merge_td_columns(rows)
+        ctx.update({
+            'table_rows': table_rows
+        })
+
+    def get_table_rows(self, context, result, ms):
+        table_rows = []
+
+        frange = 'FREQ RANGE'
+        fitorder = 1
+        to_source = 'FIELD INTENT'
+        spw = 'SPW'
+        row = UVcontSubParams(ms.basename,  frange, fitorder, to_source, spw)
+        table_rows.append(row)
+
+        return table_rows
