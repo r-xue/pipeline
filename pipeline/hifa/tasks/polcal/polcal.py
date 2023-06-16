@@ -218,6 +218,9 @@ class Polcal(basetask.StandardTaskTemplate):
         final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + \
             xyratio_calapps + amp_calapps
         result = {
+            'vislist': vislist,
+            'polcal_field_name': polcal_field_name,
+            'refant': refant,
             'calapps': final_calapps,
             'init_gcal_result': init_gcal_result,
             'uncal_pfg_result': uncal_pfg_result,
