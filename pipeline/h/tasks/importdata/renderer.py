@@ -120,7 +120,7 @@ def make_flux_table(context, results):
     return utils.merge_td_columns(rows)
 
 
-RepsourceTR = collections.namedtuple('RepsourceTR', 'vis source rfreq rbwidth spwid bwidth')
+RepsourceTR = collections.namedtuple('RepsourceTR', 'vis source rfreq rbwidth spwid bwidth dynrange')
 
 
 def make_repsource_table(context, results):
@@ -148,7 +148,7 @@ def make_repsource_table(context, results):
             rep_target_defined = not(None in representative_target or 'None' in representative_target or 'none' in representative_target)
             repsource_name_is_none = representative_target[0] == 'none'
             if not rep_target_defined:
-                rows.append(RepsourceTR(vis, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'))
+                rows.append(RepsourceTR(vis, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'))
                 continue
 
             # Is the representative source in the context or not
@@ -163,6 +163,15 @@ def make_repsource_table(context, results):
             else:
                 source_spwid = context.project_performance_parameters.representative_spwid
 
+            try:
+                dynrange_bw = ms.science_goals['spectralDynamicRangeBandWidth']
+                if dynrange_bw is not None:
+                    dynrange_bw = qa.tos(dynrange_bw, 5)
+                else:
+                    dynrange_bw = 'Not provided'  # cannot use N/A because this will hide the entire row
+            except KeyError:
+                dynrange_bw = 'Unknown'
+
             # Determine the representative source name and spwid for the ms
             repsource_name, repsource_spwid = ms.get_representative_source_spw(source_name=source_name,
                                                                                source_spwid=source_spwid)
@@ -171,16 +180,16 @@ def make_repsource_table(context, results):
             # No source
             if repsource_name is None: 
                 if not ms.representative_target[0]:
-                    tr = RepsourceTR(vis, 'Unknown', 'Unknown', 'Unknown', 'Unknown', 'Unknown')
+                    tr = RepsourceTR(vis, 'Unknown', 'Unknown', 'Unknown', 'Unknown', 'Unknown', dynrange_bw)
                 else:
-                    tr = RepsourceTR(vis, ms.representative_target[0], 'Unknown', 'Unknown', 'Unknown', 'Unknown')
+                    tr = RepsourceTR(vis, ms.representative_target[0], 'Unknown', 'Unknown', 'Unknown', 'Unknown', dynrange_bw)
                 rows.append(tr)
                 continue
 
             # No spwid
             if repsource_spwid is None:
                 tr = RepsourceTR(vis, repsource_name, qa.tos(ms.representative_target[1], 5),
-                                 qa.tos(ms.representative_target[2], 5), 'Unknown', 'Unknown')
+                                 qa.tos(ms.representative_target[2], 5), 'Unknown', 'Unknown', dynrange_bw)
                 rows.append(tr)
                 continue
 
@@ -191,7 +200,7 @@ def make_repsource_table(context, results):
 
             tr = RepsourceTR(vis, repsource_name, qa.tos(ms.representative_target[1], 5),
                              qa.tos(ms.representative_target[2], 5), str(repsource_spwid),
-                             qa.tos(repsource_chanwidth, 5))
+                             qa.tos(repsource_chanwidth, 5), dynrange_bw)
             rows.append(tr)
 
     return utils.merge_td_columns(rows), repsource_name_is_none

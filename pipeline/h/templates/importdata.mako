@@ -107,7 +107,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
     <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Measurement Set</th>
-	        <th scope="col" colspan="5">Representative Source</th>
+	        <th scope="col" colspan="6">Representative Source</th>
 	    </tr>
 	    <tr>
 	        <th scope="col">Name</th>
@@ -115,6 +115,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 	        <th scope="col">Bandwidth for Sensitivity</th>
 	        <th scope="col">Spw Id</th>
 	        <th scope="col">Chanwidth</th>
+	        <th scope="col">Spectral Dynamic Range Bandwidth</th>
 	    </tr>
     </thead>
     <tbody>

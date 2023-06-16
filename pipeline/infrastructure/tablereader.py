@@ -379,10 +379,7 @@ class MeasurementSetReader(object):
                 else:
                     ms.science_goals['dynamicRange'] = sbinfo.dynamicRange
 
-                if sbinfo.spectralDynamicRangeBandWidth is None:
-                    ms.science_goals['spectralDynamicRangeBandWidth'] = '0.0GHz'
-                else:
-                    ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
+                ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
 
                 ms.science_goals['sbName'] = sbinfo.sbName
             
