@@ -930,10 +930,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
             _pp : Imaging post process parameters of prepare()
         """
-        _rgp.rep_source_name, _rgp.rep_spw_id = _rgp.ref_ms.get_representative_source_spw()
+        __rep_source_name, __rep_spw_id = _rgp.ref_ms.get_representative_source_spw()
         _pp.is_representative_source_and_spw = \
-            _rgp.rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
-            _rgp.rep_source_name == utils.dequote(_rgp.source_name)
+            __rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
+            __rep_source_name == utils.dequote(_rgp.source_name)
 
     def __warning_if_cycle2(self, _rgp: imaging_params.ReductionGroupParameters):
         """If it processes MS before Cycle2, logs warning.

@@ -226,8 +226,6 @@ class ReductionGroupParameters(Parameters):
         self.polslist = None               # List[List[str]]: List of Polarization. NOT USED NOW virtually.
         self.pols_list = None              # List[List[str]]: List of Polarization
         self.ref_ms = None                 # MeasurementSet: Reference MS object
-        self.rep_source_name = None        # str: Name of represented source like 'M100'
-        self.rep_spw_id = None             # int: Represented spectral window ID
         self.restfreq = None               # str: Rest frequency
         self.rmss = None                   # List[float]: List of RMSs
         self.source_name = None            # str: Name of source like 'M100'
