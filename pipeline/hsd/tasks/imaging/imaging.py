@@ -224,7 +224,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                     self.__set_representative_flag(_rgp, _pp)
 
                     self.__warning_if_cycle2(_rgp)
-                    self.__warning_if_effective_bw_eq_chanwidth(_rgp)
 
                     self.__calculate_sensitivity(_cp, _rgp, _pp)
                 finally:
@@ -936,10 +935,6 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp.rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
             _rgp.rep_source_name == utils.dequote(_rgp.source_name)
 
-        __spwobj = _rgp.ref_ms.get_spectral_window(_rgp.rep_spw_id)
-        if __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
-            LOG.warning("Effective band width is nominal.")
-
     def __warning_if_cycle2(self, _rgp: imaging_params.ReductionGroupParameters):
         """If it processes MS before Cycle2, logs warning.
 
@@ -949,16 +944,6 @@ class SDImaging(basetask.StandardTaskTemplate):
         __cqa = casa_tools.quanta
         if __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
             LOG.warning("Cycle 2 and earlier project with nominal effective band width.")
-
-    def __warning_if_effective_bw_eq_chanwidth(self, _rgp: imaging_params.ReductionGroupParameters):
-        """If the value of Effective BandWidth is equal to Channel Width, logs warning.
-
-        Args:
-            _rgp (imaging_params.ReductionGroupParameters): _description_
-        """
-        __spwobj = _rgp.ref_ms.get_spectral_window(_rgp.rep_spw_id)
-        if __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
-            LOG.warning("Effective band width is equal to Channel Width.")
 
     def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                 _rgp: imaging_params.ReductionGroupParameters,
@@ -984,21 +969,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                                         for __iseg in range(0, len(__freqs), 2)])
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
         __bw = __cqa.quantity(_pp.chan_width, 'Hz')
-        __bw['value'] = abs(__bw['value'])
-        __effective_bw = __cqa.quantity(_rgp.ref_ms.representative_target[2], 'Hz')
-
+        __spwid = str(_rgp.combined.v_spws[REF_MS_ID])
+        __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
+        __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
         __sensitivity = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
-                                    spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                    is_representative=_pp.is_representative_source_and_spw,
-                                    bandwidth=__bw,
-                                    bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
+                                    spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
+                                    bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                     sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
                                     effective_bw=__effective_bw)
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
-                                          spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                          is_representative=_pp.is_representative_source_and_spw,
-                                          bandwidth=__bw,
-                                          bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
+                                          spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
+                                          bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
         __sensitivity_info = SensitivityInfo(__sensitivity, _pp.stat_freqs, (_cp.is_not_nro()))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
