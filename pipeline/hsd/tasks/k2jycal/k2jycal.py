@@ -284,7 +284,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         extract Jy/K factors from caltable file
 
         Args:
-            filename : Filename of calfile
+            filename : Filename of caltable file
             ant_name : Name of antenna
             spw : Name of spectral window
         Returns:
@@ -297,15 +297,13 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             return None
         antid = np.where( antlist == ant_name )[0][0]
 
-        # fetch Jy/K factors from calfile
+        # fetch Jy/K factors from caltable file
         with casa_tools.TableReader(filename) as tb:
             subtb = tb.query( "ANTENNA1={} && SPECTRAL_WINDOW_ID={}".format(antid, spw) )
-            factors = []
-            for cparam in subtb.getcol("CPARAM"):
-                factors.append( cparam[0][0].real )
+            factors = subtb.getcol("CPARAM")[:,0,0].real
             subtb.close()
 
-        return factors
+        return list(factors)
 
     def _extract_factors( self, context: 'Context', vis: str, caltable: str, dbstatus: bool ) -> Optional[Dict[str, Dict[str, Dict[str, float]]]]:
         """
