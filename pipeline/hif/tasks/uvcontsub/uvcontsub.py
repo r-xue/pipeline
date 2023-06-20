@@ -126,6 +126,10 @@ class UVcontSub(applycal.Applycal):
         fields = dict()
         spws = dict()
         fitspec = nested_dict()
+        # Keep list of actual field/intent/spw combinations in hif_makeimlist
+        # order for weblog. Avoid saving the full list in the results object
+        # because of the large heuristics objects which would bloat the context.
+        field_intent_spw_list = []
         topo_freq_fitorder_dict = nested_dict()
         for imaging_target in imlist:
             datacolumn = imaging_target['datacolumn']
@@ -140,6 +144,9 @@ class UVcontSub(applycal.Applycal):
 
             fields[minimal_tclean_inputs.field] = True
             spws[minimal_tclean_inputs.spw] = True
+            field_intent_spw_list.append({'field': imaging_target['field'],
+                                          'intent': imaging_target['intent'],
+                                          'spw': imaging_target['spw']})
 
             (_, _, spw_topo_freq_param_dict, spw_topo_chan_param_dict, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
 
@@ -162,6 +169,7 @@ class UVcontSub(applycal.Applycal):
             topo_freq_fitorder_dict[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]['fitorder'] = fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder']
 
         result = UVcontSubResults()
+        result.field_intent_spw_list = field_intent_spw_list
         result.topo_freq_fitorder_dict = topo_freq_fitorder_dict
 
         outputvis = inputs.vis.replace('_targets', '_targets_line')
@@ -230,12 +238,13 @@ class UVcontSubResults(basetask.Results):
     UVcontSubResults is the results class for the pipeline UVcontSub task.
     """
 
-    def __init__(self, applied=[]):
+    def __init__(self):
         super(UVcontSubResults, self).__init__()
         self.mitigation_error = False
         self.vis = None
         # TODO: outputvis needed?
         self.outputvis = None
+        self.field_intent_spw_list = None
         self.topo_freq_fitorder_dict = None
         self.line_mses = []
         self.casa_uvcontsub_result = None

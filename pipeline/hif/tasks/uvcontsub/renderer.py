@@ -8,7 +8,7 @@ import pipeline.infrastructure.utils as utils
 
 #LOG = logging.get_logger(__name__)
 
-UVcontSubParams = collections.namedtuple('UVcontSubParams', 'ms freqrange fitorder source scispw')
+UVcontSubParams = collections.namedtuple('UVcontSubParams', 'ms freqrange fitorder source_intent scispw')
 
 class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='uvcontfit.mako',
@@ -123,11 +123,12 @@ class T2_4MDetailsUVcontSubRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def get_table_rows(self, context, result, ms):
         table_rows = []
 
-        frange = 'FREQ RANGE'
-        fitorder = 1
-        to_source = 'FIELD INTENT'
-        spw = 'SPW'
-        row = UVcontSubParams(ms.basename,  frange, fitorder, to_source, spw)
-        table_rows.append(row)
+        for field_intent_spw in result.field_intent_spw_list:
+            source_intent = f'{field_intent_spw["field"]} {field_intent_spw["intent"]}'
+            spw = f'{field_intent_spw["spw"]}'
+            frange = result.topo_freq_fitorder_dict[field_intent_spw['field']][field_intent_spw['spw']]['freq'].replace(';', ', ')
+            fitorder = result.topo_freq_fitorder_dict[field_intent_spw['field']][field_intent_spw['spw']]['fitorder']
+            row = UVcontSubParams(ms.basename,  frange, fitorder, source_intent, spw)
+            table_rows.append(row)
 
         return table_rows
