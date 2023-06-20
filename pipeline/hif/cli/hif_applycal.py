@@ -46,16 +46,16 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, appl
     antenna         The list of antennas to which the calibration will be applied.
                     Defaults to all antennas. Not currently supported.
                     Parameter is not available when pipelinemode='automatic'.
-    applymode       Calibration apply mode.
-                    ''='calflagstrict': calibrate data and apply flags from solutions using
-                        the strict flagging convention
-                    'trial': report on flags from solutions, dataset entirely unchanged
-                    'flagonly': apply flags from solutions only, data not calibrated
-                    'calonly': calibrate data only, flags from solutions NOT applied
-                    'calflagstrict':
-                    'flagonlystrict': same as above except flag spws for which calibration is
+    applymode       Calibration apply mode
+                    'calflag': calibrate data and apply flags from solutions
+                    ''='calflagstrict': same as above except flag spws for which calibration is
                         unavailable in one or more tables (instead of allowing them to pass
                         uncalibrated and unflagged)
+                    'trial': report on flags from solutions, dataset entirely unchanged
+                    'flagonly': apply flags from solutions only, data not calibrated
+                    'flagonlystrict': same as above except flag spws for which calibration is
+                        unavailable in one or more tables
+                    'calonly': calibrate data only, flags from solutions NOT applied
     calwt           Calibrate the weights as well as the data
     flagbackup      Backup the flags before the apply
     flagsum         Compute before and after flagging summary statistics

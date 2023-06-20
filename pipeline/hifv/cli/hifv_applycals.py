@@ -41,15 +41,15 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
                     Defaults to all antennas. Not currently supported.
                     Only can be set in pipelinemode='interactive'.
     applymode       Calibration apply mode
-                    ''='calflagstrict': calibrate data and apply flags from solutions using
-                        the strict flagging convention
-                    'trial': report on flags from solutions, dataset entirely unchanged
-                    'flagonly': apply flags from solutions only, data not calibrated
-                    'calonly': calibrate data only, flags from solutions NOT applied
-                    'calflagstrict':
-                    'flagonlystrict': same as above except flag spws for which calibration is
+                    'calflag': calibrate data and apply flags from solutions
+                    ''='calflagstrict': same as above except flag spws for which calibration is
                         unavailable in one or more tables (instead of allowing them to pass
                         uncalibrated and unflagged)
+                    'trial': report on flags from solutions, dataset entirely unchanged
+                    'flagonly': apply flags from solutions only, data not calibrated
+                    'flagonlystrict': same as above except flag spws for which calibration is
+                        unavailable in one or more tables
+                    'calonly': calibrate data only, flags from solutions NOT applied
     flagbackup      Backup the flags before the apply.  Only can be set in pipelinemode='interactive'.
     flagsum         Compute before and after flagging summary statistics
     flagdetailedsum Compute detailed flagging statistics
