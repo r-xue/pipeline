@@ -337,10 +337,9 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                     return None
                 else:
                     factors_table[spw][ant] = {}
-                    # for polid, factor in enumerate(factors):
-                    for polid in range(len(pol_list)):
+                    for polid, pol in enumerate(pol_list):
                         factor = factors[polid]
-                        factors_table[spw][ant][pol_list[polid]] = 1.0/(factor*factor)
+                        factors_table[spw][ant][pol] = 1.0/(factor*factor)
 
         # remove parameters not found in reffile
         # doing this because gencal() gives 1.0 for factors not found in reffile
