@@ -87,8 +87,8 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"Deriving polarisation calibration for session '{session_name}' with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
-        # Check that each MS in session shares the same one polarisation
-        # calibrator by field name; stop processing session if not.
+        # Check that each MS in session shares the same single polarisation
+        # calibrator by field name; if not, then stop processing this session.
         polcal_field_name = self._check_matching_pol_field(session_name, vislist)
         if not polcal_field_name:
             return {}
@@ -96,13 +96,14 @@ class Polcal(basetask.StandardTaskTemplate):
         # Retrieve reference antenna for this session.
         refant = self._get_refant(session_name, vislist)
 
-        # Run applycal to apply the registered total intensity caltables to the
-        # polarisation calibrator.
+        # For each MS in session, run applycal to apply the registered total
+        # intensity caltables to the polarisation calibrator field.
         for vis in vislist:
             LOG.info(f'Session {session_name}: apply pre-existing caltables to polarisation calibrator for MS {vis}.')
             self._run_applycal(vis)
 
-        # Extract polarisation data and concatenate in session MS.
+        # Extract polarisation data from each MS in session, concatenate into
+        # a session MS, and register this session MS with local context.
         LOG.info(f"Creating polarisation data MS for session '{session_name}'.")
         session_msname, spwmaps = self._create_session_ms(session_name, vislist)
 
@@ -188,7 +189,7 @@ class Polcal(basetask.StandardTaskTemplate):
             session_vs_result[obsid] = self._run_visstat(session_msname, obsid=str(obsid))
 
         # Register the relevant CalApps for polarisation calibrator in
-        # each MS MSes in this session.
+        # each MS in this session.
         self._register_calapps(final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps)
 
         # Run applycal to apply the newly derived polarisation caltables to the
@@ -203,7 +204,8 @@ class Polcal(basetask.StandardTaskTemplate):
             LOG.info(f'{session_msname}: run visstat for MS {vis}.")')
             vis_vs_results[vis] = self._run_visstat(vis)
 
-        # Compare results from visstat.
+        # Compare results from visstat to log any differences exceeding the
+        # threshold.
         LOG.info(f'{session_msname}: comparison of visstat results.")')
         self._compare_visstat_results(session_vs_result, vis_vs_results, spwmaps)
 
