@@ -22,7 +22,7 @@ class UVcontSubQAHandler(pqa.QAPlugin):
             scores.append(pqa.QAScore(0.0, longmsg='Size mitigation error. No continuum information available.',
                                       shortmsg='Size mitigation error'))
         else:
-            scores.append(pqa.QAScore(1.0, longmsg='Continuum subtraction cal tables applied.', shortmsg=''))
+            scores.append(pqa.QAScore(1.0, longmsg='Continuum subtraction applied.', shortmsg=''))
 
         result.qa.pool.extend(scores)
 
