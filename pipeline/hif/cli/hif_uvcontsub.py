@@ -40,16 +40,19 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, applymode=None, p
                   '', Defaults to all science spectral windows.
                   
                   Example: '11,13,15,17'
-    applymode       Calibration apply mode
-                    'calflag': calibrate data and apply flags from solutions
-                    ''='calflagstrict': same as above except flag spws for which calibration is
-                        unavailable in one or more tables (instead of allowing them to pass
-                        uncalibrated and unflagged)
-                    'trial': report on flags from solutions, dataset entirely unchanged
-                    'flagonly': apply flags from solutions only, data not calibrated
-                    'flagonlystrict': same as above except flag spws for which calibration is
-                        unavailable in one or more tables
-                    'calonly': calibrate data only, flags from solutions NOT applied
+    applymode     Calibration apply mode 
+                  ''='calflagstrict': calibrate data and apply flags from
+                    solutions using the strict flagging convention
+                  'trial': report on flags from solutions, dataset entirely
+                    unchanged
+                  'flagonly': apply flags from solutions only, data not
+                    calibrated
+                  'calonly': calibrate data only, flags from solutions NOT
+                    applied
+                  'calflagstrict':
+                  'flagonlystrict': same as above except flag spws for which
+                    calibration is unavailable in one or more tables (instead
+                    of allowing them to pass uncalibrated and unflagged)
     pipelinemode  The pipeline operating mode.
                   In 'automatic' mode the pipeline determines the values of all
                   context defined pipeline inputs automatically.
