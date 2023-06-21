@@ -2,7 +2,6 @@ import os
 import shutil
 from collections import namedtuple
 
-import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -41,7 +40,7 @@ class UVcontSubInputs(vdp.StandardInputs):
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
-class UVcontSub(applycal.Applycal):
+class UVcontSub(basetask.StandardTaskTemplate):
     Inputs = UVcontSubInputs
 
     def prepare(self):
@@ -191,6 +190,7 @@ class UVcontSub(applycal.Applycal):
             casa_uvcontsub_result = self._executor.execute(uvcontsub_job)
         except OSError as e:
             LOG.warning(f'Caught uvcontsub exception: {e}')
+            casa_uvcontsub_result = {'error': str(e)}
 
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, outputvis)
@@ -242,7 +242,6 @@ class UVcontSubResults(basetask.Results):
         super(UVcontSubResults, self).__init__()
         self.mitigation_error = False
         self.vis = None
-        # TODO: outputvis needed?
         self.outputvis = None
         self.field_intent_spw_list = None
         self.topo_freq_fitorder_dict = None
@@ -296,6 +295,7 @@ class UVcontSubResults(basetask.Results):
 
     def __repr__(self):
         s = 'UVcontSubResults:\n'
+        s += f'\tContinuum subtracted for {self.vis}. Line data stored in {self.outputvis}'
         return s
 
 FLAGGING_TEMPLATE_HEADER = '''#
