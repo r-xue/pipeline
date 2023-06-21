@@ -181,9 +181,11 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f'{session_msname}: apply polarisation calibrations to the polarisation calibrator.")')
         self._run_applycal(session_msname, parang=True)
 
-        # Run visstat on session MS.
+        # Run visstat on session MS, once per obsid.
         LOG.info(f'{session_msname}: run visstat for session MS.")')
-        session_vs_result = self._run_visstat(session_msname)
+        session_vs_result = {}
+        for obsid in range(len(vislist)):
+            session_vs_result[obsid] = self._run_visstat(session_msname, obsid=str(obsid))
 
         # Register the relevant CalApps for polarisation calibrator in
         # each MS MSes in this session.
@@ -231,7 +233,9 @@ class Polcal(basetask.StandardTaskTemplate):
             'cal_pfg_result': cal_pfg_result,
             'leak_polcal_result': leak_polcal_result,
             'xyratio_gcal_result': xyratio_gcal_result,
-            'polcal_amp_result': polcal_amp_result,
+            'session_vs_result': session_vs_result,
+            'vis_vs_results': vis_vs_results,
+            'polcal_amp_results': polcal_amp_results,
         }
 
         return result
@@ -648,7 +652,10 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result, final_calapps
 
-    def _run_visstat(self, vis: str) -> dict:
+    def _run_visstat(self, vis: str, obsid=None) -> dict:
+        if obsid is None:
+            obsid = ''
+
         # Retrieve science SpW(s) for vis.
         ms = self.inputs.context.observing_run.get_ms(name=vis)
         sci_spws = [str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True)]
@@ -662,6 +669,7 @@ class Polcal(basetask.StandardTaskTemplate):
                 'intent': utils.to_CASA_intent(ms, self.inputs.intent),
                 'spw': sci_spw,
                 'datacolumn': 'corrected',
+                'observation': obsid,
             }
             visstat_job = casa_tasks.visstat(**task_args)
             vs_result[sci_spw] = self._executor.execute(visstat_job)
