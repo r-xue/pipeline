@@ -51,11 +51,15 @@ class PolcalResults(basetask.Results):
 class PolcalInputs(vdp.StandardInputs):
 
     intent = vdp.VisDependentProperty(default='POLARIZATION,POLANGLE,POLLEAKAGE')
+    vs_stats = vdp.VisDependentProperty(default='min,max,mean')
+    vs_thresh = vdp.VisDependentProperty(default=1e-3)
 
-    def __init__(self, context, vis=None, intent=None):
+    def __init__(self, context, vis=None, intent=None, vs_stats=None, vs_thresh=None):
         self.context = context
         self.vis = vis
         self.intent = intent
+        self.vs_stats = vs_stats
+        self.vs_thresh = vs_thresh
 
 
 @task_registry.set_equivalent_casa_task('hifa_polcal')
@@ -207,7 +211,8 @@ class Polcal(basetask.StandardTaskTemplate):
         # Compare results from visstat to log any differences exceeding the
         # threshold.
         LOG.info(f'{session_msname}: comparison of visstat results.")')
-        self._compare_visstat_results(session_vs_result, vis_vs_results, spwmaps)
+        vs_diffs = self._compare_visstat_results(self.inputs.vs_stats, self.inputs.vs_thresh, session_vs_result,
+                                                 vis_vs_results, spwmaps)
 
         # Set flux density for polarisation calibrator in each MS in this
         # session.
@@ -237,6 +242,7 @@ class Polcal(basetask.StandardTaskTemplate):
             'xyratio_gcal_result': xyratio_gcal_result,
             'session_vs_result': session_vs_result,
             'vis_vs_results': vis_vs_results,
+            'vs_diffs': vs_diffs,
             'polcal_amp_results': polcal_amp_results,
         }
 
@@ -679,8 +685,33 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return vs_results
 
-    def _compare_visstat_results(self, session_vs_result: dict, vis_vs_results: dict, spwmaps: dict):
-        pass
+    def _compare_visstat_results(self, stats: str, threshold: float, session_vs_results: dict, vis_vs_results: dict,
+                                 spwmaps: dict) -> dict:
+        # Define function for determining the difference in given visstat
+        # derived statistic between session MS and individual MS.
+        def compute_diff(vres, sres, stat):
+            return abs(vres[stat] - sres[stat]) / sres[stat]
+
+        # Collect difference to put in task result.
+        diffs = {}
+        stats_to_compare = stats.split(",")
+
+        # Compare visstat results for each observation id in the session MS
+        # with the corresponding individual MS.
+        for obsid, (vis, vis_vs_result) in enumerate(vis_vs_results.items()):
+            session_vs_result = session_vs_results[obsid]
+            diffs[vis] = {}
+            for spw_id, vres in vis_vs_result.items():
+                for stat in stats_to_compare:
+                    diffs[vis][stat] = compute_diff(vres, session_vs_result[spwmaps[vis][spw_id]], stat)
+
+                    # If the relative difference is above the threshold, then
+                    # report the difference to the CASA log.
+                    if diffs[vis][stat] > threshold:
+                        LOG.info(f"Comparison of visstat results between session MS and {vis} for SpW {spw_id} shows a"
+                                 f" large relative difference in the statistic '{stat}': {diffs[vis][stat]}.")
+
+        return diffs
 
     def _setjy_for_polcal(self, vis: str, smodel: List[float]):
         pass
