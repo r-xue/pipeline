@@ -1,3 +1,4 @@
+import operator
 import os
 from typing import List, Tuple, Union
 
@@ -9,6 +10,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import measures
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import gaincal
 from pipeline.hif.tasks import polcal
@@ -714,7 +716,60 @@ class Polcal(basetask.StandardTaskTemplate):
         return diffs
 
     def _setjy_for_polcal(self, vis: str, smodel: List[float]):
-        pass
+        # Get pol calibrator field ID and science SpWs from MS.
+        ms = self.inputs.context.observing_run.get_ms(name=vis)
+        sci_spws = ms.get_spectral_windows(science_windows_only=True)
+        # This assumes that there is one and only one polcal field.
+        polcal_field = ms.get_fields(intent=self.inputs.intent)[0]
+
+        # Get imported flux density measurements (populated during importdata
+        # stage).
+        import_fluxes = sorted(polcal_field.flux_densities, key=operator.attrgetter('spw_id'))
+
+        # Check for presence of fluxscale derived flux measurements in current
+        # MS. These should have been populated by the hifa_gfluxscale stage. If
+        # not present, log warning and return without running setjy.
+        if ms.fluxscale_fluxes is None:
+            LOG.warning(f"No fluxscale derived flux measurements registered for {vis}, cannot retrieve total"
+                        f" intensity, skipping setjy step for polarisation calibrator in this MS.")
+            return
+
+        # Get fluxscale derived flux measurements for the polarisation
+        # calibrator field in the current MS
+        gfs_fluxes = sorted(ms.fluxscale_fluxes[str(polcal_field.id)], key=operator.attrgetter('spw_id'))
+
+        # Create a separate job for each SpW, to use corresponding reffreq.
+        for ind, sci_spw in enumerate(sci_spws):
+            # Get the spectral index for current SpW from imported flux
+            # density measurements.
+            spix = float(import_fluxes[ind].spix)
+
+            # Get fluxes for current SpW.
+            iquv = gfs_fluxes[ind].casa_flux_density
+
+            # For setjy command, use total intensity from hifa_gfluxscale stage,
+            # and use QUV from earlier in this stage but scaled by total intensity.
+            for i in range(3):
+                iquv[i + 1] = smodel[i + 1] * iquv[0]
+
+            # Set reference frequency to the central frequency of this SpW.
+            reffreq = f"{sci_spw.centre_frequency.convert_to(measures.FrequencyUnits.GIGAHERTZ).value}GHz"
+
+            # Initialize setjy task inputs.
+            task_args = {
+                'vis': vis,
+                'spw': str(sci_spw.id),
+                'selectdata': True,
+                'intent': utils.to_CASA_intent(ms, self.inputs.intent),
+                'scalebychan': True,
+                'standard': 'manual',
+                'fluxdensity': iquv,
+                'spix': spix,
+                'reffreq': reffreq,
+                'usescratch': True,
+            }
+            job = casa_tasks.setjy(**task_args)
+            self._executor.execute(job)
 
     def _compute_ampcal_for_polcal(self, vis: str, vislist: List[str], refant: str, spwmaps: dict) \
             -> Tuple[gaincal.common.GaincalResults, List]:
