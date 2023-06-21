@@ -5,10 +5,10 @@ import os
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Fit and Subtract UV Continuum Model from Target Data </%block>
+<%block name="title">Fit and Subtract UV Continuum Model</%block>
 
 <p>This task computes the UV continuum model and subtracts it from the
-science target data. The result is stored in the DATA column of a new set of MSes called "&lt;UID&gt;_targets_line.ms"</p>
+(science target) data. The result is stored in the DATA column of a new set of MSes called "&lt;UID&gt;_targets_line.ms"</p>
 
 <h2>Results</h2>
 
