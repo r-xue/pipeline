@@ -44,10 +44,7 @@ def hifatargets (vislist, importonly=False, pipelinemode='automatic', interactiv
         # Find continuum frequency ranges
         hif_findcont(pipelinemode=pipelinemode)
 
-        # Fit the continuum using frequency ranges from hif_findcont
-        hif_uvcontfit(pipelinemode=pipelinemode)
-
-        # Subtract the continuum fit
+        # Fit and subtract the continuum using frequency ranges from hif_findcont
         hif_uvcontsub(pipelinemode=pipelinemode)
 
         # Make clean mfs images for the selected targets
