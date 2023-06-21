@@ -1,5 +1,5 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 
@@ -654,29 +654,30 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result, final_calapps
 
-    def _run_visstat(self, vis: str, obsid=None) -> dict:
+    def _run_visstat(self, vis: str, obsid: Union[None, str] = None) -> dict:
         if obsid is None:
             obsid = ''
 
         # Retrieve science SpW(s) for vis.
         ms = self.inputs.context.observing_run.get_ms(name=vis)
-        sci_spws = [str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True)]
+        sci_spws = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
 
         # Collect visstat results for each SpW in MS.
-        vs_result = {}
+        vs_results = {}
         for sci_spw in sci_spws:
             # Create and run CASA visstat job.
             task_args = {
                 'vis': vis,
                 'intent': utils.to_CASA_intent(ms, self.inputs.intent),
-                'spw': sci_spw,
+                'spw': str(sci_spw),
                 'datacolumn': 'corrected',
                 'observation': obsid,
             }
             visstat_job = casa_tasks.visstat(**task_args)
-            vs_result[sci_spw] = self._executor.execute(visstat_job)
+            visstat_result = self._executor.execute(visstat_job)
+            vs_results[sci_spw] = list(visstat_result.values())[0]
 
-        return vs_result
+        return vs_results
 
     def _compare_visstat_results(self, session_vs_result: dict, vis_vs_results: dict, spwmaps: dict):
         pass
