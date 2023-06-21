@@ -43,12 +43,12 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, appl
                     will be applied. Defaults to all science windows in the pipeline
                     context. Parameter is not available when pipelinemode='automatic'.
                     example: '17', '11, 15'
-    antenna         The list of antennas to which the calibration will be applied.
+    antenna         The selection of antennas to which the calibration will be applied.
                     Defaults to all antennas. Not currently supported.
                     Parameter is not available when pipelinemode='automatic'.
     applymode       Calibration apply mode
                     'calflag': calibrate data and apply flags from solutions
-                    ''='calflagstrict': same as above except flag spws for which calibration is
+                    'calflagstrict': (default) same as above except flag spws for which calibration is
                         unavailable in one or more tables (instead of allowing them to pass
                         uncalibrated and unflagged)
                     'trial': report on flags from solutions, dataset entirely unchanged
