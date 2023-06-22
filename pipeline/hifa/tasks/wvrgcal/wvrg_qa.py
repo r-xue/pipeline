@@ -126,6 +126,18 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
         elif v.intent == 'BANDPASS' and perhi > (BPlim-5.) and bpmax > BPlim:
              BPnoisy = True
 
+        # PIPE-1837
+        # simply add a bool again for 'good' phase rms
+        # define this as <1 radian over all the data averaged
+        # here just return the values for both, do logic for score elsewhere
+        BPgood = False
+        PHgood = False
+        #LOG.info('phase rms is : '+str(perhi))
+        if v.intent == 'PHASE' and perhi < 57.1:
+            PHgood = True
+        elif v.intent == 'BANDPASS' and perhi < 57.1:
+            BPgood = True
+
         ############################
 
         axes = v.axes
@@ -136,7 +148,7 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
 
         result.addview(improvement_result.description, improvement_result)
 
-    return PHnoisy, BPnoisy
+    return PHnoisy, BPnoisy, PHgood, BPgood
 
 
 def calculate_phase_rms(context, gaintable, qa_intent):

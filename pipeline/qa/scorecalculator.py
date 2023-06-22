@@ -1412,12 +1412,12 @@ def score_wvrgcal(ms_name, dataresult):
 
     # now for scores < 1.0 
     elif score < 1.0:
-        qa_messages.append('No WVR improvement - Check Phase stability')
+        qa_messages.append('No WVR improvement') # PIPE-1837 message changed, now below
 
         ## presuming disc list and rms list are all filled 
         if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
             score = 0.33
-            qa_messages.append('Elevated disc/rms value(s)')
+            qa_messages.append('Elevated disc/rms value(s) - Check atmospheric phase stability')
             if len(flagant_list) > 0:
                 reduceBy = len(disc_limit)*0.1
                 qa_messages.append('Flagged antenna(s)')
@@ -1440,8 +1440,29 @@ def score_wvrgcal(ms_name, dataresult):
                     qa_messages.append('Elevated disc value(s)')
                 if len(rms_limit) > 0:
                     qa_messages.append('Elevated rms value(s)')
-            score = linear_score(score,0.0,0.66,0.34,0.66)
-            # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
+            # PIPE-1837 before final yellow scoring we assess if the 
+            # phase rms from wvrg_qa was 'good' i.e. <1 radian
+            # but only when there are no other WVR soln issues, i.e. 
+            # disc or rms are below the fixed limts - note
+            # message changes explicitly if only BP is 'good' or both BP and Phase
+            # technically the phase can be noisy due to SNR, not atmospheric variations
+            if len(disc_limit) ==0 and len(rms_limit) ==0:  
+                # here we would check if initscore > 0.X: "limit' 
+                if dataresult.PHgood and dataresult.BPgood:
+                    qa_messages.append('Bandpass and Phase calibrator atmoshperic phase stability appear to be good')
+                    score = 0.9 - reduceBy # still account for flagged antennas 
+                    score = linear_score(score,0.0,0.9,0.67,0.9)
+                elif dataresult.BPgood:
+                    qa_messages.append('Bandpass calibrator atmospheric phase stability appears to be good')
+                    score = 0.9 - reduceBy # still account for flagged antennas 
+                    score = linear_score(score,0.0,0.9,0.67,0.9)
+                else: # we don't modify from the previous assessment - .e. data seem ok, no poor rms or disc but, the phase RMS is not explicilty good - I suspect some LB and HF might come here
+                    qa_messages.append(' Check atmospheric phase stability')   
+            # Otherwise now we are back to yellow 
+            else:
+                qa_messages.append(' Check atmospheric phase stability')    
+                score = linear_score(score,0.0,0.66,0.34,0.66)
+                # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
 
     # join the short messages for the QA score (are these stored?? ) 
     qa_mesg = ' - '.join(qa_messages)
