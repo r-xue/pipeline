@@ -918,7 +918,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                           org_directions=_rgp.tocombine.org_directions,
                                                           specmodes=_rgp.tocombine.specmodes)
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
+        __chan_inverted = False
+        if isinstance(_rgp.imager_result, resultobjects.SDImagingResultItem):
+            __chan_inverted = _rgp.imager_result.chan_inverted
         _rgp.imager_result = self._executor.execute(__combine_task)
+        _rgp.imager_result.chan_inverted = __chan_inverted
 
     def __estimate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                _rgp: imaging_params.ReductionGroupParameters,
