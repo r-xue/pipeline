@@ -443,21 +443,19 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             ddid = ms.get_data_description(spw=spwid)
             pol_list = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
             # mapping for anonymous antenna if necessary
-            is_anonymous_ant = 'ANONYMOUS' in result.factors[vis][spwid]
-            all_ant_factor = result.factors[vis][spwid].pop('ANONYMOUS') if is_anonymous_ant else {}
+            all_ant_factor = result.factors[vis][spwid].pop('ANONYMOUS', {})
             for ant in ms.get_antenna():
                 ant_name = ant.name
-                if is_anonymous_ant:
+                if all_ant_factor:
                     result.factors[vis][spwid][ant_name] = all_ant_factor
                 elif ant_name not in result.factors[vis][spwid]:
                     result.all_ok = False
                     LOG.warning("No Jy/K factor is given for Spw={}, Ant={} of {}".format(spwid, ant_name, vis))
                     continue
-                is_anonymous_pol = 'I' in result.factors[vis][spwid][ant_name]
-                all_pol_factor = result.factors[vis][spwid][ant_name].pop('I') if is_anonymous_pol else {}
+                all_pol_factor = result.factors[vis][spwid][ant_name].pop('I', {})
                 for pol in pol_list:
                     # mapping for stokes I if necessary
-                    if is_anonymous_pol and pol in pol_to_map_i:
+                    if all_pol_factor and pol in pol_to_map_i:
                         result.factors[vis][spwid][ant_name][pol] = all_pol_factor
                     # check factors provided for all spw, antenna, and pol
                     ok = self.__check_factor(result.factors[vis], spwid, ant_name, pol)
