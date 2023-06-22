@@ -105,7 +105,7 @@ class Polcal(basetask.StandardTaskTemplate):
         # For each MS in session, run applycal to apply the registered total
         # intensity caltables to the polarisation calibrator field.
         for vis in vislist:
-            LOG.info(f'Session {session_name}: apply pre-existing caltables to polarisation calibrator for MS {vis}.')
+            LOG.info(f"Session {session_name}: apply pre-existing caltables to polarisation calibrator for MS {vis}.")
             self._run_applycal(vis)
 
         # Extract polarisation data from each MS in session, concatenate into
@@ -185,11 +185,11 @@ class Polcal(basetask.StandardTaskTemplate):
         self._register_calapps_from_results([final_gcal_result])
 
         # Apply the polarisation calibration to the polarisation calibrator.
-        LOG.info(f'{session_msname}: apply polarisation calibrations to the polarisation calibrator.")')
+        LOG.info(f"{session_msname}: apply polarisation calibrations to the polarisation calibrator.")
         self._run_applycal(session_msname, parang=True)
 
         # Run visstat on session MS, once per obsid.
-        LOG.info(f'{session_msname}: run visstat for session MS.")')
+        LOG.info(f"{session_msname}: run visstat for session MS.")
         session_vs_result = {}
         for obsid in range(len(vislist)):
             session_vs_result[obsid] = self._run_visstat(session_msname, obsid=str(obsid))
@@ -201,25 +201,25 @@ class Polcal(basetask.StandardTaskTemplate):
         # Run applycal to apply the newly derived polarisation caltables to the
         # polarisation calibrator in each MS in this session.
         for vis in vislist:
-            LOG.info(f'Session {session_name}: apply polarisation caltables to polarisation calibrator for MS {vis}.')
+            LOG.info(f"Session {session_name}: apply polarisation caltables to polarisation calibrator for MS {vis}.")
             self._run_applycal(vis)
 
         # Run visstat on each MS in this session.
         vis_vs_results = {}
         for vis in vislist:
-            LOG.info(f'{session_msname}: run visstat for MS {vis}.")')
+            LOG.info(f"{session_msname}: run visstat for MS {vis}.")
             vis_vs_results[vis] = self._run_visstat(vis)
 
         # Compare results from visstat to log any differences exceeding the
         # threshold.
-        LOG.info(f'{session_msname}: comparison of visstat results.")')
+        LOG.info(f"{session_msname}: comparison of visstat results.")
         vs_diffs = self._compare_visstat_results(self.inputs.vs_stats, self.inputs.vs_thresh, session_vs_result,
                                                  vis_vs_results, spwmaps)
 
         # Set flux density for polarisation calibrator in each MS in this
         # session.
         for vis in vislist:
-            LOG.info(f'{session_msname}: run setjy for MS {vis}.")')
+            LOG.info(f"{session_msname}: run setjy for MS {vis}.")
             self._setjy_for_polcal(vis, smodel)
 
         # Compute amplitude calibration for polarisation calibrator.
@@ -710,8 +710,8 @@ class Polcal(basetask.StandardTaskTemplate):
                     # If the relative difference is above the threshold, then
                     # report the difference to the CASA log.
                     if diffs[vis][stat] > threshold:
-                        LOG.info(f"Comparison of visstat results between session MS and {vis} for SpW {spw_id} shows a"
-                                 f" large relative difference in the statistic '{stat}': {diffs[vis][stat]}.")
+                        LOG.info(f"Large relative difference found in comparison of visstat results for session MS and"
+                                 f" {vis}, SpW {spw_id}, statistic '{stat}': {diffs[vis][stat]}.")
 
         return diffs
 
