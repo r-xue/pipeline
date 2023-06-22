@@ -324,7 +324,7 @@ class Polcal(basetask.StandardTaskTemplate):
             pol_vislist.append(outputvis)
 
         # Concatenate the new polarisation MSes into a single session MS.
-        session_msname = session_name + '_concat_polcalib.ms'
+        session_msname = session_name + '_polcalib.ms'
         LOG.info(f"Creating polarisation session measurement set '{session_msname}' from input measurement set(s):"
                  f" {utils.commafy(pol_vislist, quotes=False)}.")
         concat_job = casa_tasks.concat(vis=pol_vislist, concatvis=session_msname)
