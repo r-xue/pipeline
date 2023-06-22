@@ -609,7 +609,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
         # perform atmtype heuristics if atmtype is 'auto'
         # run Harold's script here
         LOG.info('Performing atmtype heuristics')
-        atm_heuristics = 'Default'
+        atm_heuristics = 'Fallback'
         default_model = ATMModelParam(atmtype=1, maxalt=120, dtem_dh=-5.6, h0=2.0)
         # best_model will fall back to default_model if heuristics is failed
         best_model = default_model
