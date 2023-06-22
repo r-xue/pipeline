@@ -396,7 +396,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                 status = False
 
         # retrieve factors from file
-        if (not status) or (inputs.dbservice is False):
+        if not status:
             gencal_args['infile'] = inputs.reffile
 
             if not os.path.exists(inputs.reffile):
