@@ -844,6 +844,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     LOG.warning(e)
                                     pass
 
+                    # Get stokes value
+                    stokes = self.heuristics.stokes(field_intent[1])
+
                     # cell is a list of form [cellx, celly]. If the list has form [cell]
                     # then that means the cell is the same size in x and y. If cell is
                     # empty then fill it with a heuristic result
@@ -942,7 +945,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     himsize = self.heuristics.imsize(
                                         fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
                                         sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
-                                        spwspec=imsize_spwlist)
+                                        spwspec=imsize_spwlist, intent=field_intent[1])
                                     if field_intent[1] in [
                                             'PHASE',
                                             'BANDPASS',
@@ -1255,7 +1258,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     uvrange=uvrange[(field_intent[0], spwspec)],
                                     bl_ratio=bl_ratio[(field_intent[0], spwspec)],
                                     uvtaper=uvtaper,
-                                    stokes='I',
+                                    stokes=stokes,
                                     heuristics=target_heuristics,
                                     vis=filtered_vislist,
                                     datacolumn=datacolumn,
