@@ -84,7 +84,7 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
                                         metric_score=metric_score, 
                                         metric_units='Degrees')
 
-        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin, weblog_location=pqa.WebLogLocation.ACCORDIAN))
+        scores.append(pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin, weblog_location=pqa.WebLogLocation.ACCORDION))
 
         # Add all scores to the QA pool
         result.qa.pool.extend(scores)
