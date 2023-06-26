@@ -697,7 +697,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         result.set_imaging_params(iter, tclean_job_parameters)
 
         # This operation is used as a workaround for CAS-13401 and can be removed after the CAS ticket is resolved.
-        if tclean_job_parameters['stokes'] != 'I':
+        if tclean_job_parameters['stokes'] != 'I' and inputs.heuristics.imaging_mode != 'ALMA':
             self._copy_restoringbeam_from_psf(tclean_job_parameters['imagename'])
 
         return result
