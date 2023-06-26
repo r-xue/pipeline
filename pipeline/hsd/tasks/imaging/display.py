@@ -932,9 +932,11 @@ class SDChannelMapDisplay(SDImageDisplay):
         # indice of frequency and velocity must have an offset to get a center value of them.
         if is_inverted_image:
             _offset = 0.5
+            _offset_f = 0
             _left_edge = self.edge[1]
         else:
             _offset = 0
+            _offset_f = 0.5
             _left_edge = self.edge[0]
 
         # NOTE:
@@ -942,10 +944,10 @@ class SDChannelMapDisplay(SDImageDisplay):
         # In the for loop below, the variables with the prefix 'idx_' or 'indice_' are meant it.
 
         for line_window in line_list:
-            _line_center = line_window[0] + _offset
+            _line_center = line_window[0]
             _line_width = line_window[1]
             # shift channel according to the edge parameter
-            idx_line_center_vel = int(_line_center + 0.5 - _left_edge)
+            idx_line_center_vel = int(_line_center + 0.5 + _offset - _left_edge)
             if float(idx_line_center_vel) == _line_center - _left_edge:
                 velocity_line_center = self.velocity[idx_line_center_vel]
             else:
@@ -957,12 +959,12 @@ class SDChannelMapDisplay(SDImageDisplay):
             else:
                 ChanVelWidth = abs(self.velocity[idx_line_center_vel] - self.velocity[idx_line_center_vel + 1])
 
-            idx_line_center_freq = int(_line_center - _left_edge)
+            idx_line_center_freq = int(_line_center + _offset_f - _left_edge)
             # 2007/9/13 Change the magnification factor 1.2 to your preference (to Dirk)
             # be sure the width of one channel map is integer
             # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
             indice_width_of_line = max(int(_line_width / self.NumChannelMap + 0.5), 1)
-            idx_left_end = int(idx_line_center_freq - self.NumChannelMap / 2.0 * indice_width_of_line + 0.5)
+            idx_left_end = int(idx_line_center_freq - self.NumChannelMap / 2.0 * indice_width_of_line + 0.5 + _offset)
             # 2007/9/10 remedy for 'out of index' error
             LOG.debug('idx_left_end, indice_width_of_line, NchanMap : '
                       f'{idx_left_end}, {indice_width_of_line}, {self.NumChannelMap}')
