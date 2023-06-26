@@ -837,7 +837,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         newflags = []
 
         # Read in data from MS. If no valid data could be read, return early with no flags.
-        data = mstools.read_data_from_ms(ms, field, spwid, intent,
+        data = mstools.read_channel_averaged_data_from_ms(ms, field, spwid, intent,
             ['corrected_data', 'model_data', 'antenna1', 'antenna2', 'flag', 'time', 'uvdist'], baseline_set)
         if not data:
             return newflags

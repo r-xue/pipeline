@@ -11,12 +11,12 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 
-def read_data_from_ms(ms: MeasurementSet,
-                      fieldid: Union[str, int],
-                      spwid: Union[str, int],
-                      intent: str,
-                      items: List[str],
-                      baseline_set: Optional[List] = None) -> dict:
+def read_channel_averaged_data_from_ms(ms: MeasurementSet,
+                                       fieldid: Union[str, int],
+                                       spwid: Union[str, int],
+                                       intent: str,
+                                       items: List[str],
+                                       baseline_set: Optional[List] = None) -> dict:
     """
     Read the channel-averaged visibility data from a MS for the given field, spw, intent,
     and optionally a subset of baselines.
@@ -89,7 +89,7 @@ def compute_mean_flux(ms: MeasurementSet,
 
     # Read in data from the MS, for specified intent, field, and spw.
     try:
-        data = read_data_from_ms(ms, fieldid, spwid, intent, ['corrected_data', 'flag', 'antenna1', 'antenna2', 'weight'])
+        data = read_channel_averaged_data_from_ms(ms, fieldid, spwid, intent, ['corrected_data', 'flag', 'antenna1', 'antenna2', 'weight'])
     except Exception as ex:
         LOG.warn('Cannot retrieve data for MS {}, field {}, spw {}, intent {}: {}'.
                  format(ms.basename, fieldid, spwid, intent, ex))
