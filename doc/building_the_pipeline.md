@@ -24,7 +24,7 @@ To use this file manually, you can type the following command:
 
 ```console
 PYTHONNOUSERSITE=1 ${casa_bin}/pip3 install --disable-pip-version-check \
-    -upgrade-strategy=only-if-needed -r requirements.txt
+    --upgrade-strategy=only-if-needed -r requirements.txt
 ```
 
 Note that here `casa_bin` is the path to the CASA `bin` directory.
