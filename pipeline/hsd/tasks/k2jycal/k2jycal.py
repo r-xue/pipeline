@@ -279,32 +279,6 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                                 factors=valid_factors, all_ok=factors_ok,
                                 dbstatus=caltable_status)
 
-    def __read_caltable( self, filename: str, ant_name: str, spw: str ) -> Optional[List[float]]:
-        """
-        extract Jy/K factors from caltable file
-
-        Args:
-            filename : Filename of caltable file
-            ant_name : Name of antenna
-            spw : Name of spectral window
-        Returns:
-            Array of Jy/K factors / None if ant_name does not exist in caltable
-        """
-        # convert ant_name to andid (of caltable)
-        with casa_tools.TableReader(filename+"/ANTENNA") as tb:
-            antlist = tb.getcol("NAME")
-        if ant_name not in antlist:
-            return None
-        antid = np.where( antlist == ant_name )[0][0]
-
-        # fetch Jy/K factors from caltable file
-        with casa_tools.TableReader(filename) as tb:
-            subtb = tb.query( "ANTENNA1={} && SPECTRAL_WINDOW_ID={}".format(antid, spw) )
-            factors = subtb.getcol("CPARAM")[:,0,0].real
-            subtb.close()
-
-        return list(factors)
-
     def _extract_factors( self, context: 'Context', vis: str, caltable: str, dbstatus: bool ) -> Optional[Dict[str, Dict[str, Dict[str, float]]]]:
         """
         extract Jy/K factors
@@ -322,24 +296,35 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         antennas = [ x.name for x in ms.get_antenna() ]
         science_windows = [ x.id for x in ms.get_spectral_windows(science_windows_only=True) ]
 
+        # get antenna list from caltable
+        with casa_tools.TableReader(caltable+"/ANTENNA") as tb:
+            caltable_antlist = tb.getcol("NAME")
+        antidx = {}   # index of antenna in caltable
+        for ant in antennas:
+            if ant not in caltable_antlist:
+                LOG.error( "{}: antenna {} does not exist in caltable".format(vis, ant) )
+                return None
+            antidx[ant] = np.where( caltable_antlist == ant )[0][0]
+
+        # fetch Jy/K factors from caltable file
         factors_table = {}
-        for spw in science_windows:
-            factors_table[spw] = {}
-            ddid = ms.get_data_description(spw=spw)
-            pol_list = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
-            for ant in antennas:
-                factors = self.__read_caltable( caltable, ant, spw )
-                if factors is None:
-                    LOG.error( "{}: antenna {} does not exist in caltable".format(vis, ant) )
-                    return None
-                elif len(factors) < len(pol_list):
-                    LOG.error( "{}: insufficient pols in caltable (MS:{} caltable:{})".format(vis, len(pol_list), len(factors)) )
-                    return None
-                else:
-                    factors_table[spw][ant] = {}
-                    for polid, pol in enumerate(pol_list):
-                        factor = factors[polid]
-                        factors_table[spw][ant][pol] = 1.0/(factor*factor)
+        with casa_tools.TableReader(caltable) as tb:
+            for spw in science_windows:
+                factors_table[spw] = {}
+                ddid = ms.get_data_description(spw=spw)
+                pol_list = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
+                for ant in antennas:
+                    subtb = tb.query( "ANTENNA1={} && SPECTRAL_WINDOW_ID={}".format(antidx[ant], spw) )
+                    factors = subtb.getcol("CPARAM")[:,0,0].real
+                    subtb.close()
+                    if len(factors) < len(pol_list):
+                        LOG.error( "{}: insufficient pols in caltable (MS:{} caltable:{})".format(vis, len(pol_list), len(factors)) )
+                        return None
+                    else:
+                        factors_table[spw][ant] = {}
+                        for polid, pol in enumerate(pol_list):
+                            factor = factors[polid]
+                            factors_table[spw][ant][pol] = 1.0/(factor*factor)
 
         # remove parameters not found in reffile
         # doing this because gencal() gives 1.0 for factors not found in reffile
