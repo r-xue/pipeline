@@ -202,7 +202,7 @@ class Polcal(basetask.StandardTaskTemplate):
         # polarisation calibrator in each MS in this session.
         for vis in vislist:
             LOG.info(f"Session {session_name}: apply polarisation caltables to polarisation calibrator for MS {vis}.")
-            self._run_applycal(vis)
+            self._run_applycal(vis, parang=True)
 
         # Run visstat on each MS in this session.
         vis_vs_results = {}
@@ -578,7 +578,7 @@ class Polcal(basetask.StandardTaskTemplate):
 
             # Create and append modified CalApplication.
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=inp_vis, spw=sci_spws,
-                                                                intent=inputs.intent, interp='nearest',
+                                                                intent=inputs.intent, interp='linear',
                                                                 spwmap=spwmaps[inp_vis]))
 
         return result, final_calapps
