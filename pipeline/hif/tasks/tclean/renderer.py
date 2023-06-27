@@ -25,7 +25,7 @@ LOG = logging.get_logger(__name__)
 
 
 ImageRow = collections.namedtuple('ImageInfo', (
-    'vis field fieldname intent spw spwnames pol frequency_label frequency beam beam_pa sensitivity '
+    'vis field fieldname intent spw spwnames pol stokes_label frequency_label frequency beam beam_pa sensitivity '
     'cleaning_threshold_label cleaning_threshold initial_nsigma_mad_label initial_nsigma_mad '
     'final_nsigma_mad_label final_nsigma_mad residual_ratio non_pbcor_label non_pbcor '
     'pbcor score fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
@@ -64,15 +64,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         image_stats = {}
 
         for r in clean_results:
-            if r.empty():
+            if r.empty() or not r.iterations:
                 continue
-            if not r.iterations:
-                continue
-            if r.multiterm:
-                extension = '.tt0'
-            else:
-                extension = ''
 
+            extension = '.tt0' if r.multiterm else ''
             maxiter = max(r.iterations.keys())
 
             vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
@@ -97,511 +92,534 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # While the image tool is open, read and cache the image
                 # stats for use in the plot generation classes.
                 stats = image.statistics(robust=False)
+                stokes_labels = coordsys.stokes()
+                stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
 
-            # cache image statistics while we have them in scope.
-            image_rms = stats.get('rms')[0]
-            image_max = stats.get('max')[0]
-            image_stats[image_path] = display.ImageStats(rms=image_rms, max=image_max)
+            for pol in stokes_present:
 
-            spw = info.get('virtspw', None)
-            if spw is not None:
-                nspwnam = info.get('nspwnam', None)
-                spwnames = ','.join([info.get('spwnam%02d' % (i + 1)) for i in range(nspwnam)])
-            else:
-                spwnames = None
-            if 'field' in info:
-                field = '%s (%s)' % (info['field'], r.intent)
-                fieldname = info['field']
-                intent = r.intent
+                LOG.info('Getting properties of %s for the weblog' % image_path)
+                with casa_tools.ImagepolReader(image_path) as imagepol:
+                    image = imagepol.stokes(pol)
+                    #image_name = str(image.name(strippath=True))
+                    info = image.miscinfo()
+                    coordsys = image.coordsys()
+                    brightness_unit = image.brightnessunit()
+                    summary = image.summary()
+                    beam = image.restoringbeam()
 
-            coord_names = numpy.array(coordsys.names())
-            coord_refs = coordsys.referencevalue(format='s')
-            pol = coord_refs['string'][coord_names == 'Stokes'][0]
+                    # While the image tool is open, read and cache the image
+                    # stats for use in the plot generation classes.
+                    stats = image.statistics(robust=False)
+                    image.close()
 
-            coordsys.done()
+                # cache image statistics while we have them in scope.
+                image_rms = stats.get('rms')[0]
+                image_max = stats.get('max')[0]
+                image_stats[image_path] = display.ImageStats(rms=image_rms, max=image_max)
 
-            #
-            # beam calculation
-            #
-            if 'beams' in beam:
-                # 'beams' dict has results for each channel and
-                # each pol product. For now, just use the first beam.
-                beam = beam['beams']['*0']['*0']
-                LOG.warning('%s has per-plane beam shape, displaying only first',
-                            r.iterations[maxiter]['image'].replace('.image', '.image%s' % extension))
+                spw = info.get('virtspw', None)
+                if spw is not None:
+                    nspwnam = info.get('nspwnam', None)
+                    spwnames = ','.join([info.get('spwnam%02d' % (i + 1)) for i in range(nspwnam)])
+                else:
+                    spwnames = None
+                if 'field' in info:
+                    field = '%s (%s)' % (info['field'], r.intent)
+                    fieldname = info['field']
+                    intent = r.intent
 
-            #
-            # beam value
-            #
-            try:
-                beam_major = qaTool.convert(beam['major'], 'arcsec')
-                beam_minor = qaTool.convert(beam['minor'], 'arcsec')
-                row_beam = '%#.3g x %#.3g %s' % (beam_major['value'], beam_minor['value'], beam_major['unit'])
-            except:
-                row_beam = '-'
+                coordsys.done()
 
-            #
-            # beam position angle
-            #
-            try:
-                beam_pa = qaTool.convert(beam['positionangle'], 'deg')
-                row_beam_pa = casa_tools.quanta.tos(beam_pa, 1)
-            except:
-                row_beam_pa = '-'
+                #
+                # beam calculation
+                #
+                if 'beams' in beam:
+                    # 'beams' dict has results for each channel and
+                    # each pol product. For now, just use the first beam.
+                    beam = beam['beams']['*0']['*0']
+                    LOG.warning('%s has per-plane beam shape, displaying only first',
+                                r.iterations[maxiter]['image'].replace('.image', '.image%s' % extension))
 
-            nchan = summary['shape'][3]
-            width = qaTool.quantity(summary['incr'][3], summary['axisunits'][3])
-            width = qaTool.convert(width, 'MHz')
-            width = qaTool.tos(width, 4)
+                #
+                # beam value
+                #
+                try:
+                    beam_major = qaTool.convert(beam['major'], 'arcsec')
+                    beam_minor = qaTool.convert(beam['minor'], 'arcsec')
+                    row_beam = '%#.3g x %#.3g %s' % (beam_major['value'], beam_minor['value'], beam_major['unit'])
+                except:
+                    row_beam = '-'
 
-            # eff_ch_bw_MHz = qaTool.convert(r.eff_ch_bw, 'MHz')['value']
-            # eff_ch_bw_text = '%.5g MHz (TOPO)' % (eff_ch_bw_MHz)
-            # effective_channel_bandwidth = eff_ch_bw_text
+                #
+                # beam position angle
+                #
+                try:
+                    beam_pa = qaTool.convert(beam['positionangle'], 'deg')
+                    row_beam_pa = casa_tools.quanta.tos(beam_pa, 1)
+                except:
+                    row_beam_pa = '-'
 
-            #
-            # centre frequency heading
-            #
-            if nchan > 1:
-                row_frequency_label = 'centre / rest frequency of cube'
-            elif nchan == 1:
-                row_frequency_label = 'centre frequency of image'
-            else:
-                row_frequency_label = 'centre frequency'
+                nchan = summary['shape'][3]
+                width = qaTool.quantity(summary['incr'][3], summary['axisunits'][3])
+                width = qaTool.convert(width, 'MHz')
+                width = qaTool.tos(width, 4)
 
-            #
-            # centre and optionally rest frequency value
-            #
-            try:
-                frequency_axis = list(summary['axisnames']).index('Frequency')
-                center_frequency = summary['refval'][frequency_axis] + \
-                    (summary['shape'][frequency_axis] / 2.0 - 0.5 - summary['refpix'][frequency_axis]) \
-                    * summary['incr'][frequency_axis]
-                centre_ghz = qaTool.convert('%s %s' % (center_frequency, summary['axisunits'][frequency_axis]), 'GHz')
+                # eff_ch_bw_MHz = qaTool.convert(r.eff_ch_bw, 'MHz')['value']
+                # eff_ch_bw_text = '%.5g MHz (TOPO)' % (eff_ch_bw_MHz)
+                # effective_channel_bandwidth = eff_ch_bw_text
+
+                #
+                # stokes heading
+                #
+                stokes_label = 'stokes'
+
+                #
+                # centre frequency heading
+                #
                 if nchan > 1:
-                    job = casa_tasks.imhead(image_path, mode='get', hdkey='restfreq')
-                    restfreq = job.execute(dry_run=False)
-                    rest_ghz = qaTool.convert(restfreq, 'GHz')
-                    row_frequency = '%s / %s (LSRK)' % (casa_tools.quanta.tos(centre_ghz, 4),
-                                                        casa_tools.quanta.tos(rest_ghz, 4))
+                    row_frequency_label = 'centre / rest frequency of cube'
+                elif nchan == 1:
+                    row_frequency_label = 'centre frequency of image'
                 else:
-                    row_frequency = '%s (LSRK)' % casa_tools.quanta.tos(centre_ghz, 4)
-            except:
-                row_frequency = '-'
+                    row_frequency_label = 'centre frequency'
 
-            #
-            # residual peak / scaled MAD
-            #
-            with casa_tools.ImageReader(r.iterations[maxiter]['residual'] + extension) as residual:
-                residual_stats = residual.statistics(robust=True)
-
-            residual_robust_rms = residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
-            if abs(residual_stats['min'])[0] > abs(residual_stats['max'])[0]:  # see CAS-10731 & PIPE-374
-                residual_peak_value = residual_stats['min'][0]
-            else:
-                residual_peak_value = residual_stats['max'][0]
-            residual_snr = (residual_peak_value / residual_robust_rms)
-            row_residual_ratio = '%.2f' % residual_snr
-            # preserve the sign of the largest magnitude value for printout
-            LOG.info('{field} clean value of maximum absolute residual / scaled MAD'
-                     ' = {peak:.12f} / {rms:.12f} = {ratio:.2f} '.format(field=field,
-                                                                         peak=residual_peak_value,
-                                                                         rms=residual_robust_rms,
-                                                                         ratio=residual_snr))
-
-            #
-            # theoretical sensitivity
-            #
-            if 'VLA' in r.imaging_mode:
-                row_sensitivity = '-'
-            else:
-                sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
-                row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
-
-            #
-            # Model image statistics for VLASS, PIPE-991
-            #
-            if 'VLASS-SE-CONT' in r.imaging_mode:
-                model_image = r.iterations[maxiter]['model'] + extension
-                with casa_tools.ImageReader(model_image) as image:
-                    # In some cases there might not be any negative (or positive) pixels
-                    try:
-                        pos_flux = image.statistics(mask='"%s" > %f'%(model_image, 0.0), robust=False)['sum'][0]
-                    except IndexError:
-                        pos_flux = 0.0
-                    row_model_pos_flux = '{:.2g} {}'.format(pos_flux, image.brightnessunit())
-                    try:
-                        neg_flux = image.statistics(mask='"%s" < %f'%(model_image, 0.0), robust=False)['sum'][0]
-                    except IndexError:
-                        neg_flux = 0.0
-                    row_model_neg_flux = '{:.2g} {}'.format(neg_flux, image.brightnessunit())
-                    # Create region for inner degree
-                    # TODO: refactor because this code is partially a duplicate of vlassmasking.py
-                    image_csys = image.coordsys()
-
-                    xpixel = image_csys.torecord()['direction0']['crpix'][0]
-                    ypixel = image_csys.torecord()['direction0']['crpix'][1]
-                    xdelta = image_csys.torecord()['direction0']['cdelt'][0]  # in radians
-                    ydelta = image_csys.torecord()['direction0']['cdelt'][1]  # in radians
-                    onedeg = 1.0 * numpy.pi / 180.0  # conversion
-                    widthdeg = 1.0  # degrees
-                    boxhalfxwidth = numpy.abs((onedeg * widthdeg / 2.0) / xdelta)
-                    boxhalfywidth = numpy.abs((onedeg * widthdeg / 2.0) / ydelta)
-
-                    blcx = xpixel - boxhalfxwidth
-                    blcy = ypixel - boxhalfywidth
-                    if blcx < 0:
-                        blcx = 0
-                    if blcy < 0:
-                        blcy = 0
-                    blc = [blcx, blcy]
-
-                    trcx = xpixel + boxhalfxwidth
-                    trcy = ypixel + boxhalfywidth
-                    if trcx > image.getchunk().shape[0]:
-                        trcx = image.getchunk().shape[0]
-                    if trcy > image.getchunk().shape[1]:
-                        trcy = image.getchunk().shape[1]
-                    trc = [trcx, trcy]
-
-                    myrg = casa_tools.regionmanager
-                    r1 = myrg.box(blc=blc, trc=trc)
-
-                    y = image.getregion(r1)
-                    row_model_flux_inner_deg = '{:.2g} {}'.format(y.sum(), image.brightnessunit())
-            else:
-                row_model_pos_flux = None
-                row_model_neg_flux = None
-                row_model_flux_inner_deg = None
-
-            row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
-                context, makeimages_result, r)
-
-            #
-            # Amount of flux inside and outside QL for VLASS-SE-CONT, PIPE-1081
-            #
-            if 'VLASS-SE-CONT' in r.imaging_mode and r.outmaskratio:
-                row_outmaskratio_label = 'flux fraction outside clean mask'
-                row_outmaskratio = '%#.3g' % r.outmaskratio
-            else:
-                row_outmaskratio_label = None
-                row_outmaskratio = None
-
-            #
-            # clean iterations, for VLASS
-            #
-            if 'VLASS' in r.imaging_mode:
-                row_iterdone = r.tclean_iterdone
-                row_stopcode = r.tclean_stopcode
-                row_stopreason = r.tclean_stopreason
-            else:
-                row_iterdone = None
-                row_stopcode = None
-                row_stopreason = None
-
-            #
-            # cleaning threshold cell
-            #
-
-            cleaning_threshold_label = 'cleaning threshold'
-
-            if 'VLASS' in r.imaging_mode:
-                if r.threshold:
-                    threshold_quantity = utils.get_casa_quantity(r.threshold)
-                    row_cleaning_threshold = '%.2g %s' % (threshold_quantity['value'], threshold_quantity['unit'])
-                else:
-                    row_cleaning_threshold = '-'
-            elif 'VLA' in r.imaging_mode:
-                cleaning_threshold_label = None
-                row_cleaning_threshold = '-'
-            else:
-                if r.threshold:
-                    threshold_quantity = qaTool.convert(r.threshold, 'Jy')
-                    sp_str, sp_scale = utils.get_si_prefix(threshold_quantity['value'], lztol=1)
-                    row_cleaning_threshold = '{:.2g} {}'.format(
-                        threshold_quantity['value']/sp_scale, sp_str+brightness_unit)
-                    if r.dirty_dynamic_range:
-                        row_cleaning_threshold += '<br>Dirty DR: %.2g' % r.dirty_dynamic_range
-                        row_cleaning_threshold += '<br>DR correction: %.2g' % r.DR_correction_factor
+                #
+                # centre and optionally rest frequency value
+                #
+                try:
+                    frequency_axis = list(summary['axisnames']).index('Frequency')
+                    center_frequency = summary['refval'][frequency_axis] + \
+                        (summary['shape'][frequency_axis] / 2.0 - 0.5 - summary['refpix'][frequency_axis]) \
+                        * summary['incr'][frequency_axis]
+                    centre_ghz = qaTool.convert('%s %s' % (center_frequency, summary['axisunits'][frequency_axis]), 'GHz')
+                    if nchan > 1:
+                        job = casa_tasks.imhead(image_path, mode='get', hdkey='restfreq')
+                        restfreq = job.execute(dry_run=False)
+                        rest_ghz = qaTool.convert(restfreq, 'GHz')
+                        row_frequency = '%s / %s (LSRK)' % (casa_tools.quanta.tos(centre_ghz, 4),
+                                                            casa_tools.quanta.tos(rest_ghz, 4))
                     else:
-                        row_cleaning_threshold += '<br>No DR information'
+                        row_frequency = '%s (LSRK)' % casa_tools.quanta.tos(centre_ghz, 4)
+                except:
+                    row_frequency = '-'
+
+                #
+                # residual peak / scaled MAD
+                #
+                with casa_tools.ImagepolReader(r.iterations[maxiter]['residual'] + extension) as residualpol:
+                    residual = residualpol.stokes(pol)
+                    residual_stats = residual.statistics(robust=True)
+                    residualpol.close()
+
+                residual_robust_rms = residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
+                if abs(residual_stats['min'])[0] > abs(residual_stats['max'])[0]:  # see CAS-10731 & PIPE-374
+                    residual_peak_value = residual_stats['min'][0]
                 else:
+                    residual_peak_value = residual_stats['max'][0]
+                residual_snr = (residual_peak_value / residual_robust_rms)
+                row_residual_ratio = '%.2f' % residual_snr
+                # preserve the sign of the largest magnitude value for printout
+                LOG.info('{field} clean value of maximum absolute residual / scaled MAD'
+                         ' = {peak:.12f} / {rms:.12f} = {ratio:.2f} '.format(field=field,
+                                                                             peak=residual_peak_value,
+                                                                             rms=residual_robust_rms,
+                                                                             ratio=residual_snr))
+
+                #
+                # theoretical sensitivity
+                #
+                if 'VLA' in r.imaging_mode:
+                    row_sensitivity = '-'
+                else:
+                    sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
+                    row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
+
+                #
+                # Model image statistics for VLASS, PIPE-991
+                #
+                if 'VLASS-SE-CONT' in r.imaging_mode:
+                    model_image = r.iterations[maxiter]['model'] + extension
+                    with casa_tools.ImageReader(model_image) as image:
+                        # In some cases there might not be any negative (or positive) pixels
+                        try:
+                            pos_flux = image.statistics(mask='"%s" > %f'%(model_image, 0.0), robust=False)['sum'][0]
+                        except IndexError:
+                            pos_flux = 0.0
+                        row_model_pos_flux = '{:.2g} {}'.format(pos_flux, image.brightnessunit())
+                        try:
+                            neg_flux = image.statistics(mask='"%s" < %f'%(model_image, 0.0), robust=False)['sum'][0]
+                        except IndexError:
+                            neg_flux = 0.0
+                        row_model_neg_flux = '{:.2g} {}'.format(neg_flux, image.brightnessunit())
+                        # Create region for inner degree
+                        # TODO: refactor because this code is partially a duplicate of vlassmasking.py
+                        image_csys = image.coordsys()
+
+                        xpixel = image_csys.torecord()['direction0']['crpix'][0]
+                        ypixel = image_csys.torecord()['direction0']['crpix'][1]
+                        xdelta = image_csys.torecord()['direction0']['cdelt'][0]  # in radians
+                        ydelta = image_csys.torecord()['direction0']['cdelt'][1]  # in radians
+                        onedeg = 1.0 * numpy.pi / 180.0  # conversion
+                        widthdeg = 1.0  # degrees
+                        boxhalfxwidth = numpy.abs((onedeg * widthdeg / 2.0) / xdelta)
+                        boxhalfywidth = numpy.abs((onedeg * widthdeg / 2.0) / ydelta)
+
+                        blcx = xpixel - boxhalfxwidth
+                        blcy = ypixel - boxhalfywidth
+                        if blcx < 0:
+                            blcx = 0
+                        if blcy < 0:
+                            blcy = 0
+                        blc = [blcx, blcy]
+
+                        trcx = xpixel + boxhalfxwidth
+                        trcy = ypixel + boxhalfywidth
+                        if trcx > image.getchunk().shape[0]:
+                            trcx = image.getchunk().shape[0]
+                        if trcy > image.getchunk().shape[1]:
+                            trcy = image.getchunk().shape[1]
+                        trc = [trcx, trcy]
+
+                        myrg = casa_tools.regionmanager
+                        r1 = myrg.box(blc=blc, trc=trc)
+
+                        y = image.getregion(r1)
+                        row_model_flux_inner_deg = '{:.2g} {}'.format(y.sum(), image.brightnessunit())
+                else:
+                    row_model_pos_flux = None
+                    row_model_neg_flux = None
+                    row_model_flux_inner_deg = None
+
+                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                    context, makeimages_result, r)
+
+                #
+                # Amount of flux inside and outside QL for VLASS-SE-CONT, PIPE-1081
+                #
+                if 'VLASS-SE-CONT' in r.imaging_mode and r.outmaskratio:
+                    row_outmaskratio_label = 'flux fraction outside clean mask'
+                    row_outmaskratio = '%#.3g' % r.outmaskratio
+                else:
+                    row_outmaskratio_label = None
+                    row_outmaskratio = None
+
+                #
+                # clean iterations, for VLASS
+                #
+                if 'VLASS' in r.imaging_mode:
+                    row_iterdone = r.tclean_iterdone
+                    row_stopcode = r.tclean_stopcode
+                    row_stopreason = r.tclean_stopreason
+                else:
+                    row_iterdone = None
+                    row_stopcode = None
+                    row_stopreason = None
+
+                #
+                # cleaning threshold cell
+                #
+
+                cleaning_threshold_label = 'cleaning threshold'
+
+                if 'VLASS' in r.imaging_mode:
+                    if r.threshold:
+                        threshold_quantity = utils.get_casa_quantity(r.threshold)
+                        row_cleaning_threshold = '%.2g %s' % (threshold_quantity['value'], threshold_quantity['unit'])
+                    else:
+                        row_cleaning_threshold = '-'
+                elif 'VLA' in r.imaging_mode:
+                    cleaning_threshold_label = None
                     row_cleaning_threshold = '-'
+                else:
+                    if r.threshold:
+                        threshold_quantity = qaTool.convert(r.threshold, 'Jy')
+                        sp_str, sp_scale = utils.get_si_prefix(threshold_quantity['value'], lztol=1)
+                        row_cleaning_threshold = '{:.2g} {}'.format(
+                            threshold_quantity['value']/sp_scale, sp_str+brightness_unit)
+                        if r.dirty_dynamic_range:
+                            row_cleaning_threshold += '<br>Dirty DR: %.2g' % r.dirty_dynamic_range
+                            row_cleaning_threshold += '<br>DR correction: %.2g' % r.DR_correction_factor
+                        else:
+                            row_cleaning_threshold += '<br>No DR information'
+                    else:
+                        row_cleaning_threshold = '-'
 
-            #
-            # nsigma * initial and final scaled MAD for residual image, See PIPE-488
-            #
-            nsigma_final = r.iterations[maxiter]['imaging_params']['nsigma']
+                #
+                # nsigma * initial and final scaled MAD for residual image, See PIPE-488
+                #
+                nsigma_final = r.iterations[maxiter]['imaging_params']['nsigma']
 
-            # dirty image statistics (iter 0)
-            with casa_tools.ImageReader(r.iterations[0]['residual'] + extension) as residual:
-                initial_residual_stats = residual.statistics(robust=True)
+                # dirty image statistics (iter 0)
+                with casa_tools.ImageReader(r.iterations[0]['residual'] + extension) as residual:
+                    initial_residual_stats = residual.statistics(robust=True)
 
-            initial_nsigma_mad = nsigma_final * initial_residual_stats.get('medabsdevmed')[0] * 1.4826
-            final_nsigma_mad = nsigma_final * residual_stats.get('medabsdevmed')[0] * 1.4826
+                initial_nsigma_mad = nsigma_final * initial_residual_stats.get('medabsdevmed')[0] * 1.4826
+                final_nsigma_mad = nsigma_final * residual_stats.get('medabsdevmed')[0] * 1.4826
 
-            if (nsigma_final != 0.0):
-                row_initial_nsigma_mad = '%#.3g %s' % (initial_nsigma_mad, brightness_unit)
-                row_final_nsigma_mad = '%#.3g %s' % (final_nsigma_mad, brightness_unit)
-            else:
-                row_initial_nsigma_mad = '-'
-                row_final_nsigma_mad = '-'
+                if (nsigma_final != 0.0):
+                    row_initial_nsigma_mad = '%#.3g %s' % (initial_nsigma_mad, brightness_unit)
+                    row_final_nsigma_mad = '%#.3g %s' % (final_nsigma_mad, brightness_unit)
+                else:
+                    row_initial_nsigma_mad = '-'
+                    row_final_nsigma_mad = '-'
 
-            # store values in log file
-            LOG.info('n-sigma * initial scaled MAD of residual: %s %s' % (("%.12f" % initial_nsigma_mad, brightness_unit)
-                                                                           if row_initial_nsigma_mad != '-'
-                                                                           else (row_initial_nsigma_mad,"")))
-            LOG.info('n-sigma * final scaled MAD of residual: %s %s' % (("%.12f" % final_nsigma_mad, brightness_unit)
-                                                                           if row_final_nsigma_mad != '-'
-                                                                           else (row_final_nsigma_mad,"")))
+                # store values in log file
+                LOG.info('n-sigma * initial scaled MAD of residual: %s %s' % (("%.12f" % initial_nsigma_mad, brightness_unit)
+                                                                               if row_initial_nsigma_mad != '-'
+                                                                               else (row_initial_nsigma_mad,"")))
+                LOG.info('n-sigma * final scaled MAD of residual: %s %s' % (("%.12f" % final_nsigma_mad, brightness_unit)
+                                                                               if row_final_nsigma_mad != '-'
+                                                                               else (row_final_nsigma_mad,"")))
 
-            #
-            # heading for non-pbcor RMS cell
-            #
-            if nchan is None:
-                non_pbcor_label = 'No RMS information'
-            elif nchan == 1:
-                non_pbcor_label = 'non-pbcor image RMS'
-            else:
-                non_pbcor_label = 'non-pbcor image RMS / RMS<sub>min</sub> / RMS<sub>max</sub>'
+                #
+                # heading for non-pbcor RMS cell
+                #
+                if nchan is None:
+                    non_pbcor_label = 'No RMS information'
+                elif nchan == 1:
+                    non_pbcor_label = 'non-pbcor image RMS'
+                else:
+                    non_pbcor_label = 'non-pbcor image RMS / RMS<sub>min</sub> / RMS<sub>max</sub>'
 
-            #
-            # value for non-pbcor RMS cell
-            #
-            if nchan is None or r.image_rms is None:
-                row_non_pbcor = '-'
-            else:
-                sp_str, sp_scale = utils.get_si_prefix(r.image_rms, lztol=1)
+                #
+                # value for non-pbcor RMS cell
+                #
+                if nchan is None or r.image_rms is None:
+                    row_non_pbcor = '-'
+                else:
+                    sp_str, sp_scale = utils.get_si_prefix(r.image_rms, lztol=1)
+                    if nchan == 1:
+                        row_non_pbcor = '{:.2g} {}'.format(r.image_rms/sp_scale, sp_str+brightness_unit)
+                    else:
+                        row_non_pbcor = '{:.2g} / {:.2g} / {:.2g} {}'.format(
+                            r.image_rms/sp_scale, r.image_rms_min/sp_scale, r.image_rms_max/sp_scale, sp_str+brightness_unit)
+
+                #
+                # pbcor image max / min cell
+                #
+                if r.image_max is None or r.image_min is None:
+                    row_pbcor = '-'
+                else:
+                    sp_str, sp_scale = utils.get_si_prefix(r.image_max, lztol=0)
+                    row_pbcor = '{:.3g} / {:.3g} {}'.format(r.image_max/sp_scale,
+                                                            r.image_min/sp_scale, sp_str+brightness_unit)
+
+                #
+                # fractional bandwidth calculation
+                #
+                try:
+                    frequency1 = summary['refval'][frequency_axis] + (-0.5 - summary['refpix'][frequency_axis]) * summary['incr'][frequency_axis]
+                    frequency2 = summary['refval'][frequency_axis] + (summary['shape'][frequency_axis] - 0.5 - summary['refpix'][frequency_axis]) * summary['incr'][frequency_axis]
+                    # full_bw_GHz = qaTool.convert(abs(frequency2 - frequency1), 'GHz')['value']
+                    fractional_bw = (frequency2 - frequency1) / (0.5 * (frequency1 + frequency2))
+                    fractional_bandwidth = '%.2g%%' % (fractional_bw * 100.)
+                except:
+                    fractional_bandwidth = 'N/A'
+
+                #
+                # fractional bandwidth heading and value
+                #
+                nterms = r.multiterm if r.multiterm else 1
+                if nchan is None:
+                    row_fractional_bw_label = 'No channel / width information'
+                    row_fractional_bw = '-'
+                elif nchan > 1:
+                    row_fractional_bw_label = 'channels'
+                    if r.orig_specmode == 'repBW':
+                        row_fractional_bw = '%d x %s (repBW, LSRK)' % (nchan, width)
+                    else:
+                        row_fractional_bw = '%d x %s (LSRK)' % (nchan, width)
+                else:
+                    row_fractional_bw_label = 'fractional bandwidth / nterms'
+                    row_fractional_bw = '%s / %s' % (fractional_bandwidth, nterms)
+
+                #
+                # aggregate bandwidth heading
+                #
                 if nchan == 1:
-                    row_non_pbcor = '{:.2g} {}'.format(r.image_rms/sp_scale, sp_str+brightness_unit)
+                    row_bandwidth_label = 'aggregate bandwidth'
                 else:
-                    row_non_pbcor = '{:.2g} / {:.2g} / {:.2g} {}'.format(
-                        r.image_rms/sp_scale, r.image_rms_min/sp_scale, r.image_rms_max/sp_scale, sp_str+brightness_unit)
+                    row_bandwidth_label = None
 
-            #
-            # pbcor image max / min cell
-            #
-            if r.image_max is None or r.image_min is None:
-                row_pbcor = '-'
-            else:
-                sp_str, sp_scale = utils.get_si_prefix(r.image_max, lztol=0)
-                row_pbcor = '{:.3g} / {:.3g} {}'.format(r.image_max/sp_scale,
-                                                        r.image_min/sp_scale, sp_str+brightness_unit)
+                #
+                # aggregate bandwidth value
+                #
+                aggregate_bw_GHz = qaTool.convert(r.aggregate_bw, 'GHz')['value']
+                row_aggregate_bw = '%.3g GHz (LSRK)' % aggregate_bw_GHz
+                row_aggregate_bw_num = '%.4g' % aggregate_bw_GHz
 
-            #
-            # fractional bandwidth calculation
-            #
-            try:
-                frequency1 = summary['refval'][frequency_axis] + (-0.5 - summary['refpix'][frequency_axis]) * summary['incr'][frequency_axis]
-                frequency2 = summary['refval'][frequency_axis] + (summary['shape'][frequency_axis] - 0.5 - summary['refpix'][frequency_axis]) * summary['incr'][frequency_axis]
-                # full_bw_GHz = qaTool.convert(abs(frequency2 - frequency1), 'GHz')['value']
-                fractional_bw = (frequency2 - frequency1) / (0.5 * (frequency1 + frequency2))
-                fractional_bandwidth = '%.2g%%' % (fractional_bw * 100.)
-            except:
-                fractional_bandwidth = 'N/A'
+                #
+                # VLA statistics (PIPE-764)
+                #
+                initial_nsigma_mad_label = None
+                final_nsigma_mad_label = None
 
-            #
-            # fractional bandwidth heading and value
-            #
-            nterms = r.multiterm if r.multiterm else 1
-            if nchan is None:
-                row_fractional_bw_label = 'No channel / width information'
-                row_fractional_bw = '-'
-            elif nchan > 1:
-                row_fractional_bw_label = 'channels'
-                if r.orig_specmode == 'repBW':
-                    row_fractional_bw = '%d x %s (repBW, LSRK)' % (nchan, width)
+                if 'VLA' in r.imaging_mode:   # VLA and VLASS
+                    initial_nsigma_mad_label = 'n-sigma * initial scaled MAD of residual'
+                    final_nsigma_mad_label = 'n-sigma * final scaled MAD of residual'
+
+                nsigma_label = None
+                row_nsigma = None
+                vis_amp_ratio_label = None
+                row_vis_amp_ratio = None
+
+                if 'VLA' == r.imaging_mode:  # VLA only
+                    nsigma_label = 'nsigma'
+                    row_nsigma = nsigma_final
+                    vis_amp_ratio_label = 'vis. amp. ratio'
+                    row_vis_amp_ratio = r.bl_ratio
+
+                #
+                #  score value
+                #
+                if r.qa.representative is not None:
+                    badge_class = rendererutils.get_badge_class(r.qa.representative)
+                    row_score = '<span class="badge %s">%0.2f</span>' % (badge_class, r.qa.representative.score)
                 else:
-                    row_fractional_bw = '%d x %s (LSRK)' % (nchan, width)
-            else:
-                row_fractional_bw_label = 'fractional bandwidth / nterms'
-                row_fractional_bw = '%s / %s' % (fractional_bandwidth, nterms)
+                    row_score = '-'
 
-            #
-            # aggregate bandwidth heading
-            #
-            if nchan == 1:
-                row_bandwidth_label = 'aggregate bandwidth'
-            else:
-                row_bandwidth_label = None
-
-            #
-            # aggregate bandwidth value
-            #
-            aggregate_bw_GHz = qaTool.convert(r.aggregate_bw, 'GHz')['value']
-            row_aggregate_bw = '%.3g GHz (LSRK)' % aggregate_bw_GHz
-            row_aggregate_bw_num = '%.4g' % aggregate_bw_GHz
-
-            #
-            # VLA statistics (PIPE-764)
-            #
-            initial_nsigma_mad_label = None
-            final_nsigma_mad_label = None
-
-            if 'VLA' in r.imaging_mode:   # VLA and VLASS
-                initial_nsigma_mad_label = 'n-sigma * initial scaled MAD of residual'
-                final_nsigma_mad_label = 'n-sigma * final scaled MAD of residual'
-
-            nsigma_label = None
-            row_nsigma = None
-            vis_amp_ratio_label = None
-            row_vis_amp_ratio = None
-
-            if 'VLA' == r.imaging_mode:  # VLA only
-                nsigma_label = 'nsigma'
-                row_nsigma = nsigma_final
-                vis_amp_ratio_label = 'vis. amp. ratio'
-                row_vis_amp_ratio = r.bl_ratio
-
-            #
-            #  score value
-            #
-            if r.qa.representative is not None:
-                badge_class = rendererutils.get_badge_class(r.qa.representative)
-                row_score = '<span class="badge %s">%0.2f</span>' % (badge_class, r.qa.representative.score)
-            else:
-                row_score = '-'
-
-            #
-            # check source fit parameters
-            #
-            if r.check_source_fit is not None:
-                try:
-                    chk_pos_offset = '%.2f +/- %.2f' % (r.check_source_fit['offset'], r.check_source_fit['offset_err'])
-                except:
-                    chk_pos_offset = 'N/A'
-                try:
-                    chk_frac_beam_offset = '%.2f +/- %.3f' % (r.check_source_fit['beams'], r.check_source_fit['beams_err'])
-                except:
-                    chk_frac_beam_offset = 'N/A'
-                try:
-                    chk_fitflux = '%d +/- %d' % (int(utils.round_half_up(r.check_source_fit['fitflux'] * 1000.)), int(utils.round_half_up(r.check_source_fit['fitflux_err'] * 1000.)))
-                except:
-                    chk_fitflux = 'N/A'
-
-                if r.check_source_fit['fitflux'] != 0.0:
+                #
+                # check source fit parameters
+                #
+                if r.check_source_fit is not None:
                     try:
-                        chk_fitpeak_fitflux_ratio = '%.2f' % (r.check_source_fit['fitpeak'] / r.check_source_fit['fitflux'])
+                        chk_pos_offset = '%.2f +/- %.2f' % (r.check_source_fit['offset'], r.check_source_fit['offset_err'])
                     except:
+                        chk_pos_offset = 'N/A'
+                    try:
+                        chk_frac_beam_offset = '%.2f +/- %.3f' % (r.check_source_fit['beams'], r.check_source_fit['beams_err'])
+                    except:
+                        chk_frac_beam_offset = 'N/A'
+                    try:
+                        chk_fitflux = '%d +/- %d' % (int(utils.round_half_up(r.check_source_fit['fitflux'] * 1000.)), int(utils.round_half_up(r.check_source_fit['fitflux_err'] * 1000.)))
+                    except:
+                        chk_fitflux = 'N/A'
+
+                    if r.check_source_fit['fitflux'] != 0.0:
+                        try:
+                            chk_fitpeak_fitflux_ratio = '%.2f' % (r.check_source_fit['fitpeak'] / r.check_source_fit['fitflux'])
+                        except:
+                            chk_fitpeak_fitflux_ratio = 'N/A'
+                    else:
                         chk_fitpeak_fitflux_ratio = 'N/A'
-                else:
-                    chk_fitpeak_fitflux_ratio = 'N/A'
 
-                if r.check_source_fit['gfluxscale'] is not None and r.check_source_fit['gfluxscale_err'] is not None:
-                    try:
-                        chk_gfluxscale = '%.2f +/- %.2f' % (r.check_source_fit['gfluxscale'], r.check_source_fit['gfluxscale_err'])
-                    except:
-                        chk_gfluxscale = 'N/A'
-
-                    if r.check_source_fit['gfluxscale_err'] != 0.0:
+                    if r.check_source_fit['gfluxscale'] is not None and r.check_source_fit['gfluxscale_err'] is not None:
                         try:
-                            chk_gfluxscale_snr = '%.2f' % (r.check_source_fit['gfluxscale'] / r.check_source_fit['gfluxscale_err'])
+                            chk_gfluxscale = '%.2f +/- %.2f' % (r.check_source_fit['gfluxscale'], r.check_source_fit['gfluxscale_err'])
                         except:
+                            chk_gfluxscale = 'N/A'
+
+                        if r.check_source_fit['gfluxscale_err'] != 0.0:
+                            try:
+                                chk_gfluxscale_snr = '%.2f' % (r.check_source_fit['gfluxscale'] / r.check_source_fit['gfluxscale_err'])
+                            except:
+                                chk_gfluxscale_snr = 'N/A'
+                        else:
                             chk_gfluxscale_snr = 'N/A'
-                    else:
-                        chk_gfluxscale_snr = 'N/A'
 
-                    if r.check_source_fit['gfluxscale'] != 0.0:
-                        try:
-                            chk_fitflux_gfluxscale_ratio = '%.2f' % (r.check_source_fit['fitflux'] * 1000. / r.check_source_fit['gfluxscale'])
-                        except:
+                        if r.check_source_fit['gfluxscale'] != 0.0:
+                            try:
+                                chk_fitflux_gfluxscale_ratio = '%.2f' % (r.check_source_fit['fitflux'] * 1000. / r.check_source_fit['gfluxscale'])
+                            except:
+                                chk_fitflux_gfluxscale_ratio = 'N/A'
+                        else:
                             chk_fitflux_gfluxscale_ratio = 'N/A'
-                    else:
-                        chk_fitflux_gfluxscale_ratio = 'N/A'
 
+                    else:
+                        chk_gfluxscale = 'N/A'
+                        chk_gfluxscale_snr = 'N/A'
+                        chk_fitflux_gfluxscale_ratio = 'N/A'
                 else:
+                    chk_pos_offset = 'N/A'
+                    chk_frac_beam_offset = 'N/A'
+                    chk_fitflux = 'N/A'
+                    chk_fitpeak_fitflux_ratio = 'N/A'
                     chk_gfluxscale = 'N/A'
                     chk_gfluxscale_snr = 'N/A'
                     chk_fitflux_gfluxscale_ratio = 'N/A'
-            else:
-                chk_pos_offset = 'N/A'
-                chk_frac_beam_offset = 'N/A'
-                chk_fitflux = 'N/A'
-                chk_fitpeak_fitflux_ratio = 'N/A'
-                chk_gfluxscale = 'N/A'
-                chk_gfluxscale_snr = 'N/A'
-                chk_fitflux_gfluxscale_ratio = 'N/A'
 
-            if r.image_max is not None and r.image_rms is not None:
-                try:
-                    img_snr = '%.2f' % (r.image_max / r.image_rms)
-                except:
+                if r.image_max is not None and r.image_rms is not None:
+                    try:
+                        img_snr = '%.2f' % (r.image_max / r.image_rms)
+                    except:
+                        img_snr = 'N/A'
+                else:
                     img_snr = 'N/A'
-            else:
-                img_snr = 'N/A'
 
-            cube_all_cont = r.cube_all_cont
+                cube_all_cont = r.cube_all_cont
 
-            tclean_command = r.tclean_command
+                tclean_command = r.tclean_command
 
-            # create our table row for this image.
-            # Plot is set to None as we have a circular dependency: the row
-            # needs the plot, but the plot generator needs the image_stats
-            # cache. We will later set plot to the correct value.
-            row = ImageRow(
-                vis=vis,
-                datatype=datatype,
-                datatype_info=datatype_info,
-                field=field,
-                fieldname=fieldname,
-                intent=intent,
-                spw=spw,
-                spwnames=spwnames,
-                pol=pol,
-                frequency_label=row_frequency_label,
-                frequency=row_frequency,
-                beam=row_beam,
-                beam_pa=row_beam_pa,
-                sensitivity=row_sensitivity,
-                cleaning_threshold_label=cleaning_threshold_label,
-                cleaning_threshold=row_cleaning_threshold,
-                initial_nsigma_mad_label=initial_nsigma_mad_label,
-                initial_nsigma_mad=row_initial_nsigma_mad,
-                final_nsigma_mad_label=final_nsigma_mad_label,
-                final_nsigma_mad=row_final_nsigma_mad,
-                model_pos_flux=row_model_pos_flux,
-                model_neg_flux=row_model_neg_flux,
-                model_flux_inner_deg=row_model_flux_inner_deg,
-                nmajordone_total=row_nmajordone_total,
-                nmajordone_per_iter=row_nmajordone_per_iter,
-                majorcycle_stat_plot=majorcycle_stat_plot,
-                tab_dict=tab_dict,
-                tab_url=None,
-                residual_ratio=row_residual_ratio,
-                non_pbcor_label=non_pbcor_label,
-                non_pbcor=row_non_pbcor,
-                pbcor=row_pbcor,
-                score=row_score,
-                fractional_bw_label=row_fractional_bw_label,
-                fractional_bw=row_fractional_bw,
-                aggregate_bw_label=row_bandwidth_label,
-                aggregate_bw=row_aggregate_bw,
-                aggregate_bw_num=row_aggregate_bw_num,
-                nsigma_label=nsigma_label,
-                nsigma=row_nsigma,
-                vis_amp_ratio_label=vis_amp_ratio_label,
-                vis_amp_ratio=row_vis_amp_ratio,
-                image_file=image_name.replace('.pbcor', ''),
-                nchan=nchan,
-                plot=None,
-                qa_url=None,
-                outmaskratio=row_outmaskratio,
-                outmaskratio_label=row_outmaskratio_label,
-                iterdone=row_iterdone,
-                stopcode=row_stopcode,
-                stopreason=row_stopreason,
-                chk_pos_offset=chk_pos_offset,
-                chk_frac_beam_offset=chk_frac_beam_offset,
-                chk_fitflux=chk_fitflux,
-                chk_fitpeak_fitflux_ratio=chk_fitpeak_fitflux_ratio,
-                img_snr=img_snr,
-                chk_gfluxscale=chk_gfluxscale,
-                chk_gfluxscale_snr=chk_gfluxscale_snr,
-                chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
-                cube_all_cont=cube_all_cont,
-                tclean_command=tclean_command,
-                result=r
-            )
-            image_rows.append(row)
+                # create our table row for this image.
+                # Plot is set to None as we have a circular dependency: the row
+                # needs the plot, but the plot generator needs the image_stats
+                # cache. We will later set plot to the correct value.
+                row = ImageRow(
+                    vis=vis,
+                    datatype=datatype,
+                    datatype_info=datatype_info,
+                    field=field,
+                    fieldname=fieldname,
+                    intent=intent,
+                    spw=spw,
+                    spwnames=spwnames,
+                    pol=pol,
+                    stokes_label=stokes_label,
+                    frequency_label=row_frequency_label,
+                    frequency=row_frequency,
+                    beam=row_beam,
+                    beam_pa=row_beam_pa,
+                    sensitivity=row_sensitivity,
+                    cleaning_threshold_label=cleaning_threshold_label,
+                    cleaning_threshold=row_cleaning_threshold,
+                    initial_nsigma_mad_label=initial_nsigma_mad_label,
+                    initial_nsigma_mad=row_initial_nsigma_mad,
+                    final_nsigma_mad_label=final_nsigma_mad_label,
+                    final_nsigma_mad=row_final_nsigma_mad,
+                    model_pos_flux=row_model_pos_flux,
+                    model_neg_flux=row_model_neg_flux,
+                    model_flux_inner_deg=row_model_flux_inner_deg,
+                    nmajordone_total=row_nmajordone_total,
+                    nmajordone_per_iter=row_nmajordone_per_iter,
+                    majorcycle_stat_plot=majorcycle_stat_plot,
+                    tab_dict=tab_dict,
+                    tab_url=None,
+                    residual_ratio=row_residual_ratio,
+                    non_pbcor_label=non_pbcor_label,
+                    non_pbcor=row_non_pbcor,
+                    pbcor=row_pbcor,
+                    score=row_score,
+                    fractional_bw_label=row_fractional_bw_label,
+                    fractional_bw=row_fractional_bw,
+                    aggregate_bw_label=row_bandwidth_label,
+                    aggregate_bw=row_aggregate_bw,
+                    aggregate_bw_num=row_aggregate_bw_num,
+                    nsigma_label=nsigma_label,
+                    nsigma=row_nsigma,
+                    vis_amp_ratio_label=vis_amp_ratio_label,
+                    vis_amp_ratio=row_vis_amp_ratio,
+                    image_file=image_name.replace('.pbcor', ''),
+                    nchan=nchan,
+                    plot=None,
+                    qa_url=None,
+                    outmaskratio=row_outmaskratio,
+                    outmaskratio_label=row_outmaskratio_label,
+                    iterdone=row_iterdone,
+                    stopcode=row_stopcode,
+                    stopreason=row_stopreason,
+                    chk_pos_offset=chk_pos_offset,
+                    chk_frac_beam_offset=chk_frac_beam_offset,
+                    chk_fitflux=chk_fitflux,
+                    chk_fitpeak_fitflux_ratio=chk_fitpeak_fitflux_ratio,
+                    img_snr=img_snr,
+                    chk_gfluxscale=chk_gfluxscale,
+                    chk_gfluxscale_snr=chk_gfluxscale_snr,
+                    chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
+                    cube_all_cont=cube_all_cont,
+                    tclean_command=tclean_command,
+                    result=r
+                )
+                image_rows.append(row)
 
         plotter = display.CleanSummary(context, makeimages_result, image_stats)
         plots = plotter.plot()
@@ -624,12 +642,12 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
             prefix = row.image_file.split('.')[0]
             try:
-                final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)].keys())[-1]
+                final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][row.pol].keys())[-1]
                 # cube and repBW mode use mom8
-                plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), final_iter, 'image', 'mom8')
+                plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mom8')
                 if plot is None:
                     # mfs and cont mode use mean
-                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), final_iter, 'image', 'mean')
+                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
 
                 renderer = TCleanPlotsRenderer(context, results, row.result,
                                                plots_dict, prefix, row.field, str(row.spw), row.pol,
@@ -741,6 +759,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             'datatype': datatype,
             'field': field,
             'spw': spw,
+            'pol': pol,
             'qa_previous': urls[0],
             'qa_next': urls[2],
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
@@ -769,6 +788,7 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
             'prefix': prefix.split('.')[0],
             'field': field,
             'spw': spw,
+            'pol': pol,
             'qa_previous': urls[0],
             'qa_next': urls[2],
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
@@ -778,19 +798,24 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
         mako_context.update(self.extra_data)
 
 
-def get_plot(plots, prefix, datatype, field, spw, i, colname, moment):
+def get_plot(plots, prefix, datatype, field, spw, stokes, i, colname, moment):
     try:
-        return plots[prefix][datatype][field][spw][i][colname][moment]
+        return plots[prefix][datatype][field][spw][stokes][i][colname][moment]
     except KeyError:
         return None
 
 
 def make_plot_dict(plots):
     # Make the plots
+    # Note that any change in the nested dictionary structure must be
+    # reflected in the renderer class code and in the Mako templates.
+    # Otherwise there may be inadvertent modifications of the dictionary
+    # when it is passed to the render() method.
     prefixes = sorted({p.parameters['prefix'] for p in plots})
     datatypes = sorted({p.parameters['datatype'] for p in plots})
     fields = sorted({p.parameters['field'] for p in plots})
     spws = sorted({p.parameters['virtspw'] for p in plots})
+    stokeses = sorted({p.parameters['stokes'] for p in plots})
     iterations = sorted({p.parameters['iter'] for p in plots})
     types = sorted({p.parameters['type'] for p in plots})
     moments = sorted({p.parameters['moment'] for p in plots})
@@ -798,26 +823,29 @@ def make_plot_dict(plots):
     type_dim = lambda: collections.defaultdict(dict)
     iteration_dim = lambda: collections.defaultdict(type_dim)
     spw_dim = lambda: collections.defaultdict(iteration_dim)
-    field_dim = lambda: collections.defaultdict(spw_dim)
+    stokes_dim = lambda: collections.defaultdict(spw_dim)
+    field_dim = lambda: collections.defaultdict(stokes_dim)
     datatype_dim = lambda: collections.defaultdict(field_dim)
     plots_dict = collections.defaultdict(datatype_dim)
     for prefix in prefixes:
         for datatype in datatypes:
             for field in fields:
                 for spw in spws:
-                    for iteration in iterations:
-                        for t in types:
-                            for moment in moments:
-                                matching = [p for p in plots
-                                            if p.parameters['prefix'] == prefix
-                                            and p.parameters['datatype'] == datatype
-                                            and p.parameters['field'] == field
-                                            and p.parameters['virtspw'] == spw
-                                            and p.parameters['iter'] == iteration
-                                            and p.parameters['type'] == t
-                                            and p.parameters['moment'] == moment]
-                                if matching:
-                                    plots_dict[prefix][datatype][field][spw][iteration][t][moment] = matching[0]
+                    for stokes in stokeses:
+                        for iteration in iterations:
+                            for t in types:
+                                for moment in moments:
+                                    matching = [p for p in plots
+                                                if p.parameters['prefix'] == prefix
+                                                and p.parameters['datatype'] == datatype
+                                                and p.parameters['field'] == field
+                                                and p.parameters['virtspw'] == spw
+                                                and p.parameters['stokes'] == stokes
+                                                and p.parameters['iter'] == iteration
+                                                and p.parameters['type'] == t
+                                                and p.parameters['moment'] == moment]
+                                    if matching:
+                                        plots_dict[prefix][datatype][field][spw][stokes][iteration][t][moment] = matching[0]
 
     return plots_dict
 
@@ -843,7 +871,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
     def update_mako_context(self, ctx, context, results):
 
-        # because hif.tclean is a multi-vis task (is_multi_vis_task = False) which operates over multiple MSs,
+        # because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
         # we will only get one CleanListResult in the ResultsList returned by the task.
         makeimages_result = results[0]
         if not makeimages_result:
@@ -1387,6 +1415,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     spw=spw,
                     spwnames=spwnames,
                     pol=pol,
+                    stokes_label=None,
                     frequency_label=row_frequency_label,
                     frequency=row_frequency,
                     beam=row_beam,

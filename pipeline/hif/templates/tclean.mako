@@ -216,6 +216,12 @@ except:
                     %endfor
                 </tr>
                 <tr>
+                    <th>${image_info[j].stokes_label}</th>
+                    %for k in range(j, min(j+4, field_block_indices[i+1])):
+                        <td style="width:250px;">${image_info[k].pol}</td>
+                    %endfor
+                </tr>
+                <tr>
                     <th>${image_info[j].frequency_label}</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
                         <td style="width:250px;">${image_info[k].frequency}</td>
