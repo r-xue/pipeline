@@ -7,6 +7,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tools
@@ -34,6 +35,7 @@ class MakeImListInputs(vdp.StandardInputs):
     width = vdp.VisDependentProperty(default='')
     clearlist = vdp.VisDependentProperty(default=True)
     per_eb = vdp.VisDependentProperty(default=False)
+    per_session = vdp.VisDependentProperty(default=False)
     calcsb = vdp.VisDependentProperty(default=False)
     datatype = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
@@ -170,7 +172,7 @@ class MakeImListInputs(vdp.StandardInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
-                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, datatype=None,
+                 robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
                  datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
         self.context = context
         self.output_dir = output_dir
@@ -197,6 +199,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.uvtaper = uvtaper
         self.clearlist = clearlist
         self.per_eb = per_eb
+        self.per_session = per_session
         self.calcsb = calcsb
         self.datatype = datatype
         self.datacolumn = datacolumn
@@ -608,8 +611,17 @@ class MakeImList(basetask.StandardTaskTemplate):
             spw = '[]'
             spwlist = []
 
+        if inputs.per_eb and inputs.per_session:
+            msg = '"per_eb" and "per_session" are mutually exclusive'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
         if inputs.per_eb:
             vislists = [[vis] for vis in inputs.vis]
+        elif inputs.per_session:
+            vislists = [v for v in sessionutils.group_vislist_into_sessions(inputs.context, inputs.vis).values()]
         else:
             vislists = [inputs.vis]
 
@@ -637,6 +649,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 for vislist in vislists:
                     if inputs.per_eb:
                         imagename_prefix = os.path.basename(vislist[0]).strip('.ms')
+                    elif inputs.per_session:
+                        imagename_prefix = inputs.context.observing_run.get_ms(vislist[0]).session
                     else:
                         imagename_prefix = inputs.context.project_structure.ousstatus_entity_id
 
