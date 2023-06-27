@@ -787,6 +787,7 @@ class Polcal(basetask.StandardTaskTemplate):
                 'solint': 'inf',
                 'gaintype': 'T',
                 'refant': refant,
+                'parang': True,
             }
             task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
 
