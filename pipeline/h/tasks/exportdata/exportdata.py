@@ -1012,7 +1012,7 @@ finally:
             if calimages:
                 LOG.info('Exporting calibrator source images')
                 if calintents == '':
-                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE']
+                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE', 'POLARIZATION']
                 else:
                     intents = calintents.split(',')
                 cleanlist = context.calimlist.get_imlist()
