@@ -794,9 +794,9 @@ class SDChannelMapDisplay(SDImageDisplay):
                     if ll not in line_list and ll[2] is True:
                         line_list.append(ll)
         if is_inverted_image:
-            right_edge = float(self.nchan-1)
+            _right_edge = float(self.nchan - 1)
             for ll in line_list:
-                ll[0] = right_edge - ll[0]
+                ll[0] = _right_edge - ll[0]
         return line_list
 
     def __get_integrated_spectra(self) -> numpy.ma.masked_array:
@@ -815,7 +815,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # if all pixels are masked, return fully masked array
         unweight_mask = unweight_ia.getchunk(getmask=True)
-        if numpy.all(unweight_mask == False):
+        if numpy.all(unweight_mask is False):
             unweight_ia.close()
             sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32),
                                            mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
@@ -835,7 +835,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         with casa_tools.ImageReader(imagename) as ia:
             maskname = ia.maskhandler('get')[0]
         with casa_tools.ImageReader(weightname) as ia:
-            if maskname != 'T': #'T' is no mask (usually an image from completely flagged MSes)
+            if maskname != 'T':  # 'T' is no mask (usually an image from completely flagged MSes)
                 ia.maskhandler('delete', [maskname])
                 ia.maskhandler('copy', ['%s:%s' % (imagename, maskname), maskname])
                 ia.maskhandler('set', maskname)
@@ -932,11 +932,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         # indice of frequency and velocity must have an offset to get a center value of them.
         if is_inverted_image:
             _offset = 0.5
-            _offset_f = 0
             _left_edge = self.edge[1]
         else:
             _offset = 0
-            _offset_f = 0.5
             _left_edge = self.edge[0]
 
         # NOTE:
@@ -947,37 +945,41 @@ class SDChannelMapDisplay(SDImageDisplay):
             _line_center = line_window[0]
             _line_width = line_window[1]
             # shift channel according to the edge parameter
-            idx_line_center_vel = int(_line_center + 0.5 + _offset - _left_edge)
-            if float(idx_line_center_vel) == _line_center - _left_edge:
-                velocity_line_center = self.velocity[idx_line_center_vel]
+            idx_line_center = int(_line_center + 0.5 - _left_edge)
+            if float(idx_line_center) == _line_center - _left_edge:
+                velocity_line_center = self.velocity[idx_line_center]
             else:
-                velocity_line_center = 0.5 * (self.velocity[idx_line_center_vel] +
-                                              self.velocity[idx_line_center_vel - 1])
-            LOG.debug(f'velocity[{idx_line_center_vel}]: {velocity_line_center}')
-            if idx_line_center_vel > 0:
-                ChanVelWidth = abs(self.velocity[idx_line_center_vel] - self.velocity[idx_line_center_vel - 1])
+                if is_inverted_image:
+                    velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
+                                                  self.velocity[idx_line_center])
+                else:
+                    velocity_line_center = 0.5 * (self.velocity[idx_line_center] +
+                                                  self.velocity[idx_line_center - 1])
+            LOG.debug(f'center velocity[{idx_line_center}]: {velocity_line_center}')
+            if idx_line_center > 0:
+                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center - 1])
             else:
-                ChanVelWidth = abs(self.velocity[idx_line_center_vel] - self.velocity[idx_line_center_vel + 1])
+                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center + 1])
 
-            idx_line_center_freq = int(_line_center + _offset_f - _left_edge)
+            LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
             # 2007/9/13 Change the magnification factor 1.2 to your preference (to Dirk)
             # be sure the width of one channel map is integer
             # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
             indice_width_of_line = max(int(_line_width / self.NumChannelMap + 0.5), 1)
-            idx_left_end = int(idx_line_center_freq - self.NumChannelMap / 2.0 * indice_width_of_line + 0.5 + _offset)
+            idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indice_width_of_line + 0.5 + _offset)
             # 2007/9/10 remedy for 'out of index' error
             LOG.debug('idx_left_end, indice_width_of_line, NchanMap : '
                       f'{idx_left_end}, {indice_width_of_line}, {self.NumChannelMap}')
             if idx_left_end < 0:
-                indice_width_of_line = int(idx_line_center_freq * 2.0 / self.NumChannelMap)
+                indice_width_of_line = int(idx_line_center * 2.0 / self.NumChannelMap)
                 if indice_width_of_line == 0:
                     continue
-                idx_left_end = int(idx_line_center_freq - self.NumChannelMap / 2.0 * indice_width_of_line)
+                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indice_width_of_line)
             elif idx_left_end + indice_width_of_line * self.NumChannelMap > self.nchan:
-                indice_width_of_line = int((self.nchan - 1 - idx_line_center_freq) * 2.0 / self.NumChannelMap)
+                indice_width_of_line = int((self.nchan - 1 - idx_line_center) * 2.0 / self.NumChannelMap)
                 if indice_width_of_line == 0:
                     continue
-                idx_left_end = int(idx_line_center_freq - self.NumChannelMap / 2.0 * indice_width_of_line)
+                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indice_width_of_line)
 
             chan0 = max(idx_left_end - 1, 0)
             chan1 = min(idx_left_end + self.NumChannelMap * indice_width_of_line, self.nchan - 1)
@@ -990,7 +992,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # vertical lines for integrated spectrum #1
             vertical_lines.append(
-                axes_integsp1.axvline(x=self.frequency[max(idx_left_end, 0)], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[chan0], linewidth=0.3, color='r')
             )
             vertical_lines.append(
                 axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
@@ -1018,7 +1020,8 @@ class SDChannelMapDisplay(SDImageDisplay):
             for pol in range(self.npol):
                 plotted_objects = []
 
-                masked_data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
+                masked_data = (data.take([pol], axis=self.id_stokes) *
+                               mask.take([pol], axis=self.id_stokes)).squeeze()
 
                 # Integrated Spectrum
                 t0 = time.time()
@@ -1029,7 +1032,8 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 # 2008/9/20 DEC Effect
                 plotted_objects.append(
-                    axes_integmap.imshow(total, interpolation='nearest', aspect=self.aspect, extent=Extent)
+                    axes_integmap.imshow(total, interpolation='nearest',
+                                         aspect=self.aspect, extent=Extent)
                 )
 
                 xlim = axes_integmap.get_xlim()
@@ -1048,7 +1052,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                                                      self.ra_min, self.dec_min)
 
                 axes_integmap.set_title('Total Intensity: CenterFreq.= %.3f GHz' %
-                                        self.frequency[idx_line_center_freq], size=TickSize)
+                                        self.frequency[idx_line_center], size=TickSize)
                 axes_integmap.set_xlim(xlim)
                 axes_integmap.set_ylim(ylim)
 
@@ -1056,7 +1060,8 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 # Plot Integrated Spectrum #1
                 Sp = Sp_integ[pol, :]
-                (F0, F1) = (min(self.frequency[0], self.frequency[-1]), max(self.frequency[0], self.frequency[-1]))
+                (F0, F1) = (min(self.frequency[0], self.frequency[-1]),
+                            max(self.frequency[0], self.frequency[-1]))
                 spmin = Sp.min()
                 spmax = Sp.max()
                 dsp = spmax - spmin
@@ -1064,14 +1069,16 @@ class SDChannelMapDisplay(SDImageDisplay):
                 spmax += dsp * 0.1
                 LOG.debug(f'Freq0, Freq1: {F0}, {F1}')
 
-                axes_integsp1.plot(self.frequency, Sp, '-b', markersize=2, markeredgecolor='b', markerfacecolor='b')
+                axes_integsp1.plot(self.frequency, Sp, '-b', markersize=2,
+                                   markeredgecolor='b', markerfacecolor='b')
                 axes_integsp1.axis([F0, F1, spmin, spmax])
 
                 t2 = time.time()
 
                 # Plot Integrated Spectrum #2
                 axes_integsp2.plot(self.velocity[chan0:chan1 + 1] - velocity_line_center,
-                                   Sp[chan0:chan1 + 1], '-b', markersize=2, markeredgecolor='b', markerfacecolor='b')
+                                   Sp[chan0:chan1 + 1], '-b', markersize=2, markeredgecolor='b',
+                                   markerfacecolor='b')
                 # adjust Y-axis range to the current line
                 spmin_zoom = Sp[chan0:chan1 + 1].min()
                 spmax_zoom = Sp[chan0:chan1 + 1].max()
