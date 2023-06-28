@@ -654,10 +654,9 @@ class ImageParamsHeuristics(object):
         """Determine the gridder to use for the given intent and field."""
 
         field_str_list = self.field(intent, field)
-        is_mosaic = self._is_mosaic(field_str_list)
 
         # use mosaic gridder for mosaic imaging and/or het.array data
-        if is_mosaic or (len(self.antenna_diameters()) > 1):
+        if self._is_mosaic(field_str_list) or len(self.antenna_diameters()) > 1:
             return 'mosaic'
         else:
             return 'standard'
@@ -724,7 +723,9 @@ class ImageParamsHeuristics(object):
         # Set the maximum separation to 200 microarcsec and test via
         # a tolerance rather than an equality.
         max_separation = cqa.quantity('200uarcsec')
-        if not self._is_mosaic(fields):
+
+        is_mos_or_het = self._is_mosaic(fields) or len(self.antenna_diameters()) > 1
+        if not is_mos_or_het:
             max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0]  # in micro arcsec
             for mdirection in mdirections:
                 separation = cme.separation(mdirection, mdirections[0])
@@ -1037,9 +1038,9 @@ class ImageParamsHeuristics(object):
         # border of 0.75 (0.825) * beam radius (radius is to
         # first null) wide
         nfields = int(np.median([len(field_ids.split(',')) for field_ids in fields]))
-        is_mosaic = self._is_mosaic(fields)
+        is_mos_or_het = self._is_mosaic(fields) or len(self.antenna_diameters()) > 1
 
-        if is_mosaic and nfields <= 3:
+        if is_mos_or_het and nfields <= 3:
             # PIPE-209 asks for a slightly larger size for small (2-3 field) mosaics.
             nxpix = int((1.65 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.65 * beam_radius_v + yspread) / celly_v)
@@ -1047,7 +1048,7 @@ class ImageParamsHeuristics(object):
             nxpix = int((1.5 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.5 * beam_radius_v + yspread) / celly_v)
 
-        if (not is_mosaic) and (sfpblimit is not None):
+        if (not is_mos_or_het) and (sfpblimit is not None):
             beam_fwhp = 1.12 / 1.22 * beam_radius_v
             nxpix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / cellx_v))
             nypix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / celly_v))
