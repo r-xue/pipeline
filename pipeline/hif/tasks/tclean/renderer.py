@@ -93,24 +93,26 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # stats for use in the plot generation classes.
                 stats = image.statistics(robust=False)
                 stokes_labels = coordsys.stokes()
-                stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
+                stokes_parameters = [stokes_labels[idx] for idx in range(image.shape()[2])]
+                coordsys.done()
 
-            for pol in stokes_present:
+            for pol in stokes_parameters:
 
-                LOG.info('Getting properties of %s for the weblog' % image_path)
-                with casa_tools.ImagepolReader(image_path) as imagepol:
-                    image = imagepol.stokes(pol)
-                    #image_name = str(image.name(strippath=True))
-                    info = image.miscinfo()
-                    coordsys = image.coordsys()
-                    brightness_unit = image.brightnessunit()
-                    summary = image.summary()
-                    beam = image.restoringbeam()
+                if stokes_parameters != ['I']:
+                    # Get the right stokes plane's beam and statistics
+                    LOG.info('Getting properties of %s for the weblog' % image_path)
+                    with casa_tools.ImagepolReader(image_path) as imagepol:
+                        image = imagepol.stokes(pol)
+                        #image_name = str(image.name(strippath=True))
+                        info = image.miscinfo()
+                        brightness_unit = image.brightnessunit()
+                        summary = image.summary()
+                        beam = image.restoringbeam()
 
-                    # While the image tool is open, read and cache the image
-                    # stats for use in the plot generation classes.
-                    stats = image.statistics(robust=False)
-                    image.close()
+                        # While the image tool is open, read and cache the image
+                        # stats for use in the plot generation classes.
+                        stats = image.statistics(robust=False)
+                        image.close()
 
                 # cache image statistics while we have them in scope.
                 image_rms = stats.get('rms')[0]
@@ -128,7 +130,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     fieldname = info['field']
                     intent = r.intent
 
-                coordsys.done()
 
                 #
                 # beam calculation
@@ -206,10 +207,14 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 #
                 # residual peak / scaled MAD
                 #
-                with casa_tools.ImagepolReader(r.iterations[maxiter]['residual'] + extension) as residualpol:
-                    residual = residualpol.stokes(pol)
-                    residual_stats = residual.statistics(robust=True)
-                    residualpol.close()
+                if stokes_parameters == ['I']:
+                    with casa_tools.ImageReader(r.iterations[maxiter]['residual'] + extension) as residual:
+                        residual_stats = residual.statistics(robust=True)
+                else:
+                    with casa_tools.ImagepolReader(r.iterations[maxiter]['residual'] + extension) as residualpol:
+                        residual = residualpol.stokes(pol)
+                        residual_stats = residual.statistics(robust=True)
+                        residualpol.close()
 
                 residual_robust_rms = residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
                 if abs(residual_stats['min'])[0] > abs(residual_stats['max'])[0]:  # see CAS-10731 & PIPE-374
@@ -285,6 +290,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                         y = image.getregion(r1)
                         row_model_flux_inner_deg = '{:.2g} {}'.format(y.sum(), image.brightnessunit())
+                        image_csys.done()
                 else:
                     row_model_pos_flux = None
                     row_model_neg_flux = None
