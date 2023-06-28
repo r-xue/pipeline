@@ -1448,13 +1448,25 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warning('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
                 raster_info_list.append(None)
             dt = _cp.dt_dict[msobj.basename]
+            origin_basename = os.path.basename(msobj.origin_ms)  ###
+            metadata = rasterutil.read_datatable(dt)  ###
+            pflag = metadata.pflag  ###
+            ra = metadata.ra  ###
+            dec = metadata.dec  ###
+            timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=origin_basename, pol=None)  ###
+            # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
+            # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
+            dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)  ###
+            dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] == True)]  ###
             try:
-                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
-            except Exception:
-                f = msobj.get_fields(field_id=fieldid)[0]
-                a = msobj.get_antenna(antid)[0]
-                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. '
-                         'Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
+                raster_info_list.append(rasterscan.find_raster_gap(ra, dec, dtrow_list))  ###
+#                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
+            except rasterscan.RasterScanHeuristicsFailure:   ###
+#            except Exception:
+#                f = msobj.get_fields(field_id=fieldid)[0]
+#                a = msobj.get_antenna(antid)[0]
+#                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. '
+#                         'Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
                 raster_info_list.append(None)
         assert len(_rgp.combined.infiles) == len(raster_info_list)
         return raster_info_list

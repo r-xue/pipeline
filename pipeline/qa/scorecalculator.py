@@ -2481,10 +2481,8 @@ def score_sd_line_detection(group_id_list, spw_id_list, lines_list):
 
 
 @log_qa
-def score_sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, lines_list):
+def score_sd_line_detection_for_ms(group_id_list: List, field_id_list: List, spw_id_list: List, lines_list: List) -> None:
     detected_spw = []
-#    detected_field = []
-#    detected_group = []
 
     for group_id, field_id, spw_id, lines in zip(group_id_list, field_id_list, spw_id_list, lines_list):
         if any([l[2] for l in lines]):
@@ -2494,34 +2492,9 @@ def score_sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, li
                 detected_spw.append(unique_spw_id.pop())
             else:
                 detected_spw.append(-1)
-#            unique_field_id = set(field_id)
-#            if len(unique_field_id) == 1:
-#                detected_field.append(unique_field_id.pop())
-#            else:
-#                detected_field.append(-1)
-#            detected_group.append(group_id)
 
     if len(detected_spw) == 0:
-#        score = 0.0
         LOG.attention('No spectral lines are detected.')
-#        longmsg = 'No spectral lines are detected'
-#        shortmsg = 'No spectral lines are detected'
-#    else:
-#        LOG.attention('Spectral lines are detected.') ###
-#     else:
-#        score = 1.0
-#        if detected_spw.count(-1) == 0 and detected_field.count(-1) == 0:
-#            longmsg = 'Spectral lines are detected at Spws (%s) Fields (%s)' % (', '.join(map(str, detected_spw)),
-#                                                                                ', '.join(map(str, detected_field)))
-#        else:
-#            longmsg = 'Spectral lines are detected at ReductionGroups %s' % (','.join(map(str, detected_group)))
-#        shortmsg = 'Spectral lines are detected'
-
-#    origin = pqa.QAOrigin(metric_name='score_sd_line_detection_for_ms',
-#                          metric_score=len(detected_spw),
-#                          metric_units='Number of spectral lines detected')
-
-#    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,

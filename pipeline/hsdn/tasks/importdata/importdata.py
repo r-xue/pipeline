@@ -16,8 +16,10 @@ import pipeline.infrastructure as infrastructure
 from pipeline.domain.fluxmeasurement import FluxMeasurement
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.hsd.tasks.importdata import inspection
 from pipeline.infrastructure import casa_tools, task_registry
 from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.utils import relative_path
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -121,9 +123,19 @@ class NROImportData(sd_importdata.SerialSDImportData):
         # TODO: check data type
         # get results object by running super.prepare()
         results = super(NROImportData, self).prepare()
+
+        # per MS inspection
+        table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),
+                                     self.inputs.output_dir)
+        for ms in results.mses:
+            table_name = os.path.join(table_prefix, ms.basename)
+            inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms, hm_rasterscan=self.inputs.hm_rasterscan)
+            reduction_group, org_directions, msglist = self._executor.execute(inspector, merge=False)
+
         myresults = NROImportDataResults(mses=results.mses, reduction_group_list=results.reduction_group_list,
                                          datatable_prefix=results.datatable_prefix, setjy_results=results.setjy_results)
         myresults.origin = results.origin
+        myresults.msglist = msglist
         return myresults
 
     def analyse(self, result: NROImportDataResults) -> NROImportDataResults:

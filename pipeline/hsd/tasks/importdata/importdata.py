@@ -179,7 +179,7 @@ class SerialSDImportData(importdata.ImportData):
             LOG.debug('Start inspection for %s' % ms.basename)
             table_name = os.path.join(table_prefix, ms.basename)
             inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms, hm_rasterscan=self.inputs.hm_rasterscan)
-            reduction_group, org_directions = self._executor.execute(inspector, merge=False)
+            reduction_group, org_directions, msglist = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
 
             # update org_directions_dict for only new keys in org_directions
@@ -194,6 +194,7 @@ class SerialSDImportData(importdata.ImportData):
                                         org_directions=org_directions_dict)
 
         myresults.origin = results.origin
+        myresults.msglist = msglist
         return myresults
 
 

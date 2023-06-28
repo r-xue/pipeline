@@ -277,6 +277,7 @@ class MetaDataReader(object):
         # key: antenna id
         # value: list of DataTable rows for invalid data
         self.invalid_pointing_data = collections.defaultdict(list)
+        self.msglist = []
 
         # remove flag template for pointing
         ms_prefix = os.path.splitext(self.ms.basename)[0]
@@ -347,7 +348,8 @@ class MetaDataReader(object):
         # key: antenna id
         # value: list of rows to be flagged
         try:
-            flagdict1 = self.generate_flagdict_for_invalid_pointing_data()
+            flagdict1 = self.generate_flagdict_for_invalid_pointing_data()[0]
+#            flagdict1 = self.generate_flagdict_for_invalid_pointing_data()
         except Exception:
             flagdict1 = {}
 
@@ -388,11 +390,11 @@ class MetaDataReader(object):
         Returns:
             collections.defaultdict: dictionary of invalid pointing data
         """
+
         if len(self.invalid_pointing_data) > 0:
-
-            LOG.attention('There are rows without corresponding POINTING data. Affected rows are identified and will be flagged in hsd_flagdata stage. Affected antennas are: {} in {}'.format(' '.join([self.ms.antennas[k].name for k in self.invalid_pointing_data]), self.ms.basename))
-
-        return self.invalid_pointing_data
+            msg = 'There are rows without corresponding POINTING data. Affected rows are identified and will be flagged in hsd_flagdata stage. Affected antennas are: {} in {}'.format(' '.join([self.ms.antennas[k].name for k in self.invalid_pointing_data]), self.ms.basename)
+            self.msglist.append(msg)
+        return self.invalid_pointing_data, self.msglist
 
     def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple[int, int], numpy.ndarray]:
         """Return row IDs of DataTable to flag.
@@ -717,6 +719,8 @@ class MetaDataReader(object):
 
                         # register DataTable row to self.invalid_pointing_data
                         dt_row = ID + irow
+                        LOG.info("antenna_id in execute = {}".format(antenna_id))
+                        LOG.info("dt_row in execute = {}".format(dt_row))
                         self.register_invalid_pointing_data(antenna_id, dt_row)
 
                         NAN = numpy.nan

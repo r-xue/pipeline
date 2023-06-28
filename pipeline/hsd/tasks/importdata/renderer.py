@@ -1,6 +1,7 @@
 """Renderer module for importdata."""
 
 import collections
+import os
 from typing import Any, Dict
 
 import pipeline.h.tasks.importdata.renderer as super_renderer
@@ -8,6 +9,9 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.basetask import Results
 from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.utils import relative_path
+from . import importdata
+from . import reader
 
 LOG = logging.get_logger(__name__)
 
@@ -42,6 +46,10 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
         """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).update_mako_context(mako_context, pipeline_context, result)
 
+        msg_list = []
+        for r in result:
+            msg_list.extend(r.msglist)
+
         # collect antennas of each MS and SPW combination
         row_values = []
         for group_id, group_desc in pipeline_context.observing_run.ms_reduction_group.items():
@@ -61,4 +69,5 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
                     tr = DeductionGroupTR(group_id, min_freq, max_freq, group_desc.field_name, msname, ants, spwid, num_chan)
                     row_values.append(tr)
 
+        mako_context.update({'alerts_info': msg_list})
         mako_context.update({'reduction_group_rows': utils.merge_td_columns(row_values)})
