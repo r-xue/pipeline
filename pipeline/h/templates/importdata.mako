@@ -73,6 +73,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 	</tbody>
 </table>
 
+% if not singledish_result(result):
 % if flux_imported:
 <h3>Imported Flux Densities</h3>
 <p>The following flux densities were imported into the pipeline context:</p>
@@ -106,8 +107,9 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 	%endfor
 	</tbody>
 </table>
-% elif not singledish_result(result):
+% else:
 <p>No flux densities were imported.</p>
+% endif
 % endif
 
 <h3>Representative Target Information</h3>
