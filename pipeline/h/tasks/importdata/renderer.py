@@ -145,7 +145,9 @@ def make_repsource_table(context, results):
             # If either the representative frequency or bandwidth is undefined then
             # the representative target is undefined
             reptarget_name, reptarget_freq, reptarget_bw = ms.representative_target
-            reptarget_defined = reptarget_name not in (None, 'None', 'none')
+            reptarget_defined = (reptarget_name not in (None, 'None', 'none') and
+                                 reptarget_freq is not None and
+                                 reptarget_bw is not None)
             # when no rep.target is defined, its name is None, but a string 'none' means an incomplete definition
             repsource_name_is_none = reptarget_name == 'none'
             if not reptarget_defined:
