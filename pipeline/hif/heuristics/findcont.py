@@ -15,7 +15,7 @@ class FindContHeuristics(object):
         self.context = context
 
     def find_continuum(self, dirty_cube, pb_cube=None, psf_cube=None, single_continuum=False, is_eph_obj=False,
-                       ref_ms_name='', nbin=1, spectralDynamicRangeBandWidth=None):
+                       ref_ms_name='', nbin=1, dynrange_bw=None):
         with casa_tools.ImageReader(dirty_cube) as image:
             stats = image.statistics()
 
@@ -33,7 +33,7 @@ class FindContHeuristics(object):
                           returnWarnings=True,
                           vis=ref_ms_name,
                           nbin=nbin,
-                          spectralDynamicRangeBandWidth=spectralDynamicRangeBandWidth)
+                          spectralDynamicRangeBandWidth=dynrange_bw)
 
         # PIPE-74
         channel_counts = countChannelsInRanges(channel_selection)
