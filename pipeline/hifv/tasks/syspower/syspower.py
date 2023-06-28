@@ -567,26 +567,44 @@ class Syspower(basetask.StandardTaskTemplate):
             dat_common_final[band] = dat_common
             template_table[band] = template_table_band
 
-        # for weblog, default to the to-be-applied RQ table
-        rq_table_weblog = rq_table
-
         # If requested to apply results, copy the now modified temp table over to the original
         if self.inputs.apply:
+
             LOG.info("Results applied to the RQ table.")
             if os.path.isdir(rq_table):
                 # make a table backup from the original, and remove original to be replaced by temprq
                 shutil.copytree(rq_table, rq_table + '.backup')
                 shutil.rmtree(rq_table)
             shutil.copytree(temprq, rq_table)
+
             if do_not_apply_spws:
-                rq_table_weblog = rq_table + '.weblog'
-                if os.path.isdir(rq_table_weblog):
-                    shutil.rmtree(rq_table_weblog)
-                shutil.copytree(rq_table, rq_table_weblog)
+
                 LOG.warning(
-                    "Attempting to remove spws=%r from the RQ table, within the band(s) specified by the 'do_not_apply' keyword.",
+                    "Restore caltable results of spws=%r from the original RQ table, which comes from the band(s) specified by the 'do_not_apply' keyword.",
                     do_not_apply_spws)
-                removeRows(rq_table, do_not_apply_spws)
+                # copy back the do_not_apply_spws rows from the original table, so they don't get overwritten.
+                original_tb = rq_table + '.backup'
+                modified_tb = rq_table
+
+                with casa_tools.TableReader(original_tb, nomodify=True) as tb_original:
+                    with casa_tools.TableReader(modified_tb, nomodify=False) as tb_modified:
+
+                        rq_par_original = tb_original.getcol('FPARAM')
+                        rq_par_modified = tb_modified.getcol('FPARAM')
+
+                        rq_flag_original = tb_original.getcol('FLAG')
+                        rq_flag_modified = tb_modified.getcol('FLAG')
+
+                        for spwid in do_not_apply_spws:
+                            subtb = tb_original.query('SPECTRAL_WINDOW_ID == '+str(spwid))
+                            rows_select = subtb.rownumbers()
+                            subtb.close()
+                            LOG.debug('copy FPARM/FLAG values from %s to %s for spw= %s', original_tb, modified_tb, spwid)
+                            rq_par_modified[:, :, rows_select] = rq_par_original[:, :, rows_select]
+                            rq_flag_modified[:, :, rows_select] = rq_flag_original[:, :, rows_select]
+
+                        tb_modified.putcol('FPARAM', rq_par_modified)
+                        tb_modified.putcol('FLAG', rq_flag_modified)
 
         else:
             LOG.info("Results not applied to the RQ table.")
@@ -595,7 +613,7 @@ class Syspower(basetask.StandardTaskTemplate):
         # if os.path.isdir(temprq):
         #     shutil.rmtree(temprq)
 
-        return SyspowerResults(gaintable=rq_table_weblog, spowerdict=spowerdict, dat_common=dat_common_final,
+        return SyspowerResults(gaintable=rq_table, spowerdict=spowerdict, dat_common=dat_common_final,
                                clip_sp_template=clip_sp_template, template_table=template_table,
                                band_baseband_spw=band_baseband_spw, plotrq=temprq)
 

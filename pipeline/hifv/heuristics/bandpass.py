@@ -12,14 +12,13 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def removeRows(caltable, spwids):
+    """Remove rows from specified spwid from a CASA caltable."""
 
     with casa_tools.TableReader(caltable, nomodify=False) as tb:
         for spwid in spwids:
             subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
-            print('query done: '+str(spwid))
             flaggedrows = subtb.rownumbers()
             if len(flaggedrows) > 0:
-                print('did something')
                 LOG.debug('removing rows from table '+caltable+' for spw='+str(spwid))
                 tb.removerows(flaggedrows)
             subtb.close()
