@@ -5,9 +5,9 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, spw=None,
-                excludechan=None, atm_auto_exclude=None, dryrun=None,
-                acceptresults=None):
+def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
+                excludechan=None, atm_auto_exclude=None, bwthreshspw=None,
+                dryrun=None, acceptresults=None):
 
     """
     hifa_renorm ---- Base renorm task
@@ -29,6 +29,11 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=False, spw=None
                                excludechan={'22':'230.1GHz~230.2GHz'}
     atm_auto_exclude Automatically find and exclude regions with atmospheric features.
                      Default is False
+    bwthreshspw      bandwidth beyond which a SPW is split into chunks to fit separately.
+                     The default value for all SPWs is 120e6, and this parameter allows one
+                     to override it for specific SPWs, due to needing potentially various
+                     'nsegments' when EBs have very different SPW bandwidths.
+                     Example:  bwthreshspw={'16: 64e6, '22: 64e6}
     dryrun           Run the task (False) or display task command (True)
     acceptresults    Add the results into the pipeline context
     [1;42mRETURNS[1;m             void
