@@ -944,9 +944,19 @@ class SDChannelMapDisplay(SDImageDisplay):
         for line_window in line_list:
             _line_center = line_window[0]
             _line_width = line_window[1]
+            _line_center_shifted = _line_center - _left_edge
+
+            # considering Dedekind cut of Real number;
+            # ex) n=107.5, nchan=128, inverted_n = nchan-1-n = 19.5
+            # but for index, the inverted list is Half-open: [0, 127-107.5) = [0, 19.5)
+            # so, the index of cut-edge + 0.5 like int(19.5 + 0.5) must be 19, not 20.
+            _cut_edge_offset = 0
+            if is_inverted_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
+                _cut_edge_offset = 1
+
             # shift channel according to the edge parameter
-            idx_line_center = int(_line_center + 0.5 - _left_edge)
-            if float(idx_line_center) == _line_center - _left_edge:
+            idx_line_center = int(_line_center_shifted + 0.5) - _cut_edge_offset
+            if float(idx_line_center) == _line_center_shifted:
                 velocity_line_center = self.velocity[idx_line_center]
             else:
                 if is_inverted_image:
@@ -1136,7 +1146,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 LOG.debug('PROFILE: integrated intensity map: %s sec' % (t1 - t0))
                 LOG.debug('PROFILE: integrated spectrum #1: %s sec' % (t2 - t1))
                 LOG.debug('PROFILE: integrated spectrum #2: %s sec' % (t3 - t2))
-                LOG.debug('PROFILE: channel map: %s sec'%(t4 - t3))
+                LOG.debug('PROFILE: channel map: %s sec' % (t4 - t3))
 
                 FigFileRoot = self.inputs.imagename + '.pol%s' % (pol)
                 plotfile = os.path.join(self.stage_dir, FigFileRoot + '_ChannelMap_%s.png' % (ValidCluster))
