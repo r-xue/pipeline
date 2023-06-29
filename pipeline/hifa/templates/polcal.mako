@@ -136,3 +136,71 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     </%def>
 
 </%self:plot_group>
+
+<%self:plot_group plot_dict="${amp_vs_ant}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  data_spw="${True}"
+                  title_id="amp_vs_ant_plots">
+
+    <%def name="title()">
+        X-Y amplitude vs. antenna
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the X-Y amplitude vs. antenna.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show X-Y Amplitude vs. Antenna</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        X-Y Amplitude vs. Antenna.
+    </%def>
+
+</%self:plot_group>
+
+<%self:plot_group plot_dict="${ampratio_vs_ant}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  data_spw="${True}"
+                  title_id="ampratio_vs_ant_plots">
+
+    <%def name="title()">
+        X-Y amplitude ratio vs. antenna
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the X-Y amplitude ratio vs. antenna.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show X-Y Amplitude Ratio vs. Antenna</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        X-Y Amplitude Ratio vs. Antenna.
+    </%def>
+
+</%self:plot_group>

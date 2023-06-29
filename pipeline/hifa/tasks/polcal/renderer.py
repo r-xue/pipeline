@@ -46,8 +46,11 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Create gain amp polarisation ratio vs. scan plots.
         amp_vs_scan_before, amp_vs_scan_after = self.create_amp_scan_plots(pipeline_context, result)
 
-        # Create phase vs. channel plots.
+        # Create cross-hand phase vs. channel plots.
         phase_vs_channel = self.create_phase_channel_plots(pipeline_context, result)
+
+        # Create X-Y gain amplitude vs. antenna plots.
+        amp_vs_ant, ampratio_vs_ant = self.create_xy_amp_ant_plots(pipeline_context, result)
 
         # Update the mako context.
         mako_context.update({
@@ -55,10 +58,12 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'vislists': vislists,
             'refants': refants,
             'polfields': polfields,
+            # 'amp_vs_parang': amp_vs_parang,
             'amp_vs_scan_before': amp_vs_scan_before,
             'amp_vs_scan_after': amp_vs_scan_after,
             'phase_vs_channel': phase_vs_channel,
-            # 'amp_vs_parang': amp_vs_parang,
+            'amp_vs_ant': amp_vs_ant,
+            'ampratio_vs_ant': ampratio_vs_ant,
         })
 
     @staticmethod
@@ -90,3 +95,14 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 context, result, session_results['polcal_phase_result'].final).plot()
 
         return plots
+
+    @staticmethod
+    def create_xy_amp_ant_plots(context, result):
+        plots_amp, plots_ampratio = {}, {}
+        for session_name, session_results in result.session.items():
+            plots_amp[session_name] = polcal.AmpVsAntennaChart(
+                context, result, session_results['xyratio_gcal_result'].final).plot()
+            plots_ampratio[session_name] = polcal.AmpVsAntennaChart(
+                context, result, session_results['xyratio_gcal_result'].final, correlation='/').plot()
+
+        return plots_amp, plots_ampratio

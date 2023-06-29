@@ -5,6 +5,26 @@ from . import applycal
 from . import common
 
 
+class AmpVsAntennaChart(object):
+    """
+    Plotting class that creates a gain amplitude (ratio) vs. antenna plot
+    per SpW for a caltable.
+    """
+    def __init__(self, context, result, calapps: List[callibrary.CalApplication], correlation=''):
+        plot_args = {
+            'xaxis': 'antenna1',
+            'yaxis': 'amp',
+            'correlation': correlation,
+            'coloraxis': 'antenna1',
+        }
+        self.plotters = common.PlotmsCalSpwComposite(context, result, calapps, **plot_args)
+
+    def plot(self):
+        plot_wrappers = []
+        plot_wrappers.extend(self.plotters.plot())
+        return plot_wrappers
+
+
 # TODO: move parent chart to common module?
 class AmpVsParangSummaryChart(applycal.SpwSummaryChart):
     """
