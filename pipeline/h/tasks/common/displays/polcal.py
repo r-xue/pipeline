@@ -46,3 +46,22 @@ class AmpVsScanChart(object):
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
+
+
+class PhaseVsChannelChart(object):
+    """
+    Plotting class that creates a polarisation ratio amplitude vs. scan plot
+    for a caltable.
+    """
+    def __init__(self, context, result, calapps: List[callibrary.CalApplication]):
+        plot_args = {
+            'xaxis': 'chan',
+            'yaxis': 'phase',
+            'coloraxis': 'spw',
+        }
+        self.plotters = common.PlotmsCalLeaf(context, result, calapps, **plot_args)
+
+    def plot(self):
+        plot_wrappers = []
+        plot_wrappers.extend(self.plotters.plot())
+        return plot_wrappers

@@ -46,6 +46,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Create gain amp polarisation ratio vs. scan plots.
         amp_vs_scan_before, amp_vs_scan_after = self.create_amp_scan_plots(pipeline_context, result)
 
+        # Create phase vs. channel plots.
+        phase_vs_channel = self.create_phase_channel_plots(pipeline_context, result)
+
         # Update the mako context.
         mako_context.update({
             'session_names': session_names,
@@ -54,13 +57,13 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'polfields': polfields,
             'amp_vs_scan_before': amp_vs_scan_before,
             'amp_vs_scan_after': amp_vs_scan_after,
+            'phase_vs_channel': phase_vs_channel,
             # 'amp_vs_parang': amp_vs_parang,
         })
 
     @staticmethod
     def create_amp_parang_plots(context, output_dir, result):
         plots = {}
-
         for session_name, session_results in result.session.items():
             vis = session_results['session_vis']
             calto = callibrary.CalTo(vis=vis)
@@ -71,7 +74,6 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     @staticmethod
     def create_amp_scan_plots(context, result):
         plots_before, plots_after = {}, {}
-
         for session_name, session_results in result.session.items():
             plots_before[session_name] = polcal.AmpVsScanChart(
                 context, result, session_results['init_gcal_result'].final).plot()
@@ -79,3 +81,12 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 context, result, session_results['final_gcal_result'].final).plot()
 
         return plots_before, plots_after
+
+    @staticmethod
+    def create_phase_channel_plots(context, result):
+        plots = {}
+        for session_name, session_results in result.session.items():
+            plots[session_name] = polcal.PhaseVsChannelChart(
+                context, result, session_results['polcal_phase_result'].final).plot()
+
+        return plots

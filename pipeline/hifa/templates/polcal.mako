@@ -105,3 +105,34 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     </%def>
 
 </%self:plot_group>
+
+<%self:plot_group plot_dict="${phase_vs_channel}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  title_id="phase_vs_channel_plots">
+
+    <%def name="title()">
+        Phase vs. Channel
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the phase vs. channel.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show Phase vs. Channel</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Phase vs. Channel.
+    </%def>
+
+</%self:plot_group>
