@@ -41,3 +41,67 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     % endfor
     </tbody>
 </table>
+
+<h2>Plots</h2>
+
+<%self:plot_group plot_dict="${amp_vs_scan_before}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  title_id="amp_vs_scan_before_plots">
+
+    <%def name="title()">
+        Amplitude vs. Scan before polarisation calibration
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the polarisation ratio amplitude vs. scan.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show Amplitude vs. Scan</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Amplitude vs. Scan.
+    </%def>
+
+</%self:plot_group>
+
+<%self:plot_group plot_dict="${amp_vs_scan_after}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  title_id="amp_vs_scan_after_plots">
+
+    <%def name="title()">
+        Amplitude vs. Scan after polarisation calibration
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the polarisation ratio amplitude vs. scan.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show Amplitude vs. Scan</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Amplitude vs. Scan.
+    </%def>
+
+</%self:plot_group>

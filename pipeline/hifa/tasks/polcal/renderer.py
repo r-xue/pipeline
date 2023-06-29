@@ -43,12 +43,17 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         #  Merge session MS, or create these during stage?
         # amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
 
+        # Create gain amp polarisation ratio vs. scan plots.
+        amp_vs_scan_before, amp_vs_scan_after = self.create_amp_scan_plots(pipeline_context, result)
+
         # Update the mako context.
         mako_context.update({
             'session_names': session_names,
             'vislists': vislists,
             'refants': refants,
             'polfields': polfields,
+            'amp_vs_scan_before': amp_vs_scan_before,
+            'amp_vs_scan_after': amp_vs_scan_after,
             # 'amp_vs_parang': amp_vs_parang,
         })
 
@@ -62,3 +67,15 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots[session_name] = polcal.AmpVsParangSummaryChart(context, output_dir, calto).plot()
 
         return plots
+
+    @staticmethod
+    def create_amp_scan_plots(context, result):
+        plots_before, plots_after = {}, {}
+
+        for session_name, session_results in result.session.items():
+            plots_before[session_name] = polcal.AmpVsScanChart(
+                context, result, session_results['init_gcal_result'].final).plot()
+            plots_after[session_name] = polcal.AmpVsScanChart(
+                context, result, session_results['final_gcal_result'].final).plot()
+
+        return plots_before, plots_after
