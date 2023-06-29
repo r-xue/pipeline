@@ -13,7 +13,6 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.hifv.heuristics import removeRows
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -580,7 +579,7 @@ class Syspower(basetask.StandardTaskTemplate):
             if do_not_apply_spws:
 
                 LOG.warning(
-                    "Restore caltable results of spws=%r from the original RQ table, which comes from the band(s) specified by the 'do_not_apply' keyword.",
+                    "Adopt the original requantizer gains for spws=%r from the band(s) specified by the 'do_not_apply' input parameter.",
                     do_not_apply_spws)
                 # copy back the do_not_apply_spws rows from the original table, so they don't get overwritten.
                 original_tb = rq_table + '.backup'
