@@ -1,6 +1,8 @@
 """Set of base classes and utility functions for display modules."""
 import abc
+import collections
 import datetime
+import enum
 import itertools
 import math
 import os
@@ -392,10 +394,24 @@ class SpectralImage(object):
         return (refpix, refval, increment)
 
 
+ChannelSelection = enum.Enum('ChannelSelection', ['ALL', 'LINE_ONLY', 'LINE_FREE'])
+
+
+class Moment(enum.IntEnum):
+    INTEGRATED = 0
+    MAXIMUM = 8
+
+
+MomentSpec = collections.namedtuple('MomentSpec', 'moments chans')
+
+
 class SDImageDisplayInputs(SingleDishDisplayInputs):
     """Manages input data for plotter classes for single dish images."""
 
-    MAP_MOMENT = 8
+    MomentMapList = [
+        MomentSpec(moments=[Moment.MAXIMUM], chans=ChannelSelection.ALL),
+        MomentSpec(moments=[Moment.INTEGRATED, Moment.MAXIMUM], chans=ChannelSelection.LINE_FREE)
+    ]
 
     def __init__(self,
                  context: infrastructure.launcher.Context,
@@ -414,10 +430,20 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Return name of the single dish image."""
         return self.result.outcome['image'].imagename
 
-    @property
-    def moment_imagename(self) -> str:
-        """Return name of the moment image."""
-        return self.imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
+    def moment_imagename(self, moment: Optional[Moment], chans: ChannelSelection) -> str:
+        """Return name of the moment image.
+
+        Args:
+            moment: Moment type enum
+            chans: Channel selection enum
+
+        Returns:
+            Name of moment image name
+        """
+        name = self.imagename.rstrip('/') + f'.{chans.name.lower()}'
+        if moment is not None:
+            name += f'.{moment.name.lower()}'
+        return name
 
     @property
     def spw(self) -> int:
@@ -540,14 +566,6 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
     def contamination_plot(self) -> str:
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
-
-    def get_moment_image_instance(self) -> Optional[SpectralImage]:
-        """Return SpectralImage instance generated from moment image."""
-        if os.path.exists(self.moment_imagename):
-            v = SpectralImage(self.moment_imagename)
-        else:
-            v = None
-        return v
 
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):

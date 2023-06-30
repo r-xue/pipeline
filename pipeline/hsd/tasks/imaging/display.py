@@ -19,7 +19,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
 from pipeline.hsd.tasks.common.display import DPIDetail, SDImageDisplay, SDImageDisplayInputs
-from pipeline.hsd.tasks.common.display import sd_polmap as polmap
+from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData
 from pipeline.infrastructure import casa_tasks
@@ -268,10 +268,7 @@ class SDMomentMapDisplay(SDImageDisplay):
             Inputs instance.
         """
         super(self.__class__, self).__init__(inputs)
-    #         if hasattr(self.inputs, 'momentmap_name'):
-    #             self.imagename = self.inputs.momentmap_name
-    #         else:
-        # self.imagename = self.inputs.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
+        self.moment_images = []
 
     def init(self) -> None:
         """Do some initialization for moment map.
@@ -279,11 +276,26 @@ class SDMomentMapDisplay(SDImageDisplay):
         Execute immoments task to generate moment image as well as
         performing generic initialization defined in the super class.
         """
-        if os.path.exists(self.inputs.moment_imagename):
-            status = casa_tools.image.removefile(self.inputs.moment_imagename) 
-        job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.inputs.MAP_MOMENT], outfile=self.inputs.moment_imagename)
-        job.execute(dry_run=False)
-        assert os.path.exists(self.inputs.moment_imagename)
+        self.moment_images = []
+        for spec in self.inputs.MomentMapList:
+            num_moments = len(spec.moments)
+            moment_imagename_list = [self.inputs.moment_imagename(moment, spec.chans) for moment in spec.moments]
+            for imagename in moment_imagename_list:
+                if os.path.exists(imagename):
+                    status = casa_tools.image.removefile(imagename)
+            if num_moments == 1:
+                outfile = self.inputs.moment_imagename(spec.moments[0], spec.chans)
+            else:
+                outfile = self.inputs.moment_imagename(None, spec.chans)
+            moments = [moment.value for moment in spec.moments]
+            LOG.info(f'moment_imagename_list={moment_imagename_list}')
+            LOG.info(f'moments={moments}')
+            LOG.info(f'outfile={outfile}')
+            job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=moments, outfile=outfile)
+            job.execute(dry_run=False)
+            for imagename in moment_imagename_list:
+                assert os.path.exists(imagename)
+            self.moment_images.extend(moment_imagename_list)
         super(self.__class__, self).init()
 
     def plot(self) -> List[logger.Plot]:
@@ -318,64 +330,74 @@ class SDMomentMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        image = self.inputs.get_moment_image_instance()
-        assert image is not None
-        data = image.data
-        mask = image.mask
-        for pol in range(self.npol):
-            masked_data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
-            Total = numpy.flipud(masked_data.transpose())
-            del masked_data
+        for imagename in self.moment_images:
+            if not os.path.exists(imagename):
+                continue
 
-            # 2008/9/20 DEC Effect
-            im = axes_tpmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            tmin = Total.min()
-            tmax = Total.max()
-            del Total
+            image = SpectralImage(imagename)
+            data = image.data
+            mask = image.mask
 
-            xlim = axes_tpmap.get_xlim()
-            ylim = axes_tpmap.get_ylim()
+            for pol in range(self.npol):
 
-            # colorbar
-            #print "min=%s, max of Total=%s" % (tmin,tmax)
-            if not (tmin == tmax):
-                #if not ((Ymax == Ymin) and (Xmax == Xmin)):
-                #if not all(image_shape[id_direction] <= 1):
-                if self.nx > 1 or self.ny > 1:
-                    axes_manager.set_colorbar_for(axes_tpmap, tmin, tmax, self.brightnessunit, shrink=0.8)
+                masked_data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
+                Total = numpy.flipud(masked_data.transpose())
+                del masked_data
 
-            # draw beam pattern
-            if beam_circle is None:
-                beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
-                                                 self.dec_min)
+                # 2008/9/20 DEC Effect
+                im = axes_tpmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
+                tmin = Total.min()
+                tmax = Total.max()
+                del Total
 
-            axes_tpmap.set_title(self.MAP_TITLE, size=TickSize)
-            axes_tpmap.set_xlim(xlim)
-            axes_tpmap.set_ylim(ylim)
+                xlim = axes_tpmap.get_xlim()
+                ylim = axes_tpmap.get_ylim()
 
-            FigFileRoot = self.inputs.imagename+'.pol%s' % pol
-            plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
-            fig.savefig(plotfile, dpi=DPIDetail)
+                # colorbar
+                #print "min=%s, max of Total=%s" % (tmin,tmax)
+                if not (tmin == tmax):
+                    #if not ((Ymax == Ymin) and (Xmax == Xmin)):
+                    #if not all(image_shape[id_direction] <= 1):
+                    if self.nx > 1 or self.ny > 1:
+                        axes_manager.set_colorbar_for(axes_tpmap, tmin, tmax, self.brightnessunit, shrink=0.8)
 
-            im.remove()
+                # draw beam pattern
+                if beam_circle is None:
+                    beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
+                                                     self.dec_min)
 
-            parameters = {}
-            parameters['intent'] = 'TARGET'
-            parameters['spw'] = self.inputs.spw
-            parameters['pol'] = self.image.stokes[pol] #polmap[pol]
-            parameters['ant'] = self.inputs.antenna
-            parameters['type'] = 'sd_moment_map'
-            parameters['file'] = self.inputs.imagename
-            parameters['field'] = self.inputs.source
-            parameters['vis'] = 'ALL'
+                axes_tpmap.set_title(self.MAP_TITLE, size=TickSize)
+                axes_tpmap.set_xlim(xlim)
+                axes_tpmap.set_ylim(ylim)
 
-            plot = logger.Plot(plotfile,
-                               x_axis='R.A.',
-                               y_axis='Dec.',
-                               field=self.inputs.source,
-                               parameters=parameters)
+                figfile = imagename + f'.pol{pol}.png'
+                plotfile = os.path.join(self.stage_dir, figfile)
+                fig.savefig(plotfile, dpi=DPIDetail)
 
-            plot_list.append(plot)
+                im.remove()
+
+                split_imagename = imagename.split('.')
+                moment_type = split_imagename[-1]
+                chans = split_imagename[-2]
+                parameters = {}
+                parameters['intent'] = 'TARGET'
+                parameters['spw'] = self.inputs.spw
+                parameters['pol'] = self.image.stokes[pol] #polmap[pol]
+                parameters['ant'] = self.inputs.antenna
+                parameters['type'] = 'sd_moment_map'
+                parameters['moment'] = moment_type
+                parameters['chans'] = chans
+                parameters['file'] = self.inputs.imagename
+                parameters['field'] = self.inputs.source
+                parameters['vis'] = 'ALL'
+
+                plot = logger.Plot(plotfile,
+                                   x_axis='R.A.',
+                                   y_axis='Dec.',
+                                   field=self.inputs.source,
+                                   parameters=parameters)
+
+                plot_list.append(plot)
 
         fig.clf()
         del fig
