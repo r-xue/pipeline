@@ -32,7 +32,7 @@ $(document).ready(function() {
     };
 
     // return a function that sets the Field text field to the given spw
-    var createAntennaSetter = function(field) {
+    var createFieldSetter = function(field) {
         return function() {
         	if (typeof field !== "undefined") {
 	            // trigger a change event, otherwise the filters are not changed
