@@ -45,7 +45,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             refants[session_name] = session_results['refant']
             polfields[session_name] = session_results['polcal_field_name']
 
-        # Render summary plots for main task page.
+        # Create amp vs. parallactic angle plots.
         amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
 
         # Create gain amp polarisation ratio vs. scan plots.
@@ -56,6 +56,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Create X-Y gain amplitude vs. antenna plots.
         amp_vs_ant, ampratio_vs_ant = self.create_xy_amp_ant_plots(pipeline_context, result)
+
+        # Render real vs. imaginary corrected XX,XY and XY,YX plots for the session.
+        real_vs_imag = self.create_real_imag_plots(pipeline_context, output_dir, result)
 
         # Update the mako context.
         mako_context.update({
@@ -69,6 +72,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'phase_vs_channel': phase_vs_channel,
             'amp_vs_ant': amp_vs_ant,
             'ampratio_vs_ant': ampratio_vs_ant,
+            'real_vs_imag': real_vs_imag,
         })
 
     @staticmethod
@@ -126,3 +130,14 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 context, result, session_results['xyratio_gcal_result'].final, correlation='/').plot()
 
         return plots_amp, plots_ampratio
+
+    @staticmethod
+    def create_real_imag_plots(context, output_dir, result):
+        plots = {}
+        for session_name, session_results in result.session.items():
+            vis = session_results['session_vis']
+            calto = callibrary.CalTo(vis=vis)
+            plots[session_name] = polcal.RealVsImagChart(context, output_dir, calto, correlation='XX,YY').plot()
+            plots[session_name].extend(polcal.RealVsImagChart(context, output_dir, calto, correlation='XY,YX').plot())
+
+        return plots

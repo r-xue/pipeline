@@ -1,6 +1,7 @@
 from typing import List
 
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.utils as utils
 from . import applycal
 from . import common
 
@@ -70,7 +71,7 @@ class AmpVsScanChart(object):
 
 class PhaseVsChannelChart(object):
     """
-    Plotting class that creates a polarisation ratio amplitude vs. scan plot
+    Plotting class that creates a polarisation ratio phase vs. channel plot
     for a caltable.
     """
     def __init__(self, context, result, calapps: List[callibrary.CalApplication]):
@@ -85,3 +86,32 @@ class PhaseVsChannelChart(object):
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
+
+
+class RealVsImagChart(applycal.PlotmsLeaf):
+    """
+    Plotting class that creates a real vs. imag plot.
+    """
+    def __init__(self, context, output_dir, calto, **overrides):
+        plot_args = {
+            'xaxis': 'real',
+            'xdatacolumn': 'corrected',
+            'yaxis': 'imag',
+            'ydatacolumn': 'corrected',
+            'intent': 'POLARIZATION,POLANGLE,POLLEAKAGE',
+            'correlation': 'XX,YY',
+            'averagedata': True,
+            'avgchannel': '4000',
+            'avgtime': '1000',
+            'plotrange': [0, 0, 0, 0],
+            'coloraxis': 'corr',
+            'overwrite': True
+        }
+        plot_args.update(**overrides)
+
+        super().__init__(context, output_dir, calto, **plot_args)
+
+    def plot(self):
+        jobs_and_wrappers = super().plot()
+        successful_wrappers = utils.plotms_iterate(jobs_and_wrappers)
+        return successful_wrappers

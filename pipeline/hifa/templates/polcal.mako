@@ -236,3 +236,36 @@ rsc_path = ""
     </%def>
 
 </%self:plot_group>
+
+<%self:plot_group plot_dict="${real_vs_imag}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  title_id="real_vs_imag_plots">
+
+    <%def name="title()">
+        Real vs. Imaginary
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the real vs. imaginary for XX/YY and XY/YX.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show Real vs. Imag ${plot.parameters['correlation']}</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}<br>
+        Corr: ${plot.parameters['correlation']}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}<br>
+        Corr: ${plot.parameters['correlation']}
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Real vs. Imaginary ${plot.parameters['correlation']}
+    </%def>
+
+</%self:plot_group>
