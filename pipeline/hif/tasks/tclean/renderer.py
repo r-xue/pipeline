@@ -10,7 +10,7 @@ import string
 from random import randint
 import re
 
-import numpy
+import numpy as np
 
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
@@ -34,7 +34,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
-    'tab_dict tab_url outmaskratio outmaskratio_label'))
+    'tab_dict tab_url outmaskratio outmaskratio_label pol_session pol_ratio pol_angle'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -264,10 +264,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         ypixel = image_csys.torecord()['direction0']['crpix'][1]
                         xdelta = image_csys.torecord()['direction0']['cdelt'][0]  # in radians
                         ydelta = image_csys.torecord()['direction0']['cdelt'][1]  # in radians
-                        onedeg = 1.0 * numpy.pi / 180.0  # conversion
+                        onedeg = 1.0 * np.pi / 180.0  # conversion
                         widthdeg = 1.0  # degrees
-                        boxhalfxwidth = numpy.abs((onedeg * widthdeg / 2.0) / xdelta)
-                        boxhalfywidth = numpy.abs((onedeg * widthdeg / 2.0) / ydelta)
+                        boxhalfxwidth = np.abs((onedeg * widthdeg / 2.0) / xdelta)
+                        boxhalfywidth = np.abs((onedeg * widthdeg / 2.0) / ydelta)
 
                         blcx = xpixel - boxhalfxwidth
                         blcy = ypixel - boxhalfywidth
@@ -544,6 +544,24 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     chk_gfluxscale_snr = 'N/A'
                     chk_fitflux_gfluxscale_ratio = 'N/A'
 
+                #
+                # Polarization calibrator fit parameters
+                #
+                if r.polcal_fit is not None:
+                    pol_session = r.polcal_fit['session']
+                    if r.polcal_fit['pol_ratio'] != 'N/A':
+                        pol_ratio = f"{qaTool.getvalue(r.polcal_fit['pol_ratio'])[0]:6.2f} +/- {qaTool.getvalue(r.polcal_fit['err_pol_ratio'])[0]:6.2f}%"
+                    else:
+                        pol_ratio = 'N/A'
+                    if r.polcal_fit['pol_angle'] != 'N/A':
+                        pol_angle = f"{qaTool.getvalue(r.polcal_fit['pol_angle'])[0]:7.2f} +/- {qaTool.getvalue(r.polcal_fit['err_pol_angle'])[0]:7.2f} deg"
+                    else:
+                        pol_angle = 'N/A'
+                else:
+                    pol_session = 'N/A'
+                    pol_ratio = 'N/A'
+                    pol_angle = 'N/A'
+
                 if r.image_max is not None and r.image_rms is not None:
                     try:
                         img_snr = '%.2f' % (r.image_max / r.image_rms)
@@ -623,6 +641,9 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
                     cube_all_cont=cube_all_cont,
                     tclean_command=tclean_command,
+                    pol_session=pol_session,
+                    pol_ratio=pol_ratio,
+                    pol_angle=pol_angle,
                     result=r
                 )
                 image_rows.append(row)
@@ -695,6 +716,13 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux, row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
+        pol_fit_rows = []
+        for row in final_rows:
+            if row.pol == 'I':
+                # Save only once for weblog because the fit is the same for all Stokes parameters
+                pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
+        pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
+
         # PIPE-1723: display a message in the weblog depending on the observatory
         imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
 
@@ -704,7 +732,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
-            'chk_fit_info': chk_fit_rows
+            'chk_fit_info': chk_fit_rows,
+            'pol_fit_info': pol_fit_rows
         })
 
 
@@ -1093,10 +1122,10 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         ypixel = image_csys.torecord()['direction0']['crpix'][1]
                         xdelta = image_csys.torecord()['direction0']['cdelt'][0]  # in radians
                         ydelta = image_csys.torecord()['direction0']['cdelt'][1]  # in radians
-                        onedeg = 1.0 * numpy.pi / 180.0  # conversion
+                        onedeg = 1.0 * np.pi / 180.0  # conversion
                         widthdeg = 1.0  # degrees
-                        boxhalfxwidth = numpy.abs((onedeg * widthdeg / 2.0) / xdelta)
-                        boxhalfywidth = numpy.abs((onedeg * widthdeg / 2.0) / ydelta)
+                        boxhalfxwidth = np.abs((onedeg * widthdeg / 2.0) / xdelta)
+                        boxhalfywidth = np.abs((onedeg * widthdeg / 2.0) / ydelta)
 
                         blcx = xpixel - boxhalfxwidth
                         blcy = ypixel - boxhalfywidth
@@ -1365,6 +1394,24 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     chk_gfluxscale_snr = 'N/A'
                     chk_fitflux_gfluxscale_ratio = 'N/A'
 
+                #
+                # Polarization calibrator fit parameters
+                #
+                if r.polcal_fit is not None:
+                    pol_session = r.polcal_fit['session']
+                    if r.polcal_fit['pol_ratio'] != 'N/A':
+                        pol_ratio = f"{qaTool.getvalue(r.polcal_fit['pol_ratio'])[0]:6.2f} +/- {qaTool.getvalue(r.polcal_fit['err_pol_ratio'])[0]:6.2f}%"
+                    else:
+                        pol_ratio = 'N/A'
+                    if r.polcal_fit['pol_angle'] != 'N/A':
+                        pol_angle = f"{qaTool.getvalue(r.polcal_fit['pol_angle'])[0]:7.2f} +/- {qaTool.getvalue(r.polcal_fit['err_pol_angle'])[0]:7.2f} deg"
+                    else:
+                        pol_angle = 'N/A'
+                else:
+                    pol_session = 'N/A'
+                    pol_ratio = 'N/A'
+                    pol_angle = 'N/A'
+
                 if r.image_max is not None and r.image_rms is not None:
                     try:
                         img_snr = '%.2f' % (r.image_max / r.image_rms)
@@ -1474,6 +1521,9 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
                     cube_all_cont=cube_all_cont,
                     tclean_command=tclean_command,
+                    pol_session=pol_session,
+                    pol_ratio=pol_ratio,
+                    pol_angle=pol_angle,
                     result=r
                 )
                 image_rows.append(row)
@@ -1547,12 +1597,20 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                                     row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
+        pol_fit_rows = []
+        for row in final_rows:
+            if row.pol == 'I':
+                # Save only once for weblog because the fit is the same for all Stokes parameters
+                pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
+        pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
+
         ctx.update({
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
-            'chk_fit_info': chk_fit_rows
+            'chk_fit_info': chk_fit_rows,
+            'pol_fit_info': pol_fit_rows
         })
 
 
@@ -1578,14 +1636,14 @@ def get_cycle_stats_vlass(context, makeimages_result, r):
                 # or use the proposed new CASA/tclean parameter summary='full' (see CAS-13924).
                 field_id, channel_id = 0, 0  # explictly assume one imaging field & one channel (valid for VLASS)
                 summaryminor = iterdata['summaryminor'][field_id][channel_id]
-                iter_dict['nminordone_array'] = numpy.asarray([ss for s in summaryminor.values()
-                                                              for sn in zip(s['startIterDone'], s['iterDone']) for ss in [sn[0], sn[0] + sn[1]]])
-                iter_dict['peakresidual_array'] = numpy.asarray([ss
-                                                                 for s in summaryminor.values() for sn in zip(s['startPeakRes'],
-                                                                                                              s['peakRes']) for ss in sn])
-                iter_dict['totalflux_array'] = numpy.asarray([ss for s in summaryminor.values()
-                                                             for sn in zip(s['startModelFlux'], s['modelFlux']) for ss in sn])
-                iter_dict['planeid_array'] = numpy.asarray([pp for p in summaryminor for pp in [p]*len(summaryminor[p]['iterDone'])*2])
+                iter_dict['nminordone_array'] = np.asarray([ss for s in summaryminor.values()
+                                                           for sn in zip(s['startIterDone'], s['iterDone']) for ss in [sn[0], sn[0] + sn[1]]])
+                iter_dict['peakresidual_array'] = np.asarray([ss
+                                                              for s in summaryminor.values() for sn in zip(s['startPeakRes'],
+                                                                                                           s['peakRes']) for ss in sn])
+                iter_dict['totalflux_array'] = np.asarray([ss for s in summaryminor.values()
+                                                          for sn in zip(s['startModelFlux'], s['modelFlux']) for ss in sn])
+                iter_dict['planeid_array'] = np.asarray([pp for p in summaryminor for pp in [p]*len(summaryminor[p]['iterDone'])*2])
             else:
                 # before CAS-6692
                 iter_dict['nminordone_array'] = iterdata['nminordone_array'] if 'nminordone_array' in iterdata else None
@@ -1595,7 +1653,7 @@ def get_cycle_stats_vlass(context, makeimages_result, r):
             row_nmajordone_per_iter[iteration] = iter_dict
 
         # sum the major cycle done over all 'iter's of Tclean
-        row_nmajordone_total = numpy.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
+        row_nmajordone_total = np.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
 
         # generate the major cycle stats summary plot
         majorcycle_stat_plot = display.TcleanMajorCycleSummaryFigure(

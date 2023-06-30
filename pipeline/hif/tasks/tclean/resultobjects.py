@@ -90,6 +90,8 @@ class TcleanResult(basetask.Results):
         self.synthesized_beams = None
         # Store visibility amplitude ratio for VLA
         self.bl_ratio = None
+        # Polarization calibrator fit result
+        self.polcal_fit = None
 
     def merge_with_context(self, context):
         # Calculated beams for later stages

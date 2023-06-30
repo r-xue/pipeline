@@ -90,6 +90,30 @@ except:
                 </h4>
                 <br>
         %endif
+        %if image_info[0].intent == 'POLARIZATION':
+            <h2>Polarization Calibrator Fit Results</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>EBs</th>
+                            <th>Field</th>
+                            <th>Virtual SPW</th>
+                            <th>Polarization Fraction</th>
+                            <th>Polarization Angle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        %for row in pol_fit_info:
+                            <tr>
+                            %for td in row:
+                                ${td}
+                            %endfor
+                            </tr>
+                        %endfor
+                    </tbody>
+                </table>
+        %endif
     %endif
 %endif
 
