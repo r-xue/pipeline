@@ -1,6 +1,6 @@
 """
 The exportdata module provides base classes for preparing data products
-on disk for upload to the archive. 
+on disk for upload to the archive.
 
 To test these classes, register some data with the pipeline using ImportData,
 then execute:
@@ -89,7 +89,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
     .. py:attribute:: pprfile
 
-    the pipeline processing request. 
+    the pipeline processing request.
 
     .. py:attribute:: calintents
 
@@ -258,7 +258,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # Define the results object
         result = ExportDataResults()
 
-        # Make the standard vislist and the sessions lists. 
+        # Make the standard vislist and the sessions lists.
         #    These lists are constructed for the calibration mses only no matter the value of
         #    inputs.imaging_products_only
         session_list, session_names, session_vislists, vislist = self._make_lists(inputs.context, inputs.session,
@@ -326,7 +326,7 @@ class ExportData(basetask.StandardTaskTemplate):
         result.targetimages=(targetimages_list, targetimages_fitslist)
 
         # Export the pipeline manifest file
-        # 
+        #
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
                                                 inputs.exportmses, calvisdict, inputs.exportcalprods,
                                                 [os.path.basename(image) for image in calimages_fitslist], calimages_fitskeywords,
@@ -914,8 +914,8 @@ class ExportData(basetask.StandardTaskTemplate):
         casalog_file = os.path.join(context.report_dir, casalog_name)
 
         ps = context.project_structure
-        out_casalog_file = self.NameBuilder.casa_script(casalog_name, 
-                                                        project_structure=ps, 
+        out_casalog_file = self.NameBuilder.casa_script(casalog_name,
+                                                        project_structure=ps,
                                                         ousstatus_entity_id=oussid,
                                                         output_dir=products_dir)
 
@@ -933,8 +933,8 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Get the output file name
         ps = context.project_structure
-        out_script_file = self.NameBuilder.casa_script(script_name, 
-                                                       project_structure=ps, 
+        out_script_file = self.NameBuilder.casa_script(script_name,
+                                                       project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
 
@@ -976,8 +976,8 @@ finally:
 
         ps = context.project_structure
         casascript_file = os.path.join(context.report_dir, casascript_name)
-        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
-                                                           project_structure=ps, 
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name,
+                                                           project_structure=ps,
                                                            ousstatus_entity_id=oussid,
                                                            output_dir=products_dir)
 
@@ -991,7 +991,7 @@ finally:
         """
         Save the manifest file.
         """
-        out_manifest_file = self.NameBuilder.manifest(manifest_name, 
+        out_manifest_file = self.NameBuilder.manifest(manifest_name,
                                                       ousstatus_entity_id=oussid,
                                                       output_dir=products_dir)
         LOG.info('Creating manifest file %s', out_manifest_file)
@@ -1094,6 +1094,21 @@ finally:
                             if os.path.exists(imagename) and not os.path.exists(imagename2):
                                 images_list.append((imagename, version))
                                 cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                    # Add POLI/POLA images for polarization calibrators
+                    if image['sourcetype'] == 'POLARIZATION':
+                        if image['imagename'].find('.pbcor') != -1:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        else:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
