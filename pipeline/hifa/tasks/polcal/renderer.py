@@ -3,6 +3,8 @@ import os
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.tablereader as tablereader
+import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import polcal
 
 LOG = logging.get_logger(__name__)
@@ -21,6 +23,11 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # As a multi-vis task, there is only 1 Result for Polcal.
         result = results[0]
         output_dir = os.path.join(pipeline_context.report_dir, 'stage%s' % result.stage_number)
+
+        # Create local copy of pipeline context and register the polarisation
+        # session MSes, to enable creation of session related plots that rely
+        # on the MS being registered.
+        pipeline_context = self.create_copy_pcontext_with_session_mses(pipeline_context, result)
 
         # Initialize required output for weblog.
         session_names = []
@@ -65,6 +72,21 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_ant': amp_vs_ant,
             'ampratio_vs_ant': ampratio_vs_ant,
         })
+
+    @staticmethod
+    def create_copy_pcontext_with_session_mses(context, result):
+        # Create a copy of the pipeline context.
+        LOG.debug("Creating local copy of pipeline context for weblog rendering.")
+        context = utils.pickle_copy(context)
+
+        # Register each session MS in this new copy of the pipeline context.
+        for session_results in result.session.values():
+            LOG.debug(f"Registering session MS {session_results['session_vis']} to local copy of pipeline context for"
+                      f" weblog rendering.")
+            session_ms = tablereader.MeasurementSetReader.get_measurement_set(session_results['session_vis'])
+            context.observing_run.add_measurement_set(session_ms)
+
+        return context
 
     @staticmethod
     def create_amp_parang_plots(context, output_dir, result):
