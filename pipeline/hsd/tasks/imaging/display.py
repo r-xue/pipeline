@@ -19,14 +19,13 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
 from pipeline.hsd.tasks.common.display import DPIDetail, SDImageDisplay, SDImageDisplayInputs
-from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage
+from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage, ChannelSelection
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-from pipeline.infrastructure.utils import absolute_path
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
@@ -278,6 +277,8 @@ class SDMomentMapDisplay(SDImageDisplay):
         """
         self.moment_images = []
         for spec in self.inputs.MomentMapList:
+            chans = self.inputs.create_channel_mask(spec.chans)
+            LOG.debug('chans = "%s"', chans)
             num_moments = len(spec.moments)
             moment_imagename_list = [self.inputs.moment_imagename(moment, spec.chans) for moment in spec.moments]
             for imagename in moment_imagename_list:
@@ -291,7 +292,7 @@ class SDMomentMapDisplay(SDImageDisplay):
             LOG.info(f'moment_imagename_list={moment_imagename_list}')
             LOG.info(f'moments={moments}')
             LOG.info(f'outfile={outfile}')
-            job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=moments, outfile=outfile)
+            job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=moments, chans=chans, outfile=outfile)
             job.execute(dry_run=False)
             for imagename in moment_imagename_list:
                 assert os.path.exists(imagename)
@@ -789,32 +790,6 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return self.__plot_channel_map()
 
-    def __valid_lines(self) -> List[List[int]]:
-        """Return list of chnnel ranges of valid spectral lines."""
-        group_desc = self.inputs.reduction_group
-        ant_index = self.inputs.antennaid_list
-        spwid_list = self.inputs.spwid_list
-        msid_list = self.inputs.msid_list
-        fieldid_list = self.inputs.fieldid_list
-
-        line_list = []
-
-        msobj_list = self.inputs.context.observing_run.measurement_sets
-        msname_list = [absolute_path(msobj.name) for msobj in msobj_list]
-        for g in group_desc:
-            found = False
-            for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
-                group_msid = msname_list.index(absolute_path(g.ms.name))
-                if group_msid == msid and g.antenna_id == ant and \
-                   g.field_id == fid and g.spw_id == spw:
-                    found = True
-                    break
-            if found:
-                for ll in g.channelmap_range:
-                    if ll not in line_list and ll[2] is True:
-                        line_list.append(ll)
-        return line_list
-
     def __get_integrated_spectra(self) -> numpy.ma.masked_array:
         """Compute integrated spectrum from the image.
 
@@ -892,7 +867,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # retrieve line list from reduction group
         # key is antenna and spw id
-        line_list = self.__valid_lines()
+        line_list = self.inputs.valid_lines()
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:

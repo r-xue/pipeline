@@ -22,6 +22,7 @@ import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure.renderer.logger import Plot
+from pipeline.infrastructure.utils import absolute_path
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -567,6 +568,94 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
 
+    def valid_lines(self) -> List[List[int]]:
+        """Return list of chnnel ranges of valid spectral lines."""
+        group_desc = self.reduction_group
+        ant_index = self.antennaid_list
+        spwid_list = self.spwid_list
+        msid_list = self.msid_list
+        fieldid_list = self.fieldid_list
+
+        line_list = []
+
+        msobj_list = self.context.observing_run.measurement_sets
+        msname_list = [absolute_path(msobj.name) for msobj in msobj_list]
+        for g in group_desc:
+            found = False
+            for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
+                group_msid = msname_list.index(absolute_path(g.ms.name))
+                if group_msid == msid and g.antenna_id == ant and \
+                   g.field_id == fid and g.spw_id == spw:
+                    found = True
+                    break
+            if found:
+                for ll in g.channelmap_range:
+                    if ll not in line_list and ll[2] is True:
+                        line_list.append(ll)
+        return line_list
+
+    def create_channel_mask(self, channel_selection: ChannelSelection) -> str:
+        """Generate channel mask for immoments according to channel selection enum.
+
+        Args:
+            channel_selection: Channel selection enum.
+
+        Returns:
+            Channel selection string.
+        """
+        if channel_selection == ChannelSelection.ALL:
+            # use all channels
+            return ''
+
+        # convert line list into (start, end) list
+        range_list = []
+        for line in self.valid_lines():
+            line_center, line_width = line[:2]
+            line_start = int(round(line_center - line_width / 2))
+            line_end = int(round(line_start + line_width))
+            range_list.append((line_start, line_end))
+
+        # invert range if line-free channels are requested
+        if channel_selection == ChannelSelection.LINE_FREE:
+            range_list = invert_range_list(range_list, self.image.nchan)
+
+        # convert line list into channel selection string
+        # range_list is inclusive at the start while exclusive
+        # at the end, i.e., [start, end)
+        # On the other hand, CASA's channel selection is inclusive
+        # at both ends, i.e., [start, end]
+        return ';'.join([f'{s}~{e - 1}' for s, e in range_list])
+
+
+def invert_range_list(range_list: List[List[int]], nchan: int) -> List[List[int]]:
+    """Invert channel range list.
+
+    Overlap among ranges is handled properly.
+
+    Args:
+        range_list: List of (start, end) ranges.
+        nchan: Length of target array.
+
+    Returns:
+        Inverted list of ranges.
+    """
+    # merge range
+    arr = np.zeros(nchan, dtype=bool)
+    for start, end in range_list:
+        # range_list is inclusive at the beginning while exclusive
+        # at the end, i.e., [start, end)
+        arr[start:end] = True
+
+    # detect change of value
+    idx = np.where(arr[1:] != arr[:-1])[0] + 1
+    if not arr[0]:
+        idx = np.insert(idx, 0, 0)
+    if not arr[-1]:
+        idx = np.append(idx, nchan)
+
+    inverted = [list(x) for x in idx.reshape(len(idx) // 2, 2)]
+
+    return inverted
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     """Base plotter class for single-dish calibration tasks."""
