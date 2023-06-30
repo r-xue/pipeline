@@ -117,6 +117,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # cache image statistics while we have them in scope.
                 image_rms = stats.get('rms')[0]
                 image_max = stats.get('max')[0]
+                image_min = stats.get('min')[0]
                 image_stats[image_path] = display.ImageStats(rms=image_rms, max=image_max)
 
                 spw = info.get('virtspw', None)
@@ -129,7 +130,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     field = '%s (%s)' % (info['field'], r.intent)
                     fieldname = info['field']
                     intent = r.intent
-
 
                 #
                 # beam calculation

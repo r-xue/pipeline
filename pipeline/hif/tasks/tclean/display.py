@@ -206,6 +206,17 @@ class CleanSummary(object):
                     psf_per_channel_parameters['type'] = 'psf_per_channel'
                     plot_wrappers.append(logger.Plot(psf_per_channel_plotfile, parameters=psf_per_channel_parameters))
 
+            # polarization intensity and angle
+            if r.intent == 'POLARIZATION' and r.imaging_mode == 'ALMA':
+                plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
+                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLI'),
+                                                                      reportdir=stage_dir, intent=r.intent,
+                                                                      collapseFunction='mean'))
+                plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
+                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLA'),
+                                                                      reportdir=stage_dir, intent=r.intent,
+                                                                      collapseFunction='mean'))
+
         return [p for p in plot_wrappers if p is not None]
 
 
