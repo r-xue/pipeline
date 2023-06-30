@@ -1,7 +1,5 @@
 <%!
 rsc_path = ""
-import os
-import pipeline.infrastructure.renderer.htmlrenderer as hr
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -43,6 +41,40 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 </table>
 
 <h2>Plots</h2>
+
+<%self:plot_group plot_dict="${amp_vs_parang}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  data_spw="${True}"
+                  title_id="amp_vs_parang_plots">
+
+    <%def name="title()">
+        Amplitude vs. Parallactic Angle
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the amplitude vs. parallactic angle.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show Amplitude vs. Parallactic Angle</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Amplitude vs. Parallactic Angle
+    </%def>
+
+</%self:plot_group>
 
 <%self:plot_group plot_dict="${amp_vs_scan_before}"
                   url_fn="${lambda x: 'noop'}"

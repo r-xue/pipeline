@@ -46,9 +46,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             polfields[session_name] = session_results['polcal_field_name']
 
         # Render summary plots for main task page.
-        # TODO: disable for now: session MS not registered in context.
-        #  Merge session MS, or create these during stage?
-        # amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
+        amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
 
         # Create gain amp polarisation ratio vs. scan plots.
         amp_vs_scan_before, amp_vs_scan_after = self.create_amp_scan_plots(pipeline_context, result)
@@ -65,7 +63,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'vislists': vislists,
             'refants': refants,
             'polfields': polfields,
-            # 'amp_vs_parang': amp_vs_parang,
+            'amp_vs_parang': amp_vs_parang,
             'amp_vs_scan_before': amp_vs_scan_before,
             'amp_vs_scan_after': amp_vs_scan_after,
             'phase_vs_channel': phase_vs_channel,
