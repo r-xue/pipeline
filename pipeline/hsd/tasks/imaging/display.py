@@ -946,10 +946,10 @@ class SDChannelMapDisplay(SDImageDisplay):
             _line_width = line_window[1]
             _line_center_shifted = _line_center - _left_edge
 
-            # considering Dedekind cut of Real number;
+            # Offset calculation of index(int) from line(float) when line has a decimal point of 0.5 and frequency is inverted;
             # ex) n=107.5, nchan=128, inverted_n = nchan-1-n = 19.5
-            # but for index, the inverted list is Half-open: [0, 127-107.5) = [0, 19.5)
-            # so, the index of cut-edge + 0.5 like int(19.5 + 0.5) must be 19, not 20.
+            # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
+            # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
             _cut_edge_offset = 0
             if is_inverted_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
                 _cut_edge_offset = 1
