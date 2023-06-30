@@ -1144,15 +1144,20 @@ class SpwIdVsFreqChart(object):
         list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]  # GHz
         list_fmax = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]  # GHz
         list_all_spwids = []
+        list_indice = []
+        list_all_indice = []
         index = 0
         for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
+            shift = len(list_all_spwids)
+            list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
+            list_all_spwids.extend(list_spwids)
+            list_all_indice.extend(list_indice)
             len_spwids = len(list_spwids)
             start = len_spwids*index
             end = len_spwids*(index+1)
             fmins = list_fmin[start:end]
             bws = list_bw[start:end]
-            ax.barh(list_spwids, bws, left=fmins)
-            list_all_spwids.extend(list_spwids)
+            ax.barh(list_indice, bws, height=0.4, left=fmins)
             index += 1
         ax.set_xlabel("Frequency (GHz)", fontsize=14)
         ax.set_ylabel("spw ID", fontsize=14)
@@ -1180,10 +1185,11 @@ class SpwIdVsFreqChart(object):
         ax.tick_params(labelsize=13)
         ax.set_xticks(x_majorticks, fontsize=14)
         ax.set_xticks(x_minorticks, minor=True)
-        ax.set_yticks(y_ticks, fontsize=14)
-        yspace = len(y_ticks) / (max(y_ticks) - min(y_ticks))
-        for f, w, spwid in zip(list_fmin, list_bw, list_all_spwids):
-            ax.annotate('%s' % spwid, (f+w/2, spwid-yspace), fontsize=14)
+        ax.set_ylim(bottom=float(len(list_all_indice)), top=-1.0)
+        ax.set_yticks([])
+        yspace = 0.7*len(y_ticks) / (max(y_ticks) - min(y_ticks))
+        for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
+            ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
 
         # Make a plot of frequency vs. atm transmission (right y-axis)
         atm_color = 'm'

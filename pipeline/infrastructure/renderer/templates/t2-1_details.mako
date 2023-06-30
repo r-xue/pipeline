@@ -146,23 +146,36 @@ import os
 	</div>
 
         <div class="col-md-6">
+
+            % if spwid_vs_freq is None or not os.path.exists(spwid_vs_freq.thumbnail):
+                <h3>SpW ID vs Frequency</h3>
+                <div class="col-md-6">
+                    <div class="thumbnail">
+                        <img data-src="holder.js/250x188/text:Not Available">
+                        <div class="caption">
+                            <h4>Not Available</h4>
+                        </div>
+                    </div>
+                </div>
+            % else:
 	         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}" data-fancybox>
-		         <h3>SpW ID vs Frequency</h3>
+		     <h3>SpW ID vs Frequency</h3>
         	 </a>
 	         <div class="col-md-6">
-		         <div class="thumbnail">
-			         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}"
+		     <div class="thumbnail">
+		         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}"
 			            data-fancybox>
-			        	 <img class="lazyload"
+			   	 <img class="lazyload"
 		          data-src="${os.path.relpath(spwid_vs_freq.thumbnail, pcontext.report_dir)}"
 			        		  title="SpW ID vs Frequency Details for ${ms.basename}"
 				        	  alt="SpW ID vs Frequency Details for ${ms.basename}" />
-        		     </a>
-	        	     <div class="caption">
-		        		 <h4>SpW ID vs Frequency plot</h4>
-			         </div>
-        		 </div>
+        		 </a>
+	        	 <div class="caption">
+		             <h4>SpW ID vs Frequency plot</h4>
+			 </div>
+        	     </div>
 	         </div>
+            % endif
         </div>
 
 	<div class="col-md-6">

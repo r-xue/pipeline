@@ -776,9 +776,12 @@ class T2_1DetailsRenderer(object):
         task = summary.FieldVsTimeChart(inputs)
         field_vs_time = task.plot()
 
-        inputs = summary.SpwIdVsFreqChart.Inputs(context, vis=ms.basename)
-        task = summary.SpwIdVsFreqChart(inputs, context)
-        spwid_vs_freq = task.plot()
+        if context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):
+            inputs = summary.SpwIdVsFreqChart.Inputs(context, vis=ms.basename)
+            task = summary.SpwIdVsFreqChart(inputs, context)
+            spwid_vs_freq = task.plot()
+        else:
+            spwid_vs_freq = None
 
         science_spws = ms.get_spectral_windows(science_windows_only=True)
         all_bands = sorted({spw.band for spw in ms.get_all_spectral_windows()})
