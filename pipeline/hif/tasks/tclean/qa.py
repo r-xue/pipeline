@@ -22,7 +22,8 @@ class TcleanQAHandler(pqa.QAPlugin):
         # calculate QA score comparing RMS against clean threshold
 
         # Add offset of 0.34 to avoid any red scores
-        imageScorer = scorers.erfScorer(1.0, 5.0, 0.34)
+        min_score = 0.34
+        imageScorer = scorers.erfScorer(1.0, 5.0, min_score)
 
         # Basic imaging score
         # For the time being the VLA calibrator imaging is generating an error
@@ -38,8 +39,19 @@ class TcleanQAHandler(pqa.QAPlugin):
             result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
         else:
             # Check for any cleaning errors and render a zero score
-            if (result.error is not None):
-                result.qa.pool.append(pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg, weblog_location=pqa.WebLogLocation.UNSET))
+            if result.error:
+                if hasattr(result.error, 'longmsg'):  # unlikely to happen: result.error is normally a string (or None)
+                    longmsg = result.error.longmsg
+                    shortmsg = result.error.shortmsg
+                else:
+                    longmsg = shortmsg = str(result.error)
+                # set the score to the lowest (but still yellow) value
+                result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
+                                                  weblog_location=pqa.WebLogLocation.UNSET))
+
+            # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
+            if result.image is None:
+                return result
 
             # Image RMS based score
             try:
@@ -49,7 +61,7 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 if (numpy.isnan(rms_score)):
                     rms_score = 0.0
-                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, resultspw)
+                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
                     shortmsg='RMS is NaN'
                 else:
                     if rms_score > 0.66:
