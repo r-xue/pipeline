@@ -1,5 +1,6 @@
 import collections
 import os
+from typing import TYPE_CHECKING
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.filenamer as filenamer
@@ -11,9 +12,28 @@ from . import resultobjects
 from . import display
 from ..common import utils as sdutils
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.renderer.logger import Plot
+
 LOG = logging.get_logger(__name__)
 
 ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name estimate range width theoretical_rms observed_rms')
+
+
+class SingleDishMomentMapPlotRenderer(basetemplates.JsonPlotRenderer):
+    """Custom JsonPlotRenderer for imaging plots."""
+
+    def update_json_dict(self, d: dict, plot: 'Plot') -> None:
+        """Update JSON dictionary in place.
+
+        Add plot type to the dictionary.
+
+        Args:
+            d: JSON dictionary for rendering
+            plot: Plot object
+        """
+        for key in ['moment', 'chans']:
+            d[key] = plot.parameters[key]
 
 
 class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -78,7 +98,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                      'rmsmap': {'type': 'rms_map',
                                 'plot_title': 'Baseline RMS Map'},
                      'momentmap': {'type': 'sd_moment_map',
-                                   'plot_title': 'Maximum Intensity Map'},
+                                   'plot_title': 'Moment Map'},
                      'integratedmap': {'type': 'sd_integrated_map',
                                        'plot_title': 'Integrated Intensity Map'},
                      'contaminationmap': {'type': 'sd_contamination_map',
@@ -115,12 +135,20 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             subpage = collections.OrderedDict()
             plot_title = value['plot_title']
             LOG.debug('plot_title=%s'%(plot_title))
-            renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_ant_field_spw_pol_plots.mako',
-                                                      context,
-                                                      results,
-                                                      flattened,
-                                                      plot_title,
-                                                      filenamer.sanitize('%s.html' % (plot_title.lower())))
+            if key == 'momentmap':
+                LOG.debug('use moment map renderer')
+                renderer_cls = SingleDishMomentMapPlotRenderer
+                template = 'moment_map.mako'
+            else:
+                LOG.debug('use generic renderer')
+                renderer_cls = basetemplates.JsonPlotRenderer
+                template = 'generic_x_vs_y_ant_field_spw_pol_plots.mako'
+            renderer = renderer_cls(template,
+                                    context,
+                                    results,
+                                    flattened,
+                                    plot_title,
+                                    filenamer.sanitize('%s.html' % (plot_title.lower())))
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
             for fieldobj in sorted_fields:
