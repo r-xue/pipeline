@@ -431,19 +431,30 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Return name of the single dish image."""
         return self.result.outcome['image'].imagename
 
-    def moment_imagename(self, moment: Optional[Moment], chans: ChannelSelection) -> str:
+    def moment_imagename(self, moments: Union[List[Moment], Moment], chans: ChannelSelection) -> str:
         """Return name of the moment image.
 
+        If number of moments is 1, moment image name will include moment
+        type. On the other hand, moment image name will not contain
+        moment type if multiple moment types are specified. That is
+        because immoments treats given image name as a prefix when
+        the task computes multiple moments at once.
+
         Args:
-            moment: Moment type enum
-            chans: Channel selection enum
+            moments: Type of moment or list of them
+            chans: Channel selection spec
 
         Returns:
             Name of moment image name
         """
         name = self.imagename.rstrip('/') + f'.{chans.name.lower()}'
-        if moment is not None:
-            name += f'.{moment.name.lower()}'
+
+        if isinstance(moments, Moment):
+            moments = [moments]
+
+        if len(moments) == 1:
+            name += f'.{moments[0].name.lower()}'
+
         return name
 
     @property

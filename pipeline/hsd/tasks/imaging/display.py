@@ -279,19 +279,15 @@ class SDMomentMapDisplay(SDImageDisplay):
         for spec in self.inputs.MomentMapList:
             chans = self.inputs.create_channel_mask(spec.chans)
             LOG.debug('chans = "%s"', chans)
-            num_moments = len(spec.moments)
             moment_imagename_list = [self.inputs.moment_imagename(moment, spec.chans) for moment in spec.moments]
             for imagename in moment_imagename_list:
                 if os.path.exists(imagename):
                     status = casa_tools.image.removefile(imagename)
-            if num_moments == 1:
-                outfile = self.inputs.moment_imagename(spec.moments[0], spec.chans)
-            else:
-                outfile = self.inputs.moment_imagename(None, spec.chans)
+            outfile = self.inputs.moment_imagename(spec.moments, spec.chans)
             moments = [moment.value for moment in spec.moments]
-            LOG.info(f'moment_imagename_list={moment_imagename_list}')
-            LOG.info(f'moments={moments}')
-            LOG.info(f'outfile={outfile}')
+            LOG.debug(f'moment_imagename_list={moment_imagename_list}')
+            LOG.debug(f'moments={moments}')
+            LOG.debug(f'outfile={outfile}')
             job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=moments, chans=chans, outfile=outfile)
             job.execute(dry_run=False)
             for imagename in moment_imagename_list:
