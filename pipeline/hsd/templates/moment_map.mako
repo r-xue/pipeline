@@ -19,7 +19,7 @@ SELECTORS = ['vis', 'ant', 'field', 'spw', 'pol', 'moment', 'chans']
 		Field: ${plot.parameters['field']}<br>
 		Spectral Window: ${plot.parameters['spw']}<br>
 		Polarisation: ${plot.parameters['pol']}<br>
-        ${plot.parameters['moment']}, channel ${plot.parameters['chans']}
+        ${plot.parameters['moment']}, ${plot.parameters['chans'] channels}
 	</%def>
 
 	<%def name="caption_text(plot)">
@@ -30,6 +30,6 @@ SELECTORS = ['vis', 'ant', 'field', 'spw', 'pol', 'moment', 'chans']
 		${plot.parameters['field']}<br>
 		Spw ${plot.parameters['spw']}<br>
 		Pol ${plot.parameters['pol']}<br>
-        ${plot.parameters['moment']}, channel ${plot.parameters['chans']}
+        ${plot.parameters['moment']}, ${plot.parameters['chans'] channels}
 	</%def>
 </%self:render_plots>
