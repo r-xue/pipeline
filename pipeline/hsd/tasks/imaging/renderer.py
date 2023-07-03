@@ -197,12 +197,24 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             summary_plots[field_name] = []
             for plot in plots:
                 spw = plot.parameters['spw']
+                # ensure each spw has summary plot
                 if spw not in spw_list:
                     spw_list.append(spw)
                     summary_plots[field_name].append(plot)
+                # overwrite existing plot with the one for COMBINED data
                 if plot.parameters['ant'] == 'COMBINED':
                     idx = spw_list.index(spw)
-                    summary_plots[field_name][idx] = plot
+                    if 'moment' in plot.parameters:
+                        # special treatment for moment map
+                        # overwrite existing plot with max intensity map
+                        # for line-free channels if it exists
+                        if plot.parameters['moment'] == 'maximum' and \
+                          plot.parameters['chans'] == 'line_free':
+                            summary_plots[field_name][idx] = plot
+                    else:
+                        # simply overwrite otherwise
+                        summary_plots[field_name][idx] = plot
+
         return summary_plots
 
     @staticmethod
