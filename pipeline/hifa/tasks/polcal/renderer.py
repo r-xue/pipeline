@@ -51,7 +51,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Create residual polarization table.
         residual_pol_table_rows = self.create_pol_table_rows(result, 'residual')
 
-        # Create residual polarization table.
+        # Create polarization calibrator table.
         polcal_table_rows = self.create_pol_table_rows(result, 'polcal')
 
         # Create amp vs. parallactic angle plots.
@@ -62,6 +62,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Create cross-hand phase vs. channel plots.
         phase_vs_channel = self.create_phase_channel_plots(pipeline_context, result)
+
+        # Create gain ratio RMS plots.
+        gain_ratio_rms_vs_scan = self.create_gain_ratio_rms_plots(pipeline_context, output_dir, result)
 
         # Create X-Y gain amplitude vs. antenna plots.
         amp_vs_ant, ampratio_vs_ant = self.create_xy_amp_ant_plots(pipeline_context, result)
@@ -81,6 +84,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_scan_before': amp_vs_scan_before,
             'amp_vs_scan_after': amp_vs_scan_after,
             'phase_vs_channel': phase_vs_channel,
+            'gain_ratio_rms_vs_scan': gain_ratio_rms_vs_scan,
             'amp_vs_ant': amp_vs_ant,
             'ampratio_vs_ant': ampratio_vs_ant,
             'real_vs_imag': real_vs_imag,
@@ -150,6 +154,14 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for session_name, session_results in result.session.items():
             plots[session_name] = polcal.PhaseVsChannelChart(
                 context, result, session_results['polcal_phase_result'].final).plot()
+
+        return plots
+
+    @staticmethod
+    def create_gain_ratio_rms_plots(context, output_dir, result):
+        plots = {}
+        for session_name, sresults in result.session.items():
+            plots[session_name] = polcal.GainRatioRMSVsScanChart(context, output_dir, sresults).plot()
 
         return plots
 

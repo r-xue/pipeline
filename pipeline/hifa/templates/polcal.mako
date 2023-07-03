@@ -227,6 +227,37 @@ rsc_path = ""
 
 </%self:plot_group>
 
+<%self:plot_group plot_dict="${gain_ratio_rms_vs_scan}"
+                  url_fn="${lambda x: 'noop'}"
+                  data_vis="${True}"
+                  title_id="gain_ratio_rms_vs_scan_plots">
+
+    <%def name="title()">
+        Gain Ratio RMS vs. Scan
+    </%def>
+
+    <%def name="preamble()">
+        <p>Plots show the gain ratio RMS vs. scan before and after polarization calibration.</p>
+
+        <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show Gain Ratio RMS vs. Scan</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Gain Ratio RMS vs. Scan before and after polarization calibration.
+    </%def>
+
+</%self:plot_group>
+
 <%self:plot_group plot_dict="${amp_vs_ant}"
                   url_fn="${lambda x: 'noop'}"
                   data_vis="${True}"
