@@ -474,12 +474,13 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             ant: Antenna name
             pol: Polarization type
         Returns:
-            Availability of the factor for given meta data        """
-        if spw not in factors or factors[spw] is None:
+            Availability of the factor for given meta data
+        """
+        if factors.get( spw, None ) is None:
             return False
-        if ant not in factors[spw] or factors[spw][ant] is None:
+        if factors[spw].get( ant, None ) is None:
             return False
-        if pol not in factors[spw][ant] or factors[spw][ant][pol] is None:
+        if factors[spw][ant].get( pol, None ) is None:
             return False
         return True
 
