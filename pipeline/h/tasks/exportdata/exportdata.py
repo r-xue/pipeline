@@ -307,7 +307,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not inputs.imaging_products_only:
             if inputs.exportcalprods:
                 sessiondict = self._do_standard_session_products(inputs.context, oussid, session_names, session_vislists,
-                                                             inputs.products_dir)
+                                                                 inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
                 for i in range(len(session_names)):
@@ -616,7 +616,7 @@ class ExportData(basetask.StandardTaskTemplate):
         per_ms_calimages = []
         per_ms_calimages_keywords = []
         for i, image in enumerate(calimages):
-            if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown'):
+            if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown') or image.startswith('session'):
                 per_ous_calimages.append(image)
                 per_ous_calimages_keywords.append(calimages_fitskeywords[i])
             else:
@@ -664,6 +664,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
+        pipemanifest.add_images(ouss, per_ms_calimages, 'calibrator', per_ms_calimages_keywords)
 
         # Add the target images
         pipemanifest.add_images(ouss, targetimages, 'target', targetimages_fitskeywords)
