@@ -943,7 +943,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         __cqa = casa_tools.quanta
         if __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
-            LOG.warning("Cycle 2 and earlier project with nominal effective band width.")
+            LOG.warning("ALMA Cycle 2 and earlier project does not have a valid effective bandwidth. "
+                        "Nominal channel width is used in RMS estimates.")
 
     def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                 _rgp: imaging_params.ReductionGroupParameters,
