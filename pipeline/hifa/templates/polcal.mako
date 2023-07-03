@@ -40,6 +40,64 @@ rsc_path = ""
     </tbody>
 </table>
 
+<h2>Polarization</h2>
+
+<h3>Residual polarization after calibration</h3>
+<table class="table table-bordered table-striped">
+    <caption>Residual polarization after calibration.</caption>
+    <thead>
+        <tr>
+            <th scope="col" rowspan="2">Session</th>
+            <th scope="col" rowspan="2">Polarization Calibrator</th>
+            <th scope="col" rowspan="2">Spectral Window</th>
+            <th  scope="col" colspan="4">Fractional Stokes</th>
+        </tr>
+	    <tr>
+	        <th scope="col">I</th>
+	        <th scope="col">Q</th>
+	        <th scope="col">U</th>
+	        <th scope="col">V</th>
+	    </tr>
+	</thead>
+    <tbody>
+    % for tr in residual_pol_table_rows:
+		<tr>
+		% for td in tr:
+			${td}
+		% endfor
+		</tr>
+    % endfor
+    </tbody>
+</table>
+
+<h3>Polarization of the polarization calibrator</h3>
+<table class="table table-bordered table-striped">
+    <caption>Polarization of the polarization calibrator.</caption>
+    <thead>
+        <tr>
+            <th scope="col" rowspan="2">Session</th>
+            <th scope="col" rowspan="2">Polarization Calibrator</th>
+            <th scope="col" rowspan="2">Spectral Window</th>
+            <th  scope="col" colspan="4">Fractional Stokes</th>
+        </tr>
+	    <tr>
+	        <th scope="col">I</th>
+	        <th scope="col">Q</th>
+	        <th scope="col">U</th>
+	        <th scope="col">V</th>
+	    </tr>
+	</thead>
+    <tbody>
+    % for tr in polcal_table_rows:
+		<tr>
+		% for td in tr:
+			${td}
+		% endfor
+		</tr>
+    % endfor
+    </tbody>
+</table>
+
 <h2>Plots</h2>
 
 <%self:plot_group plot_dict="${amp_vs_parang}"

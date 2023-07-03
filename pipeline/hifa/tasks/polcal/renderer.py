@@ -1,3 +1,4 @@
+import collections
 import os
 
 import pipeline.infrastructure.callibrary as callibrary
@@ -8,6 +9,8 @@ import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import polcal
 
 LOG = logging.get_logger(__name__)
+
+ResidPolTR = collections.namedtuple('ResidPolTR', 'session field spw I Q U V')
 
 
 class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -45,6 +48,12 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             refants[session_name] = session_results['refant']
             polfields[session_name] = session_results['polcal_field_name']
 
+        # Create residual polarization table.
+        residual_pol_table_rows = self.create_pol_table_rows(result, 'residual')
+
+        # Create residual polarization table.
+        polcal_table_rows = self.create_pol_table_rows(result, 'polcal')
+
         # Create amp vs. parallactic angle plots.
         amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
 
@@ -66,6 +75,8 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'vislists': vislists,
             'refants': refants,
             'polfields': polfields,
+            'residual_pol_table_rows': residual_pol_table_rows,
+            'polcal_table_rows': polcal_table_rows,
             'amp_vs_parang': amp_vs_parang,
             'amp_vs_scan_before': amp_vs_scan_before,
             'amp_vs_scan_after': amp_vs_scan_after,
@@ -74,6 +85,28 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'ampratio_vs_ant': ampratio_vs_ant,
             'real_vs_imag': real_vs_imag,
         })
+
+    @staticmethod
+    def create_pol_table_rows(result, tabletype):
+        rows = []
+
+        for session_name, session_results in result.session.items():
+            # Retrieve the correct dictionary with polarization results based
+            # on type of table.
+            if tabletype == 'residual':
+                polcal_dict = session_results['cal_pfg_result']
+            elif tabletype == 'polcal':
+                polcal_dict = session_results['polcal_phase_result'].polcal_returns[0]
+            else:
+                polcal_dict = {}
+
+            # Create rows for each field and each SpW.
+            for field, fres in polcal_dict.items():
+                for spw, iquv in fres.items():
+                    iquv = [f"{i:.6f}" for i in iquv]
+                    rows.append(ResidPolTR(session_name, field, spw[3:].replace('Ave', 'Average'), *iquv))
+
+        return utils.merge_td_columns(rows)
 
     @staticmethod
     def create_copy_pcontext_with_session_mses(context, result):
