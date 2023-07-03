@@ -65,7 +65,7 @@ class PolcalInputs(vdp.StandardInputs):
 
 
 @task_registry.set_equivalent_casa_task('hifa_polcal')
-@task_registry.set_casa_commands_comment('Compute the polarisation calibration.')
+@task_registry.set_casa_commands_comment('Compute the polarization calibration.')
 class Polcal(basetask.StandardTaskTemplate):
     Inputs = PolcalInputs
 
@@ -80,7 +80,7 @@ class Polcal(basetask.StandardTaskTemplate):
         # Inspect the vis list to identify sessions and corresponding MSes.
         vislist_for_session = sessionutils.group_vislist_into_sessions(self.inputs.context, self.inputs.vis)
 
-        # Run polarisation calibration for each session.
+        # Run polarization calibration for each session.
         for session_name, vislist in vislist_for_session.items():
             result.session[session_name] = self._polcal_for_session(session_name, vislist)
 
@@ -90,10 +90,10 @@ class Polcal(basetask.StandardTaskTemplate):
         return result
 
     def _polcal_for_session(self, session_name: str, vislist: List[str]) -> dict:
-        LOG.info(f"Deriving polarisation calibration for session '{session_name}' with measurement set(s):"
+        LOG.info(f"Deriving polarization calibration for session '{session_name}' with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
-        # Check that each MS in session shares the same single polarisation
+        # Check that each MS in session shares the same single polarization
         # calibrator by field name; if not, then stop processing this session.
         polcal_field_name = self._check_matching_pol_field(session_name, vislist)
         if not polcal_field_name:
@@ -103,71 +103,71 @@ class Polcal(basetask.StandardTaskTemplate):
         refant = self._get_refant(session_name, vislist)
 
         # For each MS in session, run applycal to apply the registered total
-        # intensity caltables to the polarisation calibrator field.
+        # intensity caltables to the polarization calibrator field.
         for vis in vislist:
-            LOG.info(f"Session {session_name}: apply pre-existing caltables to polarisation calibrator for MS {vis}.")
+            LOG.info(f"Session {session_name}: apply pre-existing caltables to polarization calibrator for MS {vis}.")
             self._run_applycal(vis)
 
-        # Extract polarisation data from each MS in session, concatenate into
+        # Extract polarization data from each MS in session, concatenate into
         # a session MS, and register this session MS with local context.
-        LOG.info(f"Creating polarisation data MS for session '{session_name}'.")
+        LOG.info(f"Creating polarization data MS for session '{session_name}'.")
         session_msname, spwmaps = self._create_session_ms(session_name, vislist)
 
-        # Compute duration of polarisation scans.
+        # Compute duration of polarization scans.
         scan_duration = self._compute_pol_scan_duration(session_msname)
 
-        # Compute initial gain calibration for polarisation calibrator, and
+        # Compute initial gain calibration for polarization calibrator, and
         # merge into local context.
-        LOG.info(f"{session_msname}: compute initial gain calibration for polarisation calibrator.")
+        LOG.info(f"{session_msname}: compute initial gain calibration for polarization calibrator.")
         init_gcal_result = self._initial_gaincal(session_msname, refant)
         self._register_calapps_from_results([init_gcal_result])
 
-        # Compute (uncalibrated) estimate of polarisation of the polarisation
+        # Compute (uncalibrated) estimate of polarization of the polarization
         # calibrator.
-        LOG.info(f"{session_msname}: compute estimate of polarisation.")
+        LOG.info(f"{session_msname}: compute estimate of polarization.")
         uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result)
 
         # Retrieve fractional Stokes results for averaged SpW for the
-        # polarisation calibrator field.
+        # polarization calibrator field.
         smodel = list(uncal_pfg_result.values())[0]['SpwAve']
 
         # Identify scan with highest X-Y signal.
         best_scan_id = self._identify_scan_highest_xy(session_name, init_gcal_result)
 
         # Compute X-Y delay.
-        LOG.info(f"{session_msname}: compute X-Y delay (Kcross) for polarisation calibrator.")
+        LOG.info(f"{session_msname}: compute X-Y delay (Kcross) for polarization calibrator.")
         kcross_result, kcross_calapps = self._compute_xy_delay(session_msname, vislist, refant, best_scan_id, spwmaps)
         self._register_calapps_from_results([kcross_result])
 
         # Calibrate X-Y phase.
-        LOG.info(f"{session_msname}: compute X-Y phase for polarisation calibrator.")
+        LOG.info(f"{session_msname}: compute X-Y phase for polarization calibrator.")
         polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, smodel,
                                                                           scan_duration, spwmaps)
 
         # Retrieve fractional Stokes results for averaged SpW for the
-        # polarisation calibrator field.
+        # polarization calibrator field.
         smodel = list(polcal_phase_result.polcal_returns[0].values())[0]['SpwAve']
 
         # Unregister caltables that have been created for the session MS so
-        # far, prior to re-computing the gain calibration for polarisation
+        # far, prior to re-computing the gain calibration for polarization
         # calibrator.
         self._unregister_caltables(session_msname)
 
-        # Final gain calibration for polarisation calibrator, using the actual
-        # polarisation model.
-        LOG.info(f"{session_msname}: compute final gain calibration for polarisation calibrator.")
+        # Final gain calibration for polarization calibrator, using the actual
+        # polarization model.
+        LOG.info(f"{session_msname}: compute final gain calibration for polarization calibrator.")
         final_gcal_result, final_gcal_calapps = self._final_gaincal(session_msname, vislist, refant, smodel, spwmaps)
 
-        # Recompute polarisation of the polarisation calibrator after
+        # Recompute polarization of the polarization calibrator after
         # calibration.
-        LOG.info(f"{session_msname}: recompute polarisation of polarisation calibrator after calibration.")
+        LOG.info(f"{session_msname}: recompute polarization of polarization calibrator after calibration.")
         cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result)
 
         # (Re-)register the final gain, X-Y delay, and X-Y phase caltables.
         self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
 
         # Compute leakage terms.
-        LOG.info(f"{session_msname}: estimate leakage terms for polarisation calibrator.")
+        LOG.info(f"{session_msname}: estimate leakage terms for polarization calibrator.")
         leak_polcal_result, leak_pcal_calapps = self._compute_leakage_terms(session_msname, vislist, smodel,
                                                                             scan_duration, spwmaps)
 
@@ -178,14 +178,14 @@ class Polcal(basetask.StandardTaskTemplate):
         self._register_calapps_from_results([kcross_result, polcal_phase_result, leak_polcal_result])
 
         # Compute X-Y ratio.
-        LOG.info(f"{session_msname}: compute X-Y ratio for polarisation calibrator.")
+        LOG.info(f"{session_msname}: compute X-Y ratio for polarization calibrator.")
         xyratio_gcal_result, xyratio_calapps = self._compute_xy_ratio(session_msname, vislist, refant, smodel, spwmaps)
 
         # Prior to applycal, re-register the final gain caltable.
         self._register_calapps_from_results([final_gcal_result])
 
-        # Apply the polarisation calibration to the polarisation calibrator.
-        LOG.info(f"{session_msname}: apply polarisation calibrations to the polarisation calibrator.")
+        # Apply the polarization calibration to the polarization calibrator.
+        LOG.info(f"{session_msname}: apply polarization calibrations to the polarization calibrator.")
         self._run_applycal(session_msname, parang=True)
 
         # Run visstat on session MS, once per obsid.
@@ -194,14 +194,14 @@ class Polcal(basetask.StandardTaskTemplate):
         for obsid in range(len(vislist)):
             session_vs_result[obsid] = self._run_visstat(session_msname, obsid=str(obsid))
 
-        # Register the relevant CalApps for polarisation calibrator in
+        # Register the relevant CalApps for polarization calibrator in
         # each MS in this session.
         self._register_calapps(final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps)
 
-        # Run applycal to apply the newly derived polarisation caltables to the
-        # polarisation calibrator in each MS in this session.
+        # Run applycal to apply the newly derived polarization caltables to the
+        # polarization calibrator in each MS in this session.
         for vis in vislist:
-            LOG.info(f"Session {session_name}: apply polarisation caltables to polarisation calibrator for MS {vis}.")
+            LOG.info(f"Session {session_name}: apply polarization caltables to polarization calibrator for MS {vis}.")
             self._run_applycal(vis, parang=True)
 
         # Run visstat on each MS in this session.
@@ -216,13 +216,13 @@ class Polcal(basetask.StandardTaskTemplate):
         vs_diffs = self._compare_visstat_results(self.inputs.vs_stats, self.inputs.vs_thresh, session_vs_result,
                                                  vis_vs_results, spwmaps)
 
-        # Set flux density for polarisation calibrator in each MS in this
+        # Set flux density for polarization calibrator in each MS in this
         # session.
         for vis in vislist:
             LOG.info(f"{session_msname}: run setjy for MS {vis}.")
             self._setjy_for_polcal(vis, smodel)
 
-        # Compute amplitude calibration for polarisation calibrator.
+        # Compute amplitude calibration for polarization calibrator.
         polcal_amp_results, amp_calapps = self._compute_ampcal_for_polcal(vislist, refant)
 
         # Collect results.
@@ -251,7 +251,7 @@ class Polcal(basetask.StandardTaskTemplate):
         return result
 
     def _get_refant(self, session_name: str, vislist: List[str]) -> str:
-        # In the polarisation recipes, the best reference antenna should have
+        # In the polarization recipes, the best reference antenna should have
         # been determined for the entire session by hifa_session_refant, and
         # stored in each MS of the session. Retrieve this refant from the first
         # MS in the MS list.
@@ -260,29 +260,29 @@ class Polcal(basetask.StandardTaskTemplate):
         return ms.reference_antenna
 
     def _check_matching_pol_field(self, session_name: str, vislist: List[str]) -> str:
-        # Retrieve polarisation calibrator field name for each MS in session.
+        # Retrieve polarization calibrator field name for each MS in session.
         pol_fields = {}
         for vis in vislist:
             ms = self.inputs.context.observing_run.get_ms(name=vis)
             pol_fields[vis] = [field.name for field in ms.get_fields(intent=self.inputs.intent)]
 
-        # Check that each MS has one and only one polarisation calibrator.
+        # Check that each MS has one and only one polarization calibrator.
         pol_field_name = ''
         if not all(len(f) == 1 for f in pol_fields.values()):
             msg = f"Cannot process session '{session_name}': one or more measurement sets do not have exactly 1" \
-                  f" polarisation calibrator field."
+                  f" polarization calibrator field."
             for vis, fields in pol_fields.items():
-                msg += f"\n  {vis} has polarisation calibrator field(s): {utils.commafy(fields)}"
+                msg += f"\n  {vis} has polarization calibrator field(s): {utils.commafy(fields)}"
             LOG.warning(msg)
-        # Check that the polarisation field for each MS matches by name.
+        # Check that the polarization field for each MS matches by name.
         elif len({field for visfields in pol_fields.values() for field in visfields}) != 1:
-            msg = f"Cannot process session '{session_name}': the measurement sets do not have the same polarisation" \
+            msg = f"Cannot process session '{session_name}': the measurement sets do not have the same polarization" \
                   f" calibrator (fields do not match by name)."
             for vis, fields in pol_fields.items():
-                msg += f"\n  {vis} has polarisation calibrator field: {fields}"
+                msg += f"\n  {vis} has polarization calibrator field: {fields}"
             LOG.warning(msg)
         # If no mismatch was found, then return the name of the single
-        # polarisation calibrator field.
+        # polarization calibrator field.
         else:
             pol_field_name = pol_fields[vislist[0]][0]
 
@@ -296,11 +296,11 @@ class Polcal(basetask.StandardTaskTemplate):
 
     def _create_session_ms(self, session_name: str, vislist: List[str]) -> Tuple[str, dict]:
         """This method uses mstransform to create a new MS that contains only
-        the polarisation calibrator data."""
-        # Extract polarisation data for each vis, and capture name of new MS.
+        the polarization calibrator data."""
+        # Extract polarization data for each vis, and capture name of new MS.
         pol_vislist = []
         for vis in vislist:
-            LOG.info(f"Extracting corrected polarisation data for MS {vis}")
+            LOG.info(f"Extracting corrected polarization data for MS {vis}")
             # Set name of output vis.
             outputvis = os.path.splitext(vis)[0] + '.polcalib.ms'
 
@@ -309,7 +309,7 @@ class Polcal(basetask.StandardTaskTemplate):
             sci_spws = ','.join(str(spw.id) for spw in ms.get_spectral_windows(science_windows_only=True))
 
             # Create and execute mstransform job to split off the corrected
-            # column for polarisation intent.
+            # column for polarization intent.
             task_args = {
                 'vis': vis,
                 'intent': utils.to_CASA_intent(ms, self.inputs.intent),
@@ -323,9 +323,9 @@ class Polcal(basetask.StandardTaskTemplate):
 
             pol_vislist.append(outputvis)
 
-        # Concatenate the new polarisation MSes into a single session MS.
+        # Concatenate the new polarization MSes into a single session MS.
         session_msname = session_name + '_polcalib.ms'
-        LOG.info(f"Creating polarisation session measurement set '{session_msname}' from input measurement set(s):"
+        LOG.info(f"Creating polarization session measurement set '{session_msname}' from input measurement set(s):"
                  f" {utils.commafy(pol_vislist, quotes=False)}.")
         concat_job = casa_tasks.concat(vis=pol_vislist, concatvis=session_msname)
         self._executor.execute(concat_job)
@@ -350,11 +350,11 @@ class Polcal(basetask.StandardTaskTemplate):
         return session_msname, spwmaps
 
     def _compute_pol_scan_duration(self, vis: str) -> int:
-        # Get polarisation scans for session MS.
+        # Get polarization scans for session MS.
         ms = self.inputs.context.observing_run.get_ms(name=vis)
         pol_scans = ms.get_scans(scan_intent=self.inputs.intent)
 
-        # Compute median duration of polarisation scans.
+        # Compute median duration of polarization scans.
         scan_duration = int(np.median([scan.time_on_source.total_seconds() for scan in pol_scans]))
         LOG.info(f"Session MS {vis}: median scan duration = {scan_duration} seconds.")
         return scan_duration
@@ -422,7 +422,7 @@ class Polcal(basetask.StandardTaskTemplate):
         # Get caltable to analyse.
         caltable = gcal_result.final[0].gaintable
 
-        # Retrieve scan nr. and gains from initial polarisation caltable.
+        # Retrieve scan nr. and gains from initial polarization caltable.
         with casa_tools.TableReader(caltable) as table:
             scan_ids = table.getcol('SCAN_NUMBER')
             gains = np.squeeze(table.getcol('CPARAM'))
@@ -648,7 +648,7 @@ class Polcal(basetask.StandardTaskTemplate):
         result = self._executor.execute(task)
 
         # For each MS in this session, create a modified CalApplication to
-        # register this caltable against the non-polarisation intents.
+        # register this caltable against the non-polarization intents.
         final_calapps = []
         for inp_vis in vislist:
             # Retrieve science SpW(s) for vis.
@@ -731,10 +731,10 @@ class Polcal(basetask.StandardTaskTemplate):
         # not present, log warning and return without running setjy.
         if ms.fluxscale_fluxes is None:
             LOG.warning(f"No fluxscale derived flux measurements registered for {vis}, cannot retrieve total"
-                        f" intensity, skipping setjy step for polarisation calibrator in this MS.")
+                        f" intensity, skipping setjy step for polarization calibrator in this MS.")
             return
 
-        # Get fluxscale derived flux measurements for the polarisation
+        # Get fluxscale derived flux measurements for the polarization
         # calibrator field in the current MS
         gfs_fluxes = sorted(ms.fluxscale_fluxes[str(polcal_field.id)], key=operator.attrgetter('spw_id'))
 
@@ -797,7 +797,7 @@ class Polcal(basetask.StandardTaskTemplate):
             results.append(result)
 
             # Create a modified CalApplication to register this caltable
-            # against the polarisation intents.
+            # against the polarization intents.
             final_calapps.append(callibrary.copy_calapplication(result.final[0], vis=vis, intent=inputs.intent,
                                                                 interp='nearest'))
 

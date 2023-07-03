@@ -15,7 +15,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     Renders detailed HTML output for the Polcal task.
     """
     def __init__(self, uri='polcal.mako',
-                 description='Polarisation Calibration',
+                 description='polarization Calibration',
                  always_rerender=False):
         super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
@@ -24,7 +24,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         result = results[0]
         output_dir = os.path.join(pipeline_context.report_dir, 'stage%s' % result.stage_number)
 
-        # Create local copy of pipeline context and register the polarisation
+        # Create local copy of pipeline context and register the polarization
         # session MSes, to enable creation of session related plots that rely
         # on the MS being registered.
         pipeline_context = self.create_copy_pcontext_with_session_mses(pipeline_context, result)
@@ -48,7 +48,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Create amp vs. parallactic angle plots.
         amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
 
-        # Create gain amp polarisation ratio vs. scan plots.
+        # Create gain amp polarization ratio vs. scan plots.
         amp_vs_scan_before, amp_vs_scan_after = self.create_amp_scan_plots(pipeline_context, result)
 
         # Create cross-hand phase vs. channel plots.

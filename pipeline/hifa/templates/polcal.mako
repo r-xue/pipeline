@@ -3,19 +3,19 @@ rsc_path = ""
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Polarisation Calibration</%block>
+<%block name="title">Polarization Calibration</%block>
 
-<p>This task creates polarisation solutions for each polarisation session of measurement sets.</p>
+<p>This task creates polarization solutions for each polarization session of measurement sets.</p>
 
 <h2>Sessions</h2>
 <table class="table table-bordered table-striped">
-    <caption>Summary of polarisation calibrator per session.</caption>
+    <caption>Summary of polarization calibrator per session.</caption>
     <thead>
         <tr>
-            <th>Session</th>
-            <th>Measurement Sets</th>
-            <th>Polarisation Calibrator</th>
-            <th>Reference Antenna</th>
+            <th scope="col">Session</th>
+            <th scope="col">Measurement Sets</th>
+            <th scope="col">Polarization Calibrator</th>
+            <th scope="col">Reference Antenna</th>
         </tr>
     </thead>
     <tbody>
@@ -82,11 +82,11 @@ rsc_path = ""
                   title_id="amp_vs_scan_before_plots">
 
     <%def name="title()">
-        Amplitude vs. Scan before polarisation calibration
+        Amplitude vs. Scan before polarization calibration
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the polarisation ratio amplitude vs. scan.</p>
+        <p>Plots show the polarization ratio amplitude vs. scan.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
@@ -113,11 +113,11 @@ rsc_path = ""
                   title_id="amp_vs_scan_after_plots">
 
     <%def name="title()">
-        Amplitude vs. Scan after polarisation calibration
+        Amplitude vs. Scan after polarization calibration
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the polarisation ratio amplitude vs. scan.</p>
+        <p>Plots show the polarization ratio amplitude vs. scan.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
