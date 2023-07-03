@@ -223,7 +223,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     self.__set_representative_flag(_rgp, _pp)
 
-                    self.__warn_if_cycle2(_rgp)
+                    self.__warn_if_early_cycle(_rgp)
 
                     self.__calculate_sensitivity(_cp, _rgp, _pp)
                 finally:
@@ -935,14 +935,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             __rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
             __rep_source_name == utils.dequote(_rgp.source_name)
 
-    def __warn_if_cycle2(self, _rgp: imaging_params.ReductionGroupParameters):
-        """If it processes MS before Cycle2, logs warning.
+    def __warn_if_early_cycle(self, _rgp: imaging_params.ReductionGroupParameters):
+        """Warn when it processes MeasurementSet of ALMA Cycle 2 and earlier.
 
         Args:
             _rgp (imaging_params.ReductionGroupParameters): Reduction group parameter object of prepare()
         """
         __cqa = casa_tools.quanta
-        if __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
+        if _rgp.ref_ms.antenna_array.name == 'ALMA' and \
+           __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
             LOG.warning("ALMA Cycle 2 and earlier project does not have a valid effective bandwidth. "
                         "Nominal channel width is used in RMS estimates.")
 
