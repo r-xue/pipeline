@@ -223,7 +223,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     self.__set_representative_flag(_rgp, _pp)
 
-                    self.__warning_if_cycle2(_rgp)
+                    self.__warn_if_cycle2(_rgp)
 
                     self.__calculate_sensitivity(_cp, _rgp, _pp)
                 finally:
@@ -935,7 +935,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             __rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
             __rep_source_name == utils.dequote(_rgp.source_name)
 
-    def __warning_if_cycle2(self, _rgp: imaging_params.ReductionGroupParameters):
+    def __warn_if_cycle2(self, _rgp: imaging_params.ReductionGroupParameters):
         """If it processes MS before Cycle2, logs warning.
 
         Args:
