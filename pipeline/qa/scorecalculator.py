@@ -1457,8 +1457,11 @@ def score_wvrgcal(ms_name, dataresult):
                     score = 0.9 - reduceBy # still account for flagged antennas 
                     score = linear_score(score,0.0,0.9,0.67,0.9)
                 else: # we don't modify from the previous assessment - .e. data seem ok, no poor rms or disc but, the phase RMS is not explicilty good - I suspect some LB and HF might come here
-                    qa_messages.append(' Check atmospheric phase stability')   
-            # Otherwise now we are back to yellow 
+                    qa_messages.append(' Check atmospheric phase stability') 
+                    # if disc and rms didn't trigger but phase stability not reported as good - still yellow
+                    score = linear_score(score,0.0,0.66,0.34,0.66)
+  
+            # Otherwise now we are back to yellow when disc or rms also triggered on any ant 
             else:
                 qa_messages.append(' Check atmospheric phase stability')    
                 score = linear_score(score,0.0,0.66,0.34,0.66)
