@@ -34,7 +34,9 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
-    'tab_dict tab_url outmaskratio outmaskratio_label pol_session pol_ratio pol_angle'))
+    'tab_dict tab_url outmaskratio outmaskratio_label pol_session pol_ratio pol_angle '
+    'poli_abspath poli_thumbnail pola_abspath pola_thumbnail'))
+PolImagePaths = collections.namedtuple('PolImageInfo', ('poli_abspath poli_thumbnail pola_abspath pola_thumbnail'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -644,6 +646,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     pol_session=pol_session,
                     pol_ratio=pol_ratio,
                     pol_angle=pol_angle,
+                    poli_abspath=None,
+                    poli_thumbnail=None,
+                    pola_abspath=None,
+                    pola_thumbnail=None,
                     result=r
                 )
                 image_rows.append(row)
@@ -695,6 +701,12 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         fileobj.write(tab_renderer.render())
                     values['tab_url'] = tab_renderer.path
 
+                # Save POLI/POLA paths which is known only after plot() has been called
+                values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
+                values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
+                values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
+                values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
+
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
             except IOError as e:
@@ -717,10 +729,15 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
         pol_fit_rows = []
+        pol_fit_plots = []
         for row in final_rows:
             if row.pol == 'I':
                 # Save only once for weblog because the fit is the same for all Stokes parameters
                 pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
+                pol_fit_plots.append(PolImagePaths(poli_abspath=row.poli_abspath,
+                                                   poli_thumbnail=row.poli_thumbnail,
+                                                   pola_abspath=row.pola_abspath,
+                                                   pola_thumbnail=row.pola_thumbnail))
         pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
 
         # PIPE-1723: display a message in the weblog depending on the observatory
@@ -733,7 +750,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'image_info': final_rows,
             'dirname': weblog_dir,
             'chk_fit_info': chk_fit_rows,
-            'pol_fit_info': pol_fit_rows
+            'pol_fit_info': pol_fit_rows,
+            'pol_fit_plots': pol_fit_plots
         })
 
 
@@ -1524,6 +1542,10 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     pol_session=pol_session,
                     pol_ratio=pol_ratio,
                     pol_angle=pol_angle,
+                    poli_abspath = None,
+                    poli_thumbnail = None,
+                    pola_abspath = None,
+                    pola_thumbnail = None,
                     result=r
                 )
                 image_rows.append(row)
@@ -1578,6 +1600,12 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         fileobj.write(tab_renderer.render())
                     values['tab_url'] = tab_renderer.path
 
+                # Save POLI/POLA paths which is known only after plot() has been called
+                values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
+                values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
+                values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
+                values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
+
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
             except IOError as e:
@@ -1602,6 +1630,10 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             if row.pol == 'I':
                 # Save only once for weblog because the fit is the same for all Stokes parameters
                 pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
+                pol_fit_plots.append(PolImagePaths(poli_abspath=row.poli_abspath,
+                                                   poli_thumbnail=row.poli_thumbnail,
+                                                   pola_abspath=row.pola_abspath,
+                                                   pola_thumbnail=row.pola_thumbnail))
         pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
 
         ctx.update({
@@ -1610,7 +1642,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             'image_info': final_rows,
             'dirname': weblog_dir,
             'chk_fit_info': chk_fit_rows,
-            'pol_fit_info': pol_fit_rows
+            'pol_fit_info': pol_fit_rows,
+            'pol_fit_plots': pol_fit_plots
         })
 
 

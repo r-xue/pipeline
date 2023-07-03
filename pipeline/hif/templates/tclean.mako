@@ -101,14 +101,50 @@ except:
                             <th>Virtual SPW</th>
                             <th>Polarization Fraction</th>
                             <th>Polarization Angle</th>
+                            <th>Polarization Intensity Plot</th>
+                            <th>Polarization Angle Plot</th>
                         </tr>
                     </thead>
                     <tbody>
-                        %for row in pol_fit_info:
+                        %for row, plots in zip(pol_fit_info, pol_fit_plots):
                             <tr>
                             %for td in row:
                                 ${td}
                             %endfor
+                                <td>
+                                    <%
+                                    fullsize_relpath = os.path.relpath(plots.poli_abspath, pcontext.report_dir)
+                                    thumbnail_relpath = os.path.relpath(plots.poli_thumbnail, pcontext.report_dir)
+                                    %>
+                                    <a href="${fullsize_relpath}"
+                                       data-fancybox="clean-summary-images"
+                                       data-tcleanCommandTarget="N/A"
+                                       data-caption="POLI image"
+                                       title='<div class="pull-left">POLI image'>
+                                      <img class="lazyload"
+                                           data-src="${thumbnail_relpath}"
+                                           title="POLI image"
+                                           alt="POLI image"
+                                           class="img-thumbnail img-responsive">
+                                    </a>
+                                </td>
+                                <td>
+                                    <%
+                                    fullsize_relpath = os.path.relpath(plots.pola_abspath, pcontext.report_dir)
+                                    thumbnail_relpath = os.path.relpath(plots.pola_thumbnail, pcontext.report_dir)
+                                    %>
+                                    <a href="${fullsize_relpath}"
+                                       data-fancybox="clean-summary-images"
+                                       data-tcleanCommandTarget="N/A"
+                                       data-caption="POLA image"
+                                       title='<div class="pull-left">POLA image'>
+                                      <img class="lazyload"
+                                           data-src="${thumbnail_relpath}"
+                                           title="POLA image"
+                                           alt="POLA image"
+                                           class="img-thumbnail img-responsive">
+                                    </a>
+                                </td>
                             </tr>
                         %endfor
                     </tbody>
