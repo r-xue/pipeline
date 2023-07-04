@@ -90,7 +90,7 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
     
     hsdn_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
-    4. Check the hsdn_importdata inputs, then import the data:
+    4. Import a list of MeasurementSets:
     
     myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
     hsdn_importdata(vis=myvislist)
@@ -98,7 +98,7 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
     5. Load an ASDM but check the results before accepting them into the context:
     
     results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'],
-    acceptresults=False)
+                              acceptresults=False)
     results.accept()
     
     6. Run in dryrun mode before running for real:

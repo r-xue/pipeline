@@ -35,7 +35,9 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
                       single session containing all the visibility files, otherwise
                       a session must be assigned to each vis file.
                       example: session=['session_1', 'session_2']
-    asis              ASDM tables to convert as is
+    asis              Creates verbatim copies of the ASDM tables in the output MS.
+                      The value given to this option must be a list of table names
+                      separated by space characters.
                       default: 'Antenna Station Receiver CalAtmosphere'
                       example: 'Receiver', ''
     process_caldevice Ingest the ASDM caldevice table.
@@ -73,14 +75,14 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     
     h_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
-    4. Check the h_importdata inputs, then import the data:
+    4. Import a list of MeasurementSets:
     
     myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
     h_importdata(vis=myvislist)
     
     5. Load an ASDM but check the results before accepting them into the context.
-    results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms'],
-    acceptresults=False)
+    results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms']
+                           acceptresults=False)
     results.accept()
     
     6. Run in dryrun mode before running for real

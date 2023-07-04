@@ -53,7 +53,7 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
                       2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,500.0,I,90.0
                       2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,1000.0,I,110.0
                   
-                  The line starting with '#' indicates a meta data section and header.
+                  Lines starting with '#' are meta data and header.
                   The header must exist. The factor to apply is identified by matching the
                   session ID, antenna name, frequency and polarization of data in each line of
                   the file. Note the observation date is supplementary information and not used

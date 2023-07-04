@@ -36,7 +36,9 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, asis=None, proces
     hm_rasterscan            Heuristics method for raster scan analysis. Two analysis modes,
                              time-domain analysis ('time') and direction analysis ('direction'), are available.
                              Default is 'time'.
-    asis                     ASDM tables to convert as is
+    asis                     Creates verbatim copies of the ASDM tables in the output MS.
+                             The value given to this option must be a list of table names
+                             separated by space characters.
                              example: 'Receiver', ''
     process_caldevice        Ingest the ASDM caldevice table.
                              example: True
@@ -45,7 +47,7 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, asis=None, proces
                              exists in output directory, then this existing MS dataset will be used
                              instead.
     nocopy                   Disable copying of MS to working directory
-    bdfflags                 Apply BDF flags on line.
+    bdfflags                 Apply BDF flags on import.
     datacolumns              Dictionary defining the data types of
                              existing columns. The format is:
                              
@@ -97,7 +99,7 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, asis=None, proces
     
     hsd_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
-    4. Check the hsd_importdata inputs, then import the data
+    4. Import a list of MeasurementSets.
     
     myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
     hsd_importdata(vis=myvislist)
@@ -105,7 +107,7 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, asis=None, proces
     5. Load an ASDM but check the results before accepting them into the context.
     
     results = hsd_importdata (vis=['uid___A002_X30a93d_X43e.ms'],
-    acceptresults=False)
+                              acceptresults=False)
     results.accept()
     
     6. Run in dryrun mode before running for real

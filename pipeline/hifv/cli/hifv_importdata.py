@@ -24,7 +24,9 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
                   to a single session containing all the visibility files, otherwise
                   a session must be assigned to each vis file.
                   example: session=['Session_1', 'Sessions_2']
-    asis          ASDM to convert as is
+    asis          Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a list of table names
+                  separated by space characters.
                   examples: 'Receiver CalAtmosphere'
                   'Receiver', ''
     overwrite     Overwrite existing files on import.
@@ -100,7 +102,7 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
     5. Load an ASDM but check the results before accepting them into the context.
     
     results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'],
-    acceptresults=False)
+                               acceptresults=False)
     results.accept()
     
     6. Run in  dryrun mode before running for real

@@ -33,7 +33,9 @@ def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, o
                       converted to MS format.
                       example: vis=['X227.ms', 'asdms.tar.gz']
     session           List of visibility data sessions
-    asis              Extra ASDM tables to convert as is
+    asis              Creates verbatim copies of the ASDM tables in the output MS.
+                      The value given to this option must be a list of table names
+                      separated by space characters.
     process_caldevice Import the caldevice table from the ASDM
     overwrite         Overwrite existing files on import.
                       When converting ASDM to MS, if overwrite=False and the MS
@@ -96,7 +98,7 @@ def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, o
     
     hifa_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
-    4. Check the hif_importdata inputs, then import the data:
+    4. Import a list of MeasurementSets:
     
     myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
     hifa_importdata(vis=myvislist)
@@ -104,7 +106,7 @@ def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, o
     5. Load an ASDM but check the results before accepting them into the context.
     
     results = hifa_importdata(vis=['uid___A002_X30a93d_X43e.ms'],
-    acceptresults=False)
+                              acceptresults=False)
     results.accept()
     
     6. Run in dryrun mode before running for real:

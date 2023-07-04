@@ -33,8 +33,8 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
 
     hsd_baseline(spw='0')
     hsd_baseline(spw='1')
-    hsd_blflag(spw='')
-    hsd_imaging(spw='')
+    hsd_blflag()
+    hsd_imaging()
 
     Since the second run of hsd_baseline overwrites the result for
     spw 0 with the data before baseline subtraction, this will not
