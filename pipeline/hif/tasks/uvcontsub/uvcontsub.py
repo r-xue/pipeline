@@ -147,11 +147,12 @@ class UVcontSub(basetask.StandardTaskTemplate):
                                           'intent': imaging_target['intent'],
                                           'spw': imaging_target['spw']})
 
-            (_, _, spw_topo_freq_param_dict, spw_topo_chan_param_dict, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
+            # Convert the cont.dat frequency ranges to TOPO
+            (_, _, spw_topo_freq_param_dict, _, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
 
             field_ids = imaging_target['heuristics'].field(minimal_tclean_inputs.intent, minimal_tclean_inputs.field)[0]
 
-            fitspec[field_ids][minimal_tclean_inputs.spw]['chan'] = spw_topo_chan_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
+            fitspec[field_ids][minimal_tclean_inputs.spw]['chan'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
 
             # Collect frequency ranges for weblog
             topo_freq_fitorder_dict[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]['freq'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
@@ -171,7 +172,10 @@ class UVcontSub(basetask.StandardTaskTemplate):
         result.field_intent_spw_list = field_intent_spw_list
         result.topo_freq_fitorder_dict = topo_freq_fitorder_dict
 
-        outputvis = inputs.vis.replace('_targets', '_targets_line')
+        if '_targets' in inputs.vis:
+            outputvis = inputs.vis.replace('_targets', '_targets_line')
+        else:
+            outputvis = f"{inputs.vis.split('.ms')[0]}_line.ms"
         # Check if it already exists and remove it
         if os.path.exists(outputvis):
             LOG.info('Removing {} from disk'.format(outputvis))
