@@ -616,7 +616,11 @@ class ExportData(basetask.StandardTaskTemplate):
         per_ms_calimages = []
         per_ms_calimages_keywords = []
         for i, image in enumerate(calimages):
-            if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown') or image.startswith('session'):
+            if (image.startswith(oussid) or
+                any(image.startswith(session_name) for session_name in sessiondict) or
+                image.startswith('oussid') or
+                image.startswith('unknown') or
+                image.startswith('session')):
                 per_ous_calimages.append(image)
                 per_ous_calimages_keywords.append(calimages_fitskeywords[i])
             else:
