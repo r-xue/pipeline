@@ -80,7 +80,9 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
     # Initial flag settings
     PHnoisy = False
     BPnoisy = False
-
+    BPgood = False
+    PHgood = False
+    
     for k, v in wvr_results.items():
         result.vis = v.filename
 
@@ -130,9 +132,7 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
         # simply add a bool again for 'good' phase rms
         # define this as <1 radian over all the data averaged
         # here just return the values for both, do logic for score elsewhere
-        BPgood = False
-        PHgood = False
-        #LOG.info('phase rms is : '+str(perhi))
+        LOG.info('phase rms is : '+str(perhi))
         if v.intent == 'PHASE' and perhi < 57.1:
             PHgood = True
         elif v.intent == 'BANDPASS' and perhi < 57.1:
