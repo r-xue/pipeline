@@ -65,6 +65,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
         image_stats = {}
 
+        stokes_indices = {'I': 0, 'Q': 1, 'U': 2, 'V': 3}
+
         for r in clean_results:
             if r.empty() or not r.iterations:
                 continue
@@ -395,12 +397,20 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 if nchan is None or r.image_rms is None:
                     row_non_pbcor = '-'
                 else:
-                    sp_str, sp_scale = utils.get_si_prefix(r.image_rms, lztol=1)
+                    if stokes_parameters != ['I']:
+                        r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                    else:
+                        r_image_rms = r.image_rms
+                        r_image_rms_max = r.image_rms_max
+                        r_image_rms_min = r.image_rms_min
+                    sp_str, sp_scale = utils.get_si_prefix(r_image_rms, lztol=1)
                     if nchan == 1:
-                        row_non_pbcor = '{:.2g} {}'.format(r.image_rms/sp_scale, sp_str+brightness_unit)
+                        row_non_pbcor = '{:.2g} {}'.format(r_image_rms/sp_scale, sp_str+brightness_unit)
                     else:
                         row_non_pbcor = '{:.2g} / {:.2g} / {:.2g} {}'.format(
-                            r.image_rms/sp_scale, r.image_rms_min/sp_scale, r.image_rms_max/sp_scale, sp_str+brightness_unit)
+                            r_image_rms/sp_scale, r_image_rms_min/sp_scale, r_image_rms_max/sp_scale, sp_str+brightness_unit)
 
                 #
                 # pbcor image max / min cell
@@ -408,9 +418,15 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 if r.image_max is None or r.image_min is None:
                     row_pbcor = '-'
                 else:
-                    sp_str, sp_scale = utils.get_si_prefix(r.image_max, lztol=0)
-                    row_pbcor = '{:.3g} / {:.3g} {}'.format(r.image_max/sp_scale,
-                                                            r.image_min/sp_scale, sp_str+brightness_unit)
+                    if stokes_parameters != ['I']:
+                        r_image_max = r.image_max_iquv[stokes_indices[pol]]
+                        r_image_min = r.image_min_iquv[stokes_indices[pol]]
+                    else:
+                        r_image_max = r.image_max
+                        r_image_min = r.image_min
+                    sp_str, sp_scale = utils.get_si_prefix(r_image_max, lztol=0)
+                    row_pbcor = '{:.3g} / {:.3g} {}'.format(r_image_max/sp_scale,
+                                                            r_image_min/sp_scale, sp_str+brightness_unit)
 
                 #
                 # fractional bandwidth calculation
@@ -565,8 +581,14 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     pol_angle = 'N/A'
 
                 if r.image_max is not None and r.image_rms is not None:
+                    if stokes_parameters != ['I']:
+                        r_image_max = r.image_max_iquv[stokes_indices[pol]]
+                        r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
+                    else:
+                        r_image_max = r.image_max
+                        r_image_rms = r.image_rms
                     try:
-                        img_snr = '%.2f' % (r.image_max / r.image_rms)
+                        img_snr = '%.2f' % (r_image_max / r_image_rms)
                     except:
                         img_snr = 'N/A'
                 else:
@@ -701,11 +723,12 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         fileobj.write(tab_renderer.render())
                     values['tab_url'] = tab_renderer.path
 
-                # Save POLI/POLA paths which is known only after plot() has been called
-                values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
-                values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
-                values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
-                values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
+                if stokes_parameters != ['I']:
+                    # Save POLI/POLA paths which is known only after plot() has been called
+                    values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
+                    values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
+                    values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
+                    values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
 
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
@@ -1252,12 +1275,20 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 if nchan is None or r.image_rms is None:
                     row_non_pbcor = '-'
                 else:
+                    if stokes_parameters != ['I']:
+                        r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                    else:
+                        r_image_rms = r.image_rms
+                        r_image_rms_max = r.image_rms_max
+                        r_image_rms_min = r.image_rms_min
                     sp_str, sp_scale = utils.get_si_prefix(image_rms, lztol=1)
                     if nchan == 1:
-                        row_non_pbcor = '{:.2g} {}'.format(image_rms/sp_scale, sp_str+brightness_unit)
+                        row_non_pbcor = '{:.2g} {}'.format(r_image_rms/sp_scale, sp_str+brightness_unit)
                     else:
                         row_non_pbcor = '{:.2g} / {:.2g} / {:.2g} {}'.format(
-                            r.image_rms/sp_scale, r.image_rms_min/sp_scale, r.image_rms_max/sp_scale, sp_str+brightness_unit)
+                            r_image_rms/sp_scale, r_image_rms_min/sp_scale, r_image_rms_max/sp_scale, sp_str+brightness_unit)
 
                 #
                 # un-pbcor image max / min cell
@@ -1431,6 +1462,12 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     pol_angle = 'N/A'
 
                 if r.image_max is not None and r.image_rms is not None:
+                    if stokes_parameters != ['I']:
+                        r_image_max = r.image_max_iquv[stokes_indices[pol]]
+                        r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
+                    else:
+                        r_image_max = r.image_max
+                        r_image_rms = r.image_rms
                     try:
                         img_snr = '%.2f' % (r.image_max / r.image_rms)
                     except:
@@ -1600,11 +1637,12 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         fileobj.write(tab_renderer.render())
                     values['tab_url'] = tab_renderer.path
 
-                # Save POLI/POLA paths which is known only after plot() has been called
-                values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
-                values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
-                values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
-                values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
+                if stokes_parameters != ['I']:
+                    # Save POLI/POLA paths which is known only after plot() has been called
+                    values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
+                    values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
+                    values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
+                    values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
 
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)

@@ -824,7 +824,10 @@ class Tclean(cleanbase.CleanBase):
              pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
              # USED
              residual_robust_rms,
-             nonpbcor_image_robust_rms_and_spectra) = \
+             nonpbcor_image_robust_rms_and_spectra,
+             pbcor_image_min_iquv,
+             pbcor_image_max_iquv,
+             nonpbcor_image_non_cleanmask_rms_iquv) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
                                                   flux=result.flux, cleanmask=None,
@@ -925,7 +928,10 @@ class Tclean(cleanbase.CleanBase):
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms,
-             nonpbcor_image_robust_rms_and_spectra) = \
+             nonpbcor_image_robust_rms_and_spectra,
+             pbcor_image_min_iquv,
+             pbcor_image_max_iquv,
+             nonpbcor_image_non_cleanmask_rms_iquv) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
                                                   flux=result.flux, cleanmask=new_cleanmask,
@@ -939,8 +945,11 @@ class Tclean(cleanbase.CleanBase):
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
+            result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
+            result.set_image_max_iquv(pbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
+            result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
@@ -1054,7 +1063,10 @@ class Tclean(cleanbase.CleanBase):
          pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
          # USED
          residual_robust_rms,
-         nonpbcor_image_robust_rms_and_spectra) = \
+         nonpbcor_image_robust_rms_and_spectra,
+         pbcor_image_min_iquv,
+         pbcor_image_max_iquv,
+         nonpbcor_image_non_cleanmask_rms_iquv) = \
             sequence_manager.iteration_result(model=result.model,
                                               restored=result.image, residual=result.residual,
                                               flux=result.flux, cleanmask=None,
@@ -1073,8 +1085,11 @@ class Tclean(cleanbase.CleanBase):
             self._update_miscinfo(result.image.replace('.image', '.image'+extension), max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]), pbcor_image_min, pbcor_image_max)
 
             result.set_image_min(pbcor_image_min)
+            result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
+            result.set_image_max_iquv(pbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
+            result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
@@ -1164,7 +1179,10 @@ class Tclean(cleanbase.CleanBase):
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms,
-             nonpbcor_image_robust_rms_and_spectra) = \
+             nonpbcor_image_robust_rms_and_spectra,
+             pbcor_image_min_iquv,
+             pbcor_image_max_iquv,
+             nonpbcor_image_non_cleanmask_rms_iquv) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
                                                   flux=result.flux, cleanmask=new_cleanmask,
@@ -1188,8 +1206,11 @@ class Tclean(cleanbase.CleanBase):
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
+            result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
+            result.set_image_max_iquv(pbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
+            result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
