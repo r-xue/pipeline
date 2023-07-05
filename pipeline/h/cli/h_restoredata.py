@@ -89,7 +89,8 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
                   
                   example: ocorr_mode='ca'
 
-    asis          Set list of tables to import as-is into the Measurement Set
+    asis          Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a list of table names separated by space characters.
                   
                   example: ocorr_mode='Source Receiver'
                   

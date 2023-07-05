@@ -80,7 +80,8 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
     ocorr_mode    Set ocorr_mode
                   
                   example: ocorr_mode='ca'
-    asis          Set list of tables to import asis.
+    asis          Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a list of table names separated by space characters.
                   
                   example: asis='Source Receiver'
     hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,
