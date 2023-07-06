@@ -1128,9 +1128,16 @@ class SpwIdVsFreqChart(object):
         Returns:
             Plot object
         """
+        if DISABLE_PLOTMS:  ###
+            LOG.debug('Disabling spwid_vs_freq plot due to problems with plotms')  ###
+            return None  ###
+
         filename = self.inputs.output
         if os.path.exists(filename):
             return self._get_plot_object()
+        else:  ###
+            LOG.debug('Disabling spwid_vs_freq plot due to being unable to find a filepath.')  ###
+            return None  ###
 
         fig = plt.figure(figsize=(9.6, 7.2))
         ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
@@ -1183,7 +1190,8 @@ class SpwIdVsFreqChart(object):
         ax.grid(which="major", alpha=0.9)
         ax.grid(which="minor", alpha=0.5)
         ax.tick_params(labelsize=13)
-        ax.set_xticks(x_majorticks, fontsize=14)
+        ax.set_xticks(x_majorticks)  ###
+#        ax.set_xticks(x_majorticks, fontsize=14)
         ax.set_xticks(x_minorticks, minor=True)
         ax.set_ylim(bottom=float(len(list_all_indice)), top=-1.0)
         ax.set_yticks([])
