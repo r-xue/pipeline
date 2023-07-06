@@ -857,7 +857,7 @@ class ImageParamsHeuristics(object):
         return field_str_list
     
     def _is_mosaic(self, field_str_list):
-        """Determin is it's a mosaic or not.
+        """Determine if it's a mosaic or not.
         
         We consider imaging to be a mosaic if there is more than 1 field_id for any ms.
         """
