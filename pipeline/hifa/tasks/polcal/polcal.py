@@ -97,13 +97,15 @@ class PolcalSessionResults(basetask.Results):
 class PolcalInputs(vdp.StandardInputs):
 
     intent = vdp.VisDependentProperty(default='POLARIZATION,POLANGLE,POLLEAKAGE')
+    solint_chavg = vdp.VisDependentProperty(default='5MHz')
     vs_stats = vdp.VisDependentProperty(default='min,max,mean')
     vs_thresh = vdp.VisDependentProperty(default=1e-3)
 
-    def __init__(self, context, vis=None, intent=None, vs_stats=None, vs_thresh=None):
+    def __init__(self, context, vis=None, intent=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
         self.context = context
         self.vis = vis
         self.intent = intent
+        self.solint_chavg = solint_chavg
         self.vs_stats = vs_stats
         self.vs_thresh = vs_thresh
 
@@ -509,7 +511,7 @@ class Polcal(basetask.StandardTaskTemplate):
             'intent': inputs.intent,
             'scan': str(best_scan),
             'selectdata': True,  # needed when selecting on scan.
-            'solint': 'inf,5MHz',
+            'solint': ','.join(['inf', inputs.solint_chavg]),
             'smodel': [1, 0, 1, 0],
             'gaintype': 'KCROSS',
             'refant': refant,
@@ -548,7 +550,7 @@ class Polcal(basetask.StandardTaskTemplate):
         task_args = {
             'vis': vis,
             'intent': inputs.intent,
-            'solint': 'inf,5MHz',
+            'solint': ','.join(['inf', inputs.solint_chavg]),
             'smodel': smodel,
             'combine': 'obs,scan',
             'poltype': 'Xfparang+QU',
@@ -646,7 +648,7 @@ class Polcal(basetask.StandardTaskTemplate):
         task_args = {
             'vis': vis,
             'intent': inputs.intent,
-            'solint': 'inf,5MHz',
+            'solint': ','.join(['inf', inputs.solint_chavg]),
             'smodel': smodel,
             'combine': 'obs,scan',
             'poltype': 'Dflls',
