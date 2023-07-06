@@ -42,11 +42,11 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for session_name, session_results in result.session.items():
             # Store session name and corresponding vislist.
             session_names.append(session_name)
-            vislists[session_name] = session_results['vislist']
+            vislists[session_name] = session_results.vislist
 
             # Store pol cal field name and refant.
-            refants[session_name] = session_results['refant']
-            polfields[session_name] = session_results['polcal_field_name']
+            refants[session_name] = session_results.refant
+            polfields[session_name] = session_results.polcal_field_name
 
         # Create residual polarization table.
         residual_pol_table_rows = self.create_pol_table_rows(result, 'residual')
@@ -98,9 +98,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Retrieve the correct dictionary with polarization results based
             # on type of table.
             if tabletype == 'residual':
-                polcal_dict = session_results['cal_pfg_result']
+                polcal_dict = session_results.cal_pfg_result
             elif tabletype == 'polcal':
-                polcal_dict = session_results['polcal_phase_result'].polcal_returns[0]
+                polcal_dict = session_results.polcal_phase_result.polcal_returns[0]
             else:
                 polcal_dict = {}
 
@@ -120,9 +120,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Register each session MS in this new copy of the pipeline context.
         for session_results in result.session.values():
-            LOG.debug(f"Registering session MS {session_results['session_vis']} to local copy of pipeline context for"
+            LOG.debug(f"Registering session MS {session_results.vis} to local copy of pipeline context for"
                       f" weblog rendering.")
-            session_ms = tablereader.MeasurementSetReader.get_measurement_set(session_results['session_vis'])
+            session_ms = tablereader.MeasurementSetReader.get_measurement_set(session_results.vis)
             context.observing_run.add_measurement_set(session_ms)
 
         return context
@@ -131,8 +131,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def create_amp_parang_plots(context, output_dir, result):
         plots = {}
         for session_name, session_results in result.session.items():
-            vis = session_results['session_vis']
-            calto = callibrary.CalTo(vis=vis)
+            calto = callibrary.CalTo(vis=session_results.vis)
             plots[session_name] = polcal.AmpVsParangSummaryChart(context, output_dir, calto).plot()
 
         return plots
@@ -142,9 +141,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plots_before, plots_after = {}, {}
         for session_name, session_results in result.session.items():
             plots_before[session_name] = polcal.AmpVsScanChart(
-                context, result, session_results['init_gcal_result'].final).plot()
+                context, result, session_results.init_gcal_result.final).plot()
             plots_after[session_name] = polcal.AmpVsScanChart(
-                context, result, session_results['final_gcal_result'].final).plot()
+                context, result, session_results.final_gcal_result.final).plot()
 
         return plots_before, plots_after
 
@@ -153,7 +152,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plots = {}
         for session_name, session_results in result.session.items():
             plots[session_name] = polcal.PhaseVsChannelChart(
-                context, result, session_results['polcal_phase_result'].final).plot()
+                context, result, session_results.polcal_phase_result.final).plot()
 
         return plots
 
@@ -170,9 +169,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plots_amp, plots_ampratio = {}, {}
         for session_name, session_results in result.session.items():
             plots_amp[session_name] = polcal.AmpVsAntennaChart(
-                context, result, session_results['xyratio_gcal_result'].final).plot()
+                context, result, session_results.xyratio_gcal_result.final).plot()
             plots_ampratio[session_name] = polcal.AmpVsAntennaChart(
-                context, result, session_results['xyratio_gcal_result'].final, correlation='/').plot()
+                context, result, session_results.xyratio_gcal_result.final, correlation='/').plot()
 
         return plots_amp, plots_ampratio
 
@@ -180,8 +179,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def create_real_imag_plots(context, output_dir, result):
         plots = {}
         for session_name, session_results in result.session.items():
-            vis = session_results['session_vis']
-            calto = callibrary.CalTo(vis=vis)
+            calto = callibrary.CalTo(vis=session_results.vis)
             plots[session_name] = polcal.RealVsImagChart(context, output_dir, calto, correlation='XX,YY').plot()
             plots[session_name].extend(polcal.RealVsImagChart(context, output_dir, calto, correlation='XY,YX').plot())
 

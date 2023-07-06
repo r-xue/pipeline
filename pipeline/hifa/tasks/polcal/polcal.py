@@ -38,16 +38,60 @@ class PolcalResults(basetask.Results):
         """
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
-        # Register all CalApplications from each session.
-        for sresults in self.session.values():
-            for calapp in sresults['calapps']:
-                LOG.debug(f'Adding calibration to callibrary:\n{calapp.calto}\n'
-                          f'{calapp.calfrom}')
-                context.callibrary.add(calapp.calto, calapp.calfrom)
-        return
+        # Register results for each session into context.
+        for session_results in self.session.values():
+            session_results.merge_with_context(context)
 
     def __repr__(self):
         return 'PolcalResults'
+
+
+class PolcalSessionResults(basetask.Results):
+    def __init__(self, session=None, vis=None, final=None, pool=None, vislist=None, polcal_field_name=None, refant=None,
+                 init_gcal_result=None, uncal_pfg_result=None, kcross_result=None, polcal_phase_result=None,
+                 final_gcal_result=None, cal_pfg_result=None, leak_polcal_result=None, xyratio_gcal_result=None,
+                 session_vs_result=None, vis_vs_results=None, vs_diffs=None, polcal_amp_results=None):
+
+        super().__init__()
+
+        if final is None:
+            final = []
+        if pool is None:
+            pool = []
+
+        self.session = session
+        self.vis = vis
+        self.final = final
+        self.pool = pool
+        self.error = set()
+        self.vislist = vislist
+        self.polcal_field_name = polcal_field_name
+        self.refant = refant
+        self.init_gcal_result = init_gcal_result
+        self.uncal_pfg_result = uncal_pfg_result
+        self.kcross_result = kcross_result
+        self.polcal_phase_result = polcal_phase_result
+        self.final_gcal_result = final_gcal_result
+        self.cal_pfg_result = cal_pfg_result
+        self.leak_polcal_result = leak_polcal_result
+        self.xyratio_gcal_result = xyratio_gcal_result
+        self.session_vs_result = session_vs_result
+        self.vis_vs_results = vis_vs_results
+        self.vs_diffs = vs_diffs
+        self.polcal_amp_results = polcal_amp_results
+
+    def merge_with_context(self, context):
+        """
+        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
+        """
+        # Register all CalApplications from each session.
+        for calapp in self.final:
+            LOG.debug(f'Adding calibration to callibrary:\n{calapp.calto}\n'
+                      f'{calapp.calfrom}')
+            context.callibrary.add(calapp.calto, calapp.calfrom)
+
+    def __repr__(self):
+        return 'PolcalSessionResults'
 
 
 class PolcalInputs(vdp.StandardInputs):
@@ -87,9 +131,17 @@ class Polcal(basetask.StandardTaskTemplate):
         return result
 
     def analyse(self, result):
+        # For each session, check that the caltables were all generated.
+        for session_name, sresults in result.session.items():
+            on_disk = [ca for ca in sresults.pool if ca.exists() or self._executor._dry_run]
+            sresults.final[:] = on_disk
+
+            missing = [ca for ca in sresults.pool if ca not in on_disk and not self._executor._dry_run]
+            sresults.error.clear()
+            sresults.error.update(missing)
         return result
 
-    def _polcal_for_session(self, session_name: str, vislist: List[str]) -> dict:
+    def _polcal_for_session(self, session_name: str, vislist: List[str]) -> PolcalSessionResults:
         LOG.info(f"Deriving polarization calibration for session '{session_name}' with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
@@ -97,7 +149,7 @@ class Polcal(basetask.StandardTaskTemplate):
         # calibrator by field name; if not, then stop processing this session.
         polcal_field_name = self._check_matching_pol_field(session_name, vislist)
         if not polcal_field_name:
-            return {}
+            return PolcalSessionResults(session=session_name)
 
         # Retrieve reference antenna for this session.
         refant = self._get_refant(session_name, vislist)
@@ -225,28 +277,31 @@ class Polcal(basetask.StandardTaskTemplate):
         # Compute amplitude calibration for polarization calibrator.
         polcal_amp_results, amp_calapps = self._compute_ampcal_for_polcal(vislist, refant)
 
-        # Collect results.
+        # Collect CalApplications.
         final_calapps = final_gcal_calapps + kcross_calapps + pol_phase_calapps + leak_pcal_calapps + \
             xyratio_calapps + amp_calapps
-        result = {
-            'session_vis': session_msname,
-            'vislist': vislist,
-            'polcal_field_name': polcal_field_name,
-            'refant': refant,
-            'calapps': final_calapps,
-            'init_gcal_result': init_gcal_result,
-            'uncal_pfg_result': uncal_pfg_result,
-            'kcross_result': kcross_result,
-            'polcal_phase_result': polcal_phase_result,
-            'final_gcal_result': final_gcal_result,
-            'cal_pfg_result': cal_pfg_result,
-            'leak_polcal_result': leak_polcal_result,
-            'xyratio_gcal_result': xyratio_gcal_result,
-            'session_vs_result': session_vs_result,
-            'vis_vs_results': vis_vs_results,
-            'vs_diffs': vs_diffs,
-            'polcal_amp_results': polcal_amp_results,
-        }
+
+        # Collect results for session.
+        result = PolcalSessionResults(
+            session=session_name,
+            vis=session_msname,
+            pool=final_calapps,
+            vislist=vislist,
+            polcal_field_name=polcal_field_name,
+            refant=refant,
+            init_gcal_result=init_gcal_result,
+            uncal_pfg_result=uncal_pfg_result,
+            kcross_result=kcross_result,
+            polcal_phase_result=polcal_phase_result,
+            final_gcal_result=final_gcal_result,
+            cal_pfg_result=cal_pfg_result,
+            leak_polcal_result=leak_polcal_result,
+            xyratio_gcal_result=xyratio_gcal_result,
+            session_vs_result=session_vs_result,
+            vis_vs_results=vis_vs_results,
+            vs_diffs=vs_diffs,
+            polcal_amp_results=polcal_amp_results,
+        )
 
         return result
 

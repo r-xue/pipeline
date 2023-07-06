@@ -90,17 +90,17 @@ class GainRatioRMSVsScanChart(object):
 
         # Create plot wrapper.
         wrapper = logger.Plot(figfile, x_axis='Scan', y_axis='Gain Ratio RMS',
-                              parameters={'vis': os.path.basename(self.result['session_vis'])})
+                              parameters={'vis': os.path.basename(self.result.vis)})
 
         # Create plot if still missing.
         if not os.path.exists(figfile):
-            LOG.trace(f"Gain ratio rms vs scan plot for {self.result['session_vis']} not found. Creating new plot:"
+            LOG.trace(f"Gain ratio rms vs scan plot for {self.result.vis} not found. Creating new plot:"
                       f" {figfile}.")
 
             try:
                 self._create_plot(figfile)
             except Exception as e:
-                LOG.error(f"Could not create Gain ratio rms vs scan plot for {self.result['session_vis']}.")
+                LOG.error(f"Could not create Gain ratio rms vs scan plot for {self.result.vis}.")
                 LOG.exception(e)
                 # Ensure nothing is kept for next figure.
                 plt.clf()
@@ -109,14 +109,14 @@ class GainRatioRMSVsScanChart(object):
         return [wrapper]
 
     def _get_figfile(self):
-        png = f"{self.result['session_vis']}.gain_ratio_rms_vs_scan.png"
+        png = f"{self.result.vis}.gain_ratio_rms_vs_scan.png"
         return os.path.join(self.output_dir, png)
 
     def _create_plot(self, figfile):
         # Compute the gain ratio RMS per scan before and after polarization
         # calibration.
-        scans_before, rrms_before = self._compute_gain_ratio_rms(self.result['init_gcal_result'].final[0].gaintable)
-        scans_after, rrms_after = self._compute_gain_ratio_rms(self.result['final_gcal_result'].final[0].gaintable)
+        scans_before, rrms_before = self._compute_gain_ratio_rms(self.result.init_gcal_result.final[0].gaintable)
+        scans_after, rrms_after = self._compute_gain_ratio_rms(self.result.final_gcal_result.final[0].gaintable)
 
         # Create plot with Matplotlib.
         fig = plt.gcf()
