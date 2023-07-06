@@ -199,20 +199,6 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return new_niter
 
-    def calc_percentile_baseline_length(self, percentile):
-        """Calculate percentile baseline length for the vis list used in this heuristics instance."""
-
-        min_diameter = 1.e9
-        percentileBaselineLengths = []
-        for msname in self.vislist:
-            ms_do = self.observing_run.get_ms(msname)
-            min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
-            percentileBaselineLengths.append(
-                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                               for baseline in ms_do.antenna_array.baselines], percentile))
-
-        return np.median(percentileBaselineLengths), min_diameter
-
     def calc_length_of_nth_baseline(self, n: int):
         """Calculate the length of the nth baseline for the vis list used in the heuristics instance."""
         baseline_lengths = []
