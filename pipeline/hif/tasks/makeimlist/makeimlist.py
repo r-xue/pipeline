@@ -621,7 +621,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if inputs.per_eb:
             vislists = [[vis] for vis in inputs.vis]
         elif inputs.per_session:
-            vislists = [v for v in sessionutils.group_vislist_into_sessions(inputs.context, inputs.vis).values()]
+            vislists = list(sessionutils.group_vislist_into_sessions(inputs.context, inputs.vis).values())
         else:
             vislists = [inputs.vis]
 
@@ -857,9 +857,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # problem defining uvrange
                                     LOG.warning(e)
                                     pass
-
-                    # Get stokes value
-                    stokes = self.heuristics.stokes(field_intent[1])
 
                     # cell is a list of form [cellx, celly]. If the list has form [cell]
                     # then that means the cell is the same size in x and y. If cell is
@@ -1218,6 +1215,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     nbin = -1
                             else:
                                 nbin = -1
+
+                            # Get stokes value
+                            stokes = self.heuristics.stokes(field_intent[1])
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(

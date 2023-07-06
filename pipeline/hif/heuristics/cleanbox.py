@@ -140,6 +140,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
             if 'TARGET' in image.miscinfo().get('intent', None):
                 image_stats = image.statistics(mask=statsmask, stretch=True)
+                # For polarization calibrators we need stats for I, Q, U and V, so exclude the
+                # Stokes axis from collapsing.
                 image_stats_iquv = image.statistics(mask=statsmask, axes=[0, 1, 3], stretch=True)
             else:
                 # Restrict region to inner 25% x 25% of the image for calibrators to
@@ -149,6 +151,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nPixels = max(shape[0], shape[1])
                 region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[1]-1, shape[2]-1])
                 image_stats = image.statistics(mask=statsmask, region=region, stretch=True)
+                # For polarization calibrators we need stats for I, Q, U and V, so exclude the
+                # Stokes axis from collapsing.
                 image_stats_iquv = image.statistics(mask=statsmask, region=region, axes=[0, 1, 3], stretch=True)
                 rgTool.done()
 

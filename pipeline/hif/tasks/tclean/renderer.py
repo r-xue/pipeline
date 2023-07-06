@@ -8,7 +8,6 @@ import itertools
 import os
 import string
 from random import randint
-import re
 
 import numpy as np
 
@@ -962,6 +961,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
         image_stats = {}
 
+        stokes_indices = {'I': 0, 'Q': 1, 'U': 2, 'V': 3}
+
         for r in clean_results:
 
             if r.empty() or not r.iterations:
@@ -989,9 +990,9 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 # stats for use in the plot generation classes.
                 stats = image.statistics(robust=False)
                 stokes_labels = coordsys.stokes()
-                stokes_present = [stokes_labels[idx] for idx in range(image.shape()[2])]
+                stokes_parameters = [stokes_labels[idx] for idx in range(image.shape()[2])]
 
-            for pol in stokes_present:
+            for pol in stokes_parameters:
 
                 LOG.info('Getting properties of %s for the weblog' % image_path)
                 with casa_tools.ImagepolReader(image_path) as imagepol:
@@ -1613,10 +1614,10 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             try:
                 final_iter = sorted(plots_dict[prefix][row.datatype][row.field+': '+str(row.spw)][str(row.pol)].keys())[-1]
                 # cube and repBW mode use mom8
-                plot = get_plot(plots_dict, prefix, row.datatype, row.field+': '+str(row.spw), str(row.pol), final_iter, 'image', 'mom8')
+                plot = get_plot_stokes(plots_dict, prefix, row.datatype, row.field+': '+str(row.spw), str(row.pol), final_iter, 'image', 'mom8')
                 if plot is None:
                     # mfs and cont mode use mean
-                    plot = get_plot(plots_dict, prefix, row.datatype, row.field+': '+str(row.spw), str(row.pol), final_iter, 'image', 'mean')
+                    plot = get_plot_stokes(plots_dict, prefix, row.datatype, row.field+': '+str(row.spw), str(row.pol), final_iter, 'image', 'mean')
 
                 renderer = TCleanPlotsRenderer(context, results, row.result,
                                                plots_dict, prefix, row.field+': '+str(row.spw), str(row.pol), row.pol,
@@ -1664,6 +1665,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
 
         pol_fit_rows = []
+        pol_fit_plots = []
         for row in final_rows:
             if row.pol == 'I':
                 # Save only once for weblog because the fit is the same for all Stokes parameters
@@ -1738,6 +1740,13 @@ def get_cycle_stats_vlass(context, makeimages_result, r):
                         'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]}}
 
     return row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict
+
+
+def get_plot_stokes(plots, prefix, datatype, field, spw, i, colname, moment):
+    try:
+        return plots[prefix][datatype][field][spw][i][colname][moment]
+    except KeyError:
+        return None
 
 
 def make_plot_dict_stokes(plots):

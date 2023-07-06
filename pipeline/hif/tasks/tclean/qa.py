@@ -54,7 +54,7 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 if (np.isnan(rms_score)):
                     rms_score = 0.0
-                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, resultspw)
+                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
                     shortmsg='RMS is NaN'
                 else:
                     if rms_score > 0.66:

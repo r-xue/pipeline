@@ -185,6 +185,10 @@
                 <Keyword xmlns="">intent</Keyword>
                 <Value xmlns="">POLARIZATION,POLANGLE,POLLEAKAGE</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">per_session</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -204,6 +208,10 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">per_session</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
