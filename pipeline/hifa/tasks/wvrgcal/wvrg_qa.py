@@ -122,6 +122,7 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
         # wider data required - after tarball??
 
         perhi = np.percentile(wvr_data[data_flag==False], 80)
+        perhi_nowvr = np.percentile(nowvr_data[data_flag==False], 80)
         bpmax = np.max(wvr_data[data_flag==False])
         if v.intent == 'PHASE' and perhi > PHlim:
              PHnoisy = True
@@ -133,9 +134,9 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
         # define this as <1 radian over all the data averaged
         # here just return the values for both, do logic for score elsewhere
         LOG.info('phase rms is : '+str(perhi))
-        if v.intent == 'PHASE' and perhi < 57.1:
+        if v.intent == 'PHASE' and perhi_nowvr < 57.1:
             PHgood = True
-        elif v.intent == 'BANDPASS' and perhi < 57.1:
+        elif v.intent == 'BANDPASS' and perhi_nowvr < 57.1:
             BPgood = True
 
         ############################
