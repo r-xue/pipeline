@@ -165,7 +165,7 @@ class Wvrgcalflag(basetask.StandardTaskTemplate):
                 # Modified for PIPE-1837 to have a variable warning according to the
                 # phase rms return from dataresult.BPgood (see wvrgcal/wvrg_qa.py)
                 if result.flaggerresult.dataresult.BPgood:
-                    LOG.warning('wvrgcal file has qa score ({0}) below'
+                    LOG.attention('wvrgcal file has qa score ({0}) below'
                             ' accept_threshold ({1}) and will not be'
                             ' applied, however the atmospheric stability still'
                             ' appears to be good'.format(result.flaggerresult.dataresult.qa_wvr.overall_score,
