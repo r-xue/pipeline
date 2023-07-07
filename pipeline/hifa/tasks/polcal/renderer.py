@@ -63,7 +63,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         amp_vs_parang = self.create_amp_parang_plots(pipeline_context, output_dir, result)
 
         # Create gain amp polarization ratio vs. scan plots.
-        amp_vs_scan_before, amp_vs_scan_after = self.create_amp_scan_plots(pipeline_context, result)
+        amp_vs_scan = self.create_amp_scan_plots(pipeline_context, result)
 
         # Create cross-hand phase vs. channel plots.
         phase_vs_channel = self.create_phase_channel_plots(pipeline_context, result)
@@ -89,8 +89,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'residual_pol_table_rows': residual_pol_table_rows,
             'polcal_table_rows': polcal_table_rows,
             'amp_vs_parang': amp_vs_parang,
-            'amp_vs_scan_before': amp_vs_scan_before,
-            'amp_vs_scan_after': amp_vs_scan_after,
+            'amp_vs_scan': amp_vs_scan,
             'phase_vs_channel': phase_vs_channel,
             'gain_ratio_rms_vs_scan': gain_ratio_rms_vs_scan,
             'leak_summary': leak_summary,
@@ -148,14 +147,25 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     @staticmethod
     def create_amp_scan_plots(context, result):
-        plots_before, plots_after = {}, {}
+        plots = collections.defaultdict(list)
         for session_name, session_results in result.session.items():
-            plots_before[session_name] = polcal.AmpVsScanChart(
-                context, result, session_results.init_gcal_result.final).plot()
-            plots_after[session_name] = polcal.AmpVsScanChart(
-                context, result, session_results.final_gcal_result.final).plot()
+            # Create amp vs scan plots for 'before' calibration.
+            plots_before = polcal.AmpVsScanChart(context, result, session_results.init_gcal_result.final).plot()
+            # Add before/after calibration to plot parameters for display on
+            # weblog page.
+            for plot in plots_before:
+                plot.parameters['calib'] = "before"
+            plots[session_name].extend(plots_before)
 
-        return plots_before, plots_after
+            # Create amp vs scan plots for 'after' calibration.
+            plots_after = polcal.AmpVsScanChart(context, result, session_results.final_gcal_result.final).plot()
+            # Add before/after calibration to plot parameters for display on
+            # weblog page.
+            for plot in plots_after:
+                plot.parameters['calib'] = "after"
+            plots[session_name].extend(plots_after)
+
+        return plots
 
     @staticmethod
     def create_phase_channel_plots(context, result):

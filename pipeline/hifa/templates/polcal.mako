@@ -19,8 +19,7 @@ from pipeline.infrastructure.renderer import rendererutils
   <li><a href="#plots">Plots</a></li>
   <ul>
     <li><a href="#amp_vs_parang_plots">Amplitude vs. Parallactic Angle</a></li>
-    <li><a href="#amp_vs_scan_before_plots">Amplitude vs. Scan before polarization calibration</a></li>
-    <li><a href="#amp_vs_scan_after_plots">Amplitude vs. Scan after polarization calibration</a></li>
+    <li><a href="#amp_vs_scan_plots">Amplitude vs. Scan</a></li>
     <li><a href="#phase_vs_channel_plots">Phase vs. Channel</a></li>
     <li><a href="#leakage_plots">Leakage Solution Gain vs. Channel</a></li>
     <li><a href="#gain_ratio_rms_vs_scan_plots">Gain Ratio RMS vs. Scan</a></li>
@@ -161,70 +160,39 @@ from pipeline.infrastructure.renderer import rendererutils
 
 </%self:plot_group>
 
-<%self:plot_group plot_dict="${amp_vs_scan_before}"
+<%self:plot_group plot_dict="${amp_vs_scan}"
                   url_fn="${lambda x: 'noop'}"
                   data_vis="${True}"
-                  title_id="amp_vs_scan_before_plots">
+                  title_id="amp_vs_scan_plots"
+                  sort_row_by="spw">
 
     <%def name="title()">
-        Amplitude vs. Scan before polarization calibration
+        Amplitude vs. Scan
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator prior to
-        polarization calibration.</p>
+        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator for both prior to
+        and after polarization calibration.</p>
 
         <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show Amplitude vs. Scan</%def>
+    <%def name="mouseover(plot)">Click to show Amplitude vs. Scan ${plot.parameters['calib']} calibration</%def>
 
     <%def name="fancybox_caption(plot)">
-        ${plot.parameters['vis']}
+        ${plot.parameters['vis']}<br>
+        ${plot.parameters['calib'].capitalize()} calibration
     </%def>
 
     <%def name="caption_title(plot)">
-        ${plot.parameters['vis']}
+        ${plot.parameters['vis']}<br>
+        ${plot.parameters['calib'].capitalize()} calibration
     </%def>
 
     <%def name="caption_text(plot, _)">
-        Amplitude vs. Scan.
-    </%def>
-
-</%self:plot_group>
-
-<%self:plot_group plot_dict="${amp_vs_scan_after}"
-                  url_fn="${lambda x: 'noop'}"
-                  data_vis="${True}"
-                  title_id="amp_vs_scan_after_plots">
-
-    <%def name="title()">
-        Amplitude vs. Scan after polarization calibration
-    </%def>
-
-    <%def name="preamble()">
-        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator after
-        polarization calibration.</p>
-
-        <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
-
-        <p>Click the plots to enlarge them.</p>
-    </%def>
-
-    <%def name="mouseover(plot)">Click to show Amplitude vs. Scan</%def>
-
-    <%def name="fancybox_caption(plot)">
-        ${plot.parameters['vis']}
-    </%def>
-
-    <%def name="caption_title(plot)">
-        ${plot.parameters['vis']}
-    </%def>
-
-    <%def name="caption_text(plot, _)">
-        Amplitude vs. Scan.
+        Amplitude vs. Scan ${plot.parameters['calib']} calibration.
     </%def>
 
 </%self:plot_group>
