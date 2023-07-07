@@ -1,13 +1,13 @@
 import re
-from typing import Union, Tuple
+from typing import Union
 
-import numpy
-
+import numpy as np
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks, casa_tools
+from pipeline.infrastructure.tablereader import find_EVLA_band
+
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -54,11 +54,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             stats = job.execute(dry_run=False)  # returns stat in meter
 
             # Get means of spectral windows with data in the selected uvrange
-            spws_means = [v['mean'] for (k, v) in stats.items() if numpy.isfinite(v['mean'])]
+            spws_means = [v['mean'] for (k, v) in stats.items() if np.isfinite(v['mean'])]
 
             # Determine mean and 95% percentile
-            mean = numpy.mean(spws_means)
-            percentile_95 = numpy.percentile(spws_means, 95)
+            mean = np.mean(spws_means)
+            percentile_95 = np.percentile(spws_means, 95)
 
             return (mean, percentile_95)
 
@@ -211,6 +211,58 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """Tclean deconvolver parameter heuristics.
         See PIPE-679 and CASR-543"""
         return 'mtmfs'
+
+    def _get_vla_band(self, spwspec):
+        """Get VLA band from spwspec, assuming spwspec from the same band."""
+        vla_band = None
+        if isinstance(spwspec, str) and spwspec != '':
+            freq_limits = self.get_min_max_freq(spwspec)
+            mean_freq_hz = (freq_limits['abs_max_freq'] + freq_limits['abs_min_freq'])/2.0
+            vla_band = find_EVLA_band(mean_freq_hz)
+        return vla_band
+
+    def gridder(self, intent, field, spwspec=None) -> str:
+        """Tclean gridder parameter heuristics for VLA."""
+
+        # the field heuristic which decides whether this is a mosaic or not
+        field_str_list = self.field(intent, field)
+        is_mosaic = self._is_mosaic(field_str_list)
+
+        gridder_select = 'standard'
+
+        # not really necessary for VLA, but as a placeholder for PIPE-684.
+        if is_mosaic or (len(self.antenna_diameters()) > 1):
+            gridder_select = 'mosaic'
+
+        # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging
+        vla_band = self._get_vla_band(spwspec)
+        if vla_band in ['L', 'S'] and 'TARGET' in intent:
+            gridder_select = 'wproject'
+
+        return gridder_select
+
+    def wprojplanes(self, gridder=None, spwspec=None):
+        """Tclean wprojplanes parameter heuristics for VLA."""
+
+        wplanes = None
+        vla_band = self._get_vla_band(spwspec)
+
+        # PIPE-1641: heuristics for wprojplanes when gridder='wproject'
+        # note that the scaling logic inside this block is only valid for L-/S-band data.
+        if gridder == 'wproject' and vla_band in ['L', 'S']:
+
+            # calculate 75th percentile uv distance
+            uvrange_pct75_meter, _ = self.calc_percentile_baseline_length(75.)
+            # normalized to S-band A-config
+            wplanes = 384
+            # scaled by 75th percentile uv distance divided by A-config value
+            wplanes = wplanes * uvrange_pct75_meter/20000.0
+
+            if vla_band == 'L':
+                # compensate for 1.5 GHz being 2x longer than 3 GHz
+                wplanes = wplanes*2.0
+            wplanes = int(np.ceil(wplanes))
+        return wplanes
 
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET') -> int:
         """Adjustment of number of cleaning iterations due to mask size.

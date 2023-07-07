@@ -5,7 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, usemedian=None, apply=None,
+def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, do_not_apply=None,
                   dryrun=None, acceptresults=None):
 
     """
@@ -15,10 +15,14 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, usemedian=No
 
     vis              List of input visibility data
     clip_sp_template Acceptable range for Pdiff data; data are clipped outside this range and flagged
-    antexclude       csv string list of antennas to exclude
-    usemedian        If antexclude is specified with usemedian=False, the template values are replaced with 1.0.
-                     If usemedian = True, the template values are replaced with the median of the good antennas.
+    antexclude       dictionary in the format of:
+                     {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                      'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                      'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+                     If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
+                     If 'usemedian': True, the template values are replaced with the median of the good antennas.
     apply            Apply task results to RQ table
+    do_not_apply     csv string of band names to not apply. Example: 'L,X,S'
     dryrun           Run the commands (True) or generate the commands to be run but
                      do not execute (False).  This is a pipeline task execution mode.
     acceptresults    Add the results of the task to the pipeline context (True) or
