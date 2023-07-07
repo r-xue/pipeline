@@ -192,3 +192,40 @@ class RealVsImagChart(applycal.PlotmsLeaf):
         jobs_and_wrappers = super().plot()
         successful_wrappers = utils.plotms_iterate(jobs_and_wrappers)
         return successful_wrappers
+
+
+class XVsChannelSummaryChart(object):
+    """
+    Plotting class that creates an "X" vs. channel summary chart per SpW for
+    all antennas, for a caltable.
+    """
+    def __init__(self, context, result, calapps: List[callibrary.CalApplication], yaxis):
+        plot_args = {
+            'xaxis': 'chan',
+            'yaxis': yaxis,
+            'coloraxis': 'antenna1',
+        }
+        self.plotters = common.PlotmsCalSpwComposite(context, result, calapps, **plot_args)
+
+    def plot(self):
+        plot_wrappers = []
+        plot_wrappers.extend(self.plotters.plot())
+        return plot_wrappers
+
+
+class XVsChannelDetailChart(object):
+    """
+    Plotting class that creates an "X" vs. channel detail chart per SpW and per
+    antenna for a caltable.
+    """
+    def __init__(self, context, result, calapps: List[callibrary.CalApplication], yaxis):
+        plot_args = {
+            'xaxis': 'chan',
+            'yaxis': yaxis,
+        }
+        self.plotters = common.PlotmsCalSpwAntComposite(context, result, calapps, **plot_args)
+
+    def plot(self):
+        plot_wrappers = []
+        plot_wrappers.extend(self.plotters.plot())
+        return plot_wrappers

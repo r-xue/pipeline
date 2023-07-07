@@ -2,6 +2,7 @@ import collections
 import os
 
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.tablereader as tablereader
@@ -48,6 +49,10 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             refants[session_name] = session_results.refant
             polfields[session_name] = session_results.polcal_field_name
 
+            # Add stage number to session result, needed by steps that render
+            # based on session result.
+            session_results.stage_number = result.stage_number
+
         # Create residual polarization table.
         residual_pol_table_rows = self.create_pol_table_rows(result, 'residual')
 
@@ -65,6 +70,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # Create gain ratio RMS plots.
         gain_ratio_rms_vs_scan = self.create_gain_ratio_rms_plots(pipeline_context, output_dir, result)
+
+        # Create leakage solution real/imag gain vs. channel plots, per ant.
+        leak_summary, leak_subpages = self.create_leakage_vs_channel_plots(pipeline_context, result)
 
         # Create X-Y gain amplitude vs. antenna plots.
         amp_vs_ant, ampratio_vs_ant = self.create_xy_amp_ant_plots(pipeline_context, result)
@@ -85,6 +93,8 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_scan_after': amp_vs_scan_after,
             'phase_vs_channel': phase_vs_channel,
             'gain_ratio_rms_vs_scan': gain_ratio_rms_vs_scan,
+            'leak_summary': leak_summary,
+            'leak_subpages': leak_subpages,
             'amp_vs_ant': amp_vs_ant,
             'ampratio_vs_ant': ampratio_vs_ant,
             'real_vs_imag': real_vs_imag,
@@ -165,6 +175,43 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return plots
 
     @staticmethod
+    def create_leakage_vs_channel_plots(context, result):
+        summary_plots = collections.defaultdict(list)
+        detail_plots = []
+        subpages = {}
+
+        for session_name, session_results in result.session.items():
+            # Create the summary plots.
+            summary_plots[session_results.vis].extend(polcal.XVsChannelSummaryChart(
+                 context, result, session_results.leak_polcal_result.final, yaxis='real').plot())
+            summary_plots[session_results.vis].extend(polcal.XVsChannelSummaryChart(
+                 context, result, session_results.leak_polcal_result.final, yaxis='imag').plot())
+            # Add y-axis to plot.parameters for display on weblog page.
+            for plot in summary_plots[session_results.vis]:
+                plot.parameters['yaxis'] = plot.y_axis.capitalize()
+
+            # Create the detailed plots.
+            detail_plots.extend(polcal.XVsChannelDetailChart(
+                context, result, session_results.leak_polcal_result.final, yaxis='real').plot())
+            detail_plots.extend(polcal.XVsChannelDetailChart(
+                context, result, session_results.leak_polcal_result.final, yaxis='imag').plot())
+
+        # Add y-axis to plot.parameters for display on weblog page.
+        for plot in detail_plots:
+            plot.parameters['yaxis'] = plot.y_axis.capitalize()
+
+        # Render a single subpage with the detailed plots for all sessions, and
+        # register this joint plot subpage for each session MS.
+        renderer = PolcalLeakagePlotRenderer(context, result, detail_plots)
+        with renderer.get_file() as fileobj:
+            fileobj.write(renderer.render())
+            outfile = os.path.basename(renderer.path)
+        for session_results in result.session.values():
+            subpages[session_results.vis] = outfile
+
+        return summary_plots, subpages
+
+    @staticmethod
     def create_xy_amp_ant_plots(context, result):
         plots_amp, plots_ampratio = {}, {}
         for session_name, session_results in result.session.items():
@@ -184,3 +231,17 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots[session_name].extend(polcal.RealVsImagChart(context, output_dir, calto, correlation='XY,YX').plot())
 
         return plots
+
+
+class PolcalLeakagePlotRenderer(basetemplates.JsonPlotRenderer):
+    """
+    Renders the page with the detailed plots for the leakage solutions gain vs
+    channel.
+    """
+    def __init__(self, context, result, plots):
+        vis = utils.get_vis_from_plots(plots)
+
+        title = f"Leakage gain vs channels for {vis}"
+        outfile = filenamer.sanitize(f"leakage_gain_vs_channels-{vis}.html")
+
+        super().__init__('polcal_leakage_plots.mako', context, result, plots, title, outfile)

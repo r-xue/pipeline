@@ -1,5 +1,6 @@
 <%!
 rsc_path = ""
+from pipeline.infrastructure.renderer import rendererutils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -21,6 +22,7 @@ rsc_path = ""
     <li><a href="#amp_vs_scan_before_plots">Amplitude vs. Scan before polarization calibration</a></li>
     <li><a href="#amp_vs_scan_after_plots">Amplitude vs. Scan after polarization calibration</a></li>
     <li><a href="#phase_vs_channel_plots">Phase vs. Channel</a></li>
+    <li><a href="#leakage_plots">Leakage Solution Gain vs. Channel</a></li>
     <li><a href="#gain_ratio_rms_vs_scan_plots">Gain Ratio RMS vs. Scan</a></li>
     <li><a href="#amp_vs_ant_plots">XY amplitude vs. antenna</a></li>
     <li><a href="#ampratio_vs_ant_plots">XY amplitude gain ratio vs. antenna</a></li>
@@ -256,6 +258,50 @@ rsc_path = ""
 
     <%def name="caption_text(plot, _)">
         Phase vs. Channel.
+    </%def>
+
+</%self:plot_group>
+
+<%self:plot_group plot_dict="${leak_summary}"
+                  url_fn="${lambda x: leak_subpages[x]}"
+                  data_vis="${True}"
+                  data_spw="${True}"
+                  title_id="leakage_plots"
+                  sort_row_by="spw">
+
+    <%def name="title()">
+        Leakage solution gain vs. channel
+    </%def>
+
+    <%def name="preamble()">
+        <p>These plots show the real and imaginary component of the leakage solution gain vs. channel for the
+        polarization calibrator.</p>
+
+        <p>Data are plotted per SpW for all antennas, colorized by antenna. Click on the summary plots to enlarge
+        them.</p>
+
+        <p>Click on the session MS heading to show detailed plots for that session, or on the links in the summary
+        plot captions to show detailed plots (per antenna) for that session and SpW.
+    </%def>
+
+    <%def name="mouseover(plot)">
+        Click to show Leakage Solution Gain ${plot.parameters['yaxis']} vs. Channel
+    </%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${plot.parameters['vis']}<br>
+        Gain: ${plot.parameters['yaxis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_title(plot)">
+        ${plot.parameters['vis']}<br>
+        Gain: ${plot.parameters['yaxis']}<br>
+        SpW: ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_text(plot, _)">
+        Leakage Solution Gain ${plot.parameters['yaxis']} vs. Channel.
     </%def>
 
 </%self:plot_group>
