@@ -7,7 +7,29 @@ rsc_path = ""
 
 <p>This task creates polarization solutions for each polarization session of measurement sets.</p>
 
-<h2>Sessions</h2>
+<h2>Contents</h2>
+<ul>
+  <li><a href="#sessions">Sessions</a></li>
+  <li><a href="#sessions">Polarization</a></li>
+  <ul>
+    <li><a href="#residpol">Residual polarization after calibration</a></li>
+    <li><a href="#polcalpol">Polarization of the polarization calibrator</a></li>
+  </ul>
+  <li><a href="#plots">Plots</a></li>
+  <ul>
+    <li><a href="#amp_vs_parang_plots">Amplitude vs. Parallactic Angle</a></li>
+    <li><a href="#amp_vs_scan_before_plots">Amplitude vs. Scan before polarization calibration</a></li>
+    <li><a href="#amp_vs_scan_after_plots">Amplitude vs. Scan after polarization calibration</a></li>
+    <li><a href="#phase_vs_channel_plots">Phase vs. Channel</a></li>
+    <li><a href="#gain_ratio_rms_vs_scan_plots">Gain Ratio RMS vs. Scan</a></li>
+    <li><a href="#amp_vs_ant_plots">XY amplitude vs. antenna</a></li>
+    <li><a href="#ampratio_vs_ant_plots">XY amplitude gain ratio vs. antenna</a></li>
+    <li><a href="#real_vs_imag_plots">Real vs. Imaginary</a></li>
+  </ul>
+</ul>
+
+
+<h2 id="sessions" class="jumptarget">Sessions</h2>
 <table class="table table-bordered table-striped">
     <caption>Summary of polarization calibrator per session.</caption>
     <thead>
@@ -40,9 +62,9 @@ rsc_path = ""
     </tbody>
 </table>
 
-<h2>Polarization</h2>
+<h2 id="polarization" class="jumptarget">Polarization</h2>
 
-<h3>Residual polarization after calibration</h3>
+<h3 id="residpol" class="jumptarget">Residual polarization after calibration</h3>
 <table class="table table-bordered table-striped">
     <caption>Residual polarization after calibration.</caption>
     <thead>
@@ -70,7 +92,7 @@ rsc_path = ""
     </tbody>
 </table>
 
-<h3>Polarization of the polarization calibrator</h3>
+<h3 id="polcalpol" class="jumptarget">Polarization of the polarization calibrator</h3>
 <table class="table table-bordered table-striped">
     <caption>Polarization of the polarization calibrator.</caption>
     <thead>
@@ -98,7 +120,7 @@ rsc_path = ""
     </tbody>
 </table>
 
-<h2>Plots</h2>
+<h2 id="plots" class="jumptarget">Plots</h2>
 
 <%self:plot_group plot_dict="${amp_vs_parang}"
                   url_fn="${lambda x: 'noop'}"
@@ -111,7 +133,10 @@ rsc_path = ""
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the amplitude vs. parallactic angle.</p>
+        <p>These plots show the amplitude vs. parallactic angle for the polarization calibrator.</p>
+
+        <p>Data are plotted per spectral window for all antennas and correlations XX and YY, colorized by
+        correlation.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
@@ -144,7 +169,10 @@ rsc_path = ""
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the polarization ratio amplitude vs. scan.</p>
+        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator prior to
+        polarization calibration.</p>
+
+        <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
@@ -175,7 +203,10 @@ rsc_path = ""
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the polarization ratio amplitude vs. scan.</p>
+        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator after
+        polarization calibration.</p>
+
+        <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
@@ -206,7 +237,9 @@ rsc_path = ""
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the phase vs. channel.</p>
+        <p>These plots show the XY phase vs. channel for the polarization calibrator.</p>
+
+        <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
@@ -237,7 +270,10 @@ rsc_path = ""
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the gain ratio RMS vs. scan before and after polarization calibration.</p>
+        <p>These plots show the gain ratio RMS vs. scan for the polarization calibrator, before and after
+        polarization calibration.</p>
+
+        <p>Data are plotted for all antennas and spectral windows.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
@@ -265,16 +301,18 @@ rsc_path = ""
                   title_id="amp_vs_ant_plots">
 
     <%def name="title()">
-        X-Y amplitude vs. antenna
+        XY amplitude vs. antenna
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the X-Y amplitude vs. antenna.</p>
+        <p>These plots show the XY amplitude vs. antenna for the polarization calibrator.</p>
+
+        <p>Data are plotted per spectral window for all antennas, colorized by antenna.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show X-Y Amplitude vs. Antenna</%def>
+    <%def name="mouseover(plot)">Click to show XY Amplitude vs. Antenna</%def>
 
     <%def name="fancybox_caption(plot)">
         ${plot.parameters['vis']}<br>
@@ -287,7 +325,7 @@ rsc_path = ""
     </%def>
 
     <%def name="caption_text(plot, _)">
-        X-Y Amplitude vs. Antenna.
+        XY Amplitude vs. Antenna.
     </%def>
 
 </%self:plot_group>
@@ -299,16 +337,18 @@ rsc_path = ""
                   title_id="ampratio_vs_ant_plots">
 
     <%def name="title()">
-        X-Y amplitude ratio vs. antenna
+        XY amplitude gain ratio vs. antenna
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the X-Y amplitude ratio vs. antenna.</p>
+        <p>These plots show the XY amplitude gain ratio vs. antenna for the polarization calibrator.</p>
+
+        <p>Data are plotted per spectral window for all antennas, colorized by antenna.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show X-Y Amplitude Ratio vs. Antenna</%def>
+    <%def name="mouseover(plot)">Click to show XY Amplitude Gain Ratio vs. Antenna</%def>
 
     <%def name="fancybox_caption(plot)">
         ${plot.parameters['vis']}<br>
@@ -321,7 +361,7 @@ rsc_path = ""
     </%def>
 
     <%def name="caption_text(plot, _)">
-        X-Y Amplitude Ratio vs. Antenna.
+        XY Amplitude Gain Ratio vs. Antenna.
     </%def>
 
 </%self:plot_group>
@@ -336,7 +376,10 @@ rsc_path = ""
     </%def>
 
     <%def name="preamble()">
-        <p>Plots show the real vs. imaginary for XX/YY and XY/YX.</p>
+        <p>These plots show the real vs. imaginary component for the polarization calibrator after polarization
+        calibration, for correlations XX,YY and XY,YX.</p>
+
+        <p>Data are plotted for all antennas and spectral windows, colorized by correlation.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
