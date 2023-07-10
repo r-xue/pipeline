@@ -1399,7 +1399,7 @@ def score_wvrgcal(ms_name, dataresult):
                 qa_messages.append('Elevated rms value(s)')
             # before making the score check if noisy BP was triggered
             if dataresult.BPnoisy:
-                score = 0.66  # should be yellow to trigger a warning
+                score = 0.66  # downgrade to yellow to trigger a warning
                 qa_messages.append('Atmospheric phases appear unstable')
                 if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                     # inherit previous reduceBy values
@@ -1427,9 +1427,10 @@ def score_wvrgcal(ms_name, dataresult):
 
         else:
             score = 0.66
+            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops 
             if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                 # now adjust 0.1 per bad entry
-                reduceBy =  len(flagant_list)*0.1
+                reduceBy += len(flagant_list)*0.1
                 reduceBy += len(disc_limit)*0.1
                 reduceBy += len(rms_limit)*0.1
                 score = score - reduceBy
@@ -1440,6 +1441,7 @@ def score_wvrgcal(ms_name, dataresult):
                     qa_messages.append('Elevated disc value(s)')
                 if len(rms_limit) > 0:
                     qa_messages.append('Elevated rms value(s)')
+
             # PIPE-1837 before final yellow scoring we assess if the 
             # phase rms from wvrg_qa was 'good' i.e. <1 radian
             # but only when there are no other WVR soln issues, i.e. 
@@ -1461,7 +1463,7 @@ def score_wvrgcal(ms_name, dataresult):
                     # if disc and rms didn't trigger but phase stability not reported as good - still yellow
                     score = linear_score(score,0.0,0.66,0.34,0.66)
   
-            # Otherwise now we are back to yellow when disc or rms also triggered on any ant 
+            # Otherwise now we are back to yellow when disc or rms also triggered on any ant and append message now
             else:
                 qa_messages.append(' Check atmospheric phase stability')    
                 score = linear_score(score,0.0,0.66,0.34,0.66)
