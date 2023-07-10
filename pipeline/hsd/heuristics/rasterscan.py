@@ -24,6 +24,7 @@ LOG = logging.get_logger(__name__)
 
 class RasterScanHeuristicsFailure(Exception):
     """Indicates failure of RasterScanHeuristics."""
+    pass
 
 
 class HeuristicsParameter(object):
@@ -580,7 +581,9 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
     LOG.debug('ndelta1 = %s', ndelta1)
     if ndelta1 > HeuristicsParameter.RoundTripRasterScanThresholdFactor * len(raster_gap):
         # possibly round-trip raster mapping which is not supported
-        msg = 'Failed to identify gap between raster map iteration.'
+        msg = 'Failed to identify gap between raster map iteration.'  ###
+#        msg = 'The pattern seems to be raster but is not supported by this heuristics.'
+#        LOG.warning(msg)
         raise RasterScanHeuristicsFailure(msg)
     return raster_gap
 

@@ -21,6 +21,7 @@ from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure  ###
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy ,rasterutil
@@ -996,7 +997,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                     is_representative=_pp.is_representative_source_spw,
                                     bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
                                     bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
-                                    sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit))
+                                    sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
+                                    imagename=_rgp.imagename)
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                           spw=str(_rgp.combined.v_spws[REF_MS_ID]),
                                           is_representative=_pp.is_representative_source_spw,
@@ -1448,25 +1450,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warning('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
                 raster_info_list.append(None)
             dt = _cp.dt_dict[msobj.basename]
-            origin_basename = os.path.basename(msobj.origin_ms)  ###
-            metadata = rasterutil.read_datatable(dt)  ###
-            pflag = metadata.pflag  ###
-            ra = metadata.ra  ###
-            dec = metadata.dec  ###
-            timetable = datatable.get_timetable(ant=antid, spw=spwid, field_id=fieldid, ms=origin_basename, pol=None)  ###
-            # dtrow_list is a list of numpy array holding datatable rows separated by raster rows
-            # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
-            dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)  ###
-            dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] == True)]  ###
             try:
-                raster_info_list.append(rasterscan.find_raster_gap(ra, dec, dtrow_list))  ###
-#                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
-            except rasterscan.RasterScanHeuristicsFailure:   ###
+                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
+            except RasterScanHeuristicsFailure as e:  ###
+                LOG.warning('{} in get_raster_info_list().'.format(e))  ###
 #            except Exception:
-#                f = msobj.get_fields(field_id=fieldid)[0]
-#                a = msobj.get_antenna(antid)[0]
-#                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. '
-#                         'Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
+                f = msobj.get_fields(field_id=fieldid)[0]
+                a = msobj.get_antenna(antid)[0]
+                LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. '
+                         'Potentially be because all data are flagged.'.format(f.name, spwid, a.name, msobj.basename))
                 raster_info_list.append(None)
         assert len(_rgp.combined.infiles) == len(raster_info_list)
         return raster_info_list
@@ -1826,7 +1818,11 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
-    except Exception:
+    except RasterScanHeuristicsFailure as e:  ###
+        LOG.warning('{} in _analyze_raster_pattern().'.format(e))  ###
+#    except Exception:
+#        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. '
+#                    'Result might not be correct.')
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
