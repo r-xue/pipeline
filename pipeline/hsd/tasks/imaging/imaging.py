@@ -17,7 +17,6 @@ import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType, MeasurementSet
-from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
@@ -1694,28 +1693,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         with casa_tools.MSMDReader(_tirp.infile) as __msmd:
-            __ms_chanwidth = numpy.abs(__msmd.chanwidths(_tirp.spwid).mean())
-            __ms_effbw = __msmd.chaneffbws(_tirp.spwid).mean()
-            __ms_nchan = __msmd.nchan(_tirp.spwid)
-            __nchan_avg = sensitivity_improvement.onlineChannelAveraging(_tirp.infile, _tirp.spwid, __msmd)
-        if _tirp.bandwidth / __ms_chanwidth < 1.1:  # imaging by the original channel
-            _tirp.effBW = __ms_effbw
+            _tirp.effBW = __msmd.chaneffbws(_tirp.spwid).mean()
             LOG.info('Using an MS effective bandwidth, {} kHz'.format(_tirp.effBW * 0.001))
-        else:
-            __image_map_chan = _tirp.bandwidth / __ms_chanwidth
-            _tirp.effBW = __ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
-                                                                                  channelAveraging=__nchan_avg,
-                                                                                  returnValue='EffectiveBW',
-                                                                                  useCAS8534=True,
-                                                                                  spwchan=__ms_nchan,
-                                                                                  nchan=__image_map_chan)
-            LOG.info('Using an adjusted effective bandwidth of image, {} kHz'.format(_tirp.effBW * 0.001))
-            # else: # pre-Cycle 3 alma data
-
-        #    effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
-        #                                                                  channelAveraging=nchan_avg,
-        #                                                                  returnValue='EffectiveBW')
-        #    LOG.info('Using an estimated effective bandwidth {} kHz'.format(effBW*0.001))
 
     def __loop_initializer_of_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
                                                     _rgp: imaging_params.ReductionGroupParameters,
