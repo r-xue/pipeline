@@ -376,7 +376,11 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                 self._executor.execute(gencal_job)
                 status = True
             except Exception as e:
-                LOG.warning( "Failed to get Jy/K factor from DB: {}".format(e) )
+                if e is None:
+                    if len(str(e)) == 0:
+                        LOG.warning( "Failed to get Jy/K factors from DB." )
+                    else:
+                        LOG.warning( e )
                 LOG.warning( "{}: Query to Jy/K DB failed. Will fallback to read CSV file '{}'".format(inputs.vis, inputs.reffile) )
                 status = False
 
