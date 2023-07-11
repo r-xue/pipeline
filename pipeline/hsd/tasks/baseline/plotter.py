@@ -782,8 +782,8 @@ class BaselineSubtractionPlotManager(object):
             nbin_factor = 2
             nbin *= nbin_factor
             LOG.info(
-                f'Calculation of baseline flatness QA metrics with nbin={nbin_org} was failed.'
-                f'Increase nbin to {nbin} '
+                f'Calculation of baseline flatness QA metrics with nbin={nbin_org} has failed. '
+                f'Increase nbin to {nbin}.'
             )
             binned_freq, binned_data = binned_mean_ma(frequency, masked_data, nbin)
             LOG.debug(
