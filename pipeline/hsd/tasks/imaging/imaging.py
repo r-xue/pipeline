@@ -944,8 +944,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         if _rgp.ref_ms.antenna_array.name == 'ALMA' and \
            __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
             LOG.warning("ALMA Cycle 2 and earlier project does not have a valid effective bandwidth. "
-                        "Therefore, a nominal value of channel separation loaded from the MeasurementSet "
-                        "that is processing now is used as an effective bandwidth for RMS estimation.")
+                        "Therefore, a nominal value of channel separation loaded from the MS "
+                        "is used as an effective bandwidth for RMS estimation.")
 
     def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                 _rgp: imaging_params.ReductionGroupParameters,
