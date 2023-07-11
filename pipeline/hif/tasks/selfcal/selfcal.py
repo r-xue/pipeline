@@ -13,7 +13,7 @@ import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
-from pipeline.hif.tasks.applycal import IFApplycal
+from pipeline.hif.tasks.applycal import SerialIFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
 from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, utils, task_registry
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
@@ -321,7 +321,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
             for vis in vislist:
                 task_args = {'vis': vis, 'applymode': 'calflag', 'intent': 'TARGET'}
-                tq.add_pipelinetask(IFApplycal, task_args, self.inputs.context)
+                tq.add_pipelinetask(SerialIFApplycal, task_args, self.inputs.context)
 
         tq_results = tq.get_results()
 
