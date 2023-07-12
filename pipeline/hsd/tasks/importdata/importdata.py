@@ -196,6 +196,11 @@ class SerialSDImportData(importdata.ImportData):
         myresults.origin = results.origin
         return myresults
 
+    def _get_fluxes(self, context, observing_run):
+        # override _get_fluxes not to create flux.csv (PIPE-1846)
+        # do nothing, return empty results
+        return None, [], None
+
 
 # Tier-0 parallelization
 class HpcSDImportDataInputs(SDImportDataInputs):
