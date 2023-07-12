@@ -1161,8 +1161,9 @@ class SpwIdVsFreqChart(object):
             bws = list_bw[start:end]
             ax.barh(list_indice, bws, height=0.4, left=fmins)
             index += 1
+        ax.set_title('Spectral Window ID vs. Frequency (GHz)', loc='center')  ###
         ax.set_xlabel("Frequency (GHz)", fontsize=14)
-        ax.set_ylabel("spw ID", fontsize=14)
+#        ax.set_ylabel("spw ID", fontsize=14)
         ax.invert_yaxis()
         x_min_start = min(list_fmin)
         x_max_end = max(list_fmax)
@@ -1172,12 +1173,12 @@ class SpwIdVsFreqChart(object):
         xmargin = 1
         ystep = 2
         ymargin = 2
-        if x_min_start < x_max_end:
-            x_majorticks = list(range(floor(x_min_start), ceil(x_max_end)+5*(xstep+xmargin), 5*xstep))
-            x_minorticks = list(range(floor(x_min_start), ceil(x_max_end)+(xstep+xmargin), xstep))
-        else:
-            x_majorticks = list(range(floor(x_max_end), ceil(x_min_start)+5*(xstep+xmargin), 5*xstep))
-            x_minorticks = list(range(floor(x_max_end), ceil(x_min_start)+(xstep+xmargin), xstep))
+#        if x_min_start < x_max_end:
+#            x_majorticks = list(range(floor(x_min_start), ceil(x_max_end)+5*(xstep+xmargin), 5*xstep))
+#            x_minorticks = list(range(floor(x_min_start), ceil(x_max_end)+(xstep+xmargin), xstep))
+#        else:
+#            x_majorticks = list(range(floor(x_max_end), ceil(x_min_start)+5*(xstep+xmargin), 5*xstep))
+#            x_minorticks = list(range(floor(x_max_end), ceil(x_min_start)+(xstep+xmargin), xstep))
         if y_start < y_end:
             y_ticks = list(range(y_start-ystep, y_end+ystep+ymargin, ystep))
         else:
@@ -1185,8 +1186,8 @@ class SpwIdVsFreqChart(object):
         ax.grid(which="major", alpha=0.9)
         ax.grid(which="minor", alpha=0.5)
         ax.tick_params(labelsize=13)
-        ax.set_xticks(x_majorticks)
-        ax.set_xticks(x_minorticks, minor=True)
+#        ax.set_xticks(x_majorticks)
+#        ax.set_xticks(x_minorticks, minor=True)
         ax.set_ylim(bottom=float(len(list_all_indice)), top=-1.0)
         ax.set_yticks([])
         yspace = 0.7*len(y_ticks) / (max(y_ticks) - min(y_ticks))
@@ -1196,7 +1197,7 @@ class SpwIdVsFreqChart(object):
         # Make a plot of frequency vs. atm transmission (right y-axis)
         atm_color = 'm'
         axes_atm = ax.twinx()
-        axes_atm.set_xlim(min(x_minorticks)-xmargin, max(x_minorticks)+xmargin)
+#        axes_atm.set_xlim(min(x_minorticks)-xmargin, max(x_minorticks)+xmargin)
         axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
         axes_atm.set_ylim(0, 1.05)
         axes_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
