@@ -77,8 +77,17 @@ class SelfcalInputs(vdp.StandardInputs):
 
     processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE]
 
-    # simple properties with no logic
     field = vdp.VisDependentProperty(default='')
+
+    @field.convert
+    def field(self, val):
+        if not isinstance(val, (str, type(None))):
+            # PIPE-1881: allow field names that mistakenly get casted into non-string datatype by
+            # recipereducer (recipereducer.string_to_val) and executeppr (XmlObjectifier.castType)
+            LOG.warning('The field selection input %r is not a string and will be converted.', val)
+            val = str(val)
+        return val
+        
     spw = vdp.VisDependentProperty(default='')
     contfile = vdp.VisDependentProperty(default='cont.dat')
     apply = vdp.VisDependentProperty(default=True)
