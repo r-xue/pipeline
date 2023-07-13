@@ -55,6 +55,15 @@ class MakeImListInputs(vdp.StandardInputs):
             return self.context.size_mitigation_parameters['field']
         return ''
 
+    @field.convert
+    def field(self, val):
+        if not isinstance(val, (str, type(None))):
+            # PIPE-1881: allow field names that mistakenly get casted into non-string datatype by
+            # recipereducer (recipereducer.string_to_val) and executeppr (XmlObjectifier.castType)
+            LOG.warning('The field selection input %r is not a string and will be converted.', val)
+            val = str(val)
+        return val
+
     @vdp.VisDependentProperty
     def hm_cell(self):
         if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
