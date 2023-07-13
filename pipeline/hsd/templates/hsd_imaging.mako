@@ -273,7 +273,8 @@ It generates an image combined spectral data from whole antenna as well as image
     % for field, subpage in plots['subpage'].items():
         <h4><a class="replace"
                href="${os.path.join(dirname, subpage)}"
-               data-field="${field}">
+               data-field="${field}"
+               data-ant="COMBINED">
                ${field}
             </a>
         </h4>
@@ -294,7 +295,8 @@ It generates an image combined spectral data from whole antenna as well as image
 	                            <a href="${os.path.join(dirname, subpage)}"
 	                               class="replace"
 	                               data-spw="${plot.parameters['spw']}"
-	                               data-field="${field}">
+	                               data-field="${field}"
+                                   data-ant="COMBINED">
 	                               ${get_spw_exp(plot.parameters['spw'])}
 	                            </a>
 	                        </h4>
