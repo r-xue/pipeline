@@ -3,28 +3,29 @@
 see: https://github.com/jjtobin/auto_selfcal
 """
 
-import os
 import glob
+import os
 
 import numpy as np
 import pipeline.infrastructure as infrastructure
 from pipeline.domain.observingrun import ObservingRun
+from pipeline.infrastructure import casa_tools, utils
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.tablereader import MeasurementSetReader
-from pipeline.infrastructure import casa_tools
-# from pipeline.infrastructure.utils import request_omp_threading
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
                               estimate_SNR, fetch_spws, fetch_targets,
-                              get_dr_correction, get_nterms,
-                              get_intflux, get_n_ants, get_sensitivity,
-                              get_SNR_self, get_SNR_self_update,
-                              get_solints_simple, get_spw_bandwidth,
-                              get_uv_range, importdata, rank_refants,
-                              sanitize_string)
+                              get_dr_correction, get_intflux, get_n_ants,
+                              get_nterms, get_sensitivity, get_SNR_self,
+                              get_SNR_self_update, get_solints_simple,
+                              get_spw_bandwidth, get_uv_range, importdata,
+                              rank_refants, sanitize_string)
+
+# from pipeline.infrastructure.utils import request_omp_threading
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -60,6 +61,7 @@ class SelfcalHeuristics(object):
         self.uvtaper = scal_target['uvtaper']
         self.robust = scal_target['robust']
         self.field = scal_target['field']
+        self.target = utils.dequote(scal_target['field'])
         self.uvrange = scal_target['uvrange']
 
         self.do_amp_selfcal = do_amp_selfcal
@@ -100,7 +102,7 @@ class SelfcalHeuristics(object):
         See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters
         """
         msmd.open(vis[0])
-        fieldid = msmd.fieldsforname(field)
+        fieldid = msmd.fieldsforname(self.target)
         msmd.done()
         tb.open(vis[0]+'/FIELD')
         ephem_column = tb.getcol('EPHEMERIS_ID')
