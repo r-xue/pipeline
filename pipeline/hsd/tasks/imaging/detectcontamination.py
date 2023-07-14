@@ -3,6 +3,7 @@
 # This code is originally provided by Yoshito Shimajiri.
 # See PIPE-251 for detail about this.
 
+from math import ceil
 import os
 import numpy as np
 import matplotlib
@@ -31,47 +32,21 @@ DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra'
 
 
 # To find the emission free channels roughly for estimating RMS
-def decide_rms(naxis3, cube_regrid):
-    start_rms_ch, end_rms_ch = int(naxis3 * 2 / 10), int(naxis3 * 3 / 10)
-    rms_map1 = ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
-    start_rms_ch, end_rms_ch = int(naxis3 * 3 / 10), int(naxis3 * 4 / 10)
-    rms_map2 = ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
-    start_rms_ch, end_rms_ch = int(naxis3 * 4 / 10), int(naxis3 * 5 / 10)
-    rms_map3 = ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
-    start_rms_ch, end_rms_ch = int(naxis3 * 5 / 10), int(naxis3 * 6 / 10)
-    rms_map4 = ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
-    start_rms_ch, end_rms_ch = int(naxis3 * 6 / 10), int(naxis3 * 7 / 10)
-    rms_map5 = ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
-    start_rms_ch, end_rms_ch = int(naxis3 * 7 / 10), int(naxis3 * 8 / 10)
-    rms_map6 = ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
-
-    rms_check = np.array([np.nanmean(rms_map1),
-                          np.nanmean(rms_map2),
-                          np.nanmean(rms_map3),
-                          np.nanmean(rms_map4),
-                          np.nanmean(rms_map5),
-                          np.nanmean(rms_map6)])
-    rms_check_min = np.argmin(rms_check)
-    if rms_check_min == 0:
-        rms_map = rms_map1
-        start_rms_ch, end_rms_ch = int(naxis3 * 2 / 10), int(naxis3 * 3 / 10)
-    if rms_check_min == 1:
-        rms_map = rms_map2
-        start_rms_ch, end_rms_ch = int(naxis3 * 3 / 10), int(naxis3 * 4 / 10)
-    if rms_check_min == 2:
-        rms_map = rms_map3
-        start_rms_ch, end_rms_ch = int(naxis3 * 4 / 10), int(naxis3 * 5 / 10)
-    if rms_check_min == 3:
-        rms_map = rms_map4
-        start_rms_ch, end_rms_ch = int(naxis3 * 5 / 10), int(naxis3 * 6 / 10)
-    if rms_check_min == 4:
-        rms_map = rms_map5
-        start_rms_ch, end_rms_ch = int(naxis3 * 6 / 10), int(naxis3 * 7 / 10)
-    if rms_check_min == 5:
-        rms_map = rms_map6
-        start_rms_ch, end_rms_ch = int(naxis3 * 7 / 10), int(naxis3 * 8 / 10)
+def decide_rms(naxis3: int, cube_regrid, inverted: bool=False):
+    rms_maps = [__slice_cube_regrid(naxis3, cube_regrid, x, inverted) for x in range(2, 8)]
+    rms_check = np.array([np.nanmean(rms_maps[x]) for x in range(6)])
+    rms_map = rms_maps[np.argmin(rms_check)]
     LOG.info("RMS: {}".format(np.nanmean(rms_map)))
     return rms_map
+
+
+# Slice cube_regrid from position to position+1
+def __slice_cube_regrid(naxis3: int, cube_regrid, pos, inverted: bool):
+    if inverted:
+        start_rms_ch, end_rms_ch = ceil(naxis3 * pos / 10), ceil(naxis3 * (pos + 1) / 10)
+    else:
+        start_rms_ch, end_rms_ch = int(naxis3 * pos / 10), int(naxis3 * (pos + 1) / 10)
+    return ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
 
 
 # Function for making fiures
@@ -207,7 +182,7 @@ def read_fits(input):
     return cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3
 
 
-def detect_contamination(context, imageitem):
+def detect_contamination(context, imageitem, inverted=False):
     imagename = imageitem.imagename
     LOG.info("=================")
     stage_number = context.task_counter
@@ -233,7 +208,7 @@ def detect_contamination(context, imageitem):
                           resolution=grid_size)
 
     # Making rms 　& Peak SN maps
-    rms_map = decide_rms(naxis3, cube_regrid)
+    rms_map = decide_rms(naxis3, cube_regrid, inverted)
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
     idy, idx = np.unravel_index(np.nanargmax(peak_sn), peak_sn.shape)
     LOG.debug(f'idx {idx}, idy {idy}')
