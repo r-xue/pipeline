@@ -29,6 +29,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     deconvolver = vdp.VisDependentProperty(default='')
     cycleniter = vdp.VisDependentProperty(default=-999)
     cyclefactor = vdp.VisDependentProperty(default=-999.0)
+    nmajor = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default='')
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
@@ -120,7 +121,7 @@ class CleanBaseInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, datatype=None, datatype_info=None, intent=None, field=None,
                  spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
-                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
+                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, nmajor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
@@ -155,6 +156,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.nterms = nterms
         self.cycleniter = cycleniter
         self.cyclefactor = cyclefactor
+        self.nmajor = nmajor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
         self.scales = scales
@@ -481,6 +483,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             cycleniter = inputs.heuristics.cycleniter(iter)
             if cycleniter is not None:
                 tclean_job_parameters['cycleniter'] = cycleniter
+
+        if inputs.nmajor not in (None, -999):
+            tclean_job_parameters['nmajor'] = inputs.nmajor
+        else:
+            nmajor = inputs.heuristics.nmajor(iter)
+            if nmajor is not None:
+                tclean_job_parameters['nmajor'] = nmajor
 
         if inputs.scales:
             tclean_job_parameters['scales'] = inputs.scales
