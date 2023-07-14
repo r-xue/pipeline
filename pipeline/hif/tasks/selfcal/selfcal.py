@@ -248,7 +248,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             # note scal_library is keyed by field name without quotes at this moment.
             # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
             #       utils.fieldname_for_casa() and
-            #       utils.dequote_fieldname_for_casa()
+            #       utils.dequote()
             field_name = utils.dequote(target['field'])
             target['sc_lib'] = scal_library[field_name][target['sc_band']]
             target['field_name'] = field_name
