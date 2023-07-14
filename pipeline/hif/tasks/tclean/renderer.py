@@ -3,6 +3,7 @@ Created on 7 Jan 2015
 
 @author: sjw
 """
+import traceback
 import collections
 import itertools
 import os
@@ -1591,15 +1592,15 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         plotter = display.CleanSummary(context, makeimages_result, image_stats)
         plots = plotter.plot()
 
-        plots_dict = make_plot_dict_stokes(plots)
+        plots_dict = make_plot_dict(plots)
 
         # construct the renderers so we know what the back/forward links will be
         # sort the rows so the links will be in the same order as the rows
         image_rows.sort(key=lambda row: (row.image_file.split(
             '.')[0], utils.natural_sort_key(row.datatype, row.field+': '+str(row.spw)), row.pol))
         temp_urls = (None, None, None)
-        qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field+': '+str(row.spw), str(row.pol), row.pol, row.datatype, temp_urls, row.cube_all_cont)
-                        for row in image_rows]
+        qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split(
+            '.')[0], row.field, str(row.spw), row.pol, row.datatype, temp_urls, row.cube_all_cont) for row in image_rows]
         qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
         # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
@@ -1609,18 +1610,21 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
         final_rows = []
+
         for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
             prefix = row.image_file.split('.')[0]
+
             try:
-                final_iter = sorted(plots_dict[prefix][row.datatype][row.field+': '+str(row.spw)][str(row.pol)].keys())[-1]
+                final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][str(row.pol)].keys())[-1]
+
                 # cube and repBW mode use mom8
-                plot = get_plot_stokes(plots_dict, prefix, row.datatype, row.field+': '+str(row.spw), str(row.pol), final_iter, 'image', 'mom8')
+                plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mom8')
                 if plot is None:
                     # mfs and cont mode use mean
-                    plot = get_plot_stokes(plots_dict, prefix, row.datatype, row.field+': '+str(row.spw), str(row.pol), final_iter, 'image', 'mean')
+                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
 
                 renderer = TCleanPlotsRenderer(context, results, row.result,
-                                               plots_dict, prefix, row.field+': '+str(row.spw), str(row.pol), row.pol,
+                                               plots_dict, prefix, row.field, str(row.spw), row.pol,
                                                row.datatype, qa_urls, row.cube_all_cont)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -1638,20 +1642,25 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         fileobj.write(tab_renderer.render())
                     values['tab_url'] = tab_renderer.path
 
-                if stokes_parameters != ['I']:
-                    # Save POLI/POLA paths which is known only after plot() has been called
-                    values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
-                    values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
-                    values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
-                    values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
+                # Save POLI/POLA paths which is known only after plot() has been called
+                pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean')
+                if pol_plot is not None:
+                    values['poli_abspath'] = pol_plot.abspath
+                    values['poli_thumbnail'] = pol_plot.thumbnail
+                pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean')
+                if pol_plot is not None:
+                    values['pola_abspath'] = pol_plot.abspath
+                    values['pola_thumbnail'] = pol_plot.thumbnail
 
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
             except IOError as e:
                 LOG.error(e)
+                LOG.error(traceback.format_exc())
             except Exception as e:
                 # Probably some detail page rendering exception.
                 LOG.error(e)
+                LOG.error(traceback.format_exc())
                 final_rows.append(row)
 
         # primary sort images by vis, datatype, field, secondary sort on spw, then by pol
@@ -1740,48 +1749,3 @@ def get_cycle_stats_vlass(context, makeimages_result, r):
                         'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]}}
 
     return row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict
-
-
-def get_plot_stokes(plots, prefix, datatype, field, spw, i, colname, moment):
-    try:
-        return plots[prefix][datatype][field][spw][i][colname][moment]
-    except KeyError:
-        return None
-
-
-def make_plot_dict_stokes(plots):
-    # Make the plots
-    prefixes = sorted({p.parameters['prefix'] for p in plots})
-    datatypes = sorted({p.parameters['datatype'] for p in plots})
-    fields = sorted({p.parameters['field']+': '+p.parameters['virtspw'] for p in plots})
-    spws = sorted({p.parameters['stokes'] for p in plots})
-    iterations = sorted({p.parameters['iter'] for p in plots})
-    types = sorted({p.parameters['type'] for p in plots})
-    moments = sorted({p.parameters['moment'] for p in plots})
-
-    def type_dim(): return collections.defaultdict(dict)
-    def iteration_dim(): return collections.defaultdict(type_dim)
-    def spw_dim(): return collections.defaultdict(iteration_dim)
-    def field_dim(): return collections.defaultdict(spw_dim)
-    def datatype_dim(): return collections.defaultdict(field_dim)
-    plots_dict = collections.defaultdict(datatype_dim)
-
-    for prefix in prefixes:
-        for datatype in datatypes:
-            for field in fields:
-                for spw in spws:
-                    for iteration in iterations:
-                        for t in types:
-                            for moment in moments:
-                                matching = [p for p in plots
-                                            if p.parameters['prefix'] == prefix
-                                            and p.parameters['datatype'] == datatype
-                                            and p.parameters['field']+': '+p.parameters['virtspw'] == field
-                                            and p.parameters['stokes'] == spw
-                                            and p.parameters['iter'] == iteration
-                                            and p.parameters['type'] == t
-                                            and p.parameters['moment'] == moment]
-                                if matching:
-                                    plots_dict[prefix][datatype][field][spw][iteration][t][moment] = matching[0]
-
-    return plots_dict
