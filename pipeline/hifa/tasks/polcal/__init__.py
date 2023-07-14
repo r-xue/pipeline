@@ -5,7 +5,7 @@ from . import polcal
 from . import renderer
 from .polcal import Polcal
 
-qaadapter.registry.register_to_dataset_topic(polcal.PolcalResults)
+qaadapter.registry.register_to_calibration_topic(polcal.PolcalResults)
 
 weblog.add_renderer(Polcal,
                     renderer.T2_4MDetailsPolcalRenderer(),

@@ -12,17 +12,17 @@ from pipeline.infrastructure import casa_tasks
 LOG = infrastructure.get_logger(__name__)
 
 
-class PolcalResults(basetask.Results):
+class PolcalWorkerResults(basetask.Results):
     """
-    PolcalResults is the results class for the pipeline polcal calibration
+    PolcalWorkerResults is the results class for the pipeline polcal calibration
     task.
     """
 
     def __init__(self, final=None, pool=None, polcal_returns=None):
         """
-        Construct and return a new PolcalResults.
+        Construct and return a new PolcalWorkerResults.
 
-        PolcalResults can be initialised with an optional list of
+        PolcalWorkerResults can be initialised with an optional list of
         CalApplications detailing which calibrations, from a pool of candidate
         calibrations (pool), are considered the best to apply (final).
 
@@ -30,7 +30,6 @@ class PolcalResults(basetask.Results):
         :type final: list of :class:`~pipeline.infrastructure.callibrary.CalApplication`
         :param pool: the pool of all calibrations evaluated by the task
         :type pool: list of :class:`~pipeline.infrastructure.callibrary.CalApplication`
-
         """
         if final is None:
             final = []
@@ -83,7 +82,7 @@ class PolcalResults(basetask.Results):
         return calto_copy
 
     def __repr__(self):
-        s = 'PolcalResults:\n'
+        s = 'PolcalWorkerResults:\n'
         for calapp in self.final:
             s += f'\t{os.path.basename(calapp.vis)}: calibration application for table {calapp.gaintable}\n'
         return s
@@ -190,7 +189,7 @@ class PolcalWorker(basetask.StandardTaskTemplate):
         calfrom = callibrary.CalFrom(inputs.caltable, caltype='polarization', gainfield='nearest')
         calapp = callibrary.CalApplication(calto, calfrom, origin)
 
-        result = PolcalResults(pool=[calapp], polcal_returns=polcal_returns)
+        result = PolcalWorkerResults(pool=[calapp], polcal_returns=polcal_returns)
 
         return result
 

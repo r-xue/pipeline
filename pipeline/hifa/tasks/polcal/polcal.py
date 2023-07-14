@@ -546,7 +546,7 @@ class Polcal(basetask.StandardTaskTemplate):
         return result, final_calapps
 
     def _calibrate_xy_phase(self, vis: str, vislist: List[str], smodel: List[float], scan_duration: int,
-                            spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
+                            spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalWorkerResults, List]:
         inputs = self.inputs
 
         # Initialize polcal task inputs.
@@ -644,7 +644,7 @@ class Polcal(basetask.StandardTaskTemplate):
         return result, final_calapps
 
     def _compute_leakage_terms(self, vis: str, vislist: List[str], smodel: List[float], scan_duration: int,
-                               spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalResults, List]:
+                               spwmaps: dict) -> Tuple[polcal.polcalworker.PolcalWorkerResults, List]:
         inputs = self.inputs
 
         # Initialize polcal task inputs.
