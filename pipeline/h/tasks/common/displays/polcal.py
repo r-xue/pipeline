@@ -3,6 +3,7 @@ from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
@@ -119,13 +120,14 @@ class GainRatioRMSVsScanChart(object):
         scans_after, rrms_after = self._compute_gain_ratio_rms(self.result.final_gcal_result.final[0].gaintable)
 
         # Create plot with Matplotlib.
-        fig = plt.gcf()
-        sub = fig.add_subplot(111)
-        sub.plot(scans_before, rrms_before, 'or', label='Before polcal')
-        sub.plot(scans_after, rrms_after, 'ob', label='After polcal')
-        sub.set_xlabel('Scan Number')
-        sub.set_ylabel('Gain Ratio RMS')
-        plt.legend(numpoints=1)
+        fig, ax = plt.subplots()
+        ax.plot(scans_before, rrms_before, 'or', label='Before polcal')
+        ax.plot(scans_after, rrms_after, 'ob', label='After polcal')
+        ax.set_xlabel('Scan Number')
+        ax.set_ylabel('Gain Ratio RMS')
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        ax.xaxis.set_major_locator(MultipleLocator(10))
+        ax.legend(numpoints=1)
         plt.savefig(figfile)
         plt.close()
 

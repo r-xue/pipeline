@@ -38,6 +38,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         vislists = {}
         refants = {}
         polfields = {}
+        scanid_highest_xy = {}
 
         # Retrieve info for each session.
         for session_name, session_results in result.session.items():
@@ -48,6 +49,9 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Store pol cal field name and refant.
             refants[session_name] = session_results.refant
             polfields[session_name] = session_results.polcal_field_name
+
+            # Store ID of scan with highest X-Y signal.
+            scanid_highest_xy[session_name] = session_results.best_scan_id
 
             # Add stage number to session result, needed by steps that render
             # based on session result.
@@ -86,6 +90,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'vislists': vislists,
             'refants': refants,
             'polfields': polfields,
+            'scanid_highest_xy': scanid_highest_xy,
             'residual_pol_table_rows': residual_pol_table_rows,
             'polcal_table_rows': polcal_table_rows,
             'amp_vs_parang': amp_vs_parang,

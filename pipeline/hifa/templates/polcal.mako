@@ -171,8 +171,8 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator for both prior to
-        and after polarization calibration.</p>
+        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator prior to and after
+        polarization calibration.</p>
 
         <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
@@ -290,6 +290,10 @@ from pipeline.infrastructure.renderer import rendererutils
         <p>Data are plotted for all antennas and spectral windows.</p>
 
         <p>Click the plots to enlarge them.</p>
+    </%def>
+
+    <%def name="ms_preamble(ms)">
+        <p>ID of scan with highest X-Y signal: ${scanid_highest_xy[ms]}</p>
     </%def>
 
     <%def name="mouseover(plot)">Click to show Gain Ratio RMS vs. Scan</%def>

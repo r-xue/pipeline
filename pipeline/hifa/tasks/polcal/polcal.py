@@ -48,9 +48,10 @@ class PolcalResults(basetask.Results):
 
 class PolcalSessionResults(basetask.Results):
     def __init__(self, session=None, vis=None, final=None, pool=None, vislist=None, polcal_field_name=None, refant=None,
-                 init_gcal_result=None, uncal_pfg_result=None, kcross_result=None, polcal_phase_result=None,
-                 final_gcal_result=None, cal_pfg_result=None, leak_polcal_result=None, xyratio_gcal_result=None,
-                 session_vs_result=None, vis_vs_results=None, vs_diffs=None, polcal_amp_results=None):
+                 init_gcal_result=None, uncal_pfg_result=None, best_scan_id=None, kcross_result=None,
+                 polcal_phase_result=None, final_gcal_result=None, cal_pfg_result=None, leak_polcal_result=None,
+                 xyratio_gcal_result=None, session_vs_result=None, vis_vs_results=None, vs_diffs=None,
+                 polcal_amp_results=None):
 
         super().__init__()
 
@@ -69,6 +70,7 @@ class PolcalSessionResults(basetask.Results):
         self.refant = refant
         self.init_gcal_result = init_gcal_result
         self.uncal_pfg_result = uncal_pfg_result
+        self.best_scan_id = best_scan_id
         self.kcross_result = kcross_result
         self.polcal_phase_result = polcal_phase_result
         self.final_gcal_result = final_gcal_result
@@ -293,6 +295,7 @@ class Polcal(basetask.StandardTaskTemplate):
             refant=refant,
             init_gcal_result=init_gcal_result,
             uncal_pfg_result=uncal_pfg_result,
+            best_scan_id=best_scan_id,
             kcross_result=kcross_result,
             polcal_phase_result=polcal_phase_result,
             final_gcal_result=final_gcal_result,
@@ -744,12 +747,13 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return vs_results
 
-    def _compare_visstat_results(self, stats: str, threshold: float, session_vs_results: dict, vis_vs_results: dict,
+    @staticmethod
+    def _compare_visstat_results(stats: str, threshold: float, session_vs_results: dict, vis_vs_results: dict,
                                  spwmaps: dict) -> dict:
         # Define function for determining the difference in given visstat
         # derived statistic between session MS and individual MS.
-        def compute_diff(vres, sres, stat):
-            return abs(vres[stat] - sres[stat]) / sres[stat]
+        def compute_diff(vres, sres, st):
+            return abs(vres[st] - sres[st]) / sres[st]
 
         # Collect difference to put in task result.
         diffs = {}
@@ -760,9 +764,9 @@ class Polcal(basetask.StandardTaskTemplate):
         for obsid, (vis, vis_vs_result) in enumerate(vis_vs_results.items()):
             session_vs_result = session_vs_results[obsid]
             diffs[vis] = {}
-            for spw_id, vres in vis_vs_result.items():
+            for spw_id, visres in vis_vs_result.items():
                 for stat in stats_to_compare:
-                    diffs[vis][stat] = compute_diff(vres, session_vs_result[spwmaps[vis][spw_id]], stat)
+                    diffs[vis][stat] = compute_diff(visres, session_vs_result[spwmaps[vis][spw_id]], stat)
 
                     # If the relative difference is above the threshold, then
                     # report the difference to the CASA log.
