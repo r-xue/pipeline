@@ -1597,7 +1597,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         # construct the renderers so we know what the back/forward links will be
         # sort the rows so the links will be in the same order as the rows
         image_rows.sort(key=lambda row: (row.image_file.split(
-            '.')[0], utils.natural_sort_key(row.datatype, row.field+': '+str(row.spw)), row.pol))
+            '.')[0], row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
         temp_urls = (None, None, None)
         qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split(
             '.')[0], row.field, str(row.spw), row.pol, row.datatype, temp_urls, row.cube_all_cont) for row in image_rows]
@@ -1664,7 +1664,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 final_rows.append(row)
 
         # primary sort images by vis, datatype, field, secondary sort on spw, then by pol
-        final_rows.sort(key=lambda row: (row.vis, utils.natural_sort_key(row.datatype, row.field+': '+str(row.spw)), row.pol))
+        final_rows.sort(key=lambda row: (row.vis, row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
 
         chk_fit_rows = []
         for row in final_rows:
