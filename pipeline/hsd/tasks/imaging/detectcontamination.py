@@ -3,17 +3,24 @@
 # This code is originally provided by Yoshito Shimajiri.
 # See PIPE-251 for detail about this.
 
+import collections
 from math import ceil
 import os
-import numpy as np
+from typing import TYPE_CHECKING, NewType, Optional, Tuple
+
 import matplotlib
 import matplotlib.pyplot as plt
-import collections
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
 from ..common import display as sd_display
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure import Context
+    from pipeline.infrastructure.imagelibrary import ImageItem
+    CubeRegrid = NewType('CubeRegrid', np.ndarray[np.ndarray[np.ndarray[np.float64]]])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -31,30 +38,72 @@ FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
 DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
 
-# To find the emission free channels roughly for estimating RMS
-def decide_rms(naxis3: int, cube_regrid, inverted: bool=False):
-    rms_maps = [__slice_cube_regrid(naxis3, cube_regrid, x, inverted) for x in range(2, 8)]
+def decide_rms(naxis3: int, cube_regrid: 'CubeRegrid', inverted: bool) -> 'np.ndarray[np.ndarray[np.float64]]':
+    """Find the emission free channels roughly for estimating RMS.
+    
+    Split a chunk of the cube generated from FITS image into 10 chunks, and discards 2 chunks
+    on each end (index 0, 1, and 8, 9), then return the chunk that has the smallest average RMS value
+    for each of the remaining 6 chunks.
+
+    Args:
+        naxis3 : value of axis3
+        cube_regrid : data chunk loaded from image cube
+        inverted : flag of channel-inverted image cube. Defaults to False.
+
+    Returns:
+        RMS map of the part of the cube.
+    """
+    rms_maps = [__slice_and_calc_RMS_of_cube_regrid(naxis3, cube_regrid, x, inverted) for x in range(2, 8)]
     rms_check = np.array([np.nanmean(rms_maps[x]) for x in range(6)])
     rms_map = rms_maps[np.argmin(rms_check)]
     LOG.info("RMS: {}".format(np.nanmean(rms_map)))
     return rms_map
 
 
-# Slice cube_regrid from position to position+1
-def __slice_cube_regrid(naxis3: int, cube_regrid, pos, inverted: bool):
+def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'CubeRegrid', pos: int,
+                                        inverted: bool) -> 'np.ndarray[np.ndarray[np.float64]]':
+    """Get one chunk from 10 chunks of cube_regrid, and calculate RMS of it.
+
+    Args:
+        naxis3 : value of axis3
+        cube_regrid : data chunk loaded from image cube
+        pos : position to slice
+        inverted (bool): flag of channel-ibverted image cube
+
+    Returns:
+        RMS array of a part of the cube.
+    """
     if inverted:
         start_rms_ch, end_rms_ch = ceil(naxis3 * pos / 10), ceil(naxis3 * (pos + 1) / 10)
     else:
         start_rms_ch, end_rms_ch = int(naxis3 * pos / 10), int(naxis3 * (pos + 1) / 10)
-    return ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
+    return ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + \
+            (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
 
 
-# Function for making fiures
-def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
-                 masked_average_spectrum, all_average_spectrum,
-                 naxis3, peak_sn_threshold, spectrum_at_peak,
-                 idy, idx, output_name, fspec=None, dspec=None):
+def make_figures(peak_sn: 'np.ndarray[np.ndarray[np.float64]]', mask_map: 'np.ndarray[np.ndarray[np.float64]]',
+                 rms_threshold: float, rms_map: 'np.ndarray[np.ndarray[np.float64]]',
+                 masked_average_spectrum: 'np.ndarray[np.float64]', all_average_spectrum: 'np.ndarray[np.float64]',
+                 naxis3: int, peak_sn_threshold: float, spectrum_at_peak: 'np.ndarray[np.float64]',
+                 idy: np.int64, idx: np.int64, output_name: str, fspec: FrequencySpec=None, dspec: DirectionSpec=None):
+    """Make figures of Contamination.
 
+    Args:
+        peak_sn : array of peak of SN
+        mask_map : array of mask map
+        rms_threshold : RMS threshold
+        rms_map : array of RMS map
+        masked_average_spectrum : list of masked average spectrum
+        all_average_spectrum : list of all average spectrum
+        naxis3 : value of axis3
+        peak_sn_threshold : peak SN threshold
+        spectrum_at_peak : list of spectrum at peak
+        idy : index y
+        idx : index x
+        output_name : output file name
+        fspec : FrequensySpec(NamedTuple). Defaults to None.
+        dspec : DirectionSpec(NamedTuple). Defaults to None.
+    """
     std_value = np.nanstd(masked_average_spectrum)
     plt.figure(MATPLOTLIB_FIGURE_NUM, figsize=(20, 5))
     a1 = plt.subplot(1, 3, 1)
@@ -77,9 +126,6 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
             plt.setp(ylabels, 'rotation', pointing.DECrotation)
         kw['extent'] = Extent
         dunit = dspec.ref
-        mdec = (dspec.mindec + dspec.maxdec) / 2 * np.pi / 180
-        dx = (Extent[0] - Extent[1]) / peak_sn.shape[1]
-        dy = (Extent[3] - Extent[2]) / peak_sn.shape[0]
         # Pixel coordinate -> Axes coordinate
         scx = (idx + 0.5) / peak_sn.shape[1]
         scy = (idy + 0.5) / peak_sn.shape[0]
@@ -150,21 +196,33 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     return
 
 
-def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
+def warn_deep_absorption_feature(masked_average_spectrum: 'np.ndarray[np.float64]', imageitem: 'ImageItem'=None):
+    """Warn if deep absouption feature.
+
+    Args:
+        masked_average_spectrum: Array of masked average spectrum.
+        imageitem : ImageItem object. Defaults to None.
+    """
     std_value = np.nanstd(masked_average_spectrum)
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
         if imageitem is not None:
             field = imageitem.sourcename
             spw = ','.join(map(str, np.unique(imageitem.spwlist)))
-            warning_sentence = f'Field {field} Spw {spw}: ' \
-                              'Absorption feature is detected ' \
-                              'in the lower S/N area. ' \
-                              'Please check calibration result in detail.'
+            warning_sentence = f'Field {field} Spw {spw}: '
+            'Absorption feature is detected in the lower S/N area. '
+            'Please check calibration result in detail.'
         LOG.warning(warning_sentence)
 
 
-# Function for reading FITS and its header (CASA version)
-def read_fits(input):
+def read_fits(input: str) -> Tuple['CubeRegrid', int, int, int, float, float]:
+    """Read FITS and its header (CASA version).
+
+    Args:
+        input : FITS image
+
+    Returns:
+        data chunk generated from FITS, axises, and deltas
+    """
     LOG.info("FITS: {}".format(input))
     with casa_tools.ImageReader(input) as ia:
         cube = ia.getchunk()
@@ -182,7 +240,14 @@ def read_fits(input):
     return cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3
 
 
-def detect_contamination(context, imageitem, inverted=False):
+def detect_contamination(context: 'Context', imageitem: 'ImageItem', inverted: Optional[bool]=False):
+    """Detect contamination. The main routine of the module.
+
+    Args:
+        context : object of Pipeline Context
+        imageitem : object of ImageItem
+        inverted : flag of channel-inverted image. Defaults to False.
+    """
     imagename = imageitem.imagename
     LOG.info("=================")
     stage_number = context.task_counter
