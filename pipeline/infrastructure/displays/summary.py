@@ -1169,13 +1169,8 @@ class SpwIdVsFreqChart(object):
                 list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
                 list_all_spwids.extend(list_spwids)
                 list_all_indice.extend(list_indice)
-                len_spwids = len(list_spwids)
-                start = len_spwids*index
-                end = len_spwids*(index+1)
-                fmins = list_fmin[start:end]
-                bws = list_bw[start:end]
-                ax.barh(list_indice, bws, height=0.4, left=fmins)
                 index += 1
+            ax.barh(list_all_indice, list_bw, height=0.4, left=list_fmin)
         else:  # For ALMA and NRO
             for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
                 shift = len(list_all_spwids)
@@ -1218,7 +1213,7 @@ class SpwIdVsFreqChart(object):
             for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                 ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
         else:  # For VLA
-            if len(list_spwids_baseband) < 16:
+            if len(list_all_spwids) < 16:
                 for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                     ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
             else:
