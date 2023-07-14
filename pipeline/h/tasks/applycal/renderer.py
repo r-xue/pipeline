@@ -19,14 +19,13 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.displays.summary import UVChart
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.renderer.logger import Plot
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
 from pipeline.infrastructure.renderer.basetemplates import JsonPlotRenderer
-from ..common import flagging_renderer_utils as flagutils
+from ..common import flagging_renderer_utils as flagutils, mstools
 from ..common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
@@ -793,102 +792,29 @@ def get_brightest_field(ms, source, intent='TARGET'):
         LOG.info('Only one %s target for Source #%s. Bypassing brightest target selection.', intent, source.id)
         return fields_for_source[0]
 
-    visstat_fields, visstat_spws = get_visstat_data_selection(ms, fields_for_source, spw_ids, intent)
-    if not visstat_fields:
-        LOG.info('All data flagged. Bypassing brightest target selection.')
-        return fields_for_source[0]
-
     # a list of (field, field flux) tuples
-    median_flux = []
-
-    # defines the parameters for the visstat job
-    job_params = {
-        'vis': ms.name,
-        'axis': 'amp',
-        'datacolumn': 'corrected',
-        'spw': ','.join((str(spw_id) for spw_id in sorted(visstat_spws))),
-        'field': ','.join((str(field.id) for field in sorted(visstat_fields, key=operator.attrgetter('id')))),
-        'intent': utils.to_CASA_intent(ms, intent),
-        'reportingaxes': 'field',
-        'useflags': True
-    }
-
-    # run visstat for each scan selection for the target
-    LOG.info('Calculating which %s field has the highest median flux for Source #%s', intent, source.id)
-    job = casa_tasks.visstat(**job_params)
-    visstat_result = job.execute(dry_run=False)
-
-    # representative visstat output:
-    #  'FIELD_ID=6': {'median': 2.4579226970672607}
-    for k, v in visstat_result.items():
-        _, field_id = k.split('=')
-        measurement_field = [f for f in fields_for_source if f.id == int(field_id)][0]
-        median_flux.append((measurement_field, float(v['median'])))
+    mean_flux = []
+    for field in fields_for_source:
+        fluxes_for_field = []
+        for spwid in spw_ids:
+            fluxes_for_field_and_spw = mstools.compute_mean_flux(ms, field.id, spwid, intent)[0]
+            if fluxes_for_field_and_spw:
+                fluxes_for_field.append(fluxes_for_field_and_spw)
+        if fluxes_for_field:
+            mean_flux.append((field, sum(fluxes_for_field) / len(fluxes_for_field)))
 
     LOG.debug('Median flux for %s targets:', intent)
-    for field, field_flux in median_flux:
+    for field, field_flux in mean_flux:
         LOG.debug('\t{!r} ({}): {}'.format(field.name, field.id, field_flux))
 
     # find the ID of the field with the highest average flux
-    sorted_by_flux = sorted(median_flux, key=operator.itemgetter(1), reverse=True)
+    sorted_by_flux = sorted(mean_flux, key=operator.itemgetter(1), reverse=True)
     brightest_field, highest_flux = sorted_by_flux[0]
 
     LOG.info('{} field {!r} (#{}) has highest median flux ({})'.format(
         intent, brightest_field.name, brightest_field.id, highest_flux
     ))
     return brightest_field
-
-
-def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
-    """
-    Validate a visstat data selection, removing field/spw combinations that
-    are completely flagged.
-
-    :param ms: MeasurementSet object, used to get MS filename
-    :param fields_for_source: iterable of Field domain objects
-    :param spw_ids: iterable of integer spw IDs
-    :return: ([Field, Field, ...], [int, int, ...])
-    """
-    LOG.info('Finding flagged data selections for {}'.format(ms.basename))
-
-    #
-    # PIPE-446: handle visstat exception
-    #
-    # Visstat raises an exception if a field is completely flagged.
-    # Unfortunately it doesn't report which is the problem field, so we have
-    # to find that by inspecting flagdata summaries, one for each field.
-    #
-    casa_intent = utils.to_CASA_intent(ms, intent)
-    inpfile = ["mode='summary' name='field_{}_spw_{}' field='{}' spw='{}' intent='{}'".format(field.id, spw_id, field.id, spw_id, casa_intent)
-               for field in sorted(fields_for_source, key=operator.attrgetter('id'))
-               for spw_id in sorted(spw_ids)]
-    flagdata_job = casa_tasks.flagdata(vis=ms.name, datacolumn='corrected', mode='list', inpfile=inpfile)
-    flagdata_result = flagdata_job.execute(dry_run=False)
-
-    spw_to_fields_for_visstat_job = {spw: set(fields_for_source) for spw in spw_ids}
-
-    for flagdata_summary in flagdata_result.values():
-        num_flagged_rows = flagdata_summary['flagged']
-        num_rows = flagdata_summary['total']
-        if num_flagged_rows == num_rows:
-            _, flagged_field, _, flagged_spw = flagdata_summary['name'].split('_')
-            LOG.info('Discarding field %s spw %s as a visstat candidate', flagged_field, flagged_spw)
-            field_to_remove = ms.fields[int(flagged_field)]
-            spw_to_fields_for_visstat_job[int(flagged_spw)].remove(field_to_remove)
-
-    # Take the spw(s) with the largest number of <100% flagged fields.
-    #
-    # Different spws could have the same number of fields but a different
-    # selection of fields (e.g., a different field in each spw has been flagged).
-    # We don't care which field set is selected when multiple spws give the
-    # same number of good fields.
-    fields_for_job = max(spw_to_fields_for_visstat_job.values(), key=len)
-
-    # Identify the spws that are good for the job fields we just identified.
-    spws_for_job_fields = {spw_id for spw_id, fields_for_spw in spw_to_fields_for_visstat_job.items()
-                           if fields_for_job.issubset(fields_for_spw)}
-
-    return fields_for_job, spws_for_job_fields
 
 
 def copy_callibrary(results: ResultsList, report_dir: str) -> Dict[str, str]:
