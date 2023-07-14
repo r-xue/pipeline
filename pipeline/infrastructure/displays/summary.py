@@ -1127,7 +1127,7 @@ class SpwIdVsFreqChart(object):
             Plot object
         """
         if DISABLE_PLOTMS:
-            LOG.info('Disabling spwid_vs_freq plot due to problems with plotms')
+            LOG.debug('Disabling spwid_vs_freq plot due to problems with plotms')
             return None
 
         filename = self.inputs.output
@@ -1149,21 +1149,49 @@ class SpwIdVsFreqChart(object):
         list_indice = []
         list_all_indice = []
         index = 0
-        for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
-            shift = len(list_all_spwids)
-            list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
-            list_all_spwids.extend(list_spwids)
-            list_all_indice.extend(list_indice)
-            len_spwids = len(list_spwids)
-            start = len_spwids*index
-            end = len_spwids*(index+1)
-            fmins = list_fmin[start:end]
-            bws = list_bw[start:end]
-            ax.barh(list_indice, bws, height=0.4, left=fmins)
-            index += 1
-        ax.set_title('Spectral Window ID vs. Frequency (GHz)', loc='center')  ###
+        if self.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
+            banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+            list_spwids_baseband = []
+            for band in banddict:
+                LOG.info("band = {}".format(band))
+                for baseband in banddict[band]:
+                    LOG.info("baseband = {}".format(baseband))
+                    spw = []
+                    minfreqs = []
+                    maxfreqs = []
+                    list_spwids = []
+                    for spwitem in banddict[band][baseband]:
+                        spw.append([*spwitem][0])
+                    list_spwids_baseband.append(spw)
+
+            for list_spwids in list_spwids_baseband:
+                shift = len(list_all_spwids)
+                list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
+                list_all_spwids.extend(list_spwids)
+                list_all_indice.extend(list_indice)
+                len_spwids = len(list_spwids)
+                start = len_spwids*index
+                end = len_spwids*(index+1)
+                fmins = list_fmin[start:end]
+                bws = list_bw[start:end]
+                ax.barh(list_indice, bws, height=0.4, left=fmins)
+                index += 1
+        else:  # For ALMA and NRO
+            for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
+                shift = len(list_all_spwids)
+                list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
+                list_all_spwids.extend(list_spwids)
+                list_all_indice.extend(list_indice)
+                len_spwids = len(list_spwids)
+                start = len_spwids*index
+                end = len_spwids*(index+1)
+                fmins = list_fmin[start:end]
+                bws = list_bw[start:end]
+                ax.barh(list_indice, bws, height=0.4, left=fmins)
+                index += 1
+
+        ax.set_title('Spectral Window ID vs. Frequency (GHz)', loc='center')
         ax.set_xlabel("Frequency (GHz)", fontsize=14)
-#        ax.set_ylabel("spw ID", fontsize=14)
         ax.invert_yaxis()
         x_min_start = min(list_fmin)
         x_max_end = max(list_fmax)
@@ -1173,12 +1201,7 @@ class SpwIdVsFreqChart(object):
         xmargin = 1
         ystep = 2
         ymargin = 2
-#        if x_min_start < x_max_end:
-#            x_majorticks = list(range(floor(x_min_start), ceil(x_max_end)+5*(xstep+xmargin), 5*xstep))
-#            x_minorticks = list(range(floor(x_min_start), ceil(x_max_end)+(xstep+xmargin), xstep))
-#        else:
-#            x_majorticks = list(range(floor(x_max_end), ceil(x_min_start)+5*(xstep+xmargin), 5*xstep))
-#            x_minorticks = list(range(floor(x_max_end), ceil(x_min_start)+(xstep+xmargin), xstep))
+
         if y_start < y_end:
             y_ticks = list(range(y_start-ystep, y_end+ystep+ymargin, ystep))
         else:
@@ -1186,18 +1209,41 @@ class SpwIdVsFreqChart(object):
         ax.grid(which="major", alpha=0.9)
         ax.grid(which="minor", alpha=0.5)
         ax.tick_params(labelsize=13)
-#        ax.set_xticks(x_majorticks)
-#        ax.set_xticks(x_minorticks, minor=True)
         ax.set_ylim(bottom=float(len(list_all_indice)), top=-1.0)
         ax.set_yticks([])
         yspace = 0.7*len(y_ticks) / (max(y_ticks) - min(y_ticks))
-        for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
-            ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
+
+        # Switch annotate
+        if self.context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):
+            for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
+                ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
+        else:  # For VLA
+            if len(list_spwids_baseband) < 16:
+                for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
+                    ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
+            else:
+                list_all_spwids = []
+                list_all_indice = []
+                k = 0
+                index = 0
+                for list_spwids in list_spwids_baseband:
+                    shift = len(list_all_spwids)
+                    list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
+                    list_all_spwids.extend(list_spwids)
+                    list_all_indice.extend(list_indice)
+                    len_spwids = len(list_spwids)
+                    start = len_spwids*k
+                    end = len_spwids*(k+1)
+                    fmins = list_fmin[start:end]
+                    bws = list_bw[start:end]
+                    step = len(list_spwids_baseband)+1
+                    for f, w, spwid, idx in zip(fmins[::step], bws[::step], list_spwids[::step], list_indice[::step]):
+                        ax.annotate('%s' % spwid, (f+w/2, idx-yspace), fontsize=14)
+                    k += 1
 
         # Make a plot of frequency vs. atm transmission (right y-axis)
         atm_color = 'm'
         axes_atm = ax.twinx()
-#        axes_atm.set_xlim(min(x_minorticks)-xmargin, max(x_minorticks)+xmargin)
         axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
         axes_atm.set_ylim(0, 1.05)
         axes_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
@@ -1210,7 +1256,6 @@ class SpwIdVsFreqChart(object):
             atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
             axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-')
 
-        fig.tight_layout()
         fig.savefig(filename)
         plt.clf()
         plt.close()
