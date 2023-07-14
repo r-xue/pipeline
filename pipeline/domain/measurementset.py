@@ -93,6 +93,7 @@ class MeasurementSet(object):
         self.reference_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
         self.data_column: dict = {}
+        self.exclude_num_chans: Tuple[int, int] = (1, 4)
 
         # The ALMA Common Software version used to create this MS, if ALMA. Otherwise, None
         # (PIPE-132)
@@ -534,14 +535,14 @@ class MeasurementSet(object):
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK', 'DIFFGAIN'}
-            return [w for w in spws if w.num_channels not in (1, 4)
+            return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents)]
 
         if self.antenna_array.name == 'VLA' or self.antenna_array.name == 'EVLA':
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
-            return [w for w in spws if w.num_channels not in (1, 4)
+            return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents) and 'POINTING' not in w.intents]
 
         if self.antenna_array.name == 'NRO':
@@ -593,7 +594,7 @@ class MeasurementSet(object):
             phasecalspws = []
             sciencespws = []
             for w in spws:
-                if w.num_channels not in (1,4) and 'DIFFGAIN' in w.intents:
+                if w.num_channels not in self.exclude_num_chans and 'DIFFGAIN' in w.intents:
                     if 'PHASE' in w.intents:
                         phasecalspws.append(w)
                     elif 'TARGET' in w.intents:
@@ -615,6 +616,10 @@ class MeasurementSet(object):
         if 'DIFFGAIN' in self.intents:
             # examine only the first spw, the setup is expected to be the same for all spws
             diffspw = self.get_diffgain_spectral_windows()
+            if not diffspw['REFERENCE']:
+                raise ValueError(f'DIFFGAIN intent missing in calibration sources for dataset {self.basename}')
+            if not diffspw['SCIENCE']:
+                raise ValueError(f'DIFFGAIN intent missing in science sources for dataset {self.basename}')
             refcent = diffspw['REFERENCE'][0].centre_frequency.value
             scicent = diffspw['SCIENCE'][0].centre_frequency.value
             refwidth = diffspw['REFERENCE'][0].bandwidth.value
@@ -637,7 +642,7 @@ class MeasurementSet(object):
         return set(itertools.chain(*obs_modes))
 
     def get_alma_cycle_number(self) -> Optional[int]:
-        """"
+        """
         Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.
 
         Returns: 
