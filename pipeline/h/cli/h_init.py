@@ -1,10 +1,12 @@
 from casatasks import casalog
 
-from . import cli
-import pipeline.infrastructure.launcher as launcher
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.launcher as launcher
+
+from . import cli, utils
 
 
+@utils.cli_wrapper
 def h_init(loglevel='info', plotlevel='default', weblog=True):
 
     """

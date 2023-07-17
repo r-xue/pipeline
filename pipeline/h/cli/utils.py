@@ -1,3 +1,4 @@
+from functools import wraps
 import pprint
 
 import pipeline.infrastructure as infrastructure
@@ -9,6 +10,16 @@ from . import cli
 from .. import heuristics
 
 LOG = infrastructure.get_logger(__name__)
+
+
+def cli_wrapper(func):
+    @wraps(func)
+    def wrapped_func(*args, **kwargs):
+        if 'pipelinemode' in kwargs:
+            LOG.warning('The task argument "pipelinemode" is deprecated')
+            kwargs.pop('pipelinemode')
+        return func(*args, **kwargs)
+    return wrapped_func
 
 
 def get_context():
