@@ -114,6 +114,19 @@ def hif_editimlist(imagename=None,
     uvtaper              Used to set a uv-taper during clean.
     uvrange              Set of data selection uv ranges, \'\' for all.
     width                Channel width
+    spw_reject           If True, reject VLASS Coarse Cube planes with high flagging percentages.
+                         Only used for the 'VLASS-SE-CUBE' imaging mode.
+                         default: True
+    spw_reject_exclude   Spectral windows to be excluded from the VLASS Coarse Cube plane rejection heuristics.
+                         Only used for the 'VLASS-SE-CUBE' imaging mode.
+                         default: ''
+    spw_reject_flagpct   Flagging percentage threshold per field for the VLASS Coarse Cube plane rejection heuristics
+                         Only used for the 'VLASS-SE-CUBE' imaging mode.
+                         default: 0.9
+    spw_reject_nfield    Threshold of the number of fields above the flagging percentage threshold for the VLASS Coarse 
+                         Cube plane rejection heuristics.
+                         Only used for the 'VLASS-SE-CUBE' imaging mode.
+                         default: 12
     pipelinemode         The pipeline operating mode. In 'automatic' mode the pipeline
                          determines the values of all context defined pipeline inputs automatically.
                          In 'interactive' mode the user can set the pipeline context defined
