@@ -637,6 +637,43 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         # at both ends, i.e., [start, end]
         return ';'.join([f'{s}~{e - 1}' for s, e in range_list])
 
+    def get_line_free_channels(self) -> List[int]:
+        """Get list of line-free channels.
+
+        Returns:
+            Indices of line-free channels
+        """
+        # per-channel mask to diffentiate line/line-free regions
+        # line regions: False
+        # line-free regions: True
+        is_line_free = np.ones(self.image.nchan, dtype=bool)
+
+        # invalidate line regions
+        for line in self.valid_lines():
+            line_center, line_width = line[:2]
+            line_start = int(round(line_center - line_width / 2))
+            line_end = int(round(line_start + line_width))
+            is_line_free[line_start:line_end] = False
+
+        return np.where(is_line_free)[0]
+
+    def compute_per_channel_stats(self) -> dict:
+        """Compute per-channel statistics of cube image.
+
+        Returns:
+            Statistics dictionary
+        """
+        spectral_axis = self.image.id_spectral
+        axes = list(range(len(self.image.image_shape)))
+        axes.pop(spectral_axis)
+        with casa_tools.ImageReader(self.imagename) as ia:
+            # cf. hif/tasks/tclean/tclean.py cube_stats_masked
+            stats = ia.statistics(
+                robust=True, stretch=True,
+                axes=axes, algorithm='chauvenet', maxiter=5
+            )
+        return stats
+
 
 def invert_range_list(range_list: List[List[int]], nchan: int) -> List[List[int]]:
     """Invert channel range list.

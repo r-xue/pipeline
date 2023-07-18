@@ -258,8 +258,6 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 class SDMomentMapDisplay(SDImageDisplay):
     """Plotter to create a moment map."""
 
-    MAP_TITLE = "Max Intensity Map"
-
     def __init__(self, inputs: SDImageDisplayInputs) -> None:
         """Create SDMomentMapDisplay instance.
 
@@ -328,8 +326,18 @@ class SDMomentMapDisplay(SDImageDisplay):
         plot_list = []
 
         for imagename in self.moment_images:
+
             if not os.path.exists(imagename):
                 continue
+
+            split_imagename = imagename.split('.')
+            moment_type = split_imagename[-1]
+            chans = split_imagename[-2]
+
+            if moment_type == 'maximum':
+                map_title = 'Max Intensity Map'
+            else:  # 'integrated'
+                map_title = 'Integrated Intensity Map'
 
             image = SpectralImage(imagename)
             data = image.data
@@ -341,10 +349,26 @@ class SDMomentMapDisplay(SDImageDisplay):
                 Total = numpy.flipud(masked_data.transpose())
                 del masked_data
 
+                if moment_type == 'maximum' and chans == 'line_free':
+                    # adjust color scale according to the logic described in PIPE-373/PIPE-197
+                    with casa_tools.ImageReader(imagename) as ia:
+                        # cf. hif/tasks/tclean/tclean.py mom8_stats
+                        stats = ia.statistics(robust=True, stretch=True)
+                    tmin = stats['median'] - stats['medabsdevmed']
+
+                    per_channel_stats = self.inputs.compute_per_channel_stats()
+                    line_free_channels = self.inputs.get_line_free_channels()
+                    sigma = numpy.median(per_channel_stats['sigma'][line_free_channels])
+                    tmax = 10 * sigma
+                else:
+                    tmin = Total.min()
+                    tmax = Total.max()
+
                 # 2008/9/20 DEC Effect
-                im = axes_tpmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-                tmin = Total.min()
-                tmax = Total.max()
+                im = axes_tpmap.imshow(
+                    Total, interpolation='nearest', aspect=self.aspect, extent=Extent,
+                    vmin=tmin, vmax=tmax
+                )
                 del Total
 
                 xlim = axes_tpmap.get_xlim()
@@ -363,7 +387,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                     beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
                                                      self.dec_min)
 
-                axes_tpmap.set_title(self.MAP_TITLE, size=TickSize)
+                axes_tpmap.set_title(map_title, size=TickSize)
                 axes_tpmap.set_xlim(xlim)
                 axes_tpmap.set_ylim(ylim)
 
@@ -373,9 +397,6 @@ class SDMomentMapDisplay(SDImageDisplay):
 
                 im.remove()
 
-                split_imagename = imagename.split('.')
-                moment_type = split_imagename[-1]
-                chans = split_imagename[-2]
                 parameters = {}
                 parameters['intent'] = 'TARGET'
                 parameters['spw'] = self.inputs.spw
