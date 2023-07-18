@@ -2,14 +2,12 @@ import os
 from typing import List
 
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
 from . import applycal
 from . import common
 
@@ -114,10 +112,10 @@ class GainRatioRMSVsScanChart(object):
         return os.path.join(self.output_dir, png)
 
     def _create_plot(self, figfile):
-        # Compute the gain ratio RMS per scan before and after polarization
+        # Retrieve the gain ratio RMS per scan before and after polarization
         # calibration.
-        scans_before, rrms_before = self._compute_gain_ratio_rms(self.result.init_gcal_result.final[0].gaintable)
-        scans_after, rrms_after = self._compute_gain_ratio_rms(self.result.final_gcal_result.final[0].gaintable)
+        scans_before, rrms_before = self.result.gain_ratio_rms_prior
+        scans_after, rrms_after = self.result.gain_ratio_rms_after
 
         # Create plot with Matplotlib.
         fig, ax = plt.subplots()
@@ -130,22 +128,6 @@ class GainRatioRMSVsScanChart(object):
         ax.legend(numpoints=1)
         plt.savefig(figfile)
         plt.close()
-
-    @staticmethod
-    def _compute_gain_ratio_rms(caltable):
-        # Retrieve gains and scan from caltable.
-        with casa_tools.TableReader(caltable) as table:
-            scans = table.getcol('SCAN_NUMBER')
-            gains = np.squeeze(table.getcol('CPARAM'))
-
-        # Compute the gain ratio RMS for each scan.
-        uniq_scans = sorted(set(scans))
-        ratio_rms = np.zeros(len(uniq_scans))
-        for ind, scanid in enumerate(uniq_scans):
-            filt = np.where(scans == scanid)[0]
-            ratio_rms[ind] = np.sqrt(np.average(np.power(np.abs(gains[0, filt]) / np.abs(gains[1, filt]) - 1.0, 2.)))
-
-        return uniq_scans, ratio_rms
 
 
 class PhaseVsChannelChart(object):

@@ -48,10 +48,10 @@ class PolcalResults(basetask.Results):
 
 class PolcalSessionResults(basetask.Results):
     def __init__(self, session=None, vis=None, final=None, pool=None, vislist=None, polcal_field_name=None, refant=None,
-                 init_gcal_result=None, uncal_pfg_result=None, best_scan_id=None, kcross_result=None,
-                 polcal_phase_result=None, final_gcal_result=None, cal_pfg_result=None, leak_polcal_result=None,
-                 xyratio_gcal_result=None, session_vs_result=None, vis_vs_results=None, vs_diffs=None,
-                 polcal_amp_results=None):
+                 init_gcal_result=None, gain_ratio_rms_prior=None, uncal_pfg_result=None, best_scan_id=None,
+                 kcross_result=None, polcal_phase_result=None, final_gcal_result=None, gain_ratio_rms_after=None,
+                 cal_pfg_result=None, leak_polcal_result=None, xyratio_gcal_result=None, session_vs_result=None,
+                 vis_vs_results=None, vs_diffs=None, polcal_amp_results=None):
 
         super().__init__()
 
@@ -69,11 +69,13 @@ class PolcalSessionResults(basetask.Results):
         self.polcal_field_name = polcal_field_name
         self.refant = refant
         self.init_gcal_result = init_gcal_result
+        self.gain_ratio_rms_prior = gain_ratio_rms_prior
         self.uncal_pfg_result = uncal_pfg_result
         self.best_scan_id = best_scan_id
         self.kcross_result = kcross_result
         self.polcal_phase_result = polcal_phase_result
         self.final_gcal_result = final_gcal_result
+        self.gain_ratio_rms_after = gain_ratio_rms_after
         self.cal_pfg_result = cal_pfg_result
         self.leak_polcal_result = leak_polcal_result
         self.xyratio_gcal_result = xyratio_gcal_result
@@ -177,6 +179,8 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"{session_msname}: compute initial gain calibration for polarization calibrator.")
         init_gcal_result = self._initial_gaincal(session_msname, refant)
         self._register_calapps_from_results([init_gcal_result])
+        # Compute gain ratio RMS per scan (prior to polarization calibration).
+        gain_ratio_rms_prior = self._compute_gain_ratio_rms(init_gcal_result)
 
         # Compute (uncalibrated) estimate of polarization of the polarization
         # calibrator.
@@ -213,6 +217,8 @@ class Polcal(basetask.StandardTaskTemplate):
         # polarization model.
         LOG.info(f"{session_msname}: compute final gain calibration for polarization calibrator.")
         final_gcal_result, final_gcal_calapps = self._final_gaincal(session_msname, vislist, refant, smodel, spwmaps)
+        # Compute gain ratio RMS per scan (after polarization calibration).
+        gain_ratio_rms_after = self._compute_gain_ratio_rms(final_gcal_result)
 
         # Recompute polarization of the polarization calibrator after
         # calibration.
@@ -294,11 +300,13 @@ class Polcal(basetask.StandardTaskTemplate):
             polcal_field_name=polcal_field_name,
             refant=refant,
             init_gcal_result=init_gcal_result,
+            gain_ratio_rms_prior=gain_ratio_rms_prior,
             uncal_pfg_result=uncal_pfg_result,
             best_scan_id=best_scan_id,
             kcross_result=kcross_result,
             polcal_phase_result=polcal_phase_result,
             final_gcal_result=final_gcal_result,
+            gain_ratio_rms_after=gain_ratio_rms_after,
             cal_pfg_result=cal_pfg_result,
             leak_polcal_result=leak_polcal_result,
             xyratio_gcal_result=xyratio_gcal_result,
@@ -465,6 +473,25 @@ class Polcal(basetask.StandardTaskTemplate):
         for calapp in calapps:
             LOG.debug(f'Adding calibration to callibrary in task-specific context:\n{calapp.calto}\n{calapp.calfrom}')
             self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
+
+    @staticmethod
+    def _compute_gain_ratio_rms(result: gaincal.common.GaincalResults) -> Tuple[List, List]:
+        # Get caltable to analyse.
+        caltable = result.final[0].gaintable
+
+        # Retrieve gains and scan from caltable.
+        with casa_tools.TableReader(caltable) as table:
+            scans = table.getcol('SCAN_NUMBER')
+            gains = np.squeeze(table.getcol('CPARAM'))
+
+        # Compute the gain ratio RMS for each scan.
+        uniq_scans = sorted(set(scans))
+        ratio_rms = np.zeros(len(uniq_scans))
+        for ind, scanid in enumerate(uniq_scans):
+            filt = np.where(scans == scanid)[0]
+            ratio_rms[ind] = np.sqrt(np.average(np.power(np.abs(gains[0, filt]) / np.abs(gains[1, filt]) - 1.0, 2.)))
+
+        return uniq_scans, list(ratio_rms)
 
     def _compute_polfromgain(self, vis: str, gcal_result: gaincal.common.GaincalResults) -> dict:
         # Get caltable to analyse, and set name of output caltable.
