@@ -2,6 +2,7 @@ import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
 
 from . import polcal
+from . import qa
 from . import renderer
 from .polcal import Polcal
 
