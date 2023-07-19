@@ -3,7 +3,6 @@ import itertools
 import math
 import operator
 import os
-
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -15,6 +14,7 @@ from pipeline.h.tasks.common import arrayflaggerbase
 from pipeline.h.tasks.common import flaggableviewresults
 from pipeline.h.tasks.common import ozone
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils.utils import find_ranges
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -561,7 +561,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 if rejected_flagging:
                     msg = ("Outliers provisionally found with flagging rule '{}' for {}, spw {}, pol {}{}, "
                            "channel {}, were not flagged because they overlap with known atmospheric ozone lines".
-                           format(rulename, os.path.basename(table), spw, pol, ants_as_str, rejected_flagging))
+                           format(rulename, os.path.basename(table), spw, pol, ants_as_str, find_ranges(rejected_flagging)))
                     # add a message at the "attention" level, creating a notification banner in the weblog
                     _log_outlier(msg, logging.ATTENTION)
 
@@ -1204,9 +1204,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     ind2flag[chan] = False
 
                 if rejected_flagging:
-                    msg = ("Outliers provisionally found with flagging rule '{}' for {}, spw {}, pol {}, "
-                           "channel {}, were not flagged because they overlap with known atmospheric ozone lines".
-                           format(rulename, os.path.basename(table), spw, pol, rejected_flagging))
+                    msg = ("Outliers that could have been flagged with '{}' for {}, spw {}, pol {}, channel {}, were "
+                           "removed from the flagging list because they overlap with known atmospheric ozone lines".
+                           format(rulename, os.path.basename(table), spw, pol, find_ranges(rejected_flagging)))
                     _log_outlier(msg, logging.ATTENTION)
 
                 # check again if any outliers remained after excluding those within ozone lines
