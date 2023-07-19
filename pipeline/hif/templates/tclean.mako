@@ -327,7 +327,7 @@ except:
                  %if image_info[0].intent == 'CHECK':
                     <th>peak SNR</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:250px;">${image_info[k].peak_snr}</td>
+                            <td style="width:250px;">${'{:.4}'.format(image_info[k].peak_snr)}</td>
                         %endfor
                     </tr>
                 %endif

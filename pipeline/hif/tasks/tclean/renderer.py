@@ -11,6 +11,7 @@ from random import randint
 import re
 
 import numpy
+import traceback
 
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
@@ -85,8 +86,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Get the scaled MAD from the non-pbcor image outside of a central radius to caculate the peakSNR for CHECK sources (PIPE-1296)
             if r.intent == 'CHECK': 
                 try:
-                    LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog'% image_path_non_pbcor)
                     image_path_non_pbcor = r.iterations[maxiter]['image']
+                    LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog'% image_path_non_pbcor)
 
                     with casa_tools.ImageReader(image_path_non_pbcor) as image:
                         non_pbcor_image_name = str(image.name(strippath=True))
@@ -102,8 +103,9 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         outside_circle_imstat = image.statistics(region=everything_but_central_circle, robust=True) 
                         scaled_mad = outside_circle_imstat['medabsdevmed'][0]
                 except Exception as e: 
-                    msg = "For {}, peakSNR calculation for the tclean weblog failed. Failed to calculate the MAD outside of a central radius. Error: {}".format(non_pbcor_image_name, str(e))
-                    LOG.warning(msg)
+                    msg = "PeakSNR calculation for the tclean weblog failed. Failed to calculate the MAD outside of a central radius. Error: {}".format(str(e))
+                    LOG.error(msg)
+                    LOG.error(traceback.format_exc())
                     scaled_mad = None
 
             image_path = r.iterations[maxiter]['image'].replace('.image', '.image%s' % extension)
