@@ -993,7 +993,7 @@ class SBSummaryTable(object):
 
                 # Create spectral dynamic range bandwidth goal
                 spectralDynamicRangeBandWidthGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'spectralDynamicRangeBandWidth')
-                if spectralDynamicRangeBandWidthGoal is not None:
+                if spectralDynamicRangeBandWidthGoal not in (None, 'None', 'none'):
                     spectralDynamicRangeBandWidth = qa.quantity(spectralDynamicRangeBandWidthGoal)
                 else:
                     spectralDynamicRangeBandWidth = qa.quantity(0.0)
