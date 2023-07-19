@@ -123,7 +123,14 @@ class Polcal(basetask.StandardTaskTemplate):
     # at once.
     is_multi_vis_task = True
 
-    def prepare(self):
+    def prepare(self) -> PolcalResults:
+        """
+        Execute polarization calibration heuristics and return Results object
+        that includes final caltables.
+
+        Returns:
+            PolcalResults instance.
+        """
         # Initialize results.
         result = PolcalResults(vis=self.inputs.vis)
 
@@ -136,7 +143,17 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return result
 
-    def analyse(self, result):
+    def analyse(self, result: PolcalResults) -> PolcalResults:
+        """
+        Analyze the PolcalResults: check that all caltables from
+        CalApplications exist on disk.
+
+        Args:
+            result: PolcalResults instance.
+
+        Returns:
+            PolcalResults instance.
+        """
         # For each session, check that the caltables were all generated.
         for session_name, sresults in result.session.items():
             on_disk = [ca for ca in sresults.pool if ca.exists() or self._executor._dry_run]
@@ -148,6 +165,17 @@ class Polcal(basetask.StandardTaskTemplate):
         return result
 
     def _polcal_for_session(self, session_name: str, vislist: List[str]) -> PolcalSessionResults:
+        """
+        Run polarization calibration heuristics for a single session and
+        corresponding list of measurement sets.
+
+        Args:
+            session_name: name of session.
+            vislist: list of measurement sets in session.
+
+        Returns:
+            PolcalSessionResults instance.
+        """
         LOG.info(f"Deriving polarization calibration for session '{session_name}' with measurement set(s):"
                  f" {utils.commafy(vislist, quotes=False)}.")
 
