@@ -3245,6 +3245,19 @@ def score_renorm(result):
 @log_qa
 def score_polcal_gain_ratio(session_name: str, xyratio_result: GaincalResults, threshold: float = 0.1) \
         -> List[pqa.QAScore]:
+    """
+    This QA heuristic inspects the gain ratios in a X-Y ratio caltable and
+    create a score based on how large the deviation from one is.
+
+    Args:
+        session_name: name of session being evaluated.
+        xyratio_result: Gaincal task result object containing the
+            CalApplication for the caltable to analyze.
+        threshold: threshold used to determine whether the gain ratio deviates
+            too much from 1 (resulting in a lowered score).
+    Returns:
+        List of QAScore objects.
+    """
     scores = []
     # Score each caltable in result.
     for calapp in xyratio_result.final:
@@ -3286,6 +3299,20 @@ def score_polcal_gain_ratio(session_name: str, xyratio_result: GaincalResults, t
 @log_qa
 def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, List], threshold: float = 0.02) \
         -> pqa.QAScore:
+    """
+    This QA heuristic receives gain ratio RMS corresponding to scan IDs, and
+    scores outliers beyond the threshold.
+
+    Args:
+        session_name: name of session being evaluated.
+        gain_ratio_rms: tuple containing a list of scan IDs and a list of
+            corresponding gain ratio RMS.
+        threshold: threshold used to determine whether the gain ratio RMS is
+            high enough to return a lowered score.
+
+    Returns:
+        QAScore object
+    """
     # Retrieve the gain ratio RMS and scan IDs.
     scanids, ratio_rms = gain_ratio_rms
 
@@ -3311,8 +3338,23 @@ def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, L
 
 @log_qa
 def score_polcal_leakage(session_name: str, ms: domain.MeasurementSet, leakage_result: PolcalWorkerResults,
-                         th_poor: float = 0.10, th_bad: float = 0.15) \
-        -> List[pqa.QAScore]:
+                         th_poor: float = 0.10, th_bad: float = 0.15) -> List[pqa.QAScore]:
+    """
+    This heuristic inspects the polarization calibrator leakage (D-terms)
+    solutions caltable and create a score based on how large the deviation from
+    zero is.
+
+    Args:
+        session_name: name of session being evaluated.
+        ms: measurement set object for one of the measurement sets in the
+            polcal session, used to retrieve antenna names.
+        leakage_result: PolcalWorker task result object containing the
+            CalApplication for the leakage caltable to analyze.
+        th_poor: threshold used to declare that leakage solutions are poor.
+        th_bad: threshold used to declare that leakage solutions are bad.
+    Returns:
+        List of QAScore objects.
+    """
     scores = []
     # Score each caltable in result.
     for calapp in leakage_result.final:
