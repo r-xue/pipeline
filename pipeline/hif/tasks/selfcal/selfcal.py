@@ -94,9 +94,10 @@ class SelfcalInputs(vdp.StandardInputs):
     dividing_factor = vdp.VisDependentProperty(default=None)
     check_all_spws = vdp.VisDependentProperty(default=False)
     inf_EB_gaincal_combine = vdp.VisDependentProperty(default=False)
+    refantignore = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, vis=None, field=None, spw=None, contfile=None,
-                 amplitude_selfcal=None, gaincal_minsnr=None,
+                 amplitude_selfcal=None, gaincal_minsnr=None,refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                  apply=None, parallel=None, recal=None):
@@ -109,6 +110,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.apply = apply
         self.parallel = parallel
         self.recal = recal
+        self.refantignore = refantignore
 
         self.amplitude_selfcal = amplitude_selfcal
         self.gaincal_minsnr = gaincal_minsnr
@@ -223,6 +225,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                     apply_cal_mode_default=self.inputs.apply_cal_mode_default,
                                     rel_thresh_scaling=self.inputs.rel_thresh_scaling,
                                     dividing_factor=self.inputs.dividing_factor,
+                                    refantignore=self.inputs.refantignore,
                                     check_all_spws=self.inputs.check_all_spws,
                                     do_amp_selfcal=self.inputs.amplitude_selfcal,
                                     inf_EB_gaincal_combine=inf_EB_gaincal_combine,

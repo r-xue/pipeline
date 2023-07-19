@@ -42,6 +42,7 @@ class SelfcalHeuristics(object):
                  check_all_spws=False,
                  do_amp_selfcal=False,
                  inf_EB_gaincal_combine='scan',
+                 refantignore='',
                  executor=None):
         """Initialize the class."""
         self.executor = executor
@@ -70,6 +71,7 @@ class SelfcalHeuristics(object):
         self.rel_thresh_scaling = rel_thresh_scaling
         self.dividing_factor = dividing_factor
         self.check_all_spws = check_all_spws
+        self.refantignore = refantignore
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
         self.inf_EB_gaintype = 'G'              # Options: 'G' or 'T' or 'G,T'
 
@@ -1326,7 +1328,7 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band][vis]['TOS'] = np.sum(scantimesdict[band][vis][target])
                     selfcal_library[target][band][vis]['Median_scan_time'] = np.median(scantimesdict[band][vis][target])
                     allscantimes = np.append(allscantimes, scantimesdict[band][vis][target])
-                    selfcal_library[target][band][vis]['refant'] = rank_refants(vis)
+                    selfcal_library[target][band][vis]['refant'] = rank_refants(vis, refantignore=self.refantignore)
                     selfcal_library[target][band][vis]['spws'] = band_properties[vis][band]['spwstring']
                     selfcal_library[target][band][vis]['spwsarray'] = band_properties[vis][band]['spwarray']
                     selfcal_library[target][band][vis]['spwlist'] = band_properties[vis][band]['spwarray'].tolist()

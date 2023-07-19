@@ -626,12 +626,12 @@ def rank_refants_old(vis):
     return ','.join(np.array(names)[np.argsort(score)])
 
 
-def rank_refants(vis):
+def rank_refants(vis, refantignore=None):
     """Rank the reference antenna for a measurement set."""
 
     refantobj = findrefant.RefAntHeuristics(vis=vis, field='',
                                             geometry=True, flagging=True, intent='', spw='',
-                                            refantignore=None)
+                                            refantignore=refantignore)
     refant_list = refantobj.calculate()
     LOG.info(f"refant list for {vis} = {refant_list!r}")
 
