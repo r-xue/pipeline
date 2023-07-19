@@ -30,8 +30,6 @@ from ..common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
 
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
-
 
 class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='applycal.mako', 
@@ -40,11 +38,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super(T2_4MDetailsApplycalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx, context, result):
-        weblog_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+    def update_mako_context(self, mako_context, pipeline_context, result):
+        weblog_dir = os.path.join(pipeline_context.report_dir, 'stage%s' % result.stage_number)
 
         # calculate which intents to display in the flagging statistics table
-        intents_to_summarise = flagutils.intents_to_summarise(context)
+        intents_to_summarise = flagutils.intents_to_summarise(pipeline_context)
         flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
         flag_table_intents.extend(intents_to_summarise)
 
@@ -52,7 +50,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for r in result:
             if r.inputs['flagsum'] is True:
                 flag_totals = utils.dict_merge(flag_totals,
-                                               flagutils.flags_for_result(r, context, intents_to_summarise=intents_to_summarise))
+                    flagutils.flags_for_result(r, pipeline_context, intents_to_summarise=intents_to_summarise))
 
         calapps = {}
         for r in result:
@@ -65,13 +63,13 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         filesizes = {}
         for r in result:
             vis = r.inputs['vis']
-            ms = context.observing_run.get_ms(vis)
+            ms = pipeline_context.observing_run.get_ms(vis)
             filesizes[ms.basename] = ms._calc_filesize()
 
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'applycal']
 
-        ctx.update({
+        mako_context.update({
             'flags': flag_totals,
             'calapps': calapps,
             'caltypes': caltypes,
@@ -86,14 +84,14 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         amp_vs_uv_subpages = {}
 
         amp_vs_time_summary_plots, amp_vs_time_subpages = self.create_plots(
-            context,
+            pipeline_context,
             result,
             applycal.AmpVsTimeSummaryChart,
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
         phase_vs_time_summary_plots, phase_vs_time_subpages = self.create_plots(
-            context,
+            pipeline_context,
             result,
             applycal.PhaseVsTimeSummaryChart,
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
@@ -107,7 +105,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # non-existing page, which will disable the link.
 
             plots, amp_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.AmpVsFrequencyFieldSummaryChart,
                 intents
@@ -119,7 +117,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, phase_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.PhaseVsFrequencyPerSpwSummaryChart,
                 intents
@@ -134,7 +132,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for intents in [['AMPLITUDE'], ['PHASE'], ['BANDPASS'], ['CHECK'],
                         ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, amp_vs_uv_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.AmpVsUVFieldSummaryChart,
                 intents
@@ -147,7 +145,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         (science_amp_vs_freq_summary_plots,
          science_amp_vs_freq_subpages,
          science_amp_vs_uv_summary_plots,
-         uv_max) = self.create_science_plots(context, result)
+         uv_max) = self.create_science_plots(pipeline_context, result)
 
         corrected_ratio_to_antenna1_plots = utils.OrderedDefaultdict(list)
         corrected_ratio_to_uv_dist_plots = {}
@@ -166,7 +164,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                        (['POLANGLE'], ''),
                                        (['POLLEAKAGE'], '')]:
                 p, _ = self.create_plots(
-                    context,
+                    pipeline_context,
                     [r],
                     applycal.CorrectedToModelRatioVsAntenna1SummaryChart,
                     intents,
@@ -177,7 +175,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     corrected_ratio_to_antenna1_plots[vis].extend(vis_plots)
 
             p, _ = self.create_plots(
-                context,
+                pipeline_context,
                 [r],
                 applycal.CorrectedToModelRatioVsUVDistanceSummaryChart,
                 ['AMPLITUDE'],
@@ -198,7 +196,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # plots relatively unchanged.
         #
         amp_vs_time_detail_plots, amp_vs_time_subpages = self.create_plots(
-            context,
+            pipeline_context,
             result,
             applycal.CAS9154AmpVsTimeDetailChart,
             ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -210,7 +208,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # detail plots. Don't need the return dictionary, but make sure a
             # renderer is passed so the detail page is written to disk
             amp_vs_freq_detail_plots, amp_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.AmpVsFrequencyDetailChart,
                 ['BANDPASS', 'PHASE', 'CHECK', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -218,7 +216,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             )
 
             phase_vs_freq_detail_plots, phase_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.PhaseVsFrequencyDetailChart,
                 ['BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -226,7 +224,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             )
 
             phase_vs_time_detail_plots, phase_vs_time_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.PhaseVsTimeDetailChart,
                 ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -241,7 +239,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (phase_vs_time_detail_plots, ApplycalPhaseVsTimePlotRenderer, phase_vs_time_subpages)):
             if d:
                 all_plots = list(utils.flatten([v for v in d.values()]))
-                renderer = plotter_cls(context, result, all_plots)
+                renderer = plotter_cls(pipeline_context, result, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
                     # redirect subpage links to master page
@@ -249,20 +247,20 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         subpages[vis] = renderer.path
 
         # CAS-11511: add plots of UV coverage.
-        if utils.contains_single_dish(context):
+        if utils.contains_single_dish(pipeline_context):
             uv_plots = None
         else:
-            uv_plots = self.create_uv_plots(context, result, weblog_dir)
+            uv_plots = self.create_uv_plots(pipeline_context, result, weblog_dir)
 
         # PIPE-615: Add links to the hif_applycal weblog for viewing each
         # callibrary table (and store all callibrary tables in the weblog
         # directory)
-        callib_map = copy_callibrary(result, context.report_dir)
+        callib_map = copy_callibrary(result, pipeline_context.report_dir)
 
         # PIPE-396: Suppress redundant plots from hifa_applycal
-        amp_vs_freq_summary_plots = deduplicate(context, amp_vs_freq_summary_plots)
-        amp_vs_uv_summary_plots = deduplicate(context, amp_vs_uv_summary_plots)
-        corrected_ratio_to_antenna1_plots = deduplicate(context, corrected_ratio_to_antenna1_plots)
+        amp_vs_freq_summary_plots = deduplicate(pipeline_context, amp_vs_freq_summary_plots)
+        amp_vs_uv_summary_plots = deduplicate(pipeline_context, amp_vs_uv_summary_plots)
+        corrected_ratio_to_antenna1_plots = deduplicate(pipeline_context, corrected_ratio_to_antenna1_plots)
 
         # PIPE-1327: Link outliers file in weblog
 
@@ -279,7 +277,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         else:
             outliers_path_link = ''
 
-        ctx.update({
+        mako_context.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
             'phase_vs_freq_plots': phase_vs_freq_summary_plots,
             'amp_vs_time_plots': amp_vs_time_summary_plots,
