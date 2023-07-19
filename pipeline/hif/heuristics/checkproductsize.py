@@ -53,7 +53,7 @@ class CheckProductSizeHeuristics(object):
         size_mitigation_parameters = {}
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context)
         makeimlist_inputs.intent = 'TARGET'
         makeimlist_inputs.specmode = 'cube'
         makeimlist_inputs.clearlist = True
@@ -85,7 +85,7 @@ class CheckProductSizeHeuristics(object):
 
         if nfields == 0:
             LOG.error('Cannot determine any default imaging targets')
-            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
+            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
 
         # Get representative target information
         repr_target, \
@@ -372,9 +372,6 @@ class CheckProductSizeHeuristics(object):
                 cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
                 LOG.info('spw mitigation leads to product size of %s GB' % (total_productsize))
 
-        # Save cube mitigated product size for logs
-        cube_mitigated_productsize = total_productsize
-
         if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
             LOG.error('Product size cannot be mitigated. Remaining factor: %.4f.' % (total_productsize / self.inputs.maxproductsize / nfields))
             return size_mitigation_parameters, \
@@ -449,7 +446,7 @@ class CheckProductSizeHeuristics(object):
         total_productsize = 0.0
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context)
         makeimlist_inputs.intent = 'TARGET'
         makeimlist_inputs.specmode = 'cont'
         makeimlist_inputs.clearlist = True
