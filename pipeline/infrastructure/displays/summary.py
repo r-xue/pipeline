@@ -1210,23 +1210,21 @@ class SpwIdVsFreqChart(object):
         yspace = 0.7*len(y_ticks) / (max(y_ticks) - min(y_ticks))
 
         # Switch annotate
-        if self.context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):
+        if self.context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):  # For ALMA and NRO
             for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                 ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
         else:  # For VLA
-            if len(list_all_spwids) < 4:
+            if len(list_all_spwids) < 16:  # small number spw
                 for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                     ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
-            else:
+            else:  # large number spw
                 list_all_spwids = []
-                list_all_indice = []
                 k = 0
                 index = 0
                 for list_spwids in list_spwids_baseband:
                     shift = len(list_all_spwids)
                     list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
                     list_all_spwids.extend(list_spwids)
-                    list_all_indice.extend(list_indice)
                     len_spwids = len(list_spwids)
                     start = len_spwids*k
                     end = len_spwids*(k+1)
