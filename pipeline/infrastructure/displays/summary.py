@@ -1149,7 +1149,8 @@ class SpwIdVsFreqChart(object):
         list_indice = []
         list_all_indice = []
         index = 0
-        if self.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
+
+        if self.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):  # For VLA
             banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
             list_spwids_baseband = []
             for band in banddict:
@@ -1163,7 +1164,6 @@ class SpwIdVsFreqChart(object):
                     for spwitem in banddict[band][baseband]:
                         spw.append([*spwitem][0])
                     list_spwids_baseband.append(spw)
-
             for list_spwids in list_spwids_baseband:
                 shift = len(list_all_spwids)
                 list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
@@ -1171,6 +1171,7 @@ class SpwIdVsFreqChart(object):
                 list_all_indice.extend(list_indice)
                 index += 1
             ax.barh(list_all_indice, list_bw, height=0.4, left=list_fmin)
+
         else:  # For ALMA and NRO
             for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
                 shift = len(list_all_spwids)
@@ -1213,7 +1214,7 @@ class SpwIdVsFreqChart(object):
             for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                 ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
         else:  # For VLA
-            if len(list_all_spwids) < 16:
+            if len(list_all_spwids) < 4:
                 for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                     ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
             else:
@@ -1231,8 +1232,8 @@ class SpwIdVsFreqChart(object):
                     end = len_spwids*(k+1)
                     fmins = list_fmin[start:end]
                     bws = list_bw[start:end]
-                    step = len(list_spwids_baseband)+1
-                    for f, w, spwid, idx in zip(fmins[::step], bws[::step], list_spwids[::step], list_indice[::step]):
+                    step = len(list_spwids)-1
+                    for f, w, spwid, idx in zip(fmins[0::step], bws[0::step], list_spwids[0::step], list_indice[0::step]):
                         ax.annotate('%s' % spwid, (f+w/2, idx-yspace), fontsize=14)
                     k += 1
 
@@ -1249,7 +1250,7 @@ class SpwIdVsFreqChart(object):
             antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
         for spwid in list_all_spwids:
             atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-            axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-')
+            axes_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', linestyle='-')
 
         fig.savefig(filename)
         plt.clf()
