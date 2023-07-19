@@ -239,22 +239,22 @@ class SelfcalHeuristics(object):
     def move_dir(self, old_dirname, new_dirname):
         """Move a directory to a new location."""
         if os.path.isdir(new_dirname):
-            LOG.warning(f"WARNING: {new_dirname} already exists. Will remove it first.")
+            LOG.info("%s already exists. Will remove it first.", new_dirname)
             self.cts.rmtree(new_dirname)
         if os.path.isdir(old_dirname):
             self.cts.move(old_dirname, new_dirname)
         else:
-            LOG.warning(f"WARNING: {old_dirname} does not exist")
+            LOG.info("%s does not exist", old_dirname)
 
     def copy_dir(self, old_dirname, new_dirname):
         """Copy a directory to a new location."""
         if os.path.isdir(new_dirname):
-            LOG.warning(f"WARNING: {new_dirname} already exists. Will remove it first.")
+            LOG.info("%s already exists. Will remove it first.", new_dirname)
             self.cts.rmtree(new_dirname)
         if os.path.isdir(old_dirname):
             self.cts.copytree(old_dirname, new_dirname)
         else:
-            LOG.warning(f"WARNING: {old_dirname} does not exist")
+            LOG.info("%s does not exist", old_dirname)
 
     def get_sensitivity(self):
 
