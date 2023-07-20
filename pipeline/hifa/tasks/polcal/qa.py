@@ -4,6 +4,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+from pipeline.h.tasks.common import commonhelpermethods
 from . import polcal
 
 LOG = logging.get_logger(__name__)
@@ -20,24 +21,23 @@ class PolcalQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         scores = []
 
-        # Create QA score for residual polarization (Q, U) after polarization
-        # has been applied.
-        for session_name, session_result in result.session.items():
-            scores.extend(qacalc.score_polcal_residual_pol(session_name, session_result.cal_pfg_result))
-
-        # Create QA score for gain ratio RMS after polarization correction.
-        for session_name, session_result in result.session.items():
-            scores.append(qacalc.score_polcal_gain_ratio_rms(session_name, session_result.gain_ratio_rms_after))
-
-        # Create QA score for D-term solutions.
         for session_name, session_result in result.session.items():
             # Get first MS from session for antenna ID > name translation.
             ms = context.observing_run.get_ms(name=session_result.vislist[0])
-            scores.extend(qacalc.score_polcal_leakage(session_name, ms, session_result.leak_polcal_result))
+            ant_names, _ = commonhelpermethods.get_antenna_names(ms)
 
-        # Create QA score for gain ratios.
-        for session_name, session_result in result.session.items():
-            scores.extend(qacalc.score_polcal_gain_ratio(session_name, session_result.xyratio_gcal_result))
+            # Create QA score for residual polarization (Q, U) after
+            # polarization has been applied.
+            scores.extend(qacalc.score_polcal_residual_pol(session_name, session_result.cal_pfg_result))
+
+            # Create QA score for gain ratio RMS after polarization correction.
+            scores.append(qacalc.score_polcal_gain_ratio_rms(session_name, session_result.gain_ratio_rms_after))
+
+            # Create QA score for D-term solutions.
+            scores.extend(qacalc.score_polcal_leakage(session_name, ant_names, session_result.leak_polcal_result))
+
+            # Create QA score for gain ratios.
+            scores.extend(qacalc.score_polcal_gain_ratio(session_name, ant_names, session_result.xyratio_gcal_result))
 
         # Add all scores to the QA pool
         result.qa.pool.extend(scores)

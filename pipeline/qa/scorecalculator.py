@@ -3243,14 +3243,15 @@ def score_renorm(result):
 
 
 @log_qa
-def score_polcal_gain_ratio(session_name: str, xyratio_result: GaincalResults, threshold: float = 0.1) \
-        -> List[pqa.QAScore]:
+def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
+                            threshold: float = 0.1) -> List[pqa.QAScore]:
     """
-    This QA heuristic inspects the gain ratios in a X-Y ratio caltable and
-    create a score based on how large the deviation from one is.
+    This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
+    and creates a score based on how large the deviation from one is.
 
     Args:
         session_name: name of session being evaluated.
+        ant_names: dictionary mapping antenna IDs to names.
         xyratio_result: Gaincal task result object containing the
             CalApplication for the caltable to analyze.
         threshold: threshold used to determine whether the gain ratio deviates
@@ -3265,6 +3266,7 @@ def score_polcal_gain_ratio(session_name: str, xyratio_result: GaincalResults, t
         with casa_tools.TableReader(calapp.gaintable) as table:
             gains = np.squeeze(table.getcol('CPARAM'))
             spws = table.getcol('SPECTRAL_WINDOW_ID')
+            ants = table.getcol('ANTENNA1')
 
         # Score each SpW separately.
         for spwid in sorted(set(spws)):
@@ -3274,8 +3276,9 @@ def score_polcal_gain_ratio(session_name: str, xyratio_result: GaincalResults, t
 
             if len(ind_bad) > 0:
                 score = 0.65
+                ant_str = utils.commafy([f"{ant_names[i]} (#{i})" for i in ants[ind_bad]], quotes=False)
                 longmsg = f"Session '{session_name}' has gain ratios deviate from 1 by more than {threshold} for SpW" \
-                          f" {spwid}."
+                          f" {spwid}, antenna(s) {ant_str}"
                 shortmsg = "Large gain ratio deviation"
                 origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
                                       metric_score=score,
@@ -3286,7 +3289,7 @@ def score_polcal_gain_ratio(session_name: str, xyratio_result: GaincalResults, t
     if not scores:
         score = 1.0
         longmsg = f"Session '{session_name}' has gain ratios with deviations from 1 <= the threshold of {threshold}" \
-                  f" for all SpWs."
+                  f" for all SpWs and all antennas."
         shortmsg = "Gain ratio"
         origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
                               metric_score=score,
@@ -3337,8 +3340,8 @@ def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, L
 
 
 @log_qa
-def score_polcal_leakage(session_name: str, ms: domain.MeasurementSet, leakage_result: PolcalWorkerResults,
-                         th_poor: float = 0.10, th_bad: float = 0.15) -> List[pqa.QAScore]:
+def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: PolcalWorkerResults, th_poor: float = 0.10,
+                         th_bad: float = 0.15) -> List[pqa.QAScore]:
     """
     This heuristic inspects the polarization calibrator leakage (D-terms)
     solutions caltable and create a score based on how large the deviation from
@@ -3346,8 +3349,7 @@ def score_polcal_leakage(session_name: str, ms: domain.MeasurementSet, leakage_r
 
     Args:
         session_name: name of session being evaluated.
-        ms: measurement set object for one of the measurement sets in the
-            polcal session, used to retrieve antenna names.
+        ant_names: dictionary mapping antenna IDs to names.
         leakage_result: PolcalWorker task result object containing the
             CalApplication for the leakage caltable to analyze.
         th_poor: threshold used to declare that leakage solutions are poor.
@@ -3370,7 +3372,7 @@ def score_polcal_leakage(session_name: str, ms: domain.MeasurementSet, leakage_r
                 data = table.query(f"SPECTRAL_WINDOW_ID=={spwid}", columns='CPARAM')
                 dterms = data.getcol('CPARAM')
 
-                # For each antenna, check if the D-term solutions exceed the
+                # For each antenna, check if the D-terms solutions exceed the
                 # threshold.
                 bad_antids = []
                 poor_antids = []
@@ -3383,7 +3385,7 @@ def score_polcal_leakage(session_name: str, ms: domain.MeasurementSet, leakage_r
                     rpol2 = abs(np.real(pol2)) > th_bad
                     ipol2 = abs(np.imag(pol2)) > th_bad
 
-                    if rpol1.any() and ipol1.any() and rpol2.any() and ipol2.any():
+                    if rpol1.any() or ipol1.any() or rpol2.any() or ipol2.any():
                         bad_antids.append(antid)
                         continue
 
@@ -3392,40 +3394,40 @@ def score_polcal_leakage(session_name: str, ms: domain.MeasurementSet, leakage_r
                     rpol2 = abs(np.real(pol2)) > th_poor
                     ipol2 = abs(np.imag(pol2)) > th_poor
 
-                    if rpol1.any() and ipol1.any() and rpol2.any() and ipol2.any():
+                    if rpol1.any() or ipol1.any() or rpol2.any() or ipol2.any():
                         poor_antids.append(antid)
 
                 if poor_antids:
-                    ant_names = [ms.get_antenna(i)[0].name for i in bad_antids]
                     score = 0.75
-                    longmsg = f"Session '{session_name}' has D-term solutions that deviate by {th_poor}-{th_bad} for" \
-                              f" SpW {spwid}, antenna(s) {utils.commafy(ant_names, quotes=False)}."
-                    shortmsg = "Large deviation D-term solutions"
+                    longmsg = f"Session '{session_name}' has D-terms solutions that deviate by {th_poor}-{th_bad} for" \
+                              f" SpW {spwid}, antenna(s)" \
+                              f" {utils.commafy([ant_names[i] for i in bad_antids], quotes=False)}."
+                    shortmsg = "Large deviation D-terms solutions"
                     origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                                           metric_score=score,
-                                          metric_units='D-term solutions deviation')
+                                          metric_units='D-terms solutions deviation')
                     scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
                 if bad_antids:
-                    ant_names = [ms.get_antenna(i)[0].name for i in bad_antids]
                     score = 0.55
-                    longmsg = f"Session '{session_name}' has D-term solutions that deviate by more than {th_bad} for" \
-                              f" SpW {spwid}, antenna(s) {utils.commafy(ant_names, quotes=False)}."
-                    shortmsg = "Very large deviation D-term solutions"
+                    longmsg = f"Session '{session_name}' has D-terms solutions that deviate by more than {th_bad} for" \
+                              f" SpW {spwid}, antenna(s)" \
+                              f" {utils.commafy([ant_names[i] for i in bad_antids], quotes=False)}."
+                    shortmsg = "Very large deviation D-terms solutions"
                     origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                                           metric_score=score,
-                                          metric_units='D-term solutions deviation')
+                                          metric_units='D-terms solutions deviation')
                     scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
-    # If no poor D-term solutions are found, then create a good score.
+    # If no poor D-terms solutions are found, then create a good score.
     if not scores:
         score = 1.0
-        longmsg = f"Session '{session_name}' has D-term solutions <= the threshold of {th_poor} for all SpWs and" \
+        longmsg = f"Session '{session_name}' has D-terms solutions <= the threshold of {th_poor} for all SpWs and" \
                   f" antennas."
-        shortmsg = "D-term solutions"
+        shortmsg = "D-terms solutions"
         origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                               metric_score=score,
-                              metric_units='D-term solutions deviation')
+                              metric_units='D-terms solutions deviation')
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
