@@ -14,17 +14,17 @@ from pipeline.infrastructure.renderer import rendererutils
   <li><a href="#sessions">Polarization</a></li>
   <ul>
     <li><a href="#residpol">Residual polarization after calibration</a></li>
-    <li><a href="#polcalpol">Polarization of the polarization calibrator</a></li>
+    <li><a href="#polcalpol">Derived polarization of the polarization calibrator</a></li>
   </ul>
   <li><a href="#plots">Plots</a></li>
   <ul>
     <li><a href="#amp_vs_parang_plots">Amplitude vs. Parallactic Angle</a></li>
-    <li><a href="#amp_vs_scan_plots">Amplitude vs. Scan</a></li>
-    <li><a href="#phase_vs_channel_plots">Phase vs. Channel</a></li>
-    <li><a href="#leakage_plots">Leakage Solution Gain vs. Channel</a></li>
+    <li><a href="#amp_pol_ratio_vs_scan_plots">Gain Amplitude Polarization Ratio vs. Scan</a></li>
+    <li><a href="#xy_phase_vs_channel_plots">Cross-hand Phase vs. Channel</a></li>
+    <li><a href="#dterms_gain_vs_channel_plots">D-terms Solutions Gain vs. Channel</a></li>
     <li><a href="#gain_ratio_rms_vs_scan_plots">Gain Ratio RMS vs. Scan</a></li>
-    <li><a href="#amp_vs_ant_plots">XY amplitude vs. antenna</a></li>
-    <li><a href="#ampratio_vs_ant_plots">XY amplitude gain ratio vs. antenna</a></li>
+    <li><a href="#amp_vs_ant_plots">X,Y amplitude vs. antenna</a></li>
+    <li><a href="#ampratio_vs_ant_plots">X/Y amplitude gain ratio vs. antenna</a></li>
     <li><a href="#real_vs_imag_plots">Real vs. Imaginary</a></li>
   </ul>
 </ul>
@@ -93,9 +93,9 @@ from pipeline.infrastructure.renderer import rendererutils
     </tbody>
 </table>
 
-<h3 id="polcalpol" class="jumptarget">Polarization of the polarization calibrator</h3>
+<h3 id="polcalpol" class="jumptarget">Derived polarization of the polarization calibrator</h3>
 <table class="table table-bordered table-striped">
-    <caption>Polarization of the polarization calibrator.</caption>
+    <caption>Derived polarization of the polarization calibrator.</caption>
     <thead>
         <tr>
             <th scope="col" rowspan="2">Session</th>
@@ -134,7 +134,8 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the amplitude vs. parallactic angle for the polarization calibrator.</p>
+        <p>These plots show the amplitude vs. parallactic angle for the polarization calibrator before polarization
+        calibration.</p>
 
         <p>Data are plotted per spectral window for all antennas and correlations XX and YY, colorized by
         correlation.</p>
@@ -163,23 +164,25 @@ from pipeline.infrastructure.renderer import rendererutils
 <%self:plot_group plot_dict="${amp_vs_scan}"
                   url_fn="${lambda x: 'noop'}"
                   data_vis="${True}"
-                  title_id="amp_vs_scan_plots"
+                  title_id="amp_pol_ratio_vs_scan_plots"
                   sort_row_by="spw">
 
     <%def name="title()">
-        Amplitude vs. Scan
+        Gain amplitude polarization ratio vs. Scan
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the polarization ratio amplitude vs. scan for the polarization calibrator prior to and after
-        polarization calibration.</p>
+        <p>These plots show the gain amplitude polarization ratio vs. scan for the polarization calibrator prior to and
+        after polarization calibration.</p>
 
         <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show Amplitude vs. Scan ${plot.parameters['calib']} calibration</%def>
+    <%def name="mouseover(plot)">
+        Click to show Gain amplitude polarization ratio vs. Scan ${plot.parameters['calib']} calibration
+    </%def>
 
     <%def name="fancybox_caption(plot)">
         ${plot.parameters['vis']}<br>
@@ -192,7 +195,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="caption_text(plot, _)">
-        Amplitude vs. Scan ${plot.parameters['calib']} calibration.
+        Gain amplitude polarization ratio vs. Scan ${plot.parameters['calib']} calibration.
     </%def>
 
 </%self:plot_group>
@@ -200,21 +203,21 @@ from pipeline.infrastructure.renderer import rendererutils
 <%self:plot_group plot_dict="${phase_vs_channel}"
                   url_fn="${lambda x: 'noop'}"
                   data_vis="${True}"
-                  title_id="phase_vs_channel_plots">
+                  title_id="xy_phase_vs_channel_plots">
 
     <%def name="title()">
-        Phase vs. Channel
+        Cross-hand phase vs. Channel
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the XY phase vs. channel for the polarization calibrator.</p>
+        <p>These plots show the cross-hand (XY) phase vs. channel for the polarization calibrator.</p>
 
         <p>Data are plotted for all antennas and spectral windows, colorized by spectral window.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show Phase vs. Channel</%def>
+    <%def name="mouseover(plot)">Click to show Cross-hand phase vs. Channel</%def>
 
     <%def name="fancybox_caption(plot)">
         ${plot.parameters['vis']}
@@ -225,7 +228,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="caption_text(plot, _)">
-        Phase vs. Channel.
+        Cross-hand phase vs. Channel.
     </%def>
 
 </%self:plot_group>
@@ -234,15 +237,15 @@ from pipeline.infrastructure.renderer import rendererutils
                   url_fn="${lambda x: leak_subpages[x]}"
                   data_vis="${True}"
                   data_spw="${True}"
-                  title_id="leakage_plots"
+                  title_id="dterms_gain_vs_channel_plots"
                   sort_row_by="spw">
 
     <%def name="title()">
-        Leakage solution gain vs. channel
+        D-terms solutions gain vs. channel
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the real and imaginary component of the leakage solution gain vs. channel for the
+        <p>These plots show the real and imaginary component of the D-terms solutions gain vs. channel for the
         polarization calibrator.</p>
 
         <p>Data are plotted per SpW for all antennas, colorized by antenna. Click on the summary plots to enlarge
@@ -253,7 +256,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="mouseover(plot)">
-        Click to show Leakage Solution Gain ${plot.parameters['yaxis']} vs. Channel
+        Click to show D-terms Solutions Gain ${plot.parameters['yaxis']} vs. Channel
     </%def>
 
     <%def name="fancybox_caption(plot)">
@@ -269,7 +272,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="caption_text(plot, _)">
-        Leakage Solution Gain ${plot.parameters['yaxis']} vs. Channel.
+        D-terms Solutions Gain ${plot.parameters['yaxis']} vs. Channel.
     </%def>
 
 </%self:plot_group>
@@ -293,7 +296,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="ms_preamble(ms)">
-        <p>ID of scan with highest X-Y signal: ${scanid_highest_xy[ms]}</p>
+        <p>ID of scan with highest XY signal: ${scanid_highest_xy[ms]}</p>
     </%def>
 
     <%def name="mouseover(plot)">Click to show Gain Ratio RMS vs. Scan</%def>
@@ -319,18 +322,18 @@ from pipeline.infrastructure.renderer import rendererutils
                   title_id="amp_vs_ant_plots">
 
     <%def name="title()">
-        XY amplitude vs. antenna
+        X,Y amplitude vs. antenna
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the XY amplitude vs. antenna for the polarization calibrator.</p>
+        <p>These plots show the X,Y amplitude vs. antenna for the polarization calibrator.</p>
 
         <p>Data are plotted per spectral window for all antennas, colorized by antenna.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show XY Amplitude vs. Antenna</%def>
+    <%def name="mouseover(plot)">Click to show X,Y Amplitude vs. Antenna</%def>
 
     <%def name="fancybox_caption(plot)">
         ${plot.parameters['vis']}<br>
@@ -343,7 +346,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="caption_text(plot, _)">
-        XY Amplitude vs. Antenna.
+        X,Y Amplitude vs. Antenna.
     </%def>
 
 </%self:plot_group>
@@ -355,18 +358,18 @@ from pipeline.infrastructure.renderer import rendererutils
                   title_id="ampratio_vs_ant_plots">
 
     <%def name="title()">
-        XY amplitude gain ratio vs. antenna
+        X/Y amplitude gain ratio vs. antenna
     </%def>
 
     <%def name="preamble()">
-        <p>These plots show the XY amplitude gain ratio vs. antenna for the polarization calibrator.</p>
+        <p>These plots show the X/Y amplitude gain ratio vs. antenna for the polarization calibrator.</p>
 
         <p>Data are plotted per spectral window for all antennas, colorized by antenna.</p>
 
         <p>Click the plots to enlarge them.</p>
     </%def>
 
-    <%def name="mouseover(plot)">Click to show XY Amplitude Gain Ratio vs. Antenna</%def>
+    <%def name="mouseover(plot)">Click to show X/Y Amplitude Gain Ratio vs. Antenna</%def>
 
     <%def name="fancybox_caption(plot)">
         ${plot.parameters['vis']}<br>
@@ -379,7 +382,7 @@ from pipeline.infrastructure.renderer import rendererutils
     </%def>
 
     <%def name="caption_text(plot, _)">
-        XY Amplitude Gain Ratio vs. Antenna.
+        X/Y Amplitude Gain Ratio vs. Antenna.
     </%def>
 
 </%self:plot_group>
