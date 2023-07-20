@@ -1154,9 +1154,7 @@ class SpwIdVsFreqChart(object):
             banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
             list_spwids_baseband = []
             for band in banddict:
-                LOG.info("band = {}".format(band))
                 for baseband in banddict[band]:
-                    LOG.info("baseband = {}".format(baseband))
                     spw = []
                     minfreqs = []
                     maxfreqs = []
