@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 from . import utils
 
 
+@utils.cli_wrapper
 def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None, bdfflags=None,
                   ocorr_mode=None, asis=None, dryrun=None, acceptresults=None):
 

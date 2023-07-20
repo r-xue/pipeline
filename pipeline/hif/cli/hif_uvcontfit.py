@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_uvcontfit(vis=None, caltable=None, contfile=None, field=None, intent=None, spw=None, combine=None, solint=None,
                   fitorder=None, dryrun=None, acceptresults=None):
 

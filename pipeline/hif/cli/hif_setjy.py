@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
               reffile=None, normfluxes=None, reffreq=None, fluxdensity=None,
               spix=None, scalebychan=None, standard=None,

@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_restorepims(vis=None, reimaging_resources=None, dryrun=None, acceptresults=None):
 
     """
@@ -18,7 +17,6 @@ def hifv_restorepims(vis=None, reimaging_resources=None, dryrun=None, acceptresu
     reimaging_resources file path of reimaging_resources.tgz from the SE imaging product
     dryrun              Run the task (False) or display task command (True)
     acceptresults       Add the results into the pipeline context
-    [1;42mRETURNS[1;m                void
 
     --------- examples -----------------------------------------------------------
 

@@ -1,5 +1,3 @@
-from casatasks import casalog
-
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.launcher as launcher
 

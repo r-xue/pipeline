@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
                 excludechan=None, atm_auto_exclude=None, bwthreshspw=None,
                 dryrun=None, acceptresults=None):
@@ -36,7 +35,6 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
                      Example:  bwthreshspw={'16: 64e6, '22: 64e6}
     dryrun           Run the task (False) or display task command (True)
     acceptresults    Add the results into the pipeline context
-    [1;42mRETURNS[1;m             void
 
     --------- examples -----------------------------------------------------------
 

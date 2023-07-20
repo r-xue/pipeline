@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None,
                    dryrun=None, acceptresults=None):
 

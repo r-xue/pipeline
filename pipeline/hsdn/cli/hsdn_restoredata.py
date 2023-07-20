@@ -1,9 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
+
+@utils.cli_wrapper
 def hsdn_restoredata(vis=None, caltable=None, reffile=None,
                      products_dir=None, copytoraw=None, rawdata_dir=None, hm_rasterscan=None,
                      dryrun=False, acceptresults=None):
