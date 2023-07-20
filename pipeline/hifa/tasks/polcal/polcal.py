@@ -219,16 +219,16 @@ class Polcal(basetask.StandardTaskTemplate):
         # polarization calibrator field.
         smodel = list(uncal_pfg_result.values())[0]['SpwAve']
 
-        # Identify scan with highest X-Y signal.
+        # Identify scan with highest XY signal.
         best_scan_id = self._identify_scan_highest_xy(session_name, init_gcal_result)
 
-        # Compute X-Y delay.
-        LOG.info(f"{session_msname}: compute X-Y delay (Kcross) for polarization calibrator.")
+        # Compute XY delay.
+        LOG.info(f"{session_msname}: compute XY delay (Kcross) for polarization calibrator.")
         kcross_result, kcross_calapps = self._compute_xy_delay(session_msname, vislist, refant, best_scan_id, spwmaps)
         self._register_calapps_from_results([kcross_result])
 
-        # Calibrate X-Y phase.
-        LOG.info(f"{session_msname}: compute X-Y phase for polarization calibrator.")
+        # Calibrate XY phase.
+        LOG.info(f"{session_msname}: compute XY phase for polarization calibrator.")
         polcal_phase_result, pol_phase_calapps = self._calibrate_xy_phase(session_msname, vislist, smodel,
                                                                           scan_duration, spwmaps)
 
@@ -253,7 +253,7 @@ class Polcal(basetask.StandardTaskTemplate):
         LOG.info(f"{session_msname}: recompute polarization of polarization calibrator after calibration.")
         cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result)
 
-        # (Re-)register the final gain, X-Y delay, and X-Y phase caltables.
+        # (Re-)register the final gain, XY delay, and XY phase caltables.
         self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
 
         # Compute leakage terms.
@@ -261,14 +261,14 @@ class Polcal(basetask.StandardTaskTemplate):
         leak_polcal_result, leak_pcal_calapps = self._compute_leakage_terms(session_msname, vislist, smodel,
                                                                             scan_duration, spwmaps)
 
-        # Unregister caltables created so far, and re-register just the X-Y
-        # delay, X-Y phase, and leakage term caltables, prior to computing the
-        # X-Y ratio.
+        # Unregister caltables created so far, and re-register just the XY
+        # delay, XY phase, and leakage term caltables, prior to computing the
+        # X/Y ratio.
         self._unregister_caltables(session_msname)
         self._register_calapps_from_results([kcross_result, polcal_phase_result, leak_polcal_result])
 
-        # Compute X-Y ratio.
-        LOG.info(f"{session_msname}: compute X-Y ratio for polarization calibrator.")
+        # Compute X/Y ratio.
+        LOG.info(f"{session_msname}: compute X/Y ratio for polarization calibrator.")
         xyratio_gcal_result, xyratio_calapps = self._compute_xy_ratio(session_msname, vislist, refant, smodel, spwmaps)
 
         # Prior to applycal, re-register the final gain caltable.
@@ -542,7 +542,7 @@ class Polcal(basetask.StandardTaskTemplate):
             scan_ids = table.getcol('SCAN_NUMBER')
             gains = np.squeeze(table.getcol('CPARAM'))
 
-        # For each scan, derive the average X-Y signal ratio.
+        # For each scan, derive the average XX/YY signal ratio.
         uniq_scan_ids = sorted(set(scan_ids))
         ratios = []
         for scan_id in uniq_scan_ids:
@@ -550,10 +550,11 @@ class Polcal(basetask.StandardTaskTemplate):
             ratios.append(
                 np.sqrt(np.average(np.power(np.abs(gains[0, scan_idx]) / np.abs(gains[1, scan_idx]) - 1.0, 2.))))
 
-        # Identify the scan with the best X-Y signal ratio.
+        # Identify the scan with the best XY signal ratio as the scan where the
+        # polarization signal is minimum in XX and YY.
         best_ratio_idx = np.argmin(ratios)
         best_scan_id = uniq_scan_ids[best_ratio_idx]
-        LOG.info(f"Session {session_name} - scan with highest expected X-Y signal: {best_scan_id}.")
+        LOG.info(f"Session {session_name} - scan with highest expected XY signal: {best_scan_id}.")
 
         return best_scan_id
 

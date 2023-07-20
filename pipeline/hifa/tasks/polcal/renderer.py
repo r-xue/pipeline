@@ -50,7 +50,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             refants[session_name] = session_results.refant
             polfields[session_name] = session_results.polcal_field_name
 
-            # Store ID of scan with highest X-Y signal.
+            # Store ID of scan with highest XY signal.
             scanid_highest_xy[session_name] = session_results.best_scan_id
 
             # Add stage number to session result, needed by steps that render
@@ -78,7 +78,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Create leakage solution real/imag gain vs. channel plots, per ant.
         leak_summary, leak_subpages = self.create_leakage_vs_channel_plots(pipeline_context, result)
 
-        # Create X-Y gain amplitude vs. antenna plots.
+        # Create XY gain amplitude vs. antenna plots.
         amp_vs_ant, ampratio_vs_ant = self.create_xy_amp_ant_plots(pipeline_context, result)
 
         # Render real vs. imaginary corrected XX,XY and XY,YX plots for the session.
