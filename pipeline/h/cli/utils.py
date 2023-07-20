@@ -16,7 +16,7 @@ def cli_wrapper(func):
     @wraps(func)
     def wrapped_func(*args, **kwargs):
         if 'pipelinemode' in kwargs:
-            LOG.warning('The task argument "pipelinemode" is deprecated')
+            LOG.warning('The pipeline task argument "pipelinemode" does not affect results and will be removed in the future.')
             kwargs.pop('pipelinemode')
         return func(*args, **kwargs)
     return wrapped_func
