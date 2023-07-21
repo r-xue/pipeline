@@ -10,7 +10,6 @@ import os
 import string
 from random import randint
 
-import numpy
 import traceback
 import numpy as np
 
@@ -36,7 +35,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
-    'tab_dict tab_url outmaskratio outmaskratio_label peak_snr'
+    'tab_dict tab_url outmaskratio outmaskratio_label pol_session pol_ratio pol_angle'
     'poli_abspath poli_thumbnail pola_abspath pola_thumbnail peak_snr'))
 PolImagePaths = collections.namedtuple('PolImageInfo', ('poli_abspath poli_thumbnail pola_abspath pola_thumbnail'))
 
