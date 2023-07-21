@@ -83,10 +83,6 @@ def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
     and the elements of b are merged into the new dictionary. Otherwise return
     argument b.
 
-    This utility function check the equivalence of array like objects. Two arrays
-    are equal if they have the same number of elements and elements of the same
-    index are equal.
-
     Examples:
     >>> dict_merge({'a': {'b': 1}}, {'c': 2})
     {'a': {'b': 1}, 'c': 2}
