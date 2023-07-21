@@ -258,7 +258,8 @@ class MakeImages(basetask.StandardTaskTemplate):
                            uvtaper=target['uvtaper'],
                            sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
                            pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
-                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'))
+                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           imagename=result.image.replace('.pbcor', ''))
 
 
 class CleanTaskFactory(object):

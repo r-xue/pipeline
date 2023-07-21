@@ -444,7 +444,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Column parameter to be used as tclean argument"""
         return 'data'
 
-    def wprojplanes(self) -> int:
+    def wprojplanes(self, gridder=None, spwspec=None) -> int:
         """Tclean wprojplanes parameter heuristics."""
         return 1
 
