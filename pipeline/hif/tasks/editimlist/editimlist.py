@@ -122,7 +122,12 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @field.convert
     def field(self, val):
-        if isinstance(val, str):
+        if not isinstance(val, (str, list, type(None))):
+            # PIPE-1881: allow field names that mistakenly get casted into non-string datatype by
+            # recipereducer (recipereducer.string_to_val) and executeppr (XmlObjectifier.castType)
+            LOG.warning('The field selection input %r is not a string and will be converted.', val)
+            val = str(val)
+        if not isinstance(val, list):
             val = [val]
         return val
 
@@ -558,7 +563,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                 else inpdict['mask']
 
         for key, value in imlist_entry.items():
-            LOG.info("{k} = {v}".format(k=key, v=value))
+            LOG.info("%s = %r", key, value)
 
         try:
             if imlist_entry['field']:
