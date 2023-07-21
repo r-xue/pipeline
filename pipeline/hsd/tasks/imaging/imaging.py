@@ -21,7 +21,7 @@ from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure  ###
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy ,rasterutil
@@ -1448,13 +1448,11 @@ class SDImaging(basetask.StandardTaskTemplate):
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
                 f = msobj.get_fields(field_id=fieldid)[0]
                 LOG.warning('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
-                raster_info_list.append(None)
+                raster_info_listappend(None)
             dt = _cp.dt_dict[msobj.basename]
             try:
                 raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
-            except RasterScanHeuristicsFailure as e:  ###
-                LOG.warning('{} in get_raster_info_list().'.format(e))  ###
-#            except Exception:
+            except Exception:
                 f = msobj.get_fields(field_id=fieldid)[0]
                 a = msobj.get_antenna(antid)[0]
                 LOG.info('Could not get raster information of field {}, Spw {}, Ant {}, MS {}. '
@@ -1813,13 +1811,14 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
     dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)
     dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] == True)]
+    LOG.info("len(dtrow_list) = {}".format(len(dtrow_list)))
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
-    except RasterScanHeuristicsFailure as e:  ###
-        LOG.warning('{} in _analyze_raster_pattern().'.format(e))  ###
+    except RasterScanHeuristicsFailure as e:
+        LOG.warn('{}'.format(e))
 #    except Exception:
 #        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. '
 #                    'Result might not be correct.')

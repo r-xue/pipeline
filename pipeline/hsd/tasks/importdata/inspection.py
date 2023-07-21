@@ -430,9 +430,7 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
-                            LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))  ###
-#                            LOG.warn('RasterScanHeuristics failed with the following error. ' +
-#                                     'Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+                            LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or self.hm_rasterscan == 'time' or raster_heuristic_ok is False:
