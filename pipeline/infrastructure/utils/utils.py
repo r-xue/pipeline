@@ -83,10 +83,6 @@ def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
     and the elements of b are merged into the new dictionary. Otherwise return
     argument b.
 
-    This utility function check the equivalence of array like objects. Two arrays
-    are equal if they have the same number of elements and elements of the same
-    index are equal.
-
     Examples:
     >>> dict_merge({'a': {'b': 1}}, {'c': 2})
     {'a': {'b': 1}, 'c': 2}
@@ -768,7 +764,7 @@ def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
     tarfilename = name_builder.weblog(project_structure=context.project_structure,
                                       ousstatus_entity_id=context.get_oussid())
     # Save weblog directory to tar archive.
-    LOG.info(f"Saving final weblog in {tarfilename}")
+    LOG.info(f"Saving weblog in {tarfilename}")
     if not dry_run:
         tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
         tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
