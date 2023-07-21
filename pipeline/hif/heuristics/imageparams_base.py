@@ -989,7 +989,7 @@ class ImageParamsHeuristics(object):
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None):
+               centreonly=False, vislist=None, spwspec=None, intent: str = ''):
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -1003,10 +1003,17 @@ class ImageParamsHeuristics(object):
         :param centreonly: if True, then ignore the spread of field centers.
         :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities
             in the context.
+        :param intent: field/source intent
         :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
             separated spw IDs list. Not used in the base method.
         :return: two element list of pixel count along x and y image axes.
         """
+
+        # For the time being PIPE-1829 asks for a fixed imsize
+        # for polarization calibrators. The subsequent image
+        # analysis depends on the exact numbers.
+        if intent == 'POLARIZATION':
+            return [256, 256]
 
         if vislist is None:
             vislist = self.vislist
@@ -1182,7 +1189,10 @@ class ImageParamsHeuristics(object):
 
         return pblimit_image, pblimit_cleanmask
 
-    def deconvolver(self, specmode, spwspec):
+    def deconvolver(self, specmode, spwspec, intent: str = '') -> str:
+        if intent == 'POLARIZATION':
+            return 'clarkstokes'
+
         if (specmode == 'cont'):
             fr_bandwidth = self.get_fractional_bandwidth(spwspec)
             if (fr_bandwidth > 0.1):
@@ -2115,7 +2125,7 @@ class ImageParamsHeuristics(object):
 
         return None
 
-    def stokes(self):
+    def stokes(self, intent: str = '') -> str:
         return 'I'
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask=None):
@@ -2123,6 +2133,9 @@ class ImageParamsHeuristics(object):
 
     def specmode(self):
         return 'mfs'
+
+    def intent(self) -> str:
+        return 'TARGET'
 
     def datacolumn(self):
         return None

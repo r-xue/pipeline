@@ -47,7 +47,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         # Protection against spurious long baselines
         if protect_long is not None:
             l80, min_diameter = self.calc_percentile_baseline_length(80.)
-            LOG.info('ALMA uvtaper heuristic: L80 baseline length is %.1f meter' % (l80)) 
+            LOG.info('ALMA uvtaper heuristic: L80 baseline length is %.1f meter' % (l80))
 
             c = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0]
             uvtaper_value = protect_long * l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
@@ -98,7 +98,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                 return '%.3gJy' % (new_threshold), DR_correction_factor, maxEDR_used
             else:
                 raise Exception(f'Got an invalid input value for the DR correction factor: {drcorrect}')
-                        
+
         if intent == 'TARGET' or intent == 'CHECK':
             n_dr_max = 2.5
             if diameter == 12.0:
@@ -210,11 +210,11 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             if(len(ms_baseline_lengths) >= n):
                 baseline_lengths.append(ms_baseline_lengths[n-1])
 
-        if(len(baseline_lengths) > 0): 
+        if(len(baseline_lengths) > 0):
             return np.median(baseline_lengths)
-        else: 
+        else:
             return None
-            
+
     def get_autobox_params(self, iteration, intent, specmode, robust):
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
@@ -411,6 +411,11 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
     def intent(self):
         return 'TARGET'
 
+    def stokes(self, intent: str = '') -> str:
+        if intent == 'POLARIZATION':
+            return 'IQUV'
+        else:
+            return 'I'
 
     def weighting(self, specmode: str) -> str:
         """Determine the weighting scheme."""
