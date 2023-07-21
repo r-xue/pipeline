@@ -407,12 +407,12 @@ class Editimlist(basetask.StandardTaskTemplate):
         LOG.info("{k} = {v}".format(k='search_radius', v=buffer_arcsec))
         result.capture_buffer_size(buffer_arcsec)
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
-        
+
         # imlist_entry['datacolumn'] is either None or an non-empty string here based on the current heuristics implementation.
         imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms(imlist_entry['spw']) if not inpdict['nterms'] else inpdict['nterms']
         if 'ALMA' not in img_mode:
-            imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None, 
+            imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None,
                                                              chansel=None, specmode=None, cell=None, imsize=None,
                                                              weighting=None, robust=None,
                                                              uvtaper=None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
@@ -435,12 +435,12 @@ class Editimlist(basetask.StandardTaskTemplate):
         fieldids = th.field('TARGET', fieldnames)
         imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                            primary_beam=largest_primary_beam,
-                                           sfpblimit=0.2) if not inpdict['imsize'] else inpdict['imsize']
+                                           sfpblimit=0.2, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
         # ---------------------------------------------------------------------------------- set imsize (VLA)
         if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                primary_beam=largest_primary_beam,
-                                               spwspec=imlist_entry['spw']) if not inpdict['imsize'] else inpdict['imsize']
+                                               spwspec=imlist_entry['spw'], intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
