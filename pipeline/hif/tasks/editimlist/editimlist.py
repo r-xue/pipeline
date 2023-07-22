@@ -60,6 +60,7 @@ class EditimlistInputs(vdp.StandardInputs):
     cfcache_nowb = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
+    nmajor = vdp.VisDependentProperty(default=None)
     datatype = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
@@ -149,7 +150,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None,
                  search_radius_arcsec=None, cell=None, cfcache=None, conjbeams=None,
-                 cyclefactor=None, cycleniter=None, datatype=None, datacolumn=None, deconvolver=None,
+                 cyclefactor=None, cycleniter=None, nmajor=None, datatype=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
                  mask=None, pbmask=None, nbin=None, nchan=None, niter=None, nterms=None,
@@ -171,6 +172,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.conjbeams = conjbeams
         self.cyclefactor = cyclefactor
         self.cycleniter = cycleniter
+        self.nmajor = nmajor
         self.datatype = datatype
         self.datacolumn = datacolumn
         self.deconvolver = deconvolver
@@ -214,7 +216,7 @@ class EditimlistInputs(vdp.StandardInputs):
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datatype', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
-                            'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
+                            'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'nmajor', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
                             'editmode', 'nsigma', 'pblimit',
                             'spw_reject', 'spw_reject_exclude', 'spw_reject_flagpct', 'spw_reject_nfield',
@@ -397,6 +399,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
+        imlist_entry['nmajor'] = inpdict['nmajor']
         imlist_entry['cfcache'], imlist_entry['cfcache_nowb'] = th.get_cfcaches(inpdict['cfcache'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters

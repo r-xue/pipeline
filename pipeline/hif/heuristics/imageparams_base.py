@@ -1973,6 +1973,9 @@ class ImageParamsHeuristics(object):
     def cycleniter(self, iteration):
         return None
 
+    def nmajor(self, iteration):
+        return None
+
     def scales(self, iteration=None):
         return None
 
