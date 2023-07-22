@@ -8,7 +8,6 @@ user.
 import collections
 import decimal
 import math
-import numpy as np
 import os
 import re
 import string
@@ -17,7 +16,9 @@ from datetime import datetime, timedelta
 from numbers import Number
 from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 
+import astropy.units as u
 import cachetools
+import numpy as np
 import pyparsing
 
 from .. import casa_tools, logging
@@ -26,7 +27,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['commafy', 'flatten', 'mjd_seconds_to_datetime', 'get_epoch_as_datetime', 'range_to_list', 'to_CASA_intent',
            'to_pipeline_intent', 'field_arg_to_id', 'spw_arg_to_id', 'ant_arg_to_id', 'safe_split', 'dequote',
-           'format_datetime', 'format_timedelta']
+           'format_datetime', 'format_timedelta', 'record_to_quantity']
 
 # By default we use CASA to parse arguments into spw/field/ant IDs. However, this
 # requires access to the data. Setting this property to False uses the pipeline's
@@ -690,3 +691,18 @@ def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndar
                 results.add(ant)
 
     return sorted(list(results))
+
+
+def record_to_quantity(record: Union[Dict, List[Dict], Tuple[Dict]]) -> Union[u.Quantity, List[u.Quantity], Tuple[u.Quantity]]:
+    """Convert a CASA record to an Astropy quantity.
+
+    Optionally, the input can be a list/tuple in which each element is a CASA record.
+    """
+
+    if isinstance(record, (list, tuple)):
+        quantities = [record_to_quantity(r) for r in record]
+        if isinstance(record, tuple):
+            return tuple(quantities)
+        return quantities
+
+    return record['value']*u.Unit(record['unit'])
