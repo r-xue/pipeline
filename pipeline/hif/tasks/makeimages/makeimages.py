@@ -30,7 +30,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
-    hm_masking = vdp.VisDependentProperty(default='auto')
+    hm_masking = vdp.VisDependentProperty(default=None)
     hm_minbeamfrac = vdp.VisDependentProperty(default=-999.0)
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
@@ -46,6 +46,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
+    drcorrect = vdp.VisDependentProperty(default=-999.0)
     overwrite_on_export = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -64,7 +65,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
-                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
+                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                  cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
@@ -93,6 +94,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_maxpsffraction = hm_maxpsffraction
         self.hm_weighting = hm_weighting
         self.tlimit = tlimit
+        self.drcorrect = drcorrect
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
         self.calcsb = calcsb
@@ -256,7 +258,8 @@ class MakeImages(basetask.StandardTaskTemplate):
                            uvtaper=target['uvtaper'],
                            sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
                            pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
-                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'))
+                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           imagename=result.image.replace('.pbcor', ''))
 
 
 class CleanTaskFactory(object):
@@ -357,6 +360,9 @@ class CleanTaskFactory(object):
         if 'hm_nsigma' not in task_args:
             task_args['hm_nsigma'] = inputs.hm_nsigma
 
+        if inputs.drcorrect not in (None, -999.0):
+            task_args['drcorrect'] = inputs.drcorrect
+
         if target['robust'] not in (None, -999.0):
             task_args['robust'] = target['robust']
         else:
@@ -374,12 +380,11 @@ class CleanTaskFactory(object):
             task_args['gridder'] = image_heuristics.gridder(
                     task_args['intent'], task_args['field'])
 
-        if inputs.hm_masking == '':
+        if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                # For the time being the target imaging uses the
-                # inner quarter. Other methods will be made available
-                # later.
                 task_args['hm_masking'] = 'auto'
+            elif 'POLARIZATION' in task_args['intent']:
+                task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'
         else:
