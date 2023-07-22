@@ -154,6 +154,13 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         if inputs.hm_phaseup != '':
             result.preceding.append(phaseup_result.final)
 
+            # PIPE-1624: Store bandpass gaincal table name so that it can be saved into the context. 
+            # Do not use the version in preceding.append (above), as it is labeled "deprecated" 
+            for cal in phaseup_result.final:
+                # Only save off this caltable if it was created as part of hifa_bandpass, not hifa_bandpassflag
+                if "bandpass." in cal.gaintable:
+                    result.bp_gaintable_for_phase_rms.append(cal.gaintable)
+
         # PIPE-628: set whether we should unregister old bandpass calibrators
         # on results acceptance
         result.unregister_existing = inputs.unregister_existing
