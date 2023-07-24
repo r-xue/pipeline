@@ -3,13 +3,18 @@ import shutil
 import traceback
 
 import numpy as np
+import json
+import datetime
+import tarfile
+from fnmatch import fnmatch
+
+from astropy.utils.misc import JsonCustomEncoder
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.mpihelpers as mpihelpers
-import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
@@ -19,16 +24,18 @@ from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, utils, t
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
 class SelfcalResults(basetask.Results):
-    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None):
+    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None, selfcal_resources=None):
         super().__init__()
         self.pipeline_casa_task = 'Selfcal'
         self.targets = targets
         self.applycal_result_contline = applycal_result_contline
         self.applycal_result_line = applycal_result_line
+        self.selfcal_resources = selfcal_resources
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
@@ -36,6 +43,8 @@ class SelfcalResults(basetask.Results):
         # save selfcal results into the Pipeline context
         if not hasattr(context, 'scal_targets') and self.targets:
             context.scal_targets = self.targets
+        if self.selfcal_resources is not None:
+            context.scal_resources = self.selfcal_resources
 
         if self.applycal_result_contline is not None:
             self._register_datatype(context, self.applycal_result_contline, DataType.SELFCAL_CONTLINE_SCIENCE)
@@ -48,6 +57,10 @@ class SelfcalResults(basetask.Results):
         for r in appycal_result:
             for calapp in r.applied:
                 calto_list.append(calapp.calto)
+                # Register applied calibrations and remove them from subsequent on-the-fly calibration calculations.
+                # If they are marked as appliaed, selfcal tables will be packaed into auxcaltables.tgz and list in auxcalapply.txt
+                # LOG.debug('Marking %r as applied',calapp.as_applycal())
+                # context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
 
         # register the selfcal results to the observing run
         for calto in calto_list:
@@ -87,7 +100,7 @@ class SelfcalInputs(vdp.StandardInputs):
             LOG.warning('The field selection input %r is not a string and will be converted.', val)
             val = str(val)
         return val
-        
+
     spw = vdp.VisDependentProperty(default='')
     contfile = vdp.VisDependentProperty(default='cont.dat')
     apply = vdp.VisDependentProperty(default=True)
@@ -104,12 +117,13 @@ class SelfcalInputs(vdp.StandardInputs):
     check_all_spws = vdp.VisDependentProperty(default=False)
     inf_EB_gaincal_combine = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
+    restore_resources = vdp.VisDependentProperty(default=None)
 
     def __init__(self, context, vis=None, field=None, spw=None, contfile=None,
-                 amplitude_selfcal=None, gaincal_minsnr=None,refantignore=None,
+                 amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
-                 apply=None, parallel=None, recal=None):
+                 apply=None, parallel=None, recal=None, restore_resources=None):
         super().__init__()
         self.context = context
         self.vis = vis
@@ -130,6 +144,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.dividing_factor = dividing_factor
         self.check_all_spws = check_all_spws
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine
+        self.restore_resources = restore_resources
 
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
@@ -141,6 +156,121 @@ class Selfcal(basetask.StandardTaskTemplate):
     def __init__(self, inputs):
         super().__init__(inputs)
 
+    @staticmethod
+    def _scal_targets_to_json(scal_targets, filename='selfcal.json'):
+        """Serilize scal_targets to a json file."""
+
+        current_version = 1.0
+        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        for target in scal_targets:
+            target.pop('heuristics', None)
+        scal_targets_json = {}
+        scal_targets_json['scal_targets'] = scal_targets
+        scal_targets_json['version'] = current_version
+        scal_targets_json['datetime'] = current_datetime
+        with open(filename, 'w') as fp:
+            json.dump(scal_targets_json, fp, sort_keys=True, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
+
+    @staticmethod
+    def _scal_targets_from_json(filename='selfcal.json'):
+        """Deserilize scal_targets from a json file."""
+
+        LOG.info('Reading the selfcal targets list from %s', filename)
+        with open(filename, 'r') as fp:
+            scal_targets_json = json.load(fp)
+        return scal_targets_json['scal_targets']
+
+    def _apply_scal_check_caltable(self, sc_targets, mses=None):
+        """Check if all calibration tables required for applying the selfcal solutions are ready to use.
+        
+        caltable_list: a list of calibration tables requested based on the calapply information inside scal_targets
+        caltable_rady: a list of the requested cal tables that are ready to be applied.
+        """
+
+        if mses is None:
+            obs_run = self.inputs.context.observing_run
+            mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
+            mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
+            mses = mses_regcal_contline+mses_regcal_line
+
+        # collect a name list of MSes which we could apply the selfcal solutions to.
+        vislist_calto = [ms.name for ms in mses]
+        caltable_list = []
+        caltable_ready = []
+        for cleantarget in sc_targets:
+
+            sc_lib = cleantarget['sc_lib']
+            sc_workdir = cleantarget['sc_workdir']
+            if not sc_lib['SC_success']:
+                continue
+
+            for vis in sc_lib['vislist']:
+                for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):
+                    for vis_calto in vislist_calto:
+                        if vis_calto.startswith(os.path.splitext(os.path.basename(vis))[0]):
+                            gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
+                            if gaintable not in caltable_list:
+                                caltable_list.append(gaintable)
+                            if os.path.exists(gaintable):
+                                if gaintable not in caltable_ready:
+                                    caltable_ready.append(gaintable)
+        LOG.info('selfcal/caltable(s) request : %r', caltable_list)
+        LOG.info('selfcal/caltable(s) ready   : %r', caltable_ready)
+
+        return caltable_list, caltable_ready
+
+    def _check_restore_from_resources(self):
+        """Check if we can do selfcal restore from the restore resources."""
+
+        scal_targets = None
+        pat_list = ['*.auxproducts.tgz', '*.selfcal.json',
+                    '../products/*.auxproducts.tgz', '*.selfcal.json',
+                    '../rawdata/*.auxproducts.tgz', '*.selfcal.json']
+        match_list = ('sc_workdir*', '*.selfcal.json')
+
+        if self.inputs.restore_resources is not None:
+            pat_list = [self.inputs.restore_resources, '*selfcal.json']+pat_list
+
+        for pat in pat_list:
+            for check_file in utils.glob_ordered(pat):
+                if check_file.endswith('.auxproducts.tgz') and tarfile.is_tarfile(check_file):
+                    with tarfile.open(check_file, 'r:gz') as tar:
+                        members = []
+                        for member in tar.getmembers():
+                            is_resource = any([fnmatch(member.name, pat) for pat in match_list])
+                            if is_resource:
+                                members.append(member)
+                                LOG.info('extracting: %s from %s', member.name, check_file)
+                        tar.extractall(members=members)
+                if check_file.endswith('.selfcal.json'):
+                    scal_targets_json = self._scal_targets_from_json(check_file)
+                    if scal_targets_json is not None:
+                        caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets_json)
+                        # we verify the existances of required caltables in-flight as the file search progresses.
+                        if len(caltable_ready) < len(caltable_list):
+                            LOG.warning('The required selfcal caltable(s) is missing if we use scal_targets from the json file %s', check_file)
+                        else:
+                            scal_targets = scal_targets_json
+            if scal_targets is not None:
+                break
+
+        return scal_targets
+
+    def _check_restore_from_context(self):
+        """Check if we can do selfcal restore from scal_targets saved in the context."""
+
+        scal_targets = None
+        if hasattr(self.inputs.context, 'scal_targets'):
+            scal_targets_last = self.inputs.context.scal_targets
+            LOG.info('Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.')
+            caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets)
+            if len(caltable_ready) < len(caltable_list):
+                LOG.warning('The required selfcal caltable(s) is missing if we use scal_targets from the context.')
+            else:
+                scal_targets = scal_targets_last
+
+        return scal_targets
+
     def prepare(self):
 
         inputs = self.inputs
@@ -151,25 +281,47 @@ class Selfcal(basetask.StandardTaskTemplate):
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
 
-        if not hasattr(self.inputs.context, 'scal_targets') or self.inputs.recal:
-            # skip the "selfcal-solver" execution if the selfcal results are already in the context and recal is False.
-            LOG.info('No selfcal results found in the context. Proceed to execute the selfcal solver.')
+        scal_targets_last = scal_targets_json = None
+
+        # Check if we can use a scal_targets list from the Pipeline context
+        scal_targets_last = self._check_restore_from_context()
+
+        # Check if we can use a scal_targets list from restore_resources
+        scal_targets_json = self._check_restore_from_resources()
+
+        obs_run = self.inputs.context.observing_run
+        mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
+        mses_selfcal_contline = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_CONTLINE_SCIENCE], msonly=True)
+        mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
+        mses_selfcal_line = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_LINE_SCIENCE], msonly=True)
+
+        scal_targets = []
+        if not self.inputs.recal:
+
+            if scal_targets_last is not None:
+                scal_targets = scal_targets_last
+            if scal_targets_json is not None:
+                scal_targets = scal_targets_json
+
+        applycal_result_contline = applycal_result_line = selfcal_resources = None
+
+        if not scal_targets:
+            if self.inputs.recal:
+                LOG.info('recal=True, override any existing selfcal solution in context or json, and alway execute the selfcal solver.')
+            LOG.info('Execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
+
+            selfcal_json = self.inputs.context.name+'.selfcal.json'
+            self._scal_targets_to_json(scal_targets, filename=selfcal_json)
+            scal_caltable, _ = self._apply_scal_check_caltable(scal_targets, mses_regcal_contline+mses_regcal_line)
+            selfcal_resources = [selfcal_json] + scal_caltable
+            LOG.debug('selfcal resources list: %r', selfcal_resources)
+
             if not scal_targets:
                 LOG.info('No single-pointing science target found. Skip selfcal.')
                 return SelfcalResults(scal_targets)
-        else:
-            LOG.info('Found selfcal results in the context. Skip the selfcal solver.')
-            scal_targets = self.inputs.context.scal_targets
-
-        obs_run = self.inputs.context.observing_run
-
-        applycal_result_contline = applycal_result_line = None
 
         if self.inputs.apply:
-
-            mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
-            mses_selfcal_contline = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_CONTLINE_SCIENCE], msonly=True)
 
             if mses_regcal_contline:
                 if not mses_selfcal_contline:
@@ -184,9 +336,6 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     LOG.info('Skip applying selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es).')
 
-            mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
-            mses_selfcal_line = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_LINE_SCIENCE], msonly=True)
-
             if mses_regcal_line:
                 if not mses_selfcal_line:
                     LOG.info('No DataType:SELFCAL_LINE_SCIENCE found.')
@@ -200,7 +349,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
 
-        return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line)
+        return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources)
 
     def _solve_selfcal(self):
 
@@ -287,7 +436,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 # sc_parallel=True indicats that we are certainly running tclean(parallel=true) in a sequential TaskQueue.
                 # A side effect of doing this while changing cwd is that the working directory of MPIServers will be "stuck"
                 # to the one where tclean(paralllel=True) started.
-                # As a workaround, we send the chdir command to the MPIServers exeplicitly.
+                # As a workaround, we send the chdir command to the MPIServers explicitly.
                 mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
         return selfcal_library, solints, bands

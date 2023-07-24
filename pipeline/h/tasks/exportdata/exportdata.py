@@ -565,6 +565,13 @@ class ExportData(basetask.StandardTaskTemplate):
         if timetracker_file_list:
             empty = False
 
+        # PIPE-1802: look for the selfcal/restore resources
+        selfcal_resources_list = []
+        if hasattr(self.inputs.context, 'scal_resources') and isinstance(self.inputs.context.scal_resources, list):
+            selfcal_resources_list = self.inputs.context.scal_resources
+        if selfcal_resources_list:
+            empty = False
+
         if empty:
             return None
 
@@ -611,6 +618,12 @@ class ExportData(basetask.StandardTaskTemplate):
                     LOG.info('Saving auxiliary data product %s in %s', os.path.basename(timetracker_file), tarfilename)
                 else:
                     LOG.info('Auxiliary data product timetracker json report file does not exist')
+
+            # PIPE-1802: Save selfcal restore resources
+            for selfcal_resource in selfcal_resources_list:
+                if os.path.exists(selfcal_resource):
+                    tar.add(selfcal_resource, arcname=selfcal_resource)
+                    LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
 
             tar.close()
 

@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
-                apply=None, parallel=None, recal=None, refantignore=None,
+                apply=None, parallel=None, recal=None, refantignore=None, restore_resources=None,
                 amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
@@ -32,7 +32,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             default="cont.dat"
     apply                   Apply final selfcal solutions back to the input MeasurementSets.
                             default = True
-    recal                   Re-do self-calibration even if a hif_selfcal has been executed previously.
+    recal                   Always re-do self-calibration even solutions/caltables are found in the Pipeline 
+                            context or json restore file.
                             default = False
     amplitude_selfcal       Attempt amplitude self-calibration following phase-only self-calibration; 
                             if median time between scans of a given target is < 150s, 
@@ -68,7 +69,14 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             the gaincal combine parameter will be set to 'scan'.
                             default=False
     refantignore            string list to be ignored as reference antennas.
-                            example:  refantignore='ea02,ea03'                                              
+                            example:  refantignore='ea02,ea03'
+    restore_resources       Restore resources from a standard run of hif_selfcal.
+                            hif_selfcal will automatically do an exhaustive search to lookup/extract/verify 
+                            the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred 
+                            inside selfcal.json, starting from working/, to products/ and 
+                            rawdata/. If resource_resources is specified, this file path will be evaluated first
+                            before the pre-defined exhaustive search list.
+                            The value can be as the file path of *auxproducts.tgz file or *selfcal.json file.
     """
 
     #                                                                        #
