@@ -18,14 +18,10 @@ from pipeline.infrastructure.launcher import Context
 
 from .. import common
 from ..common import direction_utils as dirutil
-from ..common import observatory_policy, utils
+from ..common import observatory_policy, sdtyping, utils
 from . import resultobjects
 
 LOG = infrastructure.get_logger(__name__)
-
-if TYPE_CHECKING:
-    Angle = NewType('Angle', Dict[str, Union[str, float]])
-    Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 
 def ImageCoordinateUtil(
@@ -34,7 +30,7 @@ def ImageCoordinateUtil(
     ant_list: List[Optional[int]],
     spw_list: List[int],
     fieldid_list: List[int]
-) -> Union[Tuple[str, 'Angle', 'Angle', int, int, 'Direction'], bool]:
+) -> Union[Tuple[str, 'sdtyping.Angle', 'sdtyping.Angle', int, int, 'sdtyping.Direction'], bool]:
     """
     Calculate spatial coordinate of image.
 
@@ -272,10 +268,10 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     def __init__(self, context: Context, infiles: List[str], outfile: str, mode: str,
                  antids: List[int], spwids: List[int], fieldids: List[int], restfreq: str,
                  stokes: str, edge: Optional[List[int]]=None, phasecenter: Optional[str]=None,
-                 cellx: Optional['Angle']=None,
-                 celly: Optional['Angle']=None,
+                 cellx: Optional['sdtyping.Angle']=None,
+                 celly: Optional['sdtyping.Angle']=None,
                  nx: Optional[int]=None, ny: Optional[int]=None,
-                 org_direction: Optional['Direction']=None):
+                 org_direction: Optional['sdtyping.Direction']=None):
         """Initialise an instance of SDImagingWorkerInputs.
 
         Args:
@@ -390,7 +386,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _get_map_coord(self, inputs: SDImagingWorkerInputs, context: Context, infiles: List[str],
                        ant_list: List[int], spw_list: List[int], field_list: List[int]) \
-            -> Tuple[str, 'Angle', 'Angle', int, int, 'Direction']:
+            -> Tuple[str, 'sdtyping.Angle', 'sdtyping.Angle', int, int, 'sdtyping.Direction']:
         """Gather or generate the input image parameters.
 
         Args:
@@ -419,7 +415,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _do_imaging(self, infiles: List[str], antid_list: List[int], spwid_list: List[int],
                     fieldid_list: List[int], imagename: str, imagemode: str, edge: List[int],
-                    phasecenter: str, cellx: 'Angle', celly: 'Angle', nx: int, ny: int) -> bool:
+                    phasecenter: str, cellx: 'sdtyping.Angle', celly: 'sdtyping.Angle', nx: int, ny: int) -> bool:
         """Process imaging.
 
         Args:

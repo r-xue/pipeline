@@ -4,7 +4,7 @@ import collections
 import math
 import os
 from numbers import Number
-from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import numpy
 from scipy import interpolate
@@ -23,7 +23,7 @@ from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
-from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy ,rasterutil
+from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
                                         imaging_params, resultobjects,
@@ -34,7 +34,6 @@ if TYPE_CHECKING:
     from casatools import coordsys
     from pipeline.infrastructure import Context
     from resultobjects import SDImagingResults
-    Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -114,7 +113,7 @@ class SDImagingInputs(vdp.StandardInputs):
 
     def __init__(self, context: 'Context', mode: Optional[str]=None, restfreq: Optional[str]=None,
                  infiles: Optional[List[str]]=None, field: Optional[str]=None, spw: Optional[str]=None,
-                 org_direction: Optional['Direction']=None):
+                 org_direction: Optional['sdtyping.Direction']=None):
         """Initialize an object.
 
         Args:

@@ -6,7 +6,7 @@
 import collections
 from math import ceil
 import os
-from typing import TYPE_CHECKING, NewType, Optional, Tuple
+from typing import Optional, Tuple, TYPE_CHECKING
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -16,11 +16,11 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
 from ..common import display as sd_display
+from ..common import sdtyping
 
 if TYPE_CHECKING:
     from pipeline.infrastructure import Context
     from pipeline.infrastructure.imagelibrary import ImageItem
-    CubeRegrid = NewType('CubeRegrid', np.ndarray[np.ndarray[np.ndarray[np.float64]]])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -38,7 +38,7 @@ FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
 DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
 
-def decide_rms(naxis3: int, cube_regrid: 'CubeRegrid', inverted: bool) -> 'np.ndarray[np.ndarray[np.float64]]':
+def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NDArray3D', inverted: bool) -> 'sdtyping.NDArray2D':
     """Find the emission free channels roughly for estimating RMS.
     
     Split a chunk of the cube generated from FITS image into 10 chunks, and discards 2 chunks
@@ -60,8 +60,8 @@ def decide_rms(naxis3: int, cube_regrid: 'CubeRegrid', inverted: bool) -> 'np.nd
     return rms_map
 
 
-def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'CubeRegrid', pos: int,
-                                        inverted: bool) -> 'np.ndarray[np.ndarray[np.float64]]':
+def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NDArray3D', pos: int,
+                                        inverted: bool) -> 'sdtyping.NDArray2D':
     """Get one chunk from 10 chunks of cube_regrid, and calculate RMS of it.
 
     Args:
@@ -81,10 +81,10 @@ def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'CubeRegrid', 
             (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
 
 
-def make_figures(peak_sn: 'np.ndarray[np.ndarray[np.float64]]', mask_map: 'np.ndarray[np.ndarray[np.float64]]',
-                 rms_threshold: float, rms_map: 'np.ndarray[np.ndarray[np.float64]]',
-                 masked_average_spectrum: 'np.ndarray[np.float64]', all_average_spectrum: 'np.ndarray[np.float64]',
-                 naxis3: int, peak_sn_threshold: float, spectrum_at_peak: 'np.ndarray[np.float64]',
+def make_figures(peak_sn: 'sdtyping.NDArray2D', mask_map: 'sdtyping.NDArray2D',
+                 rms_threshold: float, rms_map: 'sdtyping.NDArray2D',
+                 masked_average_spectrum: 'sdtyping.NDArray1D', all_average_spectrum: 'sdtyping.NDArray1D',
+                 naxis3: int, peak_sn_threshold: float, spectrum_at_peak: 'sdtyping.NDArray1D',
                  idy: np.int64, idx: np.int64, output_name: str, fspec: FrequencySpec=None, dspec: DirectionSpec=None):
     """Make figures of Contamination.
 
@@ -196,7 +196,7 @@ def make_figures(peak_sn: 'np.ndarray[np.ndarray[np.float64]]', mask_map: 'np.nd
     return
 
 
-def warn_deep_absorption_feature(masked_average_spectrum: 'np.ndarray[np.float64]', imageitem: 'ImageItem'=None):
+def warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NDArray1D', imageitem: 'ImageItem'=None):
     """Warn if deep absouption feature.
 
     Args:
@@ -214,7 +214,7 @@ def warn_deep_absorption_feature(masked_average_spectrum: 'np.ndarray[np.float64
         LOG.warning(warning_sentence)
 
 
-def read_fits(input: str) -> Tuple['CubeRegrid', int, int, int, float, float]:
+def read_fits(input: str) -> Tuple['sdtyping.NDArray3D', int, int, int, float, float]:
     """Read FITS and its header (CASA version).
 
     Args:
