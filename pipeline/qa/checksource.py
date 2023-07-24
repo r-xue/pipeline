@@ -95,7 +95,7 @@ def fitimage (imagename, rms, fitradius=15):
         return {}
 
     # Check validity of fit
-    if (not fitresults) or ('component0' not in fitresults['results']):
+    if not fitresults:
         return {}
 
     fitdict = collections.OrderedDict()
