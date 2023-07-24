@@ -46,7 +46,7 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NDArray3D', inverted: bool) -
     for each of the remaining 6 chunks.
 
     Args:
-        naxis3 : value of axis3
+        naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
         inverted : flag of channel-inverted image cube. Defaults to False.
 
@@ -65,7 +65,7 @@ def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NDAr
     """Get one chunk from 10 chunks of cube_regrid, and calculate RMS of it.
 
     Args:
-        naxis3 : value of axis3
+        naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
         pos : position to slice
         inverted (bool): flag of channel-ibverted image cube
@@ -95,7 +95,7 @@ def make_figures(peak_sn: 'sdtyping.NDArray2D', mask_map: 'sdtyping.NDArray2D',
         rms_map : array of RMS map
         masked_average_spectrum : list of masked average spectrum
         all_average_spectrum : list of all average spectrum
-        naxis3 : value of axis3
+        naxis3 : a number of pixels along spectral axis
         peak_sn_threshold : peak SN threshold
         spectrum_at_peak : list of spectrum at peak
         idy : index y
