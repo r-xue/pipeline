@@ -739,49 +739,43 @@ def get_SNR_self_update(
                 'SNR_post'] / ((n_ant - 3) ** 0.5 * (selfcal_library[target][band]['Total_TOS'] / solint_float) ** 0.5)
 
 
-def get_sensitivity(vislist, selfcal_library, specmode='mfs', spwstring='', spw=[],
+def get_sensitivity(vislist, selfcal_library, field='', specmode='mfs', spwstring='', spw=[],
                     chan=0, cellsize='0.025arcsec', imsize=1600, robust=0.5, uvtaper=''):
-    sensitivities = np.zeros(len(vislist))
-    TOS = np.zeros(len(vislist))
-    counter = 0
+    maxspws = 0
+    maxspwvis = ''
     scalefactor = 1.0
     for vis in vislist:
-        im.open(vis)
-        im.selectvis(field='', spw=spwstring)
-        im.defineimage(mode=specmode, stokes='I', spw=spw, cellx=cellsize, celly=cellsize, nx=imsize, ny=imsize)
-        im.weight(type='briggs', robust=robust)
-        if uvtaper != '':
-            if 'klambda' in uvtaper:
-                uvtaper = uvtaper.replace('klambda', '')
-                uvtaperflt = float(uvtaper)
-                bmaj = str(206.0/uvtaperflt)+'arcsec'
-                bmin = bmaj
-                bpa = '0.0deg'
-            if 'arcsec' in uvtaper:
-                bmaj = uvtaper
-                bmin = uvtaper
-                bpa = '0.0deg'
-            LOG.info('uvtaper: '+bmaj+' '+bmin+' '+bpa)
-            im.filter(type='gaussian', bmaj=bmaj, bmin=bmin, bpa=bpa)
-        try:
-            sens = im.apparentsens()
-        except:
-            LOG.info('#')
-            LOG.info('# Sensisitivity Calculation failed for '+vis)
-            LOG.info('# Continuing to next MS')
-            LOG.info('# Data in this spw/MS may be flagged')
-            LOG.info('#')
-            continue
-        # LOG.info(sens)
-        # LOG.info(f'{vis} Briggs Sensitivity = {sens[1]}')
-        # LOG.info(f'{vis} Relative to Natural Weighting = {sens[2]}')
-        sensitivities[counter] = sens[1]*scalefactor
-        TOS[counter] = selfcal_library[vis]['TOS']
-        counter += 1
-        im.close()
-    # estsens=np.sum(sensitivities)/float(counter)/(float(counter))**0.5
-    # LOG.info(estsens)
-    estsens = np.sum(sensitivities*TOS)/np.sum(TOS)
+        casa_tools.imager.selectvis(vis=vis, field=field, spw=selfcal_library[vis]['spws'])
+        # Also figure out which vis has the max # of spws
+        if selfcal_library[vis]['n_spws'] >= maxspws:
+            maxspws = selfcal_library[vis]['n_spws']
+            maxspwvis = vis+''
+    casa_tools.imager.defineimage(
+        mode=specmode, stokes='I', spw=selfcal_library[maxspwvis]['spwsarray'],
+        cellx=cellsize, celly=cellsize, nx=imsize, ny=imsize)
+    casa_tools.imager.weight(type='briggs', robust=robust)
+    if uvtaper != '':
+        if 'klambda' in uvtaper:
+            uvtaper = uvtaper.replace('klambda', '')
+            uvtaperflt = float(uvtaper)
+            bmaj = str(206.0/uvtaperflt)+'arcsec'
+            bmin = bmaj
+            bpa = '0.0deg'
+        if 'arcsec' in uvtaper:
+            bmaj = uvtaper
+            bmin = uvtaper
+            bpa = '0.0deg'
+        LOG.info('uvtaper: '+bmaj+' '+bmin+' '+bpa)
+        casa_tools.imager.filter(type='gaussian', bmaj=bmaj, bmin=bmin, bpa=bpa)
+    try:
+        estsens = np.float64(casa_tools.imager.apparentsens()[1])
+    except:
+        LOG.info('#')
+        LOG.info('# Sensisitivity Calculation failed for %r', vislist)
+        LOG.info('# Data in MS may be flagged')
+        LOG.info('#')
+    casa_tools.imager.done()
+
     LOG.info(f'Estimated Sensitivity: {estsens}')
     return estsens
 
@@ -922,7 +916,8 @@ def get_nterms(fracbw, nt1snr=3.0):
         nterms = 2
     else:
         if nt1snr > 10.0:
-            # estimate the gain of going to nterms=2 based on nterms=1 S/N and fracbw
+            # Estimate the gain of going to nterms=2 based on nterms=1 S/N and fracbw
+            # The coefficients come from a empirical fit using simulated data with a spectral index of 3
             A1 = 2336.415
             B1 = 0.051
             C1 = -306.590
@@ -931,7 +926,7 @@ def get_nterms(fracbw, nt1snr=3.0):
             F1 = -23.598
             G1 = -0.594
             H1 = -3.413
-            #note that we fit the log10 of S/N_nt1 and [S/N_nt2 - S/N_nt1]/(S/N_nt1)
+            # Note that we fit the log10 of S/N_nt1 and [S/N_nt2 - S/N_nt1]/(S/N_nt1)
             Z = 10**func_cubic([fracbw, np.log10(nt1snr)], A1, B1, C1, D1, E1, F1, G1, H1)
             if Z > 0.01:
                 nterms = 2

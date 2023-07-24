@@ -314,7 +314,7 @@ class SelfcalHeuristics(object):
                 dr_mod = 1.0
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
                     sensitivity = get_sensitivity(
-                        vislist, selfcal_library[target][band],
+                        vislist, selfcal_library[target][band], target,
                         selfcal_library[target][band][vis]['spws'],
                         spw=selfcal_library[target][band][vis]['spwsarray'],
                         imsize=imsize[0],
@@ -353,7 +353,10 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band]['theoretical_sensitivity'] = -99.0
                 selfcal_library[target][band]['SNR_orig'] = initial_SNR
                 if selfcal_library[target][band]['nterms'] < 2:
-                    selfcal_library[target][band]['nterms'] = get_nterms(band_properties[vislist[0]][band]['fracbw'], initial_SNR)
+                    # updated nterms if needed based on S/N and fracbw
+                    selfcal_library[target][band]['nterms'] = get_nterms(
+                        selfcal_library[target][band]['fracbw'],
+                        selfcal_library[target][band]['SNR_orig'])
                 selfcal_library[target][band]['RMS_orig'] = initial_RMS
                 selfcal_library[target][band]['SNR_NF_orig'] = initial_NF_SNR
                 selfcal_library[target][band]['RMS_NF_orig'] = initial_NF_RMS
@@ -435,7 +438,7 @@ class SelfcalHeuristics(object):
                         if not os.path.exists(sani_target+'_'+band+'_'+spw+'_initial.image.tt0'):
                             if self.telescope == 'ALMA' or self.telescope == 'ACA':
                                 sensitivity = get_sensitivity(
-                                    vislist, selfcal_library[target][band],
+                                    vislist, selfcal_library[target][band], target,
                                     spw, spw=np.array([int(spw)]),
                                     imsize=imsize[0],
                                     cellsize=cellsize[0])
@@ -552,7 +555,7 @@ class SelfcalHeuristics(object):
                         np.array([10 ** (np.log10(3.0))] * n_ap_solints))
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':  # or ('VLA' in telescope)
                     sensitivity = get_sensitivity(
-                        vislist, selfcal_library[target][band],
+                        vislist, selfcal_library[target][band], target,
                         selfcal_library[target][band][vis]['spws'],
                         spw=selfcal_library[target][band][vis]['spwsarray'],
                         imsize=imsize[0],
@@ -875,7 +878,8 @@ class SelfcalHeuristics(object):
                         else:
                             post_SNR_NF, post_RMS_NF = post_SNR, post_RMS
                         if selfcal_library[target][band]['nterms'] < 2:
-                            selfcal_library[target][band]['nterms'] = get_nterms(band_properties[vislist[0]][band]['fracbw'], post_SNR)
+                            # Change nterms to 2 if needed based on fracbw and SNR
+                            selfcal_library[target][band]['nterms'] = get_nterms(selfcal_library[target][band]['fracbw'], post_SNR)
 
                         for vis in vislist:
 
@@ -1036,7 +1040,7 @@ class SelfcalHeuristics(object):
                 # omit DR modifiers here since we should have increased DR significantly
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
                     sensitivity = get_sensitivity(
-                        vislist, selfcal_library[target][band],
+                        vislist, selfcal_library[target][band], target,
                         selfcal_library[target][band][vis]['spws'],
                         spw=selfcal_library[target][band][vis]['spwsarray'],
                         imsize=imsize[0],
@@ -1115,7 +1119,7 @@ class SelfcalHeuristics(object):
                             self.cts.rmtree(sani_target+'_'+band+'_final.image.tt0')
                         if self.telescope == 'ALMA' or self.telescope == 'ACA':
                             sensitivity = get_sensitivity(
-                                vislist, selfcal_library[target][band],
+                                vislist, selfcal_library[target][band], target,
                                 spw, spw=np.array([int(spw)]),
                                 imsize=imsize[0],
                                 cellsize=cellsize[0])
@@ -1348,6 +1352,7 @@ class SelfcalHeuristics(object):
                 LOG.info(
                     f'using the Pipeline standard heuristics uvrange: {self.uvrange}, instead of the prototype uvrange: {prototype_uvrange}')
                 selfcal_library[target][band]['75thpct_uv'] = band_properties[vislist[0]][band]['75thpct_uv']
+                selfcal_library[target][band]['fracbw'] = band_properties[vislist[0]][band]['fracbw']
 
         for target in all_targets:
             for band in selfcal_library[target].keys():
