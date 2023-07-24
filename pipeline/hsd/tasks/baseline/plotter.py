@@ -31,7 +31,10 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 # A named tuple to store statistics of baseline quality
-BinnedStat = collections.namedtuple('BinnedStat', 'bin_min_ratio bin_max_ratio bin_diff_ratio')
+BinnedStat = collections.namedtuple(
+    'BinnedStat',
+    'bin_min_ratio bin_max_ratio bin_diff_ratio nbin nbin_factor valid'
+)
 QualityStat = collections.namedtuple('QualityStat', 'vis field spw ant pol stat')
 
 
@@ -1096,12 +1099,14 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         self.binned_freq = None
         self.binned_data = None
 
-    def data_flatness(self, spectrum: List[float], frequency: List[float],
+    def analyze_flatness(self, spectrum: List[float], frequency: List[float],
                       line_range: Optional[List[Tuple[float, float]]],
                       deviation_mask: Optional[List[Tuple[int, int]]],
-                      edge: Tuple[int, int]) -> Tuple[MaskedArray, numpy.ndarray, MaskedArray]:
+                      edge: Tuple[int, int]) -> BinnedStat:
         """
         Create a data of baseline flatness of a spectrum.
+
+        Also, this method computes statistics of binned spectrum.
 
         Args:
             spectrum: A spectrum to analyze baseline flatness and plot.
@@ -1115,27 +1120,90 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
                 eliminates from inspection of baseline flatness.
 
         Return:
-            Arrays of binned abcissa, binned data and masked data
+            Statistics of binned spectrum
         """
         masked_data = numpy.ma.masked_array(spectrum, mask=False)
         if edge is not None:
             (ch1, ch2) = edge
             masked_data.mask[0:ch1] = True
             masked_data.mask[len(masked_data)-ch2:] = True
+        num_masked_1 = sum(numpy.where(masked_data.mask, 1, 0))
+        LOG.debug(f'Number of newly masked channels with edge parameter: {num_masked_1}')
         if line_range is not None:
             for chmin, chmax in line_range:
                 masked_data.mask[int(chmin):int(numpy.ceil(chmax))+1] = True
+        num_masked_2 = sum(numpy.where(masked_data.mask, 1, 0))
+        LOG.debug(f'Number of newly masked channels with line mask: {num_masked_2 - num_masked_1}')
         if deviation_mask is not None:
             for chmin, chmax in deviation_mask:
                 masked_data.mask[chmin:chmax+1] = True
-        nbin = 20 if len(frequency) >= 512 else 10
+        num_masked_3 = sum(numpy.where(masked_data.mask, 1, 0))
+        LOG.debug(f'Number of newly masked channels with deviation mask: {num_masked_3 - num_masked_2}')
+
         self.masked_data = masked_data
-        self.binned_freq, self.binned_data = binned_mean_ma(frequency, self.masked_data, nbin)
+
+        stddev = self.masked_data.std()
+
+        stat_valid = True
+        nbin_factor = 1
+        nbin = 20 if len(frequency) >= 512 else 10
+
+        binned_freq, binned_data = binned_mean_ma(frequency, self.masked_data, nbin)
+        LOG.debug(
+            f'nbin {nbin}: len(binned_data) = {len(binned_data)}'
+            f' count = {binned_data.count()}'
+        )
+
+        if stddev is numpy.ma.masked or not numpy.isfinite(stddev):
+            # stddev is invalid, i.e., masked_data doesn't contain valid data
+            stat_valid = False
+
+        elif binned_data.count() < 2:
+            # not enough valid data, increase nbin and try again
+            nbin_org = nbin
+            nbin_factor = 2
+            nbin *= nbin_factor
+            LOG.info(
+                f'Calculation of baseline flatness QA metrics with nbin={nbin_org} has failed. '
+                f'Increase nbin to {nbin}.'
+            )
+            binned_freq, binned_data = binned_mean_ma(frequency, self.masked_data, nbin)
+            LOG.debug(
+                f'nbin {nbin}: len(binned_data) = {len(binned_data)}'
+                f' count = {binned_data.count()}'
+            )
+
+            if binned_data.count() < 2:
+                # not enough valid data even for larger number of bins
+                stat_valid = False
+
+        self.binned_freq = binned_freq
+        self.binned_data = binned_data
+
+        if stat_valid:
+            bin_min = numpy.nanmin(binned_data)
+            bin_max = numpy.nanmax(binned_data)
+            stat = BinnedStat(bin_min_ratio=bin_min/stddev,
+                              bin_max_ratio=bin_max/stddev,
+                              bin_diff_ratio=(bin_max-bin_min)/stddev,
+                              nbin=nbin,
+                              nbin_factor=nbin_factor,
+                              valid=True)
+        else:
+            stat = BinnedStat(bin_min_ratio=None,
+                              bin_max_ratio=None,
+                              bin_diff_ratio=None,
+                              nbin=nbin,
+                              nbin_factor=nbin_factor,
+                              valid=False)
+
+        return stat
 
     def plot_flatness(self, spectrum: List[float], frequency: List[float],
                       line_range: Optional[List[Tuple[float, float]]],
                       deviation_mask: Optional[List[Tuple[int, int]]],
                       edge: Tuple[int, int], brightnessunit: str,
+                      stat: BinnedStat,
                       figfile: str) -> None:
         """
         Create a plot of baseline flatness of a spectrum.
@@ -1151,14 +1219,15 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             edge: Number of elements in left and right edges that should be
                 eliminated from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
+            stat: Binned statistics data
             figfile: A file name to save figure.
         """
         stddev = self.masked_data.std()
-        if self.binned_data.count() < 2 \
-           or stddev is numpy.ma.masked \
-           or not numpy.isfinite(stddev):
+
+        if stddev is numpy.ma.masked or not numpy.isfinite(stddev):
             # not enough valid data or stddev is invalid
-            return None
+            return
+
         # create a plot
         xmin = min(frequency[0], frequency[-1])
         xmax = max(frequency[0], frequency[-1])
@@ -1191,7 +1260,25 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
                 fmax = ch_to_freq(chmax, frequency)
                 plt.axvspan(fmin, fmax, ymin=0.97, ymax=1.0, color='red')
         plt.hlines([-stddev, 0.0, stddev], xmin, xmax, colors='k', linestyles='dashed')
-        plt.plot(self.binned_freq, self.binned_data, 'ro')
+        if stat.valid:
+            plt.plot(self.binned_freq, self.binned_data, 'ro')
+
+            if stat.nbin_factor == 1:
+                note_nbin = f'applied default number of bins ({stat.nbin})'
+            else:
+                note_nbin = f'applied {stat.nbin_factor} times default number of bins ({stat.nbin})'
+            facecolor = 'white'
+        else:
+            note_nbin = 'NO BINNED SPECTRUM AVAILABLE'
+            facecolor = 'yellow'
+
+        plt.text(
+            0.98, 0.02, note_nbin,
+            transform=plt.gca().transAxes,
+            verticalalignment='bottom',
+            horizontalalignment='right',
+            bbox={'boxstyle': 'round', 'facecolor': facecolor, 'edgecolor': 'black'}
+        )
         plt.savefig(figfile, dpi=DPIDetail)
 
     def calculate_baseline_quality_stat(self, field_id: int, ant_id: int, spw_id: int,
@@ -1248,45 +1335,41 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         bunit = utils.get_brightness_unit(self.ms.name, defaultunit='Jy/beam')
 
         for ipol in range(npol):
-            self.data_flatness(postfit_integrated_data[ipol], frequency, line_range, deviation_mask, edge)
-            stat = self.analyze_flatness()
-            if stat:
-                quality_stat = QualityStat(vis=os.path.basename(self.ms.origin_ms), field=source_name, spw=virtual_spw_id, ant=self.ms.antennas[ant_id].name, pol=sd_polmap[ipol], stat=stat)
+            stat = self.analyze_flatness(postfit_integrated_data[ipol], frequency, line_range, deviation_mask, edge)
+            if stat.valid:
+                if stat.nbin_factor > 1:
+                    LOG.warning(
+                        'Default number of bins for baseline flatness QA '
+                        'metrics did not work for vis %s ant %s spw %s pol %s. '
+                        'Applied %s times larger number of bins instead.',
+                        self.ms.basename, ant_id, spw_id, ipol, stat.nbin_factor
+                    )
+                quality_stat = QualityStat(vis=os.path.basename(self.ms.origin_ms), field=source_name, spw=virtual_spw_id, ant=self.ms.antennas[ant_id].name, pol=sd_polmap[ipol], stat=[stat])
                 baseline_quality_stat.append(quality_stat)
+            else:
+                LOG.warning(
+                    'Failed to evaluate baseline flatness QA metrics for '
+                    'vis %s ant %s spw %s pol %s. '
+                    'Baseline flatness plot will be incomplete.',
+                    self.ms.basename, ant_id, spw_id, ipol
+                )
 
-                if basetask.DISABLE_WEBLOG:
-                    pass
-                else:
-                    postfit_qa_figfile = self.postfit_prefix + '_flatness_pol%s.png' % ipol
-                    self.plot_flatness(postfit_integrated_data[ipol], frequency, line_range,
-                                       deviation_mask, edge, bunit, postfit_qa_figfile)
+            if not basetask.DISABLE_WEBLOG:
+                postfit_qa_figfile = self.postfit_prefix + '_flatness_pol%s.png' % ipol
+                self.plot_flatness(postfit_integrated_data[ipol], frequency, line_range,
+                                   deviation_mask, edge, bunit, stat, postfit_qa_figfile)
+
+                if not os.path.exists(postfit_qa_figfile):
+                    LOG.warning(
+                        'No valid spectra in vis %s ant %s spw %s pol %s. '
+                        'Neither baseline flatness QA metrics nor baseline '
+                        'flatness plot are available.',
+                        self.ms.basename, ant_id, spw_id, ipol
+                    )
 
         del postfit_integrated_data
 
         return baseline_quality_stat
-
-    def analyze_flatness(self) -> Optional[BinnedStat]:
-        """
-        Calculate baseline flatness statistics of a spectrum.
-
-        Returns:
-            List of namedtuple 'BinnedStat' containing 'bin_min_ratio bin_max_ratio bin_diff_ratio'.
-        """
-        binned_stat = []
-        stddev = self.masked_data.std()
-        if self.binned_data.count() < 2 \
-           or stddev is numpy.ma.masked \
-           or not numpy.isfinite(stddev):
-            # not enough valid data or stddev is invalid
-            return None
-        bin_min = numpy.nanmin(self.binned_data)
-        bin_max = numpy.nanmax(self.binned_data)
-        stat = BinnedStat(bin_min_ratio=bin_min/stddev,
-                          bin_max_ratio=bin_max/stddev,
-                          bin_diff_ratio=(bin_max-bin_min)/stddev)
-        binned_stat.append(stat)
-        return binned_stat
-
 
 def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
     """Yield list of grid table indices that belong to the sparse map panel.
@@ -1534,6 +1617,12 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     min_i = 0
     for i in range(nbin):
         max_i = min(int(numpy.floor((i+1)*bin_width)), ndata-1)
+        num_masked = sum(numpy.where(masked_data.mask[min_i:max_i+1], 1, 0))
+        if num_masked == 0:
+            msg = 'valid for flatness QA'
+        else:
+            msg = 'will be excluded from the flatness QA'
+        LOG.trace(f'bin {i}: masked channels {num_masked}, {msg}')
         binned_x[i] = numpy.mean(x[min_i:max_i+1])
         if any(masked_data.mask[min_i:max_i+1]):
             binned_data.mask[i] = True
