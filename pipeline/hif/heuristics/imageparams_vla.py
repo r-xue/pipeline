@@ -207,7 +207,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         else:
             return 1
 
-    def deconvolver(self, specmode, spwspec) -> str:
+    def deconvolver(self, specmode, spwspec, intent: str = '') -> str:
         """Tclean deconvolver parameter heuristics.
         See PIPE-679 and CASR-543"""
         return 'mtmfs'
@@ -341,14 +341,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         automasking mode (PIPE-677):
             VLA auto-masking heuristics for TARGET performs two-stage iterations with slightly different auto-multithresh parameters
             iteration=0: keep_iteration=True
-            iteration=1: 
+            iteration=1:
                 stopcode=0 (no minor or major cycles?): keep_iteration=False
                 stopcode=1 (iteration limit): keep_iteration=True
                 stopcode=5,6 (doesn't converge): keep_iteration=False
                 stopcode=7 (no mask generated from automask): keep_iteration=False
                 stopcode=others: keep_iteration=True
             iteration>=2: keep_iteration=False
-        
+
         other modes:
             iteration=0: keep_iteration=True
             iteration=1: keep_iteration=False
@@ -372,7 +372,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return threshold
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None) -> Union[list, int]:
+               centreonly=False, vislist=None, spwspec=None, intent: str = '') -> Union[list, int]:
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -410,7 +410,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 sfpblimit = 0.016
 
         return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
-                              centreonly=centreonly, vislist=vislist)
+                              centreonly=centreonly, vislist=vislist, intent=intent)
 
     def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype: str = None) -> str:
         try:
