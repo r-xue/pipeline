@@ -10,7 +10,6 @@ import os
 import string
 from random import randint
 
-import traceback
 import numpy as np
 
 import pipeline.infrastructure.filenamer as filenamer
