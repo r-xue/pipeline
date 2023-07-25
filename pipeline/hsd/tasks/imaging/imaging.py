@@ -364,7 +364,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             restfreq_list=self.inputs.restfreq,
             ms_list=self.inputs.ms,
             ms_names=[msobj.name for msobj in self.inputs.ms],
-            args_spw=sdutils.convert_spw_virtual2real(self.inputs.context, str(self.inputs.spw)),
+            args_spw=sdutils.convert_spw_virtual2real(self.inputs.context, self.inputs.spw),
             in_field=self.inputs.field,
             imagemode=self.inputs.mode.upper(),
             is_nro=sdutils.is_nro(self.inputs.context),

@@ -303,7 +303,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         reduction_group = context.observing_run.ms_reduction_group
         vis_list = inputs.vis
         args = inputs.to_casa_args()
-        args_spw = utils.convert_spw_virtual2real(context, str(inputs.spw))
+        args_spw = utils.convert_spw_virtual2real(context, inputs.spw)
 
         window = inputs.linewindow
         windowmode = inputs.linewindowmode

@@ -107,7 +107,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
     def pol(self):
         # filters polarization by spw
         # need to convert input (virtual) spw into real spw
-        real_spw = sdutils.convert_spw_virtual2real(self.context, str(self.spw), [self.ms])[self.vis]
+        real_spw = sdutils.convert_spw_virtual2real(self.context, self.spw, [self.ms])[self.vis]
         selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(real_spw, with_channels=True)]
         pols = set()
         for idx in selected_spwids:
@@ -242,7 +242,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         match = sdutils.match_origin_ms(bl_list, inputs.ms.origin_ms)
         bl_name = match.name if match is not None else cal_name
         in_ant = inputs.antenna
-        in_spw = str(inputs.spw)
+        in_spw = inputs.spw
         real_spw = sdutils.convert_spw_virtual2real(context, in_spw, [self.inputs.ms])[self.inputs.vis]
         LOG.trace(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}" real_spw="{real_spw}"')
         in_field = inputs.field
