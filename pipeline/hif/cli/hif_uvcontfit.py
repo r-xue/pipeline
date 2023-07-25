@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_uvcontfit(vis=None, caltable=None, contfile=None, field=None, intent=None, spw=None, combine=None, solint=None,
-                  fitorder=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                  fitorder=None, dryrun=None, acceptresults=None):
 
     """
     hif_uvcontfit ---- Fit the continuum in the UV plane
@@ -46,13 +46,6 @@ def hif_uvcontfit(vis=None, caltable=None, contfile=None, field=None, intent=Non
                   This option is currently not supported.
     solint        Time scale for the continuum fit
     fitorder      Polynomial order for the continuum fits
-    pipelinemode  The pipeline operating mode.
-                  In 'automatic' mode the pipeline determines the values of all
-                  context defined pipeline inputs automatically.
-                  In 'interactive' mode the user can set the pipeline context
-                  defined parameters manually.
-                  In 'getinputs' mode the user can check the settings of all
-                  pipeline parameters without running the task.
     dryrun        Run the task (False) or just display the command (True)
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).
