@@ -56,17 +56,15 @@ def get_heuristic(arg):
 
 
 def execute_task(context, casa_task, casa_args):
-    pipelinemode = casa_args.get('pipelinemode', None)
     dry_run = casa_args.get('dryrun', None)
+    if dry_run is None:
+        dry_run = False
     accept_results = casa_args.get('acceptresults', True)
+    if accept_results is None:
+        accept_results = True
 
     # get the pipeline task inputs
     task_inputs = _get_task_inputs(casa_task, context, casa_args)
-
-    # print them if necessary
-    if pipelinemode == 'getinputs':
-        _print_inputs(casa_task, casa_args, task_inputs)
-        return None
 
     # Execute the class, collecting the results
     results = _execute_task(casa_task, task_inputs, dry_run)
@@ -118,18 +116,3 @@ def _merge_results(context, results):
     except Exception:
         LOG.critical('Warning: Check merge to context for {}'.format(results.__class__.__name__))
         raise
-
-
-def _print_inputs(casa_task, casa_args, task_inputs):
-    pipeline_class = task_registry.get_pipeline_class_for_task(casa_task)
-    task_args = argmapper.convert_args(pipeline_class, casa_args)
-
-    pipeline_perspective = {}
-    for arg in task_args:
-        if hasattr(task_inputs, arg):
-            pipeline_perspective[arg] = getattr(task_inputs, arg)
-
-    casa_args = argmapper.task_to_casa(casa_task, pipeline_perspective)
-
-    print('Pipeline-derived inputs for {!s}:'.format(casa_task))
-    pprint.pprint(casa_args)

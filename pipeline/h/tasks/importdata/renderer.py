@@ -78,7 +78,7 @@ def make_flux_table(context, results):
         vis_cell = os.path.basename(single_result.vis)
 
         # measurements will be empty if fluxscale derivation failed
-        if len(single_result.measurements) is 0:
+        if len(single_result.measurements) == 0:
             continue
 
         for field_arg in sorted(single_result.measurements, key=lambda f: ms_for_result.get_fields(f)[0].id):
@@ -107,7 +107,10 @@ def make_flux_table(context, results):
                 # get one spw/field intent
                 scan_intents_list = [scan.intents for scan in ms_for_result.get_scans(field=field.name, spw=measurement.spw_id)]
                 scan_intents = set().union(*scan_intents_list)
-                field_spw_intents = ", ".join(sorted(scan_intents.intersection({'PHASE', 'BANDPASS', 'FLUX', 'CHECK', 'POLARIZATION', 'AMPLITUDE'}))) # Set of intents to include from PIPE-1006
+
+                # Set of intents to include from PIPE-1006 + PIPE-1724
+                field_spw_intents = ", ".join(sorted(scan_intents.intersection(
+                    {'PHASE', 'BANDPASS', 'FLUX', 'CHECK', 'POLARIZATION', 'AMPLITUDE', 'DIFFGAIN'})))
 
                 tr = FluxTR(vis_cell, field_cell, field_spw_intents, measurement.spw_id, 
                             fluxes['I'], fluxes['Q'], fluxes['U'], fluxes['V'],

@@ -37,6 +37,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='ao')
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
+    hm_rasterscan = vdp.VisDependentProperty(default='time')
 
     def __init__(self,
                  context: Context,
@@ -53,14 +54,16 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                  lazy: Optional[bool]=None,
                  with_pointing_correction: Optional[bool]=None,
                  createmms: Optional[str]=None,
-                 ocorr_mode: Optional[str]=None):
+                 ocorr_mode: Optional[str]=None,
+                 hm_rasterscan: Optional[str]=None):
         """Initialise SDImportDataInputs class.
 
         Args:
             context: pipeline context
             vis: List of input visibility data
             output_dir: path of output directory
-            asis: Extra ASDM tables to convert as is
+            asis: Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a list of table names separated by space characters.
             process_caldevice: Import the CalDevice table from the ASDM
             session: List of sessions of input visibility data. Each element in the list indicates the session of a corresponding element in vis.
             overwrite: Overwrite existing files on import
@@ -72,6 +75,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
             createmms: Create an MMS
             ocorr_mode: Selection of baseline correlation to import.
                         Valid only if input visibility is ASDM. See a document of CASA, casatasks::importasdm, for available options.
+            hm_rasterscan: heuristics method for raster scan analysis
         """
         super(SDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                  process_caldevice=process_caldevice, session=session,
@@ -79,6 +83,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
                                                  save_flagonline=save_flagonline, createmms=createmms,
                                                  ocorr_mode=ocorr_mode, datacolumns=datacolumns)
         self.with_pointing_correction = with_pointing_correction
+        self.hm_rasterscan = hm_rasterscan
 
 
 class SDImportDataResults(basetask.Results):
@@ -174,7 +179,7 @@ class SerialSDImportData(importdata.ImportData):
         for ms in results.mses:
             LOG.debug('Start inspection for %s' % ms.basename)
             table_name = os.path.join(table_prefix, ms.basename)
-            inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms)
+            inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms, hm_rasterscan=self.inputs.hm_rasterscan)
             reduction_group, org_directions = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
 
@@ -191,6 +196,11 @@ class SerialSDImportData(importdata.ImportData):
 
         myresults.origin = results.origin
         return myresults
+
+    def _get_fluxes(self, context, observing_run):
+        # override _get_fluxes not to create flux.csv (PIPE-1846)
+        # do nothing, return empty results
+        return None, [], None
 
 
 # Tier-0 parallelization
@@ -215,6 +225,7 @@ class HpcSDImportDataInputs(SDImportDataInputs):
                  with_pointing_correction: Optional[bool]=None,
                  createmms: Optional[str]=None,
                  ocorr_mode: Optional[str]=None,
+                 hm_rasterscan: Optional[str]=None,
                  parallel: Optional[property]=None):
         """
         Initialise HpcSDImportDataInputs class. Arguments are same with SDImportDataInputs.
@@ -223,7 +234,8 @@ class HpcSDImportDataInputs(SDImportDataInputs):
             context: pipeline context
             vis: List of input visibility data
             output_dir: path of output directory
-            asis: Extra ASDM tables to convert as is
+            asis: Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a list of table names separated by space characters.
             process_caldevice: Import the caldevice table from the ASDM
             session: List of visibility data sessions
             overwrite: Overwrite existing files on import
@@ -234,13 +246,16 @@ class HpcSDImportDataInputs(SDImportDataInputs):
             with_pointing_correction: Apply pointing correction to DIRECTION
             createmms: Create an MMS
             ocorr_mode: Correlation data mode
+            hm_rasterscan: Heuristics method for raster scan analysis
+            parallel: Parallel execution or not
         """
         super(HpcSDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                     process_caldevice=process_caldevice, session=session,
                                                     overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                     save_flagonline=save_flagonline,
                                                     with_pointing_correction=with_pointing_correction,
-                                                    createmms=createmms, ocorr_mode=ocorr_mode)
+                                                    createmms=createmms, ocorr_mode=ocorr_mode,
+                                                    hm_rasterscan=hm_rasterscan)
         self.parallel = parallel
 
 
