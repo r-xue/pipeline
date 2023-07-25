@@ -81,19 +81,19 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                    Example: phaseupnsols=4
     hm_bandpass    The bandpass solution heuristics. The options are:
                    'snr': compute the solution required to achieve the specified SNR
-                   'smoothed': simple smoothing heuristics
+                   'smoothed': simple 'smoothing' i.e. spectral solint>1chan
                    'fixed': use the user defined parameters for all spws
     solint         Time and channel solution intervals in CASA syntax.
                    
                    Default is solint='inf', which is used when hm_bandpass='fixed'.
                    If hm_bandpass is set to 'snr', then the task will attempt to compute and use
                    an optimal SNR-based solint (and warn if this solint is not good enough).
-                   If hm_bandpass is set to 'smoothed', the task will use a smoothed solint.
-    maxchannels    The bandpass solution smoothing factor in channels. The
-                   solution interval is bandwidth / 240. Set to 0 for no smoothing.
+                   If hm_bandpass is set to 'smoothed', the task will override the spectral
+                   solint with bandwidth/maxchannels.
+    maxchannels    The bandpass solution 'smoothing' factor in channels, i.e. spectral
+                   solint will be set to bandwidth/maxchannels
+                   Set to 0 for no smoothing.
                    Used if hm_bandpass='smoothed'.
-                   
-                   Example: maxchannels=0
     evenbpints     Force the per spw frequency solint to be evenly divisible
                    into the spw bandpass if hm_bandpass='snr'.
                    

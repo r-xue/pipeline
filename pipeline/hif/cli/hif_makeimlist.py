@@ -10,8 +10,8 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                    calmaxpix=None, phasecenter=None,
                    nchan=None, start=None, width=None, nbins=None,
                    robust=None, uvtaper=None, clearlist=None, per_eb=None,
-                   calcsb=None, datatype=None, datacolumn=None, parallel=None,
-                   dryrun=None, acceptresults=None):
+                   per_session=None, calcsb=None, datatype=None, datacolumn=None,
+                   parallel=None, dryrun=None, acceptresults=None):
 
     """
     hif_makeimlist ---- Compute list of clean images to be produced
