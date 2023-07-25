@@ -90,8 +90,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog'% image_path_non_pbcor)
 
                     with casa_tools.ImageReader(image_path_non_pbcor) as image:
-                        non_pbcor_image_name = str(image.name(strippath=True))
-                        
                         # Construct the region for "the image outside of a central radius"
                         imshape = image.shape()
                         central_radius = min(20, imshape[0]//5) 
