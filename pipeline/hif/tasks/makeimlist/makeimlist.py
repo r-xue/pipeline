@@ -1294,6 +1294,11 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 result.add_target(target)
 
+        if inputs.intent == 'TARGET' and result.num_targets == 0 and not result.clean_list_info:
+            result.set_info({'msg': 'No data found. No imaging targets were created.',
+                             'intent': inputs.intent,
+                             'specmode': inputs.specmode})
+
         if inputs.intent == 'CHECK':
             if not any(have_targets.values()):
                 info_msg = 'No check source found.'
