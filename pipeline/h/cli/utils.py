@@ -1,5 +1,5 @@
 from functools import wraps
-import pprint
+from typing import Callable
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
@@ -12,7 +12,13 @@ from .. import heuristics
 LOG = infrastructure.get_logger(__name__)
 
 
-def cli_wrapper(func):
+def cli_wrapper(func: Callable):
+    """Wrap pipeline task CLI functions to handle the extra 'pipelinemode' argument.
+
+    PIPE-1884: this decorator function removes the "pipelinemode" argument from pipeline CLI task 
+    calls, which commonly exists in archival casa_pipescript.py/casa_pipestorescript.py scripts generated 
+    by old pipeline versions before PIPE-1686.
+    """
     @wraps(func)
     def wrapped_func(*args, **kwargs):
         if 'pipelinemode' in kwargs:
