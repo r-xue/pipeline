@@ -14,6 +14,7 @@ from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.tablereader import MeasurementSetReader
+from pipeline.infrastructure import logging
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
@@ -77,8 +78,10 @@ class SelfcalHeuristics(object):
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
         self.inf_EB_gaintype = 'G'              # Options: 'G' or 'T' or 'G,T'
 
-        LOG.info('recreating observing run from per-selfcal-target MS(es)')
+        LOG.info('recreating observing run from per-selfcal-target MS(es): %r', self.vislist)
         self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
+
+        raise RuntimeError('heuristics crashed')
 
     @staticmethod
     def get_observing_run(ms_files):
@@ -87,7 +90,9 @@ class SelfcalHeuristics(object):
 
         observing_run = ObservingRun()
         for ms_file in ms_files:
-            ms = MeasurementSetReader.get_measurement_set(ms_file)
+            with logging.log_level('pipeline.infrastructure.tablereader', logging.WARNING+1):
+                # avoid trigger warnings from MeasurementSetReader
+                ms = MeasurementSetReader.get_measurement_set(ms_file)
             ms.exclude_num_chans = ()
             observing_run.add_measurement_set(ms)
         return observing_run

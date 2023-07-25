@@ -23,27 +23,34 @@ from pipeline.hif.tasks.makeimlist import MakeImList
 from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, utils, task_registry
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
+from pipeline import environment
 
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class SelfcalResults(basetask.Results):
-    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None, selfcal_resources=None):
+    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None, selfcal_resources=None, is_restore=False):
         super().__init__()
         self.pipeline_casa_task = 'Selfcal'
         self.targets = targets
         self.applycal_result_contline = applycal_result_contline
         self.applycal_result_line = applycal_result_line
+        self.is_restore = is_restore
         self.selfcal_resources = selfcal_resources
 
     def merge_with_context(self, context):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
 
         # save selfcal results into the Pipeline context
-        if not hasattr(context, 'scal_targets') and self.targets:
-            context.scal_targets = self.targets
+        if hasattr(context, 'scal_targets'):
+            LOG.warning('context.scal_targets is being over-written.')
+        context.scal_targets = self.targets
+
+        # if selfcal_resources is None, then the selfcal solver is not triggered and no need to register the
+        # selfcal resources for auxproducts exporting.
         if self.selfcal_resources is not None:
+
             context.scal_resources = self.selfcal_resources
 
         if self.applycal_result_contline is not None:
@@ -168,6 +175,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets_json['scal_targets'] = scal_targets
         scal_targets_json['version'] = current_version
         scal_targets_json['datetime'] = current_datetime
+        scal_targets_json['pipeline_version'] = environment.pipeline_revision
         with open(filename, 'w') as fp:
             json.dump(scal_targets_json, fp, sort_keys=True, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
 
@@ -198,7 +206,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         caltable_list = []
         caltable_ready = []
         for cleantarget in sc_targets:
-
+            if cleantarget['sc_exception']:
+                continue
             sc_lib = cleantarget['sc_lib']
             sc_workdir = cleantarget['sc_workdir']
             if not sc_lib['SC_success']:
@@ -297,20 +306,25 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         scal_targets = []
         if not self.inputs.recal:
-
+            # only sideload the selfcal restore information from the context or json if recal=False
             if scal_targets_last is not None:
                 scal_targets = scal_targets_last
             if scal_targets_json is not None:
                 scal_targets = scal_targets_json
 
+        # if applycal_result_contline is None, then contline applycal is not triggered.
+        # if applycal_result_line is None, then line applycal is not triggered.
+        # if selfcal_resources is None, then the selfcal solver is not triggered, even selfcal solution could be applied.
         applycal_result_contline = applycal_result_line = selfcal_resources = None
+        is_restore = True
 
         if not scal_targets:
+
             if self.inputs.recal:
                 LOG.info('recal=True, override any existing selfcal solution in context or json, and alway execute the selfcal solver.')
             LOG.info('Execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
-
+            is_restore = False
             selfcal_json = self.inputs.context.name+'.selfcal.json'
             self._scal_targets_to_json(scal_targets, filename=selfcal_json)
             scal_caltable, _ = self._apply_scal_check_caltable(scal_targets, mses_regcal_contline+mses_regcal_line)
@@ -319,7 +333,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
             if not scal_targets:
                 LOG.info('No single-pointing science target found. Skip selfcal.')
-                return SelfcalResults(scal_targets)
+                return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
         if self.inputs.apply:
 
@@ -349,7 +363,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
 
-        return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources)
+        return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
     def _solve_selfcal(self):
 
@@ -391,21 +405,24 @@ class Selfcal(basetask.StandardTaskTemplate):
         tq_results = tq.get_results()
 
         for idx, target in enumerate(scal_targets):
-            scal_library, solints, bands = tq_results[idx]
+            scal_library, solints, bands, _ = tq_results[idx]
             if scal_library is None:
-                raise ValueError('auto_selfcal heuristics failed for target {0} spw {1} from {2}'.format(
-                    target['field'], target['spw'], target['sc_workdir']))
-            target['sc_band'] = bands[0]
-            target['sc_solints'] = solints[bands[0]]
-            # note scal_library is keyed by field name without quotes at this moment.
-            # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
-            #       utils.fieldname_for_casa() and
-            #       utils.dequote()
-            field_name = utils.dequote(target['field'])
-            target['sc_lib'] = scal_library[field_name][target['sc_band']]
-            target['field_name'] = field_name
-            target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
-            target['sc_success'] = target['sc_lib']['SC_success']
+                target['sc_exception'] = True
+                LOG.error('The self-calibration sequence failed for target=%r spw=%r from the working directory: %s/ .',
+                          target['field'], target['spw'], target['sc_workdir'])
+            else:
+                target['sc_exception'] = False
+                target['sc_band'] = bands[0]
+                target['sc_solints'] = solints[bands[0]]
+                # note scal_library is keyed by field name without quotes at this moment.
+                # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
+                #       utils.fieldname_for_casa() and
+                #       utils.dequote()
+                field_name = utils.dequote(target['field'])
+                target['sc_lib'] = scal_library[field_name][target['sc_band']]
+                target['field_name'] = field_name
+                target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
+                target['sc_success'] = target['sc_lib']['SC_success']
 
         return scal_targets
 
@@ -413,7 +430,7 @@ class Selfcal(basetask.StandardTaskTemplate):
     def _run_selfcal_sequence(scal_target, **kwargs):
 
         workdir = os.path.abspath('./')
-        selfcal_library, solints, bands = None, None, None
+        selfcal_library = solints = bands = trackback_msg = None
 
         try:
             os.chdir(scal_target['sc_workdir'])
@@ -425,11 +442,11 @@ class Selfcal(basetask.StandardTaskTemplate):
             # import pickle
             # with open('selfcal_heuristics.pickle', 'wb') as handle:
             #     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
             selfcal_library, solints, bands = selfcal_heuristics()
         except Exception as err:
-            LOG.error('Exception from hif.heuristics.auto_selfcal.SelfcalHeuristics:')
-            LOG.error(str(err))
-            LOG.error(traceback.format_exc())
+            traceback_msg = traceback.format_exc()
+            LOG.info(traceback_msg)
         finally:
             os.chdir(workdir)
             if scal_target['sc_parallel']:
@@ -439,7 +456,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 # As a workaround, we send the chdir command to the MPIServers explicitly.
                 mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
-        return selfcal_library, solints, bands
+        return selfcal_library, solints, bands, trackback_msg
 
     def _apply_scal(self, sc_targets, mses):
 
@@ -450,11 +467,12 @@ class Selfcal(basetask.StandardTaskTemplate):
         vislist_calto = [ms.name for ms in mses]
 
         for cleantarget in sc_targets:
-
+            if cleantarget['sc_exception']:
+                continue
             sc_lib = cleantarget['sc_lib']
-            sc_workdir = cleantarget['sc_workdir']
             if not sc_lib['SC_success']:
                 continue
+            sc_workdir = cleantarget['sc_workdir']
 
             for vis in sc_lib['vislist']:
                 for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):

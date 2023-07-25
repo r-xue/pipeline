@@ -117,7 +117,7 @@ def fm_reason(slib):
 <h3>List of Self-cal Targets</h3>
 
 % if not cleantargets:
-    <p>No valid selfcal source found.</p>
+    <p>No valid self-calibration result is returned.</p>
     <% return STOP_RENDERING %>
 % endif
 
@@ -150,6 +150,14 @@ def fm_reason(slib):
   </tbody>
 </table> 
 </div>
+
+% if is_restore:
+    <p>
+    The task has skipped the self-calibration solver and is executed in the applycal-only mode based on the existing selfcal/restore resources.
+    Please visit the original weblog for details on the self-calibration process.
+    </p>
+    <% return STOP_RENDERING %>
+% endif
 
 <h3>Self-cal Target Details</h3>
 
