@@ -19,6 +19,7 @@ from scipy.special import erf
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -1841,12 +1842,12 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 @log_qa
-def  score_decoherence_assessment(ms, phasermscycle_p80, bl_p80, bl_p80_orig, antout):
+def  score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, bl_p80: float, bl_p80_orig: float, outlier_antennas: List[str]):
     """
     Assess the cycle time phase RMS value, which is important as everything longer than a cycle time
     is corrected by phase referencing (in terms of atmospheric phase variations).
 
-    Checks the outlier antennas and such to see what affects the score, i.e. downgrade and message change
+    Also checks the outlier antennas and the 80th percentile baseline with and without flagged antennas.
     """
     try:
         initial_score = 1.0 - phasermscycle_p80/100.0
@@ -1860,11 +1861,11 @@ def  score_decoherence_assessment(ms, phasermscycle_p80, bl_p80, bl_p80_orig, an
             base_score  = 1.0
             shortmsg = "Excellent stability Phase RMS (<30deg)."
             longmsg = "For {0}, Excellent stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
-                        deg over the cycle time.".format(ms.basename, antout)
+                        deg over the cycle time.".format(ms.basename, RMSstring)
 
             # Check for problem antennas and update the score if needed.
-            # these are outliers >100 deg, or those beyond stat outlierlimit in function 'analysis' (6 MAD)
-            if len(antout) > 0:
+            # these are outliers >100 deg, or those beyond "outlier_limit" in SSFherusitics (6 MAD)
+            if len(outlier_antennas) > 0:
                  base_score = 0.9
 
         elif initial_score > 0.5 and initial_score <= 0.7:
@@ -1905,11 +1906,11 @@ def  score_decoherence_assessment(ms, phasermscycle_p80, bl_p80, bl_p80_orig, an
             longmsg= "For {}, the spatial structure function could not be assessed".format(ms)
 
         # Append antenna outlier information to longmsg if present
-        if len(antout) > 0:
-            if len(antout) == 1:
-                longmsg = "{0} {1} has higher phase RMS.".format(longmsg, ','.join(antout))
+        if len(outlier_antennas) > 0:
+            if len(outlier_antennas) == 1:
+                longmsg = "{0} {1} has higher phase RMS.".format(longmsg, ','.join(outlier_antennas))
             else:
-                longmsg = "{0} {1} have higher phase RMS".format(longmsg, ','.join(antout))
+                longmsg = "{0} {1} have higher phase RMS".format(longmsg, ','.join(outlier_antennas))
 
 
         # The P80 is shorter than the P80 of all data due to notable baseline flagging

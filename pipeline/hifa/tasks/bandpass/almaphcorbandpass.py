@@ -158,6 +158,9 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             # Do not use the version in preceding.append (above), as it is labeled "deprecated" 
             for cal in phaseup_result.final:
                 # Only save off this caltable if it was created as part of hifa_bandpass, not hifa_bandpassflag
+#                stage = self.context.stage()
+#                stage_name = stage.split('_')[1]
+#                if stage_name == "hifa_bandpass":
                 if "bandpass." in cal.gaintable:
                     result.bp_gaintable_for_phase_rms.append(cal.gaintable)
 

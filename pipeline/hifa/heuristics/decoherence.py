@@ -23,27 +23,26 @@ LOG = infrastructure.get_logger(__name__)
 ##################
 class SSFheuristics(object):
     def __init__(self, inputsin, outlier_limit, flag_tolerance, max_poor_ant): 
-        self.visUse = inputsin.ms.basename
+        self.vis = inputsin.ms.basename
         self.outlierlimit = outlier_limit
-        self.ftoll = flag_tolerance
+        self.flag_tolerance = flag_tolerance
         self.maxpoorant = max_poor_ant 
 
-        self.spwUse = None
-        self.fieldUse = None
-        self.scanUse = None
+        self.spw = None
+        self.field = None
+        self.scan = None
         self.refantid = None
-        
         self.caltable = [] 
        
         context = inputsin.context
-        ms = context.observing_run.get_ms(self.visUse)
+        ms = context.observing_run.get_ms(self.vis)
         self.caltable = sorted(ms.bp_gaintable_for_phase_rms)
 
         # Fetch the bandpass phaseup caltable 
         if len(self.caltable) > 0:
             self.caltable = self.caltable[-1]
         else:
-            LOG.error("For {}, missing bandpass phaseup caltable and cannot perform decoherence assessment.".format(self.visUse))
+            LOG.error("For {}, missing bandpass phaseup caltable and cannot perform decoherence assessment.".format(self.vis))
             raise
         
         self.refant = inputsin.refant.split(',')[0] # this is the NAME not the index
@@ -69,13 +68,13 @@ class SSFheuristics(object):
         # Future improvement: update to use SPW with highest SNR
         for scispw in scispws:
             if scispw.band in bwmaxdict and scispw.bandwidth == bwmaxdict[scispw.band]:
-                self.spwUse = scispw.id
+                self.spw = scispw.id
                 break
 
         ##################
         ## PIPE-1661 related
         # phasecal field ID out of the ms context passed - need for later flag assessment
-        ph_fieldids = [f.id for f in inputsin.ms.get_fields(intent='PHASE')]#, spw=str(self.spwUse))] 
+        ph_fieldids = [f.id for f in inputsin.ms.get_fields(intent='PHASE')]
         # traditionally we should only have one phase calibrator
         # but still pull this as a list and use in the _getblflags function
         self.ph_ids=ph_fieldids
@@ -89,7 +88,7 @@ class SSFheuristics(object):
         ####################
 
         # Get the bandpass scans
-        targeted_scans = inputsin.ms.get_scans(scan_intent='BANDPASS', spw=str(self.spwUse))
+        targeted_scans = inputsin.ms.get_scans(scan_intent='BANDPASS', spw=str(self.spw))
         bp_scan = []
         bp_field = []
         bp_id = []
@@ -99,8 +98,8 @@ class SSFheuristics(object):
                 bp_field.append(elms.name)  # fields is a dict again...
                 bp_id.append(elms.id) # PIPE-1661
 
-        self.scanUse = bp_scan[0] # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure. 
-        self.fieldUse = bp_field[0]
+        self.scan = bp_scan[0] # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure. 
+        self.field = bp_field[0]
         self.fieldId = bp_id[0]  # PIPE-1661 needs ID not a name 
 
         # Check to see if data are ACA or not
@@ -120,7 +119,7 @@ class SSFheuristics(object):
         self.blflags = self._getblflags()  # index back is 'all' and 'phasecalonly' intents
 
         # Set holder for outlier antennas related to plotting and scores later
-        self.antout = []
+        self.outlier_antennas = []
 
         # Setup the main analysis dictionary
         self.allResult = {}
@@ -134,7 +133,7 @@ class SSFheuristics(object):
         and return everything required for later scoring and plotting
         """
         self._do_analysis()
-        return copy.deepcopy(self.allResult), self.cycletime, self.totaltime, copy.deepcopy(self.antout)
+        return copy.deepcopy(self.allResult), self.cycletime, self.totaltime, copy.deepcopy(self.outlier_antennas)
 
     def _do_analysis(self):
         ''' this is the wrapper to do the phase RMS calculation, outlier analysis,
@@ -142,10 +141,10 @@ class SSFheuristics(object):
 
         inputs used are:
                   self.cycletime, self.totaltime, self.PMinACA,
-                  self.outlierlimit, self.antout, self.maxpoorant 
+                  self.outlierlimit, self.outlier_antennas, self.maxpoorant 
 
         uses functions:
-                  self._phase_rms_caltab, self.madcalc
+                  self._phase_rms_caltab, self.mad
 
         fills:
                   self.allResults
@@ -168,7 +167,7 @@ class SSFheuristics(object):
             self.allResult= self._phase_rms_caltab() # otherwise no options added and cycletime value will equal total time value
 
         # Check the cycle time calculation is not all nans - might happen if there are considerable flags
-        # i.e. if a large fraction of data > self.ftoll are flagged
+        # i.e. if a large fraction of data > self.flag_tolerance are flagged
         cycleResultFinite = len(np.array(self.allResult['blphasermscycle'])[np.isfinite(self.allResult['blphasermscycle'])])
 
         # if it is all flagged, theory to scale down total time with 'lower' scaling constant power (Maud et al. 2022)
@@ -213,31 +212,31 @@ class SSFheuristics(object):
 
         if len(ID_poorant)>0:
             for antout in ID_poorant:
-                self.antout.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
+                self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
 
         # for what are yellow or red scores where phase RMS >50deg
         # we check for statistical outliers, and then clip these out and re-calculate the phaseRMS
         # in the case PL missed bad antennas were causing the high phase RMS
-        # self.antout is used/passed in the score function as it adjusts the score and message too
+        # self.outlier_antennas is used/passed in the score function as it adjusts the score and message too
         if self.allResult['phasermscycleP80'] > 50.:
             statsoutlierlimit = self.allResult['phasermscycleP80'] + 4.*phaseRMScycleP80mad # tested limit works well
             # ant phase on cycle time !
             ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])]>statsoutlierlimit)[0]
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
-                    self.antout.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
+                    self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
         
             # max limit on number of 'bad' antennas to be allowed to exclude from calculations (set at 11 good as tested in PIPE692)
             # we clip them out and recalculate - score function also tracks and gives a warning
             # if >11, basically the data is rubbish, so don't clip and let scores be low
-            if len(self.antout) > 0 and len(self.antout) < self.maxpoorant: 
+            if len(self.outlier_antennas) > 0 and len(self.outlier_antennas) < self.maxpoorant: 
 
                 # crude way to get the index values is a loop over the baselines
-                # is there a way to better search allResult['blname'] to check if any self.antout are (or are not) in them
+                # is there a way to better search allResult['blname'] to check if any self.outlier_antennas are (or are not) in them
                 ID_goodbl=[]
                 ID_badbl=[]
                 for idg, bln in enumerate(self.allResult['blname']):
-                    if (bln.split('-')[0] not in self.antout) and (bln.split('-')[1] not in self.antout):
+                    if (bln.split('-')[0] not in self.outlier_antennas) and (bln.split('-')[1] not in self.outlier_antennas):
                         ID_goodbl.append(idg)
                     else: # assume bad
                         ID_badbl.append(idg)
@@ -267,7 +266,7 @@ class SSFheuristics(object):
             # add them to the list so score code picks them up if required and changes the messages
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
-                    self.antout.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
+                    self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
 
             # none the 'bad' entires in dict 
             self.allResult['blphasermsbad']= None
@@ -280,7 +279,7 @@ class SSFheuristics(object):
         for bnblph in list(zip(np.array(self.allResult['blname'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['bllen'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['blphasermscycle'])[np.array(self.allResult['bllen']).argsort()])):
 
             # add simple text to flagged (i.e. we made nan for the calculation), or outlier antennas (outlier comes first)
-            if str(bnblph[0].split('-')[0]) in self.antout or str(bnblph[0].split('-')[1]) in self.antout:
+            if str(bnblph[0].split('-')[0]) in self.outlier_antennas or str(bnblph[0].split('-')[1]) in self.outlier_antennas:
                 LOG.info(str(bnblph)+' - outlier')
             elif not np.isfinite(bnblph[2]):
                 LOG.info(str(bnblph)+' - flagged')
@@ -288,25 +287,26 @@ class SSFheuristics(object):
                 LOG.info(str(bnblph))
 
 
-        if len(self.antout)>0:
-            antoutstr = ",".join(self.antout)
-            LOG.info(" Possible high phase RMS on antenna(s): "+str(antoutstr))
+        if len(self.outlier_antennas) > 0:
+            antoutstr = ",".join(self.outlier_antennas)
+            LOG.info(" Possible high phase RMS on antenna(s): {}".format(antoutstr))
 
         # Save off spw, scan, field
-        self.allResult['spw'] = self.spwUse
-        self.allResult['scan'] = self.scanUse
-        self.allResult['field'] = self.fieldUse
+        self.allResult['spw'] = self.spw
+        self.allResult['scan'] = self.scan
+        self.allResult['field'] = self.field
 
-    # Used by __init__ 
-    def _pm_in_aca(self):
-        ''' Check if the array is ACA and has PM antennas
+    # Methods used by __init__ 
+    def _pm_in_aca(self) -> bool:
+        """
+        Check if the array is ACA and has PM antennas
 
         input used:
                  self.antlist
 
         returns: 
                 Bool based on PM with CM antennas
-        '''
+        """
         antUse = self.antlist
         antUse = ",".join(antUse) # See: PIPE-1633
 
@@ -317,7 +317,7 @@ class SSFheuristics(object):
 
         return PMincACA
 
-    def _getbaselinesproj(self, fieldin=None):
+    def _getbaselinesproj(self, field_id: int=None) -> Dict[str, str]:
         ''' Code to get the projected baseline from the openend 
         visibilitiy file already - these are ordered in 
         terms of antennas. This is a modified stand alone version
@@ -326,17 +326,17 @@ class SSFheuristics(object):
         returns a dict of lengths which are BL name keyed
         e.g. bllens[DA41-DA42] - key is name ant 1 - dash - name ant 2
         '''
-        with casa_tools.MSMDReader(self.visUse) as msmd:
-            spwchan = msmd.nchan(self.spwUse)
-            datadescid = msmd.datadescids(spw=self.spwUse)[0]
+        with casa_tools.MSMDReader(self.vis) as msmd:
+            spwchan = msmd.nchan(self.spw)
+            datadescid = msmd.datadescids(spw=self.spw)[0]
         
-        with casa_tools.MSReader(self.visUse) as ms:
+        with casa_tools.MSReader(self.vis) as ms:
             ms.selectinit(datadescid=datadescid)
             ms.select({'uvdist': [1e-9,1e12]}) # avoid auto corr
             ms.selectchannel(1, 0, spwchan, 1) # data structure related 
-            ms.select({'scan_number': int(self.scanUse)})
-            if fieldin:
-                ms.select({'field_id': int(fieldin)})
+            ms.select({'scan_number': int(self.scan)})
+            if field_id:
+                ms.select({'field_id': int(field_id)})
             alldata = ms.getdata(['uvdist', 'antenna1', 'antenna2']) 
 
         ## the length of e.g. alldata['uvdist'] is >total no. of Bls - it loops over all time stamps of the BP 
@@ -360,24 +360,24 @@ class SSFheuristics(object):
         # order irrelavant as keyed here with BL Name
         return baselineLen
     
-    def _get_bandpass_scan_time(self):
-        ''' Read a caltable file and return time
+    def _get_bandpass_scan_time(self) -> Tuple[float, float]:
+        """
+        Read a caltable file and return time
         shifted to start at zero seconds starting time.
         Note these are the recored times in the caltable
 
         uses inputs:
-               self.caltable, self.spwUse, self.scanUse, self.antlist
+               self.caltable, self.spw, self.scan, self.antlist
         
         :returns: total time of baseline scan, average integration time 
 	    :rtype: float, float
-        '''
-        
+        """
         with casa_tools.TableReader(self.caltable) as tb:
             nant = len(self.antlist)
             timeX = []
             antid = 0
             while len(timeX) < 2:
-                tb1 = tb.query("ANTENNA1 == %s  && SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s"%(antid, self.spwUse, self.scanUse))
+                tb1 = tb.query("ANTENNA1 == %s  && SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s"%(antid, self.spw, self.scan))
                 timeX = tb1.getcol('TIME')
                 antid += 1
                 if antid == nant - 1:
@@ -394,43 +394,43 @@ class SSFheuristics(object):
 
         return total_bp_scan_time, avg_integration_time
 
-    def _getcycletime(self):
+    def _getcycletime(self) -> float:
         """
         Computes the median time (in seconds) between visits to the specified intent.
         Note that other parts of the ALMA project consider the "cycleTime" to be the 
         scan duration on the science target before going back to the phase calibrator,
         i.e. ignoring the duration of the phasecal scan, the ATM cal scans, the 
         checksource, and all the slewing and overhead.
-        -Todd Hunter ORIG in analysis Utils (cycleTime)
-        - LM edited for this code
-        - PIPE-1848 diverts to a lookup table if cycle time is not found
 
-                input used:
-                self.visUse
+        If the cycle time is not found, diverts to a lookup table (See: PIPE-1848)
+       
+        This method is adapted from:
+        - Todd Hunter ORIG in analysis Utils (cycleTime)
+        - LM edited for this code
+
+        input used:
+            self.vis
 
         return: the cycletime (float)
         """
-        with casa_tools.MSMDReader(self.visUse) as msmd:
+        with casa_tools.MSMDReader(self.vis) as msmd:
             scans = msmd.scansforintent('*PHASE*')
 
-            # PIPE-1848: if there is no phase calibrator we cannot get cycle time either
+            # PIPE-1848: if there is no phase calibrator, we cannot get cycle time either
             if len(scans) == 0:
                 # No phase calibrator in the data
-                LOG.warning("Using lookup Cycle Time as there is no PHASE intent in {}".format(self.visUse))
+                LOG.warning("Using lookup Cycle Time as there is no PHASE intent in {}".format(self.vis))
                 usecycle = self._lookupcycle()
                 return usecycle
 
-            # PIPE-1848
-            # changed as before tired to get times even for one scan, but it is pointless
-            # already use the lookup 
+            # Use the lookup if there is only one phase calibrator scan. See: PIPE-1848
             if len(scans) == 1:
-                LOG.warning("Using lookup Cycle Time as there is only 1 PHASE calibrator scan for {}".format(self.visUse))
+                LOG.warning("Using lookup Cycle Time as there is only 1 PHASE calibrator scan for {}".format(self.vis))
                 usecycle = self._lookupcycle()
                 return usecycle
 
-            # all correectly formed data should go here
+            # all correctly formed data should go here
             # now get the times for the scans and work out the cycle time 
-
             times = []
 
             for scan in scans:
@@ -442,18 +442,18 @@ class SSFheuristics(object):
         diffs = np.diff(times)
         return np.median(diffs)
 
-    def _lookupcycle(self):
-        """ Code to lookup the nearest default cycle time 
+    def _lookupcycle(self) -> int:
+        """ 
+        Look up the nearest default cycle time 
         as using best practices for Baseline length and 
-        the frequency band - this is ONLY needed when the 
+        the frequency band. This is ONLY needed when the 
         returned cycle time is None - which would only happen
         for malformed data with only one PHASE cal scan,
         that ultimately should not be coming to PIPELINE at all
-        PIPE-1848
-
+        See: PIPE-1848
         """
         if self.PMinACA:
-            config=0
+            config = 0
         else:
             config = self._getconfig()  # as configs run 1 to 10, 0 is ACA 
 
@@ -476,22 +476,25 @@ class SSFheuristics(object):
                       [999,999,999,80,80,80,80,80,65,58,45]]  
 
         cycletime = float(cycletimes[config][bandu])
+
+        #if cycletime == 999: 
+        #    raise
  
         return cycletime
     
-    def _getfreq(self):
+    def _getfreq(self) -> float:
         """ wrap in a function here as we open msmd
         return is in Hz used for getting the band
 
         PIPE-1848
         """
         #TODO: update to fetch from context
-        with casa_tools.MSMDReader(self.visUse) as msmd:
-            freqval = np.median(msmd.chanfreqs(self.spwUse)) # otherwise all channels 
+        with casa_tools.MSMDReader(self.vis) as msmd:
+            freqval = np.median(msmd.chanfreqs(self.spw)) # otherwise all channels 
     
         return freqval
     
-    def _getband(self):
+    def _getband(self) -> int:
         ''' Identify the Band for specific frequency (in GHz)
         PIPE-1848
 
@@ -506,7 +509,7 @@ class SSFheuristics(object):
 
         return bandsel
 
-    def _getconfig(self):
+    def _getconfig(self) -> int:
         ''' Identify the configuration based on 
         baseline length - returns as an int to 
         allow a table search for cycle time
@@ -523,11 +526,12 @@ class SSFheuristics(object):
 
         return config
     
-    def _getblflags(self, ant1=None, ant2=None):
-        ''' Code to open and close the table for the MS 
+    def _getblflags(self, ant1=None, ant2=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Code to open and close the table for the MS 
         and get the baseline based flags in one lump
 
-        we only pass the spwUse as previously established
+        we only pass the spw as previously established
         here the assumption is that any phase RMS issue with
         baseline length will be flagged accross all the data,
         true atmosphereic things would not be spectral window based
@@ -541,36 +545,39 @@ class SSFheuristics(object):
 
         result - pass out simple a true or false (could be used for a masked array?)
                  to set that baseline to a nan and thus not be used 
-        '''
+        """
 
         #set the flagged baseline return to false
         flaggedbl = False
         # MS reads datadescid not spw id 
         #- need to do the conversion to make sure we use
         # the correct value
-        with casa_tools.MSMDReader(self.visUse) as msmd:
-            datadescid= msmd.datadescids(spw=self.spwUse)[0]
+        with casa_tools.MSMDReader(self.vis) as msmd:
+            datadescid= msmd.datadescids(spw=self.spw)[0]
 
-        with casa_tools.TableReader(self.visUse) as tb:
-            if ant1 != None and ant2 != None:
-                tb1 = tb.query("ANTENNA1 == %s && ANTENNA2 == %s && DATA_DESC_ID == %s "%(ant1,ant2,datadescid))
+        with casa_tools.TableReader(self.vis) as tb:
+            if (ant1 != None) and (ant2 != None):
+                tb1 = tb.query("ANTENNA1 == %s && ANTENNA2 == %s && DATA_DESC_ID == %s "%(ant1, ant2, datadescid))
             else:
                 # Speed up - pull everything in one go not per antena, divide out later in main function
                 tb1 = tb.query("DATA_DESC_ID == %s "%(datadescid))
 
-            flags=tb1.getcol('FLAG') ## index is [pol][chan][integration]
-            a1s=tb1.getcol('ANTENNA1')
-            a2s=tb1.getcol('ANTENNA2') 
+            flags = tb1.getcol('FLAG') ## index is [pol][chan][integration]
+            a1s = tb1.getcol('ANTENNA1')
+            a2s = tb1.getcol('ANTENNA2') 
             field = tb1.getcol('FIELD_ID')
 
-        return flags, a1s,a2s,field  
+        return flags, a1s, a2s, field  
 
     def _log_setup_info(self): 
+        """
+        Prints information about the setup of the SSF analysis to the log at the "info" level
+        """
         LOG.info('*** Phase RMS vs Baseline assessment setup ***')
-        LOG.info(' Working on the MS {}'.format(self.visUse))
-        LOG.info(' Selected scan {}'.format(self.scanUse))
-        LOG.info(' Selected spw {}'.format(self.spwUse))
-        LOG.info(' Using field {}'.format(self.fieldUse))
+        LOG.info(' Working on the MS {}'.format(self.vis))
+        LOG.info(' Selected scan {}'.format(self.scan))
+        LOG.info(' Selected spw {}'.format(self.spw))
+        LOG.info(' Using field {}'.format(self.field))
         LOG.info(' Using caltab {}'.format(self.caltable))
         LOG.info(' The refant is {} id {}'.format(self.refant, self.refantid))
         LOG.info(' Is ACA with PM data {}'.format(self.PMinACA))
@@ -578,9 +585,10 @@ class SSFheuristics(object):
         LOG.info(' Phase referencing cycle time {}'.format(self.cycletime))
         LOG.info(' The median integration time {}'.format(self.difftime))
 
-    # Used by _do_analysis()
-    def _get_cal_phase(self, ant):
-        ''' Read a caltable file and select the
+    # Methods used by _do_analysis()
+    def _get_cal_phase(self, ant: int) -> np.ndarray:
+        """
+        Read a caltable file and select the
         phases from one pol (tested in PIPE692 as sufficient).
         If those phase data have a flag, the phase
         value is set to nan, which is dealt with in the correct
@@ -591,13 +599,13 @@ class SSFheuristics(object):
                  ant (int)  - the antenna to get the phases for 
 
         uses inputs:
-                 self.caltable, self.refantid, self.spwUse, self.scanUse
+                 self.caltable, self.refantid, self.spw, self.scan
   
 
         returns: float array of the phases of an antenna
-        '''
+        """
         with casa_tools.TableReader(self.caltable) as tb:
-            tb1 = tb.query("ANTENNA1 == %s && ANTENNA2 == %s && SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s "%(ant, self.refantid, self.spwUse, self.scanUse))
+            tb1 = tb.query("ANTENNA1 == %s && ANTENNA2 == %s && SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s "%(ant, self.refantid, self.spw, self.scan))
             cal_phases = tb1.getcol('CPARAM')
             cal_phases = np.angle(cal_phases[0][0])  ## in radians one pol only
 
@@ -618,15 +626,16 @@ class SSFheuristics(object):
         cal_phases = self.phase_unwrap(cal_phases)
         return cal_phases #float array of the phases of an antenna
 
-    def _phase_rms_caltab(self, antout : list=[], timeScale=None): 
-        ''' This will run the loop over the caltable
+    def _phase_rms_caltab(self, antout: list=[], timeScale: float=None) -> Dict[str, str]: 
+        """
+        This will run the loop over the caltable
         and work out the baseline based phases and calculate the 
         phase RMS. It will also get the Phase RMS per antenna (with
         respect to the refant - i.e. ant based phase RMS) these are all
         passed back to the main class as self.allResult is filled 
         
         inputs used:
-              self.antlist, self.ftoll, self.difftime, self.baselines
+              self.antlist, self.flag_tolerance, self.difftime, self.baselines
 
         calls functions:
               self._get_cal_phase, self.ave_phase, self.stdc
@@ -634,11 +643,9 @@ class SSFheuristics(object):
         returns:  rms_results{}
         dict keys: blphaserms, bphasermscycle, bllen, blname,
                    antphaserms, antphasermscycle, antname
-              
-        '''
+        """
 
         # setup the result list
-
         rms_results =  {}  
         rms_results['blphaserms'] = []
         rms_results['blphasermscycle'] = []
@@ -661,7 +668,7 @@ class SSFheuristics(object):
             rms_results['antname'].append(self.antlist[i]) 
 
             # make an assessment of flagged data for that antenna
-            if len(pHant1[np.isnan(pHant1)]) > self.ftoll*len(pHant1):
+            if len(pHant1[np.isnan(pHant1)]) > self.flag_tolerance*len(pHant1):
                 rms_results['antphaserms'].append(np.nan)
                 rms_results['antphasermscycle'].append(np.nan)
                 
@@ -712,7 +719,7 @@ class SSFheuristics(object):
                 ###############
               
                 # make an assessment of flagged data
-                elif len(pH[np.isnan(pH)]) > self.ftoll*len(pH):
+                elif len(pH[np.isnan(pH)]) > self.flag_tolerance*len(pH):
                     rms_results['blphaserms'].append(np.nan)
                     rms_results['blphasermscycle'].append(np.nan)
 
@@ -732,16 +739,16 @@ class SSFheuristics(object):
         for key_res in ['blphaserms', 'blphasermscycle', 'antphaserms', 'antphasermscycle']:
             rms_results[key_res]= np.degrees(rms_results[key_res])
         
-        # this is a dict
         return rms_results
     
-    def _isblflagged(self, ant1, ant2):
-        ''' function to make the assessment of 
+    def _isblflagged(self, ant1: int, ant2: int):
+        """
+        function to make the assessment of 
         the flags that are saved and return if the
         full baseline is flagged or not
        
         requires the self.blflags
-        '''
+        """
 
         # in checking the order of data read associated with each antenna
         # the ordering system is not 100% preordained it seems,
@@ -755,9 +762,6 @@ class SSFheuristics(object):
         # speed assumption is we will hit a false before a true
         # flag for good data, so assume bad, set to good
         flaggedbl = True 
-
-
-        # we know 0 index has stuff print again to check
 
         idbl = np.where((self.blflags[1]==ant1) & (self.blflags[2]==ant2) & (self.blflags[3]==self.fieldId))[0]
         # loop over correct ant, integration time index 
@@ -783,40 +787,47 @@ class SSFheuristics(object):
 
     # Static methods
     @staticmethod
-    def phase_unwrap(phase):
-        """ Unwraps the phases to solve for 2PI ambiguities
+    def phase_unwrap(phase: np.ndarray) -> np.ndarray:
+        """ 
+        Unwraps the phases to solve for 2PI ambiguities
+        Input phases may contain np.nan. 
 
-            Input phases may be nan. 
-
-        	:param phase: phase in radians
-        	:type phase: float array
-	        :returns: unwrapped phase-array
-	        :rtype: float array
+        :param phase: phase in radians
+        :type phase: float array
+        :returns: unwrapped phase-array
+        :rtype: float array
         """
         working_phase = phase.copy()
         working_phase[~np.isnan(working_phase)] = np.unwrap(working_phase[~np.isnan(working_phase)]) 
         return working_phase
     
     @staticmethod 
-    def mad(data, axis=None):
-        ''' This calculates the MAD - median absolute deviation from the median
+    def mad(data: np.ndarray, axis: int=None) -> float:
+        """
+        This calculates the MAD - median absolute deviation from the median
         The input must be nan free, i.e. finite data 
+        
         :param data: input data stream
         :type data: list or array
         
         :returns: median absolute deviation (from the median)
         :rtyep: float
-        '''
+        """
         return np.median(np.abs(data - np.median(data, axis)), axis)
 
     @staticmethod
-    def stdc(phase, diffTime, over=120.0):
-        '''Calculate STD over a set time and return the average of all overlapping
+    def stdc(phase: np.ndarray, diffTime: float, over: float=120.0) -> float:
+        """
+        Calculate STD over a set time and return the average of all overlapping
         values of the standard deviation - overlapping estimator. This acts
         upon a phase-time stream of data. Will consider only finite values in 
         the phase-time stream (i.e. phase array). The phase array must be 
         unwrapped, i.e. continous, no breaks or 2PI ambiguities
     
+        This is the standard deviation, so it takes out the
+        mean value. RMS with mean or fit removed provides
+        the same value for zero-centered phases.
+
         :param phase: any unwrapped input phase
         :type phase: array
         :param diffTime: the time between each data integration
@@ -825,13 +836,9 @@ class SSFheuristics(object):
         :type over: float
         :returns: average standard deviation for the dataset calcualted over the input timescale 
         :rtype: float
-    
-        Note this is STANDARD DEVIATION - takes out the
-        mean value. RMS with mean or fit removed provides
-        the same value for zero centred phases.
-        '''
+        """
 
-        # overlap in elements 
+        # Overlap in elements 
         over = np.int(np.round(over / diffTime))
         
         # Use nan versions of numpy functions as some elements of 'phase' might be np.nan to indicate that it was flagged
@@ -848,11 +855,12 @@ class SSFheuristics(object):
         return std_mean
 
     @staticmethod
-    def ave_phase(phase, diffTime, over=1.0):
-        ''' Routine to do an averaging/smoopthing on the phase data
-        The by default for ALMA for phase statistics should be 10s.
+    def ave_phase(phase: np.ndarray, diffTime: np.ndarray, over: float=1.0) -> np.ndarray:
+        """
+        Do an averaging/smoopthing on the phase data
+        The default for ALMA for phase statistics should be 10s.
         For default 6s integration times this will average 2 values.
-        If input phase from gain table have integration(diffTime) > 10s
+        If input phases from the gain table have integration(diffTime) > 10s
         then no averaging is made.
 
         :param phase: phase series of the data to average
@@ -863,16 +871,14 @@ class SSFheuristics(object):
         :type over: float
         :returns: array of averaged phases
         :rtype: array
-        '''
+        """
         over = np.int(np.round(over / diffTime))
         # Make an int for using elements
-        # will be slightlt inaccuracies as there are long timegaps in the data
-        # but this is minimal 
+        # There will be slight but minimal inaccuracies due to long timegaps in the data
         if over > 1.0:
             mean_hold = []
             for i in range(len(phase) - over):
-                # this averages/smoothes the data 
-                # make nan resistant by ignoring the nan values
+                # Average/smooth the data and ignore the nan values
                 mean_hold.append(
                     np.mean(np.array(phase[i:i+over])[~np.isnan(phase[i:i+over])])
                     )

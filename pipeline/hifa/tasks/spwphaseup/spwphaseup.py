@@ -745,14 +745,14 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         try:
             LOG.info("Starting phase RMS structure function decoherence assessment.")
 
-            # Initialize the decoherence phase RMS structure function assessment
+            # Initialize the phase RMS structure function assessment
             inputs = copy.deepcopy(self.inputs)
             phase_rms = SSFheuristics(inputs, outlier_limit=180.0, flag_tolerance=0.3, max_poor_ant=11) 
 
             # Do the analysis
             phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout = phase_rms.analysis()
 
-        except Exception as e:
+        except Exception:
             phaserms_results, phaserms_cycletime, phaserms_totaltime = None, None, None
             phaserms_antout = []
             LOG.error("For {}, phase RMS structure function analysis failed".format(self.inputs.ms.basename))
