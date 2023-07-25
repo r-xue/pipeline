@@ -38,9 +38,12 @@ class TcleanQAHandler(pqa.QAPlugin):
             shortmsg = 'snr = {:0.2f}'.format(snr)
             result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
         else:
-            # Check for any cleaning errors and render a zero score
+            # Check for any cleaning errors and render a minimum score
             if result.error:
-                if hasattr(result.error, 'longmsg'):  # unlikely to happen: result.error is normally a string (or None)
+                # this variable may be either a string or an instance of CleanBaseError,
+                # which contains both long and short messages;
+                # we should eventually harmonise the usage convention, but for now need to correctly treat both cases
+                if hasattr(result.error, 'longmsg'):
                     longmsg = result.error.longmsg
                     shortmsg = result.error.shortmsg
                 else:
