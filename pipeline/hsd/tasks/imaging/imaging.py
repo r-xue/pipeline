@@ -1140,8 +1140,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         Args:
             _rgp : Reduction group parameter object of prepare()
         """
-        # PIPE-251: detect contamination
-        detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'])
+        if not basetask.DISABLE_WEBLOG:
+            # PIPE-251: detect contamination
+            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'])
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.

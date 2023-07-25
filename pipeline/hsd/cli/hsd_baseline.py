@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None,
-                 clusteringalgorithm=None, deviationmask=None,
-                 parallel=None, pipelinemode=None,
+                 clusteringalgorithm=None, deviationmask=None, parallel=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None,
                  dryrun=None, acceptresults=None):
 
@@ -32,10 +31,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     two spectral windows (0 and 1) and hsd_baseline is executed
     separately for each spw as below,
 
-    hsd_baseline(pipelinemode="interactive", spw="0")
-    hsd_baseline(pipelinemode="interactive", spw="1")
-    hsd_blflag(pipelinemode="automatic")
-    hsd_imaging(pipelinemode="automatic")
+    hsd_baseline(spw='0')
+    hsd_baseline(spw='1')
+    hsd_blflag()
+    hsd_imaging()
 
     Since the second run of hsd_baseline overwrites the result for
     spw 0 with the data before baseline subtraction, this will not
@@ -43,17 +42,15 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     case is to process each spw to the imaging stage separately,
     which looks like as follows:
 
-    hsd_baseline(pipelinemode="interactive", spw="0")
-    hsd_blflag(pipelinemode="interactive", spw="0")
-    hsd_imaging(pipelinemode="interactive", spw="0"))
-    hsd_baseline(pipelinemode="interactive", spw="1")
-    hsd_blflag(pipelinemode="interactive", spw="1")
-    hsd_imaging(pipelinemode="interactive", spw="1")
+    hsd_baseline(spw='0')
+    hsd_blflag(spw='0')
+    hsd_imaging(spw='0'))
+    hsd_baseline(spw='1')
+    hsd_blflag(spw='1')
+    hsd_imaging(spw='1')
 
     Output:
-    results -- If pipeline mode is 'getinputs' then None is returned.
-    Otherwise the results object for the pipeline task is
-    returned.
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -177,14 +174,6 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     parallel            Execute using CASA HPC functionality, if available.
                         options: 'automatic', 'true', 'false', True, False
                         default: None (equivalent to 'automatic')
-
-    pipelinemode        The pipeline operating mode. In 'automatic' mode the
-                        pipeline determines the values of all context defined
-                        pipeline inputs  automatically.  In 'interactive' mode
-                        the user can set the pipeline context defined parameters
-                        manually.  In 'getinputs' mode the user can check the
-                        settings of all pipeline parameters without running the
-                        task.
 
     infiles             List of data files. These must be a name of
                         MeasurementSets that are registered to context via
