@@ -5,7 +5,11 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
+<<<<<<< HEAD
 def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, pipelinemode=None, dryrun=None,
+=======
+def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, applymode=None, dryrun=None,
+>>>>>>> origin/main
                   acceptresults=None):
 
     """
@@ -19,8 +23,7 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, pi
     Users can interact with the pipeline calibration state using the tasks
     h_export_calstate and h_import_calstate.
 
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned
+    results -- The results object for the pipeline task is returned
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -46,13 +49,6 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, pi
                   selections still default to 1.
 
                   Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
-    pipelinemode  The pipeline operating mode.
-                  In 'automatic' mode the pipeline determines the values of all
-                  context defined pipeline inputs automatically.
-                  In 'interactive' mode the user can set the pipeline context
-                  defined parameters manually.
-                  In 'getinputs' mode the user can check the settings of all
-                  pipeline parameters without running the task.
     dryrun        Run the task (False) or just display the command (True)
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).

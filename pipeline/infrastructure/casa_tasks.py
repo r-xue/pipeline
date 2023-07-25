@@ -103,6 +103,11 @@ def imdev(*v, **k) -> JobRequest:
 
 
 @register_task
+def imfit(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.imfit, *v, **k)
+
+
+@register_task
 def imhead(*v, **k) -> JobRequest:
     return JobRequest(casatasks.imhead, *v, **k)
 

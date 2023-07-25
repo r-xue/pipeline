@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweightdensity=None, hm_weighting=None,
-                 datacolumn=None, parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                 datacolumn=None, parallel=None, dryrun=None, acceptresults=None):
 
     """
     hif_findcont ---- Find continuum frequency ranges
@@ -32,8 +32,7 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
     normal and update the file. In either case, the cont.dat file is used by the subsequent
     hif_uvcontsub and hif_makeimages stages.
 
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -55,13 +54,6 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
     datacolumn              Data column to image. Only to be used for manual overriding
                             when the automatic choice by data type is not appropriate.
     parallel                Use MPI cluster where possible
-    pipelinemode            The pipeline operating mode.
-                            In 'automatic' mode the pipeline determines the values of all
-                            context defined pipeline inputs automatically.
-                            In 'interactive' mode the user can set the pipeline context
-                            defined parameters manually.
-                            In 'getinputs' mode the user can check the settings of all
-                            pipeline parameters without running the task.
     dryrun                  Run the task (False) or just display the command (True)
     acceptresults           Add the results of the task to the pipeline context (True) or
                             reject them (False).
