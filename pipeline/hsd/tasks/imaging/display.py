@@ -873,7 +873,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         is_inverted_image = False
         if isinstance(self.inputs.result, SDImagingResultItem):
-            is_inverted_image = self.inputs.result.chan_inverted
+            is_inverted_image = self.inputs.result.freq_axis_reversed
 
         # retrieve line list from reduction group
         # key is antenna and spw id

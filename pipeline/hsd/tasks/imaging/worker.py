@@ -254,6 +254,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     nx = vdp.VisDependentProperty(default=-1)
     ny = vdp.VisDependentProperty(default=-1)
     org_direction = vdp.VisDependentProperty(default=None)
+    is_freq_axis_ascending = vdp.VisDependentProperty(default=True)
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
@@ -314,6 +315,9 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         self.ny = ny
         self.org_direction = org_direction
 
+        _ref_spwobj = context.observing_run.get_ms(infiles[0]).spectral_windows[spwids[0]]
+        self.is_freq_axis_ascending = _ref_spwobj.channels.chan_freqs.delta > 0
+
 
 class SDImagingWorker(basetask.StandardTaskTemplate):
     """Worker class of imaging task."""
@@ -321,10 +325,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
     Inputs = SDImagingWorkerInputs
 
     is_multi_vis_task = True
-
-    RESULT_FALSE = 0
-    RESULT_TRUE = 1
-    RESULT_REVERSED = 2
 
     def prepare(self):
         """Execute imaging process of sdimaging task.
@@ -351,11 +351,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             self._get_map_coord(inputs, context, infiles, antid_list, spwid_list, fieldid_list)
         is_eph_obj = rep_ms.get_fields(field_id=rep_fieldid)[0].source.is_eph_obj
 
-        status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
-                                  edge, phasecenter, cellx, celly, nx, ny)
-
-        if status >= SDImagingWorker.RESULT_TRUE:
-            inverted = True if status == SDImagingWorker.RESULT_REVERSED else False
+        if self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
+                            edge, phasecenter, cellx, celly, nx, ny):
             specmode = 'cubesource' if is_eph_obj else 'cube'
             # missing attributes in result instance will be filled in by the
             # parent class
@@ -368,10 +365,11 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             image_item.antenna = ant_name  # name #(group name)
             outcome = {}
             outcome['image'] = image_item
+            freq_axis_reversed = not self.inputs.is_freq_axis_ascending
             result = resultobjects.SDImagingResultItem(task=None,
                                                        success=True,
                                                        outcome=outcome,
-                                                       chan_inverted=inverted)
+                                                       freq_axis_reversed=freq_axis_reversed)
         else:
             # Imaging failed due to missing valid data
             result = resultobjects.SDImagingResultItem(task=None,
@@ -472,9 +470,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # stokes
         stokes = self.inputs.stokes
 
-        # frequency direction flag: If it is True then the frequency axis direction is right
-        inverted_freq_axis = False
-
         # start, nchan, step
         ref_spwobj = reference_data.spectral_windows[ref_spwid]
         total_nchan = ref_spwobj.num_channels
@@ -485,10 +480,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         else:
             nchan = total_nchan - sum(edge)
             # to make frequency order ascending in all fits, it sets start and step value reverse
-            if ref_spwobj.channels.chan_freqs.delta < 0:
+            if numpy.logical_not(self.inputs.is_freq_axis_ascending):
                 step = -1
                 start = nchan - edge[1] - 1
-                inverted_freq_axis = True
             else:
                 step = 1
                 start = edge[0]
@@ -620,7 +614,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         weightname = imagename + '.weight'
         if not os.path.exists(imagename) or not os.path.exists(weightname):
             LOG.error("Generation of %s failed" % imagename)
-            return SDImagingWorker.RESULT_FALSE
+            return False
 
         # check for valid pixels (non-zero weight)
         # Task sdimaging does not fail even if no data is gridded to image.
@@ -630,10 +624,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             sumsq = ia.statistics()['sumsq'][0]
         if sumsq == 0.0:
             LOG.warning("No valid pixel found in image, %s. Discarding the image from futher processing." % imagename)
-            return SDImagingWorker.RESULT_FALSE
+            return False
 
-        if inverted_freq_axis is False:
-            return SDImagingWorker.RESULT_TRUE
-        else:
+        if self.inputs.is_freq_axis_ascending is False:
             LOG.info("Channel frequency is inverted. So the channel of output image cube is going to be reversed.")
-            return SDImagingWorker.RESULT_REVERSED
+
+        return True
