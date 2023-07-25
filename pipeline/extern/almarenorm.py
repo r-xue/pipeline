@@ -208,7 +208,7 @@ class ACreNorm(object):
 
         # Version
 
-        self.RNversion='v1.5-2023/06/27-PLWG'
+        self.RNversion='v1.6-2023/07/25-PLWG'
 
         self.msname=msname
         casalog.post('Opening ms: '+str(self.msname))
@@ -873,18 +873,18 @@ class ACreNorm(object):
             Data Selection
             --------------
 
-            spws : list of integers
-                If not empty, only perform renormalization on the spws that
-                are specified. Note that these must be science spws or they
-                will be ignored.
-                Example: spws = [21,23]
-                Default: spws = []
-
             excludespws : list of integers
                 If not empty, any spw specified will be removed from analysis
                 if that spw is one of the science spws. 
                 Example: excludespws = [21]
                 Default: excludespws = []
+
+             spws : list of integers
+                If not empty, only perform renormalization on the spws that
+                are specified. Note that these must be science spws or they
+                will be ignored.
+                Example: spws = [21,23]
+                Default: spws = []
 
             targscans : list of integers
                 If not empty, only perform renormalization on the target scans
@@ -892,7 +892,7 @@ class ACreNorm(object):
                 data or they will be ignored. 
                 Example: targscans = [18,21,24,27]
                 Default: targscans = []
-            
+
             --------------
             Data Reduction
             --------------
@@ -1229,7 +1229,7 @@ class ACreNorm(object):
             casalog.post('User supplied spws = '+str(spws))
             if not any(uspw in spws for uspw in list(self.fdmspws)):
                 casalog.post('User supplied spw(s) are not in the list of FDM spws => '+str(self.fdmspws))
-                raise
+                raise SyntaxError('User supplied spw(s) are not in the list of FDM spws => '+str(self.fdmspws))
 
         if len(excludespws)>0:
             casalog.post('Will exclude spws='+str(excludespws))
@@ -1353,10 +1353,27 @@ class ACreNorm(object):
                 casalog.post(' bwthreshspw specified but useDynamicSegments was also specified.')
                 casalog.post(' I will use the user input and turn off dynamic segmentation for specified spws.')
 
+        # Send all input options to the log file so it's clear what has been entered
+        casalog.post('Equivalent manual input:')
+        casalog.post('\nself.renormalize(excludespws='+str(excludespws)+', spws='+str(spws) \
+                + ', targscans='+str(targscans))
+        casalog.post('    excludeants='+str(excludeants)+', excludechan='+str(excludechan)\
+                +', excflagged='+str(excflagged)+', fixOutliers='+str(fixOutliers)+', mededge='+str(mededge))
+        casalog.post('    atmAutoExclude='+str(atmAutoExclude)+', checkFalsePositives='+str(checkFalsePositives) \
+                +', correctATM='+str(correctATM)+', limATM='+str(limATM)+', plotATM='+str(plotATM)+',')
+        casalog.post('    bwdiv='+str(bwdiv)+', bwthresh='+str(bwthresh)+', bwthreshspw='+str(bwthreshspw) \
+                +', checkLineForest='+str(checkLineForest)+', nfit='+str(nfit)+', useDynamicSegments=' \
+                +str(useDynamicSegments))
+        casalog.post('    datacolumn='+str(datacolumn)+', docorr='+str(docorr)+', docorrThresh='+str(docorrThresh) \
+                +', usePhaseAC='+str(usePhaseAC))
+        casalog.post('    antHeuristicsSpectra='+str(antHeuristicsSpectra)+', diagSpectra='+str(diagSpectra) \
+                +', fthresh='+str(fthresh))
+        casalog.post('    verbose='+str(verbose)+')')
+
         # Want to loop over sources so we can disentangle fields and sources and better plot what is happening
         # for mosaics and multi-target observations. 
         target_list = np.unique(self.msmeta.namesforfields(self.msmeta.fieldsforintent('*TARGET*')))
-        casalog.post('Found targets: '+str(target_list))
+        casalog.post('\nFound targets: '+str(target_list))
         for target in target_list:
             self.rnstats['N'][target] = {}
             self.rnstats['N_atm'][target] = {}
@@ -1688,6 +1705,7 @@ class ACreNorm(object):
                                                                 N_tmp[icor,lochan:hichan,iant],
                                                                 checkFit=True,
                                                                 doplot=False,
+                                                                iden='Ant'+str(iant)+'Seg'+str(iseg)+'Corr'+str(icor),
                                                                 verbose=True
                                                                 )
                                                     else:
@@ -1695,6 +1713,7 @@ class ACreNorm(object):
                                                                 N_tmp[icor,lochan:hichan,iant],
                                                                 checkFit=False,
                                                                 doplot=False,
+                                                                iden='Ant'+str(iant)+'Seg'+str(iseg)+'Corr'+str(icor),
                                                                 verbose=True
                                                                 )
 
@@ -1789,13 +1808,17 @@ class ACreNorm(object):
                                             hichan=(iseg+1)*dNchan
                                             for icor in range(nCor):
                                                 # edits N in place! just does the fit to get zero baseline - this is calcuating the ReNorm scaling per ant !!!
-                                                self.calcReNorm1(N[icor,lochan:hichan,iant],doplot=False)
+                                                self.calcReNorm1(
+                                                        N[icor,lochan:hichan,iant],
+                                                        doplot=False,
+                                                        iden='Ant'+str(iant)+'Seg'+str(iseg)+'Corr'+str(icor)
+                                                        )
                                                 #N[icor,lochan:hichan,iant] = self.calcRenormLegendre(N[icor,lochan:hichan,iant])
 
                                                 # If we applied an ATM correction to the data, want to
                                                 # also see the non-ATM corrected data.
                                                 if (self.corrATM and not skipAtmCorr) or (str(ispw) in excludechan.keys()):
-                                                     self.calcReNorm1(N_atm[icor,lochan:hichan,iant],False)                                    
+                                                     self.calcReNorm1(N_atm[icor,lochan:hichan,iant],doplot=False)                                    
 
                                 ## LM added 
                                 if mededge:
@@ -2098,16 +2121,20 @@ class ACreNorm(object):
                         if docorr and not second_pass and self.docorrApply[target][str(ispw)]:
                             second_pass_required = True
 
+
                     if checkFalsePositives:
+                        exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
                         if self.atmWarning[str(fldname)][str(ispw)]:
-                            exclude_cmd = self.suggestAtmExclude(target, str(ispw), return_command=True)
                             if atmAutoExclude:
                                 casalog.post('Atmospheric features above the threshold have been mitigated by atmAutoExclude.')
                                 casalog.post('Equivalent manual call: '+exclude_cmd)
                             else:
                                 casalog.post('ATM features may be falsely triggering renorm!')
                                 casalog.post('Suggested channel exclusion: '+exclude_cmd)
-                
+                        elif exclude_cmd:
+                            casalog.post('Atmospheric features mitigated.')
+                            casalog.post('Equivalent manual call: '+exclude_cmd)
+
         # PIPE 1168 (3)
         # Loops through the scalingValue dict and populates the pipeline needed dictionary
         self.rnpipestats = {}
@@ -2463,7 +2490,7 @@ class ACreNorm(object):
                 casalog.post('\toffset = '+str(popt[3]))
                 casalog.post('')
                 casalog.post('\tcovariance matrix:')
-                casalog.post(cov)
+                casalog.post(str(cov))
                 casalog.post('')
                 casalog.post('\t std_devs = '+str(np.sqrt(np.diag(cov))))
         return centers, scales 
@@ -3221,7 +3248,7 @@ class ACreNorm(object):
                     
         self.putXCdata(scan,spw,field,X,datacolumn)
 
-    def calcReNorm1(self,R,checkFit=False,doplot=False, verbose=True):   
+    def calcReNorm1(self, R, checkFit=False, doplot=False, iden='', verbose=True):   
         """
         Purpose:
             Perform a simple polynomial fit to the renormalization scaling 
@@ -3239,6 +3266,10 @@ class ACreNorm(object):
                 If set to True, produce a plot showing the polynomial fits 
                 that have been applied to the data. 
 
+            iden : str : OPTIONAL
+                An optional identifier to append to image names to make them
+                unique, otherwise they will get written over. 
+
         Outputs:
             None directly, but note that the input scaling spectrum will be 
             adjusted directly.
@@ -3249,17 +3280,23 @@ class ACreNorm(object):
 
         x=np.array(range(nCha))*1.0/nCha - 0.5
 
-        # initial "fit"
-        f=np.array([np.median(R)])
-
         mask=np.ones(len(R),bool)
         ylim=0.0
 
         if doplot:
+            plt.ioff()
             plt.clf()
+            fig = plt.figure(figsize=(20,10))
         
         # Find where ATM was masked
         atm_masked = np.where(R==1.0)[0]
+        
+        tmp_mask = mask
+        tmp_mask[atm_masked] = False
+
+        # initial "fit" - Ignoring atm regions
+        f=np.array([np.median(R[tmp_mask])])
+
 
         for ifit in range(1,self.nfit):
 
@@ -3280,9 +3317,6 @@ class ACreNorm(object):
             mask[R0<-thresh]=False
             mask[R0>thresh]=False
 
-            # ignore ATM masked regions
-            mask[R0==1.0]=False
-            
             if checkFit:
                 if sum(mask)/len(mask) > 0.5:
                     refit=False
@@ -3290,35 +3324,56 @@ class ACreNorm(object):
                     if verbose:
                         casalog.post('\tWARN: More than 50% of the selected data is masked in the fit.')
                     refit=True
+                    # Exit here since we need to refit anyway, no sense in
+                    # wasting compute time. There's also a small chance that
+                    # the entire segment is masked from an atm feature.
+                    return refit
+
+            # ignore ATM masked regions
+            mask[atm_masked]=False
+
+            if checkFit:
+                if sum(mask)/len(mask) > 0.1:
+                    refit=False
+                else:
+                    if verbose:
+                        casalog.post('\tWARN: Less than 10% of the selected data is availabe to fit due to atm features.')
+                        refit=True
+                        # Exit here since we need to refit because there's 
+                        # almost no data left.
+                        return refit
 
             if doplot:
                 med=np.median(R)
                 plt.subplot(2,self.nfit,ifit)
-                plt.plot(range(nCha),R,'b,')
+                plt.plot(range(nCha),R,'b,', label='Data')
                 plt.plot(
                         np.array(range(nCha))[np.logical_not(mask)],
                         R[np.logical_not(mask)],
-                        'r.'
+                        'r.',
+                        label='Masked'
                         )
-                plt.plot(range(nCha),np.polyval(f,x),'r-')
-                plt.axis([-1,nCha,med-0.003,med+0.003])
+                plt.plot(range(nCha),np.polyval(f,x),'r-', label='Initial/Last Fit')
+                #plt.axis([-1,nCha,med-0.003,med+0.003])
                             
                 if ylim==0.0:
                     ylim=5*thresh
                 plt.subplot(2,self.nfit,ifit+self.nfit)
-                plt.plot(range(nCha),R0,'b,')
-                plt.plot([-1,nCha],[-thresh,-thresh],'r:')
+                plt.plot(range(nCha),R0,'b,', label='Data after last fit')
+                plt.plot([-1,nCha],[-thresh,-thresh],'r:', label='Threshold')
                 plt.plot([-1,nCha],[thresh,thresh],'r:')
-                plt.axis([-1,nCha,-ylim,ylim])
-                casalog.post(ifit-1, thresh, abs(R0.min()/2.0), np.sum(mask), f)
+                #plt.axis([-1,nCha,-ylim,ylim])
+                #casalog.post(ifit-1, thresh, abs(R0.min()/2.0), np.sum(mask), f)
+                plt.legend()
 
             # fit to _R_ in masked spectra
             f=np.polyfit(x[mask],R[mask],ifit)
             
             if doplot:
                 plt.subplot(2,self.nfit,ifit)
-                plt.plot(range(nCha),np.polyval(f,x),'g-')
-                casalog.post(ifit, f)
+                plt.plot(range(nCha),np.polyval(f,x),'g-', label='N='+str(ifit)+' Fit')
+                #casalog.post(ifit, f)
+                plt.legend()
 
         R/=np.polyval(f,x)
 
@@ -3328,6 +3383,13 @@ class ACreNorm(object):
         if doplot:
             plt.subplot(2,self.nfit,ifit+1)
             plt.plot(range(nCha),R,'g-')
+            plt.title('Final Data After Fitting')
+            plt.savefig(
+                    './RN_plots/seg_fitting_results_'+iden+'.png', 
+                    format='png', 
+                    bbox_inches='tight'
+                    )
+            plt.close()
         
         if checkFit:        
             return refit
