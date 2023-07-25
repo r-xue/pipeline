@@ -3,8 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, pipelinemode=None, dryrun=None,
-                acceptresults=None):
+def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, dryrun=None, acceptresults=None):
     """
     hifa_polcal ---- Derive instrumental polarization calibration for ALMA.
 
@@ -29,11 +28,6 @@ def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, pipe
                     statistics; relative differences larger than this threshold
                     are reported in the CASA log.
                     Default: 1e-3
-    pipelinemode    The pipeline operating mode. In 'automatic' mode the pipeline
-                    determines the values of all context defined pipeline inputs automatically.
-                    In interactive mode the user can set the pipeline context defined
-                    parameters manually. In 'getinputs' mode the users can check the settings
-                    of all pipeline parameters without running the task.
     dryrun          Run the commands (True) or generate the commands to be run but do not
                     execute (False).
     acceptresults   Add the results of the task to the pipeline context (True) or
