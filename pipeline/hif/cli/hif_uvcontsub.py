@@ -5,13 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-<<<<<<< HEAD
-def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, pipelinemode=None, dryrun=None,
-=======
-def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, applymode=None, dryrun=None,
->>>>>>> origin/main
-                  acceptresults=None):
-
+def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, dryrun=None, acceptresults=None):
     """
     hif_uvcontsub ---- Subtract the fitted continuum from the data
 
