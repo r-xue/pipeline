@@ -1,4 +1,5 @@
 """Display module for skycal task."""
+import glob
 import os
 import matplotlib.pyplot as plt
 import numpy
@@ -128,6 +129,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                                                                     overlay='antenna',
                                                                     solutionTimeThresholdSeconds=3600.)
 
+        self.context = context
         # self._figfile structure: {spw_id: {antenna_id: filename}}
         self.spw_ids = list(self._figfile.keys())
         # take any value from the dictionary
@@ -140,6 +142,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         Return:
             List of plot object.
         """
+        commands = {}
         missing = [spw_id
                    for spw_id in self.spw_ids
                    if not os.path.exists(self._figfile[spw_id])]
@@ -150,7 +153,27 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                 showimage = self._rxmap.get(spw_id, "") == "DSB"
                 try:
                     task = self.create_task(spw_id, '', showimage=showimage)
+                    commands[spw_id] = str(task)
                     task.execute(dry_run=False)
+                except Exception as ex:
+                    LOG.error('Could not create plotbandpass summary plots')
+                    LOG.exception(ex)
+
+        # workaround for CAS-13863
+        # So far, missing plots issue happens only for TP Spectral Scan data
+        missing = [spw_id
+                   for spw_id in self.spw_ids
+                   if not os.path.exists(self._figfile[spw_id])]
+        if missing:
+            LOG.info('Executing plotbandpass again for missing figures')
+            for spw_id in missing:
+                # PIPE-110: show image sideband for DSB receivers.
+                showimage = self._rxmap.get(spw_id, "") == "DSB"
+                try:
+                    task = self.create_task_for_tp_spectral_scan(spw_id, '', showimage=showimage)
+                    commands[spw_id] = str(task)
+                    task.execute(dry_run=False)
+                    self.rename_and_clear_figure(spw_id)
                 except Exception as ex:
                     LOG.error('Could not create plotbandpass summary plots')
                     LOG.exception(ex)
@@ -161,13 +184,14 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             showimage = self._rxmap.get(spw_id, "") == "DSB"
             if os.path.exists(figfile):
                 task = self.create_task(spw_id, '', showimage=showimage)
+                command = commands.get(spw_id, str(task))
                 wrapper = logger.Plot(figfile,
                                       x_axis=self._xaxis,
                                       y_axis=self._yaxis,
                                       parameters={'vis': self._vis_basename,
                                                   'spw': spw_id,
                                                   'field': self.field_name},
-                                      command=str(task))
+                                      command=command)
                 wrappers.append(wrapper)
             else:
                 LOG.trace('No plotbandpass summary plot found for spw '
@@ -194,6 +218,54 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             pieces.pop(spw_index - 1)
             self._figfile[spw_id] = '.'.join(pieces)
 
+    def create_task_for_tp_spectral_scan(self, spw_arg: int, antenna_arg: str,
+                                         showimage: bool=False) -> 'JobRequest':
+        """
+        Return plotbandpass task job with a tweaked parameter value.
+
+        A job of plotbandpass is created with
+            solutionTimeThresholdSeconds = a half of exposure time of a scan.
+
+        Args:
+            spw_arg: spw ID
+            antenna_arg: antenna selection string
+            showimage: If True, show the atmospheric curve for the image
+                sideband, too.
+        Returns:
+            A job of plotbandpass task.
+        """
+        kwargs_org = self._kwargs.copy()
+        try:
+            ms = self.context.observing_run.get_ms(self._vis)
+            scans = ms.get_scans(scan_intent='REFERENCE', spw=spw_arg)
+            scan = sorted(scans, key=lambda s: s.id)[0]
+            self._kwargs['scans'] = scan.id
+            # half the scan duration seems to work
+            self._kwargs['solutionTimeThresholdSeconds'] = scan.exposure_time(spw_arg).seconds / 2
+            task = super().create_task(spw_arg, antenna_arg, showimage)
+        finally:
+            self._kwargs = kwargs_org
+        return task
+
+    def rename_and_clear_figure(self, spw_id: int) -> None:
+        """
+        Select one figure per spw and rename the figure.
+
+        Args:
+            spw_id: Spw ID
+        """
+        figfile = self._figfile[spw_id]
+        if os.path.exists(figfile):
+            return
+
+        prefix, extension = os.path.splitext(self._figroot)
+        pattern = f'{prefix}.spw{spw_id}.t*{extension}'
+        figures = sorted(glob.glob(pattern))
+        if len(figures) == 0:
+            return
+        os.rename(figures[0], figfile)
+        for fig in figures[1:]:
+            os.remove(fig)
 
 class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleDishSkyCalDisplayBase):
     """Class for plotting Amplitude vs. Frequency detail chart.
