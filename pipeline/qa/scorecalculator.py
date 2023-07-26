@@ -3401,7 +3401,7 @@ def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: Pol
                     score = 0.75
                     longmsg = f"Session '{session_name}' has D-terms solutions that deviate by {th_poor}-{th_bad} for" \
                               f" SpW {spwid}, antenna(s)" \
-                              f" {utils.commafy([ant_names[i] for i in bad_antids], quotes=False)}."
+                              f" {utils.commafy([ant_names[i] for i in poor_antids], quotes=False)}."
                     shortmsg = "Large deviation D-terms solutions"
                     origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                                           metric_score=score,
