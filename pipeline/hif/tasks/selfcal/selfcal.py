@@ -517,7 +517,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         final_scal_target = []
         for scal_target in scal_targets:
-            if scal_target['gridder'] != 'standard':
+            is_mosaic = scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent'])
+            if is_mosaic:
                 LOG.warning(
                     'Selfcal heuristics does not support mosaic. Skipping target {} spw {}.'.format(
                         scal_target['field'],
