@@ -81,7 +81,8 @@ class SelfcalHeuristics(object):
         LOG.info('recreating observing run from per-selfcal-target MS(es): %r', self.vislist)
         self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
 
-        raise RuntimeError('heuristics crashed')
+        # This can be used to test the hif_selfcal exception handling for the selfcal-calibration sequence.
+        # raise RuntimeError('heuristics crashed')
 
     @staticmethod
     def get_observing_run(ms_files):
