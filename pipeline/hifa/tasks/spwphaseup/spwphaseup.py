@@ -21,7 +21,7 @@ from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.hifa.heuristics.decoherence import SSFheuristics
+from pipeline.hifa.heuristics.phasemetrics import SSFheuristics
 
 LOG = infrastructure.get_logger(__name__)
 

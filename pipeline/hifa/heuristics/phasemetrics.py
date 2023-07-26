@@ -1,5 +1,4 @@
-import collections
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import copy
 import numpy as np
@@ -42,8 +41,9 @@ class SSFheuristics(object):
         if len(self.caltable) > 0:
             self.caltable = self.caltable[-1]
         else:
-            LOG.error("For {}, missing bandpass phaseup caltable and cannot perform decoherence assessment.".format(self.vis))
-            raise
+            msg = "For {}, missing bandpass phaseup caltable and cannot perform decoherence assessment.".format(self.vis)
+            LOG.error(msg)
+            raise Exception(msg)
         
         self.refant = inputsin.refant.split(',')[0] # this is the NAME not the index
         self.antlist = []
@@ -130,14 +130,15 @@ class SSFheuristics(object):
     def analysis(self) -> Tuple[Dict, str, str, List]:
         """
         Do the phase RMS calculation, outlier analysis,
-        and return everything required for later scoring and plotting
+        and return everything required for qa scores, plotting, weblog
         """
         self._do_analysis()
         return copy.deepcopy(self.allResult), self.cycletime, self.totaltime, copy.deepcopy(self.outlier_antennas)
 
     def _do_analysis(self):
-        ''' this is the wrapper to do the phase RMS calculation, outlier analysis,
-          and fill the dictionary will everything required for later scoring and plotting
+        """
+        Do the phase RMS calculation, outlier analysis,
+        and fill the dictionary with everything required for later scoring and plotting
 
         inputs used are:
                   self.cycletime, self.totaltime, self.PMinACA,
@@ -154,13 +155,12 @@ class SSFheuristics(object):
                   blphasermsbad, blphasermscyclebad, bllenbad,
                   antphaserms, antphasermscycle, antname,
                   phasermsP80, phasermscycleP80, blP80, blP80orig
-        '''
+        """
         
-        # call to phase_rms_caltab
+        # Call to phase_rms_caltab
         # gets baseline based phase RMS and antenna based phase RMS for
         # the total time (i.e. length of BP scan) and 
         # the cycle time (time it takes to cycle the start of a phase cal scan to the next - ties with a 'decohernce time' over the target)
-
         if self.cycletime < self.totaltime:
             self.allResult= self._phase_rms_caltab(timeScale=self.cycletime) # if cycle time is shorter we pass the option so it gets assessed
         else:
@@ -181,7 +181,7 @@ class SSFheuristics(object):
             blACAid = np.array([blid for blid in range(len(self.allResult['blname'])) if 'PM' not in self.allResult['blname'][blid]])
             antACAid = np.array([antid for antid in range(len(self.allResult['antname'])) if 'PM' not in self.allResult['antname'][antid]])
  
-            ## reset allResult to exclude the PM baselines, and PM ants only
+            # Reset allResult to exclude the PM baselines, and PM ants only
             bl_keys=['blphaserms', 'blphasermscycle', 'bllen', 'blname'] # PIPE-1633
             ant_keys=['antphaserms', 'antphasermscycle', 'antname'] # PIPE-1633
             for bl_key in bl_keys:
@@ -190,7 +190,7 @@ class SSFheuristics(object):
                 self.allResult[ant_key]=np.array(self.allResult[ant_key])[antACAid]
 
             
-        # get 80th percentile baseline length and ID of all baselines above it
+        # Get 80th percentile baseline length and ID of all baselines above it
         self.allResult['blP80orig'] = np.percentile(self.allResult['bllen'], 80) ## was xy
 
         #PIPE-1662 P80 to acount for flagged antennas, i.e work from P80 of the 'good' data
@@ -204,7 +204,7 @@ class SSFheuristics(object):
         self.allResult['phasermscycleP80'] = np.median(np.array(self.allResult['blphasermscycle'])[ID_all80[np.isfinite(np.array(self.allResult['blphasermscycle'])[ID_all80])]])
         phaseRMScycleP80mad = self.mad(np.array(self.allResult['blphasermscycle'])[ID_all80[np.isfinite(np.array(self.allResult['blphasermscycle'])[ID_all80])]])
         
-        # now begin the outlier checks
+        # Begin the outlier checks
         # first check if any antennas are just above 100 deg phase RMS (this means ~pure phase noise for phases between -180 to +180 deg)
         # so sensible to identify these antennas - over total time
         ID_poorant = np.where(np.array(self.allResult['antphaserms'])[np.isfinite(self.allResult['antphaserms'])]>self.outlierlimit)[0]
@@ -249,14 +249,14 @@ class SSFheuristics(object):
                 self.allResult['phasermscycleP80'] = np.median(np.array(self.allResult['blphasermscycle'])[ID_all80[np.isfinite(np.array(self.allResult['blphasermscycle'])[ID_all80])]])
 
                 # store outliers for passing to plot function - will be plotted in 'shade/alpha'
-                self.allResult['blphasermsbad']=np.array(self.allResult['blphaserms'])[np.array(ID_badbl)]
-                self.allResult['blphasermscyclebad']=np.array(self.allResult['blphasermscycle'])[np.array(ID_badbl)]
-                self.allResult['bllenbad']=np.array(self.allResult['bllen'])[np.array(ID_badbl)]
+                self.allResult['blphasermsbad'] = np.array(self.allResult['blphaserms'])[np.array(ID_badbl)]
+                self.allResult['blphasermscyclebad'] = np.array(self.allResult['blphasermscycle'])[np.array(ID_badbl)]
+                self.allResult['bllenbad'] = np.array(self.allResult['bllen'])[np.array(ID_badbl)]
             else:
                 # none the 'bad' entires in dict 
-                self.allResult['blphasermsbad']=None
-                self.allResult['blphasermscyclebad']=None
-                self.allResult['bllenbad']=None
+                self.allResult['blphasermsbad'] = None
+                self.allResult['blphasermscyclebad'] = None
+                self.allResult['bllenbad'] = None
         else:
             # this else is for <50deg phase RMS where we do not recalcualte the phase RMS as its low already
             # but we still want to identify any outliers to notify in the messages
@@ -339,8 +339,8 @@ class SSFheuristics(object):
                 ms.select({'field_id': int(field_id)})
             alldata = ms.getdata(['uvdist', 'antenna1', 'antenna2']) 
 
-        ## the length of e.g. alldata['uvdist'] is >total no. of Bls - it loops over all time stamps of the BP 
-        ## we need a mean of the unique values (as Todd's aU) otherwise we just get the first time entry in the below
+        # The length of e.g. alldata['uvdist'] is > total no. of Bls - it loops over all time stamps of the BP 
+        # we need a mean of the unique values (as Todd's aU) otherwise we just get the first time entry in the below
         bldict = {}
         uniBl = []
         baselineLen = {}
@@ -442,25 +442,26 @@ class SSFheuristics(object):
         diffs = np.diff(times)
         return np.median(diffs)
 
-    def _lookupcycle(self) -> int:
+    def _lookupcycle(self) -> float:
         """ 
         Look up the nearest default cycle time 
-        as using best practices for Baseline length and 
+        using best practices for Baseline length and 
         the frequency band. This is ONLY needed when the 
         returned cycle time is None - which would only happen
         for malformed data with only one PHASE cal scan,
-        that ultimately should not be coming to PIPELINE at all
+        that ultimately should not be coming to PIPELINE at all.
+
         See: PIPE-1848
         """
         if self.PMinACA:
             config = 0
         else:
-            config = self._getconfig()  # as configs run 1 to 10, 0 is ACA 
+            config = self._getconfig()  # Configs run 1 to 10, 0 is ACA 
 
-        bandu = self._getband()  # this gets freq then band - run 1 to 10
+        bandu = self._getband()  # Gets freq then band - 1 to 10
 
-        # just a big list of lists for cycle times these are for Cycle 10
-        # BAND 1 is missing, I do not know these
+        # List of lists for cycle times for Cycle 10
+        # BAND 1 is missing
         # [config][band]
         # band index 0 doesnt exist padded with 999
         cycletimes = [[999,999,999,660,660,480,540,480,480,360,360],  
@@ -475,12 +476,13 @@ class SSFheuristics(object):
                       [999,999,999,80,80,80,80,80,65,58,45],  
                       [999,999,999,80,80,80,80,80,65,58,45]]  
 
-        cycletime = float(cycletimes[config][bandu])
+        cycletime = cycletimes[config][bandu]
 
-        #if cycletime == 999: 
-        #    raise
- 
-        return cycletime
+        if cycletime == 999: 
+            msg = "For {}, unable to find back-up cycle time.".format(self.vis)
+            raise Exception(msg)
+
+        return float(cycletime)
     
     def _getfreq(self) -> float:
         """ wrap in a function here as we open msmd
@@ -624,21 +626,19 @@ class SSFheuristics(object):
         # Correct wraps in phase stream     
         # Note: everything is in radians
         cal_phases = self.phase_unwrap(cal_phases)
-        return cal_phases #float array of the phases of an antenna
+        return cal_phases
 
     def _phase_rms_caltab(self, antout: list=[], timeScale: float=None) -> Dict[str, str]: 
         """
-        This will run the loop over the caltable
-        and work out the baseline based phases and calculate the 
-        phase RMS. It will also get the Phase RMS per antenna (with
-        respect to the refant - i.e. ant based phase RMS) these are all
-        passed back to the main class as self.allResult is filled 
+        Run the loop over the caltable, work out the baseline based phases,
+        and calculate the phase RMS. Also get the Phase RMS per antenna (with
+        respect to the refant - i.e. ant based phase RMS).
         
         inputs used:
               self.antlist, self.flag_tolerance, self.difftime, self.baselines
 
         calls functions:
-              self._get_cal_phase, self.ave_phase, self.stdc
+              self._get_cal_phase, self.ave_phase, self.std_overlapping_avg
  
         returns:  rms_results{}
         dict keys: blphaserms, bphasermscycle, bllen, blname,
@@ -663,32 +663,32 @@ class SSFheuristics(object):
         iloop = np.arange(nant-1) 
 
         for i in iloop:
-            # ant based parameters
+            # Ant based parameters
             pHant1 = self._get_cal_phase(i)
             rms_results['antname'].append(self.antlist[i]) 
 
-            # make an assessment of flagged data for that antenna
+            # Make an assessment of flagged data for that antenna
             if len(pHant1[np.isnan(pHant1)]) > self.flag_tolerance*len(pHant1):
                 rms_results['antphaserms'].append(np.nan)
                 rms_results['antphasermscycle'].append(np.nan)
                 
             else:
-                ## do averaing -> 10s
+                # Do averaing -> 10s
                 pHant_ave = self.ave_phase(pHant1, self.difftime, over=10.0) # for thermal/short term noise
                 rmspHant_ave = np.std(np.array(pHant_ave)[np.isfinite(pHant_ave)])
                 rms_results['antphaserms'].append(rmspHant_ave)
                 if timeScale:
-                    rmspHant_ave_cycle = self.stdc(pHant_ave, self.difftime, over=timeScale) 
+                    rmspHant_ave_cycle = self.std_overlapping_avg(pHant_ave, self.difftime, over=timeScale) 
                     rms_results['antphasermscycle'].append(rmspHant_ave_cycle)
                 else:
                     rms_results['antphasermscycle'].append(rmspHant_ave)
 
 
-            jloop = np.arange(i+1, nant) # so this is baseline loop 
+            jloop = np.arange(i+1, nant) # baseline loop 
             for j in jloop:
-                ## get the phases - needs to be the single read in table 
+                # Get the phases - needs to be the single read in table 
                 
-                #pHant1 is read in above already
+                # pHant1 is read in above already
                 pHant2 = self._get_cal_phase(j)
                 # phases from cal table come in an order, baseline then is simply the subtraction
                 pH= pHant1 - pHant2 
@@ -730,7 +730,7 @@ class SSFheuristics(object):
                     rmspH_ave = np.std(np.array(pH_ave)[np.isfinite(pH_ave)])  
                     rms_results['blphaserms'].append(rmspH_ave)
                     if timeScale:
-                        rmspH_ave_cycle = self.stdc(pH_ave, self.difftime, over=timeScale)   
+                        rmspH_ave_cycle = self.std_overlapping_avg(pH_ave, self.difftime, over=timeScale)   
                         rms_results['blphasermscycle'].append(rmspH_ave_cycle)
                     else:
                         rms_results['blphasermscycle'].append(rmspH_ave)
@@ -816,7 +816,7 @@ class SSFheuristics(object):
         return np.median(np.abs(data - np.median(data, axis)), axis)
 
     @staticmethod
-    def stdc(phase: np.ndarray, diffTime: float, over: float=120.0) -> float:
+    def std_overlapping_avg(phase: np.ndarray, diffTime: float, over: float=120.0) -> float:
         """
         Calculate STD over a set time and return the average of all overlapping
         values of the standard deviation - overlapping estimator. This acts
