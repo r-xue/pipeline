@@ -1024,6 +1024,10 @@ class Tclean(cleanbase.CleanBase):
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
                                 sensitivity=sequence_manager.sensitivity, result=None)
 
+        # PIPE-1790: skip any further processing in case of errors (i.e. tclean failed to produce an image)
+        if result.error:
+            return result
+
         # Check for bad PSF fit
         bad_psf_channels = None
         if inputs.specmode == 'cube':
@@ -1040,7 +1044,6 @@ class Tclean(cleanbase.CleanBase):
                     # In the future, we might use the PIPE-375 method to calculate unskewed
                     # common beam in case of PSF fit problems.  For implementation details see
                     # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/tclean.py?at=9b8902e66bf44e644e612b1980e5aee5361e8ddd#607
-
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
@@ -1166,6 +1169,10 @@ class Tclean(cleanbase.CleanBase):
             result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=nsigma,
                                     threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
                                     result=result)
+            if result.image is None:
+                if not result.error:
+                    result.error = '%s/%s/spw%s clean error: failed to produce an image' % (inputs.field, inputs.intent, inputs.spw)
+                return result
 
             # Give the result to the clean 'sequencer'
             (residual_cleanmask_rms,
