@@ -73,6 +73,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             extension = '.tt0' if r.multiterm else ''
             maxiter = max(r.iterations.keys())
+            if 'image' not in r.iterations[maxiter]:
+                continue   # PIPE-1790: skip the rest if an image was not produced due to some error
 
             vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
             datatype = r.datatype

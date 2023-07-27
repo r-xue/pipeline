@@ -27,7 +27,8 @@ class TcleanQAHandler(pqa.QAPlugin):
         # calculate QA score comparing RMS against clean threshold
 
         # Add offset of 0.34 to avoid any red scores
-        imageScorer = scorers.erfScorer(1.0, 5.0, 0.34)
+        min_score = 0.34
+        imageScorer = scorers.erfScorer(1.0, 5.0, min_score)
 
         # Basic imaging score
         # For the time being the VLA calibrator imaging is generating an error
@@ -42,9 +43,23 @@ class TcleanQAHandler(pqa.QAPlugin):
             shortmsg = 'snr = {:0.2f}'.format(snr)
             result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
         else:
-            # Check for any cleaning errors and render a zero score
-            if (result.error is not None):
-                result.qa.pool.append(pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg, weblog_location=pqa.WebLogLocation.UNSET))
+            # Check for any cleaning errors and render a minimum score
+            if result.error:
+                # this variable may be either a string or an instance of CleanBaseError,
+                # which contains both long and short messages;
+                # we should eventually harmonise the usage convention, but for now need to correctly treat both cases
+                if hasattr(result.error, 'longmsg'):
+                    longmsg = result.error.longmsg
+                    shortmsg = result.error.shortmsg
+                else:
+                    longmsg = shortmsg = str(result.error)
+                # set the score to the lowest (but still yellow) value
+                result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
+                                                  weblog_location=pqa.WebLogLocation.UNSET))
+
+            # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
+            if result.image is None:
+                return result
 
             # Image RMS based score
             try:
