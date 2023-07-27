@@ -146,16 +146,8 @@ import os
 	</div>
 
         <div class="col-md-6">
-
             % if spwid_vs_freq is None or not os.path.exists(spwid_vs_freq.thumbnail):
-                <h3>SpW ID vs Frequency</h3>
                 <div class="col-md-6">
-                    <div class="thumbnail">
-                        <img data-src="holder.js/250x188/text:Not Available">
-                        <div class="caption">
-                            <h4>Not Available</h4>
-                        </div>
-                    </div>
                 </div>
             % else:
 	         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}" data-fancybox>

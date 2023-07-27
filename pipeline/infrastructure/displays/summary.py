@@ -1127,7 +1127,7 @@ class SpwIdVsFreqChart(object):
             Plot object
         """
         if DISABLE_PLOTMS:
-            LOG.debug('Disabling spwid_vs_freq plot due to problems with plotms')
+            LOG.info('Disabling spwid_vs_freq plot due to problems with plotms')
             return None
 
         filename = self.inputs.output
@@ -1148,8 +1148,6 @@ class SpwIdVsFreqChart(object):
         list_all_spwids = []
         list_indice = []
         list_all_indice = []
-        index = 0
-
         if self.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):  # For VLA
             banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
             list_spwids_baseband = []
@@ -1167,86 +1165,72 @@ class SpwIdVsFreqChart(object):
                 list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
                 list_all_spwids.extend(list_spwids)
                 list_all_indice.extend(list_indice)
-                index += 1
             ax.barh(list_all_indice, list_bw, height=0.4, left=list_fmin)
-
         else:  # For ALMA and NRO
             for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
                 shift = len(list_all_spwids)
                 list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
+                start = len(list_all_spwids)
                 list_all_spwids.extend(list_spwids)
                 list_all_indice.extend(list_indice)
-                len_spwids = len(list_spwids)
-                start = len_spwids*index
-                end = len_spwids*(index+1)
+                end = len(list_all_spwids)
                 fmins = list_fmin[start:end]
                 bws = list_bw[start:end]
                 ax.barh(list_indice, bws, height=0.4, left=fmins)
-                index += 1
 
         ax.set_title('Spectral Window ID vs. Frequency (GHz)', loc='center')
         ax.set_xlabel("Frequency (GHz)", fontsize=14)
         ax.invert_yaxis()
-        x_min_start = min(list_fmin)
-        x_max_end = max(list_fmax)
-        y_start = min(list_all_spwids)
-        y_end = max(list_all_spwids)
-        xstep = 1
-        xmargin = 1
-        ystep = 2
-        ymargin = 2
-
-        if y_start < y_end:
-            y_ticks = list(range(y_start-ystep, y_end+ystep+ymargin, ystep))
-        else:
-            y_ticks = list(range(y_end+ystep, y_start-ystep-ymargin, ystep))
-        ax.grid(which="major", alpha=0.9)
-        ax.grid(which="minor", alpha=0.5)
+        ax.grid(axis='x')
         ax.tick_params(labelsize=13)
         ax.set_ylim(bottom=float(len(list_all_indice)), top=-1.0)
         ax.set_yticks([])
-        yspace = 0.7*len(y_ticks) / (max(y_ticks) - min(y_ticks))
+        yspace = 0.3
 
-        # Switch annotate
-        if self.context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):  # For ALMA and NRO
-            for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
-                ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
-        else:  # For VLA
-            if len(list_all_spwids) < 16:  # small number spw
+        # Annotate
+        if self.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):  # For VLA
+            if len(list_all_spwids) < 16:
                 for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
                     ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
-            else:  # large number spw
+            else:
                 list_all_spwids = []
-                k = 0
-                index = 0
                 for list_spwids in list_spwids_baseband:
                     shift = len(list_all_spwids)
                     list_indice = [list_spwids.index(spwid)+shift for spwid in list_spwids]
+                    len_spwids = len(list_all_spwids)
+                    start = len_spwids
                     list_all_spwids.extend(list_spwids)
-                    len_spwids = len(list_spwids)
-                    start = len_spwids*k
-                    end = len_spwids*(k+1)
+                    len_spwids = len(list_all_spwids)
+                    end = len_spwids
                     fmins = list_fmin[start:end]
                     bws = list_bw[start:end]
                     step = len(list_spwids)-1
-                    for f, w, spwid, idx in zip(fmins[0::step], bws[0::step], list_spwids[0::step], list_indice[0::step]):
-                        ax.annotate('%s' % spwid, (f+w/2, idx-yspace), fontsize=14)
-                    k += 1
+                    if step == 0:
+                        for f, w, spwid, index in zip(fmins, bws, list_spwids, list_indice):
+                            ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
+                    else:
+                        for f, w, spwid, index in zip(fmins[0::step], bws[0::step], list_spwids[0::step], list_indice[0::step]):
+                            ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
+        else:  # For ALMA and NRO
+            for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indice):
+                ax.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
 
         # Make a plot of frequency vs. atm transmission (right y-axis)
-        atm_color = 'm'
-        axes_atm = ax.twinx()
-        axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
-        axes_atm.set_ylim(0, 1.05)
-        axes_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
-        axes_atm.yaxis.set_major_formatter(plt.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
-        axes_atm.yaxis.tick_right()
-        antid = 0
-        if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
-            antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
-        for spwid in list_all_spwids:
-            atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-            axes_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', linestyle='-')
+        if self.context.project_summary.telescope not in ('VLA', 'JVLA', 'EVLA'):  # For ALMA and NRO
+            atm_color = 'm'
+            axes_atm = ax.twinx()
+            axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
+            axes_atm.set_ylim(0, 1.05)
+            axes_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
+            axes_atm.yaxis.set_major_formatter(plt.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+            axes_atm.yaxis.tick_right()
+            antid = 0
+            if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
+                antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
+
+            for spwid in list_all_spwids:
+                atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
+                axes_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
 
         fig.savefig(filename)
         plt.clf()
