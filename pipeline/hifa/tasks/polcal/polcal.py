@@ -796,6 +796,7 @@ class Polcal(basetask.StandardTaskTemplate):
                 'spw': str(sci_spw),
                 'datacolumn': 'corrected',
                 'observation': obsid,
+                'correlation': 'XY,YX',
             }
             visstat_job = casa_tasks.visstat(**task_args)
             visstat_result = self._executor.execute(visstat_job)
