@@ -153,7 +153,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                 except Exception as e:
                     result.check_source_fit = {'offset': 'N/A', 'offset_err': 'N/A', 'beams': 'N/A', 'beams_err': 'N/A', 'fitflux': 'N/A', 'fitflux_err': 'N/A', 'fitpeak': 'N/A', 'gfluxscale': 'N/A', 'gfluxscale_err': 'N/A'}
                     LOG.warning('Exception scoring check source fit: %s. Setting score to -0.1.' % (e))
-                    result.qa.pool.append(-0.1, longmsg='Exception scoring check source fit: %s' % (e), shortmsg='Exception scoring check source fit')
+                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring check source fit: %s' % (e), shortmsg='Exception scoring check source fit'))
 
             # Polarization calibrators
             if result.intent == 'POLARIZATION' and result.inputs['specmode'] in ('mfs', 'cont') and result.imaging_mode == 'ALMA':
