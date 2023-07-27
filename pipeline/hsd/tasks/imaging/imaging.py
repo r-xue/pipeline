@@ -1448,7 +1448,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
                 f = msobj.get_fields(field_id=fieldid)[0]
                 LOG.warning('Not a raster map: field {} in {}'.format(f.name, msobj.basename))
-                raster_info_listappend(None)
+                raster_info_list.append(None)
             dt = _cp.dt_dict[msobj.basename]
             try:
                 raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
@@ -1811,17 +1811,13 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     # [[r00, r01, r02, ...], [r10, r11, r12, ...], ...]
     dtrow_list_nomask = rasterutil.extract_dtrow_list(timetable)
     dtrow_list = [rows[pflag[rows]] for rows in dtrow_list_nomask if numpy.any(pflag[rows] == True)]
-    LOG.info("len(dtrow_list) = {}".format(len(dtrow_list)))
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except RasterScanHeuristicsFailure as e:
-        LOG.warn('{}'.format(e))
-#    except Exception:
-#        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. '
-#                    'Result might not be correct.')
+        LOG.warning('{}'.format(e))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
