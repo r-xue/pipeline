@@ -488,7 +488,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                 spwmap_final = [spwmap_final]
                             gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
                             calfrom = callibrary.CalFrom(gaintable=gaintable,
-                                                         interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=True,
+                                                         interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=False,
                                                          spwmap=spwmap_final[idx], caltype='gaincal')
                             calto = callibrary.CalTo(vis=vis_calto, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
                             # applymode=sc_lib[vis]['applycal_mode_final']

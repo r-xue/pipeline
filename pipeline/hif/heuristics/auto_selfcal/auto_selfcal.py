@@ -840,7 +840,7 @@ class SelfcalHeuristics(object):
                             self.cts.applycal(
                                 vis=vis, gaintable=applycal_gaintable[vis],
                                 interp=applycal_interpolate[vis],
-                                calwt=True, spwmap=applycal_spwmap[vis],
+                                calwt=False, spwmap=applycal_spwmap[vis],
                                 applymode=applycal_mode[band][iteration],
                                 field=self.field, spw=selfcal_library[target][band][vis]['spws'])
 
@@ -1008,7 +1008,7 @@ class SelfcalHeuristics(object):
                                     self.cts.applycal(vis=vis,
                                                       gaintable=selfcal_library[target][band][vis]['gaintable_final'],
                                                       interp=selfcal_library[target][band][vis]['applycal_interpolate_final'],
-                                                      calwt=True, spwmap=selfcal_library[target][band][vis]['spwmap_final'],
+                                                      calwt=False, spwmap=selfcal_library[target][band][vis]['spwmap_final'],
                                                       applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
                                                       field=self.field, spw=selfcal_library[target][band][vis]['spws'])
                             else:
