@@ -349,7 +349,6 @@ class MetaDataReader(object):
         # value: list of rows to be flagged
         try:
             flagdict1 = self.generate_flagdict_for_invalid_pointing_data()[0]
-#            flagdict1 = self.generate_flagdict_for_invalid_pointing_data()
         except Exception:
             flagdict1 = {}
 
@@ -384,11 +383,11 @@ class MetaDataReader(object):
         self._generate_flagcmd(self.flagtemplate, flagdict1, reason='missing pointing data')
         self._generate_flagcmd(self.flagtemplate, flagdict2, reason='uniform image rms')
 
-    def generate_flagdict_for_invalid_pointing_data(self) -> collections.defaultdict:
-        """Return row IDs of DataTable with invalid pointing information.
+    def generate_flagdict_for_invalid_pointing_data(self) -> Tuple[collections.defaultdict, List[str]]:
+        """Return row IDs of DataTable with invalid pointing information and a list of message.
 
         Returns:
-            collections.defaultdict: dictionary of invalid pointing data
+            Tuple: contains dictionary of invalid pointing data and a list of message 
         """
 
         if len(self.invalid_pointing_data) > 0:

@@ -1,7 +1,6 @@
 """Renderer module for importdata."""
 
 import collections
-import os
 from typing import Any, Dict
 
 import pipeline.h.tasks.importdata.renderer as super_renderer
@@ -9,9 +8,6 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.basetask import Results
 from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.utils import relative_path
-from . import importdata
-from . import reader
 
 LOG = logging.get_logger(__name__)
 
