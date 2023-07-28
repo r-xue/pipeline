@@ -94,7 +94,10 @@ def fm_band(band):
     return band.replace('_',' ')
 
 def fm_target(target):
-    return target.replace('_',' ') 
+    target_str=target['field'].replace('_',' ')
+    if target['is_repr_target']:
+       target_str+='<br> (rep.source)'
+    return target_str
 
 def fm_sc_success(success):
     if success:
@@ -174,7 +177,7 @@ def fm_reason(slib):
 
     <a class="anchor" id="${id_name}"></a>
     <h4>
-      ${fm_target(target['field'])}&nbsp;${fm_band(target['sc_band'])}&nbsp;
+      ${fm_target(target)}&nbsp;${fm_band(target['sc_band'])}&nbsp;
       <a href="#targetlist"><sup>back to top</sup></a>&nbsp;&nbsp;
       <a class="btn btn-sm btn-light" data-toggle="collapse" 
           href="#${id_name}_summary" 

@@ -561,6 +561,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets = makeimlist_results.targets
         for scal_target in scal_targets:
             scal_target['sc_telescope'] = telescope
+            scal_target['is_repr_target'] = scal_target['heuristics'].representative_target()[5]
 
         return scal_targets
 
