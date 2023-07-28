@@ -1,6 +1,7 @@
 import os
 import shutil
 import traceback
+import copy
 
 import numpy as np
 import json
@@ -45,6 +46,7 @@ class SelfcalResults(basetask.Results):
         # save selfcal results into the Pipeline context
         if hasattr(context, 'scal_targets'):
             LOG.warning('context.scal_targets is being over-written.')
+        # we could consider exclude the heuristics from the scal_targets first here.
         context.scal_targets = self.targets
 
         # if selfcal_resources is None, then the selfcal solver is not triggered and no need to register the
@@ -169,10 +171,11 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         current_version = 1.0
         current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        for target in scal_targets:
+        scal_targets_copy = copy.deepcopy(scal_targets)
+        for target in scal_targets_copy:
             target.pop('heuristics', None)
         scal_targets_json = {}
-        scal_targets_json['scal_targets'] = scal_targets
+        scal_targets_json['scal_targets'] = scal_targets_copy
         scal_targets_json['version'] = current_version
         scal_targets_json['datetime'] = current_datetime
         scal_targets_json['pipeline_version'] = environment.pipeline_revision

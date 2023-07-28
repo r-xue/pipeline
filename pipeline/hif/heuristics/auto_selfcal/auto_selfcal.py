@@ -262,12 +262,13 @@ class SelfcalHeuristics(object):
         else:
             LOG.info("%s does not exist", old_dirname)
 
-    def get_sensitivity(self):
+    def get_sensitivity(self, spw=None):
+        if spw is None:
+            spw = self.spw_virtual
 
         gridder = self.image_heuristics.gridder('TARGET', self.field)
-
         sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
-            self.vislist, self.field, 'TARGET', self.spw_virtual, -1, {},
+            self.vislist, self.field, 'TARGET', spw, -1, {},
             'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
             False)
         return sensitivity[0], sens_bw[0]
@@ -425,13 +426,13 @@ class SelfcalHeuristics(object):
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
                     # potential place where diff spws for different VLA EBs could cause problems
-                    spwlist = selfcal_library[target][band][vis]['spws'].split(',')
+                    spwlist = self.spw_virtual.split(',')
                     for spw in spwlist:
                         keylist = selfcal_library[target][band]['per_spw_stats'].keys()
                         if spw not in keylist:
                             selfcal_library[target][band]['per_spw_stats'][spw] = {}
                         if not os.path.exists(sani_target+'_'+band+'_'+spw+'_dirty.image.tt0'):
-                            spws_per_vis = [spw]*len(vislist)
+                            spws_per_vis = self.image_heuristics.observing_run.get_real_spwsel([spw]*len(vislist), vislist)
                             self.tclean_wrapper(
                                 vislist, sani_target + '_' + band + '_' + spw + '_dirty', band_properties, band,
                                 telescope=self.telescope, nsigma=4.0, scales=[0],
@@ -448,7 +449,7 @@ class SelfcalHeuristics(object):
                                     spw, spw=np.array([int(spw)]),
                                     imsize=imsize[0],
                                     cellsize=cellsize[0])
-                                sensitivity, sens_bw = self.get_sensitivity()
+                                sensitivity, sens_bw = self.get_sensitivity(spw=spw)
                                 dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
                                 LOG.info(f'DR modifier: {dr_mod}  SPW: {spw}')
                                 sensitivity = sensitivity*dr_mod
@@ -456,7 +457,7 @@ class SelfcalHeuristics(object):
                                     sensitivity = sensitivity*4.0
                             else:
                                 sensitivity = 0.0
-                            spws_per_vis = [spw]*len(vislist)  # assumes all spw ids are identical in each MS file
+                            spws_per_vis = self.image_heuristics.observing_run.get_real_spwsel([spw]*len(vislist), vislist)
 
                             self.tclean_wrapper(
                                 vislist, sani_target + '_' + band + '_' + spw + '_initial', band_properties, band,
@@ -1043,30 +1044,9 @@ class SelfcalHeuristics(object):
             sani_target = sanitize_string(target)
             for band in selfcal_library[target].keys():
                 vislist = selfcal_library[target][band]['vislist'].copy()
-                # omit DR modifiers here since we should have increased DR significantly
-                if self.telescope == 'ALMA' or self.telescope == 'ACA':
-                    sensitivity = get_sensitivity(
-                        vislist, selfcal_library[target][band], target,
-                        selfcal_library[target][band][vis]['spws'],
-                        spw=selfcal_library[target][band][vis]['spwsarray'],
-                        imsize=imsize[0],
-                        cellsize=cellsize[0])
-                    sensitivity, sens_bw = self.get_sensitivity()
-                    dr_mod = 1.0
-                    if not selfcal_library[target][band]['SC_success']:  # fetch the DR modifier if selfcal failed on source
-                        dr_mod = get_dr_correction(
-                            self.telescope, selfcal_library[target][band]['SNR_dirty'] *
-                            selfcal_library[target][band]['RMS_dirty'],
-                            sensitivity, vislist)
-                        LOG.info(f'DR modifier: {dr_mod}')
-                        sensitivity = sensitivity*dr_mod
-                    if ((band == 'Band_9') or (band == 'Band_10')) and dr_mod != 1.0:   # adjust for DSB noise increase
-                        sensitivity = sensitivity*4.0
-                else:
-                    sensitivity = 0.0
                 self.tclean_wrapper(
                     vislist, sani_target + '_' + band + '_final', band_properties, band, telescope=self.telescope, nsigma=3.0,
-                    threshold=str(sensitivity * 4.0) + 'Jy', scales=[0],
+                    threshold=str(selfcal_library[target][band]['RMS_curr']*3.0) + 'Jy', scales=[0],
                     savemodel='none', parallel=parallel, cellsize=cellsize,
                     imsize=imsize,
                     nterms=selfcal_library[target][band]['nterms'],
@@ -1116,8 +1096,7 @@ class SelfcalHeuristics(object):
                 sani_target = sanitize_string(target)
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
-
-                    spwlist = selfcal_library[target][band][vis]['spws'].split(',')
+                    spwlist = self.spw_virtual.split(',')
                     LOG.info('Generating final per-SPW images for '+target+' in '+band)
                     for spw in spwlist:
                         # omit DR modifiers here since we should have increased DR significantly
@@ -1129,7 +1108,7 @@ class SelfcalHeuristics(object):
                                 spw, spw=np.array([int(spw)]),
                                 imsize=imsize[0],
                                 cellsize=cellsize[0])
-                            sensitivity, sens_bw = self.get_sensitivity()
+                            sensitivity, sens_bw = self.get_sensitivity(spw=spw)
                             dr_mod = 1.0
                             # fetch the DR modifier if selfcal failed on source
                             if not selfcal_library[target][band]['SC_success']:
@@ -1143,15 +1122,16 @@ class SelfcalHeuristics(object):
                                 sensitivity = sensitivity*4.0
                         else:
                             sensitivity = 0.0
-                        spws_per_vis = [spw]*len(vislist)  # assumes all spw ids are identical in each MS file
-                        self.tclean_wrapper(
-                            vislist, sani_target + '_' + band + '_' + spw + '_final', band_properties, band,
-                            telescope=self.telescope, nsigma=4.0, threshold=str(sensitivity * 4.0) + 'Jy', scales=[0],
-                            savemodel='none', parallel=parallel, cellsize=cellsize,
-                            imsize=imsize,
-                            nterms=1, field=self.field, datacolumn='corrected', spw=spws_per_vis,
-                            uvrange=selfcal_library[target][band]['uvrange'],
-                            obstype=selfcal_library[target][band]['obstype'])
+                        spws_per_vis = self.image_heuristics.observing_run.get_real_spwsel([spw]*len(vislist), vislist)
+                        sensitivity_agg, sens_bw = self.get_sensitivity()
+                        sensitivity_scale_factor = selfcal_library[target][band]['RMS_curr']/sensitivity_agg
+                        self.tclean_wrapper(vislist, sani_target + '_' + band + '_' + spw + '_final', band_properties, band,
+                                            telescope=self.telescope, nsigma=4.0,
+                                            threshold=str(sensitivity * sensitivity_scale_factor * 4.0) + 'Jy', scales=[0],
+                                            savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize, nterms=1,
+                                            field=self.field, datacolumn='corrected', spw=spws_per_vis,
+                                            uvrange=selfcal_library[target][band]['uvrange'],
+                                            obstype=selfcal_library[target][band]['obstype'])
                         final_per_spw_SNR, final_per_spw_RMS = estimate_SNR(sani_target+'_'+band+'_'+spw+'_final.image.tt0')
                         if self.telescope != 'ACA':
                             final_per_spw_NF_SNR, final_per_spw_NF_RMS = estimate_near_field_SNR(

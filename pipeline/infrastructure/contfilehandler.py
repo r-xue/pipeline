@@ -242,7 +242,8 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
     The return is a dictionary with field names with keys and spwsel as values, e.g.,
         {'04287+1801': '20:327.464~328.183GHz;328.402~329.136GHz,26:340.207~340.239GHz;340.280~340.313GHz'}
-    By default (use_realspw=True), the frequency selection string is in real SPWs of input vis.
+    By default (use_realspw=True), the frequency selection string is in real SPWs of input vis, even though
+    contfile is in virtual SPWs. If use_realspw=False, the output frequency selection string is in virtual SPWs.
     If the frequencies specified in the contfile are in LSRK, they will be converted to TOPO.
     """
 
