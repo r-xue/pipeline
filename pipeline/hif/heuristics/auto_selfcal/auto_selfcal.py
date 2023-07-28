@@ -27,7 +27,6 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
 
 # from pipeline.infrastructure.utils import request_omp_threading
 
-
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -265,10 +264,12 @@ class SelfcalHeuristics(object):
             spw = self.spw_virtual
 
         gridder = self.image_heuristics.gridder('TARGET', self.field)
-        sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
-            self.vislist, self.field, 'TARGET', spw, -1, {},
-            'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
-            False)
+        # PIPE-1827: filter out the "channel bandwidths ratio" warning messages during sensitivity calculations.
+        with logging.log_level('pipeline.hif.heuristics.imageparams_base', logging.WARNING+1):
+            sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
+                self.vislist, self.field, 'TARGET', spw, -1, {},
+                'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
+                False)
         return sensitivity[0], sens_bw[0]
 
     def get_dr_correction(self):
