@@ -207,7 +207,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         else:
             return 1
 
-    def deconvolver(self, specmode, spwspec, intent: str = '') -> str:
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
         """Tclean deconvolver parameter heuristics.
         See PIPE-679 and CASR-543"""
         return 'mtmfs'

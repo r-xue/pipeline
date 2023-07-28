@@ -44,7 +44,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean niter parameter heuristics."""
         return self.niter_correction(None, None, None, None, None, None)
 
-    def deconvolver(self, specmode, spwspec, intent: str = '') -> str:
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
         """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 

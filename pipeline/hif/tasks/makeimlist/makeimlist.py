@@ -1223,8 +1223,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                             else:
                                 nbin = -1
 
-                            # Get stokes value
-                            stokes = self.heuristics.stokes(field_intent[1])
+                            # Get stokes value. Note that the full list of intents is
+                            # used to decide whether to do IQUV for ALMA as PIPE-1829
+                            # asked for Stokes I only if other calibration intents are
+                            # done together with POLARIZATION.
+                            stokes = self.heuristics.stokes(inputs.intent)
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(

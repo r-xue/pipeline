@@ -205,7 +205,7 @@ class CleanSummary(object):
                     plot_wrappers.append(logger.Plot(psf_per_channel_plotfile, parameters=psf_per_channel_parameters))
 
             # polarization intensity and angle
-            if r.intent == 'POLARIZATION' and r.imaging_mode == 'ALMA':
+            if r.intent == 'POLARIZATION' and stokes_list == ['I', 'Q', 'U', 'V'] and r.imaging_mode == 'ALMA':
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
                                                                       r.image.replace('.pbcor', '').replace('IQUV', 'POLI'),
                                                                       reportdir=stage_dir, intent=r.intent,

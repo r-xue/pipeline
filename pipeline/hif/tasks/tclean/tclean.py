@@ -323,7 +323,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine deconvolver
         if inputs.deconvolver in (None, ''):
-            inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw, inputs.intent)
+            inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw, inputs.intent, inputs.stokes)
 
         # Determine weighting
         if inputs.weighting in (None, ''):

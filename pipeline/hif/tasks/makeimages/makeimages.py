@@ -386,7 +386,7 @@ class CleanTaskFactory(object):
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
                 task_args['hm_masking'] = 'auto'
-            elif 'POLARIZATION' in task_args['intent']:
+            elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
                 task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'

@@ -1189,8 +1189,8 @@ class ImageParamsHeuristics(object):
 
         return pblimit_image, pblimit_cleanmask
 
-    def deconvolver(self, specmode, spwspec, intent: str = '') -> str:
-        if intent == 'POLARIZATION':
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
+        if intent == 'POLARIZATION' and stokes == 'IQUV':
             return 'clarkstokes'
 
         if (specmode == 'cont'):
