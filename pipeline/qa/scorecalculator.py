@@ -1844,7 +1844,7 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
 
 
 @log_qa
-def score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, bl_p80: float, bl_p80_orig: float, outlier_antennas: List[str]):
+def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_antennas: str):
     """
     Assess the cycle time phase RMS value, which is important as everything longer than a cycle time
     is corrected by phase referencing (in terms of atmospheric phase variations).
@@ -1852,6 +1852,10 @@ def score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, b
     Also checks the outlier antennas and the 80th percentile baseline with and without flagged antennas.
     """
     try:
+        phasermscycle_p80: float = phaserms_results['phasermscycleP80'],
+        bl_p80: float = phaserms_results['blP80'],
+        bl_p80_orig: float = phaserms_results['blP80orig']
+
         initial_score = 1.0 - phasermscycle_p80/100.0
         RMSstring = str(round(phasermscycle_p80, 2))
 
@@ -1862,7 +1866,7 @@ def score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, b
         if initial_score > 0.7:
             base_score = 1.0
             shortmsg = "Excellent stability Phase RMS (<30deg)."
-            longmsg = "For {0}, Excellent stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+            longmsg = "For {0}, excellent stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
                         deg over the cycle time.".format(ms.basename, RMSstring)
 
             # Check for problem antennas and update the score if needed.
@@ -1876,7 +1880,7 @@ def score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, b
             # as 50 deg phase RMS can still cause ~30% decoherence
             base_score = 0.9
             shortmsg = "Stable conditions phase RMS (30-50deg)."
-            longmsg = "For {0}, Good stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+            longmsg = "For {0}, good stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
                             deg over the cycle time.".format(ms.basename, RMSstring)
 
         # These are high phase noise -
@@ -1889,7 +1893,7 @@ def score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, b
             # The initial score is representative
             base_score = initial_score
             shortmsg = "Elevated Phase RMS (50-70deg) exceeds stable parameters."
-            longmsg = "For {0}, Elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+            longmsg = "For {0}, elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
                             deg over the cycle time. Some image artifacts/defects may occur.".format(ms.basename, RMSstring)
 
         elif initial_score <= 0.3:
@@ -1909,15 +1913,15 @@ def score_decoherence_assessment(ms: MeasurementSet, phasermscycle_p80: float, b
 
         # Append antenna outlier information to longmsg if present
         if len(outlier_antennas) > 0:
-            if len(outlier_antennas) == 1:
-                longmsg = "{0} {1} has higher phase RMS.".format(longmsg, ','.join(outlier_antennas))
+            if len(outlier_antennas.split(",")) == 1:
+                longmsg = "{0} {1} has higher phase RMS.".format(longmsg, outlier_antennas)
             else:
-                longmsg = "{0} {1} have higher phase RMS".format(longmsg, ','.join(outlier_antennas))
+                longmsg = "{0} {1} have higher phase RMS".format(longmsg, outlier_antennas)
 
         # The P80 is shorter than the P80 of all data due to notable baseline flagging
         #       tbd but if the P80 is 10-15% lower than expected - i.e. can later impact QA2
         #       as the longer baselines have maybe been flagged out
-        if bl_p80 < bl_p80_orig*0.85:
+        if bl_p80 < bl_p80_orig * 0.85:
             LOG.info("P80 of unflagged data is more than 15% shorter than P80 of all baselines due to baseline and antennas flags")
             if base_score == 1.0:
                 base_score = 0.9

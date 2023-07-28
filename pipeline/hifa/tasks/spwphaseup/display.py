@@ -28,8 +28,7 @@ class SpatialStructureFunctionChart(object):
         phaserms_results = self.result.phaserms_results
 
         # Set up plot
-        figsize = [11.0, 8.5]  # appears mostly to affect the savefig not the interactive one 
-        figsize = np.array(figsize)
+        figsize = np.array([11.0, 8.5])  # Appears mostly to affect the savefig not the interactive one
         plt.close(1)
         fig = plt.figure(1)
         fig.set_size_inches(figsize[0], figsize[1], forward=True)

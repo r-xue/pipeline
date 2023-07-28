@@ -40,10 +40,10 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         applications = get_gaincal_applications(context, results)
 
         # Get info on the phase RMS spatial structure function plots and tables
-        if results[0].phaserms_results: 
+        if results[0].phaserms_results:
             rmsplots = make_rms_plots(context, results)
             phaserms_table_rows = get_phaserms_table_rows(context, results)
-        else: 
+        else:
             rmsplots = None
             phaserms_table_rows = None
 
@@ -54,7 +54,7 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'snr_table_rows': snr_table_rows,
             'phaserms_table_rows': phaserms_table_rows,
             'spwmaps': spwmaps,
-            'rmsplots' : rmsplots
+            'rmsplots': rmsplots
         })
 
 

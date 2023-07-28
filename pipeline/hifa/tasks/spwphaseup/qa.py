@@ -66,9 +66,7 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
 
         # QA scores for decoherence assessment (See: PIPE-692 and PIPE-1624)
         if result.phaserms_results:
-            decoherence_score = qacalc.score_decoherence_assessment(ms, result.phaserms_results['phasermscycleP80'], 
-                                                                        result.phaserms_results['blP80'], 
-                                                                        result.phaserms_results['blP80orig'], result.phaserms_antout)
+            decoherence_score = qacalc.score_decoherence_assessment(ms, result.phaserms_results, result.phaserms_antout)
         else:
             # "missing results" decoherence assessment QA score
             base_score = 0.9
@@ -78,7 +76,7 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
                                         metric_score=None,
                                         metric_units='Degrees')
-            decoherence_score = pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, 
+            decoherence_score = pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename,
                                             origin=phase_stability_origin, weblog_location=pqa.WebLogLocation.ACCORDION)
 
         scores.append(decoherence_score)

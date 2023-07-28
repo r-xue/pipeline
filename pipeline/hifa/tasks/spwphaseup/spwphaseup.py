@@ -159,7 +159,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phasecal_mapping=phasecal_mapping, phaseup_result=phaseupresult,
                                    snr_info=snr_info, spwmaps=spwmaps, unregister_existing=inputs.unregister_existing,
-                                   phaserms_totaltime=phaserms_totaltime, phaserms_cycletime=phaserms_cycletime, 
+                                   phaserms_totaltime=phaserms_totaltime, phaserms_cycletime=phaserms_cycletime,
                                    phaserms_results=phaserms_results, phaserms_antout=phaserms_antout)
 
         return result
@@ -747,7 +747,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             # Initialize the phase RMS structure function assessment
             inputs = copy.deepcopy(self.inputs)
-            phase_rms = SSFheuristics(inputs, outlier_limit=180.0, flag_tolerance=0.3, max_poor_ant=11) 
+            phase_rms = SSFheuristics(inputs, outlier_limit=180.0, flag_tolerance=0.3, max_poor_ant=11)
 
             # Do the analysis
             phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout = phase_rms.analysis()
@@ -854,9 +854,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
-                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False, 
-                 phaserms_totaltime: str = None, phaserms_cycletime: str = None, phaserms_results = None, 
-                 phaserms_antout: List = []): 
+                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False,
+                 phaserms_totaltime: str = None, phaserms_cycletime: str = None, phaserms_results = None,
+                 phaserms_antout: List = []):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -875,7 +875,6 @@ class SpwPhaseupResults(basetask.Results):
         self.phaserms_cycletime = phaserms_cycletime
         self.phaserms_results = phaserms_results
         self.phaserms_antout = ",".join(phaserms_antout)
-
 
     def merge_with_context(self, context):
         if self.vis is None:

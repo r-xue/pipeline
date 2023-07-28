@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import copy
 import numpy as np
@@ -165,7 +165,7 @@ class SSFheuristics(object):
         # the total time (i.e. length of BP scan) and 
         # the cycle time (time it takes to cycle the start of a phase cal scan to the next - ties with a 'decohernce time' over the target)
         if self.cycletime < self.totaltime:
-            self.allResult = self._phase_rms_caltab(timeScale=self.cycletime) # if cycle time is shorter we pass the option so it gets assessed
+            self.allResult = self._phase_rms_caltab(timeScale=self.cycletime)  # if cycle time is shorter we pass the option so it gets assessed
         else:
             self.allResult = self._phase_rms_caltab()  # otherwise no options added and cycletime value will equal total time value
 
@@ -195,7 +195,7 @@ class SSFheuristics(object):
         # Get 80th percentile baseline length and ID of all baselines above it
         self.allResult['blP80orig'] = np.percentile(self.allResult['bllen'], 80)  # was xy
 
-        #PIPE-1662 P80 to acount for flagged antennas, i.e work from P80 of the 'good' data
+        # PIPE-1662 P80 to acount for flagged antennas, i.e work from P80 of the 'good' data
         self.allResult['blP80'] = np.percentile(np.array(self.allResult['bllen'])[np.isfinite(np.array(self.allResult['blphaserms']))], 80)
         #####
 
@@ -318,7 +318,7 @@ class SSFheuristics(object):
 
         return PMincACA
 
-    def _getbaselinesproj(self, field_id: int=None) -> Dict[str, str]:
+    def _getbaselinesproj(self, field_id: Optional[int] = None) -> Dict[str, float]:
         """
         Code to get the projected baseline from the openend 
         visibilitiy file already - these are ordered in 
@@ -372,7 +372,7 @@ class SSFheuristics(object):
                self.caltable, self.spw, self.scan, self.antlist
         
         :returns: total time of baseline scan, average integration time 
-	    :rtype: float, float
+        :rtype: float, float
         """
         with casa_tools.TableReader(self.caltable) as tb:
             nant = len(self.antlist)
@@ -550,8 +550,7 @@ class SSFheuristics(object):
         phase cal field id already known to class
         ant1 and ant2 for the antennas
 
-        result - pass out simple a true or false (could be used for a masked array?)
-                 to set that baseline to a nan and thus not be used
+        Returns: 4-tuple containing Numpy arrays for flags, antenna1, antenna2, and field.
         """
         # MS reads datadescid not spw id
         # need to do the conversion to make sure we use
@@ -570,6 +569,7 @@ class SSFheuristics(object):
             a1s = tb1.getcol('ANTENNA1')
             a2s = tb1.getcol('ANTENNA2') 
             field = tb1.getcol('FIELD_ID')
+            tb1.close()
 
         return flags, a1s, a2s, field  
 
@@ -773,7 +773,7 @@ class SSFheuristics(object):
                 break
 
         # else here for Phase cal check if not flagged in BP
-        if flaggedbl == False:
+        if not flaggedbl:
             flaggedbl = True
             for phid in self.ph_ids: # usually one phase cal anyway but loop incase multiple
                 idbl = np.where((self.blflags[1]==ant1) & (self.blflags[2]==ant2) & (self.blflags[3]==phid))[0] 
@@ -803,7 +803,7 @@ class SSFheuristics(object):
         return working_phase
     
     @staticmethod
-    def mad(data: np.ndarray, axis: int=None) -> float:
+    def mad(data: np.ndarray, axis: Optional[int] = None) -> float:
         """
         This calculates the MAD - median absolute deviation from the median
         The input must be nan free, i.e. finite data
