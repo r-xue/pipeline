@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_correctedampflag(
         vis=None, intent=None, field=None, spw=None, antnegsig=None,
         antpossig=None, tmantint=None,

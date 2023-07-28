@@ -7,6 +7,8 @@ import sys
 
 import pipeline.h.cli.utils as utils
 
+
+@utils.cli_wrapper
 def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                  flag_prfre=None, prfre_thresh=None,
                  flag_pofre=None, pofre_thresh=None,

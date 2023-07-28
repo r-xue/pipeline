@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_wvrgcalflag(
         vis=None, caltable=None, offsetstable=None, hm_toffset=None,
         toffset=None, segsource=None, sourceflag=None, hm_tie=None, tie=None,

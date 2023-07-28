@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 apply=None, parallel=None, recal=None, refantignore=None, restore_resources=None,
                 amplitude_selfcal=None, gaincal_minsnr=None,

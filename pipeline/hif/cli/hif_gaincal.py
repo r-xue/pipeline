@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, hm_gaintype=None,
                 calmode=None, solint=None, combine=None, refant=None, refantmode=None, solnorm=None, minblperant=None,
                 minsnr=None, smodel=None, splinetime=None, npointaver=None, phasewrap=None,

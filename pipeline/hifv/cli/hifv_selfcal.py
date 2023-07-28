@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_selfcal(vis=None, dryrun=None, acceptresults=None, refantignore=None,
                  combine=None, selfcalmode=None, refantmode=None, overwrite_modelcol=None):
 

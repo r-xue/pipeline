@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_finalcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, refantignore=None):
 
     """

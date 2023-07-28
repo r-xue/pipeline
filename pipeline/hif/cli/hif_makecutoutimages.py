@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_makecutoutimages(vis=None, offsetblc=None, offsettrc=None, dryrun=None, acceptresults=None):
 
     """
