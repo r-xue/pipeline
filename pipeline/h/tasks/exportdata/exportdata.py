@@ -1,6 +1,6 @@
 """
 The exportdata module provides base classes for preparing data products
-on disk for upload to the archive. 
+on disk for upload to the archive.
 
 To test these classes, register some data with the pipeline using ImportData,
 then execute:
@@ -29,17 +29,19 @@ task = pipeline.tasks.exportdata.ExportData(inputs)
 """
 import collections
 import copy
-import errno
 import fnmatch
-import glob
 import io
 import os
 import shutil
 import sys
 import tarfile
+import tempfile
 
 import astropy.io.fits as apfits
 
+from pipeline.infrastructure.launcher import Context
+from pipeline.h.tasks.exportdata.aqua import AquaXmlGenerator
+from pipeline.h.tasks.exportdata.aqua import export_to_disk as export_aqua_to_disk
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -49,125 +51,15 @@ from pipeline import environment
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.filenamer import fitsname
+from pipeline.infrastructure import utils
+from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
 from pipeline.domain import DataType
 from ..common import manifest
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
 
-
 StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript casa_restore_script')
-
-
-# product name utility 
-class PipelineProductNameBuilder(object):
-
-    aqua_report_name = 'pipeline_aquareport.xml'
-
-    @classmethod
-    def __build(self, *args, **kwargs):
-        if 'separator' in kwargs:
-            separator = kwargs['separator']
-        else:
-            separator = '.'
-        return separator.join(map(str, args))
-
-    @classmethod
-    def _join_dir(self, name, output_dir=None):
-        if output_dir is not None:
-            name = os.path.join(output_dir, name)
-        return name
-
-    @classmethod
-    def _build_from_oussid(self, basename, ousstatus_entity_id=None, output_dir=None):
-        if ousstatus_entity_id is None:
-            name = basename
-        else:
-            name = self.__build(ousstatus_entity_id, basename)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_from_ps_oussid(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        if project_structure is None:
-            name = basename
-        elif project_structure.ousstatus_entity_id == 'unknown':
-            name = basename
-        else:
-            name = self._build_from_oussid(basename, ousstatus_entity_id=ousstatus_entity_id)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_from_oussid_session(self, basename, ousstatus_entity_id=None, session_name=None, output_dir=None):
-        name = self.__build(ousstatus_entity_id, session_name, basename)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_calproduct_name(self, basename, aux_product=False, output_dir=None):
-        if aux_product:
-            prefix='auxcal'
-        else:
-            prefix='cal'
-        name = self.__build(prefix, basename, separator='')
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_from_vis(self, basename, vis, output_dir=None):
-        name = self.__build(os.path.basename(vis), basename)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def weblog(self, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid('weblog.tgz', 
-                                          project_structure=project_structure, 
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
-
-    @classmethod
-    def casa_script(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid(basename, 
-                                          project_structure=project_structure, 
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
-
-    @classmethod
-    def manifest(self, basename, ousstatus_entity_id, output_dir=None):
-        return self._build_from_oussid(basename,
-                                       ousstatus_entity_id=ousstatus_entity_id,
-                                       output_dir=output_dir)
-
-    @classmethod
-    def calapply_list(self, vis, aux_product=False, output_dir=None):
-        basename = self._build_calproduct_name('apply.txt', aux_product=aux_product)
-        return self._build_from_vis(basename, vis, output_dir=output_dir)
-
-    @classmethod
-    def caltables(self, ousstatus_entity_id=None, session_name=None, aux_product=False, output_dir=None):
-        basename = self._build_calproduct_name('tables.tgz', aux_product=aux_product)
-        return self._build_from_oussid_session(basename=basename,
-                                               ousstatus_entity_id=ousstatus_entity_id,
-                                               session_name=session_name,
-                                               output_dir=None)
-
-    @classmethod
-    def aqua_report(self, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid(PipelineProductNameBuilder.aqua_report_name,
-                                          project_structure=project_structure,
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
-
-    @classmethod
-    def auxiliary_products(self, basename, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_oussid(basename,
-                                       ousstatus_entity_id=ousstatus_entity_id,
-                                       output_dir=output_dir)
-
-    @classmethod
-    def aqua_report(self, aqua_report_name, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid(aqua_report_name,
-                                          project_structure=project_structure,
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
 
 
 class ExportDataInputs(vdp.StandardInputs):
@@ -197,7 +89,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
     .. py:attribute:: pprfile
 
-    the pipeline processing request. 
+    the pipeline processing request.
 
     .. py:attribute:: calintents
 
@@ -357,20 +249,16 @@ class ExportData(basetask.StandardTaskTemplate):
         # 'self.inputs' everywhere
         inputs = self.inputs
 
-        try:
-            LOG.trace('Creating products directory: %s', inputs.products_dir)
-            os.makedirs(inputs.products_dir)
-        except OSError as exc:
-            if exc.errno != errno.EEXIST:
-                raise
+        # Create products directory if necessary.
+        utils.ensure_products_dir_exists(inputs.products_dir)
 
-        # Initialize the standard ous is string.
-        oussid = self.get_oussid(inputs.context)
+        # Initialize the standard OUS status ID string.
+        oussid = inputs.context.get_oussid()
 
         # Define the results object
         result = ExportDataResults()
 
-        # Make the standard vislist and the sessions lists. 
+        # Make the standard vislist and the sessions lists.
         #    These lists are constructed for the calibration mses only no matter the value of
         #    inputs.imaging_products_only
         session_list, session_names, session_vislists, vislist = self._make_lists(inputs.context, inputs.session,
@@ -419,7 +307,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not inputs.imaging_products_only:
             if inputs.exportcalprods:
                 sessiondict = self._do_standard_session_products(inputs.context, oussid, session_names, session_vislists,
-                                                             inputs.products_dir)
+                                                                 inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
                 for i in range(len(session_names)):
@@ -438,7 +326,7 @@ class ExportData(basetask.StandardTaskTemplate):
         result.targetimages=(targetimages_list, targetimages_fitslist)
 
         # Export the pipeline manifest file
-        # 
+        #
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
                                                 inputs.exportmses, calvisdict, inputs.exportcalprods,
                                                 [os.path.basename(image) for image in calimages_fitslist], calimages_fitskeywords,
@@ -461,21 +349,6 @@ class ExportData(basetask.StandardTaskTemplate):
         :rtype: :class:~`ExportDataResults`
         """
         return results
-
-    def get_oussid(self, context):
-        """
-        Determine the ous prefix
-        """
-
-        # Get the parent ous ousstatus name. This is the sanitized ous
-        # status uid
-        ps = context.project_structure
-        if ps is None or ps.ousstatus_entity_id == 'unknown':
-            oussid = 'unknown'
-        else:
-            oussid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
-
-        return oussid
 
     def get_recipename(self, context):
         """
@@ -538,7 +411,7 @@ class ExportData(basetask.StandardTaskTemplate):
             ppr_file = None
 
         # Export a tar file of the web log
-        weblog_file = self._export_weblog(context, products_dir, oussid)
+        weblog_file = self._export_weblog(context, products_dir)
 
         # Export the processing log independently of the web log
         casa_commands_file = self._export_casa_commands_log(context, context.logs['casa_commands'], products_dir,
@@ -673,12 +546,12 @@ class ExportData(basetask.StandardTaskTemplate):
 
         targetflags_filelist = []
         if self.inputs.imaging_products_only:
-            flags_file_list = glob.glob('*.flagtargetstemplate.txt')
+            flags_file_list = utils.glob_ordered('*.flagtargetstemplate.txt')
         elif not vislist:
-            flags_file_list = glob.glob('*.flagtemplate.txt')
-            flags_file_list.extend(glob.glob('*.flagtsystemplate.txt'))
+            flags_file_list = utils.glob_ordered('*.flagtemplate.txt')
+            flags_file_list.extend(utils.glob_ordered('*.flagtsystemplate.txt'))
         else:
-            flags_file_list = glob.glob('*.flag*template.txt')
+            flags_file_list = utils.glob_ordered('*.flag*template.txt')
         for file_name in flags_file_list:
             flags_file = os.path.join(output_dir, file_name)
             if os.path.exists(flags_file):
@@ -743,7 +616,11 @@ class ExportData(basetask.StandardTaskTemplate):
         per_ms_calimages = []
         per_ms_calimages_keywords = []
         for i, image in enumerate(calimages):
-            if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown'):
+            if (image.startswith(oussid) or
+                any(image.startswith(session_name) for session_name in sessiondict) or
+                image.startswith('oussid') or
+                image.startswith('unknown') or
+                image.startswith('session')):
                 per_ous_calimages.append(image)
                 per_ous_calimages_keywords.append(calimages_fitskeywords[i])
             else:
@@ -791,6 +668,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
+        pipemanifest.add_images(ouss, per_ms_calimages, 'calibrator', per_ms_calimages_keywords)
 
         # Add the target images
         pipemanifest.add_images(ouss, targetimages, 'target', targetimages_fitskeywords)
@@ -1028,24 +906,11 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return tarfilename
 
-    def _export_weblog(self, context, products_dir, oussid):
+    def _export_weblog(self, context, products_dir):
         """
         Save the processing web log to a tarfile
         """
-        # Define the name of the output tarfile
-        ps = context.project_structure
-        tarfilename = self.NameBuilder.weblog(project_structure=ps,
-                                              ousstatus_entity_id=oussid)
-
-        LOG.info('Saving final weblog in %s', tarfilename)
-
-        # Create the tar file
-        if not self._executor._dry_run:
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
-            tar.close()
-
-        return tarfilename
+        return utils.export_weblog_as_tar(context, products_dir, self.NameBuilder, self._executor._dry_run)
 
     def _export_casa_commands_log(self, context, casalog_name, products_dir, oussid):
         """
@@ -1054,8 +919,8 @@ class ExportData(basetask.StandardTaskTemplate):
         casalog_file = os.path.join(context.report_dir, casalog_name)
 
         ps = context.project_structure
-        out_casalog_file = self.NameBuilder.casa_script(casalog_name, 
-                                                        project_structure=ps, 
+        out_casalog_file = self.NameBuilder.casa_script(casalog_name,
+                                                        project_structure=ps,
                                                         ousstatus_entity_id=oussid,
                                                         output_dir=products_dir)
 
@@ -1073,8 +938,8 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Get the output file name
         ps = context.project_structure
-        out_script_file = self.NameBuilder.casa_script(script_name, 
-                                                       project_structure=ps, 
+        out_script_file = self.NameBuilder.casa_script(script_name,
+                                                       project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
 
@@ -1116,8 +981,8 @@ finally:
 
         ps = context.project_structure
         casascript_file = os.path.join(context.report_dir, casascript_name)
-        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
-                                                           project_structure=ps, 
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name,
+                                                           project_structure=ps,
                                                            ousstatus_entity_id=oussid,
                                                            output_dir=products_dir)
 
@@ -1131,7 +996,7 @@ finally:
         """
         Save the manifest file.
         """
-        out_manifest_file = self.NameBuilder.manifest(manifest_name, 
+        out_manifest_file = self.NameBuilder.manifest(manifest_name,
                                                       ousstatus_entity_id=oussid,
                                                       output_dir=products_dir)
         LOG.info('Creating manifest file %s', out_manifest_file)
@@ -1152,7 +1017,7 @@ finally:
             if calimages:
                 LOG.info('Exporting calibrator source images')
                 if calintents == '':
-                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE']
+                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE', 'POLARIZATION']
                 else:
                     intents = calintents.split(',')
                 cleanlist = context.calimlist.get_imlist()
@@ -1234,6 +1099,21 @@ finally:
                             if os.path.exists(imagename) and not os.path.exists(imagename2):
                                 images_list.append((imagename, version))
                                 cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                    # Add POLI/POLA images for polarization calibrators
+                    if image['sourcetype'] == 'POLARIZATION':
+                        if image['imagename'].find('.pbcor') != -1:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        else:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
@@ -1354,3 +1234,82 @@ finally:
 
         pipemanifest.write(manifest_file)
 
+    def _export_aqua_report(self, context: Context, oussid: str, products_dir: str, report_generator: AquaXmlGenerator,
+                            weblog_filename: str):
+        """Save the AQUA report.
+
+        Note the method is mostly a duplicate of the conterpart
+             in hifa/tasks/exportdata/almaexportdata
+
+        Args:
+            context : pipeline context
+            oussid : OUS status ID
+            products_dir (str): path of product directory
+            report_generator: AQUA XML Generator
+            weblog_filename (str): weblog tarball filename
+
+        Returns:
+            AQUA report file path
+        """
+
+        aqua_file = os.path.join(context.output_dir, context.logs['aqua_report'])
+
+        LOG.info('Generating pipeline AQUA report')
+        try:
+            report_xml = report_generator.get_report_xml(context)
+            export_aqua_to_disk(report_xml, aqua_file)
+        except Exception as e:
+            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
+            return 'Undefined'
+
+        ps = context.project_structure
+        out_aqua_file = self.NameBuilder.aqua_report(context.logs['aqua_report'],
+                                                     project_structure=ps,
+                                                     ousstatus_entity_id=oussid,
+                                                     output_dir=products_dir)
+
+        LOG.info(f'Copying AQUA report {aqua_file} to {out_aqua_file}')
+        shutil.copy(aqua_file, out_aqua_file)
+
+        # put aqua report into html directory, so it can be linked to the weblog
+        aqua_html_path = f'{context.report_dir}/{aqua_file}'
+        LOG.info(f'Copying AQUA report {aqua_file} to {aqua_html_path}')
+        shutil.copy(aqua_file, context.report_dir)
+
+        products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
+
+        with tarfile.open(products_weblog_tarball, "r:gz") as tar:
+
+            # Extract all the files from the old tarball except the file to be replaced
+            files_to_keep = []
+            aqua_html_path_in_tarball = None
+            for member in tar.getmembers():
+                if aqua_file in member.name:
+                    aqua_html_path_in_tarball = member
+                else:
+                    files_to_keep.append(member)
+
+            with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False) as temp_weblog_tarball:
+                LOG.debug(f'Created {temp_weblog_tarball.name}')
+
+                # Create a new tarball with the updated aqua file, keeping all others the same
+                with tarfile.open(temp_weblog_tarball.name, "w:gz") as new_tar:
+                    for member in files_to_keep:
+                        # Add all the existing files from the old tarball to the new tarball
+                        new_tar.addfile(member, tar.extractfile(member))
+
+                    # If an aqua file was already in the weblog tarball, then update it.
+                    # Else, add it into the weblog tarball.
+                    if aqua_html_path_in_tarball:
+                        LOG.info(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
+                        new_tar.add(aqua_file, arcname=aqua_html_path_in_tarball.name)
+                    else:
+                        LOG.info(f'Adding {aqua_html_path} to contents of weblog tarball')
+                        LOG.debug(f'Adding {aqua_html_path} to contents of {temp_weblog_tarball.name}')
+                        new_tar.add(f'{aqua_html_path}')
+
+            LOG.info(f'Adding/updating aqua report in {products_weblog_tarball}')
+            LOG.debug(f'Moving {temp_weblog_tarball.name} to {products_weblog_tarball}')
+            shutil.move(temp_weblog_tarball.name, products_weblog_tarball)
+
+        return os.path.basename(out_aqua_file)

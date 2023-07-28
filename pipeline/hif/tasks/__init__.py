@@ -15,13 +15,14 @@ from .refant import RefAnt, HpcRefAnt
 from .setmodel import Setjy
 from .setmodel import SetModels
 from .tclean import Tclean
-from .uvcontsub import UVcontFit, UVcontSub
+from .uvcontsub import UVcontSub
 from .polarization import Polarization
 from .editimlist import Editimlist
 from .transformimagedata import Transformimagedata
 from .makermsimages import Makermsimages
 from .makecutoutimages import Makecutoutimages
 from .analyzealpha import Analyzealpha
+from .selfcal import Selfcal
 
 # set default tasks for tasks with several implementations to our desired
 # specific implementation

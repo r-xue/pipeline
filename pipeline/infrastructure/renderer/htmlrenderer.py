@@ -482,6 +482,7 @@ class T1_1Renderer(RendererBase):
             'project_uids': project_uids,
             'schedblock_uids': schedblock_uids,
             'execblock_uids': execblock_uids,
+            'number_of_execblocks': len(context.observing_run.execblock_ids),
             'ous_uid': context.project_structure.ous_entity_id,
             'ousstatus_entity_id': context.project_structure.ousstatus_entity_id,
             'ppr_uid': None,
@@ -638,8 +639,9 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             # Get the field intents, but only for those that
                             # the pipeline processes. This can be an empty
-                            # list (PIPE-394: POINTING, WVR intents).
-                            intents_list = [f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET')
+                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806: DIFFGAIN).
+                            intents_list = [f.intents for f in ms.get_fields(
+                                intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET,DIFFGAIN')
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
