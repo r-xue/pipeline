@@ -347,6 +347,45 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return 2
 
+    def _tlimit_cyclefactor_heuristic(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        gridder = self.gridder(intent, field)
+
+        times_on_source_per_field = []
+        for vis in self.vislist:
+            ms_do = self.observing_run.get_ms(vis)
+            times_on_source_per_field.extend([f.time_on_source for f in ms_do.fields if f.name == field and intent in f.intents])
+
+        if not times_on_source_per_field:
+            return False
+
+        min_time_on_source_per_field = min(times_on_source_per_field)
+
+        if (gridder == 'mosaic'
+            and specmode in ('cube', 'repBW')
+            and min_time_on_source_per_field <= 60.0
+            and iter0_dirty_dynamic_range >= 30
+            and iteration > 0):
+            return True
+        else:
+            return False
+
+    def tlimit(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        if field is None or intent is None or specmode is None or iter0_dirty_dynamic_range is None:
+            return 2.0
+        if self._tlimit_cyclefactor_heuristic(iteration, field, intent, specmode, iter0_dirty_dynamic_range):
+            return 5.0
+        else:
+            return 2.0
+
+    def cyclefactor(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        if field is None or intent is None or specmode is None or iter0_dirty_dynamic_range is None:
+            # Use CASA default
+            return None
+        if self._tlimit_cyclefactor_heuristic(iteration, field, intent, specmode, iter0_dirty_dynamic_range):
+            return 3.0
+        else:
+            return None
+
     def mosweight(self, intent, field):
 
         if self.gridder(intent, field) == 'mosaic':

@@ -69,7 +69,7 @@ class Field(object):
         Get the field name with illegal characters replaced with underscores.
 
         This property is used to determine whether the field name, when given
-        as a CASA argument, should be enclosed in quotes. 
+        as a CASA argument, should be enclosed in quotes.
         """
         return utils.fieldname_clean(self._name)
 
@@ -85,7 +85,7 @@ class Field(object):
     def identifier(self):
         """
         A human-readable identifier for this Field.
-        """ 
+        """
         return self.name if self.name else '#{0}'.format(self.id)
 
     @property
@@ -112,7 +112,7 @@ class Field(object):
         self._name = value
 
     @property
-    def ra(self):        
+    def ra(self):
         return casa_tools.quanta.formxxx(self.longitude, format='hms', prec=3)
 
     # Galactic Longitude: it is usually expressed in DMS format
@@ -125,6 +125,29 @@ class Field(object):
     def gb(self):
         return self.dec
 
+    # Time on source
+    @property
+    def time_on_source(self):
+       """
+       Return the time on source in seconds. The implementation relies
+       on the msmd.timesforfield() time stamps that are stored in
+       self.time. These appear to be in general on the 16 ms granularity
+       for ALMA. There are gaps between the observations when other fields
+       are observed and when other scans are done. The simple algorithm
+       here tries to exclude these gaps to sum up the deltas. It does not
+       correct for edge effects (half integrations before the first and
+       after the last time stamp per observation). This is negligible for
+       the 16 ms granularity and the intended use of this time for the
+       heuristic requested in PIPE-1782. A fully fledged solution would
+       involve reading the INTERVAL column of the MS for a given field
+       based selection. This is more time consuming and should only be
+       considered if the current method is not accurate enough.
+       """
+
+       delta_times = self.time[1:]-self.time[:-1]
+       median_delta_time = np.median(delta_times)
+       return np.sum(delta_times[delta_times <= 3 * median_delta_time])
+
     def set_source_type(self, source_type):
         source_type = source_type.strip().upper()
 
@@ -133,7 +156,7 @@ class Field(object):
         source_type = source_type.replace('GAIN', 'PHASE')
         source_type = source_type.replace('FLUX', 'AMPLITUDE')
 
-        for intent in ['BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET', 'POINTING', 
+        for intent in ['BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET', 'POINTING',
                        'WVR', 'ATMOSPHERE', 'SIDEBAND', 'POLARIZATION',
                        'POLANGLE', 'POLLEAKAGE', 'CHECK', 'DIFFGAIN', 'UNKNOWN',
                        'SYSTEM_CONFIGURATION']:
@@ -142,5 +165,5 @@ class Field(object):
 
     def __str__(self):
         return '<Field {id}: name=\'{name}\' intents=\'{intents}\'>'.format(
-            id=self.identifier, name=self.name, 
+            id=self.identifier, name=self.name,
             intents=','.join(self.intents))
