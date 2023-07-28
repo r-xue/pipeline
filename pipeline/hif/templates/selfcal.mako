@@ -95,8 +95,6 @@ def fm_band(band):
 
 def fm_target(target):
     target_str=target['field'].replace('_',' ')
-    if target['is_repr_target']:
-       target_str+='<br> (rep.source)'
     return target_str
 
 def fm_sc_success(success):

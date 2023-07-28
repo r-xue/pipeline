@@ -139,7 +139,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             row = []
             valid_chars = "%s%s" % (string.ascii_letters, string.digits)
             id_name = filenamer.sanitize(target['field_name']+'_'+target['sc_band'], valid_chars)
-            row.append(f' <a href="#{id_name}">{target["field"]}</a> ')
+            row.append(f' <a href="#{id_name}">{fm_target(target)}</a> ')
             row.append(target['sc_band'].replace('_', ' '))
             row.append(target['spw'])
             row.append(target['phasecenter'])
@@ -492,3 +492,10 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 def text_with_tooltip(text, tooltip):
     return f'<div data-toggle="tooltip" data-placement="bottom" title="{tooltip}">{text}</div>'
+
+
+def fm_target(target):
+    target_str = target['field']
+    if target['is_repr_target']:
+        target_str += '<br> (rep.source)'
+    return target_str
