@@ -561,7 +561,12 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets = makeimlist_results.targets
         for scal_target in scal_targets:
             scal_target['sc_telescope'] = telescope
-            scal_target['is_repr_target'] = scal_target['heuristics'].representative_target()[5]
+            _, repr_source, repr_spw, _, _, repr_real, _, _, _, _ = scal_target['heuristics'].representative_target()
+            if str(repr_spw) in scal_target['spw'].split(',') and repr_source == utils.dequote(scal_target['field']):
+                is_representative = True
+            else:
+                is_representative = False
+            scal_target['is_repr_target'] = is_representative
 
         return scal_targets
 
