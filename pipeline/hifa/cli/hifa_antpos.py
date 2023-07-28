@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
                 dryrun=None, acceptresults=None, threshold=None):
 

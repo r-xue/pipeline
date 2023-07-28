@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None,
                      dryrun=None, acceptresults=None):
 

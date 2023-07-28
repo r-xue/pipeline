@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 from . import utils
 
 
+@utils.cli_wrapper
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, dryrun=None,
                  acceptresults=None):

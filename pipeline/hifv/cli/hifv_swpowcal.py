@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_swpowcal(vis=None, caltable=None, spw=None, dryrun=None, acceptresults=None):
 
     """
