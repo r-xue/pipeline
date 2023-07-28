@@ -318,14 +318,15 @@ class SSFheuristics(object):
         return PMincACA
 
     def _getbaselinesproj(self, field_id: int=None) -> Dict[str, str]:
-        ''' Code to get the projected baseline from the openend 
+        """
+        Code to get the projected baseline from the openend 
         visibilitiy file already - these are ordered in 
         terms of antennas. This is a modified stand alone version
-        similar to the getProjectedBaselines from Todd Hunter's aUs.
+        similar to the getProjectedBaselines from Todd Hunter's AUs.
 
         returns a dict of lengths which are BL name keyed
         e.g. bllens[DA41-DA42] - key is name ant 1 - dash - name ant 2
-        '''
+        """
         with casa_tools.MSMDReader(self.vis) as msmd:
             spwchan = msmd.nchan(self.spw)
             datadescid = msmd.datadescids(spw=self.spw)[0]
@@ -348,7 +349,7 @@ class SSFheuristics(object):
             myBl = '%s-%s' %(self.antlist[alldata['antenna1'][allID]], self.antlist[alldata['antenna2'][allID]])
             thelen = alldata['uvdist'][allID]
             if myBl not in bldict:
-                bldict[myBl]=[]
+                bldict[myBl] = []
             bldict[myBl].append(thelen)
             uniBl.append(myBl)
 
@@ -446,10 +447,10 @@ class SSFheuristics(object):
         """ 
         Look up the nearest default cycle time 
         using best practices for Baseline length and 
-        the frequency band. This is ONLY needed when the 
-        returned cycle time is None - which would only happen
+        the frequency band. This is only needed when the 
+        returned cycle time is None, which only happens
         for malformed data with only one PHASE cal scan,
-        that ultimately should not be coming to PIPELINE at all.
+        that ultimately should not be coming to pipeline at all.
 
         See: PIPE-1848
         """
@@ -458,12 +459,12 @@ class SSFheuristics(object):
         else:
             config = self._getconfig()  # Configs run 1 to 10, 0 is ACA 
 
-        bandu = self._getband()  # Gets freq then band - 1 to 10
+        bandu = self._getband()  # Gets freq then band 1 to 10
 
         # List of lists for cycle times for Cycle 10
         # BAND 1 is missing
         # [config][band]
-        # band index 0 doesnt exist padded with 999
+        # band index 0 doesn't exist padded with 999
         cycletimes = [[999,999,999,660,660,480,540,480,480,360,360],  
                       [999,999,999,630,630,450,510,390,390,270,270],  
                       [999,999,999,630,630,450,510,390,390,270,270],  
@@ -485,10 +486,12 @@ class SSFheuristics(object):
         return float(cycletime)
     
     def _getfreq(self) -> float:
-        """ wrap in a function here as we open msmd
-        return is in Hz used for getting the band
+        """ 
+        Get the median frequency for the spw.
 
-        PIPE-1848
+        The return is in Hz used for getting the band.
+
+        See: PIPE-1848
         """
         #TODO: update to fetch from context
         with casa_tools.MSMDReader(self.vis) as msmd:
@@ -497,14 +500,15 @@ class SSFheuristics(object):
         return freqval
     
     def _getband(self) -> int:
-        ''' Identify the Band for specific frequency (in GHz)
+        """
+        Identify the Band for specific frequency (in GHz)
         PIPE-1848
+        """
 
-        '''
         freq = self._getfreq()
         
-        lo=np.array([35,67,84,125,157,211,275,385,602,787])*1e9
-        hi=np.array([51,85,116,163,212,275,373,500,720,950])*1e9
+        lo=np.array([35, 67, 84, 125, 157, 211, 275, 385, 602, 787])*1e9
+        hi=np.array([51, 85, 116, 163, 212, 275, 373, 500, 720, 950])*1e9
         # Set Band 2 to stop at current B3
 
         bandsel = np.arange(1,len(lo)+1)[(freq>lo)&(freq<hi)][0]
@@ -521,8 +525,8 @@ class SSFheuristics(object):
         # self.baselines is a dict, rule is max on a dict returns a
         # key for the max so this is max baseline to use 
         maxbl = self.baselines[max(self.baselines)]
-        shortbl=np.array([0,44,160,313,499,783,1399,2499,3599,8499,13899])
-        longbl=np.array([45,161,314,500,784,1400,2500,3600,8500,13900,20000]) # upper limit greater than baseline len 
+        shortbl=np.array([0, 44, 160, 313, 499, 783, 1399, 2499, 3599, 8499, 13899])
+        longbl=np.array([45, 161, 314, 500, 784, 1400, 2500, 3600, 8500, 13900, 20000]) # upper limit greater than baseline len 
              
         config = np.arange(0,len(longbl))[(maxbl>shortbl)&(maxbl<longbl)][0]
 
