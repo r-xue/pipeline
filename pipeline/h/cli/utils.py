@@ -22,7 +22,7 @@ def cli_wrapper(func: Callable):
     @wraps(func)
     def wrapped_func(*args, **kwargs):
         if 'pipelinemode' in kwargs:
-            LOG.info('The pipeline task argument "pipelinemode" does not affect results and will be removed in the future.')
+            LOG.attention('The pipeline task argument "pipelinemode" does not affect results and will be removed in the future.')
             kwargs.pop('pipelinemode')
         return func(*args, **kwargs)
     return wrapped_func
