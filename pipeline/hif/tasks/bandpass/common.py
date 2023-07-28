@@ -126,8 +126,8 @@ class BandpassResults(basetask.Results):
         self.final.extend(copy.deepcopy(final))
         self.preceding.extend(copy.deepcopy(preceding))
 
-        # PIPE-1624: Bandpass gaintable is saved off so it can be used in the Phase RMS structure function analysis in spwphaseup. 
-        self.bp_gaintable_for_phase_rms = []
+        # PIPE-1624: Bandpass phaseup caltable is saved off so it can be used in the Phase RMS structure function analysis in spwphaseup.
+        self.phaseup_caltable_for_phase_rms = []
 
     def merge_with_context(self, context: Context):
         """
@@ -138,10 +138,10 @@ class BandpassResults(basetask.Results):
             return
 
         # PIPE-1624: Add caltable name to the ms so it can be used later by the Phase RMS structure function analysis.
-        if self.bp_gaintable_for_phase_rms:
+        if self.phaseup_caltable_for_phase_rms:
             vis = os.path.basename(self.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
-            ms.bp_gaintable_for_phase_rms = self.bp_gaintable_for_phase_rms
+            ms.phaseup_caltable_for_phase_rms = self.phaseup_caltable_for_phase_rms
 
         # If requested, unregister old bandpass calibrations before 
         # registering this one

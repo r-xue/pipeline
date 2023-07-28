@@ -66,7 +66,7 @@ class MeasurementSet(object):
         acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
         phase_calapps_for_check_sources : The phase calapps for the check sources 
             from hifa_gfluxscale
-        bp_gaintable_for_phase_rms : The bandpass gaintable names from hifa_bandpass
+        phaseup_caltable_for_phase_rms : The bandpass phaseup caltable name from hifa_bandpass
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -143,9 +143,9 @@ class MeasurementSet(object):
         self.phase_calapps_for_check_sources = []
 
         # Added for ALMA IF to support PIPE-1624
-        # This gaintable name is saved in hifa_bandpass
-        # so it can be used for the phase RMS structure function decoherence assessment
-        self.bp_gaintable_for_phase_rms = []
+        # This phaseup caltable name is saved in hifa_bandpass
+        # so it can be used for the phase RMS stability assessment
+        self.phaseup_caltable_for_phase_rms = []
 
     def _calc_filesize(self):
         """

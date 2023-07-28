@@ -64,14 +64,14 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Add score to list of scores.
             scores.append(score)
 
-         # QA scores for decoherence assessment (See: PIPE-692 and PIPE-1624)
-        if result.phaserms_results: 
+        # QA scores for decoherence assessment (See: PIPE-692 and PIPE-1624)
+        if result.phaserms_results:
             decoherence_score = qacalc.score_decoherence_assessment(ms, result.phaserms_results['phasermscycleP80'], 
                                                                         result.phaserms_results['blP80'], 
                                                                         result.phaserms_results['blP80orig'], result.phaserms_antout)
-        else: 
+        else:
             # "missing results" decoherence assessment QA score
-            base_score = 0.9 
+            base_score = 0.9
             shortmsg = "Cannot assess Phase RMS."
             longmsg = 'Unable to assess the Phase RMS decoherence, for {}.'.format(ms.basename)
 

@@ -1,4 +1,3 @@
-import collections
 import os
 
 import matplotlib.pyplot as plt
@@ -10,9 +9,11 @@ import pipeline.infrastructure.renderer.logger as logger
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class SpatialStructureFunctionChart(object):
-    """ Creates a spatial structure function plot from the results 
-        from SSFheuristics. Adapted from PIPE692.py as part of PIPE-1624. 
+    """ 
+    Creates a spatial structure function plot from the results 
+    from SSFheuristics. Adapted from PIPE692.py as part of PIPE-1624. 
     """
 
     def __init__(self, context, result):
@@ -21,13 +22,13 @@ class SpatialStructureFunctionChart(object):
         self.vis = os.path.basename(self.result.inputs['vis'])
         self.spw = self.result.phaserms_results['spw']
         self.scan = self.result.phaserms_results['scan']
-        self.field= self.result.phaserms_results['field']
+        self.field = self.result.phaserms_results['field']
 
     def create_plot(self):
         phaserms_results = self.result.phaserms_results
 
         # Set up plot
-        figsize = [11.0, 8.5] # appears mostly to affect the savefig not the interactive one 
+        figsize = [11.0, 8.5]  # appears mostly to affect the savefig not the interactive one 
         figsize = np.array(figsize)
         plt.close(1)
         fig = plt.figure(1)
@@ -111,7 +112,7 @@ class SpatialStructureFunctionChart(object):
         # Extend the plot max range
         plotrange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
         idplot = [id for id, val in enumerate(plotrange) if phaseRMSmin < val and phaseRMSmax > val]
-        indexplt= 10 - len(idplot) + np.max(idplot)
+        indexplt = 10 - len(idplot) + np.max(idplot)
         
         if len(idplot) < 10 and indexplt < len(plotrange) - 1:  # i.e. if we cannot adjust further than plotrange, we don't
             phaseRMSmax = plotrange[indexplt]

@@ -9,35 +9,37 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 #################
-# Adapted from PIPE692.py::SSFanalyis. Original history: 
+# Adapted from PIPE692.py::SSFanalyis. Original history:
 # L T Maud - ESO 
 #          - April 2020 0RIG
 #          - May 2021 full CASA 6 version mockup
-#          - March 2022 CASA 6.4 'class' version for PL 
+#          - March 2022 CASA 6.4 'class' version for PL
 #          - July 2022 Edit for PL2022 implementation
 #            includes logger output messages
 #            included bl-name, bl-len, phase RMS in log
 # K Berry - NRAO
 #          -  July 2023 moved into PL
 ##################
+
+
 class SSFheuristics(object):
-    def __init__(self, inputsin, outlier_limit, flag_tolerance, max_poor_ant): 
+    def __init__(self, inputsin, outlier_limit, flag_tolerance, max_poor_ant):
         self.vis = inputsin.ms.basename
         self.outlierlimit = outlier_limit
         self.flag_tolerance = flag_tolerance
-        self.maxpoorant = max_poor_ant 
+        self.maxpoorant = max_poor_ant
 
         self.spw = None
         self.field = None
         self.scan = None
         self.refantid = None
-        self.caltable = [] 
+        self.caltable = []
        
         context = inputsin.context
         ms = context.observing_run.get_ms(self.vis)
-        self.caltable = sorted(ms.bp_gaintable_for_phase_rms)
+        self.caltable = sorted(ms.phaseup_caltable_for_phase_rms)
 
-        # Fetch the bandpass phaseup caltable 
+        # Fetch the bandpass phaseup caltable
         if len(self.caltable) > 0:
             self.caltable = self.caltable[-1]
         else:
@@ -45,13 +47,13 @@ class SSFheuristics(object):
             LOG.error(msg)
             raise Exception(msg)
         
-        self.refant = inputsin.refant.split(',')[0] # this is the NAME not the index
+        self.refant = inputsin.refant.split(',')[0]  # this is the NAME not the index
         self.antlist = []
         # loop ant list for id of refant
-        for elma in inputsin.ms.antennas:
-            if elma.name == self.refant:
-                self.refantid=elma.id
-            self.antlist.append(elma.name)
+        for ant in inputsin.ms.antennas:
+            if ant.name == self.refant:
+                self.refantid = ant.id
+            self.antlist.append(ant.name)
 
         scispws = inputsin.ms.get_spectral_windows(task_arg=inputsin.spw, science_windows_only=True)
         # Find the maximum science spw bandwidth for each science receiver band.
@@ -72,12 +74,12 @@ class SSFheuristics(object):
                 break
 
         ##################
-        ## PIPE-1661 related
+        # PIPE-1661 related
         # phasecal field ID out of the ms context passed - need for later flag assessment
         ph_fieldids = [f.id for f in inputsin.ms.get_fields(intent='PHASE')]
         # traditionally we should only have one phase calibrator
         # but still pull this as a list and use in the _getblflags function
-        self.ph_ids=ph_fieldids
+        self.ph_ids = ph_fieldids
 
         # future note, if we have multiple phase calibrators and these have
         # a different spectral spec, should we do this as per the bandpass
@@ -93,12 +95,12 @@ class SSFheuristics(object):
         bp_field = []
         bp_id = []
         for elm in targeted_scans:
-            bp_scan.append(elm.id) # take the ID
+            bp_scan.append(elm.id)  # take the ID
             for elms in elm.fields:
                 bp_field.append(elms.name)  # fields is a dict again...
-                bp_id.append(elms.id) # PIPE-1661
+                bp_id.append(elms.id)  # PIPE-1661
 
-        self.scan = bp_scan[0] # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure. 
+        self.scan = bp_scan[0]  # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure. 
         self.field = bp_field[0]
         self.fieldId = bp_id[0]  # PIPE-1661 needs ID not a name 
 
@@ -127,7 +129,7 @@ class SSFheuristics(object):
         # Write the seutp info to the log
         self._log_setup_info()
 
-    def analysis(self) -> Tuple[Dict, str, str, List]:
+    def analysis(self) -> Tuple[Dict, float, float, List]:
         """
         Do the phase RMS calculation, outlier analysis,
         and return everything required for qa scores, plotting, weblog
@@ -138,7 +140,8 @@ class SSFheuristics(object):
     def _do_analysis(self):
         """
         Do the phase RMS calculation, outlier analysis,
-        and fill the dictionary with everything required for later scoring and plotting
+        and fill the dictionary with everything required for later scoring and 
+        plotting
 
         inputs used are:
                   self.cycletime, self.totaltime, self.PMinACA,
@@ -162,9 +165,9 @@ class SSFheuristics(object):
         # the total time (i.e. length of BP scan) and 
         # the cycle time (time it takes to cycle the start of a phase cal scan to the next - ties with a 'decohernce time' over the target)
         if self.cycletime < self.totaltime:
-            self.allResult= self._phase_rms_caltab(timeScale=self.cycletime) # if cycle time is shorter we pass the option so it gets assessed
+            self.allResult = self._phase_rms_caltab(timeScale=self.cycletime) # if cycle time is shorter we pass the option so it gets assessed
         else:
-            self.allResult= self._phase_rms_caltab() # otherwise no options added and cycletime value will equal total time value
+            self.allResult = self._phase_rms_caltab()  # otherwise no options added and cycletime value will equal total time value
 
         # Check the cycle time calculation is not all nans - might happen if there are considerable flags
         # i.e. if a large fraction of data > self.flag_tolerance are flagged
@@ -182,22 +185,21 @@ class SSFheuristics(object):
             antACAid = np.array([antid for antid in range(len(self.allResult['antname'])) if 'PM' not in self.allResult['antname'][antid]])
  
             # Reset allResult to exclude the PM baselines, and PM ants only
-            bl_keys=['blphaserms', 'blphasermscycle', 'bllen', 'blname'] # PIPE-1633
-            ant_keys=['antphaserms', 'antphasermscycle', 'antname'] # PIPE-1633
+            bl_keys = ['blphaserms', 'blphasermscycle', 'bllen', 'blname'] # PIPE-1633
+            ant_keys = ['antphaserms', 'antphasermscycle', 'antname'] # PIPE-1633
             for bl_key in bl_keys:
-                self.allResult[bl_key]=np.array(self.allResult[bl_key])[blACAid]
+                self.allResult[bl_key] = np.array(self.allResult[bl_key])[blACAid]
             for ant_key in ant_keys:
-                self.allResult[ant_key]=np.array(self.allResult[ant_key])[antACAid]
-
+                self.allResult[ant_key] = np.array(self.allResult[ant_key])[antACAid]
             
         # Get 80th percentile baseline length and ID of all baselines above it
-        self.allResult['blP80orig'] = np.percentile(self.allResult['bllen'], 80) ## was xy
+        self.allResult['blP80orig'] = np.percentile(self.allResult['bllen'], 80)  # was xy
 
         #PIPE-1662 P80 to acount for flagged antennas, i.e work from P80 of the 'good' data
-        self.allResult['blP80'] = np.percentile(np.array(self.allResult['bllen'])[np.isfinite(np.array(self.allResult['blphaserms']))], 80) 
+        self.allResult['blP80'] = np.percentile(np.array(self.allResult['bllen'])[np.isfinite(np.array(self.allResult['blphaserms']))], 80)
         #####
 
-        ID_all80 = np.where(np.array(self.allResult['bllen'])> self.allResult['blP80'])[0]  ## was xy
+        ID_all80 = np.where(np.array(self.allResult['bllen'])> self.allResult['blP80'])[0]  # was xy
 
         # First calculation of the representative phase RMS values
         self.allResult['phasermsP80'] = np.median(np.array(self.allResult['blphaserms'])[ID_all80[np.isfinite(np.array(self.allResult['blphaserms'])[ID_all80])]])
@@ -209,8 +211,7 @@ class SSFheuristics(object):
         # so sensible to identify these antennas - over total time
         ID_poorant = np.where(np.array(self.allResult['antphaserms'])[np.isfinite(self.allResult['antphaserms'])]>self.outlierlimit)[0]
         
-
-        if len(ID_poorant)>0:
+        if len(ID_poorant) > 0:
             for antout in ID_poorant:
                 self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
 
@@ -221,7 +222,7 @@ class SSFheuristics(object):
         if self.allResult['phasermscycleP80'] > 50.:
             statsoutlierlimit = self.allResult['phasermscycleP80'] + 4.*phaseRMScycleP80mad # tested limit works well
             # ant phase on cycle time !
-            ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])]>statsoutlierlimit)[0]
+            ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])] > statsoutlierlimit)[0]
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
                     self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
@@ -229,7 +230,7 @@ class SSFheuristics(object):
             # max limit on number of 'bad' antennas to be allowed to exclude from calculations (set at 11 good as tested in PIPE692)
             # we clip them out and recalculate - score function also tracks and gives a warning
             # if >11, basically the data is rubbish, so don't clip and let scores be low
-            if len(self.outlier_antennas) > 0 and len(self.outlier_antennas) < self.maxpoorant: 
+            if len(self.outlier_antennas) > 0 and len(self.outlier_antennas) < self.maxpoorant:
 
                 # crude way to get the index values is a loop over the baselines
                 # is there a way to better search allResult['blname'] to check if any self.outlier_antennas are (or are not) in them
@@ -260,7 +261,7 @@ class SSFheuristics(object):
         else:
             # this else is for <50deg phase RMS where we do not recalcualte the phase RMS as its low already
             # but we still want to identify any outliers to notify in the messages
-            statsoutlierlimit = np.max([self.allResult['phasermscycleP80'] + 6.*phaseRMScycleP80mad,2.*self.allResult['phasermscycleP80']])
+            statsoutlierlimit = np.max([self.allResult['phasermscycleP80'] + 6.0 * phaseRMScycleP80mad, 2.0 * self.allResult['phasermscycleP80']])
             # outlier on cycle time 
             ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])]>statsoutlierlimit)[0]
             # add them to the list so score code picks them up if required and changes the messages
@@ -269,14 +270,15 @@ class SSFheuristics(object):
                     self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
 
             # none the 'bad' entires in dict 
-            self.allResult['blphasermsbad']= None
+            self.allResult['blphasermsbad'] =  None
             self.allResult['blphasermscyclebad'] = None
             self.allResult['bllenbad'] = None
 
         # now loop over and log write the phase RMS parameters
         # sort by baseline len
         LOG.info(' Phase RMS calculated over the cycle time as function of baseline length')
-        for bnblph in list(zip(np.array(self.allResult['blname'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['bllen'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['blphasermscycle'])[np.array(self.allResult['bllen']).argsort()])):
+        for bnblph in list(zip(np.array(self.allResult['blname'])[np.array(self.allResult['bllen']).argsort()],np.array(self.allResult['bllen'])[np.array(self.allResult['bllen']).argsort()],
+                               np.array(self.allResult['blphasermscycle'])[np.array(self.allResult['bllen']).argsort()])):
 
             # add simple text to flagged (i.e. we made nan for the calculation), or outlier antennas (outlier comes first)
             if str(bnblph[0].split('-')[0]) in self.outlier_antennas or str(bnblph[0].split('-')[1]) in self.outlier_antennas:
@@ -285,7 +287,6 @@ class SSFheuristics(object):
                 LOG.info(str(bnblph)+' - flagged')
             else:
                 LOG.info(str(bnblph))
-
 
         if len(self.outlier_antennas) > 0:
             antoutstr = ",".join(self.outlier_antennas)
@@ -296,7 +297,7 @@ class SSFheuristics(object):
         self.allResult['scan'] = self.scan
         self.allResult['field'] = self.field
 
-    # Methods used by __init__ 
+    # Methods used by __init__
     def _pm_in_aca(self) -> bool:
         """
         Check if the array is ACA and has PM antennas
@@ -308,7 +309,7 @@ class SSFheuristics(object):
                 Bool based on PM with CM antennas
         """
         antUse = self.antlist
-        antUse = ",".join(antUse) # See: PIPE-1633
+        antUse = ",".join(antUse)  # See: PIPE-1633
 
         if 'CM' in antUse and 'PM' in antUse and 'DA' not in antUse and 'DV' not in antUse:
             PMincACA = True
@@ -333,12 +334,12 @@ class SSFheuristics(object):
         
         with casa_tools.MSReader(self.vis) as ms:
             ms.selectinit(datadescid=datadescid)
-            ms.select({'uvdist': [1e-9,1e12]}) # avoid auto corr
-            ms.selectchannel(1, 0, spwchan, 1) # data structure related 
+            ms.select({'uvdist': [1e-9, 1e12]})  # avoid auto corr
+            ms.selectchannel(1, 0, spwchan, 1)  # data structure related
             ms.select({'scan_number': int(self.scan)})
             if field_id:
                 ms.select({'field_id': int(field_id)})
-            alldata = ms.getdata(['uvdist', 'antenna1', 'antenna2']) 
+            alldata = ms.getdata(['uvdist', 'antenna1', 'antenna2'])
 
         # The length of e.g. alldata['uvdist'] is > total no. of Bls - it loops over all time stamps of the BP 
         # we need a mean of the unique values (as Todd's aU) otherwise we just get the first time entry in the below
@@ -346,7 +347,7 @@ class SSFheuristics(object):
         uniBl = []
         baselineLen = {}
         for allID in range(len(alldata['uvdist'])):
-            myBl = '%s-%s' %(self.antlist[alldata['antenna1'][allID]], self.antlist[alldata['antenna2'][allID]])
+            myBl = '%s-%s' % (self.antlist[alldata['antenna1'][allID]], self.antlist[alldata['antenna2'][allID]])
             thelen = alldata['uvdist'][allID]
             if myBl not in bldict:
                 bldict[myBl] = []
@@ -356,7 +357,7 @@ class SSFheuristics(object):
         uniBl = np.unique(uniBl)
 
         for myBl in uniBl:
-            baselineLen[myBl]= np.mean(bldict[myBl]) # this has a list for each 
+            baselineLen[myBl] = np.mean(bldict[myBl])  # this has a list for each
         
         # order irrelavant as keyed here with BL Name
         return baselineLen
@@ -378,7 +379,7 @@ class SSFheuristics(object):
             timeX = []
             antid = 0
             while len(timeX) < 2:
-                tb1 = tb.query("ANTENNA1 == %s  && SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s"%(antid, self.spw, self.scan))
+                tb1 = tb.query("ANTENNA1 == %s  && SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s" % (antid, self.spw, self.scan))
                 timeX = tb1.getcol('TIME')
                 antid += 1
                 if antid == nant - 1:
@@ -444,10 +445,10 @@ class SSFheuristics(object):
         return np.median(diffs)
 
     def _lookupcycle(self) -> float:
-        """ 
-        Look up the nearest default cycle time 
-        using best practices for Baseline length and 
-        the frequency band. This is only needed when the 
+        """
+        Look up the nearest default cycle time
+        using best practices for Baseline length and
+        the frequency band. This is only needed when the
         returned cycle time is None, which only happens
         for malformed data with only one PHASE cal scan,
         that ultimately should not be coming to pipeline at all.
@@ -457,29 +458,29 @@ class SSFheuristics(object):
         if self.PMinACA:
             config = 0
         else:
-            config = self._getconfig()  # Configs run 1 to 10, 0 is ACA 
+            config = self._getconfig()  # Configs run 1 to 10, 0 is ACA
 
         bandu = self._getband()  # Gets freq then band 1 to 10
 
         # List of lists for cycle times for Cycle 10
-        # BAND 1 is missing
         # [config][band]
-        # band index 0 doesn't exist padded with 999
-        cycletimes = [[999,999,999,660,660,480,540,480,480,360,360],  
-                      [999,999,999,630,630,450,510,390,390,270,270],  
-                      [999,999,999,630,630,450,510,390,390,270,270],  
-                      [999,999,999,630,630,450,510,270,270,210,210],  
-                      [999,999,999,630,630,450,510,270,270,210,210],  
-                      [999,999,999,390,390,270,210,130,130,130,130],  
-                      [999,999,999,390,390,270,210,130,130,130,130],  
-                      [999,999,999,80,80,80,80,80,80,80,80],  
-                      [999,999,999,80,80,80,80,80,65,58,45],   
-                      [999,999,999,80,80,80,80,80,65,58,45],  
-                      [999,999,999,80,80,80,80,80,65,58,45]]  
+        # Band index 0 doesn't exist padded with 999
+
+        cycletimes = [[999, 660, 999, 660, 660, 480, 540, 480, 480, 360, 360],
+                      [999, 660, 999, 630, 630, 450, 510, 390, 390, 270, 270],
+                      [999, 660, 999, 630, 630, 450, 510, 390, 390, 270, 270],
+                      [999, 660, 999, 630, 630, 450, 510, 270, 270, 210, 210],
+                      [999, 660, 999, 630, 630, 450, 510, 270, 270, 210, 210],
+                      [999, 390, 999, 390, 390, 270, 210, 130, 130, 130, 130],
+                      [999, 390, 999, 390, 390, 270, 210, 130, 130, 130, 130],
+                      [999, 80, 999, 80, 80, 80, 80, 80, 80, 80, 80],
+                      [999, 80, 999, 80, 80, 80, 80, 80, 65, 58, 45],
+                      [999, 80, 999, 80, 80, 80, 80, 80, 65, 58, 45],
+                      [999, 80, 999, 80, 80, 80, 80, 80, 65, 58, 45]]
 
         cycletime = cycletimes[config][bandu]
 
-        if cycletime == 999: 
+        if cycletime == 999:
             msg = "For {}, unable to find back-up cycle time.".format(self.vis)
             raise Exception(msg)
 
@@ -493,9 +494,9 @@ class SSFheuristics(object):
 
         See: PIPE-1848
         """
-        #TODO: update to fetch from context
+        # TODO: update to fetch from context
         with casa_tools.MSMDReader(self.vis) as msmd:
-            freqval = np.median(msmd.chanfreqs(self.spw)) # otherwise all channels 
+            freqval = np.median(msmd.chanfreqs(self.spw))  # otherwise all channels 
     
         return freqval
     
@@ -507,11 +508,11 @@ class SSFheuristics(object):
 
         freq = self._getfreq()
         
-        lo=np.array([35, 67, 84, 125, 157, 211, 275, 385, 602, 787])*1e9
-        hi=np.array([51, 85, 116, 163, 212, 275, 373, 500, 720, 950])*1e9
+        lo = np.array([35, 67, 84, 125, 157, 211, 275, 385, 602, 787])*1e9
+        hi = np.array([51, 85, 116, 163, 212, 275, 373, 500, 720, 950])*1e9
         # Set Band 2 to stop at current B3
 
-        bandsel = np.arange(1,len(lo)+1)[(freq>lo)&(freq<hi)][0]
+        bandsel = np.arange(1, len(lo)+1)[(freq > lo) & (freq < hi)][0]
 
         return bandsel
 
@@ -525,10 +526,10 @@ class SSFheuristics(object):
         # self.baselines is a dict, rule is max on a dict returns a
         # key for the max so this is max baseline to use 
         maxbl = self.baselines[max(self.baselines)]
-        shortbl=np.array([0, 44, 160, 313, 499, 783, 1399, 2499, 3599, 8499, 13899])
-        longbl=np.array([45, 161, 314, 500, 784, 1400, 2500, 3600, 8500, 13900, 20000]) # upper limit greater than baseline len 
-             
-        config = np.arange(0,len(longbl))[(maxbl>shortbl)&(maxbl<longbl)][0]
+        shortbl = np.array([0, 44, 160, 313, 499, 783, 1399, 2499, 3599, 8499, 13899])
+        longbl = np.array([45, 161, 314, 500, 784, 1400, 2500, 3600, 8500, 13900, 20000])  # upper limit greater than baseline len 
+            
+        config = np.arange(0, len(longbl))[(maxbl > shortbl) & (maxbl < longbl)][0]
 
         return config
     
@@ -545,30 +546,27 @@ class SSFheuristics(object):
         Added to support PIPE-1661
         
         inputs -
-        needs Measurement set, spw, 
+        needs Measurement set, spw,
         phase cal field id already known to class
         ant1 and ant2 for the antennas
 
         result - pass out simple a true or false (could be used for a masked array?)
-                 to set that baseline to a nan and thus not be used 
+                 to set that baseline to a nan and thus not be used
         """
-
-        #set the flagged baseline return to false
-        flaggedbl = False
-        # MS reads datadescid not spw id 
-        #- need to do the conversion to make sure we use
+        # MS reads datadescid not spw id
+        # need to do the conversion to make sure we use
         # the correct value
         with casa_tools.MSMDReader(self.vis) as msmd:
-            datadescid= msmd.datadescids(spw=self.spw)[0]
+            datadescid = msmd.datadescids(spw=self.spw)[0]
 
         with casa_tools.TableReader(self.vis) as tb:
-            if (ant1 != None) and (ant2 != None):
-                tb1 = tb.query("ANTENNA1 == %s && ANTENNA2 == %s && DATA_DESC_ID == %s "%(ant1, ant2, datadescid))
+            if (ant1 is not None) and (ant2 is not None):
+                tb1 = tb.query("ANTENNA1 == %s && ANTENNA2 == %s && DATA_DESC_ID == %s " % (ant1, ant2, datadescid))
             else:
                 # Speed up - pull everything in one go not per antena, divide out later in main function
-                tb1 = tb.query("DATA_DESC_ID == %s "%(datadescid))
+                tb1 = tb.query("DATA_DESC_ID == %s " % (datadescid))
 
-            flags = tb1.getcol('FLAG') ## index is [pol][chan][integration]
+            flags = tb1.getcol('FLAG')  # index is [pol][chan][integration]
             a1s = tb1.getcol('ANTENNA1')
             a2s = tb1.getcol('ANTENNA2') 
             field = tb1.getcol('FIELD_ID')
@@ -615,24 +613,24 @@ class SSFheuristics(object):
             cal_phases = tb1.getcol('CPARAM')
             cal_phases = np.angle(cal_phases[0][0])  ## in radians one pol only
 
-            ## code works fine as tested in PIPE 692 with only XX pol extractions
-            ## not 'really' required to do both pols, but could do so, and also get an average
-            ## single and full-pol to check, this single pull will work, but with more then the order differs (c.f. renorm pol code)
+            # code works fine as tested in PIPE 692 with only XX pol extractions
+            # not 'really' required to do both pols, but could do so, and also get an average
+            # single and full-pol to check, this single pull will work, but with more then the order differs (c.f. renorm pol code)
 
-            # Exclude flagged data as it is extracted from the gaintable   
-            # this is antenna based only       
-            flags = tb1.getcol('FLAG') ## [0][0]
+            # Exclude flagged data as it is extracted from the gaintable
+            # this is antenna based only   
+            flags = tb1.getcol('FLAG')  # [0][0]
             tb1.close()
 
-        cal_phases = [val if not flags[0][0][id_u] else np.nan for id_u, val in enumerate(cal_phases)]  ## so only one pol used 'X'
+        cal_phases = [val if not flags[0][0][id_u] else np.nan for id_u, val in enumerate(cal_phases)]  # so only one pol used 'X'
         cal_phases = np.array(cal_phases)
 
-        # Correct wraps in phase stream     
+        # Correct wraps in phase stream
         # Note: everything is in radians
         cal_phases = self.phase_unwrap(cal_phases)
         return cal_phases
 
-    def _phase_rms_caltab(self, antout: list=[], timeScale: float=None) -> Dict[str, str]: 
+    def _phase_rms_caltab(self, antout: list=[], timeScale: float=None) -> Dict[str, str]:
         """
         Run the loop over the caltable, work out the baseline based phases,
         and calculate the phase RMS. Also get the Phase RMS per antenna (with
@@ -650,7 +648,7 @@ class SSFheuristics(object):
         """
 
         # setup the result list
-        rms_results =  {}  
+        rms_results = {}
         rms_results['blphaserms'] = []
         rms_results['blphasermscycle'] = []
         rms_results['bllen'] = []
@@ -661,15 +659,15 @@ class SSFheuristics(object):
 
         # PIPE-1661 baseline based flag awareness - these store flags 
         # that we read in - just in case we 'need' this information
-        rms_results['blflags']=[]
+        rms_results['blflags'] = []
 
-        nant=len(self.antlist)
-        iloop = np.arange(nant-1) 
+        nant = len(self.antlist)
+        iloop = np.arange(nant-1)
 
         for i in iloop:
             # Ant based parameters
             pHant1 = self._get_cal_phase(i)
-            rms_results['antname'].append(self.antlist[i]) 
+            rms_results['antname'].append(self.antlist[i])
 
             # Make an assessment of flagged data for that antenna
             if len(pHant1[np.isnan(pHant1)]) > self.flag_tolerance*len(pHant1):
@@ -678,41 +676,40 @@ class SSFheuristics(object):
                 
             else:
                 # Do averaing -> 10s
-                pHant_ave = self.ave_phase(pHant1, self.difftime, over=10.0) # for thermal/short term noise
+                pHant_ave = self.ave_phase(pHant1, self.difftime, over=10.0)  # for thermal/short term noise
                 rmspHant_ave = np.std(np.array(pHant_ave)[np.isfinite(pHant_ave)])
                 rms_results['antphaserms'].append(rmspHant_ave)
                 if timeScale:
-                    rmspHant_ave_cycle = self.std_overlapping_avg(pHant_ave, self.difftime, over=timeScale) 
+                    rmspHant_ave_cycle = self.std_overlapping_avg(pHant_ave, self.difftime, over=timeScale)
                     rms_results['antphasermscycle'].append(rmspHant_ave_cycle)
                 else:
                     rms_results['antphasermscycle'].append(rmspHant_ave)
 
-
-            jloop = np.arange(i+1, nant) # baseline loop 
+            jloop = np.arange(i+1, nant)  # baseline loop
             for j in jloop:
                 # Get the phases - needs to be the single read in table 
                 
                 # pHant1 is read in above already
                 pHant2 = self._get_cal_phase(j)
                 # phases from cal table come in an order, baseline then is simply the subtraction
-                pH= pHant1 - pHant2 
+                pH = pHant1 - pHant2
                     
                 # fill baseline information now
                 rms_results['blname'].append(self.antlist[i]+'-'+self.antlist[j])
                 # OLD (new) WAY from context - average all as overview
                 # not direcrtly the BP only
-                #rms_results['bllen'].append(float(self.baselines.get_baseline(i,j).length.value)) # from context input
+                # rms_results['bllen'].append(float(self.baselines.get_baseline(i,j).length.value)) # from context input
                 
                 rms_results['bllen'].append(float(self.baselines[self.antlist[i]+'-'+self.antlist[j]])) # from function
 
-                # PIPE-1661 - get baseline based flags 
-                blisflagged = self._isblflagged(i,j)
+                # PIPE-1661 - get baseline based flags
+                blisflagged = self._isblflagged(i, j)
 
                 rms_results['blflags'].append(blisflagged)
                 ######
 
                 # make assessment if this is a bad antenna
-                if self.antlist[i] in antout or self.antlist[j] in antout: 
+                if self.antlist[i] in antout or self.antlist[j] in antout:
                     rms_results['blphaserms'].append(np.nan)
                     rms_results['blphasermscycle'].append(np.nan)
 
@@ -728,13 +725,13 @@ class SSFheuristics(object):
                     rms_results['blphasermscycle'].append(np.nan)
 
                 else:
-                    ## do averaing -> 10s
+                    # do averaing -> 10s
                     # need to get time and then rebin
-                    pH_ave = self.ave_phase(pH, self.difftime, over=10.0) # for thermal/short term noise 
+                    pH_ave = self.ave_phase(pH, self.difftime, over=10.0)  # for thermal/short term noise
                     rmspH_ave = np.std(np.array(pH_ave)[np.isfinite(pH_ave)])  
                     rms_results['blphaserms'].append(rmspH_ave)
                     if timeScale:
-                        rmspH_ave_cycle = self.std_overlapping_avg(pH_ave, self.difftime, over=timeScale)   
+                        rmspH_ave_cycle = self.std_overlapping_avg(pH_ave, self.difftime, over=timeScale)
                         rms_results['blphasermscycle'].append(rmspH_ave_cycle)
                     else:
                         rms_results['blphasermscycle'].append(rmspH_ave)
@@ -765,7 +762,7 @@ class SSFheuristics(object):
 
         # speed assumption is we will hit a false before a true
         # flag for good data, so assume bad, set to good
-        flaggedbl = True 
+        flaggedbl = True
 
         idbl = np.where((self.blflags[1]==ant1) & (self.blflags[2]==ant2) & (self.blflags[3]==self.fieldId))[0]
         # loop over correct ant, integration time index 
@@ -782,17 +779,17 @@ class SSFheuristics(object):
                 idbl = np.where((self.blflags[1]==ant1) & (self.blflags[2]==ant2) & (self.blflags[3]==phid))[0] 
                 for iduse in idbl:
                     if self.blflags[0].shape[0]*self.blflags[0].shape[1]!= np.sum(self.blflags[0][:,:,iduse]):
-                        # if there is unflagged data in this antenna pair and time then 
+                        # if there is unflagged data in this antenna pair and time then
                         # that baseline is, in fact, not fully flagged
                         flaggedbl = False
                         break
 
-        return flaggedbl 
+        return flaggedbl
 
     # Static methods
     @staticmethod
     def phase_unwrap(phase: np.ndarray) -> np.ndarray:
-        """ 
+        """
         Unwraps the phases to solve for 2PI ambiguities
         Input phases may contain np.nan. 
 
@@ -802,14 +799,14 @@ class SSFheuristics(object):
         :rtype: float array
         """
         working_phase = phase.copy()
-        working_phase[~np.isnan(working_phase)] = np.unwrap(working_phase[~np.isnan(working_phase)]) 
+        working_phase[~np.isnan(working_phase)] = np.unwrap(working_phase[~np.isnan(working_phase)])
         return working_phase
     
-    @staticmethod 
+    @staticmethod
     def mad(data: np.ndarray, axis: int=None) -> float:
         """
         This calculates the MAD - median absolute deviation from the median
-        The input must be nan free, i.e. finite data 
+        The input must be nan free, i.e. finite data
         
         :param data: input data stream
         :type data: list or array
@@ -842,7 +839,7 @@ class SSFheuristics(object):
         :rtype: float
         """
 
-        # Overlap in elements 
+        # Overlap in elements
         over = np.int(np.round(over / diffTime))
         
         # Use nan versions of numpy functions as some elements of 'phase' might be np.nan to indicate that it was flagged
@@ -871,7 +868,7 @@ class SSFheuristics(object):
         :type phase: array
         :param diffTime: the average difference in time between each data value, i.e. each phase
         :type diffTime: float
-        :param over: the time to average over - default is 1s 
+        :param over: the time to average over - default is 1s
         :type over: float
         :returns: array of averaged phases
         :rtype: array
@@ -887,6 +884,6 @@ class SSFheuristics(object):
                     np.mean(np.array(phase[i:i+over])[~np.isnan(phase[i:i+over])])
                     )
         else:
-            mean_hold = phase 
+            mean_hold = phase
             
         return mean_hold
