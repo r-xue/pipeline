@@ -183,7 +183,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">intent</Keyword>
-                <Value xmlns="">POLARIZATION,POLANGLE,POLLEAKAGE</Value>
+                <Value xmlns="">POLARIZATION</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
