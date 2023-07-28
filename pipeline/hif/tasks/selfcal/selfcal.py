@@ -116,6 +116,7 @@ class SelfcalInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
 
+    n_solints = vdp.VisDependentProperty(default=4.0)
     amplitude_selfcal = vdp.VisDependentProperty(default=False)
     gaincal_minsnr = vdp.VisDependentProperty(default=2.0)
     minsnr_to_proceed = vdp.VisDependentProperty(default=3.0)
@@ -128,7 +129,7 @@ class SelfcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     restore_resources = vdp.VisDependentProperty(default=None)
 
-    def __init__(self, context, vis=None, field=None, spw=None, contfile=None,
+    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, n_solints=None,
                  amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
@@ -144,6 +145,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.recal = recal
         self.refantignore = refantignore
 
+        self.n_solints = n_solints
         self.amplitude_selfcal = amplitude_selfcal
         self.gaincal_minsnr = gaincal_minsnr
         self.minsnr_to_proceed = minsnr_to_proceed
@@ -402,6 +404,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                     dividing_factor=self.inputs.dividing_factor,
                                     refantignore=self.inputs.refantignore,
                                     check_all_spws=self.inputs.check_all_spws,
+                                    n_solints=self.inputs.n_solints,
                                     do_amp_selfcal=self.inputs.amplitude_selfcal,
                                     inf_EB_gaincal_combine=inf_EB_gaincal_combine,
                                     executor=self._executor)

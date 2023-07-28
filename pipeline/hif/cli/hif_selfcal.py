@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 apply=None, parallel=None, recal=None, refantignore=None, restore_resources=None,
-                amplitude_selfcal=None, gaincal_minsnr=None,
+                n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
@@ -67,6 +67,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
                             the gaincal combine parameter will be set to 'scan'.
                             default=False
+    n_solints               number of solution intervals to attempt for self-calibration.
+                            default: 4
     refantignore            string list to be ignored as reference antennas.
                             example:  refantignore='ea02,ea03'
     restore_resources       Restore resources from a standard run of hif_selfcal.

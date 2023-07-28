@@ -41,6 +41,7 @@ class SelfcalHeuristics(object):
                  rel_thresh_scaling='log10',
                  dividing_factor=None,
                  check_all_spws=False,
+                 n_solints=4.0,
                  do_amp_selfcal=False,
                  inf_EB_gaincal_combine='scan',
                  refantignore='',
@@ -65,6 +66,7 @@ class SelfcalHeuristics(object):
         self.target = utils.dequote(scal_target['field'])
         self.uvrange = scal_target['uvrange']
 
+        self.n_solints = n_solints
         self.do_amp_selfcal = do_amp_selfcal
         self.gaincal_minsnr = gaincal_minsnr
         self.minsnr_to_proceed = minsnr_to_proceed
@@ -1320,7 +1322,9 @@ class SelfcalHeuristics(object):
                 scanstartsdict[band],
                 scanendsdict[band],
                 integrationtimesdict[band],
-                self.inf_EB_gaincal_combine, do_amp_selfcal=self.do_amp_selfcal)
+                self.inf_EB_gaincal_combine, 
+                n_solints=self.n_solints, 
+                do_amp_selfcal=self.do_amp_selfcal)
             LOG.info(f'{band} {solints[band]}')
             applycal_mode[band] = [self.apply_cal_mode_default]*len(solints[band])
 
