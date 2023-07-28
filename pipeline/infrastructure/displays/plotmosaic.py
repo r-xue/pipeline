@@ -71,8 +71,6 @@ def plot_mosaic(ms, source, figfile):
 
     legend_labels = {}
     legend_colours = {}
-    beam_label_y = 0.025
-
     for dish_diameter, beam_diameter in zip(dish_diameters, beam_diameters):
         for field, rel_ra, rel_dec in zip(fields, delta_ra, delta_dec):
             x = rel_ra  * radians_to_arcsec
@@ -92,22 +90,10 @@ def plot_mosaic(ms, source, figfile):
                                               linestyle='dotted')
                 legend_colours[label] = colour
 
-        colour = get_dish_colour(dish_diameter)
-        msg = '{} primary beam = {}'.format(dish_diameter, AXES_FORMATTER.format(beam_diameter))
-        t = ax.text(0.02, beam_label_y, msg, color=colour, transform=ax.transAxes, fontsize=10, zorder=5)
-        t.set_bbox(dict(facecolor='white', edgecolor='none', alpha=0.75))
-        beam_label_y += 0.05
-
     title_string = '{}, {}, average freq.={}'.format(ms.basename, source.name,
                                                      unitformat.frequency.format(median_ref_freq))
     title_font_size = 12
-    title_text = fig.supxlabel(title_string, y=0.99, fontsize=title_font_size, va='top')
-    # make sure title text fits into the picture, if not, then reduce the font size
-    title_bbox = title_text.get_window_extent(fig.canvas.get_renderer())
-    figwidth, figheight = fig.canvas.get_width_height()
-    if title_bbox.xmax > figwidth:
-        title_text.set_fontsize(title_font_size * figwidth / (title_bbox.xmax-title_bbox.xmin))
-
+    title_text = ax.set_title(title_string, size=title_font_size)
     ra_string = r'{:02d}$^{{\rm h}}${:02d}$^{{\rm m}}${:02.3f}$^{{\rm s}}$'.format(
         *EquatorialArc(mean_ra % (2*numpy.pi), ArcUnits.RADIAN).toHms())
     ax.set_xlabel('Right ascension offset from {}'.format(ra_string))
@@ -129,7 +115,13 @@ def plot_mosaic(ms, source, figfile):
     ax.xaxis.grid(True, which='major')
     ax.yaxis.grid(True, which='major')
     ax.invert_xaxis()
-    plt.tight_layout(pad=0.2, rect=(0, 0, 1, title_bbox.ymin / figheight * 0.99))
+    plt.tight_layout()
+
+    # make sure title text fits into the picture, if not, then reduce the font size
+    xmax = title_text.get_window_extent(fig.canvas.get_renderer()).xmax
+    figwidth = fig.canvas.get_width_height()[0]
+    if xmax > figwidth:
+        title_text.set_fontsize(title_font_size * figwidth / (2*xmax-figwidth))
 
     fig.savefig(figfile, dpi=dpi)
     plt.close(fig)
